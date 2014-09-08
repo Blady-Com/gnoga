@@ -786,7 +786,6 @@ package body Gnoga.Connections is
             Script_Holder.Hold;
          end select;
 
-         Log ("back");
          Script_Manager.Delete_Script_Holder (Script_ID);
 
          return Script_Holder.Result;

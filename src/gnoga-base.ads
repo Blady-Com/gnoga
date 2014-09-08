@@ -143,6 +143,8 @@ package Gnoga.Base is
    procedure Width (Object : in out Base_Type; Value : in Integer);
    function Width (Object : Base_Type) return Integer;
 
+   procedure Visible (Object : in out Base_Type; Value : Boolean := True);
+   function Visible (Object : Base_Type) return Boolean;
 
 
    --  Generic Access  --

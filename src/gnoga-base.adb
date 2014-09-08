@@ -296,6 +296,26 @@ package body Gnoga.Base is
       return Integer (Float'Value (R));
    end Width;
 
+   -------------
+   -- Visible --
+   -------------
+   
+   procedure Visible (Object : in out Base_Type; Value : Boolean := True)
+   is
+   begin
+      if Value then
+         Object.Style ("visibility", "visible");
+      else
+         Object.Style ("visibility", "hidden");
+      end if;
+   end Visible;
+   
+   function Visible (Object : Base_Type) return Boolean
+   is
+   begin
+      return Object.Style ("visibility") = "visible";
+   end Visible;
+   
    --------------
    -- Property --
    --------------

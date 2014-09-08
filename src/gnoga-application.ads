@@ -38,6 +38,13 @@
 with Gnoga.Types;
 
 package Gnoga.Application is
+
+   --  This package allows for the creation of simple GUI applications
+   --  using Gnoga. It allows only a single connection and application
+   --  terminates whenever End_Application is called.
+
+   --  See test/singleton.adb for an example.
+
    procedure Initialize
      (Host : in String  := "";
       Port : in Integer := 8080;

@@ -2,6 +2,7 @@ with Gnoga.Application;
 with Gnoga.Types;
 with Gnoga.Base;
 with Gnoga.Screen;
+with Gnoga.Navigator;
 
 procedure Demo is
    T : Gnoga.Base.Base_Type;
@@ -41,6 +42,9 @@ begin
    Gnoga.Application.Initialize;
 
    Gnoga.Log ("Connection established.");
+
+   Gnoga.Log ("User Agent = " &
+                Gnoga.Navigator.User_Agent (Gnoga.Application.Connection_ID));
 
    T.Create_Root (Connection_ID => Gnoga.Application.Connection_ID,
                   ID            => "t",

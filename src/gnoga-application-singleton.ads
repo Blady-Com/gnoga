@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                     G N O G A . A P P L I C A T I O N                    --
+--          G N O G A . A P P L I C A T I O N . S I N G L E T O N           --
 --                                                                          --
---                                 B o d y                                  --
+--                                 S p e c                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,22 +35,34 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------                                                                          --
 
-with Ada.Strings.Unbounded;
+with Gnoga.Types;
 
+package Gnoga.Application.Singleton is
 
-package body Gnoga.Application is
-   App_Name : Ada.Strings.Unbounded.Unbounded_String :=
-     Ada.Strings.Unbounded.To_Unbounded_String
-       ("Gnoga - The GNU Omnificent GUI for Ada");
+   --  This package allows for the creation of simple GUI applications
+   --  using Gnoga. It allows only a single connection and application
+   --  terminates whenever End_Application is called.
 
-   procedure Application_Name (Name : in String) is
-   begin
-      App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
-   end Application_Name;
+   --  See test/singleton.adb for an example.
 
-   function Applicaiton_Name return String is
-   begin
-      return Ada.Strings.Unbounded.To_String (App_Name);
-   end Applicaiton_Name;
+   procedure Initialize
+     (Host : in String  := "";
+      Port : in Integer := 8080;
+      Boot : in String  := "boot.html");
+   --  Initialize applicaiton for single connection is Boot for bootstrap html.
+   --  If Host = "" then will listen on all interfaces.
+   --  Use Host = "locahost" to constrain to local use only.
 
-end Gnoga.Application;
+   Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+   --  Set after Initialization
+
+   procedure Message_Loop;
+   --  Remain running until connection to browser lost.
+
+   procedure End_Application;
+   --  Terminate application.
+   --  This will disconnect application connection to browser and finalize
+   --  Gnoga objects, however Gnoga objects on finalization do not destroy
+   --  DOM object in browser so browser state will remain with document
+   --  after the loop has terminated and application has ended.
+end Gnoga.Application.Singleton;

@@ -1,4 +1,4 @@
-with Gnoga.Application;
+with Gnoga.Application.Singleton;
 with Gnoga.Types;
 with Gnoga.Base;
 
@@ -29,14 +29,14 @@ procedure Singleton is
       B.Style ("visibility", "hidden");
 
       Gnoga.Log ("Ending application.");
-      Gnoga.Application.End_Application;
+      Gnoga.Application.Singleton.End_Application;
    end End_App;
 begin
-   Gnoga.Application.Initialize;
+   Gnoga.Application.Singleton.Initialize;
 
    Gnoga.Log ("Connection established.");
 
-   T.Create_Root (Connection_ID => Gnoga.Application.Connection_ID,
+   T.Create_Root (Connection_ID => Gnoga.Application.Singleton.Connection_ID,
                   ID            => "t",
                   HTML          => "<h3 id='t'>Hello world 2!</h3>");
 
@@ -51,7 +51,7 @@ begin
    T.On_Click_Handler (On_Click'Unrestricted_Access);
    B.On_Click_Handler (End_App'Unrestricted_Access);
 
-   Gnoga.Application.Message_Loop;
+   Gnoga.Application.Singleton.Message_Loop;
 
    Gnoga.Log ("Done.");
 end Singleton;

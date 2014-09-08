@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                     G N O G A . A P P L I C A T I O N                    --
+--          G N O G A . A P P L I C A T I O N . S I N G L E T O N           --
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
@@ -35,22 +35,69 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------                                                                          --
 
-with Ada.Strings.Unbounded;
+with Gnoga.Connections;
 
+package body Gnoga.Application.Singleton is
+   Application_Holder : Gnoga.Connections.Connection_Holder_Type;
+   --  Used to block Initialize until On_Connect is called
 
-package body Gnoga.Application is
-   App_Name : Ada.Strings.Unbounded.Unbounded_String :=
-     Ada.Strings.Unbounded.To_Unbounded_String
-       ("Gnoga - The GNU Omnificent GUI for Ada");
+   Connection_Holder : Gnoga.Connections.Connection_Holder_Type;
+   --  Used to hold the single incoming connection
 
-   procedure Application_Name (Name : in String) is
+   procedure On_Connect
+     (ID         : in     Gnoga.Types.Connection_ID;
+      Connection : access Gnoga.Connections.Connection_Holder_Type);
+
+   procedure On_Connect
+     (ID         : in     Gnoga.Types.Connection_ID;
+      Connection : access Gnoga.Connections.Connection_Holder_Type)
+   is
    begin
-      App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
-   end Application_Name;
+      if Connection_ID = Gnoga.Types.No_Connection then
+         Connection_ID := ID;
+         Application_Holder.Release;
+         Connection_Holder.Hold;
+      else
+         Gnoga.Connections.Execute_Script
+           (ID, "document.writeln ('Only one connection permitted.');");
+      end if;
+   end On_Connect;
 
-   function Applicaiton_Name return String is
+   task Web_Server_Task is
+      entry Start;
+   end Web_Server_Task;
+
+   task body Web_Server_Task is
    begin
-      return Ada.Strings.Unbounded.To_String (App_Name);
-   end Applicaiton_Name;
+      accept Start;
+      Gnoga.Connections.Run (Wait_For_Q => False);
+      Connection_Holder.Release;
+   end Web_Server_Task;
 
-end Gnoga.Application;
+   procedure Initialize
+     (Host : in  String  := "";
+      Port : in  Integer := 8080;
+      Boot : in  String  := "boot.html")
+   is
+   begin
+      Gnoga.Connections.Initialize (Host, Port, Boot);
+
+      Gnoga.Connections.On_Connect_Handler
+        (Event => On_Connect'Access);
+
+      Web_Server_Task.Start;
+
+      Application_Holder.Hold;
+   end Initialize;
+
+   procedure Message_Loop is
+   begin
+      Connection_Holder.Hold;
+   end Message_Loop;
+
+   procedure End_Application is
+   begin
+      Connection_Holder.Release;
+      Gnoga.Connections.Stop;
+   end End_Application;
+end Gnoga.Application.Singleton;

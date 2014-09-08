@@ -38,31 +38,11 @@
 with Gnoga.Types;
 
 package Gnoga.Application is
+   --  Application packages simplify the management of single or multipage
+   --  Gnoga GUIs.
 
-   --  This package allows for the creation of simple GUI applications
-   --  using Gnoga. It allows only a single connection and application
-   --  terminates whenever End_Application is called.
-
-   --  See test/singleton.adb for an example.
-
-   procedure Initialize
-     (Host : in String  := "";
-      Port : in Integer := 8080;
-      Boot : in String  := "boot.html");
-   --  Initialize applicaiton for single connection is Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
-
-   Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
-   --  Set after Initialization
-
-   procedure Message_Loop;
-   --  Remain running until connection to browser lost.
-
-   procedure End_Application;
-   --  Terminate application.
-   --  This will disconnect application connection to browser and finalize
-   --  Gnoga objects, however Gnoga objects on finalization do not destroy
-   --  DOM object in browser so browser state will remain with document
-   --  after the loop has terminated and application has ended.
+   procedure Application_Name (Name : in String);
+   function Applicaiton_Name return String;
+   --  Set the name of the application. This will automatically set the
+   --  browser window title to Name on new connections.
 end Gnoga.Application;

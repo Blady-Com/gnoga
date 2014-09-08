@@ -1,4 +1,4 @@
-with Gnoga.Application;
+with Gnoga.Application.Singleton;
 with Gnoga.Types;
 with Gnoga.Base;
 with Gnoga.Screen;
@@ -37,21 +37,22 @@ procedure Demo is
       B.Visible (False);
 
       Gnoga.Log ("Ending application.");
-      Gnoga.Application.End_Application;
+      Gnoga.Application.Singleton.End_Application;
    end End_App;
 begin
-   Gnoga.Application.Initialize;
+   Gnoga.Application.Singleton.Initialize;
 
    Gnoga.Log ("Connection established.");
 
-   Gnoga.Log ("?page_id = " &
+   Gnoga.Log ("page_id = " &
                 Gnoga.Connections.Search_Parameter
-                (Gnoga.Application.Connection_ID, "page_id"));
+                (Gnoga.Application.Singleton.Connection_ID, "page_id"));
 
    Gnoga.Log ("User Agent = " &
-                Gnoga.Navigator.User_Agent (Gnoga.Application.Connection_ID));
+                Gnoga.Navigator.User_Agent
+                (Gnoga.Application.Singleton.Connection_ID));
 
-   T.Create_Root (Connection_ID => Gnoga.Application.Connection_ID,
+   T.Create_Root (Connection_ID => Gnoga.Application.Singleton.Connection_ID,
                   ID            => "t",
                   HTML          => "<h3 id='t'>Hello world 2!</h3>");
 
@@ -66,7 +67,7 @@ begin
    T.On_Click_Handler (On_Click'Unrestricted_Access);
    B.On_Click_Handler (End_App'Unrestricted_Access);
 
-   Gnoga.Application.Message_Loop;
+   Gnoga.Application.Singleton.Message_Loop;
 
    Gnoga.Log ("Done.");
 end Demo;

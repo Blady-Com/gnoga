@@ -10,6 +10,7 @@ procedure Demo is
    procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
    is
    begin
+      Gnoga.Log ("Visible = " & Object.Visible'Img);
       Gnoga.Log ("Color = " & Object.Style ("color"));
       Gnoga.Log ("Height = " & Object.Style ("height"));
       Gnoga.Log ("Width = " & Object.Style ("width"));
@@ -24,9 +25,9 @@ procedure Demo is
 
    procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is
    begin
-      T.Style ("visibility", "hidden");
-      A.Style ("visibility", "hidden");
-      B.Style ("visibility", "hidden");
+      T.Visible (False);
+      A.Visible (False);
+      B.Visible (False);
 
       Gnoga.Log ("Ending application.");
       Gnoga.Application.End_Application;

@@ -1,6 +1,7 @@
 with Gnoga.Application;
 with Gnoga.Types;
 with Gnoga.Base;
+with Gnoga.Screen;
 
 procedure Demo is
    T : Gnoga.Base.Base_Type;
@@ -11,6 +12,10 @@ procedure Demo is
    is
    begin
       Gnoga.Log ("Visible = " & Object.Visible'Img);
+      Gnoga.Log ("Screen.Available_Height = " &
+                   Gnoga.Screen.Available_Height (Object.Connection_ID)'Img);
+      Gnoga.Log ("Screen.Height = " &
+                   Gnoga.Screen.Height (Object.Connection_ID)'Img);
       Gnoga.Log ("Color = " & Object.Style ("color"));
       Gnoga.Log ("Height = " & Object.Style ("height"));
       Gnoga.Log ("Width = " & Object.Style ("width"));

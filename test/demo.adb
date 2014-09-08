@@ -3,6 +3,7 @@ with Gnoga.Types;
 with Gnoga.Base;
 with Gnoga.Screen;
 with Gnoga.Navigator;
+with Gnoga.Connections;
 
 procedure Demo is
    T : Gnoga.Base.Base_Type;
@@ -42,6 +43,10 @@ begin
    Gnoga.Application.Initialize;
 
    Gnoga.Log ("Connection established.");
+
+   Gnoga.Log ("?page_id = " &
+                Gnoga.Connections.Search_Parameter
+                (Gnoga.Application.Connection_ID, "page_id"));
 
    Gnoga.Log ("User Agent = " &
                 Gnoga.Navigator.User_Agent (Gnoga.Application.Connection_ID));

@@ -84,6 +84,14 @@ package Gnoga.Connections is
    procedure On_Connect_Handler (Event : in Connect_Event);
    --  Set event handler for new socket connections.
 
+   function Search_Parameter (ID   : Gnoga.Types.Connection_ID;
+                              Name : String)
+                              return String;
+   --  Returns the value of parameters passed in on URL. Returns "undefined"
+   --  if Name is not in URL search parameters.
+   --  For example: http://localhost:8080/?page_id=2
+   --  Search_Parameter (ID, "page_id") = "2"
+
    function Valid (ID : Gnoga.Types.Connection_ID) return Boolean;
    --  If ID is valid return true. Note that a broken web socket that has not
    --  been closed properly will have to time out first before reporting an

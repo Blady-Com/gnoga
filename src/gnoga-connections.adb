@@ -741,9 +741,6 @@ package body Gnoga.Connections is
    -- Execute_Script --
    --------------------
 
-   -- ? Need some sort of try block in JS to capture JS errors and then trow
-   --   exceptions.
-
    procedure Execute_Script (ID     : in Gnoga.Types.Connection_ID;
                              Script : in String)
    is
@@ -800,6 +797,18 @@ package body Gnoga.Connections is
    begin
       On_Connect_Event := Event;
    end On_Connect_Handler;
+
+   ----------------------
+   -- Search_Parameter --
+   ----------------------
+
+   function Search_Parameter (ID   : Gnoga.Types.Connection_ID;
+                              Name : String)
+                              return String
+   is
+   begin
+      return Execute_Script (ID, "params['" & name & "'];");
+   end Search_Parameter;
 
    -----------
    -- Valid --

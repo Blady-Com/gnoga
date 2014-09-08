@@ -1,0 +1,29 @@
+<!doctype HTML>
+<HTML>
+   <HEAD>
+      <meta charset="utf-8">
+      <script src="/js/jquery.min.js"></script>
+      <link rel="stylesheet" href="/css/jquery-ui.css" />
+      <script src="/js/jquery-ui.min.js"></script>
+   </HEAD>
+<BODY>
+</BODY>
+<script>
+  var ws;
+
+  $( document ).ready(function() {
+     ws = new WebSocket ("ws://" + location.hostname + ":" + location.port + "/echo");
+  
+     if (ws != null) {
+        ws.onmessage = function (event) {
+           try {
+              eval (event.data);
+           } catch (e) {           
+              console.error (e.message);
+              console.error ("eval data = " + event.data);
+           }
+        }
+     }
+  });
+</script>
+</HTML>

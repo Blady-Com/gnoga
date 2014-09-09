@@ -1,6 +1,7 @@
 with Gnoga.Connections;
 with Gnoga.Types;
 with Gnoga.Base;
+with Gnoga.Element;
 
 procedure Messaging is
    procedure On_Connect (ID         : in     Gnoga.Types.Connection_ID;
@@ -19,9 +20,9 @@ procedure Messaging is
                       (Object.Connection_ID, "screen.height"));
       end On_Message;
 
-      T : Gnoga.Base.Base_Type;
-      A : Gnoga.Base.Base_Type;
-      B : Gnoga.Base.Base_Type;
+      T : Gnoga.Element.Element_Type;
+      A : Gnoga.Element.Element_Type;
+      B : Gnoga.Element.Element_Type;
    begin
       Gnoga.Log ("Connection established on " & ID'img);
 
@@ -43,7 +44,7 @@ procedure Messaging is
 
       for i in 1 .. 10 loop
          declare
-            p : Gnoga.Base.Base_Type;
+            p : Gnoga.Element.Element_Type;
          begin
             P.Create_After (Target => A,
                             ID     => "",

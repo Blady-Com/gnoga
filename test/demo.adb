@@ -1,33 +1,35 @@
 with Gnoga.Application.Singleton;
 with Gnoga.Types;
 with Gnoga.Base;
+with Gnoga.Element;
 with Gnoga.Screen;
 with Gnoga.Navigator;
 with Gnoga.Connections;
 
 procedure Demo is
-   T : Gnoga.Base.Base_Type;
-   A : Gnoga.Base.Base_Type;
-   B : Gnoga.Base.Base_Type;
+   T : Gnoga.Element.Element_Type;
+   A : Gnoga.Element.Element_Type;
+   B : Gnoga.Element.Element_Type;
 
    procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
    is
+      use Gnoga.Element;
    begin
-      Gnoga.Log ("Visible = " & Object.Visible'Img);
+      Gnoga.Log ("Visible = " & Element_Type (Object).Visible'Img);
       Gnoga.Log ("Screen.Available_Height = " &
-                   Gnoga.Screen.Available_Height (Object.Connection_ID)'Img);
+                   Gnoga.Screen.Available_Height (Element_Type (Object).Connection_ID)'Img);
       Gnoga.Log ("Screen.Height = " &
-                   Gnoga.Screen.Height (Object.Connection_ID)'Img);
-      Gnoga.Log ("Color = " & Object.Style ("color"));
-      Gnoga.Log ("Height = " & Object.Style ("height"));
-      Gnoga.Log ("Width = " & Object.Style ("width"));
-      Object.Style ("color", "green");
-      Object.Style ("background", "black");
-      Object.Style ("height", "200px");
-      Object.Width (300);
-      Gnoga.Log ("Color = " & Object.Style ("color"));
-      Gnoga.Log ("Height = " & Object.Height'Img);
-      Gnoga.Log ("Width = " & Object.Width'Img);
+                   Gnoga.Screen.Height (Element_Type (Object).Connection_ID)'Img);
+      Gnoga.Log ("Color = " & Element_Type (Object).Style ("color"));
+      Gnoga.Log ("Height = " & Element_Type (Object).Style ("height"));
+      Gnoga.Log ("Width = " & Element_Type (Object).Style ("width"));
+      Element_Type (Object).Style ("color", "green");
+      Element_Type (Object).Style ("background", "black");
+      Element_Type (Object).Style ("height", "200px");
+      Element_Type (Object).Width (300);
+      Gnoga.Log ("Color = " & Element_Type (Object).Style ("color"));
+      Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
+      Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
    end On_Click;
 
    procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is

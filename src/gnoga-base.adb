@@ -39,17 +39,20 @@ with Ada.Strings.Unbounded;
 with Gnoga.Connections;
 
 package body Gnoga.Base is
-
-   function jQuery (Object : Base_Type) return String;
-   --  Returns the jQuery selector for Object
    
    ------------
    -- jQuery --
    ------------
 
    function jQuery (Object : Base_Type) return String is
+      use Gnoga.Types;
    begin
-      return "$('" & Object.Script_Accessor & "')";
+      case Object.ID_Type is
+      when DOM_ID =>
+         return "$('" & Object.Script_Accessor & "')";
+      when Script =>
+         return "$(" & Object.Script_Accessor & ")";
+      end case;
    end jQuery;
    
    ----------------
@@ -75,108 +78,6 @@ package body Gnoga.Base is
    --  Base_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   -----------------
-   -- Create_Root --
-   -----------------
-
-   procedure Create_Root (Object        : in out Base_Type;
-                          Connection_ID : in     Gnoga.Types.Connection_ID;
-                          ID            : in     String;
-                          HTML          : in     String)
-   is
-   begin
-      Object.Create_With_Script
-        (Connection_ID => Connection_ID,
-         ID            => ID,
-         Script        => "$(""body"").html(""" &
-           Escape_Quotes (HTML) & """);");
-   end Create_Root;
-
-   -------------------
-   -- Create_Inside --
-   -------------------
-   
-   procedure Create_Inside (Object        : in out Base_Type;
-                            Parent        : in out Base_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String)
-   is
-   begin
-      Object.Create_With_Script
-        (Connection_ID => Parent.Connection_ID,
-         ID            => ID,
-         Script        => jQuery (Base_Type (Parent)) &
-           ".html(""" & Escape_Quotes (HTML) & """);");
-   end Create_Inside;
-   
-   --------------------------
-   -- Create_Inside_At_Top --
-   --------------------------
-   
-   procedure Create_Inside_At_Top (Object        : in out Base_Type;
-                                   Parent        : in out Base_Type'Class;
-                                   ID            : in     String;
-                                   HTML          : in     String)
-   is
-   begin
-      Object.Create_With_Script
-        (Connection_ID => Parent.Connection_ID,
-         ID            => ID,
-         Script        => jQuery (Base_Type (Parent)) &
-           ".prepend(""" & Escape_Quotes (HTML) & """);");      
-   end Create_Inside_At_Top;
-   
-   -----------------------------
-   -- Create_Inside_At_Bottom --
-   -----------------------------
-   
-   procedure Create_Inside_At_Bottom (Object        : in out Base_Type;
-                                      Parent        : in out Base_Type'Class;
-                                      ID            : in     String;
-                                      HTML          : in     String)
-   is
-   begin
-      Object.Create_With_Script
-        (Connection_ID => Parent.Connection_ID,
-         ID            => ID,
-         Script        => jQuery (Base_Type (Parent)) &
-           ".append(""" & Escape_Quotes (HTML) & """);");      
-   end Create_Inside_At_Bottom;
-   
-   ------------------
-   -- Create_After --
-   ------------------
-   
-   procedure Create_After (Object        : in out Base_Type;
-                           Target        : in out Base_Type'Class;
-                           ID            : in     String;
-                           HTML          : in     String)
-   is
-   begin
-      Object.Create_With_Script
-        (Connection_ID => Target.Connection_ID,
-         ID            => ID,
-         Script        => "$(""" & Escape_Quotes (HTML) & """).insertAfter(""#" &
-           Target.ID & """);");
-   end Create_After;
-
-   -------------------
-   -- Create_Before --
-   -------------------
-   
-   procedure Create_Before (Object        : in out Base_Type;
-                            Target        : in out Base_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String)
-   is
-   begin
-      Object.Create_With_Script
-        (Connection_ID => Target.Connection_ID,
-         ID            => ID,
-         Script        => "$(""" & Escape_Quotes (HTML) &
-           """).insertBefore(""#" & Target.ID & """);");
-   end Create_Before;
-
    ------------------------
    -- Create_With_Script --
    ------------------------
@@ -185,7 +86,8 @@ package body Gnoga.Base is
      (Object        : in out Base_Type;
       Connection_ID : in     Gnoga.Types.Connection_ID;
       ID            : in     String;
-      Script        : in     String)
+      Script        : in     String;
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
    is
    begin      
       Gnoga.Connections.Execute_Script (ID     => Connection_ID,
@@ -201,14 +103,17 @@ package body Gnoga.Base is
    -- Attach --
    ------------
    
-   procedure Attach (Object        : in out Base_Type;
-                     Connection_ID : in     Gnoga.Types.Connection_ID;
-                     ID            : in     String)
+   procedure Attach
+     (Object        : in out Base_Type;
+      Connection_ID : in     Gnoga.Types.Connection_ID;
+      ID            : in     String;
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
    is
    begin
-      Object.DOM_ID        := Ada.Strings.Unbounded.To_Unbounded_String (ID);
+      Object.Web_ID        := Ada.Strings.Unbounded.To_Unbounded_String (ID);
       Object.Connection_ID := Connection_ID;      
-
+      Object.ID_Type       := ID_Type;
+      
       Object.Attach_To_Message_Queue;
    end Attach;
 
@@ -248,8 +153,18 @@ package body Gnoga.Base is
    function ID (Object : Base_Type) return String
    is
    begin
-      return Ada.Strings.Unbounded.To_String (Object.DOM_ID);
+      return Ada.Strings.Unbounded.To_String (Object.Web_ID);
    end ID;
+
+   -------------
+   -- ID_Type --
+   -------------
+
+   function ID_Type (Object : Base_Type) return Gnoga.Types.ID_Enumeration
+   is
+   begin
+      return Object.ID_Type;
+   end ID_Type;
 
    ------------
    -- Height --
@@ -295,26 +210,6 @@ package body Gnoga.Base is
    begin
       return Integer (Float'Value (R));
    end Width;
-
-   -------------
-   -- Visible --
-   -------------
-   
-   procedure Visible (Object : in out Base_Type; Value : Boolean := True)
-   is
-   begin
-      if Value then
-         Object.Style ("visibility", "visible");
-      else
-         Object.Style ("visibility", "hidden");
-      end if;
-   end Visible;
-   
-   function Visible (Object : Base_Type) return Boolean
-   is
-   begin
-      return Object.Style ("visibility") = "visible";
-   end Visible;
    
    --------------
    -- Property --
@@ -339,55 +234,6 @@ package body Gnoga.Base is
       return Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
                                                Script => Message_Script);
    end Property;
-
-   -----------
-   -- Style --
-   -----------
-   
-   procedure Style (Object : in out Base_Type;
-                    Name   : in String;
-                    Value  : in String)
-   is
-      Message_Script : constant String := jQuery(Object) &
-        ".css ('" & Name & "', """ & Escape_Quotes (Value) & """);";
-   begin
-      Gnoga.Connections.Execute_Script
-        (ID     => Object.Connection_ID,
-         Script => Message_Script);               
-   end Style;
-   
-   function Style (Object : Base_Type; Name : String) return String is
-      Message_Script : constant String := jQuery(Object) &
-        ".css ('" & Name & "');";
-   begin
-      return Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
-                                               Script => Message_Script);
-   end Style;
-
-   
-   ---------------
-   -- Attribute --
-   ---------------
-   
-   procedure Attribute (Object : in out Base_Type;
-                        Name   : in String;
-                        Value  : in String)
-   is
-      Message_Script : constant String := jQuery(Object) &
-        ".attr ('" & Name & "')=""" & Escape_Quotes (Value) & """";
-   begin
-      Gnoga.Connections.Execute_Script
-        (ID     => Object.Connection_ID,
-         Script => Message_Script);               
-   end Attribute;
-         
-   function Attribute (Object : Base_Type; Name : String) return String is
-      Message_Script : constant String := jQuery(Object) &
-        ".attr ('" & Name & "');";
-   begin
-      return Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
-                                               Script => Message_Script);
-   end Attribute;
 
    -------------------------------------------------------------------------
    --  Base_Type - Methods
@@ -416,7 +262,6 @@ package body Gnoga.Base is
    --  Base_Type - Events
    -------------------------------------------------------------------------
 
-   
    --------------
    -- On_Click --
    --------------   
@@ -438,8 +283,6 @@ package body Gnoga.Base is
          Object.On_Click_Event (Object);
       end if;
    end Fire_On_Click;
-
-      
    
    ---------------
    -- On_Create --
@@ -605,8 +448,14 @@ package body Gnoga.Base is
    ---------------------
    
    function Script_Accessor (Object : Base_Type) return String is
+      use Gnoga.Types;
    begin
-      return "#" & Object.ID;
+      case Object.ID_Type is
+      when DOM_ID =>
+         return "#" & Object.ID;
+      when Script =>
+         return Object.ID;
+      end case;
    end Script_Accessor;
     
 end Gnoga.Base;

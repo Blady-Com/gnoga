@@ -62,59 +62,21 @@ package Gnoga.Base is
    --  Base_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create_Root (Object        : in out Base_Type;
-                          Connection_ID : in     Gnoga.Types.Connection_ID;
-                          ID            : in     String;
-                          HTML          : in     String);
-   --  Create a Gnoga oject on Connection ID with DOM ID using HTML in <body>
-   --  Warning: This will destroy all DOM objects in body.
-
-   procedure Create_Inside (Object        : in out Base_Type;
-                            Parent        : in out Base_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String);
-   --  Create a Gnoga object on with DOM ID using HTML inside Parent.
-   --  Warning: This will destroy all DOM objects already in Parent.
-
-   procedure Create_Inside_At_Top (Object        : in out Base_Type;
-                                   Parent        : in out Base_Type'Class;
-                                   ID            : in     String;
-                                   HTML          : in     String);
-   --  Create a Gnoga object on with DOM ID using HTML inside Parent at top
-   --  of existing objects.
-
-   procedure Create_Inside_At_Bottom (Object        : in out Base_Type;
-                                      Parent        : in out Base_Type'Class;
-                                      ID            : in     String;
-                                      HTML          : in     String);
-   --  Create a Gnoga object on with DOM ID using HTML inside Parent at bottom
-   --  of existing objects.
-
-
-   procedure Create_After (Object        : in out Base_Type;
-                           Target        : in out Base_Type'Class;
-                           ID            : in     String;
-                           HTML          : in     String);
-   --  Create a Gnoga object with DOM ID using HTML after Target.
-
-   procedure Create_Before (Object        : in out Base_Type;
-                            Target        : in out Base_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String);
-   --  Create a Gnoga object with DOM ID using HTML before Target.
-
    procedure Create_With_Script
      (Object        : in out Base_Type;
       Connection_ID : in     Gnoga.Types.Connection_ID;
       ID            : in     String;
-      Script        : in     String);
-   --  Create a Gnoga object on Connection ID with DOM ID using Script.
+      Script        : in     String;
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID);
+   --  Create a Gnoga object on Connection ID with ID using Script.
    --  The Script must include creating the id attribute equal to ID.
-   --  Script is eval'd JavaScript
+   --  Script is eval'd JavaScript.
 
-   procedure Attach (Object        : in out Base_Type;
-                     Connection_ID : in     Gnoga.Types.Connection_ID;
-                     ID            : in     String);
+   procedure Attach
+     (Object        : in out Base_Type;
+      Connection_ID : in     Gnoga.Types.Connection_ID;
+      ID            : in     String;
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID);
    --  Attache a Gnoga object on Connection ID to an existing DOM object
    --  with ID. On_Create event is not fired.
 
@@ -132,20 +94,18 @@ package Gnoga.Base is
    --  The Gnoga Connection ID of Object.
 
    function ID (Object : Base_Type) return String;
-   --  The DOM ID for Object.
+   --  The ID for Object.
 
+   function ID_Type (Object : Base_Type) return Gnoga.Types.ID_Enumeration;
+   --  Returns the type of ID stored for Object
 
-   --  Object Propertie --
+   --  Object Properties --
 
    procedure Height (Object : in out Base_Type; Value : in Integer);
    function Height (Object : Base_Type) return Integer;
 
    procedure Width (Object : in out Base_Type; Value : in Integer);
    function Width (Object : Base_Type) return Integer;
-
-   procedure Visible (Object : in out Base_Type; Value : Boolean := True);
-   function Visible (Object : Base_Type) return Boolean;
-
 
    --  Generic Access  --
 
@@ -154,20 +114,6 @@ package Gnoga.Base is
                        Value  : in String);
    function Property (Object : Base_Type; Name : String) return String;
    --  General access to property Name
-
-   procedure Style (Object : in out Base_Type;
-                    Name   : in String;
-                    Value  : in String);
-   function Style (Object : Base_Type; Name : String) return String;
-   --  General access to style Name
-
-   procedure Attribute (Object : in out Base_Type;
-                        Name   : in String;
-                        Value  : in String);
-   function Attribute (Object : Base_Type; Name : String) return String;
-   --  General access to attribute Name
-
-
 
    -------------------------------------------------------------------------
    --  Base_Type - Methods
@@ -275,15 +221,18 @@ package Gnoga.Base is
    --  Detach Object from Message Queue
 
    function Script_Accessor (Object : Base_Type) return String;
-   --  Return the internal DOM representation for scripts for Object
-   --  unless overidden returns #ID
+   --  Returns the script representation for ID. For DOM_ID '#ID' for
+   --  Script 'ID'
 
+   function jQuery (Object : Base_Type) return String;
+   --  Returns the jQuery selector for Object
 private
    type Base_Type is
      new Ada.Finalization.Limited_Controlled with
       record
          Unique_ID     : Gnoga.Types.Unique_ID;
-         DOM_ID        : Gnoga.Types.DOM_ID;
+         Web_ID        : Gnoga.Types.Web_ID;
+         ID_Type       : Gnoga.Types.ID_Enumeration;
          Connection_ID : Gnoga.Types.Connection_ID := -1;
 
          -- Event Handlers

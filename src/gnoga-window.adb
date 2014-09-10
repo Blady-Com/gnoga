@@ -59,7 +59,16 @@ package body Gnoga.Window is
               Connection_ID => Connection_ID,
               ID            => Adjusted_ID,
               ID_Type       => Gnoga.Types.Script);
+
+      Window.DOM_Document.Attach (Connection_ID);
    end Attach;
+
+   function Document (Window : Window_Type)
+                      return Gnoga.Document.Document_Access
+   is
+   begin
+      return Window.DOM_Document'Unrestricted_Access;
+   end Document;
 
    ----------
    -- Name --

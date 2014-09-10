@@ -37,6 +37,7 @@
 
 with Gnoga.Types;
 with Gnoga.Base;
+with Gnoga.Document;
 
 package Gnoga.Window is
 
@@ -64,6 +65,10 @@ package Gnoga.Window is
    -------------------------------------------------------------------------
    --  Window_Type - Properties
    -------------------------------------------------------------------------
+
+   function Document (Window : Window_Type)
+                      return Gnoga.Document.Document_Access;
+   --  DOM Document Node
 
    procedure Name (Window : in out Window_Type; Value : String);
    function Name (Window : Window_Type) return String;
@@ -118,6 +123,6 @@ package Gnoga.Window is
 private
    type Window_Type is new Gnoga.Base.Base_Type with
       record
-         null;
+         DOM_Document : aliased Gnoga.Document.Document_Type;
       end record;
 end Gnoga.Window;

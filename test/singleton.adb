@@ -56,9 +56,9 @@ begin
                 Gnoga.Navigator.User_Agent
                 (M.Connection_ID));
 
-   T.Create_Root (Window => M,
-                  ID     => "t",
-                  HTML   => "<h3 id='t'>Hello world 2!</h3>");
+   T.Create_Inside_At_Top (Parent => M.Document.Body_Element.all,
+                           ID     => "t",
+                           HTML   => "<h3 id='t'>Hello world 2!</h3>");
 
    A.Create_After (Target => T,
                    ID     => "a",

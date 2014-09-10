@@ -39,7 +39,6 @@ with Ada.Finalization;
 
 with Gnoga.Types;
 with Gnoga.Base;
-with Gnoga.Window;
 
 package Gnoga.Element is
 
@@ -57,13 +56,6 @@ package Gnoga.Element is
    -------------------------------------------------------------------------
    --  Element_Type - Creation Methods
    -------------------------------------------------------------------------
-
-   procedure Create_Root (Object : in out Element_Type;
-                          Window : in out Gnoga.Window.Window_Type'Class;
-                          ID     : in     String;
-                          HTML   : in     String);
-   --  Create a Gnoga oject on Connection ID with DOM ID using HTML in <body>
-   --  Warning: This will destroy all DOM objects in body.
 
    procedure Create_Inside (Object : in out Element_Type;
                             Parent : in out Element_Type'Class;

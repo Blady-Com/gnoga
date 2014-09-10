@@ -222,7 +222,7 @@ package body Gnoga.Base is
                        Value  : in     String)
    is
       Message_Script : constant String := jQuery(Object) &
-        ".prop ('" & Name & "')=""" & Escape_Quotes (Value) & """;";
+        ".prop ('" & Name & "',""" & Escape_Quotes (Value) & """);";
    begin
       Gnoga.Connections.Execute_Script
         (ID     => Object.Connection_ID,

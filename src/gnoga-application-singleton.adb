@@ -94,6 +94,8 @@ package body Gnoga.Application.Singleton is
       Application_Holder.Hold;
 
       Window.Attach (Connection_ID => Connection_ID);
+
+      Window.Document.Title (Applicaiton_Name);
    end Initialize;
 
    procedure Message_Loop is

@@ -168,7 +168,7 @@ package body Gnoga.Element is
                         Value  : in String)
    is
       Message_Script : constant String := jQuery(Object) &
-        ".attr ('" & Name & "')=""" & Escape_Quotes (Value) & """";
+        ".attr ('" & Name & "',""" & Escape_Quotes (Value) & """);";
    begin
       Gnoga.Connections.Execute_Script
         (ID     => Object.Connection_ID,

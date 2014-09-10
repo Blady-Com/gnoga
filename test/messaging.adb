@@ -2,6 +2,7 @@ with Gnoga.Connections;
 with Gnoga.Types;
 with Gnoga.Base;
 with Gnoga.Element;
+with Gnoga.Window;
 
 procedure Messaging is
    procedure On_Connect (ID         : in     Gnoga.Types.Connection_ID;
@@ -9,26 +10,31 @@ procedure Messaging is
    is
       use Gnoga.Connections;
 
-      procedure On_Message (Object  : in out Gnoga.Base.Base_Type'Class;
-                            Event   : in     String;
-                            Message : in     String)
+      procedure On_Message (Object   : in out Gnoga.Base.Base_Type'Class;
+                            Event    : in     String;
+                            Message  : in     String;
+                            Continue : out    Boolean)
       is
       begin
          Gnoga.Log ("In on_message Event:" & Event & " Message: " & Message);
          Gnoga.Log ("Screen Height = " &
                       Gnoga.Connections.Execute_Script
                       (Object.Connection_ID, "screen.height"));
+         Continue := True;
       end On_Message;
 
+      M : Gnoga.Window.Window_Type;
       T : Gnoga.Element.Element_Type;
       A : Gnoga.Element.Element_Type;
       B : Gnoga.Element.Element_Type;
    begin
       Gnoga.Log ("Connection established on " & ID'img);
 
-      T.Create_Root (Connection_ID => ID,
-                     ID            => "t",
-                     HTML          => "<h3 id='t'>Hello world 2!</h3>");
+      M.Attach (Connection_ID => ID);
+
+      T.Create_Root (Window => M,
+                     ID     => "t",
+                     HTML   => "<h3 id='t'>Hello world 2!</h3>");
 
       A.Create_After (Target => T,
                       ID     => "a",

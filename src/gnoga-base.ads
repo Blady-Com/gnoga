@@ -110,9 +110,14 @@ package Gnoga.Base is
    --  Generic Access  --
 
    procedure Property (Object : in out Base_Type;
-                       Name   : in String;
-                       Value  : in String);
+                       Name   : in     String;
+                       Value  : in     String);
    function Property (Object : Base_Type; Name : String) return String;
+
+   procedure Property (Object : in out Base_Type;
+                       Name   : in     String;
+                       Value  : in     Integer);
+   function Property (Object : Base_Type; Name : String) return Integer;
    --  General access to property Name
 
    -------------------------------------------------------------------------
@@ -133,9 +138,10 @@ package Gnoga.Base is
      procedure (Object : in out Base_Type'Class);
 
    type Message_Event is access
-     procedure (Object  : in out Base_Type'Class;
-                Event   : in     String;
-                Message : in     String);
+     procedure (Object   : in out Base_Type'Class;
+                Event    : in     String;
+                Message  : in     String;
+                Continue : out    Boolean);
 
    -- Mouse Events --
 
@@ -161,10 +167,12 @@ package Gnoga.Base is
 
    procedure On_Message_Handler (Object  : in out Base_Type;
                                  Handler : in     Message_Event);
-   procedure Fire_On_Message (Object  : in out Base_Type;
-                              Event   : in     String;
-                              Message : in     String);
-   -- Generic message event handler
+   procedure Fire_On_Message (Object   : in out Base_Type;
+                              Event    : in     String;
+                              Message  : in     String;
+                              Continue : out    Boolean);
+   --  Generic message event handler, if set is called before every event.
+   --  If Continue is set to false, no more event processing will occur.
 
    -------------------------------------------------------------------------
    --  Base_Type - Event Methods
@@ -207,13 +215,6 @@ package Gnoga.Base is
                                 Script : in     String);
    --  On Event occuring to Object, the Script will be executed on browser.
 
-   procedure Bind_Event_Script (Connection_ID : in Gnoga.Types.Connection_ID;
-                                Query         : in String;
-                                Event         : in String;
-                                Script        : in String);
-   --  On Event occuring to jQuery(Query) the Script will be executed on
-   --  Connection_ID.
-
    procedure Attach_To_Message_Queue (Object : in out Base_Type);
    --  Attach Object to Message Queue
 
@@ -233,7 +234,7 @@ private
          Unique_ID     : Gnoga.Types.Unique_ID;
          Web_ID        : Gnoga.Types.Web_ID;
          ID_Type       : Gnoga.Types.ID_Enumeration;
-         Connection_ID : Gnoga.Types.Connection_ID := -1;
+         Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
 
          -- Event Handlers
          On_Click_Event      : Action_Event  := null;

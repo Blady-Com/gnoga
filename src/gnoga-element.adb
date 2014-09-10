@@ -48,14 +48,14 @@ package body Gnoga.Element is
    -- Create_Root --
    -----------------
 
-   procedure Create_Root (Object        : in out Element_Type;
-                          Connection_ID : in     Gnoga.Types.Connection_ID;
-                          ID            : in     String;
-                          HTML          : in     String)
+   procedure Create_Root (Object : in out Element_Type;
+                          Window : in out Gnoga.Window.Window_Type'Class;
+                          ID     : in     String;
+                          HTML   : in     String)
    is
    begin
       Object.Create_With_Script
-        (Connection_ID => Connection_ID,
+        (Connection_ID => Window.Connection_ID,
          ID            => ID,
          Script        => "$(""body"").html(""" &
            Escape_Quotes (HTML) & """);");

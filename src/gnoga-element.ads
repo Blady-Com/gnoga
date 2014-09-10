@@ -39,6 +39,7 @@ with Ada.Finalization;
 
 with Gnoga.Types;
 with Gnoga.Base;
+with Gnoga.Window;
 
 package Gnoga.Element is
 
@@ -57,45 +58,45 @@ package Gnoga.Element is
    --  Element_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create_Root (Object        : in out Element_Type;
-                          Connection_ID : in     Gnoga.Types.Connection_ID;
-                          ID            : in     String;
-                          HTML          : in     String);
+   procedure Create_Root (Object : in out Element_Type;
+                          Window : in out Gnoga.Window.Window_Type'Class;
+                          ID     : in     String;
+                          HTML   : in     String);
    --  Create a Gnoga oject on Connection ID with DOM ID using HTML in <body>
    --  Warning: This will destroy all DOM objects in body.
 
-   procedure Create_Inside (Object        : in out Element_Type;
-                            Parent        : in out Element_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String);
+   procedure Create_Inside (Object : in out Element_Type;
+                            Parent : in out Element_Type'Class;
+                            ID     : in     String;
+                            HTML   : in     String);
    --  Create a Gnoga object on with DOM ID using HTML inside Parent.
    --  Warning: This will destroy all DOM objects already in Parent.
 
-   procedure Create_Inside_At_Top (Object        : in out Element_Type;
-                                   Parent        : in out Element_Type'Class;
-                                   ID            : in     String;
-                                   HTML          : in     String);
+   procedure Create_Inside_At_Top (Object : in out Element_Type;
+                                   Parent : in out Element_Type'Class;
+                                   ID     : in     String;
+                                   HTML   : in     String);
    --  Create a Gnoga object on with DOM ID using HTML inside Parent at top
    --  of existing objects.
 
-   procedure Create_Inside_At_Bottom (Object        : in out Element_Type;
-                                      Parent        : in out Element_Type'Class;
-                                      ID            : in     String;
-                                      HTML          : in     String);
+   procedure Create_Inside_At_Bottom (Object : in out Element_Type;
+                                      Parent : in out Element_Type'Class;
+                                      ID     : in     String;
+                                      HTML   : in     String);
    --  Create a Gnoga object on with DOM ID using HTML inside Parent at bottom
    --  of existing objects.
 
 
-   procedure Create_After (Object        : in out Element_Type;
-                           Target        : in out Element_Type'Class;
-                           ID            : in     String;
-                           HTML          : in     String);
+   procedure Create_After (Object : in out Element_Type;
+                           Target : in out Element_Type'Class;
+                           ID     : in     String;
+                           HTML   : in     String);
    --  Create a Gnoga object with DOM ID using HTML after Target.
 
-   procedure Create_Before (Object        : in out Element_Type;
-                            Target        : in out Element_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String);
+   procedure Create_Before (Object : in out Element_Type;
+                            Target : in out Element_Type'Class;
+                            ID     : in     String;
+                            HTML   : in     String);
    --  Create a Gnoga object with DOM ID using HTML before Target.
 
    -------------------------------------------------------------------------

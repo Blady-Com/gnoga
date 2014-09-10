@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------                                                                          --
 
 with Gnoga.Types;
+with Gnoga.Window;
 
 package Gnoga.Application.Singleton is
 
@@ -46,15 +47,13 @@ package Gnoga.Application.Singleton is
    --  See test/singleton.adb for an example.
 
    procedure Initialize
-     (Host : in String  := "";
-      Port : in Integer := 8080;
-      Boot : in String  := "boot.html");
+     (Window : in out Gnoga.Window.Window_Type'Class;
+      Host   : in String  := "";
+      Port   : in Integer := 8080;
+      Boot   : in String  := "boot.html");
    --  Initialize applicaiton for single connection is Boot for bootstrap html.
    --  If Host = "" then will listen on all interfaces.
    --  Use Host = "locahost" to constrain to local use only.
-
-   Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
-   --  Set after Initialization
 
    procedure Message_Loop;
    --  Remain running until connection to browser lost.

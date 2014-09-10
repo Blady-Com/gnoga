@@ -1,0 +1,41 @@
+<!doctype HTML>
+<HTML>
+   <HEAD>
+      <meta charset="utf-8">
+      <script src="/js/jquery.min.js"></script>
+      <link rel="stylesheet" href="/css/jquery-ui.css" />
+      <script src="/js/jquery-ui.min.js"></script>
+   </HEAD>
+<BODY>
+</BODY>
+<script>
+  var ws;
+  var params={};
+  
+  $( document ).ready(function() {
+     var s = document.location.search;
+     var tokens;
+     var r = /[?&]?([^=]+)=([^&]*)/g;
+     
+     s = s.split("+").join(" ");
+
+     while (tokens = r.exec(s)) {
+        params[decodeURIComponent(tokens[1])]
+           = decodeURIComponent(tokens[2]);
+     }
+  
+     ws = new WebSocket ("ws://" + location.hostname + ":" + location.port + "/echo");
+  
+     if (ws != null) {
+        ws.onmessage = function (event) {
+           try {
+              console.log ("eval data = " + event.data);
+              eval (event.data);
+           } catch (e) {           
+              console.error (e.message);
+           }
+        }
+     }
+  });
+</script>
+</HTML>

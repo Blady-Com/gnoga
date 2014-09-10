@@ -71,7 +71,9 @@ package body Gnoga.Base is
    procedure Finalize (Object : in out Base_Type) is
    begin
       Object.On_Destroy;
-      Object.Detach_From_Message_Queue;
+      if Object.Connection_ID /= Gnoga.Types.No_Connection then
+         Object.Detach_From_Message_Queue;
+      end if;
    end Finalize;
 
    -------------------------------------------------------------------------
@@ -216,11 +218,11 @@ package body Gnoga.Base is
    --------------
    
    procedure Property (Object : in out Base_Type;
-                       Name   : in String;
-                       Value  : in String)
+                       Name   : in     String;
+                       Value  : in     String)
    is
       Message_Script : constant String := jQuery(Object) &
-        ".prop ('" & Name & "')=""" & Escape_Quotes (Value) & """";
+        ".prop ('" & Name & "')=""" & Escape_Quotes (Value) & """;";
    begin
       Gnoga.Connections.Execute_Script
         (ID     => Object.Connection_ID,
@@ -235,6 +237,27 @@ package body Gnoga.Base is
                                                Script => Message_Script);
    end Property;
 
+   procedure Property (Object : in out Base_Type;
+                       Name   : in     String;
+                       Value  : in     Integer)
+   is
+      Message_Script : constant String := jQuery(Object) &
+        ".prop ('" & Name & "')=" & Value'Img & ";";
+   begin
+      Gnoga.Connections.Execute_Script
+        (ID     => Object.Connection_ID,
+         Script => Message_Script);               
+   end Property;
+   
+   function Property (Object : Base_Type; Name : String) return Integer is
+      Message_Script : constant String := jQuery(Object) &
+        ".prop ('" & Name & "');";
+   begin
+      return Integer'Value
+        (Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
+                                           Script => Message_Script));
+   end Property;
+
    -------------------------------------------------------------------------
    --  Base_Type - Methods
    -------------------------------------------------------------------------
@@ -244,7 +267,7 @@ package body Gnoga.Base is
    ------------
    
    procedure Execute (Object : in out Base_Type; Method : in String) is
-      Message_Script : constant String := jQuery(Object) & "." & Method;
+      Message_Script : constant String := jQuery(Object) & ".get(0)." & Method;
    begin
       Gnoga.Connections.Execute_Script
         (ID     => Object.Connection_ID,
@@ -252,7 +275,7 @@ package body Gnoga.Base is
    end Execute;
 
    function Execute (Object : Base_Type; Method : in String) return String is
-      Message_Script : constant String := jQuery(Object) & "." & Method;
+      Message_Script : constant String := jQuery(Object) & ".get(0)." & Method;
    begin
       return Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
                                                Script => Message_Script);
@@ -342,12 +365,15 @@ package body Gnoga.Base is
                          Event   : in     String;
                          Message : in     String)
    is
+      Continue : Boolean;
    begin
-      if Event = "click" then
-         Object.Fire_On_Click;
-      end if;
+      Object.Fire_On_Message (Event, Message, Continue);
 
-      Object.Fire_On_Message (Event, Message);
+      if Continue then
+         if Event = "click" then
+            Object.Fire_On_Click;
+         end if;
+      end if;
    end On_Message;
    
    procedure On_Message_Handler (Object  : in out Base_Type;
@@ -357,13 +383,16 @@ package body Gnoga.Base is
       Object.On_Message_Event := Handler;      
    end On_Message_Handler;
    
-   procedure Fire_On_Message (Object  : in out Base_Type;
-                              Event   : in     String;
-                              Message : in     String)
+   procedure Fire_On_Message (Object   : in out Base_Type;
+                              Event    : in     String;
+                              Message  : in     String;
+                              Continue : out    Boolean)
    is
    begin
+      Continue := True;
+      
       if Object.On_Message_Event /= null then
-         Object.On_Message_Event (Object, Event, Message);
+         Object.On_Message_Event (Object, Event, Message, Continue);
       end if;
    end Fire_On_Message;
 
@@ -398,33 +427,17 @@ package body Gnoga.Base is
                                 Event  : in     String;
                                 Script : in     String)
    is
-   begin
-      Bind_Event_Script (Connection_ID => Object.Connection_ID,
-                         Query         => "#" & Object.ID,
-                         Event         => Event,
-                         Script        => Script);
-   end Bind_Event_Script;
-   
-   -----------------------
-   -- Bind_Event_Script --
-   -----------------------
-   
-   procedure Bind_Event_Script (Connection_ID : in Gnoga.Types.Connection_ID;
-                                Query         : in String;
-                                Event         : in String;
-                                Script        : in String)
-   is
       Message_Script : constant String :=
-        "$(""" & Query & """).on (""" & Event &
+        jQuery (Object) & ".on (""" & Event &
         """, function () {" &
         Script & "}" &
         "); ";
    begin
       Gnoga.Connections.Execute_Script
-        (ID     => Connection_ID,
+        (ID     => Object.Connection_ID,
          Script => Message_Script);
    end Bind_Event_Script;
-
+   
    -----------------------------
    -- Attach_To_Message_Queue --
    -----------------------------

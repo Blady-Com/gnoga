@@ -38,6 +38,9 @@
 with Gnoga.Connections;
 
 package body Gnoga.Application.Singleton is
+   Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+   --  Set after Initialization
+
    Application_Holder : Gnoga.Connections.Connection_Holder_Type;
    --  Used to block Initialize until On_Connect is called
 
@@ -75,9 +78,10 @@ package body Gnoga.Application.Singleton is
    end Web_Server_Task;
 
    procedure Initialize
-     (Host : in  String  := "";
-      Port : in  Integer := 8080;
-      Boot : in  String  := "boot.html")
+     (Window : in out Gnoga.Window.Window_Type'Class;
+      Host   : in  String  := "";
+      Port   : in  Integer := 8080;
+      Boot   : in  String  := "boot.html")
    is
    begin
       Gnoga.Connections.Initialize (Host, Port, Boot);
@@ -88,6 +92,8 @@ package body Gnoga.Application.Singleton is
       Web_Server_Task.Start;
 
       Application_Holder.Hold;
+
+      Window.Attach (Connection_ID => Connection_ID);
    end Initialize;
 
    procedure Message_Loop is

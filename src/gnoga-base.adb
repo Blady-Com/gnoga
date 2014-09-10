@@ -256,6 +256,9 @@ package body Gnoga.Base is
       return Integer'Value
         (Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
                                            Script => Message_Script));
+   exception
+      when others =>
+         return 0;
    end Property;
 
    -------------------------------------------------------------------------

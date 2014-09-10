@@ -37,6 +37,8 @@ begin
 
    Main_Window.Move_To (10,10);
 
+   Gnoga.Log (Integer'Image (Main_Window.Property("test")));
+
    Gnoga.Log ("Window width = " & Main_Window.Width'Img);
 
    T.Create_Root (Window => Main_Window,

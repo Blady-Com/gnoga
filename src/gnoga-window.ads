@@ -38,6 +38,7 @@
 with Gnoga.Types;
 with Gnoga.Base;
 with Gnoga.Document;
+with Gnoga.Location;
 
 package Gnoga.Window is
 
@@ -69,6 +70,10 @@ package Gnoga.Window is
    function Document (Window : Window_Type)
                       return Gnoga.Document.Document_Access;
    --  DOM Document Node
+
+   function Location (Window : Window_Type)
+                      return Gnoga.Location.Location_Access;
+   --  Browser location object
 
    procedure Name (Window : in out Window_Type; Value : String);
    function Name (Window : Window_Type) return String;
@@ -124,5 +129,6 @@ private
    type Window_Type is new Gnoga.Base.Base_Type with
       record
          DOM_Document : aliased Gnoga.Document.Document_Type;
+         Location     : aliased Gnoga.Location.Location_Type;
       end record;
 end Gnoga.Window;

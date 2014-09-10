@@ -61,7 +61,16 @@ package body Gnoga.Window is
               ID_Type       => Gnoga.Types.Script);
 
       Window.DOM_Document.Attach (Connection_ID);
+
+      Window.Location.Attach
+        (Connection_ID => Connection_ID,
+         ID            => Window.jQuery & ".prop ('location')",
+         ID_Type       => Gnoga.Types.Script);
    end Attach;
+
+   --------------
+   -- Document --
+   --------------
 
    function Document (Window : Window_Type)
                       return Gnoga.Document.Document_Access
@@ -69,6 +78,17 @@ package body Gnoga.Window is
    begin
       return Window.DOM_Document'Unrestricted_Access;
    end Document;
+
+   --------------
+   -- Location --
+   --------------
+
+   function Location (Window : Window_Type)
+                      return Gnoga.Location.Location_Access
+   is
+   begin
+      return Window.Location'Unrestricted_Access;
+   end Location;
 
    ----------
    -- Name --

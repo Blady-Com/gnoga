@@ -41,6 +41,8 @@ begin
 
    Gnoga.Log ("Window width = " & Main_Window.Width'Img);
 
+   Gnoga.Log ("Window URL = " & Main_Window.Location.URL);
+
    T.Create_Inside_At_Top (Parent => Main_Window.Document.Body_Element.all,
                            ID     => "t",
                            HTML   => "<h3 id='t'>Hello world 2!</h3>");

@@ -118,6 +118,11 @@ package Gnoga.Base is
                        Name   : in     String;
                        Value  : in     Integer);
    function Property (Object : Base_Type; Name : String) return Integer;
+
+   procedure Property (Object : in out Base_Type;
+                       Name   : in     String;
+                       Value  : in     Boolean);
+   function Property (Object : Base_Type; Name : String) return Boolean;
    --  General access to property Name
 
    -------------------------------------------------------------------------

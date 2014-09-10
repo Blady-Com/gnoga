@@ -109,8 +109,71 @@ package Gnoga.Element is
 
    --  Object Properties --
 
+   procedure Access_Key (Object : in out Element_Type; Value : String);
+   function Access_Key (Object : Element_Type) return String;
+   --  Used for hot key access to element. [special key] + Access_Key
+   --  The [special key] per browser and platform is:
+   --
+   --  Browser              Windows       Linux           Mac
+   --  -----------------    -------       -----           ---
+   --  Internet Explorer     [Alt]         N/A            N/A
+   --  Chrome                [Alt]        [Alt]     [Control][Alt]
+   --  Firefox 	         [Alt][Shift] [Alt][Shift] [Control][Alt]
+   --  Safari                [Alt]         N/A      [Control][Alt]
+   --  Opera 15+             [Alt]        [Alt]          [Alt]
+
+   procedure Advisory_Title (Object : in out Element_Type; Value : String);
+   function Advisory_Title (Object : Element_Type) return String;
+   --  Advisory_Title of Object, usually used for body and image maps
+
+   procedure Class_Name (Object : in out Element_Type; Value : String);
+   function Class_Name (Object : Element_Type) return String;
+
+   procedure Editable (Object : in out Element_Type; Value : Boolean := True);
+   function Editable (Object : Element_Type) return Boolean;
+
+   procedure Language_Code (Object : in out Element_Type; Value : String);
+   function Language_Code (Object : Element_Type) return String;
+
+   procedure Tab_Index (Object : in out Element_Type; Value : Natural);
+   function Tab_Index (Object : Element_Type) return Natural;
+
+   procedure Text_Direction (Object : in out Element_Type; Value : String);
+   function Text_Direction (Object : Element_Type) return String;
+   -- BiDi text direction
+
    procedure Visible (Object : in out Element_Type; Value : Boolean := True);
    function Visible (Object : Element_Type) return Boolean;
+
+   -- Location Properties --
+
+   function Client_Width (Object : Element_Type) return Integer;
+
+   function Client_Height (Object : Element_Type) return Integer;
+
+   function Offset_Width (Object : Element_Type) return Integer;
+
+   function Offset_Height (Object : Element_Type) return Integer;
+
+   function Offset_Left (Object : Element_Type) return Integer;
+
+   function Offset_Top (Object : Element_Type) return Integer;
+
+   -- Traversal Properties --
+
+   procedure First_Child (Object : in out Element_Type;
+                          Child  : in out Element_Type'Class);
+   --  If Child does not have an html id than Element_Type will have an
+   --  ID of undefined and therefore attached to no actual HTML element.
+
+   procedure Next_Sibling (Object : in out Element_Type;
+                           Sibling : in out Element_Type'Class);
+   --  If Sibling does not have an html id than Element_Type will have an
+   --  ID of undefined and therefore attached to no actual HTML element.
+
+   -- Internal Properties --
+
+   function HTML_Tag (Object : Element_Type) return String;
 
    -------------------------------------------------------------------------
    --  Element_Type - Methods

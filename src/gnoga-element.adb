@@ -133,26 +133,6 @@ package body Gnoga.Element is
    -------------------------------------------------------------------------
    --  Element_Type - Properties
    -------------------------------------------------------------------------
-
-   -------------
-   -- Visible --
-   -------------
-   
-   procedure Visible (Object : in out Element_Type; Value : Boolean := True)
-   is
-   begin
-      if Value then
-         Object.Style ("visibility", "visible");
-      else
-         Object.Style ("visibility", "hidden");
-      end if;
-   end Visible;
-   
-   function Visible (Object : Element_Type) return Boolean
-   is
-   begin
-      return Object.Style ("visibility") = "visible";
-   end Visible;
    
    -----------
    -- Style --
@@ -203,6 +183,214 @@ package body Gnoga.Element is
                                                Script => Message_Script);
    end Attribute;
 
+   ----------------
+   -- Access_Key --
+   ----------------
+   
+   procedure Access_Key (Object : in out Element_Type; Value : String) is
+   begin
+      Object.Property ("accessKey", Value);
+   end Access_Key;
+
+   function Access_Key (Object : Element_Type) return String is
+   begin
+      return Object.Property ("accessKey");
+   end Access_Key;
+
+   --------------------
+   -- Advisory_Title --
+   --------------------
+   
+   procedure Advisory_Title (Object : in out Element_Type; Value : String) is
+   begin
+      Object.Property ("title", Value);
+   end Advisory_Title;
+
+   function Advisory_Title (Object : Element_Type) return String is
+   begin
+      return Object.Property ("title");
+   end Advisory_Title;
+
+
+   ----------------
+   -- Class_Name --
+   ----------------
+
+   procedure Class_Name (Object : in out Element_Type; Value : String) is
+   begin
+      Object.Property ("className", Value);
+   end Class_Name;
+
+   function Class_Name (Object : Element_Type) return String is
+   begin
+      return Object.Property ("className");
+   end Class_Name;
+   
+   ---------------
+   -- Editable --
+   ---------------
+   
+   procedure Editable (Object : in out Element_Type; Value : Boolean := True) is
+   begin
+      Object.Property ("contentEditable", Value);
+   end Editable;
+   
+   function Editable (Object : Element_Type) return Boolean is
+   begin
+      return Object.Property ("isContentEditable");
+   end;
+
+   procedure Tab_Index (Object : in out Element_Type; Value : Natural)
+   is
+   begin
+      Object.Property ("tabIndex", Value);
+   end Tab_Index;
+   
+   function Tab_Index (Object : Element_Type) return Natural is
+   begin
+      return Object.Property ("tabIndex");
+   end Tab_Index;
+   
+   --------------------
+   -- Text_Direction --
+   --------------------
+   
+   procedure Text_Direction (Object : in out Element_Type; Value : String) is
+   begin
+      Object.Property ("dir", Value);
+   end Text_Direction;
+
+   function Text_Direction (Object : Element_Type) return String is
+   begin
+      return Object.Property ("dir");
+   end Text_Direction;
+   
+   --------------------
+   -- Language_Code --
+   --------------------
+   
+   procedure Language_Code (Object : in out Element_Type; Value : String) is
+   begin
+      Object.Property ("lang", Value);
+   end Language_Code;
+
+   function Language_Code (Object : Element_Type) return String is
+   begin
+      return Object.Property ("lang");
+   end Language_Code;
+
+   
+   -------------
+   -- Visible --
+   -------------
+   
+   procedure Visible (Object : in out Element_Type; Value : Boolean := True)
+   is
+   begin
+      if Value then
+         Object.Style ("visibility", "visible");
+      else
+         Object.Style ("visibility", "hidden");
+      end if;
+   end Visible;
+   
+   function Visible (Object : Element_Type) return Boolean
+   is
+   begin
+      return Object.Style ("visibility") = "visible";
+   end Visible;
+
+   -------------------
+   -- Client_Height --
+   -------------------
+   
+   function Client_Height (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("clientHeight");
+   end Client_Height;
+   
+   ------------------
+   -- Client_Width --
+   ------------------
+   
+   function Client_Width (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("clientWidth");
+   end Client_Width;
+   
+   -------------------
+   -- Offset_Height --
+   -------------------
+   
+   function Offset_Height (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("offsetHeight");
+   end Offset_Height;
+   
+   ------------------
+   -- Offset_Width --
+   ------------------
+   
+   function Offset_Width (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("offsetWidth");
+   end Offset_Width;
+
+   ------------------
+   -- Offset_Left --
+   ------------------
+   
+   function Offset_Left (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("offsetLeft");
+   end Offset_Left;
+
+   ------------------
+   -- Offset_Top --
+   ------------------
+   
+   function Offset_Top (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("offsetTop");
+   end Offset_Top;   
+   
+   -----------------
+   -- First_Child --
+   -----------------
+   
+   procedure First_Child (Object : in out Element_Type;
+                          Child  : in out Element_Type'Class)
+   is
+   begin
+      Child.Attach (Connection_ID => Object.Connection_ID,
+                    ID            => Object.Execute
+                      ("children().first().attr('id');"),
+                    ID_Type       => Gnoga.Types.DOM_ID);
+   end First_Child;
+   
+   ------------------
+   -- Next_Sibling --
+   ------------------
+   
+   procedure Next_Sibling (Object : in out Element_Type;
+                           Sibling : in out Element_Type'Class)
+   is
+   begin
+      Sibling.Attach (Connection_ID => Object.Connection_ID,
+                      ID            => Object.Execute
+                        ("siblings().first().attr('id');"),
+                      ID_Type       => Gnoga.Types.DOM_ID);
+   end Next_Sibling;
+
+   --------------
+   -- HTML_Tag --
+   --------------
+   
+   function HTML_Tag (Object : Element_Type) return String is
+   begin
+      return Object.Property ("tagName");
+   end HTML_Tag;
+   
    -------------------------------------------------------------------------
    --  Element_Type - Methods
    -------------------------------------------------------------------------

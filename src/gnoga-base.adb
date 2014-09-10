@@ -250,15 +250,28 @@ package body Gnoga.Base is
    end Property;
    
    function Property (Object : Base_Type; Name : String) return Integer is
-      Message_Script : constant String := jQuery(Object) &
-        ".prop ('" & Name & "');";
    begin
-      return Integer'Value
-        (Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
-                                           Script => Message_Script));
+      return Integer'Value (Object.Property (Name));
    exception
       when others =>
          return 0;
+   end Property;
+
+   procedure Property (Object : in out Base_Type;
+                       Name   : in     String;
+                       Value  : in     Boolean)
+   is
+      Message_Script : constant String := jQuery(Object) &
+        ".prop ('" & Name & "')=" & Value'Img & ";";      
+   begin
+      Gnoga.Connections.Execute_Script
+        (ID     => Object.Connection_ID,
+         Script => Message_Script);               
+   end Property;
+   
+   function Property (Object : Base_Type; Name : String) return Boolean is
+   begin
+      return Object.Property (Name) = "true";
    end Property;
 
    -------------------------------------------------------------------------

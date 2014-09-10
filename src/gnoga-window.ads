@@ -106,13 +106,21 @@ package Gnoga.Window is
    procedure Alert (Window : in out Window_Type; Message : String);
    --  Display Alert box on Window with Message
 
-   procedure Close (Window : in out Window_Type);
-
    procedure Focus (Window : in out Window_Type);
 
    procedure Blur (Window : in out Window_Type);
 
    procedure Print (Window : in out Window_Type);
+
+   procedure Scroll_By (Window : in out Window_Type; X, Y : Integer);
+
+   procedure Scroll_To (Window : in out Window_Type; X, Y : Integer);
+
+   -- Window Placement Methods --
+   --
+   -- These methods will only work on child windows
+
+   procedure Close (Window : in out Window_Type);
 
    procedure Resize_By (Window : in out Window_Type; Width, Height : Integer);
 
@@ -121,10 +129,6 @@ package Gnoga.Window is
    procedure Move_By (Window : in out Window_Type; X, Y : Integer);
 
    procedure Move_To (Window : in out Window_Type; X, Y : Integer);
-
-   procedure Scroll_By (Window : in out Window_Type; X, Y : Integer);
-
-   procedure Scroll_To (Window : in out Window_Type; X, Y : Integer);
 private
    type Window_Type is new Gnoga.Base.Base_Type with
       record

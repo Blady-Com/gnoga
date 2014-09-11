@@ -308,7 +308,7 @@ package body Gnoga.Element is
    -- Client_Height --
    -------------------
    
-   function Client_Height (Object : Element_Type) return Integer is
+   function Client_Height (Object : Element_Type) return Natural is
    begin
       return Object.Property ("clientHeight");
    end Client_Height;
@@ -317,16 +317,34 @@ package body Gnoga.Element is
    -- Client_Width --
    ------------------
    
-   function Client_Width (Object : Element_Type) return Integer is
+   function Client_Width (Object : Element_Type) return Natural is
    begin
       return Object.Property ("clientWidth");
    end Client_Width;
    
+   ------------------
+   -- Client_Left --
+   ------------------
+   
+   function Client_Left (Object : Element_Type) return Natural is
+   begin
+      return Object.Property ("clientLeft");
+   end Client_Left;
+
+   ------------------
+   -- Client_Top --
+   ------------------
+   
+   function Client_Top (Object : Element_Type) return Natural is
+   begin
+      return Object.Property ("clientTop");
+   end Client_Top;
+
    -------------------
    -- Offset_Height --
    -------------------
    
-   function Offset_Height (Object : Element_Type) return Integer is
+   function Offset_Height (Object : Element_Type) return Natural is
    begin
       return Object.Property ("offsetHeight");
    end Offset_Height;
@@ -335,7 +353,7 @@ package body Gnoga.Element is
    -- Offset_Width --
    ------------------
    
-   function Offset_Width (Object : Element_Type) return Integer is
+   function Offset_Width (Object : Element_Type) return Natural is
    begin
       return Object.Property ("offsetWidth");
    end Offset_Width;
@@ -344,7 +362,7 @@ package body Gnoga.Element is
    -- Offset_Left --
    ------------------
    
-   function Offset_Left (Object : Element_Type) return Integer is
+   function Offset_Left (Object : Element_Type) return Natural is
    begin
       return Object.Property ("offsetLeft");
    end Offset_Left;
@@ -353,11 +371,57 @@ package body Gnoga.Element is
    -- Offset_Top --
    ------------------
    
-   function Offset_Top (Object : Element_Type) return Integer is
+   function Offset_Top (Object : Element_Type) return Natural is
    begin
       return Object.Property ("offsetTop");
    end Offset_Top;   
+
+   -------------------
+   -- Scroll_Height --
+   -------------------
    
+   function Scroll_Height (Object : Element_Type) return Natural is
+   begin
+      return Object.Property ("scrollHeight");
+   end Scroll_Height;
+   
+   ------------------
+   -- Scroll_Width --
+   ------------------
+   
+   function Scroll_Width (Object : Element_Type) return Natural is
+   begin
+      return Object.Property ("scrollWidth");
+   end Scroll_Width;
+
+   ------------------
+   -- Scroll_Left --
+   ------------------
+   
+   procedure Scroll_Left (Object : in out Element_Type; Value : Integer) is
+   begin
+      Object.Property ("scrollLeft", Value);
+   end Scroll_Left;
+   
+   function Scroll_Left (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("scrollLeft");
+   end Scroll_Left;
+
+   ------------------
+   -- Scroll_Top --
+   ------------------
+   
+   procedure Scroll_Top (Object : in out Element_Type; Value : Integer) is
+   begin
+      Object.Property ("scrollTop", Value);
+   end Scroll_Top;
+
+   function Scroll_Top (Object : Element_Type) return Integer is
+   begin
+      return Object.Property ("scrollTop");
+   end Scroll_Top;
+
    -----------------
    -- First_Child --
    -----------------

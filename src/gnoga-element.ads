@@ -121,7 +121,7 @@ package Gnoga.Element is
    --  -----------------    -------       -----           ---
    --  Internet Explorer     [Alt]         N/A            N/A
    --  Chrome                [Alt]        [Alt]     [Control][Alt]
-   --  Firefox 	         [Alt][Shift] [Alt][Shift] [Control][Alt]
+   --  Firefox 	         [Alt][Shift] [Alt][Shift]  [Control][Alt]
    --  Safari                [Alt]         N/A      [Control][Alt]
    --  Opera 15+             [Alt]        [Alt]          [Alt]
 
@@ -143,24 +143,66 @@ package Gnoga.Element is
 
    procedure Text_Direction (Object : in out Element_Type; Value : String);
    function Text_Direction (Object : Element_Type) return String;
-   -- BiDi text direction
+   --  BiDi text direction
 
    procedure Visible (Object : in out Element_Type; Value : Boolean := True);
    function Visible (Object : Element_Type) return Boolean;
 
    -- Location Properties --
 
-   function Client_Width (Object : Element_Type) return Integer;
 
-   function Client_Height (Object : Element_Type) return Integer;
+   --  For reference:
+   --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...
 
-   function Offset_Width (Object : Element_Type) return Integer;
+   function Client_Width (Object : Element_Type) return Natural;
+   --  Inner width of an element in pixels.
+   --  CSS width + CSS padding - width of vertical scrollbar (if present)
+   --  Does not include the border or margin.
 
-   function Offset_Height (Object : Element_Type) return Integer;
+   function Client_Height (Object : Element_Type) return Natural;
+   --  Inner height of an element in pixels.
+   --  CSS height + CSS padding - height of horizontal scrollbar (if present)
+   --  Does not include the border or margin.
 
-   function Offset_Left (Object : Element_Type) return Integer;
+   function Client_Left (Object : Element_Type) return Natural;
+   --  The width of the left border of an element in pixels.
+   --. It does not include the margin or padding.
 
-   function Offset_Top (Object : Element_Type) return Integer;
+   function Client_Top (Object : Element_Type) return Natural;
+   --  The width of the top border of an element in pixels.
+   --. It does not include the margin or padding.
+
+   function Offset_Width (Object : Element_Type) return Natural;
+   --  CSS width + CSS padding + width of vertical scrollbar (if present) +
+   --  Border
+
+   function Offset_Height (Object : Element_Type) return Natural;
+   --  CSS height + CSS padding + height of horizontal scrollbar (if present) +
+   --  Border
+
+   function Offset_Left (Object : Element_Type) return Natural;
+   --  The width from parent object border to child border left
+
+   function Offset_Top (Object : Element_Type) return Natural;
+   --  The width from parent object border to child border top
+
+   function Scroll_Width (Object : Element_Type) return Natural;
+   --  Either the width in pixels of the content of an element or the width of
+   --  the element itself, whichever is greater
+
+   function Scroll_Height (Object : Element_Type) return Natural;
+   --  Eeight of an element's content, including content not visible on the
+   --  screen due to overflow.
+
+   procedure Scroll_Left (Object : in out Element_Type; Value : Integer);
+   function Scroll_Left (Object : Element_Type) return Integer;
+   --  The number of pixels that an element's content is scrolled to the left.
+   --  For RTL languages is negative.
+
+   procedure Scroll_Top (Object : in out Element_Type; Value : Integer);
+   function Scroll_Top (Object : Element_Type) return Integer;
+   --  The number of pixels thant an element's content has been scrolled upward.
+
 
    -- Traversal Properties --
 

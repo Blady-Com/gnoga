@@ -42,19 +42,31 @@ package Gnoga.Navigator is
    --  Access information about the user's browser
 
    function Code_Name (ID : Gnoga.Types.Connection_ID) return String;
+   --  Always returns Mozilla on all browsers.
 
    function Name (ID : Gnoga.Types.Connection_ID) return String;
+   --  Almost all browsers regardless of brand will return Navigator.
 
    function Version (ID : Gnoga.Types.Connection_ID) return String;
+   --  Most browsers return 4.0, is unreliable for any real information.
 
-   function Cookies_Enabled (ID : Gnoga.Types.Connection_ID) return Boolean;
+   function Cookie_Enabled (ID : Gnoga.Types.Connection_ID) return Boolean;
+   --  Returns true of browser will accept cookies
 
    function Language (ID : Gnoga.Types.Connection_ID) return String;
 
    function Platform  (ID : Gnoga.Types.Connection_ID) return String;
+   --  May be "", sometimes will report actual platform MacIntel, Win32, etc.
 
    function Product (ID : Gnoga.Types.Connection_ID) return String;
+   --  All browsers return "Gecko"
 
    function User_Agent (ID : Gnoga.Types.Connection_ID) return String;
+   --  The user may use settings on their browser to modify this so not
+   --  100% reliable, however most browsers will follow the following standard:
+   --
+   -- userAgent = appCodeName/appVersion number (Platform; Security; OS-or-CPU;
+   --             Localization; rv: revision-version-number) product/productSub
+   --             Application-Name Application-Name-version
 
 end Gnoga.Navigator;

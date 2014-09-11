@@ -66,13 +66,13 @@ package body Gnoga.Navigator is
       return Gnoga.Connections.Execute_Script (ID, "navigator.appVersion");
    end Version;
 
-   ---------------------
-   -- Cookies_Enabled --
-   ---------------------
+   --------------------
+   -- Cookie_Enabled --
+   --------------------
 
-   function Cookies_Enabled (ID : Gnoga.Types.Connection_ID) return Boolean is
+   function Cookie_Enabled (ID : Gnoga.Types.Connection_ID) return Boolean is
    begin
-      return Gnoga.Connections.Execute_Script (ID, "navigator.appVersion") =
+      return Gnoga.Connections.Execute_Script (ID, "navigator.cookieEnabled") =
         "true";
    end Cookies_Enabled;
 

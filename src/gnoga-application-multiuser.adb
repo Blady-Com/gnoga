@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                     G N O G A . A P P L I C A T I O N                    --
+--          G N O G A . A P P L I C A T I O N . M U L T I U S E R           --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -33,16 +33,90 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Gnoga.Types;
 
-package Gnoga.Application is
-   --  Application packages simplify the management of single or multipage
-   --  Gnoga GUIs.
+package body Gnoga.Application.Multiuser is
 
-   procedure Application_Name (Name : in String);
-   function Application_Name return String;
-   --  Set the name of the application. This will automatically set the
-   --  browser window title to Name on new connections.
-end Gnoga.Application;
+   On_Application_Connect_Event : Application_Connect_Event := null;
+
+   procedure On_Connect
+     (ID         : in     Gnoga.Types.Connection_ID;
+      Connection : access Gnoga.Connections.Connection_Holder_Type);
+
+   procedure On_Connect
+     (ID         : in     Gnoga.Types.Connection_ID;
+      Connection : access Gnoga.Connections.Connection_Holder_Type)
+   is
+   begin
+      if On_Application_Connect_Event /= null then
+         declare
+            Main_Window : Gnoga.Window.Window_Type;
+         begin
+            Main_Window.Attach (Connection_ID => ID);
+
+            Main_Window.Document.Title (Application_Name);
+            On_Application_Connect_Event (Main_Window, Connection);
+         end;
+      end if;
+   end On_Connect;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Host   : in String  := "";
+      Port   : in Integer := 8080;
+      Boot   : in String  := "boot.html")
+   is
+   begin
+      Gnoga.Connections.Initialize (Host, Port, Boot);
+
+      Gnoga.Connections.On_Connect_Handler
+        (Event => On_Connect'Access);
+   end Initialize;
+
+   ------------------------
+   -- On_Connect_Handler --
+   ------------------------
+
+   procedure On_Connect_Handler (Event : in Application_Connect_Event) is
+   begin
+     On_Application_Connect_Event := Event;
+   end On_Connect_Handler;
+
+   ---------------------
+   -- Connection_Data --
+   ---------------------
+
+   procedure Connection_Data
+     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+      Data        : access Gnoga.Types.Connection_Data_Type'Class)
+   is
+   begin
+      Gnoga.Connections.Connection_Data (ID   => Main_Window.Connection_ID,
+                                         Data => Data);
+   end Connection_Data;
+
+   ------------------
+   -- Message_Loop --
+   ------------------
+
+   procedure Message_Loop is
+   begin
+      Gnoga.Connections.Run (Wait_For_Q => False);
+   end Message_Loop;
+
+   ---------------------
+   -- End_Application --
+   ---------------------
+
+   procedure End_Application is
+   begin
+      On_Application_Connect_Event := null;
+      Gnoga.Connections.Stop;
+   end End_Application;
+
+end Gnoga.Application.Multiuser;

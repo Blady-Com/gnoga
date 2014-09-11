@@ -49,6 +49,11 @@ package Gnoga.Types is
 
    subtype Unique_ID is Integer;
 
+   type Connection_Data_Type is tagged limited null record;
+   type Connection_Data_Access is access all Connection_Data_Type;
+   type Pointer_to_Connection_Data_Class is
+     access all Connection_Data_Type'Class;
+
    type Point_Type is
       record
          X, Y : Integer;

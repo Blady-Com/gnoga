@@ -99,6 +99,10 @@ package Gnoga.Base is
    function ID_Type (Object : Base_Type) return Gnoga.Types.ID_Enumeration;
    --  Returns the type of ID stored for Object
 
+   function Connection_Data
+     (Object : Base_Type)
+      return Gnoga.Types.Pointer_to_Connection_Data_Class;
+
    --  Object Properties --
 
    procedure Height (Object : in out Base_Type; Value : in Integer);

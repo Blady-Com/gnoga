@@ -60,6 +60,7 @@ with GNAT.Traceback.Symbolic;
 
 package body Gnoga.Connections is
    use type Gnoga.Types.Unique_ID;
+   use type Gnoga.Types.Pointer_to_Connection_Data_Class;
 
    Boot_HTML : Ada.Strings.Unbounded.Unbounded_String;
 
@@ -216,15 +217,6 @@ package body Gnoga.Connections is
       end if;
    end Run;
 
-   ----------
-   -- Stop --
-   ----------
-
-   procedure Stop is
-   begin
-      AWS.Server.Shutdown (Web_Server);
-   end Stop;
-
    ----------------------
    -- Default Dispatch --
    ----------------------
@@ -349,6 +341,9 @@ package body Gnoga.Connections is
    package Connection_Holder_Maps is new Ada.Containers.Ordered_Maps
      (Gnoga.Types.Unique_ID, Connection_Holder_Access);
 
+   package Connection_Data_Maps is new Ada.Containers.Ordered_Maps
+     (Gnoga.Types.Unique_ID, Gnoga.Types.Pointer_to_Connection_Data_Class);
+
    ------------------------
    -- Connection Manager --
    ------------------------
@@ -367,6 +362,16 @@ package body Gnoga.Connections is
                                        Holder : in Connection_Holder_Access);
       --  Adds a connection holder to the connection
       --  Can only be one at any given time.
+
+      procedure Add_Connection_Data
+        (ID   : in Gnoga.Types.Connection_ID;
+         Data : in Gnoga.Types.Pointer_to_Connection_Data_Class);
+      --  Adds data to be associated with connection
+
+      function Connection_Data
+        (ID : in Gnoga.Types.Connection_ID)
+         return Gnoga.Types.Pointer_to_Connection_Data_Class;
+      --  Returns the Connection_Data associated with ID
 
       procedure Delete_Connection_Holder (ID : in Gnoga.Types.Connection_ID);
       --  Delete connection holder
@@ -390,10 +395,14 @@ package body Gnoga.Connections is
       function Find_Connetion_ID (Socket : Socket_Type)
                                   return Gnoga.Types.Connection_ID;
       --  Find the Connetion_ID related to Socket.
+
+      procedure Delete_All_Connections;
+      --  Called by Stop to close down server
    private
       Socket_Map            : Socket_Maps.Map;
       Socket_Count          : Gnoga.Types.Connection_ID := 0;
       Connection_Holder_Map : Connection_Holder_Maps.Map;
+      Connection_Data_Map   : Connection_Data_Maps.Map;
    end Connection_Manager_Type;
 
    protected body Connection_Manager_Type is
@@ -421,12 +430,40 @@ package body Gnoga.Connections is
          end if;
       end Delete_Connection_Holder;
 
+      procedure Add_Connection_Data
+        (ID   : in Gnoga.Types.Connection_ID;
+         Data : in Gnoga.Types.Pointer_to_Connection_Data_Class)
+      is
+      begin
+         if Connection_Data_Map.Contains (ID) then
+            Connection_Data_Map.Delete (ID);
+         end if;
+
+         Connection_Data_Map.Insert (ID, Data);
+      end Add_Connection_Data;
+
+      function Connection_Data
+        (ID : in Gnoga.Types.Connection_ID)
+         return Gnoga.Types.Pointer_to_Connection_Data_Class
+      is
+      begin
+         if Connection_Data_Map.Contains (ID) then
+            return Connection_Data_Map.Element (ID);
+         else
+            return null;
+         end if;
+      end Connection_Data;
+
       procedure Delete_Connection (ID : in Gnoga.Types.Connection_ID) is
       begin
          if (ID > 0) then
             if Connection_Holder_Map.Contains (ID) then
                Connection_Holder_Map.Element (ID).Release;
                Connection_Holder_Map.Delete (ID);
+            end if;
+
+            if Connection_Data_Map.Contains (ID) then
+               Connection_Data_Map.Delete (ID);
             end if;
 
             Socket_Map.Delete (ID);
@@ -473,8 +510,17 @@ package body Gnoga.Connections is
             end if;
          end loop;
 
-         return -1;
+         return Gnoga.Types.No_Connection;
       end Find_Connetion_ID;
+
+      procedure Delete_All_Connections is
+         procedure Do_Delete (C : in Socket_Maps.Cursor) is
+         begin
+            Delete_Connection (Socket_Maps.Key (C));
+         end Do_Delete;
+      begin
+         Socket_Map.Iterate (Do_Delete'Access);
+      end Delete_All_Connections;
    end Connection_Manager_Type;
 
    Connection_Manager : Connection_Manager_Type;
@@ -789,6 +835,28 @@ package body Gnoga.Connections is
       end;
    end Execute_Script;
 
+   ---------------------
+   -- Connection_Data --
+   ---------------------
+
+   procedure Connection_Data
+     (ID   : in     Gnoga.Types.Connection_ID;
+      Data : access Gnoga.Types.Connection_Data_Type'Class)
+   is
+   begin
+      Connection_Manager.Add_Connection_Data
+        (ID,
+         Gnoga.Types.Pointer_to_Connection_Data_Class (Data));
+   end Connection_Data;
+
+   function Connection_Data
+     (ID : in Gnoga.Types.Connection_ID)
+      return Gnoga.Types.Pointer_to_Connection_Data_Class
+   is
+   begin
+      return Connection_Manager.Connection_Data (ID);
+   end Connection_Data;
+
    ------------------------
    -- On_Connect_Handler --
    ------------------------
@@ -818,6 +886,16 @@ package body Gnoga.Connections is
    begin
       return Connection_Manager.Valid (ID);
    end Valid;
+
+   -----------
+   -- Close --
+   -----------
+
+   procedure Close (ID : Gnoga.Types.Connection_ID) is
+   begin
+      Connection_Manager.Delete_Connection (ID);
+   end Close;
+
 
    ---------------------
    -- ID_Machine_Type --
@@ -867,4 +945,15 @@ package body Gnoga.Connections is
    begin
       Object_Map.Delete (Key => Object.Unique_ID);
    end Delete_From_Message_Queue;
+
+   ----------
+   -- Stop --
+   ----------
+
+   procedure Stop is
+   begin
+      Connection_Manager.Delete_All_Connections;
+      AWS.Server.Shutdown (Web_Server);
+   end Stop;
+
 end Gnoga.Connections;

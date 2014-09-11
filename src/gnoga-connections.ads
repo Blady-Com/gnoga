@@ -54,7 +54,7 @@ package Gnoga.Connections is
    --  on console. If not server must be shutdown using Stop.
 
    procedure Stop;
-   --  Stop webserver
+   --  Close all connections and Stop webserver
 
    procedure Execute_Script (ID     : in Gnoga.Types.Connection_ID;
                              Script : in String);
@@ -77,6 +77,13 @@ package Gnoga.Connections is
    --  It is used to allow Connect_Event handlers to remain in memory
    --  until the web socket connection is closed.
 
+   procedure Connection_Data
+     (ID   : in     Gnoga.Types.Connection_ID;
+      Data : access Gnoga.Types.Connection_Data_Type'Class);
+   function Connection_Data
+     (ID : in Gnoga.Types.Connection_ID)
+      return Gnoga.Types.Pointer_to_Connection_Data_Class;
+
    type Connect_Event is access
      procedure (ID         : in Gnoga.Types.Connection_ID;
                 Connection : access Connection_Holder_Type);
@@ -96,6 +103,9 @@ package Gnoga.Connections is
    --  If ID is valid return true. Note that a broken web socket that has not
    --  been closed properly will have to time out first before reporting an
    --  error and Gnoga invalidating the ID.
+
+   procedure Close (ID : Gnoga.Types.Connection_ID);
+   --  Close connection ID
 
    procedure New_Unique_ID (New_ID : out Gnoga.Types.Unique_ID);
    --  Generates a new unique ID in to New_ID

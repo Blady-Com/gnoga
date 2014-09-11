@@ -48,9 +48,9 @@ package body Gnoga.Application is
       App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
    end Application_Name;
 
-   function Applicaiton_Name return String is
+   function Application_Name return String is
    begin
       return Ada.Strings.Unbounded.To_String (App_Name);
-   end Applicaiton_Name;
+   end Application_Name;
 
 end Gnoga.Application;

@@ -168,6 +168,14 @@ package body Gnoga.Base is
       return Object.ID_Type;
    end ID_Type;
 
+   function Connection_Data
+     (Object : Base_Type)
+      return Gnoga.Types.Pointer_to_Connection_Data_Class
+   is
+   begin
+      return Gnoga.Connections.Connection_Data (Object.Connection_ID);
+   end Connection_Data;
+   
    ------------
    -- Height --
    ------------

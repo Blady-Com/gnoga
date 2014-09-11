@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                     G N O G A . A P P L I C A T I O N                    --
+--          G N O G A . A P P L I C A T I O N . M U L T I U S E R           --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -36,13 +36,48 @@
 ------------------------------------------------------------------------------                                                                          --
 
 with Gnoga.Types;
+with Gnoga.Connections;
+with Gnoga.Window;
 
-package Gnoga.Application is
-   --  Application packages simplify the management of single or multipage
-   --  Gnoga GUIs.
+package Gnoga.Application.Multiuser is
 
-   procedure Application_Name (Name : in String);
-   function Application_Name return String;
-   --  Set the name of the application. This will automatically set the
-   --  browser window title to Name on new connections.
-end Gnoga.Application;
+   subtype Connection_Holder_Type is Gnoga.Connections.Connection_Holder_Type;
+
+   --  This package allows for the creation of multiuser GUI applications
+   --  using Gnoga. It allows only a multiple connections to the same
+   --  application.
+
+   procedure Initialize
+     (Host   : in String  := "";
+      Port   : in Integer := 8080;
+      Boot   : in String  := "boot.html");
+   --  Initialize applicaiton for multiple connectionsusing
+   --  Boot for bootstrap html.
+   --  If Host = "" then will listen on all interfaces.
+   --  Use Host = "locahost" to constrain to local use only.
+
+   type Application_Connect_Event is access
+     procedure (Main_Window : in out Gnoga.Window.Window_Type'Class;
+                Connection  : access Connection_Holder_Type);
+
+   procedure On_Connect_Handler (Event : in Application_Connect_Event);
+   --  Set event handler for new application connections.
+
+   procedure Connection_Data
+     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+      Data        : access Gnoga.Types.Connection_Data_Type'Class);
+   --  Set Data for the connection to Main_Window
+   --  The Connection_Data property on any Base_Type'Class can be used to
+   --  access Data.
+
+   procedure Message_Loop;
+   --  Start serving connections to application and continue until
+   --  End_Application is called.
+
+   procedure End_Application;
+   --  Terminate application.
+   --  This will disconnect application connection to browser and finalize
+   --  Gnoga objects, however Gnoga objects on finalization do not destroy
+   --  DOM object in browser so browser state will remain with document
+   --  after the loop has terminated and application has ended.
+end Gnoga.Application.Multiuser;

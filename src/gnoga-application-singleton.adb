@@ -78,10 +78,10 @@ package body Gnoga.Application.Singleton is
    end Web_Server_Task;
 
    procedure Initialize
-     (Window : in out Gnoga.Window.Window_Type'Class;
-      Host   : in  String  := "";
-      Port   : in  Integer := 8080;
-      Boot   : in  String  := "boot.html")
+     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+      Host        : in  String  := "";
+      Port        : in  Integer := 8080;
+      Boot        : in  String  := "boot.html")
    is
    begin
       Gnoga.Connections.Initialize (Host, Port, Boot);
@@ -93,9 +93,9 @@ package body Gnoga.Application.Singleton is
 
       Application_Holder.Hold;
 
-      Window.Attach (Connection_ID => Connection_ID);
+      Main_Window.Attach (Connection_ID => Connection_ID);
 
-      Window.Document.Title (Applicaiton_Name);
+      Main_Window.Document.Title (Application_Name);
    end Initialize;
 
    procedure Message_Loop is

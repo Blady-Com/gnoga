@@ -75,7 +75,8 @@ package body Gnoga.Element is
         (Connection_ID => Parent.Connection_ID,
          ID            => ID,
          Script        => Element_Type (Parent).jQuery &
-           ".prepend(""" & Escape_Quotes (HTML) & """);");      
+           ".prepend($(""" & Escape_Quotes (HTML) &
+           """).prop('id','" & ID & "'));");      
    end Create_Inside_At_Top;
    
    -----------------------------
@@ -92,7 +93,8 @@ package body Gnoga.Element is
         (Connection_ID => Parent.Connection_ID,
          ID            => ID,
          Script        => Element_Type (Parent).jQuery &
-           ".append(""" & Escape_Quotes (HTML) & """);");      
+           ".append($(""" & Escape_Quotes (HTML) &
+           """).prop('id','" & ID & "'));");      
    end Create_Inside_At_Bottom;
    
    ------------------
@@ -108,8 +110,9 @@ package body Gnoga.Element is
       Object.Create_With_Script
         (Connection_ID => Target.Connection_ID,
          ID            => ID,
-         Script        => "$(""" & Escape_Quotes (HTML) & """).insertAfter(""#" &
-           Target.ID & """);");
+         Script        => "$(""" & Escape_Quotes (HTML) &
+           """).insertAfter(""#" &
+           Target.ID & """).prop('id','" & ID & "');");
    end Create_After;
 
    -------------------
@@ -126,7 +129,8 @@ package body Gnoga.Element is
         (Connection_ID => Target.Connection_ID,
          ID            => ID,
          Script        => "$(""" & Escape_Quotes (HTML) &
-           """).insertBefore(""#" & Target.ID & """);");
+           """).insertBefore(""#" & Target.ID &
+           """).prop('id','" & ID & "');");
    end Create_Before;
 
 

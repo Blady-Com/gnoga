@@ -44,7 +44,7 @@ procedure Singleton is
       Gnoga.Application.Singleton.End_Application;
    end End_App;
 begin
-   Gnoga.Application.Singleton.Initialize (Window => M);
+   Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
    Gnoga.Log ("Connection established.");
 

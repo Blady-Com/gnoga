@@ -62,7 +62,10 @@ package Gnoga.Element is
                             ID     : in     String;
                             HTML   : in     String);
    --  Create a Gnoga object on with DOM ID using HTML inside Parent.
-   --  Warning: This will destroy all DOM objects already in Parent.
+   --  Warning: This will destroy all DOM objects already children of Parent.
+   --  Warning: HTML must include the attribute on the tag of id='ID'
+   --           unlike the other create methods it is not set
+   --           automatically.
 
    procedure Create_Inside_At_Top (Object : in out Element_Type;
                                    Parent : in out Element_Type'Class;

@@ -1,63 +1,64 @@
-with Gnoga.Application.Singleton;
-with Gnoga.Types;
+with Gnoga.Application.Multiuser;
+with Gnoga.Window;
 with Gnoga.Base;
 with Gnoga.Element;
-with Gnoga.Screen;
-with Gnoga.Connections;
-with Gnoga.Window;
+with Gnoga.Types;
 
 procedure Demo is
-   Main_Window : Gnoga.Window.Window_Type;
+   use Gnoga;
+   use Gnoga.Types;
+   use Gnoga.Element;
 
-   T : Gnoga.Element.Element_Type;
-   A : Gnoga.Element.Element_Type;
-   B : Gnoga.Element.Element_Type;
+   type App_Data is new Connection_Data_Type with
+      record
+         Hello_World : Element_Type;
+         Click_Quit  : Element_Type;
+      end record;
+   type App_Access is access all App_Data;
 
-   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
    begin
-      Main_Window.Alert ("Clicked.");
+      App.Hello_World.Style ("color", "green");
    end On_Click;
 
    procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
    begin
-      T.Visible (False);
-      A.Visible (False);
-      B.Visible (False);
-
-      Gnoga.Log ("Ending application.");
-      Gnoga.Application.Singleton.End_Application;
+      Log ("Ending Application");
+      Application.Multiuser.End_Application;
    end End_App;
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+   is
+      App : aliased App_Data;
+   begin
+      App.Hello_World.Create_Inside_At_Top
+        (Parent => Main_Window.Document.Body_Element.all,
+         ID     => "label1",
+         HTML   => "<h1 />");
+
+      App.Hello_World.Property ("textContent", "Hello World!");
+
+      App.Hello_World.On_Click_Handler (On_Click'Unrestricted_Access);
+
+      App.Click_Quit.Create_After (Target => App.Hello_World,
+                                   ID     => "label2",
+                                   HTML   => "<h3>Click to Quit</h3>");
+
+      App.Click_Quit.On_Click_Handler (End_App'Unrestricted_Access);
+
+      Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
+
+      Connection.Hold;
+   end On_Connect;
+
 begin
-   Gnoga.Application.Singleton.Initialize (Main_Window, Boot => "debug.html");
+   Application.Multiuser.Initialize (Boot => "debug.html");
 
-   Gnoga.Log ("Connection established.");
+   Application.Multiuser.On_Connect_Handler (On_Connect'Unrestricted_Access);
 
-   Main_Window.On_Click_Handler (On_Click'Unrestricted_Access);
-
-   Main_Window.Move_To (10,10);
-
-   Gnoga.Log (Integer'Image (Main_Window.Property("test")));
-
-   Gnoga.Log ("Window width = " & Main_Window.Width'Img);
-
-   Gnoga.Log ("Window URL = " & Main_Window.Location.URL);
-
-   T.Create_Inside_At_Top (Parent => Main_Window.Document.Body_Element.all,
-                           ID     => "t",
-                           HTML   => "<h3 id='t'>Hello world 2!</h3>");
-
-   A.Create_After (Target => T,
-                   ID     => "a",
-                   HTML   => "<hr id='a' />");
-
-   B.Create_Before (Target => T,
-                    ID     => "b",
-                    HTML   => "<h1 id='b'>Click when Done</h1>");
-
-   B.On_Click_Handler (End_App'Unrestricted_Access);
-
-   Gnoga.Application.Singleton.Message_Loop;
-
-   Gnoga.Log ("Done.");
+   Application.Multiuser.Message_Loop;
 end Demo;

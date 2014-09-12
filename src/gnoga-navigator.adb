@@ -74,7 +74,7 @@ package body Gnoga.Navigator is
    begin
       return Gnoga.Connections.Execute_Script (ID, "navigator.cookieEnabled") =
         "true";
-   end Cookies_Enabled;
+   end Cookie_Enabled;
 
    --------------
    -- Language --

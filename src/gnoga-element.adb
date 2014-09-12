@@ -48,13 +48,13 @@ package body Gnoga.Element is
    -- Create_Inside --
    -------------------
    
-   procedure Create_Inside (Object        : in out Element_Type;
-                            Parent        : in out Element_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String)
+   procedure Create_Inside (Element : in out Element_Type;
+                            Parent  : in out Element_Type'Class;
+                            ID      : in     String;
+                            HTML    : in     String)
    is
    begin
-      Object.Create_With_Script
+      Element.Create_With_Script
         (Connection_ID => Parent.Connection_ID,
          ID            => ID,
          Script        => Element_Type (Parent).jQuery &
@@ -65,13 +65,13 @@ package body Gnoga.Element is
    -- Create_Inside_At_Top --
    --------------------------
    
-   procedure Create_Inside_At_Top (Object        : in out Element_Type;
-                                   Parent        : in out Element_Type'Class;
-                                   ID            : in     String;
-                                   HTML          : in     String)
+   procedure Create_Inside_At_Top (Element : in out Element_Type;
+                                   Parent  : in out Element_Type'Class;
+                                   ID      : in     String;
+                                   HTML    : in     String)
    is
    begin
-      Object.Create_With_Script
+      Element.Create_With_Script
         (Connection_ID => Parent.Connection_ID,
          ID            => ID,
          Script        => Element_Type (Parent).jQuery &
@@ -83,13 +83,13 @@ package body Gnoga.Element is
    -- Create_Inside_At_Bottom --
    -----------------------------
    
-   procedure Create_Inside_At_Bottom (Object        : in out Element_Type;
-                                      Parent        : in out Element_Type'Class;
-                                      ID            : in     String;
-                                      HTML          : in     String)
+   procedure Create_Inside_At_Bottom (Element : in out Element_Type;
+                                      Parent  : in out Element_Type'Class;
+                                      ID      : in     String;
+                                      HTML    : in     String)
    is
    begin
-      Object.Create_With_Script
+      Element.Create_With_Script
         (Connection_ID => Parent.Connection_ID,
          ID            => ID,
          Script        => Element_Type (Parent).jQuery &
@@ -101,13 +101,13 @@ package body Gnoga.Element is
    -- Create_After --
    ------------------
    
-   procedure Create_After (Object        : in out Element_Type;
-                           Target        : in out Element_Type'Class;
-                           ID            : in     String;
-                           HTML          : in     String)
+   procedure Create_After (Element : in out Element_Type;
+                           Target  : in out Element_Type'Class;
+                           ID      : in     String;
+                           HTML    : in     String)
    is
    begin
-      Object.Create_With_Script
+      Element.Create_With_Script
         (Connection_ID => Target.Connection_ID,
          ID            => ID,
          Script        => "$(""" & Escape_Quotes (HTML) &
@@ -119,13 +119,13 @@ package body Gnoga.Element is
    -- Create_Before --
    -------------------
    
-   procedure Create_Before (Object        : in out Element_Type;
-                            Target        : in out Element_Type'Class;
-                            ID            : in     String;
-                            HTML          : in     String)
+   procedure Create_Before (Element : in out Element_Type;
+                            Target  : in out Element_Type'Class;
+                            ID      : in     String;
+                            HTML    : in     String)
    is
    begin
-      Object.Create_With_Script
+      Element.Create_With_Script
         (Connection_ID => Target.Connection_ID,
          ID            => ID,
          Script        => "$(""" & Escape_Quotes (HTML) &
@@ -142,23 +142,23 @@ package body Gnoga.Element is
    -- Style --
    -----------
    
-   procedure Style (Object : in out Element_Type;
-                    Name   : in String;
-                    Value  : in String)
+   procedure Style (Element : in out Element_Type;
+                    Name    : in String;
+                    Value   : in String)
    is
-      Message_Script : constant String := jQuery(Object) &
+      Message_Script : constant String := jQuery(Element) &
         ".css ('" & Name & "', """ & Escape_Quotes (Value) & """);";
    begin
       Gnoga.Connections.Execute_Script
-        (ID     => Object.Connection_ID,
+        (ID     => Element.Connection_ID,
          Script => Message_Script);               
    end Style;
    
-   function Style (Object : Element_Type; Name : String) return String is
-      Message_Script : constant String := jQuery(Object) &
+   function Style (Element : Element_Type; Name : String) return String is
+      Message_Script : constant String := jQuery(Element) &
         ".css ('" & Name & "');";
    begin
-      return Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
+      return Gnoga.Connections.Execute_Script (ID     => Element.Connection_ID,
                                                Script => Message_Script);
    end Style;
 
@@ -167,23 +167,23 @@ package body Gnoga.Element is
    -- Attribute --
    ---------------
    
-   procedure Attribute (Object : in out Element_Type;
-                        Name   : in String;
-                        Value  : in String)
+   procedure Attribute (Element : in out Element_Type;
+                        Name    : in String;
+                        Value   : in String)
    is
-      Message_Script : constant String := jQuery(Object) &
+      Message_Script : constant String := jQuery(Element) &
         ".attr ('" & Name & "',""" & Escape_Quotes (Value) & """);";
    begin
       Gnoga.Connections.Execute_Script
-        (ID     => Object.Connection_ID,
+        (ID     => Element.Connection_ID,
          Script => Message_Script);               
    end Attribute;
          
-   function Attribute (Object : Element_Type; Name : String) return String is
-      Message_Script : constant String := jQuery(Object) &
+   function Attribute (Element : Element_Type; Name : String) return String is
+      Message_Script : constant String := jQuery(Element) &
         ".attr ('" & Name & "');";
    begin
-      return Gnoga.Connections.Execute_Script (ID     => Object.Connection_ID,
+      return Gnoga.Connections.Execute_Script (ID     => Element.Connection_ID,
                                                Script => Message_Script);
    end Attribute;
 
@@ -191,28 +191,28 @@ package body Gnoga.Element is
    -- Access_Key --
    ----------------
    
-   procedure Access_Key (Object : in out Element_Type; Value : String) is
+   procedure Access_Key (Element : in out Element_Type; Value : String) is
    begin
-      Object.Property ("accessKey", Value);
+      Element.Property ("accessKey", Value);
    end Access_Key;
 
-   function Access_Key (Object : Element_Type) return String is
+   function Access_Key (Element : Element_Type) return String is
    begin
-      return Object.Property ("accessKey");
+      return Element.Property ("accessKey");
    end Access_Key;
 
    --------------------
    -- Advisory_Title --
    --------------------
    
-   procedure Advisory_Title (Object : in out Element_Type; Value : String) is
+   procedure Advisory_Title (Element : in out Element_Type; Value : String) is
    begin
-      Object.Property ("title", Value);
+      Element.Property ("title", Value);
    end Advisory_Title;
 
-   function Advisory_Title (Object : Element_Type) return String is
+   function Advisory_Title (Element : Element_Type) return String is
    begin
-      return Object.Property ("title");
+      return Element.Property ("title");
    end Advisory_Title;
 
 
@@ -220,67 +220,67 @@ package body Gnoga.Element is
    -- Class_Name --
    ----------------
 
-   procedure Class_Name (Object : in out Element_Type; Value : String) is
+   procedure Class_Name (Element : in out Element_Type; Value : String) is
    begin
-      Object.Property ("className", Value);
+      Element.Property ("className", Value);
    end Class_Name;
 
-   function Class_Name (Object : Element_Type) return String is
+   function Class_Name (Element : Element_Type) return String is
    begin
-      return Object.Property ("className");
+      return Element.Property ("className");
    end Class_Name;
    
    ---------------
    -- Editable --
    ---------------
    
-   procedure Editable (Object : in out Element_Type; Value : Boolean := True) is
+   procedure Editable (Element : in out Element_Type; Value : Boolean := True) is
    begin
-      Object.Property ("contentEditable", Value);
+      Element.Property ("contentEditable", Value);
    end Editable;
    
-   function Editable (Object : Element_Type) return Boolean is
+   function Editable (Element : Element_Type) return Boolean is
    begin
-      return Object.Property ("isContentEditable");
+      return Element.Property ("isContentEditable");
    end;
 
-   procedure Tab_Index (Object : in out Element_Type; Value : Natural)
+   procedure Tab_Index (Element : in out Element_Type; Value : Natural)
    is
    begin
-      Object.Property ("tabIndex", Value);
+      Element.Property ("tabIndex", Value);
    end Tab_Index;
    
-   function Tab_Index (Object : Element_Type) return Natural is
+   function Tab_Index (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("tabIndex");
+      return Element.Property ("tabIndex");
    end Tab_Index;
    
    --------------------
    -- Text_Direction --
    --------------------
    
-   procedure Text_Direction (Object : in out Element_Type; Value : String) is
+   procedure Text_Direction (Element : in out Element_Type; Value : String) is
    begin
-      Object.Property ("dir", Value);
+      Element.Property ("dir", Value);
    end Text_Direction;
 
-   function Text_Direction (Object : Element_Type) return String is
+   function Text_Direction (Element : Element_Type) return String is
    begin
-      return Object.Property ("dir");
+      return Element.Property ("dir");
    end Text_Direction;
    
    --------------------
    -- Language_Code --
    --------------------
    
-   procedure Language_Code (Object : in out Element_Type; Value : String) is
+   procedure Language_Code (Element : in out Element_Type; Value : String) is
    begin
-      Object.Property ("lang", Value);
+      Element.Property ("lang", Value);
    end Language_Code;
 
-   function Language_Code (Object : Element_Type) return String is
+   function Language_Code (Element : Element_Type) return String is
    begin
-      return Object.Property ("lang");
+      return Element.Property ("lang");
    end Language_Code;
 
    
@@ -288,150 +288,150 @@ package body Gnoga.Element is
    -- Visible --
    -------------
    
-   procedure Visible (Object : in out Element_Type; Value : Boolean := True)
+   procedure Visible (Element : in out Element_Type; Value : Boolean := True)
    is
    begin
       if Value then
-         Object.Style ("visibility", "visible");
+         Element.Style ("visibility", "visible");
       else
-         Object.Style ("visibility", "hidden");
+         Element.Style ("visibility", "hidden");
       end if;
    end Visible;
    
-   function Visible (Object : Element_Type) return Boolean
+   function Visible (Element : Element_Type) return Boolean
    is
    begin
-      return Object.Style ("visibility") = "visible";
+      return Element.Style ("visibility") = "visible";
    end Visible;
 
    -------------------
    -- Client_Height --
    -------------------
    
-   function Client_Height (Object : Element_Type) return Natural is
+   function Client_Height (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("clientHeight");
+      return Element.Property ("clientHeight");
    end Client_Height;
    
    ------------------
    -- Client_Width --
    ------------------
    
-   function Client_Width (Object : Element_Type) return Natural is
+   function Client_Width (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("clientWidth");
+      return Element.Property ("clientWidth");
    end Client_Width;
    
    ------------------
    -- Client_Left --
    ------------------
    
-   function Client_Left (Object : Element_Type) return Natural is
+   function Client_Left (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("clientLeft");
+      return Element.Property ("clientLeft");
    end Client_Left;
 
    ------------------
    -- Client_Top --
    ------------------
    
-   function Client_Top (Object : Element_Type) return Natural is
+   function Client_Top (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("clientTop");
+      return Element.Property ("clientTop");
    end Client_Top;
 
    -------------------
    -- Offset_Height --
    -------------------
    
-   function Offset_Height (Object : Element_Type) return Natural is
+   function Offset_Height (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("offsetHeight");
+      return Element.Property ("offsetHeight");
    end Offset_Height;
    
    ------------------
    -- Offset_Width --
    ------------------
    
-   function Offset_Width (Object : Element_Type) return Natural is
+   function Offset_Width (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("offsetWidth");
+      return Element.Property ("offsetWidth");
    end Offset_Width;
 
    ------------------
    -- Offset_Left --
    ------------------
    
-   function Offset_Left (Object : Element_Type) return Natural is
+   function Offset_Left (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("offsetLeft");
+      return Element.Property ("offsetLeft");
    end Offset_Left;
 
    ------------------
    -- Offset_Top --
    ------------------
    
-   function Offset_Top (Object : Element_Type) return Natural is
+   function Offset_Top (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("offsetTop");
+      return Element.Property ("offsetTop");
    end Offset_Top;   
 
    -------------------
    -- Scroll_Height --
    -------------------
    
-   function Scroll_Height (Object : Element_Type) return Natural is
+   function Scroll_Height (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("scrollHeight");
+      return Element.Property ("scrollHeight");
    end Scroll_Height;
    
    ------------------
    -- Scroll_Width --
    ------------------
    
-   function Scroll_Width (Object : Element_Type) return Natural is
+   function Scroll_Width (Element : Element_Type) return Natural is
    begin
-      return Object.Property ("scrollWidth");
+      return Element.Property ("scrollWidth");
    end Scroll_Width;
 
    ------------------
    -- Scroll_Left --
    ------------------
    
-   procedure Scroll_Left (Object : in out Element_Type; Value : Integer) is
+   procedure Scroll_Left (Element : in out Element_Type; Value : Integer) is
    begin
-      Object.Property ("scrollLeft", Value);
+      Element.Property ("scrollLeft", Value);
    end Scroll_Left;
    
-   function Scroll_Left (Object : Element_Type) return Integer is
+   function Scroll_Left (Element : Element_Type) return Integer is
    begin
-      return Object.Property ("scrollLeft");
+      return Element.Property ("scrollLeft");
    end Scroll_Left;
 
    ------------------
    -- Scroll_Top --
    ------------------
    
-   procedure Scroll_Top (Object : in out Element_Type; Value : Integer) is
+   procedure Scroll_Top (Element : in out Element_Type; Value : Integer) is
    begin
-      Object.Property ("scrollTop", Value);
+      Element.Property ("scrollTop", Value);
    end Scroll_Top;
 
-   function Scroll_Top (Object : Element_Type) return Integer is
+   function Scroll_Top (Element : Element_Type) return Integer is
    begin
-      return Object.Property ("scrollTop");
+      return Element.Property ("scrollTop");
    end Scroll_Top;
 
    -----------------
    -- First_Child --
    -----------------
    
-   procedure First_Child (Object : in out Element_Type;
-                          Child  : in out Element_Type'Class)
+   procedure First_Child (Element : in out Element_Type;
+                          Child   : in out Element_Type'Class)
    is
    begin
-      Child.Attach (Connection_ID => Object.Connection_ID,
-                    ID            => Object.Execute
+      Child.Attach (Connection_ID => Element.Connection_ID,
+                    ID            => Element.Execute
                       ("children().first().attr('id');"),
                     ID_Type       => Gnoga.Types.DOM_ID);
    end First_Child;
@@ -440,12 +440,12 @@ package body Gnoga.Element is
    -- Next_Sibling --
    ------------------
    
-   procedure Next_Sibling (Object : in out Element_Type;
+   procedure Next_Sibling (Element : in out Element_Type;
                            Sibling : in out Element_Type'Class)
    is
    begin
-      Sibling.Attach (Connection_ID => Object.Connection_ID,
-                      ID            => Object.Execute
+      Sibling.Attach (Connection_ID => Element.Connection_ID,
+                      ID            => Element.Execute
                         ("siblings().first().attr('id');"),
                       ID_Type       => Gnoga.Types.DOM_ID);
    end Next_Sibling;
@@ -454,15 +454,23 @@ package body Gnoga.Element is
    -- HTML_Tag --
    --------------
    
-   function HTML_Tag (Object : Element_Type) return String is
+   function HTML_Tag (Element : Element_Type) return String is
    begin
-      return Object.Property ("tagName");
+      return Element.Property ("tagName");
    end HTML_Tag;
    
    -------------------------------------------------------------------------
    --  Element_Type - Methods
    -------------------------------------------------------------------------
 
+   -----------
+   -- Click --
+   -----------
+   
+   procedure Click (Element : in out Element_Type) is
+   begin
+      Element.Execute ("click();");
+   end Click;
    
    -------------------------------------------------------------------------
    --  Element_Type - Events

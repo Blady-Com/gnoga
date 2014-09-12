@@ -57,6 +57,7 @@ package body Gnoga.Application.Multiuser is
             Main_Window.Attach (Connection_ID => ID);
 
             Main_Window.Document.Title (Application_Name);
+
             On_Application_Connect_Event (Main_Window, Connection);
          end;
       end if;

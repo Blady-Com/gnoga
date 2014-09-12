@@ -36,24 +36,75 @@
 ------------------------------------------------------------------------------                                                                          --
 
 with Ada.Strings.Unbounded;
+with Ada.Strings.Fixed;
+
 with Gnoga.Connections;
 
 package body Gnoga.Base is
    
-   ------------
-   -- jQuery --
-   ------------
+   Mouse_Event_Script : constant String :=
+     "e.clientX + '|' + e.clientY + '|' + e.screenX + '|' + " &
+     "e.screenY + '|' + e.which + '|' + e.altKey + '|' + " &
+     "e.ctrlKey + '|' + e.shiftKey + '|' + e.metaKey + '|'";
+   --  e.buttons would be better but not supported currently outside
+   --  of firefox and would always return 0 on Mac so using e.which.
+      
+   function Parse_Mouse_Event (Message : String) return Mouse_Event_Record;
+   --  Parse event message in to Mouse_Event_Record
+   
+   -----------------------
+   -- Parse_Mouse_Event --
+   -----------------------
+   
+   function Parse_Mouse_Event (Message : String) return Mouse_Event_Record is
+      use Ada.Strings.Fixed;
+      
+      Event  : Mouse_Event_Record;
+      S      : Integer := Message'First;
+      F      : Integer := Message'First - 1;
+      Button : Integer;
+      
+      function Split return String is
+      begin
+         S := F + 1;
+         F := Index (Source  => Message,
+                     Pattern => "|",
+                     From    => S);
+         return Message (S .. (F - 1));
+      end;
+      
+      function Split return Integer is
+      begin
+         return Integer'Value (Split);
+      end Split;
+      
+      function Split return Boolean is
+      begin
+         return Split = "true";
+      end Split;
 
-   function jQuery (Object : Base_Type) return String is
-      use Gnoga.Types;
+      No_Button     : constant := 0;
+      Left_Button   : constant := 1;
+      Middle_Button : constant := 2;
+      Right_Button  : constant := 3;     
    begin
-      case Object.ID_Type is
-      when DOM_ID =>
-         return "$('" & Object.Script_Accessor & "')";
-      when Script =>
-         return "$(" & Object.Script_Accessor & ")";
-      end case;
-   end jQuery;
+      Event.X := Split;
+      Event.Y := Split;
+      Event.Screen_X := Split;
+      Event.Screen_Y := Split;
+
+      Button := Split;
+      Event.Left_Button := Button = Left_Button;
+      Event.Middle_Button := Button = Middle_Button;
+      Event.Right_Button := Button = Right_Button;
+      
+      Event.Alt := Split;
+      Event.Control := Split;
+      Event.Shift := Split;
+      Event.Meta := Split;
+      
+      return Event;
+   end Parse_Mouse_Event;
    
    ----------------
    -- Initialize --
@@ -285,11 +336,29 @@ package body Gnoga.Base is
    -------------------------------------------------------------------------
    --  Base_Type - Methods
    -------------------------------------------------------------------------
+   
+   -----------
+   -- Focus --
+   -----------
+
+   procedure Focus (Object : in out Base_Type) is
+   begin
+      Object.Execute ("focus();");
+   end Focus;
+
+   ----------
+   -- Blur --
+   ----------
+
+   procedure Blur (Object : in out Base_Type) is
+   begin
+      Object.Execute ("blur();");
+   end Blur;   
 
    ------------   
    -- Execute--
    ------------
-   
+
    procedure Execute (Object : in out Base_Type; Method : in String) is
       Message_Script : constant String := jQuery(Object) & ".get(0)." & Method;
    begin
@@ -309,6 +378,50 @@ package body Gnoga.Base is
    --  Base_Type - Events
    -------------------------------------------------------------------------
 
+   --------------
+   -- On_Abort --
+   --------------   
+
+   procedure On_Abort_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Abort_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "abort",
+                         Message => "");
+   end On_Abort_Handler;
+   
+   procedure Fire_On_Abort (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Abort_Event /= null then
+         Object.On_Abort_Event (Object);
+      end if;
+   end Fire_On_Abort;
+
+   -------------
+   -- On_Blur --
+   -------------   
+
+   procedure On_Blur_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Blur_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "blur",
+                         Message => "");
+   end On_Blur_Handler;
+   
+   procedure Fire_On_Blur (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Blur_Event /= null then
+         Object.On_Blur_Event (Object);
+      end if;
+   end Fire_On_Blur;
+   
    --------------
    -- On_Click --
    --------------   
@@ -330,6 +443,282 @@ package body Gnoga.Base is
          Object.On_Click_Event (Object);
       end if;
    end Fire_On_Click;
+
+   --------------------
+   -- On_Mouse_Click --
+   --------------------   
+
+   procedure On_Mouse_Click_Handler (Object  : in out Base_Type;
+                                     Handler : in     Mouse_Event)
+   is
+   begin
+      Object.On_Mouse_Click_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "click",
+                         Message => "",
+                         Script  => Mouse_Event_Script);
+   end On_Mouse_Click_Handler;
+   
+   procedure Fire_On_Mouse_Click (Object   : in out Base_Type;
+                                  Event    : in     Mouse_Event_Record)
+   is
+   begin
+      if Object.On_Mouse_Click_Event /= null then
+         Object.On_Mouse_Click_Event (Object, Event);
+      end if;
+   end Fire_On_Mouse_Click;
+   
+   ---------------------
+   -- On_Context_Menu --
+   ---------------------
+
+   procedure On_Context_Menu_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Context_Menu_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "contextmenu",
+                         Message => "");
+   end On_Context_Menu_Handler;
+   
+   procedure Fire_On_Context_Menu (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Context_Menu_Event /= null then
+         Object.On_Context_Menu_Event (Object);
+      end if;
+   end Fire_On_Context_Menu;
+   
+   --------------------------
+   -- On_Mouse_Right_Click --
+   --------------------------   
+
+   procedure On_Mouse_Right_Click_Handler (Object  : in out Base_Type;
+                                     Handler : in     Mouse_Event)
+   is
+   begin
+      Object.On_Mouse_Right_Click_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "contextmenu",
+                         Message => "",
+                         Script  => Mouse_Event_Script);
+   end On_Mouse_Right_Click_Handler;
+   
+   procedure Fire_On_Mouse_Right_Click (Object   : in out Base_Type;
+                                  Event    : in     Mouse_Event_Record)
+   is
+   begin
+      if Object.On_Mouse_Right_Click_Event /= null then
+         Object.On_Mouse_Right_Click_Event (Object, Event);
+      end if;
+   end Fire_On_Mouse_Right_Click;
+
+   --------------
+   -- On_Double_Click --
+   --------------   
+
+   procedure On_Double_Click_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Double_Click_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "dblclick",
+                         Message => "");
+   end On_Double_Click_Handler;
+   
+   procedure Fire_On_Double_Click (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Double_Click_Event /= null then
+         Object.On_Double_Click_Event (Object);
+      end if;
+   end Fire_On_Double_Click;
+
+   ---------------------------
+   -- On_Mouse_Double_Click --
+   ---------------------------   
+
+   procedure On_Mouse_Double_Click_Handler (Object  : in out Base_Type;
+                                     Handler : in     Mouse_Event)
+   is
+   begin
+      Object.On_Mouse_Double_Click_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "dblclick",
+                         Message => "",
+                         Script  => Mouse_Event_Script);
+   end On_Mouse_Double_Click_Handler;
+   
+   procedure Fire_On_Mouse_Double_Click (Object   : in out Base_Type;
+                                  Event    : in     Mouse_Event_Record)
+   is
+   begin
+      if Object.On_Mouse_Double_Click_Event /= null then
+         Object.On_Mouse_Double_Click_Event (Object, Event);
+      end if;
+   end Fire_On_Mouse_Double_Click;
+   
+   --------------------
+   -- On_Mouse_Enter --
+   --------------------
+
+   procedure On_Mouse_Enter_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Mouse_Enter_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "mouseenter",
+                         Message => "");
+   end On_Mouse_Enter_Handler;
+   
+   procedure Fire_On_Mouse_Enter (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Mouse_Enter_Event /= null then
+         Object.On_Mouse_Enter_Event (Object);
+      end if;
+   end Fire_On_Mouse_Enter;
+
+   --------------------
+   -- On_Mouse_Leave --
+   --------------------
+
+   procedure On_Mouse_Leave_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Mouse_Leave_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "mouseleave",
+                         Message => "");
+   end On_Mouse_Leave_Handler;
+   
+   procedure Fire_On_Mouse_Leave (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Mouse_Leave_Event /= null then
+         Object.On_Mouse_Leave_Event (Object);
+      end if;
+   end Fire_On_Mouse_Leave;
+
+   --------------------
+   -- On_Mouse_Over --
+   --------------------
+
+   procedure On_Mouse_Over_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Mouse_Over_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "mouseover",
+                         Message => "");
+   end On_Mouse_Over_Handler;
+   
+   procedure Fire_On_Mouse_Over (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Mouse_Over_Event /= null then
+         Object.On_Mouse_Over_Event (Object);
+      end if;
+   end Fire_On_Mouse_Over;
+
+   --------------------
+   -- On_Mouse_Out --
+   --------------------
+
+   procedure On_Mouse_Out_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Mouse_Out_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "mouseout",
+                         Message => "");
+   end On_Mouse_Out_Handler;
+   
+   procedure Fire_On_Mouse_Out (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Mouse_Out_Event /= null then
+         Object.On_Mouse_Out_Event (Object);
+      end if;
+   end Fire_On_Mouse_Out;
+
+   -------------------
+   -- On_Mouse_Down --
+   -------------------   
+
+   procedure On_Mouse_Down_Handler (Object  : in out Base_Type;
+                                     Handler : in     Mouse_Event)
+   is
+   begin
+      Object.On_Mouse_Down_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "mousedown",
+                         Message => "",
+                         Script  => Mouse_Event_Script);
+   end On_Mouse_Down_Handler;
+   
+   procedure Fire_On_Mouse_Down (Object   : in out Base_Type;
+                                  Event    : in     Mouse_Event_Record)
+   is
+   begin
+      if Object.On_Mouse_Down_Event /= null then
+         Object.On_Mouse_Down_Event (Object, Event);
+      end if;
+   end Fire_On_Mouse_Down;
+   
+   -----------------
+   -- On_Mouse_Up --
+   -----------------   
+
+   procedure On_Mouse_Up_Handler (Object  : in out Base_Type;
+                                     Handler : in     Mouse_Event)
+   is
+   begin
+      Object.On_Mouse_Up_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "mouseup",
+                         Message => "",
+                         Script  => Mouse_Event_Script);
+   end On_Mouse_Up_Handler;
+   
+   procedure Fire_On_Mouse_Up (Object   : in out Base_Type;
+                                  Event    : in     Mouse_Event_Record)
+   is
+   begin
+      if Object.On_Mouse_Up_Event /= null then
+         Object.On_Mouse_Up_Event (Object, Event);
+      end if;
+   end Fire_On_Mouse_Up;
+   
+   -------------------
+   -- On_Mouse_Move --
+   -------------------   
+
+   procedure On_Mouse_Move_Handler (Object  : in out Base_Type;
+                                     Handler : in     Mouse_Event)
+   is
+   begin
+      Object.On_Mouse_Move_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "mousemove",
+                         Message => "",
+                         Script  => Mouse_Event_Script);
+   end On_Mouse_Move_Handler;
+   
+   procedure Fire_On_Mouse_Move (Object   : in out Base_Type;
+                                  Event    : in     Mouse_Event_Record)
+   is
+   begin
+      if Object.On_Mouse_Move_Event /= null then
+         Object.On_Mouse_Move_Event (Object, Event);
+      end if;
+   end Fire_On_Mouse_Move;
    
    ---------------
    -- On_Create --
@@ -380,7 +769,7 @@ package body Gnoga.Base is
          Object.On_Destroy_Event (Object);
       end if;
    end Fire_On_Destroy;
-   
+        
    ----------------
    -- On_Message --
    ----------------
@@ -389,14 +778,49 @@ package body Gnoga.Base is
                          Event   : in     String;
                          Message : in     String)
    is
-      Continue : Boolean;
    begin
-      Object.Fire_On_Message (Event, Message, Continue);
+      if Event = "abort" then
+         Object.Fire_On_Abort;
+      elsif Event = "blur" then
+         Object.Fire_On_Blur;
 
-      if Continue then
-         if Event = "click" then
+         
+      -- Mouse Events --
+         
+      elsif Event = "click" then
+         if Message = "" then
             Object.Fire_On_Click;
+         else
+            Object.Fire_On_Mouse_Click (Parse_Mouse_Event (Message));
          end if;
+      elsif Event = "contextmenu" then
+         if Message = "" then
+            Object.Fire_On_Double_Click;
+         else
+            Object.Fire_On_Mouse_Double_Click (Parse_Mouse_Event (Message));
+         end if;
+      elsif Event = "dblclick" then
+         if Message = "" then
+            Object.Fire_On_Context_Menu;
+         else
+            Object.Fire_On_Mouse_Right_Click (Parse_Mouse_Event (Message));
+         end if;
+      elsif Event = "mouseenter" then
+         Object.Fire_On_Mouse_Enter;
+      elsif Event = "mouseleave" then
+         Object.Fire_On_Mouse_Leave;
+      elsif Event = "mouseover" then
+         Object.Fire_On_Mouse_Over;
+      elsif Event = "mouseout" then
+         Object.Fire_On_Mouse_Out;
+      elsif Event = "mousedown" then
+         Object.Fire_On_Mouse_Down (Parse_Mouse_Event (Message));
+      elsif Event = "mouseup" then
+         Object.Fire_On_Mouse_Up (Parse_Mouse_Event (Message));
+      elsif Event = "mousemove" then
+         Object.Fire_On_Mouse_Move (Parse_Mouse_Event (Message));
+      else
+         Gnoga.Log ("Unhandled Event : " & Event);
       end if;
    end On_Message;
    
@@ -430,17 +854,28 @@ package body Gnoga.Base is
    
    procedure Bind_Event (Object  : in out Base_Type;
                          Event   : in     String;
-                         Message : in     String)
+                         Message : in     String;
+                         Script  : in     String    := "")
    is
       US : constant String := Object.Unique_ID'Img;
       
       Full_Message : constant String := US (US'First + 1 .. US'Last) &
         "|" & Event & "|" & Message;
+      
+      function If_Script return String is
+      begin
+         if Script = "" then
+            return "";
+         else
+            return "+" & Script;
+         end if;
+      end;
    begin
       Bind_Event_Script (Object => Object,
                          Event  => Event,
                          Script => "ws.send (""" &
-                           Escape_Quotes (Full_Message) & """);");
+                           Escape_Quotes (Full_Message) & """" &
+                           If_Script & ");");
    end Bind_Event;
 
    -----------------------
@@ -453,7 +888,7 @@ package body Gnoga.Base is
    is
       Message_Script : constant String :=
         jQuery (Object) & ".on (""" & Event &
-        """, function () {" &
+        """, function (e) {" &
         Script & "}" &
         "); ";
    begin
@@ -494,5 +929,19 @@ package body Gnoga.Base is
          return Object.ID;
       end case;
    end Script_Accessor;
-    
+   
+   ------------
+   -- jQuery --
+   ------------
+
+   function jQuery (Object : Base_Type) return String is
+      use Gnoga.Types;
+   begin
+      case Object.ID_Type is
+      when DOM_ID =>
+         return "$('" & Object.Script_Accessor & "')";
+      when Script =>
+         return "$(" & Object.Script_Accessor & ")";
+      end case;
+   end jQuery;    
 end Gnoga.Base;

@@ -133,6 +133,17 @@ package Gnoga.Base is
    --  Base_Type - Methods
    -------------------------------------------------------------------------
 
+   --  Object Properties --
+
+   procedure Focus (Object : in out Base_Type);
+   --  Set focus on Object
+
+   procedure Blur (Object : in out Base_Type);
+   --  Remove focus from Object
+
+
+   --  Generic Methods --
+
    procedure Execute (Object : in out Base_Type; Method : in String);
    function Execute (Object : Base_Type; Method : in String) return String;
    --  General access to execute a Method
@@ -146,19 +157,128 @@ package Gnoga.Base is
    type Action_Event is access
      procedure (Object : in out Base_Type'Class);
 
+   type Mouse_Event_Record is
+      record
+         X             : Integer;
+         Y             : Integer;
+         Screen_X      : Integer;
+         Screen_Y      : Integer;
+         Left_Button   : Boolean := False;
+         Middle_Button : Boolean := False;
+         Right_Button  : Boolean := False;
+         Alt           : Boolean := False;
+         Control       : Boolean := False;
+         Shift         : Boolean := False;
+         Meta          : Boolean := False;
+      end record;
+
+   type Mouse_Event is access
+     procedure (Object      : in out Base_Type'Class;
+                Mouse_Event : in     Mouse_Event_Record);
+
    type Message_Event is access
      procedure (Object   : in out Base_Type'Class;
                 Event    : in     String;
                 Message  : in     String;
                 Continue : out    Boolean);
 
+
+   -- abort
+   procedure On_Abort_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event);
+   procedure Fire_On_Abort (Object : in out Base_Type);
+
+   -- blur
+   procedure On_Blur_Handler (Object  : in out Base_Type;
+                              Handler : in     Action_Event);
+   procedure Fire_On_Blur (Object : in out Base_Type);
+   --  Handle loss of focus, many browsers poorly support this event.
+
    -- Mouse Events --
 
+   -- click
    procedure On_Click_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Click (Object : in out Base_Type);
-   -- Handle mouse click events
+   --  Handle mouse click events
 
+   -- click + mouse event
+   procedure On_Mouse_Click_Handler (Object  : in out Base_Type;
+                                     Handler : in     Mouse_Event);
+   procedure Fire_On_Mouse_Click (Object   : in out Base_Type;
+                                  Event    : in     Mouse_Event_Record);
+   --  Handle mouse click events, but also return mouse event data
+
+   -- contextmenu
+   procedure On_Context_Menu_Handler (Object  : in out Base_Type;
+                                      Handler : in     Action_Event);
+   procedure Fire_On_Context_Menu (Object : in out Base_Type);
+   --  Handle right mouse button click events
+
+   -- contextmenu + mouse event
+   procedure On_Mouse_Right_Click_Handler (Object  : in out Base_Type;
+                                           Handler : in     Mouse_Event);
+   procedure Fire_On_Mouse_Right_Click (Object   : in out Base_Type;
+                                        Event    : in     Mouse_Event_Record);
+   --  Handle mouse right click event, but also return mouse event data
+
+   -- dblclick
+   procedure On_Double_Click_Handler (Object  : in out Base_Type;
+                                      Handler : in     Action_Event);
+   procedure Fire_On_Double_Click (Object : in out Base_Type);
+   --  Handle mouse double click events
+
+   -- dblclick + mouse event
+   procedure On_Mouse_Double_Click_Handler (Object  : in out Base_Type;
+                                            Handler : in     Mouse_Event);
+   procedure Fire_On_Mouse_Double_Click (Object   : in out Base_Type;
+                                         Event    : in     Mouse_Event_Record);
+   --  Handle mouse double click events, but also return mouse event data
+
+   -- onmouseenter
+   procedure On_Mouse_Enter_Handler (Object  : in out Base_Type;
+                                     Handler : in     Action_Event);
+   procedure Fire_On_Mouse_Enter (Object : in out Base_Type);
+   --  Handle mouse enter to object events
+
+   -- onmouseleave
+   procedure On_Mouse_Leave_Handler (Object  : in out Base_Type;
+                                     Handler : in     Action_Event);
+   procedure Fire_On_Mouse_Leave (Object : in out Base_Type);
+   --  Handle mouse leave object events
+
+   -- onmouseover
+   procedure On_Mouse_Over_Handler (Object  : in out Base_Type;
+                                     Handler : in     Action_Event);
+   procedure Fire_On_Mouse_Over (Object : in out Base_Type);
+   --  Handle mouse enter to object or it's children events
+
+   -- onmouseout
+   procedure On_Mouse_Out_Handler (Object  : in out Base_Type;
+                                   Handler : in     Action_Event);
+   procedure Fire_On_Mouse_Out (Object : in out Base_Type);
+   --  Handle mouse leave object or it's children events
+
+   -- onmousedown
+   procedure On_Mouse_Down_Handler (Object  : in out Base_Type;
+                                    Handler : in     Mouse_Event);
+   procedure Fire_On_Mouse_Down (Object   : in out Base_Type;
+                                 Event    : in     Mouse_Event_Record);
+   --  Handle mouse down events
+
+   -- onmouseup
+   procedure On_Mouse_Up_Handler (Object  : in out Base_Type;
+                                  Handler : in     Mouse_Event);
+   procedure Fire_On_Mouse_Up (Object   : in out Base_Type;
+                               Event    : in     Mouse_Event_Record);
+   --  Handle mouse down events
+
+   -- onmousemove
+   procedure On_Mouse_Move_Handler (Object  : in out Base_Type;
+                                    Handler : in     Mouse_Event);
+   procedure Fire_On_Mouse_Move (Object   : in out Base_Type;
+                                     Event    : in     Mouse_Event_Record);
+   --  Handle mouse down events
 
    --  Generic Events --
 
@@ -215,9 +335,10 @@ package Gnoga.Base is
 
    procedure Bind_Event (Object  : in out Base_Type;
                          Event   : in     String;
-                         Message : in     String);
+                         Message : in     String;
+                         Script  : in     String    := "");
    --  On Event occuring to Object Gnoga will fire Object.On_Message with
-   --  Message.
+   --  Event and Message, the result of Script is concatinated to Message.
 
    procedure Bind_Event_Script (Object : in out Base_Type;
                                 Event  : in     String;
@@ -246,9 +367,25 @@ private
          Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
 
          -- Event Handlers
-         On_Click_Event      : Action_Event  := null;
-         On_Create_Event     : Action_Event  := null;
-         On_Destroy_Event    : Action_Event  := null;
-         On_Message_Event    : Message_Event := null;
+         On_Abort_Event              : Action_Event  := null;
+         On_Blur_Event               : Action_Event  := null;
+
+         On_Click_Event              : Action_Event  := null;
+         On_Mouse_Click_Event        : Mouse_Event   := null;
+         On_Mouse_Right_Click_Event  : Mouse_Event   := null;
+         On_Context_Menu_Event       : Action_Event  := null;
+         On_Double_Click_Event       : Action_Event  := null;
+         On_Mouse_Double_Click_Event : Mouse_Event   := null;
+         On_Mouse_Enter_Event        : Action_Event  := null;
+         On_Mouse_Leave_Event        : Action_Event  := null;
+         On_Mouse_Over_Event         : Action_Event  := null;
+         On_Mouse_Out_Event          : Action_Event  := null;
+         On_Mouse_Down_Event         : Mouse_Event   := null;
+         On_Mouse_Up_Event           : Mouse_Event   := null;
+         On_Mouse_Move_Event         : Mouse_Event   := null;
+
+         On_Create_Event             : Action_Event  := null;
+         On_Destroy_Event            : Action_Event  := null;
+         On_Message_Event            : Message_Event := null;
       end record;
 end Gnoga.Base;

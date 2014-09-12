@@ -222,7 +222,8 @@ package body Gnoga.Connections is
    ----------------------
 
    overriding function Dispatch
-     (Dispatcher : in Default; Request : AWS.Status.Data) return AWS.Response.Data
+     (Dispatcher : in Default; Request : AWS.Status.Data)
+      return AWS.Response.Data
    is
       pragma Unreferenced (Dispatcher);
 
@@ -237,7 +238,7 @@ package body Gnoga.Connections is
       end Adjusted_URI;
 
       File : constant String :=
-               Ada.Strings.Unbounded.To_String (Web_Root) & "html" & Adjusted_URI;
+        Ada.Strings.Unbounded.To_String (Web_Root) & "html" & Adjusted_URI;
    begin
       if Ada.Directories.Exists (File) then
          return AWS.Response.File
@@ -730,8 +731,18 @@ package body Gnoga.Connections is
          D := Ada.Strings.Unbounded.To_Unbounded_String (Data);
       end Start;
 
-      Object.On_Message (Ada.Strings.Unbounded.To_String (E),
-                         Ada.Strings.Unbounded.To_String (D));
+      declare
+         Continue : Boolean;
+
+         Event    : constant String  := Ada.Strings.Unbounded.To_String (E);
+         Data     : constant String  := Ada.Strings.Unbounded.To_String (D);
+      begin
+         Object.Fire_On_Message (Event, Data, Continue);
+
+         if Continue then
+            Object.On_Message (Event, Data);
+         end if;
+      end;
    exception
       when E : others =>
          Log ("Dispatch Error");
@@ -930,7 +941,8 @@ package body Gnoga.Connections is
    -- Add_To_Message_Queue --
    --------------------------
 
-   procedure Add_To_Message_Queue (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure Add_To_Message_Queue (Object : in out Gnoga.Base.Base_Type'Class)
+   is
    begin
       Object_Map.Insert (Key      => Object.Unique_ID,
                          New_Item => Object'Unchecked_Access);

@@ -235,24 +235,6 @@ package body Gnoga.Window is
    end Close;
 
    -----------
-   -- Focus --
-   -----------
-
-   procedure Focus (Window : in out Window_Type) is
-   begin
-      Window.Execute ("focus();");
-   end Focus;
-
-   ----------
-   -- Blur --
-   ----------
-
-   procedure Blur (Window : in out Window_Type) is
-   begin
-      Window.Execute ("blur();");
-   end Blur;
-
-   -----------
    -- Print --
    -----------
 

@@ -45,9 +45,9 @@ package Gnoga.Element is
    -------------------------------------------------------------------------
    --  Element_Type
    -------------------------------------------------------------------------
-   --  Element_Type is the parent class of all Gnoga GUI Objects.
-   --  It is generally used internally to create and bind Gnoga objects to
-   --  HTML5 DOM element objects.
+   --  Element_Type is the parent class of all Gnoga GUI elements.
+   --  It is generally used internally to create and bind Gnoga elements to
+   --  HTML5 DOM elements.
 
    type Element_Type is new Gnoga.Base.Base_Type with private;
    type Element_Access is access all Element_Type;
@@ -57,63 +57,63 @@ package Gnoga.Element is
    --  Element_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create_Inside (Object : in out Element_Type;
-                            Parent : in out Element_Type'Class;
-                            ID     : in     String;
-                            HTML   : in     String);
-   --  Create a Gnoga object on with DOM ID using HTML inside Parent.
-   --  Warning: This will destroy all DOM objects already children of Parent.
+   procedure Create_Inside (Element : in out Element_Type;
+                            Parent  : in out Element_Type'Class;
+                            ID      : in     String;
+                            HTML    : in     String);
+   --  Create a Gnoga element on with DOM ID using HTML inside Parent.
+   --  Warning: This will destroy all DOM elements already children of Parent.
    --  Warning: HTML must include the attribute on the tag of id='ID'
    --           unlike the other create methods it is not set
    --           automatically.
 
-   procedure Create_Inside_At_Top (Object : in out Element_Type;
-                                   Parent : in out Element_Type'Class;
-                                   ID     : in     String;
-                                   HTML   : in     String);
-   --  Create a Gnoga object on with DOM ID using HTML inside Parent at top
-   --  of existing objects.
+   procedure Create_Inside_At_Top (Element : in out Element_Type;
+                                   Parent  : in out Element_Type'Class;
+                                   ID      : in     String;
+                                   HTML    : in     String);
+   --  Create a Gnoga element on with DOM ID using HTML inside Parent at top
+   --  of existing elements.
 
-   procedure Create_Inside_At_Bottom (Object : in out Element_Type;
-                                      Parent : in out Element_Type'Class;
-                                      ID     : in     String;
-                                      HTML   : in     String);
-   --  Create a Gnoga object on with DOM ID using HTML inside Parent at bottom
-   --  of existing objects.
+   procedure Create_Inside_At_Bottom (Element : in out Element_Type;
+                                      Parent  : in out Element_Type'Class;
+                                      ID      : in     String;
+                                      HTML    : in     String);
+   --  Create a Gnoga element on with DOM ID using HTML inside Parent at bottom
+   --  of existing elements.
 
 
-   procedure Create_After (Object : in out Element_Type;
-                           Target : in out Element_Type'Class;
-                           ID     : in     String;
-                           HTML   : in     String);
-   --  Create a Gnoga object with DOM ID using HTML after Target.
+   procedure Create_After (Element : in out Element_Type;
+                           Target  : in out Element_Type'Class;
+                           ID      : in     String;
+                           HTML    : in     String);
+   --  Create a Gnoga element with DOM ID using HTML after Target.
 
-   procedure Create_Before (Object : in out Element_Type;
-                            Target : in out Element_Type'Class;
-                            ID     : in     String;
-                            HTML   : in     String);
-   --  Create a Gnoga object with DOM ID using HTML before Target.
+   procedure Create_Before (Element : in out Element_Type;
+                            Target  : in out Element_Type'Class;
+                            ID      : in     String;
+                            HTML    : in     String);
+   --  Create a Gnoga element with DOM ID using HTML before Target.
 
    -------------------------------------------------------------------------
    --  Element_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Style (Object : in out Element_Type;
-                    Name   : in String;
-                    Value  : in String);
-   function Style (Object : Element_Type; Name : String) return String;
+   procedure Style (Element : in out Element_Type;
+                    Name    : in String;
+                    Value   : in String);
+   function Style (Element : Element_Type; Name : String) return String;
    --  General access to style Name
 
-   procedure Attribute (Object : in out Element_Type;
-                        Name   : in String;
-                        Value  : in String);
-   function Attribute (Object : Element_Type; Name : String) return String;
+   procedure Attribute (Element : in out Element_Type;
+                        Name    : in String;
+                        Value   : in String);
+   function Attribute (Element : Element_Type; Name : String) return String;
    --  General access to attribute Name
 
-   --  Object Properties --
+   --  Element Properties --
 
-   procedure Access_Key (Object : in out Element_Type; Value : String);
-   function Access_Key (Object : Element_Type) return String;
+   procedure Access_Key (Element : in out Element_Type; Value : String);
+   function Access_Key (Element : Element_Type) return String;
    --  Used for hot key access to element. [special key] + Access_Key
    --  The [special key] per browser and platform is:
    --
@@ -125,28 +125,28 @@ package Gnoga.Element is
    --  Safari                [Alt]         N/A      [Control][Alt]
    --  Opera 15+             [Alt]        [Alt]          [Alt]
 
-   procedure Advisory_Title (Object : in out Element_Type; Value : String);
-   function Advisory_Title (Object : Element_Type) return String;
-   --  Advisory_Title of Object, usually used for body and image maps
+   procedure Advisory_Title (Element : in out Element_Type; Value : String);
+   function Advisory_Title (Element : Element_Type) return String;
+   --  Advisory_Title of Element, usually used for body and image maps
 
-   procedure Class_Name (Object : in out Element_Type; Value : String);
-   function Class_Name (Object : Element_Type) return String;
+   procedure Class_Name (Element : in out Element_Type; Value : String);
+   function Class_Name (Element : Element_Type) return String;
 
-   procedure Editable (Object : in out Element_Type; Value : Boolean := True);
-   function Editable (Object : Element_Type) return Boolean;
+   procedure Editable (Element : in out Element_Type; Value : Boolean := True);
+   function Editable (Element : Element_Type) return Boolean;
 
-   procedure Language_Code (Object : in out Element_Type; Value : String);
-   function Language_Code (Object : Element_Type) return String;
+   procedure Language_Code (Element : in out Element_Type; Value : String);
+   function Language_Code (Element : Element_Type) return String;
 
-   procedure Tab_Index (Object : in out Element_Type; Value : Natural);
-   function Tab_Index (Object : Element_Type) return Natural;
+   procedure Tab_Index (Element : in out Element_Type; Value : Natural);
+   function Tab_Index (Element : Element_Type) return Natural;
 
-   procedure Text_Direction (Object : in out Element_Type; Value : String);
-   function Text_Direction (Object : Element_Type) return String;
+   procedure Text_Direction (Element : in out Element_Type; Value : String);
+   function Text_Direction (Element : Element_Type) return String;
    --  BiDi text direction
 
-   procedure Visible (Object : in out Element_Type; Value : Boolean := True);
-   function Visible (Object : Element_Type) return Boolean;
+   procedure Visible (Element : in out Element_Type; Value : Boolean := True);
+   function Visible (Element : Element_Type) return Boolean;
 
    -- Location Properties --
 
@@ -154,75 +154,78 @@ package Gnoga.Element is
    --  For reference:
    --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...
 
-   function Client_Width (Object : Element_Type) return Natural;
+   function Client_Width (Element : Element_Type) return Natural;
    --  Inner width of an element in pixels.
    --  CSS width + CSS padding - width of vertical scrollbar (if present)
    --  Does not include the border or margin.
 
-   function Client_Height (Object : Element_Type) return Natural;
+   function Client_Height (Element : Element_Type) return Natural;
    --  Inner height of an element in pixels.
    --  CSS height + CSS padding - height of horizontal scrollbar (if present)
    --  Does not include the border or margin.
 
-   function Client_Left (Object : Element_Type) return Natural;
+   function Client_Left (Element : Element_Type) return Natural;
    --  The width of the left border of an element in pixels.
    --. It does not include the margin or padding.
 
-   function Client_Top (Object : Element_Type) return Natural;
+   function Client_Top (Element : Element_Type) return Natural;
    --  The width of the top border of an element in pixels.
    --. It does not include the margin or padding.
 
-   function Offset_Width (Object : Element_Type) return Natural;
+   function Offset_Width (Element : Element_Type) return Natural;
    --  CSS width + CSS padding + width of vertical scrollbar (if present) +
    --  Border
 
-   function Offset_Height (Object : Element_Type) return Natural;
+   function Offset_Height (Element : Element_Type) return Natural;
    --  CSS height + CSS padding + height of horizontal scrollbar (if present) +
    --  Border
 
-   function Offset_Left (Object : Element_Type) return Natural;
-   --  The width from parent object border to child border left
+   function Offset_Left (Element : Element_Type) return Natural;
+   --  The width from parent element border to child border left
 
-   function Offset_Top (Object : Element_Type) return Natural;
-   --  The width from parent object border to child border top
+   function Offset_Top (Element : Element_Type) return Natural;
+   --  The width from parent element border to child border top
 
-   function Scroll_Width (Object : Element_Type) return Natural;
+   function Scroll_Width (Element : Element_Type) return Natural;
    --  Either the width in pixels of the content of an element or the width of
    --  the element itself, whichever is greater
 
-   function Scroll_Height (Object : Element_Type) return Natural;
+   function Scroll_Height (Element : Element_Type) return Natural;
    --  Eeight of an element's content, including content not visible on the
    --  screen due to overflow.
 
-   procedure Scroll_Left (Object : in out Element_Type; Value : Integer);
-   function Scroll_Left (Object : Element_Type) return Integer;
+   procedure Scroll_Left (Element : in out Element_Type; Value : Integer);
+   function Scroll_Left (Element : Element_Type) return Integer;
    --  The number of pixels that an element's content is scrolled to the left.
    --  For RTL languages is negative.
 
-   procedure Scroll_Top (Object : in out Element_Type; Value : Integer);
-   function Scroll_Top (Object : Element_Type) return Integer;
+   procedure Scroll_Top (Element : in out Element_Type; Value : Integer);
+   function Scroll_Top (Element : Element_Type) return Integer;
    --  The number of pixels thant an element's content has been scrolled upward.
 
 
    -- Traversal Properties --
 
-   procedure First_Child (Object : in out Element_Type;
+   procedure First_Child (Element : in out Element_Type;
                           Child  : in out Element_Type'Class);
    --  If Child does not have an html id than Element_Type will have an
    --  ID of undefined and therefore attached to no actual HTML element.
 
-   procedure Next_Sibling (Object : in out Element_Type;
+   procedure Next_Sibling (Element : in out Element_Type;
                            Sibling : in out Element_Type'Class);
    --  If Sibling does not have an html id than Element_Type will have an
    --  ID of undefined and therefore attached to no actual HTML element.
 
    -- Internal Properties --
 
-   function HTML_Tag (Object : Element_Type) return String;
+   function HTML_Tag (Element : Element_Type) return String;
 
    -------------------------------------------------------------------------
    --  Element_Type - Methods
    -------------------------------------------------------------------------
+
+   procedure Click (Element : in out Element_Type);
+   --  Simulate click on element
 
    -------------------------------------------------------------------------
    --  Element_Type - Event Handlers
@@ -238,7 +241,7 @@ package Gnoga.Element is
    --  be executed and internal functionality of the event is handled
    --  properly, always call the base class event method.
    --
-   --  Event Methods are always bound on creation of Gnoga object or do not
+   --  Event Methods are always bound on creation of Gnoga element or do not
    --  require event binding.
 
 

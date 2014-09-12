@@ -446,6 +446,116 @@ package body Gnoga.Base is
       end if;
    end Fire_On_Abort;
 
+   --------------
+   -- On_Error --
+   --------------   
+
+   procedure On_Error_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Error_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "error",
+                         Message => "");
+   end On_Error_Handler;
+   
+   procedure Fire_On_Error (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Error_Event /= null then
+         Object.On_Error_Event (Object);
+      end if;
+   end Fire_On_Error;
+
+   --------------------
+   -- On_Hash_Change --
+   --------------------   
+
+   procedure On_Hash_Change_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Hash_Change_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "hashchange",
+                         Message => "");
+   end On_Hash_Change_Handler;
+   
+   procedure Fire_On_Hash_Change (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Hash_Change_Event /= null then
+         Object.On_Hash_Change_Event (Object);
+      end if;
+   end Fire_On_Hash_Change;
+
+   ---------------
+   -- On_Resize --
+   ---------------   
+
+   procedure On_Resize_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Resize_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "resize",
+                         Message => "");
+   end On_Resize_Handler;
+   
+   procedure Fire_On_Resize (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Resize_Event /= null then
+         Object.On_Resize_Event (Object);
+      end if;
+   end Fire_On_Resize;
+   
+   ---------------
+   -- On_Scroll --
+   ---------------   
+
+   procedure On_Scroll_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Scroll_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "scroll",
+                         Message => "");
+   end On_Scroll_Handler;
+   
+   procedure Fire_On_Scroll (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Scroll_Event /= null then
+         Object.On_Scroll_Event (Object);
+      end if;
+   end Fire_On_Scroll;
+   
+   --------------
+   -- On_Focus --
+   --------------   
+
+   procedure On_Focus_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Focus_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "focus",
+                         Message => "");
+   end On_Focus_Handler;
+   
+   procedure Fire_On_Focus (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Focus_Event /= null then
+         Object.On_Focus_Event (Object);
+      end if;
+   end Fire_On_Focus;
+   
    -------------
    -- On_Blur --
    -------------   
@@ -467,6 +577,182 @@ package body Gnoga.Base is
          Object.On_Blur_Event (Object);
       end if;
    end Fire_On_Blur;
+   
+   ---------------
+   -- On_Change --
+   ---------------   
+
+   procedure On_Change_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Change_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "change",
+                         Message => "");
+   end On_Change_Handler;
+   
+   procedure Fire_On_Change (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Change_Event /= null then
+         Object.On_Change_Event (Object);
+      end if;
+   end Fire_On_Change;
+   
+   -----------------
+   -- On_Focus_In --
+   -----------------   
+
+   procedure On_Focus_In_Handler (Object  : in out Base_Type;
+                                  Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Focus_In_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "focusin",
+                         Message => "");
+   end On_Focus_In_Handler;
+   
+   procedure Fire_On_Focus_In (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Focus_In_Event /= null then
+         Object.On_Focus_In_Event (Object);
+      end if;
+   end Fire_On_Focus_In;
+   
+   ------------------
+   -- On_Focus_Out --
+   ------------------   
+
+   procedure On_Focus_Out_Handler (Object  : in out Base_Type;
+                                   Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Focus_Out_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "focusout",
+                         Message => "");
+   end On_Focus_Out_Handler;
+   
+   procedure Fire_On_Focus_Out (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Focus_Out_Event /= null then
+         Object.On_Focus_Out_Event (Object);
+      end if;
+   end Fire_On_Focus_Out;
+   
+   --------------
+   -- On_Input --
+   --------------   
+
+   procedure On_Input_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Input_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "input",
+                         Message => "");
+   end On_Input_Handler;
+   
+   procedure Fire_On_Input (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Input_Event /= null then
+         Object.On_Input_Event (Object);
+      end if;
+   end Fire_On_Input;
+   
+   --------------
+   -- On_Reset --
+   --------------   
+
+   procedure On_Reset_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Reset_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "reset",
+                         Message => "");
+   end On_Reset_Handler;
+   
+   procedure Fire_On_Reset (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Reset_Event /= null then
+         Object.On_Reset_Event (Object);
+      end if;
+   end Fire_On_Reset;
+   
+   ---------------
+   -- On_Search --
+   ---------------   
+
+   procedure On_Search_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Search_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "search",
+                         Message => "");
+   end On_Search_Handler;
+   
+   procedure Fire_On_Search (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Search_Event /= null then
+         Object.On_Search_Event (Object);
+      end if;
+   end Fire_On_Search;
+   
+   ---------------
+   -- On_Select --
+   ---------------   
+
+   procedure On_Select_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Select_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "select",
+                         Message => "");
+   end On_Select_Handler;
+   
+   procedure Fire_On_Select (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Select_Event /= null then
+         Object.On_Select_Event (Object);
+      end if;
+   end Fire_On_Select;
+   
+   ---------------
+   -- On_Submit --
+   ---------------   
+
+   procedure On_Submit_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Submit_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "submit",
+                         Message => "");
+   end On_Submit_Handler;
+   
+   procedure Fire_On_Submit (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Submit_Event /= null then
+         Object.On_Submit_Event (Object);
+      end if;
+   end Fire_On_Submit;
    
    --------------
    -- On_Click --
@@ -887,6 +1173,72 @@ package body Gnoga.Base is
       end if;
    end Fire_On_Key_Press;
    
+   -------------
+   -- On_Copy --
+   -------------   
+
+   procedure On_Copy_Handler (Object  : in out Base_Type;
+                              Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Copy_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "copy",
+                         Message => "");
+   end On_Copy_Handler;
+   
+   procedure Fire_On_Copy (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Copy_Event /= null then
+         Object.On_Copy_Event (Object);
+      end if;
+   end Fire_On_Copy;
+   
+   ------------
+   -- On_Cut --
+   ------------   
+
+   procedure On_Cut_Handler (Object  : in out Base_Type;
+                             Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Cut_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "cut",
+                         Message => "");
+   end On_Cut_Handler;
+   
+   procedure Fire_On_Cut (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Cut_Event /= null then
+         Object.On_Cut_Event (Object);
+      end if;
+   end Fire_On_Cut;
+   
+   --------------
+   -- On_Paste --
+   --------------   
+
+   procedure On_Paste_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event)
+   is
+   begin
+      Object.On_Paste_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "paste",
+                         Message => "");
+   end On_Paste_Handler;
+   
+   procedure Fire_On_Paste (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Paste_Event /= null then
+         Object.On_Paste_Event (Object);
+      end if;
+   end Fire_On_Paste;
+   
    ---------------
    -- On_Create --
    ---------------   
@@ -946,11 +1298,41 @@ package body Gnoga.Base is
                          Message : in     String)
    is
    begin
+      -- Network Event --
       if Event = "abort" then
          Object.Fire_On_Abort;
+      elsif Event = "error" then
+         Object.Fire_On_Error;
+      elsif Event = "hashchange" then
+         Object.Fire_On_Hash_Change;
+
+      -- Object Events --
+      elsif Event = "resize" then
+         Object.Fire_On_Resize;
+      elsif Event = "scroll" then
+         Object.Fire_On_Scroll;
+         
+      -- Form Events --
+      elsif Event = "focus" then
+         Object.Fire_On_Focus;
       elsif Event = "blur" then
          Object.Fire_On_Blur;
-
+      elsif Event = "change" then
+         Object.Fire_On_Change;
+      elsif Event = "focusin" then
+         Object.Fire_On_Focus_In;
+      elsif Event = "focusout" then
+         Object.Fire_On_Focus_Out;
+      elsif Event = "input" then
+         Object.Fire_On_Input;
+      elsif Event = "reset" then
+         Object.Fire_On_Reset;
+      elsif Event = "search" then
+         Object.Fire_On_Search;
+      elsif Event = "select" then
+         Object.Fire_On_Select;
+      elsif Event = "submit" then
+         Object.Fire_On_Submit;
          
       -- Mouse Events --
          
@@ -987,7 +1369,7 @@ package body Gnoga.Base is
       elsif Event = "mousemove" then
          Object.Fire_On_Mouse_Move (Parse_Mouse_Event (Message));
          
-      -- Keyboar Events --
+      -- Keyboard Events --
          
       elsif Event = "keydown" then
          Object.Fire_On_Key_Down (Parse_Keyboard_Event (Message));
@@ -1009,6 +1391,15 @@ package body Gnoga.Base is
             
             Object.Fire_On_Character (C);
          end;
+         
+      -- Clipboard Events --
+
+      elsif Event = "copy" then
+         Object.Fire_On_Copy;
+      elsif Event = "cut" then
+         Object.Fire_On_Cut;
+      elsif Event = "paste" then
+         Object.Fire_On_Paste;
       else
          Gnoga.Log ("Unhandled Event : " & Event);
       end if;

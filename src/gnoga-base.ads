@@ -203,16 +203,92 @@ package Gnoga.Base is
                 Message  : in     String;
                 Continue : out    Boolean);
 
+
+   -- Network Events --
+
    -- abort
    procedure On_Abort_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Abort (Object : in out Base_Type);
+
+   -- error
+   procedure On_Error_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event);
+   procedure Fire_On_Error (Object : in out Base_Type);
+
+   -- hashchange
+   procedure On_Hash_Change_Handler (Object  : in out Base_Type;
+                                     Handler : in     Action_Event);
+   procedure Fire_On_Hash_Change (Object : in out Base_Type);
+
+   -- Object Events --
+
+   -- resize
+   procedure On_Resize_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event);
+   procedure Fire_On_Resize (Object : in out Base_Type);
+   --  Handle object size change.
+
+   -- scroll
+   procedure On_Scroll_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event);
+   procedure Fire_On_Scroll (Object : in out Base_Type);
+   --  Handle scroll changes.
+
+   -- Form Events --
+
+   -- focus
+   procedure On_Focus_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event);
+   procedure Fire_On_Focus (Object : in out Base_Type);
+   --  Handle focus on object
 
    -- blur
    procedure On_Blur_Handler (Object  : in out Base_Type;
                               Handler : in     Action_Event);
    procedure Fire_On_Blur (Object : in out Base_Type);
    --  Handle loss of focus, many browsers poorly support this event.
+
+   -- change
+   procedure On_Change_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event);
+   procedure Fire_On_Change (Object : in out Base_Type);
+
+   -- focusin
+   procedure On_Focus_In_Handler (Object  : in out Base_Type;
+                                  Handler : in     Action_Event);
+   procedure Fire_On_Focus_In (Object : in out Base_Type);
+
+   -- focusout
+   procedure On_Focus_Out_Handler (Object  : in out Base_Type;
+                                   Handler : in     Action_Event);
+   procedure Fire_On_Focus_Out (Object : in out Base_Type);
+
+   -- input
+   procedure On_Input_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event);
+   procedure Fire_On_Input (Object : in out Base_Type);
+
+   -- reset
+   procedure On_Reset_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event);
+   procedure Fire_On_Reset (Object : in out Base_Type);
+
+   -- search
+   procedure On_Search_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event);
+   procedure Fire_On_Search (Object : in out Base_Type);
+
+   -- select
+   procedure On_Select_Handler (Object  : in out Base_Type;
+                                Handler : in     Action_Event);
+   procedure Fire_On_Select (Object : in out Base_Type);
+
+   -- submit
+   procedure On_Submit_Handler (Object  : in out Base_Type;
+                                   Handler : in     Action_Event);
+   procedure Fire_On_Submit (Object : in out Base_Type);
+
 
    -- Mouse Events --
 
@@ -300,6 +376,7 @@ package Gnoga.Base is
                                  Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
 
+
    --  Keyboard Events --
 
    procedure On_Character_Handler (Object  : in out Base_Type;
@@ -326,6 +403,24 @@ package Gnoga.Base is
                                    Handler : in     Keyboard_Event);
    procedure Fire_On_Key_Press (Object : in out Base_Type;
                                 Event  : in     Keyboard_Event_Record);
+
+   --  Clipboard Events  --
+
+   -- copy
+   procedure On_Copy_Handler (Object  : in out Base_Type;
+                              Handler : in     Action_Event);
+   procedure Fire_On_Copy (Object : in out Base_Type);
+
+   -- cut
+   procedure On_Cut_Handler (Object  : in out Base_Type;
+                             Handler : in     Action_Event);
+   procedure Fire_On_Cut (Object : in out Base_Type);
+
+   -- paste
+   procedure On_Paste_Handler (Object  : in out Base_Type;
+                               Handler : in     Action_Event);
+   procedure Fire_On_Paste (Object : in out Base_Type);
+
 
    --  Generic Events --
 
@@ -413,11 +508,28 @@ private
          ID_Type       : Gnoga.Types.ID_Enumeration;
          Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
 
-         -- Event Handlers
+         -- Network Events
          On_Abort_Event              : Action_Event         := null;
-         On_Blur_Event               : Action_Event         := null;
+         On_Error_Event              : Action_Event         := null;
+         On_Hash_Change_Event        : Action_Event         := null;
 
-         -- Mouse Event Handlers
+         -- Object Events
+         On_Resize_Event             : Action_Event         := null;
+         On_Scroll_Event             : Action_Event         := null;
+
+         -- Form Events
+         On_Focus_Event              : Action_Event         := null;
+         On_Blur_Event               : Action_Event         := null;
+         On_Change_Event             : Action_Event         := null;
+         On_Focus_In_Event           : Action_Event         := null;
+         On_Focus_Out_Event          : Action_Event         := null;
+         On_Input_Event              : Action_Event         := null;
+         On_Reset_Event              : Action_Event         := null;
+         On_Search_Event             : Action_Event         := null;
+         On_Select_Event             : Action_Event         := null;
+         On_Submit_Event             : Action_Event         := null;
+
+         -- Mouse Events
          On_Click_Event              : Action_Event         := null;
          On_Mouse_Click_Event        : Mouse_Event          := null;
          On_Mouse_Right_Click_Event  : Mouse_Event          := null;
@@ -432,14 +544,19 @@ private
          On_Mouse_Up_Event           : Mouse_Event          := null;
          On_Mouse_Move_Event         : Mouse_Event          := null;
 
-         -- Keyboard Event Handlers
+         -- Keyboard Events
          On_Character_Event          : Character_Event      := null;
          On_Wide_Character_Event     : Wide_Character_Event := null;
          On_Key_Down_Event           : Keyboard_Event       := null;
          On_Key_Up_Event             : Keyboard_Event       := null;
          On_Key_Press_Event          : Keyboard_Event       := null;
 
-         -- Generic Event Handlers
+         -- Clipboard Events
+         On_Copy_Event               : Action_Event         := null;
+         On_Cut_Event                : Action_Event         := null;
+         On_Paste_Event              : Action_Event         := null;
+
+         -- Generic Events
          On_Create_Event             : Action_Event         := null;
          On_Destroy_Event            : Action_Event         := null;
          On_Message_Event            : Message_Event        := null;

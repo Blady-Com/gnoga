@@ -133,18 +133,6 @@ package Gnoga.Window is
    --  Window_Type - Event Handlers
    -------------------------------------------------------------------------
 
-   -- afterprint
-   -- procedure On_After_Print_Handler (Window  : in out Window_Type;
---                                     Handler : in     Gnoga.Base.Action_Event);
-   -- procedure Fire_On_After_Print (Window : in out Window_Type);
-   --  Handle after printing window
-
-   -- beforeprint
-   -- procedure On_Before_Print_Handler (Window  : in out Window_Type;
---                                     Handler : in     Gnoga.Base.Action_Event);
-   -- procedure Fire_On_Before_Print (Window : in out Window_Type);
-   --  Handle before printing window
-
 private
    type Window_Type is new Gnoga.Base.Base_Type with
       record

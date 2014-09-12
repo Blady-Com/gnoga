@@ -48,10 +48,17 @@ package body Gnoga.Base is
      "e.ctrlKey + '|' + e.shiftKey + '|' + e.metaKey + '|'";
    --  e.buttons would be better but not supported currently outside
    --  of firefox and would always return 0 on Mac so using e.which.
+
+   Keyboard_Event_Script : constant String :=
+     "e.which + '|' + e.altKey + '|' + e.ctrlKey + '|' + e.shiftKey + '|' + " &
+     "e.metaKey + '|'";
       
    function Parse_Mouse_Event (Message : String) return Mouse_Event_Record;
    --  Parse event message in to Mouse_Event_Record
    
+   function Parse_Keyboard_Event (Message : String) return Keyboard_Event_Record;
+   --  Parse event message in to Keyboard_Event_Record
+
    -----------------------
    -- Parse_Mouse_Event --
    -----------------------
@@ -105,6 +112,45 @@ package body Gnoga.Base is
       
       return Event;
    end Parse_Mouse_Event;
+   
+   --------------------------
+   -- Parse_Keyboard_Event --
+   --------------------------
+   
+   function Parse_Keyboard_Event (Message : String) return Keyboard_Event_Record is
+      use Ada.Strings.Fixed;
+      
+      Event  : Keyboard_Event_Record;
+      S      : Integer := Message'First;
+      F      : Integer := Message'First - 1;
+      
+      function Split return String is
+      begin
+         S := F + 1;
+         F := Index (Source  => Message,
+                     Pattern => "|",
+                     From    => S);
+         return Message (S .. (F - 1));
+      end;
+      
+      function Split return Integer is
+      begin
+         return Integer'Value (Split);
+      end Split;
+      
+      function Split return Boolean is
+      begin
+         return Split = "true";
+      end Split;
+   begin
+      Event.Key_Code := Split;
+      Event.Alt := Split;
+      Event.Control := Split;
+      Event.Shift := Split;
+      Event.Meta := Split;
+      
+      return Event;
+   end Parse_Keyboard_Event;
    
    ----------------
    -- Initialize --
@@ -473,7 +519,7 @@ package body Gnoga.Base is
    ---------------------
 
    procedure On_Context_Menu_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+                                      Handler : in     Action_Event)
    is
    begin
       Object.On_Context_Menu_Event := Handler;      
@@ -495,7 +541,7 @@ package body Gnoga.Base is
    --------------------------   
 
    procedure On_Mouse_Right_Click_Handler (Object  : in out Base_Type;
-                                     Handler : in     Mouse_Event)
+                                           Handler : in     Mouse_Event)
    is
    begin
       Object.On_Mouse_Right_Click_Event := Handler;      
@@ -506,7 +552,7 @@ package body Gnoga.Base is
    end On_Mouse_Right_Click_Handler;
    
    procedure Fire_On_Mouse_Right_Click (Object   : in out Base_Type;
-                                  Event    : in     Mouse_Event_Record)
+                                        Event    : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Right_Click_Event /= null then
@@ -514,12 +560,12 @@ package body Gnoga.Base is
       end if;
    end Fire_On_Mouse_Right_Click;
 
-   --------------
+   ---------------------
    -- On_Double_Click --
-   --------------   
+   ---------------------   
 
    procedure On_Double_Click_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+                                      Handler : in     Action_Event)
    is
    begin
       Object.On_Double_Click_Event := Handler;      
@@ -541,7 +587,7 @@ package body Gnoga.Base is
    ---------------------------   
 
    procedure On_Mouse_Double_Click_Handler (Object  : in out Base_Type;
-                                     Handler : in     Mouse_Event)
+                                            Handler : in     Mouse_Event)
    is
    begin
       Object.On_Mouse_Double_Click_Event := Handler;      
@@ -552,7 +598,7 @@ package body Gnoga.Base is
    end On_Mouse_Double_Click_Handler;
    
    procedure Fire_On_Mouse_Double_Click (Object   : in out Base_Type;
-                                  Event    : in     Mouse_Event_Record)
+                                         Event    : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Double_Click_Event /= null then
@@ -565,7 +611,7 @@ package body Gnoga.Base is
    --------------------
 
    procedure On_Mouse_Enter_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+                                     Handler : in     Action_Event)
    is
    begin
       Object.On_Mouse_Enter_Event := Handler;      
@@ -631,7 +677,7 @@ package body Gnoga.Base is
    --------------------
 
    procedure On_Mouse_Out_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+                                   Handler : in     Action_Event)
    is
    begin
       Object.On_Mouse_Out_Event := Handler;      
@@ -653,7 +699,7 @@ package body Gnoga.Base is
    -------------------   
 
    procedure On_Mouse_Down_Handler (Object  : in out Base_Type;
-                                     Handler : in     Mouse_Event)
+                                    Handler : in     Mouse_Event)
    is
    begin
       Object.On_Mouse_Down_Event := Handler;      
@@ -664,7 +710,7 @@ package body Gnoga.Base is
    end On_Mouse_Down_Handler;
    
    procedure Fire_On_Mouse_Down (Object   : in out Base_Type;
-                                  Event    : in     Mouse_Event_Record)
+                                 Event    : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Down_Event /= null then
@@ -677,7 +723,7 @@ package body Gnoga.Base is
    -----------------   
 
    procedure On_Mouse_Up_Handler (Object  : in out Base_Type;
-                                     Handler : in     Mouse_Event)
+                                  Handler : in     Mouse_Event)
    is
    begin
       Object.On_Mouse_Up_Event := Handler;      
@@ -688,7 +734,7 @@ package body Gnoga.Base is
    end On_Mouse_Up_Handler;
    
    procedure Fire_On_Mouse_Up (Object   : in out Base_Type;
-                                  Event    : in     Mouse_Event_Record)
+                               Event    : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Up_Event /= null then
@@ -701,7 +747,7 @@ package body Gnoga.Base is
    -------------------   
 
    procedure On_Mouse_Move_Handler (Object  : in out Base_Type;
-                                     Handler : in     Mouse_Event)
+                                    Handler : in     Mouse_Event)
    is
    begin
       Object.On_Mouse_Move_Event := Handler;      
@@ -712,13 +758,134 @@ package body Gnoga.Base is
    end On_Mouse_Move_Handler;
    
    procedure Fire_On_Mouse_Move (Object   : in out Base_Type;
-                                  Event    : in     Mouse_Event_Record)
+                                 Event    : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Move_Event /= null then
          Object.On_Mouse_Move_Event (Object, Event);
       end if;
    end Fire_On_Mouse_Move;
+
+   
+   ------------------
+   -- On_Character --
+   ------------------   
+
+   procedure On_Character_Handler (Object  : in out Base_Type;
+                                   Handler : in     Character_Event)
+   is
+   begin
+      Object.On_Character_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "keypress",
+                         Message => "",
+                         Script  => Keyboard_Event_Script);
+   end On_Character_Handler;
+   
+   procedure Fire_On_Character (Object : in out Base_Type;
+                                Key    : in     Character)
+   is
+   begin
+      if Object.On_Character_Event /= null then
+         Object.On_Character_Event (Object, Key);
+      end if;
+   end Fire_On_Character;
+   
+   -----------------------
+   -- On_Wide_Character --
+   -----------------------   
+
+   procedure On_Wide_Character_Handler (Object  : in out Base_Type;
+                                        Handler : in     Wide_Character_Event)
+   is
+   begin
+      Object.On_Wide_Character_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "keypress",
+                         Message => "",
+                         Script  => Keyboard_Event_Script);
+   end On_Wide_Character_Handler;
+   
+   procedure Fire_On_Wide_Character (Object : in out Base_Type;
+                                     Key    : in     Wide_Character)
+   is
+   begin
+      if Object.On_Wide_Character_Event /= null then
+         Object.On_Wide_Character_Event (Object, Key);
+      end if;
+   end Fire_On_Wide_Character;
+   
+   ------------------
+   -- On_Key_Down --
+   ------------------   
+
+   procedure On_Key_Down_Handler (Object  : in out Base_Type;
+                                  Handler : in     Keyboard_Event)
+   is
+   begin
+      Object.On_Key_Down_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "keydown",
+                         Message => "",
+                         Script  => Keyboard_Event_Script);
+   end On_Key_Down_Handler;
+   
+   procedure Fire_On_Key_Down (Object : in out Base_Type;
+                               Event  : in     Keyboard_Event_Record)
+   is
+   begin
+      if Object.On_Key_Down_Event /= null then
+         Object.On_Key_Down_Event (Object, Event);
+      end if;
+   end Fire_On_Key_Down;
+   
+   -----------------
+   -- On_Key_Up --
+   -----------------   
+
+   procedure On_Key_Up_Handler (Object  : in out Base_Type;
+                                Handler : in     Keyboard_Event)
+   is
+   begin
+      Object.On_Key_Up_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "keyup",
+                         Message => "",
+                         Script  => Keyboard_Event_Script);
+   end On_Key_Up_Handler;
+   
+   procedure Fire_On_Key_Up (Object : in out Base_Type;
+                             Event  : in     Keyboard_Event_Record)
+   is
+   begin
+      if Object.On_Key_Up_Event /= null then
+         Object.On_Key_Up_Event (Object, Event);
+      end if;
+   end Fire_On_Key_Up;
+   
+   ------------------
+   -- On_Key_Press --
+   ------------------   
+
+   procedure On_Key_Press_Handler (Object  : in out Base_Type;
+                                  Handler : in     Keyboard_Event)
+   is
+   begin
+      Object.On_Key_Press_Event := Handler;      
+      
+      Object.Bind_Event (Event   => "keypress",
+                         Message => "",
+                         Script  => Keyboard_Event_Script);
+   end On_Key_Press_Handler;
+   
+   procedure Fire_On_Key_Press (Object : in out Base_Type;
+                               Event  : in     Keyboard_Event_Record)
+   is
+   begin
+      if Object.On_Key_Press_Event /= null then
+         Object.On_Key_Press_Event (Object, Event);
+      end if;
+   end Fire_On_Key_Press;
    
    ---------------
    -- On_Create --
@@ -756,7 +923,7 @@ package body Gnoga.Base is
    end On_Destroy;
    
    procedure On_Destroy_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+                                 Handler : in     Action_Event)
    is
    begin
       Object.On_Destroy_Event := Handler;      
@@ -819,6 +986,29 @@ package body Gnoga.Base is
          Object.Fire_On_Mouse_Up (Parse_Mouse_Event (Message));
       elsif Event = "mousemove" then
          Object.Fire_On_Mouse_Move (Parse_Mouse_Event (Message));
+         
+      -- Keyboar Events --
+         
+      elsif Event = "keydown" then
+         Object.Fire_On_Key_Down (Parse_Keyboard_Event (Message));
+      elsif Event = "keyup" then
+         Object.Fire_On_Key_Down (Parse_Keyboard_Event (Message));
+      elsif Event = "keypress" then
+         declare
+            E : Keyboard_Event_Record := Parse_Keyboard_Event (Message);
+            C : Character;
+         begin
+            Object.Fire_On_Key_Press (E);
+            Object.Fire_On_Wide_Character (Wide_Character'Val (E.Key_Code));
+            
+            if E.Key_Code > 255 then
+               C := Character'Val (0);
+            else
+               C := Character'Val (E.Key_Code);
+            end if;
+            
+            Object.Fire_On_Character (C);
+         end;
       else
          Gnoga.Log ("Unhandled Event : " & Event);
       end if;

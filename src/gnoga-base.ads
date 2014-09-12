@@ -176,12 +176,32 @@ package Gnoga.Base is
      procedure (Object      : in out Base_Type'Class;
                 Mouse_Event : in     Mouse_Event_Record);
 
+   type Keyboard_Event_Record is
+      record
+         Key_Code      : Integer;
+         Alt           : Boolean := False;
+         Control       : Boolean := False;
+         Shift         : Boolean := False;
+         Meta          : Boolean := False;
+      end record;
+
+   type Keyboard_Event is access
+     procedure (Object         : in out Base_Type'Class;
+                Keyboard_Event : in     Keyboard_Event_Record);
+
+   type Character_Event is access
+     procedure (Object : in out Base_Type'Class;
+                Key    : in     Character);
+
+   type Wide_Character_Event is access
+     procedure (Object : in out Base_Type'Class;
+                Key    : in     Wide_Character);
+
    type Message_Event is access
      procedure (Object   : in out Base_Type'Class;
                 Event    : in     String;
                 Message  : in     String;
                 Continue : out    Boolean);
-
 
    -- abort
    procedure On_Abort_Handler (Object  : in out Base_Type;
@@ -277,8 +297,35 @@ package Gnoga.Base is
    procedure On_Mouse_Move_Handler (Object  : in out Base_Type;
                                     Handler : in     Mouse_Event);
    procedure Fire_On_Mouse_Move (Object   : in out Base_Type;
-                                     Event    : in     Mouse_Event_Record);
+                                 Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
+
+   --  Keyboard Events --
+
+   procedure On_Character_Handler (Object  : in out Base_Type;
+                                   Handler : in     Character_Event);
+   procedure Fire_On_Character (Object : in out Base_Type;
+                                Key    : in     Character);
+
+   procedure On_Wide_Character_Handler (Object  : in out Base_Type;
+                                        Handler : in     Wide_Character_Event);
+   procedure Fire_On_Wide_Character (Object : in out Base_Type;
+                                     Key    : in     Wide_Character);
+
+   procedure On_Key_Down_Handler (Object  : in out Base_Type;
+                                  Handler : in     Keyboard_Event);
+   procedure Fire_On_Key_Down (Object : in out Base_Type;
+                               Event  : in     Keyboard_Event_Record);
+
+   procedure On_Key_Up_Handler (Object  : in out Base_Type;
+                                Handler : in     Keyboard_Event);
+   procedure Fire_On_Key_Up (Object : in out Base_Type;
+                             Event  : in     Keyboard_Event_Record);
+
+   procedure On_Key_Press_Handler (Object  : in out Base_Type;
+                                   Handler : in     Keyboard_Event);
+   procedure Fire_On_Key_Press (Object : in out Base_Type;
+                                Event  : in     Keyboard_Event_Record);
 
    --  Generic Events --
 
@@ -367,25 +414,34 @@ private
          Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
 
          -- Event Handlers
-         On_Abort_Event              : Action_Event  := null;
-         On_Blur_Event               : Action_Event  := null;
+         On_Abort_Event              : Action_Event         := null;
+         On_Blur_Event               : Action_Event         := null;
 
-         On_Click_Event              : Action_Event  := null;
-         On_Mouse_Click_Event        : Mouse_Event   := null;
-         On_Mouse_Right_Click_Event  : Mouse_Event   := null;
-         On_Context_Menu_Event       : Action_Event  := null;
-         On_Double_Click_Event       : Action_Event  := null;
-         On_Mouse_Double_Click_Event : Mouse_Event   := null;
-         On_Mouse_Enter_Event        : Action_Event  := null;
-         On_Mouse_Leave_Event        : Action_Event  := null;
-         On_Mouse_Over_Event         : Action_Event  := null;
-         On_Mouse_Out_Event          : Action_Event  := null;
-         On_Mouse_Down_Event         : Mouse_Event   := null;
-         On_Mouse_Up_Event           : Mouse_Event   := null;
-         On_Mouse_Move_Event         : Mouse_Event   := null;
+         -- Mouse Event Handlers
+         On_Click_Event              : Action_Event         := null;
+         On_Mouse_Click_Event        : Mouse_Event          := null;
+         On_Mouse_Right_Click_Event  : Mouse_Event          := null;
+         On_Context_Menu_Event       : Action_Event         := null;
+         On_Double_Click_Event       : Action_Event         := null;
+         On_Mouse_Double_Click_Event : Mouse_Event          := null;
+         On_Mouse_Enter_Event        : Action_Event         := null;
+         On_Mouse_Leave_Event        : Action_Event         := null;
+         On_Mouse_Over_Event         : Action_Event         := null;
+         On_Mouse_Out_Event          : Action_Event         := null;
+         On_Mouse_Down_Event         : Mouse_Event          := null;
+         On_Mouse_Up_Event           : Mouse_Event          := null;
+         On_Mouse_Move_Event         : Mouse_Event          := null;
 
-         On_Create_Event             : Action_Event  := null;
-         On_Destroy_Event            : Action_Event  := null;
-         On_Message_Event            : Message_Event := null;
+         -- Keyboard Event Handlers
+         On_Character_Event          : Character_Event      := null;
+         On_Wide_Character_Event     : Wide_Character_Event := null;
+         On_Key_Down_Event           : Keyboard_Event       := null;
+         On_Key_Up_Event             : Keyboard_Event       := null;
+         On_Key_Press_Event          : Keyboard_Event       := null;
+
+         -- Generic Event Handlers
+         On_Create_Event             : Action_Event         := null;
+         On_Destroy_Event            : Action_Event         := null;
+         On_Message_Event            : Message_Event        := null;
       end record;
 end Gnoga.Base;

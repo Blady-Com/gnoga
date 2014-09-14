@@ -68,34 +68,28 @@ procedure Multiuser is
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      App.Hello_World.Create_Inside_At_Top
-        (Parent => Main_Window.Document.Body_Element.all,
-         ID     => "label1",
-         HTML   => "<h1 />");
-
+      App.Hello_World.Create_From_HTML (Main_Window, "<h1 />");
       App.Hello_World.Property ("textContent", "Hello World!");
+      App.Hello_World.Place_Inside_Top_Of
+        (Main_Window.Document.Body_Element.all);
 
       App.Hello_World.On_Context_Menu_Handler (On_Context'Unrestricted_Access);
       App.Hello_World.On_Mouse_Click_Handler (On_Click'Unrestricted_Access);
       App.Hello_World.On_Mouse_Move_Handler (On_Move'Unrestricted_Access);
 
-      App.Click_Quit.Create_After (Target => App.Hello_World,
-                                   ID     => "label2",
-                                   HTML   => "<h3>Click to Quit</h3>");
-
+      App.Click_Quit.Create_From_HTML (Main_Window, "<h3 />", "label2");
+      App.Click_Quit.Property ("textContent", "Click to Quit");
+      App.Click_Quit.Place_After (App.Hello_World);
       App.Click_Quit.On_Click_Handler (End_App'Unrestricted_Access);
 
-      App.X.Create_After (Target => App.Hello_World,
-                          ID     => "labelX",
-                          HTML   => "<div />");
+      App.X.Create_From_HTML (Main_Window, "<div />");
+      App.X.Place_After (App.Hello_World);
 
-      App.Y.Create_After (Target => App.Hello_World,
-                          ID     => "labelY",
-                          HTML   => "<div />");
+      App.Y.Create_From_HTML (Main_Window, "<div />");
+      App.Y.Place_After (App.Hello_World);
 
-      App.Key.Create_After (Target => App.Hello_World,
-                            ID     => "labelK",
-                            HTML   => "<div />");
+      App.Key.Create_From_HTML (Main_Window, "<div />");
+      App.Key.Place_After (App.Hello_World);
 
       App.Main_Window.On_Key_Down_Handler (On_Key_Press'Unrestricted_Access);
 

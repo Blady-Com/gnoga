@@ -56,17 +56,14 @@ begin
                 Gnoga.Navigator.User_Agent
                 (M.Connection_ID));
 
-   T.Create_Inside_At_Top (Parent => M.Document.Body_Element.all,
-                           ID     => "t",
-                           HTML   => "<h3 id='t'>Hello world 2!</h3>");
+   T.Create_From_HTML (M, "<h3>Hello World!</h3>");
+   T.Place_Inside_Top_Of (M.Document.Body_Element.all);
 
-   A.Create_After (Target => T,
-                   ID     => "a",
-                   HTML   => "<hr id='a' />");
+   A.Create_From_HTML(M, "<hr />");
+   A.Place_After (T);
 
-   B.Create_Before (Target => T,
-                    ID     => "b",
-                    HTML   => "<h1 id='b'>Click when Done</h1>");
+   B.Create_From_HTML (M, "<h1>Click when Done</h1>");
+   B.Place_After (T);
 
    T.On_Click_Handler (On_Click'Unrestricted_Access);
    B.On_Click_Handler (End_App'Unrestricted_Access);

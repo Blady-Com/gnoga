@@ -43,7 +43,7 @@ procedure Demo is
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.Hello_World.Create_From_HTML (Main_Window, "<h1 />");
-      App.Hello_World.Property ("textContent", "Hello World!");
+      App.Hello_World.Text ("Hello World!");
       App.Hello_World.Place_Inside_Top_Of
         (Main_Window.Document.Body_Element.all);
       App.Hello_World.On_Click_Handler (On_Click'Unrestricted_Access);
@@ -52,7 +52,7 @@ procedure Demo is
       Hr1.Place_After (App.Hello_World);
 
       App.Click_Quit.Create_From_HTML (Main_Window, "<h3 />", "label2");
-      App.Click_Quit.Property ("textContent", "Click to Quit");
+      App.Click_Quit.Text ("Click to Quit");
       App.Click_Quit.Place_After (Hr1);
       App.Click_Quit.On_Click_Handler (End_App'Unrestricted_Access);
 

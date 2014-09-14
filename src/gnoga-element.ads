@@ -70,18 +70,6 @@ package Gnoga.Element is
    --  Element_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Style (Element : in out Element_Type;
-                    Name    : in String;
-                    Value   : in String);
-   function Style (Element : Element_Type; Name : String) return String;
-   --  General access to style Name
-
-   procedure Attribute (Element : in out Element_Type;
-                        Name    : in String;
-                        Value   : in String);
-   function Attribute (Element : Element_Type; Name : String) return String;
-   --  General access to attribute Name
-
    --  Element Properties --
 
    procedure Access_Key (Element : in out Element_Type; Value : String);
@@ -107,11 +95,35 @@ package Gnoga.Element is
    procedure Editable (Element : in out Element_Type; Value : Boolean := True);
    function Editable (Element : Element_Type) return Boolean;
 
+   procedure Draggable (Element : in out Element_Type; Value : Boolean := True);
+   function Draggable (Element : Element_Type) return Boolean;
+
+   procedure Hidden (Element : in out Element_Type; Value : Boolean := True);
+   function Hidden (Element : Element_Type) return Boolean;
+   --  The hidden property is practically speaking like Visible, however
+   --  visible uses CSS to hide the Element. Hidden implies the element is
+   --  semantically not relevant not just visually.
+
+   procedure Inner_HTML (Element : in out Element_Type; Value : in String);
+   function Inner_HTML (Element : Element_Type) return String;
+   --  This will completely replace the inner html of an element. This
+   --  will require all Gnoga elements to be Placed again in the DOM to
+   --  display again.
+
    procedure Language_Code (Element : in out Element_Type; Value : String);
    function Language_Code (Element : Element_Type) return String;
 
    procedure Tab_Index (Element : in out Element_Type; Value : Natural);
    function Tab_Index (Element : Element_Type) return Natural;
+
+   procedure Spell_Check (Element : in out Element_Type; Value : Boolean := True);
+   function Spell_Check (Element : Element_Type) return Boolean;
+   --  If true Element is subject to browser spell checking if Editable is
+   --  also true.
+
+   procedure Text (Element : in out Element_Type; Value : in String);
+   function Text (Element : Element_Type) return String;
+   -- Text content of element.
 
    procedure Text_Direction (Element : in out Element_Type; Value : String);
    function Text_Direction (Element : Element_Type) return String;
@@ -120,6 +132,12 @@ package Gnoga.Element is
    procedure Visible (Element : in out Element_Type; Value : Boolean := True);
    function Visible (Element : Element_Type) return Boolean;
 
+
+   --  Properties curently not being supported:
+   --  contentmenu - property is currently only supported in FireFox
+   --  data-* - may be considered in future versions
+   --  dropzone - no browser support
+   --  translate - no browser support
 
    -- Location Properties --
 
@@ -175,6 +193,19 @@ package Gnoga.Element is
    function Scroll_Top (Element : Element_Type) return Integer;
    --  The number of pixels thant an element's content has been scrolled upward.
 
+   --  General Access to Element --
+
+   procedure Style (Element : in out Element_Type;
+                    Name    : in String;
+                    Value   : in String);
+   function Style (Element : Element_Type; Name : String) return String;
+   --  General access to style Name
+
+   procedure Attribute (Element : in out Element_Type;
+                        Name    : in String;
+                        Value   : in String);
+   function Attribute (Element : Element_Type; Name : String) return String;
+   --  General access to attribute Name
 
    -- Traversal Properties --
 

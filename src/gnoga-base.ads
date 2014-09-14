@@ -392,6 +392,11 @@ package Gnoga.Base is
                                  Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
 
+   -- Drag and Drop Events --
+
+   -- On_Drop event.preventDefault, data = event.dataTransfer.getData(Mime)
+   -- On_Drag_Over (call to event.preventDefault on element allowing drop)
+   -- On_Drag_Start (Mime, ID)
 
    --  Keyboard Events --
 

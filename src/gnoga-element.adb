@@ -146,7 +146,6 @@ package body Gnoga.Element is
       return Element.Property ("title");
    end Advisory_Title;
 
-
    ----------------
    -- Class_Name --
    ----------------
@@ -161,9 +160,9 @@ package body Gnoga.Element is
       return Element.Property ("className");
    end Class_Name;
    
-   ---------------
+   --------------
    -- Editable --
-   ---------------
+   --------------
    
    procedure Editable (Element : in out Element_Type; Value : Boolean := True) is
    begin
@@ -173,8 +172,68 @@ package body Gnoga.Element is
    function Editable (Element : Element_Type) return Boolean is
    begin
       return Element.Property ("isContentEditable");
-   end;
+   end Editable;
 
+   ---------------
+   -- Draggable --
+   ---------------
+   
+   procedure Draggable (Element : in out Element_Type; Value : Boolean := True) is
+   begin
+      Element.Property ("draggable", Value);
+   end Draggable;
+   
+   function Draggable (Element : Element_Type) return Boolean is
+   begin
+      return Element.Property ("draggable");
+   end Draggable;
+
+   ------------
+   -- Hidden --
+   ------------
+   
+   procedure Hidden (Element : in out Element_Type; Value : Boolean := True) is
+   begin
+      Element.Property ("hidden", Value);
+   end Hidden;
+   
+   function Hidden (Element : Element_Type) return Boolean is
+   begin
+      return Element.Property ("hidden");
+   end Hidden;
+   
+   ----------------
+   -- Inner_HTML --
+   ----------------
+   
+   procedure Inner_Html (Element : in out Element_Type; Value : String) is
+   begin
+      Element.jQuery_Execute ("html (""" & Escape_Quotes (Value) & """);");
+   end Inner_Html;
+   
+   function Inner_Html (Element : Element_Type) return String is
+   begin
+      return Element.jQuery_Execute ("html();");
+   end Inner_Html;
+
+   -----------------
+   -- Spell_Check --
+   -----------------
+   
+   procedure Spell_Check (Element : in out Element_Type; Value : Boolean := True) is
+   begin
+      Element.Property ("spellcheck", Value);
+   end Spell_Check;
+   
+   function Spell_Check (Element : Element_Type) return Boolean is
+   begin
+      return Element.Property ("spellcheck");
+   end Spell_Check;
+
+   ---------------
+   -- Tab_Index --
+   ---------------
+   
    procedure Tab_Index (Element : in out Element_Type; Value : Natural)
    is
    begin
@@ -185,7 +244,21 @@ package body Gnoga.Element is
    begin
       return Element.Property ("tabIndex");
    end Tab_Index;
+
+   ----------
+   -- Text --
+   ----------
    
+   procedure Text (Element : in out Element_Type; Value : String) is
+   begin
+      Element.jQuery_Execute ("text (""" & Escape_Quotes (Value) & """);");
+   end Text;
+   
+   function Text (Element : Element_Type) return String is
+   begin
+      return Element.jQuery_Execute ("text();");
+   end Text;
+
    --------------------
    -- Text_Direction --
    --------------------

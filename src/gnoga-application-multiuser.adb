@@ -68,15 +68,20 @@ package body Gnoga.Application.Multiuser is
    ----------------
 
    procedure Initialize
-     (Host   : in String  := "";
-      Port   : in Integer := 8080;
-      Boot   : in String  := "boot.html")
+     (Event : in Application_Connect_Event := null;
+      Host  : in String                    := "";
+      Port  : in Integer                   := 8080;
+      Boot  : in String                    := "boot.html")
    is
    begin
       Gnoga.Connections.Initialize (Host, Port, Boot);
 
       Gnoga.Connections.On_Connect_Handler
         (Event => On_Connect'Access);
+
+      if Event /= null then
+         On_Connect_Handler (Event);
+      end if;
    end Initialize;
 
    ------------------------

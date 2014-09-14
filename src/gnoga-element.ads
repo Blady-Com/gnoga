@@ -57,6 +57,18 @@ package Gnoga.Element is
    --  Element_Type - Creation Methods
    -------------------------------------------------------------------------
 
+   procedure Create_From_HTML (Element : in out Element_Type;
+                               Parent  : in out Gnoga.Base.Base_Type'Class;
+                               HTML    : in     String;
+                               ID      : in     String := "");
+   --  Create a Gnoga element with HTML not attached to the DOM. If ID is blank
+   --  Gnoga will generate a unique one for it. The created object will be
+   --  stored on the browser but will not be inserted in to the DOM until
+   --  Place_Inside_Top_Of, Place_Inside_Botton_Of, Place_Before, Place_ After
+
+
+   --  Non-Gnoga ID Create Methods --
+
    procedure Create_Inside (Element : in out Element_Type;
                             Parent  : in out Element_Type'Class;
                             ID      : in     String;
@@ -82,17 +94,17 @@ package Gnoga.Element is
    --  of existing elements.
 
 
-   procedure Create_After (Element : in out Element_Type;
-                           Target  : in out Element_Type'Class;
-                           ID      : in     String;
-                           HTML    : in     String);
-   --  Create a Gnoga element with DOM ID using HTML after Target.
-
    procedure Create_Before (Element : in out Element_Type;
                             Target  : in out Element_Type'Class;
                             ID      : in     String;
                             HTML    : in     String);
    --  Create a Gnoga element with DOM ID using HTML before Target.
+
+   procedure Create_After (Element : in out Element_Type;
+                           Target  : in out Element_Type'Class;
+                           ID      : in     String;
+                           HTML    : in     String);
+   --  Create a Gnoga element with DOM ID using HTML after Target.
 
    -------------------------------------------------------------------------
    --  Element_Type - Properties
@@ -148,8 +160,8 @@ package Gnoga.Element is
    procedure Visible (Element : in out Element_Type; Value : Boolean := True);
    function Visible (Element : Element_Type) return Boolean;
 
-   -- Location Properties --
 
+   -- Location Properties --
 
    --  For reference:
    --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...
@@ -218,11 +230,32 @@ package Gnoga.Element is
 
    -- Internal Properties --
 
+   function Parent (Element : Element_Type)
+                    return Gnoga.Base.Pointer_To_Base_Class;
+   --  Return the Parent used to create Element
+
    function HTML_Tag (Element : Element_Type) return String;
 
    -------------------------------------------------------------------------
    --  Element_Type - Methods
    -------------------------------------------------------------------------
+
+   -- DOM Placement Methods --
+
+   procedure Place_Inside_Top_Of (Element : in out Element_Type;
+                                  Target  : in out Element_Type'Class);
+
+   procedure Place_Inside_Bottom_Of (Element : in out Element_Type;
+                                     Target  : in out Element_Type'Class);
+
+   procedure Place_Before (Element : in out Element_Type;
+                           Target  : in out Element_Type'Class);
+
+   procedure Place_After (Element : in out Element_Type;
+                          Target  : in out Element_Type'Class);
+
+
+   -- Element Methods --
 
    procedure Click (Element : in out Element_Type);
    --  Simulate click on element
@@ -230,24 +263,13 @@ package Gnoga.Element is
    -------------------------------------------------------------------------
    --  Element_Type - Event Handlers
    -------------------------------------------------------------------------
-   -- When an event handler is set any event binding to the browser will be
-   -- installed automatically.
 
-
-   -------------------------------------------------------------------------
-   --  Element_Type - Event Methods
-   -------------------------------------------------------------------------
-   --  When overiding events, to insure that the event handlers will still
-   --  be executed and internal functionality of the event is handled
-   --  properly, always call the base class event method.
-   --
-   --  Event Methods are always bound on creation of Gnoga element or do not
-   --  require event binding.
+   -- transionend
 
 
 private
    type Element_Type is new Gnoga.Base.Base_Type with
       record
-         null;
+         Parent : Gnoga.Base.Pointer_To_Base_Class := null;
       end record;
 end Gnoga.Element;

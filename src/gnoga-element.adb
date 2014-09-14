@@ -44,6 +44,37 @@ package body Gnoga.Element is
    --  Element_Type - Creation Methods
    -------------------------------------------------------------------------
 
+   ----------------------
+   -- Create_From_HTML --
+   ----------------------
+   
+   procedure Create_From_HTML (Element : in out Element_Type;
+                               Parent  : in out Gnoga.Base.Base_Type'Class;
+                               HTML    : in     String;
+                               ID      : in     String := "")
+   is
+      
+      function Adjusted_ID return String is
+         New_ID : Gnoga.Types.Unique_ID;
+      begin
+         if ID = "" then
+            Gnoga.Connections.New_Unique_ID (New_ID);
+            return "g" & Left_Trim (New_ID'Img);
+         else
+            return ID;
+         end if;
+      end Adjusted_ID;
+      
+      GID : String := Adjusted_ID;
+   begin
+      Element.Create_With_Script
+        (Connection_ID => Parent.Connection_ID,
+         ID            => GID,
+         Script        => "gnoga['" & GID & "']=$(""" & Escape_Quotes (HTML) &
+             """).prop('id','" & GID & "');",
+         ID_Type       => Gnoga.Types.Gnoga_ID);
+   end Create_From_HTML;
+
    -------------------
    -- Create_Inside --
    -------------------
@@ -133,7 +164,6 @@ package body Gnoga.Element is
            """).prop('id','" & ID & "');");
    end Create_Before;
 
-
    -------------------------------------------------------------------------
    --  Element_Type - Properties
    -------------------------------------------------------------------------
@@ -146,20 +176,14 @@ package body Gnoga.Element is
                     Name    : in String;
                     Value   : in String)
    is
-      Message_Script : constant String := jQuery(Element) &
-        ".css ('" & Name & "', """ & Escape_Quotes (Value) & """);";
    begin
-      Gnoga.Connections.Execute_Script
-        (ID     => Element.Connection_ID,
-         Script => Message_Script);               
+      Element.jQuery_Execute ("css ('" & Name & "', """ &
+                                Escape_Quotes (Value) & """);");
    end Style;
    
    function Style (Element : Element_Type; Name : String) return String is
-      Message_Script : constant String := jQuery(Element) &
-        ".css ('" & Name & "');";
    begin
-      return Gnoga.Connections.Execute_Script (ID     => Element.Connection_ID,
-                                               Script => Message_Script);
+      return Element.jQuery_Execute ("css ('" & Name & "');");
    end Style;
 
    
@@ -171,20 +195,14 @@ package body Gnoga.Element is
                         Name    : in String;
                         Value   : in String)
    is
-      Message_Script : constant String := jQuery(Element) &
-        ".attr ('" & Name & "',""" & Escape_Quotes (Value) & """);";
    begin
-      Gnoga.Connections.Execute_Script
-        (ID     => Element.Connection_ID,
-         Script => Message_Script);               
+      Element.jQuery_Execute ("attr ('" & Name & "',""" &
+                                Escape_Quotes (Value) & """);");
    end Attribute;
          
    function Attribute (Element : Element_Type; Name : String) return String is
-      Message_Script : constant String := jQuery(Element) &
-        ".attr ('" & Name & "');";
    begin
-      return Gnoga.Connections.Execute_Script (ID     => Element.Connection_ID,
-                                               Script => Message_Script);
+      return Element.jQuery_Execute ("attr ('" & Name & "');");
    end Attribute;
 
    ----------------
@@ -450,6 +468,17 @@ package body Gnoga.Element is
                       ID_Type       => Gnoga.Types.DOM_ID);
    end Next_Sibling;
 
+   ------------
+   -- Parent --
+   ------------
+   
+   function Parent (Element : Element_Type)
+                    return Gnoga.Base.Pointer_To_Base_Class
+   is
+   begin
+      return Element.Parent;
+   end Parent;
+   
    --------------
    -- HTML_Tag --
    --------------
@@ -463,6 +492,38 @@ package body Gnoga.Element is
    --  Element_Type - Methods
    -------------------------------------------------------------------------
 
+   -------------------------
+   -- Place_Inside_Top_Of --
+   -------------------------
+   
+   procedure Place_Inside_Top_Of (Element : in out Element_Type;
+                                  Target  : in out Element_Type'Class)
+   is
+   begin
+      Target.jQuery_Execute ("prepend(" & Element.jQuery & ")");      
+   end Place_Inside_Top_Of;
+   
+   procedure Place_Inside_Bottom_Of (Element : in out Element_Type;
+                                     Target  : in out Element_Type'Class)
+   is
+   begin      
+      Target.jQuery_Execute ("append(" & Element.jQuery & ")");      
+   end Place_Inside_Bottom_Of;
+   
+   procedure Place_Before (Element : in out Element_Type;
+                           Target  : in out Element_Type'Class)
+   is
+   begin
+      Element.jQuery_Execute ("insertBefore(" & Target.jQuery & ")");
+   end Place_Before;
+   
+   procedure Place_After (Element : in out Element_Type;
+                          Target  : in out Element_Type'Class)
+   is
+   begin
+      Element.jQuery_Execute ("insertAfter(" & Target.jQuery & ")");
+   end Place_After;
+   
    -----------
    -- Click --
    -----------

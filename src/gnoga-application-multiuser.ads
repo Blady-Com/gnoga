@@ -47,18 +47,19 @@ package Gnoga.Application.Multiuser is
    --  using Gnoga. It allows only a multiple connections to the same
    --  application.
 
-   procedure Initialize
-     (Host   : in String  := "";
-      Port   : in Integer := 8080;
-      Boot   : in String  := "boot.html");
-   --  Initialize applicaiton for multiple connectionsusing
-   --  Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
-
    type Application_Connect_Event is access
      procedure (Main_Window : in out Gnoga.Window.Window_Type'Class;
                 Connection  : access Connection_Holder_Type);
+
+   procedure Initialize
+     (Event : in Application_Connect_Event := null;
+      Host  : in String                    := "";
+      Port  : in Integer                   := 8080;
+      Boot  : in String                    := "boot.html");
+   --  Initialize applicaiton for multiple connections using
+   --  Event for the Connection Handler and Boot for bootstrap html.
+   --  If Host = "" then will listen on all interfaces.
+   --  Use Host = "locahost" to constrain to local use only.
 
    procedure On_Connect_Handler (Event : in Application_Connect_Event);
    --  Set event handler for new application connections.

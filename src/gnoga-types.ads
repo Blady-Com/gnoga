@@ -41,7 +41,7 @@ with Ada.Strings.Unbounded;
 package Gnoga.Types is
    subtype Web_ID is Ada.Strings.Unbounded.Unbounded_String;
 
-   type ID_Enumeration is (DOM_ID, Script);
+   type ID_Enumeration is (DOM_ID, Script, Gnoga_ID);
 
    subtype Connection_ID is Integer;
 

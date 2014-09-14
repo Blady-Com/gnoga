@@ -58,6 +58,9 @@ package Gnoga.Base is
    overriding procedure Finalize (Object : in out Base_Type);
    --  Detaches object from message queue and fires On_Destroy
 
+   procedure Free (Object : in out Base_Type);
+   --  Free a dynamically created Object
+
    -------------------------------------------------------------------------
    --  Base_Type - Creation Methods
    -------------------------------------------------------------------------
@@ -499,6 +502,11 @@ package Gnoga.Base is
 
    function jQuery (Object : Base_Type) return String;
    --  Returns the jQuery selector for Object
+
+   procedure jQuery_Execute (Object : in out Base_Type; Method : String);
+   function jQuery_Execute (Object : Base_Type; Method : String) return String;
+   function jQuery_Execute (Object : Base_Type; Method : String) return Integer;
+   --  Execute Method of jQuery wrapper object
 private
    type Base_Type is
      new Ada.Finalization.Limited_Controlled with

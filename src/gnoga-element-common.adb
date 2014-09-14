@@ -107,6 +107,28 @@ package body Gnoga.Element.Common is
    end Create;
 
    -------------------------------------------------------------------------
+   --  IMG_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (IMG              : in out IMG_Type;
+      Parent           : in out Gnoga.Base.Base_Type'Class;
+      URL_Source       : in     String := "";
+      Alternative_Text : in     String := "";
+      ID               : in     String := "")
+   is
+   begin
+      IMG.Create_From_HTML (Parent,
+                            "<img src=""" & Escape_Quotes (URL_Source) &
+                              """ Alt=""" & Escape_Quotes (Alternative_Text) &
+                              """>", ID);
+   end Create;
+
+   -------------------------------------------------------------------------
    --  HR_Types
    -------------------------------------------------------------------------
 

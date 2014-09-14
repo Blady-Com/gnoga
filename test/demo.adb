@@ -42,7 +42,9 @@ procedure Demo is
    is
       App : aliased App_Data;
       Hr1 : Gnoga.Element.Common.HR_Type;
+      Hr2 : Gnoga.Element.Common.HR_Type;
       Lnk : Gnoga.Element.Common.A_Type;
+      Img : Gnoga.Element.Common.IMG_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
@@ -64,6 +66,15 @@ procedure Demo is
                   Content => "Gnoga Home Page",
                   Target  => "_blank");
       Lnk.Place_After (App.Click_Quit);
+
+      Hr2.Create (Main_Window);
+      Hr2.Place_After (Lnk);
+
+      Img.Create
+        (Parent           => Main_Window,
+         URL_Source       => "http://www.gnu.org/graphics/gplv3-127x51.png",
+         Alternative_Text => "GNAT Modified GNU GPL 3");
+      Img.Place_After (Hr2);
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
 

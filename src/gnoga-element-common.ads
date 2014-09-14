@@ -91,6 +91,25 @@ package Gnoga.Element.Common is
                      ID      : in     String := "");
    --  Create a div container with optional HTML content
 
+   -------------------------------------------------------------------------
+   --  IMG_Types
+   -------------------------------------------------------------------------
+
+   type IMG_Type is new Gnoga.Element.Element_Type with private;
+   type IMG_Access is access all IMG_Type;
+   type Pointer_To_IMG_Class is access all IMG_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  IMG_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (IMG              : in out IMG_Type;
+                     Parent           : in out Gnoga.Base.Base_Type'Class;
+                     URL_Source       : in     String := "";
+                     Alternative_Text : in     String := "";
+                     ID               : in     String := "");
+   --  Create an image element. Use width and height properties before
+   --  placing image to constrain image size.
 
    -------------------------------------------------------------------------
    --  HR_Types
@@ -130,6 +149,7 @@ package Gnoga.Element.Common is
 private
    type A_Type is new Gnoga.Element.Element_Type with null record;
    type DIV_Type is new Gnoga.Element.Element_Type with null record;
+   type IMG_Type is new Gnoga.Element.Element_Type with null record;
    type HR_Type is new Gnoga.Element.Element_Type with null record;
    type Span_Type is new Gnoga.Element.Element_Type with null record;
 end Gnoga.Element.Common;

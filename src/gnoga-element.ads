@@ -190,10 +190,6 @@ package Gnoga.Element is
 
    -- Internal Properties --
 
-   function Parent (Element : Element_Type)
-                    return Gnoga.Base.Pointer_To_Base_Class;
-   --  Return the Parent used to create Element
-
    function HTML_Tag (Element : Element_Type) return String;
 
    -------------------------------------------------------------------------
@@ -226,10 +222,9 @@ package Gnoga.Element is
 
    -- transionend
 
-
 private
    type Element_Type is new Gnoga.Base.Base_Type with
       record
-         Parent : Gnoga.Base.Pointer_To_Base_Class := null;
+         null;
       end record;
 end Gnoga.Element;

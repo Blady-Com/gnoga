@@ -210,7 +210,7 @@ package body Gnoga.Base is
                      ID            => ID,
                      ID_Type       => ID_Type);
       
-      Object.On_Create;      
+      Object.On_Create;
    end Create_With_Script;
 
    ------------
@@ -280,6 +280,10 @@ package body Gnoga.Base is
       return Object.ID_Type;
    end ID_Type;
 
+   ---------------------
+   -- Connection_Data --
+   ---------------------
+   
    function Connection_Data
      (Object : Base_Type)
       return Gnoga.Types.Pointer_to_Connection_Data_Class
@@ -287,6 +291,33 @@ package body Gnoga.Base is
    begin
       return Gnoga.Connections.Connection_Data (Object.Connection_ID);
    end Connection_Data;
+
+   ------------
+   -- Parent --
+   ------------
+   
+   function Parent (Object : Base_Type)
+                    return Pointer_To_Base_Class
+   is
+   begin
+      return Object.Parent_Object;
+   end Parent;
+   
+   procedure Parent (Object : in out Base_Type;
+                     Value  : in out Base_Type'Class)
+   is
+   begin
+      Object.Parent_Object := Value'Unchecked_Access;
+
+      Value.On_Child_Added (Object);
+   end Parent;
+   
+   procedure Parent (Object : in out Base_Type;
+                     Value  : in Pointer_To_Base_Class)
+   is
+   begin
+      Object.Parent (Value.all);
+   end Parent;   
    
    ------------
    -- Height --
@@ -1269,6 +1300,33 @@ package body Gnoga.Base is
       end if;
    end Fire_On_Destroy;
         
+   ----------------
+   -- On_Child_Added --
+   ----------------   
+   
+   procedure On_Child_Added (Object : in out Base_Type;
+                             Child  : in out Base_Type'Class)
+   is
+   begin
+      Object.Fire_On_Child_Added (Child);
+   end On_Child_Added;
+   
+   procedure On_Child_Added_Handler (Object  : in out Base_Type;
+                                     Handler : in     Child_Added_Event)
+   is
+   begin
+      Object.On_Child_Added_Event := Handler;      
+   end On_Child_Added_Handler;
+   
+   procedure Fire_On_Child_Added (Object : in out Base_Type;
+                                  Child  : in out Base_Type'Class)
+   is
+   begin
+      if Object.On_Child_Added_Event /= null then
+         Object.On_Child_Added_Event (Object, Child);
+      end if;
+   end Fire_On_Child_Added;
+   
    ----------------
    -- On_Message --
    ----------------

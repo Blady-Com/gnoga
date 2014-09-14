@@ -106,6 +106,16 @@ package Gnoga.Base is
      (Object : Base_Type)
       return Gnoga.Types.Pointer_to_Connection_Data_Class;
 
+   function Parent (Object : Base_Type)
+                    return Pointer_To_Base_Class;
+   procedure Parent (Object : in out Base_Type;
+                     Value  : in out Base_Type'Class);
+   procedure Parent (Object : in out Base_Type;
+                     Value  : in Pointer_To_Base_Class);
+   --  Parent of Object. Setting the parent will on Parent_Added on parent.
+   --  Setting the parent Object does not change the position Object may have
+   --  in the DOM by default.
+
    --  Object Properties --
 
    procedure Height (Object : in out Base_Type; Value : in Integer);
@@ -206,6 +216,9 @@ package Gnoga.Base is
                 Message  : in     String;
                 Continue : out    Boolean);
 
+   type Child_Added_Event is access
+     procedure (Object : in out Base_Type;
+                Child  : in out Base_Type'Class);
 
    -- Network Events --
 
@@ -439,6 +452,11 @@ package Gnoga.Base is
    --  Called before detaching Gnoga object from message queue during
    --  finalization of Object.
 
+   procedure On_Child_Added_Handler (Object  : in out Base_Type;
+                                     Handler : in     Child_Added_Event);
+   procedure Fire_On_Child_Added (Object : in out Base_Type;
+                                  Child  : in out Base_Type'Class);
+
    procedure On_Message_Handler (Object  : in out Base_Type;
                                  Handler : in     Message_Event);
    procedure Fire_On_Message (Object   : in out Base_Type;
@@ -465,6 +483,10 @@ package Gnoga.Base is
    procedure On_Destroy (Object : in out Base_Type);
    --  Called before detaching Gnoga object from message queue during
    --  finalization of Object.
+
+   procedure On_Child_Added (Object : in out Base_Type;
+                             Child  : in out Base_Type'Class);
+   --  Called when a Child is created claiming Object as its parent.
 
    procedure On_Message (Object  : in out Base_Type;
                          Event   : in     String;
@@ -515,6 +537,8 @@ private
          Web_ID        : Gnoga.Types.Web_ID;
          ID_Type       : Gnoga.Types.ID_Enumeration;
          Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+         Parent_Object : Pointer_To_Base_Class := null;
+
 
          -- Network Events
          On_Abort_Event              : Action_Event         := null;
@@ -567,6 +591,7 @@ private
          -- Generic Events
          On_Create_Event             : Action_Event         := null;
          On_Destroy_Event            : Action_Event         := null;
+         On_Child_Added_Event        : Child_Added_Event    := null;
          On_Message_Event            : Message_Event        := null;
       end record;
 end Gnoga.Base;

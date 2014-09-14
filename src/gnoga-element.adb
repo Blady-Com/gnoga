@@ -73,6 +73,8 @@ package body Gnoga.Element is
          Script        => "gnoga['" & GID & "']=$(""" & Escape_Quotes (HTML) &
              """).prop('id','" & GID & "');",
          ID_Type       => Gnoga.Types.Gnoga_ID);
+      
+      Element.Parent (Parent);
    end Create_From_HTML;
 
    -------------------------------------------------------------------------
@@ -378,17 +380,6 @@ package body Gnoga.Element is
                         ("siblings().first().attr('id');"),
                       ID_Type       => Gnoga.Types.DOM_ID);
    end Next_Sibling;
-
-   ------------
-   -- Parent --
-   ------------
-   
-   function Parent (Element : Element_Type)
-                    return Gnoga.Base.Pointer_To_Base_Class
-   is
-   begin
-      return Element.Parent;
-   end Parent;
    
    --------------
    -- HTML_Tag --

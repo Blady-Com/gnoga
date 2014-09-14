@@ -2,6 +2,7 @@ with Gnoga.Application.Multiuser;
 with Gnoga.Window;
 with Gnoga.Base;
 with Gnoga.Element;
+with Gnoga.Element.Hr;
 with Gnoga.Types;
 
 procedure Demo is
@@ -37,6 +38,7 @@ procedure Demo is
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App : aliased App_Data;
+      hr1 : Gnoga.Element.Hr.Hr_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
@@ -46,9 +48,12 @@ procedure Demo is
         (Main_Window.Document.Body_Element.all);
       App.Hello_World.On_Click_Handler (On_Click'Unrestricted_Access);
 
+      Hr1.Create (Main_Window);
+      Hr1.Place_After (App.Hello_World);
+
       App.Click_Quit.Create_From_HTML (Main_Window, "<h3 />", "label2");
       App.Click_Quit.Property ("textContent", "Click to Quit");
-      App.Click_Quit.Place_After (App.Hello_World);
+      App.Click_Quit.Place_After (Hr1);
       App.Click_Quit.On_Click_Handler (End_App'Unrestricted_Access);
 
 

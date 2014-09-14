@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                    G N O G A . E L E M E N T . H R                       --
+--                 G N O G A . E L E M E N T . C O M M O N                  --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,19 +35,110 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-package body Gnoga.Element.Hr is
+package body Gnoga.Element.Common is
+
+   -------------------------------------------------------------------------
+   --  A_Types
+   -------------------------------------------------------------------------
 
    ------------
    -- Create --
    ------------
 
    procedure Create
-     (Hr     : in out Hr_Type;
+     (A       : in out A_Type;
+      Parent  : in out Gnoga.Base.Base_Type'Class;
+      Link    : in     String := "";
+      Content : in     String := "";
+      Target  : in     String := "_self";
+      ID      : in     String := "")
+   is
+   begin
+      A.Create_From_HTML (Parent, "<a target=""" & Escape_Quotes (Target) &
+                            """ href=""" & Escape_Quotes (Link) & """>" &
+                            Escape_Quotes (Content) & "</a>", ID);
+   end Create;
+
+   ----------
+   -- Link --
+   ----------
+
+   procedure Link (A : in out A_Type; Value : String) is
+   begin
+      A.Property ("href", Value);
+   end Link;
+
+   function Link (A : A_Type) return String is
+   begin
+      return A.Property ("href");
+   end Link;
+
+   ------------
+   -- Target --
+   ------------
+
+   procedure Target (A : in out A_Type; Value : String) is
+   begin
+      A.Attribute ("target", Value);
+   end Target;
+
+   function Target (A : A_Type) return String is
+   begin
+      return A.Attribute ("target");
+   end Target;
+
+   -------------------------------------------------------------------------
+   --  DIV_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (DIV     : in out DIV_Type;
+      Parent  : in out Gnoga.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "")
+   is
+   begin
+      DIV.Create_From_HTML (Parent, "<div>" & Escape_Quotes (Content) &
+                              "</div>", ID);
+   end Create;
+
+   -------------------------------------------------------------------------
+   --  HR_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (HR     : in out HR_Type;
       Parent : in out Gnoga.Base.Base_Type'Class;
       ID     : in     String := "")
    is
    begin
-      Hr.Create_From_HTML (Parent, "<hr />", ID);
+      HR.Create_From_HTML (Parent, "<hr />", ID);
    end Create;
 
-end Gnoga.Element.Hr;
+   -------------------------------------------------------------------------
+   --  Span_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Span    : in out Span_Type;
+      Parent  : in out Gnoga.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "")
+   is
+   begin
+      Span.Create_From_HTML (Parent, "<span>" & Escape_Quotes (Content) &
+                              "</span>", ID);
+   end Create;
+end Gnoga.Element.Common;

@@ -91,6 +91,7 @@ package Gnoga.Element is
 
    procedure Class_Name (Element : in out Element_Type; Value : String);
    function Class_Name (Element : Element_Type) return String;
+   --  CSS Class name, can be multiple seperated by <space>
 
    procedure Editable (Element : in out Element_Type; Value : Boolean := True);
    function Editable (Element : Element_Type) return Boolean;

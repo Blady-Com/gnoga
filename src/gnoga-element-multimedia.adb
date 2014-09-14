@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                    G N O G A . E L E M E N T . H R                       --
+--             G N O G A . E L E M E N T . M U L T I M E D I A              --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -33,27 +33,10 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
-package Gnoga.Element.Hr is
+package body Gnoga.Element.MultiMedia is
 
-   -------------------------------------------------------------------------
-   --  Hr_Type
-   -------------------------------------------------------------------------
+   -- Will contain the Audio and Video tags, events, etc. from HTML5
 
-   type Hr_Type is new Gnoga.Element.Element_Type with private;
-   type Hr_Access is access all Hr_Type;
-   type Pointer_To_Hr_Class is access all Hr_Type'Class;
-
-   -------------------------------------------------------------------------
-   --  Hr_Type - Creation Methods
-   -------------------------------------------------------------------------
-
-   procedure Create (Hr     : in out Hr_Type;
-                     Parent : in out Gnoga.Base.Base_Type'Class;
-                     ID     : in     String := "");
-   --  Create a horizontal rule
-
-private
-   type Hr_Type is new Gnoga.Element.Element_Type with null record;
-end Gnoga.Element.Hr;
+end Gnoga.Element.MultiMedia;

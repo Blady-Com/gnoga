@@ -2,7 +2,8 @@ with Gnoga.Application.Multiuser;
 with Gnoga.Window;
 with Gnoga.Base;
 with Gnoga.Element;
-with Gnoga.Element.Hr;
+with Gnoga.Element.Common;
+with Gnoga.Element.Canvas;
 with Gnoga.Types;
 
 procedure Demo is
@@ -14,7 +15,7 @@ procedure Demo is
       record
          Main_Window : Window.Pointer_To_Window_Class;
          Hello_World : Element_Type;
-         Click_Quit  : Element_Type;
+         Click_Quit  : Common.DIV_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -29,6 +30,8 @@ procedure Demo is
    procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
+      App.Main_Window.Document.Body_Element.Inner_HTML ("Application closed.");
+
       Log ("Ending Application");
       Application.Multiuser.End_Application;
    end End_App;
@@ -38,7 +41,8 @@ procedure Demo is
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App : aliased App_Data;
-      hr1 : Gnoga.Element.Hr.Hr_Type;
+      Hr1 : Gnoga.Element.Common.HR_Type;
+      Lnk : Gnoga.Element.Common.A_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
@@ -51,11 +55,15 @@ procedure Demo is
       Hr1.Create (Main_Window);
       Hr1.Place_After (App.Hello_World);
 
-      App.Click_Quit.Create_From_HTML (Main_Window, "<h3 />", "label2");
-      App.Click_Quit.Text ("Click to Quit");
+      App.Click_Quit.Create (Main_Window, "Click to Quit");
       App.Click_Quit.Place_After (Hr1);
       App.Click_Quit.On_Click_Handler (End_App'Unrestricted_Access);
 
+      Lnk.Create (Parent  => Main_Window,
+                  Link    => "http://www.gnoga.com",
+                  Content => "Gnoga Home Page",
+                  Target  => "_blank");
+      Lnk.Place_After (App.Click_Quit);
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
 

@@ -4,7 +4,7 @@
 --                                                                          --
 --                         G N O G A . T Y P E S                            --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -34,55 +34,72 @@
 --                                                                          --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
+with Ada.Strings.Fixed;
 
-package Gnoga.Types is
-   subtype Web_ID is Ada.Strings.Unbounded.Unbounded_String;
+package body Gnoga.Types is
 
-   type ID_Enumeration is (DOM_ID, Script, Gnoga_ID);
+   ---------------
+   -- To_String --
+   ---------------
 
-   subtype Connection_ID is Integer;
+   function To_String (RGBA : RGBA_Type) return String is
+   begin
+      return "rgba(" &
+        Left_Trim (RGBA.Red'Img) & "," &
+        Left_Trim (RGBA.Green'Img) & "," &
+        Left_Trim (RGBA.Blue'Img) & "," &
+        Left_Trim (RGBA.Alpha'Img) & ")";
+   end To_String;
 
-   No_Connection : constant Connection_ID := -1;
+   -------------
+   -- To_RGBA --
+   -------------
 
-   subtype Unique_ID is Integer;
+   function To_RGBA (Value : String) return RGBA_Type is
+      use Ada.Strings.Fixed;
 
-   type Connection_Data_Type is tagged limited null record;
-   type Connection_Data_Access is access all Connection_Data_Type;
-   type Pointer_to_Connection_Data_Class is
-     access all Connection_Data_Type'Class;
+      S    : Integer   := Value'First;
+      F    : Integer   := Value'First - 1;
+      RGBA : RGBA_Type;
 
-   type Alpha_Type is delta 0.001 range 0.0 .. 1.0;
+      function Split (P : String) return String is
+      begin
+         S := F + 1;
+         F := Index (Source  => Value,
+                     Pattern => P,
+                     From    => S);
+         return Value (S .. (F - 1));
+      end;
 
-   type RGBA_Type is
-      record
-         Red   : Integer    := 0;
-         Green : Integer    := 0;
-         Blue  : Integer    := 0;
-         Alpha : Alpha_Type := 1.0;
-      end record;
+      function Split (P : String) return Integer is
+      begin
+         return Integer'Value (Split (P));
+      end Split;
 
-   function To_String (RGBA : RGBA_Type) return String;
-   function To_RGBA (Value : String) return RGBA_Type;
-   -- Will convert rgb(r,g,b) and rgba(r,g,b,a) to RGBA_Type
+      function Split (P : String) return Alpha_Type is
+      begin
+         return Alpha_Type'Value (Split (P));
+      end Split;
 
-   type Point_Type is
-      record
-         X, Y : Integer;
-      end record;
+      rtype : String := Split ("(");
+   begin
+      RGBA.Red := Split (",");
+      RGBA.Green := Split (",");
 
-   type Point_Array_Type is
-     array (Positive range <>) of Point_Type;
+      if rtype'Length = 3 then
+         RGBA.Blue := Split (")");
+      else
+         RGBA.Blue := Split (",");
+         RGBA.Alpha := Split (")");
+      end if;
 
-   type Rectangle_Type is
-      record
-         Left, Top, Right, Bottom : Integer;
-      end record;
+      return RGBA;
+   exception
+      when others =>
+         Log ("Error converting to rbga value = " & Value);
+         return RGBA;
+   end To_RGBA;
 
-   type Size_Type is
-      record
-         Width, Height : Integer;
-      end record;
 end Gnoga.Types;

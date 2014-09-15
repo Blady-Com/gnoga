@@ -202,7 +202,11 @@ package body Gnoga.Base is
       Script        : in     String;
       ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
    is
-   begin      
+   begin
+      if Object.Connection_ID /= Gnoga.Types.No_Connection then
+         raise Object_Already_Create;
+      end if;
+      
       Gnoga.Connections.Execute_Script (ID     => Connection_ID,
                                         Script => Script);
 
@@ -259,6 +263,19 @@ package body Gnoga.Base is
    begin
       return Object.Connection_ID;
    end Connection_ID;
+
+   -----------
+   -- Valid --
+   -----------
+   
+   function Valid (Object : Base_Type) return Boolean is
+   begin
+      if Object.Connection_ID = Gnoga.Types.No_Connection then
+         return False;
+      else
+         return Gnoga.Connections.Valid (Object.Connection_ID);
+      end if;
+   end Valid;
    
    --------
    -- ID --

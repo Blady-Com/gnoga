@@ -52,6 +52,10 @@ package Gnoga.Base is
    type Base_Access is access all Base_Type;
    type Pointer_To_Base_Class is access all Base_Type'Class;
 
+   Object_Already_Create : exception;
+   --  Thrown when an attempt is made to perform a create method on an already
+   --  created or attached Gnoga object.
+
    overriding procedure Initialize (Object : in out Base_Type);
    --  Assigns Unique_ID
 
@@ -95,6 +99,10 @@ package Gnoga.Base is
    function Connection_ID (Object : Base_Type)
                            return Gnoga.Types.Connection_ID;
    --  The Gnoga Connection ID of Object.
+
+   function Valid (Object : Base_Type) return Boolean;
+   --  Returns true if Connection_ID is valid, i.e. Object was created and
+   --  the connection is still valid.
 
    function ID (Object : Base_Type) return String;
    --  The ID for Object.

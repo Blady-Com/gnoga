@@ -23,7 +23,10 @@ procedure Demo is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Hello_World.Style ("color", "green");
+      App.Hello_World.Color ("green");
+      App.Hello_World.Background_Color (RGBA_Type'(255,255,255,1.0));
+      App.Main_Window.Browser_Log
+        ("Color = " & Gnoga.Types.To_String (App.Hello_World.Color));
    end On_Click;
 
 
@@ -67,6 +70,7 @@ procedure Demo is
         ("Value sent = " &
            Gnoga.Types.To_String (RGBA_Type'(255,192,203,0.500)));
 
+
       App.Hello_World.Create_From_HTML (Main_Window, "<h1 />");
       App.Hello_World.Text ("Hello World!");
       App.Hello_World.Place_Inside_Top_Of
@@ -77,6 +81,11 @@ procedure Demo is
       Hr1.Place_After (App.Hello_World);
 
       App.Click_Quit.Create (Main_Window, "Click to Quit");
+      App.Click_Quit.Opacity (0.5);
+
+      App.Main_Window.Browser_Log ("Click opacity = " &
+                                     App.Click_Quit.Opacity'Img);
+
       App.Click_Quit.Place_After (Hr1);
       App.Click_Quit.On_Click_Handler (End_App'Unrestricted_Access);
 

@@ -230,30 +230,25 @@ package Gnoga.Base is
 
    -- Network Events --
 
-   -- abort
    procedure On_Abort_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Abort (Object : in out Base_Type);
 
-   -- error
    procedure On_Error_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Error (Object : in out Base_Type);
 
-   -- hashchange
    procedure On_Hash_Change_Handler (Object  : in out Base_Type;
                                      Handler : in     Action_Event);
    procedure Fire_On_Hash_Change (Object : in out Base_Type);
 
    -- Object Events --
 
-   -- resize
    procedure On_Resize_Handler (Object  : in out Base_Type;
                                 Handler : in     Action_Event);
    procedure Fire_On_Resize (Object : in out Base_Type);
    --  Handle object size change.
 
-   -- scroll
    procedure On_Scroll_Handler (Object  : in out Base_Type;
                                 Handler : in     Action_Event);
    procedure Fire_On_Scroll (Object : in out Base_Type);
@@ -261,54 +256,44 @@ package Gnoga.Base is
 
    -- Form Events --
 
-   -- focus
    procedure On_Focus_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Focus (Object : in out Base_Type);
    --  Handle focus on object
 
-   -- blur
    procedure On_Blur_Handler (Object  : in out Base_Type;
                               Handler : in     Action_Event);
    procedure Fire_On_Blur (Object : in out Base_Type);
    --  Handle loss of focus, many browsers poorly support this event.
 
-   -- change
    procedure On_Change_Handler (Object  : in out Base_Type;
                                 Handler : in     Action_Event);
    procedure Fire_On_Change (Object : in out Base_Type);
 
-   -- focusin
    procedure On_Focus_In_Handler (Object  : in out Base_Type;
                                   Handler : in     Action_Event);
    procedure Fire_On_Focus_In (Object : in out Base_Type);
 
-   -- focusout
    procedure On_Focus_Out_Handler (Object  : in out Base_Type;
                                    Handler : in     Action_Event);
    procedure Fire_On_Focus_Out (Object : in out Base_Type);
 
-   -- input
    procedure On_Input_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Input (Object : in out Base_Type);
 
-   -- reset
    procedure On_Reset_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Reset (Object : in out Base_Type);
 
-   -- search
    procedure On_Search_Handler (Object  : in out Base_Type;
                                 Handler : in     Action_Event);
    procedure Fire_On_Search (Object : in out Base_Type);
 
-   -- select
    procedure On_Select_Handler (Object  : in out Base_Type;
                                 Handler : in     Action_Event);
    procedure Fire_On_Select (Object : in out Base_Type);
 
-   -- submit
    procedure On_Submit_Handler (Object  : in out Base_Type;
                                    Handler : in     Action_Event);
    procedure Fire_On_Submit (Object : in out Base_Type);
@@ -316,84 +301,71 @@ package Gnoga.Base is
 
    -- Mouse Events --
 
-   -- click
    procedure On_Click_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Click (Object : in out Base_Type);
    --  Handle mouse click events
 
-   -- click + mouse event
    procedure On_Mouse_Click_Handler (Object  : in out Base_Type;
                                      Handler : in     Mouse_Event);
    procedure Fire_On_Mouse_Click (Object   : in out Base_Type;
                                   Event    : in     Mouse_Event_Record);
    --  Handle mouse click events, but also return mouse event data
 
-   -- contextmenu
    procedure On_Context_Menu_Handler (Object  : in out Base_Type;
                                       Handler : in     Action_Event);
    procedure Fire_On_Context_Menu (Object : in out Base_Type);
    --  Handle right mouse button click events
 
-   -- contextmenu + mouse event
    procedure On_Mouse_Right_Click_Handler (Object  : in out Base_Type;
                                            Handler : in     Mouse_Event);
    procedure Fire_On_Mouse_Right_Click (Object   : in out Base_Type;
                                         Event    : in     Mouse_Event_Record);
    --  Handle mouse right click event, but also return mouse event data
 
-   -- dblclick
    procedure On_Double_Click_Handler (Object  : in out Base_Type;
                                       Handler : in     Action_Event);
    procedure Fire_On_Double_Click (Object : in out Base_Type);
    --  Handle mouse double click events
 
-   -- dblclick + mouse event
    procedure On_Mouse_Double_Click_Handler (Object  : in out Base_Type;
                                             Handler : in     Mouse_Event);
    procedure Fire_On_Mouse_Double_Click (Object   : in out Base_Type;
                                          Event    : in     Mouse_Event_Record);
    --  Handle mouse double click events, but also return mouse event data
 
-   -- onmouseenter
    procedure On_Mouse_Enter_Handler (Object  : in out Base_Type;
                                      Handler : in     Action_Event);
    procedure Fire_On_Mouse_Enter (Object : in out Base_Type);
    --  Handle mouse enter to object events
 
-   -- onmouseleave
    procedure On_Mouse_Leave_Handler (Object  : in out Base_Type;
                                      Handler : in     Action_Event);
    procedure Fire_On_Mouse_Leave (Object : in out Base_Type);
    --  Handle mouse leave object events
 
-   -- onmouseover
    procedure On_Mouse_Over_Handler (Object  : in out Base_Type;
                                      Handler : in     Action_Event);
    procedure Fire_On_Mouse_Over (Object : in out Base_Type);
    --  Handle mouse enter to object or it's children events
 
-   -- onmouseout
    procedure On_Mouse_Out_Handler (Object  : in out Base_Type;
                                    Handler : in     Action_Event);
    procedure Fire_On_Mouse_Out (Object : in out Base_Type);
    --  Handle mouse leave object or it's children events
 
-   -- onmousedown
    procedure On_Mouse_Down_Handler (Object  : in out Base_Type;
                                     Handler : in     Mouse_Event);
    procedure Fire_On_Mouse_Down (Object   : in out Base_Type;
                                  Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
 
-   -- onmouseup
    procedure On_Mouse_Up_Handler (Object  : in out Base_Type;
                                   Handler : in     Mouse_Event);
    procedure Fire_On_Mouse_Up (Object   : in out Base_Type;
                                Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
 
-   -- onmousemove
    procedure On_Mouse_Move_Handler (Object  : in out Base_Type;
                                     Handler : in     Mouse_Event);
    procedure Fire_On_Mouse_Move (Object   : in out Base_Type;
@@ -435,17 +407,14 @@ package Gnoga.Base is
 
    --  Clipboard Events  --
 
-   -- copy
    procedure On_Copy_Handler (Object  : in out Base_Type;
                               Handler : in     Action_Event);
    procedure Fire_On_Copy (Object : in out Base_Type);
 
-   -- cut
    procedure On_Cut_Handler (Object  : in out Base_Type;
                              Handler : in     Action_Event);
    procedure Fire_On_Cut (Object : in out Base_Type);
 
-   -- paste
    procedure On_Paste_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Paste (Object : in out Base_Type);

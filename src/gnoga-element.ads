@@ -85,21 +85,23 @@ package Gnoga.Element is
    --  Safari                [Alt]         N/A      [Control][Alt]
    --  Opera 15+             [Alt]        [Alt]          [Alt]
 
-   procedure Advisory_Title (Element : in out Element_Type; Value : String);
+   procedure Advisory_Title (Element : in out Element_Type; Value : in String);
    function Advisory_Title (Element : Element_Type) return String;
    --  Advisory_Title of Element, usually used for body and image maps
 
-   procedure Class_Name (Element : in out Element_Type; Value : String);
+   procedure Class_Name (Element : in out Element_Type; Value : in String);
    function Class_Name (Element : Element_Type) return String;
    --  CSS Class name, can be multiple seperated by <space>
 
-   procedure Editable (Element : in out Element_Type; Value : Boolean := True);
+   procedure Editable (Element : in out Element_Type;
+                       Value   : in Boolean := True);
    function Editable (Element : Element_Type) return Boolean;
 
-   procedure Draggable (Element : in out Element_Type; Value : Boolean := True);
+   procedure Draggable (Element : in out Element_Type;
+                        Value   : in  Boolean := True);
    function Draggable (Element : Element_Type) return Boolean;
 
-   procedure Hidden (Element : in out Element_Type; Value : Boolean := True);
+   procedure Hidden (Element : in out Element_Type; Value : in Boolean := True);
    function Hidden (Element : Element_Type) return Boolean;
    --  The hidden property is practically speaking like Visible, however
    --  visible uses CSS to hide the Element. Hidden implies the element is
@@ -111,13 +113,14 @@ package Gnoga.Element is
    --  will require all Gnoga elements to be Placed again in the DOM to
    --  display again.
 
-   procedure Language_Code (Element : in out Element_Type; Value : String);
+   procedure Language_Code (Element : in out Element_Type; Value : in String);
    function Language_Code (Element : Element_Type) return String;
 
-   procedure Tab_Index (Element : in out Element_Type; Value : Natural);
+   procedure Tab_Index (Element : in out Element_Type; Value : in Natural);
    function Tab_Index (Element : Element_Type) return Natural;
 
-   procedure Spell_Check (Element : in out Element_Type; Value : Boolean := True);
+   procedure Spell_Check (Element : in out Element_Type;
+                          Value   : in Boolean := True);
    function Spell_Check (Element : Element_Type) return Boolean;
    --  If true Element is subject to browser spell checking if Editable is
    --  also true.
@@ -126,11 +129,15 @@ package Gnoga.Element is
    function Text (Element : Element_Type) return String;
    -- Text content of element.
 
-   procedure Text_Direction (Element : in out Element_Type; Value : String);
-   function Text_Direction (Element : Element_Type) return String;
+   type Text_Direction_Type is (Left_To_Right, Right_To_Left);
+
+   procedure Text_Direction (Element : in out Element_Type;
+                              Value  : in Text_Direction_Type);
+   function Text_Direction (Element : Element_Type) return Text_Direction_Type;
    --  BiDi text direction
 
-   procedure Visible (Element : in out Element_Type; Value : Boolean := True);
+   procedure Visible (Element : in out Element_Type;
+                      Value   : in     Boolean := True);
    function Visible (Element : Element_Type) return Boolean;
 
 
@@ -193,6 +200,70 @@ package Gnoga.Element is
    procedure Scroll_Top (Element : in out Element_Type; Value : Integer);
    function Scroll_Top (Element : Element_Type) return Integer;
    --  The number of pixels thant an element's content has been scrolled upward.
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+
+   --  Color
+
+   procedure Color (Element : in out Element_Type; Value : String);
+   procedure Color (Element : in out Element_Type;
+                    RGBA    : Gnoga.Types.RGBA_Type);
+   function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type;
+
+   procedure Opacity (Element : in out Element_Type;
+                      Alpha   : in     Gnoga.Types.Alpha_Type);
+   function Opacity (Element : Element_Type) return Gnoga.Types.Alpha_Type;
+
+   --  Backgroud
+
+   type Background_Attachment_type is (scroll, fixed, local);
+
+   procedure Background_Attachment
+     (Element : in out Element_Type;
+      Value   : in     Background_Attachment_type);
+   function Background_Attachment (Element : Element_Type)
+                                   return Background_Attachment_type;
+   --  scroll|fixed|local
+
+   procedure Background_Color (Element : in out Element_Type; Value : String);
+   procedure Background_Color (Element : in out Element_Type;
+                               RGBA    : Gnoga.Types.RGBA_Type);
+   function Background_Color (Element : Element_Type)
+                              return Gnoga.Types.RGBA_Type;
+
+   procedure Background_Image (Element : in out Element_Type;
+                               Value   : in     String);
+   function Background_Image (Element : Element_Type) return String;
+   --  proper syntax is "url(...)" or "" to clear
+
+   procedure Background_Position (Element : in out Element_Type;
+                                  Value   : in     String);
+   function Background_Position (Element : Element_Type) return String;
+   --  combination of 2 - left/right/center/top/bottom | %x %y | x y
+
+   procedure Background_Origin (Element : in out Element_Type;
+                                Value   : in     String);
+   function Background_Origin (Element : Element_Type) return String;
+   --  Background position property is relative to origin of:
+   --  padding-box|border-box|content-box
+
+   procedure Background_Repeat (Element : in out Element_Type;
+                                  Value   : in     String);
+   function Background_Repeat (Element : Element_Type) return String;
+   --  repeat|repeat-x|repeat-y|no-repeat
+
+   procedure Background_Clip (Element : in out Element_Type;
+                                  Value   : in     String);
+   function Background_Clip (Element : Element_Type) return String;
+   --  border-box|padding-box|content-box
+
+   procedure Background_Size (Element : in out Element_Type;
+                                  Value   : in     String);
+   function Background_Size (Element : Element_Type) return String;
+   --  auto| w h | % = cover of parent | contain
+
 
    --  General Access to Element --
 

@@ -122,7 +122,7 @@ package body Gnoga.Element is
    -- Access_Key --
    ----------------
    
-   procedure Access_Key (Element : in out Element_Type; Value : String) is
+   procedure Access_Key (Element : in out Element_Type; Value : in String) is
    begin
       Element.Property ("accessKey", Value);
    end Access_Key;
@@ -136,7 +136,9 @@ package body Gnoga.Element is
    -- Advisory_Title --
    --------------------
    
-   procedure Advisory_Title (Element : in out Element_Type; Value : String) is
+   procedure Advisory_Title (Element : in out Element_Type;
+                             Value   : in     String)
+   is
    begin
       Element.Property ("title", Value);
    end Advisory_Title;
@@ -150,7 +152,7 @@ package body Gnoga.Element is
    -- Class_Name --
    ----------------
 
-   procedure Class_Name (Element : in out Element_Type; Value : String) is
+   procedure Class_Name (Element : in out Element_Type; Value : in String) is
    begin
       Element.Property ("className", Value);
    end Class_Name;
@@ -164,7 +166,9 @@ package body Gnoga.Element is
    -- Editable --
    --------------
    
-   procedure Editable (Element : in out Element_Type; Value : Boolean := True) is
+   procedure Editable (Element : in out Element_Type;
+                       Value   : in     Boolean := True)
+   is
    begin
       Element.Property ("contentEditable", Value);
    end Editable;
@@ -178,7 +182,9 @@ package body Gnoga.Element is
    -- Draggable --
    ---------------
    
-   procedure Draggable (Element : in out Element_Type; Value : Boolean := True) is
+   procedure Draggable (Element : in out Element_Type;
+                        Value   : in     Boolean := True)
+   is
    begin
       Element.Property ("draggable", Value);
    end Draggable;
@@ -192,7 +198,9 @@ package body Gnoga.Element is
    -- Hidden --
    ------------
    
-   procedure Hidden (Element : in out Element_Type; Value : Boolean := True) is
+   procedure Hidden (Element : in out Element_Type;
+                     Value   : in     Boolean := True)
+   is
    begin
       Element.Property ("hidden", Value);
    end Hidden;
@@ -206,21 +214,25 @@ package body Gnoga.Element is
    -- Inner_HTML --
    ----------------
    
-   procedure Inner_Html (Element : in out Element_Type; Value : String) is
+   procedure Inner_HTML (Element : in out Element_Type;
+                         Value   : in     String)
+   is
    begin
       Element.jQuery_Execute ("html (""" & Escape_Quotes (Value) & """);");
-   end Inner_Html;
+   end Inner_HTML;
    
-   function Inner_Html (Element : Element_Type) return String is
+   function Inner_HTML (Element : Element_Type) return String is
    begin
       return Element.jQuery_Execute ("html();");
-   end Inner_Html;
+   end Inner_HTML;
 
    -----------------
    -- Spell_Check --
    -----------------
    
-   procedure Spell_Check (Element : in out Element_Type; Value : Boolean := True) is
+   procedure Spell_Check (Element : in out Element_Type;
+                          Value   : in     Boolean := True)
+   is
    begin
       Element.Property ("spellcheck", Value);
    end Spell_Check;
@@ -234,7 +246,7 @@ package body Gnoga.Element is
    -- Tab_Index --
    ---------------
    
-   procedure Tab_Index (Element : in out Element_Type; Value : Natural)
+   procedure Tab_Index (Element : in out Element_Type; Value : in Natural)
    is
    begin
       Element.Property ("tabIndex", Value);
@@ -249,7 +261,7 @@ package body Gnoga.Element is
    -- Text --
    ----------
    
-   procedure Text (Element : in out Element_Type; Value : String) is
+   procedure Text (Element : in out Element_Type; Value : in String) is
    begin
       Element.jQuery_Execute ("text (""" & Escape_Quotes (Value) & """);");
    end Text;
@@ -263,21 +275,42 @@ package body Gnoga.Element is
    -- Text_Direction --
    --------------------
    
-   procedure Text_Direction (Element : in out Element_Type; Value : String) is
+   procedure Text_Direction (Element : in out Element_Type;
+                             Value   : in     Text_Direction_Type)
+   is
+      function To_String return String is
+      begin
+         if Value = Right_To_Left then
+            return "rtl";
+         else
+            return "ltr";
+         end if;
+      end To_String;
    begin
-      Element.Property ("dir", Value);
-   end Text_Direction;
-
-   function Text_Direction (Element : Element_Type) return String is
-   begin
-      return Element.Property ("dir");
+      Element.Property ("dir", To_String);
    end Text_Direction;
    
-   --------------------
+   function Text_Direction (Element : Element_Type) return Text_Direction_Type
+   is
+      function To_TDT return Text_Direction_Type is
+      begin
+         if Element.Property ("dir") = "rtl" then
+            return Right_To_Left;
+         else
+            return Left_To_Right;
+         end if;
+      end To_TDT;
+   begin
+      return To_TDT;
+   end Text_Direction;
+   
+   -------------------
    -- Language_Code --
-   --------------------
+   -------------------
    
-   procedure Language_Code (Element : in out Element_Type; Value : String) is
+   procedure Language_Code (Element : in out Element_Type;
+                            Value   : in     String)
+   is
    begin
       Element.Property ("lang", Value);
    end Language_Code;
@@ -292,7 +325,7 @@ package body Gnoga.Element is
    -- Visible --
    -------------
    
-   procedure Visible (Element : in out Element_Type; Value : Boolean := True)
+   procedure Visible (Element : in out Element_Type; Value : in Boolean := True)
    is
    begin
       if Value then
@@ -425,6 +458,190 @@ package body Gnoga.Element is
    begin
       return Element.Property ("scrollTop");
    end Scroll_Top;
+
+   -----------
+   -- Color --
+   -----------
+
+   procedure Color (Element : in out Element_Type; Value : String) is
+   begin
+      Element.Style ("color", Value);
+   end Color;
+   
+   procedure Color (Element : in out Element_Type;
+                    RGBA    : Gnoga.Types.RGBA_Type)
+   is
+   begin
+      Element.Style ("color", Gnoga.Types.To_String (RGBA));
+   end Color;
+   
+   function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type is
+   begin
+      return Gnoga.Types.To_RGBA (Element.Style ("color"));
+   end Color;
+   
+   -------------
+   -- Opacity --
+   -------------
+   
+   procedure Opacity (Element : in out Element_Type;
+                      Alpha   : in     Gnoga.Types.Alpha_Type)
+   is
+   begin
+      Element.Style ("opacity", Alpha'Img);
+   end Opacity;
+   
+   function Opacity (Element : Element_Type) return Gnoga.Types.Alpha_Type is
+   begin
+      return Gnoga.Types.Alpha_Type'Value (Element.Style ("opacity"));
+   exception
+      when others =>
+         Log ("Error converting opacity to Alpha_Type");
+         return 1.0;      
+   end Opacity;
+   
+   ---------------------------
+   -- Background_Attachment --
+   ---------------------------
+
+   procedure Background_Attachment
+     (Element : in out Element_Type;
+      Value   : in     Background_Attachment_type)
+   is
+   begin
+      Element.Style ("background-attachment", Value'Img);
+   end Background_Attachment;
+   
+   function Background_Attachment (Element : Element_Type)
+                                   return Background_Attachment_type
+   is
+      Value : String := Element.Style ("background-color");
+   begin
+      if Value ="" then
+         return scroll;
+      else
+         return Background_Attachment_type'Value (Value);
+      end if;
+   end Background_Attachment;
+   
+   ----------------------
+   -- Background_Color --
+   ----------------------
+
+   procedure Background_Color (Element : in out Element_Type; Value : String) is
+   begin
+      Element.Style ("background-color", Value);
+   end Background_Color;
+   
+   procedure Background_Color (Element : in out Element_Type;
+                               RGBA    : Gnoga.Types.RGBA_Type)
+   is
+   begin
+      Element.Style ("background-color", Gnoga.Types.To_String (RGBA));
+   end Background_Color;
+   
+   function Background_Color (Element : Element_Type)
+                              return Gnoga.Types.RGBA_Type
+   is
+   begin
+      return Gnoga.Types.To_RGBA (Element.Style ("background-color"));
+   end Background_Color;
+
+   ----------------------
+   -- Background_Image --
+   ----------------------
+   
+   procedure Background_Image (Element : in out Element_Type;
+                               Value   : in     String)
+   is
+   begin
+      Element.Property ("background-image", Value);
+   end Background_Image;
+
+   function Background_Image (Element : Element_Type) return String is
+   begin
+      return Element.Property ("background-image");
+   end Background_Image;
+   
+   -------------------------
+   -- Background_Position --
+   -------------------------
+   
+   procedure Background_Position (Element : in out Element_Type;
+                                  Value   : in     String)
+   is
+   begin
+      Element.Property ("background-position", Value);
+   end Background_Position;
+
+   function Background_Position (Element : Element_Type) return String is
+   begin
+      return Element.Property ("background-position");
+   end Background_Position;
+
+   -----------------------
+   -- Background_Origin --
+   -----------------------
+   
+   procedure Background_Origin (Element : in out Element_Type;
+                                Value   : in     String)
+   is
+   begin
+      Element.Property ("background-origin", Value);
+   end Background_Origin;
+
+   function Background_Origin (Element : Element_Type) return String is
+   begin
+      return Element.Property ("background-origin");
+   end Background_Origin;
+
+   -----------------------
+   -- Background_Repeat --
+   -----------------------
+   
+   procedure Background_Repeat (Element : in out Element_Type;
+                                Value   : in     String)
+   is
+   begin
+      Element.Property ("background-repeat", Value);
+   end Background_Repeat;
+
+   function Background_Repeat (Element : Element_Type) return String is
+   begin
+      return Element.Property ("background-repeat");
+   end Background_Repeat;      
+   
+   ---------------------
+   -- Background_Clip --
+   ---------------------
+   
+   procedure Background_Clip (Element : in out Element_Type;
+                              Value   : in     String)
+   is
+   begin
+      Element.Property ("background-clip", Value);
+   end Background_Clip;
+
+   function Background_Clip (Element : Element_Type) return String is
+   begin
+      return Element.Property ("background-clip");
+   end Background_Clip;
+
+   ---------------------
+   -- Background_Size --
+   ---------------------
+   
+   procedure Background_Size (Element : in out Element_Type;
+                              Value   : in     String)
+   is
+   begin
+      Element.Property ("background-size", Value);
+   end Background_Size;
+
+   function Background_Size (Element : Element_Type) return String is
+   begin
+      return Element.Property ("background-size");
+   end Background_Size;
 
    -----------------
    -- First_Child --

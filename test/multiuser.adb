@@ -11,8 +11,8 @@ procedure Multiuser is
    use Gnoga.Element;
 
    task type Color_Me_Task (O : Element.Pointer_To_Element_Class) is
-      entry start;
-      entry stop;
+      entry Start;
+      entry Stop;
    end Color_Me_Task;
 
    task body Color_Me_Task is
@@ -20,7 +20,7 @@ procedure Multiuser is
 
       Current_Color : Colors := Colors'First;
    begin
-      accept start;
+      accept Start;
 
       loop
          begin
@@ -35,7 +35,7 @@ procedure Multiuser is
             end if;
          end;
          select
-            accept stop;
+            accept Stop;
             exit;
          or
             delay 0.1;
@@ -68,7 +68,7 @@ end Color_Me_Task;
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Key.Property ("textContent", Event.Key_Code'Img);
+      App.Key.Text (Event.Key_Code'Img);
    end On_Key_Press;
 
    procedure On_Move (Object : in out Gnoga.Base.Base_Type'Class;
@@ -76,8 +76,8 @@ end Color_Me_Task;
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.X.Property ("textContent", Event.X'Img);
-      App.Y.Property ("textContent", Event.Y'Img);
+      App.X.Text (Event.X'Img);
+      App.Y.Text (Event.Y'Img);
    end On_Move;
 
    procedure On_Context (Object : in out Gnoga.Base.Base_Type'Class)

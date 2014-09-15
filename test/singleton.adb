@@ -2,16 +2,52 @@ with Gnoga.Application.Singleton;
 with Gnoga.Types;
 with Gnoga.Base;
 with Gnoga.Element;
+with Gnoga.Element.Common;
 with Gnoga.Screen;
 with Gnoga.Navigator;
 with Gnoga.Connections;
 with Gnoga.Window;
 
 procedure Singleton is
+   task type Color_Me_Task (O : Gnoga.Element.Pointer_To_Element_Class) is
+      entry start;
+      entry stop;
+   end Color_Me_Task;
+   -- Strobe color Element O
+
    M : Gnoga.Window.Window_Type;
-   T : Gnoga.Element.Element_Type;
-   A : Gnoga.Element.Element_Type;
-   B : Gnoga.Element.Element_Type;
+   T : aliased Gnoga.Element.Common.DIV_Type;
+   A : Gnoga.Element.Common.HR_Type;
+   B : Gnoga.Element.Common.DIV_Type;
+   C : Color_Me_Task (T'Unchecked_Access);
+
+   task body Color_Me_Task is
+      type Colors is (red, green, blue, orange, black);
+
+      Current_Color : Colors := Colors'First;
+   begin
+      accept start;
+
+      loop
+         begin
+            if O.Valid then
+               O.Style ("color", Current_Color'Img);
+
+               if Current_Color = Colors'Last then
+                  Current_Color := Colors'First;
+               else
+                  Current_Color := Colors'Succ (Current_Color);
+               end if;
+            end if;
+         end;
+         select
+            accept stop;
+            exit;
+         or
+            delay 0.1;
+         end select;
+      end loop;
+   end Color_Me_Task;
 
    procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
    is
@@ -36,6 +72,8 @@ procedure Singleton is
 
    procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is
    begin
+      C.Stop;
+
       T.Visible (False);
       A.Visible (False);
       B.Visible (False);
@@ -48,6 +86,7 @@ begin
 
    Gnoga.Log ("Connection established.");
 
+   Gnoga.Log ("page_id can be set using http://url:8080?page_id=xxx");
    Gnoga.Log ("page_id = " &
                 Gnoga.Connections.Search_Parameter
                 (M.Connection_ID, "page_id"));
@@ -56,17 +95,19 @@ begin
                 Gnoga.Navigator.User_Agent
                 (M.Connection_ID));
 
-   T.Create_From_HTML (M, "<h3>Hello World!</h3>");
+   T.Create (M, "<h1>Hello World!</h1>");
    T.Place_Inside_Top_Of (M.Document.Body_Element.all);
 
-   A.Create_From_HTML(M, "<hr />");
+   A.Create (M);
    A.Place_After (T);
 
-   B.Create_From_HTML (M, "<h1>Click when Done</h1>");
-   B.Place_After (T);
+   B.Create (M, "<h3>Click when Done</h3>");
+   B.Place_After (A);
 
    T.On_Click_Handler (On_Click'Unrestricted_Access);
    B.On_Click_Handler (End_App'Unrestricted_Access);
+
+   C.Start;
 
    Gnoga.Application.Singleton.Message_Loop;
 

@@ -45,8 +45,27 @@ procedure Demo is
       Hr2 : Gnoga.Element.Common.HR_Type;
       Lnk : Gnoga.Element.Common.A_Type;
       Img : Gnoga.Element.Common.IMG_Type;
+      Clr : Gnoga.Types.RGBA_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
+
+      Clr := Gnoga.Types.To_RGBA
+        (App.Main_Window.Document.Body_Element.Style ("background-color"));
+
+      App.Main_Window.Browser_Log
+        ("Background Color was " & Gnoga.Types.To_String (Clr));
+
+      App.Main_Window.Document.Body_Element.Style
+        ("background-color",
+         Gnoga.Types.To_String (RGBA_Type'(255,192,203,0.500)));
+
+      Clr := Gnoga.Types.To_RGBA
+        (App.Main_Window.Document.Body_Element.Style ("background-color"));
+      App.Main_Window.Browser_Log
+        ("Background Color now is " & Gnoga.Types.To_String (Clr));
+      App.Main_Window.Browser_Log
+        ("Value sent = " &
+           Gnoga.Types.To_String (RGBA_Type'(255,192,203,0.500)));
 
       App.Hello_World.Create_From_HTML (Main_Window, "<h1 />");
       App.Hello_World.Text ("Hello World!");

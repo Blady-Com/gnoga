@@ -225,6 +225,24 @@ package body Gnoga.Window is
       Window.Execute ("alert (""" & Escape_Quotes (Message) & """);");
    end Alert;
 
+   -----------------
+   -- Broswer_Log --
+   -----------------
+
+   procedure Browser_Log (Window : in out Window_Type; Message : String) is
+   begin
+      Window.Execute ("console.log (""" & Escape_Quotes (Message) & """);");
+   end Browser_Log;
+
+   -------------------
+   -- Browser_Error --
+   -------------------
+
+   procedure Browser_Error (Window : in out Window_Type; Message : String) is
+   begin
+      Window.Execute ("console.error (""" & Escape_Quotes (Message) & """);");
+   end Browser_Error;
+
    -----------
    -- Close --
    -----------

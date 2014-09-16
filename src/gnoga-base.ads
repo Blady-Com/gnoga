@@ -52,7 +52,7 @@ package Gnoga.Base is
    type Base_Access is access all Base_Type;
    type Pointer_To_Base_Class is access all Base_Type'Class;
 
-   Object_Already_Create : exception;
+   Object_Already_Created : exception;
    --  Thrown when an attempt is made to perform a create method on an already
    --  created or attached Gnoga object.
 
@@ -500,6 +500,8 @@ package Gnoga.Base is
    procedure Detach_From_Message_Queue (Object : in out Base_Type);
    --  Detach Object from Message Queue
 
+   function Script_Accessor (ID : String; ID_Type : Gnoga.Types.ID_Enumeration)
+                             return String;
    function Script_Accessor (Object : Base_Type) return String;
    --  Returns the script representation for ID. For DOM_ID '#ID' for
    --  Script 'ID'

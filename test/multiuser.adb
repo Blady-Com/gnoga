@@ -164,10 +164,26 @@ end Color_Me_Task;
       Color_Me.Stop;
    end On_Connect;
 
+   procedure On_Connect_2
+     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+   is
+      D : Gnoga.Element.Common.DIV_Type;
+   begin
+      Main_Window.Document.Body_Element.Background_Color ("blue");
+
+      D.Create (Main_Window, "This is on another path in same application.");
+      D.Color ("yellow");
+      D.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
+   end On_Connect_2;
+
 begin
    Application.Multiuser.Initialize (Boot => "debug.html");
 
-   Application.Multiuser.On_Connect_Handler (On_Connect'Unrestricted_Access);
+   Application.Multiuser.On_Connect_Handler (On_Connect'Unrestricted_Access,
+                                             "default");
+   Application.Multiuser.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
+                                             "/demo");
 
    Application.Multiuser.Message_Loop;
 end Multiuser;

@@ -51,9 +51,17 @@ package Gnoga.Document is
    type Document_Access is access all Document_Type;
    type Pointer_To_Document_Class is access all Document_Type'Class;
 
-   procedure Attach (Document      : in out Document_Type;
-                     Connection_ID : in     Gnoga.Types.Connection_ID);
+   Invalid_ID_Type : exception;
+
+   overriding procedure Attach
+     (Document      : in out Document_Type;
+      Connection_ID : in     Gnoga.Types.Connection_ID;
+      ID            : in     String                     := "window";
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script);
    --  Attach a Gnoga Document_Type to the document on Connection_ID
+   --  ID in this context does not mean as on other objects the ID of this
+   --  element, but rather the ID of the parent Window for the document.
+   --  ID_Type of DOM_ID will raise Invalid_ID_Type;
 
    -------------------------------------------------------------------------
    --  Document_Type - Properties

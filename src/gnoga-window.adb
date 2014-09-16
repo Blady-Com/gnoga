@@ -35,38 +35,63 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Gnoga.Connections;
+
 package body Gnoga.Window is
 
    ------------
-   -- Create --
+   -- Attach --
    ------------
 
-   procedure Attach
+   overriding procedure Attach
      (Window        : in out Window_Type;
       Connection_ID : in     Gnoga.Types.Connection_ID;
-      ID            : in     String                    := "")
+      ID            : in     String                     := "window";
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script)
    is
-      function Adjusted_ID return String is
-      begin
-         if ID = "" then
-            return "window";
-         else
-            return ID;
-         end if;
-      end Adjusted_ID;
+      use type Gnoga.Types.ID_Enumeration;
    begin
-      Attach (Object        => Window,
-              Connection_ID => Connection_ID,
-              ID            => Adjusted_ID,
-              ID_Type       => Gnoga.Types.Script);
+      if ID_Type = Gnoga.Types.DOM_ID then
+         raise Invalid_ID_Type;
+      end if;
 
-      Window.DOM_Document.Attach (Connection_ID);
+      Gnoga.Base.Attach (Object        => Gnoga.Base.Base_Type (Window),
+                         Connection_ID => Connection_ID,
+                         ID            => ID,
+                         ID_Type       => ID_Type);
+
+      Window.DOM_Document.Attach (Connection_ID, ID, ID_Type);
 
       Window.Location.Attach
         (Connection_ID => Connection_ID,
          ID            => Window.jQuery & ".prop ('location')",
          ID_Type       => Gnoga.Types.Script);
    end Attach;
+
+   procedure Attach
+     (Window  : in out Window_Type;
+      Parent  : in out Window_Type'Class;
+      ID      : in     String;
+      ID_Type : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script)
+   is
+      use type Gnoga.Types.ID_Enumeration;
+
+      CID : String := Gnoga.Connections.Execute_Script
+        (Parent.Connection_ID,
+         Base.Script_Accessor (ID, ID_Type) & ".gnoga['Connection_ID']");
+   begin
+      if ID_Type = Gnoga.Types.DOM_ID then
+         raise Invalid_ID_Type;
+      end if;
+
+      Attach (Window, Gnoga.Types.Connection_ID'Value (CID));
+   exception
+      when others =>
+         Log ("Unable to find gnoga['Connection_ID'] on " & ID &
+                " eval returned : " & CID);
+         raise Not_A_Gnoga_Window;
+   end Attach;
+
 
    --------------
    -- Document --

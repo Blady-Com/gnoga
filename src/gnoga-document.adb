@@ -41,21 +41,32 @@ package body Gnoga.Document is
    -- Attach --
    ------------
 
-   procedure Attach
+   overriding procedure Attach
      (Document      : in out Document_Type;
-      Connection_ID : in     Gnoga.Types.Connection_ID)
+      Connection_ID : in     Gnoga.Types.Connection_ID;
+      ID            : in     String                     := "window";
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script)
    is
+      use type Gnoga.Types.ID_Enumeration;
    begin
-      Document.Attach (Connection_ID => Connection_ID,
-                       ID            => "document",
-                       ID_Type       => Gnoga.Types.Script);
+      if ID_Type = Gnoga.Types.DOM_ID then
+         raise Invalid_ID_Type;
+      end if;
+
+      Base.Attach (Object        => Base.Base_Type (Document),
+                   Connection_ID => Connection_ID,
+                   ID            => Base.Script_Accessor (ID, ID_Type) &
+                     ".document",
+                   ID_Type       => Gnoga.Types.Script);
 
       Document.DOM_Head.Attach (Connection_ID => Connection_ID,
-                                ID            => "document.head",
+                                ID            => Document.Script_Accessor &
+                                  ".head",
                                 ID_Type       => Gnoga.Types.Script);
 
       Document.DOM_Body.Attach (Connection_ID => Connection_ID,
-                                ID            => "document.body",
+                                ID            => Document.Script_Accessor &
+                                  ".body",
                                 ID_Type       => Gnoga.Types.Script);
    end Attach;
 

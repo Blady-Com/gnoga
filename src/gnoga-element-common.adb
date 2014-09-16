@@ -88,6 +88,42 @@ package body Gnoga.Element.Common is
    end Target;
 
    -------------------------------------------------------------------------
+   --  Button_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Button  : in out Button_Type;
+      Parent  : in out Gnoga.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "")
+   is
+   begin
+      Button.Create_From_HTML (Parent, "<button type='button'>" & Escape_Quotes (Content) &
+                              "</button>", ID);
+   end Create;
+
+
+   --------------
+   -- Disabled --
+   --------------
+
+   procedure Disabled (Button : in out Button_Type;
+                       Value  : in     Boolean := True)
+   is
+   begin
+      Button.Property ("disabled", Value);
+   end Disabled;
+
+   function Disabled (Button : Button_Type) return Boolean is
+   begin
+      return Button.Property ("disabled");
+   end Disabled;
+
+   -------------------------------------------------------------------------
    --  DIV_Types
    -------------------------------------------------------------------------
 

@@ -77,7 +77,6 @@ package body Gnoga.Application.Multiuser is
             Path_Map.Element ("default") (Main_Window, Connection);
          else
             Connections.HTML_On_Close (ID, "No route to path.");
-            Connections.Close (ID);
          end if;
       end;
    end On_Connect;

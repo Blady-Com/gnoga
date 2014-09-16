@@ -74,6 +74,33 @@ package Gnoga.Element.Common is
    --  _self   = current frame or window
 
    -------------------------------------------------------------------------
+   --  Button_Types
+   -------------------------------------------------------------------------
+
+   type Button_Type is new Gnoga.Element.Element_Type with private;
+   type Button_Access is access all Button_Type;
+   type Pointer_To_Botton_Class is access all Button_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Button_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Button  : in out Button_Type;
+                     Parent  : in out Gnoga.Base.Base_Type'Class;
+                     Content : in     String := "";
+                     ID      : in     String := "");
+   --  Create an HTML button. The content will be placed inside the button.
+   --  For forms use Gnoga.Element.Form.Button instead.
+
+   -------------------------------------------------------------------------
+   --  Button_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Disabled (Button : in out Button_Type;
+                        Value   : in  Boolean := True);
+   function Disabled (Button : Button_Type) return Boolean;
+
+   -------------------------------------------------------------------------
    --  DIV_Types
    -------------------------------------------------------------------------
 
@@ -148,6 +175,7 @@ package Gnoga.Element.Common is
 
 private
    type A_Type is new Gnoga.Element.Element_Type with null record;
+   type Button_Type is new Gnoga.Element.Element_Type with null record;
    type DIV_Type is new Gnoga.Element.Element_Type with null record;
    type IMG_Type is new Gnoga.Element.Element_Type with null record;
    type HR_Type is new Gnoga.Element.Element_Type with null record;

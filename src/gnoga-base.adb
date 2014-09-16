@@ -204,7 +204,7 @@ package body Gnoga.Base is
    is
    begin
       if Object.Connection_ID /= Gnoga.Types.No_Connection then
-         raise Object_Already_Create;
+         raise Object_Already_Created;
       end if;
       
       Gnoga.Connections.Execute_Script (ID     => Connection_ID,
@@ -1548,17 +1548,24 @@ package body Gnoga.Base is
    ---------------------
    -- Script_Accessor --
    ---------------------
-   
+
    function Script_Accessor (Object : Base_Type) return String is
+   begin
+      return Script_Accessor (Object.ID, Object.ID_Type);
+   end;
+   
+   function Script_Accessor (ID : String; ID_Type : Gnoga.Types.ID_Enumeration)
+                             return String
+   is
       use Gnoga.Types;
    begin
-      case Object.ID_Type is
-      when DOM_ID =>
-         return "#" & Object.ID;
-      when Script =>
-         return Object.ID;
-      when Gnoga_ID =>
-         return "gnoga['" & Object.ID & "']";
+      case ID_Type is
+         when DOM_ID =>
+            return "#" & ID;
+         when Script =>
+            return ID;
+         when Gnoga_ID =>
+            return "gnoga['" & ID & "']";
       end case;
    end Script_Accessor;
    

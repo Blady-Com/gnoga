@@ -56,12 +56,29 @@ package Gnoga.Window is
    type Window_Access is access all Window_Type;
    type Pointer_To_Window_Class is access all Window_Type'Class;
 
-   procedure Attach (Window        : in out Window_Type;
-                     Connection_ID : in     Gnoga.Types.Connection_ID;
-                     ID            : in     String                    := "");
-   --  Attach a Gnoga Window_Type to Connection_ID identified as ID in the DOM.
-   --  ID should only be set when attaching to a reference to a window stored
-   --  in a javascript variable.
+   Invalid_ID_Type    : exception;
+   Not_A_Gnoga_Window : exception;
+
+   overriding procedure Attach
+     (Window        : in out Window_Type;
+      Connection_ID : in     Gnoga.Types.Connection_ID;
+      ID            : in     String                     := "window";
+      ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script);
+   --  Attach a Gnoga Window_Type to Connection_ID. This can be used to attach
+   --  a non-Gnoga Window and events bound will use Connection_ID which should
+   --  be the parent window in this case.
+   --  ID_Type = DOM_ID will raise Invalid_ID_Type
+
+   procedure Attach
+     (Window  : in out Window_Type;
+      Parent  : in out Window_Type'Class;
+      ID      : in     String;
+      ID_Type : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script);
+   --  Attach a Window with ID with in the Parent window.
+   --  ID_Type = DOM_ID will raise Invalid_ID_Type
+   --  Note: This will only work if with window pointed to by Name has
+   --        a Gnoga connection in it. Raises Not_A_Gnoga_Window if window
+   --        does not contain a gnoga connection.
 
    -------------------------------------------------------------------------
    --  Window_Type - Properties
@@ -121,9 +138,10 @@ package Gnoga.Window is
    procedure Scroll_To (Window : in out Window_Type; X, Y : Integer);
    --  Scroll contents in window to x, y
 
+
    -- Window Placement Methods --
    --
-   -- These methods will only work on child windows
+   -- These methods will only work on child windows that have been launched
 
    procedure Close (Window : in out Window_Type);
 

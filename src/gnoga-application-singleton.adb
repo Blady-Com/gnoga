@@ -94,6 +94,7 @@ package body Gnoga.Application.Singleton is
       Application_Holder.Hold;
 
       Main_Window.Attach (Connection_ID => Connection_ID);
+      Gnoga.Connections.HTML_On_Close (Connection_ID, HTML_On_Close);
 
       Main_Window.Document.Title (Application_Name);
    end Initialize;

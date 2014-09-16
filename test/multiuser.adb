@@ -60,6 +60,9 @@ end Color_Me_Task;
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Hello_World.Style ("color", "green");
+      App.Hello_World.Background_Color (RGBA_Type'(255,255,255,1.0));
+      App.Main_Window.Log
+        ("Color = " & Gnoga.Types.To_String (App.Hello_World.Color));
       App.Main_Window.Alert ("X = " & Event.X'Img & " Y = " & Event.Y'Img);
    end On_Click;
 

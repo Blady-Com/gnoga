@@ -104,8 +104,14 @@ package Gnoga.Connections is
    --  been closed properly will have to time out first before reporting an
    --  error and Gnoga invalidating the ID.
 
-   procedure Close (ID : Gnoga.Types.Connection_ID);
+   procedure Close (ID : in Gnoga.Types.Connection_ID);
    --  Close connection ID
+
+   procedure HTML_On_Close (ID   : in Gnoga.Types.Connection_ID;
+                            HTML : in String);
+   --  On connection closed or lost HTML to display in browser.
+   --  By default pages are left in the state they were in and an alter box
+   --  announcing connection interuption is displayed.
 
    procedure New_Unique_ID (New_ID : out Gnoga.Types.Unique_ID);
    --  Generates a new unique ID in to New_ID

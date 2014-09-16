@@ -74,14 +74,14 @@ procedure Singleton is
    begin
       C.Stop;
 
-      T.Visible (False);
-      A.Visible (False);
-      B.Visible (False);
-
       Gnoga.Log ("Ending application.");
       Gnoga.Application.Singleton.End_Application;
    end End_App;
 begin
+   Gnoga.Application.Application_Name ("Test App for Gnoga");
+   Gnoga.Application.HTML_On_Close
+     ("<b>Connection to Application has been terminated</b>");
+
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
    Gnoga.Log ("Connection established.");

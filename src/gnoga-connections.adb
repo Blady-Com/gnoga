@@ -167,7 +167,7 @@ package body Gnoga.Connections is
       Write_To_Console ("Starting Web Server with web root at " &
                               Ada.Strings.Unbounded.To_String (Web_Root));
       Write_To_Console ("Starting Websocket Server");
-      AWS.Net.WebSocket.Registry.Register ("/echo", Socket_Type_Create'Access);
+      AWS.Net.WebSocket.Registry.Register ("/gnoga", Socket_Type_Create'Access);
       AWS.Net.WebSocket.Registry.Control.Start;
 
       --  Setup dispatchers
@@ -240,12 +240,20 @@ package body Gnoga.Connections is
       File : constant String :=
         Ada.Strings.Unbounded.To_String (Web_Root) & "html" & Adjusted_URI;
    begin
+      Gnoga.Log ("Inside HTML distpatch.");
+      Gnoga.Log ("File : " & File);
+
       if Ada.Directories.Exists (File) then
          return AWS.Response.File
            (Content_Type => AWS.MIME.Content_Type (File),
             Filename     => File);
       else
-         return AWS.Response.Acknowledge (AWS.Messages.S404);
+         --  Let application handle files not found in /html
+         return AWS.Response.File
+           (Content_Type => AWS.MIME.Text_HTML,
+            Filename     => Ada.Strings.Unbounded.To_String (Web_Root) &
+              "html" & Ada.Strings.Unbounded.To_String (Boot_HTML));
+         --  return AWS.Response.Acknowledge (AWS.Messages.S404);
       end if;
    end Dispatch;
 
@@ -906,6 +914,19 @@ package body Gnoga.Connections is
    begin
       Connection_Manager.Delete_Connection (ID);
    end Close;
+
+   -------------------
+   -- HTML_On_Close --
+   -------------------
+
+   procedure HTML_On_Close (ID   : in Gnoga.Types.Connection_ID;
+                            HTML : in String)
+   is
+   begin
+      Execute_Script (ID     => ID,
+                      Script => "gnoga['html_on_close']=""" &
+                        Escape_Quotes (HTML) & """;");
+   end HTML_On_Close;
 
 
    ---------------------

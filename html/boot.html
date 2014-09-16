@@ -12,7 +12,7 @@
   var ws;
   var params={};
   var gnoga={};
-    
+
   $( document ).ready(function() {
      var s = document.location.search;
      var tokens;
@@ -25,7 +25,7 @@
            = decodeURIComponent(tokens[2]);
      }
   
-     ws = new WebSocket ("ws://" + location.hostname + ":" + location.port + "/echo");
+     ws = new WebSocket ("ws://" + location.hostname + ":" + location.port + "/gnoga");
   
      if (ws != null) {
         ws.onmessage = function (event) {
@@ -33,9 +33,20 @@
               eval (event.data);
            } catch (e) {           
               console.error (e.message);
-              console.error ("eval data = " + event.data);
            }
         }
+        ws.onerror = function (event) {
+           alert ("Communication error");
+        }
+        ws.onclose = function (event) {
+           if (gnoga['html_on_close'] != "") {
+              $(document.body).html(gnoga['html_on_close']);
+           } else {
+              alert ("Server connection lost " + event.reason);
+           }
+        }
+     } else {
+        alert ("Websocket connection is required.");
      }
   });
 </script>

@@ -5,6 +5,7 @@ with Gnoga.Element;
 with Gnoga.Element.Common;
 with Gnoga.Element.Canvas;
 with Gnoga.Types;
+with Gnoga.Connections;
 
 procedure Demo is
    use Gnoga;
@@ -25,7 +26,7 @@ procedure Demo is
    begin
       App.Hello_World.Color ("green");
       App.Hello_World.Background_Color (RGBA_Type'(255,255,255,1.0));
-      App.Main_Window.Browser_Log
+      App.Main_Window.Log
         ("Color = " & Gnoga.Types.To_String (App.Hello_World.Color));
    end On_Click;
 
@@ -33,8 +34,6 @@ procedure Demo is
    procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Main_Window.Document.Body_Element.Inner_HTML ("Application closed.");
-
       Log ("Ending Application");
       Application.Multiuser.End_Application;
    end End_App;
@@ -52,10 +51,12 @@ procedure Demo is
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
+      Main_Window.Log (Main_Window.Location.Path_Name);
+
       Clr := Gnoga.Types.To_RGBA
         (App.Main_Window.Document.Body_Element.Style ("background-color"));
 
-      App.Main_Window.Browser_Log
+      App.Main_Window.Log
         ("Background Color was " & Gnoga.Types.To_String (Clr));
 
       App.Main_Window.Document.Body_Element.Style
@@ -64,9 +65,9 @@ procedure Demo is
 
       Clr := Gnoga.Types.To_RGBA
         (App.Main_Window.Document.Body_Element.Style ("background-color"));
-      App.Main_Window.Browser_Log
+      App.Main_Window.Log
         ("Background Color now is " & Gnoga.Types.To_String (Clr));
-      App.Main_Window.Browser_Log
+      App.Main_Window.Log
         ("Value sent = " &
            Gnoga.Types.To_String (RGBA_Type'(255,192,203,0.500)));
 
@@ -83,7 +84,7 @@ procedure Demo is
       App.Click_Quit.Create (Main_Window, "Click to Quit");
       App.Click_Quit.Opacity (0.5);
 
-      App.Main_Window.Browser_Log ("Click opacity = " &
+      App.Main_Window.Log ("Click opacity = " &
                                      App.Click_Quit.Opacity'Img);
 
       App.Click_Quit.Place_After (Hr1);
@@ -112,6 +113,10 @@ procedure Demo is
 begin
    Application.Multiuser.Initialize (Event => On_Connect'Unrestricted_Access,
                                      Boot  => "debug.html");
+
+   Application.Application_Name ("Test App for Gnoga");
+   Application.HTML_On_Close
+     ("<b>Connection to Application has been terminated</b>");
 
    Application.Multiuser.Message_Loop;
 end Demo;

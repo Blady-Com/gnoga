@@ -43,6 +43,12 @@ package body Gnoga.Application is
      Ada.Strings.Unbounded.To_Unbounded_String
        ("Gnoga - The GNU Omnificent GUI for Ada");
 
+   HTML_For_On_Close : Ada.Strings.Unbounded.Unbounded_String;
+
+   ----------------------
+   -- Application_Name --
+   ----------------------
+
    procedure Application_Name (Name : in String) is
    begin
       App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
@@ -52,5 +58,19 @@ package body Gnoga.Application is
    begin
       return Ada.Strings.Unbounded.To_String (App_Name);
    end Application_Name;
+
+   -------------------
+   -- HTML_On_Close --
+   -------------------
+
+   procedure HTML_On_Close (HTML : String) is
+   begin
+      HTML_For_On_Close := Ada.Strings.Unbounded.To_Unbounded_String (HTML);
+   end HTML_On_Close;
+
+   function HTML_On_Close return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (HTML_For_On_Close);
+   end HTML_On_Close;
 
 end Gnoga.Application;

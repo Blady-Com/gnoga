@@ -106,10 +106,10 @@ package Gnoga.Window is
    procedure Alert (Window : in out Window_Type; Message : String);
    --  Display Alert box on Window with Message
 
-   procedure Browser_Log (Window : in out Window_Type; Message : String);
+   procedure Log (Window : in out Window_Type; Message : String);
    --  Log message on browser console
 
-   procedure Browser_Error (Window : in out Window_Type; Message : String);
+   procedure Error (Window : in out Window_Type; Message : String);
    --  Log error message on browser console
 
    procedure Print (Window : in out Window_Type);

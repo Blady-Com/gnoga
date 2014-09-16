@@ -45,4 +45,14 @@ package Gnoga.Application is
    function Application_Name return String;
    --  Set the name of the application. This will automatically set the
    --  browser window title to Name on new connections.
+
+   procedure HTML_On_Close (HTML : String);
+   function HTML_On_Close return String;
+   --  Set the HTML that will display on all clients when connection is
+   --  terminated or application is closed. By default an alert box will
+   --  be displayed stating connection has been closed, but the current
+   --  state of the browser window will be left as is. This value is
+   --  sent on connection to application and therefore must be set before
+   --  incoming connections. To change after connection has been established
+   --  see Gnoga.Connections.HTML_On_Close
 end Gnoga.Application;

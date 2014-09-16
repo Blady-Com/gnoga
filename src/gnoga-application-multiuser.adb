@@ -35,33 +35,51 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Containers.Indefinite_Ordered_Maps;
+with Ada.Strings.Unbounded;
 with Gnoga.Types;
 
 package body Gnoga.Application.Multiuser is
 
-   On_Application_Connect_Event : Application_Connect_Event := null;
+   package Path_Maps is new Ada.Containers.Indefinite_Ordered_Maps
+     (String, Application_Connect_Event);
+
+   Path_Map : Path_Maps.Map;
 
    procedure On_Connect
      (ID         : in     Gnoga.Types.Connection_ID;
       Connection : access Gnoga.Connections.Connection_Holder_Type);
+   --  Handle connections by creating Main_Winow object and dispatching
+   --  to correct On_Connect_Handler based on Path
+
+   ----------------
+   -- On_Connect --
+   ----------------
 
    procedure On_Connect
      (ID         : in     Gnoga.Types.Connection_ID;
       Connection : access Gnoga.Connections.Connection_Holder_Type)
    is
+      Main_Window : Gnoga.Window.Window_Type;
    begin
-      if On_Application_Connect_Event /= null then
-         declare
-            Main_Window : Gnoga.Window.Window_Type;
-         begin
-            Main_Window.Attach (Connection_ID => ID);
+      Main_Window.Attach (Connection_ID => ID);
+      Main_Window.Document.Title (Application_Name);
+      Connections.HTML_On_Close (ID, HTML_On_Close);
 
-            Main_Window.Document.Title (Application_Name);
-            Connections.HTML_On_Close (ID, HTML_On_Close);
-
-            On_Application_Connect_Event (Main_Window, Connection);
-         end;
-      end if;
+      declare
+         Path : String :=
+           Right_Trim_Slashes (Left_Trim_Slashes
+                               (Main_Window.Location.Path_Name));
+      begin
+         if Path_Map.Contains (Path) then
+            Path_Map.Element (Path) (Main_Window, Connection);
+         elsif Path_Map.Contains ("default") then
+            Path_Map.Element ("default") (Main_Window, Connection);
+         else
+            Connections.HTML_On_Close (ID, "No route to path.");
+            Connections.Close (ID);
+         end if;
+      end;
    end On_Connect;
 
    ----------------
@@ -89,9 +107,11 @@ package body Gnoga.Application.Multiuser is
    -- On_Connect_Handler --
    ------------------------
 
-   procedure On_Connect_Handler (Event : in Application_Connect_Event) is
+   procedure On_Connect_Handler (Event : in Application_Connect_Event;
+                                 Path  : in String := "default")
+   is
    begin
-     On_Application_Connect_Event := Event;
+      Path_Map.Include (Right_Trim_Slashes (Left_Trim_Slashes (Path)), Event);
    end On_Connect_Handler;
 
    ---------------------
@@ -122,7 +142,6 @@ package body Gnoga.Application.Multiuser is
 
    procedure End_Application is
    begin
-      On_Application_Connect_Event := null;
       Gnoga.Connections.Stop;
    end End_Application;
 

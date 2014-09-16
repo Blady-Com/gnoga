@@ -85,7 +85,10 @@ begin
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
    Gnoga.Log ("Connection established.");
-
+   Gnoga.Log ("You can add to the path of app, e.g. http://url:8080/abc");
+   Gnoga.Log ("if a file exists in server /html/ will be served if not");
+   Gnoga.Log ("the app boot file will be served.");
+   Gnoga.Log ("path on url : " & M.Location.Path_Name);
    Gnoga.Log ("page_id can be set using http://url:8080?page_id=xxx");
    Gnoga.Log ("page_id = " &
                 Gnoga.Connections.Search_Parameter

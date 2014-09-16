@@ -51,7 +51,12 @@ package Gnoga is
    --  Escape quotes for Java Script.
 
    function Left_Trim (S : String) return String;
-   --  Remove leading spaces
+   function Right_Trim (S : String) return String;
+   --  Remove extra spaces and tabs
+
+   function Left_Trim_Slashes (S : String) return String;
+   function Right_Trim_Slashes (S : String) return String;
+   --  Remove extra spaces, tabs and '/'s
 
    procedure Write_To_Console (Message : in String);
    --  Output message to console

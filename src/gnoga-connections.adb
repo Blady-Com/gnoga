@@ -240,9 +240,6 @@ package body Gnoga.Connections is
       File : constant String :=
         Ada.Strings.Unbounded.To_String (Web_Root) & "html" & Adjusted_URI;
    begin
-      Gnoga.Log ("Inside HTML distpatch.");
-      Gnoga.Log ("File : " & File);
-
       if Ada.Directories.Exists (File) then
          return AWS.Response.File
            (Content_Type => AWS.MIME.Content_Type (File),
@@ -444,11 +441,7 @@ package body Gnoga.Connections is
          Data : in Gnoga.Types.Pointer_to_Connection_Data_Class)
       is
       begin
-         if Connection_Data_Map.Contains (ID) then
-            Connection_Data_Map.Delete (ID);
-         end if;
-
-         Connection_Data_Map.Insert (ID, Data);
+         Connection_Data_Map.Include (ID, Data);
       end Add_Connection_Data;
 
       function Connection_Data
@@ -912,7 +905,7 @@ package body Gnoga.Connections is
 
    procedure Close (ID : Gnoga.Types.Connection_ID) is
    begin
-      Connection_Manager.Delete_Connection (ID);
+      Execute_Script (ID, "ws.close();");
    end Close;
 
    -------------------

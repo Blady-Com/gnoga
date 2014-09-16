@@ -61,6 +61,10 @@ package body Gnoga is
 
    function Left_Trim (S : String) return String is
    begin
+      if S'Length = 0 then
+         return S;
+      end If;
+
       if S (S'First) = ' ' or S (S'First) = Character'Val (9) then
          return Left_Trim (S ((S'First + 1) .. S'Last));
       else
@@ -68,6 +72,65 @@ package body Gnoga is
       end if;
    end Left_Trim;
 
+   ----------------
+   -- Right_Trim --
+   ----------------
+
+   function Right_Trim (S : String) return String is
+   begin
+      if S'Length = 0 then
+         return S;
+      end if;
+
+      if S (S'Last) = ' ' or S (S'Last) = Character'Val (9)
+      then
+         return Right_Trim (S (S'First .. (S'Last - 1)));
+      else
+         return S;
+      end if;
+   end Right_Trim;
+
+   -----------------------
+   -- Left_Trim_Slashes --
+   -----------------------
+
+   function Left_Trim_Slashes (S : String) return String is
+   begin
+      if S'Length = 0 then
+         return S;
+      end If;
+
+      if
+        S (S'First) = ' ' or
+        S (S'First) = Character'Val (9) or
+        S (S'First) = '/'
+      then
+         return Left_Trim_Slashes (S ((S'First + 1) .. S'Last));
+      else
+         return S;
+      end if;
+   end Left_Trim_Slashes;
+
+   ------------------------
+   -- Right_Trim_Slashes --
+   ------------------------
+
+   function Right_Trim_Slashes (S : String) return String is
+   begin
+      if S'Length = 0 then
+         return S;
+      end If;
+
+      if
+        S (S'Last) = ' ' or
+        S (S'Last) = Character'Val (9) or
+        S (S'Last) = '/'
+      then
+         return Right_Trim_Slashes (S (S'First .. (S'Last - 1)));
+      else
+         return S;
+      end if;
+   end Right_Trim_Slashes;
 
    ----------------------
    -- Write_To_Console --

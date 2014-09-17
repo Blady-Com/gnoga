@@ -3,6 +3,7 @@ with Gnoga.Window;
 with Gnoga.Base;
 with Gnoga.Element;
 with Gnoga.Element.Common;
+with Gnoga.Element.IFrame;
 with Gnoga.Types;
 with Gnoga.Connections;
 
@@ -19,6 +20,7 @@ procedure Popups is
          Chld_Window : Window.Window_Type;
          New_Div     : Common.Div_Type;
          New_Div2    : Common.Div_Type;
+         Frame       : IFrame.IFrame_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -38,6 +40,8 @@ procedure Popups is
       Connections.Execute_Script (Object.Connection_ID,
                                   "newWin2 = window.open (""/no_boot.html"");");
       App.Chld_Window.Launch (App.Main_Window.all, "/demo");
+
+      App.Frame.Window.Document.Body_Element.Background_Color ("Orange");
    end On_Click;
 
 
@@ -105,6 +109,10 @@ procedure Popups is
       B.Create (Main_Window, "click3");
       B.Place_Inside_Bottom_Of (Main_Window.Document.Body_Element.all);
       B.On_Click_Handler (On_Click3'Unrestricted_Access);
+
+      App.Frame.Create (Main_Window, "/demo");
+      App.Frame.Width (800);
+      App.Frame.Place_After (B);
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
 

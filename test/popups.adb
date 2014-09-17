@@ -6,7 +6,7 @@ with Gnoga.Element.Common;
 with Gnoga.Types;
 with Gnoga.Connections;
 
-procedure Demo is
+procedure Popups is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Element;
@@ -147,4 +147,4 @@ begin
      ("<b>Connection to Application has been terminated</b>");
 
    Application.Multiuser.Message_Loop;
-end Demo;
+end Popups;

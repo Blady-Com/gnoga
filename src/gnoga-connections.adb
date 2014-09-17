@@ -953,6 +953,18 @@ package body Gnoga.Connections is
       ID_Machine.Next_ID (New_ID);
    end New_Unique_ID;
 
+   --------------
+   -- New_GID --
+   --------------
+
+   function New_GID return String is
+      New_ID : Gnoga.Types.Unique_ID;
+   begin
+      New_Unique_ID (New_ID);
+
+      return "g" & Left_Trim (New_ID'Img);
+   end New_GID;
+
    --------------------------
    -- Add_To_Message_Queue --
    --------------------------

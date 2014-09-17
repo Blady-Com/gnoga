@@ -116,6 +116,9 @@ package Gnoga.Connections is
    procedure New_Unique_ID (New_ID : out Gnoga.Types.Unique_ID);
    --  Generates a new unique ID in to New_ID
 
+   function New_GID return String;
+   --  Genertes unique ID for use in browser storage of elements
+
    procedure Add_To_Message_Queue (Object : in out Gnoga.Base.Base_Type'Class);
    --  Add Object to Message Queue
 

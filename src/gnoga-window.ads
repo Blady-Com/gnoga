@@ -48,7 +48,7 @@ package Gnoga.Window is
    --  Window_Type is the class encapsulating an individual Gnoga browser
    --  windows and tabs. It can also encapsulate any window or iFrame
    --  that is reachable by the DOM in a Gnoga browser window or tab, i.e.
-   --  that was loaded with a connection via websocktes to the Gnoga app.
+   --  that was loaded with a connection via websockets to the Gnoga app.
    --  usually with Gnoga's standard bootstrap file.
 
 
@@ -76,9 +76,15 @@ package Gnoga.Window is
       ID_Type : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script);
    --  Attach a Window with ID with in the Parent window.
    --  ID_Type = DOM_ID will raise Invalid_ID_Type
-   --  Note: This will only work if with window pointed to by Name has
+   --  Note: This will only work if the window pointed to by ID has
    --        a Gnoga connection in it. Raises Not_A_Gnoga_Window if window
    --        does not contain a gnoga connection.
+
+   procedure Reattach (Window : in out Window_Type;
+                       Parent : in out Window_Type'Class);
+   --  Attach a Window launched by Parent to its own Gnoga connection.
+   --  Will raise Not_A_Gnoga_Window if connection was not established in
+   --  Window or is not a Gnoga window (i.e. has websocket to app).
 
    -------------------------------------------------------------------------
    --  Window_Type - Properties
@@ -119,6 +125,23 @@ package Gnoga.Window is
    -------------------------------------------------------------------------
    --  Window_Type - Methods
    -------------------------------------------------------------------------
+
+   procedure Launch (Window   : in out Window_Type;
+                     Parent   : in out Window_Type'Class;
+                     URL      : in     String;
+                     Width    : in     Integer := -1;
+                     Height   : in     Integer := -1;
+                     Left     : in     Integer := -1;
+                     Top      : in     Integer := -1;
+                     Menu     : in     Boolean := False;
+                     Status   : in     Boolean := False;
+                     Tool_Bar : in     Boolean := False;
+                     Title    : in     Boolean := False);
+   --  Launch a new Window on Parent's connection. If Parent window is closed
+   --  events will no longer work on Window. If the launched URL has a Gnoga
+   --  connection can run Reattach on it before adding any elements or events.
+   --  Before running Reattach you need to be sure that the gnoga websocket
+   --  has been established on the launched page.
 
    procedure Alert (Window : in out Window_Type; Message : String);
    --  Display Alert box on Window with Message

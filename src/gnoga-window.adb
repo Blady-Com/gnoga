@@ -35,6 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded;
+
 with Gnoga.Connections;
 
 package body Gnoga.Window is
@@ -92,6 +94,20 @@ package body Gnoga.Window is
          raise Not_A_Gnoga_Window;
    end Attach;
 
+   --------------
+   -- Reattach --
+   --------------
+
+   procedure Reattach (Window : in out Window_Type;
+                       Parent : in out Window_Type'Class)
+   is
+      CID : String := Gnoga.Connections.Execute_Script
+        (Parent.Connection_ID,
+         Base.Script_Accessor (Window.ID, Window.ID_Type) &
+           ".gnoga['Connection_ID']");
+   begin
+      Window.Connection_ID (Gnoga.Types.Connection_ID'Value (CID));
+   end Reattach;
 
    --------------
    -- Document --
@@ -240,6 +256,82 @@ package body Gnoga.Window is
    begin
       return Window.Property ("screenX");
    end Left;
+
+   ------------
+   -- Launch --
+   ------------
+
+   procedure Launch (Window   : in out Window_Type;
+                     Parent   : in out Window_Type'Class;
+                     URL      : in     String;
+                     Width    : in     Integer := -1;
+                     Height   : in     Integer := -1;
+                     Left     : in     Integer := -1;
+                     Top      : in     Integer := -1;
+                     Menu     : in     Boolean := False;
+                     Status   : in     Boolean := False;
+                     Tool_Bar : in     Boolean := False;
+                     Title    : in     Boolean := False)
+   is
+      GID : constant String := Gnoga.Connections.New_GID;
+
+      function Params return String is
+         use Ada.Strings.Unbounded;
+
+         P : Unbounded_String;
+         C : Boolean := False;
+
+         procedure Add_Param (S : String; V : String) is
+         begin
+            if C then
+               P := P & ", ";
+            end if;
+
+            P := P & To_Unbounded_String (S) & "=" & To_Unbounded_String (V);
+            C := True;
+         end Add_Param;
+      begin
+         if Width > -1 then
+            Add_Param ("width", Width'Img);
+         end if;
+
+         if Height > -1 then
+            Add_Param ("height", Height'Img);
+         end if;
+
+         if Top > -1 then
+            Add_Param ("top", Top'Img);
+         end if;
+
+         if Left > -1 then
+            Add_Param ("left", Left'Img);
+         end if;
+
+         Add_Param ("menubar", Menu'Img);
+         Add_Param ("status", Status'Img);
+         Add_Param ("toolbar", Tool_Bar'Img);
+         Add_Param ("menubar", Menu'Img);
+         Add_Param ("titlebar", Title'Img);
+
+         return To_String (P);
+      end Params;
+
+   begin
+      Window.Create_With_Script
+        (Connection_ID => Parent.Connection_ID,
+         ID            => GID,
+         Script        => "gnoga['" & GID & "']=" & Parent.jQuery &
+           ".get(0).open ('" & URL & "', '_blank', '" & Params & "')",
+         ID_Type       => Gnoga.Types.Gnoga_ID);
+
+      Window.DOM_Document.Attach
+        (Parent.Connection_ID, GID, Gnoga.Types.Gnoga_ID);
+
+      Window.Location.Attach
+        (Connection_ID => Parent.Connection_ID,
+         ID            => Window.jQuery & ".prop ('location')",
+         ID_Type       => Gnoga.Types.Script);
+   end Launch;
 
    -----------
    -- Alert --

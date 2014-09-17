@@ -98,7 +98,12 @@ package Gnoga.Base is
 
    function Connection_ID (Object : Base_Type)
                            return Gnoga.Types.Connection_ID;
+   procedure Connection_ID (Object : in out Base_Type;
+                            Value  : in Gnoga.Types.Connection_ID);
    --  The Gnoga Connection ID of Object.
+   --  It is almost certainly always a mistake to set Connection_ID instead
+   --  of ussing Attach. Only change the Connection ID if if you fully
+   --  understand what you are doing.
 
    function Valid (Object : Base_Type) return Boolean;
    --  Returns true if Connection_ID is valid, i.e. Object was created and

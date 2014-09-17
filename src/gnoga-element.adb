@@ -52,14 +52,11 @@ package body Gnoga.Element is
                                Parent  : in out Gnoga.Base.Base_Type'Class;
                                HTML    : in     String;
                                ID      : in     String := "")
-   is
-      
+   is      
       function Adjusted_ID return String is
-         New_ID : Gnoga.Types.Unique_ID;
       begin
          if ID = "" then
-            Gnoga.Connections.New_Unique_ID (New_ID);
-            return "g" & Left_Trim (New_ID'Img);
+            return Gnoga.Connections.New_GID;
          else
             return ID;
          end if;

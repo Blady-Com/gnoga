@@ -264,6 +264,13 @@ package body Gnoga.Base is
       return Object.Connection_ID;
    end Connection_ID;
 
+   procedure Connection_ID (Object : in out Base_Type;
+                            Value  : in Gnoga.Types.Connection_ID)
+   is
+   begin
+      Object.Connection_ID := Value;
+   end Connection_ID;
+   
    -----------
    -- Valid --
    -----------

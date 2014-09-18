@@ -4,6 +4,7 @@ with Gnoga.Base;
 with Gnoga.Element;
 with Gnoga.Element.Form;
 with Gnoga.Element.Common;
+with Gnoga.Element.Canvas;
 with Gnoga.Types;
 
 procedure Demo is
@@ -16,6 +17,7 @@ procedure Demo is
          Main_Window : Window.Pointer_To_Window_Class;
          My_Form     : Form.Form_Type;
          Input       : Form.Form_Element_Type;
+         My_Canvas   : Canvas.Canvas_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -52,10 +54,12 @@ procedure Demo is
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App     : aliased App_Data;
+      C       : Canvas.Context_2D_Type;
       Button1 : Form.Form_Element_Type;
       Button2 : Form.Form_Element_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
+      App.Main_Window.Document.Execute ("writeln ('<hr />');");
 
       App.My_Form.Create (Main_Window);
       App.My_Form.Action ("/demo");
@@ -77,6 +81,17 @@ procedure Demo is
                       Input_Type => "submit",
                       Value      => "send to demo");
       Button2.Place_After (Button1);
+      App.Main_Window.Document.Execute ("writeln ('<hr />');");
+
+      App.My_Canvas.Create (Main_Window, 200, 200);
+      App.My_Canvas.Style ("border-style","solid");
+      App.My_Canvas.Place_Inside_Bottom_Of
+        (App.Main_Window.Document.Body_Element.all);
+
+      App.My_Canvas.Get_Drawing_Context_2D (C);
+
+      C.Property ("fillStyle","blue");
+      C.Execute ("fillRect(20,20,150,100);");
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
 

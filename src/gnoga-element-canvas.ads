@@ -35,6 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------                                                                          --
 
+with Gnoga.Types;
+
 package Gnoga.Element.Canvas is
    -------------------------------------------------------------------------
    --  Canvas_Types
@@ -55,8 +57,55 @@ package Gnoga.Element.Canvas is
                      ID      : in     String := "");
    --  Create a Canvas container
 
-   -- Canvas methods and events coming soon
+   type Context_2D_Type is
+     new Ada.Finalization.Limited_Controlled with private;
+   type Context_2D_Access is access all Context_2D_Type;
+   type Pointer_To_Context_2D_Class is access all Context_2D_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Canvas_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Get_Drawing_Context_2D (Canvas  : in out Canvas_Type;
+                                     Context : in out Context_2D_Type'Class);
+   --  Get a two dimensional drawing Context from Canvas
+
+   -------------------------------------------------------------------------
+   --  Context_2D_Type - Properties
+   -------------------------------------------------------------------------
+
+
+
+
+   --  Generic Properties --
+
+   procedure Property (Context : in out Context_2D_Type;
+                       Name    : in     String;
+                       Value   : in     String);
+   function Property (Context : Context_2D_Type; Name : String) return String;
+
+   -------------------------------------------------------------------------
+   --  Context_2D_Type - Methods
+   -------------------------------------------------------------------------
+
+   --  Generic Methods --
+
+   procedure Execute (Context : in out Context_2D_Type; Method : String);
+   function Execute (Context : Context_2D_Type; Method : String)
+                     return String;
+
+   --  Internal Methods --
+
+   function Connection_ID (Context : Context_2D_Type)
+                           return Gnoga.Types.Connection_ID;
 
 private
    type Canvas_Type is new Gnoga.Element.Element_Type with null record;
+
+   type Context_2D_Type is
+     new Ada.Finalization.Limited_Controlled with
+      record
+         Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+         Context_ID    : Gnoga.Types.Web_ID;
+      end record;
 end Gnoga.Element.Canvas;

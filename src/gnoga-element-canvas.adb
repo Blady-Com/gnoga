@@ -35,6 +35,10 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded;
+
+with Gnoga.Connections;
+
 package body Gnoga.Element.Canvas is
 
    -------------------------------------------------------------------------
@@ -55,5 +59,72 @@ package body Gnoga.Element.Canvas is
       Canvas.Create_From_HTML (Parent, "<canvas width=" & Width'Img &
                               " height =" & Height'Img & ">", ID);
    end Create;
+
+   ----------------------------
+   -- Get_Drawing_Context_2D --
+   ----------------------------
+
+   procedure Get_Drawing_Context_2D (Canvas  : in out Canvas_Type;
+                                     Context : in out Context_2D_Type'Class)
+   is
+      GID : String := Gnoga.Connections.New_GID;
+   begin
+      Context.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
+      Context.Connection_ID := Canvas.Connection_ID;
+
+      Gnoga.Connections.Execute_Script (Context.Connection_ID,
+                                        "gnoga['" & GID & "']=" &
+                                          Canvas.jQuery &
+                                          ".get(0).getContext('2d');");
+   end Get_Drawing_Context_2D;
+
+   -------------------
+   -- Connection_ID --
+   -------------------
+
+   function Connection_ID (Context : Context_2D_Type)
+                           return Gnoga.Types.Connection_ID
+   is
+   begin
+      return Context.Connection_ID;
+   end Connection_ID;
+
+   procedure Property (Context : in out Context_2D_Type;
+                       Name    : in     String;
+                       Value   : in     String)
+   is
+   begin
+      Context.Execute (Name & "=""" & Escape_Quotes (Value) & """;");
+   end Property;
+
+   function Property (Context : Context_2D_Type; Name : String) return String
+   is
+   begin
+      return Context.Execute (Name);
+   end Property;
+
+   -------------
+   -- Execute --
+   -------------
+
+   procedure Execute (Context : in out Context_2D_Type; Method : String) is
+   begin
+      Gnoga.Connections.Execute_Script
+        (ID     => Context.Connection_ID,
+         Script => "gnoga['" &
+           Ada.Strings.Unbounded.To_String (Context.Context_ID) &
+           "']." & Method);
+   end Execute;
+
+   function Execute (Context : Context_2D_Type; Method : String)
+                     return String
+   is
+   begin
+      return Gnoga.Connections.Execute_Script
+        (ID     => Context.Connection_ID,
+         Script => "gnoga['" &
+           Ada.Strings.Unbounded.To_String (Context.Context_ID) &
+           "']." & Method);
+   end Execute;
 
 end Gnoga.Element.Canvas;

@@ -97,7 +97,7 @@ package Gnoga.Element.Common is
    -------------------------------------------------------------------------
 
    procedure Disabled (Button : in out Button_Type;
-                        Value   : in  Boolean := True);
+                       Value  : in     Boolean := True);
    function Disabled (Button : Button_Type) return Boolean;
 
    -------------------------------------------------------------------------

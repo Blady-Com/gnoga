@@ -143,6 +143,13 @@ package Gnoga.Window is
 
    function Left (Window : Window_Type) return Integer;
 
+   function Search_Parameter (Window : Window_Type; Name  : String)
+                              return String;
+   --  Returns the value of parameters passed in on URL. Returns "undefined"
+   --  if Name is not in URL search parameters.
+   --  For example: http://localhost:8080/?page_id=2
+   --  Search_Parameter (Window, "page_id") = "2"
+
    -------------------------------------------------------------------------
    --  Window_Type - Methods
    -------------------------------------------------------------------------

@@ -2,8 +2,8 @@ with Gnoga.Application.Multiuser;
 with Gnoga.Window;
 with Gnoga.Base;
 with Gnoga.Element;
+with Gnoga.Element.Form;
 with Gnoga.Element.Common;
-with Gnoga.Element.IFrame;
 with Gnoga.Types;
 
 procedure Demo is
@@ -14,69 +14,58 @@ procedure Demo is
    type App_Data is new Connection_Data_Type with
       record
          Main_Window : Window.Pointer_To_Window_Class;
-         Hello_World : Common.Button_Type;
-         Click_Quit  : Common.Button_Type;
-         Frame       : IFrame.IFrame_Type;
+         Input       : Form.Form_Element_Type;
       end record;
    type App_Access is access all App_Data;
 
    type App_Data2 is new Connection_Data_Type with
       record
          Main_Window : Window.Pointer_To_Window_Class;
-         New_Div     : Common.DIV_Type;
       end record;
    type App_Access2 is access all App_Data2;
 
    procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
+      R   : Common.DIV_Type;
    begin
-      App.Frame.Window.Document.Body_Element.Background_Color ("Orange");
+      App.Main_Window.Document.Body_Element.Background_Color ("Orange");
+
+      R.Create (App.Main_Window.Document.Body_Element.all,
+                "Value of Some_Text is " & App.Input.Value);
+      R.Place_Inside_Bottom_Of (App.Main_Window.Document.Body_Element.all);
    end On_Click;
-
-
-   procedure On_Click3 (Object : in out Gnoga.Base.Base_Type'Class)
-   is
-   begin
-      Log ("Click 3 worked");
-   end On_Click3;
-
-
-   procedure On_Click2 (Object : in out Gnoga.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
-   begin
-      null;
-   end On_Click2;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
-      App : aliased App_Data;
-      Hr1 : Gnoga.Element.Common.HR_Type;
-      B   : Common.Button_Type;
+      App     : aliased App_Data;
+      My_Form : Form.Form_Type;
+      Button1 : Form.Form_Element_Type;
+      Button2 : Form.Form_Element_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      App.Hello_World.Create (Main_Window, "Launch Window");
-      App.Hello_World.Place_Inside_Top_Of
-        (Main_Window.Document.Body_Element.all);
-      App.Hello_World.On_Click_Handler (On_Click'Unrestricted_Access);
+      My_Form.Create (Main_Window);
+      My_Form.Action ("/demo");
+      My_Form.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
-      Hr1.Create (Main_Window);
-      Hr1.Place_After (App.Hello_World);
+      App.Input.Create (Form       => My_Form,
+                        Input_Type => "text",
+                        Name       => "Some_Text");
+      App.Input.Place_After (My_Form);
 
-      App.Click_Quit.Create (Main_Window, "Attach Window");
-      App.Click_Quit.Place_After (Hr1);
-      App.Click_Quit.On_Click_Handler (On_Click2'Unrestricted_Access);
+      Button1.Create (Form       => My_Form,
+                      Input_Type => "button",
+                      Value      => "onclick button");
+      Button1.Place_After (App.Input);
+      Button1.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      B.Create (Main_Window, "click3");
-      B.Place_Inside_Bottom_Of (Main_Window.Document.Body_Element.all);
-      B.On_Click_Handler (On_Click3'Unrestricted_Access);
-
-      App.Frame.Create (Main_Window, "/demo");
-      App.Frame.Width (800);
-      App.Frame.Place_After (B);
+      Button2.Create (Form       => My_Form,
+                      Input_Type => "submit",
+                      Value      => "send to demo");
+      Button2.Place_After (Button1);
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
 
@@ -88,18 +77,12 @@ procedure Demo is
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App : aliased App_Data2;
-      D : Gnoga.Element.Common.DIV_Type;
-      B : Common.Button_Type;
+      R   : Common.Div_Type;
    begin
-      Main_Window.Document.Body_Element.Background_Color ("blue");
-
-      D.Create (Main_Window, "This is on another path in same application.");
-      D.Color ("yellow");
-      D.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
-
-      B.Create (Main_Window, "click3");
-      B.Place_Inside_Bottom_Of (Main_Window.Document.Body_Element.all);
-      B.On_Click_Handler (On_Click3'Unrestricted_Access);
+      R.Create (Main_Window, "Results => " & Main_Window.Location.Search &
+                  "<br />" &
+                  "Some_Text => " & Main_Window.Search_Parameter ("Some_Text"));
+      R.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
 

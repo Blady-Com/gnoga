@@ -257,6 +257,16 @@ package body Gnoga.Window is
       return Window.Property ("screenX");
    end Left;
 
+   ----------------------
+   -- Search_Parameter --
+   ----------------------
+
+   function Search_Parameter (Window : Window_Type; Name  : String)
+                              return String
+   is
+   begin
+      return Gnoga.Connections.Search_Parameter (Window.Connection_ID, Name);
+   end Search_Parameter;
    ------------
    -- Launch --
    ------------

@@ -166,7 +166,8 @@ package body Gnoga.Connections is
 
       Write_To_Console ("Starting Web Server with web root at " &
                               Ada.Strings.Unbounded.To_String (Web_Root));
-      Write_To_Console ("Starting Websocket Server");
+      Write_To_Console ("Starting Gnoga Server on " & Host & ":" &
+                          Left_Trim (Port'Img));
       AWS.Net.WebSocket.Registry.Register ("/gnoga", Socket_Type_Create'Access);
       AWS.Net.WebSocket.Registry.Control.Start;
 

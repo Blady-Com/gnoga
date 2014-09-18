@@ -14,6 +14,7 @@ procedure Demo is
    type App_Data is new Connection_Data_Type with
       record
          Main_Window : Window.Pointer_To_Window_Class;
+         My_Form     : Form.Form_Type;
          Input       : Form.Form_Element_Type;
       end record;
    type App_Access is access all App_Data;
@@ -36,33 +37,43 @@ procedure Demo is
       R.Place_Inside_Bottom_Of (App.Main_Window.Document.Body_Element.all);
    end On_Click;
 
+   procedure On_Submit (Object : in out Gnoga.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      Log ("On submit.");
+      App.Main_Window.alert ("On Submit");
+      if App.Input.Value /= "no" then
+         App.My_Form.Submit;
+      end if;
+   end On_Submit;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App     : aliased App_Data;
-      My_Form : Form.Form_Type;
       Button1 : Form.Form_Element_Type;
       Button2 : Form.Form_Element_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      My_Form.Create (Main_Window);
-      My_Form.Action ("/demo");
-      My_Form.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
+      App.My_Form.Create (Main_Window);
+      App.My_Form.Action ("/demo");
+      App.My_Form.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
+      App.My_Form.On_Submit_Handler (On_Submit'Unrestricted_Access);
 
-      App.Input.Create (Form       => My_Form,
+      App.Input.Create (Form       => App.My_Form,
                         Input_Type => "text",
                         Name       => "Some_Text");
-      App.Input.Place_After (My_Form);
+      App.Input.Place_After (App.My_Form);
 
-      Button1.Create (Form       => My_Form,
+      Button1.Create (Form       => App.My_Form,
                       Input_Type => "button",
                       Value      => "onclick button");
       Button1.Place_After (App.Input);
       Button1.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      Button2.Create (Form       => My_Form,
+      Button2.Create (Form       => App.My_Form,
                       Input_Type => "submit",
                       Value      => "send to demo");
       Button2.Place_After (Button1);

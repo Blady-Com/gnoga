@@ -267,6 +267,7 @@ package body Gnoga.Window is
    begin
       return Gnoga.Connections.Search_Parameter (Window.Connection_ID, Name);
    end Search_Parameter;
+
    ------------
    -- Launch --
    ------------

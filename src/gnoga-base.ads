@@ -290,6 +290,9 @@ package Gnoga.Base is
    procedure On_Reset_Handler (Object  : in out Base_Type;
                                Handler : in     Action_Event);
    procedure Fire_On_Reset (Object : in out Base_Type);
+   --  If this event is bound it will stop automatic reset of form contents
+   --  Gnoga.Element.Form_Type.Reset must be called in the handler for the
+   --  form to be reset.
 
    procedure On_Search_Handler (Object  : in out Base_Type;
                                 Handler : in     Action_Event);
@@ -300,9 +303,11 @@ package Gnoga.Base is
    procedure Fire_On_Select (Object : in out Base_Type);
 
    procedure On_Submit_Handler (Object  : in out Base_Type;
-                                   Handler : in     Action_Event);
+                                Handler : in     Action_Event);
    procedure Fire_On_Submit (Object : in out Base_Type);
-
+   --  If this event is bound it will stop automatic submission of a form
+   --  Gnoga.Element.Form_Type.Submit must be called in the handler for
+   --  the form to be submitted.
 
    -- Mouse Events --
 
@@ -490,9 +495,12 @@ package Gnoga.Base is
    procedure Bind_Event (Object  : in out Base_Type;
                          Event   : in     String;
                          Message : in     String;
-                         Script  : in     String    := "");
+                         Script  : in     String    := "";
+                         Cancel  : in     Boolean   := false);
    --  On Event occuring to Object Gnoga will fire Object.On_Message with
    --  Event and Message, the result of Script is concatinated to Message.
+   --  If Cancel is true then JS will cancel the default behavior of Event
+   --  from occuring on browser. (e.g. stopping a form submit in onsubmit)
 
    procedure Bind_Event_Script (Object : in out Base_Type;
                                 Event  : in     String;

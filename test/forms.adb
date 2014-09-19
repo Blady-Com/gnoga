@@ -109,7 +109,7 @@ begin
    Application.Multiuser.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
                                              "/demo");
 
-   Application.Application_Name ("Test App for Gnoga");
+   Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 

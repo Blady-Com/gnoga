@@ -49,15 +49,15 @@ package body Gnoga.Application is
    -- Application_Name --
    ----------------------
 
-   procedure Application_Name (Name : in String) is
+   procedure Title (Name : in String) is
    begin
       App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
-   end Application_Name;
+   end Title;
 
-   function Application_Name return String is
+   function Title return String is
    begin
       return Ada.Strings.Unbounded.To_String (App_Name);
-   end Application_Name;
+   end Title;
 
    -------------------
    -- HTML_On_Close --

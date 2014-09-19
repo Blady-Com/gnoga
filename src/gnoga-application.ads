@@ -41,8 +41,8 @@ package Gnoga.Application is
    --  Application packages simplify the management of single or multipage
    --  Gnoga GUIs.
 
-   procedure Application_Name (Name : in String);
-   function Application_Name return String;
+   procedure Title (Name : in String);
+   function Title return String;
    --  Set the name of the application. This will automatically set the
    --  browser window title to Name on new connections.
 

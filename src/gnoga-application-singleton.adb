@@ -96,7 +96,7 @@ package body Gnoga.Application.Singleton is
       Main_Window.Attach (Connection_ID => Connection_ID);
       Gnoga.Connections.HTML_On_Close (Connection_ID, HTML_On_Close);
 
-      Main_Window.Document.Title (Application_Name);
+      Main_Window.Document.Title (Title);
    end Initialize;
 
    procedure Message_Loop is

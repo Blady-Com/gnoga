@@ -78,7 +78,7 @@ procedure Singleton is
       Gnoga.Application.Singleton.End_Application;
    end End_App;
 begin
-   Gnoga.Application.Application_Name ("Test App for Gnoga");
+   Gnoga.Application.Title ("Test App for Gnoga");
    Gnoga.Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 

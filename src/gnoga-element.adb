@@ -47,12 +47,12 @@ package body Gnoga.Element is
    ----------------------
    -- Create_From_HTML --
    ----------------------
-   
+
    procedure Create_From_HTML (Element : in out Element_Type;
                                Parent  : in out Gnoga.Base.Base_Type'Class;
                                HTML    : in     String;
                                ID      : in     String := "")
-   is      
+   is
       function Adjusted_ID return String is
       begin
          if ID = "" then
@@ -61,7 +61,7 @@ package body Gnoga.Element is
             return ID;
          end if;
       end Adjusted_ID;
-      
+
       GID : String := Adjusted_ID;
    begin
       Element.Create_With_Script
@@ -70,18 +70,18 @@ package body Gnoga.Element is
          Script        => "gnoga['" & GID & "']=$(""" & Escape_Quotes (HTML) &
              """).prop('id','" & GID & "');",
          ID_Type       => Gnoga.Types.Gnoga_ID);
-      
+
       Element.Parent (Parent);
    end Create_From_HTML;
 
    -------------------------------------------------------------------------
    --  Element_Type - Properties
    -------------------------------------------------------------------------
-   
+
    -----------
    -- Style --
    -----------
-   
+
    procedure Style (Element : in out Element_Type;
                     Name    : in String;
                     Value   : in String)
@@ -90,17 +90,32 @@ package body Gnoga.Element is
       Element.jQuery_Execute ("css ('" & Name & "', """ &
                                 Escape_Quotes (Value) & """);");
    end Style;
-   
+
+   procedure Style (Element : in out Element_Type;
+                    Name    : in String;
+                    Value   : in Integer)
+   is
+   begin
+      Element.jQuery_Execute ("css ('" & Name & "'," & Value'Img & ");");
+   end Style;
+
    function Style (Element : Element_Type; Name : String) return String is
    begin
       return Element.jQuery_Execute ("css ('" & Name & "');");
    end Style;
 
-   
+   function Style (Element : Element_Type; Name : String) return Integer is
+   begin
+      return Integer'Value (Element.Style (Name));
+   exception
+      when others =>
+         return 0;
+   end Style;
+
    ---------------
    -- Attribute --
    ---------------
-   
+
    procedure Attribute (Element : in out Element_Type;
                         Name    : in String;
                         Value   : in String)
@@ -109,7 +124,7 @@ package body Gnoga.Element is
       Element.jQuery_Execute ("attr ('" & Name & "',""" &
                                 Escape_Quotes (Value) & """);");
    end Attribute;
-         
+
    function Attribute (Element : Element_Type; Name : String) return String is
    begin
       return Element.jQuery_Execute ("attr ('" & Name & "');");
@@ -118,7 +133,7 @@ package body Gnoga.Element is
    ----------------
    -- Access_Key --
    ----------------
-   
+
    procedure Access_Key (Element : in out Element_Type; Value : in String) is
    begin
       Element.Property ("accessKey", Value);
@@ -132,7 +147,7 @@ package body Gnoga.Element is
    --------------------
    -- Advisory_Title --
    --------------------
-   
+
    procedure Advisory_Title (Element : in out Element_Type;
                              Value   : in     String)
    is
@@ -158,18 +173,18 @@ package body Gnoga.Element is
    begin
       return Element.Property ("className");
    end Class_Name;
-   
+
    --------------
    -- Editable --
    --------------
-   
+
    procedure Editable (Element : in out Element_Type;
                        Value   : in     Boolean := True)
    is
    begin
       Element.Property ("contentEditable", Value);
    end Editable;
-   
+
    function Editable (Element : Element_Type) return Boolean is
    begin
       return Element.Property ("isContentEditable");
@@ -178,14 +193,14 @@ package body Gnoga.Element is
    ---------------
    -- Draggable --
    ---------------
-   
+
    procedure Draggable (Element : in out Element_Type;
                         Value   : in     Boolean := True)
    is
    begin
       Element.Property ("draggable", Value);
    end Draggable;
-   
+
    function Draggable (Element : Element_Type) return Boolean is
    begin
       return Element.Property ("draggable");
@@ -194,30 +209,30 @@ package body Gnoga.Element is
    ------------
    -- Hidden --
    ------------
-   
+
    procedure Hidden (Element : in out Element_Type;
                      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("hidden", Value);
    end Hidden;
-   
+
    function Hidden (Element : Element_Type) return Boolean is
    begin
       return Element.Property ("hidden");
    end Hidden;
-   
+
    ----------------
    -- Inner_HTML --
    ----------------
-   
+
    procedure Inner_HTML (Element : in out Element_Type;
                          Value   : in     String)
    is
    begin
       Element.jQuery_Execute ("html (""" & Escape_Quotes (Value) & """);");
    end Inner_HTML;
-   
+
    function Inner_HTML (Element : Element_Type) return String is
    begin
       return Element.jQuery_Execute ("html();");
@@ -226,14 +241,14 @@ package body Gnoga.Element is
    -----------------
    -- Spell_Check --
    -----------------
-   
+
    procedure Spell_Check (Element : in out Element_Type;
                           Value   : in     Boolean := True)
    is
    begin
       Element.Property ("spellcheck", Value);
    end Spell_Check;
-   
+
    function Spell_Check (Element : Element_Type) return Boolean is
    begin
       return Element.Property ("spellcheck");
@@ -242,13 +257,13 @@ package body Gnoga.Element is
    ---------------
    -- Tab_Index --
    ---------------
-   
+
    procedure Tab_Index (Element : in out Element_Type; Value : in Natural)
    is
    begin
       Element.Property ("tabIndex", Value);
    end Tab_Index;
-   
+
    function Tab_Index (Element : Element_Type) return Natural is
    begin
       return Element.Property ("tabIndex");
@@ -257,12 +272,12 @@ package body Gnoga.Element is
    ----------
    -- Text --
    ----------
-   
+
    procedure Text (Element : in out Element_Type; Value : in String) is
    begin
       Element.jQuery_Execute ("text (""" & Escape_Quotes (Value) & """);");
    end Text;
-   
+
    function Text (Element : Element_Type) return String is
    begin
       return Element.jQuery_Execute ("text();");
@@ -271,7 +286,7 @@ package body Gnoga.Element is
    --------------------
    -- Text_Direction --
    --------------------
-   
+
    procedure Text_Direction (Element : in out Element_Type;
                              Value   : in     Text_Direction_Type)
    is
@@ -286,7 +301,7 @@ package body Gnoga.Element is
    begin
       Element.Property ("dir", To_String);
    end Text_Direction;
-   
+
    function Text_Direction (Element : Element_Type) return Text_Direction_Type
    is
       function To_TDT return Text_Direction_Type is
@@ -300,11 +315,11 @@ package body Gnoga.Element is
    begin
       return To_TDT;
    end Text_Direction;
-   
+
    -------------------
    -- Language_Code --
    -------------------
-   
+
    procedure Language_Code (Element : in out Element_Type;
                             Value   : in     String)
    is
@@ -317,11 +332,11 @@ package body Gnoga.Element is
       return Element.Property ("lang");
    end Language_Code;
 
-   
+
    -------------
    -- Visible --
    -------------
-   
+
    procedure Visible (Element : in out Element_Type; Value : in Boolean := True)
    is
    begin
@@ -331,7 +346,7 @@ package body Gnoga.Element is
          Element.Style ("visibility", "hidden");
       end if;
    end Visible;
-   
+
    function Visible (Element : Element_Type) return Boolean
    is
    begin
@@ -341,25 +356,25 @@ package body Gnoga.Element is
    -------------------
    -- Client_Height --
    -------------------
-   
+
    function Client_Height (Element : Element_Type) return Natural is
    begin
       return Element.Property ("clientHeight");
    end Client_Height;
-   
+
    ------------------
    -- Client_Width --
    ------------------
-   
+
    function Client_Width (Element : Element_Type) return Natural is
    begin
       return Element.Property ("clientWidth");
    end Client_Width;
-   
+
    ------------------
    -- Client_Left --
    ------------------
-   
+
    function Client_Left (Element : Element_Type) return Natural is
    begin
       return Element.Property ("clientLeft");
@@ -368,7 +383,7 @@ package body Gnoga.Element is
    ------------------
    -- Client_Top --
    ------------------
-   
+
    function Client_Top (Element : Element_Type) return Natural is
    begin
       return Element.Property ("clientTop");
@@ -377,16 +392,16 @@ package body Gnoga.Element is
    -------------------
    -- Offset_Height --
    -------------------
-   
+
    function Offset_Height (Element : Element_Type) return Natural is
    begin
       return Element.Property ("offsetHeight");
    end Offset_Height;
-   
+
    ------------------
    -- Offset_Width --
    ------------------
-   
+
    function Offset_Width (Element : Element_Type) return Natural is
    begin
       return Element.Property ("offsetWidth");
@@ -395,7 +410,7 @@ package body Gnoga.Element is
    ------------------
    -- Offset_Left --
    ------------------
-   
+
    function Offset_Left (Element : Element_Type) return Natural is
    begin
       return Element.Property ("offsetLeft");
@@ -404,25 +419,25 @@ package body Gnoga.Element is
    ------------------
    -- Offset_Top --
    ------------------
-   
+
    function Offset_Top (Element : Element_Type) return Natural is
    begin
       return Element.Property ("offsetTop");
-   end Offset_Top;   
+   end Offset_Top;
 
    -------------------
    -- Scroll_Height --
    -------------------
-   
+
    function Scroll_Height (Element : Element_Type) return Natural is
    begin
       return Element.Property ("scrollHeight");
    end Scroll_Height;
-   
+
    ------------------
    -- Scroll_Width --
    ------------------
-   
+
    function Scroll_Width (Element : Element_Type) return Natural is
    begin
       return Element.Property ("scrollWidth");
@@ -431,12 +446,12 @@ package body Gnoga.Element is
    ------------------
    -- Scroll_Left --
    ------------------
-   
+
    procedure Scroll_Left (Element : in out Element_Type; Value : Integer) is
    begin
       Element.Property ("scrollLeft", Value);
    end Scroll_Left;
-   
+
    function Scroll_Left (Element : Element_Type) return Integer is
    begin
       return Element.Property ("scrollLeft");
@@ -445,7 +460,7 @@ package body Gnoga.Element is
    ------------------
    -- Scroll_Top --
    ------------------
-   
+
    procedure Scroll_Top (Element : in out Element_Type; Value : Integer) is
    begin
       Element.Property ("scrollTop", Value);
@@ -464,39 +479,39 @@ package body Gnoga.Element is
    begin
       Element.Style ("color", Value);
    end Color;
-   
+
    procedure Color (Element : in out Element_Type;
                     RGBA    : Gnoga.Types.RGBA_Type)
    is
    begin
       Element.Style ("color", Gnoga.Types.To_String (RGBA));
    end Color;
-   
+
    function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type is
    begin
       return Gnoga.Types.To_RGBA (Element.Style ("color"));
    end Color;
-   
+
    -------------
    -- Opacity --
    -------------
-   
+
    procedure Opacity (Element : in out Element_Type;
                       Alpha   : in     Gnoga.Types.Alpha_Type)
    is
    begin
       Element.Style ("opacity", Alpha'Img);
    end Opacity;
-   
+
    function Opacity (Element : Element_Type) return Gnoga.Types.Alpha_Type is
    begin
       return Gnoga.Types.Alpha_Type'Value (Element.Style ("opacity"));
    exception
       when others =>
          Log ("Error converting opacity to Alpha_Type");
-         return 1.0;      
+         return 1.0;
    end Opacity;
-   
+
    ---------------------------
    -- Background_Attachment --
    ---------------------------
@@ -508,7 +523,7 @@ package body Gnoga.Element is
    begin
       Element.Style ("background-attachment", Value'Img);
    end Background_Attachment;
-   
+
    function Background_Attachment (Element : Element_Type)
                                    return Background_Attachment_type
    is
@@ -520,7 +535,7 @@ package body Gnoga.Element is
          return Background_Attachment_type'Value (Value);
       end if;
    end Background_Attachment;
-   
+
    ----------------------
    -- Background_Color --
    ----------------------
@@ -529,14 +544,14 @@ package body Gnoga.Element is
    begin
       Element.Style ("background-color", Value);
    end Background_Color;
-   
+
    procedure Background_Color (Element : in out Element_Type;
                                RGBA    : Gnoga.Types.RGBA_Type)
    is
    begin
       Element.Style ("background-color", Gnoga.Types.To_String (RGBA));
    end Background_Color;
-   
+
    function Background_Color (Element : Element_Type)
                               return Gnoga.Types.RGBA_Type
    is
@@ -547,7 +562,7 @@ package body Gnoga.Element is
    ----------------------
    -- Background_Image --
    ----------------------
-   
+
    procedure Background_Image (Element : in out Element_Type;
                                Value   : in     String)
    is
@@ -559,11 +574,11 @@ package body Gnoga.Element is
    begin
       return Element.Property ("background-image");
    end Background_Image;
-   
+
    -------------------------
    -- Background_Position --
    -------------------------
-   
+
    procedure Background_Position (Element : in out Element_Type;
                                   Value   : in     String)
    is
@@ -579,7 +594,7 @@ package body Gnoga.Element is
    -----------------------
    -- Background_Origin --
    -----------------------
-   
+
    procedure Background_Origin (Element : in out Element_Type;
                                 Value   : in     String)
    is
@@ -595,7 +610,7 @@ package body Gnoga.Element is
    -----------------------
    -- Background_Repeat --
    -----------------------
-   
+
    procedure Background_Repeat (Element : in out Element_Type;
                                 Value   : in     String)
    is
@@ -606,12 +621,12 @@ package body Gnoga.Element is
    function Background_Repeat (Element : Element_Type) return String is
    begin
       return Element.Property ("background-repeat");
-   end Background_Repeat;      
-   
+   end Background_Repeat;
+
    ---------------------
    -- Background_Clip --
    ---------------------
-   
+
    procedure Background_Clip (Element : in out Element_Type;
                               Value   : in     String)
    is
@@ -627,7 +642,7 @@ package body Gnoga.Element is
    ---------------------
    -- Background_Size --
    ---------------------
-   
+
    procedure Background_Size (Element : in out Element_Type;
                               Value   : in     String)
    is
@@ -643,7 +658,7 @@ package body Gnoga.Element is
    -----------------
    -- First_Child --
    -----------------
-   
+
    procedure First_Child (Element : in out Element_Type;
                           Child   : in out Element_Type'Class)
    is
@@ -653,11 +668,11 @@ package body Gnoga.Element is
                       ("children().first().attr('id');"),
                     ID_Type       => Gnoga.Types.DOM_ID);
    end First_Child;
-   
+
    ------------------
    -- Next_Sibling --
    ------------------
-   
+
    procedure Next_Sibling (Element : in out Element_Type;
                            Sibling : in out Element_Type'Class)
    is
@@ -667,16 +682,16 @@ package body Gnoga.Element is
                         ("siblings().first().attr('id');"),
                       ID_Type       => Gnoga.Types.DOM_ID);
    end Next_Sibling;
-   
+
    --------------
    -- HTML_Tag --
    --------------
-   
+
    function HTML_Tag (Element : Element_Type) return String is
    begin
       return Element.Property ("tagName");
    end HTML_Tag;
-   
+
    -------------------------------------------------------------------------
    --  Element_Type - Methods
    -------------------------------------------------------------------------
@@ -684,44 +699,44 @@ package body Gnoga.Element is
    -------------------------
    -- Place_Inside_Top_Of --
    -------------------------
-   
+
    procedure Place_Inside_Top_Of (Element : in out Element_Type;
                                   Target  : in out Element_Type'Class)
    is
    begin
-      Target.jQuery_Execute ("prepend(" & Element.jQuery & ")");      
+      Target.jQuery_Execute ("prepend(" & Element.jQuery & ")");
    end Place_Inside_Top_Of;
-   
+
    procedure Place_Inside_Bottom_Of (Element : in out Element_Type;
                                      Target  : in out Element_Type'Class)
    is
-   begin      
-      Target.jQuery_Execute ("append(" & Element.jQuery & ")");      
+   begin
+      Target.jQuery_Execute ("append(" & Element.jQuery & ")");
    end Place_Inside_Bottom_Of;
-   
+
    procedure Place_Before (Element : in out Element_Type;
                            Target  : in out Element_Type'Class)
    is
    begin
       Element.jQuery_Execute ("insertBefore(" & Target.jQuery & ")");
    end Place_Before;
-   
+
    procedure Place_After (Element : in out Element_Type;
                           Target  : in out Element_Type'Class)
    is
    begin
       Element.jQuery_Execute ("insertAfter(" & Target.jQuery & ")");
    end Place_After;
-   
+
    -----------
    -- Click --
    -----------
-   
+
    procedure Click (Element : in out Element_Type) is
    begin
       Element.Execute ("click();");
    end Click;
-   
+
    -------------------------------------------------------------------------
    --  Element_Type - Events
    -------------------------------------------------------------------------

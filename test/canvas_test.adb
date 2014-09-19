@@ -126,7 +126,7 @@ begin
    Application.Multiuser.Initialize (Event => On_Connect'Unrestricted_Access,
                                      Boot  => "debug.html");
 
-   Application.Application_Name ("Test App for Gnoga");
+   Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 

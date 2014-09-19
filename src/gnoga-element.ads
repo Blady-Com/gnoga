@@ -270,7 +270,11 @@ package Gnoga.Element is
    procedure Style (Element : in out Element_Type;
                     Name    : in String;
                     Value   : in String);
+   procedure Style (Element : in out Element_Type;
+                    Name    : in String;
+                    Value   : in Integer);
    function Style (Element : Element_Type; Name : String) return String;
+   function Style (Element : Element_Type; Name : String) return Integer;
    --  General access to style Name
 
    procedure Attribute (Element : in out Element_Type;

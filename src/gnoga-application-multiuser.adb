@@ -63,7 +63,7 @@ package body Gnoga.Application.Multiuser is
       Main_Window : Gnoga.Window.Window_Type;
    begin
       Main_Window.Attach (Connection_ID => ID);
-      Main_Window.Document.Title (Application_Name);
+      Main_Window.Document.Title (Title);
       Connections.HTML_On_Close (ID, HTML_On_Close);
 
       declare

@@ -61,6 +61,8 @@ package Gnoga.Base is
 
    overriding procedure Finalize (Object : in out Base_Type);
    --  Detaches object from message queue and fires On_Destroy
+   --  If ID_Type = Gnoga_ID then clear the browser reference to the
+   --  object
 
    procedure Free (Object : in out Base_Type);
    --  Free a dynamically created Object

@@ -167,9 +167,20 @@ package body Gnoga.Base is
    --------------
 
    procedure Finalize (Object : in out Base_Type) is
+      use type Gnoga.Types.ID_Enumeration;
    begin
       Object.On_Destroy;
       if Object.Connection_ID /= Gnoga.Types.No_Connection then
+         if Object.ID_Type = Gnoga.Types.Gnoga_ID then
+            begin
+               Gnoga.Connections.Execute_Script
+                 (Object.Connection_ID, "delete gnoga['" & Object.ID & "'];");
+            exception
+               when Gnoga.Connections.Connection_Error =>
+                  null;
+            end;
+         end if;
+
          Object.Detach_From_Message_Queue;
       end if;
    end Finalize;

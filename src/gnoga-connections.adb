@@ -821,7 +821,7 @@ package body Gnoga.Connections is
    begin
       declare
          Script_ID : Gnoga.Types.Unique_ID;
-         Socket    : Socket_Type := Connection_Manager.Connection_Socket(ID);
+         Socket    : Socket_Type := Connection_Manager.Connection_Socket (ID);
       begin
          Script_Manager.Add_Script_Holder
            (ID     => Script_ID,

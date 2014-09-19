@@ -57,10 +57,29 @@ package Gnoga.Element.Canvas is
                      ID      : in     String := "");
    --  Create a Canvas container
 
-   type Context_2D_Type is
+   -------------------------------------------------------------------------
+   --  Context_Types
+   -------------------------------------------------------------------------
+
+   type Context_Type is
      new Ada.Finalization.Limited_Controlled with private;
+   type Context_Access is access all Context_Type;
+   type Pointer_To_Context_Class is access all Context_Type'Class;
+
+   overriding procedure Finalize (Object : in out Context_Type);
+   --  Clear browser reference to created context
+
+   type Context_2D_Type is new Context_Type with private;
    type Context_2D_Access is access all Context_2D_Type;
    type Pointer_To_Context_2D_Class is access all Context_2D_Type'Class;
+
+   type Gradient_Type is new Context_Type with private;
+   type Gradient_Access is access all Gradient_Type;
+   type Pointer_To_Gradient_Class is access all Gradient_Type'Class;
+
+   type Pattern_Type is new Context_Type with private;
+   type Pattern_Access is access all Pattern_Type;
+   type Pointer_To_Pattern_Class is access all Pattern_Type'Class;
 
    -------------------------------------------------------------------------
    --  Canvas_Type - Methods
@@ -74,38 +93,360 @@ package Gnoga.Element.Canvas is
    --  Context_2D_Type - Properties
    -------------------------------------------------------------------------
 
+   --  Colors, Styles, Shadows
 
+   procedure Fill_Color (Context : in out Context_2D_Type;
+                         Value   : in     Gnoga.Types.RGBA_Type);
+   procedure Fill_Color (Context : in out Context_2D_Type;
+                         Value   : in     String);
+   --  Color used to fill in the drawing
 
+   procedure Fill_Gradient (Context : in out Context_2D_Type;
+                            Value   : in out Gradient_Type'Class);
+   --  Gradient used to fill in drawing
 
-   --  Generic Properties --
+   procedure Fill_Pattern (Context : in out Context_2D_Type;
+                           Value   : in out Pattern_Type'Class);
+   --  Pattern used to fill in the drawing
 
-   procedure Property (Context : in out Context_2D_Type;
-                       Name    : in     String;
-                       Value   : in     String);
-   function Property (Context : Context_2D_Type; Name : String) return String;
+   procedure Stroke_Color (Context : in out Context_2D_Type;
+                           Value   : in     Gnoga.Types.RGBA_Type);
+   procedure Stroke_Color (Context : in out Context_2D_Type;
+                           Value   : in     String);
+   --  Color used for strokes
+
+   procedure Stroke_Gradient (Context : in out Context_2D_Type;
+                              Value   : in out Gradient_Type'Class);
+   --  Gradient used for strokes
+
+   procedure Stroke_Pattern (Context : in out Context_2D_Type;
+                             Value   : in out Pattern_Type'Class);
+
+   procedure Shadow_Color (Context : in out Context_2D_Type;
+                           Value   : in     Gnoga.Types.RGBA_Type);
+   procedure Shadow_Color (Context : in out Context_2D_Type;
+                           Value   : in     String);
+   -- Color to use for shadows
+
+   procedure Shadow_Blur (Context : in out Context_2D_Type;
+                          Value   : in     Integer);
+   --  Blur level for shadows
+
+   procedure Shadow_Offset_X (Context : in out Context_2D_Type;
+                              Value   : in     Integer);
+   --  Horizontal distance of the shadow from the shape
+
+   procedure Shadow_Offset_Y (Context : in out Context_2D_Type;
+                              Value   : in     Integer);
+   --  Vertical distance of the shadow from the shape
+
+   --  Line Styles
+
+   type Line_Cap_Type is (Butt, Round, Square);
+
+   procedure Line_Cap (Context : in out Context_2D_Type;
+                       Value   : in     Line_Cap_Type);
+   -- Style of the end caps for a line
+
+   type Line_Join_Type is (Bevel, Round, Miter);
+
+   procedure Line_Join (Context : in out Context_2D_Type;
+                        Value   : in     Line_Join_Type);
+   --  Type of corner created when two lines meet
+
+   procedure Line_Width (Context : in out Context_2D_Type;
+                         Value   : in     Integer);
+
+   procedure Miter_Limit (Context : in out Context_2D_Type;
+                          Value   : in     Positive);
+   --  Maximum miter length
+
+   --  Text
+
+   type Font_Style_Type is (Normal, Italic, Oblique);
+
+   type Font_Variant_Type is (Normal, Small_Caps);
+
+   type Font_Weight_Type is (Weight_Normal, Weight_Bold,
+                             Weight_Bolder, Weight_Lighter,
+                             Weight_100, Weight_200, Weight_300,
+                             Weight_400, Weight_500, Weight_600,
+                             Weight_700, Weight_800, Weight_900);
+
+   type System_Font_Type is (Caption, Icon, Menu, Message_Box, Small_Caption,
+                             Status_Bar);
+
+   procedure Font
+     (Context          : in out Context_2D_Type;
+      Family           : in     String            := "sans-serif";
+      Height_In_Pixels : in     Integer           := 10;
+      Style            : in     Font_Style_Type   := Normal;
+      Weight           : in     Font_Weight_Type  := Weight_Normal;
+      Variant          : in     Font_Variant_Type := Normal);
+   procedure Font (Context     : in out Context_2D_Type;
+                   System_Font : in     System_Font_Type);
+   --  Sets or returns the current font properties for text content
+
+   type Alignment_Type is (Left, Right, Center, At_Start, To_End);
+
+   procedure Text_Alignment (Context : in out Context_2D_Type;
+                             Value   : in     Alignment_Type);
+   --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
+   --  in rtl languages At_Start = Right, and To_End = Left.
+
+   type Baseline_Type is (Alphabetic, Top, Hanging, Middle,
+                          Ideographic, Bottom);
+   procedure Text_Baseline (Context : in out Context_2D_Type;
+                            Value   : in     Baseline_Type);
+   --  Baseline used when drawing text
+
+   --  Image Data
+
+   --  width	Returns the width of an ImageData object
+   --  height	Returns the height of an ImageData object
+   --  data	Returns an object that contains image data of a specified ImageData object
+
+   --  Compositing
+
+   --  globalAlpha
+   procedure Global_Alpha (Context : in out Context_2D_Type;
+                           Alpha   : Gnoga.Types.Alpha_Type);
+   --  Global Alpha Transparency
+
+   --  globalCompositeOperation
+   type Composite_Method_Type is
+     (Source_Over, Source_Atop, Source_In, Source_Out,
+      Destination_Over, Destination_Atop, Destination_In, Destination_Out,
+      Lighter, Copy, Xor_Copy);
+
+   procedure Glogal_Composite_Operation
+     (Context : in out Context_2D_Type;
+      Value   : in     Composite_Method_Type);
+   --  How a new image are composited onto Context
 
    -------------------------------------------------------------------------
    --  Context_2D_Type - Methods
    -------------------------------------------------------------------------
 
-   --  Generic Methods --
+   --  Colors, Styles, Shadows
 
-   procedure Execute (Context : in out Context_2D_Type; Method : String);
-   function Execute (Context : Context_2D_Type; Method : String)
+   procedure Create_Linear_Gradient (Gradient : in out Gradient_Type;
+                                     Context  : in out Context_2D_Type'Class;
+                                     X_1      : in     Integer;
+                                     Y_1      : in     Integer;
+                                     X_2      : in     Integer;
+                                     Y_2      : in     Integer);
+   --  Creates a linear gradient. Gradient Start Point = (X_1,Y_1),
+   --  End Point = (X_2, Y_2)
+
+   procedure Create_Radial_Gradient (Gradient : in out Gradient_Type;
+                                     Context  : in out Context_2D_Type'Class;
+                                     X_1      : in     Integer;
+                                     Y_1      : in     Integer;
+                                     R_1      : in     Integer;
+                                     X_2      : in     Integer;
+                                     Y_2      : in     Integer;
+                                     R_2      : in     Integer);
+   --  Creates a radial gradient. Gradient Start Point = (X_1,Y_1) with radius
+   --  R_1 and End Point = (X_2, Y_2) with Radius R_2
+
+   procedure Add_Color_Stop
+     (Gradient : in out Gradient_Type;
+      Position : in     Gnoga.Types.Frational_Range_Type;
+      Color    : in     Gnoga.Types.RGBA_Type);
+   procedure Add_Color_Stop
+     (Gradient : in out Gradient_Type;
+      Position : in     Gnoga.Types.Frational_Range_Type;
+      Color    : in     String);
+   --  Specifies the colors and stop positions in a gradient object
+
+   type Repeat_Type is (Repeat, Repeat_X_Only, Repeat_Y_Only, No_Repeat);
+
+   procedure Create_Pattern (Pattern        : in out Pattern_Type;
+                             Context        : in out Context_2D_Type'Class;
+                             Image          : in out Element_Type'Class;
+                             Repeat_Pattern : in     Repeat_Type := Repeat);
+   --  Uses Image as a pattern according to Repeat. Image can be a
+   --  Gnoga.Element.Common.IMG_Type, Canvas_Type or a
+   --  Gnoga.Multimedia.Video_Type
+
+   --  Rectangles
+
+   procedure Rectangle (Context   : in out Context_2D_Type;
+                        Rectangle : in     Gnoga.Types.Rectangle_Type);
+   --  Create a Rectangle path (Stroke and/or Fill must be called to draw it).
+
+   procedure Fill_Rectangle (Context   : in out Context_2D_Type;
+                             Rectangle : in     Gnoga.Types.Rectangle_Type);
+
+   procedure Stroke_Rectangle (Context   : in out Context_2D_Type;
+                               Rectangle : in     Gnoga.Types.Rectangle_Type);
+
+   procedure Clear_Rectangle (Context   : in out Context_2D_Type;
+                               Rectangle : in     Gnoga.Types.Rectangle_Type);
+
+   --  Paths
+
+   procedure Fill (Context : in out Context_2D_Type);
+   --  Fills the current drawing path
+
+   procedure Stroke (Context : in out Context_2D_Type);
+   --  Draws the current path
+
+   procedure Begin_Path (Context : in out Context_2D_Type);
+   --  Begins a path or reset current path
+
+   procedure Move_To (Context : in out Context_2D_Type; X, Y : Integer);
+   --  Moves the path to the specified point in the canvas without creating
+   --  a line
+
+   procedure Close_Path (Context : in out Context_2D_Type);
+   --  Creates a path from the current point back to the first point of path
+
+   procedure Line_To (Context : in out Context_2D_Type; X, Y : Integer);
+   --  Adds a line from the current point to X, Y
+
+   procedure Clip (Context : in out Context_2D_Type);
+   --  Transforms the current path in to a clipping region
+
+   procedure Quadractic_Curve_To (Context           : in out Context_2D_Type;
+                                  CP_X, CP_Y, X, Y  : Integer);
+   --  Creates a quadratic Bézier curve, using control point CP_X, CP_Y to
+   --  point X, Y.
+
+   procedure Bezier_Curve_To
+     (Context                        : in out Context_2D_Type;
+      CP_X_1, CP_Y_1, CP_X_2, CP_Y_2 : in     Integer;
+      X, Y                           : in     Integer);
+   --  Creates a cubic Bézier curve
+
+   procedure Arc_Radians
+     (Context                      : in out Context_2D_Type;
+      X, Y                         : in Integer;
+      Radius                       : in Integer;
+      Starting_Angle, Ending_Angle : in Float;
+      Counter_Clockwise            : in Boolean := False);
+
+   procedure Arc_Degrees
+     (Context                      : in out Context_2D_Type;
+      X, Y                         : in Integer;
+      Radius                       : in Integer;
+      Starting_Angle, Ending_Angle : in Float;
+      Counter_Clockwise            : in Boolean := False);
+   --  Creates an arc / curve (used to create circles, or parts of circles)
+
+   procedure Arc_To
+     (Context            : in out Context_2D_Type;
+      X_1, Y_1, X_2, Y_2 : in Integer;
+      Radius             : in Integer);
+   --  Creates an arc / curve between two tangents
+
+   function Is_Point_In_Path (Context : Context_2D_Type; X, Y : Integer)
+                              return Boolean;
+   --  Returns true if the specified point is in the current path, otherwise false
+
+   --  Transforms
+
+   procedure Scale (Context : in out Context_2D_Type; Width, Height : Float);
+   --  Scales the current drawing bigger or smaller, 1.0 = 100%
+
+   procedure Rotate_Radians (Context : in out Context_2D_Type; Radians : Float);
+   procedure Rotate_Degrees (Context : in out Context_2D_Type; Degrees : Float);
+   --  Rotates the current drawing
+
+   procedure Translate (Context : in out Context_2D_Type; X, Y : Integer);
+   --  Remaps the (0, 0) position on the canvas
+
+   procedure Transform
+     (Context                           : in out Context_2D_Type;
+      Scale_Horizontal, Skew_Horizontal : in     Float;
+      Scale_Vertical,   Skew_Vertical   : in     Float;
+      Move_Horizontal,  Move_Vertical   : in     Float);
+   --  Sets the current transformation matrix for the drawing relative to last
+   --  transformation
+
+   procedure Set_Transform
+     (Context                           : in out Context_2D_Type;
+      Scale_Horizontal, Skew_Horizontal : in     Float;
+      Scale_Vertical,   Skew_Vertical   : in     Float;
+      Move_Horizontal,  Move_Vertical   : in     Float);
+   --  Sets the current transformation matrix for the drawing
+
+   --  Text
+
+   procedure Fill_Text (Context    : in out Context_2D_Type;
+                        Text       : in     String;
+                        X, Y       : in     Integer;
+                        Max_Length : in     Natural := 0);
+   -- Place Text and fill on Context at X, Y with Max_Lenght if > 0
+
+   procedure Stroke_Text (Context    : in out Context_2D_Type;
+                          Text       : in     String;
+                          X, Y       : in     Integer;
+                          Max_Length : in     Natural := 0);
+   -- Place Text without fill on Context at X, Y with Max_Lenght if > 0
+
+   function Measure_Text_Width (Context : Context_2D_Type;
+                                Text    : String)
+                                return Float;
+   --  Width of Text if drawn on Context
+
+   --  Image Drawing
+
+   procedure Draw_Image (Context : in out Context_2D_Type'Class;
+                         Image   : in out Element_Type'Class;
+                         X, Y    : in     Integer);
+   --  Draw Image at point X, Y. Image can be a
+   --  Gnoga.Element.Common.IMG_Type, Canvas_Type or a
+   --  Gnoga.Multimedia.Video_Type
+
+   --  Other
+
+   procedure Save (Context : in out Context_2D_Type);
+   --  Saves/Pushes the state of the current context, states stack
+
+   procedure Restore (Context : in out Context_2D_Type);
+   --  Restores/Pops the state the the previous context
+
+
+   -------------------------------------------------------------------------
+   --  Context_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Property (Context : in out Context_Type;
+                       Name    : in     String;
+                       Value   : in     String);
+   procedure Property (Context : in out Context_Type;
+                       Name    : in     String;
+                       Value   : in     Integer);
+   function Property (Context : Context_Type; Name : String) return String;
+   function Property (Context : Context_Type; Name : String) return Integer;
+
+   -------------------------------------------------------------------------
+   --  Context_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Execute (Context : in out Context_Type; Method : String);
+   function Execute (Context : Context_Type; Method : String)
                      return String;
 
    --  Internal Methods --
 
-   function Connection_ID (Context : Context_2D_Type)
+   function Connection_ID (Context : Context_Type)
                            return Gnoga.Types.Connection_ID;
 
 private
    type Canvas_Type is new Gnoga.Element.Element_Type with null record;
 
-   type Context_2D_Type is
+   type Context_Type is
      new Ada.Finalization.Limited_Controlled with
       record
          Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
          Context_ID    : Gnoga.Types.Web_ID;
       end record;
+
+   type Context_2D_Type is new Context_Type with null record;
+   type Gradient_Type is new Context_Type with null record;
+   type Pattern_Type is new Context_Type with null record;
+
 end Gnoga.Element.Canvas;

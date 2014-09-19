@@ -39,6 +39,8 @@
 with Ada.Strings.Fixed;
 
 package body Gnoga.Types is
+   function To_RGBA_From_Hex (Value : String) return RGBA_Type;
+   function To_RGBA_From_RGB_or_RGBA (Value : String) return RGBA_Type;
 
    ---------------
    -- To_String --
@@ -58,6 +60,40 @@ package body Gnoga.Types is
    -------------
 
    function To_RGBA (Value : String) return RGBA_Type is
+   begin
+      if Value (Value'First) = '#' then
+         return To_RGBA_From_Hex (Value);
+      else
+         return To_RGBA_From_RGB_or_RGBA (Value);
+      end if;
+   end To_RGBA;
+
+   function To_RGBA_From_Hex (Value : String) return RGBA_Type is
+      RGBA : RGBA_Type;
+      P    : Integer := Value'First;
+   begin
+      if Value'Length = 7 then
+         RGBA.Red   := Integer'Value ("16#" & Value ((P + 1) .. (P + 2)));
+         RGBA.Green := Integer'Value ("16#" & Value ((P + 3) .. (P + 4)));
+         RGBA.Blue  := Integer'Value ("16#" & Value ((P + 5) .. (P + 6)));
+      elsif Value'Length = 9 then
+         RGBA.Alpha := Alpha_Type
+           (Integer'Value ("16#" & Value ((P + 1) .. (P + 2)))) / 255;
+         RGBA.Red   := Integer'Value ("16#" & Value ((P + 3) .. (P + 4)));
+         RGBA.Green := Integer'Value ("16#" & Value ((P + 5) .. (P + 6)));
+         RGBA.Blue  := Integer'Value ("16#" & Value ((P + 7) .. (P + 8)));
+      else
+         Log ("Invalid Hex converting to rbga value = " & Value);
+      end if;
+
+      return RGBA;
+   exception
+      when others =>
+         Log ("Error converting to rbga value = " & Value);
+         return RGBA;
+   end To_RGBA_From_Hex;
+
+   function To_RGBA_From_RGB_or_RGBA (Value : String) return RGBA_Type is
       use Ada.Strings.Fixed;
 
       S    : Integer   := Value'First;
@@ -100,6 +136,6 @@ package body Gnoga.Types is
       when others =>
          Log ("Error converting to rbga value = " & Value);
          return RGBA;
-   end To_RGBA;
+   end To_RGBA_From_RGB_or_RGBA;
 
 end Gnoga.Types;

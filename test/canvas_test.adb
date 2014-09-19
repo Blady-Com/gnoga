@@ -6,7 +6,7 @@ with Gnoga.Element.Common;
 with Gnoga.Element.Canvas;
 with Gnoga.Types;
 
-procedure Demo is
+procedure Canvas_Test is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Element;
@@ -131,4 +131,4 @@ begin
      ("<b>Connection to Application has been terminated</b>");
 
    Application.Multiuser.Message_Loop;
-end Demo;
+end Canvas_Test;

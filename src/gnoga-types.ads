@@ -54,7 +54,9 @@ package Gnoga.Types is
    type Pointer_to_Connection_Data_Class is
      access all Connection_Data_Type'Class;
 
-   type Alpha_Type is delta 0.001 range 0.0 .. 1.0;
+   type Frational_Range_Type is delta 0.001 range 0.0 .. 1.0;
+
+   subtype Alpha_Type is Frational_Range_Type;
 
    type RGBA_Type is
       record
@@ -65,8 +67,11 @@ package Gnoga.Types is
       end record;
 
    function To_String (RGBA : RGBA_Type) return String;
+   --  Returns and rgba(r,g,b,a) representation of RGBA
+
    function To_RGBA (Value : String) return RGBA_Type;
-   -- Will convert rgb(r,g,b) and rgba(r,g,b,a) to RGBA_Type
+   --  Will convert rgb(r,g,b) and rgba(r,g,b,a), or
+   --  Hex color (include Hex with Alpha) to RGBA_Type
 
    type Point_Type is
       record
@@ -78,7 +83,7 @@ package Gnoga.Types is
 
    type Rectangle_Type is
       record
-         Left, Top, Right, Bottom : Integer;
+         X, Y, Width, Height : Integer;
       end record;
 
    type Size_Type is

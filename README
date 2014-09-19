@@ -1,0 +1,5 @@
+Building using:
+
+gprbuild -XLIBRARY_TYPE=static -XAWS_BUILD=default
+
+then run the snake demo in /bin

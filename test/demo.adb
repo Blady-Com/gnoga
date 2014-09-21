@@ -4,12 +4,14 @@ with Gnoga.Base;
 with Gnoga.Element;
 with Gnoga.Element.Common;
 with Gnoga.Element.Canvas;
+with Gnoga.Element.Canvas.Context_2D;
 with Gnoga.Types;
 
 procedure Demo is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Element;
+   use Gnoga.Element.Canvas;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -21,10 +23,10 @@ procedure Demo is
    procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
-      C   : Canvas.Context_2D_Type;
+      C   : Context_2D.Context_2D_Type;
       Img : Gnoga.Element.Common.IMG_Type;
    begin
-      App.My_Canvas.Get_Drawing_Context_2D (C);
+      C.Get_Drawing_Context_2D (App.My_Canvas);
       C.Rotate_Degrees (15.0);
       C.Fill_Color ("brown");
       C.Fill_Rectangle ((10,
@@ -42,9 +44,9 @@ procedure Demo is
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App     : aliased App_Data;
-      C       : Canvas.Context_2D_Type;
-      G       : Canvas.Gradient_Type;
-      P       : Canvas.Pattern_Type;
+      C       : Context_2D.Context_2D_Type;
+      G       : Context_2D.Gradient_Type;
+      P       : Context_2D.Pattern_Type;
       I       : Common.IMG_Type;
       Button1 : Common.Button_Type;
    begin
@@ -61,7 +63,7 @@ procedure Demo is
       App.My_Canvas.Place_Inside_Bottom_Of
         (App.Main_Window.Document.Body_Element.all);
 
-      App.My_Canvas.Get_Drawing_Context_2D (C);
+      C.Get_Drawing_Context_2D (App.My_Canvas);
 
       C.Stroke_Color ("yellow");
       C.Rectangle ((5, 5, 150, 100));
@@ -108,13 +110,13 @@ procedure Demo is
                 "/img/pattern.png");
       P.Create_Pattern (Context        => C,
                         Image          => I,
-                        Repeat_Pattern => Canvas.Repeat);
+                        Repeat_Pattern => Context_2D.Repeat);
       C.Fill_Pattern (P);
       C.Fill_Rectangle ((80, 80, 150, 100));
 
       C.Fill_Color ("purple");
       C.Font (Height_In_Pixels => 40);
-      C.Text_Alignment (Canvas.Right);
+      C.Text_Alignment (Context_2D.Right);
       C.Fill_Text ("Hello World!", 200, 200);
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);

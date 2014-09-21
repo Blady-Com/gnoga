@@ -5,11 +5,13 @@ with Gnoga.Types;
 with Gnoga.Window;
 with Gnoga.Element.Common;
 with Gnoga.Element.Canvas;
+with Gnoga.Element.Canvas.Context_2D;
 
 package body Snake.Connection is
    use Gnoga.Types;
    use Gnoga.Element.Common;
    use Gnoga.Element.Canvas;
+   use Gnoga.Element.Canvas.Context_2D;
 
    --------------------
    -- Display_Splash --
@@ -115,7 +117,7 @@ package body Snake.Connection is
       for i in reverse 0 .. Initial_Length - 1 loop
          App.Snake.Append (Point_Type'(i, 0));
       end loop;
-      App.Display.Get_Drawing_Context_2D (Context);
+      Context.Get_Drawing_Context_2D (App.Display);
 
       loop
          Paint (Context, App, Game_Over);

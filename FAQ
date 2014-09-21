@@ -1,3 +1,15 @@
+Q) Where can I learn more about Gnoga?
+
+A) http://www.gnoga.com and going to the sourceforge site and joining the mailing list. Reading the sources tests and demos are also a good place to start.
+
+Q) What licenses does Gnoga use?
+
+A) Gnoga is under the GNAT modified GPLv3 which means your code can use any license you like but any modifications, extensions, etc. of Gnoga fall under the same license and source for those changes must be distributed with binaries.
+
+Q) Why does Gnoga use the GMGPL and not the GPL license?
+
+A) One side goal of Gnoga is to encourage the use of Ada for general use  modern software development, forcing applications to be under the GPL license would limit that side goal. However those of use believing in the idea of "free" software would encourage choosing a "free" license for your projects.
+
 Q) Can I distribute programs I compile with Gnoga?
 
 A) If you use GNAT-FSF or GNAT-PRO you can distribute the binaries with out your source, since Gnoga and those versions of GNAT grant an exception if the libraries where not modified only compiled against. If you use GNAT-GPL, according to AdaCore your code will fall under the GPL license with out exception which means you would need to distribute the source with your binary, now is that a bad thing?! However.. Keep in mind that if you modify Gnoga, or add to it, you will need to distribute those sources. Of course if you are doing that you should be sharing them with all of use to make Gnoga better :)

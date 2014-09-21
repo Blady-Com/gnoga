@@ -1,5 +1,48 @@
-Building using:
+GNOGA - The GNU Omnificent GUI for Ada
+http://www.gnoga.com
 
-gprbuild -XLIBRARY_TYPE=static -XAWS_BUILD=default
+Documentation and more demos to come.
+
+For now run:
+
+make
 
 then run the snake demo in /bin
+
+There are other test bins in the /bin you can also take a look at but they are mainly used during development to test the framework as I go.
+
+Look through the code in the tests and the snake demo to get a feel for how things work for now.
+
+Gnoga has the following aspects to it:
+
+1. The underlying communication platform between the Ada code and the browser
+	Gnoga.Connections
+
+2. Binding the DOM for later higher level development
+        Gnoga.Base (Not per se a binding of Node but takes its place)
+        Gnoga.Element, Gnoga.Element.* (HTML Elements)
+        Gnoga.Window, Gnoga.Navigator, Gnoga.Screen, Gnoga.Location
+        Gnoga.Document (Browser and higher level aspects of the DOM).
+
+3. Application startup and services
+        Gnoga.Application.*
+
+4. Bindings to higher level toolkits like jQueryUI, Bootstrap, etc.
+        Coming soon
+
+5. Gnoga Specific higher level containers and GUI widgets
+       Coming soon
+
+6. Gnoga Application level APIs, like Logical access control systems, Security services and monitoring, etc.
+       Coming soon
+
+7. Gnoga database bindings
+	thin MySQL and Sqlite services are done but not integrated yet
+	will also include code to bind html elements directly to fields, etc.
+
+8. Gnoga development tools
+	Code generation for binding pre-made html5 pages
+        Database tools for generating front ends, etc.
+	IDE for Delphi/VB like development
+	etc.
+

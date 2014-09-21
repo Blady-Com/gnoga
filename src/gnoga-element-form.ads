@@ -115,7 +115,7 @@ package Gnoga.Element.Form is
 
 
    -------------------------------------------------------------------------
-   --  From_Element_Types
+   --  Form_Element_Types
    -------------------------------------------------------------------------
    -- Parent type for form elements
 
@@ -127,12 +127,12 @@ package Gnoga.Element.Form is
    --  Form_Element_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out Form_Element_Type;
-                     Form       : in out Form_Type'Class;
-                     Input_Type : in     String;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "");
+   procedure Create_Element (Element    : in out Form_Element_Type;
+                             Form       : in out Form_Type'Class;
+                             Input_Type : in     String;
+                             Value      : in     String := "";
+                             Name       : in     String := "";
+                             ID         : in     String := "");
    --  Create a form element of Input_Type. Setting Name on form element
    --  is only important if the form will be submitted via a GET or POST.
    --  Value is the inital value for the element.
@@ -166,6 +166,22 @@ package Gnoga.Element.Form is
                                  Value   : in     Boolean := True);
    function Validate_On_Submit (Element : Form_Element_Type) return Boolean;
 
+   procedure Name (Element : in out Form_Element_Type; Value : in String);
+   function Name (Element : Form_Element_Type) return String;
+   --  Form element name, name is not the id of the element but rather how
+   --  the data returned from the element will be named in the submit to the
+   --  server. For example if Name is My_Field a GET request could look like
+   --  http://localhost:8080?My_Field=xxxx
+
+   procedure Default_Value (Element : in out Form_Element_Type;
+                            Value   : in     String);
+   procedure Default_Value (Element : in out Form_Element_Type;
+                            Value   : in     Integer);
+   function Default_Value (Element : Form_Element_Type) return String;
+   function Default_Value (Element : Form_Element_Type) return Integer;
+   --  If the form is reset the value will be set to default value
+   --  If Value is set at time of creation it also sets it as the Default_Value
+
    procedure Value (Element : in out Form_Element_Type; Value : in String);
    procedure Value (Element : in out Form_Element_Type; Value : in Integer);
    function Value (Element : Form_Element_Type) return String;
@@ -173,7 +189,116 @@ package Gnoga.Element.Form is
    --  Form element values are not accessible through the Text property but
    --  instead through the value property.
 
+   -------------------------------------------------------------------------
+   --  Input_Button_Types
+   -------------------------------------------------------------------------
+
+   type Input_Button_Type is new Form_Element_Type with private;
+   type Input_Button_Access is access all Input_Button_Type;
+   type Pointer_To_Input_Button_Class is access all Input_Button_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Input_Button_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Input_Button_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  Submit_Button_Types
+   -------------------------------------------------------------------------
+   -- An Input Button that On_Click will fire On_Submit
+
+   type Submit_Button_Type is new Input_Button_Type with private;
+   type Submit_Button_Access is access all Submit_Button_Type;
+   type Pointer_To_Submit_Button_Class is access all Submit_Button_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Submit_Button_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   overriding
+   procedure Create (Element    : in out Submit_Button_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  Check_Box_Types
+   -------------------------------------------------------------------------
+
+   type Check_Box_Type is new Form_Element_Type with private;
+   type Check_Box_Access is access all Check_Box_Type;
+   type Pointer_To_Check_Box_Class is access all Check_Box_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Check_Box_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Check_Box_Type;
+                     Form       : in out Form_Type'Class;
+                     Checked    : in     Boolean := False;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "");
+   --  Value will be what is submitted if Checked is true for Name.
+
+   -------------------------------------------------------------------------
+   --  Check_Box_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Checked (Element : in out Form_Element_Type;
+                        Value   : in     Boolean := True);
+   function Checked (Element : Form_Element_Type) return Boolean;
+
+   procedure Indeterminate (Element : in out Form_Element_Type;
+                        Value   : in     Boolean := True);
+   function Indeterminate (Element : Form_Element_Type) return Boolean;
+
+   procedure Required (Element : in out Form_Element_Type;
+                        Value   : in     Boolean := True);
+   function Required (Element : Form_Element_Type) return Boolean;
+
+   -------------------------------------------------------------------------
+   --  Color_Picker_Types
+   -------------------------------------------------------------------------
+
+   type Color_Picker_Type is new Form_Element_Type with private;
+   type Color_Picker_Access is access all Color_Picker_Type;
+   type Pointer_To_Color_Picker_Class is access all Color_Picker_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Color_Picker_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Color_Picker_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "");
+   procedure Create (Element    : in out Color_Picker_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     Gnoga.Types.RGBA_Type;
+                     Name       : in     String := "";
+                     ID         : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  Color_Picker_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Color (Element : in out Color_Picker_Type;
+                    Value   : in     Gnoga.Types.RGBA_Type);
+   function Color (Element : Color_Picker_Type) return Gnoga.Types.RGBA_Type;
+
 private
    type Form_Type is new Gnoga.Element.Element_Type with null record;
    type Form_Element_Type is new Gnoga.Element.Element_Type with null record;
+   type Input_Button_Type is new Form_Element_Type with null record;
+   type Submit_Button_Type is new Input_Button_Type with null record;
+   type Check_Box_Type is new Form_Element_Type with null record;
+   type Color_Picker_Type is new Form_Element_Type with null record;
 end Gnoga.Element.Form;

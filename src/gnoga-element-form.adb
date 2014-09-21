@@ -213,7 +213,7 @@ package body Gnoga.Element.Form is
    -- Create --
    ------------
 
-   procedure Create
+   procedure Create_Element
      (Element    : in out Form_Element_Type;
       Form       : in out Form_Type'Class;
       Input_Type : in     String;
@@ -226,7 +226,7 @@ package body Gnoga.Element.Form is
                                   "form='" & Form.ID & "' value='" &
                                   Escape_Quotes (Value) & "' name='" &
                                   Name & "'/>", ID);
-   end Create;
+   end Create_Element;
 
    -------------------
    -- Auto_Complete --
@@ -333,6 +333,50 @@ package body Gnoga.Element.Form is
       return Element.Property ("length");
    end Validate_On_Submit;
 
+   ----------
+   -- Name --
+   ----------
+
+   procedure Name (Element : in out Form_Element_Type; Value : in String) is
+   begin
+      Element.Property ("name", Value);
+   end Name;
+
+   function Name (Element : Form_Element_Type) return String is
+   begin
+      return Element.Property ("name");
+   end Name;
+
+   -------------------
+   -- Default_Value --
+   -------------------
+
+   procedure Default_Value (Element : in out Form_Element_Type;
+                            Value   : in     String)
+   is
+   begin
+      Element.Property ("defaultValue", Value);
+   end Default_Value;
+
+
+   procedure Default_Value (Element : in out Form_Element_Type;
+                            Value   : in     Integer)
+   is
+   begin
+      Element.Property ("defaultValue", Value);
+   end Default_Value;
+
+   function Default_Value (Element : Form_Element_Type) return String is
+   begin
+      return Element.Property ("defaultValue");
+   end Default_Value;
+
+
+   function Default_Value (Element : Form_Element_Type) return Integer is
+   begin
+      return Element.Property ("defaultValue");
+   end Default_Value;
+
    -----------
    -- Value --
    -----------
@@ -342,31 +386,189 @@ package body Gnoga.Element.Form is
       Element.Property ("value", Value);
    end Value;
 
-   -----------
-   -- Value --
-   -----------
-
    procedure Value (Element : in out Form_Element_Type; Value : in Integer) is
    begin
       Element.Property ("value", Value);
    end Value;
-
-   -----------
-   -- Value --
-   -----------
 
    function Value (Element : Form_Element_Type) return String is
    begin
       return Element.Property ("value");
    end Value;
 
-   -----------
-   -- Value --
-   -----------
-
    function Value (Element : Form_Element_Type) return Integer is
    begin
       return Element.Property ("value");
    end Value;
 
+   -------------------------------------------------------------------------
+   --  Input_Button_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create (Element    : in out Input_Button_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create_Element (Form       => Form,
+                              Input_Type => "button",
+                              Value      => Value,
+                              Name       => Name,
+                              ID         => ID);
+   end Create;
+
+   -------------------------------------------------------------------------
+   --  Submit_Button_Type
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Submit_Button_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create_Element (Form       => Form,
+                              Input_Type => "submit",
+                              Value      => Value,
+                              Name       => Name,
+                              ID         => ID);
+   end Create;
+
+   -------------------------------------------------------------------------
+   --  Check_Box_Type
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create (Element    : in out Check_Box_Type;
+                     Form       : in out Form_Type'Class;
+                     Checked    : in     Boolean := False;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create_Element (Form       => Form,
+                              Input_Type => "checkbox",
+                              Value      => Value,
+                              Name       => Name,
+                              ID         => ID);
+      Element.Checked (Checked);
+   end Create;
+
+   -------------------------------------------------------------------------
+   --  Check_Box_Type - Properties
+   -------------------------------------------------------------------------
+
+   --------------
+   -- Checked --
+   --------------
+
+   procedure Checked (Element : in out Form_Element_Type;
+                      Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("checked", Value);
+   end Checked;
+
+   function Checked (Element : Form_Element_Type) return Boolean is
+   begin
+      return Element.Property ("checked");
+   end Checked;
+
+   -------------------
+   -- Indeterminate --
+   -------------------
+
+   procedure Indeterminate (Element : in out Form_Element_Type;
+                            Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("indeterminate", Value);
+   end Indeterminate;
+
+   function Indeterminate (Element : Form_Element_Type) return Boolean is
+   begin
+      return Element.Property ("indeterminate");
+   end Indeterminate;
+
+   --------------
+   -- Required --
+   --------------
+
+   procedure Required (Element : in out Form_Element_Type;
+                       Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("required", Value);
+   end Required;
+
+   function Required (Element : Form_Element_Type) return Boolean is
+   begin
+      return Element.Property ("required");
+   end Required;
+
+   -------------------------------------------------------------------------
+   --  Color_Picker_Type
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create (Element    : in out Color_Picker_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create_Element (Form       => Form,
+                              Input_Type => "color",
+                              Value      => Value,
+                              Name       => Name,
+                              ID         => ID);
+   end Create;
+
+   procedure Create (Element    : in out Color_Picker_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     Gnoga.Types.RGBA_Type;
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create (Form       => Form,
+                      Value      => Gnoga.Types.To_String (Value),
+                      Name       => Name,
+                      ID         => ID);
+   end Create;
+
+   -------------------------------------------------------------------------
+   --  Color_Picker_Type - Properties
+   -------------------------------------------------------------------------
+
+   -----------
+   -- Value --
+   -----------
+
+   procedure Color (Element : in out Color_Picker_Type;
+                    Value   : in     Gnoga.Types.RGBA_Type)
+   is
+   begin
+      Element.Property ("value", Gnoga.Types.To_String (Value));
+   end Color;
+
+   function Color (Element : Color_Picker_Type) return Gnoga.Types.RGBA_Type is
+   begin
+      return Gnoga.Types.To_RGBA (Element.Property ("value"));
+   end Color;
 end Gnoga.Element.Form;

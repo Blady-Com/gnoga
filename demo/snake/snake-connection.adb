@@ -104,10 +104,12 @@ package body Snake.Connection is
       App.Background.Create (Main_Window);
       App.Background.Style ("width", "100%");
       App.Background.Style ("height", "100%");
+      App.Background.Style ("text-align", "center");
       App.Background.Background_Color ("orange");
       App.Background.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
       App.Display.Create (App.Background, Display_Width, Display_Height);
+      App.Display.Style ("display", "inline-block");
       App.Display.Style ("border-width", 3);
       App.Display.Style ("border-style", "solid");
       App.Display.Background_Color ("white");

@@ -76,7 +76,7 @@ package body Snake.Connection is
          Background  : DIV_Type;
          Display     : Canvas_Type;
 
-         Score           : Integer := 0;
+         Score           : Integer              := 0;
          Snake           : Snake_Arrays.Vector;
          Snake_Direction : Snake_Direction_Type := Right;
          Food            : Point_Type           := New_Food;
@@ -218,9 +218,6 @@ package body Snake.Connection is
                Draw_Segment (App.Snake.Element (i));
             end loop;
 
-            Context.Fill_Color ("brown");
-            Draw_Segment (App.Food);
-
             if Food_Collision (Head_Cell) then
                App.Score := App.Score + 10;
 
@@ -231,6 +228,9 @@ package body Snake.Connection is
 
                App.Snake.Delete_Last;
             end if;
+
+            Context.Fill_Color ("brown");
+            Draw_Segment (App.Food);
          end if;
       end;
 

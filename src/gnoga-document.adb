@@ -152,4 +152,23 @@ package body Gnoga.Document is
    begin
       return Document.DOM_Body'Unrestricted_Access;
    end Body_Element;
+
+   -----------
+   -- Write --
+   -----------
+
+   procedure Write (Document : in out Document_Type; Value : String) is
+   begin
+      Document.Execute ("write(""" & Escape_Quotes (Value) & """);");
+   end Write;
+
+   ----------------
+   -- Write_Line --
+   ----------------
+
+   procedure Write_Line (Document : in out Document_Type; Value : String) is
+   begin
+      Document.Execute ("writeln(""" & Escape_Quotes (Value) & """);");
+   end Write_Line;
+
 end Gnoga.Document;

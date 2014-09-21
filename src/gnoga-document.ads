@@ -86,6 +86,14 @@ package Gnoga.Document is
    function Body_Element (Document : Document_Type)
                           return Gnoga.Element.Element_Access;
 
+   procedure Write (Document : in out Document_Type; Value : String);
+   procedure Write_Line (Document : in out Document_Type; Value : String);
+   --  Write Value (with new line if Write_Line) to the document.
+   --  Note that the first use of these procedures can erase elements already
+   --  inserted in to the Document.Body_Element. Therefore to use these
+   --  Write/Write_Line so that a text node is created before inserting any
+   --  elements into the document body.
+
 private
    type Document_Type is new Gnoga.Base.Base_Type with
       record

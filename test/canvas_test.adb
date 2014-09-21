@@ -51,7 +51,7 @@ procedure Canvas_Test is
       Button1 : Common.Button_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
-      App.Main_Window.Document.Execute ("writeln ('<hr />');");
+      App.Main_Window.Document.Write_Line ("<hr />");
 
       Button1.Create (Parent  => Main_Window.Document.Body_Element.all,
                       Content => "Click Me");

@@ -191,10 +191,35 @@ package Gnoga.Window is
    --  Window_Type - Event Handlers
    -------------------------------------------------------------------------
 
+   procedure On_Abort_Handler (Window  : in out Window_Type;
+                               Handler : in     Gnoga.Base.Action_Event);
+   procedure Fire_On_Abort (Window : in out Window_Type);
+
+   procedure On_Error_Handler (Window  : in out Window_Type;
+                               Handler : in     Gnoga.Base.Action_Event);
+   procedure Fire_On_Error (Window : in out Window_Type);
+
+   procedure On_Hash_Change_Handler (Window  : in out Window_Type;
+                                     Handler : in     Gnoga.Base.Action_Event);
+   procedure Fire_On_Hash_Change (Window : in out Window_Type);
+
+   procedure On_Orientation_Change_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Gnoga.Base.Action_Event);
+   procedure Fire_On_Orientation_Change (Window : in out Window_Type);
+
+   overriding procedure On_Message (Object  : in out Window_Type;
+                                    Event   : in     String;
+                                    Message : in     String);
 private
    type Window_Type is new Gnoga.Base.Base_Type with
       record
          DOM_Document : aliased Gnoga.Document.Document_Type;
          Location     : aliased Gnoga.Location.Location_Type;
+
+         On_Abort_Event              : Gnoga.Base.Action_Event := null;
+         On_Error_Event              : Gnoga.Base.Action_Event := null;
+         On_Hash_Change_Event        : Gnoga.Base.Action_Event := null;
+         On_Orientation_Change_Event : Gnoga.Base.Action_Event := null;
       end record;
 end Gnoga.Window;

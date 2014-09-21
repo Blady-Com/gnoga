@@ -235,19 +235,6 @@ package Gnoga.Base is
      procedure (Object : in out Base_Type;
                 Child  : in out Base_Type'Class);
 
-   -- Network Events --
-
-   procedure On_Abort_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event);
-   procedure Fire_On_Abort (Object : in out Base_Type);
-
-   procedure On_Error_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event);
-   procedure Fire_On_Error (Object : in out Base_Type);
-
-   procedure On_Hash_Change_Handler (Object  : in out Base_Type;
-                                     Handler : in     Action_Event);
-   procedure Fire_On_Hash_Change (Object : in out Base_Type);
 
    -- Object Events --
 
@@ -384,7 +371,7 @@ package Gnoga.Base is
                                  Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
 
-   -- Drag and Drop Events --
+   --? Drag and Drop Events --
 
    -- On_Drop event.preventDefault, data = event.dataTransfer.getData(Mime)
    -- On_Drag_Over (call to event.preventDefault on element allowing drop)
@@ -537,12 +524,6 @@ private
          ID_Type       : Gnoga.Types.ID_Enumeration;
          Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
          Parent_Object : Pointer_To_Base_Class := null;
-
-
-         -- Network Events
-         On_Abort_Event              : Action_Event         := null;
-         On_Error_Event              : Action_Event         := null;
-         On_Hash_Change_Event        : Action_Event         := null;
 
          -- Object Events
          On_Resize_Event             : Action_Event         := null;

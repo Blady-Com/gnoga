@@ -470,72 +470,6 @@ package body Gnoga.Base is
    --  Base_Type - Events
    -------------------------------------------------------------------------
 
-   --------------
-   -- On_Abort --
-   --------------
-
-   procedure On_Abort_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
-   is
-   begin
-      Object.On_Abort_Event := Handler;
-
-      Object.Bind_Event (Event   => "abort",
-                         Message => "");
-   end On_Abort_Handler;
-
-   procedure Fire_On_Abort (Object : in out Base_Type)
-   is
-   begin
-      if Object.On_Abort_Event /= null then
-         Object.On_Abort_Event (Object);
-      end if;
-   end Fire_On_Abort;
-
-   --------------
-   -- On_Error --
-   --------------
-
-   procedure On_Error_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
-   is
-   begin
-      Object.On_Error_Event := Handler;
-
-      Object.Bind_Event (Event   => "error",
-                         Message => "");
-   end On_Error_Handler;
-
-   procedure Fire_On_Error (Object : in out Base_Type)
-   is
-   begin
-      if Object.On_Error_Event /= null then
-         Object.On_Error_Event (Object);
-      end if;
-   end Fire_On_Error;
-
-   --------------------
-   -- On_Hash_Change --
-   --------------------
-
-   procedure On_Hash_Change_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
-   is
-   begin
-      Object.On_Hash_Change_Event := Handler;
-
-      Object.Bind_Event (Event   => "hashchange",
-                         Message => "");
-   end On_Hash_Change_Handler;
-
-   procedure Fire_On_Hash_Change (Object : in out Base_Type)
-   is
-   begin
-      if Object.On_Hash_Change_Event /= null then
-         Object.On_Hash_Change_Event (Object);
-      end if;
-   end Fire_On_Hash_Change;
-
    ---------------
    -- On_Resize --
    ---------------
@@ -1373,16 +1307,8 @@ package body Gnoga.Base is
                          Message : in     String)
    is
    begin
-      -- Network Event --
-      if Event = "abort" then
-         Object.Fire_On_Abort;
-      elsif Event = "error" then
-         Object.Fire_On_Error;
-      elsif Event = "hashchange" then
-         Object.Fire_On_Hash_Change;
-
       -- Object Events --
-      elsif Event = "resize" then
+      if Event = "resize" then
          Object.Fire_On_Resize;
       elsif Event = "scroll" then
          Object.Fire_On_Scroll;

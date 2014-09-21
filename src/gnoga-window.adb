@@ -40,6 +40,7 @@ with Ada.Strings.Unbounded;
 with Gnoga.Connections;
 
 package body Gnoga.Window is
+   use type Gnoga.Base.Action_Event;
 
    ------------
    -- Attach --
@@ -449,4 +450,114 @@ package body Gnoga.Window is
       Window.Execute ("scrollTo(" & X'Img & "," & Y'Img & ");");
    end Scroll_To;
 
+   --------------
+   -- On_Abort --
+   --------------
+
+   procedure On_Abort_Handler (Window  : in out Window_Type;
+                               Handler : in     Gnoga.Base.Action_Event)
+   is
+   begin
+      Window.On_Abort_Event := Handler;
+
+      Window.Bind_Event (Event   => "abort",
+                         Message => "");
+   end On_Abort_Handler;
+
+   procedure Fire_On_Abort (Window : in out Window_Type)
+   is
+   begin
+      if Window.On_Abort_Event /= null then
+         Window.On_Abort_Event (Window);
+      end if;
+   end Fire_On_Abort;
+
+   --------------
+   -- On_Error --
+   --------------
+
+   procedure On_Error_Handler (Window  : in out Window_Type;
+                               Handler : in     Gnoga.Base.Action_Event)
+   is
+   begin
+      Window.On_Error_Event := Handler;
+
+      Window.Bind_Event (Event   => "error",
+                         Message => "");
+   end On_Error_Handler;
+
+   procedure Fire_On_Error (Window : in out Window_Type)
+   is
+   begin
+      if Window.On_Error_Event /= null then
+         Window.On_Error_Event (Window);
+      end if;
+   end Fire_On_Error;
+
+   --------------------
+   -- On_Hash_Change --
+   --------------------
+
+   procedure On_Hash_Change_Handler (Window  : in out Window_Type;
+                                     Handler : in     Gnoga.Base.Action_Event)
+   is
+   begin
+      Window.On_Hash_Change_Event := Handler;
+
+      Window.Bind_Event (Event   => "hashchange",
+                         Message => "");
+   end On_Hash_Change_Handler;
+
+   procedure Fire_On_Hash_Change (Window : in out Window_Type)
+   is
+   begin
+      if Window.On_Hash_Change_Event /= null then
+         Window.On_Hash_Change_Event (Window);
+      end if;
+   end Fire_On_Hash_Change;
+
+   ---------------------------
+   -- On_Orientation_Change --
+   ---------------------------
+
+   procedure On_Orientation_Change_Handler (Window  : in out Window_Type;
+                                     Handler : in     Gnoga.Base.Action_Event)
+   is
+   begin
+      Window.On_Orientation_Change_Event := Handler;
+
+      Window.Bind_Event (Event   => "orientationchange",
+                         Message => "");
+   end On_Orientation_Change_Handler;
+
+   procedure Fire_On_Orientation_Change (Window : in out Window_Type)
+   is
+   begin
+      if Window.On_Orientation_Change_Event /= null then
+         Window.On_Orientation_Change_Event (Window);
+      end if;
+   end Fire_On_Orientation_Change;
+
+   ----------------
+   -- On_Message --
+   ----------------
+
+   procedure On_Message (Object  : in out Window_Type;
+                         Event   : in     String;
+                         Message : in     String)
+   is
+   begin
+      -- Network Event --
+      if Event = "abort" then
+         Object.Fire_On_Abort;
+      elsif Event = "error" then
+         Object.Fire_On_Error;
+      elsif Event = "hashchange" then
+         Object.Fire_On_Hash_Change;
+      elsif Event = "orientationchange" then
+         Object.Fire_On_Orientation_Change;
+      else
+         Gnoga.Base.Base_Type (Object).On_Message (Event, Message);
+      end if;
+   end On_Message;
 end Gnoga.Window;

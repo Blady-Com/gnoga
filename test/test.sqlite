@@ -1,0 +1,13 @@
+sqlite3 test.db .sch > schema
+
+CREATE TABLE users (lastname varchar(80), firstname varchar(80));
+
+sqlite3 test.db .dump > dump
+
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE users (lastname varchar(80), firstname varchar(80));
+INSERT INTO "users" VALUES('Botton','David');
+INSERT INTO "users" VALUES('Taft','Tucker');
+INSERT INTO "users" VALUES('Dewar','Robert');
+COMMIT;

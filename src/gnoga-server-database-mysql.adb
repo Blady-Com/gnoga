@@ -48,7 +48,7 @@ package body Gnoga.Server.Database.MySQL is
    for Ulonglong'Size use 64;
    --  return type for Row related fields
 
-   function Error_Message (S : Integer) return String;
+   function Error_Message (S : MySQL_ID) return String;
    --  Return error message from database
 
    -------------
@@ -57,12 +57,13 @@ package body Gnoga.Server.Database.MySQL is
    function Connect (Database : String;
                      Host     : String;
                      User     : String;
-                     Password : String)
+                     Password : String  := "";
+                     Port     : Integer := 3306)
                      return Connection_Access
    is
       C : Connection_Access := new Connection;
    begin
-      C.Connect (Database, Host, User, Password);
+      C.Connect (Database, Host, User, Password, Port);
       return C;
    end Connect;
 
@@ -70,33 +71,39 @@ package body Gnoga.Server.Database.MySQL is
                       Database : String;
                       Host     : String;
                       User     : String;
-                      Password : String)
+                      Password : String  := "";
+                      Port     : Integer := 3306)
    is
-      function MYSQL_Init (mysql : Integer := 0) return Integer;
+      function MYSQL_Init (mysql : MySQL_ID := null) return MySQL_ID;
       pragma Import (C, MYSQL_Init, "mysql_init");
 
-      function MYSQL_Real_Connect (mysql       : Integer := C.Server_ID;
-                                   mHost       : String  := Host & Nul;
-                                   mUser       : String  := User & Nul;
-                                   Passwd      : String  := Password & Nul;
-                                   Db          : Integer := 0;
-                                   Port        : Integer := 0;
-                                   Unix_Socket : Integer := 0;
-                                   Clientflag  : Integer := 0)
-                                  return Integer;
+      Init_Result : MySQL_ID;
+
+      function MYSQL_Real_Connect (mysql       : MySQL_ID;
+                                   mHost       : String   := Host & Nul;
+                                   mUser       : String   := User & Nul;
+                                   Passwd      : String   := Password & Nul;
+                                   Db          : Integer  := 0;
+                                   Port        : Integer  := 0;
+                                   Unix_Socket : Integer  := 0;
+                                   Clientflag  : Integer  := 0)
+                                  return MySQL_ID;
       pragma Import (C, MYSQL_Real_Connect, "mysql_real_connect");
 
-      function MYSQL_Select_DB (mysql : Integer := C.Server_ID;
-                                db    : String  := Database & Character'First)
+      function MYSQL_Select_DB (mysql : MySQL_ID := C.Server_ID;
+                                db    : String   := Database & Character'First)
                                return Integer;
       pragma Import (C, MYSQL_Select_DB, "mysql_select_db");
-
    begin
-      C.Server_ID := MYSQL_Init;
-      C.Server_ID := MYSQL_Real_Connect;
-      if C.Server_ID = 0 then
+      Init_Result := MYSQL_Init;
+      if Init_Result = null then
          raise Connection_Error with
-            "Connection to server " & Host & " has failed.";
+            "Unable to initialize connection to MySQL Client Library.";
+      end if;
+
+      C.Server_ID := MYSQL_Real_Connect (Init_Result);
+      if C.Server_ID = null then
+         raise Connection_Error with Error_Message (Init_Result);
       end if;
 
       if MYSQL_Select_DB /= 0 then
@@ -110,13 +117,13 @@ package body Gnoga.Server.Database.MySQL is
    ----------------
 
    procedure Disconnect (C : in out Connection) is
-      procedure MYSQL_Close (mysql : Integer := C.Server_ID);
+      procedure MYSQL_Close (mysql : MySQL_ID := C.Server_ID);
       pragma Import (C, MYSQL_Close, "mysql_close");
 
    begin
-      if C.Server_ID /= 0 then
+      if C.Server_ID /= null then
          MYSQL_Close;
-         C.Server_ID := 0;
+         C.Server_ID := null;
       end if;
    end Disconnect;
 
@@ -126,13 +133,13 @@ package body Gnoga.Server.Database.MySQL is
    -------------------
 
    procedure Execute_Query (C : in out Connection; SQL : String) is
-      function MYSQL_Real_Query (mysql : Integer := C.Server_ID;
-                                 q     : String  := SQL;
+      function MYSQL_Real_Query (mysql : MySQL_ID := C.Server_ID;
+                                 q     : String   := SQL;
                                  l     : Natural := SQL'Length)
                                  return Integer;
       pragma Import (C, MYSQL_Real_Query, "mysql_real_query");
    begin
-      if C.Server_ID = 0 then
+      if C.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -146,11 +153,11 @@ package body Gnoga.Server.Database.MySQL is
    ---------------
 
    function Insert_ID (C : Connection) return Natural is
-      function MYSQL_Insert_Id (mysql : Integer := C.Server_ID)
+      function MYSQL_Insert_Id (mysql : MySQL_ID := C.Server_ID)
                                 return Ulonglong;
       pragma Import (C, MYSQL_Insert_Id, "mysql_insert_id");
    begin
-      if C.Server_ID = 0 then
+      if C.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -162,11 +169,11 @@ package body Gnoga.Server.Database.MySQL is
    -------------------
 
    function Affected_Rows (C : Connection) return Natural is
-      function MYSQL_Affected_Rows (mysql : Integer := C.Server_ID)
+      function MYSQL_Affected_Rows (mysql : MySQL_ID := C.Server_ID)
                                     return Ulonglong;
       pragma Import (C, MYSQL_Affected_Rows, "mysql_affected_rows");
    begin
-      if C.Server_ID = 0 then
+      if C.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -177,12 +184,12 @@ package body Gnoga.Server.Database.MySQL is
    -- Error_Message --
    -------------------
 
-   function Error_Message (S : Integer) return String is
+   function Error_Message (S : MySQL_ID) return String is
       subtype charbuf is
         Interfaces.C.char_array (1 .. Interfaces.C.size_t'Last);
       type charbuf_access is access all charbuf;
 
-      function MYSQL_Error (mysql : Integer := S)
+      function MYSQL_Error (mysql : MySQL_ID := S)
                             return charbuf_access;
       pragma Import (C, MYSQL_Error, "mysql_error");
    begin
@@ -276,25 +283,25 @@ package body Gnoga.Server.Database.MySQL is
    is
       RS : Recordset (C.Server_ID);
 
-      function MYSQL_Real_Query (mysql : Integer := RS.Server_ID;
-                                 q     : String  := SQL;
-                                 l     : Natural := SQL'Length)
+      function MYSQL_Real_Query (mysql : MySQL_ID := RS.Server_ID;
+                                 q     : String   := SQL;
+                                 l     : Natural  := SQL'Length)
                                  return Integer;
       pragma Import (C, MYSQL_Real_Query, "mysql_real_query");
 
-      function MYSQL_Store_Result (mysql : Integer := RS.Server_ID)
-                                   return Integer;
+      function MYSQL_Store_Result (mysql : MySQL_ID := RS.Server_ID)
+                                   return MySQL_ID;
       pragma Import (C, MYSQL_Store_Result, "mysql_store_result");
 
-      function MYSQL_Num_Rows (Result : Integer := RS.Query_ID)
+      function MYSQL_Num_Rows (Result : MySQL_ID := RS.Query_ID)
                                return Ulonglong;
       pragma Import (C, MYSQL_Num_Rows, "mysql_num_rows");
 
-      function MYSQL_Num_Fields (Result : Integer := RS.Query_ID)
+      function MYSQL_Num_Fields (Result : MySQL_ID := RS.Query_ID)
                                  return Natural;
       pragma Import (C, MYSQL_Num_Fields, "mysql_num_fields");
    begin
-      if RS.Server_ID = 0 then
+      if RS.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -304,7 +311,7 @@ package body Gnoga.Server.Database.MySQL is
 
       RS.Query_ID := MYSQL_Store_Result;
 
-      if RS.Query_ID = 0 then
+      if RS.Query_ID = null then
          raise Empty_Recordset_Error;
       end if;
 
@@ -328,7 +335,7 @@ package body Gnoga.Server.Database.MySQL is
    -----------
 
    procedure Close (RS : in out Recordset) is
-      procedure MYSQL_Free_Result  (Result : Integer := RS.Query_ID);
+      procedure MYSQL_Free_Result  (Result : MySQL_ID := RS.Query_ID);
       pragma Import (C, MYSQL_Free_Result, "mysql_free_result");
    begin
       MYSQL_Free_Result;
@@ -352,11 +359,11 @@ package body Gnoga.Server.Database.MySQL is
    function Next (RS : Recordset) return Boolean is
       R : access Recordset := RS'Unrestricted_Access;
 
-      function MYSQL_Fetch_Row (Result : Integer := RS.Query_ID)
+      function MYSQL_Fetch_Row (Result : MySQL_ID := RS.Query_ID)
                                 return Row_Access;
       pragma Import (C, MYSQL_Fetch_Row, "mysql_fetch_row");
 
-      function MYSQL_Fetch_Lengths (Result : Integer := RS.Query_ID)
+      function MYSQL_Fetch_Lengths (Result : MySQL_ID := RS.Query_ID)
                                     return List_of_Lengths_Access;
       pragma Import (C, MYSQL_Fetch_Lengths, "mysql_fetch_lengths");
    begin
@@ -463,7 +470,7 @@ package body Gnoga.Server.Database.MySQL is
       type MYSQL_FIELD_Access is access all MYSQL_FIELD;
 
       function MYSQL_Fetch_Field_Direct
-        (Result   : Integer := RS.Query_ID;
+        (Result   : MySQL_ID := RS.Query_ID;
          FieldNum : Natural := Field_Number - 1)
          return MYSQL_FIELD_Access;
       pragma Import (C, MYSQL_Fetch_Field_Direct, "mysql_fetch_field_direct");
@@ -567,10 +574,10 @@ package body Gnoga.Server.Database.MySQL is
 
       Buf : Buffer_Type := (others => Character'First);
 
-      function MYSQL_Real_Escape_String (mysql  : Integer := C.Server_ID;
+      function MYSQL_Real_Escape_String (mysql  : MySQL_ID    := C.Server_ID;
                                          Buffer : Buffer_Type := Buf;
-                                         Org    : String := S;
-                                         Length : Natural := S'Length)
+                                         Org    : String      := S;
+                                         Length : Natural     := S'Length)
                                          return Natural;
       pragma Import (C, MYSQL_Real_Escape_String, "mysql_real_escape_string");
 

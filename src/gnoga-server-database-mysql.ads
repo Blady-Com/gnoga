@@ -46,6 +46,7 @@
 with Ada.Finalization;
 
 package Gnoga.Server.Database.MySQL is
+   type MySQL_ID is access all Integer;
 
    type Connection is new Gnoga.Server.Database.Connection with private;
    type Connection_Access is access all Connection'Class;
@@ -54,13 +55,15 @@ package Gnoga.Server.Database.MySQL is
                       Database : String;
                       Host     : String;
                       User     : String;
-                      Password : String);
+                      Password : String  := "";
+                      Port     : Integer := 3306);
    --  Initialize connection to MySQL Server
 
    function Connect (Database : String;
                      Host     : String;
                      User     : String;
-                     Password : String)
+                     Password : String := "";
+                     Port     : Integer := 3306)
                      return Connection_Access;
    --  Create and initialize a connection object
 
@@ -100,7 +103,7 @@ package Gnoga.Server.Database.MySQL is
    --  returns "id INTEGER PRIMARY KEY AUTO_INCREMENT" the proper ID_Field
    --  creation string for SQLLite
 
-   type Recordset (Server_ID : Integer) is new Gnoga.Server.Database.Recordset
+   type Recordset (Server_ID : MySQL_ID) is new Gnoga.Server.Database.Recordset
      with private;
 
    procedure Close (RS : in out Recordset);
@@ -168,10 +171,9 @@ package Gnoga.Server.Database.MySQL is
    --  prepares a string for safe storage in a query
 
 private
-
    type Connection is new Gnoga.Server.Database.Connection with
       record
-         Server_ID : Integer := 0;
+         Server_ID : MySQL_ID := null;
       end record;
 
    subtype Field_Data is String (1 .. Natural'Last);
@@ -184,10 +186,10 @@ private
    type List_of_Lengths_Access is access all List_of_Lengths;
    --  Used to access Result Lengths
 
-   type Recordset (Server_ID : Integer) is
+   type Recordset (Server_ID : MySQL_ID) is
      new Gnoga.Server.Database.Recordset with
       record
-         Query_ID    : Integer                := 0;
+         Query_ID    : MySQL_ID               := null;
          Last_Row    : Row_Access             := null;
          Row_Count   : Natural                := 0;
          Field_Count : Natural                := 0;

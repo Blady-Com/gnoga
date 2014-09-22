@@ -2,19 +2,17 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 
-with Gnoga.Server.Database.SQLite;
---  with Gnoga.Server.Database.MySQL;
+with Gnoga.Server.Database.MySQL;
 
 with Gnoga.Application.Singleton;
 with Gnoga.Window;
 
-procedure DB_Example is
-   pragma Linker_Options ("-L/usr/lib/sqlite3");
-   pragma Linker_Options ("-lsqlite3");
+procedure DB_MySQL is
+   pragma Linker_Options ("-L/usr/local/lib");
+   pragma Linker_Options ("-lmysqlclient");
 
 
-   Connection : Gnoga.Server.Database.SQLite.Connection;
---   Connection : Gnoga.Server.Database.MySQL.Connection;
+   Connection : Gnoga.Server.Database.MySQL.Connection;
 
    Tables       : Gnoga.Server.Data_Array.Vector;
    Fields       : Gnoga.Server.Data_Array.Vector;
@@ -27,13 +25,11 @@ begin
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
    M.Document.Put_Line ("Open Database: test");
-   Connection.Connect (Database => "../test/test.db");
 
---    For MySQL would be:
---    Connection.Connect (Database => "test",
---                        Host     => "xxx",
---                        User     => "xx",
---                        Password => "xxx");
+    Connection.Connect (Database => "xxxxx",
+                        Host     => "xxxxx",
+                        User     => "xxxxx",
+                        Password => "xxxxx");
 
    M.Document.Put_Line ("Obtain list of tables from: test");
    Tables := Connection.List_Of_Tables;
@@ -93,4 +89,4 @@ exception
       Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
                    Ada.Exceptions.Exception_Message (E));
       Gnoga.Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
-end DB_Example;
+end DB_MySQL;

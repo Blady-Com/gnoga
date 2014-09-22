@@ -123,14 +123,14 @@ package body Gnoga.Server.Database.SQLite is
 
    procedure Execute_Query (C : in out Connection; SQL : String) is
       Q  : aliased SQLite_ID;
-      P  : aliased Integer;
+      P  : aliased SQLite_ID;
 
       function sqlite3_prepare
         (sqlite  : SQLite_ID      := C.Server_ID;
          sq      : String         := SQL;
          l       : Natural        := SQL'Length;
          ppStmt  : access SQLite_ID := Q'Access;
-         ppzTail : access Integer := P'Access)
+         ppzTail : access SQLite_ID := P'Access)
          return Integer;
       pragma Import (C, sqlite3_prepare, "sqlite3_prepare_v2");
 
@@ -306,14 +306,14 @@ package body Gnoga.Server.Database.SQLite is
    is
       RS : Recordset (C.Server_ID);
       Q  : aliased SQLite_ID;
-      P  : aliased Integer;
+      P  : aliased SQLite_ID;
 
       function sqlite3_prepare
         (sqlite  : SQLite_ID        := C.Server_ID;
          sq      : String           := SQL;
          l       : Natural          := SQL'Length;
          ppStmt  : access SQLite_ID := Q'Access;
-         ppzTail : access Integer   := P'Access)
+         ppzTail : access SQLite_ID := P'Access)
          return Integer;
       pragma Import (C, sqlite3_prepare, "sqlite3_prepare_v2");
 

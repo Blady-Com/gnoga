@@ -57,7 +57,7 @@ package body Gnoga.Server.Database.SQLite is
    subtype Field_Data is String (1 .. Natural'Last);
    type Field_Access is access all Field_Data;
 
-   function Error_Message (S : Integer) return String;
+   function Error_Message (S : SQLite_ID) return String;
    --  Return error message from database
 
    -------------
@@ -74,25 +74,26 @@ package body Gnoga.Server.Database.SQLite is
    end Connect;
 
    procedure Connect (C        : in out Connection;
-                      Database : String)
+                      Database : in     String)
    is
-      DB : aliased Integer;
-
       SQLITE_OPEN_READWRITE : constant := 16#2#;
       SQLITE_OPEN_CREATE    : constant := 16#4#;
       SQLITE_OPEN_FULLMUTEX : constant := 16#10000#;
 
-      function sqlite3_open (filename : String  := Database & Nul;
-                             ppDb     : access Integer := DB'Access;
-                             flags    : Integer := SQLITE_OPEN_READWRITE +
-                               SQLITE_OPEN_CREATE + SQLITE_OPEN_FULLMUTEX;
-                             zVfs     : Integer := 0)
+      function sqlite3_open (filename : String           := Database & Nul;
+                             ppDb     : access SQLite_ID := C.Server_ID'Access;
+                             flags    : Integer          :=
+                               SQLITE_OPEN_READWRITE +
+                                 SQLITE_OPEN_CREATE +
+                                   SQLITE_OPEN_FULLMUTEX;
+                             zVfs     : Integer          := 0)
                              return Integer;
       pragma Import (C, sqlite3_open, "sqlite3_open_v2");
 
-      R : Integer := sqlite3_open;
+      R : Integer;
    begin
-      C.Server_ID := DB;
+      R := sqlite3_open;
+
       if R /= 0 then
          raise Connection_Error with
             "Connection to server " & Database & " has failed - " &
@@ -105,13 +106,13 @@ package body Gnoga.Server.Database.SQLite is
    ----------------
 
    procedure Disconnect (C : in out Connection) is
-      procedure sqlite3_close (sqlite3 : Integer := C.Server_ID);
+      procedure sqlite3_close (sqlite3 : SQLite_ID := C.Server_ID);
       pragma Import (C, sqlite3_close, "sqlite3_close");
 
    begin
-      if C.Server_ID /= 0 then
+      if C.Server_ID /= null then
          sqlite3_close;
-         C.Server_ID := 0;
+         C.Server_ID := null;
       end if;
    end Disconnect;
 
@@ -121,26 +122,26 @@ package body Gnoga.Server.Database.SQLite is
    -------------------
 
    procedure Execute_Query (C : in out Connection; SQL : String) is
-      Q  : aliased Integer;
+      Q  : aliased SQLite_ID;
       P  : aliased Integer;
 
       function sqlite3_prepare
-        (sqlite  : Integer        := C.Server_ID;
+        (sqlite  : SQLite_ID      := C.Server_ID;
          sq      : String         := SQL;
          l       : Natural        := SQL'Length;
-         ppStmt  : access Integer := Q'Access;
+         ppStmt  : access SQLite_ID := Q'Access;
          ppzTail : access Integer := P'Access)
          return Integer;
       pragma Import (C, sqlite3_prepare, "sqlite3_prepare_v2");
 
-      function sqlite3_step (sqlite : Integer := Q)
+      function sqlite3_step (sqlite : SQLite_ID := Q)
                              return Integer;
       pragma Import (C, sqlite3_step, "sqlite3_step");
 
-      procedure sqlite3_finalize (sqlite : Integer := Q);
+      procedure sqlite3_finalize (sqlite : SQLite_ID := Q);
       pragma Import (C, sqlite3_finalize, "sqlite3_finalize");
    begin
-      if C.Server_ID = 0 then
+      if C.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -168,12 +169,12 @@ package body Gnoga.Server.Database.SQLite is
    ---------------
 
    function Insert_ID (C : Connection) return Natural is
-      function sqlite3_last_insert_rowid (sqlite : Integer := C.Server_ID)
+      function sqlite3_last_insert_rowid (sqlite : SQLite_ID := C.Server_ID)
                                           return Ulonglong;
       pragma Import
         (C, sqlite3_last_insert_rowid, "sqlite3_last_insert_rowid");
    begin
-      if C.Server_ID = 0 then
+      if C.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -185,11 +186,11 @@ package body Gnoga.Server.Database.SQLite is
    -------------------
 
    function Affected_Rows (C : Connection) return Natural is
-      function sqlite3_changes (sqlite : Integer := C.Server_ID)
+      function sqlite3_changes (sqlite : SQLite_ID := C.Server_ID)
                                 return Natural;
       pragma Import (C, sqlite3_changes, "sqlite3_changes");
    begin
-      if C.Server_ID = 0 then
+      if C.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -200,12 +201,12 @@ package body Gnoga.Server.Database.SQLite is
    -- Error_Message --
    -------------------
 
-   function Error_Message (S : Integer) return String is
+   function Error_Message (S : SQLite_ID) return String is
       subtype charbuf is
         Interfaces.C.char_array (1 .. Interfaces.C.size_t'Last);
       type charbuf_access is access all charbuf;
 
-      function sqlite3_errmsg (sqlite3 : Integer := S)
+      function sqlite3_errmsg (sqlite3 : SQLite_ID := S)
                                return charbuf_access;
       pragma Import (C, sqlite3_errmsg, "sqlite3_errmsg");
    begin
@@ -248,7 +249,7 @@ package body Gnoga.Server.Database.SQLite is
         C.Query ("select * from " & Table_Name & " limit 1");
 
       function sqlite3_column_count
-        (sqlite : Integer := Recordset (RS).Query_ID)
+        (sqlite : SQLite_ID := Recordset (RS).Query_ID)
          return Natural;
       pragma Import (C, sqlite3_column_count, "sqlite3_column_count");
    begin
@@ -304,27 +305,29 @@ package body Gnoga.Server.Database.SQLite is
                    return Gnoga.Server.Database.Recordset'Class
    is
       RS : Recordset (C.Server_ID);
-      Q  : aliased Integer;
+      Q  : aliased SQLite_ID;
       P  : aliased Integer;
 
       function sqlite3_prepare
-        (sqlite  : Integer        := RS.Server_ID;
-         sq      : String         := SQL;
-         l       : Natural        := SQL'Length;
-         ppStmt  : access Integer := Q'Access;
-         ppzTail : access Integer := P'Access)
+        (sqlite  : SQLite_ID        := C.Server_ID;
+         sq      : String           := SQL;
+         l       : Natural          := SQL'Length;
+         ppStmt  : access SQLite_ID := Q'Access;
+         ppzTail : access Integer   := P'Access)
          return Integer;
       pragma Import (C, sqlite3_prepare, "sqlite3_prepare_v2");
 
-      function sqlite3_step (sqlite : Integer := RS.Query_ID)
+      function sqlite3_step (sqlite : SQLite_ID := RS.Query_ID)
                              return Integer;
       pragma Import (C, sqlite3_step, "sqlite3_step");
 
-      function sqlite3_column_count (sqlite : Integer := RS.Query_ID)
+      function sqlite3_column_count (sqlite : SQLite_ID := RS.Query_ID)
                                      return Natural;
       pragma Import (C, sqlite3_column_count, "sqlite3_column_count");
+
+      R : Integer;
    begin
-      if RS.Server_ID = 0 then
+      if RS.Server_ID = null then
          raise Connection_Error;
       end if;
 
@@ -334,16 +337,16 @@ package body Gnoga.Server.Database.SQLite is
 
       RS.Query_ID := Q;
 
-      Q := sqlite3_step;
-      if Q /= SQLITE_OK and
-        Q /= SQLITE_ROW and
-        Q /= SQLITE_DONE
+      R := sqlite3_step;
+      if R /= SQLITE_OK and
+        R /= SQLITE_ROW and
+        R /= SQLITE_DONE
       then
          raise Query_Error with SQL & " => " &
-         Q'Img & " - " & Error_Message (C.Server_ID);
+         R'Img & " - " & Error_Message (C.Server_ID);
       end if;
 
-      RS.Last_Result := Q;
+      RS.Last_Result := R;
       RS.First_Row := True;
 
       RS.Field_Count := sqlite3_column_count;
@@ -369,7 +372,7 @@ package body Gnoga.Server.Database.SQLite is
    -----------
 
    procedure Close (RS : in out Recordset) is
-      procedure sqlite3_finalize  (Result : Integer := RS.Query_ID);
+      procedure sqlite3_finalize  (Result : SQLite_ID := RS.Query_ID);
       pragma Import (C, sqlite3_finalize, "sqlite3_finalize");
    begin
       sqlite3_finalize;
@@ -393,7 +396,7 @@ package body Gnoga.Server.Database.SQLite is
    function Next (RS : Recordset) return Boolean is
       R : access Recordset := RS'Unrestricted_Access;
 
-      function sqlite3_step (sqlite : Integer := RS.Query_ID)
+      function sqlite3_step (sqlite : SQLite_ID := RS.Query_ID)
                              return Integer;
       pragma Import (C, sqlite3_step, "sqlite3_step");
    begin
@@ -420,8 +423,8 @@ package body Gnoga.Server.Database.SQLite is
    -------------
 
    procedure Iterate
-     (C     : in out Connection;
-      SQL   : String;
+     (C       : in out Connection;
+      SQL     : in     String;
       Process : not null access
         procedure (RS : Gnoga.Server.Database.Recordset'Class))
    is
@@ -443,7 +446,7 @@ package body Gnoga.Server.Database.SQLite is
 
    procedure Iterate
      (C     : in out Connection;
-      SQL   : String;
+      SQL   : in     String;
       Process : not null access procedure (Row : Data_Maps.Map))
    is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
@@ -485,7 +488,7 @@ package body Gnoga.Server.Database.SQLite is
    ----------------
 
    function Field_Name
-     (RS : Recordset;
+     (RS           : Recordset;
       Field_Number : Natural)
       return String
    is
@@ -494,8 +497,8 @@ package body Gnoga.Server.Database.SQLite is
       type charbuf_access is access all charbuf;
 
       function sqlite3_column_name
-        (sqlite : Integer := RS.Query_ID;
-         N      : Integer := Field_Number - 1)
+        (sqlite : SQLite_ID := RS.Query_ID;
+         N      : Integer   := Field_Number - 1)
         return charbuf_access;
       pragma Import (C, sqlite3_column_name, "sqlite3_column_name");
    begin
@@ -512,14 +515,14 @@ package body Gnoga.Server.Database.SQLite is
                          return String
    is
       function sqlite3_column_blob
-        (sqlite : Integer := RS.Query_ID;
-         iCol   : Integer := Field_Number - 1)
+        (sqlite : SQLite_ID := RS.Query_ID;
+         iCol   : Integer   := Field_Number - 1)
          return Field_Access;
       pragma Import (C, sqlite3_column_blob, "sqlite3_column_blob");
 
       function sqlite3_column_bytes
-        (sqlite : Integer := RS.Query_ID;
-         iCol   : Integer := Field_Number - 1)
+        (sqlite : SQLite_ID := RS.Query_ID;
+         iCol   : Integer   := Field_Number - 1)
          return Natural;
       pragma Import (C, sqlite3_column_bytes, "sqlite3_column_bytes");
 
@@ -572,8 +575,8 @@ package body Gnoga.Server.Database.SQLite is
    -------------
 
    function Is_Null (RS : Recordset; Field_Number : Natural) return Boolean is
-      function sqlite3_column_type (sqlite : Integer := RS.Query_ID;
-                                    iCol   : Natural := Field_Number - 1)
+      function sqlite3_column_type (sqlite : SQLite_ID := RS.Query_ID;
+                                    iCol   : Natural   := Field_Number - 1)
                                     return Integer;
       pragma Import (C, sqlite3_column_type, "sqlite3_column_type");
    begin

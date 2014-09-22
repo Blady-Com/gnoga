@@ -46,6 +46,7 @@
 with Ada.Finalization;
 
 package Gnoga.Server.Database.SQLite is
+   type SQLite_ID is access all Integer;
 
    type Connection is new Gnoga.Server.Database.Connection with private;
    type Connection_Access is access all Connection'Class;
@@ -94,7 +95,7 @@ package Gnoga.Server.Database.SQLite is
    --  returns "id INTEGER PRIMARY KEY AUTOINCREMENT" the proper ID_Field
    --  creation string for SQLLite
 
-   type Recordset (Server_ID : Integer) is new Gnoga.Server.Database.Recordset
+   type Recordset (Server_ID : SQLite_ID) is new Gnoga.Server.Database.Recordset
      with private;
 
    procedure Close (RS : in out Recordset);
@@ -168,13 +169,13 @@ package Gnoga.Server.Database.SQLite is
 private
    type Connection is new Gnoga.Server.Database.Connection with
       record
-         Server_ID : Integer := 0;
+         Server_ID : aliased SQLite_ID := null;
       end record;
 
-   type Recordset (Server_ID : Integer) is
+   type Recordset (Server_ID : SQLite_ID) is
      new Gnoga.Server.Database.Recordset with
       record
-         Query_ID    : Integer                := 0;
+         Query_ID    : aliased SQLite_ID      := null;
          Field_Count : Natural                := 0;
          Last_Result : Integer                := 0;
          First_Row   : Boolean                := False;

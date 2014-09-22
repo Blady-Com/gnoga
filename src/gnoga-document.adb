@@ -171,4 +171,13 @@ package body Gnoga.Document is
       Document.Execute ("writeln(""" & Escape_Quotes (Value) & """);");
    end Write_Line;
 
+   --------------
+   -- Put_Line --
+   --------------
+
+   procedure Put_Line (Document : in out Document_Type; Value : String) is
+   begin
+      Document.Write_Line (Value & "<br />");
+   end Put_Line;
+
 end Gnoga.Document;

@@ -94,6 +94,8 @@ package Gnoga.Document is
    --  Write/Write_Line so that a text node is created before inserting any
    --  elements into the document body.
 
+   procedure Put_Line (Document : in out Document_Type; Value : String);
+   --  Calls Write_Line with Value + "<br />"
 private
    type Document_Type is new Gnoga.Base.Base_Type with
       record

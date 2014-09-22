@@ -372,6 +372,9 @@ package body Gnoga.Server.Database.MySQL is
          return False;
       else
          R.Lengths := MYSQL_Fetch_Lengths;
+         if R.Lengths = null then
+            raise Query_Error with Error_Message (RS.Query_ID);
+         end if;
          return True;
       end if;
    end Next;
@@ -382,7 +385,7 @@ package body Gnoga.Server.Database.MySQL is
 
    procedure Iterate
      (C     : in out Connection;
-      SQL   : String;
+      SQL   : in     String;
       Process : not null access
         procedure (RS : Gnoga.Server.Database.Recordset'Class))
    is
@@ -404,7 +407,7 @@ package body Gnoga.Server.Database.MySQL is
 
    procedure Iterate
      (C     : in out Connection;
-      SQL   : String;
+      SQL   : in     String;
       Process : not null access procedure (Row : Data_Maps.Map))
    is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
@@ -444,10 +447,13 @@ package body Gnoga.Server.Database.MySQL is
    ----------------
 
    function Field_Name
-     (RS : Recordset;
+     (RS           : Recordset;
       Field_Number : Natural)
       return String
    is
+      use type Interfaces.C.char_array;
+      use type Interfaces.C.size_t;
+
       type MYSQL_FIELD is record
          Name          : Field_Access;
          Org_Name      : Field_Access;
@@ -456,28 +462,36 @@ package body Gnoga.Server.Database.MySQL is
          DB            : Field_Access;
          Catalog       : Field_Access;
          Default       : Field_Access;
-         Create_Length : Natural;
-         Max_Length    : Natural;
-         Name_L        : Natural;
-         Org_Name_L    : Natural;
-         Table_L       : Natural;
-         DB_L          : Natural;
-         Catalog_L     : Natural;
-         Default_L     : Natural;
+         Create_Length : Interfaces.C.unsigned_long;
+         Max_Length    : Interfaces.C.unsigned_long;
+         Name_L        : Interfaces.C.unsigned;
+         Org_Name_L    : Interfaces.C.unsigned;
+         Table_L       : Interfaces.C.unsigned;
+         DB_L          : Interfaces.C.unsigned;
+         Catalog_L     : Interfaces.C.unsigned;
+         Default_L     : Interfaces.C.unsigned;
       end record;
       pragma Convention (C, MYSQL_FIELD);
 
       type MYSQL_FIELD_Access is access all MYSQL_FIELD;
 
       function MYSQL_Fetch_Field_Direct
-        (Result   : MySQL_ID := RS.Query_ID;
-         FieldNum : Natural := Field_Number - 1)
+        (Result   : MySQL_ID              := RS.Query_ID;
+         FieldNum : Interfaces.C.unsigned :=
+           Interfaces.C.unsigned (Field_Number - 1))
          return MYSQL_FIELD_Access;
       pragma Import (C, MYSQL_Fetch_Field_Direct, "mysql_fetch_field_direct");
 
-      Field : MYSQL_FIELD_Access := MYSQL_Fetch_Field_Direct;
+      Field : MYSQL_FIELD_Access;
    begin
-      return Field.Name (1 .. Field.Name_L);
+      Field := MYSQL_Fetch_Field_Direct;
+      if Field = null then
+         raise Query_Error with Error_Message (RS.Query_ID);
+      end if;
+
+      return Interfaces.C.To_Ada
+        (Field.Name (0 .. Interfaces.C.size_t (Field.Name_L) - 1) &
+           Interfaces.c.nul);
    end Field_Name;
 
    -----------------
@@ -489,6 +503,8 @@ package body Gnoga.Server.Database.MySQL is
                          Handle_Nulls : Boolean := True)
                          return String
    is
+      use type Interfaces.C.char_array;
+      use type Interfaces.C.size_t;
    begin
       if RS.Last_Row = null then
          raise Empty_Row_Error;
@@ -503,7 +519,10 @@ package body Gnoga.Server.Database.MySQL is
          end if;
       end if;
 
-      return RS.Last_Row (Field_Number)(1 .. RS.Lengths (Field_Number));
+      return Interfaces.C.To_Ada
+        (RS.Last_Row (Field_Number)
+         (0 .. Interfaces.C.size_t (RS.Lengths (Field_Number)) - 1) &
+           Interfaces.c.nul);
    end Field_Value;
 
    function Field_Value (RS           : Recordset;

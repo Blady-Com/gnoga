@@ -44,6 +44,7 @@
 
 
 with Ada.Finalization;
+with Interfaces.C;
 
 package Gnoga.Server.Database.MySQL is
    type MySQL_ID is access all Integer;
@@ -117,7 +118,7 @@ package Gnoga.Server.Database.MySQL is
 
    procedure Iterate
      (C       : in out Connection;
-      SQL     : in String;
+      SQL     : in     String;
       Process : not null access
         procedure (RS : Gnoga.Server.Database.Recordset'Class));
    --  Iterate through all rows in the result set of the query
@@ -130,7 +131,7 @@ package Gnoga.Server.Database.MySQL is
 
    procedure Iterate
      (C     : in out Connection;
-      SQL   : String;
+      SQL   : in     String;
       Process : not null access procedure (Row : Data_Maps.Map));
    --  Iterate through all rows in the result set of the query
 
@@ -176,13 +177,15 @@ private
          Server_ID : MySQL_ID := null;
       end record;
 
-   subtype Field_Data is String (1 .. Natural'Last);
+   subtype Field_Data is Interfaces.C.char_array
+     (0 .. Interfaces.C.size_t'Last);
    type Field_Access is access all Field_Data;
-   type Row_Data is array (1 .. Natural'Last) of Field_Access;
+   type Row_Data is array (1 .. Natural'Last) of aliased Field_Access;
    type Row_Access is access all Row_Data;
    --  Used to access ROW data
 
-   type List_of_Lengths is array (1 .. Natural'Last) of Natural;
+   subtype Field_Length is Interfaces.C.unsigned_long;
+   type List_of_Lengths is array (1 .. Natural'Last) of aliased Field_Length;
    type List_of_Lengths_Access is access all List_of_Lengths;
    --  Used to access Result Lengths
 

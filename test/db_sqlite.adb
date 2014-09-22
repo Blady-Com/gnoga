@@ -8,7 +8,6 @@ with Gnoga.Application.Singleton;
 with Gnoga.Window;
 
 procedure DB_SQLite is
-   pragma Linker_Options ("-L/usr/lib/sqlite3");
    pragma Linker_Options ("-lsqlite3");
 
 
@@ -22,6 +21,7 @@ procedure DB_SQLite is
    M : Gnoga.Window.Window_Type;
 begin
    Gnoga.Application.Title ("Database test for Gnoga");
+   Gnoga.Application.HTML_On_Close ("Application closed.");
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
    M.Document.Put_Line ("Open Database: test");
@@ -61,7 +61,7 @@ begin
    end loop;
 
    M.Document.Put_Line
-     (Connection.Escape_String ("I've been thinking.. escaped"));
+     (Connection.Escape_String ("I've been thinking.. ""escaped"" \ is it?"));
 
    declare
       RS : Gnoga.Server.Database.Recordset'Class :=

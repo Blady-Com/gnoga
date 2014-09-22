@@ -8,9 +8,7 @@ with Gnoga.Application.Singleton;
 with Gnoga.Window;
 
 procedure DB_MySQL is
-   pragma Linker_Options ("-L/usr/local/lib");
    pragma Linker_Options ("-lmysqlclient");
-
 
    Connection : Gnoga.Server.Database.MySQL.Connection;
 
@@ -22,19 +20,19 @@ procedure DB_MySQL is
    M : Gnoga.Window.Window_Type;
 begin
    Gnoga.Application.Title ("Database test for Gnoga");
+   Gnoga.Application.HTML_On_Close ("Application closed.");
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
    M.Document.Put_Line ("Open Database: test");
 
-    Connection.Connect (Database => "xxxxx",
-                        Host     => "xxxxx",
-                        User     => "xxxxx",
-                        Password => "xxxxx");
+    Connection.Connect (Database => "xxxx",
+                        Host     => "xxxx",
+                        User     => "xxxx",
+                        Password => "xxxx");
 
    M.Document.Put_Line ("Obtain list of tables from: test");
    Tables := Connection.List_Of_Tables;
 
-   M.Document.Put_Line ("Display list of tables: test");
    for I in 1 .. Natural (Tables.Length) loop
       M.Document.Put_Line ("Table Name in database : " & Tables.Element (I));
    end loop;
@@ -65,7 +63,7 @@ begin
    end loop;
 
    M.Document.Put_Line
-     (Connection.Escape_String ("I've been thinking.. escaped"));
+     (Connection.Escape_String ("I've been thinking.. ""escaped"" \ is it?"));
 
    declare
       RS : Gnoga.Server.Database.Recordset'Class :=

@@ -2,6 +2,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 
+with Gnoga.Types;
 with Gnoga.Server.Database.SQLite;
 
 with Gnoga.Application.Singleton;
@@ -13,8 +14,8 @@ procedure DB_SQLite is
 
    Connection : Gnoga.Server.Database.SQLite.Connection;
 
-   Tables       : Gnoga.Server.Data_Array.Vector;
-   Fields       : Gnoga.Server.Data_Array.Vector;
+   Tables       : Gnoga.Types.Data_Array.Vector;
+   Fields       : Gnoga.Types.Data_Array.Vector;
    Descriptions : Gnoga.Server.Database.Field_Description_Array.Vector;
    Description  : Gnoga.Server.Database.Field_Description;
 

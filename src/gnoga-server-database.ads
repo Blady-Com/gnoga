@@ -42,7 +42,10 @@ with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Vectors;
 
+with Gnoga.Types;
+
 package Gnoga.Server.Database is
+   use Gnoga.Types;
 
    type Connection is limited interface;
    type Connection_Access is access all Connection'Class;
@@ -63,7 +66,7 @@ package Gnoga.Server.Database is
    --  Returns the last error message that has occured on this connection
 
    function List_Of_Tables (C : Connection)
-                            return Gnoga.Server.Data_Array.Vector is abstract;
+                            return Gnoga.Types.Data_Array.Vector is abstract;
    --  Return an array of table names
 
    function List_Fields_Of_Table (C          : Connection;

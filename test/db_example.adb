@@ -27,7 +27,7 @@ begin
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
    M.Document.Put_Line ("Open Database: test");
-   Connection.Connect (Database => "test.db");
+   Connection.Connect (Database => "../test/test.db");
 
 --    For MySQL would be:
 --    Connection.Connect (Database => "test",

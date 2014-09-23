@@ -63,14 +63,14 @@ package body Gnoga.Server.Model is
      (A                   : in out Active_Record;
       Map                 : in     Gnoga.Types.Data_Maps.Map)
    is
-      procedure foreach (Position : in Gnoga.Types.Data_Array.Cursor);
+      procedure foreach (Position : in Gnoga.Types.Data_Arrays.Cursor);
 
-      procedure foreach (Position : in Gnoga.Types.Data_Array.Cursor) is
+      procedure foreach (Position : in Gnoga.Types.Data_Arrays.Cursor) is
       begin
-         if Map.Contains (Gnoga.Types.Data_Array.Element (Position)) then
+         if Map.Contains (Gnoga.Types.Data_Arrays.Element (Position)) then
             A.Set_Value
-              (Gnoga.Types.Data_Array.Element (Position),
-               Map.Element (Gnoga.Types.Data_Array.Element (Position)));
+              (Gnoga.Types.Data_Arrays.Element (Position),
+               Map.Element (Gnoga.Types.Data_Arrays.Element (Position)));
          end if;
       end foreach;
    begin
@@ -112,7 +112,7 @@ package body Gnoga.Server.Model is
    -----------------
 
    function Field_Names (A : Active_Record)
-                         return Gnoga.Types.Data_Array.Vector
+                         return Gnoga.Types.Data_Array_Type
    is
    begin
       return A.Fields;

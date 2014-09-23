@@ -47,9 +47,9 @@ procedure DB_MySQL is
         ("delete from users");
    end Migrations;
 
-   Tables       : Gnoga.Types.Data_Array.Vector;
-   Fields       : Gnoga.Types.Data_Array.Vector;
-   Descriptions : Gnoga.Server.Database.Field_Description_Array.Vector;
+   Tables       : Gnoga.Types.Data_Array_Type;
+   Fields       : Gnoga.Types.Data_Array_Type;
+   Descriptions : Gnoga.Server.Database.Field_Description_Array_Type;
    Description  : Gnoga.Server.Database.Field_Description;
 
    M : Gnoga.Window.Window_Type;

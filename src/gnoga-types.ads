@@ -43,14 +43,16 @@ with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Indefinite_Hashed_Maps;
 
 package Gnoga.Types is
-   package Data_Array is
+   package Data_Arrays is
      new Ada.Containers.Indefinite_Vectors (Positive, String);
+   subtype Data_Array_Type is Data_Arrays.Vector;
 
    package Data_Maps is
       new Ada.Containers.Indefinite_Hashed_Maps (String,
                                                  String,
                                                  Ada.Strings.Hash,
                                                  Equivalent_Keys => "=");
+   subtype Data_Map_Type is Data_Maps.Map;
 
    package Maps_of_Data_Maps is
      new Ada.Containers.Indefinite_Hashed_Maps (String,
@@ -58,6 +60,7 @@ package Gnoga.Types is
                                                 Ada.Strings.Hash,
                                                 Equivalent_Keys => "=",
                                                 "=" => Data_Maps."=");
+   subtype Map_of_Data_Maps_Type is Maps_of_Data_Maps.Map;
 
    subtype Web_ID is Ada.Strings.Unbounded.Unbounded_String;
 

@@ -53,15 +53,15 @@ package Gnoga.Server.Model is
    overriding procedure Initialize (Object : in out Active_Record);
 
    function Field_Names (A : Active_Record)
-                         return Gnoga.Types.Data_Array.Vector;
+                         return Gnoga.Types.Data_Array_Type;
    --  Returns the Field Names supported by this Active_Record
 
    procedure Set_Values (A   : in out Active_Record;
-                         Map : in     Gnoga.Types.Data_Maps.Map);
+                         Map : in     Gnoga.Types.Data_Map_Type);
    --  Set table values from Map ingoring any extra key/value pairs in Map
    --  not found in record schema
 
-   function Values (A : Active_Record) return Gnoga.Types.Data_Maps.Map;
+   function Values (A : Active_Record) return Gnoga.Types.Data_Map_Type;
    --  Return all values in record
 
    procedure Set_Value (A          : in out Active_Record;
@@ -123,7 +123,7 @@ private
      is new Ada.Finalization.Controlled with
       record
          Is_New     : Boolean                               := True;
-         Fields     : Gnoga.Types.Data_Array.Vector;
-         Values     : Gnoga.Types.Data_Maps.Map;
+         Fields     : Gnoga.Types.Data_Array_Type;
+         Values     : Gnoga.Types.Data_Map_Type;
       end record;
 end Gnoga.Server.Model;

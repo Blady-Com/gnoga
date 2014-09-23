@@ -74,16 +74,16 @@ package Gnoga.Server.Database.SQLite is
    function Error_Message (C : Connection) return String;
    --  Returns the last error message that has occured on this connection
 
-   function List_Of_Tables (C : Connection) return Data_Array.Vector;
+   function List_Of_Tables (C : Connection) return Gnoga.Types.Data_Array_Type;
    --  Return an array of table names
 
    function List_Fields_Of_Table (C          : Connection;
                                   Table_Name : String)
-                                  return Data_Array.Vector;
+                                  return Gnoga.Types.Data_Array_Type;
    --  Return an array of field names for table
 
    function Field_Descriptions (C : Connection; Table_Name : String)
-                                return Field_Description_Array.Vector;
+                                return Field_Description_Array_Type;
    --  Return an array of Field_Description records describe the fields of
    --  a table
 
@@ -123,12 +123,12 @@ package Gnoga.Server.Database.SQLite is
    procedure Iterate
      (C     : in out Connection;
       SQL   : String;
-      Process : not null access procedure (Row : Data_Maps.Map));
+      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type));
    --  Iterate through all rows in the result set of the query
 
    procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access procedure (Row : Data_Maps.Map));
+      Process : not null access procedure (Row :Gnoga.Types.Data_Map_Type));
    --  Iterate through all rows in the recordset
 
    function Number_Of_Rows (RS : Recordset) return Natural;
@@ -158,7 +158,7 @@ package Gnoga.Server.Database.SQLite is
    --  return value of field, if Handle_Nulls is true, Null values will
    --  return as empty Strings
 
-   function Field_Values (RS : Recordset) return Data_Maps.Map;
+   function Field_Values (RS : Recordset) return Gnoga.Types.Data_Map_Type;
    --  return map of all values for current row, NULL values are set to
    --  an empty String
 

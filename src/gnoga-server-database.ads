@@ -45,7 +45,6 @@ with Ada.Containers.Indefinite_Vectors;
 with Gnoga.Types;
 
 package Gnoga.Server.Database is
-   use Gnoga.Types;
 
    type Connection is limited interface;
    type Connection_Access is access all Connection'Class;
@@ -66,12 +65,13 @@ package Gnoga.Server.Database is
    --  Returns the last error message that has occured on this connection
 
    function List_Of_Tables (C : Connection)
-                            return Gnoga.Types.Data_Array.Vector is abstract;
+                            return Gnoga.Types.Data_Array_Type is abstract;
    --  Return an array of table names
 
-   function List_Fields_Of_Table (C          : Connection;
-                                  Table_Name : String)
-                                  return Data_Array.Vector is abstract;
+   function List_Fields_Of_Table
+     (C          : Connection;
+      Table_Name : String)
+      return Gnoga.Types.Data_Array_Type is abstract;
    --  Return an array of field names for table
 
    type Field_Description is record
@@ -81,12 +81,13 @@ package Gnoga.Server.Database is
       Default_Value : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
-   package Field_Description_Array is
+   package Field_Description_Arrays is
      new Ada.Containers.Indefinite_Vectors (Natural, Field_Description);
+   subtype Field_Description_Array_Type is Field_Description_Arrays.Vector;
 
    function Field_Descriptions
      (C : Connection; Table_Name : String)
-     return Field_Description_Array.Vector is abstract;
+     return Field_Description_Array_Type is abstract;
    --  Return an array of Field_Description records describe the fields of
    --  a table
 
@@ -152,13 +153,13 @@ package Gnoga.Server.Database is
    procedure Iterate
      (C     : in out Connection;
       SQL   : String;
-      Process : not null access procedure (Row : Data_Maps.Map))
+      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
       is abstract;
    --  Iterate through all rows in the result set of the query
 
    procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access procedure (Row : Data_Maps.Map))
+      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
       is abstract;
    --  Iterate through all rows in the recordset
 
@@ -191,7 +192,7 @@ package Gnoga.Server.Database is
    --  return value of field, if Handle_Nulls is true, Null values will
    --  return as empty Strings
 
-   function Field_Values (RS : Recordset) return Data_Maps.Map
+   function Field_Values (RS : Recordset) return Gnoga.Types.Data_Map_Type
                           is abstract;
    --  return map of all values for current row, NULL values are set to
    --  an empty String

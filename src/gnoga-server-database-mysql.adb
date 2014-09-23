@@ -205,8 +205,9 @@ package body Gnoga.Server.Database.MySQL is
    -- List_Of_Tables --
    --------------------
 
-   function List_Of_Tables (C : Connection) return Data_Array.Vector is
-      Tables : Data_Array.Vector;
+   function List_Of_Tables (C : Connection)
+                            return Gnoga.Types.Data_Array_Type is
+      Tables : Gnoga.Types.Data_Array_Type;
       RS     : Gnoga.Server.Database.Recordset'Class :=
         C.Query ("show tables");
    begin
@@ -224,9 +225,9 @@ package body Gnoga.Server.Database.MySQL is
 
    function List_Fields_Of_Table (C          : Connection;
                                   Table_Name : String)
-                                  return Data_Array.Vector
+                                  return Gnoga.Types.Data_Array_Type
    is
-      Fields : Data_Array.Vector;
+      Fields : Gnoga.Types.Data_Array_Type;
       RS     : Gnoga.Server.Database.Recordset'Class :=
         C.Query ("describe " & Table_Name);
    begin
@@ -244,14 +245,14 @@ package body Gnoga.Server.Database.MySQL is
    ------------------------
 
    function Field_Descriptions (C : Connection; Table_Name : String)
-                                return Field_Description_Array.Vector
+                                return Field_Description_Array_Type
    is
       use Ada.Strings.Unbounded;
 
       RS : Gnoga.Server.Database.Recordset'Class :=
         C.Query ("describe " & Table_Name);
 
-      Descriptions : Field_Description_Array.Vector;
+      Descriptions : Field_Description_Array_Type;
    begin
       while RS.Next loop
          declare
@@ -408,7 +409,7 @@ package body Gnoga.Server.Database.MySQL is
    procedure Iterate
      (C     : in out Connection;
       SQL   : in     String;
-      Process : not null access procedure (Row : Data_Maps.Map))
+      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
    is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
    begin
@@ -417,7 +418,8 @@ package body Gnoga.Server.Database.MySQL is
 
    procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access procedure (Row : Data_Maps.Map)) is
+      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
+   is
    begin
       while RS.Next loop
          Process (RS.Field_Values);
@@ -544,8 +546,8 @@ package body Gnoga.Server.Database.MySQL is
    -- Field_Values --
    ------------------
 
-   function Field_Values (RS : Recordset) return Data_Maps.Map is
-      Row : Data_Maps.Map;
+   function Field_Values (RS : Recordset) return Gnoga.Types.Data_Map_Type is
+      Row : Gnoga.Types.Data_Map_Type;
    begin
       for I in 1 .. RS.Field_Count loop
          Row.Insert (RS.Field_Name (I), RS.Field_Value (I));

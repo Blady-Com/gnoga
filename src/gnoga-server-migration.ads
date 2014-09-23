@@ -84,7 +84,7 @@ package Gnoga.Server.Migration is
 private
    type Migration_Collection is tagged limited
       record
-         Migrations_Up   : Gnoga.Types.Data_Array.Vector;
-         Migrations_Down : Gnoga.Types.Data_Array.Vector;
+         Migrations_Up   : Gnoga.Types.Data_Array_Type;
+         Migrations_Down : Gnoga.Types.Data_Array_Type;
       end record;
 end Gnoga.Server.Migration;

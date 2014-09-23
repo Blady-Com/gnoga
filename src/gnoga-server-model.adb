@@ -221,9 +221,19 @@ package body Gnoga.Server.Model is
          " where id=" & A.Value ("id");
    begin
       A.Connection.Execute_Query (SQL);
-      A.Is_New := True;
-      A.Values.Delete ("id");
+      A.Clear;
    end Delete;
+
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear (A : in out Active_Record) is
+   begin
+      A.Is_New := True;
+      A.Values.Clear;
+      A.Fields.Clear;
+   end Clear;
 
    ----------
    -- Find --
@@ -277,4 +287,20 @@ package body Gnoga.Server.Model is
             raise Gnoga.Server.Database.End_Of_Recordset;
          end if;
    end Find_Where;
+
+   ---------------
+   -- Find_Item --
+   ---------------
+
+   procedure Find_Item (A          : in out Active_Record;
+                        Parent     : in out Active_Record'Class;
+                        Create_New : in     Boolean := False)
+   is
+      Remove_s : String := Parent.Table_Name.all;
+      Where_Clause : String := Remove_s (Remove_s'First .. Remove_s'Last - 1)
+        & "_id = " & Parent.Value ("id");
+   begin
+      A.Find_Where (Where_Clause, Create_New);
+   end Find_Item;
+
 end Gnoga.Server.Model;

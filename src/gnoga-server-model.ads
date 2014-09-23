@@ -91,6 +91,9 @@ package Gnoga.Server.Model is
    procedure Delete (A : in out Active_Record);
    --  Delete this row
 
+   procedure Clear (A : in out Active_Record);
+   --  Clears the Active Record and mark as a new row
+
    procedure Find (A : in out Active_Record; ID : in Positive);
    --  Load row with ID
 
@@ -107,6 +110,11 @@ package Gnoga.Server.Model is
    --  is thrown if the record is not found. Checking if Value ("id")
    --  is empty, i.e. is a new record would confirm no results found.
 
+   procedure Find_Item (A          : in out Active_Record;
+                        Parent     : in out Active_Record'Class;
+                        Create_New : in     Boolean := False);
+   --  Return first matching record in Child Table A where:
+   --  Child_Table.PARENT_TABLE_NAME(with out s)_id = Child_Table.id
 private
 
    type Active_Record

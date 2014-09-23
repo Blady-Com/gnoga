@@ -68,7 +68,7 @@ package Gnoga.Server.Migration is
    --  the last added Migration_Up
 
    function Migrations_Handled_Command_Line
-     (Connection          : in     Gnoga.Server.Database.Connection'Class;
+     (Connection          : in     Gnoga.Server.Database.Connection_Access;
       Migration_Procedure : access
         procedure (Collection : in out Migration_Collection))
       return Boolean;

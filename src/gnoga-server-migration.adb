@@ -155,7 +155,7 @@ package body Gnoga.Server.Migration is
    end Setup;
 
    function Migrations_Handled_Command_Line
-     (Connection          : in     Gnoga.Server.Database.Connection'Class;
+     (Connection          : in     Gnoga.Server.Database.Connection_Access;
       Migration_Procedure : access procedure
         (Collection : in out Migration_Collection))
       return Boolean
@@ -163,9 +163,6 @@ package body Gnoga.Server.Migration is
       use Ada.Command_Line;
       use Ada.Strings.Fixed;
       use Ada.Strings.Maps.Constants;
-
-      C : Gnoga.Server.Database.Connection_Access :=
-        Connection'Unrestricted_Access;
 
       M : Migration_Collection;
    begin
@@ -175,11 +172,11 @@ package body Gnoga.Server.Migration is
          begin
             if Command = "setup" then
                Migration_Procedure (M);
-               M.Setup (C.all);
+               M.Setup (Connection.all);
                return True;
             elsif Command = "migrate" then
                Migration_Procedure (M);
-               M.Migrate_To (C.all,
+               M.Migrate_To (Connection.all,
                              Natural'Value (Ada.Command_Line.Argument (2)));
                return True;
             end if;

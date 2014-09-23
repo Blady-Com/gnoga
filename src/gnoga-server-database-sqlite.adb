@@ -65,12 +65,12 @@ package body Gnoga.Server.Database.SQLite is
    -------------
 
    function Connect (Database : String)
-                     return Connection_Access
+                     return Gnoga.Server.Database.Connection_Access
    is
       C : Connection_Access := new Connection;
    begin
       C.Connect (Database);
-      return C;
+      return Gnoga.Server.Database.Connection_Access (C);
    end Connect;
 
    procedure Connect (C        : in out Connection;

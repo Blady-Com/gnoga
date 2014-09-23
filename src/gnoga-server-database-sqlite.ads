@@ -56,7 +56,7 @@ package Gnoga.Server.Database.SQLite is
    --  Initialize connection to SQLite database file
 
    function Connect (Database : String)
-                     return Connection_Access;
+                     return Gnoga.Server.Database.Connection_Access;
    --  Create and initialize a connection object
 
    procedure Disconnect (C : in out Connection);

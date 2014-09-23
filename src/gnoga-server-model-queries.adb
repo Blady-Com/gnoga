@@ -79,7 +79,7 @@ package body Gnoga.Server.Model.Queries is
            Template.Connection.Query (To_String (SQL));
 
          Rows : Active_Record_Array.Vector;
-         Row  : Active_Record'Class := Template;
+         Row  : Active_Record (Template.Table_Name, Template.Connection);
       begin
          Row.Is_New := False;
 

@@ -17,7 +17,7 @@ with Gnoga.Window;
 procedure DB_SQLite is
    pragma Linker_Options ("-lsqlite3");
 
-   Connection : Gnoga.Server.Database.SQLite.Connection;
+   Connection : aliased Gnoga.Server.Database.SQLite.Connection;
 
    procedure Migrations
      (M : in out Gnoga.Server.Migration.Migration_Collection)
@@ -58,7 +58,7 @@ begin
 
    if
      Gnoga.Server.Migration.Migrations_Handled_Command_Line
-       (Connection, Migrations'Unrestricted_Access)
+       (Connection'Unchecked_Access, Migrations'Unrestricted_Access)
    then
       GNAT.OS_Lib.OS_Exit (0);
    end if;

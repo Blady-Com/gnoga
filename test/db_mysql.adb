@@ -19,7 +19,7 @@ with Gnoga.Window;
 procedure DB_MySQL is
    pragma Linker_Options ("-lmysqlclient");
 
-   Connection : Gnoga.Server.Database.MySQL.Connection;
+   Connection : aliased Gnoga.Server.Database.MySQL.Connection;
 
    procedure Migrations
      (M : in out Gnoga.Server.Migration.Migration_Collection)
@@ -56,14 +56,14 @@ procedure DB_MySQL is
 begin
    Gnoga.Log ("Openning connection to MySQL database.");
 
-   Connection.Connect (Database => "gnoga",
-                       Host     => "dbserver.botton.com",
-                       User     => "gnoga",
-                       Password => "gnoga613");
+   Connection.Connect (Database => "xxx",
+                       Host     => "xxx",
+                       User     => "xxx",
+                       Password => "xxx");
 
    if
      Gnoga.Server.Migration.Migrations_Handled_Command_Line
-       (Connection, Migrations'Unrestricted_Access)
+       (Connection'Unchecked_Access, Migrations'Unrestricted_Access)
    then
       GNAT.OS_Lib.OS_Exit (0);
    end if;

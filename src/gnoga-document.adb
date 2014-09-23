@@ -153,6 +153,17 @@ package body Gnoga.Document is
       return Document.DOM_Body'Unrestricted_Access;
    end Body_Element;
 
+   --------------
+   -- Load_CSS --
+   --------------
+
+   procedure Load_CSS (Document : in out Document_Type; URL : String) is
+   begin
+      Document.Head_Element.jQuery_Execute
+        ("append('<link rel=""stylesheet"" " &
+           "href="""& Escape_Quotes (URL) &""" type=""text/css"">')");
+   end Load_CSS;
+
    -----------
    -- Write --
    -----------

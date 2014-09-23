@@ -92,19 +92,19 @@ begin
       A_Food  : Foods.Active_Record;
    begin
       A_User.Find_Where ("lastname='Botton'");
-      A_Food.Set_Value ("user_id", A_User.Value ("id"));
-      A_Food.Set_Value ("food", "Apples");
+      A_Food.Value ("user_id", A_User.Value ("id"));
+      A_Food.Value ("food", "Apples");
       A_Food.Save;
 
       A_Food.Clear;
-      A_Food.Set_Value ("user_id", A_User.Value ("id"));
-      A_Food.Set_Value ("food", "Oranges");
+      A_Food.Value ("user_id", A_User.Value ("id"));
+      A_Food.Value ("food", "Oranges");
       A_Food.Save;
 
       A_User.Find_Where ("lastname='Dewar'");
       A_Food.Clear;
-      A_Food.Set_Value ("user_id", A_User.Value ("id"));
-      A_Food.Set_Value ("food", "Pears");
+      A_Food.Value ("user_id", A_User.Value ("id"));
+      A_Food.Value ("food", "Pears");
       A_Food.Save;
 
       Records := Users.Find_All;

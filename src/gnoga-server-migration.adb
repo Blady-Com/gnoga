@@ -88,7 +88,7 @@ package body Gnoga.Server.Migration is
       if Migration_Info.Exists ("name") then
          Current_Level := Natural'Value (Migration_Info.Value ("value"));
       else
-            Migration_Info.Set_Value ("value", "0");
+            Migration_Info.Value ("value", "0");
       end if;
 
       Gnoga.Log ("Current migration level =" & Current_Level'Img);
@@ -102,7 +102,7 @@ package body Gnoga.Server.Migration is
            ("Requested migration level up to" & Actual_Level'Img);
          for i in Current_Level + 1 .. Actual_Level loop
             Gnoga.Log ("Migrating to level" & i'Img);
-            Migration_Info.Set_Value ("value", i'Img);
+            Migration_Info.Value ("value", i'Img);
 
             Gnoga.Log
               ("Running : " & Collection.Migrations_Up.Element (i));
@@ -116,7 +116,7 @@ package body Gnoga.Server.Migration is
            ("Requested migration level down to" & Actual_Level'Img);
          for i in reverse Actual_Level + 1 .. Current_Level loop
             Gnoga.Log ("Migrating from level" & i'Img);
-            Migration_Info.Set_Value ("value", Integer'Image (i - 1));
+            Migration_Info.Value ("value", Integer'Image (i - 1));
             Gnoga.Log
               ("Running : " & Collection.Migrations_Down.Element (i));
             Connection.Execute_Query (Collection.Migrations_Down.Element (i));
@@ -126,7 +126,7 @@ package body Gnoga.Server.Migration is
 
       Gnoga.Log
         ("Saving new migration_level = " & Migration_Info.Value ("value"));
-      Migration_Info.Set_Value ("name", "migration_level");
+      Migration_Info.Value ("name", "migration_level");
       Migration_Info.Save;
    end Migrate_To;
 

@@ -65,8 +65,11 @@ package Gnoga.Navigator is
    --  The user may use settings on their browser to modify this so not
    --  100% reliable, however most browsers will follow the following standard:
    --
-   -- userAgent = appCodeName/appVersion number (Platform; Security; OS-or-CPU;
+   --  userAgent = appCodeName/appVersion number (Platform; Security; OS-or-CPU;
    --             Localization; rv: revision-version-number) product/productSub
    --             Application-Name Application-Name-version
 
+   procedure Navigate_To_URL (ID  : in Gnoga.Types.Connection_ID;
+                              URL : in String);
+   --  Navigate browser to URL, same as Window.Location.URL (value)
 end Gnoga.Navigator;

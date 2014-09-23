@@ -298,16 +298,21 @@ package body Gnoga.Window is
       end Generate_Session_ID;
 
       Gid : String := Window.Search_Parameter (Name);
+      Sid : String := Ada.Strings.Unbounded.To_String (Window.Session_ID);
    begin
       if Gid = "" or Gid = "undefined" then
-         declare
-            New_Session : String := Generate_Session_ID;
-         begin
-            Window.Session_ID :=
-              Ada.Strings.Unbounded.To_Unbounded_String (New_Session);
+         if Sid /= "" then
+            return Sid;
+         else
+            declare
+               New_Session : String := Generate_Session_ID;
+            begin
+               Window.Session_ID :=
+                 Ada.Strings.Unbounded.To_Unbounded_String (New_Session);
 
-            return New_Session;
-         end;
+               return New_Session;
+            end;
+         end if;
       else
          Window.Session_ID :=
            Ada.Strings.Unbounded.To_Unbounded_String (Gid);

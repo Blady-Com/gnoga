@@ -575,7 +575,10 @@ package body Gnoga.Connections is
       Connection_Manager.Add_Connection_Holder
         (ID, Connection_Holder'Unchecked_Access);
 
-      Execute_Script (ID, "gnoga['Connection_ID']=" &ID'Img);
+      Execute_Script (ID, "gnoga['Connection_ID']=" & ID'Img);
+      Execute_Script (ID, "TRUE=true");
+      Execute_Script (ID, "FALSE=false");
+
 
       On_Connect_Event (ID, Connection_Holder'Access);
 

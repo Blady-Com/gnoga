@@ -85,11 +85,11 @@ package Gnoga.Element.Form is
    --  Encoding affects how the form is send via the POST method only.
 
    procedure Auto_Complete (Form  : in out Form_Type;
-                            Value : in  Boolean := True);
+                            Value : in     Boolean := True);
    function Auto_Complete (Form : Form_Type) return Boolean;
 
    procedure Validate_On_Submit (Form  : in out Form_Type;
-                                 Value : in  Boolean := True);
+                                 Value : in     Boolean := True);
    function Validate_On_Submit (Form : Form_Type) return Boolean;
 
    function Number_Of_Elements_In_Form (Form : Form_Type) return Integer;
@@ -228,6 +228,42 @@ package Gnoga.Element.Form is
 
    procedure Select_Text (Element : in out Form_Element_Type);
    --  Selects and highlights the context of Element
+
+   -------------------------------------------------------------------------
+   --  Text_Area_Types
+   -------------------------------------------------------------------------
+
+   type Text_Area_Type is new Form_Element_Type with private;
+   type Text_Area_Access is access all Text_Area_Type;
+   type Pointer_To_Text_Area_Class is access all Text_Area_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Text_Area_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Text_Area_Type;
+                     Form       : in out Form_Type'Class;
+                     Columns    : in     Natural := 20;
+                     Rows       : in     Natural := 2;
+                     Value      : in     String  := "";
+                     Name       : in     String  := "";
+                     ID         : in     String  := "");
+
+   -------------------------------------------------------------------------
+   --  Text_Area_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Word_Wrap (Element : in out Text_Area_Type;
+                        Value   : in      Boolean := True);
+   function Word_Wrap (Element : Text_Area_Type) return Boolean;
+
+   procedure Columns (Element : in out Text_Area_Type;
+                      Value   : in     Integer);
+   function Columns (Element : Text_Area_Type) return Integer;
+
+   procedure Rows (Element : in out Text_Area_Type;
+                      Value   : in     Integer);
+   function Rows (Element : Text_Area_Type) return Integer;
 
    -------------------------------------------------------------------------
    --  Hidden_Types
@@ -703,6 +739,7 @@ package Gnoga.Element.Form is
 private
    type Form_Type is new Gnoga.Element.Element_Type with null record;
    type Form_Element_Type is new Gnoga.Element.Element_Type with null record;
+   type Text_Area_Type is new Form_Element_Type with null record;
    type Hidden_Type is new Form_Element_Type with null record;
    type Input_Image_Type is new Form_Element_Type with null record;
    type Input_Button_Type is new Form_Element_Type with null record;

@@ -21,3 +21,7 @@ A) You can either download the source package from any other distro of GNAT GPL 
 export C_INCLUDE_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include
 
 after that you can do the regular: make setup build install
+
+Q) Can I build standalone true native desktop apps?
+
+A) Yes, there are a number of ways of doing it. One is using XULRunner. For example see https://github.com/neam/webapp-xul-wrapper   I will create an example and perhaps some templates in the future. There are numerous other ways to get HTML apps in to desktop apps and in the future more options will be made available.

@@ -513,7 +513,81 @@ package body Gnoga.Element.Form is
    end Select_Text;
 
    -------------------------------------------------------------------------
-   --  Hidden_Type - Creation Methods
+   --  Text_Area_Type
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create (Element    : in out Text_Area_Type;
+                     Form       : in out Form_Type'Class;
+                     Columns    : in     Natural := 20;
+                     Rows       : in     Natural := 2;
+                     Value      : in     String  := "";
+                     Name       : in     String  := "";
+                     ID         : in     String  := "")
+   is
+   begin
+      Element.Create_From_HTML (Form, "<textarea " &
+                                  "form='" & Form.ID & "' name='" &
+                                  Name & "' cols=" & Columns'Img &
+                                  " rows=" & Rows'Img & ">" &
+                                  Escape_Quotes (Value) &
+                                  "</textarea>", ID);
+   end Create;
+
+   ---------------
+   -- Word_Wrap --
+   ---------------
+
+   procedure Word_Wrap (Element : in out Text_Area_Type;
+                        Value   : in      Boolean := True)
+   is
+   begin
+      Element.Property ("wrap", Value);
+   end Word_Wrap;
+
+   function Word_Wrap (Element : Text_Area_Type) return Boolean is
+   begin
+      return Element.Property ("wrap");
+   end Word_Wrap;
+
+   -------------
+   -- Columns --
+   -------------
+
+   procedure Columns (Element : in out Text_Area_Type;
+                      Value   : in     Integer)
+   is
+   begin
+      Element.Property ("cols", Value);
+   end Columns;
+
+   function Columns (Element : Text_Area_Type) return Integer
+   is
+   begin
+      return Element.Property ("cols");
+   end Columns;
+
+   ----------
+   -- Rows --
+   ----------
+
+   procedure Rows (Element : in out Text_Area_Type;
+                   Value   : in     Integer)
+   is
+   begin
+      Element.Property ("rows", Value);
+   end Rows;
+
+   function Rows (Element : Text_Area_Type) return Integer is
+   begin
+      return Element.Property ("rows");
+   end Rows;
+
+   -------------------------------------------------------------------------
+   --  Hidden_Type
    -------------------------------------------------------------------------
 
    ------------

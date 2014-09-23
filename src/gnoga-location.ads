@@ -56,6 +56,8 @@ package Gnoga.Location is
 
    procedure URL (Location : in out Location_Type; Value : String);
    function URL (Location : Location_Type) return String;
+   --  Setting URL will navgigate the browser from the current location and
+   --  close the current Gnoga Connection.
 
    procedure Hash (Location : in out Location_Type; Value : String);
    function Hash (Location : Location_Type) return String;

@@ -1,0 +1,10 @@
+This example uses an MVC style model of programming simlar for Ruby on Rails.
+
+It demonstrates how flexible Gnoga can be and that it is just as capable in
+the area of web sites, as web apps or application GUIs.
+
+An effort was made to also make more use of attaching to the DOM of existing
+pages and avoiding app data types.
+
+To setup database first run in bin/adablog setup
+then run a second time to start up app bin/adablog

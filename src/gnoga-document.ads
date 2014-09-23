@@ -86,6 +86,13 @@ package Gnoga.Document is
    function Body_Element (Document : Document_Type)
                           return Gnoga.Element.Element_Access;
 
+   -------------------------------------------------------------------------
+   --  Document_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Load_CSS (Document : in out Document_Type; URL : String);
+   --  Loads a CSS file in to document from URL
+
    procedure Write (Document : in out Document_Type; Value : String);
    procedure Write_Line (Document : in out Document_Type; Value : String);
    --  Write Value (with new line if Write_Line) to the document.

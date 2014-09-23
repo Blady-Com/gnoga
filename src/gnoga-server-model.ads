@@ -56,27 +56,27 @@ package Gnoga.Server.Model is
                          return Gnoga.Types.Data_Array_Type;
    --  Returns the Field Names supported by this Active_Record
 
-   procedure Set_Values (A   : in out Active_Record;
-                         Map : in     Gnoga.Types.Data_Map_Type);
+   procedure Values (A   : in out Active_Record;
+                     Map : in     Gnoga.Types.Data_Map_Type);
    --  Set table values from Map ingoring any extra key/value pairs in Map
    --  not found in record schema
 
    function Values (A : Active_Record) return Gnoga.Types.Data_Map_Type;
    --  Return all values in record
 
-   procedure Set_Value (A          : in out Active_Record;
-                        Field_Name : in     String;
-                        Value      : in     String);
+   procedure Value (A          : in out Active_Record;
+                    Field_Name : in     String;
+                    Value      : in     String);
    --  Set value for Field_Name
 
-   procedure Set_Value (A             : in out Active_Record;
-                        Field_Name    : in     String;
-                        Integer_Value : in     Integer);
+   procedure Value (A             : in out Active_Record;
+                    Field_Name    : in     String;
+                    Integer_Value : in     Integer);
    --  Set value for Field_Name
 
-   procedure Set_Value (A          : in out Active_Record;
-                        Field_Name : in     String;
-                        Date_Value : in     Ada.Calendar.Time);
+   procedure Value (A          : in out Active_Record;
+                    Field_Name : in     String;
+                    Date_Value : in     Ada.Calendar.Time);
    --  Set value for Field_Name
 
    function Value (A : Active_Record; Field_Name : String) return String;

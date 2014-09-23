@@ -81,6 +81,14 @@ package Gnoga.Base is
    --  The Script must include creating the id attribute equal to ID.
    --  Script is eval'd JavaScript.
 
+   procedure Attach_Using_Parent
+     (Object   : in out Base_Type;
+      Parent   : in     Gnoga.Base.Base_Type'Class;
+      ID       : in     String;
+      ID_Type  : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID);
+   --  Attache a Gnoga object using Connection ID from Parent to an existing
+   --  DOM object with ID. On_Create event is not fired.
+
    procedure Attach
      (Object        : in out Base_Type;
       Connection_ID : in     Gnoga.Types.Connection_ID;

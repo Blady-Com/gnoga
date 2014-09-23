@@ -54,9 +54,6 @@ package body Gnoga.Server.Database.SQLite is
    for Ulonglong'Size use 64;
    --  return type for Row related fields
 
-   subtype Field_Data is String (1 .. Natural'Last);
-   type Field_Access is access all Field_Data;
-
    function Error_Message (S : SQLite_ID) return String;
    --  Return error message from database
 
@@ -78,7 +75,12 @@ package body Gnoga.Server.Database.SQLite is
    is
       SQLITE_OPEN_READWRITE : constant := 16#2#;
       SQLITE_OPEN_CREATE    : constant := 16#4#;
+
+      SQLITE_OPEN_NOMUTEX   : constant := 16#8000#;
+      --  Can only be used if datbase access is protected in app
+
       SQLITE_OPEN_FULLMUTEX : constant := 16#10000#;
+      --  Serializes access to database, all use safe from multiple threads
 
       function sqlite3_open (filename : String           := Database & Nul;
                              ppDb     : access SQLite_ID := C.Server_ID'Access;
@@ -515,19 +517,23 @@ package body Gnoga.Server.Database.SQLite is
                          Handle_Nulls : Boolean := True)
                          return String
    is
-      function sqlite3_column_blob
+      use Interfaces.C;
+
+      subtype Field_Data is Interfaces.C.char_array (0 .. Interfaces.C.size_t'last);
+      type Field_Access is access all Field_Data;
+
+      function sqlite3_column_text
         (sqlite : SQLite_ID := RS.Query_ID;
-         iCol   : Integer   := Field_Number - 1)
+         iCol   : int       := int (Field_Number - 1))
          return Field_Access;
-      pragma Import (C, sqlite3_column_blob, "sqlite3_column_blob");
+      pragma Import (C, sqlite3_column_text, "sqlite3_column_text");
 
-      function sqlite3_column_bytes
-        (sqlite : SQLite_ID := RS.Query_ID;
-         iCol   : Integer   := Field_Number - 1)
-         return Natural;
-      pragma Import (C, sqlite3_column_bytes, "sqlite3_column_bytes");
+        function sqlite3_column_bytes
+          (sqlite : SQLite_ID := RS.Query_ID;
+           iCol   : int       := int (Field_Number - 1))
+           return int;
+        pragma Import (C, sqlite3_column_bytes, "sqlite3_column_bytes");
 
-      F : Field_Access;
    begin
       if RS.Is_Null (Field_Number) then
          if Handle_Nulls then
@@ -536,8 +542,7 @@ package body Gnoga.Server.Database.SQLite is
             raise Null_Field;
          end if;
       else
-         F := sqlite3_column_blob;
-         return F (1 .. sqlite3_column_bytes);
+         return To_Ada (sqlite3_column_text.all (0 .. size_t (sqlite3_column_bytes)));
       end if;
    end Field_Value;
 

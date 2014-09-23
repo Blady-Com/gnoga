@@ -56,10 +56,10 @@ package body Gnoga.Server.Model is
    end Initialize;
 
    ----------------
-   -- Set_Values --
+   -- Values --
    ----------------
 
-   procedure Set_Values
+   procedure Values
      (A                   : in out Active_Record;
       Map                 : in     Gnoga.Types.Data_Maps.Map)
    is
@@ -68,44 +68,44 @@ package body Gnoga.Server.Model is
       procedure foreach (Position : in Gnoga.Types.Data_Arrays.Cursor) is
       begin
          if Map.Contains (Gnoga.Types.Data_Arrays.Element (Position)) then
-            A.Set_Value
+            A.Value
               (Gnoga.Types.Data_Arrays.Element (Position),
                Map.Element (Gnoga.Types.Data_Arrays.Element (Position)));
          end if;
       end foreach;
    begin
       A.Fields.Iterate (foreach'Access);
-   end Set_Values;
+   end Values;
 
-   ---------------
-   -- Set_Value --
-   ---------------
+   -----------
+   -- Value --
+   -----------
 
-   procedure Set_Value (A          : in out Active_Record;
-                        Field_Name : in     String;
-                        Value      : in     String)
+   procedure Value (A          : in out Active_Record;
+                    Field_Name : in     String;
+                    Value      : in     String)
    is
    begin
       A.Values.Include (Field_Name, Value);
-   end Set_Value;
+   end Value;
 
-   procedure Set_Value (A             : in out Active_Record;
-                        Field_Name    : in     String;
-                        Integer_Value : in     Integer)
+   procedure Value (A             : in out Active_Record;
+                    Field_Name    : in     String;
+                    Integer_Value : in     Integer)
    is
-      Value : String := Integer'Image (Integer_Value);
+      V : String := Integer'Image (Integer_Value);
    begin
-      Set_Value (A, Field_Name, Value (Value'First + 1 .. Value'Last));
-   end Set_Value;
+      Value (A, Field_Name, Gnoga.Left_Trim (Integer_Value'Img));
+   end Value;
 
-   procedure Set_Value (A          : in out Active_Record;
-                        Field_Name : in     String;
-                        Date_Value : in     Ada.Calendar.Time)
+   procedure Value (A          : in out Active_Record;
+                    Field_Name : in     String;
+                    Date_Value : in     Ada.Calendar.Time)
    is
-      Value : String := Ada.Calendar.Formatting.Image (Date_Value);
+      V : String := Ada.Calendar.Formatting.Image (Date_Value);
    begin
-      Set_Value (A, Field_Name, Value);
-   end Set_Value;
+      Value (A, Field_Name, V);
+   end Value;
 
    -----------------
    -- Field_Names --
@@ -193,7 +193,7 @@ package body Gnoga.Server.Model is
             declare
                New_ID : String := A.Connection.Insert_ID'Img;
             begin
-               A.Set_Value ("id", New_ID (New_ID'First + 1 .. New_ID'Last));
+               A.Value ("id", New_ID (New_ID'First + 1 .. New_ID'Last));
                A.Is_New := False;
             end;
          end;
@@ -280,7 +280,7 @@ package body Gnoga.Server.Model is
    exception
       when Gnoga.Server.Database.End_Of_Recordset =>
          if Create_New then
-            A.Set_Value ("id", "");
+            A.Value ("id", "");
             RS.Close;
          else
             raise Gnoga.Server.Database.End_Of_Recordset;

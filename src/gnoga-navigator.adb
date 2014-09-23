@@ -112,4 +112,14 @@ package body Gnoga.Navigator is
       return Gnoga.Connections.Execute_Script (ID, "navigator.userAgent");
    end User_Agent;
 
+   ---------------------
+   -- Navigate_To_URL --
+   ---------------------
+
+   procedure Navigate_To_URL (ID  : in Gnoga.Types.Connection_ID;
+                              URL : in String)
+   is
+   begin
+      Gnoga.Connections.Execute_Script (ID, "window.location='" & URL & "'");
+   end Navigate_To_URL;
 end Gnoga.Navigator;

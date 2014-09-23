@@ -228,6 +228,21 @@ package body Gnoga.Base is
       Object.On_Create;
    end Create_With_Script;
 
+   -------------------------
+   -- Attach_Using_Parent --
+   -------------------------
+
+   procedure Attach_Using_Parent
+     (Object   : in out Base_Type;
+      Parent   : in     Gnoga.Base.Base_Type'Class;
+      ID       : in     String;
+      ID_Type  : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
+   is
+   begin
+      Object.Attach (Connection_ID => Parent.Connection_ID,
+                     ID            => ID,
+                     ID_Type       => ID_Type);
+   end Attach_Using_Parent;
    ------------
    -- Attach --
    ------------

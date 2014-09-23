@@ -232,7 +232,6 @@ package body Gnoga.Server.Model is
    begin
       A.Is_New := True;
       A.Values.Clear;
-      A.Fields.Clear;
    end Clear;
 
    ----------

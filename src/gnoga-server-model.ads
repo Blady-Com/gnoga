@@ -103,7 +103,7 @@ package Gnoga.Server.Model is
 
    procedure Find_Where (A          : in out Active_Record;
                          Where      : in     String;
-                         Create_New : in     Boolean := False);
+                         Create_New : in     Boolean := True);
    --  Load row based on where clause, note that only the first record
    --  returned will be loaded. Use Model.Queries.Find_All for
    --  return of multiple records. If Create_New is true then no exception
@@ -111,8 +111,8 @@ package Gnoga.Server.Model is
    --  is empty, i.e. is a new record would confirm no results found.
 
    procedure Find_Item (A          : in out Active_Record;
-                        Parent     : in out Active_Record'Class;
-                        Create_New : in     Boolean := False);
+                        Parent     : in     Active_Record'Class;
+                        Create_New : in     Boolean := True);
    --  Return first matching record in Child Table A where:
    --  Child_Table.PARENT_TABLE_NAME(with out s)_id = Child_Table.id
 private

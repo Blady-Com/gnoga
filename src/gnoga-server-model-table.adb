@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---           G N O G A . S E R V E R . M O D E L . S P E C I F I C          --
+--               G N O G A . S E R V E R . M O D E L . T A B L E            --
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
@@ -35,7 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-package body Gnoga.Server.Model.Specific is
+package body Gnoga.Server.Model.Table is
 
    --------------
    -- Find_All --
@@ -66,4 +66,4 @@ package body Gnoga.Server.Model.Specific is
       return Gnoga.Server.Model.Queries.Find_Items (Parent, R, Like, Order_By);
    end Find_Items;
 
-end Gnoga.Server.Model.Specific;
+end Gnoga.Server.Model.Table;

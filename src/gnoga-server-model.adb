@@ -265,7 +265,7 @@ package body Gnoga.Server.Model is
 
    procedure Find_Where (A          : in out Active_Record;
                          Where      : in     String;
-                         Create_New : in     Boolean := False)
+                         Create_New : in     Boolean := True)
    is
       use Ada.Strings.Unbounded;
       use Ada.Strings;
@@ -293,8 +293,8 @@ package body Gnoga.Server.Model is
    ---------------
 
    procedure Find_Item (A          : in out Active_Record;
-                        Parent     : in out Active_Record'Class;
-                        Create_New : in     Boolean := False)
+                        Parent     : in     Active_Record'Class;
+                        Create_New : in     Boolean := True)
    is
       Remove_s : String := Parent.Table_Name.all;
       Where_Clause : String := Remove_s (Remove_s'First .. Remove_s'Last - 1)

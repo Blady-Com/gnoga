@@ -13,7 +13,7 @@ with Gnoga.Server.Database.SQLite;
 with Gnoga.Server.Migration;
 with Gnoga.Server.Model;
 with Gnoga.Server.Model.Queries;
-with Gnoga.Server.Model.Specific;
+with Gnoga.Server.Model.Table;
 
 with Gnoga.Application.Singleton;
 with Gnoga.Window;
@@ -77,13 +77,13 @@ begin
    Gnoga.Application.HTML_On_Close ("Application closed.");
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
-   M.Document.Put_Line ("Using Gnoga.Server.Model.Specific");
+   M.Document.Put_Line ("Using Gnoga.Server.Model.Table");
 
    declare
-      package Users is new Model.Specific
+      package Users is new Model.Table
         ("users", Connection);
 
-      package Foods is new Model.Specific
+      package Foods is new Model.Table
         ("foods", Connection);
 
       Records : Model.Queries.Active_Record_Array.Vector;
@@ -94,6 +94,11 @@ begin
       A_User.Find_Where ("lastname='Botton'");
       A_Food.Set_Value ("user_id", A_User.Value ("id"));
       A_Food.Set_Value ("food", "Apples");
+      A_Food.Save;
+
+      A_Food.Clear;
+      A_Food.Set_Value ("user_id", A_User.Value ("id"));
+      A_Food.Set_Value ("food", "Oranges");
       A_Food.Save;
 
       A_User.Find_Where ("lastname='Dewar'");
@@ -110,26 +115,24 @@ begin
          declare
             use type Ada.Containers.Count_Type;
 
-            R  : Model.Active_Record'Class := Records.Element (i);
             F  : Model.Queries.Active_Record_Array.Vector;
             F2 : Foods.Active_Record;
          begin
             M.Document.Put_Line ("Record : " & i'Img);
-            M.Document.Put_Line ("First Name : " & R.Value ("firstname"));
-            M.Document.Put_Line ("Last Name : " & R.Value ("lastname"));
+            M.Document.Put_Line ("First Name : " &
+                                   Records.Element (i).Value ("firstname"));
+            M.Document.Put_Line ("Last Name : " &
+                                   Records.Element (i).Value ("lastname"));
 
             -- One to Many Users -> Foods
-            F := Foods.Find_Items (R);
-            if F.Length > 0 then
-               for j in F.First_Index .. F.Last_Index loop
-                  M.Document.Put_Line ("He Likes : " &
-                                         F.Element (j).Value ("food"));
-               end loop;
-            end if;
+            F := Foods.Find_Items (Parent => Records.Element (i));
+            for j in F.First_Index .. F.Last_Index loop
+               M.Document.Put_Line ("He Likes : " &
+                                      F.Element (j).Value ("food"));
+            end loop;
 
             -- One to One Users -> Foods
-
-            F2.Find_Item (R, True);
+            F2.Find_Item (Parent => Records.Element (i));
             if F2.Value ("id") /= "" then
                M.Document.Put_Line ("The first thing he liked was " &
                                       F2.Value ("food"));

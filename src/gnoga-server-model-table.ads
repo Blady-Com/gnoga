@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---          G N O G A . S E R V E R . M O D E L . S P E C I F I C           --
+--               G N O G A . S E R V E R . M O D E L . T A B L E            --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -41,7 +41,7 @@ with Gnoga.Server.Model.Queries;
 generic
    Name       : String;
    Connection : access Gnoga.Server.Database.Connection;
-package Gnoga.Server.Model.Specific is
+package Gnoga.Server.Model.Table is
 
    Table_Name : aliased constant String := Name;
 
@@ -63,4 +63,4 @@ package Gnoga.Server.Model.Specific is
    --  Parent. (keyed on parent(less the s)_id in child table)
 
 
-end Gnoga.Server.Model.Specific;
+end Gnoga.Server.Model.Table;

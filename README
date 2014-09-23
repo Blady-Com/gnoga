@@ -37,12 +37,15 @@ Gnoga has the following aspects to it:
        Coming soon
 
 7. Gnoga database bindings
-	thin MySQL and Sqlite services are done but not integrated yet
-	will also include code to bind html elements directly to fields, etc.
+	Gnoga.Server.Database - support for MySQL and SQLite 3
+	Gnoga.Server.Model - Active Data models like in Rails
+        Gnoga.Server.Migrations - Rails like database schema migrations
 
 8. Gnoga development tools
 	Code generation for binding pre-made html5 pages
         Database tools for generating front ends, etc.
+	   - I already have a tool for create delailed Active Data bindings
+	   - per tables, that will be added in the near future.
 	IDE for Delphi/VB like development
 	etc.
 

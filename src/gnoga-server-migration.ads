@@ -56,23 +56,30 @@ package Gnoga.Server.Migration is
 
    procedure Migrate_To
      (Collection    : in out Migration_Collection;
-      Connection    : access Gnoga.Server.Database.Connection'Class;
+      Connection    : in out Gnoga.Server.Database.Connection'Class;
       Level         : in     Natural);
    --  Migrate to level upgrading or degrading the schema as needed
 
    procedure Setup
      (Collection    : in out Migration_Collection;
-      Connection    : access Gnoga.Server.Database.Connection'Class);
+      Connection    : in out Gnoga.Server.Database.Connection'Class);
    --  Determines state of the schema and if needed performs
    --  setup for migrations support. It will then Migrate_To
    --  the last added Migration_Up
 
    function Migrations_Handled_Command_Line
-     (Connection          : access Gnoga.Server.Database.Connection'Class;
+     (Connection          : in     Gnoga.Server.Database.Connection'Class;
       Migration_Procedure : access
         procedure (Collection : in out Migration_Collection))
       return Boolean;
-   --  Provides command line support for migrations
+   --  Provides command line support for migrations. Returns True if the
+   --  command line was handled but this function.
+   --  command line options are:
+   --     executable setup
+   --         setsup the migration parameter table if needed and migrate to
+   --         last migration.
+   --     executable migration X
+   --         migrate up or down to the specific migration level X
 
 private
    type Migration_Collection is tagged limited

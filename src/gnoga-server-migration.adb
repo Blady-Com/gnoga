@@ -35,7 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;
 with Ada.Command_Line;
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps.Constants;
@@ -74,11 +73,11 @@ package body Gnoga.Server.Migration is
 
    procedure Migrate_To
      (Collection    : in out Migration_Collection;
-      Connection    : access Gnoga.Server.Database.Connection'Class;
-      Level         : Natural)
+      Connection    : in out Gnoga.Server.Database.Connection'Class;
+      Level         : in     Natural)
    is
       package Migration_Model is new Gnoga.Server.Model.Specific
-        ("gnogaparams", Connection);
+        ("gnogaparams", Connection'Access);
 
       Actual_Level   : Natural := Level;
       Current_Level  : Natural := 0;
@@ -92,40 +91,40 @@ package body Gnoga.Server.Migration is
             Migration_Info.Set_Value ("value", "0");
       end if;
 
-      Ada.Text_IO.Put_Line ("Current migration level =" & Current_Level'Img);
+      Gnoga.Log ("Current migration level =" & Current_Level'Img);
 
       if Level > Collection.Migrations_Up.Last_Index then
          Actual_Level := Collection.Migrations_Up.Last_Index;
       end if;
 
       if Actual_Level > Current_Level then
-         Ada.Text_IO.Put_Line
+         Gnoga.Log
            ("Requested migration level up to" & Actual_Level'Img);
          for i in Current_Level + 1 .. Actual_Level loop
-            Ada.Text_IO.Put_Line ("Migrating to level" & i'Img);
+            Gnoga.Log ("Migrating to level" & i'Img);
             Migration_Info.Set_Value ("value", i'Img);
 
-            Ada.Text_IO.Put_Line
+            Gnoga.Log
               ("Running : " & Collection.Migrations_Up.Element (i));
             Connection.Execute_Query (Collection.Migrations_Up.Element (i));
          end loop;
-         Ada.Text_IO.Put_Line ("Done migration");
+         Gnoga.Log ("Done migration");
       end if;
 
       if Actual_Level < Current_Level then
-         Ada.Text_IO.Put_Line
+         Gnoga.Log
            ("Requested migration level down to" & Actual_Level'Img);
          for i in reverse Actual_Level + 1 .. Current_Level loop
-            Ada.Text_IO.Put_Line ("Migrating from level" & i'Img);
+            Gnoga.Log ("Migrating from level" & i'Img);
             Migration_Info.Set_Value ("value", Integer'Image (i - 1));
-            Ada.Text_IO.Put_Line
+            Gnoga.Log
               ("Running : " & Collection.Migrations_Down.Element (i));
             Connection.Execute_Query (Collection.Migrations_Down.Element (i));
          end loop;
-         Ada.Text_IO.Put_Line ("Done migration");
+         Gnoga.Log ("Done migration");
       end if;
 
-      Ada.Text_IO.Put_Line
+      Gnoga.Log
         ("Saving new migration_level = " & Migration_Info.Value ("value"));
       Migration_Info.Set_Value ("name", "migration_level");
       Migration_Info.Save;
@@ -137,7 +136,7 @@ package body Gnoga.Server.Migration is
 
    procedure Setup
      (Collection    : in out Migration_Collection;
-      Connection    : access Gnoga.Server.Database.Connection'Class)
+      Connection    : in out Gnoga.Server.Database.Connection'Class)
    is
    begin
       Create_Param_Table : begin
@@ -146,7 +145,7 @@ package body Gnoga.Server.Migration is
             " (" & Connection.ID_Field_String & "," &
             "  name VARCHAR(80)," &
             "  value VARCHAR(80))");
-         Ada.Text_IO.Put_Line ("gnogaparams table created");
+         Gnoga.Log ("gnogaparams table created");
       exception
          when Gnoga.Server.Database.Query_Error =>
             null; -- table already exists
@@ -156,14 +155,17 @@ package body Gnoga.Server.Migration is
    end Setup;
 
    function Migrations_Handled_Command_Line
-     (Connection          : access Gnoga.Server.Database.Connection'Class;
-      Migration_Procedure : access
-        procedure (Collection : in out Migration_Collection))
+     (Connection          : in     Gnoga.Server.Database.Connection'Class;
+      Migration_Procedure : access procedure
+        (Collection : in out Migration_Collection))
       return Boolean
    is
       use Ada.Command_Line;
       use Ada.Strings.Fixed;
       use Ada.Strings.Maps.Constants;
+
+      C : Gnoga.Server.Database.Connection_Access :=
+        Connection'Unrestricted_Access;
 
       M : Migration_Collection;
    begin
@@ -173,11 +175,11 @@ package body Gnoga.Server.Migration is
          begin
             if Command = "setup" then
                Migration_Procedure (M);
-               M.Setup (Connection);
+               M.Setup (C.all);
                return True;
             elsif Command = "migrate" then
                Migration_Procedure (M);
-               M.Migrate_To (Connection,
+               M.Migrate_To (C.all,
                              Natural'Value (Ada.Command_Line.Argument (2)));
                return True;
             end if;

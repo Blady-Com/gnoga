@@ -1,9 +1,15 @@
+
+--  To use this app, run: db_sqlite setup
+--  then run again: db_sqlite
+
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Exceptions;
-with GNAT.Traceback.Symbolic;
+
+with GNAT.OS_Lib;
 
 with Gnoga.Types;
 with Gnoga.Server.Database.SQLite;
+with Gnoga.Server.Migration;
 
 with Gnoga.Application.Singleton;
 with Gnoga.Window;
@@ -11,8 +17,33 @@ with Gnoga.Window;
 procedure DB_SQLite is
    pragma Linker_Options ("-lsqlite3");
 
-
    Connection : Gnoga.Server.Database.SQLite.Connection;
+
+   procedure Migrations
+     (M : in out Gnoga.Server.Migration.Migration_Collection)
+   is
+   begin
+      M.Add_Migration_Up
+        ("CREATE TABLE `users`" &
+           " (" & Connection.ID_Field_String & "," &
+           "  lastname VARCHAR(80)," &
+           "  firstname VARCHAR(80))");
+      M.Add_Migration_Down
+        ("DROP TABLE `users`");
+
+      M.Add_Migration_Up
+        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Taft','Tucker')");
+      M.Add_Migration_Down
+        ("delete from users");
+      M.Add_Migration_Up
+        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Dewar','Robert')");
+      M.Add_Migration_Down
+        ("delete from users");
+      M.Add_Migration_Up
+        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Botton','David')");
+      M.Add_Migration_Down
+        ("delete from users");
+   end Migrations;
 
    Tables       : Gnoga.Types.Data_Array.Vector;
    Fields       : Gnoga.Types.Data_Array.Vector;
@@ -21,12 +52,20 @@ procedure DB_SQLite is
 
    M : Gnoga.Window.Window_Type;
 begin
+   Gnoga.Log ("Openning database file: ./test.db");
+
+   Connection.Connect (Database => "test.db");
+
+   if
+     Gnoga.Server.Migration.Migrations_Handled_Command_Line
+       (Connection, Migrations'Unrestricted_Access)
+   then
+      GNAT.OS_Lib.OS_Exit (0);
+   end if;
+
    Gnoga.Application.Title ("Database test for Gnoga");
    Gnoga.Application.HTML_On_Close ("Application closed.");
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
-
-   M.Document.Put_Line ("Open Database: test");
-   Connection.Connect (Database => "../test/test.db");
 
    M.Document.Put_Line ("Obtain list of tables from: test");
    Tables := Connection.List_Of_Tables;
@@ -85,5 +124,4 @@ exception
    when E : others =>
       Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
                    Ada.Exceptions.Exception_Message (E));
-      Gnoga.Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
 end DB_SQLite;

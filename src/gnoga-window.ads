@@ -150,6 +150,12 @@ package Gnoga.Window is
    --  For example: http://localhost:8080/?page_id=2
    --  Search_Parameter (Window, "page_id") = "2"
 
+   function Gnoga_Session_ID (Window : access Window_Type;
+                              Name   : in     String := "gid")
+                              return String;
+   --  If the Search_Parameter (Name) exists it returns that value, if not
+   --  a unique Session ID is generated, stored for future calls and returned.
+
    -------------------------------------------------------------------------
    --  Window_Type - Methods
    -------------------------------------------------------------------------
@@ -216,6 +222,7 @@ private
       record
          DOM_Document : aliased Gnoga.Document.Document_Type;
          Location     : aliased Gnoga.Location.Location_Type;
+         Session_ID   : Gnoga.Types.Web_ID;
 
          On_Abort_Event              : Gnoga.Base.Action_Event := null;
          On_Error_Event              : Gnoga.Base.Action_Event := null;

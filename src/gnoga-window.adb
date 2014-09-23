@@ -36,6 +36,9 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with Ada.Strings.Fixed;
+with Ada.Strings.Maps;
+with Ada.Calendar.Formatting;
 
 with Gnoga.Connections;
 
@@ -268,6 +271,50 @@ package body Gnoga.Window is
    begin
       return Gnoga.Connections.Search_Parameter (Window.Connection_ID, Name);
    end Search_Parameter;
+
+   ----------------------
+   -- Gnoga_Session_ID --
+   ----------------------
+
+   function Gnoga_Session_ID (Window : access Window_Type;
+                              Name   : in     String := "gid")
+                              return String
+   is
+      function Generate_Session_ID return String is
+         use Ada.Strings.Fixed;
+         use Ada.Strings;
+         use Ada.Calendar.Formatting;
+
+         Now : Ada.Calendar.Time := Ada.Calendar.Clock;
+      begin
+         return Trim (Year (Now)'Img, Side => Both)
+           & Trim (Month (Now)'Img, Side => Both)
+           & Trim (Day (Now)'Img, Side => Both)
+           & Trim (Hour (Now)'Img, Side => Both)
+           & Trim (Minute (Now)'Img, Side => Both)
+           & Trim (Second (Now)'Img, Side => Both)
+           & Translate (Trim (Sub_Second (Now)'Img, Side => Both),
+                        Ada.Strings.Maps.To_Mapping (".", "0"));
+      end Generate_Session_ID;
+
+      Gid : String := Window.Search_Parameter (Name);
+   begin
+      if Gid = "" or Gid = "undefined" then
+         declare
+            New_Session : String := Generate_Session_ID;
+         begin
+            Window.Session_ID :=
+              Ada.Strings.Unbounded.To_Unbounded_String (New_Session);
+
+            return New_Session;
+         end;
+      else
+         Window.Session_ID :=
+           Ada.Strings.Unbounded.To_Unbounded_String (Gid);
+
+         return Gid;
+      end if;
+   end Gnoga_Session_ID;
 
    ------------
    -- Launch --

@@ -39,7 +39,7 @@ with Ada.Command_Line;
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps.Constants;
 
-with Gnoga.Server.Model.Specific;
+with Gnoga.Server.Model.Table;
 
 package body Gnoga.Server.Migration is
 
@@ -76,7 +76,7 @@ package body Gnoga.Server.Migration is
       Connection    : in out Gnoga.Server.Database.Connection'Class;
       Level         : in     Natural)
    is
-      package Migration_Model is new Gnoga.Server.Model.Specific
+      package Migration_Model is new Gnoga.Server.Model.Table
         ("gnogaparams", Connection'Access);
 
       Actual_Level   : Natural := Level;

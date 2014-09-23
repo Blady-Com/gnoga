@@ -64,13 +64,15 @@ package Gnoga.Types is
 
    subtype Web_ID is Ada.Strings.Unbounded.Unbounded_String;
 
-   type ID_Enumeration is (DOM_ID, Script, Gnoga_ID);
+   type ID_Enumeration is (No_ID, DOM_ID, Script, Gnoga_ID);
 
    subtype Connection_ID is Integer;
 
    No_Connection : constant Connection_ID := -1;
 
    subtype Unique_ID is Integer;
+
+   No_Unique_ID : constant Unique_ID := -1;
 
    type Connection_Data_Type is tagged limited null record;
    type Connection_Data_Access is access all Connection_Data_Type;

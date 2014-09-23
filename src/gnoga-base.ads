@@ -56,6 +56,10 @@ package Gnoga.Base is
    --  Thrown when an attempt is made to perform a create method on an already
    --  created or attached Gnoga object.
 
+   Object_Was_Not_Created : exception;
+   --  An attempt was made to use an object that has not yet been created on
+   --  the client.
+
    overriding procedure Initialize (Object : in out Base_Type);
    --  Assigns Unique_ID
 
@@ -123,7 +127,8 @@ package Gnoga.Base is
    --  The ID for Object.
 
    function ID_Type (Object : Base_Type) return Gnoga.Types.ID_Enumeration;
-   --  Returns the type of ID stored for Object
+   --  Returns the type of ID stored for Object or No_ID if object has not
+   --  been created or attached on the client side.
 
    function Connection_Data
      (Object : Base_Type)
@@ -527,11 +532,12 @@ private
    type Base_Type is
      new Ada.Finalization.Limited_Controlled with
       record
-         Unique_ID     : Gnoga.Types.Unique_ID;
+         Unique_ID     : Gnoga.Types.Unique_ID      := Gnoga.Types.No_Unique_ID;
          Web_ID        : Gnoga.Types.Web_ID;
-         ID_Type       : Gnoga.Types.ID_Enumeration;
-         Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
-         Parent_Object : Pointer_To_Base_Class := null;
+         ID_Type       : Gnoga.Types.ID_Enumeration := Gnoga.Types.No_ID;
+         Connection_ID : Gnoga.Types.Connection_ID  :=
+           Gnoga.Types.No_Connection;
+         Parent_Object : Pointer_To_Base_Class      := null;
 
          -- Object Events
          On_Resize_Event             : Action_Event         := null;

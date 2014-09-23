@@ -1531,6 +1531,8 @@ package body Gnoga.Base is
       use Gnoga.Types;
    begin
       case ID_Type is
+         when No_ID =>
+            raise Object_Was_Not_Created;
          when DOM_ID =>
             return "#" & ID;
          when Script =>
@@ -1548,10 +1550,12 @@ package body Gnoga.Base is
       use Gnoga.Types;
    begin
       case Object.ID_Type is
-      when DOM_ID =>
-         return "$('" & Object.Script_Accessor & "')";
-      when Script | Gnoga_ID =>
-         return "$(" & Object.Script_Accessor & ")";
+         when No_ID =>
+            raise Object_Was_Not_Created;
+         when DOM_ID =>
+            return "$('" & Object.Script_Accessor & "')";
+         when Script | Gnoga_ID =>
+            return "$(" & Object.Script_Accessor & ")";
       end case;
    end jQuery;
 

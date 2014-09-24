@@ -247,18 +247,18 @@ package body Gnoga.Element.Canvas.Context_2D is
    -- Font --
    ----------
 
-   procedure Font (Context          : in out Context_2D_Type;
-                   Family           : in     String            := "sans-serif";
-                   Height_In_Pixels : in     Integer           := 10;
-                   Style            : in     Font_Style_Type   := Normal;
-                   Weight           : in     Font_Weight_Type  := Weight_Normal;
-                   Variant          : in     Font_Variant_Type := Normal)
+   procedure Font (Context : in out Context_2D_Type;
+                   Family  : in     String            := "sans-serif";
+                   Height  : in     String            := "10px";
+                   Style   : in     Font_Style_Type   := Normal;
+                   Weight  : in     Font_Weight_Type  := Weight_Normal;
+                   Variant : in     Font_Variant_Type := Normal)
    is
       W : String := Weight'Img;
    begin
       Context.Property ("font", Style'Img & " " & Variant'Img & " " &
-                          W (W'First + 7 .. W'Last) & Height_In_Pixels'Img &
-                          "px " & Family);
+                          W (W'First + 7 .. W'Last) & " " &
+                          Height & " " & Family);
    end Font;
 
    procedure Font (Context     : in out Context_2D_Type;

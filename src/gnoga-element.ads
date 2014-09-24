@@ -154,9 +154,15 @@ package Gnoga.Element is
    --  dropzone - no browser support
    --  translate - no browser support
 
-   --
 
-   --  Location Properties --
+   --  Box Properties --
+
+   type Clear_Side_Type is (Left, Right, Both);
+
+   procedure Clear_Side (Element : in out Element_Type;
+                         Value   : in     Clear_Side_Type);
+   --  When using "float" for layout sets if the right or left side
+   --  of Block should be clear of any "floated" Element.
 
    procedure Display (Element : in out Element_Type;
                       Value   : in     String);
@@ -181,6 +187,22 @@ package Gnoga.Element is
    --                 right.
    --
    --  flex         - Use the "flexbox" model
+
+   type Overflow_Type is (Visible, Hidden, Scroll, Auto);
+
+   procedure Overflow (Element : in out Element_Type;
+                       Value   : in     Overflow_Type);
+   function Overflow (Element : Element_Type) return Overflow_Type;
+   --  How to handle overflow of contents of an element's box
+   --  The default is Visible - no clipping.
+
+   type Resizable_Type is (None, Both, Horizontal, Vertical);
+
+   procedure Resizable (Element : in out Element_Type;
+                        Value   : in     Resizable_Type);
+   function Resizable (Element : Element_Type) return Resizable_Type;
+   --  If overflow is not set to visible, sets if element can be resized
+   --  by user.
 
    type Position_Type is (Static, Absolute, Fixed, Relative);
 
@@ -217,6 +239,58 @@ package Gnoga.Element is
                      Value   : in     String);
    function Bottom (Element : Element_Type) return String;
 
+   type Box_Sizing_Type is (Content_Box, Border_Box);
+
+   procedure Box_Sizing (Element : in out Element_Type;
+                         Value   : in     Box_Sizing_Type);
+   function Box_Sizing (Element : Element_Type) return Box_Sizing_Type;
+   --  Affects if height and width properteries represent just the content or
+   --  the border, marging, padding, scroll and conent area as a whole.
+   --  The default is Content_Box
+
+   procedure Box_Height (Element : in out Element_Type;
+                         Value   : in     Integer;
+                         Unit    : in     String := "px");
+   procedure Box_Height (Element : in out Element_Type;
+                         Value   : in     String);
+   function Box_Height (Element : Element_Type) return String;
+   --  Box height based on Box_Sizing
+
+   procedure Box_Width (Element : in out Element_Type;
+                        Value   : in     Integer;
+                        Unit    : in     String := "px");
+   procedure Box_Width (Element : in out Element_Type;
+                        Value   : in     String);
+   function Box_Width (Element : Element_Type) return String;
+   --  Box with based on Box_Sizing
+
+   procedure Minimum_Height (Element : in out Element_Type;
+                             Value   : in     Integer;
+                             Unit    : in     String := "px");
+   procedure Minimum_Height (Element : in out Element_Type;
+                             Value   : in     String);
+   function Minimum_Height (Element : Element_Type) return String;
+
+   procedure Maximum_Height (Element : in out Element_Type;
+                             Value   : in     Integer;
+                             Unit    : in     String := "px");
+   procedure Maximum_Height (Element : in out Element_Type;
+                             Value   : in     String);
+   function Maximum_Height (Element : Element_Type) return String;
+
+   procedure Minimum_Width (Element : in out Element_Type;
+                             Value   : in     Integer;
+                             Unit    : in     String := "px");
+   procedure Minimum_Width (Element : in out Element_Type;
+                             Value   : in     String);
+   function Minimum_Width (Element : Element_Type) return String;
+
+   procedure Maximum_Width (Element : in out Element_Type;
+                             Value   : in     Integer;
+                             Unit    : in     String := "px");
+   procedure Maximum_Width (Element : in out Element_Type;
+                             Value   : in     String);
+   function Maximum_Width (Element : Element_Type) return String;
 
    --  For reference:
    --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...
@@ -274,38 +348,38 @@ package Gnoga.Element is
    -- Style Properties --
    ----------------------
 
-   --  Color
+   --  Color  --
 
    procedure Color (Element : in out Element_Type; Value : String);
    procedure Color (Element : in out Element_Type;
-                    RGBA    : Gnoga.Types.RGBA_Type);
+                    RGBA    : in     Gnoga.Types.RGBA_Type);
    function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type;
 
    procedure Opacity (Element : in out Element_Type;
                       Alpha   : in     Gnoga.Types.Alpha_Type);
    function Opacity (Element : Element_Type) return Gnoga.Types.Alpha_Type;
 
-   --  Backgroud
+   --  Backgroud --
 
-   type Background_Attachment_type is (scroll, fixed, local);
+   type Background_Attachment_type is (Scroll, Fixed, Local);
 
    procedure Background_Attachment
      (Element : in out Element_Type;
       Value   : in     Background_Attachment_type);
    function Background_Attachment (Element : Element_Type)
                                    return Background_Attachment_type;
-   --  scroll|fixed|local
 
-   procedure Background_Color (Element : in out Element_Type; Value : String);
    procedure Background_Color (Element : in out Element_Type;
-                               RGBA    : Gnoga.Types.RGBA_Type);
+                               Value   : in     String);
+   procedure Background_Color (Element : in out Element_Type;
+                               RGBA    : in     Gnoga.Types.RGBA_Type);
    function Background_Color (Element : Element_Type)
                               return Gnoga.Types.RGBA_Type;
 
    procedure Background_Image (Element : in out Element_Type;
                                Value   : in     String);
    function Background_Image (Element : Element_Type) return String;
-   --  proper syntax is "url(...)" or "" to clear
+   --  proper syntax is "url(...)" | "" to clear
 
    procedure Background_Position (Element : in out Element_Type;
                                   Value   : in     String);
@@ -319,20 +393,117 @@ package Gnoga.Element is
    --  padding-box|border-box|content-box
 
    procedure Background_Repeat (Element : in out Element_Type;
-                                  Value   : in     String);
+                                Value   : in     String);
    function Background_Repeat (Element : Element_Type) return String;
    --  repeat|repeat-x|repeat-y|no-repeat
 
    procedure Background_Clip (Element : in out Element_Type;
-                                  Value   : in     String);
+                              Value   : in     String);
    function Background_Clip (Element : Element_Type) return String;
    --  border-box|padding-box|content-box
 
    procedure Background_Size (Element : in out Element_Type;
-                                  Value   : in     String);
+                              Value   : in     String);
    function Background_Size (Element : Element_Type) return String;
    --  auto| w h | % = cover of parent | contain
 
+   --  Border  --
+
+   type Border_Style is (None, Hidden, Dotted, Dashed, Solid, Double, Groove,
+                         Ridge, Inset, Outset);
+   procedure Border (Element : in out Element_Type;
+                     Width   : in     String       := "medium";
+                     Style   : in     Border_Style := Solid;
+                     Color   : in     String       := "black");
+   --  Width = medium|thin|thick|length|initial|inherit;
+   --  If Color is "" then border is same as Element.Color
+
+   procedure Border_Radius (Element : in out Element_Type;
+                            Radius  : in     String := "0");
+   --  Curve of borders
+   --  Radius = length|%|initial|inhert
+
+   procedure Shadow (Element             : in out Element_Type;
+                     Horizontal_Position : in     String;
+                     Vertical_Position   : in     String;
+                     Blur                : in     String := "";
+                     Spread              : in     String := "";
+                     Color               : in     String := "black";
+                     Inset_Shadow        : in     Boolean := False);
+
+   procedure Shadow_None (Element : in out Element_Type);
+
+   type Outline_Style_Type is (None, Hidden, Dotted, Dashed, Dolid, Double,
+                               Groove, Ridge, Inset, Outset);
+
+   procedure Outline (Element : in out Element_Type;
+                      Color   : in     String             := "invert";
+                      Style   : in     Outline_Style_Type := None;
+                      Width   : in     String             := "medium");
+
+   --  Margin --
+
+   procedure Margin (Element : in out Element_Type;
+                     Top     : in     String := "0";
+                     Right   : in     String := "0";
+                     Bottom  : in     String := "0";
+                     Left    : in     String := "0");
+   --  Each can be - length|auto|initial|inherit
+
+   --  Padding --
+
+   procedure Padding (Element : in out Element_Type;
+                     Top     : in     String := "0";
+                     Right   : in     String := "0";
+                     Bottom  : in     String := "0";
+                     Left    : in     String := "0");
+   --  Each can be - length|initial|inherit
+
+   procedure Cursor (Element : in out Element_Type;
+                     Value   : in     String);
+   function Cursor (Element : Element_Type) return String;
+   --  Sets the cursor to a standard type or an image
+   --  if set to url(url_to_image). When using a url is best
+   --  to suggest an alternate cursor, e.g. "url(url_to_image),auto"
+
+   -- Text --
+
+   type Font_Style_Type is (Normal, Italic, Oblique);
+
+   type Font_Weight_Type is (Weight_Normal, Weight_Bold,
+                             Weight_Bolder, Weight_Lighter,
+                             Weight_100, Weight_200, Weight_300,
+                             Weight_400, Weight_500, Weight_600,
+                             Weight_700, Weight_800, Weight_900);
+
+   type Font_Variant_Type is (Normal, Small_Caps);
+
+   type System_Font_Type is (Caption, Icon, Menu, Message_Box, Small_Caption,
+                             Status_Bar);
+
+   procedure Font (Element : in out Element_Type;
+                   Family  : in     String            := "sans-serif";
+                   Height  : in     String            := "normal";
+                   Style   : in     Font_Style_Type   := Normal;
+                   Weight  : in     Font_Weight_Type  := Weight_Normal;
+                   Variant : in     Font_Variant_Type := Normal);
+   procedure Font (Element     : in out Element_Type;
+                   System_Font : in     System_Font_Type);
+   --  Sets or returns the current font properties for text content
+
+   type Alignment_Type is (Left, Right, Center, At_Start, To_End);
+
+   procedure Text_Alignment (Element : in out Element_Type;
+                             Value   : in     Alignment_Type);
+   --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
+   --  in rtl languages At_Start = Right, and To_End = Left.
+
+   type Baseline_Type is (Alphabetic, Top, Hanging, Middle,
+                          Ideographic, Bottom);
+
+   procedure Text_Baseline (Element : in out Element_Type;
+                            Value   : in     Baseline_Type);
+   --  Baseline used when drawing text
 
    --  General Access to Element --
 

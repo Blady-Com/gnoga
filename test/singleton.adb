@@ -31,7 +31,7 @@ procedure Singleton is
       loop
          begin
             if O.Valid then
-               O.Style ("color", Current_Color'Img);
+               O.Color (Current_Color'Img);
 
                if Current_Color = Colors'Last then
                   Current_Color := Colors'First;
@@ -58,13 +58,13 @@ procedure Singleton is
                    Gnoga.Screen.Available_Height (Element_Type (Object).Connection_ID)'Img);
       Gnoga.Log ("Screen.Height = " &
                    Gnoga.Screen.Height (Element_Type (Object).Connection_ID)'Img);
-      Gnoga.Log ("Color = " & Element_Type (Object).Style ("color"));
-      Gnoga.Log ("Height = " & Element_Type (Object).Style ("height"));
-      Gnoga.Log ("Width = " & Element_Type (Object).Style ("width"));
-      Element_Type (Object).Style ("color", "green");
-      Element_Type (Object).Style ("background", "black");
-      Element_Type (Object).Style ("height", "200px");
-      Element_Type (Object).Width (300);
+      Gnoga.Log ("Color = " & Gnoga.Types.To_String (Element_Type (Object).Color));
+      Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
+      Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
+      Element_Type (Object).Color ("green");
+      Element_Type (Object).Background_Color ("black");
+      Element_Type (Object).Box_Height ("200px");
+      Element_Type (Object).Box_Width (300);
       Gnoga.Log ("Color = " & Element_Type (Object).Style ("color"));
       Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
       Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);

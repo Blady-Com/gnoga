@@ -46,7 +46,7 @@ package body AdaBlog.Controller is
       pass2.Attach_Using_Parent (Main_Window, "pass2");
 
       verify.Attach_Using_Parent (Main_Window, "verify-pass");
-      verify.Style ("display", "inline");
+      verify.Display ("inline");
 
       if
         String'(password.Value) /= String'(pass2.Value) or

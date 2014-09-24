@@ -59,7 +59,7 @@ procedure Canvas_Test is
       Button1.On_Click_Handler (On_Click'Unrestricted_Access);
 
       App.My_Canvas.Create (Main_Window, 400, 400);
-      App.My_Canvas.Style ("border-style","solid");
+      App.My_Canvas.Border;
       App.My_Canvas.Place_Inside_Bottom_Of
         (App.Main_Window.Document.Body_Element.all);
 
@@ -115,8 +115,8 @@ procedure Canvas_Test is
       C.Fill_Rectangle ((80, 80, 150, 100));
 
       C.Fill_Color ("purple");
-      C.Font (Height_In_Pixels => 40);
-      C.Text_Alignment (Context_2D.Right);
+      C.Font (Height => "40px");
+      C.Text_Alignment (Right);
       C.Fill_Text ("Hello World!", 200, 200);
 
       Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);

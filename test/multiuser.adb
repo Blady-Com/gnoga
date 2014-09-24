@@ -25,7 +25,7 @@ procedure Multiuser is
       loop
          begin
             if O.Valid then
-               O.Style ("color", Current_Color'Img);
+               O.Color (Current_Color'Img);
 
                if Current_Color = Colors'Last then
                   Current_Color := Colors'First;
@@ -59,7 +59,7 @@ end Color_Me_Task;
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Hello_World.Style ("color", "green");
+      App.Hello_World.Color ("green");
       App.Hello_World.Background_Color (RGBA_Type'(255,255,255,1.0));
       App.Main_Window.Log
         ("Color = " & Gnoga.Types.To_String (App.Hello_World.Color));
@@ -87,7 +87,7 @@ end Color_Me_Task;
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Hello_World.Style ("color", "red");
+      App.Hello_World.Color ("red");
    end On_Context;
 
    procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is

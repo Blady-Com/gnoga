@@ -22,7 +22,7 @@ procedure Demo is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Message.Style ("display", "none");
+      App.Message.Display ("none");
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
    end On_Click;
@@ -38,6 +38,7 @@ procedure Demo is
 
       View.Create (Main_Window);
       View.Background_Color ("azure");
+      View.Border;
 
       App.Message.Create (View, "Click me and I will hide.");
       App.Message.On_Click_Handler (On_Click'Unrestricted_Access);

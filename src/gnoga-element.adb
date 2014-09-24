@@ -190,6 +190,43 @@ package body Gnoga.Element is
       return Element.Property ("isContentEditable");
    end Editable;
 
+   ----------------
+   -- Box_Sizing --
+   ----------------
+
+   procedure Box_Sizing (Element : in out Element_Type;
+                         Value   : in     Box_Sizing_Type)
+   is
+   begin
+      case Value is
+         when Content_Box =>
+            Element.Style ("box-sizing", "content-box");
+         when Border_Box =>
+            Element.Style ("box-sizing", "border-box");
+      end case;
+   end Box_Sizing;
+
+   function Box_Sizing (Element : Element_Type) return Box_Sizing_Type
+   is
+   begin
+      if Element.Style ("box-sizing") = "border-box" then
+         return Border_Box;
+      else
+         return Content_Box;
+      end if;
+   end Box_Sizing;
+
+   ----------------
+   -- Clear_Side --
+   ----------------
+
+   procedure Clear_Side (Element : in out Element_Type;
+                         Value   : in     Clear_Side_Type)
+   is
+   begin
+      Element.Style ("clear", Value'Img);
+   end Clear_Side;
+
    -------------
    -- Display --
    -------------
@@ -206,6 +243,44 @@ package body Gnoga.Element is
    begin
       return Element.Style ("display");
    end Display;
+
+   --------------
+   -- Overflow --
+   --------------
+
+   procedure Overflow (Element : in out Element_Type;
+                       Value   : in     Overflow_Type)
+   is
+   begin
+      Element.Style ("overflow", Value'Img);
+   end Overflow;
+
+   function Overflow (Element : Element_Type) return Overflow_Type is
+   begin
+      return Overflow_Type'Value (Element.Style ("overflow"));
+   exception
+      when others =>
+         return Visible;
+   end Overflow;
+
+   --------------
+   -- Resizable --
+   --------------
+
+   procedure Resizable (Element : in out Element_Type;
+                        Value   : in     Resizable_Type)
+   is
+   begin
+      Element.Style ("resize", Value'Img);
+   end Resizable;
+
+   function Resizable (Element : Element_Type) return Resizable_Type is
+   begin
+      return Resizable_Type'Value (Element.Style ("resize"));
+   exception
+      when others =>
+         return None;
+   end Resizable;
 
    --------------
    -- Position --
@@ -325,6 +400,156 @@ package body Gnoga.Element is
    begin
       return Element.Style ("bottom");
    end Bottom;
+
+   ----------------
+   -- Box_Height --
+   ----------------
+
+   procedure Box_Height (Element : in out Element_Type;
+                         Value   : in     Integer;
+                         Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("height", Left_Trim (Value'Img) & Unit);
+   end Box_Height;
+
+   procedure Box_Height (Element : in out Element_Type;
+                         Value   : in     String)
+   is
+   begin
+      Element.Style ("height", Value);
+   end Box_Height;
+
+   function Box_Height (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("height");
+   end Box_Height;
+
+   --------------------
+   -- Minimum_Height --
+   --------------------
+
+   procedure Minimum_Height (Element : in out Element_Type;
+                             Value   : in     Integer;
+                             Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("min-height", Left_Trim (Value'Img) & Unit);
+   end Minimum_Height;
+
+   procedure Minimum_Height (Element : in out Element_Type;
+                             Value   : in     String)
+   is
+   begin
+      Element.Style ("min-height", Value);
+   end Minimum_Height;
+
+   function Minimum_Height (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("min-height");
+   end Minimum_Height;
+
+   --------------------
+   -- Maximum_Height --
+   --------------------
+
+   procedure Maximum_Height (Element : in out Element_Type;
+                             Value   : in     Integer;
+                             Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("max-height", Left_Trim (Value'Img) & Unit);
+   end Maximum_Height;
+
+   procedure Maximum_Height (Element : in out Element_Type;
+                             Value   : in     String)
+   is
+   begin
+      Element.Style ("max-height", Value);
+   end Maximum_Height;
+
+   function Maximum_Height (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("max-height");
+   end Maximum_Height;
+
+   ---------------
+   -- Box_Width --
+   ---------------
+
+   procedure Box_Width (Element : in out Element_Type;
+                        Value   : in     Integer;
+                        Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("width", Left_Trim (Value'Img) & Unit);
+   end Box_Width;
+
+   procedure Box_Width (Element : in out Element_Type;
+                        Value   : in     String)
+   is
+   begin
+      Element.Style ("width", Value);
+   end Box_Width;
+
+   function Box_Width (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("width");
+   end Box_Width;
+
+   -------------------
+   -- Minimum_Width --
+   -------------------
+
+   procedure Minimum_Width (Element : in out Element_Type;
+                            Value   : in     Integer;
+                            Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("min-width", Left_Trim (Value'Img) & Unit);
+   end Minimum_Width;
+
+   procedure Minimum_Width (Element : in out Element_Type;
+                            Value   : in     String)
+   is
+   begin
+      Element.Style ("min-width", Value);
+   end Minimum_Width;
+
+   function Minimum_Width (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("min-width");
+   end Minimum_Width;
+
+   -------------------
+   -- Maximum_Width --
+   -------------------
+
+   procedure Maximum_Width (Element : in out Element_Type;
+                            Value   : in     Integer;
+                            Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("max-width", Left_Trim (Value'Img) & Unit);
+   end Maximum_Width;
+
+   procedure Maximum_Width (Element : in out Element_Type;
+                            Value   : in     String)
+   is
+   begin
+      Element.Style ("max-width", Value);
+   end Maximum_Width;
+
+   function Maximum_Width (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("max-width");
+   end Maximum_Width;
 
    ---------------
    -- Draggable --
@@ -790,6 +1015,184 @@ package body Gnoga.Element is
    begin
       return Element.Property ("background-size");
    end Background_Size;
+
+   ------------
+   -- Border --
+   ------------
+
+   procedure Border (Element : in out Element_Type;
+                     Width   : in     String       := "medium";
+                     Style   : in     Border_Style := Solid;
+                     Color   : in     String       := "black")
+   is
+   begin
+      Element.Style ("border", Width & " " & Style'Img & " " & Color);
+   end Border;
+
+   -------------------
+   -- Border_Radius --
+   -------------------
+
+   procedure Border_Radius (Element : in out Element_Type;
+                            Radius  : in     String := "0")
+   is
+   begin
+      Element.Style ("border-radius", Radius);
+   end Border_Radius;
+
+   ------------
+   -- Shadow --
+   ------------
+
+   procedure Shadow (Element             : in out Element_Type;
+                     Horizontal_Position : in     String;
+                     Vertical_Position   : in     String;
+                     Blur                : in     String := "";
+                     Spread              : in     String := "";
+                     Color               : in     String := "black";
+                     Inset_Shadow        : in     Boolean := False)
+   is
+      function Inset return String is
+      begin
+         if Inset_Shadow then
+            return "inset";
+         else
+            return "";
+         end if;
+      end Inset;
+   begin
+      Element.Style ("box-shadow", Horizontal_Position & " " &
+                       Vertical_Position & " " & Blur & " " & Spread &
+                       " " & Color & " " & Inset);
+   end Shadow;
+
+   -----------------
+   -- Shadow_None --
+   -----------------
+
+   procedure Shadow_None (Element : in out Element_Type) is
+   begin
+      Element.Style ("box-shadow", "none");
+   end Shadow_None;
+
+   -------------
+   -- Outline --
+   -------------
+
+   procedure Outline (Element : in out Element_Type;
+                      Color   : in     String             := "invert";
+                      Style   : in     Outline_Style_Type := None;
+                      Width   : in     String             := "medium")
+   is
+   begin
+      Element.Style ("outline", Color & " " & Style'Img & " " & Width);
+   end Outline;
+
+   ------------
+   -- Margin --
+   ------------
+
+   procedure Margin (Element : in out Element_Type;
+                     Top     : in     String := "0";
+                     Right   : in     String := "0";
+                     Bottom  : in     String := "0";
+                     Left    : in     String := "0")
+   is
+   begin
+      Element.Style ("margin", Top & " " & Right & " " & Bottom & " " & Left);
+   end Margin;
+
+   -------------
+   -- Padding --
+   -------------
+
+   procedure Padding (Element : in out Element_Type;
+                     Top     : in     String := "0";
+                     Right   : in     String := "0";
+                     Bottom  : in     String := "0";
+                     Left    : in     String := "0")
+   is
+   begin
+      Element.Style ("padding", Top & " " & Right & " " & Bottom & " " & Left);
+   end Padding;
+
+   ------------
+   -- Cursor --
+   ------------
+
+   procedure Cursor (Element : in out Element_Type;
+                     Value   : in     String)
+   is
+   begin
+      Element.Style ("cursor", Value);
+   end Cursor;
+
+   function Cursor (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("cursor");
+   end Cursor;
+
+   ----------
+   -- Font --
+   ----------
+
+   procedure Font (Element : in out Element_Type;
+                   Family  : in     String            := "sans-serif";
+                   Height  : in     String            := "normal";
+                   Style   : in     Font_Style_Type   := Normal;
+                   Weight  : in     Font_Weight_Type  := Weight_Normal;
+                   Variant : in     Font_Variant_Type := Normal)
+   is
+      W : String := Weight'Img;
+   begin
+      Element.Style ("font", Style'Img & " " & Variant'Img & " " &
+                       W (W'First + 7 .. W'Last) & Height & " " & Family);
+   end Font;
+
+   procedure Font (Element     : in out Element_Type;
+                   System_Font : in     System_Font_Type)
+   is
+   begin
+      case System_Font is
+         when Caption | Icon | Menu =>
+            Element.Style ("font", System_Font'Img);
+         when Message_Box =>
+            Element.Style ("font", "message-box");
+         when Small_Caption =>
+            Element.Style ("font", "small-caption");
+         when Status_Bar =>
+            Element.Style ("font", "status-bar");
+      end case;
+   end Font;
+
+   --------------------
+   -- Text_Alignment --
+   --------------------
+
+   procedure Text_Alignment (Element : in out Element_Type;
+                             Value   : in     Alignment_Type)
+   is
+      V : String := Value'Img;
+   begin
+      case Value is
+         when Left | Right | Center =>
+            Element.Style ("text-align", V);
+         when At_Start | To_End =>
+            Element.Style ("text-align", V ((V'First + 3) .. V'Last));
+      end case;
+   end Text_Alignment;
+
+   -------------------
+   -- Text_Baseline --
+   -------------------
+
+   procedure Text_Baseline (Element : in out Element_Type;
+                            Value   : in     Baseline_Type)
+   is
+   begin
+      Element.Style ("text-baseline", Value'Img);
+   end Text_Baseline;
 
    -----------------
    -- First_Child --

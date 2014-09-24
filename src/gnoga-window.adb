@@ -143,12 +143,13 @@ package body Gnoga.Window is
 
       Window.View_ID := Ada.Strings.Unbounded.To_Unbounded_String (Object.ID);
 
+      Element_Type (ObjecT).Box_Sizing (Border_Box);
       Element_Type (Object).Position (Gnoga.Element.Fixed);
       Element_Type (Object).Display ("block");
       Element_Type (Object).Left (0);
       Element_Type (Object).Top (0);
-      Element_Type (Object).Height (Window.Height);
-      Element_Type (Object).Width (Window.Width);
+      Element_Type (Object).Box_Height (Window.Height);
+      Element_Type (Object).Box_Width (Window.Width);
 
       Window.Has_View := True;
    end Set_View;
@@ -653,8 +654,8 @@ package body Gnoga.Window is
             Object.Attach_Using_Parent
               (Window,
                Ada.Strings.Unbounded.To_String (Window.View_ID));
-            Object.Height (Window.Height);
-            Object.Width (Window.Width);
+            Object.Box_Height (Window.Height);
+            Object.Box_Width (Window.Width);
          end;
       end if;
    end On_Resize;

@@ -31,9 +31,9 @@ package body Snake.Connection is
            "If sparky hits his tail he electrocutes himself to <b>death!!</b>" &
            "<br /><br />" &
            "Use the keys a,w,s,d for direction keys.<br/><br/>");
-      Display.Style ("text-align", "center");
-      Display.Style ("width", "100%");
-      Display.Style ("height", "100%");
+      Display.Text_Alignment (Gnoga.Element.Center);
+      Display.Box_Width ("100%");
+      Display.Box_Height ("100%");
       Display.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
       for i in 1 .. 15 loop
@@ -108,9 +108,9 @@ package body Snake.Connection is
 
       App.Display.Create (App.Background, Display_Width, Display_Height);
       App.Display.Display ("block");
-      App.Display.Style ("margin", "auto");
-      App.Display.Style ("border-width", 3);
-      App.Display.Style ("border-style", "solid");
+      App.Display.Margin ("auto", "auto", "auto", "auto");
+      App.Display.Border (Width => "thin");
+      App.Display.Border_Radius ("10px");
       App.Display.Background_Color ("white");
 
       -- Initialize Snake
@@ -208,8 +208,8 @@ package body Snake.Connection is
            Self_Collision (Head_Cell)
          then
             Context.Fill_Color ("red");
-            Context.Font (Height_In_Pixels => 20);
-            Context.Fill_Text ("GAME OVER", 20, 20);
+            Context.Font (Height => "20px");
+            Context.Fill_Text ("GAME OVER", 30, 30);
             Game_Over := True;
          else
             App.Snake.Prepend (Head_Cell);
@@ -221,6 +221,12 @@ package body Snake.Connection is
             end loop;
 
             if Food_Collision (Head_Cell) then
+               -- clear old score
+               Context.Fill_Color ("white");
+               Context.Font (Height => "12px");
+               Context.Fill_Text
+                 ("Score :" & App.Score'Img, 5, Display_Height - 15);
+
                App.Score := App.Score + 10;
 
                App.Food := New_Food;
@@ -237,7 +243,7 @@ package body Snake.Connection is
       end;
 
       Context.Fill_Color ("green");
-      Context.Font (Height_In_Pixels => 10);
+      Context.Font (Height => "12px");
       Context.Fill_Text ("Score :" & App.Score'Img, 5, Display_Height - 15);
    end Paint;
 

@@ -138,39 +138,21 @@ package Gnoga.Element.Canvas.Context_2D is
 
    --  Text
 
-   type Font_Style_Type is (Normal, Italic, Oblique);
-
-   type Font_Variant_Type is (Normal, Small_Caps);
-
-   type Font_Weight_Type is (Weight_Normal, Weight_Bold,
-                             Weight_Bolder, Weight_Lighter,
-                             Weight_100, Weight_200, Weight_300,
-                             Weight_400, Weight_500, Weight_600,
-                             Weight_700, Weight_800, Weight_900);
-
-   type System_Font_Type is (Caption, Icon, Menu, Message_Box, Small_Caption,
-                             Status_Bar);
-
-   procedure Font
-     (Context          : in out Context_2D_Type;
-      Family           : in     String            := "sans-serif";
-      Height_In_Pixels : in     Integer           := 10;
-      Style            : in     Font_Style_Type   := Normal;
-      Weight           : in     Font_Weight_Type  := Weight_Normal;
-      Variant          : in     Font_Variant_Type := Normal);
+   procedure Font (Context : in out Context_2D_Type;
+                   Family  : in     String            := "sans-serif";
+                   Height  : in     String            := "10px";
+                   Style   : in     Font_Style_Type   := Normal;
+                   Weight  : in     Font_Weight_Type  := Weight_Normal;
+                   Variant : in     Font_Variant_Type := Normal);
    procedure Font (Context     : in out Context_2D_Type;
                    System_Font : in     System_Font_Type);
    --  Sets or returns the current font properties for text content
-
-   type Alignment_Type is (Left, Right, Center, At_Start, To_End);
 
    procedure Text_Alignment (Context : in out Context_2D_Type;
                              Value   : in     Alignment_Type);
    --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
    --  in rtl languages At_Start = Right, and To_End = Left.
 
-   type Baseline_Type is (Alphabetic, Top, Hanging, Middle,
-                          Ideographic, Bottom);
    procedure Text_Baseline (Context : in out Context_2D_Type;
                             Value   : in     Baseline_Type);
    --  Baseline used when drawing text

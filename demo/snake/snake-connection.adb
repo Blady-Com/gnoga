@@ -31,10 +31,8 @@ package body Snake.Connection is
            "If sparky hits his tail he electrocutes himself to <b>death!!</b>" &
            "<br /><br />" &
            "Use the keys a,w,s,d for direction keys.<br/><br/>");
+      Main_Window.Set_View (Display);
       Display.Text_Alignment (Gnoga.Element.Center);
-      Display.Box_Width ("100%");
-      Display.Box_Height ("100%");
-      Display.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
       for i in 1 .. 15 loop
          declare
@@ -42,7 +40,7 @@ package body Snake.Connection is
          begin
             Blip.Create (Display, "&nbsp;*&nbsp;");
             Blip.Place_Inside_Bottom_Of (Display);
-            delay 0.05;
+            delay 0.3;
          end;
       end loop;
 
@@ -112,6 +110,9 @@ package body Snake.Connection is
       App.Display.Border (Width => "thin");
       App.Display.Border_Radius ("10px");
       App.Display.Background_Color ("white");
+      App.Display.Shadow (Horizontal_Position => "3px",
+                          Vertical_Position   => "3px",
+                          Blur                => "5px");
 
       -- Initialize Snake
       for i in reverse 0 .. Initial_Length - 1 loop

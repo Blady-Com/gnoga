@@ -41,6 +41,7 @@ with Ada.Strings.Maps;
 with Ada.Calendar.Formatting;
 
 with Gnoga.Connections;
+with Gnoga.Element;
 
 package body Gnoga.Window is
    use type Gnoga.Base.Action_Event;
@@ -72,6 +73,9 @@ package body Gnoga.Window is
         (Connection_ID => Connection_ID,
          ID            => Window.jQuery & ".prop ('location')",
          ID_Type       => Gnoga.Types.Script);
+
+      Window.Bind_Event (Event   => "resize",
+                         Message => "");
    end Attach;
 
    procedure Attach
@@ -112,6 +116,47 @@ package body Gnoga.Window is
    begin
       Window.Connection_ID (Gnoga.Types.Connection_ID'Value (CID));
    end Reattach;
+
+   --------------
+   -- Set_View --
+   --------------
+
+   procedure Set_View (Window : in out Window_Type;
+                       Object : in out Gnoga.Base.Base_Type'Class;
+                       Place  : in     Boolean := True)
+   is
+      use Gnoga.Types;
+      use Gnoga.Element;
+   begin
+      if not (Object.ID_Type = DOM_ID or Object.ID_Type = Gnoga_ID) then
+         raise Invalid_ID_Type;
+      end if;
+
+      if Place then
+         Element_Type (Object).Place_Inside_Top_Of
+           (Window.Document.Body_Element.all);
+      end if;
+
+      Window.View_ID := Ada.Strings.Unbounded.To_Unbounded_String (Object.ID);
+
+      Element_Type (Object).Position (Gnoga.Element.Fixed);
+      Element_Type (Object).Display ("block");
+      Element_Type (Object).Left (0);
+      Element_Type (Object).Top (0);
+      Element_Type (Object).Height (Window.Height);
+      Element_Type (Object).Width (Window.Width);
+
+      Window.Has_View := True;
+   end Set_View;
+
+   -----------------
+   -- Remove_View --
+   -----------------
+
+   procedure Remove_View (Window : in out Window_Type) is
+   begin
+      Window.Has_View := False;
+   end Remove_View;
 
    --------------
    -- Document --
@@ -590,6 +635,26 @@ package body Gnoga.Window is
       end if;
    end Fire_On_Orientation_Change;
 
+   ---------------
+   -- On_Resize --
+   ---------------
+
+   procedure On_Resize (Window : in out Window_Type) is
+      use Gnoga.Types;
+   begin
+      if Window.Has_View then
+         declare
+            Object : Gnoga.Element.Element_Type;
+         begin
+            Object.Attach_Using_Parent
+              (Window,
+               Ada.Strings.Unbounded.To_String (Window.View_ID));
+            Object.Height (Window.Height);
+            Object.Width (Window.Width);
+         end;
+      end if;
+   end On_Resize;
+
    ----------------
    -- On_Message --
    ----------------
@@ -608,6 +673,9 @@ package body Gnoga.Window is
          Object.Fire_On_Hash_Change;
       elsif Event = "orientationchange" then
          Object.Fire_On_Orientation_Change;
+      elsif Event = "resize" then
+         Object.On_Resize;
+         Object.Fire_On_Resize;
       else
          Gnoga.Base.Base_Type (Object).On_Message (Event, Message);
       end if;

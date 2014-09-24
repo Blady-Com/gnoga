@@ -57,6 +57,7 @@ package Gnoga.Window is
    type Pointer_To_Window_Class is access all Window_Type'Class;
 
    Invalid_ID_Type    : exception;
+
    Not_A_Gnoga_Window : exception;
 
    overriding procedure Attach
@@ -84,7 +85,25 @@ package Gnoga.Window is
                        Parent : in out Window_Type'Class);
    --  Attach a Window launched by Parent to its own Gnoga connection.
    --  Will raise Not_A_Gnoga_Window if connection was not established in
-   --  Window or is not a Gnoga window (i.e. has websocket to app).
+   --  Window or is not a Gnoga window (i.e. if has no websocket to app).
+
+   procedure Set_View (Window : in out Window_Type;
+                       Object : in out Gnoga.Base.Base_Type'Class;
+                       Place  : in     Boolean := True);
+   --  Sets Object as the Window's View. Object will be auto resized to fill
+   --  the entire client area of Window. If Object is not in the DOM the
+   --  resize will fail, therefore on an Object with a valid DOM id will
+   --  work. Elements created with Gnoga always have a DOM id set if if
+   --  the Object.ID_Type is not DOM_ID. Only the ID for Object is stored
+   --  and used therefore even if Object is finalized as long as Object
+   --  is still in the DOM it will continue to resize. If Place is True
+   --  then Object will first be placed using Element.Place_Inside_Top_Of.
+   --  If Object is not an Gnog.Element.Element_Type or a child of it an
+   --  exception will be raised.
+   --  ID_Type is not DOM_ID or Gnoga_ID will raise Invalid_ID_Type
+
+   procedure Remove_View (Window : in out Window_Type);
+   --  Remove the current View Object from Window
 
    -------------------------------------------------------------------------
    --  Window_Type - Creation Methods
@@ -150,6 +169,8 @@ package Gnoga.Window is
    --  For example: http://localhost:8080/?page_id=2
    --  Search_Parameter (Window, "page_id") = "2"
 
+   --  Framework Properties  --
+
    function Gnoga_Session_ID (Window : access Window_Type;
                               Name   : in     String := "gid")
                               return String;
@@ -214,6 +235,14 @@ package Gnoga.Window is
       Handler : in     Gnoga.Base.Action_Event);
    procedure Fire_On_Orientation_Change (Window : in out Window_Type);
 
+   -------------------------------------------------------------------------
+   --  Winow_Type - Event Methods
+   -------------------------------------------------------------------------
+
+   procedure On_Resize (Window : in out Window_Type);
+   --  Handle resizing an object set as a View for Window to new
+   --  height and width of Window
+
    overriding procedure On_Message (Object  : in out Window_Type;
                                     Event   : in     String;
                                     Message : in     String);
@@ -223,6 +252,8 @@ private
          DOM_Document : aliased Gnoga.Document.Document_Type;
          Location     : aliased Gnoga.Location.Location_Type;
          Session_ID   : Gnoga.Types.Web_ID;
+         View_ID      : Gnoga.Types.Web_ID;
+         Has_View     : Boolean := False;
 
          On_Abort_Event              : Gnoga.Base.Action_Event := null;
          On_Error_Event              : Gnoga.Base.Action_Event := null;

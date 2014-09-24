@@ -105,7 +105,8 @@ package Gnoga.Element is
    function Hidden (Element : Element_Type) return Boolean;
    --  The hidden property is practically speaking like Visible, however
    --  visible uses CSS to hide the Element. Hidden implies the element is
-   --  semantically not relevant not just visually.
+   --  semantically not relevant not just visually. It will also remove it
+   --  from layout unlike Element.Visible and just like Element.Display (None)
 
    procedure Inner_HTML (Element : in out Element_Type; Value : in String);
    function Inner_HTML (Element : Element_Type) return String;
@@ -139,7 +140,13 @@ package Gnoga.Element is
    procedure Visible (Element : in out Element_Type;
                       Value   : in     Boolean := True);
    function Visible (Element : Element_Type) return Boolean;
-
+   --  This will cause the Element to no longer be visible but it will still
+   --  take up space where it was in the layout. Use Element.Hidden to also
+   --  remove from layout.
+   --  Note: that each property, Visible, Hidden and Display (None) all work
+   --  independantly and do not reflect the actual client side visual state
+   --  but the property state. To check an object all three properties would
+   --  need to be checked to know if for sure is visible or not.
 
    --  Properties curently not being supported:
    --  contentmenu - property is currently only supported in FireFox

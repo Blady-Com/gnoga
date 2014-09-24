@@ -576,9 +576,12 @@ package body Gnoga.Connections is
         (ID, Connection_Holder'Unchecked_Access);
 
       Execute_Script (ID, "gnoga['Connection_ID']=" & ID'Img);
+
       Execute_Script (ID, "TRUE=true");
       Execute_Script (ID, "FALSE=false");
-
+      --  By setting the variable TRUE and FALSE it is possible to set a
+      --  property or attribute with Boolean'Img which will result in TRUE or
+      --  FALSE not the case sensitive true or false expected.
 
       On_Connect_Event (ID, Connection_Holder'Access);
 

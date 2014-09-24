@@ -190,6 +190,142 @@ package body Gnoga.Element is
       return Element.Property ("isContentEditable");
    end Editable;
 
+   -------------
+   -- Display --
+   -------------
+
+   procedure Display (Element : in out Element_Type;
+                      Value   : in     String)
+   is
+   begin
+      Element.Style ("display", Value);
+   end Display;
+
+   function Display (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("display");
+   end Display;
+
+   --------------
+   -- Position --
+   --------------
+
+   procedure Position (Element : in out Element_Type;
+                       Value   : in     Position_Type)
+   is
+   begin
+      Element.Style ("position", Value'Img);
+   end Position;
+
+   function Position (Element : Element_Type) return Position_Type is
+   begin
+      return Position_Type'Value (Element.Style ("position"));
+   exception
+      when others =>
+         return Static;
+   end Position;
+
+   ----------
+   -- Left --
+   ----------
+
+   procedure Left (Element : in out Element_Type;
+                   Value   : in     Integer;
+                   Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("left", Left_Trim (Value'Img) & Unit);
+   end Left;
+
+   procedure Left (Element : in out Element_Type;
+                   Value   : in     String)
+   is
+   begin
+      Element.Style ("left", Value);
+   end Left;
+
+   function Left (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("left");
+   end Left;
+
+   -----------
+   -- Right --
+   -----------
+
+   procedure Right (Element : in out Element_Type;
+                    Value   : in     Integer;
+                    Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("right", Left_Trim (Value'Img) & Unit);
+   end Right;
+
+   procedure Right (Element : in out Element_Type;
+                    Value   : in     String)
+   is
+   begin
+      Element.Style ("right", Value);
+   end Right;
+
+   function Right (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("right");
+   end Right;
+
+   ---------
+   -- Top --
+   ---------
+
+   procedure Top (Element : in out Element_Type;
+                  Value   : in     Integer;
+                  Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("top", Left_Trim (Value'Img) & Unit);
+   end Top;
+
+   procedure Top (Element : in out Element_Type;
+                  Value   : in     String)
+   is
+   begin
+      Element.Style ("top", Value);
+   end Top;
+
+   function Top (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("top");
+   end Top;
+
+   ------------
+   -- Bottom --
+   ------------
+
+   procedure Bottom (Element : in out Element_Type;
+                     Value   : in     Integer;
+                     Unit    : in     String := "px")
+   is
+   begin
+      Element.Style ("bottom", Left_Trim (Value'Img) & Unit);
+   end Bottom;
+
+   procedure Bottom (Element : in out Element_Type;
+                     Value   : in     String)
+   is
+   begin
+      Element.Style ("bottom", Value);
+   end Bottom;
+
+   function Bottom (Element : Element_Type) return String
+   is
+   begin
+      return Element.Style ("bottom");
+   end Bottom;
+
    ---------------
    -- Draggable --
    ---------------

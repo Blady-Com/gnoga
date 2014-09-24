@@ -94,11 +94,11 @@ package Gnoga.Element is
    --  CSS Class name, can be multiple seperated by <space>
 
    procedure Editable (Element : in out Element_Type;
-                       Value   : in Boolean := True);
+                       Value   : in     Boolean := True);
    function Editable (Element : Element_Type) return Boolean;
 
    procedure Draggable (Element : in out Element_Type;
-                        Value   : in  Boolean := True);
+                        Value   : in     Boolean := True);
    function Draggable (Element : Element_Type) return Boolean;
 
    procedure Hidden (Element : in out Element_Type; Value : in Boolean := True);
@@ -154,7 +154,69 @@ package Gnoga.Element is
    --  dropzone - no browser support
    --  translate - no browser support
 
-   -- Location Properties --
+   --
+
+   --  Location Properties --
+
+   procedure Display (Element : in out Element_Type;
+                      Value   : in     String);
+   function Display (Element : Element_Type) return String;
+   --  Display sets the CSS Display property that handles how elements are
+   --  treated by the browser layout engine.
+   --
+   --  Common Values:
+   --
+   --  none         - Remove Element from layout but remain in the DOM this is
+   --                 similar to Element.Hidden, but not like Element.Visible
+   --                 that makes the element not visible but still take up
+   --                 space in layout.
+   --
+   --  block        - Displays an element starting on a new line and stretches
+   --                 out to the left and right as far as it can. e.g. <div> by
+   --                 default
+   --
+   --  inline       - Wraps with text in a paragraph. e.g. <span> by default
+   --
+   --  inline-block - Flows with paragraph but will always fill from left to
+   --                 right.
+   --
+   --  flex         - Use the "flexbox" model
+
+   type Position_Type is (Static, Absolute, Fixed, Relative);
+
+   procedure Position (Element : in out Element_Type;
+                       Value   : in     Position_Type);
+   function Position (Element : Element_Type) return Position_Type;
+   --  Determins how the properties left, right, top and bottom are interpreted.
+
+   procedure Left (Element : in out Element_Type;
+                   Value   : in     Integer;
+                   Unit    : in     String := "px");
+   procedure Left (Element : in out Element_Type;
+                   Value   : in     String);
+   function Left (Element : Element_Type) return String;
+
+   procedure Right (Element : in out Element_Type;
+                    Value   : in     Integer;
+                    Unit    : in     String := "px");
+   procedure Right (Element : in out Element_Type;
+                    Value   : in     String);
+   function Right (Element : Element_Type) return String;
+
+   procedure Top (Element : in out Element_Type;
+                  Value   : in     Integer;
+                  Unit    : in     String := "px");
+   procedure Top (Element : in out Element_Type;
+                  Value   : in     String);
+   function Top (Element : Element_Type) return String;
+
+   procedure Bottom (Element : in out Element_Type;
+                     Value   : in     Integer;
+                     Unit    : in     String := "px");
+   procedure Bottom (Element : in out Element_Type;
+                     Value   : in     String);
+   function Bottom (Element : Element_Type) return String;
+
 
    --  For reference:
    --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...

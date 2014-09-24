@@ -102,8 +102,11 @@ package body Snake.Connection is
       App.Main_Window.On_Character_Handler (On_Key_Press'Access);
 
       App.Background.Create (Main_Window);
-      App.Background.Style ("width", "100%");
-      App.Background.Style ("height", "100%");
+      App.Background.Position (Gnoga.Element.Fixed);
+      App.Background.Top (0);
+      App.Background.Left (0);
+      App.Background.Width (Main_Window.Inner_Width);
+      App.Background.Height (Main_Window.Inner_Height);
       App.Background.Style ("text-align", "center");
       App.Background.Background_Color ("orange");
       App.Background.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);

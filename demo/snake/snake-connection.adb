@@ -1,6 +1,7 @@
 with Ada.Numerics.Discrete_Random;
 with Ada.Containers.Vectors;
 
+with Gnoga.View;
 with Gnoga.Types;
 with Gnoga.Window;
 with Gnoga.Element.Common;
@@ -10,6 +11,7 @@ with Gnoga.Element.Canvas.Context_2D;
 package body Snake.Connection is
    use Gnoga.Types;
    use Gnoga.Element.Common;
+   use Gnoga.View;
    use Gnoga.Element.Canvas;
    use Gnoga.Element.Canvas.Context_2D;
 
@@ -40,7 +42,7 @@ package body Snake.Connection is
          begin
             Blip.Create (Display, "&nbsp;*&nbsp;");
             Blip.Place_Inside_Bottom_Of (Display);
-            delay 0.5;
+            delay 0.05;
          end;
       end loop;
 
@@ -75,7 +77,7 @@ package body Snake.Connection is
    type App_Data is new Connection_Data_Type with
       record
          Main_Window : Pointer_To_Window_Class;
-         Background  : DIV_Type;
+         Background  : View_Type;
          Display     : Canvas_Type;
 
          Score           : Integer              := 0;
@@ -102,21 +104,14 @@ package body Snake.Connection is
       App.Main_Window.On_Character_Handler (On_Key_Press'Access);
 
       App.Background.Create (Main_Window);
-      App.Background.Position (Gnoga.Element.Fixed);
-      App.Background.Top (0);
-      App.Background.Left (0);
-      App.Background.Width (Main_Window.Inner_Width);
-      App.Background.Height (Main_Window.Inner_Height);
-      App.Background.Style ("text-align", "center");
       App.Background.Background_Color ("orange");
-      App.Background.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
       App.Display.Create (App.Background, Display_Width, Display_Height);
-      App.Display.Style ("display", "inline-block");
+      App.Display.Display ("block");
+      App.Display.Style ("margin", "auto");
       App.Display.Style ("border-width", 3);
       App.Display.Style ("border-style", "solid");
       App.Display.Background_Color ("white");
-      App.Display.Place_Inside_Top_Of (App.Background);
 
       -- Initialize Snake
       for i in reverse 0 .. Initial_Length - 1 loop

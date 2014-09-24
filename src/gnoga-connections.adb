@@ -587,6 +587,8 @@ package body Gnoga.Connections is
 
       Connection_Manager.Delete_Connection_Holder (ID);
    exception
+      when Connection_Error =>
+         null; - Browser was closed by user
       when E : others =>
          Log ("Connection ID=" & ID'Img);
          Log (Ada.Exceptions.Exception_Name (E) & " - " &

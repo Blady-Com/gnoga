@@ -132,6 +132,10 @@ package body Gnoga.Window is
          raise Invalid_ID_Type;
       end if;
 
+      if not (Object in Element_Type'Class) then
+         raise Invalid_ID_Type with "Not in Element_Type'Class";
+      end if;
+
       if Place then
          Element_Type (Object).Place_Inside_Top_Of
            (Window.Document.Body_Element.all);

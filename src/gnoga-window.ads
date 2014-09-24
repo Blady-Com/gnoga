@@ -243,9 +243,10 @@ package Gnoga.Window is
    --  Handle resizing an object set as a View for Window to new
    --  height and width of Window
 
-   overriding procedure On_Message (Object  : in out Window_Type;
-                                    Event   : in     String;
-                                    Message : in     String);
+   overriding
+   procedure On_Message (Object  : in out Window_Type;
+                         Event   : in     String;
+                         Message : in     String);
 private
    type Window_Type is new Gnoga.Base.Base_Type with
       record

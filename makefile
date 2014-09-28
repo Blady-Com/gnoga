@@ -36,7 +36,7 @@ tests:
 	cd test && gprbuild
 
 clean:
-	cd src && gprclean
+	cd src && gprclean -Pgnoga.gpr
 	cd test && gprclean
 	cd demo/adablog && gprclean
 	cd demo/snake && gprclean

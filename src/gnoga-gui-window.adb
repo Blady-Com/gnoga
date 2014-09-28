@@ -644,6 +644,28 @@ package body Gnoga.Gui.Window is
       end if;
    end Fire_On_Orientation_Change;
 
+   ----------------
+   -- On_Storage --
+   ----------------
+
+   procedure On_Storage_Handler (Window  : in out Window_Type;
+                                 Handler : in     Gnoga.Gui.Base.Action_Event)
+   is
+   begin
+      Window.On_Storage_Event := Handler;
+
+      Window.Bind_Event (Event   => "storage",
+                         Message => "");
+   end On_Storage_Handler;
+
+   procedure Fire_On_Storage (Window : in out Window_Type)
+   is
+   begin
+      if Window.On_Storage_Event /= null then
+         Window.On_Storage_Event (Window);
+      end if;
+   end Fire_On_Storage;
+
    ---------------
    -- On_Resize --
    ---------------
@@ -682,6 +704,8 @@ package body Gnoga.Gui.Window is
          Object.Fire_On_Hash_Change;
       elsif Event = "orientationchange" then
          Object.Fire_On_Orientation_Change;
+      elsif Event = "storage" then
+         Object.Fire_On_Storage;
       elsif Event = "resize" then
          Object.On_Resize;
          Object.Fire_On_Resize;

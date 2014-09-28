@@ -236,6 +236,11 @@ package Gnoga.Gui.Window is
       Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Orientation_Change (Window : in out Window_Type);
 
+   procedure On_Storage_Handler (Window  : in out Window_Type;
+                                 Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure Fire_On_Storage (Window : in out Window_Type);
+   -- local or sessin storage data was changed
+
    -------------------------------------------------------------------------
    --  Winow_Type - Event Methods
    -------------------------------------------------------------------------
@@ -261,5 +266,6 @@ private
          On_Error_Event              : Gnoga.Gui.Base.Action_Event := null;
          On_Hash_Change_Event        : Gnoga.Gui.Base.Action_Event := null;
          On_Orientation_Change_Event : Gnoga.Gui.Base.Action_Event := null;
+         On_Storage_Event            : Gnoga.Gui.Base.Action_Event := null;
       end record;
 end Gnoga.Gui.Window;

@@ -5,6 +5,10 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
+with Gnoga.Client.Storage;
+
+with Ada.Calendar;
+with Ada.Calendar.Conversions;
 
 procedure Demo is
    use Gnoga;
@@ -34,6 +38,10 @@ procedure Demo is
    is
       App     : aliased App_Data;
       View    : Gnoga.Gui.View.View_Type;
+      Storage : Gnoga.Client.Storage.Local_Storage_Type :=
+                  Gnoga.Client.Storage.Local_Storage (Main_Window);
+      Session : Gnoga.Client.Storage.Session_Storage_Type :=
+                  Gnoga.Client.Storage.Session_Storage (Main_Window);
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
@@ -43,6 +51,19 @@ procedure Demo is
 
       App.Message.Create (View, "Click me and I will hide.");
       App.Message.On_Click_Handler (On_Click'Unrestricted_Access);
+
+      View.Put_Line ("Last access was at " & Storage.Get ("Last_View"));
+      Storage.Set
+        ("Last_View",
+         Ada.Calendar.Conversions.To_Unix_Time (Ada.Calendar.Clock)'Img);
+
+      if Session.Get ("ID") = "null" then
+         Session.Set ("ID", Main_Window.Gnoga_Session_ID);
+         View.Put_Line ("New session assigned.");
+      end if;
+
+      View.Put_Line ("Session id is " & Session.Get ("ID"));
+
 
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);

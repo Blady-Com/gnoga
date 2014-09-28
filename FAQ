@@ -42,6 +42,26 @@ brew upgrade
 
 brew install mysql-connector-c
 
+Q) How can I set up test for Gnoga Applications?
+
+A) There are many products on the market for testing Web sites / apps, any of those can be used with Gnoga as well. For example one inexpensive one for Mac is Fake.app http://fakeapp.com/
+
 Q) Can I build standalone true native desktop apps?
 
-A) Yes, there are a number of ways of doing it. One is using XULRunner. For example see https://github.com/neam/webapp-xul-wrapper   I will create an example and perhaps some templates in the future. There are numerous other ways to get HTML apps in to desktop apps and in the future more options will be made available.
+A) Yes, there are a number of ways of doing it. As time permits various examples will be created using available products. Here are some options:
+
+- XulRunner
+- http://fluidapp.com/ on Mac
+- http://www.tidesdk.org/
+
+Q) Can I buid native iOS apps for my iPhone or iPad?
+
+A) In theory it should be possible using GNAT with an LLVM back end and PhoneGAP. It does exist and but I have not explored it.
+
+Q) Can I buid native Android Apps?
+
+A) In theory it should be possible using GNAT and PhoneGAP. I have not explored it yet.
+
+Q) Can I build native Chromebook apps?
+
+A) It should be possible using GNAT, I have not yet explored the requirements for it, but Chromebooks are running linux and Google does have a spec for it.

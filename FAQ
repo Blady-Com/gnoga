@@ -14,6 +14,15 @@ Q) Can I distribute programs I compile with Gnoga?
 
 A) If you use GNAT-FSF or GNAT-PRO you can distribute the binaries with out your source, since Gnoga and those versions of GNAT grant an exception if the libraries where not modified only compiled against. If you use GNAT-GPL, according to AdaCore your code will fall under the GPL license with out exception which means you would need to distribute the source with your binary, now is that a bad thing?! However.. Keep in mind that if you modify Gnoga, or add to it, you will need to distribute those sources. Of course if you are doing that you should be sharing them with all of use to make Gnoga better :)
 
+Q) How to compile Gnoga on Debian (wheezy), AWS doesn't support WebSockers?
+
+A) You will need to use a more recent version of AWS (and perhaps GNAT). You
+can install GNAT-GPL from http://libre.adacore.com You can try building the latest AWS, git clone --recursive http://forge.open-do.org/anonscm/git/aws/aws.git with the gnat installed.
+
+Q) Do I need Sqlite3 or MySQL installed to use Gnoga?
+
+A) Only if you choose to build database apps or compilie the database examples. You can disable compiling the MySQL example if you want to just use SqlLite3.
+
 Q) How do I get AWS on Mac so I can use Gnoga with GNAT?
 
 A) You can either download the source package from any other distro of GNAT GPL or git clone the AWS repo, git clone --recursive http://forge.open-do.org/anonscm/git/aws/aws.git  Once you have unpacked it, to build you will need to set the include path to include the needed C libraries (included as part of Xcode) that do not come with the GNAT GPL or GNAT FSF versions. The following is an example on Mavericks:
@@ -21,6 +30,17 @@ A) You can either download the source package from any other distro of GNAT GPL 
 export C_INCLUDE_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include
 
 after that you can do the regular: make setup build install
+
+Q) How do I get sqlite3 and MySQL on my Mac for use with Gnoga?
+
+Sqlite3 is already built in to Mac OS X. You would only need to install MySQL if you wanted to run the MySQL test or wanted to use MySQL. There are many ways to install the need MySQL client libraries on Mac OS X, http://brew.sh/ is a simple solution. Here is a simple set of steps once you have installed homebrew on Mac:
+
+--  Insure that all is up to date
+brew update
+brew doctor
+brew upgrade
+
+brew install mysql-connector-c
 
 Q) Can I build standalone true native desktop apps?
 

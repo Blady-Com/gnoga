@@ -35,11 +35,10 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
--- This binding is to SQLite v3
+--  This binding is to SQLite v3
 
--- You will need to add linker options for SQLite. This can be done as part
--- of gpr files, command line or even something like:
---    pragma Linker_Options ("-L/usr/lib/sqlite3");
+--  You will need to add linker options for SQLite. This can be done as part
+--  of gpr files, command line or even something like:
 --    pragma Linker_Options ("-lsqlite3");
 
 
@@ -95,7 +94,8 @@ package Gnoga.Server.Database.SQLite is
    --  returns "id INTEGER PRIMARY KEY AUTOINCREMENT" the proper ID_Field
    --  creation string for SQLLite
 
-   type Recordset (Server_ID : SQLite_ID) is new Gnoga.Server.Database.Recordset
+   type Recordset (Server_ID : SQLite_ID) is
+     new Gnoga.Server.Database.Recordset
      with private;
 
    procedure Close (RS : in out Recordset);
@@ -128,7 +128,7 @@ package Gnoga.Server.Database.SQLite is
 
    procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access procedure (Row :Gnoga.Types.Data_Map_Type));
+      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type));
    --  Iterate through all rows in the recordset
 
    function Number_Of_Rows (RS : Recordset) return Natural;

@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more inIFrameation please go to http://www.gnoga.com                 --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Gnoga.Gui.Window;
 
@@ -42,7 +42,7 @@ package Gnoga.Gui.Element.IFrame is
    -------------------------------------------------------------------------
    --  From_Element_Types
    -------------------------------------------------------------------------
-   -- Parent type for IFrame elements
+   --  Parent type for IFrame elements
 
    type IFrame_Type is new Gnoga.Gui.Element.Element_Type with private;
    type IFrame_Access is access all IFrame_Type;
@@ -64,7 +64,8 @@ package Gnoga.Gui.Element.IFrame is
    --  IFrame_Type - Properties
    -------------------------------------------------------------------------
 
-   function Window (IFrame : IFrame_Type) return Gnoga.Gui.Window.Window_Access;
+   function Window (IFrame : IFrame_Type)
+                    return Gnoga.Gui.Window.Window_Access;
 
 private
    type IFrame_Type is new Gnoga.Gui.Element.Element_Type with

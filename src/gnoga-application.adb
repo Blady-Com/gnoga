@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
 

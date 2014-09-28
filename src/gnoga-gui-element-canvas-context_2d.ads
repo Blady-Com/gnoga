@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Gnoga.Types;
 
@@ -101,7 +101,7 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                            Value   : in     Gnoga.Types.RGBA_Type);
    procedure Shadow_Color (Context : in out Context_2D_Type;
                            Value   : in     String);
-   -- Color to use for shadows
+   --  Color to use for shadows
 
    procedure Shadow_Blur (Context : in out Context_2D_Type;
                           Value   : in     Integer);
@@ -121,7 +121,7 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
 
    procedure Line_Cap (Context : in out Context_2D_Type;
                        Value   : in     Line_Cap_Type);
-   -- Style of the end caps for a line
+   --  Style of the end caps for a line
 
    type Line_Join_Type is (Bevel, Round, Miter);
 
@@ -159,9 +159,10 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
 
    --  Image Data
 
-   --  width	Returns the width of an ImageData object
-   --  height	Returns the height of an ImageData object
-   --  data	Returns an object that contains image data of a specified ImageData object
+   --  width    Returns the width of an ImageData object
+   --  height   Returns the height of an ImageData object
+   --  data     Returns an object that contains image data of a specified
+   --           ImageData object
 
    --  Compositing
 
@@ -300,15 +301,18 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
 
    function Is_Point_In_Path (Context : Context_2D_Type; X, Y : Integer)
                               return Boolean;
-   --  Returns true if the specified point is in the current path, otherwise false
+   --  Returns true if the specified point is in the current path, otherwise
+   --  false
 
    --  Transforms
 
    procedure Scale (Context : in out Context_2D_Type; Width, Height : Float);
    --  Scales the current drawing bigger or smaller, 1.0 = 100%
 
-   procedure Rotate_Radians (Context : in out Context_2D_Type; Radians : Float);
-   procedure Rotate_Degrees (Context : in out Context_2D_Type; Degrees : Float);
+   procedure Rotate_Radians (Context : in out Context_2D_Type;
+                             Radians : in     Float);
+   procedure Rotate_Degrees (Context : in out Context_2D_Type;
+                             Degrees : in     Float);
    --  Rotates the current drawing
 
    procedure Translate (Context : in out Context_2D_Type; X, Y : Integer);
@@ -335,13 +339,13 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                         Text       : in     String;
                         X, Y       : in     Integer;
                         Max_Length : in     Natural := 0);
-   -- Place Text and fill on Context at X, Y with Max_Lenght if > 0
+   --  Place Text and fill on Context at X, Y with Max_Lenght if > 0
 
    procedure Stroke_Text (Context    : in out Context_2D_Type;
                           Text       : in     String;
                           X, Y       : in     Integer;
                           Max_Length : in     Natural := 0);
-   -- Place Text without fill on Context at X, Y with Max_Lenght if > 0
+   --  Place Text without fill on Context at X, Y with Max_Lenght if > 0
 
    function Measure_Text_Width (Context : Context_2D_Type;
                                 Text    : String)

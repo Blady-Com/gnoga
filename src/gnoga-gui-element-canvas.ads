@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Gnoga.Types;
 
@@ -101,7 +101,8 @@ private
    type Context_Type is
      new Ada.Finalization.Limited_Controlled with
       record
-         Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+         Connection_ID : Gnoga.Types.Connection_ID :=
+                           Gnoga.Types.No_Connection;
          Context_ID    : Gnoga.Types.Web_ID;
       end record;
 end Gnoga.Gui.Element.Canvas;

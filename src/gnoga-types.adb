@@ -100,6 +100,11 @@ package body Gnoga.Types is
       F    : Integer   := Value'First - 1;
       RGBA : RGBA_Type;
 
+      function Split (P : String) return String;
+      function Split (P : String) return Integer;
+      function Split (P : String) return Alpha_Type;
+      --  Split string and extract values
+
       function Split (P : String) return String is
       begin
          S := F + 1;
@@ -107,7 +112,7 @@ package body Gnoga.Types is
                      Pattern => P,
                      From    => S);
          return Value (S .. (F - 1));
-      end;
+      end Split;
 
       function Split (P : String) return Integer is
       begin

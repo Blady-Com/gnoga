@@ -122,8 +122,9 @@ package body Gnoga.Application.Multiuser is
       Data        : access Gnoga.Types.Connection_Data_Type'Class)
    is
    begin
-      Gnoga.Server.Connection.Connection_Data (ID   => Main_Window.Connection_ID,
-                                         Data => Data);
+      Gnoga.Server.Connection.Connection_Data
+        (ID   => Main_Window.Connection_ID,
+         Data => Data);
    end Connection_Data;
 
    ------------------

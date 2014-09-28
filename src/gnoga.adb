@@ -63,7 +63,7 @@ package body Gnoga is
    begin
       if S'Length = 0 then
          return S;
-      end If;
+      end if;
 
       if S (S'First) = ' ' or S (S'First) = Character'Val (9) then
          return Left_Trim (S ((S'First + 1) .. S'Last));
@@ -98,7 +98,7 @@ package body Gnoga is
    begin
       if S'Length = 0 then
          return S;
-      end If;
+      end if;
 
       if
         S (S'First) = ' ' or
@@ -119,7 +119,7 @@ package body Gnoga is
    begin
       if S'Length = 0 then
          return S;
-      end If;
+      end if;
 
       if
         S (S'Last) = ' ' or

@@ -35,7 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
--- An Active Record implementation for Ada similar to that used in Rails
+--  An Active Record implementation for Ada similar to that used in Rails
 
 with Ada.Finalization;
 with Ada.Strings.Unbounded;

@@ -1,6 +1,6 @@
 with "../../src/gnoga.gpr";
 
-project AdaBlog is
+project Snake is
 
    for Languages use ("Ada");
    for Source_Dirs use (".");
@@ -15,4 +15,4 @@ project AdaBlog is
    package Compiler is
       for Default_Switches ("ada") use ("-gnat05", "-g");
    end Compiler;
-end AdaBlog;
+end Snake;

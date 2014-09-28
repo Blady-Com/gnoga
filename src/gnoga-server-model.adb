@@ -161,7 +161,8 @@ package body Gnoga.Server.Model is
       begin
          if (Gnoga.Types.Data_Maps.Key (Position) /= "id") then
             if (A.Is_New) then
-               fields := fields & "`" & Gnoga.Types.Data_Maps.Key (Position) & "` ,";
+               fields := fields & "`" &
+                 Gnoga.Types.Data_Maps.Key (Position) & "` ,";
                values := values & "'" &
                A.Connection.Escape_String
                  (Gnoga.Types.Data_Maps.Element (Position)) &

@@ -77,6 +77,13 @@ package body Gnoga.Gui.Element.Multimedia is
                      Muted     : in     Boolean := False;
                      ID        : in     String  := "")
    is
+      function Has_Controls return String;
+      function Has_Preload return String;
+      function Has_Autoplay return String;
+      function Has_Autoloop return String;
+      function Has_Muted return String;
+      function Has_Source return String;
+
       function Has_Controls return String is
       begin
          if Controls then
@@ -136,7 +143,7 @@ package body Gnoga.Gui.Element.Multimedia is
                                 Has_Controls &
                                 Has_Preload &
                                 Has_Autoplay &
-                                Has_AutoLoop &
+                                Has_Autoloop &
                                 Has_Muted &
                                 Has_Source &
                                 " />",
@@ -158,6 +165,14 @@ package body Gnoga.Gui.Element.Multimedia is
                      Muted     : in     Boolean := False;
                      ID        : in     String  := "")
    is
+      function Has_Controls return String;
+      function Has_Preload return String;
+      function Has_Autoplay return String;
+      function Has_Autoloop return String;
+      function Has_Muted return String;
+      function Has_Poster return String;
+      function Has_Source return String;
+
       function Has_Controls return String is
       begin
          if Controls then
@@ -226,7 +241,7 @@ package body Gnoga.Gui.Element.Multimedia is
                                 Has_Controls &
                                 Has_Preload &
                                 Has_Autoplay &
-                                Has_AutoLoop &
+                                Has_Autoloop &
                                 Has_Muted &
                                 Has_Poster &
                                 Has_Source &

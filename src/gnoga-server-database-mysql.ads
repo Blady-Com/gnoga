@@ -35,11 +35,10 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
--- This binding is to MySQL
+--  This binding is to MySQL
 
--- You will need to add linker options for MySQL. This can be done as part
--- of gpr files, command line or even something like:
---   pragma Linker_Options ("-L/usr/lib/mysql");
+--  You will need to add linker options for MySQL. This can be done as part
+--  of gpr files, command line or even something like:
 --   pragma Linker_Options ("-lmysqlclient");
 
 

@@ -493,7 +493,7 @@ package body Gnoga.Server.Database.MySQL is
 
       return Interfaces.C.To_Ada
         (Field.Name (0 .. Interfaces.C.size_t (Field.Name_L) - 1) &
-           Interfaces.c.nul);
+           Interfaces.C.nul);
    end Field_Name;
 
    -----------------
@@ -524,7 +524,7 @@ package body Gnoga.Server.Database.MySQL is
       return Interfaces.C.To_Ada
         (RS.Last_Row (Field_Number)
          (0 .. Interfaces.C.size_t (RS.Lengths (Field_Number)) - 1) &
-           Interfaces.c.nul);
+           Interfaces.C.nul);
    end Field_Value;
 
    function Field_Value (RS           : Recordset;

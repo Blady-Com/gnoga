@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
@@ -73,6 +73,11 @@ package body Gnoga.Gui.Base is
       F      : Integer := Message'First - 1;
       Button : Integer;
 
+      function Split return String;
+      function Split return Integer;
+      function Split return Boolean;
+      --  Split string and extract values
+
       function Split return String is
       begin
          S := F + 1;
@@ -80,7 +85,7 @@ package body Gnoga.Gui.Base is
                      Pattern => "|",
                      From    => S);
          return Message (S .. (F - 1));
-      end;
+      end Split;
 
       function Split return Integer is
       begin
@@ -127,6 +132,10 @@ package body Gnoga.Gui.Base is
       S      : Integer := Message'First;
       F      : Integer := Message'First - 1;
 
+      function Split return String;
+      function Split return Integer;
+      function Split return Boolean;
+
       function Split return String is
       begin
          S := F + 1;
@@ -134,7 +143,7 @@ package body Gnoga.Gui.Base is
                      Pattern => "|",
                      From    => S);
          return Message (S .. (F - 1));
-      end;
+      end Split;
 
       function Split return Integer is
       begin
@@ -276,17 +285,12 @@ package body Gnoga.Gui.Base is
       return Object.Unique_ID;
    end Unique_ID;
 
-   function Unique_ID (Object : Base_Type) return String is
-   begin
-      return Object.Unique_ID'Img;
-   end Unique_ID;
-
    -------------------
    -- Connection_ID --
    -------------------
 
    function Connection_ID (Object : Base_Type)
-			  return Gnoga.Types.Connection_ID
+                           return Gnoga.Types.Connection_ID
    is
    begin
       return Object.Connection_ID;
@@ -422,7 +426,7 @@ package body Gnoga.Gui.Base is
                        Value  : in     Integer)
    is
    begin
-      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'img & ");");
+      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
    end Property;
 
    function Property (Object : Base_Type; Name : String) return Integer is
@@ -438,7 +442,7 @@ package body Gnoga.Gui.Base is
                        Value  : in     Boolean)
    is
    begin
-      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'img & ");");
+      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
    end Property;
 
    function Property (Object : Base_Type; Name : String) return Boolean is
@@ -473,7 +477,8 @@ package body Gnoga.Gui.Base is
    ------------
 
    procedure Execute (Object : in out Base_Type; Method : in String) is
-      Message_Script : constant String := jQuery(Object) & ".get(0)." & Method;
+      Message_Script : constant String :=
+                         jQuery (Object) & ".get(0)." & Method;
    begin
       Object.jQuery_Execute ("get(0)." & Method);
    end Execute;
@@ -1455,12 +1460,15 @@ package body Gnoga.Gui.Base is
                          Event   : in     String;
                          Message : in     String;
                          Script  : in     String    := "";
-                         Cancel  : in     Boolean   := false)
+                         Cancel  : in     Boolean   := False)
    is
       US : constant String := Object.Unique_ID'Img;
 
       Full_Message : constant String := US (US'First + 1 .. US'Last) &
         "|" & Event & "|" & Message;
+
+      function If_Script return String;
+      function Cancel_Event return String;
 
       function If_Script return String is
       begin
@@ -1525,7 +1533,7 @@ package body Gnoga.Gui.Base is
    function Script_Accessor (Object : Base_Type) return String is
    begin
       return Script_Accessor (Object.ID, Object.ID_Type);
-   end;
+   end Script_Accessor;
 
    function Script_Accessor (ID : String; ID_Type : Gnoga.Types.ID_Enumeration)
                              return String
@@ -1566,7 +1574,7 @@ package body Gnoga.Gui.Base is
    --------------------
 
    procedure jQuery_Execute (Object : in out Base_Type; Method : String) is
-      Message_Script : constant String := jQuery(Object) & "." & Method;
+      Message_Script : constant String := jQuery (Object) & "." & Method;
    begin
       Gnoga.Server.Connection.Execute_Script
         (ID     => Object.Connection_ID,
@@ -1576,10 +1584,11 @@ package body Gnoga.Gui.Base is
    function jQuery_Execute (Object : Base_Type; Method : String)
                             return String
    is
-      Message_Script : constant String := jQuery(Object) & "." & Method;
+      Message_Script : constant String := jQuery (Object) & "." & Method;
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID     => Object.Connection_ID,
-                                               Script => Message_Script);
+      return Gnoga.Server.Connection.Execute_Script
+        (ID     => Object.Connection_ID,
+         Script => Message_Script);
    end jQuery_Execute;
 
    function jQuery_Execute (Object : Base_Type; Method : String)
@@ -1590,5 +1599,5 @@ package body Gnoga.Gui.Base is
    exception
       when others =>
          return 0;
-   end;
+   end jQuery_Execute;
 end Gnoga.Gui.Base;

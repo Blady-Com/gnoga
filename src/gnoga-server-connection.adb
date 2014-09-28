@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Directories;
 with Ada.Exceptions;
@@ -52,7 +52,7 @@ with AWS.Services.Dispatchers.URI;
 with AWS.Status;
 with AWS.Server;
 with AWS.Dispatchers;
-with AWS.Net.Websocket;
+with AWS.Net.WebSocket;
 with AWS.Net.WebSocket.Registry;
 with AWS.Net.WebSocket.Registry.Control;
 
@@ -168,7 +168,8 @@ package body Gnoga.Server.Connection is
                               Ada.Strings.Unbounded.To_String (Web_Root));
       Write_To_Console ("Starting Gnoga Server on " & Host & ":" &
                           Left_Trim (Port'Img));
-      AWS.Net.WebSocket.Registry.Register ("/gnoga", Socket_Type_Create'Access);
+      AWS.Net.WebSocket.Registry.Register ("/gnoga",
+                                           Socket_Type_Create'Access);
       AWS.Net.WebSocket.Registry.Control.Start;
 
       --  Setup dispatchers
@@ -201,7 +202,7 @@ package body Gnoga.Server.Connection is
    -- Run --
    ---------
 
-   procedure Run (Wait_for_Q : in Boolean := True) is
+   procedure Run (Wait_For_Q : in Boolean := True) is
    begin
       --  Start the server
 
@@ -227,6 +228,8 @@ package body Gnoga.Server.Connection is
       return AWS.Response.Data
    is
       pragma Unreferenced (Dispatcher);
+
+      function Adjusted_URI return String;
 
       function Adjusted_URI return String is
          URI : constant String := AWS.Status.URI (Request);
@@ -293,9 +296,9 @@ package body Gnoga.Server.Connection is
         URI (URI'First + 1 .. URI'Last);
    begin
       if Ada.Directories.Exists (File) then
-	    return AWS.Response.File
-	      (Content_Type => AWS.MIME.Text_Javascript,
-	       Filename     => File);
+         return AWS.Response.File
+           (Content_Type => AWS.MIME.Text_Javascript,
+            Filename     => File);
       else
          return AWS.Response.Acknowledge (AWS.Messages.S404);
       end if;
@@ -332,15 +335,15 @@ package body Gnoga.Server.Connection is
       entry Hold when not Connected is
       begin
          null;
-         -- Semiphore does not reset itself to a blocking state.
-         -- This insures that if Released before Hold that Hold
-         -- will not block and connection will be released.
-      end;
+         --  Semiphore does not reset itself to a blocking state.
+         --  This insures that if Released before Hold that Hold
+         --  will not block and connection will be released.
+      end Hold;
 
       procedure Release is
       begin
          Connected := False;
-      end;
+      end Release;
    end Connection_Holder_Type;
 
    type Connection_Holder_Access is access all Connection_Holder_Type;
@@ -417,7 +420,7 @@ package body Gnoga.Server.Connection is
                                 New_ID : out Gnoga.Types.Connection_ID)
       is
       begin
-         Socket_Count:= Socket_Count + 1;
+         Socket_Count := Socket_Count + 1;
          New_ID := Socket_Count;
          Socket_Map.Insert (New_ID, Socket);
       end Add_Connection;
@@ -503,8 +506,6 @@ package body Gnoga.Server.Connection is
 
          Cursor : Socket_Maps.Cursor := Socket_Map.First;
       begin
-         -- ? This needs optimization
-
          while Cursor /= Socket_Maps.No_Element loop
             if Socket_Maps.Element (Cursor) = Socket then
                return Socket_Maps.Key (Cursor);
@@ -517,6 +518,8 @@ package body Gnoga.Server.Connection is
       end Find_Connetion_ID;
 
       procedure Delete_All_Connections is
+         procedure Do_Delete (C : in Socket_Maps.Cursor);
+
          procedure Do_Delete (C : in Socket_Maps.Cursor) is
          begin
             Delete_Connection (Socket_Maps.Key (C));
@@ -533,6 +536,10 @@ package body Gnoga.Server.Connection is
    ---------------------------
 
    function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
+                 return Boolean;
+   --  Properly identify equivelant objects
+
+   function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
                  return Boolean
    is
    begin
@@ -541,9 +548,9 @@ package body Gnoga.Server.Connection is
 
    package Object_Maps is new Ada.Containers.Ordered_Maps
      (Gnoga.Types.Unique_ID, Gnoga.Gui.Base.Pointer_To_Base_Class);
-   -- ? needs to be protected
 
    Object_Map : Object_Maps.Map;
+   --  ? Does this need to be protected?
 
    -------------------
    -- Socket_Create --
@@ -597,7 +604,7 @@ package body Gnoga.Server.Connection is
    end Event_Task_Type;
 
    New_Event_Task : access Event_Task_Type;
-   -- ? Ada.Task_Termination should be used for cleanup of dangling task TCBs
+   --  ? Ada.Task_Termination should be used for cleanup of dangling task TCBs
    --  If New_Event_Task is located with in the on_open it will prevent
    --  on_open from completing.
 
@@ -658,16 +665,16 @@ package body Gnoga.Server.Connection is
       entry Hold when not Connected is
       begin
          null;
-         -- Semiphore does not reset itself to a blocking state.
-         -- This insures that if Released before Hold that Hold
-         -- will not block and connection will be released.
-      end;
+         --  Semiphore does not reset itself to a blocking state.
+         --  This insures that if Released before Hold that Hold
+         --  will not block and connection will be released.
+      end Hold;
 
       procedure Release (Result : in String) is
       begin
          Connected := False;
          Script_Result := Ada.Strings.Unbounded.To_Unbounded_String (Result);
-      end;
+      end Release;
 
       function Result return String is
       begin
@@ -730,7 +737,9 @@ package body Gnoga.Server.Connection is
    -- On_Message --
    ----------------
 
-   task type Dispatch_Task_Type (Object : Gnoga.Gui.Base.Pointer_To_Base_Class) is
+   task type Dispatch_Task_Type
+     (Object : Gnoga.Gui.Base.Pointer_To_Base_Class)
+   is
       entry Start (Event : in String; Data : in String);
    end Dispatch_Task_Type;
 
@@ -764,7 +773,7 @@ package body Gnoga.Server.Connection is
    end Dispatch_Task_Type;
 
    New_Dispatch_Task : access Dispatch_Task_Type;
-   -- ? Ada.Task_Termination should be used for cleanup of dangling task TCBs
+   --  ? Ada.Task_Termination should be used for cleanup of dangling task TCBs
 
 
    overriding procedure On_Message
@@ -815,7 +824,7 @@ package body Gnoga.Server.Connection is
    is
    begin
       declare
-         Socket  : Socket_Type := Connection_Manager.Connection_Socket(ID);
+         Socket  : Socket_Type := Connection_Manager.Connection_Socket (ID);
       begin
          Socket.Send (Script);
       end;
@@ -840,9 +849,9 @@ package body Gnoga.Server.Connection is
               """S" & Script_ID'Img & "|""+" &
               "eval (""" & Escape_Quotes (Script) & """)" &
               ");";
-            begin
-               Socket.Send (Message);
-            end;
+         begin
+            Socket.Send (Message);
+         end;
 
          select
             delay 3.0;
@@ -898,7 +907,7 @@ package body Gnoga.Server.Connection is
                               return String
    is
    begin
-      return Execute_Script (ID, "params['" & name & "'];");
+      return Execute_Script (ID, "params['" & Name & "'];");
    end Search_Parameter;
 
    -----------
@@ -948,7 +957,7 @@ package body Gnoga.Server.Connection is
       begin
          Current_ID := Current_ID + 1;
          ID := Current_ID;
-      end;
+      end Next_ID;
    end ID_Machine_Type;
 
    ID_Machine : ID_Machine_Type;
@@ -978,7 +987,8 @@ package body Gnoga.Server.Connection is
    -- Add_To_Message_Queue --
    --------------------------
 
-   procedure Add_To_Message_Queue (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   procedure Add_To_Message_Queue
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
       Object_Map.Insert (Key      => Object.Unique_ID,

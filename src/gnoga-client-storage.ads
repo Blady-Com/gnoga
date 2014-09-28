@@ -95,7 +95,8 @@ package Gnoga.Client.Storage is
 private
    type Storage_Type is tagged
       record
-         Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+         Connection_ID : Gnoga.Types.Connection_ID :=
+                           Gnoga.Types.No_Connection;
       end record;
 
    type Local_Storage_Type is new Storage_Type with null record;

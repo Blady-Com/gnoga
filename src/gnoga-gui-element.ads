@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Finalization;
 
@@ -81,7 +81,7 @@ package Gnoga.Gui.Element is
    --  -----------------    -------       -----           ---
    --  Internet Explorer     [Alt]         N/A            N/A
    --  Chrome                [Alt]        [Alt]     [Control][Alt]
-   --  Firefox 	         [Alt][Shift] [Alt][Shift]  [Control][Alt]
+   --  Firefox           [Alt][Shift] [Alt][Shift]  [Control][Alt]
    --  Safari                [Alt]         N/A      [Control][Alt]
    --  Opera 15+             [Alt]        [Alt]          [Alt]
 
@@ -101,7 +101,8 @@ package Gnoga.Gui.Element is
                         Value   : in     Boolean := True);
    function Draggable (Element : Element_Type) return Boolean;
 
-   procedure Hidden (Element : in out Element_Type; Value : in Boolean := True);
+   procedure Hidden (Element : in out Element_Type;
+                     Value   : in     Boolean := True);
    function Hidden (Element : Element_Type) return Boolean;
    --  The hidden property is practically speaking like Visible, however
    --  visible uses CSS to hide the Element. Hidden implies the element is
@@ -128,7 +129,7 @@ package Gnoga.Gui.Element is
 
    procedure Text (Element : in out Element_Type; Value : in String);
    function Text (Element : Element_Type) return String;
-   -- Text content of element.
+   --  Text content of element.
 
    type Text_Direction_Type is (Left_To_Right, Right_To_Left);
 
@@ -209,7 +210,8 @@ package Gnoga.Gui.Element is
    procedure Position (Element : in out Element_Type;
                        Value   : in     Position_Type);
    function Position (Element : Element_Type) return Position_Type;
-   --  Determins how the properties left, right, top and bottom are interpreted.
+   --  Determins how the properties left, right, top and bottom are
+   --  interpreted.
 
    procedure Left (Element : in out Element_Type;
                    Value   : in     Integer;
@@ -342,7 +344,8 @@ package Gnoga.Gui.Element is
 
    procedure Scroll_Top (Element : in out Element_Type; Value : Integer);
    function Scroll_Top (Element : Element_Type) return Integer;
-   --  The number of pixels thant an element's content has been scrolled upward.
+   --  The number of pixels thant an element's content has been scrolled
+   --  upward.
 
    ----------------------
    -- Style Properties --

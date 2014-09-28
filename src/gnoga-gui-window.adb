@@ -68,6 +68,10 @@ package body Gnoga.Gui.Window is
       S      : Integer := Message'First;
       F      : Integer := Message'First - 1;
 
+      function Split return String;
+      function Split return Boolean;
+      --  Split string and extract values
+
       function Split return String is
       begin
          S := F + 1;
@@ -75,7 +79,7 @@ package body Gnoga.Gui.Window is
                      Pattern => "|",
                      From    => S);
          return Message (S .. (F - 1));
-      end;
+      end Split;
 
       function Split return Boolean is
       begin
@@ -105,10 +109,11 @@ package body Gnoga.Gui.Window is
          raise Invalid_ID_Type;
       end if;
 
-      Gnoga.Gui.Base.Attach (Object        => Gnoga.Gui.Base.Base_Type (Window),
-                             Connection_ID => Connection_ID,
-                             ID            => ID,
-                             ID_Type       => ID_Type);
+      Gnoga.Gui.Base.Attach
+        (Object        => Gnoga.Gui.Base.Base_Type (Window),
+         Connection_ID => Connection_ID,
+         ID            => ID,
+         ID_Type       => ID_Type);
 
       Window.DOM_Document.Attach (Connection_ID, ID, ID_Type);
 
@@ -186,7 +191,7 @@ package body Gnoga.Gui.Window is
 
       Window.View_ID := Ada.Strings.Unbounded.To_Unbounded_String (Object.ID);
 
-      Element_Type (ObjecT).Box_Sizing (Border_Box);
+      Element_Type (Object).Box_Sizing (Border_Box);
       Element_Type (Object).Position (Gnoga.Gui.Element.Fixed);
       Element_Type (Object).Display ("block");
       Element_Type (Object).Left (0);
@@ -375,6 +380,9 @@ package body Gnoga.Gui.Window is
    is
       use Gnoga.Client.Storage;
 
+      function Generate_Session_ID return String;
+      --  Create a new unique string to identify sessions
+
       function Generate_Session_ID return String is
          use Ada.Strings.Fixed;
          use Ada.Strings;
@@ -426,11 +434,15 @@ package body Gnoga.Gui.Window is
    is
       GID : constant String := Gnoga.Server.Connection.New_GID;
 
+      function Params return String;
+
       function Params return String is
          use Ada.Strings.Unbounded;
 
          P : Unbounded_String;
          C : Boolean := False;
+
+         procedure Add_Param (S : String; V : String);
 
          procedure Add_Param (S : String; V : String) is
          begin

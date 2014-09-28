@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
 with Gnoga.Server.Connection;
@@ -53,6 +53,8 @@ package body Gnoga.Gui.Element is
                                HTML    : in     String;
                                ID      : in     String := "")
    is
+      function Adjusted_ID return String;
+
       function Adjusted_ID return String is
       begin
          if ID = "" then
@@ -651,6 +653,8 @@ package body Gnoga.Gui.Element is
    procedure Text_Direction (Element : in out Element_Type;
                              Value   : in     Text_Direction_Type)
    is
+      function To_String return String;
+
       function To_String return String is
       begin
          if Value = Right_To_Left then
@@ -665,6 +669,8 @@ package body Gnoga.Gui.Element is
 
    function Text_Direction (Element : Element_Type) return Text_Direction_Type
    is
+      function To_TDT return Text_Direction_Type;
+
       function To_TDT return Text_Direction_Type is
       begin
          if Element.Property ("dir") = "rtl" then
@@ -698,7 +704,8 @@ package body Gnoga.Gui.Element is
    -- Visible --
    -------------
 
-   procedure Visible (Element : in out Element_Type; Value : in Boolean := True)
+   procedure Visible (Element : in out Element_Type;
+                      Value   : in     Boolean := True)
    is
    begin
       if Value then
@@ -890,8 +897,8 @@ package body Gnoga.Gui.Element is
    is
       Value : String := Element.Style ("background-color");
    begin
-      if Value ="" then
-         return scroll;
+      if Value = "" then
+         return Scroll;
       else
          return Background_Attachment_type'Value (Value);
       end if;
@@ -901,7 +908,8 @@ package body Gnoga.Gui.Element is
    -- Background_Color --
    ----------------------
 
-   procedure Background_Color (Element : in out Element_Type; Value : String) is
+   procedure Background_Color (Element : in out Element_Type; Value : String)
+   is
    begin
       Element.Style ("background-color", Value);
    end Background_Color;
@@ -1052,6 +1060,8 @@ package body Gnoga.Gui.Element is
                      Color               : in     String := "black";
                      Inset_Shadow        : in     Boolean := False)
    is
+      function Inset return String;
+
       function Inset return String is
       begin
          if Inset_Shadow then

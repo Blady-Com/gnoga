@@ -41,11 +41,13 @@ package body Gnoga.Client.Storage is
    --  One local and one session storage is available across an entire
    --  scheme://domain:port. Give that there is no point in supporting access
    --  to non-Gnoga iFrames or Popups since if they are not form the same
-   --  scheme://domain:port the browser security would not allow access anyways.
+   --  scheme://domain:port the browser security would not allow access
+   --  anyways.
 
 
    procedure Execute (Storage : in out Storage_Type'Class; Method : in String);
-   function Execute (Storage : Storage_Type'Class; Method : String) return String;
+   function Execute (Storage : Storage_Type'Class; Method : String)
+                     return String;
    --  Execute access to Storage on its Conneciton_ID
 
    -------------
@@ -124,7 +126,8 @@ package body Gnoga.Client.Storage is
 
    function Script_Accessor (Storage : Storage_Type) return String is
    begin
-      raise Program_Error with "Use Session_Storage_Type or Local_Storage_Type";
+      raise Program_Error
+        with "Use Session_Storage_Type or Local_Storage_Type";
       return "";
    end Script_Accessor;
 

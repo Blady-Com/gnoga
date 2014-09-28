@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
 
@@ -203,8 +203,8 @@ package Gnoga.Gui.Window is
 
 
    -- Window Placement Methods --
-   --
-   -- These methods will only work on child windows that have been launched
+
+   --  These methods will only work on child windows that have been launched
 
    procedure Close (Window : in out Window_Type);
 
@@ -253,7 +253,7 @@ package Gnoga.Gui.Window is
                                  Handler : in     Storage_Event);
    procedure Fire_On_Storage (Window        : in out Window_Type;
                               Storage_Event : in     Storage_Event_Record);
-   -- Storage data was changed in another session
+   --  Storage data was changed in another session
 
    -------------------------------------------------------------------------
    --  Winow_Type - Event Methods

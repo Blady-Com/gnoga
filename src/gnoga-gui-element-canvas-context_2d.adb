@@ -436,6 +436,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    is
       GID : String := Gnoga.Server.Connection.New_GID;
 
+      function Repeat_to_String return String;
+
       function Repeat_to_String return String is
       begin
          case Repeat_Pattern is
@@ -766,6 +768,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                         X, Y       : in     Integer;
                         Max_Length : in     Natural := 0)
    is
+      function Max_To_String return String;
+
       function Max_To_String return String is
       begin
          if Max_Length > 0 then
@@ -784,6 +788,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                           X, Y       : in     Integer;
                           Max_Length : in     Natural := 0)
    is
+      function Max_To_String return String;
+
       function Max_To_String return String is
       begin
          if Max_Length > 0 then

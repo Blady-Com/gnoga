@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 package Gnoga.Gui.Element.Form is
 
@@ -69,7 +69,7 @@ package Gnoga.Gui.Element.Form is
 
    procedure Action (Form : in out Form_Type; Value : in String);
    function Action (Form : Form_Type) return String;
-   -- URL to submit form to using Method
+   --  URL to submit form to using Method
 
    type Form_Method_Type is (Get, Post);
 
@@ -77,8 +77,8 @@ package Gnoga.Gui.Element.Form is
    function Method (Form : Form_Type) return Form_Method_Type;
 
    type Encoding_Type is (URL_Encode, Multi_Part, Text);
-   -- application/x-www-form-urlencoded / multipart/form-data / text/plain
-   -- The default for forms is URL_Encode
+   --  application/x-www-form-urlencoded / multipart/form-data / text/plain
+   --  The default for forms is URL_Encode
 
    procedure Encoding (Form : in out Form_Type; Value : in Encoding_Type);
    function Encoding (Form : Form_Type) return  Encoding_Type;
@@ -117,7 +117,7 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
    --  Form_Element_Types
    -------------------------------------------------------------------------
-   -- Parent type for form elements
+   --  Parent type for form elements
 
    type Form_Element_Type is new Gnoga.Gui.Element.Element_Type with private;
    type Form_Element_Access is access all Form_Element_Type;
@@ -304,7 +304,7 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
    --  Submit_Button_Types
    -------------------------------------------------------------------------
-   -- An Input Button that On_Click will fire On_Submit
+   --  An Input Button that On_Click will fire On_Submit
 
    type Submit_Button_Type is new Input_Button_Type with private;
    type Submit_Button_Access is access all Submit_Button_Type;
@@ -324,7 +324,7 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
    --  Reset_Button_Types
    -------------------------------------------------------------------------
-   -- An Input Button that On_Click will fire On_Reset
+   --  An Input Button that On_Click will fire On_Reset
 
    type Reset_Button_Type is new Input_Button_Type with private;
    type Reset_Button_Access is access all Reset_Button_Type;

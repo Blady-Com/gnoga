@@ -1,6 +1,6 @@
 with "../src/gnoga.gpr";
 
-project AdaBlog is
+project Test is
 
    for Languages use ("Ada");
    for Source_Dirs use (".");
@@ -14,8 +14,8 @@ project AdaBlog is
    package Builder is
       for Executable ("demo.adb") use "gnoga-demo";
    end Builder;
-      
+
    package Compiler is
       for Default_Switches ("ada") use ("-gnat05", "-g");
    end Compiler;
-end AdaBlog;
+end Test;

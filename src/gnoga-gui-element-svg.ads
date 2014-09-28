@@ -33,9 +33,9 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
--- SVG - Scalable Vector Graphics
+--  SVG - Scalable Vector Graphics
 --     - The SVG DOM will be bound eventually for now can just pass in with
 --     - content and can update SVG using innerHTML.
 --     - I have not tried, but in theory you should be able to create and

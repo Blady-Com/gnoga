@@ -226,7 +226,7 @@ package body Gnoga.Server.Database.SQLite is
 
    function List_Of_Tables (C : Connection)
                             return Gnoga.Types.Data_Array_Type is
-      Tables :Gnoga.Types.Data_Array_Type;
+      Tables : Gnoga.Types.Data_Array_Type;
       RS     : Gnoga.Server.Database.Recordset'Class :=
         C.Query
           ("select name from sqlite_master where type='table' order by name");
@@ -519,7 +519,8 @@ package body Gnoga.Server.Database.SQLite is
    is
       use Interfaces.C;
 
-      subtype Field_Data is Interfaces.C.char_array (0 .. Interfaces.C.size_t'last);
+      subtype Field_Data is
+        Interfaces.C.char_array (0 .. Interfaces.C.size_t'Last);
       type Field_Access is access all Field_Data;
 
       function sqlite3_column_text
@@ -542,7 +543,8 @@ package body Gnoga.Server.Database.SQLite is
             raise Null_Field;
          end if;
       else
-         return To_Ada (sqlite3_column_text.all (0 .. size_t (sqlite3_column_bytes)));
+         return To_Ada
+           (sqlite3_column_text.all (0 .. size_t (sqlite3_column_bytes)));
       end if;
    end Field_Value;
 

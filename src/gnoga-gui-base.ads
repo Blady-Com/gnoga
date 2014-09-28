@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Finalization;
 
@@ -192,8 +192,8 @@ package Gnoga.Gui.Base is
    -------------------------------------------------------------------------
    --  Base_Type - Event Handlers
    -------------------------------------------------------------------------
-   -- When an event handler is set any event binding to the browser will be
-   -- installed automatically.
+   --  When an event handler is set any event binding to the browser will be
+   --  installed automatically.
 
    type Action_Event is access
      procedure (Object : in out Base_Type'Class);
@@ -384,11 +384,11 @@ package Gnoga.Gui.Base is
                                  Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
 
-   --? Drag and Drop Events --
+   --  ? Drag and Drop Events --
 
-   -- On_Drop event.preventDefault, data = event.dataTransfer.getData(Mime)
-   -- On_Drag_Over (call to event.preventDefault on element allowing drop)
-   -- On_Drag_Start (Mime, ID)
+   --  On_Drop event.preventDefault, data = event.dataTransfer.getData(Mime)
+   --  On_Drag_Over (call to event.preventDefault on element allowing drop)
+   --  On_Drag_Start (Mime, ID)
 
    --  Keyboard Events --
 
@@ -498,7 +498,7 @@ package Gnoga.Gui.Base is
                          Event   : in     String;
                          Message : in     String;
                          Script  : in     String    := "";
-                         Cancel  : in     Boolean   := false);
+                         Cancel  : in     Boolean   := False);
    --  On Event occuring to Object Gnoga will fire Object.On_Message with
    --  Event and Message, the result of Script is concatinated to Message.
    --  If Cancel is true then JS will cancel the default behavior of Event
@@ -526,24 +526,26 @@ package Gnoga.Gui.Base is
 
    procedure jQuery_Execute (Object : in out Base_Type; Method : String);
    function jQuery_Execute (Object : Base_Type; Method : String) return String;
-   function jQuery_Execute (Object : Base_Type; Method : String) return Integer;
+   function jQuery_Execute (Object : Base_Type; Method : String)
+                            return Integer;
    --  Execute Method of jQuery wrapper object
 private
    type Base_Type is
      new Ada.Finalization.Limited_Controlled with
       record
-         Unique_ID     : Gnoga.Types.Unique_ID      := Gnoga.Types.No_Unique_ID;
+         Unique_ID     : Gnoga.Types.Unique_ID      :=
+                           Gnoga.Types.No_Unique_ID;
          Web_ID        : Gnoga.Types.Web_ID;
          ID_Type       : Gnoga.Types.ID_Enumeration := Gnoga.Types.No_ID;
          Connection_ID : Gnoga.Types.Connection_ID  :=
            Gnoga.Types.No_Connection;
          Parent_Object : Pointer_To_Base_Class      := null;
 
-         -- Object Events
+         --  Object Events
          On_Resize_Event             : Action_Event         := null;
          On_Scroll_Event             : Action_Event         := null;
 
-         -- Form Events
+         --  Form Events
          On_Focus_Event              : Action_Event         := null;
          On_Blur_Event               : Action_Event         := null;
          On_Change_Event             : Action_Event         := null;
@@ -555,7 +557,7 @@ private
          On_Select_Event             : Action_Event         := null;
          On_Submit_Event             : Action_Event         := null;
 
-         -- Mouse Events
+         --  Mouse Events
          On_Click_Event              : Action_Event         := null;
          On_Mouse_Click_Event        : Mouse_Event          := null;
          On_Mouse_Right_Click_Event  : Mouse_Event          := null;
@@ -570,19 +572,19 @@ private
          On_Mouse_Up_Event           : Mouse_Event          := null;
          On_Mouse_Move_Event         : Mouse_Event          := null;
 
-         -- Keyboard Events
+         --  Keyboard Events
          On_Character_Event          : Character_Event      := null;
          On_Wide_Character_Event     : Wide_Character_Event := null;
          On_Key_Down_Event           : Keyboard_Event       := null;
          On_Key_Up_Event             : Keyboard_Event       := null;
          On_Key_Press_Event          : Keyboard_Event       := null;
 
-         -- Clipboard Events
+         --  Clipboard Events
          On_Copy_Event               : Action_Event         := null;
          On_Cut_Event                : Action_Event         := null;
          On_Paste_Event              : Action_Event         := null;
 
-         -- Generic Events
+         --  Generic Events
          On_Create_Event             : Action_Event         := null;
          On_Destroy_Event            : Action_Event         := null;
          On_Child_Added_Event        : Child_Added_Event    := null;

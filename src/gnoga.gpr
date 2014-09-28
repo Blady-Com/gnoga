@@ -10,8 +10,7 @@ project Gnoga is
    for Library_Kind use "static";
 
    package Compiler is
-      for Default_Switches ("ada") use ("-g");
-      -- for Default_Switches ("ada") use ("-gnatyabcefhiklmnprst", "-gnat05");
+     for Default_Switches ("ada") use ("-gnatyabcefhiklmnprst", "-gnat05");
    end Compiler;
 
 end Gnoga;

@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Gnoga.Types;
 
@@ -65,8 +65,10 @@ package Gnoga.Gui.Navigator is
    --  The user may use settings on their browser to modify this so not
    --  100% reliable, however most browsers will follow the following standard:
    --
-   --  userAgent = appCodeName/appVersion number (Platform; Security; OS-or-CPU;
-   --             Localization; rv: revision-version-number) product/productSub
+   --  userAgent = appCodeName/appVersion number
+   --             (Platform; Security; OS-or-CPU;
+   --             Localization; rv: revision-version-number)
+   --             product/productSub
    --             Application-Name Application-Name-version
 
    procedure Navigate_To_URL (ID  : in Gnoga.Types.Connection_ID;

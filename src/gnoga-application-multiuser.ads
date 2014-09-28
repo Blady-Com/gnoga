@@ -33,7 +33,7 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Gnoga.Types;
 with Gnoga.Server.Connection;
@@ -66,9 +66,9 @@ package Gnoga.Application.Multiuser is
                                  Path  : in String := "default");
    --  Set event handler for new application connections with Path. If
    --  Path = "default" then Event will be the default handler for any
-   --  connection not matching another Path. Note that http://myapp:8080/abc and
-   --  http://myapp:8080/abc/ will both match Path = "/abc" or Path="abc" or
-   --  Path="/abc/"
+   --  connection not matching another Path. Note that http://myapp:8080/abc
+   --  and http://myapp:8080/abc/ will both match Path = "/abc" or Path="abc"
+   --  or Path="/abc/"
    --  This can be used to set or change connection handlers during application
    --  execution for future connections or to to set the default handler if
    --  wasn't set in Initialize.

@@ -123,7 +123,7 @@ package body Gnoga.Gui.Navigator is
                               URL : in String)
    is
    begin
-      Gnoga.Server.Connection.Execute_Script (ID,
-                                               "window.location='" & URL & "'");
+      Gnoga.Server.Connection.Execute_Script
+        (ID, "window.location='" & URL & "'");
    end Navigate_To_URL;
 end Gnoga.Gui.Navigator;

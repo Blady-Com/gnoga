@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                                G N O G A                                 --
+--                      G N O G A . G U I . S C R E E N                     --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -33,27 +33,73 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
-package Gnoga is
-   version      : constant String := "0.0";
-   version_high : constant        := 0;
-   version_low  : constant        := 0;
+with Gnoga.Server.Connection;
 
-   function Escape_Quotes (S : String) return String;
-   --  Escape quotes for Java Script.
+package body Gnoga.Gui.Screen is
 
-   function Left_Trim (S : String) return String;
-   function Right_Trim (S : String) return String;
-   --  Remove extra spaces and tabs
+   -----------
+   -- Width --
+   -----------
 
-   function Left_Trim_Slashes (S : String) return String;
-   function Right_Trim_Slashes (S : String) return String;
-   --  Remove extra spaces, tabs and '/'s
+   function Width (ID : Gnoga.Types.Connection_ID) return Integer is
+   begin
+      return Integer'Value
+        (Gnoga.Server.Connection.Execute_Script (ID, "screen.width;"));
+   end Width;
 
-   procedure Write_To_Console (Message : in String);
-   --  Output message to console
+   ------------
+   -- Height --
+   ------------
 
-   procedure Log (Message : in String);
-   --  Output message to log (currently console)
-end Gnoga;
+   function Height (ID : Gnoga.Types.Connection_ID) return Integer is
+   begin
+      return Integer'Value
+        (Gnoga.Server.Connection.Execute_Script (ID, "screen.height;"));
+   end Height;
+
+   ----------------------
+   -- Available_Height --
+   ----------------------
+
+   function Available_Height
+     (ID : Gnoga.Types.Connection_ID)
+      return Integer
+   is
+   begin
+      return Integer'Value
+        (Gnoga.Server.Connection.Execute_Script (ID, "screen.availHeight;"));
+   end Available_Height;
+
+   ---------------------
+   -- Available_Width --
+   ---------------------
+
+   function Available_Width (ID : Gnoga.Types.Connection_ID) return Integer is
+   begin
+      return Integer'Value
+        (Gnoga.Server.Connection.Execute_Script (ID, "screen.availWidth;"));
+   end Available_Width;
+
+   -----------------
+   -- Color_Depth --
+   -----------------
+
+   function Color_Depth (ID : Gnoga.Types.Connection_ID) return Integer is
+   begin
+      return Integer'Value
+        (Gnoga.Server.Connection.Execute_Script (ID, "screen.colorDepth;"));
+   end Color_Depth;
+
+   -----------------
+   -- Pixel_Depth --
+   -----------------
+
+   function Pixel_Depth (ID : Gnoga.Types.Connection_ID) return Integer is
+   begin
+      return Integer'Value
+        (Gnoga.Server.Connection.Execute_Script (ID, "screen.pixelDepth;"));
+   end Pixel_Depth;
+
+end Gnoga.Gui.Screen;

@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                                G N O G A                                 --
+--                       G N O G A . G U I . V I E W                        --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -33,27 +33,55 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
-package Gnoga is
-   version      : constant String := "0.0";
-   version_high : constant        := 0;
-   version_low  : constant        := 0;
+--  Views are used to handle auto insertion of objects in to the DOM and
+--  placement.
 
-   function Escape_Quotes (S : String) return String;
-   --  Escape quotes for Java Script.
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
 
-   function Left_Trim (S : String) return String;
-   function Right_Trim (S : String) return String;
-   --  Remove extra spaces and tabs
+package Gnoga.Gui.View is
 
-   function Left_Trim_Slashes (S : String) return String;
-   function Right_Trim_Slashes (S : String) return String;
-   --  Remove extra spaces, tabs and '/'s
+   -------------------------------------------------------------------------
+   --  View_Types
+   -------------------------------------------------------------------------
 
-   procedure Write_To_Console (Message : in String);
-   --  Output message to console
+   type View_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type View_Access is access all View_Type;
+   type Pointer_To_View_Class is access all View_Type'Class;
 
-   procedure Log (Message : in String);
-   --  Output message to log (currently console)
-end Gnoga;
+   -------------------------------------------------------------------------
+   --  View_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (View    : in out View_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID      : in     String := "");
+   --  If Parent is a Window_Type'Class will automatically set itself
+   --  as the View on Parent.
+
+   -------------------------------------------------------------------------
+   --  View_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Put_Line (View : in out View_Type; Message : String);
+   --  Create a new DIV wit
+
+   -------------------------------------------------------------------------
+   --  View_Type - Event Methods
+   -------------------------------------------------------------------------
+
+   overriding
+   procedure On_Child_Added
+     (View  : in out View_Type;
+      Child : in out Gnoga.Gui.Base.Base_Type'Class);
+   --  All children of views should be Element_Type'Class, if it is not
+   --  it will be ignored. Any child professing the View as its parent
+   --  will automatially have Element.Place_Inside_Bottom_Of (View) applied
+   --  to it.
+
+private
+   type View_Type is new Gnoga.Gui.Element.Element_Type with null record;
+end Gnoga.Gui.View;

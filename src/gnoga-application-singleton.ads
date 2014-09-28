@@ -36,7 +36,7 @@
 ------------------------------------------------------------------------------                                                                          --
 
 with Gnoga.Types;
-with Gnoga.Window;
+with Gnoga.Gui.Window;
 
 package Gnoga.Application.Singleton is
 
@@ -47,7 +47,7 @@ package Gnoga.Application.Singleton is
    --  See test/singleton.adb for an example.
 
    procedure Initialize
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Host        : in     String  := "";
       Port        : in     Integer := 8080;
       Boot        : in     String  := "boot.html");

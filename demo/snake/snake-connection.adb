@@ -1,19 +1,19 @@
 with Ada.Numerics.Discrete_Random;
 with Ada.Containers.Vectors;
 
-with Gnoga.View;
 with Gnoga.Types;
-with Gnoga.Window;
-with Gnoga.Element.Common;
-with Gnoga.Element.Canvas;
-with Gnoga.Element.Canvas.Context_2D;
+with Gnoga.Gui.View;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Element.Canvas;
+with Gnoga.Gui.Element.Canvas.Context_2D;
 
 package body Snake.Connection is
    use Gnoga.Types;
-   use Gnoga.Element.Common;
-   use Gnoga.View;
-   use Gnoga.Element.Canvas;
-   use Gnoga.Element.Canvas.Context_2D;
+   use Gnoga.Gui.Element.Common;
+   use Gnoga.Gui.View;
+   use Gnoga.Gui.Element.Canvas;
+   use Gnoga.Gui.Element.Canvas.Context_2D;
 
    --------------------
    -- Display_Splash --
@@ -32,7 +32,7 @@ package body Snake.Connection is
            "<br /><br />" &
            "Use the keys a,w,s,d for direction keys.<br/><br/>");
       Main_Window.Set_View (Display);
-      Display.Text_Alignment (Gnoga.Element.Center);
+      Display.Text_Alignment (Gnoga.Gui.Element.Center);
 
       for i in 1 .. 15 loop
          declare

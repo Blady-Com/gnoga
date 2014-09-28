@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---          G N O G A . A P P L I C A T I O N . M U L T I U S E R           --
+--                      G N O G A . G U I . S C R E E N                     --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -36,58 +36,27 @@
 ------------------------------------------------------------------------------                                                                          --
 
 with Gnoga.Types;
-with Gnoga.Server.Connection;
-with Gnoga.Gui.Window;
 
-package Gnoga.Application.Multiuser is
+package Gnoga.Gui.Screen is
 
-   subtype Connection_Holder_Type is
-     Gnoga.Server.Connection.Connection_Holder_Type;
+   --  Access informaton about user's screen
 
-   --  This package allows for the creation of multiuser GUI applications
-   --  using Gnoga. It allows only a multiple connections to the same
-   --  application.
+   function Width (ID : Gnoga.Types.Connection_ID) return Integer;
+   --  Screen width
 
-   type Application_Connect_Event is access
-     procedure (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                Connection  : access Connection_Holder_Type);
+   function Height (ID : Gnoga.Types.Connection_ID) return Integer;
+   --  Screen height
 
-   procedure Initialize
-     (Event : in Application_Connect_Event := null;
-      Host  : in String                    := "";
-      Port  : in Integer                   := 8080;
-      Boot  : in String                    := "boot.html");
-   --  Initialize applicaiton for multiple connections using
-   --  Event for the default Connection Handler and Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
+   function Available_Height (ID : Gnoga.Types.Connection_ID) return Integer;
+   --  Available total height = Height - Window treatments
 
-   procedure On_Connect_Handler (Event : in Application_Connect_Event;
-                                 Path  : in String := "default");
-   --  Set event handler for new application connections with Path. If
-   --  Path = "default" then Event will be the default handler for any
-   --  connection not matching another Path. Note that http://myapp:8080/abc and
-   --  http://myapp:8080/abc/ will both match Path = "/abc" or Path="abc" or
-   --  Path="/abc/"
-   --  This can be used to set or change connection handlers during application
-   --  execution for future connections or to to set the default handler if
-   --  wasn't set in Initialize.
+   function Available_Width (ID : Gnoga.Types.Connection_ID) return Integer;
+   --  Available total width = Width - Window treatments
 
-   procedure Connection_Data
-     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Data        : access Gnoga.Types.Connection_Data_Type'Class);
-   --  Set Data for the connection to Main_Window
-   --  The Connection_Data property on any Base_Type'Class can be used to
-   --  access Data.
+   function Color_Depth (ID : Gnoga.Types.Connection_ID) return Integer;
+   --  Bit depth of rendering color palette
 
-   procedure Message_Loop;
-   --  Start serving connections to application and continue until
-   --  End_Application is called.
+   function Pixel_Depth (ID : Gnoga.Types.Connection_ID) return Integer;
+   --  Color depth of screen in bits per pixel
 
-   procedure End_Application;
-   --  Terminate application.
-   --  This will disconnect application connection to browser and finalize
-   --  Gnoga objects, however Gnoga objects on finalization do not destroy
-   --  DOM object in browser so browser state will remain with document
-   --  after the loop has terminated and application has ended.
-end Gnoga.Application.Multiuser;
+end Gnoga.Gui.Screen;

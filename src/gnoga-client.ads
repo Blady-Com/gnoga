@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                                G N O G A                                 --
+--                         G N O G A . C L I E N T                          --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -33,27 +33,9 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
-package Gnoga is
-   version      : constant String := "0.0";
-   version_high : constant        := 0;
-   version_low  : constant        := 0;
+--  client side bindings and tools
 
-   function Escape_Quotes (S : String) return String;
-   --  Escape quotes for Java Script.
-
-   function Left_Trim (S : String) return String;
-   function Right_Trim (S : String) return String;
-   --  Remove extra spaces and tabs
-
-   function Left_Trim_Slashes (S : String) return String;
-   function Right_Trim_Slashes (S : String) return String;
-   --  Remove extra spaces, tabs and '/'s
-
-   procedure Write_To_Console (Message : in String);
-   --  Output message to console
-
-   procedure Log (Message : in String);
-   --  Output message to log (currently console)
-end Gnoga;
+package Gnoga.Client is
+end Gnoga.Client;

@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                                G N O G A                                 --
+--         G N O G A . G U I . E L E M E N T . M U L T I M E D I A          --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -33,27 +33,10 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
-package Gnoga is
-   version      : constant String := "0.0";
-   version_high : constant        := 0;
-   version_low  : constant        := 0;
+package body Gnoga.Gui.Element.MultiMedia is
 
-   function Escape_Quotes (S : String) return String;
-   --  Escape quotes for Java Script.
+   -- Will contain the Audio and Video tags, events, etc. from HTML5
 
-   function Left_Trim (S : String) return String;
-   function Right_Trim (S : String) return String;
-   --  Remove extra spaces and tabs
-
-   function Left_Trim_Slashes (S : String) return String;
-   function Right_Trim_Slashes (S : String) return String;
-   --  Remove extra spaces, tabs and '/'s
-
-   procedure Write_To_Console (Message : in String);
-   --  Output message to console
-
-   procedure Log (Message : in String);
-   --  Output message to log (currently console)
-end Gnoga;
+end Gnoga.Gui.Element.MultiMedia;

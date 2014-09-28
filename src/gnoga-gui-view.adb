@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                                G N O G A                                 --
+--                       G N O G A . G U I . V I E W                        --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -33,27 +33,51 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
-package Gnoga is
-   version      : constant String := "0.0";
-   version_high : constant        := 0;
-   version_low  : constant        := 0;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.Element.Common;
 
-   function Escape_Quotes (S : String) return String;
-   --  Escape quotes for Java Script.
+package body Gnoga.Gui.View is
 
-   function Left_Trim (S : String) return String;
-   function Right_Trim (S : String) return String;
-   --  Remove extra spaces and tabs
+   ------------
+   -- Create --
+   ------------
 
-   function Left_Trim_Slashes (S : String) return String;
-   function Right_Trim_Slashes (S : String) return String;
-   --  Remove extra spaces, tabs and '/'s
+   procedure Create
+     (View    : in out View_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID      : in     String := "")
+   is
+   begin
+      View.Create_From_HTML (Parent, "<div />", ID);
 
-   procedure Write_To_Console (Message : in String);
-   --  Output message to console
+      if Parent in Gnoga.Gui.Window.Window_Type'Class then
+         Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
+      end if;
+   end Create;
 
-   procedure Log (Message : in String);
-   --  Output message to log (currently console)
-end Gnoga;
+   --------------------
+   -- On_Child_Added --
+   --------------------
+
+   procedure On_Child_Added (View  : in out View_Type;
+                             Child : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      use Gnoga.Gui.Element;
+   begin
+      if Child in Element_Type'Class then
+         Element_Type (Child).Place_Inside_Bottom_Of (View);
+      end if;
+   end On_Child_Added;
+
+   --------------
+   -- Put_Line --
+   --------------
+
+   procedure Put_Line (View : in out View_Type; Message : String) is
+      D : Gnoga.Gui.Element.Common.DIV_Type;
+   begin
+      D.Create (View, Message);
+   end Put_Line;
+end Gnoga.Gui.View;

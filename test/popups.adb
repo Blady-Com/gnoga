@@ -1,16 +1,17 @@
 with Gnoga.Application.Multiuser;
-with Gnoga.Window;
-with Gnoga.Base;
-with Gnoga.Element;
-with Gnoga.Element.Common;
-with Gnoga.Element.IFrame;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Element.IFrame;
 with Gnoga.Types;
-with Gnoga.Connections;
+with Gnoga.Server.Connection;
 
 procedure Popups is
    use Gnoga;
    use Gnoga.Types;
-   use Gnoga.Element;
+   use Gnoga.Gui;
+   use Gnoga.Gui.Element;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -31,28 +32,29 @@ procedure Popups is
       end record;
    type App_Access2 is access all App_Data2;
 
-   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
+      use Gnoga.Server;
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      Connections.Execute_Script (Object.Connection_ID,
+      Connection.Execute_Script (Object.Connection_ID,
                                  "newWin = window.open (""/demo"");");
-      Connections.Execute_Script (Object.Connection_ID,
-                                  "newWin2 = window.open (""/no_boot.html"");");
+      Connection.Execute_Script (Object.Connection_ID,
+                                 "newWin2 = window.open (""/no_boot.html"");");
       App.Chld_Window.Launch (App.Main_Window.all, "/demo");
 
       App.Frame.Window.Document.Body_Element.Background_Color ("Orange");
    end On_Click;
 
 
-   procedure On_Click3 (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Click3 (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
       Log ("Click 3 worked");
    end On_Click3;
 
 
-   procedure On_Click2 (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
       W   : Window.Window_Type;
       W2  : Window.Window_Type;
@@ -85,11 +87,11 @@ procedure Popups is
    end On_Click2;
 
    procedure On_Connect
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App : aliased App_Data;
-      Hr1 : Gnoga.Element.Common.HR_Type;
+      Hr1 : Gnoga.Gui.Element.Common.HR_Type;
       B   : Common.Button_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
@@ -120,11 +122,11 @@ procedure Popups is
    end On_Connect;
 
    procedure On_Connect_2
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App : aliased App_Data2;
-      D : Gnoga.Element.Common.DIV_Type;
+      D : Gnoga.Gui.Element.Common.DIV_Type;
       B : Common.Button_Type;
    begin
       Main_Window.Document.Body_Element.Background_Color ("blue");

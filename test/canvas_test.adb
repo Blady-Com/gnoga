@@ -1,17 +1,18 @@
 with Gnoga.Application.Multiuser;
-with Gnoga.Window;
-with Gnoga.Base;
-with Gnoga.Element;
-with Gnoga.Element.Common;
-with Gnoga.Element.Canvas;
-with Gnoga.Element.Canvas.Context_2D;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Element.Canvas;
+with Gnoga.Gui.Element.Canvas.Context_2D;
 with Gnoga.Types;
 
 procedure Canvas_Test is
    use Gnoga;
    use Gnoga.Types;
-   use Gnoga.Element;
-   use Gnoga.Element.Canvas;
+   use Gnoga.Gui;
+   use Gnoga.Gui.Element;
+   use Gnoga.Gui.Element.Canvas;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -20,11 +21,11 @@ procedure Canvas_Test is
       end record;
    type App_Access is access all App_Data;
 
-   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
       C   : Context_2D.Context_2D_Type;
-      Img : Gnoga.Element.Common.IMG_Type;
+      Img : Gnoga.Gui.Element.Common.IMG_Type;
    begin
       C.Get_Drawing_Context_2D (App.My_Canvas);
       C.Rotate_Degrees (15.0);
@@ -40,7 +41,7 @@ procedure Canvas_Test is
    end On_Click;
 
    procedure On_Connect
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App     : aliased App_Data;
@@ -51,7 +52,6 @@ procedure Canvas_Test is
       Button1 : Common.Button_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
-      App.Main_Window.Document.Write_Line ("<hr />");
 
       Button1.Create (Parent  => Main_Window.Document.Body_Element.all,
                       Content => "Click Me");
@@ -69,12 +69,12 @@ procedure Canvas_Test is
       C.Rectangle ((5, 5, 150, 100));
       C.Line_Width (8);
       C.Stroke;
-      C.Fill_Color (Gnoga.Types.RGBA_Type'(0, 255, 255, 1.0));
+      C.Fill_Color (RGBA_Type'(0, 255, 255, 1.0));
       C.Fill;
-      C.Fill_Color (Gnoga.Types.RGBA_Type'(0, 0, 255, 0.75));
+      C.Fill_Color (RGBA_Type'(0, 0, 255, 0.75));
 
       C.Fill_Rectangle ((20,20,150,100));
-      C.Fill_Color (Gnoga.Types.RGBA_Type'(0,0,255,0.50));
+      C.Fill_Color (RGBA_Type'(0,0,255,0.50));
       C.Fill_Rectangle ((30, 30, 150, 100));
 
       G.Create_Linear_Gradient (Context => C,

@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---          G N O G A . A P P L I C A T I O N . M U L T I U S E R           --
+--                    G N O G A . G U I . L O C A T I O N                   --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -36,58 +36,51 @@
 ------------------------------------------------------------------------------                                                                          --
 
 with Gnoga.Types;
-with Gnoga.Server.Connection;
-with Gnoga.Gui.Window;
+with Gnoga.Gui.Base;
 
-package Gnoga.Application.Multiuser is
+package Gnoga.Gui.Location is
 
-   subtype Connection_Holder_Type is
-     Gnoga.Server.Connection.Connection_Holder_Type;
+   -------------------------------------------------------------------------
+   --  Location_Type
+   -------------------------------------------------------------------------
+   --  Location_Type is the class encapsulating the DOM Location node
 
-   --  This package allows for the creation of multiuser GUI applications
-   --  using Gnoga. It allows only a multiple connections to the same
-   --  application.
 
-   type Application_Connect_Event is access
-     procedure (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                Connection  : access Connection_Holder_Type);
+   type Location_Type is new Gnoga.Gui.Base.Base_Type with private;
+   type Location_Access is access all Location_Type;
+   type Pointer_To_Location_Class is access all Location_Type'Class;
 
-   procedure Initialize
-     (Event : in Application_Connect_Event := null;
-      Host  : in String                    := "";
-      Port  : in Integer                   := 8080;
-      Boot  : in String                    := "boot.html");
-   --  Initialize applicaiton for multiple connections using
-   --  Event for the default Connection Handler and Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
+   -------------------------------------------------------------------------
+   --  Location_Type - Properties
+   -------------------------------------------------------------------------
 
-   procedure On_Connect_Handler (Event : in Application_Connect_Event;
-                                 Path  : in String := "default");
-   --  Set event handler for new application connections with Path. If
-   --  Path = "default" then Event will be the default handler for any
-   --  connection not matching another Path. Note that http://myapp:8080/abc and
-   --  http://myapp:8080/abc/ will both match Path = "/abc" or Path="abc" or
-   --  Path="/abc/"
-   --  This can be used to set or change connection handlers during application
-   --  execution for future connections or to to set the default handler if
-   --  wasn't set in Initialize.
+   procedure URL (Location : in out Location_Type; Value : String);
+   function URL (Location : Location_Type) return String;
+   --  Setting URL will navgigate the browser from the current location and
+   --  close the current Gnoga Connection.
 
-   procedure Connection_Data
-     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Data        : access Gnoga.Types.Connection_Data_Type'Class);
-   --  Set Data for the connection to Main_Window
-   --  The Connection_Data property on any Base_Type'Class can be used to
-   --  access Data.
+   procedure Hash (Location : in out Location_Type; Value : String);
+   function Hash (Location : Location_Type) return String;
 
-   procedure Message_Loop;
-   --  Start serving connections to application and continue until
-   --  End_Application is called.
+   procedure Host (Location : in out Location_Type; Value : String);
+   function Host (Location : Location_Type) return String;
 
-   procedure End_Application;
-   --  Terminate application.
-   --  This will disconnect application connection to browser and finalize
-   --  Gnoga objects, however Gnoga objects on finalization do not destroy
-   --  DOM object in browser so browser state will remain with document
-   --  after the loop has terminated and application has ended.
-end Gnoga.Application.Multiuser;
+   procedure Host_Name (Location : in out Location_Type; Value : String);
+   function Host_Name (Location : Location_Type) return String;
+
+   function Origin (Location : Location_Type) return String;
+
+   procedure Path_Name (Location : in out Location_Type; Value : String);
+   function Path_Name (Location : Location_Type) return String;
+
+   procedure Port (Location : in out Location_Type; Value : String);
+   function Port (Location : Location_Type) return String;
+
+   procedure Protocol (Location : in out Location_Type; Value : String);
+   function Protocol (Location : Location_Type) return String;
+
+   procedure Search (Location : in out Location_Type; Value : String);
+   function Search (Location : Location_Type) return String;
+private
+   type Location_Type is new Gnoga.Gui.Base.Base_Type with null record;
+end Gnoga.Gui.Location;

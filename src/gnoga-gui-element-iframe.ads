@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---          G N O G A . A P P L I C A T I O N . M U L T I U S E R           --
+--               G N O G A . G U I . E L E M E N T . I F R A M E            --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -32,62 +32,43 @@
 --  however invalidate any other reasons why the executable file  might be  --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+-- For more inIFrameation please go to http://www.gnoga.com                 --
 ------------------------------------------------------------------------------                                                                          --
 
-with Gnoga.Types;
-with Gnoga.Server.Connection;
 with Gnoga.Gui.Window;
 
-package Gnoga.Application.Multiuser is
+package Gnoga.Gui.Element.IFrame is
 
-   subtype Connection_Holder_Type is
-     Gnoga.Server.Connection.Connection_Holder_Type;
+   -------------------------------------------------------------------------
+   --  From_Element_Types
+   -------------------------------------------------------------------------
+   -- Parent type for IFrame elements
 
-   --  This package allows for the creation of multiuser GUI applications
-   --  using Gnoga. It allows only a multiple connections to the same
-   --  application.
+   type IFrame_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type IFrame_Access is access all IFrame_Type;
+   type Pointer_To_IFrame_Class is access all IFrame_Type'Class;
 
-   type Application_Connect_Event is access
-     procedure (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                Connection  : access Connection_Holder_Type);
 
-   procedure Initialize
-     (Event : in Application_Connect_Event := null;
-      Host  : in String                    := "";
-      Port  : in Integer                   := 8080;
-      Boot  : in String                    := "boot.html");
-   --  Initialize applicaiton for multiple connections using
-   --  Event for the default Connection Handler and Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
+   -------------------------------------------------------------------------
+   --  IFrame_Type - Creation Methods
+   -------------------------------------------------------------------------
 
-   procedure On_Connect_Handler (Event : in Application_Connect_Event;
-                                 Path  : in String := "default");
-   --  Set event handler for new application connections with Path. If
-   --  Path = "default" then Event will be the default handler for any
-   --  connection not matching another Path. Note that http://myapp:8080/abc and
-   --  http://myapp:8080/abc/ will both match Path = "/abc" or Path="abc" or
-   --  Path="/abc/"
-   --  This can be used to set or change connection handlers during application
-   --  execution for future connections or to to set the default handler if
-   --  wasn't set in Initialize.
+   procedure Create (IFrame   : in out IFrame_Type;
+                     Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
+                     URL      : in     String;
+                     Seamless : in     Boolean := False;
+                     ID       : in     String := "");
+   --  Create a IFrame element with URL
 
-   procedure Connection_Data
-     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Data        : access Gnoga.Types.Connection_Data_Type'Class);
-   --  Set Data for the connection to Main_Window
-   --  The Connection_Data property on any Base_Type'Class can be used to
-   --  access Data.
+   -------------------------------------------------------------------------
+   --  IFrame_Type - Properties
+   -------------------------------------------------------------------------
 
-   procedure Message_Loop;
-   --  Start serving connections to application and continue until
-   --  End_Application is called.
+   function Window (IFrame : IFrame_Type) return Gnoga.Gui.Window.Window_Access;
 
-   procedure End_Application;
-   --  Terminate application.
-   --  This will disconnect application connection to browser and finalize
-   --  Gnoga objects, however Gnoga objects on finalization do not destroy
-   --  DOM object in browser so browser state will remain with document
-   --  after the loop has terminated and application has ended.
-end Gnoga.Application.Multiuser;
+private
+   type IFrame_Type is new Gnoga.Gui.Element.Element_Type with
+      record
+         Frame : aliased Gnoga.Gui.Window.Window_Type;
+      end record;
+end Gnoga.Gui.Element.IFrame;

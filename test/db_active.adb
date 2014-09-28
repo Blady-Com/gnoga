@@ -16,7 +16,9 @@ with Gnoga.Server.Model.Queries;
 with Gnoga.Server.Model.Table;
 
 with Gnoga.Application.Singleton;
-with Gnoga.Window;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.View;
+with Gnoga.Gui.Element;
 
 procedure DB_Active is
    use Gnoga.Server;
@@ -60,7 +62,8 @@ procedure DB_Active is
 
    end Migrations;
 
-   M : Gnoga.Window.Window_Type;
+   M : Gnoga.Gui.Window.Window_Type;
+   V : Gnoga.Gui.View.View_Type;
 begin
    Gnoga.Log ("Openning database file: ./active_test.db");
 
@@ -77,7 +80,10 @@ begin
    Gnoga.Application.HTML_On_Close ("Application closed.");
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
-   M.Document.Put_Line ("Using Gnoga.Server.Model.Table");
+   V.Create (M);
+   V.Overflow (Gnoga.Gui.Element.Scroll);
+
+   V.Put_Line ("Using Gnoga.Server.Model.Table");
 
    declare
       package Users is new Model.Table
@@ -109,7 +115,7 @@ begin
 
       Records := Users.Find_All;
 
-      M.Document.Put_Line ("Records in table : " & Records.Length'Img);
+      V.Put_Line ("Records in table : " & Records.Length'Img);
 
       for i in Records.First_Index .. Records.Last_Index loop
          declare
@@ -118,24 +124,24 @@ begin
             F  : Model.Queries.Active_Record_Array.Vector;
             F2 : Foods.Active_Record;
          begin
-            M.Document.Put_Line ("Record : " & i'Img);
-            M.Document.Put_Line ("First Name : " &
-                                   Records.Element (i).Value ("firstname"));
-            M.Document.Put_Line ("Last Name : " &
-                                   Records.Element (i).Value ("lastname"));
+            V.Put_Line ("Record : " & i'Img);
+            V.Put_Line ("First Name : " &
+                          Records.Element (i).Value ("firstname"));
+            V.Put_Line ("Last Name : " &
+                          Records.Element (i).Value ("lastname"));
 
             -- One to Many Users -> Foods
             F := Foods.Find_Items (Parent => Records.Element (i));
             for j in F.First_Index .. F.Last_Index loop
-               M.Document.Put_Line ("He Likes : " &
-                                      F.Element (j).Value ("food"));
+               V.Put_Line ("He Likes : " &
+                             F.Element (j).Value ("food"));
             end loop;
 
             -- One to One Users -> Foods
             F2.Find_Item (Parent => Records.Element (i));
             if F2.Value ("id") /= "" then
-               M.Document.Put_Line ("The first thing he liked was " &
-                                      F2.Value ("food"));
+               V.Put_Line ("The first thing he liked was " &
+                             F2.Value ("food"));
             end if;
 
          end;

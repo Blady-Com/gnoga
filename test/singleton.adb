@@ -1,24 +1,24 @@
 with Gnoga.Application.Singleton;
 with Gnoga.Types;
-with Gnoga.Base;
-with Gnoga.Element;
-with Gnoga.Element.Common;
-with Gnoga.Screen;
-with Gnoga.Navigator;
-with Gnoga.Connections;
-with Gnoga.Window;
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Screen;
+with Gnoga.Gui.Navigator;
+with Gnoga.Server.Connection;
+with Gnoga.Gui.Window;
 
 procedure Singleton is
-   task type Color_Me_Task (O : Gnoga.Element.Pointer_To_Element_Class) is
+   task type Color_Me_Task (O : Gnoga.Gui.Element.Pointer_To_Element_Class) is
       entry start;
       entry stop;
    end Color_Me_Task;
    -- Strobe color Element O
 
-   M : Gnoga.Window.Window_Type;
-   T : aliased Gnoga.Element.Common.DIV_Type;
-   A : Gnoga.Element.Common.HR_Type;
-   B : Gnoga.Element.Common.DIV_Type;
+   M : Gnoga.Gui.Window.Window_Type;
+   T : aliased Gnoga.Gui.Element.Common.DIV_Type;
+   A : Gnoga.Gui.Element.Common.HR_Type;
+   B : Gnoga.Gui.Element.Common.DIV_Type;
    C : Color_Me_Task (T'Unchecked_Access);
 
    task body Color_Me_Task is
@@ -49,15 +49,15 @@ procedure Singleton is
       end loop;
    end Color_Me_Task;
 
-   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      use Gnoga.Element;
+      use Gnoga.Gui.Element;
    begin
       Gnoga.Log ("Visible = " & Element_Type (Object).Visible'Img);
       Gnoga.Log ("Screen.Available_Height = " &
-                   Gnoga.Screen.Available_Height (Element_Type (Object).Connection_ID)'Img);
+                   Gnoga.Gui.Screen.Available_Height (Element_Type (Object).Connection_ID)'Img);
       Gnoga.Log ("Screen.Height = " &
-                   Gnoga.Screen.Height (Element_Type (Object).Connection_ID)'Img);
+                   Gnoga.Gui.Screen.Height (Element_Type (Object).Connection_ID)'Img);
       Gnoga.Log ("Color = " & Gnoga.Types.To_String (Element_Type (Object).Color));
       Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
       Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
@@ -70,7 +70,7 @@ procedure Singleton is
       Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
    end On_Click;
 
-   procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       C.Stop;
 
@@ -91,11 +91,11 @@ begin
    Gnoga.Log ("path on url : " & M.Location.Path_Name);
    Gnoga.Log ("page_id can be set using http://url:8080?page_id=xxx");
    Gnoga.Log ("page_id = " &
-                Gnoga.Connections.Search_Parameter
+                Gnoga.Server.Connection.Search_Parameter
                 (M.Connection_ID, "page_id"));
 
    Gnoga.Log ("User Agent = " &
-                Gnoga.Navigator.User_Agent
+                Gnoga.Gui.Navigator.User_Agent
                 (M.Connection_ID));
 
    T.Create (M, "<h1>Hello World!</h1>");

@@ -1,16 +1,17 @@
 with Gnoga.Application.Multiuser;
-with Gnoga.Window;
-with Gnoga.Base;
-with Gnoga.Element;
-with Gnoga.Element.Form;
-with Gnoga.Element.Common;
-with Gnoga.Element.Canvas;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Form;
+with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Element.Canvas;
 with Gnoga.Types;
 
 procedure Forms is
    use Gnoga;
    use Gnoga.Types;
-   use Gnoga.Element;
+   use Gnoga.Gui;
+   use Gnoga.Gui.Element;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -27,7 +28,7 @@ procedure Forms is
       end record;
    type App_Access2 is access all App_Data2;
 
-   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
       R   : Common.DIV_Type;
@@ -39,7 +40,7 @@ procedure Forms is
       R.Place_Inside_Bottom_Of (App.Main_Window.Document.Body_Element.all);
    end On_Click;
 
-   procedure On_Submit (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       Log ("On submit.");
@@ -49,14 +50,14 @@ procedure Forms is
       end if;
    end On_Submit;
 
-   procedure On_Change (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Input.Value (String'(App.Pick.Value));
    end On_Change;
 
    procedure On_Connect
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App     : aliased App_Data;
@@ -95,7 +96,7 @@ procedure Forms is
    end On_Connect;
 
    procedure On_Connect_2
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App : aliased App_Data2;

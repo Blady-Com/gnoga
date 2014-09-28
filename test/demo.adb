@@ -1,15 +1,16 @@
 with Gnoga.Application.Multiuser;
-with Gnoga.Window;
-with Gnoga.View;
-with Gnoga.Base;
-with Gnoga.Element;
-with Gnoga.Element.Common;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.View;
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 
 procedure Demo is
    use Gnoga;
    use Gnoga.Types;
-   use Gnoga.Element;
+   use Gnoga.Gui;
+   use Gnoga.Gui.Element;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -18,7 +19,7 @@ procedure Demo is
       end record;
    type App_Access is access all App_Data;
 
-   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
@@ -28,11 +29,11 @@ procedure Demo is
    end On_Click;
 
    procedure On_Connect
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App     : aliased App_Data;
-      View    : Gnoga.View.View_Type;
+      View    : Gnoga.Gui.View.View_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 

@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                                G N O G A                                 --
+--               G N O G A . G U I . E L E M E N T . I F R A M E            --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -32,28 +32,40 @@
 --  however invalidate any other reasons why the executable file  might be  --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+-- For more inIFrameation please go to http://www.gnoga.com                 --
+------------------------------------------------------------------------------
 
-package Gnoga is
-   version      : constant String := "0.0";
-   version_high : constant        := 0;
-   version_low  : constant        := 0;
+package body Gnoga.Gui.Element.IFrame is
 
-   function Escape_Quotes (S : String) return String;
-   --  Escape quotes for Java Script.
+   ------------
+   -- Create --
+   ------------
 
-   function Left_Trim (S : String) return String;
-   function Right_Trim (S : String) return String;
-   --  Remove extra spaces and tabs
+   procedure Create
+     (IFrame   : in out IFrame_Type;
+      Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
+      URL      : in     String;
+      Seamless : in     Boolean := False;
+      ID       : in     String := "")
+   is
+   begin
+      IFrame.Create_From_HTML (Parent, "<iframe src='" & URL & "' seamless=" &
+                                 Seamless'Img & "></iframe>", ID);
 
-   function Left_Trim_Slashes (S : String) return String;
-   function Right_Trim_Slashes (S : String) return String;
-   --  Remove extra spaces, tabs and '/'s
+      IFrame.Frame.Attach (Connection_ID => Parent.Connection_ID,
+                           ID            => IFrame.Script_Accessor &
+                             ".prop('contentWindow')",
+                           ID_Type       => Gnoga.Types.Script);
+   end Create;
 
-   procedure Write_To_Console (Message : in String);
-   --  Output message to console
+   ------------
+   -- Window --
+   ------------
 
-   procedure Log (Message : in String);
-   --  Output message to log (currently console)
-end Gnoga;
+   function Window (IFrame : IFrame_Type) return Gnoga.Gui.Window.Window_Access
+   is
+   begin
+      return IFrame.Frame'Unrestricted_Access;
+   end Window;
+
+end Gnoga.Gui.Element.IFrame;

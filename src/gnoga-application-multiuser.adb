@@ -48,7 +48,7 @@ package body Gnoga.Application.Multiuser is
 
    procedure On_Connect
      (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Connections.Connection_Holder_Type);
+      Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
    --  Handle connections by creating Main_Winow object and dispatching
    --  to correct On_Connect_Handler based on Path
 
@@ -58,13 +58,13 @@ package body Gnoga.Application.Multiuser is
 
    procedure On_Connect
      (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Connections.Connection_Holder_Type)
+      Connection : access Gnoga.Server.Connection.Connection_Holder_Type)
    is
-      Main_Window : Gnoga.Window.Window_Type;
+      Main_Window : Gnoga.Gui.Window.Window_Type;
    begin
       Main_Window.Attach (Connection_ID => ID);
       Main_Window.Document.Title (Title);
-      Connections.HTML_On_Close (ID, HTML_On_Close);
+      Server.Connection.HTML_On_Close (ID, HTML_On_Close);
 
       declare
          Path : String :=
@@ -76,7 +76,7 @@ package body Gnoga.Application.Multiuser is
          elsif Path_Map.Contains ("default") then
             Path_Map.Element ("default") (Main_Window, Connection);
          else
-            Connections.HTML_On_Close (ID, "No route to path.");
+            Server.Connection.HTML_On_Close (ID, "No route to path.");
          end if;
       end;
    end On_Connect;
@@ -92,9 +92,9 @@ package body Gnoga.Application.Multiuser is
       Boot  : in String                    := "boot.html")
    is
    begin
-      Gnoga.Connections.Initialize (Host, Port, Boot);
+      Gnoga.Server.Connection.Initialize (Host, Port, Boot);
 
-      Gnoga.Connections.On_Connect_Handler
+      Gnoga.Server.Connection.On_Connect_Handler
         (Event => On_Connect'Access);
 
       if Event /= null then
@@ -118,11 +118,11 @@ package body Gnoga.Application.Multiuser is
    ---------------------
 
    procedure Connection_Data
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Data        : access Gnoga.Types.Connection_Data_Type'Class)
    is
    begin
-      Gnoga.Connections.Connection_Data (ID   => Main_Window.Connection_ID,
+      Gnoga.Server.Connection.Connection_Data (ID   => Main_Window.Connection_ID,
                                          Data => Data);
    end Connection_Data;
 
@@ -132,7 +132,7 @@ package body Gnoga.Application.Multiuser is
 
    procedure Message_Loop is
    begin
-      Gnoga.Connections.Run (Wait_For_Q => False);
+      Gnoga.Server.Connection.Run (Wait_For_Q => False);
    end Message_Loop;
 
    ---------------------
@@ -141,7 +141,7 @@ package body Gnoga.Application.Multiuser is
 
    procedure End_Application is
    begin
-      Gnoga.Connections.Stop;
+      Gnoga.Server.Connection.Stop;
    end End_Application;
 
 end Gnoga.Application.Multiuser;

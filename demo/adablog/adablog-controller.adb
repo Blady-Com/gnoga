@@ -2,28 +2,29 @@ with Ada.Calendar;
 
 with Gnoga.Types;
 with Gnoga.Application.Multiuser;
-with Gnoga.Base;
-with Gnoga.Element;
-with Gnoga.Element.Common;
-with Gnoga.Element.Form;
-with Gnoga.Window;
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Element.Form;
+with Gnoga.Gui.Window;
 
 with AdaBlog.View;
 with AdaBlog.Model;
 
 package body AdaBlog.Controller is
    use Gnoga;
+   use Gnoga.Gui;
 
-   procedure On_Create_User (Object : in out Gnoga.Base.Base_Type'Class);
+   procedure On_Create_User (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  The create user button was clicked
 
-   procedure On_User_Login (Object : in out Gnoga.Base.Base_Type'Class);
+   procedure On_User_Login (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  User clicked the submit button for his user name and password
 
-   procedure On_Submit_Entry (Object : in out Gnoga.Base.Base_Type'Class);
+   procedure On_Submit_Entry (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  User clicked the submit button to an a blog entry.
 
-   procedure On_Create_User (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure On_Create_User (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Main_Window  : aliased Window.Window_Type;
       Message_Area : Element.Common.DIV_Type;
       User_Login   : Element.Common.Button_Type;
@@ -76,7 +77,7 @@ package body AdaBlog.Controller is
       Main_Window.Location.URL ("/?gid=" & Main_Window.Gnoga_Session_ID);
    end On_Create_User;
 
-   procedure On_User_Login (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure On_User_Login (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Main_Window  : aliased Window.Window_Type;
       Message_Area : Element.Common.DIV_Type;
 
@@ -105,13 +106,13 @@ package body AdaBlog.Controller is
          Message_Area.Text ("Invalid Login");
    end On_User_Login;
 
-   procedure On_Submit_Entry (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Submit_Entry (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       User        : AdaBlog.Model.Users.Active_Record;
       Entries     : AdaBlog.Model.Blog_Entries.Active_Record;
 
       Main_Window : aliased Window.Window_Type;
-      Text        : Gnoga.Element.Form.Text_Area_Type;
+      Text        : Gnoga.Gui.Element.Form.Text_Area_Type;
    begin
       Main_Window.Attach (Object.Connection_ID);
 
@@ -127,7 +128,7 @@ package body AdaBlog.Controller is
    end On_Submit_Entry;
 
    procedure Index
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       Content_Area : Element.Common.DIV_Type;
@@ -170,7 +171,7 @@ package body AdaBlog.Controller is
    end Index;
 
    procedure New_Entry
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       User         : AdaBlog.Model.Users.Active_Record;

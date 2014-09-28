@@ -1,11 +1,12 @@
 package body AdaBlog.View is
    use Gnoga;
+   use Gnoga.Gui;
 
    procedure Display_Blog_Entry
-     (Parent : in out Gnoga.Element.Common.DIV_Type'Class;
+     (Parent : in out Gnoga.Gui.Element.Common.DIV_Type'Class;
       Data   : in     Gnoga.Types.Data_Map_Type)
    is
-      Entry_Div : Gnoga.Element.Common.DIV_Type;
+      Entry_Div : Gnoga.Gui.Element.Common.DIV_Type;
    begin
       Entry_Div.Create
         (Parent,
@@ -19,8 +20,8 @@ package body AdaBlog.View is
    end Display_Blog_Entry;
 
    procedure New_Entry_Form
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
-      Content     : in out Gnoga.Element.Common.DIV_Type'Class)
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Content     : in out Gnoga.Gui.Element.Common.DIV_Type'Class)
    is
    begin
       Content.Create (Parent  => Main_Window,
@@ -35,8 +36,8 @@ package body AdaBlog.View is
    end New_Entry_Form;
 
    procedure User_Panel
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
-      Panel       : in out Gnoga.Element.Common.DIV_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Panel       : in out Gnoga.Gui.Element.Common.DIV_Type'Class;
       User_Record : in     Gnoga.Types.Data_Map_Type)
    is
    begin
@@ -72,9 +73,9 @@ package body AdaBlog.View is
    end User_Panel;
 
    procedure Template
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
-      Content     : in out Gnoga.Element.Common.DIV_Type'Class;
-      Left_Panel  : in out Gnoga.Element.Common.DIV_Type'Class)
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Content     : in out Gnoga.Gui.Element.Common.DIV_Type'Class;
+      Left_Panel  : in out Gnoga.Gui.Element.Common.DIV_Type'Class)
    is
       Title_Div    : Element.Common.DIV_Type;
       Message_Area : Element.Common.DIV_Type;

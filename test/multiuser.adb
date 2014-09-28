@@ -1,14 +1,15 @@
 with Gnoga.Application.Multiuser;
-with Gnoga.Window;
-with Gnoga.Base;
-with Gnoga.Element;
-with Gnoga.Element.Common;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.Base;
+with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 
 procedure Multiuser is
    use Gnoga;
    use Gnoga.Types;
-   use Gnoga.Element;
+   use Gnoga.Gui;
+   use Gnoga.Gui.Element;
 
    task type Color_Me_Task (O : Element.Pointer_To_Element_Class) is
       entry Start;
@@ -54,8 +55,8 @@ end Color_Me_Task;
       end record;
    type App_Access is access all App_Data;
 
-   procedure On_Click (Object : in out Gnoga.Base.Base_Type'Class;
-                       Event  : in     Gnoga.Base.Mouse_Event_Record)
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
@@ -66,16 +67,16 @@ end Color_Me_Task;
       App.Main_Window.Alert ("X = " & Event.X'Img & " Y = " & Event.Y'Img);
    end On_Click;
 
-   procedure On_Key_Press (Object : in out Gnoga.Base.Base_Type'Class;
-                           Event  : in     Gnoga.Base.Keyboard_Event_Record)
+   procedure On_Key_Press (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                           Event  : in     Gnoga.Gui.Base.Keyboard_Event_Record)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Key.Text (Event.Key_Code'Img);
    end On_Key_Press;
 
-   procedure On_Move (Object : in out Gnoga.Base.Base_Type'Class;
-                      Event  : in     Gnoga.Base.Mouse_Event_Record)
+   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
@@ -83,14 +84,14 @@ end Color_Me_Task;
       App.Y.Text (Event.Y'Img);
    end On_Move;
 
-   procedure On_Context (Object : in out Gnoga.Base.Base_Type'Class)
+   procedure On_Context (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Hello_World.Color ("red");
    end On_Context;
 
-   procedure End_App (Object : in out Gnoga.Base.Base_Type'Class) is
+   procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Main_Window.Document.Body_Element.Inner_HTML ("Application closed.");
@@ -100,17 +101,17 @@ end Color_Me_Task;
    end End_App;
 
    procedure On_Connect
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
       App : aliased App_Data;
 
       Color_Me : Color_Me_Task (App.Hello_World'Unchecked_Access);
 
-      Hr1 : Gnoga.Element.Common.HR_Type;
-      Hr2 : Gnoga.Element.Common.HR_Type;
-      Lnk : Gnoga.Element.Common.A_Type;
-      Img : Gnoga.Element.Common.IMG_Type;
+      Hr1 : Gnoga.Gui.Element.Common.HR_Type;
+      Hr2 : Gnoga.Gui.Element.Common.HR_Type;
+      Lnk : Gnoga.Gui.Element.Common.A_Type;
+      Img : Gnoga.Gui.Element.Common.IMG_Type;
    begin
       App.Main_Window := Main_Window'Unchecked_Access;
 
@@ -165,10 +166,10 @@ end Color_Me_Task;
    end On_Connect;
 
    procedure On_Connect_2
-     (Main_Window : in out Gnoga.Window.Window_Type'Class;
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
    is
-      D : Gnoga.Element.Common.DIV_Type;
+      D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
       Main_Window.Document.Body_Element.Background_Color ("blue");
 

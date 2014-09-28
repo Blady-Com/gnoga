@@ -14,7 +14,9 @@ with Gnoga.Server.Database.MySQL;
 with Gnoga.Server.Migration;
 
 with Gnoga.Application.Singleton;
-with Gnoga.Window;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.View;
+with Gnoga.Gui.Element;
 
 procedure DB_MySQL is
    pragma Linker_Options ("-lmysqlclient");
@@ -52,7 +54,8 @@ procedure DB_MySQL is
    Descriptions : Gnoga.Server.Database.Field_Description_Array_Type;
    Description  : Gnoga.Server.Database.Field_Description;
 
-   M : Gnoga.Window.Window_Type;
+   M : Gnoga.Gui.Window.Window_Type;
+   V : Gnoga.Gui.View.View_Type;
 begin
    Gnoga.Log ("Openning connection to MySQL database.");
 
@@ -72,39 +75,42 @@ begin
    Gnoga.Application.HTML_On_Close ("Application closed.");
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
-   M.Document.Put_Line ("Obtain list of tables from: test");
+   V.Create (M);
+   V.Overflow (Gnoga.Gui.Element.Scroll);
+
+   V.Put_Line ("Obtain list of tables from: test");
    Tables := Connection.List_Of_Tables;
 
    for I in 1 .. Natural (Tables.Length) loop
-      M.Document.Put_Line ("Table Name in database : " & Tables.Element (I));
+      V.Put_Line ("Table Name in database : " & Tables.Element (I));
    end loop;
 
    Fields := Connection.List_Fields_Of_Table ("users");
    for I in 1 .. Natural (Fields.Length) loop
-      M.Document.Put_Line ("Field Name in users : " & Fields.Element (I));
+      V.Put_Line ("Field Name in users : " & Fields.Element (I));
    end loop;
 
    Descriptions := Connection.Field_Descriptions ("users");
    for I in Descriptions.First_Index .. Descriptions.Last_Index loop
       Description := Descriptions.Element (I);
-      M.Document.Put_Line ("Column Name : " &
+      V.Put_Line ("Column Name : " &
                              To_String (Description.Column_Name));
-      M.Document.Put_Line ("Data Type   : " &
+      V.Put_Line ("Data Type   : " &
                              To_String (Description.Data_Type));
-      M.Document.Put_Line ("Field Type  : " &
+      V.Put_Line ("Field Type  : " &
                   Gnoga.Server.Database.Field_Type (Description));
-      M.Document.Put_Line ("Field Opts  : " &
+      V.Put_Line ("Field Opts  : " &
                   Gnoga.Server.Database.Field_Options (Description));
-      M.Document.Put_Line ("Field Size  : " &
+      V.Put_Line ("Field Size  : " &
                   Gnoga.Server.Database.Field_Size (Description)'Img);
-      M.Document.Put_Line ("Decimals    : " &
+      V.Put_Line ("Decimals    : " &
          Gnoga.Server.Database.Field_Decimals (Description)'Img);
-      M.Document.Put_Line ("Can Be Null : " & Description.Can_Be_Null'Img);
-      M.Document.Put_Line ("Default     : " &
+      V.Put_Line ("Can Be Null : " & Description.Can_Be_Null'Img);
+      V.Put_Line ("Default     : " &
                              To_String (Description.Default_Value));
    end loop;
 
-   M.Document.Put_Line
+   V.Put_Line
      (Connection.Escape_String ("I've been thinking.. ""escaped"" \ is it?"));
 
    declare
@@ -113,7 +119,7 @@ begin
    begin
       while RS.Next loop
          for J in 1 .. RS.Number_Of_Fields loop
-            M.Document.Put_Line (RS.Field_Name (J) & " => " &
+            V.Put_Line (RS.Field_Name (J) & " => " &
                       RS.Field_Value (J));
          end loop;
       end loop;

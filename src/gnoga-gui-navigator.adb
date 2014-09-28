@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---          G N O G A . A P P L I C A T I O N . S I N G L E T O N           --
+--                    G N O G A . G U I . N A V I G A T O R                 --
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
@@ -33,80 +33,97 @@
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
-------------------------------------------------------------------------------                                                                          --
+------------------------------------------------------------------------------
 
 with Gnoga.Server.Connection;
 
-package body Gnoga.Application.Singleton is
-   Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
-   --  Set after Initialization
+package body Gnoga.Gui.Navigator is
 
-   Application_Holder : Gnoga.Server.Connection.Connection_Holder_Type;
-   --  Used to block Initialize until On_Connect is called
+   ---------------
+   -- Code_Name --
+   ---------------
 
-   Connection_Holder : Gnoga.Server.Connection.Connection_Holder_Type;
-   --  Used to hold the single incoming connection
+   function Code_Name (ID : Gnoga.Types.Connection_ID) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID,
+                                                     "navigator.appCodeName");
+   end Code_Name;
 
-   procedure On_Connect
-     (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
+   ----------
+   -- Name --
+   ----------
 
-   procedure On_Connect
-     (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Server.Connection.Connection_Holder_Type)
+   function Name (ID : Gnoga.Types.Connection_ID) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.appName");
+   end Name;
+
+   -------------
+   -- Version --
+   -------------
+
+   function Version (ID : Gnoga.Types.Connection_ID) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID,
+                                                     "navigator.appVersion");
+   end Version;
+
+   --------------------
+   -- Cookie_Enabled --
+   --------------------
+
+   function Cookie_Enabled (ID : Gnoga.Types.Connection_ID) return Boolean is
+   begin
+      return Gnoga.Server.Connection.Execute_Script
+        (ID, "navigator.cookieEnabled") = "true";
+   end Cookie_Enabled;
+
+   --------------
+   -- Language --
+   --------------
+
+   function Language (ID : Gnoga.Types.Connection_ID) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.language");
+   end Language;
+
+   --------------
+   -- Platform --
+   --------------
+
+   function Platform (ID : Gnoga.Types.Connection_ID) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.platform");
+   end Platform;
+
+   -------------
+   -- Product --
+   -------------
+
+   function Product (ID : Gnoga.Types.Connection_ID) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.product");
+   end Product;
+
+   ----------------
+   -- User_Agent --
+   ----------------
+
+   function User_Agent (ID : Gnoga.Types.Connection_ID) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID,
+                                                     "navigator.userAgent");
+   end User_Agent;
+
+   ---------------------
+   -- Navigate_To_URL --
+   ---------------------
+
+   procedure Navigate_To_URL (ID  : in Gnoga.Types.Connection_ID;
+                              URL : in String)
    is
    begin
-      if Connection_ID = Gnoga.Types.No_Connection then
-         Connection_ID := ID;
-         Application_Holder.Release;
-         Connection_Holder.Hold;
-      else
-         Gnoga.Server.Connection.Execute_Script
-           (ID, "document.writeln ('Only one connection permitted.');");
-      end if;
-   end On_Connect;
-
-   task Web_Server_Task is
-      entry Start;
-   end Web_Server_Task;
-
-   task body Web_Server_Task is
-   begin
-      accept Start;
-      Gnoga.Server.Connection.Run (Wait_For_Q => False);
-      Connection_Holder.Release;
-   end Web_Server_Task;
-
-   procedure Initialize
-     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Host        : in  String  := "";
-      Port        : in  Integer := 8080;
-      Boot        : in  String  := "boot.html")
-   is
-   begin
-      Gnoga.Server.Connection.Initialize (Host, Port, Boot);
-
-      Gnoga.Server.Connection.On_Connect_Handler
-        (Event => On_Connect'Access);
-
-      Web_Server_Task.Start;
-
-      Application_Holder.Hold;
-
-      Main_Window.Attach (Connection_ID => Connection_ID);
-      Gnoga.Server.Connection.HTML_On_Close (Connection_ID, HTML_On_Close);
-
-      Main_Window.Document.Title (Title);
-   end Initialize;
-
-   procedure Message_Loop is
-   begin
-      Connection_Holder.Hold;
-   end Message_Loop;
-
-   procedure End_Application is
-   begin
-      Connection_Holder.Release;
-      Gnoga.Server.Connection.Stop;
-   end End_Application;
-end Gnoga.Application.Singleton;
+      Gnoga.Server.Connection.Execute_Script (ID,
+                                               "window.location='" & URL & "'");
+   end Navigate_To_URL;
+end Gnoga.Gui.Navigator;

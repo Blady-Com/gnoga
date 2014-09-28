@@ -67,7 +67,9 @@ package Gnoga.Gui.View is
    -------------------------------------------------------------------------
 
    procedure Put_Line (View : in out View_Type; Message : String);
-   --  Create a new DIV wit
+   --  Create a new DIV with Message and append to end of view.
+   --  Use View.Overflow (Scroll) to allow scroll bars to view overflow
+   --  of data added by Put_Line.
 
    -------------------------------------------------------------------------
    --  View_Type - Event Methods

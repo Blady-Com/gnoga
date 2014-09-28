@@ -65,9 +65,9 @@ package body AdaBlog.View is
             Content =>
               " Username: <b>" & User_Record.Element ("username") &
               "</b><br /><br />" &
-              "<a href=""/new_entry?gid=" & Main_Window.Gnoga_Session_ID &
+              "<a href=""/new_entry" &
               """>Add Entry</a><br /><br />" &
-              "<a href=""/"">Logout</a ><br/>",
+              "<a href=""/logout"">Logout</a ><br/>",
             ID      => "left-panel");
       end if;
    end User_Panel;

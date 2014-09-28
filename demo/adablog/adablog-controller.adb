@@ -74,7 +74,7 @@ package body AdaBlog.Controller is
       User.Value ("last_session", Value => Main_Window.Gnoga_Session_ID);
       User.Save;
 
-      Main_Window.Location.URL ("/?gid=" & Main_Window.Gnoga_Session_ID);
+      Main_Window.Location.URL ("/");
    end On_Create_User;
 
    procedure On_User_Login (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -100,7 +100,7 @@ package body AdaBlog.Controller is
       User.Value ("last_session", Value => Main_Window.Gnoga_Session_ID);
       User.Save;
 
-      Main_Window.Location.URL ("/?gid=" & Main_Window.Gnoga_Session_ID);
+      Main_Window.Location.URL ("/");
    exception
       when others =>
          Message_Area.Text ("Invalid Login");
@@ -124,7 +124,7 @@ package body AdaBlog.Controller is
       Entries.Value ("entry_text", Value => Text.Value);
       Entries.Save;
 
-      Main_Window.Location.URL ("/?gid=" & Main_Window.Gnoga_Session_ID);
+      Main_Window.Location.URL ("/");
    end On_Submit_Entry;
 
    procedure Index
@@ -204,6 +204,22 @@ package body AdaBlog.Controller is
 
       Connection.Hold;
    end New_Entry;
+
+   procedure Log_Out
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+   is
+      User : AdaBlog.Model.Users.Active_Record;
+   begin
+      User.Find_Where ("last_session ='" & Main_Window.Gnoga_Session_ID & "'");
+
+      if User.Value ("id") /= "" then
+         User.Value ("last_session", "");
+         User.Save;
+      end if;
+
+      Main_Window.Location.URL ("/");
+   end Log_Out;
 begin
    Application.Multiuser.On_Connect_Handler (Index'Unrestricted_Access,
                                              "default");
@@ -211,4 +227,6 @@ begin
                                              "main");
    Application.Multiuser.On_Connect_Handler (New_Entry'Unrestricted_Access,
                                              "new_entry");
+   Application.Multiuser.On_Connect_Handler (Log_Out'Unrestricted_Access,
+                                             "logout");
 end AdaBlog.Controller;

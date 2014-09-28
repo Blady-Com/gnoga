@@ -63,7 +63,7 @@ package Gnoga.Client.Storage is
    --  Set Name=Value in Storage
 
    function Get (Storage : Storage_Type; Name : String) return String;
-   --  Get Value for Name in Storage
+   --  Get Value for Name in Storage. If Name does not exist returns "null"
 
    function Script_Accessor (Storage : Storage_Type) return String;
 

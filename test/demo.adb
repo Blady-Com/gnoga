@@ -9,6 +9,7 @@ with Gnoga.Client.Storage;
 
 with Ada.Calendar;
 with Ada.Calendar.Conversions;
+with Ada.Strings.Unbounded;
 
 procedure Demo is
    use Gnoga;
@@ -32,6 +33,21 @@ procedure Demo is
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
    end On_Click;
 
+   procedure On_Storage
+     (Object        : in out Gnoga.Gui.Base.Base_Type'Class;
+      Storage_Event : in     Gnoga.Gui.Window.Storage_Event_Record)
+   is
+      use Ada.Strings.Unbounded;
+
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      Gnoga.Log ("On Storage");
+      App.Main_Window.Alert
+        (To_String (Storage_Event.Name) & "=" &
+           To_String (Storage_Event.Old_Value) &
+           " now = " & To_String (Storage_Event.New_Value));
+   end On_Storage;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
@@ -48,6 +64,8 @@ procedure Demo is
       View.Create (Main_Window);
       View.Background_Color ("azure");
       View.Border;
+
+      Main_Window.On_Storage_Handler (On_Storage'Unrestricted_Access);
 
       App.Message.Create (View, "Click me and I will hide.");
       App.Message.On_Click_Handler (On_Click'Unrestricted_Access);

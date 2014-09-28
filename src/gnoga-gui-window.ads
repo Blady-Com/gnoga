@@ -35,6 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------                                                                          --
 
+with Ada.Strings.Unbounded;
+
 with Gnoga.Types;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Document;
@@ -218,6 +220,17 @@ package Gnoga.Gui.Window is
    --  Window_Type - Event Handlers
    -------------------------------------------------------------------------
 
+   type Storage_Event_Record is
+      record
+         Name            : Ada.Strings.Unbounded.Unbounded_String;
+         Old_Value       : Ada.Strings.Unbounded.Unbounded_String;
+         New_Value       : Ada.Strings.Unbounded.Unbounded_String;
+      end record;
+
+   type Storage_Event is access
+     procedure (Object        : in out Gnoga.Gui.Base.Base_Type'Class;
+                Storage_Event : in     Storage_Event_Record);
+
    procedure On_Abort_Handler (Window  : in out Window_Type;
                                Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Abort (Window : in out Window_Type);
@@ -237,9 +250,10 @@ package Gnoga.Gui.Window is
    procedure Fire_On_Orientation_Change (Window : in out Window_Type);
 
    procedure On_Storage_Handler (Window  : in out Window_Type;
-                                 Handler : in     Gnoga.Gui.Base.Action_Event);
-   procedure Fire_On_Storage (Window : in out Window_Type);
-   -- local or sessin storage data was changed
+                                 Handler : in     Storage_Event);
+   procedure Fire_On_Storage (Window        : in out Window_Type;
+                              Storage_Event : in     Storage_Event_Record);
+   -- Storage data was changed in another session
 
    -------------------------------------------------------------------------
    --  Winow_Type - Event Methods
@@ -265,6 +279,6 @@ private
          On_Error_Event              : Gnoga.Gui.Base.Action_Event := null;
          On_Hash_Change_Event        : Gnoga.Gui.Base.Action_Event := null;
          On_Orientation_Change_Event : Gnoga.Gui.Base.Action_Event := null;
-         On_Storage_Event            : Gnoga.Gui.Base.Action_Event := null;
+         On_Storage_Event            : Storage_Event               := null;
       end record;
 end Gnoga.Gui.Window;

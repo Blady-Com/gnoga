@@ -47,6 +47,48 @@ with Gnoga.Gui.Element;
 package body Gnoga.Gui.Window is
    use type Gnoga.Gui.Base.Action_Event;
 
+   Storage_Event_Script : constant String :=
+                          "e.originalEvent.key + '|' + " &
+                          "e.originalEvent.oldValue + '|' " &
+                          "+ e.originalEvent.newValue + '|'";
+
+   function Parse_Storage_Event (Message : String)
+                                 return Storage_Event_Record;
+
+   -------------------------
+   -- Parse_Storage_Event --
+   -------------------------
+
+   function Parse_Storage_Event (Message : String)
+                                 return Storage_Event_Record is
+      use Ada.Strings.Fixed;
+      use Ada.Strings.Unbounded;
+
+      Event  : Storage_Event_Record;
+      S      : Integer := Message'First;
+      F      : Integer := Message'First - 1;
+
+      function Split return String is
+      begin
+         S := F + 1;
+         F := Index (Source  => Message,
+                     Pattern => "|",
+                     From    => S);
+         return Message (S .. (F - 1));
+      end;
+
+      function Split return Boolean is
+      begin
+         return Split = "true";
+      end Split;
+   begin
+      Event.Name := To_Unbounded_String (Split);
+      Event.Old_Value := To_Unbounded_String (Split);
+      Event.New_Value := To_Unbounded_String (Split);
+
+      return Event;
+   end Parse_Storage_Event;
+
    ------------
    -- Attach --
    ------------
@@ -643,20 +685,22 @@ package body Gnoga.Gui.Window is
    ----------------
 
    procedure On_Storage_Handler (Window  : in out Window_Type;
-                                 Handler : in     Gnoga.Gui.Base.Action_Event)
+                                 Handler : in     Storage_Event)
    is
    begin
       Window.On_Storage_Event := Handler;
 
       Window.Bind_Event (Event   => "storage",
-                         Message => "");
+                         Message => "",
+                         Script  => Storage_Event_Script);
    end On_Storage_Handler;
 
-   procedure Fire_On_Storage (Window : in out Window_Type)
+   procedure Fire_On_Storage (Window        : in out Window_Type;
+                              Storage_Event : in     Storage_Event_Record)
    is
    begin
       if Window.On_Storage_Event /= null then
-         Window.On_Storage_Event (Window);
+         Window.On_Storage_Event (Window, Storage_Event);
       end if;
    end Fire_On_Storage;
 
@@ -699,7 +743,11 @@ package body Gnoga.Gui.Window is
       elsif Event = "orientationchange" then
          Object.Fire_On_Orientation_Change;
       elsif Event = "storage" then
-         Object.Fire_On_Storage;
+         declare
+            E : Storage_Event_Record := Parse_Storage_Event (Message);
+         begin
+            Object.Fire_On_Storage (E);
+         end;
       elsif Event = "resize" then
          Object.On_Resize;
          Object.Fire_On_Resize;

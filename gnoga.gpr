@@ -13,7 +13,7 @@ project Gnoga is
    for Main use ("demo.adb", "singleton.adb", "multiuser.adb",
                  "popups.adb", "forms.adb", "canvas_test.adb",
                  "snake-main.adb", "db_sqlite.adb", "db_mysql.adb",
-                 "db_active.adb", "adablog-main.adb");
+                 "db_active.adb", "adablog-main.adb", "storage.adb");
    LIBRARY_TYPE : Xmlada_Kind_Type := external ("LIBRARY_TYPE");
    AWS_BUILD : Build_Kind := external ("AWS_BUILD");
 

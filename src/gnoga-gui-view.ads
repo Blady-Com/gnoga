@@ -58,18 +58,26 @@ package Gnoga.Gui.View is
    procedure Create
      (View    : in out View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String := "");
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "");
    --  If Parent is a Window_Type'Class will automatically set itself
-   --  as the View on Parent.
+   --  as the View on Parent if Attach is True
 
    -------------------------------------------------------------------------
    --  View_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Put_Line (View : in out View_Type; Message : String);
+   procedure Put_Line (View    : in out View_Type;
+                       Message : in     String;
+                       Class   : in     String := "";
+                       ID      : in     String := "");
    --  Create a new DIV with Message and append to end of view.
    --  Use View.Overflow (Scroll) to allow scroll bars to view overflow
-   --  of data added by Put_Line.
+   --  of data added by Put_Line. Class is an optional CSS class and
+   --  ID and option DOM ID.
+
+   procedure New_Line (View : in out View_Type);
+   --  Create a new DIV with <br /> and append to end of view
 
    -------------------------------------------------------------------------
    --  View_Type - Event Methods

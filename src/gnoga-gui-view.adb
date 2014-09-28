@@ -47,12 +47,13 @@ package body Gnoga.Gui.View is
    procedure Create
      (View    : in out View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
       ID      : in     String := "")
    is
    begin
       View.Create_From_HTML (Parent, "<div />", ID);
 
-      if Parent in Gnoga.Gui.Window.Window_Type'Class then
+      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
          Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
       end if;
    end Create;
@@ -75,9 +76,27 @@ package body Gnoga.Gui.View is
    -- Put_Line --
    --------------
 
-   procedure Put_Line (View : in out View_Type; Message : String) is
+   procedure Put_Line (View    : in out View_Type;
+                       Message : in     String;
+                       Class   : in     String := "";
+                       ID      : in     String := "")
+   is
       D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
-      D.Create (View, Message);
+      D.Create (View, Message, ID);
+      if Class /= "" then
+         D.Class_Name (Class);
+      end if;
    end Put_Line;
+
+   --------------
+   -- New_Line --
+   --------------
+
+   procedure New_Line (View : in out View_Type) is
+      D : Gnoga.Gui.Element.Common.DIV_Type;
+   begin
+      D.Create (View, "<br />");
+   end New_Line;
+
 end Gnoga.Gui.View;

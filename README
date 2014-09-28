@@ -11,6 +11,10 @@ then run the snake demo in /bin
 
 There are other test bins in the /bin you can also take a look at but they are mainly used during development to test the framework as I go.
 
+You can now install gnoga as a gnat library using:
+
+make install
+
 Look through the code in the tests and the snake demo to get a feel for how things work for now.
 
 Gnoga has the following aspects to it:

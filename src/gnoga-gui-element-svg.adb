@@ -43,7 +43,7 @@ package body Gnoga.Gui.Element.SVG is
 
    procedure Create
      (SVG     : in out SVG_Type;
-      Parent  : in out Gnoga.Base.Base_Type'Class;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
       Content : in     String := "";
       ID      : in     String := "")
    is

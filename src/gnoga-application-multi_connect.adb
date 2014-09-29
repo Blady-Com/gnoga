@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---          G N O G A . A P P L I C A T I O N . M U L T I U S E R           --
+--       G N O G A . A P P L I C A T I O N . M U L T _ C O N N E C T        --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -39,7 +39,7 @@ with Ada.Containers.Indefinite_Ordered_Maps;
 with Ada.Strings.Unbounded;
 with Gnoga.Types;
 
-package body Gnoga.Application.Multiuser is
+package body Gnoga.Application.Multi_Connect is
 
    package Path_Maps is new Ada.Containers.Indefinite_Ordered_Maps
      (String, Application_Connect_Event);
@@ -145,4 +145,4 @@ package body Gnoga.Application.Multiuser is
       Gnoga.Server.Connection.Stop;
    end End_Application;
 
-end Gnoga.Application.Multiuser;
+end Gnoga.Application.Multi_Connect;

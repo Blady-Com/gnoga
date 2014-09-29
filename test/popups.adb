@@ -1,4 +1,4 @@
-with Gnoga.Application.Multiuser;
+with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
@@ -88,7 +88,7 @@ procedure Popups is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : aliased App_Data;
       Hr1 : Gnoga.Gui.Element.Common.HR_Type;
@@ -116,14 +116,14 @@ procedure Popups is
       App.Frame.Width (800);
       App.Frame.Place_After (B);
 
-      Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
+      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
 
       Connection.Hold;
    end On_Connect;
 
    procedure On_Connect_2
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : aliased App_Data2;
       D : Gnoga.Gui.Element.Common.DIV_Type;
@@ -139,22 +139,22 @@ procedure Popups is
       B.Place_Inside_Bottom_Of (Main_Window.Document.Body_Element.all);
       B.On_Click_Handler (On_Click3'Unrestricted_Access);
 
-      Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
+      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
 
       Connection.Hold;
    end On_Connect_2;
 
 begin
-   Application.Multiuser.Initialize (Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Boot  => "debug.html");
 
-   Application.Multiuser.On_Connect_Handler (On_Connect'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (On_Connect'Unrestricted_Access,
                                              "default");
-   Application.Multiuser.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
                                              "/demo");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Multiuser.Message_Loop;
+   Application.Multi_Connect.Message_Loop;
 end Popups;

@@ -1,4 +1,4 @@
-with Gnoga.Application.Multiuser;
+with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
 with Gnoga.Gui.Base;
@@ -31,7 +31,7 @@ procedure Demo is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : aliased App_Data;
       Play    : Common.Button_Type;
@@ -43,18 +43,18 @@ procedure Demo is
       Play.Create (App.Console, "Play");
       Play.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
+      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
 
       Connection.Hold;
    end On_Connect;
 
 begin
-   Application.Multiuser.Initialize (Event => On_Connect'Unrestricted_Access,
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
                                      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Multiuser.Message_Loop;
+   Application.Multi_Connect.Message_Loop;
 end Demo;

@@ -1,4 +1,4 @@
-with Gnoga.Application.Multiuser;
+with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
@@ -97,12 +97,12 @@ end Color_Me_Task;
       App.Main_Window.Document.Body_Element.Inner_HTML ("Application closed.");
 
       Log ("Ending Application");
-      Application.Multiuser.End_Application;
+      Application.Multi_Connect.End_Application;
    end End_App;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : aliased App_Data;
 
@@ -116,7 +116,7 @@ end Color_Me_Task;
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.Hello_World.Create (Main_Window);
-      App.Hello_World.Inner_HTML ("<h1>Multiuser App Demo</h1>");
+      App.Hello_World.Inner_HTML ("<h1>Multi_Connect App Demo</h1>");
       App.Hello_World.Place_Inside_Top_Of
         (Main_Window.Document.Body_Element.all);
 
@@ -156,7 +156,7 @@ end Color_Me_Task;
 
       App.Main_Window.On_Key_Down_Handler (On_Key_Press'Unrestricted_Access);
 
-      Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
+      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
 
       Color_Me.Start;
 
@@ -167,7 +167,7 @@ end Color_Me_Task;
 
    procedure On_Connect_2
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
@@ -179,12 +179,12 @@ end Color_Me_Task;
    end On_Connect_2;
 
 begin
-   Application.Multiuser.Initialize (Boot => "debug.html");
+   Application.Multi_Connect.Initialize (Boot => "debug.html");
 
-   Application.Multiuser.On_Connect_Handler (On_Connect'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (On_Connect'Unrestricted_Access,
                                              "default");
-   Application.Multiuser.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
                                              "/demo");
 
-   Application.Multiuser.Message_Loop;
+   Application.Multi_Connect.Message_Loop;
 end Multiuser;

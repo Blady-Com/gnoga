@@ -1,11 +1,11 @@
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
-with Gnoga.Application.Multiuser;
+with Gnoga.Application.Multi_Connect;
 
 package Snake.Connection is
    use Gnoga.Gui.Base;
    use Gnoga.Gui.Window;
-   use Gnoga.Application.Multiuser;
+   use Gnoga.Application.Multi_Connect;
 
    procedure Display_Splash (Main_Window : in out Window_Type'Class);
 

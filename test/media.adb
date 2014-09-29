@@ -1,4 +1,4 @@
-with Gnoga.Application.Multiuser;
+with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Base;
@@ -31,7 +31,7 @@ procedure Media is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : aliased App_Data;
       Play    : Common.Button_Type;
@@ -59,18 +59,18 @@ procedure Media is
          Source   => "http://www.mindbodycures.com/archive/Ankle.mp4",
          Controls => True);
 
-      Application.Multiuser.Connection_Data (Main_Window, App'Unchecked_Access);
+      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
 
       Connection.Hold;
    end On_Connect;
 
 begin
-   Application.Multiuser.Initialize (Event => On_Connect'Unrestricted_Access,
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
                                      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Multiuser.Message_Loop;
+   Application.Multi_Connect.Message_Loop;
 end Media;

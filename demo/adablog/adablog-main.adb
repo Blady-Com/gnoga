@@ -2,7 +2,7 @@ with Ada.Exceptions;
 
 with GNAT.OS_Lib;
 
-with Gnoga.Application.Multiuser;
+with Gnoga.Application.Multi_Connect;
 with Gnoga.Server.Migration;
 
 with AdaBlog.Migrations;
@@ -23,9 +23,9 @@ begin
    Application.Title ("AdaBlog - Gnoga Demo");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
-   Application.Multiuser.Initialize (Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Boot  => "debug.html");
 
-   Application.Multiuser.Message_Loop;
+   Application.Multi_Connect.Message_Loop;
 exception
    when E : others =>
       Log (Ada.Exceptions.Exception_Name (E) & " - " &

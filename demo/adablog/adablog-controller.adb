@@ -1,7 +1,7 @@
 with Ada.Calendar;
 
 with Gnoga.Types;
-with Gnoga.Application.Multiuser;
+with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
@@ -129,7 +129,7 @@ package body AdaBlog.Controller is
 
    procedure Index
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       Content_Area : Element.Common.DIV_Type;
       Left_Area    : Element.Common.DIV_Type;
@@ -172,7 +172,7 @@ package body AdaBlog.Controller is
 
    procedure New_Entry
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       User         : AdaBlog.Model.Users.Active_Record;
 
@@ -207,7 +207,7 @@ package body AdaBlog.Controller is
 
    procedure Log_Out
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multiuser.Connection_Holder_Type)
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       User : AdaBlog.Model.Users.Active_Record;
    begin
@@ -221,12 +221,12 @@ package body AdaBlog.Controller is
       Main_Window.Location.URL ("/");
    end Log_Out;
 begin
-   Application.Multiuser.On_Connect_Handler (Index'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access,
                                              "default");
-   Application.Multiuser.On_Connect_Handler (Index'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access,
                                              "main");
-   Application.Multiuser.On_Connect_Handler (New_Entry'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (New_Entry'Unrestricted_Access,
                                              "new_entry");
-   Application.Multiuser.On_Connect_Handler (Log_Out'Unrestricted_Access,
+   Application.Multi_Connect.On_Connect_Handler (Log_Out'Unrestricted_Access,
                                              "logout");
 end AdaBlog.Controller;

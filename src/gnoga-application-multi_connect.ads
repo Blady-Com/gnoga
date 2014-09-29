@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---          G N O G A . A P P L I C A T I O N . M U L T I U S E R           --
+--       G N O G A . A P P L I C A T I O N . M U L T _ C O N N E C T        --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -35,18 +35,17 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+--  This package allows for the creation of GUI applications with multiple
+--  connections to the same app.
+
 with Gnoga.Types;
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Window;
 
-package Gnoga.Application.Multiuser is
+package Gnoga.Application.Multi_Connect is
 
    subtype Connection_Holder_Type is
      Gnoga.Server.Connection.Connection_Holder_Type;
-
-   --  This package allows for the creation of multiuser GUI applications
-   --  using Gnoga. It allows only a multiple connections to the same
-   --  application.
 
    type Application_Connect_Event is access
      procedure (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
@@ -90,4 +89,4 @@ package Gnoga.Application.Multiuser is
    --  Gnoga objects, however Gnoga objects on finalization do not destroy
    --  DOM object in browser so browser state will remain with document
    --  after the loop has terminated and application has ended.
-end Gnoga.Application.Multiuser;
+end Gnoga.Application.Multi_Connect;

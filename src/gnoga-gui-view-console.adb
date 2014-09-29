@@ -35,17 +35,18 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-package body Gnoga.Gui.View.Console is
+with GNAT.OS_Lib;
 
+package body Gnoga.Gui.View.Console is
    ------------
    -- Create --
    ------------
 
    procedure Create
-     (View    : in out Console_View_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
-      ID      : in     String  := "")
+     (View          : in out Console_View_Type;
+      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach        : in     Boolean := True;
+      ID            : in     String  := "")
    is
    begin
       View_Type (View).Create (Parent => Parent,

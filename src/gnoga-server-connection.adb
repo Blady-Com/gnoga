@@ -549,8 +549,42 @@ package body Gnoga.Server.Connection is
    package Object_Maps is new Ada.Containers.Ordered_Maps
      (Gnoga.Types.Unique_ID, Gnoga.Gui.Base.Pointer_To_Base_Class);
 
-   Object_Map : Object_Maps.Map;
-   --  ? Does this need to be protected?
+   protected type Object_Manager_Type is
+      function Get_Object (Index : Integer)
+                           return Gnoga.Gui.Base.Pointer_To_Base_Class;
+      procedure Insert
+        (ID     : in Gnoga.Types.Unique_ID;
+         Object : in Gnoga.Gui.Base.Pointer_To_Base_Class);
+
+      procedure Delete (ID : Gnoga.Types.Unique_ID);
+   private
+      Object_Map : Object_Maps.Map;
+   end Object_Manager_Type;
+
+   protected body Object_Manager_Type is
+      function Get_Object (Index : Integer)
+                           return Gnoga.Gui.Base.Pointer_To_Base_Class
+      is
+      begin
+         return Object_Map.Element (Index);
+      end Get_Object;
+
+      procedure Insert
+        (ID     : in Gnoga.Types.Unique_ID;
+         Object : in Gnoga.Gui.Base.Pointer_To_Base_Class)
+      is
+      begin
+         Object_Map.Insert (Key      => ID,
+                            New_Item => Object);
+      end Insert;
+
+      procedure Delete (ID : Gnoga.Types.Unique_ID) is
+      begin
+         Object_Map.Delete (ID);
+      end Delete;
+   end Object_Manager_Type;
+
+   Object_Manager : Object_Manager_Type;
 
    -------------------
    -- Socket_Create --
@@ -597,7 +631,7 @@ package body Gnoga.Server.Connection is
       when Connection_Error =>
          null; -- Browser was closed by user
       when E : others =>
-         Log ("Connection ID=" & ID'Img);
+         Log ("Connection Error on ID=" & ID'Img);
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
@@ -807,7 +841,7 @@ package body Gnoga.Server.Connection is
             Event_Data : String := Message ((P2 + 1) .. Message'Last);
 
             Object : Gnoga.Gui.Base.Pointer_To_Base_Class :=
-              Object_Map.Element (Integer'Value (UID));
+                       Object_Manager.Get_Object (Integer'Value (UID));
          begin
             New_Dispatch_Task := new Dispatch_Task_Type (Object);
             New_Dispatch_Task.Start (Event, Event_Data);
@@ -828,6 +862,9 @@ package body Gnoga.Server.Connection is
       begin
          Socket.Send (Script);
       end;
+   exception
+      when AWS.Net.Socket_Error =>
+         raise Connection_Error;
    end Execute_Script;
 
    function Execute_Script (ID     : in Gnoga.Types.Connection_ID;
@@ -854,7 +891,7 @@ package body Gnoga.Server.Connection is
          end;
 
          select
-            delay 3.0;
+            delay 3.0; --  Timeout for browser to return answer
             Script_Manager.Delete_Script_Holder (Script_ID);
             raise Script_Error;
          then abort
@@ -865,6 +902,9 @@ package body Gnoga.Server.Connection is
 
          return Script_Holder.Result;
       end;
+   exception
+      when AWS.Net.Socket_Error =>
+         raise Connection_Error;
    end Execute_Script;
 
    ---------------------
@@ -991,8 +1031,7 @@ package body Gnoga.Server.Connection is
      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
-      Object_Map.Insert (Key      => Object.Unique_ID,
-                         New_Item => Object'Unchecked_Access);
+      Object_Manager.Insert (Object.Unique_ID, Object'Unchecked_Access);
    end Add_To_Message_Queue;
 
    -------------------------------
@@ -1002,7 +1041,7 @@ package body Gnoga.Server.Connection is
    procedure Delete_From_Message_Queue
      (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
-      Object_Map.Delete (Key => Object.Unique_ID);
+      Object_Manager.Delete (Object.Unique_ID);
    end Delete_From_Message_Queue;
 
    ----------

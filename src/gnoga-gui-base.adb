@@ -180,19 +180,22 @@ package body Gnoga.Gui.Base is
    procedure Finalize (Object : in out Base_Type) is
       use type Gnoga.Types.ID_Enumeration;
    begin
-      Object.On_Destroy;
       if Object.Connection_ID /= Gnoga.Types.No_Connection then
+         Object.On_Destroy;
+
          if Object.ID_Type = Gnoga.Types.Gnoga_ID then
             begin
                Gnoga.Server.Connection.Execute_Script
                  (Object.Connection_ID, "delete gnoga['" & Object.ID & "'];");
             exception
                when Gnoga.Server.Connection.Connection_Error =>
-                  null;
+                  null; --  Socket error to browser
             end;
          end if;
 
          Object.Detach_From_Message_Queue;
+
+         Object.Connection_ID := Gnoga.Types.No_Connection;
       end if;
    end Finalize;
 

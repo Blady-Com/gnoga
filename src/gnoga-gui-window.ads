@@ -58,6 +58,9 @@ package Gnoga.Gui.Window is
    type Window_Access is access all Window_Type;
    type Pointer_To_Window_Class is access all Window_Type'Class;
 
+   overriding
+   procedure Finalize (Object : in out Window_Type);
+
    Invalid_ID_Type    : exception;
 
    Not_A_Gnoga_Window : exception;
@@ -179,6 +182,14 @@ package Gnoga.Gui.Window is
    --  if not a unique Session ID is generated and stored for future
    --  invocations.
 
+   procedure Connection_Data
+     (Window           : in out Window_Type;
+      Data             : in out Gnoga.Types.Connection_Data_Type'Class;
+      Free_On_Finalize : in     Boolean := True);
+   --  Associates Data with the the connection Window is on.
+   --  If Free_On_Finalize is true, Data will be unallocated when Window is
+   --  finalized.
+
    -------------------------------------------------------------------------
    --  Window_Type - Methods
    -------------------------------------------------------------------------
@@ -270,10 +281,11 @@ package Gnoga.Gui.Window is
 private
    type Window_Type is new Gnoga.Gui.Base.Base_Type with
       record
-         DOM_Document : aliased Gnoga.Gui.Document.Document_Type;
-         Location     : aliased Gnoga.Gui.Location.Location_Type;
-         View_ID      : Gnoga.Types.Web_ID;
-         Has_View     : Boolean := False;
+         DOM_Document         : aliased Gnoga.Gui.Document.Document_Type;
+         Location             : aliased Gnoga.Gui.Location.Location_Type;
+         View_ID              : Gnoga.Types.Web_ID;
+         Has_View             : Boolean := False;
+         Free_Connection_Data : Boolean := False;
 
          On_Abort_Event              : Gnoga.Gui.Base.Action_Event := null;
          On_Error_Event              : Gnoga.Gui.Base.Action_Event := null;

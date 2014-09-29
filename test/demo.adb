@@ -33,19 +33,17 @@ procedure Demo is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : aliased App_Data;
+      App     : App_Access := new App_Data;
       Play    : Common.Button_Type;
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.Console.Create (Main_Window);
 
       Play.Create (App.Console, "Play");
       Play.On_Click_Handler (On_Click'Unrestricted_Access);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect;
 
 begin

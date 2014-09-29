@@ -104,7 +104,7 @@ end Color_Me_Task;
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : aliased App_Data;
+      App : App_Access := new App_Data;
 
       Color_Me : Color_Me_Task (App.Hello_World'Unchecked_Access);
 
@@ -113,6 +113,8 @@ end Color_Me_Task;
       Lnk : Gnoga.Gui.Element.Common.A_Type;
       Img : Gnoga.Gui.Element.Common.IMG_Type;
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.Hello_World.Create (Main_Window);
@@ -155,8 +157,6 @@ end Color_Me_Task;
       Img.Place_After (Hr2);
 
       App.Main_Window.On_Key_Down_Handler (On_Key_Press'Unrestricted_Access);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
 
       Color_Me.Start;
 

@@ -36,9 +36,11 @@
 ------------------------------------------------------------------------------
 
 with Ada.Directories;
-with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
+
+with Ada.Exceptions;
+with GNAT.Traceback.Symbolic;
 
 with Ada.Containers.Ordered_Maps;
 
@@ -55,8 +57,6 @@ with AWS.Dispatchers;
 with AWS.Net.WebSocket;
 with AWS.Net.WebSocket.Registry;
 with AWS.Net.WebSocket.Registry.Control;
-
-with GNAT.Traceback.Symbolic;
 
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Unique_ID;
@@ -338,6 +338,9 @@ package body Gnoga.Server.Connection is
          --  Semiphore does not reset itself to a blocking state.
          --  This insures that if Released before Hold that Hold
          --  will not block and connection will be released.
+         --  It also allows for On_Connect Handler to not have to use
+         --  Connection.Hold unless there is a desire code such as to
+         --  clean up after a connetion is ended.
       end Hold;
 
       procedure Release is

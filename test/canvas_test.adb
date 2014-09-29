@@ -44,13 +44,15 @@ procedure Canvas_Test is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : aliased App_Data;
+      App     : App_Access := new App_Data;
       C       : Context_2D.Context_2D_Type;
       G       : Context_2D.Gradient_Type;
       P       : Context_2D.Pattern_Type;
       I       : Common.IMG_Type;
       Button1 : Common.Button_Type;
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
 
       Button1.Create (Parent  => Main_Window.Document.Body_Element.all,
@@ -118,10 +120,6 @@ procedure Canvas_Test is
       C.Font (Height => "40px");
       C.Text_Alignment (Right);
       C.Fill_Text ("Hello World!", 200, 200);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect;
 
 begin

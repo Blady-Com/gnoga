@@ -33,10 +33,12 @@ procedure Media is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : aliased App_Data;
+      App     : access App_Data := new App_Data;
       Play    : Common.Button_Type;
       View    : Gnoga.Gui.View.View_Type;
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
 
       View.Create (Main_Window);
@@ -58,10 +60,6 @@ procedure Media is
         (Parent   => View,
          Source   => "http://www.mindbodycures.com/archive/Ankle.mp4",
          Controls => True);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect;
 
 begin

@@ -53,13 +53,15 @@ procedure Storage is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : aliased App_Data;
+      App     : access App_Data := new App_Data;
       View    : Gnoga.Gui.View.View_Type;
       Storage : Gnoga.Client.Storage.Local_Storage_Type :=
                   Gnoga.Client.Storage.Local_Storage (Main_Window);
       Session : Gnoga.Client.Storage.Session_Storage_Type :=
                   Gnoga.Client.Storage.Session_Storage (Main_Window);
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
 
       View.Create (Main_Window);
@@ -86,10 +88,6 @@ procedure Storage is
 
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect;
 
 begin

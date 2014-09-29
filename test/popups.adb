@@ -90,10 +90,12 @@ procedure Popups is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : aliased App_Data;
+      App : App_Access := new App_Data;
       Hr1 : Gnoga.Gui.Element.Common.HR_Type;
       B   : Common.Button_Type;
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.Hello_World.Create (Main_Window, "Launch Window");
@@ -115,20 +117,17 @@ procedure Popups is
       App.Frame.Create (Main_Window, "/demo");
       App.Frame.Width (800);
       App.Frame.Place_After (B);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect;
 
    procedure On_Connect_2
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : aliased App_Data2;
+      App : App_Access2 := new App_Data2;
       D : Gnoga.Gui.Element.Common.DIV_Type;
       B : Common.Button_Type;
    begin
+      Main_Window.Connection_Data (App.all);
       Main_Window.Document.Body_Element.Background_Color ("blue");
 
       D.Create (Main_Window, "This is on another path in same application.");
@@ -138,10 +137,6 @@ procedure Popups is
       B.Create (Main_Window, "click3");
       B.Place_Inside_Bottom_Of (Main_Window.Document.Body_Element.all);
       B.On_Click_Handler (On_Click3'Unrestricted_Access);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect_2;
 
 begin

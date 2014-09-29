@@ -72,13 +72,6 @@ package Gnoga.Application.Multi_Connect is
    --  execution for future connections or to to set the default handler if
    --  wasn't set in Initialize.
 
-   procedure Connection_Data
-     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Data        : access Gnoga.Types.Connection_Data_Type'Class);
-   --  Set Data for the connection to Main_Window
-   --  The Connection_Data property on any Base_Type'Class can be used to
-   --  access Data.
-
    procedure Message_Loop;
    --  Start serving connections to application and continue until
    --  End_Application is called.

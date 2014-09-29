@@ -39,10 +39,14 @@ with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps;
 with Ada.Calendar.Formatting;
+with Ada.Unchecked_Deallocation;
+with Ada.Exceptions;
+with GNAT.Traceback.Symbolic;
 
 with Gnoga.Client.Storage;
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Element;
+
 
 package body Gnoga.Gui.Window is
    use type Gnoga.Gui.Base.Action_Event;
@@ -92,6 +96,31 @@ package body Gnoga.Gui.Window is
 
       return Event;
    end Parse_Storage_Event;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   procedure Finalize (Object : in out Window_Type) is
+      P : Gnoga.Types.Pointer_to_Connection_Data_Class :=
+            Object.Connection_Data;
+
+      procedure Free_Data is
+        new Ada.Unchecked_Deallocation
+          (Gnoga.Types.Connection_Data_Type'Class,
+           Gnoga.Types.Pointer_to_Connection_Data_Class);
+   begin
+      if Object.Free_Connection_Data then
+         Free_Data (P);
+      end if;
+      Gnoga.Gui.Base.Base_Type (Object).Finalize;
+   exception
+      when E : others =>
+         Log ("Error finalizing Window - " & Object.ID);
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+   end Finalize;
 
    ------------
    -- Attach --
@@ -415,6 +444,22 @@ package body Gnoga.Gui.Window is
          return Gid;
       end if;
    end Gnoga_Session_ID;
+
+   ---------------------
+   -- Connection_Data --
+   ---------------------
+
+   procedure Connection_Data
+     (Window           : in out Window_Type;
+      Data             : in out Gnoga.Types.Connection_Data_Type'Class;
+      Free_On_Finalize : in     Boolean := True)
+   is
+   begin
+      Gnoga.Server.Connection.Connection_Data
+        (ID => Window.Connection_ID, Data => Data'Unchecked_Access);
+
+      Window.Free_Connection_Data := Free_On_Finalize;
+   end Connection_Data;
 
    ------------
    -- Launch --

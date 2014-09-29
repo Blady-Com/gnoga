@@ -60,10 +60,12 @@ procedure Forms is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : aliased App_Data;
+      App     : App_Access := new App_Data;
       Button1 : Form.Input_Button_Type;
       Button2 : Form.Submit_Button_Type;
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.My_Form.Create (Main_Window);
@@ -89,27 +91,21 @@ procedure Forms is
                        Name       => "My_Color");
       App.Pick.Place_After (Button2);
       App.Pick.On_Change_Handler (On_Change'Unrestricted_Access);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect;
 
    procedure On_Connect_2
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : aliased App_Data2;
+      App : App_Access2 := new App_Data2;
       R   : Common.Div_Type;
    begin
+      Main_Window.Connection_Data (App.all);
+
       R.Create (Main_Window, "Results => " & Main_Window.Location.Search &
                   "<br />" &
                   "Some_Text => " & Main_Window.Search_Parameter ("Some_Text"));
       R.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
-
-      Application.Multi_Connect.Connection_Data (Main_Window, App'Unchecked_Access);
-
-      Connection.Hold;
    end On_Connect_2;
 
 begin

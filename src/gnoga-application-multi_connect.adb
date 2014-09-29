@@ -50,7 +50,10 @@ package body Gnoga.Application.Multi_Connect is
      (ID         : in     Gnoga.Types.Connection_ID;
       Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
    --  Handle connections by creating Main_Winow object and dispatching
-   --  to correct On_Connect_Handler based on Path
+   --  to correct On_Connect_Handler based on Path. It is not neccessary
+   --  to call Connection.Hold unless you wish to hold the connection and
+   --  then following it's release run additional such as to clean up some
+   --  dynamically created data, etc.
 
    ----------------
    -- On_Connect --
@@ -73,8 +76,14 @@ package body Gnoga.Application.Multi_Connect is
       begin
          if Path_Map.Contains (Path) then
             Path_Map.Element (Path) (Main_Window, Connection);
+
+            Connection.Hold;
+            --  If connection was already released this will not block.
          elsif Path_Map.Contains ("default") then
             Path_Map.Element ("default") (Main_Window, Connection);
+
+            Connection.Hold;
+            --  If connection was already released this will not block.
          else
             Server.Connection.HTML_On_Close (ID, "No route to path.");
          end if;
@@ -112,20 +121,6 @@ package body Gnoga.Application.Multi_Connect is
    begin
       Path_Map.Include (Right_Trim_Slashes (Left_Trim_Slashes (Path)), Event);
    end On_Connect_Handler;
-
-   ---------------------
-   -- Connection_Data --
-   ---------------------
-
-   procedure Connection_Data
-     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Data        : access Gnoga.Types.Connection_Data_Type'Class)
-   is
-   begin
-      Gnoga.Server.Connection.Connection_Data
-        (ID   => Main_Window.Connection_ID,
-         Data => Data);
-   end Connection_Data;
 
    ------------------
    -- Message_Loop --

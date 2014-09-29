@@ -35,6 +35,9 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Exceptions;
+with GNAT.Traceback.Symbolic;
+
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
@@ -197,6 +200,12 @@ package body Gnoga.Gui.Base is
 
          Object.Connection_ID := Gnoga.Types.No_Connection;
       end if;
+   exception
+      when E : others =>
+         Log ("Error finalizing - " & Object.ID);
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Finalize;
 
    ----------

@@ -256,16 +256,15 @@ package body Snake.Connection is
      (Main_Window : in out Window_Type'Class;
       Connection  : access Connection_Holder_Type)
    is
-      App : aliased App_Data;
+      App : App_Access := new App_Data;
    begin
+      Main_Window.Connection_Data (App.all);
+
       App.Main_Window := Main_Window'Unchecked_Access;
-      Connection_Data (Main_Window, App'Unchecked_Access);
 
       Display_Splash (Main_Window);
 
       Start_Game (Main_Window);
-
-      Connection.Hold;
    end On_Connect_Default;
 
 end Snake.Connection;

@@ -1,0 +1,30 @@
+Welcome to Gnoga
+----------------
+
+These tutorials are designed to introduce you in a practical and efficient way
+in to programming Ada with Gnoga.
+
+Gnoga is a collection of Ada packages, we will call such a collection a
+development framework, designed to allow Ada programs to make use of the
+latest web technologies both on the internet and on the desktop.
+
+Each tutorial has a README that will help you understand what to look for
+in the tutorial application to get you up to speed using Gnoga in your own
+applications quickly.
+
+After reading the tutorial README carefully read through the tutorial
+application code and all comments with in the code.
+
+Each tutorial is built by changing in to the directory and running grpbuild,
+for example:
+
+cd tutorial-01
+gprbuild
+
+Once the executable has been built it will be in the gnoga/bin directory.
+To see the tutorial in action run the executable there and open a web browser
+to http://localhost:8080
+
+If you have questions or find that there are areas that are not clear, please
+e-mail me with your comments so that I can improve these tutorials at:
+david@botton.com

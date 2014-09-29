@@ -1,7 +1,7 @@
 GNOGA - The GNU Omnificent GUI for Ada
 http://www.gnoga.com
 
-Documentation and more demos to come.
+Read through each README starting with /tutorial for the basics on writing Gnoga applications.
 
 For now run:
 
@@ -9,7 +9,7 @@ make
 
 then run the snake demo in /bin
 
-There are other test bins in the /bin you can also take a look at but they are mainly used during development to test the framework as I go.
+There are other test bins in the /bin you can also take a look at but they are mainly used during development to test the framework as I go the tutorials are better examples of how to program Gnoga.
 
 You can now install gnoga as a gnat library using:
 

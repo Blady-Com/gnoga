@@ -91,6 +91,10 @@ procedure Forms is
                        Name       => "My_Color");
       App.Pick.Place_After (Button2);
       App.Pick.On_Change_Handler (On_Change'Unrestricted_Access);
+      
+      Connection.Hold;
+      --  If any handlers are set on local variables they can't finalize
+      --  before connection end.
    end On_Connect;
 
    procedure On_Connect_2

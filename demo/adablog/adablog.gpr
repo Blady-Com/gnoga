@@ -13,6 +13,6 @@ project AdaBlog is
    end Builder;
       
    package Compiler is
-      for Default_Switches ("ada") use ("-gnat05", "-g");
+      for Default_Switches ("ada") use ("-E");
    end Compiler;
 end AdaBlog;

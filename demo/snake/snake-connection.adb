@@ -267,4 +267,8 @@ package body Snake.Connection is
       Start_Game (Main_Window);
    end On_Connect_Default;
 
+begin
+   On_Connect_Handler
+     (Event => Snake.Connection.On_Connect_Default'Unrestricted_Access,
+      Path  => "default");
 end Snake.Connection;

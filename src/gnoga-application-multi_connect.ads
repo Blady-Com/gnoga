@@ -44,16 +44,6 @@ with Gnoga.Gui.Window;
 
 package Gnoga.Application.Multi_Connect is
 
-   procedure Initialize
-     (Event : in Application_Connect_Event := null;
-      Host  : in String                    := "";
-      Port  : in Integer                   := 8080;
-      Boot  : in String                    := "boot.html");
-   --  Initialize applicaiton for multiple connections using
-   --  Event for the default Connection Handler and Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
-
    subtype Connection_Holder_Type is
      Gnoga.Server.Connection.Connection_Holder_Type;
 
@@ -69,6 +59,16 @@ package Gnoga.Application.Multi_Connect is
    --  be created on the stack with in the procedure and not be finalized
    --  prematurely and still able to respond to events, etc.
    --  Use: Connection.Hold;
+
+   procedure Initialize
+     (Event : in Application_Connect_Event := null;
+      Host  : in String                    := "";
+      Port  : in Integer                   := 8080;
+      Boot  : in String                    := "boot.html");
+   --  Initialize applicaiton for multiple connections using
+   --  Event for the default Connection Handler and Boot for bootstrap html.
+   --  If Host = "" then will listen on all interfaces.
+   --  Use Host = "locahost" to constrain to local use only.
 
    procedure On_Connect_Handler (Event : in Application_Connect_Event;
                                  Path  : in String := "default");

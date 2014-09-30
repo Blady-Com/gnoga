@@ -11,11 +11,7 @@ begin
 
    Application.HTML_On_Close ("Application disconnected.");
 
-   Initialize (Boot => "debug.html");
-
-   On_Connect_Handler
-     (Event => Snake.Connection.On_Connect_Default'Unrestricted_Access,
-      Path  => "default");
+   Initialize;
 
    Message_Loop;
 end Snake.Main;

@@ -270,6 +270,13 @@ package Gnoga.Gui.Window is
    --  Winow_Type - Event Methods
    -------------------------------------------------------------------------
 
+   overriding
+   procedure On_Resize_Handler
+     (Object  : in out Window_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event);
+   --  Prevent ubinding of resize event from window by adding or removing a
+   --  handler.
+
    procedure On_Resize (Window : in out Window_Type);
    --  Handle resizing an object set as a View for Window to new
    --  height and width of Window

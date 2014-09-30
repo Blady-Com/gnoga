@@ -521,6 +521,10 @@ package Gnoga.Gui.Base is
                                 Script : in     String);
    --  On Event occuring to Object, the Script will be executed on browser.
 
+   procedure Unbind_Event (Object : in out Base_Type;
+                           Event  : in     String);
+   --  Unbind an event.
+
    procedure Attach_To_Message_Queue (Object : in out Base_Type);
    --  Attach Object to Message Queue
 

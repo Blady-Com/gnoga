@@ -20,6 +20,14 @@ procedure Demo is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Console.Put_Line ("Dynamic reasign of click handler worked");
+      Object.On_Click_Handler (null);
+      App.Console.Put_Line ("Click handler now set to null - disabled");
+   end On_Click2;
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -30,6 +38,8 @@ procedure Demo is
          D.Dynamic;
          D.Create (App.Console, "This is a dynamic DIV");
       end loop;
+      App.Console.Put_Line ("Changing click handler.");
+      Object.On_Click_Handler (On_Click2'Unrestricted_Access);
    end On_Click;
 
    procedure On_Connect

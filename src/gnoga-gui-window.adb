@@ -654,10 +654,16 @@ package body Gnoga.Gui.Window is
                                Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
+      if Window.On_Abort_Event /= null then
+         Window.Unbind_Event ("abort");
+      end if;
+
       Window.On_Abort_Event := Handler;
 
-      Window.Bind_Event (Event   => "abort",
-                         Message => "");
+      if Handler /= null then
+         Window.Bind_Event (Event   => "abort",
+                            Message => "");
+      end if;
    end On_Abort_Handler;
 
    procedure Fire_On_Abort (Window : in out Window_Type)
@@ -677,10 +683,16 @@ package body Gnoga.Gui.Window is
       Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
+      if Window.On_Error_Event /= null then
+         Window.Unbind_Event ("error");
+      end if;
+
       Window.On_Error_Event := Handler;
 
-      Window.Bind_Event (Event   => "error",
-                         Message => "");
+      if Handler /= null then
+         Window.Bind_Event (Event   => "error",
+                            Message => "");
+      end if;
    end On_Error_Handler;
 
    procedure Fire_On_Error (Window : in out Window_Type)
@@ -700,10 +712,16 @@ package body Gnoga.Gui.Window is
       Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
+      if Window.On_Hash_Change_Event /= null then
+         Window.Unbind_Event ("hashchange");
+      end if;
+
       Window.On_Hash_Change_Event := Handler;
 
-      Window.Bind_Event (Event   => "hashchange",
-                         Message => "");
+      if Handler /= null then
+         Window.Bind_Event (Event   => "hashchange",
+                            Message => "");
+      end if;
    end On_Hash_Change_Handler;
 
    procedure Fire_On_Hash_Change (Window : in out Window_Type)
@@ -723,10 +741,16 @@ package body Gnoga.Gui.Window is
       Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
+      if Window.On_Orientation_Change_Event /= null then
+         Window.Unbind_Event ("orientationchange");
+      end if;
+
       Window.On_Orientation_Change_Event := Handler;
 
-      Window.Bind_Event (Event   => "orientationchange",
-                         Message => "");
+      if Handler /= null then
+         Window.Bind_Event (Event   => "orientationchange",
+                            Message => "");
+      end if;
    end On_Orientation_Change_Handler;
 
    procedure Fire_On_Orientation_Change (Window : in out Window_Type)
@@ -745,11 +769,17 @@ package body Gnoga.Gui.Window is
                                  Handler : in     Storage_Event)
    is
    begin
+      if Window.On_Storage_Event /= null then
+         Window.Unbind_Event ("storage");
+      end if;
+
       Window.On_Storage_Event := Handler;
 
-      Window.Bind_Event (Event   => "storage",
-                         Message => "",
-                         Script  => Storage_Event_Script);
+      if Handler /= null then
+         Window.Bind_Event (Event   => "storage",
+                            Message => "",
+                            Script  => Storage_Event_Script);
+      end if;
    end On_Storage_Handler;
 
    procedure Fire_On_Storage (Window        : in out Window_Type;
@@ -764,6 +794,24 @@ package body Gnoga.Gui.Window is
    ---------------
    -- On_Resize --
    ---------------
+
+   overriding
+   procedure On_Resize_Handler (Object  : in out Window_Type;
+                                Handler : in     Gnoga.Gui.Base.Action_Event)
+   is
+      --  This must be overidden to prevent unbinding of the resize event.
+   begin
+      Object.Unbind_Event ("resize");
+      --  Remove binding set by Window_Type attachment.
+
+      Gnoga.Gui.Base.Base_Type (Object).On_Resize_Handler (Handler);
+
+      if Handler = null then
+         Object.Bind_Event (Event   => "resize",
+                            Message => "");
+         --  Rebind if additional handler was removed.
+      end if;
+   end On_Resize_Handler;
 
    procedure On_Resize (Window : in out Window_Type) is
       use Gnoga.Types;

@@ -1,0 +1,9 @@
+Tutorial 03
+-----------
+
+This tutorial is designed to introduce:
+
+1) Using Tasks with Gnoga
+2) The difference between DIV_Types and Span_Types
+3) How to attach Gnoga objects to existing HTML elements in the DOM
+4) When to manually "hold" a connection.

@@ -35,9 +35,19 @@ snake:
 tests:
 	cd test && gprbuild
 
+tutorials:
+	cd tutorial/tutorial-01 && gprbuild
+	cd tutorial/tutorial-02 && gprbuild
+	cd tutorial/tutorial-03 && gprbuild
+	cd tutorial/tutorial-04 && gprbuild
+
 clean:
 	cd src && gprclean -Pgnoga.gpr
 	cd test && gprclean
 	cd demo/adablog && gprclean
 	cd demo/snake && gprclean
+	cd tutorial/tutorial-01 && gprclean
+	cd tutorial/tutorial-02 && gprclean
+	cd tutorial/tutorial-03 && gprclean
+	cd tutorial/tutorial-04 && gprclean
 	-cd bin && rm *.db

@@ -89,6 +89,23 @@ package body Gnoga.Gui.View is
       end if;
    end Put_Line;
 
+   ---------
+   -- Put --
+   ---------
+
+   procedure Put (View    : in out View_Type;
+                  Message : in     String;
+                  Class   : in     String := "";
+                  ID      : in     String := "")
+   is
+      S : Gnoga.Gui.Element.Common.Span_Type;
+   begin
+      S.Create (View, Message, ID);
+      if Class /= "" then
+         S.Class_Name (Class);
+      end if;
+   end Put;
+
    --------------
    -- New_Line --
    --------------

@@ -76,6 +76,14 @@ package Gnoga.Gui.View is
    --  of data added by Put_Line. Class is an optional CSS class and
    --  ID and option DOM ID.
 
+   procedure Put (View    : in out View_Type;
+                  Message : in     String;
+                  Class   : in     String := "";
+                  ID      : in     String := "");
+   --  Create a new SPAN with Message and append to end of view.
+   --  Spans are added inline unlike DIVs that are blocks taking up an
+   --  an entire row.
+
    procedure New_Line (View : in out View_Type);
    --  Create a new DIV with <br /> and append to end of view
 

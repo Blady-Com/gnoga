@@ -47,11 +47,14 @@ with Gnoga.Server.Connection;
 package body Gnoga.Gui.Base is
 
    Mouse_Event_Script : constant String :=
-     "e.clientX + '|' + e.clientY + '|' + e.screenX + '|' + " &
+     "(e.clientX - e.target.offsetLeft) + '|' + " &
+     "(e.clientY - e.target.offsetTop) + '|' + e.screenX + '|' + " &
      "e.screenY + '|' + e.which + '|' + e.altKey + '|' + " &
      "e.ctrlKey + '|' + e.shiftKey + '|' + e.metaKey + '|'";
    --  e.buttons would be better but not supported currently outside
    --  of firefox and would always return 0 on Mac so using e.which.
+   --  The use of offsetLeft and offsetTop is to correct the X and Y
+   --  to the actual X,Y of the target.
 
    Keyboard_Event_Script : constant String :=
      "e.which + '|' + e.altKey + '|' + e.ctrlKey + '|' + e.shiftKey + '|' + " &

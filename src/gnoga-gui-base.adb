@@ -462,6 +462,20 @@ package body Gnoga.Gui.Base is
       return Object.Property (Name) = "true";
    end Property;
 
+   -------------
+   -- Dynamic --
+   -------------
+
+   procedure Dynamic (Object : in out Base_Type; Value : Boolean := True) is
+   begin
+      Object.Is_Dynamic := Value;
+   end Dynamic;
+
+   function Dynamic (Object : Base_Type) return Boolean is
+   begin
+      return Object.Is_Dynamic;
+   end Dynamic;
+
    -------------------------------------------------------------------------
    --  Base_Type - Methods
    -------------------------------------------------------------------------

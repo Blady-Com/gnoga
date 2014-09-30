@@ -44,13 +44,6 @@ with Gnoga.Gui.Window;
 
 package Gnoga.Application.Multi_Connect is
 
-   subtype Connection_Holder_Type is
-     Gnoga.Server.Connection.Connection_Holder_Type;
-
-   type Application_Connect_Event is access
-     procedure (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                Connection  : access Connection_Holder_Type);
-
    procedure Initialize
      (Event : in Application_Connect_Event := null;
       Host  : in String                    := "";
@@ -60,6 +53,22 @@ package Gnoga.Application.Multi_Connect is
    --  Event for the default Connection Handler and Boot for bootstrap html.
    --  If Host = "" then will listen on all interfaces.
    --  Use Host = "locahost" to constrain to local use only.
+
+   subtype Connection_Holder_Type is
+     Gnoga.Server.Connection.Connection_Holder_Type;
+
+   type Application_Connect_Event is access
+     procedure (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+                Connection  : access Connection_Holder_Type);
+   --  On each connection an Application_Connect_Event registered in
+   --  On_Connect_Handler will be called. Main_Window will be attached
+   --  to the window of the browser, Connection can optionally be used
+   --  to allow for "clean up" upon close of connection, or to prevent
+   --  finalization of the called Application_Connect_Event procedure
+   --  until the connection is closed. This allows for Gnoga objects to
+   --  be created on the stack with in the procedure and not be finalized
+   --  prematurely and still able to respond to events, etc.
+   --  Use: Connection.Hold;
 
    procedure On_Connect_Handler (Event : in Application_Connect_Event;
                                  Path  : in String := "default");
@@ -81,5 +90,6 @@ package Gnoga.Application.Multi_Connect is
    --  This will disconnect application connection to browser and finalize
    --  Gnoga objects, however Gnoga objects on finalization do not destroy
    --  DOM object in browser so browser state will remain with document
-   --  after the loop has terminated and application has ended.
+   --  after the loop has terminated and application has ended unless
+   --  Gnoga.Application.HTML_On_Close has been set.
 end Gnoga.Application.Multi_Connect;

@@ -40,6 +40,22 @@ with Gnoga.Gui.Element.Common;
 
 package body Gnoga.Gui.View is
 
+   --------------
+   -- Finalize --
+   --------------
+
+   procedure Finalize (Object : in out View_Type) is
+   begin
+      for i in
+        Object.Base_Type_Array.First_Index .. Object.Base_Type_Array.Last_Index
+      loop
+         if Object.Base_Type_Array.Element (i).Dynamic then
+            Object.Base_Type_Array.Element (i).Free;
+         end if;
+      end loop;
+      Gnoga.Gui.Element.Element_Type (Object).Finalize;
+   end Finalize;
+
    ------------
    -- Create --
    ------------
@@ -69,6 +85,10 @@ package body Gnoga.Gui.View is
    begin
       if Child in Element_Type'Class then
          Element_Type (Child).Place_Inside_Bottom_Of (View);
+      end if;
+
+      if Child.Dynamic then
+         View.Base_Type_Array.Append (Child'Unchecked_Access);
       end if;
    end On_Child_Added;
 

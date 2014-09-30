@@ -60,10 +60,12 @@ package Gnoga.Gui.Base is
    --  An attempt was made to use an object that has not yet been created on
    --  the client.
 
-   overriding procedure Initialize (Object : in out Base_Type);
+   overriding
+   procedure Initialize (Object : in out Base_Type);
    --  Assigns Unique_ID
 
-   overriding procedure Finalize (Object : in out Base_Type);
+   overriding
+   procedure Finalize (Object : in out Base_Type);
    --  Detaches object from message queue and fires On_Destroy
    --  If ID_Type = Gnoga_ID then clear the browser reference to the
    --  object
@@ -169,6 +171,16 @@ package Gnoga.Gui.Base is
                        Value  : in     Boolean);
    function Property (Object : Base_Type; Name : String) return Boolean;
    --  General access to property Name
+
+   --  Framework Properties  --
+
+   procedure Dynamic (Object : in out Base_Type; Value : Boolean := True);
+   function Dynamic (Object : Base_Type) return Boolean;
+   --  Can be used to mark an object as dynamically allocated instead of
+   --  on the stack. This in of itself does not do anything, but Views
+   --  will deallocate on finalization children that are marked as Dynamic
+   --  if done so before being Created and added to View.
+   --  See Gnoga.Gui.View
 
    -------------------------------------------------------------------------
    --  Base_Type - Methods
@@ -540,6 +552,7 @@ private
          Connection_ID : Gnoga.Types.Connection_ID  :=
            Gnoga.Types.No_Connection;
          Parent_Object : Pointer_To_Base_Class      := null;
+         Is_Dynamic    : Boolean                    := False;
 
          --  Object Events
          On_Resize_Event             : Action_Event         := null;

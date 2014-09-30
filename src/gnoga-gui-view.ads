@@ -38,6 +38,8 @@
 --  Views are used to handle auto insertion of objects in to the DOM and
 --  placement.
 
+with Ada.Containers.Vectors;
+
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 
@@ -50,6 +52,11 @@ package Gnoga.Gui.View is
    type View_Type is new Gnoga.Gui.Element.Element_Type with private;
    type View_Access is access all View_Type;
    type Pointer_To_View_Class is access all View_Type'Class;
+
+   overriding
+   procedure Finalize (Object : in out View_Type);
+   --  Deallocate any child element that was marked as Dynamic before
+   --  being added to View
 
    -------------------------------------------------------------------------
    --  View_Type - Creation Methods
@@ -101,5 +108,14 @@ package Gnoga.Gui.View is
    --  to it.
 
 private
-   type View_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   package Base_Type_Arrays is
+     new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Gnoga.Gui.Base.Pointer_To_Base_Class,
+        "="          => Gnoga.Gui.Base."=");
+
+   type View_Type is new Gnoga.Gui.Element.Element_Type with
+      record
+         Base_Type_Array : Base_Type_Arrays.Vector;
+      end record;
 end Gnoga.Gui.View;

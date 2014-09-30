@@ -23,9 +23,12 @@ procedure Demo is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
+      D : Common.DIV_Access;
    begin
       For i in 1 .. 50 loop
-         App.Console.Put_Line ("Another line");
+         D := new Common.DIV_Type;
+         D.Dynamic;
+         D.Create (App.Console, "This is a dynamic DIV");
       end loop;
    end On_Click;
 
@@ -34,7 +37,7 @@ procedure Demo is
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : App_Access := new App_Data;
-      Play    : Common.Button_Type;
+      Play    : Common.Button_Access := new Common.Button_Type;
    begin
       Main_Window.Connection_Data (App.all);
 
@@ -42,7 +45,8 @@ procedure Demo is
 
       App.Console.Create (Main_Window);
 
-      Play.Create (App.Console, "Play");
+      Play.Dynamic;
+      Play.Create (App.Console, "Click Me");
       Play.On_Click_Handler (On_Click'Unrestricted_Access);
    end On_Connect;
 

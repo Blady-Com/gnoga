@@ -472,6 +472,7 @@ package body Gnoga.Gui.Window is
                      Height   : in     Integer := -1;
                      Left     : in     Integer := -1;
                      Top      : in     Integer := -1;
+                     Location : in     Boolean := False;
                      Menu     : in     Boolean := False;
                      Status   : in     Boolean := False;
                      Tool_Bar : in     Boolean := False;
@@ -488,6 +489,7 @@ package body Gnoga.Gui.Window is
          C : Boolean := False;
 
          procedure Add_Param (S : String; V : String);
+         procedure Add_Param (S : String; V : Boolean);
 
          procedure Add_Param (S : String; V : String) is
          begin
@@ -498,6 +500,16 @@ package body Gnoga.Gui.Window is
             P := P & To_Unbounded_String (S) & "=" & To_Unbounded_String (V);
             C := True;
          end Add_Param;
+
+         procedure Add_Param (S : String; V : Boolean) is
+         begin
+            if V then
+               Add_Param (S, "yes");
+            else
+               Add_Param (S, "no");
+            end if;
+         end Add_Param;
+
       begin
          if Width > -1 then
             Add_Param ("width", Width'Img);
@@ -515,11 +527,12 @@ package body Gnoga.Gui.Window is
             Add_Param ("left", Left'Img);
          end if;
 
-         Add_Param ("menubar", Menu'Img);
-         Add_Param ("status", Status'Img);
-         Add_Param ("toolbar", Tool_Bar'Img);
-         Add_Param ("menubar", Menu'Img);
-         Add_Param ("titlebar", Title'Img);
+         Add_Param ("menubar", Menu);
+         Add_Param ("status", Status);
+         Add_Param ("toolbar", Tool_Bar);
+         Add_Param ("menubar", Menu);
+         Add_Param ("titlebar", Title);
+         Add_Param ("location", Location);
 
          return To_String (P);
       end Params;

@@ -121,6 +121,7 @@ package Gnoga.Gui.Window is
                      Height   : in     Integer := -1;
                      Left     : in     Integer := -1;
                      Top      : in     Integer := -1;
+                     Location : in     Boolean := False;
                      Menu     : in     Boolean := False;
                      Status   : in     Boolean := False;
                      Tool_Bar : in     Boolean := False;

@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---               G N O G A . G U I . V I E W . F I E L D S E T              --
+--      G N O G A . G U I . E L E M E N T . F O R M . F I E L D S E T       --
 --                                                                          --
---                                 B o d y                                  --
+--                                 S p e c                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,38 +35,45 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Gui.Window;
+--  A field set is used for grouping form fields.
+--
+--  Elements setting Fieldset as the parent will automatically be placed
+--  in to the fieldset.
 
-package body Gnoga.Gui.View.Fieldset is
-   ------------
-   -- Create --
-   ------------
+with Gnoga.Gui.View;
+
+package Gnoga.Gui.Element.Form.Fieldset is
+
+   -------------------------------------------------------------------------
+   --  Fieldset_Types
+   -------------------------------------------------------------------------
+
+   type Fieldset_Type is new Gnoga.Gui.View.View_Type with private;
+   type Fieldset_Access is access all Fieldset_Type;
+   type Pointer_To_Fieldset_Class is access all Fieldset_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Fieldset_Type - Creation Methods
+   -------------------------------------------------------------------------
 
    procedure Create
      (View          : in out Fieldset_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Attach        : in     Boolean := True;
-      ID            : in     String  := "")
-   is
-   begin
-      View.Create_From_HTML (Parent, "<fieldset />", ID);
+      ID            : in     String  := "");
+   --  If Parent is a Window_Type'Class will automatically set itself
+   --  as the View on Parent if Attach is True
 
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
-      end if;
-   end Create;
-
-   ----------------
-   -- Put_Legend --
-   ----------------
+   -------------------------------------------------------------------------
+   --  Fieldset_Type - Methods
+   -------------------------------------------------------------------------
 
    procedure Put_Legend (View  : in out Fieldset_Type;
                          Value : in     String;
-                         ID    : in     String  := "")
-   is
-      D : Gnoga.Gui.Element.Element_Type;
-   begin
-      D.Create_From_HTML (View, "<legend>" & Value & "</legend>", ID);
-   end Put_Legend;
+                         ID    : in     String  := "");
+   --  Should be called at start or end of adding items to a fieldset
+   --  to add a legend.
 
-end Gnoga.Gui.View.Fieldset;
+private
+   type Fieldset_Type is new Gnoga.Gui.View.View_Type with null record;
+end Gnoga.Gui.Element.Form.Fieldset;

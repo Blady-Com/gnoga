@@ -1,7 +1,7 @@
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
-with Gnoga.Gui.View.Fieldset;
+with Gnoga.Gui.Element.Form.Fieldset;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
@@ -18,7 +18,7 @@ procedure Demo is
       record
          Main_Window : Window.Pointer_To_Window_Class;
          Console     : View.Console.Console_View_Type;
-         FSet        : View.Fieldset.Fieldset_Type;
+         FSet        : Form.Fieldset.Fieldset_Type;
       end record;
    type App_Access is access all App_Data;
 

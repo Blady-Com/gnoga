@@ -35,6 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Gnoga.Gui.Window;
+
 package body Gnoga.Gui.Element.Form is
 
    -------------------------------------------------------------------------
@@ -48,10 +50,15 @@ package body Gnoga.Gui.Element.Form is
    procedure Create
      (Form    : in out Form_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String := "")
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "")
    is
    begin
       Form.Create_From_HTML (Parent, "<form />", ID);
+
+      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
+         Gnoga.Gui.Window.Window_Type (Parent).Set_View (Form);
+      end if;
    end Create;
 
    ------------
@@ -273,6 +280,17 @@ package body Gnoga.Gui.Element.Form is
    begin
       return Element.Property ("autofocus");
    end Auto_Focus;
+
+   ---------------
+   -- Data_List --
+   ---------------
+
+   procedure Data_List (Element : in out Form_Element_Type;
+                        ID      : in     String)
+   is
+   begin
+      Element.Attribute  ("list", ID);
+   end Data_List;
 
    --------------
    -- Disabled --

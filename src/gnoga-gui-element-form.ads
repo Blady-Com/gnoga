@@ -34,6 +34,7 @@
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
+with Gnoga.Gui.View;
 
 package Gnoga.Gui.Element.Form is
 
@@ -41,7 +42,7 @@ package Gnoga.Gui.Element.Form is
    --  Form_Types
    -------------------------------------------------------------------------
 
-   type Form_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Form_Type is new Gnoga.Gui.View.View_Type with private;
    type Form_Access is access all Form_Type;
    type Pointer_To_Botton_Class is access all Form_Type'Class;
 
@@ -49,9 +50,11 @@ package Gnoga.Gui.Element.Form is
    --  Form_Type - Creation Methods
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Form    : in out Form_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     ID      : in     String := "");
+                     Attach  : in     Boolean := True;
+                     ID      : in     String  := "");
    --  Create a Form element. This is used to group and set the action
    --  taken on a submit of the form.
    --
@@ -153,6 +156,12 @@ package Gnoga.Gui.Element.Form is
    procedure Auto_Focus (Element : in out Form_Element_Type;
                          Value   : in     Boolean := True);
    function Auto_Focus (Element : Form_Element_Type) return Boolean;
+
+   procedure Data_List (Element : in out Form_Element_Type;
+                        ID      : in     String);
+   --  Set the ID for the data list for Auto_Complete
+   --  Gnoga.Gui.Element.Form.Data_List can be used to easily create
+   --  a Data_List.
 
    procedure Disabled (Element : in out Form_Element_Type;
                        Value   : in     Boolean := True);
@@ -737,7 +746,7 @@ package Gnoga.Gui.Element.Form is
                      Name       : in     String := "";
                      ID         : in     String := "");
 private
-   type Form_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Form_Type is new Gnoga.Gui.View.View_Type with null record;
    type Form_Element_Type is
      new Gnoga.Gui.Element.Element_Type with null record;
    type Text_Area_Type is new Form_Element_Type with null record;

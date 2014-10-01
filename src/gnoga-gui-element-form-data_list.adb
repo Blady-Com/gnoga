@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                 G N O G A . G U I . V I E W . C O N S O L E              --
+--     G N O G A . G U I . E L E M E N T . F O R M . D A T A _ L I S T      --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,41 +35,40 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  A console view automatically sets padding around view for more readable
---  Put_Line use and auto scrolls down as items are added in to view.
-
-package Gnoga.Gui.View.Console is
-
-   -------------------------------------------------------------------------
-   --  Console_View_Types
-   -------------------------------------------------------------------------
-
-   type Console_View_Type is new View_Type with private;
-   type Console_View_Access is access all Console_View_Type;
-   type Pointer_To_Console_View_Class is access all Console_View_Type'Class;
-
-   -------------------------------------------------------------------------
-   --  Console_View_Type - Creation Methods
-   -------------------------------------------------------------------------
-
-   overriding
+package body Gnoga.Gui.Element.Form.Data_List is
+   ------------
+   -- Create --
+   ------------
    procedure Create
-     (View          : in out Console_View_Type;
+     (List          : in out Data_List_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
-      ID            : in     String  := "");
-   --  If Parent is a Window_Type'Class will automatically set itself
-   --  as the View on Parent if Attach is True
+      ID            : in     String)
+   is
+   begin
+      List.Create (Parent, False, ID);
+   end Create;
 
-   -------------------------------------------------------------------------
-   --  View_Type - Event Methods
-   -------------------------------------------------------------------------
+   procedure Create
+     (List          : in out Data_List_Type;
+      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach        : in     Boolean;
+      ID            : in     String)
+   is
+   begin
+      List.Create_From_HTML (Parent, "<datalist />", ID);
+   end Create;
 
-   overriding
-   procedure On_Child_Added
-     (View  : in out Console_View_Type;
-      Child : in out Gnoga.Gui.Base.Base_Type'Class);
+   ----------------
+   -- Add_Option --
+   ----------------
 
-private
-   type Console_View_Type is new View_Type with null record;
-end Gnoga.Gui.View.Console;
+   procedure Add_Option (List  : in out Data_List_Type;
+                         Value : in     String)
+   is
+      D : Gnoga.Gui.Element.Element_Type;
+   begin
+      D.Create_From_HTML
+        (List, "<option value=""" & Escape_Quotes (Value) & """>");
+   end Add_Option;
+
+end Gnoga.Gui.Element.Form.Data_List;

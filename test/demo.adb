@@ -1,12 +1,13 @@
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
-with Gnoga.Gui.Element.Form.Fieldset;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 
+with Gnoga.Gui.Element.Form.Fieldset;
+with Gnoga.Gui.Element.Form.Data_List;
 
 procedure Demo is
    use Gnoga;
@@ -19,6 +20,9 @@ procedure Demo is
          Main_Window : Window.Pointer_To_Window_Class;
          Console     : View.Console.Console_View_Type;
          FSet        : Form.Fieldset.Fieldset_Type;
+         My_Form     : Form.Form_Type;
+         My_List     : Form.Data_List.Data_List_Type;
+         My_Input    : Form.Text_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -57,11 +61,27 @@ procedure Demo is
 
       App.Console.Create (Main_Window);
 
-      App.FSet.Create (App.Console);
+      App.My_Form.Create (App.Console);
+
+      App.FSet.Create (App.My_Form);
       App.FSet.Put_Legend ("My set");
+
       Play.Dynamic;
       Play.Create (App.FSet, "Click Me");
       Play.On_Click_Handler (On_Click'Unrestricted_Access);
+
+      App.FSet.New_Line;
+
+      App.My_List.Create (App.My_Form, "stuff");
+      App.My_List.Add_Option ("thing1");
+      App.My_List.Add_Option ("abcde");
+      App.My_List.Add_Option ("1234");
+
+      App.My_Input.Create (Form  => App.My_Form,
+                           Size  => 40);
+      App.My_Input.Place_Inside_Bottom_Of (App.FSet);
+      App.My_Input.Data_List ("stuff");
+      App.My_Input.Auto_Complete;
    end On_Connect;
 
 begin

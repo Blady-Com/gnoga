@@ -56,6 +56,7 @@ package Gnoga.Gui.Element.Form.Fieldset is
    --  Fieldset_Type - Creation Methods
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create
      (View          : in out Fieldset_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;

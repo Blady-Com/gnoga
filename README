@@ -34,7 +34,7 @@ Gnoga has the following aspects to it:
 3. Application startup and services
         Gnoga.Server.Application.*
 
-4. Bindings to higher level toolkits like jQueryUI, Bootstrap, etc.
+4. Bindings to higher level toolkits like  Bootstrap, etc.
         Coming soon
 
 5. Gnoga Specific higher level containers and GUI widgets

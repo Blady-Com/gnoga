@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                 G N O G A . G U I . V I E W . C O N S O L E              --
+--               G N O G A . G U I . V I E W . F I E L D S E T              --
 --                                                                          --
---                                 B o d y                                 --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,36 +35,38 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-package body Gnoga.Gui.View.Console is
+with Gnoga.Gui.Window;
+
+package body Gnoga.Gui.View.Fieldset is
    ------------
    -- Create --
    ------------
 
    procedure Create
-     (View          : in out Console_View_Type;
+     (View          : in out Fieldset_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
    begin
-      View_Type (View).Create (Parent => Parent,
-                               Attach => Attach,
-                               ID     => ID);
-      View.Padding ("3px", "3px", "3px", "3px");
-      View.Overflow (Gnoga.Gui.Element.Auto);
+      View.Create_From_HTML (Parent, "<fieldset />", ID);
+
+      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
+         Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
+      end if;
    end Create;
 
-   --------------------
-   -- On_Child_Added --
-   --------------------
+   ----------------
+   -- Put_Legend --
+   ----------------
 
-   overriding procedure On_Child_Added
-     (View  : in out Console_View_Type;
-      Child : in out Gnoga.Gui.Base.Base_Type'Class)
+   procedure Put_Legend (View  : in out Fieldset_Type;
+                         Value : in     String;
+                         ID    : in     String  := "")
    is
+      D : Gnoga.Gui.Element.Element_Type;
    begin
-      View_Type (View).On_Child_Added (Child);
-      View.Scroll_Top (View.Scroll_Height);
-   end On_Child_Added;
+      D.Create_From_HTML (View, "<legend>" & Value & "</legend>", ID);
+   end Put_Legend;
 
-end Gnoga.Gui.View.Console;
+end Gnoga.Gui.View.Fieldset;

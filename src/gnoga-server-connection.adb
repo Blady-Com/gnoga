@@ -254,7 +254,6 @@ package body Gnoga.Server.Connection is
            (Content_Type => AWS.MIME.Text_HTML,
             Filename     => Ada.Strings.Unbounded.To_String (Web_Root) &
               "html" & Ada.Strings.Unbounded.To_String (Boot_HTML));
-         --  return AWS.Response.Acknowledge (AWS.Messages.S404);
       end if;
    end Dispatch;
 

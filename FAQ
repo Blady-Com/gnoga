@@ -51,6 +51,7 @@ Q) Can I build standalone true native desktop apps?
 A) Yes, there are a number of ways of doing it. As time permits various examples will be created using available products. Here are some options:
 
 - XulRunner
+- https://github.com/neam/webapp-xul-wrapper
 - http://fluidapp.com/ on Mac
 - http://www.tidesdk.org/
 

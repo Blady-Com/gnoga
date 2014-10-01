@@ -1,7 +1,7 @@
 prefix  =$(dir $(shell which gnatls))..
 INSTALL =/usr/bin/install -c
 
-all: bin gnoga demo tests
+all: bin gnoga demo tutorials
 
 gnoga:
 	cd src && gprbuild -Pgnoga.gpr
@@ -40,6 +40,8 @@ tutorials:
 	cd tutorial/tutorial-02 && gprbuild
 	cd tutorial/tutorial-03 && gprbuild
 	cd tutorial/tutorial-04 && gprbuild
+	cd tutorial/tutorial-05 && gprbuild
+	cd tutorial/tutorial-06 && gprbuild
 
 clean:
 	cd src && gprclean -Pgnoga.gpr
@@ -50,4 +52,6 @@ clean:
 	cd tutorial/tutorial-02 && gprclean
 	cd tutorial/tutorial-03 && gprclean
 	cd tutorial/tutorial-04 && gprclean
+	cd tutorial/tutorial-05 && gprclean
+	cd tutorial/tutorial-06 && gprclean
 	-cd bin && rm *.db

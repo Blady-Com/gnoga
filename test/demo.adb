@@ -7,7 +7,6 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 
 with Gnoga.Gui.Element.Form.Fieldset;
-with Gnoga.Gui.Element.Form.Data_List;
 
 procedure Demo is
    use Gnoga;
@@ -21,7 +20,7 @@ procedure Demo is
          Console     : View.Console.Console_View_Type;
          FSet        : Form.Fieldset.Fieldset_Type;
          My_Form     : Form.Form_Type;
-         My_List     : Form.Data_List.Data_List_Type;
+         My_List     : Form.Data_List_Type;
          My_Input    : Form.Text_Type;
          Source      : Common.DIV_Type;
          Target      : Common.DIV_Type;
@@ -93,6 +92,7 @@ procedure Demo is
    is
       App     : App_Access := new App_Data;
       Play    : Common.Button_Access := new Common.Button_Type;
+      Label   : Form.Label_Access := new Form.Label_Type;
    begin
       Main_Window.Connection_Data (App.all);
 
@@ -111,16 +111,22 @@ procedure Demo is
 
       App.FSet.New_Line;
 
-      App.My_List.Create (App.My_Form, "stuff");
+      App.My_List.Create (App.My_Form);
       App.My_List.Add_Option ("thing1");
       App.My_List.Add_Option ("abcde");
       App.My_List.Add_Option ("1234");
 
       App.My_Input.Create (Form  => App.My_Form,
                            Size  => 40);
-      App.My_Input.Place_Inside_Bottom_Of (App.FSet);
-      App.My_Input.Data_List ("stuff");
+      App.My_Input.Data_List (App.My_List);
       App.My_Input.Auto_Complete;
+
+      Label.Create (Form      => App.My_Form,
+                    Label_For => App.My_Input,
+                    Contents  => "Type Stuff:");
+
+      Label.Place_Inside_Bottom_Of (App.FSet);
+      App.My_Input.Place_Inside_Bottom_Of (App.FSet);
 
       App.Source.Create (App.Console, "Drag Me");
       App.Source.Draggable;

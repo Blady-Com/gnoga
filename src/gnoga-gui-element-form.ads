@@ -126,6 +126,10 @@ package Gnoga.Gui.Element.Form is
    type Form_Element_Access is access all Form_Element_Type;
    type Pointer_To_Form_Element_Class is access all Form_Element_Type'Class;
 
+   type Data_List_Type is new Gnoga.Gui.View.View_Type with private;
+   --  Forward decleration of Data_List_Type used for drop down /
+   --  autocomplete.
+
    -------------------------------------------------------------------------
    --  Form_Element_Type - Creation Methods
    -------------------------------------------------------------------------
@@ -157,11 +161,9 @@ package Gnoga.Gui.Element.Form is
                          Value   : in     Boolean := True);
    function Auto_Focus (Element : Form_Element_Type) return Boolean;
 
-   procedure Data_List (Element : in out Form_Element_Type;
-                        ID      : in     String);
-   --  Set the ID for the data list for Auto_Complete
-   --  Gnoga.Gui.Element.Form.Data_List can be used to easily create
-   --  a Data_List.
+   procedure Data_List (Element   : in out Form_Element_Type;
+                        Data_List : in out Data_List_Type'Class);
+   --  Set the data list for Auto_Complete
 
    procedure Disabled (Element : in out Form_Element_Type;
                        Value   : in     Boolean := True);
@@ -237,6 +239,32 @@ package Gnoga.Gui.Element.Form is
 
    procedure Select_Text (Element : in out Form_Element_Type);
    --  Selects and highlights the context of Element
+
+   -------------------------------------------------------------------------
+   --  Data_List_Types
+   -------------------------------------------------------------------------
+
+   type Data_List_Access is access all Data_List_Type;
+   type Pointer_To_Data_List_Class is access all Data_List_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Data_List_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   overriding
+   procedure Create
+     (List          : in out Data_List_Type;
+      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach        : in     Boolean := False;
+      ID            : in     String  := "");
+
+   -------------------------------------------------------------------------
+   --  Data_List_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Add_Option (List  : in out Data_List_Type;
+                         Value : in     String);
+   --  Add option to Data_List
 
    -------------------------------------------------------------------------
    --  Text_Area_Types
@@ -590,8 +618,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Date_Type is new Form_Element_Type with private;
-   type Date_Type_Access is access all Date_Type;
-   type Pointer_To_Date_Type_Class is access all Date_Type'Class;
+   type Date_Access is access all Date_Type;
+   type Pointer_To_Date_Class is access all Date_Type'Class;
 
    -------------------------------------------------------------------------
    --  Date_Type - Creation Methods
@@ -609,8 +637,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Time_Type is new Form_Element_Type with private;
-   type Time_Type_Access is access all Time_Type;
-   type Pointer_To_Time_Type_Class is access all Time_Type'Class;
+   type Time_Access is access all Time_Type;
+   type Pointer_To_Time_Class is access all Time_Type'Class;
 
    -------------------------------------------------------------------------
    --  Time_Type - Creation Methods
@@ -628,8 +656,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Month_Type is new Form_Element_Type with private;
-   type Month_Type_Access is access all Month_Type;
-   type Pointer_To_Month_Type_Class is access all Month_Type'Class;
+   type Month_Access is access all Month_Type;
+   type Pointer_To_Month_Class is access all Month_Type'Class;
 
    -------------------------------------------------------------------------
    --  Month_Type - Creation Methods
@@ -648,8 +676,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Week_Type is new Form_Element_Type with private;
-   type Week_Type_Access is access all Week_Type;
-   type Pointer_To_Week_Type_Class is access all Week_Type'Class;
+   type Week_Access is access all Week_Type;
+   type Pointer_To_Week_Class is access all Week_Type'Class;
 
    -------------------------------------------------------------------------
    --  Week_Type - Creation Methods
@@ -671,8 +699,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Date_Time_Type is new Form_Element_Type with private;
-   type Date_Time_Type_Access is access all Date_Time_Type;
-   type Pointer_To_Date_Time_Type_Class is access all Date_Time_Type'Class;
+   type Date_Time_Access is access all Date_Time_Type;
+   type Pointer_To_Date_Time_Class is access all Date_Time_Type'Class;
 
    -------------------------------------------------------------------------
    --  Date_Time_Type - Creation Methods
@@ -691,8 +719,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Date_Time_Local_Type is new Form_Element_Type with private;
-   type Date_Time_Local_Type_Access is access all Date_Time_Local_Type;
-   type Pointer_To_Date_Time_Local_Type_Class is
+   type Date_Time_Local_Access is access all Date_Time_Local_Type;
+   type Pointer_To_Date_Time_Local_Class is
      access all Date_Time_Local_Type'Class;
 
    -------------------------------------------------------------------------
@@ -712,9 +740,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Number_Type is new Form_Element_Type with private;
-   type Number_Type_Access is access all Number_Type;
-   type Pointer_To_Number_Type_Class is
-     access all Number_Type'Class;
+   type Number_Access is access all Number_Type;
+   type Pointer_To_Number_Class is access all Number_Type'Class;
 
    -------------------------------------------------------------------------
    --  Number_Type - Creation Methods
@@ -731,9 +758,8 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
 
    type Range_Type is new Number_Type with private;
-   type Range_Type_Access is access all Range_Type;
-   type Pointer_To_Range_Type_Class is
-     access all Range_Type'Class;
+   type Range_Access is access all Range_Type;
+   type Pointer_To_Range_Class is access all Range_Type'Class;
 
    -------------------------------------------------------------------------
    --  Range_Type - Creation Methods
@@ -745,6 +771,26 @@ package Gnoga.Gui.Element.Form is
                      Value      : in     String := "";
                      Name       : in     String := "";
                      ID         : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  Label_Types
+   -------------------------------------------------------------------------
+
+   type Label_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Label_Access is access all Label_Type;
+   type Pointer_To_Label_Class is access all Label_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Range_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Label_Type;
+                     Form       : in out Form_Type'Class;
+                     Label_For  : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Contents   : in     String := "";
+                     ID         : in     String := "");
+   --  Creates a Label_For a form element in Form with Contents as label.
+
 private
    type Form_Type is new Gnoga.Gui.View.View_Type with null record;
    type Form_Element_Type is
@@ -771,4 +817,6 @@ private
    type Date_Time_Local_Type is new Form_Element_Type with null record;
    type Number_Type is new Form_Element_Type with null record;
    type Range_Type is new Number_Type with null record;
+   type Label_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Data_List_Type is new Gnoga.Gui.View.View_Type with null record;
 end Gnoga.Gui.Element.Form;

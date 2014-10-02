@@ -285,11 +285,11 @@ package body Gnoga.Gui.Element.Form is
    -- Data_List --
    ---------------
 
-   procedure Data_List (Element : in out Form_Element_Type;
-                        ID      : in     String)
+   procedure Data_List (Element   : in out Form_Element_Type;
+                        Data_List : in out Data_List_Type'Class)
    is
    begin
-      Element.Attribute  ("list", ID);
+      Element.Attribute  ("list", Data_List.ID);
    end Data_List;
 
    --------------
@@ -1148,7 +1148,7 @@ package body Gnoga.Gui.Element.Form is
    end Create;
 
    -------------------------------------------------------------------------
-   --  Number_Type - Creation Methods
+   --  Number_Type
    -------------------------------------------------------------------------
 
    procedure Create (Element    : in out Number_Type;
@@ -1166,7 +1166,7 @@ package body Gnoga.Gui.Element.Form is
    end Create;
 
    -------------------------------------------------------------------------
-   --  Range_Type - Creation Methods
+   --  Range_Type
    -------------------------------------------------------------------------
 
    procedure Create (Element    : in out Range_Type;
@@ -1182,4 +1182,54 @@ package body Gnoga.Gui.Element.Form is
                               Name       => Name,
                               ID         => ID);
    end Create;
+
+   -------------------------------------------------------------------------
+   --  Label_Type
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Label_Type;
+                     Form       : in out Form_Type'Class;
+                     Label_For  : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Contents   : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create_From_HTML
+        (Parent => Form,
+         HTML   => "<label for='" & Label_For.ID & "'>" &
+           Escape_Quotes (Contents) & "</label>",
+         ID     => ID);
+   end Create;
+
+   -------------------------------------------------------------------------
+   --  Data_List_Type
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (List          : in out Data_List_Type;
+      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach        : in     Boolean := False;
+      ID            : in     String  := "")
+   is
+   begin
+      List.Create_From_HTML (Parent, "<datalist />", ID);
+   end Create;
+
+   ----------------
+   -- Add_Option --
+   ----------------
+
+   procedure Add_Option (List  : in out Data_List_Type;
+                         Value : in     String)
+   is
+      D : Gnoga.Gui.Element.Element_Type;
+   begin
+      D.Create_From_HTML
+        (List, "<option value=""" & Escape_Quotes (Value) & """>");
+   end Add_Option;
+
 end Gnoga.Gui.Element.Form;

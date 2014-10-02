@@ -42,6 +42,7 @@ tutorials:
 	cd tutorial/tutorial-04 && gprbuild
 	cd tutorial/tutorial-05 && gprbuild
 	cd tutorial/tutorial-06 && gprbuild
+	cd tutorial/tutorial-07 && gprbuild
 
 clean:
 	cd src && gprclean -Pgnoga.gpr
@@ -54,4 +55,5 @@ clean:
 	cd tutorial/tutorial-04 && gprclean
 	cd tutorial/tutorial-05 && gprclean
 	cd tutorial/tutorial-06 && gprclean
+	cd tutorial/tutorial-07 && gprclean
 	-cd bin && rm *.db

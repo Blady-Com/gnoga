@@ -23,6 +23,8 @@ procedure Demo is
          My_Form     : Form.Form_Type;
          My_List     : Form.Data_List.Data_List_Type;
          My_Input    : Form.Text_Type;
+         Source      : Common.DIV_Type;
+         Target      : Common.DIV_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -47,6 +49,43 @@ procedure Demo is
       App.Console.Put_Line ("Changing click handler.");
       Object.On_Click_Handler (On_Click2'Unrestricted_Access);
    end On_Click;
+
+   procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Source.Opacity (0.4);
+   end Start_Drag;
+
+   procedure End_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Source.Opacity (1.0);
+   end End_Drag;
+
+   procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Target.Border (Color => "Red");
+   end Enter_Drag;
+
+   procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Target.Border (Color => "Black");
+   end Leave_Drag;
+
+   procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
+                   Drag_Text : in     String)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Target.Border (Color => "Green");
+      App.Target.Text (Drag_Text);
+   end Drop;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
@@ -82,6 +121,20 @@ procedure Demo is
       App.My_Input.Place_Inside_Bottom_Of (App.FSet);
       App.My_Input.Data_List ("stuff");
       App.My_Input.Auto_Complete;
+
+      App.Source.Create (App.Console, "Drag Me");
+      App.Source.Draggable;
+      App.Source.Border;
+      App.Source.On_Drag_Start_Handler
+        (Handler   => Start_Drag'Unrestricted_Access,
+         Drag_Text => "I've been Dragged");
+      App.Source.On_Drag_End_Handler (End_Drag'Unrestricted_Access);
+
+      App.Target.Create (App.Console, "Drop on Me");
+      App.Target.Border;
+      App.Target.On_Drop_Handler (Drop'Unrestricted_Access);
+      App.Target.On_Drag_Enter_Handler (Enter_Drag'Unrestricted_Access);
+      App.Target.On_Drag_Leave_Handler (Leave_Drag'Unrestricted_Access);
    end On_Connect;
 
 begin

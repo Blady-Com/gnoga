@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Finalization;
+with Ada.Strings.Unbounded;
 
 with Gnoga.Types;
 with Gnoga.Gui.Base;
@@ -97,9 +98,12 @@ package Gnoga.Gui.Element is
                        Value   : in     Boolean := True);
    function Editable (Element : Element_Type) return Boolean;
 
-   procedure Draggable (Element : in out Element_Type;
-                        Value   : in     Boolean := True);
+   procedure Draggable (Element    : in out Element_Type;
+                        Value      : in     Boolean := True);
    function Draggable (Element : Element_Type) return Boolean;
+   --  In order to make an objet draggable in addition to Draggable being true
+   --  the On_Drag_Start event _must_ be bound as well to set the Drag_Text.
+   --  To receive a drop, you need to bind On_Drop.
 
    procedure Hidden (Element : in out Element_Type;
                      Value   : in     Boolean := True);

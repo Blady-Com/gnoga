@@ -557,8 +557,8 @@ package body Gnoga.Gui.Element is
    -- Draggable --
    ---------------
 
-   procedure Draggable (Element : in out Element_Type;
-                        Value   : in     Boolean := True)
+   procedure Draggable (Element    : in out Element_Type;
+                        Value      : in     Boolean := True)
    is
    begin
       Element.Property ("draggable", Value);

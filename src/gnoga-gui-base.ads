@@ -257,9 +257,12 @@ package Gnoga.Gui.Base is
                 Continue : out    Boolean);
 
    type Child_Added_Event is access
-     procedure (Object : in out Base_Type;
+     procedure (Object : in out Base_Type'Class;
                 Child  : in out Base_Type'Class);
 
+   type Drop_Event is access
+     procedure (Object    : in out Base_Type'Class;
+                Drag_Text : in     String);
 
    -- Object Events --
 
@@ -396,11 +399,41 @@ package Gnoga.Gui.Base is
                                  Event    : in     Mouse_Event_Record);
    --  Handle mouse down events
 
-   --  ? Drag and Drop Events --
+   --  Drag and Drop Events --
 
-   --  On_Drop event.preventDefault, data = event.dataTransfer.getData(Mime)
-   --  On_Drag_Over (call to event.preventDefault on element allowing drop)
-   --  On_Drag_Start (Mime, ID)
+   procedure On_Drag_Start_Handler (Object    : in out Base_Type;
+                                    Handler   : in     Action_Event;
+                                    Drag_Text : in     String;
+                                    Drag_Type : in     String := "text/plain");
+   procedure Fire_On_Drag_Start (Object : in out Base_Type);
+   --  When setting the On_Drag_Start_Handler, Drag_Text is set to be the
+   --  text that will be delivered in a Drag_Event to an On_Drop event.
+   --  The Element_Type.Draggable property should also be true for Object.
+
+   procedure On_Drag_Handler (Object  : in out Base_Type;
+                              Handler : in     Action_Event);
+   procedure Fire_On_Drag (Object : in out Base_Type);
+
+   procedure On_Drag_End_Handler (Object  : in out Base_Type;
+                                  Handler : in     Action_Event);
+   procedure Fire_On_Drag_End (Object : in out Base_Type);
+
+   procedure On_Drag_Enter_Handler (Object  : in out Base_Type;
+                                  Handler : in     Action_Event);
+   procedure Fire_On_Drag_Enter (Object : in out Base_Type);
+
+   procedure On_Drag_Leave_Handler (Object  : in out Base_Type;
+                                  Handler : in     Action_Event);
+   procedure Fire_On_Drag_Leave (Object : in out Base_Type);
+
+   procedure On_Drop_Handler (Object    : in out Base_Type;
+                              Handler   : in     Drop_Event;
+                              Drag_Type : in     String := "text/plain");
+   procedure Fire_On_Drop (Object    : in out Base_Type;
+                           Drag_Text : in     String);
+   --  To become a drop target an element only needs to handle On_Drop
+   --  On_Drag_Enter and On_Drag_Leave can be used to show indication
+   --  of "ready to receive" object.
 
    --  Keyboard Events --
 
@@ -588,6 +621,15 @@ private
          On_Mouse_Down_Event         : Mouse_Event          := null;
          On_Mouse_Up_Event           : Mouse_Event          := null;
          On_Mouse_Move_Event         : Mouse_Event          := null;
+
+         --  Drag and Drop Events
+         On_Drag_Start_Event         : Action_Event         := null;
+         On_Drag_Event               : Action_Event         := null;
+         On_Drag_End_Event           : Action_Event         := null;
+         On_Drag_Enter_Event         : Action_Event         := null;
+         On_Drag_Leave_Event         : Action_Event         := null;
+         On_Drop_Event               : Drop_Event           := null;
+
 
          --  Keyboard Events
          On_Character_Event          : Character_Event      := null;

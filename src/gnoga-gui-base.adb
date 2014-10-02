@@ -1256,6 +1256,167 @@ package body Gnoga.Gui.Base is
       end if;
    end Fire_On_Mouse_Move;
 
+   procedure On_Drag_Start_Handler (Object    : in out Base_Type;
+                                    Handler   : in     Action_Event;
+                                    Drag_Text : in     String;
+                                    Drag_Type : in     String := "text/plain")
+   is
+   begin
+      if Object.On_Drag_Start_Event /= null then
+         Object.Unbind_Event ("dragstart");
+      end if;
+
+      Object.On_Drag_Start_Event := Handler;
+
+      if Handler /= null then
+         Object.Bind_Event
+           (Event   => "dragstart",
+            Message => "",
+            Script  =>
+             "e.originalEvent.dataTransfer.setData(""" & Drag_Type & """, """ &
+             Escape_Quotes (Drag_Text) & """)");
+      end if;
+   end On_Drag_Start_Handler;
+
+   procedure Fire_On_Drag_Start (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Drag_Start_Event /= null then
+         Object.On_Drag_Start_Event (Object);
+      end if;
+   end Fire_On_Drag_Start;
+
+   procedure On_Drag_Handler (Object  : in out Base_Type;
+                              Handler : in     Action_Event)
+   is
+   begin
+      if Object.On_Drag_Event /= null then
+         Object.Unbind_Event ("drag");
+      end if;
+
+      Object.On_Drag_Event := Handler;
+
+      if Handler /= null then
+         Object.Bind_Event (Event   => "drag",
+                            Message => "");
+      end if;
+   end On_Drag_Handler;
+
+   procedure Fire_On_Drag (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Drag_Event /= null then
+         Object.On_Drag_Event (Object);
+      end if;
+   end Fire_On_Drag;
+
+   procedure On_Drag_End_Handler (Object  : in out Base_Type;
+                                  Handler : in     Action_Event)
+   is
+   begin
+      if Object.On_Drag_End_Event /= null then
+         Object.Unbind_Event ("dragend");
+      end if;
+
+      Object.On_Drag_End_Event := Handler;
+
+      if Handler /= null then
+         Object.Bind_Event (Event   => "dragend",
+                            Message => "");
+      end if;
+   end On_Drag_End_Handler;
+
+   procedure Fire_On_Drag_End (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Drag_End_Event /= null then
+         Object.On_Drag_End_Event (Object);
+      end if;
+   end Fire_On_Drag_End;
+
+
+   procedure On_Drag_Enter_Handler (Object  : in out Base_Type;
+                                    Handler : in     Action_Event)
+   is
+   begin
+      if Object.On_Drag_Enter_Event /= null then
+         Object.Unbind_Event ("dragenter");
+      end if;
+
+      Object.On_Drag_Enter_Event := Handler;
+
+      if Handler /= null then
+         Object.Bind_Event (Event   => "dragenter",
+                            Message => "");
+      end if;
+   end On_Drag_Enter_Handler;
+
+   procedure Fire_On_Drag_Enter (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Drag_Enter_Event /= null then
+         Object.On_Drag_Enter_Event (Object);
+      end if;
+   end Fire_On_Drag_Enter;
+
+   procedure On_Drag_Leave_Handler (Object  : in out Base_Type;
+                                    Handler : in     Action_Event)
+   is
+   begin
+      if Object.On_Drag_Leave_Event /= null then
+         Object.Unbind_Event ("dragleave");
+      end if;
+
+      Object.On_Drag_Leave_Event := Handler;
+
+      if Handler /= null then
+         Object.Bind_Event (Event   => "dragleave",
+                            Message => "");
+      end if;
+   end On_Drag_Leave_Handler;
+
+   procedure Fire_On_Drag_Leave (Object : in out Base_Type)
+   is
+   begin
+      if Object.On_Drag_Leave_Event /= null then
+         Object.On_Drag_Leave_Event (Object);
+      end if;
+   end Fire_On_Drag_Leave;
+
+
+   procedure On_Drop_Handler (Object    : in out Base_Type;
+                              Handler   : in     Drop_Event;
+                              Drag_Type : in     String := "text/plain")
+   is
+   begin
+      if Object.On_Drop_Event /= null then
+         Object.Unbind_Event ("dragover");
+         Object.Unbind_Event ("drop");
+      end if;
+
+      Object.On_Drop_Event := Handler;
+
+      if Handler /= null then
+         Object.Bind_Event (Event   => "dragover",
+                            Message => "",
+                            Script  => "e.preventDefault()");
+         Object.Bind_Event (Event   => "drop",
+                            Message => "",
+                            Script  =>
+                              "e.originalEvent.dataTransfer.getData(""" &
+                              Drag_Type & """)");
+      end if;
+   end On_Drop_Handler;
+
+   procedure Fire_On_Drop (Object    : in out Base_Type;
+                           Drag_Text : in     String)
+   is
+   begin
+      if Object.On_Drop_Event /= null then
+         Object.On_Drop_Event (Object, Drag_Text);
+      end if;
+   end Fire_On_Drop;
+
 
    ------------------
    -- On_Character --
@@ -1654,6 +1815,21 @@ package body Gnoga.Gui.Base is
          Object.Fire_On_Mouse_Up (Parse_Mouse_Event (Message));
       elsif Event = "mousemove" then
          Object.Fire_On_Mouse_Move (Parse_Mouse_Event (Message));
+
+      elsif Event = "dragstart" then
+         Object.Fire_On_Drag_Start;
+      elsif Event = "drag" then
+         Object.Fire_On_Drag;
+      elsif Event = "dragend" then
+         Object.Fire_On_Drag_End;
+      elsif Event = "dragenter" then
+         Object.Fire_On_Drag_Enter;
+      elsif Event = "dragleave" then
+         Object.Fire_On_Drag_Leave;
+      elsif Event = "dragover" then
+         null;
+      elsif Event = "drop" then
+         Object.Fire_On_Drop (Message);
 
       -- Keyboard Events --
 

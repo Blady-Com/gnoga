@@ -94,6 +94,13 @@ package Gnoga.Gui.View is
    procedure New_Line (View : in out View_Type);
    --  Create a new DIV with <br /> and append to end of view
 
+   procedure Put_HTML (View  : in out View_Type;
+                       HTML  : in     String;
+                       Class : in     String := "";
+                       ID    : in     String := "");
+   --  Place HTML directly in to view. The HTML will not be wrapped in a DIV
+   --  or Span.
+
    -------------------------------------------------------------------------
    --  View_Type - Event Methods
    -------------------------------------------------------------------------

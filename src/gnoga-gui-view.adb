@@ -127,6 +127,23 @@ package body Gnoga.Gui.View is
    end Put;
 
    --------------
+   -- Put_HTML --
+   --------------
+
+   procedure Put_HTML (View  : in out View_Type;
+                       HTML  : in     String;
+                       Class : in     String := "";
+                       ID    : in     String := "")
+   is
+      D : Gnoga.Gui.Element.Element_Type;
+   begin
+      D.Create_From_HTML (View, HTML, ID);
+      if Class /= "" then
+         D.Class_Name (Class);
+      end if;
+   end Put_HTML;
+
+   --------------
    -- New_Line --
    --------------
 

@@ -66,3 +66,7 @@ A) In theory it should be possible using GNAT and PhoneGAP. I have not explored 
 Q) Can I build native Chromebook apps?
 
 A) It should be possible using GNAT, I have not yet explored the requirements for it, but Chromebooks are running linux and Google does have a spec for it.
+
+Q) Which Tags are bound in Gnoga?
+
+A) See the spec file for Gnoga.Gui.Element, it is possible to create any HTML and bind it using the Element_Type.Create_With_HTML. Gnoga though only includes specific types that are needed for application development.

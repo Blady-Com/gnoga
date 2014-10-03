@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 package Gnoga.Gui.Element.Common is
-
    -------------------------------------------------------------------------
    --  A_Types
    -------------------------------------------------------------------------
@@ -111,6 +110,10 @@ package Gnoga.Gui.Element.Common is
    -------------------------------------------------------------------------
    --  DIV_Type - Creation Methods
    -------------------------------------------------------------------------
+   --  Gnoga.Gui.View_Type is a DIV but with far more functionality.
+   --  If doing anything beyond static display, View_Type usually makes
+   --  more sense to use. Also note, that View_Type.Put_Line also creates
+   --  DIVs.
 
    procedure Create (DIV     : in out DIV_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -166,6 +169,7 @@ package Gnoga.Gui.Element.Common is
    -------------------------------------------------------------------------
    --  Span_Type - Creation Methods
    -------------------------------------------------------------------------
+   --  The Spans are created automatically when using View_Type.Put
 
    procedure Create (Span    : in out Span_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;

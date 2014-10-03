@@ -43,6 +43,73 @@ with Gnoga.Gui.Base;
 
 package Gnoga.Gui.Element is
 
+   -- HTML5 Tags Bound as Gui Elements in Gnoga
+   --              - Items with a * are under consideration or
+   --              - used internally
+   --
+   -- <a>,<hr>,<button>,<div>,<img>,<meter>*,<progress>*,
+   --              - Element.Common, also see Gui.View for <div>
+   -- <canvas>
+   --              - Element.Canvas
+   -- <svg>
+   --              - Element.SVG
+   --
+   -- <form>,<input>,<textarea>,<select>,<datalist>,<legend>,<label>,<option>
+   -- <optgroup>*
+   --              - Element.Form
+   -- <fieldset>
+   --              - Element.Form.Fieldset
+   --
+   -- <audio>,<video>,<source>*,<track>*
+   --              - Element.Multimedia
+   --
+   -- <html>,<body>,<head>
+   --              - Access through Window_Type.Document
+
+
+   -- HTML5 Tags Unbound as Gui Elements in Gnoga
+   --      Note: All tags can be bound and used with
+   --            Element_Type.Create_With_HTML
+   --            For various reasons as desribed here,
+   --            they are not bound specifically.
+   --
+   -- <table>,<caption>,<td>,<tr>,<th>,<col>,<colgroup>,<tfoot>,<thead>
+   --              - No specific tabe bindings. Tables are meant for data
+   --              - display and not layouts.
+   --
+   -- <dl>,<dd>,<dt>,<ul>,<ol>,<li>
+   --              - No specific list bindings
+   --
+   -- <map>,<area>
+   --              - No spefic bindings currently for image maps, best
+   --              - generated with an automated tool as regular HTML.
+   --
+   -- <abbr>,<b>,<bdi>,<bdo>,<i>,<sub>,<sup>,<h*>,<ruby>,<rp>,<rt>,<u>
+   --              - Text formatting tags are not bound. Have no application
+   --              - specific use. Span_Type should be used to contain text
+   --              - that needs interaction or interactive styling.
+   --
+   -- <code>,<strong>,<em>,<dfn>,<samp>,<kbd>,<var>,<marked>,<del>,<ins>,<pre>,
+   -- <s>,<q>,<big>,<small>,<time>,<tt>,<wbr>
+   --              - No bindings for phrase tags, all of which even in HTML
+   --              - more often best done with CSS
+   --
+   -- <address>,<article>,<aside>,<p>,<blockquote>,<br>,<cite>,<del>,
+   -- <details>,<output>,<figure>,<flgcaption>,<footer>,<header>,<hgroup>,
+   -- <main>,<nav>,<section>,
+   --              - No bindings for organizational html
+   --
+   -- <object>,<embed>,<script>,<noscript>,<param>,<applet>
+   --              - No bindings are made for external plugins or scripting
+   --              - tags
+   --
+   -- <base>,<link>,<meta>,<style>,<title>
+   --              - No head region tags are bound
+   --              - see Document.Load_CSS, Document.Title
+   --
+   -- <dialog>,<keygen>,<menu>,<menuitem>,
+   --              - No broswer support
+
    -------------------------------------------------------------------------
    --  Element_Type
    -------------------------------------------------------------------------

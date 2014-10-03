@@ -44,10 +44,11 @@ Gnoga has the following aspects to it:
 5. Gnoga Application level APIs, like Logical access control systems, Security services and monitoring, etc.
        Gnoga.Client.Storage - local persistent and session storage on browser
 
-6. Gnoga database bindings
+6. Gnoga database bindings and server side APIs
       Gnoga.Server.Database - support for MySQL and SQLite 3
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
+      Gnoga.Serve.Template_Parser - Parse PHP and Python files
 
 7. Gnoga development tools
 	Code generation for binding pre-made html5 pages

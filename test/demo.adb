@@ -22,6 +22,7 @@ procedure Demo is
          My_Form     : Form.Form_Type;
          My_List     : Form.Data_List_Type;
          My_Input    : Form.Text_Type;
+         My_Select   : Form.Selection_Type;
          Source      : Common.DIV_Type;
          Target      : Common.DIV_Type;
       end record;
@@ -40,6 +41,12 @@ procedure Demo is
       App : App_Access := App_Access (Object.Connection_Data);
       D : Common.DIV_Access;
    begin
+      for i in 1 .. App.My_Select.Length loop
+         App.Console.Put_Line (App.My_Select.Value (Index => i) & " - " &
+                                 App.My_Select.Text (Index => i) & " - " &
+                                 App.My_Select.Selected (i)'Img);
+      end loop;
+
       For i in 1 .. 50 loop
          D := new Common.DIV_Type;
          D.Dynamic;
@@ -127,6 +134,25 @@ procedure Demo is
 
       Label.Place_Inside_Bottom_Of (App.FSet);
       App.My_Input.Place_Inside_Bottom_Of (App.FSet);
+
+      App.FSet.New_Line;
+
+      App.My_Select.Create (App.My_Form,
+                            Multiple_Select => True,
+                            Visible_Lines => 6);
+      App.My_Select.Add_Option (Value    => "1",
+                                Text     => "L1");
+      App.My_Select.Add_Option (Value    => "2",
+                                Text     => "L2",
+                                Selected => True);
+      App.My_Select.Add_Option (Value    => "3",
+                                Text     => "L3");
+      App.My_Select.Add_Option (Value    => "4",
+                                Text     => "L4");
+      App.My_Select.Add_Option (Value    => "2.5",
+                                Text     => "L2.5",
+                                Index    => 2);
+      App.My_Select.Place_Inside_Bottom_Of (App.FSet);
 
       App.Source.Create (App.Console, "Drag Me");
       App.Source.Draggable;

@@ -53,10 +53,11 @@ package Gnoga.Gui.Element.Form is
    overriding
    procedure Create (Form    : in out Form_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Attach  : in     Boolean := True;
+                     Attach  : in     Boolean := False;
                      ID      : in     String  := "");
    --  Create a Form element. This is used to group and set the action
-   --  taken on a submit of the form.
+   --  taken on a submit of the form. If Attach is True has no effect
+   --  since Forms are not vissible.
    --
    --  In Gnoga forms in general should be processed by handling the
    --  On_Submit event and accessing each element's value directly.
@@ -257,6 +258,7 @@ package Gnoga.Gui.Element.Form is
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Attach        : in     Boolean := False;
       ID            : in     String  := "");
+   --  Attach if True has no effect since Data_Lists are not visible elements.
 
    -------------------------------------------------------------------------
    --  Data_List_Type - Methods
@@ -781,7 +783,7 @@ package Gnoga.Gui.Element.Form is
    type Pointer_To_Label_Class is access all Label_Type'Class;
 
    -------------------------------------------------------------------------
-   --  Range_Type - Creation Methods
+   --  Label_Type - Creation Methods
    -------------------------------------------------------------------------
 
    procedure Create (Element    : in out Label_Type;
@@ -790,6 +792,92 @@ package Gnoga.Gui.Element.Form is
                      Contents   : in     String := "";
                      ID         : in     String := "");
    --  Creates a Label_For a form element in Form with Contents as label.
+
+   -------------------------------------------------------------------------
+   --  Selection_Types
+   -------------------------------------------------------------------------
+
+   type Selection_Type is new Form_Element_Type with private;
+   type Selection_Access is access all Selection_Type;
+   type Pointer_To_Selection_Class is access all Selection_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Selection_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (Element         : in out Selection_Type;
+      Form            : in out Form_Type'Class;
+      Multiple_Select : in     Boolean  := False;
+      Visible_Lines   : in     Positive := 1;
+      Name            : in     String   := "";
+      ID              : in     String   := "");
+   --  If Parent is a Window_Type'Class will automatically set itself
+   --  as the View on Parent if Attach is True
+
+   -------------------------------------------------------------------------
+   --  Selection_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Multiple_Select (Element : in out Selection_Type;
+                              Value   : in    Boolean := True);
+   function Multiple_Select (Element : Selection_Type) return Boolean;
+
+   procedure Visible_Lines (Element : in out Selection_Type;
+                            Value   : in     Positive);
+   function Visible_Lines (Element : Selection_Type) return Positive;
+
+   function Selected_Index (Element : Selection_Type) return Natural;
+   --  If no item currently selected returns 0, in multiple select boxes
+   --  traverse the options using Selected.
+
+   function Value (Element : Selection_Type) return String;
+   --  Returns the value of the currently selected item. For multiple select
+   --  boxes get the value based on Index.
+
+   function Length (Element : Selection_Type) return Natural;
+   --  Number of options in Selection_Type
+
+   procedure Selected (Element : in out Selection_Type;
+                       Index   : in     Positive;
+                       Value   : in     Boolean := True);
+   function Selected (Element : Selection_Type; Index : Positive)
+                      return Boolean;
+
+   procedure Disabled (Element : in out Selection_Type;
+                       Index   : in     Positive;
+                       Value   : in     Boolean := True);
+   function Disabled (Element : Selection_Type; Index : Positive)
+                      return Boolean;
+
+   procedure Value (Element : in out Selection_Type;
+                    Index   : in     Positive;
+                    Value   : in     String);
+   function Value (Element : Selection_Type; Index : Positive)
+                   return String;
+
+   procedure Text (Element : in out Selection_Type;
+                   Index   : in     Positive;
+                   Value   : in     String);
+   function Text (Element : Selection_Type; Index : Positive)
+                  return String;
+
+   -------------------------------------------------------------------------
+   --  Selection_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Add_Option (Element  : in out Selection_Type;
+                         Value    : in     String;
+                         Text     : in     String;
+                         Index    : in     Natural := 0;
+                         Selected : in     Boolean := False;
+                         Disabled : in     Boolean := False;
+                         ID       : in     String  := "");
+   --  Call to add options to the Selection_Type Element. If Index is 0
+   --  adds to end of list. Otherwise inserts at Index.
+
+   procedure Remove_Option (Element  : in out Selection_Type;
+                            Index    : in     Positive);
 
 private
    type Form_Type is new Gnoga.Gui.View.View_Type with null record;
@@ -819,4 +907,5 @@ private
    type Range_Type is new Number_Type with null record;
    type Label_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Data_List_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Selection_Type is new Form_Element_Type with null record;
 end Gnoga.Gui.Element.Form;

@@ -50,15 +50,11 @@ package body Gnoga.Gui.Element.Form is
    procedure Create
      (Form    : in out Form_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
+      Attach  : in     Boolean := False;
       ID      : in     String  := "")
    is
    begin
       Form.Create_From_HTML (Parent, "<form />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (Form);
-      end if;
    end Create;
 
    ------------
@@ -232,11 +228,20 @@ package body Gnoga.Gui.Element.Form is
       Name       : in     String := "";
       ID         : in     String := "")
    is
+      function Is_Name return String;
+
+      function Is_Name return String is
+      begin
+         if Name /= "" then
+            return " name='" & Name & "'";
+         else
+            return "";
+         end if;
+      end Is_Name;
    begin
       Element.Create_From_HTML (Form, "<input type='" & Input_Type & "' " &
                                   "form='" & Form.ID & "' value='" &
-                                  Escape_Quotes (Value) & "' name='" &
-                                  Name & "'/>", ID);
+                                  Escape_Quotes (Value) & Is_Name & "/>", ID);
    end Create_Element;
 
    -------------------
@@ -1196,7 +1201,8 @@ package body Gnoga.Gui.Element.Form is
    begin
       Element.Create_From_HTML
         (Parent => Form,
-         HTML   => "<label for='" & Label_For.ID & "'>" &
+         HTML   => "<label for='" & Label_For.ID &
+           "' form='" & Form.ID & "'>" &
            Escape_Quotes (Contents) & "</label>",
          ID     => ID);
    end Create;
@@ -1232,4 +1238,228 @@ package body Gnoga.Gui.Element.Form is
         (List, "<option value=""" & Escape_Quotes (Value) & """>");
    end Add_Option;
 
+   -------------------------------------------------------------------------
+   --  Selection_Type
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (Element         : in out Selection_Type;
+      Form            : in out Form_Type'Class;
+      Multiple_Select : in     Boolean  := False;
+      Visible_Lines   : in     Positive := 1;
+      Name            : in     String   := "";
+      ID              : in     String   := "")
+   is
+      function Is_Name return String;
+      function Is_Multiple_Select return String;
+
+      function Is_Name return String is
+      begin
+         if Name /= "" then
+            return " name='" & Name & "'";
+         else
+            return "";
+         end if;
+      end Is_Name;
+
+      function Is_Multiple_Select return String is
+      begin
+         if Multiple_Select then
+            return " multiple";
+         else
+            return "";
+         end if;
+      end Is_Multiple_Select;
+   begin
+      Element.Create_From_HTML
+        (Parent => Form,
+         HTML   => "<select size=" & Visible_Lines'Img &
+           Is_Multiple_Select & Is_Name & " form='" & Form.ID & "'/>",
+         ID     => ID);
+   end Create;
+
+   procedure Multiple_Select (Element : in out Selection_Type;
+                              Value   : in    Boolean := True)
+   is
+   begin
+      Element.Property ("multiple", Value);
+   end Multiple_Select;
+
+   function Multiple_Select (Element : Selection_Type) return Boolean is
+   begin
+      return Element.Property ("multiple");
+   end Multiple_Select;
+
+   procedure Visible_Lines (Element : in out Selection_Type;
+                            Value   : in     Positive)
+   is
+   begin
+      Element.Property ("size", Value);
+   end Visible_Lines;
+
+   function Visible_Lines (Element : Selection_Type) return Positive is
+   begin
+      return Element.Property ("size");
+   end Visible_Lines;
+
+   function Selected_Index (Element : Selection_Type) return Natural is
+   begin
+      return Element.Property ("selectedIndex") + 1;
+   end Selected_Index;
+
+   function Value (Element : Selection_Type) return String is
+   begin
+      return Element.Property ("value");
+   end Value;
+
+   function Length (Element : Selection_Type) return Natural is
+   begin
+      return Element.Property ("length");
+   end Length;
+
+   procedure Selected (Element : in out Selection_Type;
+                       Index   : in     Positive;
+                       Value   : in     Boolean := True)
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      Element.Execute
+        ("item(" & JS_Index'Img & ").selected = " & Value'Img);
+   end Selected;
+
+   function Selected (Element : Selection_Type; Index : Positive)
+                      return Boolean
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      return Element.Execute
+        ("item(" & JS_Index'Img & ").selected") = "true";
+   end Selected;
+
+   procedure Disabled (Element : in out Selection_Type;
+                       Index   : in     Positive;
+                       Value   : in     Boolean := True)
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      Element.Execute
+        ("item(" & JS_Index'Img & ").disabled = " & Value'Img);
+   end Disabled;
+
+   function Disabled (Element : Selection_Type; Index : Positive)
+                      return Boolean
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      return Element.Execute
+        ("item(" & JS_Index'Img & ").disabled") = "true";
+   end Disabled;
+
+   procedure Value (Element : in out Selection_Type;
+                    Index   : in     Positive;
+                    Value   : in     String)
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      Element.Execute
+        ("item(" & JS_Index'Img & ").value = """ &
+           Escape_Quotes (Value) & """");
+   end Value;
+
+   function Value (Element : Selection_Type; Index : Positive)
+                   return String
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      return Element.Execute
+        ("item(" & JS_Index'Img & ").value");
+   end Value;
+
+
+   procedure Text (Element : in out Selection_Type;
+                   Index   : in     Positive;
+                   Value   : in     String)
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      Element.Execute
+        ("item(" & JS_Index'Img & ").text = """ &
+           Escape_Quotes (Value) & """");
+   end Text;
+
+   function Text (Element : Selection_Type; Index : Positive)
+                  return String
+   is
+      JS_Index : constant Natural := Index - 1;
+   begin
+      return Element.Execute
+        ("item(" & JS_Index'Img & ").text");
+   end Text;
+
+   procedure Add_Option (Element  : in out Selection_Type;
+                         Value    : in     String;
+                         Text     : in     String;
+                         Index    : in     Natural := 0;
+                         Selected : in     Boolean := False;
+                         Disabled : in     Boolean := False;
+                         ID       : in     String  := "")
+   is
+      function Is_Selected return String;
+      function Is_Disabled return String;
+      function Has_ID return String;
+      function Last_Parameter return String;
+
+      function Is_Selected return String is
+      begin
+         if Selected then
+            return " selected";
+         else
+            return "";
+         end if;
+      end Is_Selected;
+
+      function Is_Disabled return String is
+      begin
+         if Disabled then
+            return " disabled";
+         else
+            return "";
+         end if;
+      end Is_Disabled;
+
+      function Has_ID return String is
+      begin
+         if ID /= "" then
+            return " id='" & ID & "'";
+         else
+            return "";
+         end if;
+      end Has_ID;
+
+      function Last_Parameter return String is
+      begin
+         if Index = 0 then
+            return "";
+         else
+            declare
+               JS_Index : constant Natural := Index - 1;
+            begin
+               return "," & JS_Index'Img;
+            end;
+         end if;
+      end Last_Parameter;
+   begin
+      Element.Execute
+        ("add ($(""<option value=\""" & Escape_Quotes (Value) &
+           "\""" & Is_Selected & Is_Disabled & Has_ID & ">" &
+           Escape_Quotes (Text) &
+           "</option>"").get(0)" & Last_Parameter & ")");
+   end Add_Option;
+
+   procedure Remove_Option (Element  : in out Selection_Type;
+                            Index    : in     Positive)
+   is
+   begin
+      Element.Execute ("remove (" & Index'Img &")");
+   end Remove_Option;
 end Gnoga.Gui.Element.Form;

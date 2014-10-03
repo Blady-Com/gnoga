@@ -32,6 +32,9 @@ begin
    --  This title will appear on the browser title when the browser
    --  connects to our application.
 
+   --  Gnoga.Application.Launch_URL_* could be used here to start the user's
+   --  default browser pointing to this tutorial application.
+
    Gnoga.Application.Singleton.Initialize (Main_Window => My_Window);
    --  Initialize will start Gnoga's http services and websocket services
    --  to wait for a connection from the browser. There are ways to start

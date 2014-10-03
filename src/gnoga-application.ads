@@ -55,4 +55,14 @@ package Gnoga.Application is
    --  sent on connection to application and therefore must be set before
    --  incoming connections. To change after connection has been established
    --  see Gnoga.Connections.HTML_On_Close
+
+   procedure Open_URL_OSX (url : String := "http://localhost:8080");
+   --  Open the default browser on Mac OS X
+
+   procedure Open_URL_Linux (url : String := "http://localhost:8080");
+   --  Open the default browser on Linux
+   --  Uses /usr/bin/xdg-open
+
+   procedure Open_URL_Windows (url : String := "http://localhost:8080");
+   --  Open the default browser on Windows
 end Gnoga.Application;

@@ -14,6 +14,11 @@ Q) Can I distribute programs I compile with Gnoga?
 
 A) If you use GNAT-FSF or GNAT-PRO you can distribute the binaries with out your source, since Gnoga and those versions of GNAT grant an exception if the libraries where not modified only compiled against. If you use GNAT-GPL, according to AdaCore your code will fall under the GPL license with out exception which means you would need to distribute the source with your binary, now is that a bad thing?! However.. Keep in mind that if you modify Gnoga, or add to it, you will need to distribute those sources. Of course if you are doing that you should be sharing them with all of use to make Gnoga better :)
 
+Q) Can I launch a browser on start up to access by Gnoga Application?
+
+A) Yes, See Gnoga.Applications.Open_URL_* there is a version of that procedure
+   for Mac OSX, Windows and Linux
+
 Q) How to compile Gnoga on Debian (wheezy), AWS doesn't support WebSockers?
 
 A) You will need to use a more recent version of AWS (and perhaps GNAT). You

@@ -37,6 +37,7 @@
 
 with Ada.Strings.Unbounded;
 
+with GNAT.OS_Lib;
 
 package body Gnoga.Application is
    App_Name : Ada.Strings.Unbounded.Unbounded_String :=
@@ -72,5 +73,47 @@ package body Gnoga.Application is
    begin
       return Ada.Strings.Unbounded.To_String (HTML_For_On_Close);
    end HTML_On_Close;
+
+   ------------------
+   -- Open_URL_OSX --
+   ------------------
+
+   procedure Open_URL_OSX (url : String := "http://localhost:8080") is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/open " & url);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_OSX;
+
+   --------------------
+   -- Open_URL_Linux --
+   --------------------
+
+   procedure Open_URL_Linux (url : String := "http://localhost:8080");
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/xdg-open " & url);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_OSX;
+
+   ----------------------
+   -- Open_URL_Windows --
+   ----------------------
+
+   procedure Open_URL_Windows (url : String := "http://localhost:8080") is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("cmd /c start " & url);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_Windows;
 
 end Gnoga.Application;

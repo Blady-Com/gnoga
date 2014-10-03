@@ -159,6 +159,80 @@ package Gnoga.Gui.Element.Common is
    --  Create a horizontal rule
 
    -------------------------------------------------------------------------
+   --  Meter_Types
+   -------------------------------------------------------------------------
+
+   type Meter_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Meter_Access is access all Meter_Type;
+   type Pointer_To_Meter_Class is access all Meter_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Meter_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Meter   : in out Meter_Type;
+                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Value   : in     Integer := 0;
+                     High    : in     Integer := 100;
+                     Low     : in     Integer := 0;
+                     Maximum : in     Integer := 100;
+                     Minimum : in     Integer := 0;
+                     Optimum : in     Integer := 50;
+                     ID      : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  Meter_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Value (Meter : in out Meter_Type; Value : in Integer);
+   function Value (Meter : Meter_Type) return Integer;
+
+   procedure High (Meter : in out Meter_Type; Value : in Integer);
+   function High (Meter : Meter_Type) return Integer;
+
+   procedure Low (Meter : in out Meter_Type; Value : in Integer);
+   function Low (Meter : Meter_Type) return Integer;
+
+   procedure Maximum (Meter : in out Meter_Type; Value : in Integer);
+   function Maximum (Meter : Meter_Type) return Integer;
+
+   procedure Minimum (Meter : in out Meter_Type; Value : in Integer);
+   function Minimum (Meter : Meter_Type) return Integer;
+
+   procedure Optimum (Meter : in out Meter_Type; Value : in Integer);
+   function Optimum (Meter : Meter_Type) return Integer;
+
+   -------------------------------------------------------------------------
+   --  Progress_Bar_Types
+   -------------------------------------------------------------------------
+
+   type Progress_Bar_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Progress_Bar_Access is access all Progress_Bar_Type;
+   type Pointer_To_Progress_Bar_Class is access all Progress_Bar_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Progress_Bar_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Progress_Bar : in out Progress_Bar_Type;
+                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Value        : in     Integer := 0;
+                     Maximum      : in     Integer := 100;
+                     ID           : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  Progress_Bar_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Value (Progress_Bar : in out Progress_Bar_Type;
+                    Value        : in     Integer);
+   function Value (Progress_Bar : Progress_Bar_Type) return Integer;
+
+   procedure Maximum (Progress_Bar : in out Progress_Bar_Type;
+                      Value        : in     Integer);
+   function Maximum (Progress_Bar : Progress_Bar_Type) return Integer;
+
+   -------------------------------------------------------------------------
    --  Span_Types
    -------------------------------------------------------------------------
 
@@ -183,5 +257,8 @@ private
    type DIV_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type IMG_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type HR_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Meter_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Progress_Bar_Type is
+     new Gnoga.Gui.Element.Element_Type with null record;
    type Span_Type is new Gnoga.Gui.Element.Element_Type with null record;
 end Gnoga.Gui.Element.Common;

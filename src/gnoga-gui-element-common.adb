@@ -183,6 +183,134 @@ package body Gnoga.Gui.Element.Common is
    end Create;
 
    -------------------------------------------------------------------------
+   --  Meter_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Meter   : in out Meter_Type;
+                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Value   : in     Integer := 0;
+                     High    : in     Integer := 100;
+                     Low     : in     Integer := 0;
+                     Maximum : in     Integer := 100;
+                     Minimum : in     Integer := 0;
+                     Optimum : in     Integer := 50;
+                     ID      : in     String := "")
+   is
+   begin
+      Meter.Create_From_HTML (Parent,
+                              "<meter high=" & High'Img &
+                                " low=" & Low'Img &
+                                " max=" & Maximum'Img &
+                                " min=" & Minimum'Img &
+                                " optimum=" & Optimum'Img &
+                                " value=" & Value'Img &
+                                " />");
+   end Create;
+
+   procedure Value (Meter : in out Meter_Type; Value : in Integer) is
+   begin
+      Meter.Property ("value", Value);
+   end Value;
+
+   function Value (Meter : Meter_Type) return Integer is
+   begin
+      return Meter.Property ("value");
+   end Value;
+
+   procedure High (Meter : in out Meter_Type; Value : in Integer) is
+   begin
+      Meter.Property ("high", Value);
+   end High;
+
+   function High (Meter : Meter_Type) return Integer is
+   begin
+      return Meter.Property ("high");
+   end High;
+
+   procedure Low (Meter : in out Meter_Type; Value : in Integer) is
+   begin
+      Meter.Property ("low", Value);
+   end Low;
+
+   function Low (Meter : Meter_Type) return Integer is
+   begin
+      return Meter.Property ("low");
+   end Low;
+
+   procedure Maximum (Meter : in out Meter_Type; Value : in Integer) is
+   begin
+      Meter.Property ("max", Value);
+   end Maximum;
+
+   function Maximum (Meter : Meter_Type) return Integer is
+   begin
+      return Meter.Property ("max");
+   end Maximum;
+
+   procedure Minimum (Meter : in out Meter_Type; Value : in Integer) is
+   begin
+      Meter.Property ("min", Value);
+   end Minimum;
+
+   function Minimum (Meter : Meter_Type) return Integer is
+   begin
+      return Meter.Property ("min");
+   end Minimum;
+
+   procedure Optimum (Meter : in out Meter_Type; Value : in Integer) is
+   begin
+      Meter.Property ("optimum", Value);
+   end Optimum;
+
+   function Optimum (Meter : Meter_Type) return Integer is
+   begin
+      return Meter.Property ("optimum");
+   end Optimum;
+
+   -------------------------------------------------------------------------
+   --  Progress_Bar_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Progress_Bar : in out Progress_Bar_Type;
+                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Value        : in     Integer := 0;
+                     Maximum      : in     Integer := 100;
+                     ID           : in     String := "")
+   is
+   begin
+      Progress_Bar.Create_From_HTML (Parent,
+                              "<progress" &
+                                " max=" & Maximum'Img &
+                                " value=" & Value'Img &
+                                " />");
+
+   end Create;
+
+   procedure Value (Progress_Bar : in out Progress_Bar_Type;
+                    Value        : in     Integer)
+   is
+   begin
+      Progress_Bar.Property ("value", Value);
+   end Value;
+
+   function Value (Progress_Bar : Progress_Bar_Type) return Integer is
+   begin
+      return Progress_Bar.Property ("value");
+   end Value;
+
+   procedure Maximum (Progress_Bar : in out Progress_Bar_Type;
+                      Value        : in     Integer)
+   is
+   begin
+      Progress_Bar.Property ("max", Value);
+   end Maximum;
+
+   function Maximum (Progress_Bar : Progress_Bar_Type) return Integer is
+   begin
+      return Progress_Bar.Property ("max");
+   end Maximum;
+
+   -------------------------------------------------------------------------
    --  Span_Types
    -------------------------------------------------------------------------
 

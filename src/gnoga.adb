@@ -45,13 +45,27 @@ package body Gnoga is
    -------------------
 
    function Escape_Quotes (S : String) return String is
-      P : Integer := Ada.Strings.Fixed.Index (S, """");
    begin
-      if P = 0 then
-         return S;
+      if S'Length = 0 then
+         return "";
       else
-         return Escape_Quotes (S (S'First .. (P - 1)) &
-                                 "\x22" & S ((P + 1) .. S'Last));
+         declare
+            New_Char : Character := S (S'First);
+         begin
+            if New_Char = '"' then
+               return "\x22"
+                 & Escape_Quotes (S (S'First + 1 .. S'Last));
+            elsif New_Char = Character'Val (10) then
+               return "\x0A"
+                 & Escape_Quotes (S (S'First + 1 .. S'Last));
+            elsif New_Char = Character'Val (13) then
+               return "\x0D"
+                 & Escape_Quotes (S (S'First + 1 .. S'Last));
+            else
+               return New_Char
+                 & Escape_Quotes (S (S'First + 1 .. S'Last));
+            end if;
+         end;
       end if;
    end Escape_Quotes;
 

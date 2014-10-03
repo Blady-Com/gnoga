@@ -45,8 +45,8 @@ with GNAT.Expect; use GNAT;
 
 package body Gnoga.Server.Template_Parser is
 
-   Default_Extension : Ada.Strings.Unbounded.Unbounded_String :=
-     Ada.Strings.Unbounded.To_Unbounded_String (".php");
+   Template_Directory : Ada.Strings.Unbounded.Unbounded_String :=
+     Ada.Strings.Unbounded.To_Unbounded_String ("../templates");
 
    function PHP_Encode_Key (Code : String) return String;
    --  fixes the presence of a ' in a key
@@ -137,7 +137,6 @@ package body Gnoga.Server.Template_Parser is
       if Result /= 0 then
          raise Parser_Execution_Failure with "Call to php executable failed";
       end if;
-
       return RetStr;
    end Execute_PHP;
 
@@ -412,12 +411,11 @@ package body Gnoga.Server.Template_Parser is
    ----------------
 
    function Parse_Name (Name : String) return String is
+      Templates_Dir : constant String :=
+                        Ada.Strings.Unbounded.To_String
+                          (Template_Directory) & "/";
    begin
-      if Ada.Directories.Extension (Name) = "" then
-         return Name & Ada.Strings.Unbounded.To_String (Default_Extension);
-      else
-         return Name;
-      end if;
+      return Templates_Dir & Name;
    end Parse_Name;
 
    ---------------
@@ -496,14 +494,15 @@ package body Gnoga.Server.Template_Parser is
                           "?>");
    end Load_View;
 
-   -------------------
-   -- Set_Extension --
-   -------------------
+   ----------------------------
+   -- Set_Template_Directory --
+   ----------------------------
 
-   procedure Set_Extension (Ext : String) is
+   procedure Set_Template_Directory (Directory : String) is
    begin
-      Default_Extension := Ada.Strings.Unbounded.To_Unbounded_String (Ext);
-   end Set_Extension;
+      Template_Directory :=
+        Ada.Strings.Unbounded.To_Unbounded_String (Directory);
+   end Set_Template_Directory;
 
    -----------------------
    -- Add_Error_Message --

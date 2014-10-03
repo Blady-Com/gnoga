@@ -12,6 +12,8 @@ App Dir
   |___ css - optional, a directory for serving css files
   |
   |___ img - optional, a directory of serving graphics.
+  |
+  |___ templates - option, if using Gnoga.Server.Template_Parser
 
 You can use Gnoga.Application.Lauch_URL_* to start the default browser
 pointed to the Gnoga app on startup.

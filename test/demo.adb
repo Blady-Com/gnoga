@@ -5,8 +5,10 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
-
 with Gnoga.Gui.Element.Form.Fieldset;
+
+with Gnoga.Server.Template_Parser;
+with Gnoga.Server.Template_Parser.Python;
 
 procedure Demo is
    use Gnoga;
@@ -167,6 +169,23 @@ procedure Demo is
       App.Target.On_Drop_Handler (Drop'Unrestricted_Access);
       App.Target.On_Drag_Enter_Handler (Enter_Drag'Unrestricted_Access);
       App.Target.On_Drag_Leave_Handler (Leave_Drag'Unrestricted_Access);
+
+      declare
+         use Gnoga.Server.Template_Parser;
+
+         Items : View_Data;
+      begin
+         Items.Insert (Key => "say", Value => "Hello World");
+
+         App.Console.Put_Line ("From PHP parser:");
+         App.Console.Put_Line (Load_View ("test_sample.php", Items));
+
+         App.Console.New_Line;
+
+         App.Console.Put_Line ("From Python parser:");
+
+         App.Console.Put_Line (Python.Load_View ("test_sample.py", Items));
+      end;
    end On_Connect;
 
 begin

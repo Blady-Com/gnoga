@@ -169,8 +169,8 @@ package Gnoga.Server.Template_Parser is
                        return String;
    --  Display named view with Data_List array of View_Data items
 
-   procedure Set_Extension (Ext : String);
-   --  Set the default extension for views. By default this is ".php"
+   procedure Set_Template_Directory (Directory : String);
+   --  Set the default extension for views. By default this is "../templates"
 
 private
    type View_Data is new Ada.Finalization.Controlled with

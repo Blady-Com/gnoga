@@ -15,6 +15,9 @@ App Dir
   |___ src - Source code for your gnoga app
   |
   |___ obj - Build objects
+  |
+  |___ templates - option, if using Gnoga.Server.Template_Parser
+
   
   The basic gpr file (assuming you have run "make install" to install gnoga as a library in gnat) for this setup of dirs would be (using my_app.gpr):
   

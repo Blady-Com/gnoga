@@ -9,13 +9,13 @@ make
 
 then run the snake demo in /bin
 
-There are other test bins in the /bin you can also take a look at but they are mainly used during development to test the framework as I go the tutorials are better examples of how to program Gnoga.
+There are other applicaions in the /bin you can take a look. See /demo and /tutorial
 
 You can now install gnoga as a gnat library using:
 
 make install
 
-Look through the code in the tests and the snake demo to get a feel for how things work for now.
+Look through the code in the tutorials and the snake demo to get a feel for how things work for now.
 
 Gnoga has the following aspects to it:
 
@@ -26,6 +26,7 @@ Gnoga has the following aspects to it:
         Gnoga.Gui.Base (Not per se a binding of Node but takes its place)
         Gnoga.Gui.Element, Gnoga.Gui.Element.* (HTML Elements)
         Gnoga.Gui.Element.Canvas - HTML 5 Canvas bindings
+        Gnoga.Gui.Element.SVG - HTML SVG vector graphics
         Gnoga.Gui.Element.Multimedia - HTML 5 Audio and Video
         Gnoga.Gui.Window, Gnoga.Gui.Navigator, Gnoga.Gui.Screen,
         Gnoga.Gui.Location
@@ -34,26 +35,22 @@ Gnoga has the following aspects to it:
 3. Application startup and services
         Gnoga.Server.Application.*
 
-4. Bindings to higher level toolkits like  Bootstrap, etc.
-        Coming soon
-
-5. Gnoga Specific higher level containers and GUI widgets
+4. Gnoga Specific higher level containers and GUI widgets
         Gnoga.Views.* - Auto layout of child elements and basis for future
                           custom Gnoga widgts
 
-6. Gnoga Application level APIs, like Logical access control systems, Security services and monitoring, etc.
+5. Gnoga Application level APIs, like Logical access control systems, Security services and monitoring, etc.
        Gnoga.Client.Storage - local persistent and session storage on browser
 
-7. Gnoga database bindings
-	   Gnoga.Server.Database - support for MySQL and SQLite 3
+6. Gnoga database bindings
+      Gnoga.Server.Database - support for MySQL and SQLite 3
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
 
-8. Gnoga development tools
+7. Gnoga development tools
 	Code generation for binding pre-made html5 pages
         Database tools for generating front ends, etc.
-	   - I already have a tool for create delailed Active Data bindings
+	   - I already have a tool for creating delailed Active Data bindings
 	   - per tables, that will be added in the near future.
 	IDE for Delphi/VB like development
 	etc.
-

@@ -13,42 +13,5 @@ App Dir
   |
   |___ img - optional, a directory of serving graphics.
 
-
-During development the following works well:
-
-App Dir
-  |
-  |___ bin - your gnoga app binary
-  |
-  |___ html - boot.html (or other boot loader used)
-  |
-  |___ js - must contain jquery.min.js and jquery-ui.min.js
-  |
-  |___ css - must contain jquery-ui.css
-  |
-  |___ img - optional, a directory of serving graphics.
-  |
-  |___ src - Source code for your gnoga app
-  |
-  |___ obj - Build objects
-  
-  The basic gpr file (assuming you have run "make install" to install gnoga as a library in gnat) for this setup of dirs would be (using my_app.gpr):
-  
-  with "Gnoga";
-
-  project My_App is
-
-     for Languages use ("Ada");
-     for Source_Dirs use (".");
-     for Object_Dir use "../obj";
-     for Exec_Dir use "../bin";
-     for Main use ("my_app-main.adb");
-     
-     package Builder is
-        for Executable ("my_app-main.adb") use "myapp";
-     end Builder;
-
-     package Compiler is
-        for Default_Switches ("ada") use ("-E");
-     end Compiler;
-  end My_App;
+You can use Gnoga.Application.Lauch_URL_* to start the default browser
+pointed to the Gnoga app on startup.

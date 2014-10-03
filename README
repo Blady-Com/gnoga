@@ -17,6 +17,8 @@ make install
 
 Look through the code in the tutorials and the snake demo to get a feel for how things work for now.
 
+see: DEPLOYING_APPS and DEVELOPING_APPS for some tips on Gnoga applications
+
 Gnoga has the following aspects to it:
 
 1. The underlying communication platform between the Ada code and the browser

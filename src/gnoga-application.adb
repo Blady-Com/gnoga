@@ -92,7 +92,7 @@ package body Gnoga.Application is
    -- Open_URL_Linux --
    --------------------
 
-   procedure Open_URL_Linux (url : String := "http://localhost:8080");
+   procedure Open_URL_Linux (url : String := "http://localhost:8080") is
       Args : GNAT.OS_Lib.Argument_List_Access;
       PID  : GNAT.OS_Lib.Process_Id;
    begin
@@ -100,7 +100,7 @@ package body Gnoga.Application is
       PID := GNAT.OS_Lib.Non_Blocking_Spawn
         (Program_Name => Args (Args'First).all,
          Args         => Args (Args'First + 1 .. Args'Last));
-   end Open_URL_OSX;
+   end Open_URL_Linux;
 
    ----------------------
    -- Open_URL_Windows --

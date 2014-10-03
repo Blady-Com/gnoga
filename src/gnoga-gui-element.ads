@@ -54,12 +54,12 @@ package Gnoga.Gui.Element is
    --
    --  <form>,<input>,<textarea>,<select>,<datalist>,<legend>,<label>,<option>
    --  <optgroup>*
-   --              - Element.Form
+   --              - Element.Form, * Not supported
    --  <fieldset>
    --              - Element.Form.Fieldset
    --
    --  <audio>,<video>,<source>*,<track>*
-   --              - Element.Multimedia
+   --              - Element.Multimedia, * Not needed
    --
    --  <iframe>
    --              - Element.IFrame

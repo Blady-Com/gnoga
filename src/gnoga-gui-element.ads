@@ -53,8 +53,8 @@ package Gnoga.Gui.Element is
    --              - Element.SVG
    --
    --  <form>,<input>,<textarea>,<select>,<datalist>,<legend>,<label>,<option>
-   --  <optgroup>*
-   --              - Element.Form, * Not supported
+   --  <optgroup>
+   --              - Element.Form,
    --  <fieldset>
    --              - Element.Form.Fieldset
    --
@@ -137,6 +137,7 @@ package Gnoga.Gui.Element is
    --  Gnoga will generate a unique one for it. The created object will be
    --  stored on the browser but will not be inserted in to the DOM until
    --  Place_Inside_Top_Of, Place_Inside_Botton_Of, Place_Before, Place_ After
+   --  Note: ID _must_ be unique for use in Gnoga.
 
    -------------------------------------------------------------------------
    --  Element_Type - Properties
@@ -635,6 +636,9 @@ package Gnoga.Gui.Element is
    procedure Place_After (Element : in out Element_Type;
                           Target  : in out Element_Type'Class);
 
+   procedure Remove (Element : in out Element_Type);
+   --  Removes an element from the DOM, if the ID_Type is DOM_ID, the ID
+   --  will be changed to a unique Gnoga_ID before removal.
 
    -- Element Methods --
 

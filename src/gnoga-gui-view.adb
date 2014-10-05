@@ -47,10 +47,10 @@ package body Gnoga.Gui.View is
    procedure Finalize (Object : in out View_Type) is
    begin
       for i in
-        Object.Base_Type_Array.First_Index .. Object.Base_Type_Array.Last_Index
+        Object.Child_Array.First_Index .. Object.Child_Array.Last_Index
       loop
-         if Object.Base_Type_Array.Element (i).Dynamic then
-            Object.Base_Type_Array.Element (i).Free;
+         if Object.Child_Array.Element (i).Dynamic then
+            Object.Child_Array.Element (i).Free;
          end if;
       end loop;
       Gnoga.Gui.Element.Element_Type (Object).Finalize;
@@ -88,7 +88,7 @@ package body Gnoga.Gui.View is
       end if;
 
       if Child.Dynamic then
-         View.Base_Type_Array.Append (Child'Unchecked_Access);
+         View.Child_Array.Append (Child'Unchecked_Access);
       end if;
    end On_Child_Added;
 

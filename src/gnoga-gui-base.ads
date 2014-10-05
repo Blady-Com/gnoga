@@ -36,6 +36,9 @@
 ------------------------------------------------------------------------------
 
 with Ada.Finalization;
+with Ada.Containers.Vectors;
+with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Strings.Hash;
 
 with Gnoga.Types;
 
@@ -73,6 +76,25 @@ package Gnoga.Gui.Base is
    procedure Free (Object : in out Base_Type);
    --  Free a dynamically created Object
 
+   package Base_Type_Arrays is
+     new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Pointer_To_Base_Class,
+        "="          => Base."=");
+
+   package Base_Type_Maps is
+      new Ada.Containers.Indefinite_Hashed_Maps (String,
+                                                 Pointer_To_Base_Class,
+                                                 Ada.Strings.Hash,
+                                                 Equivalent_Keys => "=");
+
+   subtype Base_Type_Array is Base_Type_Arrays.Vector;
+   --  Arrays of Base_Types
+
+   subtype Base_Type_Map is Base_Type_Maps.Map;
+   --  String to Base_Type associative array
+
+
    -------------------------------------------------------------------------
    --  Base_Type - Creation Methods
    -------------------------------------------------------------------------
@@ -86,6 +108,7 @@ package Gnoga.Gui.Base is
    --  Create a Gnoga object on Connection ID with ID using Script.
    --  The Script must include creating the id attribute equal to ID.
    --  Script is eval'd JavaScript.
+   --  Note ID _must_ be unique for use in Gnoga.
 
    procedure Attach_Using_Parent
      (Object   : in out Base_Type;
@@ -94,6 +117,7 @@ package Gnoga.Gui.Base is
       ID_Type  : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID);
    --  Attache a Gnoga object using Connection ID from Parent to an existing
    --  DOM object with ID. On_Create event is not fired.
+   --  Note ID _must_ be unique for use in Gnoga.
 
    procedure Attach
      (Object        : in out Base_Type;
@@ -102,6 +126,7 @@ package Gnoga.Gui.Base is
       ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID);
    --  Attache a Gnoga object on Connection ID to an existing DOM object
    --  with ID. On_Create event is not fired.
+   --  Note ID _must_ be unique for use in Gnoga.
 
    -------------------------------------------------------------------------
    --  Base_Type - Properties
@@ -126,7 +151,12 @@ package Gnoga.Gui.Base is
    --  the connection is still valid.
 
    function ID (Object : Base_Type) return String;
-   --  The ID for Object.
+   procedure ID (Object  : in out Base_Type;
+                 ID      : in     String;
+                 ID_Type : in     Gnoga.Types.ID_Enumeration);
+   --  The ID for Object. Use Attach for attaching to existing objects in,
+   --  setting the ID should only be done with full understanding of the Gnoga
+   --  internalls.
 
    function ID_Type (Object : Base_Type) return Gnoga.Types.ID_Enumeration;
    --  Returns the type of ID stored for Object or No_ID if object has not

@@ -1278,6 +1278,10 @@ package body Gnoga.Gui.Element.Form is
          ID     => ID);
    end Create;
 
+   ---------------------
+   -- Multiple_Select --
+   ---------------------
+
    procedure Multiple_Select (Element : in out Selection_Type;
                               Value   : in    Boolean := True)
    is
@@ -1289,6 +1293,10 @@ package body Gnoga.Gui.Element.Form is
    begin
       return Element.Property ("multiple");
    end Multiple_Select;
+
+   -------------------
+   -- Visible_Lines --
+   -------------------
 
    procedure Visible_Lines (Element : in out Selection_Type;
                             Value   : in     Positive)
@@ -1302,10 +1310,18 @@ package body Gnoga.Gui.Element.Form is
       return Element.Property ("size");
    end Visible_Lines;
 
+   --------------------
+   -- Selected_Index --
+   --------------------
+
    function Selected_Index (Element : Selection_Type) return Natural is
    begin
       return Element.Property ("selectedIndex") + 1;
    end Selected_Index;
+
+   -----------
+   -- Value --
+   -----------
 
    function Value (Element : Selection_Type) return String is
    begin
@@ -1462,4 +1478,181 @@ package body Gnoga.Gui.Element.Form is
    begin
       Element.Execute ("remove (" & Index'Img &")");
    end Remove_Option;
+
+   -------------------------------------------------------------------------
+   --  Option_Type
+   -------------------------------------------------------------------------
+
+   procedure Create (Element   : in out Option_Type;
+                     Form      : in out Form_Type'Class;
+                     Selection : in out Gnoga.Gui.Element.Element_Type'Class;
+                     Value     : in     String;
+                     Text      : in     String;
+                     Selected  : in     Boolean := False;
+                     Disabled  : in     Boolean := False;
+                     ID        : in     String := "")
+   is
+      function Is_Selected return String;
+      function Is_Disabled return String;
+
+      function Is_Selected return String is
+      begin
+         if Selected then
+            return " selected";
+         else
+            return "";
+         end if;
+      end Is_Selected;
+
+      function Is_Disabled return String is
+      begin
+         if Disabled then
+            return " disabled";
+         else
+            return "";
+         end if;
+      end Is_Disabled;
+   begin
+      Element.Create_From_HTML
+        (Parent => Form,
+         HTML   => "<option value=""" & Escape_Quotes (Value) & """>" &
+           Escape_Quotes (Text) & Is_Selected & Is_Disabled & "</option>",
+         ID     => ID);
+
+      Element.Place_Inside_Bottom_Of (Selection);
+   end Create;
+
+   --------------
+   -- Selected --
+   --------------
+
+   procedure Selected (Element : in out Option_Type;
+                       Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("selected", Value);
+   end Selected;
+
+   function Selected (Element : Option_Type) return Boolean is
+   begin
+      return Element.Property ("selected");
+   end Selected;
+
+   --------------
+   -- Disabled --
+   --------------
+
+   procedure Disabled (Element : in out Option_Type;
+                       Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("disabled", Value);
+   end Disabled;
+
+   function Disabled (Element : Option_Type)
+                      return Boolean
+   is
+   begin
+      return Element.Property ("disabled");
+   end Disabled;
+
+   -----------
+   -- Value --
+   -----------
+
+   procedure Value (Element : in out Option_Type;
+                    Value   : in     String)
+   is
+   begin
+      Element.Property ("value", Value);
+   end Value;
+
+   function Value (Element : Option_Type) return String is
+   begin
+      return Element.Property ("value");
+   end Value;
+
+   -----------
+   -- Text --
+   -----------
+
+   procedure Text (Element : in out Option_Type;
+                   Value    : in     String)
+   is
+   begin
+      Element.Property ("text", Value);
+   end Text;
+
+   function Text (Element : Option_Type) return String is
+   begin
+      return Element.Property ("text");
+   end Text;
+
+   -------------------------------------------------------------------------
+   --  Option_Group_Type
+   -------------------------------------------------------------------------
+
+   procedure Create (Element   : in out Option_Group_Type;
+                     Form      : in out Form_Type'Class;
+                     Selection : in out Selection_Type'Class;
+                     Label     : in     String;
+                     Disabled  : in     Boolean := False;
+                     ID        : in     String := "")
+   is
+      function Is_Disabled return String;
+
+      function Is_Disabled return String is
+      begin
+         if Disabled then
+            return " disabled";
+         else
+            return "";
+         end if;
+      end Is_Disabled;
+   begin
+      Element.Create_From_HTML
+        (Parent => Form,
+         HTML   => "<optgroup label=""" & Escape_Quotes (Label) & """" &
+           Is_Disabled & "/>",
+         ID     => ID);
+
+      Element.Place_Inside_Bottom_Of (Selection);
+   end Create;
+
+   -------------------------------------------------------------------------
+   --  Option_Group_Type - Properties
+   -------------------------------------------------------------------------
+
+   -----------
+   -- Label --
+   -----------
+
+   procedure Label (Element : in out Option_Group_Type;
+                   Value    : in     String)
+   is
+   begin
+      Element.Property ("label", Value);
+   end Label;
+
+   function Label (Element : Option_Group_Type) return String is
+   begin
+      return Element.Property ("label");
+   end Label;
+
+   --------------
+   -- Disabled --
+   --------------
+
+   procedure Disabled (Element : in out Option_Group_Type;
+                       Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("disabled", Value);
+   end Disabled;
+
+   function Disabled (Element : Option_Group_Type) return Boolean
+   is
+   begin
+      return Element.Property ("disabled");
+   end Disabled;
 end Gnoga.Gui.Element.Form;

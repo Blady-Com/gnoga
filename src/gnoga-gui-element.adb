@@ -1277,6 +1277,25 @@ package body Gnoga.Gui.Element is
       Element.jQuery_Execute ("insertAfter(" & Target.jQuery & ")");
    end Place_After;
 
+   ------------
+   -- Remove --
+   ------------
+
+   procedure Remove (Element : in out Element_Type) is
+      use type Gnoga.Types.ID_Enumeration;
+   begin
+      if Element.ID_Type = Gnoga.Types.DOM_ID then
+         declare
+            GID : constant String := Gnoga.Server.Connection.New_GID;
+         begin
+            Element.jQuery_Execute ("gnoga['" & GID & "']=" & Element.jQuery);
+            Element.ID (GID, Gnoga.Types.Gnoga_ID);
+         end;
+      end if;
+
+      Element.jQuery_Execute ("remove()");
+   end Remove;
+
    -----------
    -- Click --
    -----------
@@ -1285,9 +1304,5 @@ package body Gnoga.Gui.Element is
    begin
       Element.Execute ("click();");
    end Click;
-
-   -------------------------------------------------------------------------
-   --  Element_Type - Events
-   -------------------------------------------------------------------------
 
 end Gnoga.Gui.Element;

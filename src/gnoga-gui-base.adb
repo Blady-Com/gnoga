@@ -341,6 +341,15 @@ package body Gnoga.Gui.Base is
       return Ada.Strings.Unbounded.To_String (Object.Web_ID);
    end ID;
 
+   procedure ID (Object  : in out Base_Type;
+                 ID      : in     String;
+                 ID_Type : in     Gnoga.Types.ID_Enumeration)
+   is
+   begin
+      Object.Web_ID := Ada.Strings.Unbounded.To_Unbounded_String (ID);
+      Object.ID_Type := ID_Type;
+   end ID;
+
    -------------
    -- ID_Type --
    -------------

@@ -38,8 +38,6 @@
 --  Views are used to handle auto insertion of objects in to the DOM and
 --  placement.
 
-with Ada.Containers.Vectors;
-
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 
@@ -115,14 +113,8 @@ package Gnoga.Gui.View is
    --  to it.
 
 private
-   package Base_Type_Arrays is
-     new Ada.Containers.Vectors
-       (Index_Type   => Positive,
-        Element_Type => Gnoga.Gui.Base.Pointer_To_Base_Class,
-        "="          => Gnoga.Gui.Base."=");
-
    type View_Type is new Gnoga.Gui.Element.Element_Type with
       record
-         Base_Type_Array : Base_Type_Arrays.Vector;
+         Child_Array : Gnoga.Gui.Base.Base_Type_Array;
       end record;
 end Gnoga.Gui.View;

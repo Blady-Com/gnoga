@@ -36,6 +36,7 @@ procedure Demo is
       App.Console.Put_Line ("Dynamic reasign of click handler worked");
       Object.On_Click_Handler (null);
       App.Console.Put_Line ("Click handler now set to null - disabled");
+      App.My_Select.Place_Inside_Bottom_Of (App.FSet);
    end On_Click2;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
@@ -56,6 +57,7 @@ procedure Demo is
       end loop;
       App.Console.Put_Line ("Changing click handler.");
       Object.On_Click_Handler (On_Click2'Unrestricted_Access);
+      App.My_Select.Remove;
    end On_Click;
 
    procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
@@ -102,6 +104,8 @@ procedure Demo is
       App     : App_Access := new App_Data;
       Play    : Common.Button_Access := new Common.Button_Type;
       Label   : Form.Label_Access := new Form.Label_Type;
+      Option  : Form.Option_Access;
+      optgrp  : Form.Option_Group_Access;
    begin
       Main_Window.Connection_Data (App.all);
 
@@ -141,19 +145,28 @@ procedure Demo is
 
       App.My_Select.Create (App.My_Form,
                             Multiple_Select => True,
-                            Visible_Lines => 6);
+                            Visible_Lines   => 6);
+      App.My_Select.Box_Width ("20em");
       App.My_Select.Add_Option (Value    => "1",
                                 Text     => "L1");
       App.My_Select.Add_Option (Value    => "2",
                                 Text     => "L2",
                                 Selected => True);
-      App.My_Select.Add_Option (Value    => "3",
-                                Text     => "L3");
+
+      Option := new Form.Option_Type;
+      Option.Create (App.My_Form, App.My_Select, "3", "L3");
+
       App.My_Select.Add_Option (Value    => "4",
                                 Text     => "L4");
       App.My_Select.Add_Option (Value    => "2.5",
                                 Text     => "L2.5",
                                 Index    => 2);
+
+      optgrp := new Form.Option_Group_Type;
+      optgrp.Create (App.My_Form, App.My_Select, "Group");
+      Option := new Form.Option_Type;
+      Option.Create (App.My_Form, optgrp.all, "5", "L5");
+
       App.My_Select.Place_Inside_Bottom_Of (App.FSet);
 
       App.Source.Create (App.Console, "Drag Me");

@@ -34,6 +34,7 @@
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
+
 with Gnoga.Gui.View;
 
 package Gnoga.Gui.Element.Form is
@@ -796,6 +797,11 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
    --  Selection_Types
    -------------------------------------------------------------------------
+   --  As an alternative to using the Add_Option method you can add
+   --  as children Option_Type and Option_Group_Types. Option_Type
+   --  and Option_Group_Type are added with Item.Create, they can
+   --  be removed using Item.Remove and their order can be changed using
+   --  the standard Element_Type.Place_* methods.
 
    type Selection_Type is new Form_Element_Type with private;
    type Selection_Access is access all Selection_Type;
@@ -879,6 +885,93 @@ package Gnoga.Gui.Element.Form is
    procedure Remove_Option (Element  : in out Selection_Type;
                             Index    : in     Positive);
 
+   -------------------------------------------------------------------------
+   --  Option_Type
+   -------------------------------------------------------------------------
+
+   type Option_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Option_Access is access all Option_Type;
+   type Pointer_To_Option_Class is access all Option_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Option_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element   : in out Option_Type;
+                     Form      : in out Form_Type'Class;
+                     Selection : in out Gnoga.Gui.Element.Element_Type'Class;
+                     Value     : in     String;
+                     Text      : in     String;
+                     Selected  : in     Boolean := False;
+                     Disabled  : in     Boolean := False;
+                     ID        : in     String := "");
+   --  Creates an Option for Selection, this is an alternative to using
+   --  Selection_Type.Add_Option that allows attaching events to the option.
+   --  Depending on browser, some styling may be possible also.
+   --  Will be added to end of Selection, the placement can be changed using
+   --  standard Element_Type.Place_* methods and can also be removed using
+   --  Element.Remove
+   --  Selection can be an element of Selection_Type or Option_Group_Type
+
+   -------------------------------------------------------------------------
+   --  Option_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Selected (Element : in out Option_Type;
+                       Value   : in     Boolean := True);
+   function Selected (Element : Option_Type)
+                      return Boolean;
+
+   procedure Disabled (Element : in out Option_Type;
+                       Value   : in     Boolean := True);
+   function Disabled (Element : Option_Type)
+                      return Boolean;
+
+   procedure Value (Element : in out Option_Type;
+                    Value   : in     String);
+   function Value (Element : Option_Type)
+                   return String;
+
+   procedure Text (Element : in out Option_Type;
+                   Value   : in     String);
+   function Text (Element : Option_Type)
+                  return String;
+
+   -------------------------------------------------------------------------
+   --  Option_Group_Type
+   -------------------------------------------------------------------------
+
+   type Option_Group_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Option_Group_Access is access all Option_Group_Type;
+   type Pointer_To_Option_Group_Class is access all Option_Group_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Option_Group_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element   : in out Option_Group_Type;
+                     Form      : in out Form_Type'Class;
+                     Selection : in out Selection_Type'Class;
+                     Label     : in     String;
+                     Disabled  : in     Boolean := False;
+                     ID        : in     String := "");
+   --  Option Groups create a tree like selection hierachy in the Select.
+   --  once added
+
+   -------------------------------------------------------------------------
+   --  Option_Group_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Disabled (Element : in out Option_Group_Type;
+                       Value   : in     Boolean := True);
+   function Disabled (Element : Option_Group_Type)
+                      return Boolean;
+
+   procedure Label (Element : in out Option_Group_Type;
+                    Value   : in     String);
+   function Label (Element : Option_Group_Type)
+                   return String;
+
 private
    type Form_Type is new Gnoga.Gui.View.View_Type with null record;
    type Form_Element_Type is
@@ -908,4 +1001,7 @@ private
    type Label_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Data_List_Type is new Gnoga.Gui.View.View_Type with null record;
    type Selection_Type is new Form_Element_Type with null record;
+   type Option_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Option_Group_Type is
+     new Gnoga.Gui.Element.Element_Type with null record;
 end Gnoga.Gui.Element.Form;

@@ -2,6 +2,7 @@
 <HTML>
    <HEAD>
       <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <script src="/js/jquery.min.js"></script>
    </HEAD>
 <BODY>
@@ -15,21 +16,21 @@
      var s = document.location.search;
      var tokens;
      var r = /[?&]?([^=]+)=([^&]*)/g;
-     
+
      s = s.split("+").join(" ");
 
      while (tokens = r.exec(s)) {
         params[decodeURIComponent(tokens[1])]
            = decodeURIComponent(tokens[2]);
      }
-  
+
      ws = new WebSocket ("ws://" + location.hostname + ":" + location.port + "/gnoga");
-  
+
      if (ws != null) {
         ws.onmessage = function (event) {
            try {
               eval (event.data);
-           } catch (e) {           
+           } catch (e) {
               console.error (e.message);
            }
         }

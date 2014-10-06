@@ -7,6 +7,7 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 with Gnoga.Gui.Element.Form.Fieldset;
 with Gnoga.Gui.Element.List;
+with Gnoga.Gui.Element.Style_Block;
 
 with Gnoga.Server.Template_Parser;
 with Gnoga.Server.Template_Parser.Python;
@@ -219,11 +220,17 @@ procedure Demo is
       end;
 
       declare
+         s   : Style_Block.Style_Access := new Style_Block.Style_Type;
          ul1 : List.Ordered_List_Access := new List.Ordered_List_Type;
       begin
+         s.Dynamic;
+         s.Create (App.Console);
+         s.Add_Style_for_Class ("test_class", "background-color: red;");
+
          ul1.Dynamic;
          ul1.Create (App.Console);
          ul1.List_Kind (List.Hebrew);
+         ul1.Class_Name ("test_class");
 
          for i in 1 .. 3 loop
             List.Line_Item_Access

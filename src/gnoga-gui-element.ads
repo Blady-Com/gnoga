@@ -66,6 +66,9 @@ package Gnoga.Gui.Element is
    --
    --  <html>,<body>,<head>
    --              - Access through Window_Type.Document
+   --
+   --  <ul>,<ol>,<li>
+   --              - Element.List
 
 
    --  HTML5 Tags Unbound as Gui Elements in Gnoga
@@ -78,7 +81,7 @@ package Gnoga.Gui.Element is
    --              - No specific tabe bindings. Tables are meant for data
    --              - display and not layouts.
    --
-   --  <dl>,<dd>,<dt>,<ul>,<ol>,<li>
+   --  <dl>,<dd>,<dt>
    --              - No specific list bindings
    --
    --  <map>,<area>

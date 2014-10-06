@@ -139,6 +139,7 @@ package Gnoga.Gui.View is
 
    function Element (View : View_Type; Name : String)
                      return Gnoga.Gui.Element.Pointer_To_Element_Class;
+   --  Access elements added by Add_Element and New_Element
 
    -------------------------------------------------------------------------
    --  View_Type - Event Methods
@@ -152,7 +153,7 @@ package Gnoga.Gui.View is
    --  it will be ignored. Any child professing the View as its parent
    --  will automatially have Element.Place_Inside_Bottom_Of (View) applied
    --  to it. If an element is marked as dynamic before its Create is called
-   --  it is marked for garbage collection.
+   --  it is slated for garbage collection.
 
 private
    type View_Type is new Gnoga.Gui.Element.Element_Type with

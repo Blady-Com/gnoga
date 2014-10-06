@@ -6,6 +6,7 @@ with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 with Gnoga.Gui.Element.Form.Fieldset;
+with Gnoga.Gui.Element.List;
 
 with Gnoga.Server.Template_Parser;
 with Gnoga.Server.Template_Parser.Python;
@@ -19,7 +20,7 @@ procedure Demo is
    type App_Data is new Connection_Data_Type with
       record
          Main_Window : Window.Pointer_To_Window_Class;
-         Console     : View.Console.Console_View_Type;
+         Console     : aliased View.Console.Console_View_Type;
          FSet        : Form.Fieldset.Fieldset_Type;
          My_Form     : aliased Form.Form_Type;
          My_List     : Form.Data_List_Type;
@@ -215,6 +216,19 @@ procedure Demo is
          App.Console.Put_Line ("From Python parser:");
 
          App.Console.Put_Line (Python.Load_View ("test_sample.py", Items));
+      end;
+
+      declare
+         ul1 : List.Ordered_List_Access := new List.Ordered_List_Type;
+      begin
+         ul1.Dynamic;
+         ul1.Create (App.Console);
+         ul1.List_Kind (List.Hebrew);
+
+         for i in 1 .. 3 loop
+            List.Line_Item_Access
+              (ul1.Add (new List.Line_Item_Type)).Create (ul1.all, i'img);
+         end loop;
       end;
    end On_Connect;
 

@@ -54,7 +54,10 @@ package Gnoga.Gui.View is
    overriding
    procedure Finalize (Object : in out View_Type);
    --  Deallocate any child element that was marked as Dynamic before
-   --  being added to View
+   --  being added to View. Child element's marked as Dynamic by
+   --  Element_Type.Dynamic created with a View as the parent should
+   --  never be dealocated except by Finalize. If you plan on dealocating
+   --  a child element in your code, do not mark as Dynamic.
 
    -------------------------------------------------------------------------
    --  View_Type - Creation Methods
@@ -66,7 +69,7 @@ package Gnoga.Gui.View is
       Attach  : in     Boolean := True;
       ID      : in     String  := "");
    --  If Parent is a Window_Type'Class will automatically set itself
-   --  as the View on Parent if Attach is True
+   --  as the View on Parent if Attach is True.
 
    -------------------------------------------------------------------------
    --  View_Type - Methods
@@ -99,6 +102,44 @@ package Gnoga.Gui.View is
    --  Place HTML directly in to view. The HTML will not be wrapped in a DIV
    --  or Span.
 
+   procedure Add_Element
+     (View    : in out View_Type;
+      Name    : in     String;
+      Element : access Gnoga.Gui.Element.Element_Type'Class);
+   --  Add Element to associative array of elements at Name and available using
+   --  the View_Type's Element property. This does not re-parent the Element to
+   --  View if it was created with a different parent nor does it add Element
+   --  to the View's DOM.
+
+   function New_Element
+     (View    : access View_Type;
+      Name    : String;
+      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      return Gnoga.Gui.Element.Pointer_To_Element_Class;
+   --  Only use for dynamic objects.
+   --  Performs like Add_Element (View, Name, Element); Element.Dynamic;
+   --  It returns Element in order to allow for this idiom:
+   --  Common.Button_Access
+   --   (View.New_Element ("my button", new Common.Button_Type)).Create (View);
+
+   function Add
+     (View    : access View_Type;
+      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      return Gnoga.Gui.Element.Pointer_To_Element_Class;
+   --  Only use for dynamic objects.
+   --  Marks Element as Dynamic and returns Element. This is primarly of value
+   --  for creating a dynamic element that you will no longer interact with
+   --  in the future since all reference is lost. Use the idiom:
+   --  Common.Button_Access
+   --    (View.Add (new Common.Button_Type)).Create (View);
+
+   -------------------------------------------------------------------------
+   --  View_Type - Properties
+   -------------------------------------------------------------------------
+
+   function Element (View : View_Type; Name : String)
+                     return Gnoga.Gui.Element.Pointer_To_Element_Class;
+
    -------------------------------------------------------------------------
    --  View_Type - Event Methods
    -------------------------------------------------------------------------
@@ -110,11 +151,13 @@ package Gnoga.Gui.View is
    --  All children of views should be Element_Type'Class, if it is not
    --  it will be ignored. Any child professing the View as its parent
    --  will automatially have Element.Place_Inside_Bottom_Of (View) applied
-   --  to it.
+   --  to it. If an element is marked as dynamic before its Create is called
+   --  it is marked for garbage collection.
 
 private
    type View_Type is new Gnoga.Gui.Element.Element_Type with
       record
          Child_Array : Gnoga.Gui.Base.Base_Type_Array;
+         Element_Map : Gnoga.Gui.Base.Base_Type_Map;
       end record;
 end Gnoga.Gui.View;

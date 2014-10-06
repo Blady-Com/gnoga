@@ -21,7 +21,7 @@ procedure Demo is
          Main_Window : Window.Pointer_To_Window_Class;
          Console     : View.Console.Console_View_Type;
          FSet        : Form.Fieldset.Fieldset_Type;
-         My_Form     : Form.Form_Type;
+         My_Form     : aliased Form.Form_Type;
          My_List     : Form.Data_List_Type;
          My_Input    : Form.Text_Type;
          My_Select   : Form.Selection_Type;
@@ -156,11 +156,28 @@ procedure Demo is
       Option := new Form.Option_Type;
       Option.Create (App.My_Form, App.My_Select, "3", "L3");
 
+      App.My_Form.Add_Element (Name    => "op3.5",
+                               Element => new Form.Option_Type);
+      App.My_Form.Element ("op3.5").Dynamic;
+      Form.Option_Access (App.My_Form.Element ("op3.5")).Create
+        (Form      => App.My_Form,
+         Selection => App.My_Select,
+         Value     => "3.5",
+         Text      => "L3.5");
+
       App.My_Select.Add_Option (Value    => "4",
                                 Text     => "L4");
       App.My_Select.Add_Option (Value    => "2.5",
                                 Text     => "L2.5",
                                 Index    => 2);
+
+      Form.Option_Access
+        (App.My_Form.New_Element ("op6", new Form.Option_Type)).Create
+          (App.My_Form, App.My_Select, "6", "L6");
+
+      Form.Option_Access(App.My_Form.Add (new Form.Option_Type)).Create
+        (App.My_Form, App.My_Select, "7", "L7");
+
 
       optgrp := new Form.Option_Group_Type;
       optgrp.Create (App.My_Form, App.My_Select, "Group");

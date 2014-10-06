@@ -209,8 +209,12 @@ package Gnoga.Gui.Base is
    --  Can be used to mark an object as dynamically allocated instead of
    --  on the stack. This in of itself does not do anything, but Views
    --  will deallocate on finalization children that are marked as Dynamic
-   --  if done so before being Created and added to View.
+   --  _before_ being Created and added to View or will be marked Dynamic
+   --  when using Gnoga.Gui.View.Add_Dynamic_Element.
    --  See Gnoga.Gui.View
+   --  If you plan on dealocating a child element in your code, do not mark
+   --  as Dynamic. Marking Dynamic is to mark for automatic garbage collection
+   --  by Gnoga.
 
    -------------------------------------------------------------------------
    --  Base_Type - Methods

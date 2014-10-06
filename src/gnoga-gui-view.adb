@@ -153,4 +153,59 @@ package body Gnoga.Gui.View is
       D.Create (View, "<br />");
    end New_Line;
 
+   -----------------
+   -- Add_Element --
+   -----------------
+
+   procedure Add_Element
+     (View    : in out View_Type;
+      Name    : in     String;
+      Element : access Gnoga.Gui.Element.Element_Type'Class)
+   is
+   begin
+      View.Element_Map.Insert (Key      => Name,
+                               New_Item => Element);
+   end Add_Element;
+
+   -----------------
+   -- New_Element --
+   -----------------
+
+   function New_Element
+     (View    : access View_Type;
+      Name    : String;
+      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      return Gnoga.Gui.Element.Pointer_To_Element_Class
+   is
+   begin
+      View.Add_Element (Name, Element);
+      Element.Dynamic;
+      return Element.all'Unrestricted_Access;
+   end New_Element;
+
+   ---------
+   -- Add --
+   ---------
+
+   function Add
+     (View    : access View_Type;
+      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      return Gnoga.Gui.Element.Pointer_To_Element_Class
+   is
+   begin
+      Element.Dynamic;
+      return Element.all'Unrestricted_Access;
+   end Add;
+
+   -------------
+   -- Element --
+   -------------
+
+   function Element (View : View_Type; Name : String)
+                     return Gnoga.Gui.Element.Pointer_To_Element_Class
+   is
+   begin
+      return Gnoga.Gui.Element.Pointer_To_Element_Class
+        (View.Element_Map.Element (Name));
+   end Element;
 end Gnoga.Gui.View;

@@ -1,0 +1,57 @@
+Posted on Comp.Lang.Ada - Oct 5, 2014
+
+Q) First what is a "killer App"? 
+
+A) "a killer application is any computer program that is so necessary or desirable that it proves the core value of some larger technology" - wikipedia 
+
+-> Killer App = Have to Have App 
+
+Q)  Is Gnoga necessary or desirable enough to get people to notice and use Ada? 
+
+A) Before we can answer this, we have to answer desirable to whom? 
+
+Q)  So who is the audience we want to be looking at Ada? 
+
+Ada already has notice in a very small and specific niche of the software development world. That small niche is not the target of Gnoga (although they certainly would have major advantage using it for remote GUIs). They already have AdaCore actively marketing to them and the financial reward for long term contracts in that world guarantees AdaCore will continue to address that sector for years to come. 
+
+AdaCore has always been benevolent and contributed over time their hard work on GNAT to the FSF. The GNAT GPL version gets exposure for Ada for students and for AdaCore's potential customers, but it _hurts_ considerably in the Application space. Unless the Application developer is comfortable already and _familiar_ already with the fact that there are reliable FSF versions. 
+
+Understand AdaCore's thinking, (I was at the meeting that made the decision to make public GNAT version GPL only, I disagreed) it is logical for their company. The current market for Ada is their marketing dollars, if their customers can receive a solid unencumbered version of their product, why would they consider support. I have my arguments, but the reality is they were already seeing supported customers using the public versions instead of maintaining support contracts. The problem gets worse as the product gets better, paradox. Result though in the end is that the small app developer is turned off to Ada and the larger developers are more inclined to give their business to AdaCore, understood. 
+
+So who is the audience, the people that AdaCore does not market to and _can't_ market to with their current business model. They are Application developers (see next point) with minimal "compiler" support requirements and almost no long term support needs. There _is_ a business model for them and it will be something I will share in the future and I believe many experienced Ada programmers would consider working with me on it in the future, perhaps even AdaCore will consider investment or partnership, but that is another discussion. (I'm one of the few people to have actually made a living in the application space using Ada to do it, so I have what to share when we get there.) 
+
+-> Application Developers are the target of the Killer App 
+
+Q) What is the difference between Application Developers and Systems Developers? 
+
+A) Computer programmers often are grouped into two broad types: application programmers and systems programmers. Application programmers write programs to handle a specific job, such as a program to track inventory within an organization. They also may revise existing packaged software or customize generic applications which are frequently purchased from independent software vendors. Systems programmers, in contrast, write programs to maintain and control computer systems software, such as operating systems and database management systems. These workers make changes in the instructions that determine how the network, workstations, and CPU of the system handle the various jobs they have been given and how they communicate with peripheral equipment such as printers and disk drives. - wikipedia 
+
+-> Application developers develop "userland" products, Systems developers develop infrastructure (not a perfect summary, but close enough). 
+
+Q) Why target Application Developers for Ada? 
+
+A) The reason they should use Ada, everyone on CLA should know and perhaps another thread on future marketing materials for this group can explore more, however the question is why "target" them. 
+
+    How many apps on the App store? How many Apps called iOS? 
+    How many flight control systems? How many games with air planes? 
+    How many software drivers? How many programs that use them? 
+    Got the picture? 
+
+    Even .1% of the Application space would mean more Ada developers than the language has ever seen 
+in its lifetime. 
+
+There are very smart Application developers (some even as good looking as me too!) There are also some not so smart Application developers (many of them still spell better than I). In the Systems space there are for more people with the engineering backgrounds and education to appreciate Ada from the get go, and so we can understand why that has been where most uptake has been up till now and why they are the easier crowd to introduce Ada too, but they are a minuscule portion of the developers. 
+
+So targeting the Application developer is important because 
+
+*) Better tools means better quality which means a better world 
+*) They are the vast majority of people writing software and with numbers comes strength of jobs, products, and security for all. 
+*) Ada has so much to offer the application space, we need to share the love :) 
+
+Q) So how is Gnoga the Killer App for Ada? 
+
+1) Since the "bigger" picture is the Application developers 
+2) They need a reason to look at Ada and all its its own coolness 
+3) Gnoga with Ada offers the application developer a powerful toolset for secure cloud based computing, mobile apps, desktop apps and web apps the combination not found in any other set of tools in any other language :) 
+
+=> It is the "Killer App" for the "Killer Language" 

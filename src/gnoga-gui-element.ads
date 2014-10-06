@@ -69,7 +69,10 @@ package Gnoga.Gui.Element is
    --
    --  <ul>,<ol>,<li>,<dl>,<dd>,<dt>
    --              - Element.List
-
+   --
+   -- <address>, <article>, <aside>, <header>, <main>, <nav>, <p>, <pre>,
+   -- <section>
+   --              - Element.Section
 
    --  HTML5 Tags Unbound as Gui Elements in Gnoga
    --      Note: All tags can be bound and used with
@@ -91,13 +94,12 @@ package Gnoga.Gui.Element is
    --              - that needs interaction or interactive styling.
    --
    --  <code>,<strong>,<em>,<dfn>,<samp>,<kbd>,<var>,<marked>,<del>,<ins>,
-   --  <pre>,<s>,<q>,<big>,<small>,<time>,<tt>,<wbr>
+   --  <s>,<q>,<big>,<small>,<time>,<tt>,<wbr>
    --              - No bindings for phrase tags, all of which even in HTML
    --              - more often best done with CSS
    --
-   --  <address>,<article>,<aside>,<p>,<blockquote>,<br>,<cite>,<del>,
-   --  <details>,<output>,<figure>,<flgcaption>,<footer>,<header>,<hgroup>,
-   --  <main>,<nav>,<section>,
+   --  <blockquote>,<br>,<cite>,<del>,<details>,<output>,<figure>,<flgcaption>,
+   --  <hgroup>,
    --              - No bindings for organizational html
    --
    --  <object>,<embed>,<script>,<noscript>,<param>,<applet>

@@ -135,8 +135,67 @@ package Gnoga.Gui.Element.List is
    --  Ordered list value, List_Item_Types added following set of Value will
    --  follow in order.
 
+   -------------------------------------------------------------------------
+   --  Definition_List_Types
+   -------------------------------------------------------------------------
+
+   type Definition_List_Type is new Gnoga.Gui.View.View_Type with private;
+   type Definition_List_Access is access all Definition_List_Type;
+   type Pointer_To_Definition_List_Class is
+     access all Definition_List_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Definition_List_Types - Creation Methods
+   -------------------------------------------------------------------------
+
+   overriding
+   procedure Create
+     (List    : in out Definition_List_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "");
+   --  Create a definition list of terms and descriptions
+
+   -------------------------------------------------------------------------
+   --  Term_Types
+   -------------------------------------------------------------------------
+
+   type Term_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Term_Access is access all Term_Type;
+   type Pointer_To_Term_Class is access all Term_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Term_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Item   : in out Term_Type;
+                     Parent : in out Definition_List_Type'Class;
+                     Text   : in     String := "";
+                     ID     : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  Description_Types
+   -------------------------------------------------------------------------
+
+   type Description_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Description_Access is access all Description_Type;
+   type Pointer_To_Description_Class is access all Description_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Description_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Item   : in out Description_Type;
+                     Parent : in out Definition_List_Type'Class;
+                     Text   : in     String := "";
+                     ID     : in     String := "");
+
 private
    type Ordered_List_Type is new Gnoga.Gui.View.View_Type with null record;
    type Unordered_List_Type is new Ordered_List_Type with null record;
    type Line_Item_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Definition_List_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Term_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Description_Type is
+     new Gnoga.Gui.Element.Element_Type with null record;
 end Gnoga.Gui.Element.List;

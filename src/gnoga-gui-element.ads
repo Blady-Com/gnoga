@@ -67,7 +67,7 @@ package Gnoga.Gui.Element is
    --  <html>,<body>,<head>
    --              - Access through Window_Type.Document
    --
-   --  <ul>,<ol>,<li>
+   --  <ul>,<ol>,<li>,<dl>,<dd>,<dt>
    --              - Element.List
 
 
@@ -80,9 +80,6 @@ package Gnoga.Gui.Element is
    --  <table>,<caption>,<td>,<tr>,<th>,<col>,<colgroup>,<tfoot>,<thead>
    --              - No specific tabe bindings. Tables are meant for data
    --              - display and not layouts.
-   --
-   --  <dl>,<dd>,<dt>
-   --              - No specific list bindings
    --
    --  <map>,<area>
    --              - No spefic bindings currently for image maps, best

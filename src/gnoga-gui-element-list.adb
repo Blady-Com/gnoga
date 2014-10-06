@@ -142,4 +142,52 @@ package body Gnoga.Gui.Element.List is
       return Element.Property ("value");
    end Value;
 
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (List    : in out Definition_List_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "")
+   is
+   begin
+      List.Create_From_HTML (Parent, "<dl />", ID);
+
+      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
+         Gnoga.Gui.Window.Window_Type (Parent).Set_View (List);
+      end if;
+   end Create;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Item   : in out Term_Type;
+      Parent : in out Definition_List_Type'Class;
+      Text   : in     String := "";
+      ID     : in     String := "")
+   is
+   begin
+      Item.Create_From_HTML
+        (Parent, "<dt>" & Escape_Quotes (Text) & "</dt>", ID);
+   end Create;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Item   : in out Description_Type;
+      Parent : in out Definition_List_Type'Class;
+      Text   : in     String := "";
+      ID     : in     String := "")
+   is
+   begin
+      Item.Create_From_HTML
+        (Parent, "<dd>" & Escape_Quotes (Text) & "</dd>", ID);
+   end Create;
+
 end Gnoga.Gui.Element.List;

@@ -1735,9 +1735,9 @@ package body Gnoga.Gui.Base is
       end if;
    end Fire_On_Destroy;
 
-   ----------------
+   --------------------
    -- On_Child_Added --
-   ----------------
+   --------------------
 
    procedure On_Child_Added (Object : in out Base_Type;
                              Child  : in out Base_Type'Class)

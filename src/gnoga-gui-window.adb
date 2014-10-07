@@ -867,7 +867,7 @@ package body Gnoga.Gui.Window is
             Object.Fire_On_Storage (E);
          end;
       elsif Event = "resize" then
-         Object.On_Resize;
+         Window_Type'Class (Object).On_Resize;
          Object.Fire_On_Resize;
       else
          Gnoga.Gui.Base.Base_Type (Object).On_Message (Event, Message);

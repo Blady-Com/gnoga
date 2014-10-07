@@ -218,7 +218,7 @@ package body Gnoga.Gui.Window is
            (Window.Document.Body_Element.all);
       end if;
 
-      Window.View_ID := Ada.Strings.Unbounded.To_Unbounded_String (Object.ID);
+      Window.View := Object'Unchecked_Access;
 
       Element_Type (Object).Box_Sizing (Border_Box);
       Element_Type (Object).Position (Gnoga.Gui.Element.Fixed);
@@ -227,8 +227,6 @@ package body Gnoga.Gui.Window is
       Element_Type (Object).Top (0);
       Element_Type (Object).Box_Height (Window.Height);
       Element_Type (Object).Box_Width (Window.Width);
-
-      Window.Has_View := True;
    end Set_View;
 
    -----------------
@@ -237,7 +235,7 @@ package body Gnoga.Gui.Window is
 
    procedure Remove_View (Window : in out Window_Type) is
    begin
-      Window.Has_View := False;
+      Window.View := null;
    end Remove_View;
 
    --------------
@@ -808,37 +806,13 @@ package body Gnoga.Gui.Window is
    -- On_Resize --
    ---------------
 
-   overriding
-   procedure On_Resize_Handler (Object  : in out Window_Type;
-                                Handler : in     Gnoga.Gui.Base.Action_Event)
-   is
-      --  This must be overidden to prevent unbinding of the resize event.
-   begin
-      Object.Unbind_Event ("resize");
-      --  Remove binding set by Window_Type attachment.
-
-      Gnoga.Gui.Base.Base_Type (Object).On_Resize_Handler (Handler);
-
-      if Handler = null then
-         Object.Bind_Event (Event   => "resize",
-                            Message => "");
-         --  Rebind if additional handler was removed.
-      end if;
-   end On_Resize_Handler;
-
    procedure On_Resize (Window : in out Window_Type) is
-      use Gnoga.Types;
+      use type Gnoga.Gui.Base.Pointer_To_Base_Class;
+      use Gnoga.Gui.Element;
    begin
-      if Window.Has_View then
-         declare
-            Object : Gnoga.Gui.Element.Element_Type;
-         begin
-            Object.Attach_Using_Parent
-              (Window,
-               Ada.Strings.Unbounded.To_String (Window.View_ID));
-            Object.Box_Height (Window.Height);
-            Object.Box_Width (Window.Width);
-         end;
+      if Window.View /= null then
+         Element_Access (Window.View).Box_Height (Window.Height);
+         Element_Access (Window.View).Box_Width (Window.Width);
       end if;
    end On_Resize;
 

@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                   G N O G A . G U I . V I E W . C A R D                  --
+--                  G N O G A . G U I . V I E W . D O C K E R               --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -39,62 +39,61 @@
 --  virtual stack with only one shown and the others hidden at any given
 --  time.
 
-package Gnoga.Gui.View.Card is
+package Gnoga.Gui.View.Docker is
 
    -------------------------------------------------------------------------
-   --  Card_View_Types
+   --  Docker_View_Types
    -------------------------------------------------------------------------
 
-   type Card_View_Type is new View_Type with private;
-   type Card_View_Access is access all Card_View_Type;
-   type Pointer_To_Card_View_Class is access all Card_View_Type'Class;
+   type Docker_View_Type is new View_Type with private;
+   type Docker_View_Access is access all Docker_View_Type;
+   type Pointer_To_Docker_View_Class is access all Docker_View_Type'Class;
 
    -------------------------------------------------------------------------
-   --  Card_View_Type - Creation Methods
+   --  Docker_View_Type - Creation Methods
    -------------------------------------------------------------------------
 
    overriding
    procedure Create
-     (View          : in out Card_View_Type;
+     (View          : in out Docker_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Attach        : in     Boolean := True;
       ID            : in     String  := "");
 
    -------------------------------------------------------------------------
-   --  Card_View_Type - Properties
+   --  Docker_View_Type - Properties
    -------------------------------------------------------------------------
 
-   function Current_Card (View : Card_View_Type) return Pointer_To_View_Class;
-   --  The currently shown card, null if no card has been added and shown
+   procedure Top_Dock (View : in out Docker_View_Type;
+                  Dock : access View_Type'Class);
+   function Top_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
-   function Card (View : Card_View_Type; Name : String)
-                  return Pointer_To_View_Class;
-   --  The Card with Name.
+   procedure Bottom_Dock (View : in out Docker_View_Type;
+                     Dock : access View_Type'Class);
+   function Bottom_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
+   procedure Fill_Dock (View : in out Docker_View_Type;
+                   Dock : access View_Type'Class);
+   function Fill_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
-   -------------------------------------------------------------------------
-   --  Card_View_Type - Methods
-   -------------------------------------------------------------------------
+   procedure Left_Dock (View : in out Docker_View_Type;
+                   Dock : access View_Type'Class);
+   function Left_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
-   procedure Add_Card (View : in out Card_View_Type;
-                       Name : in     String;
-                       Card : access View_Type'Class := null;
-                       Show : in     Boolean         := True);
-   --  Adds a new Card (a View_Type)  called Name and if Show true Show Card
-   --
-   --  Internally the card named "current" always points to the currently
-   --  displayed card so that name is reserved.
-
-   procedure Show_Card (View : in out Card_View_Type;
-                        Name : in     String);
-   --  Show card named Name
+   procedure Right_Dock (View : in out Docker_View_Type;
+                    Dock : access View_Type'Class);
+   function Right_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
    -------------------------------------------------------------------------
-   --  Card_View_Type - Event Methods
+   --  Docker_View_Type - Event Methods
    -------------------------------------------------------------------------
 
-   procedure On_Resize (View : in out Card_View_Type);
+   procedure Update_Dock (View : in out Docker_View_Type);
+   --  Updates layout to current View size
+
+   overriding
+   procedure On_Resize (View : in out Docker_View_Type);
    --  Handle layout of children
 private
-   type Card_View_Type is new View_Type with null record;
-end Gnoga.Gui.View.Card;
+   type Docker_View_Type is new View_Type with null record;
+end Gnoga.Gui.View.Docker;

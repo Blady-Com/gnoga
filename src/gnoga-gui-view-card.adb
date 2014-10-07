@@ -78,35 +78,43 @@ package body Gnoga.Gui.View.Card is
       return Pointer_To_View_Class
    is
    begin
-      return Pointer_To_View_Class (View.Element_Map.Element (Name));
+      if View.Element_Map.Contains (Name) then
+         return Pointer_To_View_Class (View.Element_Map.Element (Name));
+      else
+         return null;
+      end if;
    end Card;
 
    --------------
    -- Add_Card --
    --------------
 
-   procedure Add_Card
-     (View : in out Card_View_Type;
-      Name : in     String;
-      Show : in     Boolean := True)
+   procedure Add_Card (View : in out Card_View_Type;
+                       Name : in     String;
+                       Card : access View_Type'Class := null;
+                       Show : in     Boolean         := True)
    is
       use Gnoga.Gui.Element;
 
-      Card : View_Access := new View_Type;
+      New_Card : Pointer_To_View_Class;
    begin
-      Card.Create (View);
-
-      if not Show then
-         Card.Display ("none");
+      if Card = null then
+         New_Card := new View_Type;
+         New_Card.Create (View);
+      else
+         New_Card := Pointer_To_View_Class (Card);
       end if;
 
-      Card.Box_Sizing (Border_Box);
-      Card.Box_Sizing (Border_Box);
-      Card.Position (Gnoga.Gui.Element.Fixed);
-      Card.Left (0);
-      Card.Top (0);
+      if not Show then
+         New_Card.Display ("none");
+      end if;
+
+      New_Card.Box_Sizing (Border_Box);
+      New_Card.Position (Gnoga.Gui.Element.Relative);
+      New_Card.Left (0);
+      New_Card.Top (0);
       View.Element_Map.Insert
-        (Name, Gnoga.Gui.Base.Pointer_To_Base_Class (Card));
+        (Name, Gnoga.Gui.Base.Pointer_To_Base_Class (New_Card));
 
       if Show then
          View.Show_Card (Name);
@@ -130,35 +138,16 @@ package body Gnoga.Gui.View.Card is
       end if;
 
       Current := View.Card (Name);
-      View.Element_Map.Include
-        ("current", Gnoga.Gui.Base.Pointer_To_Base_Class (Current));
 
-      Current.Display ("block");
-      Current.Box_Height (View.Height);
-      Current.Box_Width (View.Width);
-   end Show_Card;
+      if Current /= null then
+         View.Element_Map.Include
+           ("current", Gnoga.Gui.Base.Pointer_To_Base_Class (Current));
 
-   -----------------------
-   -- On_Resize_Handler --
-   -----------------------
-
-   overriding procedure On_Resize_Handler
-     (Object  : in out Card_View_Type;
-      Handler : in     Gnoga.Gui.Base.Action_Event)
-   is
-      use type Gnoga.Gui.Base.Action_Event;
-   begin
-      Object.Unbind_Event ("resize");
-      --  Remove binding set by Card_View_Type create.
-
-      View_Type (Object).On_Resize_Handler (Handler);
-
-      if Handler = null then
-         Object.Bind_Event (Event   => "resize",
-                            Message => "");
-         --  Rebind if additional handler was removed.
+         Current.Display ("block");
+         Current.Box_Height (View.Height);
+         Current.Box_Width (View.Width);
       end if;
-   end On_Resize_Handler;
+   end Show_Card;
 
    ---------------
    -- On_Resize --
@@ -167,24 +156,8 @@ package body Gnoga.Gui.View.Card is
    procedure On_Resize (View : in out Card_View_Type) is
    begin
       View.Show_Card ("current");
+
+      View_Type (View).On_Resize;
    end On_Resize;
-
-   ----------------
-   -- On_Message --
-   ----------------
-
-   overriding procedure On_Message
-     (Object  : in out Card_View_Type;
-      Event   : in     String;
-      Message : in     String)
-   is
-   begin
-      if Event = "resize" then
-         Card_View_Type'Class (Object).On_Resize;
-         Object.Fire_On_Resize;
-      else
-         Gnoga.Gui.Base.Base_Type (Object).On_Message (Event, Message);
-      end if;
-   end On_Message;
 
 end Gnoga.Gui.View.Card;

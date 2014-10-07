@@ -413,6 +413,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("height", Left_Trim (Value'Img) & Unit);
+      Element_Type'Class (Element).On_Resize;
    end Box_Height;
 
    procedure Box_Height (Element : in out Element_Type;
@@ -420,6 +421,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("height", Value);
+      Element_Type'Class (Element).On_Resize;
    end Box_Height;
 
    function Box_Height (Element : Element_Type) return String
@@ -438,6 +440,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-height", Left_Trim (Value'Img) & Unit);
+      Element_Type'Class (Element).On_Resize;
    end Minimum_Height;
 
    procedure Minimum_Height (Element : in out Element_Type;
@@ -445,6 +448,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-height", Value);
+      Element_Type'Class (Element).On_Resize;
    end Minimum_Height;
 
    function Minimum_Height (Element : Element_Type) return String
@@ -463,6 +467,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-height", Left_Trim (Value'Img) & Unit);
+      Element_Type'Class (Element).On_Resize;
    end Maximum_Height;
 
    procedure Maximum_Height (Element : in out Element_Type;
@@ -470,6 +475,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-height", Value);
+      Element_Type'Class (Element).On_Resize;
    end Maximum_Height;
 
    function Maximum_Height (Element : Element_Type) return String
@@ -488,6 +494,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("width", Left_Trim (Value'Img) & Unit);
+      Element_Type'Class (Element).On_Resize;
    end Box_Width;
 
    procedure Box_Width (Element : in out Element_Type;
@@ -495,6 +502,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("width", Value);
+      Element_Type'Class (Element).On_Resize;
    end Box_Width;
 
    function Box_Width (Element : Element_Type) return String
@@ -513,6 +521,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-width", Left_Trim (Value'Img) & Unit);
+      Element_Type'Class (Element).On_Resize;
    end Minimum_Width;
 
    procedure Minimum_Width (Element : in out Element_Type;
@@ -520,6 +529,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-width", Value);
+      Element_Type'Class (Element).On_Resize;
    end Minimum_Width;
 
    function Minimum_Width (Element : Element_Type) return String
@@ -538,6 +548,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-width", Left_Trim (Value'Img) & Unit);
+      Element_Type'Class (Element).On_Resize;
    end Maximum_Width;
 
    procedure Maximum_Width (Element : in out Element_Type;
@@ -545,6 +556,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-width", Value);
+      Element_Type'Class (Element).On_Resize;
    end Maximum_Width;
 
    function Maximum_Width (Element : Element_Type) return String

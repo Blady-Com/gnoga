@@ -96,15 +96,14 @@ package Gnoga.Gui.Window is
                        Object : in out Gnoga.Gui.Base.Base_Type'Class;
                        Place  : in     Boolean := True);
    --  Sets Object as the Window's View. Object will be auto resized to fill
-   --  the entire client area of Window. If Object is not in the DOM the
-   --  resize will fail, therefore on an Object with a valid DOM id will
-   --  work. Elements created with Gnoga always have a DOM id set if if
-   --  the Object.ID_Type is not DOM_ID. Only the ID for Object is stored
-   --  and used therefore even if Object is finalized as long as Object
-   --  is still in the DOM it will continue to resize. If Place is True
-   --  then Object will first be placed using Element.Place_Inside_Top_Of.
-   --  If Object is not an Gnog.Element.Element_Type or a child of it an
+   --  the entire client area of Window.
+   --
+   --  If Place is True then Object will first be placed using
+   --  Element.Place_Inside_Top_Of.
+   --
+   --  If Object is not a Gnoga.Element.Element_Type or a child of it an
    --  exception will be raised.
+   --
    --  ID_Type is not DOM_ID or Gnoga_ID will raise Invalid_ID_Type
 
    procedure Remove_View (Window : in out Window_Type);
@@ -272,12 +271,6 @@ package Gnoga.Gui.Window is
    -------------------------------------------------------------------------
 
    overriding
-   procedure On_Resize_Handler
-     (Object  : in out Window_Type;
-      Handler : in     Gnoga.Gui.Base.Action_Event);
-   --  Prevent ubinding of resize event from window by adding or removing a
-   --  handler.
-
    procedure On_Resize (Window : in out Window_Type);
    --  Handle resizing an object set as a View for Window to new
    --  height and width of Window
@@ -291,8 +284,7 @@ private
       record
          DOM_Document         : aliased Gnoga.Gui.Document.Document_Type;
          Location             : aliased Gnoga.Gui.Location.Location_Type;
-         View_ID              : Gnoga.Types.Web_ID;
-         Has_View             : Boolean := False;
+         View                 : Gnoga.Gui.Base.Pointer_To_Base_Class := null;
          Free_Connection_Data : Boolean := False;
 
          On_Abort_Event              : Gnoga.Gui.Base.Action_Event := null;

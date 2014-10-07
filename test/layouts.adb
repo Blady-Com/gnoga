@@ -1,6 +1,8 @@
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Card;
+with Gnoga.Gui.View.Console;
+with Gnoga.Gui.View.Docker;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
@@ -15,7 +17,8 @@ procedure Layouts is
    type App_Data is new Connection_Data_Type with
       record
          Main_Window : Window.Pointer_To_Window_Class;
-         View        : Gnoga.Gui.View.Card.Card_View_Type;
+         Docks       : Gnoga.Gui.View.Docker.Docker_View_Type;
+         View        : aliased Gnoga.Gui.View.Card.Card_View_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -29,7 +32,15 @@ procedure Layouts is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
+
+      Click_Count : Common.Span_Type;
+      Count       : Natural;
    begin
+      Click_Count.Attach_Using_Parent (Object, "click_count");
+      Count := Natural'Value (Click_Count.Text);
+      Count := Count + 1;
+      Click_Count.Text (Gnoga.Left_Trim (Count'Img));
+
       App.View.Show_Card ("2");
       App.View.Card ("2").Put_Line ("You have arrived on card 1");
    end On_Click;
@@ -38,21 +49,57 @@ procedure Layouts is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : App_Access := new App_Data;
+      App    : App_Access := new App_Data;
+      V      : View.Pointer_To_View_Class;
+      Card_1 : View.Pointer_To_View_Class;
+      Card_2 : View.Pointer_To_View_Class;
    begin
       Main_Window.Connection_Data (App.all);
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      App.View.Create (Main_Window);
+      App.Docks.Create (Main_Window);
 
-      App.View.Add_Card ("1");
+      App.View.Create (App.Docks);
+      App.Docks.Fill_Dock (App.View'Access);
+
+      V := new View.View_Type;
+      V.Dynamic;
+      V.Create (App.Docks);
+      V.Background_Color ("Black");
+      V.Put_Line ("Here");
+      App.Docks.Top_Dock (V);
+
+      V := new View.View_Type;
+      V.Dynamic;
+      V.Create (App.Docks);
+      V.Background_Color ("Green");
+      V.Put_Line ("Here");
+      App.Docks.Bottom_Dock (V);
+
+      V := new View.View_Type;
+      V.Dynamic;
+      V.Create (App.Docks);
+      V.Background_Color ("Blue");
+      V.Put_Line ("Here");
+      App.Docks.Left_Dock (V);
+
+      V := new View.View_Type;
+      V.Dynamic;
+      V.Create (App.Docks);
+      V.Background_Color ("Yellow");
+      V.Put_Line ("Here");
+      App.Docks.Right_Dock (V);
+
+      Card_1 := new View.Console.Console_View_Type;
+      Card_1.Dynamic;
+      Card_1.Create (App.View);
+      App.View.Add_Card ("1", Card_1);
       App.View.Add_Card ("2", Show => False);
+
+      Card_2 := App.View.Card ("2");
 
       declare
          use Gnoga.Gui.View;
-
-         Card_1 : Pointer_To_View_Class := App.View.Card ("1");
-         Card_2 : Pointer_To_View_Class := App.View.Card ("2");
 
          Button_1 : Common.Button_Access := Common.Button_Access
            (Card_1.New_Element ("next", new Common.Button_Type));
@@ -61,6 +108,9 @@ procedure Layouts is
       begin
          Button_1.Create (Card_1.all, "Click for Card 2");
          Button_2.Create (Card_2.all, "Click for Card 1");
+
+         Card_1.Put (" Number of times clicked : ");
+         Card_1.Put ("0", ID => "click_count");
 
          Button_1.On_Click_Handler (On_Click'Unrestricted_Access);
          Button_2.On_Click_Handler (On_Click2'Unrestricted_Access);

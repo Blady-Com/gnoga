@@ -406,6 +406,7 @@ package body Gnoga.Gui.Base is
    procedure Height (Object : in out Base_Type; Value : in Integer) is
    begin
       Object.jQuery_Execute ("height(" & Left_Trim (Value'Img) & ");");
+      Base_Type'Class (Object).On_Resize;
    end Height;
 
    function Height (Object : Base_Type) return Integer is
@@ -420,6 +421,7 @@ package body Gnoga.Gui.Base is
    procedure Width (Object : in out Base_Type; Value : in Integer) is
    begin
       Object.jQuery_Execute ("width(" & Left_Trim (Value'Img) & ");");
+      Base_Type'Class (Object).On_Resize;
    end Width;
 
    function Width (Object : Base_Type) return Integer is
@@ -538,16 +540,7 @@ package body Gnoga.Gui.Base is
                                 Handler : in     Action_Event)
    is
    begin
-      if Object.On_Resize_Event /= null then
-         Object.Unbind_Event ("resize");
-      end if;
-
       Object.On_Resize_Event := Handler;
-
-      if Handler /= null then
-         Object.Bind_Event (Event   => "resize",
-                            Message => "");
-      end if;
    end On_Resize_Handler;
 
    procedure Fire_On_Resize (Object : in out Base_Type)
@@ -557,6 +550,11 @@ package body Gnoga.Gui.Base is
          Object.On_Resize_Event (Object);
       end if;
    end Fire_On_Resize;
+
+   procedure On_Resize (Object : in out Base_Type) is
+   begin
+      Object.Fire_On_Resize;
+   end On_Resize;
 
    ---------------
    -- On_Scroll --
@@ -1772,9 +1770,7 @@ package body Gnoga.Gui.Base is
    is
    begin
       -- Object Events --
-      if Event = "resize" then
-         Object.Fire_On_Resize;
-      elsif Event = "scroll" then
+      if Event = "scroll" then
          Object.Fire_On_Scroll;
 
       -- Form Events --

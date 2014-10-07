@@ -549,6 +549,9 @@ package Gnoga.Gui.Base is
    --  Event Methods are always bound on creation of Gnoga object or do not
    --  require event binding.
 
+   procedure On_Resize (Object : in out Base_Type);
+   --  Called by all sizing methods to inform Object it has changed size.
+
    procedure On_Create (Object : in out Base_Type);
    --  Called on creation of a new Gnoga object after attached to message
    --  queue.

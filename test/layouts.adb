@@ -53,13 +53,27 @@ procedure Layouts is
       V      : View.Pointer_To_View_Class;
       Card_1 : View.Pointer_To_View_Class;
       Card_2 : View.Pointer_To_View_Class;
+      Dex    : View.Docker.Pointer_To_Docker_View_Class;
    begin
       Main_Window.Connection_Data (App.all);
       App.Main_Window := Main_Window'Unchecked_Access;
 
+
       App.Docks.Create (Main_Window);
-      App.View.Create (App.Docks);
-      App.Docks.Fill_Dock (App.View'Access);
+
+      Dex := new View.Docker.Docker_View_Type;
+      Dex.Dynamic;
+      Dex.Create (App.Docks);
+      App.Docks.Fill_Dock (Dex);
+
+      V := new View.View_Type;
+      V.Dynamic;
+      V.Create (Dex.all);
+      V.Put_Line ("Future Tab Menu");
+      Dex.Top_Dock (V);
+
+      App.View.Create (Dex.all);
+      Dex.Fill_Dock (App.View'Access);
 
 
       V := new View.View_Type;

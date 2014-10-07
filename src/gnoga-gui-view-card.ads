@@ -88,6 +88,8 @@ package Gnoga.Gui.View.Card is
    procedure Show_Card (View : in out Card_View_Type;
                         Name : in     String);
    --  Show card named Name
+   --  If Name does not exist, the current card will be hidden and no card
+   --  will be displayed.
 
    -------------------------------------------------------------------------
    --  Card_View_Type - Event Methods

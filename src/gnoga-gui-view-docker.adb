@@ -116,7 +116,7 @@ package body Gnoga.Gui.View.Docker is
    begin
       View.Element_Map.Include ("top", Dock);
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
-      Dock.Position (Gnoga.Gui.Element.Fixed);
+      Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
    end Top_Dock;
 
@@ -139,7 +139,7 @@ package body Gnoga.Gui.View.Docker is
    begin
       View.Element_Map.Include ("bottom", Dock);
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
-      Dock.Position (Gnoga.Gui.Element.Fixed);
+      Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
    end Bottom_Dock;
 
@@ -163,7 +163,7 @@ package body Gnoga.Gui.View.Docker is
    begin
       View.Element_Map.Include ("fill", Dock);
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
-      Dock.Position (Gnoga.Gui.Element.Fixed);
+      Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
    end Fill_Dock;
 
@@ -186,7 +186,7 @@ package body Gnoga.Gui.View.Docker is
    begin
       View.Element_Map.Include ("left", Dock);
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
-      Dock.Position (Gnoga.Gui.Element.Fixed);
+      Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
    end Left_Dock;
 
@@ -209,7 +209,7 @@ package body Gnoga.Gui.View.Docker is
    begin
       View.Element_Map.Include ("right", Dock);
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
-      Dock.Position (Gnoga.Gui.Element.Fixed);
+      Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
    end Right_Dock;
 

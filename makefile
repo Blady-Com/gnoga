@@ -24,6 +24,9 @@ uninstall:
 	rm -rf $(prefix)/include/gnoga
 	rm -f $(prefix)/lib/gnat/gnoga.gpr
 
+ace_editor:
+	cd js && git clone https://github.com/ajaxorg/ace-builds.git
+
 demo: snake adablog
 
 adablog:
@@ -31,6 +34,9 @@ adablog:
 
 snake:
 	cd demo/snake && gprbuild
+
+adaedit: ace_editor
+	cd demo/adaedit && gprbuild
 
 tests:
 	cd test && gprbuild
@@ -49,6 +55,7 @@ clean:
 	cd test && gprclean
 	cd demo/adablog && gprclean
 	cd demo/snake && gprclean
+	cd demo/adaedit && gprclean
 	cd tutorial/tutorial-01 && gprclean
 	cd tutorial/tutorial-02 && gprclean
 	cd tutorial/tutorial-03 && gprclean
@@ -57,3 +64,4 @@ clean:
 	cd tutorial/tutorial-06 && gprclean
 	cd tutorial/tutorial-07 && gprclean
 	-cd bin && rm *.db
+	-cd js && rm -rf ace-builds

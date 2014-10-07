@@ -610,7 +610,7 @@ package Gnoga.Gui.Base is
    function jQuery (Object : Base_Type) return String;
    --  Returns the jQuery selector for Object
 
-   procedure jQuery_Execute (Object : in out Base_Type; Method : String);
+   procedure jQuery_Execute (Object : in out Base_Type; Method : in String);
    function jQuery_Execute (Object : Base_Type; Method : String) return String;
    function jQuery_Execute (Object : Base_Type; Method : String)
                             return Integer;

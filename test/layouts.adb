@@ -58,9 +58,9 @@ procedure Layouts is
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.Docks.Create (Main_Window);
-
       App.View.Create (App.Docks);
       App.Docks.Fill_Dock (App.View'Access);
+
 
       V := new View.View_Type;
       V.Dynamic;

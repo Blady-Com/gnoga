@@ -1,0 +1,58 @@
+Stuff on my list of To Dos:
+---------------------------
+
+* GUI
+
+File Dialogs (Files on server side)
+Font Picker Dialogs (Fonts on client side)
+Color Picker Dialog (client side)
+Find/replace Dialog
+Input and Alert on page and as popups
+
+Tree View
+Tab Header for use with Gnoga.Gui.View.Card
+
+Dialog View, both on page or as popup
+
+Table View
+
+* Server Side Tools
+
+Tool to generate skeleton projects, new widgets
+Tool to generate database table model files - done need to port in
+
+* Compiler side
+
+GTK Webkit app, direct hooks to eval JS so for desktop apps no need for websockets.
+
+Further MacGap integration, direct hooks to eval JS so for desktop apps no need for websockets.
+
+GWindows IE embedded app with direct hooks to eval JS so for desktop apps no need for websockets.
+
+
+
+
+Someday To Dos post 1.0 for sure:
+---------------------------------
+
+* GUI
+
+Paging view - display pages of data at a time from server w/ random access
+
+Print dialog (Server side printers) and cross platform server side printing support
+
+CSS animation support
+
+Auto Classing Elements on create
+
+Bind http://codemirror.net/ or http://ace.c9.io/ as a code editor for future IDE
+
+* Apps
+
+Delphi / VB like IDE in Gnoga itself
+
+* Compiler side
+
+GNAT with llvm to generate iOS apps
+GNAT with llvm to generate ASM JavaScript = Full client side Gnoga
+GNAT JVM and minimal android browser widget

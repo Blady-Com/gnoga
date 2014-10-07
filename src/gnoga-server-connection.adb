@@ -70,6 +70,8 @@ package body Gnoga.Server.Connection is
 
    On_Connect_Event : Connect_Event := null;
 
+   Exit_Application_Requested : Boolean := False;
+
    -------------
    -- Default --
    -------------
@@ -218,6 +220,15 @@ package body Gnoga.Server.Connection is
          AWS.Server.Wait (AWS.Server.No_Server);
       end if;
    end Run;
+
+   -------------------
+   -- Shutting_Down --
+   -------------------
+
+   function Shutting_Down return Boolean is
+   begin
+      return Exit_Application_Requested;
+   end Shutting_Down;
 
    ----------------------
    -- Default Dispatch --
@@ -1052,6 +1063,7 @@ package body Gnoga.Server.Connection is
 
    procedure Stop is
    begin
+      Exit_Application_Requested := True;
       Connection_Manager.Delete_All_Connections;
       AWS.Server.Shutdown (Web_Server);
    end Stop;

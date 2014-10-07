@@ -37,7 +37,7 @@
 
 with Gnoga.Gui.Window;
 with Gnoga.Gui.Element.Common;
-
+with Gnoga.Server.Connection;
 package body Gnoga.Gui.View is
 
    --------------
@@ -46,13 +46,16 @@ package body Gnoga.Gui.View is
 
    procedure Finalize (Object : in out View_Type) is
    begin
-      for i in
-        Object.Child_Array.First_Index .. Object.Child_Array.Last_Index
-      loop
-         if Object.Child_Array.Element (i).Dynamic then
-            Object.Child_Array.Element (i).Free;
-         end if;
-      end loop;
+      if not Gnoga.Server.Connection.Shutting_Down then
+         for i in
+           Object.Child_Array.First_Index .. Object.Child_Array.Last_Index
+         loop
+            if Object.Child_Array.Element (i).Dynamic then
+               Object.Child_Array.Element (i).Free;
+            end if;
+         end loop;
+      end if;
+
       Gnoga.Gui.Element.Element_Type (Object).Finalize;
    end Finalize;
 

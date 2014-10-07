@@ -56,6 +56,9 @@ package Gnoga.Server.Connection is
    procedure Stop;
    --  Close all connections and Stop webserver
 
+   function Shutting_Down return Boolean;
+   --  If application is shutting down returns true
+
    procedure Execute_Script (ID     : in Gnoga.Types.Connection_ID;
                              Script : in String);
    --  Execute Script on Connection ID

@@ -35,9 +35,10 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  A card view allows for multiple "cards" (views) to be placed on a
---  virtual stack with only one shown and the others hidden at any given
---  time.
+--  Docker allows for laying out child views by docking them to the sides
+--  of the Docker_View_Type. Docker_View_Types can be nested like all
+--  view types and not all sides need to be docked, allowing for complex
+--  layouts easily.
 
 package Gnoga.Gui.View.Docker is
 

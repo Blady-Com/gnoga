@@ -22,24 +22,29 @@ see: DEPLOYING_APPS and DEVELOPING_APPS for some tips on Gnoga applications
 Gnoga has the following aspects to it:
 
 1. The underlying communication platform between the Ada code and the browser
-      Gnoga.Server.Connections
+      Gnoga.Server.Connection
 
 2. Binding the DOM for later higher level development
         Gnoga.Gui.Base (Not per se a binding of Node but takes its place)
         Gnoga.Gui.Element, Gnoga.Gui.Element.* (HTML Elements)
         Gnoga.Gui.Element.Canvas - HTML 5 Canvas bindings
-        Gnoga.Gui.Element.SVG - HTML SVG vector graphics
-        Gnoga.Gui.Element.Multimedia - HTML 5 Audio and Video
+        Gnoga.Gui.Element.SVG - HTML SVG vector graphics - To Do
+        Gnoga.Gui.Element.Multimedia - HTML 5 Audio and Video - 70%
+        Gnoga.Gui.Element.Style - CSS Style blocks
         Gnoga.Gui.Window, Gnoga.Gui.Navigator, Gnoga.Gui.Screen,
         Gnoga.Gui.Location
-        Gnoga.Gui.Document (Browser and higher level aspects of the DOM).
+        Gnoga.Gui.Document
 
 3. Application startup and services
-        Gnoga.Server.Application.*
+        Gnoga.Server.Application.Singleton - Desktop apps
+        Gnoga.Server.Application.Multi_Connect - Multiuser / Web apps
+        
 
 4. Gnoga Specific higher level containers and GUI widgets
-        Gnoga.Views.* - Auto layout of child elements and basis for future
-                          custom Gnoga widgts
+        Gnoga.Gui.Views.* - Auto layout of child elements and basis for future
+                            custom Gnoga widgets
+        Gnoga.Gui.Views.Docker - Dock child views to view sides
+        Gnoga.Gui.Views.Card - Stacks of views
 
 5. Gnoga Application level APIs, like Logical access control systems, Security services and monitoring, etc.
        Gnoga.Client.Storage - local persistent and session storage on browser
@@ -48,12 +53,12 @@ Gnoga has the following aspects to it:
       Gnoga.Server.Database - support for MySQL and SQLite 3
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
-      Gnoga.Serve.Template_Parser - Parse PHP and Python files
+      Gnoga.Serve.Template_Parser - Parse files using PHP and Python files
 
 7. Gnoga development tools
-	Code generation for binding pre-made html5 pages
-        Database tools for generating front ends, etc.
-	   - I already have a tool for creating delailed Active Data bindings
-	   - per tables, that will be added in the near future.
-	IDE for Delphi/VB like development
-	etc.
+	   Code generation for binding pre-made html5 pages
+      Database tools for generating front ends, etc.
+	     - I already have a tool for creating delailed Active Data bindings
+	     - per tables, that will be added in the near future.
+	   IDE for Delphi/VB like development
+	   etc.

@@ -122,6 +122,7 @@ package Gnoga.Gui.Plugin.Ace_Editor is
                         Case_Sensitive : in     Boolean := False;
                         Reg_Exp        : in     Boolean := False);
 
+   procedure Find_Next (View : in out Ace_Editor_Type);
    procedure Replace_Text (View : in out Ace_Editor_Type;
                            Text : in     String);
    procedure Replace_All (View : in out Ace_Editor_Type;

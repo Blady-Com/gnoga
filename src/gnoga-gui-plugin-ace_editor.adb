@@ -222,6 +222,15 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
                              "})");
    end Find_Text;
 
+   ---------------
+   -- Find_Next --
+   ---------------
+
+   procedure Find_Next (View : in out Ace_Editor_Type) is
+   begin
+      View.Editor_Execute ("findNext()");
+   end Find_Next;
+
    ------------------
    -- Replace_Text --
    ------------------

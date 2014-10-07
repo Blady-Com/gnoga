@@ -2,3 +2,4 @@ obj/
 bin/
 lib/
 gnatinspect.db
+.DS_Store

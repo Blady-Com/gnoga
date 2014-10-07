@@ -77,9 +77,56 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    overriding
    function Text (View : Ace_Editor_Type) return String;
 
-   -------------------------------------------------------------------------
+   function Selected_Text (View : Ace_Editor_Type) return String;
+
+   procedure Insert_Text_At_Cursor (View : in out Ace_Editor_Type;
+                                    Text : in     String);
+
+   procedure Current_Line (View  : in out Ace_Editor_Type;
+                           Value : in     Positive);
+
+   --   function Current_Line (View : Ace_Editor_Type) return Natural;
+
+   --   function Current_Column (View : Ace_Editor_Type) return Natural;
+
+   function Length (View : Ace_Editor_Type) return Natural;
+   --  Total lines in View
+
+   procedure Default_Tab_Size (View  : in out Ace_Editor_Type;
+                               Value : in     Positive);
+
+   procedure Soft_Tabs (View  : in out Ace_Editor_Type;
+                        Value : in     Boolean := True);
+
+   procedure Word_Wrap (View  : in out Ace_Editor_Type;
+                        Value : in     Boolean := True);
+
+   procedure Line_Highlighting (View  : in out Ace_Editor_Type;
+                                Value : in     Boolean := True);
+
+   procedure Print_Margin_Visible (View  : in out Ace_Editor_Type;
+                                   Value : in     Boolean := True);
+
+   procedure Read_Only (View  : in out Ace_Editor_Type;
+                        Value : in     Boolean := True);
+
+-------------------------------------------------------------------------
    --  Ace_Editor_Type - Methods
    -------------------------------------------------------------------------
+
+   procedure Find_Text (View           : in out Ace_Editor_Type;
+                        Text           : in     String;
+                        Backwards      : in     Boolean := False;
+                        Wrap           : in     Boolean := False;
+                        Whole_Word     : in     Boolean := False;
+                        Case_Sensitive : in     Boolean := False;
+                        Reg_Exp        : in     Boolean := False);
+
+   procedure Replace_Text (View : in out Ace_Editor_Type;
+                           Text : in     String);
+   procedure Replace_All (View : in out Ace_Editor_Type;
+                          Text : in     String);
+   --  Requires a previous Find_Text
 
    procedure Set_Theme (View : in out Ace_Editor_Type;
                         Name : in     String);
@@ -100,6 +147,14 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    function Editor_Execute (Editor : Ace_Editor_Type; Method : String)
                             return Integer;
    --  Execute Method on Editor
+
+   -------------------------------------------------------------------------
+   --  Ace_Editor_Type - Event Methods
+   -------------------------------------------------------------------------
+
+   overriding
+   procedure On_Resize (View : in out Ace_Editor_Type);
+   --  Let editor know View resized
 
 private
    type Ace_Editor_Type is new Gnoga.Gui.View.View_Type with

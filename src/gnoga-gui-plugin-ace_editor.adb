@@ -86,6 +86,164 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       return View.Editor_Execute ("getValue ()");
    end Text;
 
+   -------------------
+   -- Selected_Text --
+   -------------------
+
+   function Selected_Text (View : Ace_Editor_Type) return String is
+   begin
+      return View.Editor_Execute
+        ("session.getTextRange(editor.getSelectionRange())");
+   end Selected_Text;
+
+   ---------------------------
+   -- Insert_Text_At_Cursor --
+   ---------------------------
+
+   procedure Insert_Text_At_Cursor (View : in out Ace_Editor_Type;
+                                    Text : in     String)
+   is
+   begin
+      View.Editor_Execute ("insert(""" & Escape_Quotes (Text) & """)");
+   end Insert_Text_At_Cursor;
+
+   ------------------
+   -- Current_Line --
+   ------------------
+
+   procedure Current_Line (View  : in out Ace_Editor_Type;
+                           Value : in     Positive)
+   is
+   begin
+      View.Editor_Execute ("gotoLine(" & Value'Img & ")");
+   end Current_Line;
+
+--   function Current_Line (View : Ace_Editor_Type) return Natural;
+
+--   function Current_Column (View : Ace_Editor_Type) return Natural;
+
+   ------------
+   -- Length --
+   ------------
+
+   function Length (View : Ace_Editor_Type) return Natural is
+   begin
+      return Natural'Value (View.Editor_Execute ("getSession().getLength()"));
+   exception
+      when others =>
+         return 0;
+   end Length;
+
+   ----------------------
+   -- Default_Tab_Size --
+   ----------------------
+
+   procedure Default_Tab_Size (View  : in out Ace_Editor_Type;
+                               Value : in     Positive)
+   is
+   begin
+      View.Editor_Execute ("getSession().setTabSize(" & Value'Img & ")");
+   end Default_Tab_Size;
+
+   ---------------
+   -- Soft_Tabs --
+   ---------------
+
+   procedure Soft_Tabs (View  : in out Ace_Editor_Type;
+                        Value : in     Boolean := True)
+   is
+   begin
+      View.Editor_Execute ("getSession().setUseSoftTabs(" & Value'Img & ")");
+   end Soft_Tabs;
+
+   ---------------
+   -- Word_Wrap --
+   ---------------
+
+   procedure Word_Wrap (View  : in out Ace_Editor_Type;
+                        Value : in     Boolean := True)
+   is
+   begin
+      View.Editor_Execute ("getSession().setUseWrapMode(" & Value'Img & ")");
+   end Word_Wrap;
+
+   -----------------------
+   -- Line_Highlighting --
+   -----------------------
+
+   procedure Line_Highlighting (View  : in out Ace_Editor_Type;
+                                Value : in     Boolean := True)
+   is
+   begin
+      View.Editor_Execute ("setHighlightActiveLine(" & Value'Img & ")");
+   end Line_Highlighting;
+
+   --------------------------
+   -- Print_Margin_Visible --
+   --------------------------
+
+   procedure Print_Margin_Visible (View  : in out Ace_Editor_Type;
+                                   Value : in     Boolean := True)
+   is
+   begin
+      View.Editor_Execute ("setShowPrintMargin(" & Value'Img & ")");
+   end Print_Margin_Visible;
+
+   ---------------
+   -- Read_Only --
+   ---------------
+
+   procedure Read_Only (View  : in out Ace_Editor_Type;
+                        Value : in     Boolean := True)
+   is
+   begin
+      View.Editor_Execute ("setReadOnly(" & Value'Img & ")");
+   end Read_Only;
+
+   ---------------
+   -- Find_Text --
+   ---------------
+
+   procedure Find_Text (View           : in out Ace_Editor_Type;
+                        Text           : in     String;
+                        Backwards      : in     Boolean := False;
+                        Wrap           : in     Boolean := False;
+                        Whole_Word     : in     Boolean := False;
+                        Case_Sensitive : in     Boolean := False;
+                        Reg_Exp        : in     Boolean := False)
+   is
+   begin
+      View.Editor_Execute ("find(""" & Escape_Quotes (Text) & """,{" &
+                             "backwards: " & Backwards'Img & "," &
+                             "wrap: " & Wrap'Img & "," &
+                             "caseSensitive: " & Case_Sensitive'Img & "," &
+                             "wholeWord: " & Whole_Word'Img & "," &
+                           "regExp: " & Reg_Exp'Img &
+                             "})");
+   end Find_Text;
+
+   ------------------
+   -- Replace_Text --
+   ------------------
+
+   procedure Replace_Text (View : in out Ace_Editor_Type;
+                           Text : in     String)
+   is
+   begin
+      View.Editor_Execute ("replace(""" & Escape_Quotes (Text) & """)");
+   end Replace_Text;
+
+   -----------------
+   -- Replace_All --
+   -----------------
+
+   procedure Replace_All (View : in out Ace_Editor_Type;
+                          Text : in     String)
+   is
+   begin
+      View.Editor_Execute ("replaceAll(""" & Escape_Quotes (Text) & """)");
+   end Replace_All;
+
    ---------------
    -- Set_Theme --
    ---------------
@@ -152,5 +310,16 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       when others =>
          return 0;
    end Editor_Execute;
+
+   ---------------
+   -- On_Resize --
+   ---------------
+
+   procedure On_Resize (View : in out Ace_Editor_Type) is
+   begin
+      View.Editor_Execute ("resize()");
+
+      Gnoga.Gui.View.View_Type (View).On_Resize;
+   end On_Resize;
 
 end Gnoga.Gui.Plugin.Ace_Editor;

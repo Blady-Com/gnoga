@@ -1225,7 +1225,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Child.Attach (Connection_ID => Element.Connection_ID,
-                    ID            => Element.Execute
+                    ID            => Element.jQuery_Execute
                       ("children().first().attr('id');"),
                     ID_Type       => Gnoga.Types.DOM_ID);
    end First_Child;
@@ -1239,8 +1239,8 @@ package body Gnoga.Gui.Element is
    is
    begin
       Sibling.Attach (Connection_ID => Element.Connection_ID,
-                      ID            => Element.Execute
-                        ("siblings().first().attr('id');"),
+                      ID            => Element.jQuery_Execute
+                        ("next().attr('id');"),
                       ID_Type       => Gnoga.Types.DOM_ID);
    end Next_Sibling;
 

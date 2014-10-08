@@ -1,3 +1,4 @@
+with Gnoga.Types;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Card;
@@ -6,7 +7,7 @@ with Gnoga.Gui.View.Docker;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
-with Gnoga.Types;
+with Gnoga.Gui.Element.Tab;
 
 procedure Layouts is
    use Gnoga;
@@ -22,13 +23,6 @@ procedure Layouts is
       end record;
    type App_Access is access all App_Data;
 
-   procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
-   begin
-      App.View.Show_Card ("1");
-      App.View.Card ("1").Put_Line ("You have arrived on card 2");
-   end On_Click2;
-
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -36,13 +30,12 @@ procedure Layouts is
       Click_Count : Common.Span_Type;
       Count       : Natural;
    begin
+      Tab.Tab_Item_Type (Object).Tab_Select;
+
       Click_Count.Attach_Using_Parent (Object, "click_count");
       Count := Natural'Value (Click_Count.Text);
       Count := Count + 1;
       Click_Count.Text (Gnoga.Left_Trim (Count'Img));
-
-      App.View.Show_Card ("2");
-      App.View.Card ("2").Put_Line ("You have arrived on card 1");
    end On_Click;
 
    procedure On_Connect
@@ -53,6 +46,8 @@ procedure Layouts is
       V      : View.Pointer_To_View_Class;
       Card_1 : View.Pointer_To_View_Class;
       Card_2 : View.Pointer_To_View_Class;
+      Tabs   : Element.Tab.Tab_Access;
+      Tab    : Element.Tab.Tab_Item_Access;
       Dex    : View.Docker.Pointer_To_Docker_View_Class;
    begin
       Main_Window.Connection_Data (App.all);
@@ -66,15 +61,24 @@ procedure Layouts is
       Dex.Create (App.Docks);
       App.Docks.Fill_Dock (Dex);
 
-      V := new View.View_Type;
-      V.Dynamic;
-      V.Create (Dex.all);
-      V.Put_Line ("Future Tab Menu");
-      Dex.Top_Dock (V);
-
       App.View.Create (Dex.all);
+      App.View.Border;
       Dex.Fill_Dock (App.View'Access);
 
+      Tabs := new Element.Tab.Tab_Type;
+      Tabs.Dynamic;
+      Tabs.Create (Dex.all, App.View);
+
+      Tab := new Element.Tab.Tab_Item_Type;
+      Tab.Dynamic;
+      Tab.Create (Tabs.all, "1", "Card 1");
+
+      Tab := new Element.Tab.Tab_Item_Type;
+      Tab.Dynamic;
+      Tab.Create (Tabs.all, "2", "Card 2");
+      Tab.On_Click_Handler (On_Click'Unrestricted_Access);
+
+      Dex.Top_Dock (Tabs);
 
       V := new View.View_Type;
       V.Dynamic;
@@ -107,28 +111,16 @@ procedure Layouts is
       Card_1 := new View.Console.Console_View_Type;
       Card_1.Dynamic;
       Card_1.Create (App.View);
+
       App.View.Add_Card ("1", Card_1);
       App.View.Add_Card ("2", Show => False);
 
+      Tab.Tab_Select;
+
       Card_2 := App.View.Card ("2");
 
-      declare
-         use Gnoga.Gui.View;
-
-         Button_1 : Common.Button_Access := Common.Button_Access
-           (Card_1.New_Element ("next", new Common.Button_Type));
-         Button_2 : Common.Button_Access := Common.Button_Access
-           (Card_2.New_Element ("next", new Common.Button_Type));
-      begin
-         Button_1.Create (Card_1.all, "Click for Card 2");
-         Button_2.Create (Card_2.all, "Click for Card 1");
-
-         Card_1.Put (" Number of times clicked : ");
-         Card_1.Put ("0", ID => "click_count");
-
-         Button_1.On_Click_Handler (On_Click'Unrestricted_Access);
-         Button_2.On_Click_Handler (On_Click2'Unrestricted_Access);
-      end;
+      Card_1.Put (" Number of times clicked : ");
+      Card_1.Put ("0", ID => "click_count");
    end On_Connect;
 
 begin

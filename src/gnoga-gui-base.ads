@@ -624,7 +624,7 @@ private
          Web_ID        : Gnoga.Types.Web_ID;
          ID_Type       : Gnoga.Types.ID_Enumeration := Gnoga.Types.No_ID;
          Connection_ID : Gnoga.Types.Connection_ID  :=
-           Gnoga.Types.No_Connection;
+                           Gnoga.Types.No_Connection;
          Parent_Object : Pointer_To_Base_Class      := null;
          Is_Dynamic    : Boolean                    := False;
 

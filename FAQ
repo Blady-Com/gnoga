@@ -28,6 +28,15 @@ Q) Do I need Sqlite3 or MySQL installed to use Gnoga?
 
 A) Only if you choose to build database apps or compilie the database examples. You can disable compiling the MySQL example if you want to just use SqlLite3.
 
+Q) How do I get AWS on Windows so I can use Gnoga with GNAT?
+
+A) You can either download the source package from any other distro of GNAT GPL or git clone the AWS repo, git clone --recursive http://forge.open-do.org/anonscm/git/aws/aws.git. The run the following:
+
+win32\build.cmd c:\gnat\2014 
+
+Replace C:\gnat\2014 with an alternate path to your installed gnat directory
+if needed.
+
 Q) How do I get AWS on Mac so I can use Gnoga with GNAT?
 
 A) You can either download the source package from any other distro of GNAT GPL or git clone the AWS repo, git clone --recursive http://forge.open-do.org/anonscm/git/aws/aws.git  Once you have unpacked it, to build you will need to set the include path to include the needed C libraries (included as part of Xcode) that do not come with the GNAT GPL or GNAT FSF versions. The following is an example on Mavericks:

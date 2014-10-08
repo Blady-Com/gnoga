@@ -1,7 +1,7 @@
 prefix  =$(dir $(shell which gnatls))..
 INSTALL =/usr/bin/install -c
 
-all: bin gnoga demo tutorials
+all: bin gnoga tutorials demo
 
 gnoga:
 	cd src && gprbuild -Pgnoga.gpr
@@ -27,7 +27,7 @@ uninstall:
 ace_editor:
 	cd js && git clone https://github.com/ajaxorg/ace-builds.git
 
-demo: snake adablog
+demo: snake adaedit
 
 adablog:
 	cd demo/adablog && gprbuild

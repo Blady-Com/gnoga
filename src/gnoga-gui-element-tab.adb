@@ -52,13 +52,14 @@ package body Gnoga.Gui.Element.Tab is
       Card_View    : in out Gnoga.Gui.View.Card.Card_View_Type'Class;
       Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
       Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
-      Hover_Color  : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
       Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
       Attach       : in     Boolean := True;
       ID           : in     String  := "")
    is
    begin
-      Tab.Card_View := Card_View'Unrestricted_Access;
+      Tab.Card_View    := Card_View'Unrestricted_Access;
+      Tab.Tab_Color    := Tab_Color;
+      Tab.Select_Color := Select_Color;
 
       Tab.Create_From_HTML (Parent, "<ul />", ID);
 
@@ -82,10 +83,7 @@ package body Gnoga.Gui.Element.Tab is
               "   padding: 10px 20px;" &
               "   margin: 3px;" &
               "   text-decoration: none;" &
-              "   border-radius: 4px 4px 0 0;}" &
-              " ul#" & Name &
-              "   li a:hover {background-color: " & To_String (Hover_Color) &
-              "   ;}");
+              "   border-radius: 4px 4px 0 0;}");
       end;
    end Create;
 
@@ -103,7 +101,7 @@ package body Gnoga.Gui.Element.Tab is
 
    procedure Create
      (Item   : in out Tab_Item_Type;
-      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Parent : in out Tab_Type'Class;
       Card   : in     String;
       Text   : in     String := "";
       ID     : in     String := "")
@@ -142,7 +140,7 @@ package body Gnoga.Gui.Element.Tab is
                L : Element_Type;
             begin
                L.Attach_Using_Parent (Item, ID => C.ID & "_a");
-               L.Background_Color ("black");
+               L.Background_Color (Tab_Access (Item.Parent).Tab_Color);
             end;
 
             N := new Element_Type;
@@ -155,7 +153,7 @@ package body Gnoga.Gui.Element.Tab is
       end;
 
       Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
-      Link.Background_Color (Gnoga.Types.RGBA_Type'(128, 128, 128, 1.0));
+      Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
 
       Tab_Access (Item.Parent).Card_View.Show_Card
         (Ada.Strings.Unbounded.To_String (Item.Card_Name));

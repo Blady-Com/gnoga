@@ -67,7 +67,11 @@ procedure Layouts is
 
       Tabs := new Element.Tab.Tab_Type;
       Tabs.Dynamic;
-      Tabs.Create (Dex.all, App.View);
+      Tabs.Create (Parent       => Dex.all,
+                   Card_View    => App.View,
+                   Text_Color   => Gnoga.Types.RGBA_Type'(255,255,255,1.0),
+                   Tab_Color    => Gnoga.Types.RGBA_Type'(0,0,255,1.0),
+                   Select_Color => Gnoga.Types.RGBA_Type'(0, 0, 128, 1.0));
 
       Tab := new Element.Tab.Tab_Item_Type;
       Tab.Dynamic;

@@ -60,7 +60,6 @@ package Gnoga.Gui.Element.Tab is
       Card_View    : in out Gnoga.Gui.View.Card.Card_View_Type'Class;
       Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
       Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
-      Hover_Color  : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
       Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
       Attach       : in     Boolean               := True;
       ID           : in     String                := "");
@@ -78,7 +77,7 @@ package Gnoga.Gui.Element.Tab is
    -------------------------------------------------------------------------
 
    procedure Create (Item   : in out Tab_Item_Type;
-                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Parent : in out Tab_Type'Class;
                      Card   : in     String;
                      Text   : in     String := "";
                      ID     : in     String := "");
@@ -105,11 +104,12 @@ private
    type Tab_Type is new Gnoga.Gui.View.View_Type with
       record
          Card_View    : Gnoga.Gui.View.Card.Pointer_To_Card_View_Class := null;
-         Select_Color : Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
+         Select_Color : Gnoga.Types.RGBA_Type;
+         Tab_Color    : Gnoga.Types.RGBA_Type;
       end record;
 
    type Tab_Item_Type is new Gnoga.Gui.Element.Element_Type with
       record
-         Card_Name : Ada.Strings.Unbounded.Unbounded_String;
+         Card_Name    : Ada.Strings.Unbounded.Unbounded_String;
       end record;
 end Gnoga.Gui.Element.Tab;

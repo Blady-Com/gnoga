@@ -17,6 +17,8 @@ Dialog View, both on page or as popup
 
 Table View
 
+Data View - View to display or setup for edit of Active_Record objects
+
 * Server Side Tools
 
 Tool to generate skeleton projects, new widgets

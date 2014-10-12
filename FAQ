@@ -60,7 +60,6 @@ Q) How can I set up test for Gnoga Applications?
 
 A) There are many products on the market for testing Web sites / apps, any of those can be used with Gnoga as well. For example one inexpensive one for Mac is Fake.app http://fakeapp.com/
 
-
 Q) Can I Build native Mac OS X applications with Gnoga.
 
 A) Yes, I have build native apps using - http://macgapproject.github.io/
@@ -92,3 +91,34 @@ A) It should be possible using GNAT, I have not yet explored the requirements fo
 Q) Which Tags are bound in Gnoga?
 
 A) See the spec file for Gnoga.Gui.Element, it is possible to create any HTML and bind it using the Element_Type.Create_With_HTML. Gnoga though only includes specific types that are needed for application development.
+
+Q) Is it possible to use a reverse proxies / load balancers with Gnoga Apps?
+
+A) Gnoga uses websockets which uses an http "upgrade" mechanism which means
+the proxy or load balancer must have some knowledge of how to handle websockets. The two most popular Apache and Nginx support it:
+
+For nginx see:
+   http://nginx.org/en/docs/http/websocket.html
+   http://nginx.com/blog/websocket-nginx/
+
+For Apache 2.4.5+ see:
+   http://httpd.apache.org/docs/2.4/mod/mod_proxy_wstunnel.html
+
+Example of a Gnoga application as a subdirectory on a larger site using apache:
+
+<VirtualHost *:80>
+    ServerName gnoga.com
+    ServerAlias www.gnoga.com
+    ServerAdmin david@botton.com
+    DocumentRoot /www/gnoga
+
+    ProxyPass /snake http://www.gnoga.com:8080
+    ProxyPassReverse /snake http://www.gnoga.com:8080
+    ProxyPass /gnoga ws://www.gnoga.com:8080/gnoga
+    ProxyPass /js http://www.gnoga.com:8080/js
+    ProxyPass /html  http://www.gnoga.com:8080/html
+
+    ErrorLog ${APACHE_LOG_DIR}/gnoga.err.log
+    CustomLog ${APACHE_LOG_DIR}/gnoga.log common
+</VirtualHost>
+

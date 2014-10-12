@@ -133,9 +133,9 @@ package Gnoga.Gui.Element.Common is
    --  P_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (P     : in out DIV_Type;
+   procedure Create (P       : in out P_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String;
+                     Content : in     String := "";
                      ID      : in     String := "");
 
    -------------------------------------------------------------------------
@@ -187,7 +187,7 @@ package Gnoga.Gui.Element.Common is
    --  BR_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (BR     : in out HR_Type;
+   procedure Create (BR     : in out BR_Type;
                      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
                      ID     : in     String := "");
 

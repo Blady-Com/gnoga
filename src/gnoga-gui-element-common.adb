@@ -144,6 +144,25 @@ package body Gnoga.Gui.Element.Common is
    end Create;
 
    -------------------------------------------------------------------------
+   --  P_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (P       : in out P_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "")
+   is
+   begin
+      P.Create_From_HTML (Parent, "<p>" & Escape_Quotes (Content) &
+                              "</p>", ID);
+   end Create;
+
+   -------------------------------------------------------------------------
    --  IMG_Types
    -------------------------------------------------------------------------
 
@@ -191,12 +210,12 @@ package body Gnoga.Gui.Element.Common is
    ------------
 
    procedure Create
-     (HR     : in out BR_Type;
+     (BR     : in out BR_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       ID     : in     String := "")
    is
    begin
-      HR.Create_From_HTML (Parent, "<br />", ID);
+      BR.Create_From_HTML (Parent, "<br />", ID);
    end Create;
 
    -------------------------------------------------------------------------

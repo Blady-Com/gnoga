@@ -44,7 +44,7 @@ package body Gnoga.Gui.View is
    -- Finalize --
    --------------
 
-   procedure Finalize (Object : in out View_Type) is
+   procedure Finalize (Object : in out View_Base_Type) is
    begin
       if not Gnoga.Server.Connection.Shutting_Down then
          for i in
@@ -81,7 +81,7 @@ package body Gnoga.Gui.View is
    -- On_Child_Added --
    --------------------
 
-   procedure On_Child_Added (View  : in out View_Type;
+   procedure On_Child_Added (View  : in out View_Base_Type;
                              Child : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       use Gnoga.Gui.Element;
@@ -99,7 +99,7 @@ package body Gnoga.Gui.View is
    -- Put_Line --
    --------------
 
-   procedure Put_Line (View    : in out View_Type;
+   procedure Put_Line (View    : in out View_Base_Type;
                        Message : in     String;
                        Class   : in     String := "";
                        ID      : in     String := "")
@@ -116,7 +116,7 @@ package body Gnoga.Gui.View is
    -- Put --
    ---------
 
-   procedure Put (View    : in out View_Type;
+   procedure Put (View    : in out View_Base_Type;
                   Message : in     String;
                   Class   : in     String := "";
                   ID      : in     String := "")
@@ -133,7 +133,7 @@ package body Gnoga.Gui.View is
    -- Put_HTML --
    --------------
 
-   procedure Put_HTML (View  : in out View_Type;
+   procedure Put_HTML (View  : in out View_Base_Type;
                        HTML  : in     String;
                        Class : in     String := "";
                        ID    : in     String := "")
@@ -150,7 +150,7 @@ package body Gnoga.Gui.View is
    -- New_Line --
    --------------
 
-   procedure New_Line (View : in out View_Type) is
+   procedure New_Line (View : in out View_Base_Type) is
       D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
       D.Create (View, "<br />");
@@ -161,7 +161,7 @@ package body Gnoga.Gui.View is
    -----------------
 
    procedure Add_Element
-     (View    : in out View_Type;
+     (View    : in out View_Base_Type;
       Name    : in     String;
       Element : access Gnoga.Gui.Element.Element_Type'Class)
    is
@@ -175,7 +175,7 @@ package body Gnoga.Gui.View is
    -----------------
 
    function New_Element
-     (View    : access View_Type;
+     (View    : access View_Base_Type;
       Name    : String;
       Element : access Gnoga.Gui.Element.Element_Type'Class)
       return Gnoga.Gui.Element.Pointer_To_Element_Class
@@ -191,7 +191,7 @@ package body Gnoga.Gui.View is
    ---------
 
    function Add
-     (View    : access View_Type;
+     (View    : access View_Base_Type;
       Element : access Gnoga.Gui.Element.Element_Type'Class)
       return Gnoga.Gui.Element.Pointer_To_Element_Class
    is
@@ -204,7 +204,7 @@ package body Gnoga.Gui.View is
    -- Element --
    -------------
 
-   function Element (View : View_Type; Name : String)
+   function Element (View : View_Base_Type; Name : String)
                      return Gnoga.Gui.Element.Pointer_To_Element_Class
    is
    begin

@@ -47,7 +47,7 @@ package Gnoga.Gui.Element.Section is
    --  Section_Types
    -------------------------------------------------------------------------
 
-   type Section_Type is new Gnoga.Gui.View.View_Type with private;
+   type Section_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Section_Access is access all Section_Type;
    type Pointer_To_Section_Class is access all Section_Type'Class;
 
@@ -58,7 +58,6 @@ package Gnoga.Gui.Element.Section is
    type Section_Description_Type is
      (Address, Article, Aside, Header, Main, Nav, P, Pre, Section);
 
-
    procedure Create
      (View    : in out Section_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -67,5 +66,5 @@ package Gnoga.Gui.Element.Section is
       ID      : in     String  := "");
 
 private
-   type Section_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Section_Type is new Gnoga.Gui.View.View_Base_Type with null record;
 end Gnoga.Gui.Element.Section;

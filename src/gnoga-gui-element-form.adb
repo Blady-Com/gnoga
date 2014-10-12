@@ -50,7 +50,6 @@ package body Gnoga.Gui.Element.Form is
    procedure Create
      (Form    : in out Form_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := False;
       ID      : in     String  := "")
    is
    begin
@@ -1218,7 +1217,6 @@ package body Gnoga.Gui.Element.Form is
    procedure Create
      (List          : in out Data_List_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := False;
       ID            : in     String  := "")
    is
    begin

@@ -37,8 +37,6 @@
 
 with Ada.Strings.Fixed;
 
-with Gnoga.Gui.Window;
-
 package body Gnoga.Gui.Element.List is
 
    ------------
@@ -48,15 +46,10 @@ package body Gnoga.Gui.Element.List is
    procedure Create
      (List    : in out Ordered_List_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "")
    is
    begin
       List.Create_From_HTML (Parent, "<ol />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (List);
-      end if;
    end Create;
 
    ---------------
@@ -102,15 +95,10 @@ package body Gnoga.Gui.Element.List is
    procedure Create
      (List    : in out Unordered_List_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "")
    is
    begin
       List.Create_From_HTML (Parent, "<ul />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (List);
-      end if;
    end Create;
 
    ------------
@@ -119,7 +107,7 @@ package body Gnoga.Gui.Element.List is
 
    procedure Create
      (Item   : in out Line_Item_Type;
-      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Parent : in out Ordered_List_Type'Class;
       Text   : in     String := "";
       ID     : in     String := "")
    is
@@ -149,15 +137,10 @@ package body Gnoga.Gui.Element.List is
    procedure Create
      (List    : in out Definition_List_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "")
    is
    begin
       List.Create_From_HTML (Parent, "<dl />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (List);
-      end if;
    end Create;
 
    ------------

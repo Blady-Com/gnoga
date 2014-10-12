@@ -43,7 +43,7 @@ package Gnoga.Gui.Element.Form is
    --  Form_Types
    -------------------------------------------------------------------------
 
-   type Form_Type is new Gnoga.Gui.View.View_Type with private;
+   type Form_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Form_Access is access all Form_Type;
    type Pointer_To_Botton_Class is access all Form_Type'Class;
 
@@ -51,10 +51,8 @@ package Gnoga.Gui.Element.Form is
    --  Form_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
    procedure Create (Form    : in out Form_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Attach  : in     Boolean := False;
                      ID      : in     String  := "");
    --  Create a Form element. This is used to group and set the action
    --  taken on a submit of the form. If Attach is True has no effect
@@ -128,7 +126,7 @@ package Gnoga.Gui.Element.Form is
    type Form_Element_Access is access all Form_Element_Type;
    type Pointer_To_Form_Element_Class is access all Form_Element_Type'Class;
 
-   type Data_List_Type is new Gnoga.Gui.View.View_Type with private;
+   type Data_List_Type is new Gnoga.Gui.View.View_Base_Type with private;
    --  Forward decleration of Data_List_Type used for drop down /
    --  autocomplete.
 
@@ -253,13 +251,10 @@ package Gnoga.Gui.Element.Form is
    --  Data_List_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
    procedure Create
      (List          : in out Data_List_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := False;
       ID            : in     String  := "");
-   --  Attach if True has no effect since Data_Lists are not visible elements.
 
    -------------------------------------------------------------------------
    --  Data_List_Type - Methods
@@ -973,7 +968,7 @@ package Gnoga.Gui.Element.Form is
                    return String;
 
 private
-   type Form_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Form_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Form_Element_Type is
      new Gnoga.Gui.Element.Element_Type with null record;
    type Text_Area_Type is new Form_Element_Type with null record;
@@ -999,7 +994,7 @@ private
    type Number_Type is new Form_Element_Type with null record;
    type Range_Type is new Number_Type with null record;
    type Label_Type is new Gnoga.Gui.Element.Element_Type with null record;
-   type Data_List_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Data_List_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Selection_Type is new Form_Element_Type with null record;
    type Option_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Option_Group_Type is

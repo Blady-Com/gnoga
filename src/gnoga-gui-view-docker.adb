@@ -111,7 +111,7 @@ package body Gnoga.Gui.View.Docker is
    --------------
 
    procedure Top_Dock (View : in out Docker_View_Type;
-                       Dock : access View_Type'Class)
+                       Dock : access View_Base_Type'Class)
    is
    begin
       View.Element_Map.Include ("top", Dock);
@@ -134,7 +134,7 @@ package body Gnoga.Gui.View.Docker is
    -----------------
 
    procedure Bottom_Dock (View : in out Docker_View_Type;
-                          Dock : access View_Type'Class)
+                          Dock : access View_Base_Type'Class)
    is
    begin
       View.Element_Map.Include ("bottom", Dock);
@@ -158,7 +158,7 @@ package body Gnoga.Gui.View.Docker is
    ---------------
 
    procedure Fill_Dock (View : in out Docker_View_Type;
-                        Dock : access View_Type'Class)
+                        Dock : access View_Base_Type'Class)
    is
    begin
       View.Element_Map.Include ("fill", Dock);
@@ -181,7 +181,7 @@ package body Gnoga.Gui.View.Docker is
    ---------------
 
    procedure Left_Dock (View : in out Docker_View_Type;
-                        Dock : access View_Type'Class)
+                        Dock : access View_Base_Type'Class)
    is
    begin
       View.Element_Map.Include ("left", Dock);
@@ -204,7 +204,7 @@ package body Gnoga.Gui.View.Docker is
    ----------------
 
    procedure Right_Dock (View : in out Docker_View_Type;
-                         Dock : access View_Type'Class)
+                         Dock : access View_Base_Type'Class)
    is
    begin
       View.Element_Map.Include ("right", Dock);

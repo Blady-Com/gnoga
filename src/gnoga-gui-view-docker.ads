@@ -66,23 +66,23 @@ package Gnoga.Gui.View.Docker is
    -------------------------------------------------------------------------
 
    procedure Top_Dock (View : in out Docker_View_Type;
-                  Dock : access View_Type'Class);
+                       Dock : access View_Base_Type'Class);
    function Top_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
    procedure Bottom_Dock (View : in out Docker_View_Type;
-                     Dock : access View_Type'Class);
+                          Dock : access View_Base_Type'Class);
    function Bottom_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
    procedure Fill_Dock (View : in out Docker_View_Type;
-                   Dock : access View_Type'Class);
+                        Dock : access View_Base_Type'Class);
    function Fill_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
    procedure Left_Dock (View : in out Docker_View_Type;
-                   Dock : access View_Type'Class);
+                        Dock : access View_Base_Type'Class);
    function Left_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
    procedure Right_Dock (View : in out Docker_View_Type;
-                    Dock : access View_Type'Class);
+                         Dock : access View_Base_Type'Class);
    function Right_Dock (View : Docker_View_Type) return Pointer_To_View_Class;
 
    -------------------------------------------------------------------------

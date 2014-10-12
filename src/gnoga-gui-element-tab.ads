@@ -45,7 +45,7 @@ package Gnoga.Gui.Element.Tab is
    --  Tab_Types
    -------------------------------------------------------------------------
 
-   type Tab_Type is new Gnoga.Gui.View.View_Type with private;
+   type Tab_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Tab_Access is access all Tab_Type;
    type Pointer_To_Tab_Class is
      access all Tab_Type'Class;
@@ -101,7 +101,7 @@ package Gnoga.Gui.Element.Tab is
    procedure Tab_Select (Item  : in out Tab_Item_Type);
 
 private
-   type Tab_Type is new Gnoga.Gui.View.View_Type with
+   type Tab_Type is new Gnoga.Gui.View.View_Base_Type with
       record
          Card_View    : Gnoga.Gui.View.Card.Pointer_To_Card_View_Class := null;
          Select_Color : Gnoga.Types.RGBA_Type;

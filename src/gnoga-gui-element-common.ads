@@ -35,12 +35,14 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Gnoga.Gui.View;
+
 package Gnoga.Gui.Element.Common is
    -------------------------------------------------------------------------
    --  A_Types
    -------------------------------------------------------------------------
 
-   type A_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type A_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type A_Access is access all A_Type;
    type Pointer_To_A_Class is access all A_Type'Class;
 
@@ -76,7 +78,7 @@ package Gnoga.Gui.Element.Common is
    --  Button_Types
    -------------------------------------------------------------------------
 
-   type Button_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Button_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Button_Access is access all Button_Type;
    type Pointer_To_Botton_Class is access all Button_Type'Class;
 
@@ -90,6 +92,7 @@ package Gnoga.Gui.Element.Common is
                      ID      : in     String := "");
    --  Create an HTML button. The content will be placed inside the button.
    --  For forms use Gnoga.Gui.Element.Form.Button instead.
+   --  Button_Type's can contain other elements like images.
 
    -------------------------------------------------------------------------
    --  Button_Type - Properties
@@ -103,23 +106,37 @@ package Gnoga.Gui.Element.Common is
    --  DIV_Types
    -------------------------------------------------------------------------
 
-   type DIV_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type DIV_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type DIV_Access is access all DIV_Type;
    type Pointer_To_DIV_Class is access all DIV_Type'Class;
 
    -------------------------------------------------------------------------
    --  DIV_Type - Creation Methods
    -------------------------------------------------------------------------
-   --  Gnoga.Gui.View_Type is a DIV but with far more functionality.
-   --  If doing anything beyond static display, View_Type usually makes
-   --  more sense to use. Also note, that View_Type.Put_Line also creates
-   --  DIVs.
+   --  Also note, that View_Base_Type.Put_Line also creates DIVs internally
 
    procedure Create (DIV     : in out DIV_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
                      Content : in     String := "";
                      ID      : in     String := "");
    --  Create a div container with optional HTML content
+
+   -------------------------------------------------------------------------
+   --  P_Types
+   -------------------------------------------------------------------------
+
+   type P_Type is new Gnoga.Gui.View.View_Base_Type with private;
+   type P_Access is access all P_Type;
+   type Pointer_To_P_Class is access all P_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  P_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (P     : in out DIV_Type;
+                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Content : in     String;
+                     ID      : in     String := "");
 
    -------------------------------------------------------------------------
    --  IMG_Types
@@ -157,6 +174,22 @@ package Gnoga.Gui.Element.Common is
                      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
                      ID     : in     String := "");
    --  Create a horizontal rule
+
+   -------------------------------------------------------------------------
+   --  BR_Types
+   -------------------------------------------------------------------------
+
+   type BR_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type BR_Access is access all BR_Type;
+   type Pointer_To_BR_Class is access all BR_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  BR_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (BR     : in out HR_Type;
+                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+                     ID     : in     String := "");
 
    -------------------------------------------------------------------------
    --  Meter_Types
@@ -236,14 +269,14 @@ package Gnoga.Gui.Element.Common is
    --  Span_Types
    -------------------------------------------------------------------------
 
-   type Span_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Span_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Span_Access is access all Span_Type;
    type Pointer_To_Span_Class is access all Span_Type'Class;
 
    -------------------------------------------------------------------------
    --  Span_Type - Creation Methods
    -------------------------------------------------------------------------
-   --  The Spans are created automatically when using View_Type.Put
+   --  The Spans are created automatically when using View_Base_Type.Put
 
    procedure Create (Span    : in out Span_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -252,13 +285,15 @@ package Gnoga.Gui.Element.Common is
    --  Create a Span container
 
 private
-   type A_Type is new Gnoga.Gui.Element.Element_Type with null record;
-   type Button_Type is new Gnoga.Gui.Element.Element_Type with null record;
-   type DIV_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type A_Type is new Gnoga.Gui.View.View_Base_Type with null record;
+   type Button_Type is new Gnoga.Gui.View.View_Base_Type with null record;
+   type DIV_Type is new Gnoga.Gui.View.View_Base_Type with null record;
+   type P_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type IMG_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type HR_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type BR_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Meter_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Progress_Bar_Type is
      new Gnoga.Gui.Element.Element_Type with null record;
-   type Span_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type Span_Type is new Gnoga.Gui.View.View_Base_Type with null record;
 end Gnoga.Gui.Element.Common;

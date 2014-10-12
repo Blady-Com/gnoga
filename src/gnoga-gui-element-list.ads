@@ -50,7 +50,7 @@ package Gnoga.Gui.Element.List is
    --  Ordered_List_Types
    -------------------------------------------------------------------------
 
-   type Ordered_List_Type is new Gnoga.Gui.View.View_Type with private;
+   type Ordered_List_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Ordered_List_Access is access all Ordered_List_Type;
    type Pointer_To_Ordered_List_Class is
      access all Ordered_List_Type'Class;
@@ -59,11 +59,9 @@ package Gnoga.Gui.Element.List is
    --  Ordered_List_Types - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
    procedure Create
      (List    : in out Ordered_List_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");
    --  Create an ordered (by default 1,2,3,4..) list
 
@@ -103,7 +101,6 @@ package Gnoga.Gui.Element.List is
    procedure Create
      (List    : in out Unordered_List_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");
    --  Create an unordered (by default) bullet/disc list
 
@@ -120,7 +117,7 @@ package Gnoga.Gui.Element.List is
    -------------------------------------------------------------------------
 
    procedure Create (Item   : in out Line_Item_Type;
-                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Parent : in out Ordered_List_Type'Class;
                      Text   : in     String := "";
                      ID     : in     String := "");
    --  To properly display parent should be an Ordered_List_Type or an
@@ -139,7 +136,7 @@ package Gnoga.Gui.Element.List is
    --  Definition_List_Types
    -------------------------------------------------------------------------
 
-   type Definition_List_Type is new Gnoga.Gui.View.View_Type with private;
+   type Definition_List_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Definition_List_Access is access all Definition_List_Type;
    type Pointer_To_Definition_List_Class is
      access all Definition_List_Type'Class;
@@ -148,11 +145,9 @@ package Gnoga.Gui.Element.List is
    --  Definition_List_Types - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
    procedure Create
      (List    : in out Definition_List_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");
    --  Create a definition list of terms and descriptions
 
@@ -191,10 +186,12 @@ package Gnoga.Gui.Element.List is
                      ID     : in     String := "");
 
 private
-   type Ordered_List_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Ordered_List_Type is
+     new Gnoga.Gui.View.View_Base_Type with null record;
    type Unordered_List_Type is new Ordered_List_Type with null record;
    type Line_Item_Type is new Gnoga.Gui.Element.Element_Type with null record;
-   type Definition_List_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Definition_List_Type is
+     new Gnoga.Gui.View.View_Base_Type with null record;
    type Term_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Description_Type is
      new Gnoga.Gui.Element.Element_Type with null record;

@@ -183,6 +183,23 @@ package body Gnoga.Gui.Element.Common is
    end Create;
 
    -------------------------------------------------------------------------
+   --  BR_Types
+   -------------------------------------------------------------------------
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (HR     : in out BR_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
+   is
+   begin
+      HR.Create_From_HTML (Parent, "<br />", ID);
+   end Create;
+
+   -------------------------------------------------------------------------
    --  Meter_Type - Creation Methods
    -------------------------------------------------------------------------
 

@@ -8,6 +8,7 @@ with Gnoga.Types;
 with Gnoga.Gui.Element.Form.Fieldset;
 with Gnoga.Gui.Element.List;
 with Gnoga.Gui.Element.Style_Block;
+with Gnoga.Gui.Plugin.jQuery;
 
 with Gnoga.Server.Template_Parser;
 with Gnoga.Server.Template_Parser.Python;
@@ -108,6 +109,7 @@ procedure Demo is
       Label   : Form.Label_Access := new Form.Label_Type;
       Option  : Form.Option_Access;
       optgrp  : Form.Option_Group_Access;
+      Query   : Gnoga.Gui.Plugin.jQuery.jQuery_Type;
    begin
       Main_Window.Connection_Data (App.all);
 
@@ -237,6 +239,10 @@ procedure Demo is
               (ul1.Add (new List.Line_Item_Type)).Create (ul1.all, i'img);
          end loop;
       end;
+
+      Query.jQuery (Main_Window.Connection_ID, """div""");
+      Query.Execute ("css('background-color','azure')");
+
    end On_Connect;
 
 begin

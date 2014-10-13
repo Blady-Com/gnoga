@@ -50,6 +50,7 @@ tutorials:
 	cd tutorial/tutorial-06 && gprbuild
 	cd tutorial/tutorial-07 && gprbuild
 	cd tutorial/tutorial-08 && gprbuild
+	cd tutorial/tutorial-09 && gprbuild
 
 clean:
 	cd src && gprclean -Pgnoga.gpr
@@ -65,4 +66,5 @@ clean:
 	cd tutorial/tutorial-06 && gprclean
 	cd tutorial/tutorial-07 && gprclean
 	cd tutorial/tutorial-08 && gprclean
+	cd tutorial/tutorial-09 && gprclean
 	- cd js && rm -rf ace-builds

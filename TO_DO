@@ -72,3 +72,8 @@ Delphi / VB like IDE in Gnoga itself
 GNAT with llvm to generate iOS apps
 GNAT with llvm to generate ASM JavaScript = Full client side Gnoga
 GNAT JVM and minimal android browser widget
+
+* Server Side
+
+Support AWS plugins
+Support alternative transports to Websockets as fall backs.

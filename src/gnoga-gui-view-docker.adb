@@ -49,15 +49,6 @@ package body Gnoga.Gui.View.Docker is
    is
    begin
       View_Type (View).Create (Parent, Attach, ID);
-
-      View.Element_Map.Insert ("top", null);
-      View.Element_Map.Insert ("bottom", null);
-      View.Element_Map.Insert ("fill", null);
-      View.Element_Map.Insert ("left", null);
-      View.Element_Map.Insert ("right", null);
-
-      View.Bind_Event (Event   => "resize",
-                       Message => "");
    end Create;
 
    -----------------
@@ -120,10 +111,12 @@ package body Gnoga.Gui.View.Docker is
       View.Update_Dock;
    end Top_Dock;
 
-   function Top_Dock (View : Docker_View_Type) return Pointer_To_View_Class is
+   function Top_Dock (View : Docker_View_Type)
+                      return Pointer_To_View_Base_Class
+   is
    begin
       if View.Element_Map.Contains ("top") then
-         return Pointer_To_View_Class (View.Element_Map.Element ("top"));
+         return Pointer_To_View_Base_Class (View.Element_Map.Element ("top"));
       else
          return null;
       end if;
@@ -143,11 +136,13 @@ package body Gnoga.Gui.View.Docker is
       View.Update_Dock;
    end Bottom_Dock;
 
-   function Bottom_Dock (View : Docker_View_Type) return Pointer_To_View_Class
+   function Bottom_Dock (View : Docker_View_Type)
+                         return Pointer_To_View_Base_Class
    is
    begin
       if View.Element_Map.Contains ("bottom") then
-         return Pointer_To_View_Class (View.Element_Map.Element ("bottom"));
+         return Pointer_To_View_Base_Class
+           (View.Element_Map.Element ("bottom"));
       else
          return null;
       end if;
@@ -167,10 +162,12 @@ package body Gnoga.Gui.View.Docker is
       View.Update_Dock;
    end Fill_Dock;
 
-   function Fill_Dock (View : Docker_View_Type) return Pointer_To_View_Class is
+   function Fill_Dock (View : Docker_View_Type)
+                       return Pointer_To_View_Base_Class
+   is
    begin
       if View.Element_Map.Contains ("fill") then
-         return Pointer_To_View_Class (View.Element_Map.Element ("fill"));
+         return Pointer_To_View_Base_Class (View.Element_Map.Element ("fill"));
       else
          return null;
       end if;
@@ -190,10 +187,12 @@ package body Gnoga.Gui.View.Docker is
       View.Update_Dock;
    end Left_Dock;
 
-   function Left_Dock (View : Docker_View_Type) return Pointer_To_View_Class is
+   function Left_Dock (View : Docker_View_Type)
+                       return Pointer_To_View_Base_Class
+   is
    begin
       if View.Element_Map.Contains ("left") then
-         return Pointer_To_View_Class (View.Element_Map.Element ("left"));
+         return Pointer_To_View_Base_Class (View.Element_Map.Element ("left"));
       else
          return null;
       end if;
@@ -213,11 +212,13 @@ package body Gnoga.Gui.View.Docker is
       View.Update_Dock;
    end Right_Dock;
 
-   function Right_Dock (View : Docker_View_Type) return Pointer_To_View_Class
+   function Right_Dock (View : Docker_View_Type)
+                        return Pointer_To_View_Base_Class
    is
    begin
       if View.Element_Map.Contains ("right") then
-         return Pointer_To_View_Class (View.Element_Map.Element ("right"));
+         return Pointer_To_View_Base_Class
+           (View.Element_Map.Element ("right"));
       else
          return null;
       end if;

@@ -64,10 +64,10 @@ procedure Tutorial_08 is
          col2.Dynamic;
 
          row.Create (Layout_Table.all);
-         col1.Create (row.all, "Name (Only letters and spaces permitted)");
+         col1.Create (row.all, "Name");
          col2.Create (row.all);
          View.Name_Input.Create (Form  => View.Widget_Form,
-                                 Size  => 20,
+                                 Size  => 40,
                                  Name  => "Name");
          -- The Name of the element is its variable name when submitted.
 
@@ -76,6 +76,7 @@ procedure Tutorial_08 is
          --  it will not allow submission and notify user unless element
          --  if filled out.
 
+         View.Name_Input.Place_Holder ("(Only letters and spaces permitted)");
          View.Name_Input.Pattern ("[a-zA-Z\ ]+");
          --  Allow only a-z, A-Z and space characters
 

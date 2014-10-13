@@ -37,6 +37,9 @@
 
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
+with Ada.Containers.Vectors;
+with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Strings.Hash;
 
 with Gnoga.Types;
 with Gnoga.Gui.Base;
@@ -132,6 +135,24 @@ package Gnoga.Gui.Element is
    type Element_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Element_Access is access all Element_Type;
    type Pointer_To_Element_Class is access all Element_Type'Class;
+
+   package Element_Type_Arrays is
+     new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Pointer_To_Element_Class,
+        "="          => Element."=");
+
+   package Element_Type_Maps is
+      new Ada.Containers.Indefinite_Hashed_Maps (String,
+                                                 Pointer_To_Element_Class,
+                                                 Ada.Strings.Hash,
+                                                 Equivalent_Keys => "=");
+
+   subtype Element_Type_Array is Element_Type_Arrays.Vector;
+   --  Arrays of Base_Types
+
+   subtype Element_Type_Map is Element_Type_Maps.Map;
+   --  String to Base_Type associative array
 
    -------------------------------------------------------------------------
    --  Element_Type - Creation Methods

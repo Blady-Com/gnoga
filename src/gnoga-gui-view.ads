@@ -97,7 +97,8 @@ package Gnoga.Gui.View is
    --  Add Element to associative array of elements at Name and available using
    --  the View_Base_Type's Element property. This does not re-parent the
    --  Element to View if it was created with a different parent nor does it
-   --  add Element to the View's DOM.
+   --  add Element to the View's DOM. If Element with Name exists it will be
+   --  overwritten.
 
    function New_Element
      (View    : access View_Base_Type;

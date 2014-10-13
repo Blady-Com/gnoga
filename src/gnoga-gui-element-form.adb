@@ -1475,7 +1475,7 @@ package body Gnoga.Gui.Element.Form is
                             Index    : in     Positive)
    is
    begin
-      Element.Execute ("remove (" & Index'Img &")");
+      Element.Execute ("remove (" & Index'Img & ")");
    end Remove_Option;
 
    -------------------------------------------------------------------------

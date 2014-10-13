@@ -202,7 +202,7 @@ package body Gnoga.Gui.Element.Table is
    is
    begin
       Column.Create_From_HTML
-        (Group, "<col span=" & Column_Span'Img &">", ID);
+        (Group, "<col span=" & Column_Span'Img & ">", ID);
    end Create;
 
 end Gnoga.Gui.Element.Table;

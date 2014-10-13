@@ -161,7 +161,7 @@ package body Gnoga.Gui.Document is
    begin
       Document.Head_Element.jQuery_Execute
         ("append('<link rel=""stylesheet"" " &
-           "href="""& Escape_Quotes (URL) &""" type=""text/css"">')");
+           "href=""" & Escape_Quotes (URL) & """ type=""text/css"">')");
    end Load_CSS;
 
    -----------

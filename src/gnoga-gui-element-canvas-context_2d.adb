@@ -812,7 +812,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
         (ID     => Context.Connection_ID,
          Script => "gnoga['" &
            Ada.Strings.Unbounded.To_String (Context.Context_ID) &
-           "'].measureText (" & Escape_Quotes (Text) &").width"));
+           "'].measureText (" & Escape_Quotes (Text) & ").width"));
    end Measure_Text_Width;
 
    ----------------

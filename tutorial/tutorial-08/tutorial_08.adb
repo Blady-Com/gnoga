@@ -86,6 +86,7 @@ procedure Tutorial_08 is
          col2.Dynamic;
 
          row.Create (Layout_Table.all);
+         row.Style ("vertical-align", "top");
          col1.Create (row.all, "Message");
          col2.Create (row.all);
          View.Message.Create (Form    => View.Widget_Form,

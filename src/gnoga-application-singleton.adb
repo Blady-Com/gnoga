@@ -106,7 +106,7 @@ package body Gnoga.Application.Singleton is
 
    procedure End_Application is
    begin
-      Connection_Holder.Release;
       Gnoga.Server.Connection.Stop;
+      Connection_Holder.Release;
    end End_Application;
 end Gnoga.Application.Singleton;

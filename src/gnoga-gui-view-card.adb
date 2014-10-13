@@ -62,7 +62,7 @@ package body Gnoga.Gui.View.Card is
 
    function Current_Card
      (View : Card_View_Type)
-      return Pointer_To_View_Class
+      return Pointer_To_View_Base_Class
    is
    begin
       return View.Card ("current");
@@ -75,11 +75,11 @@ package body Gnoga.Gui.View.Card is
    function Card
      (View : Card_View_Type;
       Name : String)
-      return Pointer_To_View_Class
+      return Pointer_To_View_Base_Class
    is
    begin
       if View.Element_Map.Contains (Name) then
-         return Pointer_To_View_Class (View.Element_Map.Element (Name));
+         return Pointer_To_View_Base_Class (View.Element_Map.Element (Name));
       else
          return null;
       end if;
@@ -91,18 +91,18 @@ package body Gnoga.Gui.View.Card is
 
    procedure Add_Card (View : in out Card_View_Type;
                        Name : in     String;
-                       Card : access View_Type'Class := null;
-                       Show : in     Boolean         := True)
+                       Card : access View_Base_Type'Class := null;
+                       Show : in     Boolean              := True)
    is
       use Gnoga.Gui.Element;
 
-      New_Card : Pointer_To_View_Class;
+      New_Card : Pointer_To_View_Base_Class;
    begin
       if Card = null then
          New_Card := new View_Type;
-         New_Card.Create (View);
+         View_Access (New_Card).Create (View);
       else
-         New_Card := Pointer_To_View_Class (Card);
+         New_Card := Card.all'Unrestricted_Access;
       end if;
 
       if not Show then
@@ -131,7 +131,7 @@ package body Gnoga.Gui.View.Card is
    is
       use Gnoga.Gui.Element;
 
-      Current : Pointer_To_View_Class := View.Current_Card;
+      Current : Pointer_To_View_Base_Class := View.Current_Card;
    begin
       if Current /= null then
          Current.Display ("none");

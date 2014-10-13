@@ -399,18 +399,18 @@ package Gnoga.Gui.Element is
    --  The width of the top border of an element in pixels.
    --. It does not include the margin or padding.
 
-   function Offset_Width (Element : Element_Type) return Natural;
+   function Offset_Width (Element : Element_Type) return Integer;
    --  CSS width + CSS padding + width of vertical scrollbar (if present) +
    --  Border
 
-   function Offset_Height (Element : Element_Type) return Natural;
+   function Offset_Height (Element : Element_Type) return Integer;
    --  CSS height + CSS padding + height of horizontal scrollbar (if present) +
    --  Border
 
-   function Offset_Left (Element : Element_Type) return Natural;
+   function Offset_Left (Element : Element_Type) return Integer;
    --  The width from parent element border to child border left
 
-   function Offset_Top (Element : Element_Type) return Natural;
+   function Offset_Top (Element : Element_Type) return Integer;
    --  The width from parent element border to child border top
 
    function Scroll_Width (Element : Element_Type) return Natural;

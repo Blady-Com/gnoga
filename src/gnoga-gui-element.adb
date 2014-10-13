@@ -773,7 +773,7 @@ package body Gnoga.Gui.Element is
    -- Offset_Height --
    -------------------
 
-   function Offset_Height (Element : Element_Type) return Natural is
+   function Offset_Height (Element : Element_Type) return Integer is
    begin
       return Element.Property ("offsetHeight");
    end Offset_Height;
@@ -782,7 +782,7 @@ package body Gnoga.Gui.Element is
    -- Offset_Width --
    ------------------
 
-   function Offset_Width (Element : Element_Type) return Natural is
+   function Offset_Width (Element : Element_Type) return Integer is
    begin
       return Element.Property ("offsetWidth");
    end Offset_Width;
@@ -791,7 +791,7 @@ package body Gnoga.Gui.Element is
    -- Offset_Left --
    ------------------
 
-   function Offset_Left (Element : Element_Type) return Natural is
+   function Offset_Left (Element : Element_Type) return Integer is
    begin
       return Element.Property ("offsetLeft");
    end Offset_Left;
@@ -800,7 +800,7 @@ package body Gnoga.Gui.Element is
    -- Offset_Top --
    ------------------
 
-   function Offset_Top (Element : Element_Type) return Natural is
+   function Offset_Top (Element : Element_Type) return Integer is
    begin
       return Element.Property ("offsetTop");
    end Offset_Top;

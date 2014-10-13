@@ -95,6 +95,28 @@ package body Gnoga.Gui.Element.Tab is
       Tab_Item_Type (Object).Tab_Select;
    end On_Click;
 
+   -------------
+   -- Add_Tab --
+   -------------
+
+   procedure Add_Tab (Tab      : in out Tab_Type;
+                      Card     : in     String;
+                      Label    : in     String;
+                      Selected : in     Boolean := False)
+   is
+   begin
+      Tab_Item_Access
+        (Tab.New_Element
+           (Card, new Gnoga.Gui.Element.Tab.Tab_Item_Type)).Create
+          (Parent => Tab,
+           Card   => Card,
+           Label  => Label);
+
+      if Selected then
+         Tab_Item_Access (Tab.Element (Card)).Tab_Select;
+      end if;
+   end Add_Tab;
+
    ------------
    -- Create --
    ------------
@@ -103,20 +125,24 @@ package body Gnoga.Gui.Element.Tab is
      (Item   : in out Tab_Item_Type;
       Parent : in out Tab_Type'Class;
       Card   : in     String;
-      Text   : in     String := "";
+      Label  : in     String;
       ID     : in     String := "")
    is
    begin
-
       Item.Create_From_HTML
         (Parent, "<li />", ID);
       Item.Inner_HTML ("<a id='" & Item.ID & "_a" &
                          "' href='javascript:void(0)'>" &
-                         Escape_Quotes (Text) & "</a>");
+                         Escape_Quotes (Label) & "</a>");
 
       Item.On_Click_Handler (On_Click'Access);
 
-      Parent.Height (Item.Offset_Height + Item.Offset_Top + Item.Height);
+      declare
+         L : Element_Type;
+      begin
+         L.Attach_Using_Parent (Item, ID => Item.ID & "_a");
+         Parent.Height (L.Offset_Top + L.Offset_Height);
+      end;
 
       Item.Card_Name := Ada.Strings.Unbounded.To_Unbounded_String (Card);
    end Create;

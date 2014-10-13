@@ -45,7 +45,7 @@ procedure Layouts is
       App    : App_Access := new App_Data;
       V      : View.Pointer_To_View_Class;
       Card_1 : View.Pointer_To_View_Class;
-      Card_2 : View.Pointer_To_View_Class;
+      Card_2 : View.Pointer_To_View_Base_Class;
       Tabs   : Element.Tab.Tab_Access;
       Tab    : Element.Tab.Tab_Item_Access;
       Dex    : View.Docker.Pointer_To_Docker_View_Class;

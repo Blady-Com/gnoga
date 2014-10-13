@@ -65,6 +65,16 @@ package Gnoga.Gui.Element.Tab is
       ID           : in     String                := "");
 
    -------------------------------------------------------------------------
+   --  Tab_Types - Methods
+   -------------------------------------------------------------------------
+
+   procedure Add_Tab (Tab     : in out Tab_Type;
+                      Card    : in     String;
+                      Label   : in     String;
+                     Selected : in     Boolean := False);
+   --  Tabs can also be added using Tab_Item_Types
+
+   -------------------------------------------------------------------------
    --  Tab_Item_Types
    -------------------------------------------------------------------------
 
@@ -79,7 +89,7 @@ package Gnoga.Gui.Element.Tab is
    procedure Create (Item   : in out Tab_Item_Type;
                      Parent : in out Tab_Type'Class;
                      Card   : in     String;
-                     Text   : in     String := "";
+                     Label  : in     String;
                      ID     : in     String := "");
    --  Create a Tab Item with Text that when clicked will show Card on
    --  on associated Card View

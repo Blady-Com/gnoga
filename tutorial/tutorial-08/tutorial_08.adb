@@ -71,6 +71,11 @@ procedure Tutorial_08 is
                                  Name  => "Name");
          -- The Name of the element is its variable name when submitted.
 
+         View.Name_Input.Required;
+         --  By marking Name_Input required, if the submit button is pushed
+         --  it will not allow submission and notify user unless element
+         --  if filled out.
+
          View.Name_Input.Place_Inside_Top_Of (col2.all);
          -- Since forms are auto placed in side the Form. We need to move the
          -- element where we would like it to display.

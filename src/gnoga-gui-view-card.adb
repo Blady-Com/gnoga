@@ -92,7 +92,7 @@ package body Gnoga.Gui.View.Card is
    procedure Add_Card (View : in out Card_View_Type;
                        Name : in     String;
                        Card : access View_Base_Type'Class := null;
-                       Show : in     Boolean              := True)
+                       Show : in     Boolean              := False)
    is
       use Gnoga.Gui.Element;
 

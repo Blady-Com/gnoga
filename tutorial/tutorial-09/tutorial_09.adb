@@ -23,6 +23,8 @@ procedure Tutorial_09 is
 
    type App_Data is new Gnoga.Types.Connection_Data_Type with
       record
+         My_Window   : Gnoga.Gui.Window.Pointer_To_Window_Class;
+
          My_Docker   : Gnoga.Gui.View.Docker.Docker_View_Type;
          --  Main view, will dock a view on top (My_Panel) for the
          --  exit button and another taking up the rest of the window
@@ -38,13 +40,16 @@ procedure Tutorial_09 is
 
          My_Widget_1 : aliased My_Widget_Type;
          My_Widget_2 : aliased My_Widget_Type;
-         My_Results  : Gnoga.Gui.View.Console.Console_View_Type;
+         My_Results  : aliased Gnoga.Gui.View.Console.Console_View_Type;
          --  These three views will be placed in to cards in My_Cards
       end record;
    type App_Access is access all App_Data;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  Application event handlers
+
+   procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   --  Handle interactive submit
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
@@ -64,6 +69,8 @@ procedure Tutorial_09 is
       App : App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
+      App.My_Window := Main_Window'Unchecked_Access;
+
       App.My_Docker.Create (Main_Window);
 
       App.My_Panel.Create (App.My_Docker);
@@ -96,18 +103,20 @@ procedure Tutorial_09 is
 
       App.My_Widget_1.Create (App.My_Cards);
       App.My_Widget_1.Widget_Form.Action ("/result");
-
       App.My_Cards.Add_Card (Name => "Widget_1",
                              Card => App.My_Widget_1'Access);
-
       App.My_Tabs.Add_Tab ("Widget_1", "Static Form", Selected => True);
 
       App.My_Widget_2.Create (App.My_Cards);
-
+      App.My_Widget_2.Widget_Form.On_Submit_Handler (On_Submit'Unrestricted_Access);
       App.My_Cards.Add_Card (Name => "Widget_2",
                              Card => App.My_Widget_2'Access);
-
       App.My_Tabs.Add_Tab ("Widget_2", "Interactive Form");
+
+      App.My_Results.Create (App.My_Cards);
+      App.My_Cards.Add_Card (Name => "Results",
+                             Card => App.My_Results'Access);
+      App.My_Tabs.Add_Tab ("Results", "Interactive Results");
 
       App.My_Deck.Top_Dock (App.My_Tabs'Access);
       --  We wait to dock My_Tabs until after we have added the tabs
@@ -124,6 +133,24 @@ procedure Tutorial_09 is
 
       Gnoga.Application.Multi_Connect.End_Application;
    end On_Exit;
+
+   procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.My_Tabs.Select_Tab ("Results");
+
+      App.My_Results.Put ("Name : ");
+      App.My_Results.Put (App.My_Widget_2.Name_Input.Value);
+      App.My_Results.New_Line;
+
+      App.My_Results.Put ("Message : ");
+      App.My_Results.Put (App.My_Widget_2.Message.Value);
+      App.My_Results.New_Line;
+
+      --  The normal static submit behavior will not take place unless
+      --  a call the Form's Submit method is made.
+   end On_Submit;
+
 
    procedure On_Result_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;

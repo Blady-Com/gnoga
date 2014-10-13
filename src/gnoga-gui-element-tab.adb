@@ -104,18 +104,31 @@ package body Gnoga.Gui.Element.Tab is
                       Label    : in     String;
                       Selected : in     Boolean := False)
    is
+      T : Tab_Item_Access := new Tab_Item_Type;
    begin
-      Tab_Item_Access
-        (Tab.New_Element
-           (Card, new Gnoga.Gui.Element.Tab.Tab_Item_Type)).Create
-          (Parent => Tab,
-           Card   => Card,
-           Label  => Label);
+      T.Dynamic;
+      T.Create (Parent => Tab,
+                Card   => Card,
+                Label  => Label);
 
       if Selected then
-         Tab_Item_Access (Tab.Element (Card)).Tab_Select;
+         Tab.Select_Tab (Card);
       end if;
    end Add_Tab;
+
+   ----------------
+   -- Select_Tab --
+   ----------------
+
+   procedure Select_Tab (Tab  : in out Tab_Type;
+                         Card : in     String)
+   is
+      P : Pointer_To_Element_Class := Tab.Element (Card);
+   begin
+      if P /= null then
+         Tab_Item_Access (P).Tab_Select;
+      end if;
+   end Select_Tab;
 
    ------------
    -- Create --
@@ -145,6 +158,9 @@ package body Gnoga.Gui.Element.Tab is
       end;
 
       Item.Card_Name := Ada.Strings.Unbounded.To_Unbounded_String (Card);
+
+      Parent.Add_Element (Card, Item'Unrestricted_Access);
+      --  Allow for the Parent.Select_Tab to work
    end Create;
 
    ----------------

@@ -80,8 +80,8 @@ package Gnoga.Gui.View.Card is
    procedure Add_Card (View : in out Card_View_Type;
                        Name : in     String;
                        Card : access View_Base_Type'Class := null;
-                       Show : in     Boolean              := True);
-   --  Adds a new Card (a View_Type)  called Name and if Show true Show Card
+                       Show : in     Boolean              := False);
+   --  Adds a new Card (a View_Type) called Name and if Show true Show Card
    --
    --  Internally the card named "current" always points to the currently
    --  displayed card so that name is reserved.

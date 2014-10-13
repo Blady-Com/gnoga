@@ -74,6 +74,9 @@ package Gnoga.Gui.Element.Tab is
                      Selected : in     Boolean := False);
    --  Tabs can also be added using Tab_Item_Types
 
+   procedure Select_Tab (Tab  : in out Tab_Type;
+                         Card : in     String);
+
    -------------------------------------------------------------------------
    --  Tab_Item_Types
    -------------------------------------------------------------------------

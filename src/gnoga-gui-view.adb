@@ -208,7 +208,11 @@ package body Gnoga.Gui.View is
                      return Gnoga.Gui.Element.Pointer_To_Element_Class
    is
    begin
-      return Gnoga.Gui.Element.Pointer_To_Element_Class
-        (View.Element_Map.Element (Name));
+      if View.Element_Map.Contains (Name) then
+         return Gnoga.Gui.Element.Pointer_To_Element_Class
+           (View.Element_Map.Element (Name));
+      else
+         return null;
+      end if;
    end Element;
 end Gnoga.Gui.View;

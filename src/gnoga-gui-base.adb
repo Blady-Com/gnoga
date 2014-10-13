@@ -862,11 +862,11 @@ package body Gnoga.Gui.Base is
                                 Handler : in     Action_Event)
    is
    begin
-      if Object.On_Input_Event /= null then
+      if Object.On_Submit_Event /= null then
          Object.Unbind_Event ("submit");
       end if;
 
-      Object.On_Input_Event := Handler;
+      Object.On_Submit_Event := Handler;
 
       if Handler /= null then
          Object.Bind_Event (Event   => "submit",

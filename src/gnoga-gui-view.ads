@@ -128,6 +128,7 @@ package Gnoga.Gui.View is
    function Element (View : View_Base_Type; Name : String)
                      return Gnoga.Gui.Element.Pointer_To_Element_Class;
    --  Access elements added by Add_Element and New_Element
+   --  returns null if Name not found.
 
    -------------------------------------------------------------------------
    --  View_Base_Type - Event Methods

@@ -111,7 +111,7 @@ procedure Tutorial_04 is
       --  Here we pass in to the Color_Me_Task_Type the element that it will
       --  be coloring once started.
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.My_View.Create (Main_Window);
 

@@ -37,7 +37,7 @@ procedure Media is
       Play    : Common.Button_Type;
       View    : Gnoga.Gui.View.View_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
 

@@ -22,7 +22,7 @@ procedure AdaEdit is
    is
       App    : App_Access := new App_Data;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
       Gnoga.Gui.Plugin.Ace_Editor.Load_Ace_Editor (Main_Window);
 

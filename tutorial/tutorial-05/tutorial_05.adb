@@ -153,7 +153,7 @@ procedure Tutorial_05 is
    is
       App : App_Access := new App_Data;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.My_View.Create (Main_Window);
 

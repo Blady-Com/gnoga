@@ -111,7 +111,7 @@ procedure Demo is
       optgrp  : Form.Option_Group_Access;
       Query   : Gnoga.Gui.Plugin.jQuery.jQuery_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
 

@@ -239,8 +239,9 @@ package body Gnoga.Gui.Element.Form is
       end Is_Name;
    begin
       Element.Create_From_HTML (Form, "<input type='" & Input_Type & "' " &
-                                  "form='" & Form.ID & "' value='" &
-                                  Escape_Quotes (Value) & Is_Name & "/>", ID);
+                                  "form='" & Form.ID & "' value=""" &
+                                  Escape_Quotes (Value) & """ " &
+                                  Is_Name & "/>", ID);
    end Create_Element;
 
    -------------------

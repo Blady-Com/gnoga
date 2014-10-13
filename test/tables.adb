@@ -35,7 +35,7 @@ procedure Tables is
    is
       App     : App_Access := new App_Data;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
       App.Console.Create (Main_Window);
 

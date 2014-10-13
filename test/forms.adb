@@ -64,7 +64,7 @@ procedure Forms is
       Button1 : Form.Input_Button_Type;
       Button2 : Form.Submit_Button_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
 
@@ -91,7 +91,7 @@ procedure Forms is
                        Name       => "My_Color");
       App.Pick.Place_After (Button2);
       App.Pick.On_Change_Handler (On_Change'Unrestricted_Access);
-      
+
       Connection.Hold;
       --  If any handlers are set on local variables they can't finalize
       --  before connection end.
@@ -104,7 +104,7 @@ procedure Forms is
       App : App_Access2 := new App_Data2;
       R   : Common.Div_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       R.Create (Main_Window, "Results => " & Main_Window.Location.Search &
                   "<br />" &

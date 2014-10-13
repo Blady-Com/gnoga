@@ -50,7 +50,7 @@ procedure Layouts is
       Tab    : Element.Tab.Tab_Item_Access;
       Dex    : View.Docker.Pointer_To_Docker_View_Class;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
 
 

@@ -47,7 +47,6 @@ with Gnoga.Client.Storage;
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Element;
 
-
 package body Gnoga.Gui.Window is
    use type Gnoga.Gui.Base.Action_Event;
 
@@ -102,6 +101,8 @@ package body Gnoga.Gui.Window is
    --------------
 
    procedure Finalize (Object : in out Window_Type) is
+      use type Gnoga.Gui.Base.Pointer_To_Base_Class;
+
       P : Gnoga.Types.Pointer_to_Connection_Data_Class :=
             Object.Connection_Data;
 
@@ -110,9 +111,17 @@ package body Gnoga.Gui.Window is
           (Gnoga.Types.Connection_Data_Type'Class,
            Gnoga.Types.Pointer_to_Connection_Data_Class);
    begin
+      if Object.View /= null then
+         if Object.View.Dynamic then
+            Object.View.Free;
+            Object.View := null;
+         end if;
+      end if;
+
       if Object.Free_Connection_Data then
          Free_Data (P);
       end if;
+
       Gnoga.Gui.Base.Base_Type (Object).Finalize;
    exception
       when E : others =>
@@ -205,10 +214,6 @@ package body Gnoga.Gui.Window is
       use Gnoga.Types;
       use Gnoga.Gui.Element;
    begin
-      if not (Object.ID_Type = DOM_ID or Object.ID_Type = Gnoga_ID) then
-         raise Invalid_ID_Type;
-      end if;
-
       if not (Object in Element_Type'Class) then
          raise Invalid_ID_Type with "Not in Element_Type'Class";
       end if;
@@ -448,15 +453,15 @@ package body Gnoga.Gui.Window is
    ---------------------
 
    procedure Connection_Data
-     (Window           : in out Window_Type;
-      Data             : in out Gnoga.Types.Connection_Data_Type'Class;
-      Free_On_Finalize : in     Boolean := True)
+     (Window  : in out Window_Type;
+      Data    : access Gnoga.Types.Connection_Data_Type'Class;
+      Dynamic : in     Boolean := True)
    is
    begin
       Gnoga.Server.Connection.Connection_Data
-        (ID => Window.Connection_ID, Data => Data'Unchecked_Access);
+        (ID => Window.Connection_ID, Data => Data.all'Unrestricted_Access);
 
-      Window.Free_Connection_Data := Free_On_Finalize;
+      Window.Free_Connection_Data := Dynamic;
    end Connection_Data;
 
    ------------

@@ -94,7 +94,7 @@ procedure Popups is
       Hr1 : Gnoga.Gui.Element.Common.HR_Type;
       B   : Common.Button_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
 
@@ -127,7 +127,7 @@ procedure Popups is
       D : Gnoga.Gui.Element.Common.DIV_Type;
       B : Common.Button_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
       Main_Window.Document.Body_Element.Background_Color ("blue");
 
       D.Create (Main_Window, "This is on another path in same application.");

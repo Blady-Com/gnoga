@@ -60,7 +60,7 @@ procedure Storage is
       Session : Gnoga.Client.Storage.Session_Storage_Type :=
                   Gnoga.Client.Storage.Session_Storage (Main_Window);
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
 

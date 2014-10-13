@@ -113,7 +113,7 @@ end Color_Me_Task;
       Lnk : Gnoga.Gui.Element.Common.A_Type;
       Img : Gnoga.Gui.Element.Common.IMG_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
 

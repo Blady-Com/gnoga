@@ -51,7 +51,7 @@ procedure Canvas_Test is
       I       : Common.IMG_Type;
       Button1 : Common.Button_Type;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
 

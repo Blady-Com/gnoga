@@ -75,7 +75,7 @@ procedure Tutorial_03 is
    is
       App : App_Access := new App_Data;
    begin
-      Main_Window.Connection_Data (App.all);
+      Main_Window.Connection_Data (App);
       --  This associates our application data to this connection. Now any
       --  object created on it has access to it using it's Connection_Data
       --  property. When the connection is done it will deallocate the memory

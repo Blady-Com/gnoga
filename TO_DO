@@ -15,9 +15,19 @@ Tree View
 
 Dialog View, both on page or as popup
 
-Table View
-
 Data View - View to display or setup for edit of Active_Record objects
+
+SVG DOM binding
+
+* Application
+
+Multiuser Application type with multiple levels of authentication / profiles
+
+* Server Side
+
+Put variables
+File submit to server
+Submit a canvas or img back to server
 
 * Server Side Tools
 
@@ -34,7 +44,6 @@ GWindows IE embedded app with direct hooks to eval JS so for desktop apps no nee
 
 
 
-
 Someday To Dos post 1.0 for sure:
 ---------------------------------
 
@@ -47,6 +56,12 @@ Print dialog (Server side printers) and cross platform server side printing supp
 CSS animation support
 
 Auto Classing Elements on create
+
+Cairo bindings
+
+PDF manipulation and creation
+
+Reporting widgets
 
 * Apps
 

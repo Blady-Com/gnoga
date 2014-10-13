@@ -60,6 +60,8 @@ package Gnoga.Gui.Window is
 
    overriding
    procedure Finalize (Object : in out Window_Type);
+   --  Will deallocate the Connection Data if marked dynamic.
+   --  Will deallocate its View if the view was marked dynamic.
 
    Invalid_ID_Type    : exception;
 
@@ -101,10 +103,11 @@ package Gnoga.Gui.Window is
    --  If Place is True then Object will first be placed using
    --  Element.Place_Inside_Top_Of.
    --
-   --  If Object is not a Gnoga.Element.Element_Type or a child of it an
-   --  exception will be raised.
+   --  If Object is not a Gnoga.Gui.Element_Type or a child of it (such as
+   --  all View_Base_Types) an exception will be raised.
    --
-   --  ID_Type is not DOM_ID or Gnoga_ID will raise Invalid_ID_Type
+   --  If Object is marked dynamic (Element_Type.Dynamic) it will be
+   --  deallocated on finalization of Window
 
    procedure Remove_View (Window : in out Window_Type);
    --  Remove the current View Object from Window
@@ -183,11 +186,11 @@ package Gnoga.Gui.Window is
    --  invocations.
 
    procedure Connection_Data
-     (Window           : in out Window_Type;
-      Data             : in out Gnoga.Types.Connection_Data_Type'Class;
-      Free_On_Finalize : in     Boolean := True);
+     (Window  : in out Window_Type;
+      Data    : access Gnoga.Types.Connection_Data_Type'Class;
+      Dynamic : in     Boolean := True);
    --  Associates Data with the the connection Window is on.
-   --  If Free_On_Finalize is true, Data will be unallocated when Window is
+   --  If Dynamic is true, Data will be unallocated when Window is
    --  finalized.
 
    -------------------------------------------------------------------------

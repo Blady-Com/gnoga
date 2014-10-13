@@ -64,7 +64,7 @@ procedure Tutorial_08 is
          col2.Dynamic;
 
          row.Create (Layout_Table.all);
-         col1.Create (row.all, "Name");
+         col1.Create (row.all, "Name (Only letters and spaces permitted)");
          col2.Create (row.all);
          View.Name_Input.Create (Form  => View.Widget_Form,
                                  Size  => 20,
@@ -75,6 +75,9 @@ procedure Tutorial_08 is
          --  By marking Name_Input required, if the submit button is pushed
          --  it will not allow submission and notify user unless element
          --  if filled out.
+
+         View.Name_Input.Pattern ("[a-zA-Z\ ]+");
+         --  Allow only a-z, A-Z and space characters
 
          View.Name_Input.Place_Inside_Top_Of (col2.all);
          -- Since forms are auto placed in side the Form. We need to move the

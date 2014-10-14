@@ -38,6 +38,7 @@
 with Ada.Directories;
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
+with Ada.Unchecked_Deallocation;
 
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
@@ -642,10 +643,16 @@ package body Gnoga.Server.Connection is
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Event_Task_Type;
 
-   New_Event_Task : access Event_Task_Type;
-   --  ? Ada.Task_Termination should be used for cleanup of dangling task TCBs
-   --  If New_Event_Task is located with in the on_open it will prevent
-   --  on_open from completing.
+   type Event_Task_Access is access all Event_Task_Type;
+
+   procedure Free_Event_Task is
+        new Ada.Unchecked_Deallocation (Event_Task_Type,
+                                        Event_Task_Access);
+
+   package Event_Task_Maps is new Ada.Containers.Ordered_Maps
+     (Gnoga.Types.Unique_ID, Event_Task_Access);
+
+   Event_Task_Map : Event_Task_Maps.Map;
 
    overriding procedure On_Open
      (Web_Socket : in out Socket_Type; Message : String)
@@ -658,7 +665,7 @@ package body Gnoga.Server.Connection is
                                          New_ID => ID);
 
       if On_Connect_Event /= null then
-         New_Event_Task := new Event_Task_Type (ID);
+         Event_Task_Map.Insert (ID, new Event_Task_Type (ID));
       end if;
    end On_Open;
 
@@ -672,8 +679,11 @@ package body Gnoga.Server.Connection is
    is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connetion_ID (Web_Socket);
+      E  : Event_Task_Access := Event_Task_Map.Element (ID);
    begin
       Connection_Manager.Delete_Connection (ID);
+      Free_Event_Task (E);
+      Event_Task_Map.Delete (ID);
    end On_Close;
 
    --------------
@@ -686,8 +696,11 @@ package body Gnoga.Server.Connection is
    is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connetion_ID (Web_Socket);
+      E  : Event_Task_Access := Event_Task_Map.Element (ID);
    begin
       Connection_Manager.Delete_Connection (ID);
+      Free_Event_Task (E);
+      Event_Task_Map.Delete (ID);
    end On_Error;
 
    --------------------

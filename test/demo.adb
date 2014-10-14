@@ -10,6 +10,8 @@ with Gnoga.Gui.Element.List;
 with Gnoga.Gui.Element.Style_Block;
 with Gnoga.Gui.Plugin.jQuery;
 
+with Gnoga.Client.Bind_Page;
+
 with Gnoga.Server.Template_Parser;
 with Gnoga.Server.Template_Parser.Python;
 
@@ -242,6 +244,21 @@ procedure Demo is
 
       Query.jQuery (Main_Window.Connection_ID, """div""");
       Query.Execute ("css('background-color','azure')");
+
+      declare
+         Collection_View : Gnoga.Gui.View.View_Type;
+         Name_List       : Gnoga.Types.Data_Array_Type;
+      begin
+         Collection_View.Create (Main_Window, Attach => False);
+         Gnoga.Client.Bind_Page.Bind_Page (Collection_View);
+
+         Name_List := Collection_View.Element_Names;
+         App.Console.Put_Line ("Total Elements : " & Name_List.Length'Img);
+         for N of Name_List loop
+            App.Console.Put_Line ("Element ID : " & N);
+            Collection_View.Element (N).Color ("orange");
+         end Loop;
+      end;
 
    end On_Connect;
 

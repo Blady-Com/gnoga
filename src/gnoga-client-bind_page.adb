@@ -50,12 +50,13 @@ package body Gnoga.Client.Bind_Page is
    begin
       Gnoga.Server.Connection.Execute_Script
         (View.Connection_ID,
-         "var idbuf=""; $(""[id]"").each ( function (index, n)" &
-           " { idbuf = idbuf + ""|"" + $(this).attr(""id""); } );");
+         "gnoga['idbuf']=""""; $(""[id]"").each ( function (index, n)" &
+           " { gnoga['idbuf'] = gnoga['idbuf'] + " &
+           " $(this).attr(""id"") + ""|""; } );");
 
       declare
          Buf : String  := Gnoga.Server.Connection.Execute_Script
-           (View.Connection_ID, "idbuf");
+           (View.Connection_ID, "gnoga['idbuf']");
          S   : Integer := Buf'First;
          F   : Integer := Buf'First - 1;
 
@@ -77,6 +78,8 @@ package body Gnoga.Client.Bind_Page is
                                          ID      => ID);
                   View.Add_Element (ID, E);
                end;
+
+               Split;
             end if;
          end Split;
       begin

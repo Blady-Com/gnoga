@@ -215,9 +215,13 @@ package body Gnoga.Server.Connection is
          Write_To_Console ("Press the Q key to close server.");
          AWS.Server.Wait (AWS.Server.Q_Key_Pressed);
 
+         Exit_Application_Requested := True;
+
          AWS.Server.Shutdown (Web_Server);
       else
          AWS.Server.Wait (AWS.Server.No_Server);
+
+         Exit_Application_Requested := True;
       end if;
    end Run;
 
@@ -403,10 +407,6 @@ package body Gnoga.Server.Connection is
       --  Delete Connection with ID.
       --  Releases connection holder if present.
 
-      procedure Delete_Connection (Socket : in Socket_Type);
-      --  Delete Connection associated with Socket.
-      --  Releases connection holder if present.
-
       function Valid (ID : in Gnoga.Types.Connection_ID) return Boolean;
       --  Return True if ID is in connection map.
 
@@ -490,11 +490,6 @@ package body Gnoga.Server.Connection is
       exception
          when others =>
             null;
-      end Delete_Connection;
-
-      procedure Delete_Connection (Socket : in Socket_Type) is
-      begin
-         Delete_Connection (Find_Connetion_ID (Socket));
       end Delete_Connection;
 
       function Valid (ID : in Gnoga.Types.Connection_ID) return Boolean is
@@ -618,14 +613,11 @@ package body Gnoga.Server.Connection is
    -- On_Open --
    -------------
 
-   task type Event_Task_Type (ID : Gnoga.Types.Connection_ID) is
-      entry Start;
-   end Event_Task_Type;
+   task type Event_Task_Type (ID : Gnoga.Types.Connection_ID);
 
    task body Event_Task_Type is
       Connection_Holder : aliased Connection_Holder_Type;
    begin
-      accept Start;
       Connection_Manager.Add_Connection_Holder
         (ID, Connection_Holder'Unchecked_Access);
 
@@ -667,7 +659,6 @@ package body Gnoga.Server.Connection is
 
       if On_Connect_Event /= null then
          New_Event_Task := new Event_Task_Type (ID);
-         New_Event_Task.Start;
       end if;
    end On_Open;
 
@@ -679,8 +670,10 @@ package body Gnoga.Server.Connection is
      (Web_Socket : in out Socket_Type;
       Message : String)
    is
+      ID : Gnoga.Types.Connection_ID :=
+             Connection_Manager.Find_Connetion_ID (Web_Socket);
    begin
-      Connection_Manager.Delete_Connection (Socket => Web_Socket);
+      Connection_Manager.Delete_Connection (ID);
    end On_Close;
 
    --------------
@@ -691,8 +684,10 @@ package body Gnoga.Server.Connection is
      (Web_Socket : in out Socket_Type;
       Message : String)
    is
+      ID : Gnoga.Types.Connection_ID :=
+             Connection_Manager.Find_Connetion_ID (Web_Socket);
    begin
-      Connection_Manager.Delete_Connection (Web_Socket);
+      Connection_Manager.Delete_Connection (ID);
    end On_Error;
 
    --------------------

@@ -58,8 +58,14 @@ package body Gnoga.Application.Singleton is
    begin
       if Connection_ID = Gnoga.Types.No_Connection then
          Connection_ID := ID;
+
          Application_Holder.Release;
-         Connection_Holder.Hold;
+
+         Connection.Hold;
+
+         Connection_Holder.Release;
+
+         Gnoga.Server.Connection.Stop;
       else
          Gnoga.Server.Connection.Execute_Script
            (ID, "document.writeln ('Only one connection permitted.');");
@@ -74,7 +80,6 @@ package body Gnoga.Application.Singleton is
    begin
       accept Start;
       Gnoga.Server.Connection.Run (Wait_For_Q => False);
-      Connection_Holder.Release;
    end Web_Server_Task;
 
    procedure Initialize
@@ -107,6 +112,5 @@ package body Gnoga.Application.Singleton is
    procedure End_Application is
    begin
       Gnoga.Server.Connection.Stop;
-      Connection_Holder.Release;
    end End_Application;
 end Gnoga.Application.Singleton;

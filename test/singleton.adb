@@ -72,8 +72,6 @@ procedure Singleton is
 
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
-      C.Stop;
-
       Gnoga.Log ("Ending application.");
       Gnoga.Application.Singleton.End_Application;
    end End_App;
@@ -81,6 +79,8 @@ begin
    Gnoga.Application.Title ("Test App for Gnoga");
    Gnoga.Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
+
+   Gnoga.Application.Open_URL_OSX;
 
    Gnoga.Application.Singleton.Initialize (Main_Window => M);
 
@@ -113,6 +113,8 @@ begin
    C.Start;
 
    Gnoga.Application.Singleton.Message_Loop;
+
+   C.Stop;
 
    Gnoga.Log ("Done.");
 end Singleton;

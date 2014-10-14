@@ -209,10 +209,26 @@ package body Gnoga.Gui.View is
    is
    begin
       if View.Element_Map.Contains (Name) then
-         return Gnoga.Gui.Element.Pointer_To_Element_Class
-           (View.Element_Map.Element (Name));
+         return View.Element_Map.Element (Name);
       else
          return null;
       end if;
    end Element;
+
+   -------------------
+   -- Element_Names --
+   -------------------
+
+   function Element_Names (View : View_Base_Type)
+                           return Gnoga.Types.Data_Array_Type
+   is
+      Names : Gnoga.Types.Data_Array_Type;
+   begin
+      for C in View.Element_Map.Iterate loop
+         Names.Append (String'(Gnoga.Gui.Element.Element_Type_Maps.Key (C)));
+      end loop;
+
+      return Names;
+   end Element_Names;
+
 end Gnoga.Gui.View;

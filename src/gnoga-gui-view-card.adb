@@ -113,8 +113,7 @@ package body Gnoga.Gui.View.Card is
       New_Card.Position (Gnoga.Gui.Element.Relative);
       New_Card.Left (0);
       New_Card.Top (0);
-      View.Element_Map.Insert
-        (Name, Gnoga.Gui.Base.Pointer_To_Base_Class (New_Card));
+      View.Element_Map.Insert (Name, Pointer_To_Element_Class (New_Card));
 
       if Show then
          View.Show_Card (Name);
@@ -141,7 +140,7 @@ package body Gnoga.Gui.View.Card is
 
       if Current /= null then
          View.Element_Map.Include
-           ("current", Gnoga.Gui.Base.Pointer_To_Base_Class (Current));
+           ("current", Gnoga.Gui.Element.Pointer_To_Element_Class (Current));
 
          Current.Display ("block");
          Current.Box_Height (View.Height);

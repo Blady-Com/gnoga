@@ -38,6 +38,8 @@
 --  Views are used to handle auto insertion of objects in to the DOM and
 --  placement.
 
+with Gnoga.Types;
+
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 
@@ -131,6 +133,11 @@ package Gnoga.Gui.View is
    --  Access elements added by Add_Element and New_Element
    --  returns null if Name not found.
 
+   function Element_Names (View : View_Base_Type)
+                           return Gnoga.Types.Data_Array_Type;
+   --  Retrn an array of all the names of elements in the view's element
+   --  array
+
    -------------------------------------------------------------------------
    --  View_Base_Type - Event Methods
    -------------------------------------------------------------------------
@@ -169,7 +176,7 @@ private
    type View_Base_Type is new Gnoga.Gui.Element.Element_Type with
       record
          Child_Array : Gnoga.Gui.Base.Base_Type_Array;
-         Element_Map : Gnoga.Gui.Base.Base_Type_Map;
+         Element_Map : Gnoga.Gui.Element.Element_Type_Map;
       end record;
 
    type View_Type is new View_Base_Type with null record;

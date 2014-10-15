@@ -1,18 +1,13 @@
 prefix  =$(dir $(shell which gnatls))..
 INSTALL =/usr/bin/install -c
 
-all: bin gnoga tutorials snake
+all: gnoga tutorials snake
 
 gnoga:
-	cd src && gprbuild -Pgnoga.gpr
+	cd src && gprbuild -p -Pgnoga.gpr
 
 release:
-	cd src && gprbuild -Pgnoga.gpr -XPRJ_BUILD=Release
-
-bin:
-	-mkdir bin
-	-mkdir obj
-	-mkdir lib
+	cd src && gprbuild -p -Pgnoga.gpr -XPRJ_BUILD=Release
 
 install: release
 	$(INSTALL) -d $(prefix)/lib/gnoga
@@ -33,27 +28,27 @@ ace_editor:
 demo: snake adaedit adablog
 
 adablog:
-	cd demo/adablog && gprbuild
+	cd demo/adablog && gprbuild -p
 
 snake:
-	cd demo/snake && gprbuild
+	cd demo/snake && gprbuild -p
 
 adaedit: ace_editor
-	cd demo/adaedit && gprbuild
+	cd demo/adaedit && gprbuild -p
 
 tests:
-	cd test && gprbuild
+	cd test && gprbuild -p
 
 tutorials:
-	cd tutorial/tutorial-01 && gprbuild
-	cd tutorial/tutorial-02 && gprbuild
-	cd tutorial/tutorial-03 && gprbuild
-	cd tutorial/tutorial-04 && gprbuild
-	cd tutorial/tutorial-05 && gprbuild
-	cd tutorial/tutorial-06 && gprbuild
-	cd tutorial/tutorial-07 && gprbuild
-	cd tutorial/tutorial-08 && gprbuild
-	cd tutorial/tutorial-09 && gprbuild
+	cd tutorial/tutorial-01 && gprbuild -p
+	cd tutorial/tutorial-02 && gprbuild -p
+	cd tutorial/tutorial-03 && gprbuild -p
+	cd tutorial/tutorial-04 && gprbuild -p
+	cd tutorial/tutorial-05 && gprbuild -p
+	cd tutorial/tutorial-06 && gprbuild -p
+	cd tutorial/tutorial-07 && gprbuild -p
+	cd tutorial/tutorial-08 && gprbuild -p
+	cd tutorial/tutorial-09 && gprbuild -p
 
 clean:
 	cd src && gprclean -Pgnoga.gpr

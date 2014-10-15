@@ -111,6 +111,6 @@ package body Gnoga.Application.Singleton is
 
    procedure End_Application is
    begin
-      Gnoga.Server.Connection.Stop;
+      Gnoga.Server.Connection.Close (Connection_ID);
    end End_Application;
 end Gnoga.Application.Singleton;

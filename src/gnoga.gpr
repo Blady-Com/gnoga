@@ -13,4 +13,8 @@ project Gnoga is
      for Default_Switches ("ada") use ("-gnatyabcefhiklmnprst", "-E");
    end Compiler;
 
+   package IDE is
+      for Documentation_Dir use "../html/gnoga_docs";
+   end IDE;
+
 end Gnoga;

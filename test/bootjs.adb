@@ -23,10 +23,19 @@ procedure BootJS is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      null;
+      App.Main_Window.Alert ("You clicked on me!");
    end On_Click;
 
    procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   is
+   begin
+      Main_Window.Document.Put_Line
+        ("<a href='/bootjs_demo.html'>go to bootjs_demo.html</a>");
+   end On_Connect;
+
+   procedure On_BootJS_Demo_Page
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
@@ -45,17 +54,27 @@ procedure BootJS is
       for N of Name_List loop
          App.Page.Element (N).Color ("orange");
       end Loop;
-   end On_Connect;
+
+      App.Page.Element ("my_button").On_Click_Handler
+        (On_Click'Unrestricted_Access);
+   end On_BootJS_Demo_Page;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access);
+   Application.Multi_Connect.Initialize;
+
+   Application.Multi_Connect.On_Connect_Handler
+     (Event => On_Connect'Unrestricted_Access,
+      Path  => "default");
+
+   Application.Multi_Connect.On_Connect_Handler
+     (Event => On_BootJS_Demo_Page'Unrestricted_Access,
+      Path  => "bootjs_demo.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL_OSX ("http://127.0.0.1:8080/bootjs_demo.html");
+   Application.Open_URL_OSX;
 
    Application.Multi_Connect.Message_Loop;
 end BootJS;

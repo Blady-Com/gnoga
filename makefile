@@ -6,12 +6,15 @@ all: bin gnoga tutorials snake
 gnoga:
 	cd src && gprbuild -Pgnoga.gpr
 
+release:
+	cd src && gprbuild -Pgnoga.gpr -XPRJ_BUILD=Release
+
 bin:
 	-mkdir bin
 	-mkdir obj
 	-mkdir lib
 
-install: gnoga
+install: release
 	$(INSTALL) -d $(prefix)/lib/gnoga
 	$(INSTALL) -d $(prefix)/include/gnoga
 

@@ -5,7 +5,7 @@ Read through each README starting with /tutorial for the basics on writing Gnoga
 
 For now run:
 
-make
+make  (or run "make release" for no debug options)
 
 then run the snake demo in /bin
 

@@ -1,4 +1,5 @@
 with "aws";
+with "../settings";
 
 project Gnoga is
 
@@ -9,13 +10,9 @@ project Gnoga is
    for Library_Dir use "../lib";
    for Library_Kind use "static";
 
-   package Compiler is
-     for Default_Switches ("ada") use ("-gnatyabcefhiklmnprst");
-   end Compiler;
+   package Compiler renames Settings.Compiler;
 
-   package Binder is
-     for Default_Switches ("ada") use ("-E");
-   end Binder;
+   package Binder renames Settings.Binder;
 
    package IDE is
       for Documentation_Dir use "../html/gnoga_docs";

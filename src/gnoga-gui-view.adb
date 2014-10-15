@@ -166,8 +166,9 @@ package body Gnoga.Gui.View is
       Element : access Gnoga.Gui.Element.Element_Type'Class)
    is
    begin
-      View.Element_Map.Include (Key      => Name,
-                                New_Item => Element);
+      View.Element_Map.Include
+        (Key      => Name,
+         New_Item => Gnoga.Gui.Element.Pointer_To_Element_Class (Element));
    end Add_Element;
 
    -----------------
@@ -223,10 +224,15 @@ package body Gnoga.Gui.View is
                            return Gnoga.Types.Data_Array_Type
    is
       Names : Gnoga.Types.Data_Array_Type;
-   begin
-      for C in View.Element_Map.Iterate loop
+
+      procedure Add_Name (C : in Gnoga.Gui.Element.Element_Type_Maps.Cursor);
+
+      procedure Add_Name (C : in Gnoga.Gui.Element.Element_Type_Maps.Cursor) is
+      begin
          Names.Append (String'(Gnoga.Gui.Element.Element_Type_Maps.Key (C)));
-      end loop;
+      end Add_Name;
+   begin
+      View.Element_Map.Iterate (Add_Name'Access);
 
       return Names;
    end Element_Names;

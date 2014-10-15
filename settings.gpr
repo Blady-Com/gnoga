@@ -1,0 +1,35 @@
+abstract project Settings is
+
+   type Build_Type is ("Debug", "Release");
+   Build : Build_Type := external ("PRJ_BUILD", "Debug");
+
+   --------------
+   -- Compiler --
+   --------------
+
+   Common_Options := ("-gnatyabcefhiklmnprst","-gnat2005");
+   --  Common options used for the Debug and Release modes
+
+   Debug_Options := ("-g");
+
+   Release_Options := ("-O2");
+
+   package Compiler is
+      case Build is
+         when "Debug" =>
+            for Default_Switches ("Ada") use Common_Options & Debug_Options;
+
+         when "Release" =>
+            for Default_Switches ("Ada") use Common_Options & Release_Options;
+      end case;
+   end Compiler;
+
+   ------------
+   -- Binder --
+   ------------
+
+   package Binder is
+      for Default_Switches ("Ada") use ("-E");
+   end Binder;
+   
+end Settings;

@@ -10,6 +10,12 @@ release:
 	cd src && gprbuild -p -Pgnoga.gpr -XPRJ_BUILD=Release
 
 install: release
+	cd src && gprinstall -f -p gnoga.gpr -XPRJ_BUILD=Release
+
+uninstall:
+	cd src && gprinstall --uninstall gnoga.gpr
+
+old_install: release
 	$(INSTALL) -d $(prefix)/lib/gnoga
 	$(INSTALL) -d $(prefix)/include/gnoga
 
@@ -17,7 +23,7 @@ install: release
 	$(INSTALL) -m 444 lib/* $(prefix)/lib/gnoga
 	$(INSTALL) -m 444 src/* $(prefix)/include/gnoga
 
-uninstall:
+old_uninstall:
 	rm -rf $(prefix)/lib/gnoga
 	rm -rf $(prefix)/include/gnoga
 	rm -f $(prefix)/lib/gnat/gnoga.gpr

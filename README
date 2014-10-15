@@ -13,7 +13,7 @@ There are other applicaions in the /bin you can take a look. See /demo and /tuto
 
 You can now install gnoga as a gnat library using:
 
-make install
+sudo make install
 
 Look through the code in the tutorials and the snake demo to get a feel for how things work for now.
 

@@ -11,8 +11,8 @@ project AdaBlog is
    package Builder is
       for Executable ("adablog-main.adb") use "adablog";
    end Builder;
-      
-   package Compiler is
-      for Default_Switches ("ada") use ("-E");
-   end Compiler;
+
+   package Binder is
+     for Default_Switches ("ada") use ("-E");
+   end Binder;
 end AdaBlog;

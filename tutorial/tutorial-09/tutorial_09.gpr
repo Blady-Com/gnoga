@@ -8,7 +8,7 @@ project Tutorial_09 is
    for Exec_Dir use "../../bin";
    for Main use ("tutorial_09.adb");
 
-   package Compiler is
-      for Default_Switches ("ada") use ("-E");
-   end Compiler;
+   package Binder is
+     for Default_Switches ("ada") use ("-E");
+   end Binder;
 end Tutorial_09;

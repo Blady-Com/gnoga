@@ -385,7 +385,6 @@ package body Gnoga.Gui.Element.Form is
       Element.Property ("defaultValue", Value);
    end Default_Value;
 
-
    procedure Default_Value (Element : in out Form_Element_Type;
                             Value   : in     Integer)
    is
@@ -397,7 +396,6 @@ package body Gnoga.Gui.Element.Form is
    begin
       return Element.Property ("defaultValue");
    end Default_Value;
-
 
    function Default_Value (Element : Form_Element_Type) return Integer is
    begin
@@ -657,6 +655,7 @@ package body Gnoga.Gui.Element.Form is
    --  Submit_Button_Type
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Element    : in out Submit_Button_Type;
                      Form       : in out Form_Type'Class;
                      Value      : in     String := "";
@@ -675,6 +674,7 @@ package body Gnoga.Gui.Element.Form is
    --  Reset_Button_Type
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Element    : in out Reset_Button_Type;
                      Form       : in out Form_Type'Class;
                      Value      : in     String := "";
@@ -778,6 +778,7 @@ package body Gnoga.Gui.Element.Form is
    --  Email_Type
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Element    : in out Email_Type;
                      Form       : in out Form_Type'Class;
                      Size       : in     Integer   := 20;
@@ -810,6 +811,7 @@ package body Gnoga.Gui.Element.Form is
    --  Password_Type
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Element    : in out Password_Type;
                      Form       : in out Form_Type'Class;
                      Size       : in     Integer   := 20;
@@ -830,6 +832,7 @@ package body Gnoga.Gui.Element.Form is
    --  Search_Type
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Element    : in out Search_Type;
                      Form       : in out Form_Type'Class;
                      Size       : in     Integer   := 20;
@@ -850,6 +853,7 @@ package body Gnoga.Gui.Element.Form is
    --  URL_Type
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Element    : in out URL_Type;
                      Form       : in out Form_Type'Class;
                      Size       : in     Integer   := 20;
@@ -1012,6 +1016,7 @@ package body Gnoga.Gui.Element.Form is
    -- Value --
    -----------
 
+   overriding
    procedure Color (Element : in out Color_Picker_Type;
                     Value   : in     Gnoga.Types.RGBA_Type)
    is
@@ -1019,6 +1024,7 @@ package body Gnoga.Gui.Element.Form is
       Element.Property ("value", Gnoga.Types.To_String (Value));
    end Color;
 
+   overriding
    function Color (Element : Color_Picker_Type) return Gnoga.Types.RGBA_Type is
    begin
       return Gnoga.Types.To_RGBA (Element.Property ("value"));
@@ -1174,6 +1180,7 @@ package body Gnoga.Gui.Element.Form is
    --  Range_Type
    -------------------------------------------------------------------------
 
+   overriding
    procedure Create (Element    : in out Range_Type;
                      Form       : in out Form_Type'Class;
                      Value      : in     String := "";
@@ -1322,6 +1329,7 @@ package body Gnoga.Gui.Element.Form is
    -- Value --
    -----------
 
+   overriding
    function Value (Element : Selection_Type) return String is
    begin
       return Element.Property ("value");
@@ -1389,7 +1397,6 @@ package body Gnoga.Gui.Element.Form is
       return Element.Execute
         ("item(" & JS_Index'Img & ").value");
    end Value;
-
 
    procedure Text (Element : in out Selection_Type;
                    Index   : in     Positive;
@@ -1575,6 +1582,7 @@ package body Gnoga.Gui.Element.Form is
    -- Text --
    -----------
 
+   overriding
    procedure Text (Element : in out Option_Type;
                    Value    : in     String)
    is
@@ -1582,6 +1590,7 @@ package body Gnoga.Gui.Element.Form is
       Element.Property ("text", Value);
    end Text;
 
+   overriding
    function Text (Element : Option_Type) return String is
    begin
       return Element.Property ("text");

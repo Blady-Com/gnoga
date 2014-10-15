@@ -53,7 +53,6 @@ package Gnoga.Gui.Window is
    --  that was loaded with a connection via websockets to the Gnoga app.
    --  usually with Gnoga's standard bootstrap file.
 
-
    type Window_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Window_Access is access all Window_Type;
    type Pointer_To_Window_Class is access all Window_Type'Class;
@@ -214,7 +213,6 @@ package Gnoga.Gui.Window is
 
    procedure Scroll_To (Window : in out Window_Type; X, Y : Integer);
    --  Scroll contents in window to x, y
-
 
    -- Window Placement Methods --
 

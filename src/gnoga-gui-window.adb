@@ -100,6 +100,7 @@ package body Gnoga.Gui.Window is
    -- Finalize --
    --------------
 
+   overriding
    procedure Finalize (Object : in out Window_Type) is
       use type Gnoga.Gui.Base.Pointer_To_Base_Class;
 
@@ -811,6 +812,7 @@ package body Gnoga.Gui.Window is
    -- On_Resize --
    ---------------
 
+   overriding
    procedure On_Resize (Window : in out Window_Type) is
       use type Gnoga.Gui.Base.Pointer_To_Base_Class;
       use Gnoga.Gui.Element;
@@ -825,6 +827,7 @@ package body Gnoga.Gui.Window is
    -- On_Message --
    ----------------
 
+   overriding
    procedure On_Message (Object  : in out Window_Type;
                          Event   : in     String;
                          Message : in     String)

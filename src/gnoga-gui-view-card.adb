@@ -152,6 +152,7 @@ package body Gnoga.Gui.View.Card is
    -- On_Resize --
    ---------------
 
+   overriding
    procedure On_Resize (View : in out Card_View_Type) is
    begin
       View.Show_Card ("current");

@@ -45,7 +45,6 @@ package Gnoga.Gui.Location is
    -------------------------------------------------------------------------
    --  Location_Type is the class encapsulating the DOM Location node
 
-
    type Location_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Location_Access is access all Location_Type;
    type Pointer_To_Location_Class is access all Location_Type'Class;

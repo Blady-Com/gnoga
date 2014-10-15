@@ -92,6 +92,7 @@ package body Gnoga.Gui.Element.List is
    -- Create --
    ------------
 
+   overriding
    procedure Create
      (List    : in out Unordered_List_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;

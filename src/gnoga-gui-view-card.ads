@@ -72,7 +72,6 @@ package Gnoga.Gui.View.Card is
                   return Pointer_To_View_Base_Class;
    --  The Card with Name.
 
-
    -------------------------------------------------------------------------
    --  Card_View_Type - Methods
    -------------------------------------------------------------------------
@@ -96,6 +95,7 @@ package Gnoga.Gui.View.Card is
    --  Card_View_Type - Event Methods
    -------------------------------------------------------------------------
 
+   overriding
    procedure On_Resize (View : in out Card_View_Type);
    --  Handle layout of children
 private

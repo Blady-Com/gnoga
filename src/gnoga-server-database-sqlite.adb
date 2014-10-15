@@ -107,6 +107,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Disconnect --
    ----------------
 
+   overriding
    procedure Disconnect (C : in out Connection) is
       procedure sqlite3_close (sqlite3 : SQLite_ID := C.Server_ID);
       pragma Import (C, sqlite3_close, "sqlite3_close");
@@ -118,11 +119,11 @@ package body Gnoga.Server.Database.SQLite is
       end if;
    end Disconnect;
 
-
    -------------------
    -- Execute_Query --
    -------------------
 
+   overriding
    procedure Execute_Query (C : in out Connection; SQL : String) is
       Q  : aliased SQLite_ID;
       P  : aliased SQLite_ID;
@@ -170,6 +171,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Insert_ID --
    ---------------
 
+   overriding
    function Insert_ID (C : Connection) return Natural is
       function sqlite3_last_insert_rowid (sqlite : SQLite_ID := C.Server_ID)
                                           return Ulonglong;
@@ -187,6 +189,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Affected_Rows --
    -------------------
 
+   overriding
    function Affected_Rows (C : Connection) return Natural is
       function sqlite3_changes (sqlite : SQLite_ID := C.Server_ID)
                                 return Natural;
@@ -215,6 +218,7 @@ package body Gnoga.Server.Database.SQLite is
       return Interfaces.C.To_Ada (sqlite3_errmsg.all);
    end Error_Message;
 
+   overriding
    function Error_Message (C : Connection) return String is
    begin
       return Error_Message (C.Server_ID);
@@ -224,6 +228,7 @@ package body Gnoga.Server.Database.SQLite is
    -- List_Of_Tables --
    --------------------
 
+   overriding
    function List_Of_Tables (C : Connection)
                             return Gnoga.Types.Data_Array_Type is
       Tables : Gnoga.Types.Data_Array_Type;
@@ -243,6 +248,7 @@ package body Gnoga.Server.Database.SQLite is
    -- List_Fields_Of_Table --
    --------------------------
 
+   overriding
    function List_Fields_Of_Table (C          : Connection;
                                   Table_Name : String)
                                   return Gnoga.Types.Data_Array_Type
@@ -269,6 +275,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Field_Descriptions --
    ------------------------
 
+   overriding
    function Field_Descriptions (C : Connection; Table_Name : String)
                                 return Field_Description_Array_Type
    is
@@ -304,6 +311,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Query ---
    ------------
 
+   overriding
    function Query (C : Connection; SQL : String)
                    return Gnoga.Server.Database.Recordset'Class
    is
@@ -364,16 +372,17 @@ package body Gnoga.Server.Database.SQLite is
    -- ID_Field_String --
    ---------------------
 
+   overriding
    function ID_Field_String (C : Connection) return String is
    begin
       return "id INTEGER PRIMARY KEY AUTOINCREMENT";
    end ID_Field_String;
 
-
    -----------
    -- Close --
    -----------
 
+   overriding
    procedure Close (RS : in out Recordset) is
       procedure sqlite3_finalize  (Result : SQLite_ID := RS.Query_ID);
       pragma Import (C, sqlite3_finalize, "sqlite3_finalize");
@@ -385,6 +394,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Next --
    ----------
 
+   overriding
    procedure Next (RS : in out Recordset) is
    begin
       if not Next (RS) then
@@ -396,6 +406,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Next --
    ----------
 
+   overriding
    function Next (RS : Recordset) return Boolean is
       R : access Recordset := RS'Unrestricted_Access;
 
@@ -425,6 +436,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Iterate --
    -------------
 
+   overriding
    procedure Iterate
      (C       : in out Connection;
       SQL     : in     String;
@@ -436,6 +448,7 @@ package body Gnoga.Server.Database.SQLite is
       RS.Iterate (Process);
    end Iterate;
 
+   overriding
    procedure Iterate
      (RS      : in out Recordset;
       Process : not null access
@@ -447,6 +460,7 @@ package body Gnoga.Server.Database.SQLite is
       end loop;
    end Iterate;
 
+   overriding
    procedure Iterate
      (C     : in out Connection;
       SQL   : in     String;
@@ -457,6 +471,7 @@ package body Gnoga.Server.Database.SQLite is
       RS.Iterate (Process);
    end Iterate;
 
+   overriding
    procedure Iterate
      (RS      : in out Recordset;
       Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type)) is
@@ -470,6 +485,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Number_Of_Rows --
    --------------------
 
+   overriding
    function Number_Of_Rows (RS : Recordset) return Natural is
    begin
       raise NOT_IMPLEMENTED_ERROR
@@ -481,6 +497,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Number_Of_Fields --
    ----------------------
 
+   overriding
    function Number_Of_Fields (RS : Recordset) return Natural is
    begin
       return RS.Field_Count;
@@ -490,6 +507,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Field_Name --
    ----------------
 
+   overriding
    function Field_Name
      (RS           : Recordset;
       Field_Number : Natural)
@@ -512,6 +530,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Field_Value --
    -----------------
 
+   overriding
    function Field_Value (RS           : Recordset;
                          Field_Number : Natural;
                          Handle_Nulls : Boolean := True)
@@ -529,11 +548,11 @@ package body Gnoga.Server.Database.SQLite is
          return Field_Access;
       pragma Import (C, sqlite3_column_text, "sqlite3_column_text");
 
-        function sqlite3_column_bytes
-          (sqlite : SQLite_ID := RS.Query_ID;
-           iCol   : int       := int (Field_Number - 1))
-           return int;
-        pragma Import (C, sqlite3_column_bytes, "sqlite3_column_bytes");
+      function sqlite3_column_bytes
+        (sqlite : SQLite_ID := RS.Query_ID;
+         iCol   : int       := int (Field_Number - 1))
+         return int;
+      pragma Import (C, sqlite3_column_bytes, "sqlite3_column_bytes");
 
    begin
       if RS.Is_Null (Field_Number) then
@@ -548,6 +567,7 @@ package body Gnoga.Server.Database.SQLite is
       end if;
    end Field_Value;
 
+   overriding
    function Field_Value (RS           : Recordset;
                          Field_Name   : String;
                          Handle_Nulls : Boolean := True)
@@ -567,6 +587,7 @@ package body Gnoga.Server.Database.SQLite is
    -- Field_Values --
    ------------------
 
+   overriding
    function Field_Values (RS : Recordset) return Gnoga.Types.Data_Map_Type is
       Row : Gnoga.Types.Data_Map_Type;
    begin
@@ -577,11 +598,11 @@ package body Gnoga.Server.Database.SQLite is
       return Row;
    end Field_Values;
 
-
    -------------
    -- Is_Null --
    -------------
 
+   overriding
    function Is_Null (RS : Recordset; Field_Number : Natural) return Boolean is
       function sqlite3_column_type (sqlite : SQLite_ID := RS.Query_ID;
                                     iCol   : Natural   := Field_Number - 1)
@@ -595,6 +616,7 @@ package body Gnoga.Server.Database.SQLite is
       end if;
    end Is_Null;
 
+   overriding
    function Is_Null (RS : Recordset; Field_Name : String) return Boolean is
    begin
       for I in 1 .. RS.Field_Count loop
@@ -606,11 +628,11 @@ package body Gnoga.Server.Database.SQLite is
       raise No_Such_Field;
    end Is_Null;
 
-
    -------------------
    -- Escape_String --
    -------------------
 
+   overriding
    function Escape_String (C : Connection; S : String) return String is
       use Ada.Strings.Unbounded;
 

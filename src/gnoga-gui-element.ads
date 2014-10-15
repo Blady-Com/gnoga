@@ -85,8 +85,6 @@ package Gnoga.Gui.Element is
    --  <table>,<caption>,<td>,<tr>,<th>,<col>,<colgroup>,<tfoot>,<thead>
    --              - Element.Table
 
-
-
    --  HTML5 Tags Unbound as Gui Elements in Gnoga
    --      Note: All tags can be bound and used with
    --            Element_Type.Create_With_HTML
@@ -259,7 +257,6 @@ package Gnoga.Gui.Element is
    --  data-* - may be considered in future versions
    --  dropzone - no browser support
    --  translate - no browser support
-
 
    --  Box Properties --
 

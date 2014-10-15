@@ -46,7 +46,6 @@ package Gnoga.Gui.Document is
    -------------------------------------------------------------------------
    --  Document_Type is the class encapsulating the DOM document node
 
-
    type Document_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Document_Access is access all Document_Type;
    type Pointer_To_Document_Class is access all Document_Type'Class;

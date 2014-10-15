@@ -341,7 +341,6 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       end case;
    end Glogal_Composite_Operation;
 
-
    ----------------------------
    -- Create_Linear_Gradient --
    ----------------------------

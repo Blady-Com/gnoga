@@ -51,7 +51,6 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    --  use: make ace_editor to clone in the editor to Gnoga
    --  it will run cd js && git clone https://github.com/ajaxorg/ace-builds.git
 
-
    type Ace_Editor_Type is new Gnoga.Gui.View.View_Type with private;
    type Ace_Editor_Access is access all Ace_Editor_Type;
    type Pointer_To_Ace_Editor_Class is access all Ace_Editor_Type'Class;

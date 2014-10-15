@@ -7,10 +7,10 @@ abstract project Settings is
    -- Compiler --
    --------------
 
-   Common_Options := ("-gnatyabcefhiklmnprst","-gnat2005");
+   Common_Options := ("-gnaty3abcdefhiklmnOprsStu","-gnat2005");
    --  Common options used for the Debug and Release modes
 
-   Debug_Options := ("-g");
+   Debug_Options := ("-g", "-gnata");
 
    Release_Options := ("-O2");
 

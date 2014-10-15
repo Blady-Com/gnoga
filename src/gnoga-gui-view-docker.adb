@@ -238,6 +238,7 @@ package body Gnoga.Gui.View.Docker is
    -- On_Resize --
    ---------------
 
+   overriding
    procedure On_Resize (View : in out Docker_View_Type) is
    begin
       View.Update_Dock;

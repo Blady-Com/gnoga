@@ -48,7 +48,6 @@ package Gnoga.Gui.Element.IFrame is
    type IFrame_Access is access all IFrame_Type;
    type Pointer_To_IFrame_Class is access all IFrame_Type'Class;
 
-
    -------------------------------------------------------------------------
    --  IFrame_Type - Creation Methods
    -------------------------------------------------------------------------

@@ -45,6 +45,7 @@ package body Gnoga.Gui.Element.Canvas is
    -- Finalize --
    --------------
 
+   overriding
    procedure Finalize (Object : in out Context_Type) is
       use type Gnoga.Types.ID_Enumeration;
    begin

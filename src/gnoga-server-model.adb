@@ -43,6 +43,7 @@ package body Gnoga.Server.Model is
    -- Initialize --
    ----------------
 
+   overriding
    procedure Initialize (Object : in out Active_Record) is
       use Gnoga.Server.Database;
    begin

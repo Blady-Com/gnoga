@@ -47,7 +47,6 @@ package Gnoga.Gui.Plugin.jQuery is
    -------------------------------------------------------------------------
    --  Binding to allow for general jQuery use outside of Gnoga Objects
 
-
    type jQuery_Type is new Ada.Finalization.Limited_Controlled with private;
    type jQuery_Access is access all jQuery_Type;
    type Pointer_To_jQuery_Class is access all jQuery_Type'Class;

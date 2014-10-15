@@ -239,7 +239,6 @@ package body Gnoga.Server.Template_Parser is
       Data.Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
    end Variable_Name;
 
-
    ------------
    -- Insert --
    ------------

@@ -116,7 +116,6 @@ package Gnoga.Gui.Element.Form is
    procedure Reset (Form : in out Form_Type);
    --  Reset form to original defaults
 
-
    -------------------------------------------------------------------------
    --  Form_Element_Types
    -------------------------------------------------------------------------
@@ -607,8 +606,10 @@ package Gnoga.Gui.Element.Form is
    --  Color_Picker_Type - Properties
    -------------------------------------------------------------------------
 
+   overriding
    procedure Color (Element : in out Color_Picker_Type;
                     Value   : in     Gnoga.Types.RGBA_Type);
+   overriding
    function Color (Element : Color_Picker_Type) return Gnoga.Types.RGBA_Type;
 
    -------------------------------------------------------------------------
@@ -832,6 +833,7 @@ package Gnoga.Gui.Element.Form is
    --  If no item currently selected returns 0, in multiple select boxes
    --  traverse the options using Selected.
 
+   overriding
    function Value (Element : Selection_Type) return String;
    --  Returns the value of the currently selected item. For multiple select
    --  boxes get the value based on Index.
@@ -927,8 +929,10 @@ package Gnoga.Gui.Element.Form is
    function Value (Element : Option_Type)
                    return String;
 
+   overriding
    procedure Text (Element : in out Option_Type;
                    Value   : in     String);
+   overriding
    function Text (Element : Option_Type)
                   return String;
 

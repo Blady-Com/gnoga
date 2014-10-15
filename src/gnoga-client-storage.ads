@@ -77,6 +77,7 @@ package Gnoga.Client.Storage is
    function Local_Storage (Object : Gnoga.Gui.Base.Base_Type'Class)
                            return Local_Storage_Type;
 
+   overriding
    function Script_Accessor (Storage : Local_Storage_Type) return String;
 
    type Session_Storage_Type is new Storage_Type with private;
@@ -90,6 +91,7 @@ package Gnoga.Client.Storage is
    function Session_Storage (Object : Gnoga.Gui.Base.Base_Type'Class)
                              return Session_Storage_Type;
 
+   overriding
    function Script_Accessor (Storage : Session_Storage_Type) return String;
 
 private

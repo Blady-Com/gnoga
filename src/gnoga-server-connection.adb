@@ -200,7 +200,6 @@ package body Gnoga.Server.Connection is
          Action => Default_Dispatcher);
    end Initialize;
 
-
    ---------
    -- Run --
    ---------
@@ -277,6 +276,7 @@ package body Gnoga.Server.Connection is
    -- CSS Dispatch --
    ------------------
 
+   overriding
    function Dispatch
      (Dispatcher : in CSS;
       Request    : in AWS.Status.Data) return AWS.Response.Data
@@ -300,6 +300,7 @@ package body Gnoga.Server.Connection is
    -- JS Dispatch --
    -----------------
 
+   overriding
    function Dispatch
      (Dispatcher : in JS;
       Request    : in AWS.Status.Data) return AWS.Response.Data
@@ -323,6 +324,7 @@ package body Gnoga.Server.Connection is
    -- Image Dispatch --
    --------------------
 
+   overriding
    function Dispatch
      (Dispatcher : in Image;
       Request    : in AWS.Status.Data) return AWS.Response.Data
@@ -742,7 +744,6 @@ package body Gnoga.Server.Connection is
    package Script_Holder_Maps is new Ada.Containers.Ordered_Maps
      (Gnoga.Types.Unique_ID, Script_Holder_Access);
 
-
    protected type Script_Manager_Type is
       procedure Add_Script_Holder (ID     : out Gnoga.Types.Unique_ID;
                                    Holder : in  Script_Holder_Access);
@@ -829,7 +830,6 @@ package body Gnoga.Server.Connection is
 
    New_Dispatch_Task : access Dispatch_Task_Type;
    --  ? Ada.Task_Termination should be used for cleanup of dangling task TCBs
-
 
    overriding procedure On_Message
      (Web_Socket : in out Socket_Type;
@@ -1001,7 +1001,6 @@ package body Gnoga.Server.Connection is
                       Script => "gnoga['html_on_close']=""" &
                         Escape_Quotes (HTML) & """;");
    end HTML_On_Close;
-
 
    ---------------------
    -- ID_Machine_Type --

@@ -188,6 +188,7 @@ package body Gnoga.Gui.Base is
    -- Initialize --
    ----------------
 
+   overriding
    procedure Initialize (Object : in out Base_Type) is
    begin
       Gnoga.Server.Connection.New_Unique_ID (Object.Unique_ID);
@@ -197,6 +198,7 @@ package body Gnoga.Gui.Base is
    -- Finalize --
    --------------
 
+   overriding
    procedure Finalize (Object : in out Base_Type) is
       use type Gnoga.Types.ID_Enumeration;
    begin
@@ -1358,7 +1360,6 @@ package body Gnoga.Gui.Base is
       end if;
    end Fire_On_Drag_End;
 
-
    procedure On_Drag_Enter_Handler (Object  : in out Base_Type;
                                     Handler : in     Action_Event)
    is
@@ -1407,7 +1408,6 @@ package body Gnoga.Gui.Base is
       end if;
    end Fire_On_Drag_Leave;
 
-
    procedure On_Drop_Handler (Object    : in out Base_Type;
                               Handler   : in     Drop_Event;
                               Drag_Type : in     String := "text/plain")
@@ -1441,7 +1441,6 @@ package body Gnoga.Gui.Base is
          Object.On_Drop_Event (Object, Drag_Text);
       end if;
    end Fire_On_Drop;
-
 
    ------------------
    -- On_Character --

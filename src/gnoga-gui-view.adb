@@ -44,6 +44,7 @@ package body Gnoga.Gui.View is
    -- Finalize --
    --------------
 
+   overriding
    procedure Finalize (Object : in out View_Base_Type) is
    begin
       if not Gnoga.Server.Connection.Shutting_Down then
@@ -81,6 +82,7 @@ package body Gnoga.Gui.View is
    -- On_Child_Added --
    --------------------
 
+   overriding
    procedure On_Child_Added (View  : in out View_Base_Type;
                              Child : in out Gnoga.Gui.Base.Base_Type'Class)
    is

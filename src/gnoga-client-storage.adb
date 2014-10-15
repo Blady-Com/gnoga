@@ -44,7 +44,6 @@ package body Gnoga.Client.Storage is
    --  scheme://domain:port the browser security would not allow access
    --  anyways.
 
-
    procedure Execute (Storage : in out Storage_Type'Class; Method : in String);
    function Execute (Storage : Storage_Type'Class; Method : String)
                      return String;
@@ -159,6 +158,7 @@ package body Gnoga.Client.Storage is
    -- Script_Accessor --
    ---------------------
 
+   overriding
    function Script_Accessor (Storage : Local_Storage_Type) return String is
    begin
       return "localStorage";
@@ -192,6 +192,7 @@ package body Gnoga.Client.Storage is
    -- Script_Accessor --
    ---------------------
 
+   overriding
    function Script_Accessor (Storage : Session_Storage_Type) return String is
    begin
       return "sessionStorage";

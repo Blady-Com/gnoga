@@ -74,6 +74,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    -- Text --
    ----------
 
+   overriding
    procedure Text (View : in out Ace_Editor_Type;
                    Text : in     String)
    is
@@ -81,6 +82,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute ("setValue (""" & Escape_Quotes (Text) & """)");
    end Text;
 
+   overriding
    function Text (View : Ace_Editor_Type) return String is
    begin
       return View.Editor_Execute ("getValue ()");
@@ -324,6 +326,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    -- On_Resize --
    ---------------
 
+   overriding
    procedure On_Resize (View : in out Ace_Editor_Type) is
    begin
       View.Editor_Execute ("resize()");

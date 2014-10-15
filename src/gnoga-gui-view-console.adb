@@ -40,6 +40,7 @@ package body Gnoga.Gui.View.Console is
    -- Create --
    ------------
 
+   overriding
    procedure Create
      (View          : in out Console_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;

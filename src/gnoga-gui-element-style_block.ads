@@ -84,7 +84,6 @@ package Gnoga.Gui.Element.Style_Block is
                                   Text  : in     String);
    --  Appends a .Name {Text}
 
-
 private
    type Style_Type is new Element_Type with null record;
 end Gnoga.Gui.Element.Style_Block;

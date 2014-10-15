@@ -107,7 +107,6 @@ package body Gnoga.Gui.Element.Common is
            "</button>", ID);
    end Create;
 
-
    --------------
    -- Disabled --
    --------------

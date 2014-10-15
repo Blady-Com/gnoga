@@ -711,7 +711,6 @@ package body Gnoga.Gui.Element is
       return Element.Property ("lang");
    end Language_Code;
 
-
    -------------
    -- Visible --
    -------------

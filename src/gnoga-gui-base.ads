@@ -94,7 +94,6 @@ package Gnoga.Gui.Base is
    subtype Base_Type_Map is Base_Type_Maps.Map;
    --  String to Base_Type associative array
 
-
    -------------------------------------------------------------------------
    --  Base_Type - Creation Methods
    -------------------------------------------------------------------------
@@ -227,7 +226,6 @@ package Gnoga.Gui.Base is
 
    procedure Blur (Object : in out Base_Type);
    --  Remove focus from Object
-
 
    --  Generic Methods --
 
@@ -510,7 +508,6 @@ package Gnoga.Gui.Base is
                                Handler : in     Action_Event);
    procedure Fire_On_Paste (Object : in out Base_Type);
 
-
    --  Generic Events --
 
    procedure On_Create_Handler (Object  : in out Base_Type;
@@ -666,7 +663,6 @@ private
          On_Drag_Enter_Event         : Action_Event         := null;
          On_Drag_Leave_Event         : Action_Event         := null;
          On_Drop_Event               : Drop_Event           := null;
-
 
          --  Keyboard Events
          On_Character_Event          : Character_Event      := null;

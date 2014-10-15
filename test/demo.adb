@@ -214,6 +214,7 @@ procedure Demo is
          Items.Insert (Key => "say", Value => "Hello World");
 
          App.Console.Put_Line ("From PHP parser:");
+         Set_Template_Directory ("../templates/test");
          App.Console.Put_Line (Load_View ("test_sample.php", Items));
 
          App.Console.New_Line;

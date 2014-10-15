@@ -7,7 +7,7 @@ abstract project Settings is
    -- Compiler --
    --------------
 
-   Common_Options := ("-gnaty3abcdefhiklmnOprsStu","-gnat2005");
+   Common_Options := ("-gnaty3abcdefhiklmnOprsStu","-gnat2012");
    --  Common options used for the Debug and Release modes
 
    Debug_Options := ("-g", "-gnata");
@@ -31,5 +31,5 @@ abstract project Settings is
    package Binder is
       for Default_Switches ("Ada") use ("-E");
    end Binder;
-   
+
 end Settings;

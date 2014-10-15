@@ -168,9 +168,8 @@ package body Gnoga.Gui.View is
       Element : access Gnoga.Gui.Element.Element_Type'Class)
    is
    begin
-      View.Element_Map.Include
-        (Key      => Name,
-         New_Item => Gnoga.Gui.Element.Pointer_To_Element_Class (Element));
+      View.Element_Map.Include (Key      => Name,
+                                New_Item => Element);
    end Add_Element;
 
    -----------------

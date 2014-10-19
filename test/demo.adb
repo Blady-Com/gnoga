@@ -14,6 +14,7 @@ with Gnoga.Client.Bind_Page;
 
 with Gnoga.Server.Template_Parser;
 with Gnoga.Server.Template_Parser.Python;
+with Gnoga.Server.Template_Parser.Simple;
 
 procedure Demo is
    use Gnoga;
@@ -222,7 +223,13 @@ procedure Demo is
          App.Console.Put_Line ("From Python parser:");
 
          App.Console.Put_Line (Python.Load_View ("test_sample.py", Items));
-      end;
+
+         App.Console.New_Line;
+
+         App.Console.Put_Line ("From Gnoga Simple parser:");
+
+         App.Console.Put_Line (Simple.Load_View ("test_sample.tpl", Items));
+end;
 
       declare
          s   : Style_Block.Style_Access := new Style_Block.Style_Type;

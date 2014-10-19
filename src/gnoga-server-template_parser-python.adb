@@ -62,9 +62,9 @@ package body Gnoga.Server.Template_Parser.Python is
    --  Convert Map of Maps of key/value pairs in to associative arrays
    --  in scripting code
 
-   --------------------
+   -----------------------
    -- Python_Encode_Key --
-   --------------------
+   -----------------------
 
    function Python_Encode_Key (Code : String) return String is
    begin
@@ -85,9 +85,9 @@ package body Gnoga.Server.Template_Parser.Python is
       end if;
    end Python_Encode_Key;
 
-   ----------------------
+   -------------------------
    -- Python_Encode_Value --
-   ----------------------
+   -------------------------
 
    function Python_Encode_Value (Code : String) return String is
    begin
@@ -108,9 +108,9 @@ package body Gnoga.Server.Template_Parser.Python is
       end if;
    end Python_Encode_Value;
 
-   ----------------
+   -------------------
    -- Excute_Python --
-   ----------------
+   -------------------
 
    function Execute_Python (Code : String) return String is
       Args   : OS_Lib.Argument_List (1 .. 0);

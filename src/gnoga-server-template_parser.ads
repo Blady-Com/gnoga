@@ -48,14 +48,17 @@ package Gnoga.Server.Template_Parser is
    --  Gnoga.Server.Template_Parser uses PHP (or Python) as a powerful template
    --  parsing engine. It also makes it possible to leverage and reuse existing
    --  web resources until they can be ported to Gnoga. To use Python instead
-   --  of PHP see Gnoga.Server.Template_Parser.Python
+   --  of PHP see Gnoga.Server.Template_Parser.Python. If only simple parsing
+   --  is needed (find and replace), use Gnoga.Server.Template_Parse.Simple
+   --  that uses simple Ada.Text_IO
    --
    --  Note: Template_Parser is not intended to be used for web site / app
    --        development but for tools or for use by apps to manipulate files.
    --        That doesn't mean you couldn't develop an entire site using it
    --        and production sites have been made with it. Keep in mind though
    --        that the security advantages of Gnoga are reduced if you are using
-   --        a CGI like approach using template_parser.
+   --        a CGI like approach using a template_parser based on PHP or
+   --        Python.
 
    type View_Data is new Ada.Finalization.Controlled with private;
    type View_Data_Array is array (Positive range <>) of View_Data;
@@ -66,7 +69,8 @@ package Gnoga.Server.Template_Parser is
                             Name : String);
    --  Sets the variable name used for the passed data
    --  by default the Name is "data" and so in the views
-   --  accessed as - $data[key]
+   --  accessed as - $data[key] (or data['key'] in python, or
+   --  @@data.key@@ in the Simple parser).
 
    procedure Insert (Data  : in out View_Data;
                      Key   : String;
@@ -182,7 +186,7 @@ private
       end record;
 
    function Parse_Name (Name : String) return String;
-   --  add default extension to Name if no extension present
+   --  prefix path from Set_Templat_Directory to Name
 
    Error_Queue : Gnoga.Types.Data_Array_Type;
    Info_Queue  : Gnoga.Types.Data_Array_Type;

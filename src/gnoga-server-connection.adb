@@ -137,8 +137,6 @@ package body Gnoga.Server.Connection is
    overriding procedure On_Message
      (Web_Socket : in out Socket_Type; Message : String);
 
-   Web_Root : Ada.Strings.Unbounded.Unbounded_String;
-
    Default_Dispatcher : Default;
    CSS_Dispatcher     : CSS;
    JS_Dispatcher      : JS;
@@ -152,7 +150,6 @@ package body Gnoga.Server.Connection is
                          Port : in Integer := 8080;
                          Boot : in String  := "boot.html")
    is
-      Config_Root : constant String := AWS.Config.WWW_Root (Web_Config);
    begin
       --  Setup server
       AWS.Config.Set.Reuse_Address (Web_Config, True);
@@ -161,16 +158,15 @@ package body Gnoga.Server.Connection is
 
       Boot_HTML := Ada.Strings.Unbounded.To_Unbounded_String ("/" & Boot);
 
-      if Config_Root = "./" or else Config_Root = "" then
-         Web_Root := Ada.Strings.Unbounded.To_Unbounded_String ("../");
-      else
-         Web_Root := Ada.Strings.Unbounded.To_Unbounded_String (Config_Root);
-      end if;
+      Write_To_Console ("Application root :" & Application_Directory);
+      Write_To_Console ("Executable at    :" & Executable_Directory);
+      Write_To_Console ("HTML root        :" & HTML_Directory);
+      Write_To_Console ("Templates root   :" & Templates_Directory);
+      Write_To_Console ("/js  at          :" & JS_Directory);
+      Write_To_Console ("/css at          :" & CSS_Directory);
+      Write_To_Console ("/img at          :" & IMG_Directory);
 
-      Write_To_Console ("Starting Web Server with web root at " &
-                              Ada.Strings.Unbounded.To_String (Web_Root));
-      Write_To_Console ("Starting Gnoga Server on " & Host & ":" &
-                          Left_Trim (Port'Img));
+      Write_To_Console ("Listening on " & Host & ":" & Left_Trim (Port'Img));
       AWS.Net.WebSocket.Registry.Register ("/gnoga",
                                            Socket_Type_Create'Access);
       AWS.Net.WebSocket.Registry.Control.Start;
@@ -256,8 +252,7 @@ package body Gnoga.Server.Connection is
          end if;
       end Adjusted_URI;
 
-      File : constant String :=
-        Ada.Strings.Unbounded.To_String (Web_Root) & "html" & Adjusted_URI;
+      File : constant String := HTML_Directory & Adjusted_URI;
    begin
       if Ada.Directories.Exists (File) then
          return AWS.Response.File
@@ -267,8 +262,8 @@ package body Gnoga.Server.Connection is
          --  Let application handle files not found in /html
          return AWS.Response.File
            (Content_Type => AWS.MIME.Text_HTML,
-            Filename     => Ada.Strings.Unbounded.To_String (Web_Root) &
-              "html" & Ada.Strings.Unbounded.To_String (Boot_HTML));
+            Filename     => HTML_Directory &
+              Ada.Strings.Unbounded.To_String (Boot_HTML));
       end if;
    end Dispatch;
 
@@ -284,8 +279,7 @@ package body Gnoga.Server.Connection is
       pragma Unreferenced (Dispatcher);
       URI  : constant String := AWS.Status.URI (Request);
       File : constant String :=
-        Ada.Strings.Unbounded.To_String (Web_Root) &
-        URI (URI'First + 1 .. URI'Last);
+               CSS_Directory & URI (URI'First + 5 .. URI'Last);
    begin
       if Ada.Directories.Exists (File) then
          return AWS.Response.File
@@ -308,8 +302,7 @@ package body Gnoga.Server.Connection is
       pragma Unreferenced (Dispatcher);
       URI  : constant String := AWS.Status.URI (Request);
       File : constant String :=
-        Ada.Strings.Unbounded.To_String (Web_Root) &
-        URI (URI'First + 1 .. URI'Last);
+               JS_Directory & URI (URI'First + 4 .. URI'Last);
    begin
       if Ada.Directories.Exists (File) then
          return AWS.Response.File
@@ -332,8 +325,8 @@ package body Gnoga.Server.Connection is
       pragma Unreferenced (Dispatcher);
       URI  : constant String := AWS.Status.URI (Request);
       File : constant String :=
-        Ada.Strings.Unbounded.To_String (Web_Root) &
-        URI (URI'First + 1 .. URI'Last);
+               IMG_Directory & URI (URI'First + 5 .. URI'Last);
+
    begin
       if Ada.Directories.Exists (File) then
          return AWS.Response.File

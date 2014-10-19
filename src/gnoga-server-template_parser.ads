@@ -174,7 +174,8 @@ package Gnoga.Server.Template_Parser is
    --  Return named view with Data_List array of View_Data items
 
    procedure Set_Template_Directory (Directory : String);
-   --  Set the default extension for views. By default this is "../templates"
+   --  Set the default extension for views. By default this is at
+   --  Gnoga.Server.Templates_Directory
 
    procedure Write_String_To_File (File_Name : String; Value : String);
    --  Name is file name (no path is prefixed) to write Value to.

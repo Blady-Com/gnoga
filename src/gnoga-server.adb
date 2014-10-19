@@ -4,7 +4,7 @@
 --                                                                          --
 --                         G N O G A . S E R V E R                          --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,49 +35,107 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  Serverside bindings and tools
+with Ada.Directories;
+with Ada.Command_Line;
 
-package Gnoga.Server is
+with GNAT.OS_Lib;
 
-   --  Gnoga applications generally use the following layout. However
-   --  if the executable can be located in App Dir. Any missing standard
-   --  subdirectory will instead use the html root which if missing is
-   --  App Dir.
-   --
-   --  App Dir
-   --    |
-   --    |___ bin - your Gnoga app binary
-   --    |
-   --    |___ html - boot.html (or other boot loader used)
-   --    |
-   --    |___ js - must contain jquery.min.js
-   --    |
-   --    |___ css - optional, a directory for serving css files
-   --    |
-   --    |___ img - optional, a directory of serving graphics.
-   --    |
-   --    |___ templates - optional, if using Gnoga.Server.Template_Parser
+package body Gnoga.Server is
 
-   function Application_Directory return String;
-   --  This is the root directory for the application.
+   function Find_Subdirectory (Sub : String) return String;
+   --  Return the path to the given subdirectory or return "";
 
-   function Executable_Directory return String;
-   --  Locates this application's executable directory
-   --  This is usually in Application_Directory/bin
+   -----------------------
+   -- Find_Subdirectory --
+   -----------------------
 
-   function HTML_Directory return String;
-   --  Locates the applications HTML Root for this application
+   function Find_Subdirectory (Sub : String) return String is
+      Dir  : String := Application_Directory & Sub &
+               GNAT.OS_Lib.Directory_Separator;
 
-   function JS_Directory return String;
-   --  Locates the /js directory for this application
+      Html : String := Application_Directory & "html" &
+               GNAT.OS_Lib.Directory_Separator;
+   begin
+      if Ada.Directories.Exists (Dir) then
+         return Dir;
+      elsif Ada.Directories.Exists (Html) then
+         return Html;
+      else
+         return Application_Directory;
+      end if;
+   end Find_Subdirectory;
 
-   function CSS_Directory return String;
-   --  Locates the /css director for this application
+   ---------------------------
+   -- Application_Directory --
+   ---------------------------
 
-   function IMG_Directory return String;
-   --  Locates the /img directory for this application
+   function Application_Directory return String is
+      Exe : String := Executable_Directory;
+   begin
+      if Exe (Exe'Last - 3 .. Exe'Last - 1) = "bin" then
+         return Exe (Exe'First .. Exe'Last - 4);
+      else
+         return Exe;
+      end if;
+   end Application_Directory;
 
-   function Templates_Directory return String;
-   --  Locates the templates directory for this application
+   --------------------------
+   -- Executable_Directory --
+   --------------------------
+
+   function Executable_Directory return String is
+      Loc : GNAT.OS_Lib.String_Access :=
+              GNAT.OS_Lib.Locate_Exec_On_Path (Ada.Command_Line.Command_Name);
+      Buf : String := Loc.all;
+   begin
+      GNAT.OS_Lib.Free (Loc);
+      return Ada.Directories.Containing_Directory (Buf) &
+        GNAT.OS_Lib.Directory_Separator;
+   end Executable_Directory;
+
+   --------------------
+   -- HTML_Directory --
+   --------------------
+
+   function HTML_Directory return String is
+   begin
+      return Find_Subdirectory ("html");
+   end HTML_Directory;
+
+   ------------------
+   -- JS_Directory --
+   ------------------
+
+   function JS_Directory return String is
+   begin
+      return Find_Subdirectory ("js");
+   end JS_Directory;
+
+   -------------------
+   -- IMG_Directory --
+   -------------------
+
+   function IMG_Directory return String is
+   begin
+      return Find_Subdirectory ("img");
+   end IMG_Directory;
+
+   -------------------
+   -- CSS_Directory --
+   -------------------
+
+   function CSS_Directory return String is
+   begin
+      return Find_Subdirectory ("css");
+   end CSS_Directory;
+
+   -------------------------
+   -- Templates_Directory --
+   -------------------------
+
+   function Templates_Directory return String is
+   begin
+      return Find_Subdirectory ("templates");
+   end Templates_Directory;
 
 end Gnoga.Server;

@@ -47,7 +47,8 @@ with GNAT.Expect; use GNAT;
 package body Gnoga.Server.Template_Parser is
 
    Template_Directory : Ada.Strings.Unbounded.Unbounded_String :=
-     Ada.Strings.Unbounded.To_Unbounded_String ("../templates");
+                          Ada.Strings.Unbounded.To_Unbounded_String
+                            (Gnoga.Server.Templates_Directory);
 
    function PHP_Encode_Key (Code : String) return String;
    --  fixes the presence of a ' in a key

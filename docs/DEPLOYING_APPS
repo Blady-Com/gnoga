@@ -1,4 +1,4 @@
-Inorder to deploy your apps for production you need to have the following
+The idea structure to deploy your apps for production is the following
 directory structure:
 
 App Dir
@@ -13,7 +13,10 @@ App Dir
   |
   |___ img - optional, a directory of serving graphics.
   |
-  |___ templates - option, if using Gnoga.Server.Template_Parser
+  |___ templates - optional, if using Gnoga.Server.Template_Parser
 
 You can use Gnoga.Application.Lauch_URL_* to start the default browser
 pointed to the Gnoga app on startup.
+
+However, if any of the subdirectories is missing html is assumed and if html is missing the App Dir is assumed. The executable can be in the bin directory or
+in App Dir.

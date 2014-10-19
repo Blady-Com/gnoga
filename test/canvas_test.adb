@@ -120,6 +120,8 @@ procedure Canvas_Test is
       C.Font (Height => "40px");
       C.Text_Alignment (Right);
       C.Fill_Text ("Hello World!", 200, 200);
+
+      Connection.Hold;
    end On_Connect;
 
 begin

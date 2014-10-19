@@ -72,9 +72,12 @@ package body Gnoga.Application.Singleton is
       end if;
    end On_Connect;
 
-   task Web_Server_Task is
+   task type Web_Server_Task is
       entry Start;
    end Web_Server_Task;
+   type Web_Server_Task_Access is access all Web_Server_Task;
+
+   Web_Server : Web_Server_Task_Access := null;
 
    task body Web_Server_Task is
    begin
@@ -94,7 +97,8 @@ package body Gnoga.Application.Singleton is
       Gnoga.Server.Connection.On_Connect_Handler
         (Event => On_Connect'Access);
 
-      Web_Server_Task.Start;
+      Web_Server := new Web_Server_Task;
+      Web_Server.Start;
 
       Application_Holder.Hold;
 

@@ -55,6 +55,7 @@ tutorials:
 	cd tutorial/tutorial-07 && gprbuild -p
 	cd tutorial/tutorial-08 && gprbuild -p
 	cd tutorial/tutorial-09 && gprbuild -p
+	- cd tutorial/tutorial-10 && gprbuild -p
 
 clean:
 	cd src && gprclean -Pgnoga.gpr
@@ -71,4 +72,6 @@ clean:
 	cd tutorial/tutorial-07 && gprclean
 	cd tutorial/tutorial-08 && gprclean
 	cd tutorial/tutorial-09 && gprclean
+	cd tutorial/tutorial-10 && gprclean
+	- cd bin && rm *.db
 	- cd js && rm -rf ace-builds

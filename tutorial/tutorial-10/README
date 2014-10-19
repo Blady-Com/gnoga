@@ -1,0 +1,11 @@
+Tutorial 10
+-----------
+
+Important: Before running tutorial_10 make sure to run:
+    ./tutorial_10 setup
+
+SqlLite3 client development libraries must be available to link with this
+tutorial.
+
+1) General database bindings in Gnoga
+2) Use of database migrations

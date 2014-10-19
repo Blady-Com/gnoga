@@ -77,3 +77,8 @@ GNAT JVM and minimal android browser widget
 
 Support AWS plugins
 Support alternative transports to Websockets as fall backs.
+   1) Use a combination of buffer output until return from On_Connect,
+       then all bindings send back via Ajax, again buffern connection
+       on even and return via Ajax result.
+   2) Use a local webkit instance to (or other method) write output to
+       and return full HTML to browser with Ajax results.

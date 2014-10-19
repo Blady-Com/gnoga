@@ -176,6 +176,10 @@ package Gnoga.Server.Template_Parser is
    procedure Set_Template_Directory (Directory : String);
    --  Set the default extension for views. By default this is "../templates"
 
+   procedure Write_String_To_File (File_Name : String; Value : String);
+   --  Name is file name (no path is prefixed) to write Value to.
+   --  File will be overwritten if exists.
+
 private
    type View_Data is new Ada.Finalization.Controlled with
       record

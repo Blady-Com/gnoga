@@ -228,8 +228,15 @@ procedure Demo is
 
          App.Console.Put_Line ("From Gnoga Simple parser:");
 
-         App.Console.Put_Line (Simple.Load_View ("test_sample.tpl", Items));
-end;
+         declare
+            S : String := Simple.Load_View ("test_sample.tpl", Items);
+         begin
+            App.Console.Put_Line (S);
+
+            App.Console.Put_Line ("Writing parser output");
+            Write_String_To_File ("temp.txt", S);
+         end;
+      end;
 
       declare
          s   : Style_Block.Style_Access := new Style_Block.Style_Type;

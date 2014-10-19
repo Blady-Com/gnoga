@@ -1,4 +1,3 @@
-<b>Wow</b>, Gnoga can even server Python pages!
-Who would want to do that...
+<b>Wow</b>, Gnoga has its own simple parser. That could be useful.
 <br />
 Gnoga says : @@data.say@@

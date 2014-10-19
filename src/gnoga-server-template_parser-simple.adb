@@ -94,7 +94,12 @@ package body Gnoga.Server.Template_Parser.Simple is
                Name => Parse_Name (Name));
 
          while not End_Of_File (F) loop
-            Parsed_File := Parsed_File & (Get_Line (F) & Character'Val (10));
+            if Length (Parsed_File) > 0 then
+               Parsed_File :=
+                 Parsed_File & (Character'Val (10) & Get_Line (F));
+            else
+               Parsed_File := To_Unbounded_String (Get_Line (F));
+            end if;
          end loop;
       end Load_File;
 
@@ -105,9 +110,11 @@ package body Gnoga.Server.Template_Parser.Simple is
          end loop;
 
          Error_Queue_Data.Insert_Array (Error_Queue);
+         Error_Queue_Data.Variable_Name ("gnoga_errors");
          Replace_Values (Error_Queue_Data);
 
          Info_Queue_Data.Insert_Array (Info_Queue);
+         Info_Queue_Data.Variable_Name ("gnoga_infos");
          Replace_Values (Info_Queue_Data);
       end Parse_Data;
 

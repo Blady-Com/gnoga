@@ -35,6 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Text_IO;
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps;
 with Ada.Strings.Unbounded;
@@ -538,5 +539,23 @@ package body Gnoga.Server.Template_Parser is
    begin
       Info_Queue.Clear;
    end Clear_Info_Queue;
+
+   --------------------------
+   -- Write_String_To_File --
+   --------------------------
+
+   procedure Write_String_To_File (File_Name : String; Value : String) is
+      use Ada.Text_IO;
+
+      F : File_Type;
+   begin
+      Create (File => F,
+              Mode => Out_File,
+              Name => File_Name);
+
+      Put (F, Value);
+
+      Close (F);
+   end Write_String_To_File;
 
 end Gnoga.Server.Template_Parser;

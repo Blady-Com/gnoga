@@ -76,4 +76,5 @@ clean:
 	cd tutorial/tutorial-10 && gprclean
 	cd tutorial/tutorial-11 && gprclean
 	- cd bin && rm *.db
+	- cd bin && rm temp.txt
 	- cd js && rm -rf ace-builds

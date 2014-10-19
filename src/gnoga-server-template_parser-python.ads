@@ -38,21 +38,21 @@
 package Gnoga.Server.Template_Parser.Python is
 
    function Load_View (Name : String) return String;
-   --  Display named view with no passed data
+   --  Return named view with no passed data
 
    function Load_View (Name     : String;
                        Data_Map : Gnoga.Types.Data_Map_Type;
                        Var_Name : String := "data")
                        return String;
-   --  Display named view with data map
+   --  Return named view with data map
 
    function Load_View (Name : String; Data : View_Data)
                        return String;
-   --  Display named view with Data
+   --  Return named view with Data
 
    function Load_View (Name      : String;
                        Data_List : View_Data_Array)
                        return String;
-   --  Display named view with Data_List array of View_Data items
+   --  Return named view with Data_List array of View_Data items
 
 end Gnoga.Server.Template_Parser.Python;

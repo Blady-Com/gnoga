@@ -50,7 +50,8 @@ package Gnoga.Application.Singleton is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Host        : in     String  := "";
       Port        : in     Integer := 8080;
-      Boot        : in     String  := "boot.html");
+      Boot        : in     String  := "boot.html";
+      Verbose     : in     Boolean := True);
    --  Initialize applicaiton for single connection is Boot for bootstrap html.
    --  If Host = "" then will listen on all interfaces.
    --  Use Host = "locahost" to constrain to local use only.

@@ -87,12 +87,13 @@ package body Gnoga.Application.Singleton is
 
    procedure Initialize
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Host        : in  String  := "";
-      Port        : in  Integer := 8080;
-      Boot        : in  String  := "boot.html")
+      Host        : in     String  := "";
+      Port        : in     Integer := 8080;
+      Boot        : in     String  := "boot.html";
+      Verbose     : in     Boolean := True)
    is
    begin
-      Gnoga.Server.Connection.Initialize (Host, Port, Boot);
+      Gnoga.Server.Connection.Initialize (Host, Port, Boot, Verbose);
 
       Gnoga.Server.Connection.On_Connect_Handler
         (Event => On_Connect'Access);

@@ -61,10 +61,11 @@ package Gnoga.Application.Multi_Connect is
    --  Use: Connection.Hold;
 
    procedure Initialize
-     (Event : in Application_Connect_Event := null;
-      Host  : in String                    := "";
-      Port  : in Integer                   := 8080;
-      Boot  : in String                    := "boot.html");
+     (Event   : in Application_Connect_Event := null;
+      Host    : in String                    := "";
+      Port    : in Integer                   := 8080;
+      Boot    : in String                    := "boot.html";
+      Verbose : in Boolean                   := True);
    --  Initialize applicaiton for multiple connections using
    --  Event for the default Connection Handler and Boot for bootstrap html.
    --  If Host = "" then will listen on all interfaces.

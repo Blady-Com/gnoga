@@ -146,9 +146,10 @@ package body Gnoga.Server.Connection is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Host : in String  := "";
-                         Port : in Integer := 8080;
-                         Boot : in String  := "boot.html")
+   procedure Initialize (Host    : in String  := "";
+                         Port    : in Integer := 8080;
+                         Boot    : in String  := "boot.html";
+                         Verbose : in Boolean := True)
    is
    begin
       --  Setup server
@@ -158,15 +159,18 @@ package body Gnoga.Server.Connection is
 
       Boot_HTML := Ada.Strings.Unbounded.To_Unbounded_String ("/" & Boot);
 
-      Write_To_Console ("Application root :" & Application_Directory);
-      Write_To_Console ("Executable at    :" & Executable_Directory);
-      Write_To_Console ("HTML root        :" & HTML_Directory);
-      Write_To_Console ("Templates root   :" & Templates_Directory);
-      Write_To_Console ("/js  at          :" & JS_Directory);
-      Write_To_Console ("/css at          :" & CSS_Directory);
-      Write_To_Console ("/img at          :" & IMG_Directory);
+      if Verbose then
+         Write_To_Console ("Application root :" & Application_Directory);
+         Write_To_Console ("Executable at    :" & Executable_Directory);
+         Write_To_Console ("HTML root        :" & HTML_Directory);
+         Write_To_Console ("Templates root   :" & Templates_Directory);
+         Write_To_Console ("/js  at          :" & JS_Directory);
+         Write_To_Console ("/css at          :" & CSS_Directory);
+         Write_To_Console ("/img at          :" & IMG_Directory);
+         Write_To_Console ("Listening on     :" & Host & ":" &
+                             Left_Trim (Port'Img));
+      end if;
 
-      Write_To_Console ("Listening on " & Host & ":" & Left_Trim (Port'Img));
       AWS.Net.WebSocket.Registry.Register ("/gnoga",
                                            Socket_Type_Create'Access);
       AWS.Net.WebSocket.Registry.Control.Start;

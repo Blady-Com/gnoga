@@ -95,13 +95,18 @@ package body Gnoga.Application.Multi_Connect is
    ----------------
 
    procedure Initialize
-     (Event : in Application_Connect_Event := null;
-      Host  : in String                    := "";
-      Port  : in Integer                   := 8080;
-      Boot  : in String                    := "boot.html")
+     (Event   : in Application_Connect_Event := null;
+      Host    : in String                    := "";
+      Port    : in Integer                   := 8080;
+      Boot    : in String                    := "boot.html";
+      Verbose : in Boolean                   := True)
    is
    begin
-      Gnoga.Server.Connection.Initialize (Host, Port, Boot);
+      Gnoga.Server.Connection.Initialize (Host, Port, Boot, Verbose);
+
+      if Verbose then
+         Gnoga.Write_To_Console ("Press Ctrl-C to close server.");
+      end if;
 
       Gnoga.Server.Connection.On_Connect_Handler
         (Event => On_Connect'Access);

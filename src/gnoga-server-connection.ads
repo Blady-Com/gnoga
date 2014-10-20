@@ -41,12 +41,14 @@ with Gnoga.Gui.Base;
 
 package Gnoga.Server.Connection is
 
-   procedure Initialize (Host : in String  := "";
-                         Port : in Integer := 8080;
-                         Boot : in String  := "boot.html");
+   procedure Initialize (Host    : in String  := "";
+                         Port    : in Integer := 8080;
+                         Boot    : in String  := "boot.html";
+                         Verbose : in Boolean := True);
    --  Ininialize connections web server and dispatchers
    --  If Host = "" then will listen on all interfaces.
    --  Use Host = "locahost" to constrain to local use only.
+   --  If Verbose then display start up details.
 
    procedure Run (Wait_For_Q : in Boolean := True);
    --  Start webserer

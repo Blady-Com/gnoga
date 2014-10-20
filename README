@@ -17,6 +17,12 @@ sudo make install
 
 Look through the code in the tutorials and the snake demo to get a feel for how things work for now.
 
+Once you are ready, go to a directory and use:
+
+gnoga_make new My_App
+
+And it will generate a full project ready to go for your own application!
+
 see: DEPLOYING_APPS and DEVELOPING_APPS for some tips on Gnoga applications
 
 Gnoga has the following aspects to it:
@@ -24,12 +30,12 @@ Gnoga has the following aspects to it:
 1. The underlying communication platform between the Ada code and the browser
       Gnoga.Server.Connection
 
-2. Binding the DOM for later higher level development
+2. Binding to nearly the entire DOM for later higher level development
         Gnoga.Gui.Base (Not per se a binding of Node but takes its place)
         Gnoga.Gui.Element, Gnoga.Gui.Element.* (HTML Elements)
         Gnoga.Gui.Element.Canvas - HTML 5 Canvas bindings
-        Gnoga.Gui.Element.SVG - HTML SVG vector graphics - To Do
-        Gnoga.Gui.Element.Multimedia - HTML 5 Audio and Video - 70%
+        Gnoga.Gui.Element.SVG - HTML SVG vector graphics
+        Gnoga.Gui.Element.Multimedia - HTML 5 Audio and Video
         Gnoga.Gui.Element.Style - CSS Style blocks
         Gnoga.Gui.Window, Gnoga.Gui.Navigator, Gnoga.Gui.Screen,
         Gnoga.Gui.Location
@@ -46,19 +52,35 @@ Gnoga has the following aspects to it:
         Gnoga.Gui.Views.Docker - Dock child views to view sides
         Gnoga.Gui.Views.Card - Stacks of views
 
-5. Gnoga Application level APIs, like Logical access control systems, Security services and monitoring, etc.
+5. Gnoga Application APIs
        Gnoga.Client.Storage - local persistent and session storage on browser
+       Gnoga.Client.Bind_Page - Binding pre-made html5 pages
 
 6. Gnoga database bindings and server side APIs
       Gnoga.Server.Database - support for MySQL and SQLite 3
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
-      Gnoga.Serve.Template_Parser - Parse files using PHP and Python files
+      Gnoga.Serve.Template_Parser - Parse files with Tokens, PHP or Python
 
 7. Gnoga development tools
-	   Code generation for binding pre-made html5 pages
+      tool/gnoga_make - Generate application scaffolds
       Database tools for generating front ends, etc.
-	     - I already have a tool for creating delailed Active Data bindings
-	     - per tables, that will be added in the near future.
 	   IDE for Delphi/VB like development
 	   etc.
+      
+8. Plugins to other JavaScript libraries
+      Gnoga.Gui.Plugin.Ace_Editor - Full editor with Ada syntax highlighting
+      Gnoga.Gui.Plugin.jQuery - jQuery support to acces non-Gnoga Elements
+
+9. Native Desktop and Mobile Application Support
+      Expand on the existing support for Mac using MacGap
+      Create a simple WebKit frontend for Gtk to use on Linux or PC
+      Create a simple IE front end for PC
+
+10. Planned additions...
+     Floating dialogs all in Ada
+     Tree and accordian controls all in Ada
+     Cairo graphic engine support for Canvas, Img and SVG use.
+     Support for ODBC and PostgreSQL
+
+

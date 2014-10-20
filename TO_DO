@@ -19,9 +19,6 @@ Data View - View to display or setup for edit of Active_Record objects
 
 SVG DOM binding
 
-* Application
-
-Multiuser Application type with multiple levels of authentication / profiles
 
 * Server Side
 
@@ -31,8 +28,9 @@ Submit a canvas or img back to server
 
 * Server Side Tools
 
-Tool to generate skeleton projects, new widgets
-Tool to generate database table model files - done need to port in
+Extend gnoga_make to handle:
+	new_composite_widgets
+	new_controllers
 
 * Compiler side
 
@@ -66,6 +64,10 @@ Reporting widgets
 * Apps
 
 Delphi / VB like IDE in Gnoga itself
+
+* Application
+
+Multiuser Application type with multiple levels of authentication / profiles
 
 * Compiler side
 

@@ -101,6 +101,8 @@ package body Gnoga.Server.Template_Parser.Simple is
                Parsed_File := To_Unbounded_String (Get_Line (F));
             end if;
          end loop;
+
+         Close (F);
       end Load_File;
 
       procedure Parse_Data is

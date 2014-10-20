@@ -30,13 +30,17 @@ with Ada.Directories; use Ada.Directories;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Strings.Maps.Constants; use Ada.Strings.Maps.Constants;
 
+with GNAT.OS_Lib;
+
 with Gnoga.Server;
 with Gnoga.Server.Template_Parser.Simple;
 
 package body Gnoga_Make is
 
    Gnoga_Make_Templates : constant String :=
-                            Gnoga.Server.Templates_Directory & "gnoga_make/";
+                            Gnoga.Server.Templates_Directory &
+                            "gnoga_make" &
+                            GNAT.OS_Lib.Directory_Separator;
 
    -------------
    -- Version --

@@ -1,10 +1,13 @@
 prefix  =$(dir $(shell which gnatls))..
 INSTALL =/usr/bin/install -c
 
-all: gnoga tutorials snake
+all: gnoga gnoga_tools tutorials snake
 
 gnoga:
 	cd src && gprbuild -p -Pgnoga.gpr
+
+gnoga_tools:
+	cd tools && gprbuild -p -Ptools.gpr
 
 release:
 	cd src && gprbuild -p -Pgnoga.gpr -XPRJ_BUILD=Release
@@ -60,6 +63,7 @@ tutorials:
 
 clean:
 	cd src && gprclean -Pgnoga.gpr
+	cd tools && gprclean -Ptools.gpr
 	cd test && gprclean
 	cd demo/adablog && gprclean
 	cd demo/snake && gprclean

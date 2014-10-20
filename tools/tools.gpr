@@ -1,0 +1,19 @@
+with "../src/gnoga";
+with "../settings";
+
+project Tools is
+
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use "../obj";
+   for Exec_Dir use "../bin";
+   for Main use ("gnoga_make-main.adb");
+
+   package Compiler renames Settings.Compiler;
+
+   package Binder renames Settings.Binder;
+
+   package Builder is
+      for Executable ("gnoga_make-main.adb") use "gnoga_make";
+   end Builder;
+end Tools;

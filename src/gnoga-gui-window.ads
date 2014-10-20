@@ -115,6 +115,8 @@ package Gnoga.Gui.Window is
    --  Window_Type - Creation Methods
    -------------------------------------------------------------------------
 
+   Popup_Blocked : exception;
+
    procedure Launch (Window   : in out Window_Type;
                      Parent   : in out Window_Type'Class;
                      URL      : in     String;

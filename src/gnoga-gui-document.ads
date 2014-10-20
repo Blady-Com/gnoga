@@ -85,6 +85,11 @@ package Gnoga.Gui.Document is
    function Body_Element (Document : Document_Type)
                           return Gnoga.Gui.Element.Element_Access;
 
+   type Ready_State_Type is (Uninitialized, Loading, Interactive, Complete);
+
+   function Ready_State (Document : Document_Type)
+                         return Ready_State_Type;
+
    -------------------------------------------------------------------------
    --  Document_Type - Methods
    -------------------------------------------------------------------------

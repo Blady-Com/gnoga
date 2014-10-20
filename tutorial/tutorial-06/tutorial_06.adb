@@ -11,11 +11,11 @@ with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
+with Gnoga.Gui.Document;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.IFrame;
 
 procedure Tutorial_06 is
-
 
    type App_Data is new Gnoga.Types.Connection_Data_Type with
       record
@@ -65,6 +65,8 @@ procedure Tutorial_06 is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      use type Gnoga.Gui.Document.Ready_State_Type;
+
       App : App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
@@ -72,7 +74,6 @@ procedure Tutorial_06 is
       App.My_View.Create (Main_Window);
 
       App.My_Button.Create (App.My_View, "Close Popups");
-      App.My_Button.On_Click_Handler (On_Click'Unrestricted_Access);
 
       App.My_Exit.Create (App.My_View, "Exit Application");
       App.My_Exit.On_Click_Handler (On_Exit'Unrestricted_Access);
@@ -88,7 +89,7 @@ procedure Tutorial_06 is
       --  IFrame_Types are like any other element and can be styled, etc.
 
       App.My_Popup1.Launch (Parent   => Main_Window,
-                            URL      => "http://sourceforge.net/projects/gnoga/",
+                            URL      => "http://google.com",
                             Width    => 800,
                             Height   => 500,
                             Left     => 10,
@@ -113,8 +114,25 @@ procedure Tutorial_06 is
                             Tool_Bar => False,
                             Title    => False);
 
-      delay 1.0;
-      --  We need to wait for popup2 to load in order to be able to use it
+      App.My_Button.On_Click_Handler (On_Click'Unrestricted_Access);
+      --  We wait to add the On_Click_Handler to My_Button since if
+      --  Popups are blocked My_Popup and My_Popup2 will have not been
+      --  created and attempting to click them will raise an
+      --  Object_Was_Not_Created exception when tying to close them.
+
+      while
+        App.My_Popup2.Document.Ready_State /= Gnoga.Gui.Document.Complete or
+        App.My_Popup2.Width = 0
+      loop
+         delay 0.25;
+      end loop;
+      --  We need to make sure that popup2's contents is load in order to
+      --  be interact with its contents and that My_Popup2 has been created
+      --  by the browser. Although we could use My_Popup2 before the browser
+      --  displayed the window as long as the Ready_State is Complete,
+      --  My_PView will not be sized automatically to fit in to My_Popup2 since
+      --  there is no knowldege yet have the width of the new window delivered
+      --  by the browser.
 
       App.My_Popup2.Document.Title ("My Popup");
       App.My_PView.Create (App.My_Popup2);
@@ -128,6 +146,9 @@ procedure Tutorial_06 is
       App.My_PView.New_Line;
       App.My_PView.Put_Line
         ("Click the close popups buttons in the main window.");
+   exception
+      when Gnoga.Gui.Window.Popup_Blocked =>
+         Gnoga.Log ("Popups are being blocked on the browser");
    end On_Connect;
 
 begin

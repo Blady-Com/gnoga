@@ -153,6 +153,17 @@ package body Gnoga.Gui.Document is
       return Document.DOM_Body'Unrestricted_Access;
    end Body_Element;
 
+   -----------------
+   -- Ready_State --
+   -----------------
+
+   function Ready_State (Document : Document_Type)
+                         return Ready_State_Type
+   is
+   begin
+      return Ready_State_Type'Value (Document.Property ("readyState"));
+   end Ready_State;
+
    --------------
    -- Load_CSS --
    --------------

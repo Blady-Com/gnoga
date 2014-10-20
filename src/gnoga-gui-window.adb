@@ -549,6 +549,13 @@ package body Gnoga.Gui.Window is
            ".get(0).open ('" & URL & "', '_blank', '" & Params & "')",
          ID_Type       => Gnoga.Types.Gnoga_ID);
 
+      if
+        Gnoga.Server.Connection.Execute_Script
+          (Parent.Connection_ID, "gnoga['" & GID & "']") = "undefined"
+      then
+         raise Popup_Blocked;
+      end if;
+
       Window.DOM_Document.Attach
         (Parent.Connection_ID, GID, Gnoga.Types.Gnoga_ID);
 

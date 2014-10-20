@@ -136,13 +136,13 @@ package body Snake.Connection is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      if Key.Key_Code = 38 or Key.Key_Code = Character'Pos ('w') then
+      if Key.Key_Code = 38 or Key.Key_Code = Character'Pos ('W') then
          App.Snake_Direction := Up;
-      elsif Key.Key_Code = 37 or Key.Key_Code = Character'Pos ('a') then
+      elsif Key.Key_Code = 37 or Key.Key_Code = Character'Pos ('A') then
          App.Snake_Direction := Left;
-      elsif Key.Key_Code = 39 or Key.Key_Code = Character'Pos ('d') then
+      elsif Key.Key_Code = 39 or Key.Key_Code = Character'Pos ('D') then
          App.Snake_Direction := Right;
-      elsif Key.Key_Code = 40 or Key.Key_Code = Character'Pos ('s') then
+      elsif Key.Key_Code = 40 or Key.Key_Code = Character'Pos ('S') then
          App.Snake_Direction := Down;
       end if;
    end On_Key_Down;

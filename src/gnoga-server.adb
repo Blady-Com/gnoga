@@ -134,8 +134,21 @@ package body Gnoga.Server is
    -------------------------
 
    function Templates_Directory return String is
+      Dir  : String := Application_Directory & "templates" &
+               GNAT.OS_Lib.Directory_Separator;
+
+      Alt : String := Application_Directory & "share" &
+              GNAT.OS_Lib.Directory_Separator & "gnoga" &
+              GNAT.OS_Lib.Directory_Separator & "templates" &
+              GNAT.OS_Lib.Directory_Separator;
    begin
-      return Find_Subdirectory ("templates");
+      if Ada.Directories.Exists (Dir) then
+         return Dir;
+      elsif Ada.Directories.Exists (Alt) then
+         return Alt;
+      else
+         return Application_Directory;
+      end if;
    end Templates_Directory;
 
 end Gnoga.Server;

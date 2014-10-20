@@ -79,5 +79,8 @@ package Gnoga.Server is
 
    function Templates_Directory return String;
    --  Locates the templates directory for this application
+   --  If not in Application_Directory/templates, tries
+   --  Application_Directory/share/gnoga/templates, if not
+   --  uses Application_Directory
 
 end Gnoga.Server;

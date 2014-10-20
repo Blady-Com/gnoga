@@ -1,6 +1,3 @@
-prefix  =$(dir $(shell which gnatls))..
-INSTALL =/usr/bin/install -c
-
 all: gnoga gnoga_tools tutorials snake
 
 gnoga:
@@ -12,24 +9,13 @@ gnoga_tools:
 release:
 	cd src && gprbuild -p -Pgnoga.gpr -XPRJ_BUILD=Release
 
-install: release
+install: release gnoga_tools
 	cd src && gprinstall -f -p gnoga.gpr -XPRJ_BUILD=Release
+	cd tools && gprinstall -f -p --mode=usage tools.gpr
 
 uninstall:
-	cd src && gprinstall --uninstall gnoga.gpr
-
-old_install: release
-	$(INSTALL) -d $(prefix)/lib/gnoga
-	$(INSTALL) -d $(prefix)/include/gnoga
-
-	$(INSTALL) -m 444 src/gnoga-installed.gpr $(prefix)/lib/gnat/gnoga.gpr
-	$(INSTALL) -m 444 lib/* $(prefix)/lib/gnoga
-	$(INSTALL) -m 444 src/* $(prefix)/include/gnoga
-
-old_uninstall:
-	rm -rf $(prefix)/lib/gnoga
-	rm -rf $(prefix)/include/gnoga
-	rm -f $(prefix)/lib/gnat/gnoga.gpr
+	- cd src && gprinstall -f --uninstall gnoga.gpr
+	- cd tools && gprinstall -f --uninstall tools.gpr
 
 ace_editor:
 	cd js && git clone https://github.com/ajaxorg/ace-builds.git

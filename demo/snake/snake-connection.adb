@@ -26,11 +26,11 @@ package body Snake.Connection is
         (Main_Window,
          "<H1>" & Snake.Title & "</H1>" &
            "<br />" &
-           "<p>Use the arrow keys to move Sparky to pick up batteries.</p>" &
+           "<p>Use your kebyoard to move Sparky to pick up batteries.</p>" &
            "<i>Becareful...</i><br />" &
            "If sparky hits his tail he electrocutes himself to <b>death!!</b>" &
            "<br /><br />" &
-           "Use the keys a,w,s,d for direction keys.<br/><br/>");
+           "Use the arrow keys or a,w,s,d for direction keys.<br/><br/>");
       Main_Window.Set_View (Display);
       Display.Text_Alignment (Gnoga.Gui.Element.Center);
 
@@ -99,7 +99,7 @@ package body Snake.Connection is
       Context   : Context_2D_Type;
       Game_Over : Boolean;
    begin
-      App.Main_Window.On_Character_Handler (On_Key_Press'Access);
+      App.Main_Window.On_Key_Down_Handler (On_Key_Down'Access);
 
       App.Background.Create (Main_Window);
       App.Background.Background_Color ("orange");
@@ -131,21 +131,21 @@ package body Snake.Connection is
       end loop;
    end Start_Game;
 
-   procedure On_Key_Press (Object : in out Base_Type'Class;
-                           Key    : in     Character)
+   procedure On_Key_Down (Object : in out Base_Type'Class;
+                          Key    : in     Keyboard_Event_Record)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      if Key = 'w' or Key = 'W' then
+      if Key.Key_Code = 38 or Key.Key_Code = Character'Pos ('w') then
          App.Snake_Direction := Up;
-      elsif Key = 'a' or Key = 'A' then
+      elsif Key.Key_Code = 37 or Key.Key_Code = Character'Pos ('a') then
          App.Snake_Direction := Left;
-      elsif Key = 'd' or Key = 'D' then
+      elsif Key.Key_Code = 39 or Key.Key_Code = Character'Pos ('d') then
          App.Snake_Direction := Right;
-      elsif Key = 's' or Key = 'S' then
+      elsif Key.Key_Code = 40 or Key.Key_Code = Character'Pos ('s') then
          App.Snake_Direction := Down;
       end if;
-   end On_Key_Press;
+   end On_Key_Down;
 
    procedure Paint (Context   : in out Context_2D_Type;
                     App       : in     App_Access;

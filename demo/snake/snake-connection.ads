@@ -11,8 +11,8 @@ package Snake.Connection is
 
    procedure Start_Game (Main_Window : in out Window_Type'Class);
 
-   procedure On_Key_Press (Object : in out Base_Type'Class;
-                           Key    : in     Character);
+   procedure On_Key_Down (Object : in out Base_Type'Class;
+                          Key    : in     Keyboard_Event_Record);
 
    procedure On_Connect_Default
      (Main_Window : in out Window_Type'Class;

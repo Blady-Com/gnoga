@@ -37,6 +37,7 @@
 
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
+with Ada.Strings.Unbounded;
 
 package body Gnoga is
 
@@ -45,28 +46,30 @@ package body Gnoga is
    -------------------
 
    function Escape_Quotes (S : String) return String is
+      use type Ada.Strings.Unbounded.Unbounded_String;
+
+      function Translate_Character (C : Character) return String;
+
+      function Translate_Character (C : Character) return String is
+      begin
+         if C = '"' then
+            return "\x22";
+         elsif C = Character'Val (10) then
+            return "\x0A";
+         elsif C = Character'Val (13) then
+            return "\x0D";
+         else
+            return C & "";
+         end if;
+      end Translate_Character;
+
+      R : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      if S'Length = 0 then
-         return "";
-      else
-         declare
-            New_Char : Character := S (S'First);
-         begin
-            if New_Char = '"' then
-               return "\x22"
-                 & Escape_Quotes (S (S'First + 1 .. S'Last));
-            elsif New_Char = Character'Val (10) then
-               return "\x0A"
-                 & Escape_Quotes (S (S'First + 1 .. S'Last));
-            elsif New_Char = Character'Val (13) then
-               return "\x0D"
-                 & Escape_Quotes (S (S'First + 1 .. S'Last));
-            else
-               return New_Char
-                 & Escape_Quotes (S (S'First + 1 .. S'Last));
-            end if;
-         end;
-      end if;
+      for C in S'Range loop
+         R := R & Translate_Character (S (C));
+      end loop;
+
+      return Ada.Strings.Unbounded.To_String (R);
    end Escape_Quotes;
 
    ---------------

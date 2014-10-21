@@ -24,7 +24,11 @@
            = decodeURIComponent(tokens[2]);
      }
 
-     ws = new WebSocket ("ws://" + location.hostname + ":" + location.port + "/gnoga");
+     var adr = "ws://" + location.hostname;
+     if (location.port != "") { adr = adr + ":" + location.port; }
+     adr = adr + "/gnoga";
+
+     ws = new WebSocket (adr);
 
      if (ws != null) {
         ws.onmessage = function (event) {

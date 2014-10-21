@@ -947,12 +947,16 @@ package body Gnoga.Gui.Element is
                                Value   : in     String)
    is
    begin
-      Element.Property ("background-image", Value);
+      if Value = "" then
+         Element.Style ("background-image", "none");
+      else
+         Element.Style ("background-image", "url('" & Value & "')");
+      end if;
    end Background_Image;
 
    function Background_Image (Element : Element_Type) return String is
    begin
-      return Element.Property ("background-image");
+      return Element.Style ("background-image");
    end Background_Image;
 
    -------------------------
@@ -963,12 +967,12 @@ package body Gnoga.Gui.Element is
                                   Value   : in     String)
    is
    begin
-      Element.Property ("background-position", Value);
+      Element.Style ("background-position", Value);
    end Background_Position;
 
    function Background_Position (Element : Element_Type) return String is
    begin
-      return Element.Property ("background-position");
+      return Element.Style ("background-position");
    end Background_Position;
 
    -----------------------
@@ -979,12 +983,12 @@ package body Gnoga.Gui.Element is
                                 Value   : in     String)
    is
    begin
-      Element.Property ("background-origin", Value);
+      Element.Style ("background-origin", Value);
    end Background_Origin;
 
    function Background_Origin (Element : Element_Type) return String is
    begin
-      return Element.Property ("background-origin");
+      return Element.Style ("background-origin");
    end Background_Origin;
 
    -----------------------
@@ -995,12 +999,12 @@ package body Gnoga.Gui.Element is
                                 Value   : in     String)
    is
    begin
-      Element.Property ("background-repeat", Value);
+      Element.Style ("background-repeat", Value);
    end Background_Repeat;
 
    function Background_Repeat (Element : Element_Type) return String is
    begin
-      return Element.Property ("background-repeat");
+      return Element.Style ("background-repeat");
    end Background_Repeat;
 
    ---------------------
@@ -1011,12 +1015,12 @@ package body Gnoga.Gui.Element is
                               Value   : in     String)
    is
    begin
-      Element.Property ("background-clip", Value);
+      Element.Style ("background-clip", Value);
    end Background_Clip;
 
    function Background_Clip (Element : Element_Type) return String is
    begin
-      return Element.Property ("background-clip");
+      return Element.Style ("background-clip");
    end Background_Clip;
 
    ---------------------
@@ -1027,12 +1031,12 @@ package body Gnoga.Gui.Element is
                               Value   : in     String)
    is
    begin
-      Element.Property ("background-size", Value);
+      Element.Style ("background-size", Value);
    end Background_Size;
 
    function Background_Size (Element : Element_Type) return String is
    begin
-      return Element.Property ("background-size");
+      return Element.Style ("background-size");
    end Background_Size;
 
    ------------
@@ -1160,7 +1164,7 @@ package body Gnoga.Gui.Element is
 
    procedure Font (Element : in out Element_Type;
                    Family  : in     String            := "sans-serif";
-                   Height  : in     String            := "normal";
+                   Height  : in     String            := "medium";
                    Style   : in     Font_Style_Type   := Normal;
                    Weight  : in     Font_Weight_Type  := Weight_Normal;
                    Variant : in     Font_Variant_Type := Normal)
@@ -1168,7 +1172,8 @@ package body Gnoga.Gui.Element is
       W : String := Weight'Img;
    begin
       Element.Style ("font", Style'Img & " " & Variant'Img & " " &
-                       W (W'First + 7 .. W'Last) & Height & " " & Family);
+                       W (W'First + 7 .. W'Last) & " " & Height &
+                       " " & Family);
    end Font;
 
    procedure Font (Element     : in out Element_Type;

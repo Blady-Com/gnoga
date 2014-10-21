@@ -588,7 +588,7 @@ package Gnoga.Gui.Element is
 
    procedure Font (Element : in out Element_Type;
                    Family  : in     String            := "sans-serif";
-                   Height  : in     String            := "normal";
+                   Height  : in     String            := "medium";
                    Style   : in     Font_Style_Type   := Normal;
                    Weight  : in     Font_Weight_Type  := Weight_Normal;
                    Variant : in     Font_Variant_Type := Normal);

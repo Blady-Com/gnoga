@@ -103,7 +103,7 @@ procedure Tutorial_06 is
       --  but we will set them anyways.
 
       App.My_Popup2.Launch (Parent   => Main_Window,
-                            URL      => "",
+                            URL      => "/no_boot.html",
                             Width    => 500,
                             Height   => 500,
                             Left     => 50,
@@ -113,6 +113,8 @@ procedure Tutorial_06 is
                             Status   => False,
                             Tool_Bar => False,
                             Title    => False);
+      --  In order to avoid popup blocking issues on some browsers we need
+      --  to make sure we pass in a URL on the same host.
 
       App.My_Button.On_Click_Handler (On_Click'Unrestricted_Access);
       --  We wait to add the On_Click_Handler to My_Button since if

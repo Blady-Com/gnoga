@@ -545,9 +545,13 @@ package body Gnoga.Gui.Window is
       Window.Create_With_Script
         (Connection_ID => Parent.Connection_ID,
          ID            => GID,
-         Script        => "gnoga['" & GID & "']=" & Parent.jQuery &
-           ".get(0).open ('" & URL & "', '_blank', '" & Params & "')",
+         Script        => "gnoga['" & GID & "']=window.open ('" & URL &
+           "', '" & GID & "', '" & Params & "')",
          ID_Type       => Gnoga.Types.Gnoga_ID);
+
+      delay 0.25;
+      --  Needed for Firefox or there is a race condition with the value of
+      --  gnoga['" & GID & "']. Popups are nasty, they should be avoided.
 
       if
         Gnoga.Server.Connection.Execute_Script

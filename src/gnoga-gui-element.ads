@@ -603,12 +603,12 @@ package Gnoga.Gui.Element is
    --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
    --  in rtl languages At_Start = Right, and To_End = Left.
 
-   type Baseline_Type is (Alphabetic, Top, Hanging, Middle,
-                          Ideographic, Bottom);
+   type Vertical_Align_Type is (Baseline, Sub, Super, Top, Middle, Bottom,
+                                Text_Top, Text_Bottom);
 
-   procedure Text_Baseline (Element : in out Element_Type;
-                            Value   : in     Baseline_Type);
-   --  Baseline used when drawing text
+   procedure Vertical_Align (Element : in out Element_Type;
+                             Value   : in     Vertical_Align_Type);
+   --  Vertical alignment of text
 
    --  General Access to Element --
 

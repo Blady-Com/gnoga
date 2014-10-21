@@ -1209,16 +1209,22 @@ package body Gnoga.Gui.Element is
       end case;
    end Text_Alignment;
 
-   -------------------
-   -- Text_Baseline --
-   -------------------
+   --------------------
+   -- Vertical_Align --
+   --------------------
 
-   procedure Text_Baseline (Element : in out Element_Type;
-                            Value   : in     Baseline_Type)
+   procedure Vertical_Align (Element : in out Element_Type;
+                             Value   : in     Vertical_Align_Type)
    is
    begin
-      Element.Style ("text-baseline", Value'Img);
-   end Text_Baseline;
+      if Value = Text_Top then
+         Element.Style ("vertical-align", "text-top");
+      elsif Value = Text_Bottom then
+         Element.Style ("vertical-align", "text-bottom");
+      else
+         Element.Style ("vertical-align", Value'Img);
+      end if;
+   end Vertical_Align;
 
    -----------------
    -- First_Child --

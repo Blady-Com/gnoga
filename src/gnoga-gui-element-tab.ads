@@ -68,10 +68,10 @@ package Gnoga.Gui.Element.Tab is
    --  Tab_Types - Methods
    -------------------------------------------------------------------------
 
-   procedure Add_Tab (Tab     : in out Tab_Type;
-                      Card    : in     String;
-                      Label   : in     String;
-                     Selected : in     Boolean := False);
+   procedure Add_Tab (Tab      : in out Tab_Type;
+                      Card     : in     String;
+                      Label    : in     String;
+                      Selected : in     Boolean := False);
    --  Tabs can also be added using Tab_Item_Types
 
    procedure Select_Tab (Tab  : in out Tab_Type;

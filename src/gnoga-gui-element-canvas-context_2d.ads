@@ -153,6 +153,9 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
    --  in rtl languages At_Start = Right, and To_End = Left.
 
+   type Baseline_Type is (Alphabetic, Top, Hanging, Middle,
+                          Ideographic, Bottom);
+
    procedure Text_Baseline (Context : in out Context_2D_Type;
                             Value   : in     Baseline_Type);
    --  Baseline used when drawing text

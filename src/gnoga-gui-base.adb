@@ -97,8 +97,12 @@ package body Gnoga.Gui.Base is
       end Split;
 
       function Split return Integer is
+         S : String := Split;
       begin
-         return Integer'Value (Split);
+         return Integer'Value (S);
+      exception
+         when Constraint_Error =>
+            return Integer (Float'Value (S));
       end Split;
 
       function Split return Boolean is

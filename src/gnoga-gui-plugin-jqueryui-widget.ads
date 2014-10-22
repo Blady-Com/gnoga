@@ -38,7 +38,14 @@
 package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    -------------------------------------------------------------------------
-   --  jQueryUI Widgets
+   --  jQueryUI Menus
+   -------------------------------------------------------------------------
+
+   procedure Make_Menu
+     (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class);
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Tool Tips
    -------------------------------------------------------------------------
 
    procedure Turn_On_Tool_Tips

@@ -37,6 +37,16 @@
 
 package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
+   ---------------
+   -- Make_Menu --
+   ---------------
+
+   procedure Make_Menu
+     (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class)
+   is
+   begin
+      List.jQuery_Execute ("menu()");
+   end Make_Menu;
    -----------------------
    -- Turn_On_Tool_Tips --
    -----------------------

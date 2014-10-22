@@ -25,6 +25,8 @@ procedure jDemo is
          Box2        : Common.DIV_Type;
          Sorter      : aliased List.Ordered_List_Type;
          Button      : Common.Button_Type;
+         Menu        : aliased List.Unordered_List_Type;
+         Sub_Menu    : aliased List.Unordered_List_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -55,6 +57,12 @@ procedure jDemo is
       jQueryUI.Toggle_With_Effect (Element            => App.Box,
                                    Effect_Name        => "explode");
    end On_Click;
+
+   procedure On_Menu_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Console.Put_Line ("Menu Clicked - " & Element_Type (Object).Text);
+   end On_Menu_Click;
 
    procedure On_Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
                       Event     : in     String;
@@ -94,6 +102,7 @@ procedure jDemo is
 
 
       App.Sorter.Create (App.Console);
+
       List.List_Item_Access
         (App.Sorter.New_Element
            ("1", new List.List_Item_Type)).Create (App.Sorter, "Item 1");
@@ -120,6 +129,60 @@ procedure jDemo is
       App.Box2.Border;
       jQueryUI.Make_Droppable (App.Box2);
       App.Box2.On_Message_Handler (On_Drop'Unrestricted_Access);
+
+      App.Menu.Create (App.Console);
+
+      List.List_Item_Access
+        (App.Menu.New_Element
+           ("1", new List.List_Item_Type)).Create (App.Menu, "Item 1");
+      List.List_Item_Access (App.Menu.Element ("1")).Value ("4");
+
+      App.Menu.Element ("1").On_Click_Handler
+        (On_Menu_Click'Unrestricted_Access);
+
+      List.List_Item_Access
+        (App.Menu.New_Element
+           ("2", new List.List_Item_Type)).Create (App.Menu, "Item 2");
+
+      App.Menu.Element ("2").On_Click_Handler
+        (On_Menu_Click'Unrestricted_Access);
+
+      List.List_Item_Access
+        (App.Menu.New_Element
+           ("3", new List.List_Item_Type)).Create (App.Menu, "Item 3");
+
+      App.Menu.Element ("3").On_Click_Handler
+        (On_Menu_Click'Unrestricted_Access);
+
+      App.Sub_Menu.Create (App.Menu.Element ("2").all);
+      App.Sub_Menu.Place_Inside_Bottom_Of (App.Menu.Element ("2").all);
+
+      List.List_Item_Access
+        (App.Sub_Menu.New_Element
+           ("1", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 1");
+      List.List_Item_Access (App.Sub_Menu.Element ("1")).Value ("4");
+
+      App.Sub_Menu.Element ("1").On_Click_Handler
+        (On_Menu_Click'Unrestricted_Access);
+
+      List.List_Item_Access
+        (App.Sub_Menu.New_Element
+           ("2", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 2");
+
+      App.Sub_Menu.Element ("2").On_Click_Handler
+        (On_Menu_Click'Unrestricted_Access);
+
+      List.List_Item_Access
+        (App.Sub_Menu.New_Element
+           ("3", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 3");
+
+      App.Sub_Menu.Element ("3").On_Click_Handler
+        (On_Menu_Click'Unrestricted_Access);
+
+      jQueryUI.Widget.Make_Menu (App.Menu);
+      App.Menu.Width (100);
+      App.Sub_Menu.Width (100);
+      jQueryUI.Position (App.Menu, App.Console);
    end On_Connect;
 
 begin

@@ -36,21 +36,292 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with Ada.Strings.Fixed;
 
 with Gnoga.Server.Connection;
 
+with Gnoga.Gui.Element.Style_Block;
+
 package body Gnoga.Gui.Plugin.jQueryUI is
+
+   procedure jQueryUI_Effect
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Effect_Method      : in     String;
+      Effect_Name        : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing";
+      Options            : in     String  := "");
+   --  Apply Effect_Method using these parameters to Element
+
+   -------------------
+   -- Load_jQueryUI --
+   -------------------
 
    procedure Load_jQueryUI
      (Window : in out Gnoga.Gui.Window.Window_Type'Class)
    is
+      Delay_Count : Natural := 0;
    begin
       Window.Document.Head_Element.jQuery_Execute
-        ("<link rel=""stylesheet"" href=""//ajax.googleapis.com/ajax/libs/" &
-           "jqueryui/1.11.2/themes/smoothness/jquery-ui.css"" />");
+        ("append ('<link rel=""stylesheet"" " &
+           "href=""//ajax.googleapis.com/ajax/libs/" &
+           "jqueryui/1.11.2/themes/smoothness/jquery-ui.css"" />')");
       Window.Document.Head_Element.jQuery_Execute
-        ("<script src=""//ajax.googleapis.com/ajax/libs/" &
+        ("append ('<script src=""//ajax.googleapis.com/ajax/libs/" &
            "jqueryui/1.11.2/jquery-ui.min.js""></script>')");
+
+      while
+        Gnoga.Server.Connection.Execute_Script
+          (Window.Connection_ID, "$.ui") = "undefined"
+        or Delay_Count > 10
+      loop
+         delay 0.25;
+      end loop;
+
+      if Delay_Count > 10 then
+         raise Failed_To_Load_jQueryUI;
+      end if;
    end Load_jQueryUI;
+
+   --------------------
+   -- Make_Draggable --
+   --------------------
+
+   procedure Make_Draggable
+     (Element : in out Gnoga.Gui.Element.Element_Type'Class)
+   is
+   begin
+      Element.jQuery_Execute ("draggable()");
+   end Make_Draggable;
+
+   --------------------
+   -- Make_Droppable --
+   --------------------
+
+   procedure Make_Droppable
+     (Element : in out Gnoga.Gui.Element.Element_Type'Class)
+   is
+      US : constant String := Element.Unique_ID'Img;
+
+      Full_Message : constant String := US (US'First + 1 .. US'Last) &
+        "|" & jQuery_Dropped_Event_Name & "|" & Element.ID;
+   begin
+      Element.jQuery_Execute
+        ("droppable({ drop: function(event, ui) {" &
+           "ws.send (""" & Escape_Quotes (Full_Message) & """);}})");
+   end Make_Droppable;
+
+   --------------------
+   -- Make_Resizable --
+   --------------------
+
+   procedure Make_Resizable
+     (Element : in out Gnoga.Gui.Element.Element_Type'Class)
+   is
+   begin
+      Element.jQuery_Execute ("resizable()");
+   end Make_Resizable;
+
+   -------------------
+   -- Make_Sortable --
+   -------------------
+
+   procedure Make_Sortable
+     (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class)
+   is
+   begin
+      List.jQuery_Execute ("sortable()");
+   end Make_Sortable;
+
+   ---------------------
+   -- Make_Selectable --
+   ---------------------
+
+   procedure Make_Selectable
+     (List            : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class;
+      Selecting_Color : in     String := "#ccc";
+      Selected_Color  : in     String := "#999")
+   is
+      S : Gnoga.Gui.Element.Style_Block.Style_Type;
+   begin
+      S.Create (List.Parent.all,
+                "#" & List.ID & " .ui-selecting { background: " &
+                  Selecting_Color & "; } " &
+                  "#" & List.ID & " .ui-selected { background: " &
+                  Selected_Color & "; } ");
+
+      List.jQuery_Execute ("selectable()");
+   end Make_Selectable;
+
+   -----------------
+   -- Is_Selected --
+   -----------------
+
+   function Is_Selected (Item : Gnoga.Gui.Element.List.List_Item_Type'Class)
+                         return Boolean
+   is
+   begin
+      return Ada.Strings.Fixed.Index (Item.Class_Name, "ui-selected") > 0;
+   end Is_Selected;
+
+   -----------------------------
+   -- Add_Class_Name_Animated --
+   -----------------------------
+
+   procedure Add_Class_Name_Animated
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Class_Name         : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing")
+   is
+   begin
+      Element.jQuery_Execute ("addClass(""" & Class_Name & """," &
+                                Animation_Duration'Img & ",""" &
+                                Easing & """)");
+   end Add_Class_Name_Animated;
+
+   --------------------------------
+   -- Remove_Class_Name_Animated --
+   --------------------------------
+
+   procedure Remove_Class_Name_Animated
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Class_Name         : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing")
+   is
+   begin
+      Element.jQuery_Execute ("removeClass(""" & Class_Name & """," &
+                                Animation_Duration'Img & ",""" &
+                                Easing & """)");
+   end Remove_Class_Name_Animated;
+
+   --------------------------------
+   -- Toggle_Class_Name_Animated --
+   --------------------------------
+
+   procedure Toggle_Class_Name_Animated
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Class_Name         : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing")
+   is
+   begin
+      Element.jQuery_Execute ("toggleClass(""" & Class_Name & """," &
+                                Animation_Duration'Img & ",""" &
+                                Easing & """)");
+   end Toggle_Class_Name_Animated;
+
+   --------------------------------
+   -- Switch_Class_Name_Animated --
+   --------------------------------
+
+   procedure Switch_Class_Name_Animated
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Old_Class_Name     : in     String;
+      New_Class_Name     : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing")
+   is
+   begin
+      Element.jQuery_Execute ("switchClass(""" & Old_Class_Name & """,""" &
+                                New_Class_Name & """," &
+                                Animation_Duration'Img & ",""" &
+                                Easing & """)");
+   end Switch_Class_Name_Animated;
+
+   ---------------------
+   -- jQueryUI_Effect --
+   ---------------------
+
+   procedure jQueryUI_Effect
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Effect_Method      : in     String;
+      Effect_Name        : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing";
+      Options            : in     String  := "")
+   is
+      function Has_Options return String;
+
+      function Has_Options return String is
+      begin
+         if Options /= "" then
+            return ", " & Escape_Quotes (Options);
+         else
+            return "";
+         end if;
+      end Has_Options;
+   begin
+      Element.jQuery_Execute (Effect_Method &
+                                "(""" & Effect_Name & """," &
+                                "{ easing: """ & Easing & """" &
+                                Has_Options & " }," &
+                                Animation_Duration'Img & ")");
+   end jQueryUI_Effect;
+
+   ------------------
+   -- Apply_Effect --
+   ------------------
+
+   procedure Apply_Effect
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Effect_Name        : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing";
+      Options            : in     String  := "")
+   is
+   begin
+      jQueryUI_Effect (Element, "effect", Effect_Name, Animation_Duration,
+                       Easing, Options);
+   end Apply_Effect;
+
+   ------------------------
+   -- Toggle_With_Effect --
+   ------------------------
+
+   procedure Toggle_With_Effect
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Effect_Name        : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing";
+      Options            : in     String  := "")
+   is
+   begin
+      jQueryUI_Effect (Element, "toggle", Effect_Name, Animation_Duration,
+                       Easing, Options);
+   end Toggle_With_Effect;
+
+   ----------------------
+   -- Show_With_Effect --
+   ----------------------
+
+   procedure Show_With_Effect
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Effect_Name        : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing";
+      Options            : in     String  := "")
+   is
+   begin
+      jQueryUI_Effect (Element, "show", Effect_Name, Animation_Duration,
+                       Easing, Options);
+   end Show_With_Effect;
+
+   ----------------------
+   -- Hide_With_Effect --
+   ----------------------
+
+   procedure Hide_With_Effect
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Effect_Name        : in     String;
+      Animation_Duration : in     Natural := 400;
+      Easing             : in     String  := "swing";
+      Options            : in     String  := "")
+   is
+   begin
+      jQueryUI_Effect (Element, "hide", Effect_Name, Animation_Duration,
+                       Easing, Options);
+   end Hide_With_Effect;
 
 end Gnoga.Gui.Plugin.jQueryUI;

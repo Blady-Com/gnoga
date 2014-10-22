@@ -107,7 +107,7 @@ package body Gnoga.Gui.Element.List is
    ------------
 
    procedure Create
-     (Item   : in out Line_Item_Type;
+     (Item   : in out List_Item_Type;
       Parent : in out Ordered_List_Type'Class;
       Text   : in     String := "";
       ID     : in     String := "")
@@ -121,12 +121,12 @@ package body Gnoga.Gui.Element.List is
    -- Value --
    -----------
 
-   procedure Value (Element : in out Line_Item_Type; Value : in String) is
+   procedure Value (Element : in out List_Item_Type; Value : in String) is
    begin
       Element.Property ("value", Value);
    end Value;
 
-   function Value (Element : Line_Item_Type) return String is
+   function Value (Element : List_Item_Type) return String is
    begin
       return Element.Property ("value");
    end Value;

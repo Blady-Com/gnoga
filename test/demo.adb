@@ -252,8 +252,8 @@ procedure Demo is
          ul1.Class_Name ("test_class");
 
          for i in 1 .. 3 loop
-            List.Line_Item_Access
-              (ul1.Add (new List.Line_Item_Type)).Create (ul1.all, i'img);
+            List.List_Item_Access
+              (ul1.Add (new List.List_Item_Type)).Create (ul1.all, i'img);
          end loop;
       end;
 

@@ -105,18 +105,18 @@ package Gnoga.Gui.Element.List is
    --  Create an unordered (by default) bullet/disc list
 
    -------------------------------------------------------------------------
-   --  Line_Item_Types
+   --  List_Item_Types
    -------------------------------------------------------------------------
 
-   type Line_Item_Type is new Gnoga.Gui.Element.Element_Type with private;
-   type Line_Item_Access is access all Line_Item_Type;
-   type Pointer_To_Line_Item_Class is access all Line_Item_Type'Class;
+   type List_Item_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type List_Item_Access is access all List_Item_Type;
+   type Pointer_To_List_Item_Class is access all List_Item_Type'Class;
 
    -------------------------------------------------------------------------
-   --  Line_Item_Type - Creation Methods
+   --  List_Item_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Item   : in out Line_Item_Type;
+   procedure Create (Item   : in out List_Item_Type;
                      Parent : in out Ordered_List_Type'Class;
                      Text   : in     String := "";
                      ID     : in     String := "");
@@ -124,11 +124,11 @@ package Gnoga.Gui.Element.List is
    --  Unordered_List_Type
 
    -------------------------------------------------------------------------
-   --  Line_Item_Type - Properties
+   --  List_Item_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Value (Element : in out Line_Item_Type; Value : in String);
-   function Value (Element : Line_Item_Type) return String;
+   procedure Value (Element : in out List_Item_Type; Value : in String);
+   function Value (Element : List_Item_Type) return String;
    --  Ordered list value, List_Item_Types added following set of Value will
    --  follow in order.
 
@@ -189,7 +189,7 @@ private
    type Ordered_List_Type is
      new Gnoga.Gui.View.View_Base_Type with null record;
    type Unordered_List_Type is new Ordered_List_Type with null record;
-   type Line_Item_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type List_Item_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Definition_List_Type is
      new Gnoga.Gui.View.View_Base_Type with null record;
    type Term_Type is new Gnoga.Gui.Element.Element_Type with null record;

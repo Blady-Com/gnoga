@@ -1267,6 +1267,28 @@ package body Gnoga.Gui.Element is
    --  Element_Type - Methods
    -------------------------------------------------------------------------
 
+   procedure Add_Class (Element : in out Element_Type; Class_Name : in String)
+   is
+   begin
+      Element.jQuery_Execute ("addClass(" & Escape_Quotes (Class_Name) & ")");
+   end Add_Class;
+
+   procedure Remove_Class (Element    : in out Element_Type;
+                           Class_Name : in     String)
+   is
+   begin
+      Element.jQuery_Execute
+        ("removeClass(" & Escape_Quotes (Class_Name) & ")");
+   end Remove_Class;
+
+   procedure Toggle_Class (Element    : in out Element_Type;
+                           Class_Name : in     String)
+   is
+   begin
+      Element.jQuery_Execute
+        ("toggleClass(" & Escape_Quotes (Class_Name) & ")");
+   end Toggle_Class;
+
    -------------------------
    -- Place_Inside_Top_Of --
    -------------------------

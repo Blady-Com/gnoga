@@ -192,6 +192,8 @@ package Gnoga.Gui.Element is
    procedure Class_Name (Element : in out Element_Type; Value : in String);
    function Class_Name (Element : Element_Type) return String;
    --  CSS Class name, can be multiple seperated by <space>
+   --  See Add_Class, Remove_Class and Toggle_Class Methods for adding and
+   --  removing individual classes.
 
    procedure Editable (Element : in out Element_Type;
                        Value   : in     Boolean := True);
@@ -647,6 +649,19 @@ package Gnoga.Gui.Element is
    -------------------------------------------------------------------------
    --  Element_Type - Methods
    -------------------------------------------------------------------------
+
+   -- Methods on Properties --
+
+   procedure Add_Class (Element : in out Element_Type; Class_Name : in String);
+   --  Adds one or more Class_Name(s) to Element
+
+   procedure Remove_Class (Element    : in out Element_Type;
+                           Class_Name : in     String);
+   --  Removes one or more Class_Name(s) to Element
+
+   procedure Toggle_Class (Element    : in out Element_Type;
+                           Class_Name : in     String);
+   --  Toggles on and off one or more Class_Name(s) to Element
 
    -- DOM Placement Methods --
 

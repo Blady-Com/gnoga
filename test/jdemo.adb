@@ -8,6 +8,7 @@ with Gnoga.Gui.Element.List;
 with Gnoga.Types;
 
 with Gnoga.Gui.Plugin.jQueryUI;
+with Gnoga.Gui.Plugin.jQueryUI.Widget;
 
 procedure jDemo is
    use Gnoga;
@@ -81,13 +82,15 @@ procedure jDemo is
 
       jQueryUI.Load_jQueryUI (Main_Window);
 
+      jQueryUI.Widget.Turn_On_Tool_Tips (Main_Window);
+
       App.Console.Create (Main_Window);
 
       App.Box.Create (App.Console);
       App.Box.Put_Line ("Drag me around!");
       App.Box.Width (200);
       App.Box.Border;
-      jQueryUI.Position (App.Box, 500, 500, Using_My => "left top");
+      jQueryUI.Position (App.Box, 10, 10, Using_My => "left top");
 
 
       App.Sorter.Create (App.Console);
@@ -111,6 +114,7 @@ procedure jDemo is
 
       App.Button.Create (App.Console, "Click Me");
       App.Button.On_Click_Handler (On_Click'Unrestricted_Access);
+      jQueryUI.Widget.Add_Tool_Tip (App.Button, "I do all sorts of stuff");
 
       App.Box2.Create (App.Console, "Drop on me");
       App.Box2.Border;

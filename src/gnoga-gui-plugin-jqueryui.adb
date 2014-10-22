@@ -354,8 +354,8 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Element.jQuery_Execute ("position({" &
                                 "my: """ & Using_My & """," &
                                 "of: new MouseEvent ('click'," &
-                                " {'pageX':" & X'Img & "," &
-                                "  'pageY':" & Y'Img & "," &
+                                " {'clientX':" & X'Img & "," &
+                                "  'clientY':" & Y'Img & "," &
                                 "  'view': window}), " &
                                 "collision: """ & On_Collision & """" &
                                 "});");

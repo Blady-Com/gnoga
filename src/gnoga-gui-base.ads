@@ -600,6 +600,9 @@ package Gnoga.Gui.Base is
 
    function Script_Accessor (ID : String; ID_Type : Gnoga.Types.ID_Enumeration)
                              return String;
+   --  General utility for calculating te Script Accessor of an ID based on
+   --  ID_Type
+
    function Script_Accessor (Object : Base_Type) return String;
    --  Returns the script representation for ID. For DOM_ID '#ID' for
    --  Script 'ID'

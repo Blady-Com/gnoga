@@ -85,7 +85,10 @@ procedure jDemo is
 
       App.Box.Create (App.Console);
       App.Box.Put_Line ("Drag me around!");
+      App.Box.Width (200);
       App.Box.Border;
+      jQueryUI.Position (App.Box, 500, 500, Using_My => "left top");
+
 
       App.Sorter.Create (App.Console);
       List.List_Item_Access

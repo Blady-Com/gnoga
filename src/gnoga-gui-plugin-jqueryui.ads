@@ -36,18 +36,23 @@
 ------------------------------------------------------------------------------
 
 with Gnoga.Gui.Window;
+with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.List;
 
 package Gnoga.Gui.Plugin.jQueryUI is
 
    -------------------------------------------------------------------------
-   --  jQueryUI_Type
+   --  jQueryUI Plug In
    -------------------------------------------------------------------------
    --  http://jQueryUI.com
    --  Binding to jQueryUI
 
    Failed_To_Load_jQueryUI : exception;
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Library
+   -------------------------------------------------------------------------
 
    procedure Load_jQueryUI
      (Window : in out Gnoga.Gui.Window.Window_Type'Class);
@@ -55,6 +60,10 @@ package Gnoga.Gui.Plugin.jQueryUI is
    --  This proceure loads them from Google's CDN
    --  You can also modify boot.html to include the jQueryUI CSS
    --  and scripting code so that you can customize themes, etc.
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Interactions
+   -------------------------------------------------------------------------
 
    procedure Make_Draggable
      (Element : in out Gnoga.Gui.Element.Element_Type'Class);
@@ -80,6 +89,10 @@ package Gnoga.Gui.Plugin.jQueryUI is
 
    function Is_Selected (Item : Gnoga.Gui.Element.List.List_Item_Type'Class)
                          return Boolean;
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Effects
+   -------------------------------------------------------------------------
 
    procedure Add_Class_Name_Animated
      (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
@@ -133,4 +146,23 @@ package Gnoga.Gui.Plugin.jQueryUI is
       Animation_Duration : in     Natural := 400;
       Easing             : in     String  := "swing";
       Options            : in     String  := "");
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Utilities
+   -------------------------------------------------------------------------
+
+   procedure Position
+     (Element      : in out Gnoga.Gui.Element.Element_Type'Class;
+      Target       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Using_My     : in     String := "center";
+      At_Target    : in     String := "center";
+      On_Collision : in     String := "flip");
+
+   procedure Position
+     (Element      : in out Gnoga.Gui.Element.Element_Type'Class;
+      X, Y         : in     Integer;
+      Using_My     : in     String := "center";
+      On_Collision : in     String := "flip");
+   --  Position Element at target location of X,Y (page coordinates)
+
 end Gnoga.Gui.Plugin.jQueryUI;

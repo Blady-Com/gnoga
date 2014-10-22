@@ -324,4 +324,41 @@ package body Gnoga.Gui.Plugin.jQueryUI is
                        Easing, Options);
    end Hide_With_Effect;
 
+   --------------
+   -- Position --
+   --------------
+
+   procedure Position
+     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
+      Target             : in out Gnoga.Gui.Base.Base_Type'Class;
+      Using_My           : in     String := "center";
+      At_Target          : in     String := "center";
+      On_Collision       : in     String := "flip")
+   is
+   begin
+      Element.jQuery_Execute ("position({" &
+                                "my: """ & Using_My & """," &
+                                "at: """ & At_Target & """," &
+                                "of: " & Target.jQuery & "," &
+                                "collision: """ & On_Collision & """" &
+                                "});");
+   end Position;
+
+   procedure Position
+     (Element      : in out Gnoga.Gui.Element.Element_Type'Class;
+      X, Y         : in     Integer;
+      Using_My     : in     String := "center";
+      On_Collision : in     String := "flip")
+   is
+   begin
+      Element.jQuery_Execute ("position({" &
+                                "my: """ & Using_My & """," &
+                                "of: new MouseEvent ('click'," &
+                                " {'pageX':" & X'Img & "," &
+                                "  'pageY':" & Y'Img & "," &
+                                "  'view': window}), " &
+                                "collision: """ & On_Collision & """" &
+                                "});");
+   end Position;
+
 end Gnoga.Gui.Plugin.jQueryUI;

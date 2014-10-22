@@ -44,7 +44,7 @@ Gnoga has the following aspects to it:
 3. Application startup and services
         Gnoga.Server.Application.Singleton - Desktop apps
         Gnoga.Server.Application.Multi_Connect - Multiuser / Web apps
-        
+
 
 4. Gnoga Specific higher level containers and GUI widgets
         Gnoga.Gui.Views.* - Auto layout of child elements and basis for future
@@ -65,12 +65,13 @@ Gnoga has the following aspects to it:
 7. Gnoga development tools
       tool/gnoga_make - Generate application scaffolds
       Database tools for generating front ends, etc.
-	   IDE for Delphi/VB like development
-	   etc.
-      
+      IDE for Delphi/VB like development
+      etc.
+
 8. Plugins to other JavaScript libraries
       Gnoga.Gui.Plugin.Ace_Editor - Full editor with Ada syntax highlighting
       Gnoga.Gui.Plugin.jQuery - jQuery support to acces non-Gnoga Elements
+      Gnoga.Gui.Plugin.jQueryUI - all the JQueryUI Interactions and Effects
 
 9. Native Desktop and Mobile Application Support
       Expand on the existing support for Mac using MacGap
@@ -82,5 +83,3 @@ Gnoga has the following aspects to it:
      Tree and accordian controls all in Ada
      Cairo graphic engine support for Canvas, Img and SVG use.
      Support for ODBC and PostgreSQL
-
-

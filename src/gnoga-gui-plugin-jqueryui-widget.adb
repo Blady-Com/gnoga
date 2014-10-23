@@ -37,16 +37,57 @@
 
 package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
+   -------------
+   --  Create --
+   -------------
+
+   overriding
+   procedure Create
+     (View    : in out Accordion_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "")
+   is
+   begin
+      Gnoga.Gui.View.View_Type (View).Create (Parent, Attach, ID);
+   end Create;
+
+   procedure Create_Section
+     (View : in out Accordion_Type; Heading : String)
+   is
+   begin
+      View.Put_HTML ("<h3>" & Escape_Quotes (Heading) & "</h3>");
+   end Create_Section;
+
+   procedure Render_Accordion
+     (View           : in out Accordion_Type;
+      Allow_Collapse : in     Boolean := False)
+   is
+      function params return String;
+
+      function params return String is
+      begin
+         if Allow_Collapse = False then
+            return "";
+         else
+            return "{ collapsible: true }";
+         end if;
+      end params;
+   begin
+      View.jQuery_Execute ("accordion(" & params & ")");
+   end Render_Accordion;
+
    ---------------
    -- Make_Menu --
    ---------------
 
    procedure Make_Menu
-     (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class)
+     (List : in out Gnoga.Gui.Element.List.Unordered_List_Type'Class)
    is
    begin
       List.jQuery_Execute ("menu()");
    end Make_Menu;
+
    -----------------------
    -- Turn_On_Tool_Tips --
    -----------------------

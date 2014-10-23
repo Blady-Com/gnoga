@@ -35,14 +35,42 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Gnoga.Gui.View;
+
 package Gnoga.Gui.Plugin.jQueryUI.Widget is
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Accordion
+   -------------------------------------------------------------------------
+
+   type Accordion_Type is new Gnoga.Gui.View.View_Type with private;
+   type Accordion_Access is access all Accordion_Type;
+   type Pointer_To_Accordion_Class is access all Accordion_Type'Class;
+
+   overriding
+   procedure Create
+     (View    : in out Accordion_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "");
+
+   procedure Create_Section
+     (View : in out Accordion_Type; Heading : String);
+   --  Create an accordion section this should be followed up immediately
+   --  with the creation of another View_Base_Type'Class with View as the
+   --  parent for each section.
+
+   procedure Render_Accordion
+     (View           : in out Accordion_Type;
+      Allow_Collapse : in     Boolean := False);
+   --  Execute after all sections and views have been added
 
    -------------------------------------------------------------------------
    --  jQueryUI Menus
    -------------------------------------------------------------------------
 
    procedure Make_Menu
-     (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class);
+     (List : in out Gnoga.Gui.Element.List.Unordered_List_Type'Class);
 
    -------------------------------------------------------------------------
    --  jQueryUI Tool Tips
@@ -54,4 +82,7 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    procedure Add_Tool_Tip
      (Element : in out Gnoga.Gui.Element.Element_Type'Class;
       Tip     : in     String);
+
+private
+   type Accordion_Type is new Gnoga.Gui.View.View_Type with null record;
 end Gnoga.Gui.Plugin.jQueryUI.Widget;

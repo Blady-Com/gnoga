@@ -27,6 +27,7 @@ procedure jDemo is
          Button      : Common.Button_Type;
          Menu        : aliased List.Unordered_List_Type;
          Sub_Menu    : aliased List.Unordered_List_Type;
+         Tools       : aliased jQueryUI.Widget.Accordion_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -183,6 +184,30 @@ procedure jDemo is
       App.Menu.Width (100);
       App.Sub_Menu.Width (100);
       jQueryUI.Position (App.Menu, App.Console);
+
+      App.Tools.Create (App.Console);
+      App.Tools.Width (400);
+      App.Tools.Height (400);
+
+      App.Tools.Create_Section ("Section 1");
+      Common.DIV_Access
+        (App.Tools.New_Element
+           ("S1", new Common.DIV_Type)).Create
+          (App.Tools, "Section 1 View");
+
+      App.Tools.Create_Section ("Section 2");
+      Common.DIV_Access
+        (App.Tools.New_Element
+           ("S2", new Common.DIV_Type)).Create
+          (App.Tools, "Section 2 View");
+
+      App.Tools.Create_Section ("Section 3");
+      Common.DIV_Access
+        (App.Tools.New_Element
+           ("S3", new Common.DIV_Type)).Create
+          (App.Tools, "Section 3 View");
+
+      App.Tools.Render_Accordion;
    end On_Connect;
 
 begin

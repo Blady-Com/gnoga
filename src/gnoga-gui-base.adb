@@ -2070,8 +2070,15 @@ package body Gnoga.Gui.Base is
    function jQuery_Execute (Object : Base_Type; Method : String)
                             return Integer
    is
+      use Ada.Strings.Fixed;
+
+      R : String := Object.jQuery_Execute (Method);
    begin
-      return Integer'Value (Object.jQuery_Execute (Method));
+      if Index (R, ".") > 0 then
+         return Integer (Float'Value (R));
+      else
+         return Integer'Value (R);
+      end if;
    exception
       when others =>
          return 0;

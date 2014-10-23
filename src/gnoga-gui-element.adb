@@ -732,6 +732,72 @@ package body Gnoga.Gui.Element is
       return Element.Style ("visibility") = "visible";
    end Visible;
 
+   ------------------
+   -- Inner_Height --
+   ------------------
+
+   procedure Inner_Height (Object : in out Element_Type; Value : in Integer) is
+   begin
+      Object.jQuery_Execute ("innerHeight(" & Left_Trim (Value'Img) & ");");
+      Element_Type'Class (Object).On_Resize;
+   end Inner_Height;
+
+   function Inner_Height (Object : Element_Type) return Integer is
+   begin
+      return Object.jQuery_Execute ("innerHeight();");
+   end Inner_Height;
+
+   -----------------
+   -- Inner_Width --
+   -----------------
+
+   procedure Inner_Width (Object : in out Element_Type; Value : in Integer) is
+   begin
+      Object.jQuery_Execute ("innerWidth(" & Left_Trim (Value'Img) & ");");
+      Element_Type'Class (Object).On_Resize;
+   end Inner_Width;
+
+   function Inner_Width (Object : Element_Type) return Integer is
+   begin
+      return Object.jQuery_Execute ("innerWidth();");
+   end Inner_Width;
+
+   ------------------
+   -- Outer_Height --
+   ------------------
+
+   function Outer_Height (Object : Element_Type) return Integer is
+   begin
+      return Object.jQuery_Execute ("outerHeight();");
+   end Outer_Height;
+
+   -----------------
+   -- Outer_Width --
+   -----------------
+
+   function Outer_Width (Object : Element_Type) return Integer is
+   begin
+      return Object.jQuery_Execute ("outerWidth();");
+   end Outer_Width;
+
+   ----------------------------
+   -- Outer_Height_To_Margin --
+   ----------------------------
+
+   function Outer_Height_To_Margin (Object : Element_Type) return Integer is
+   begin
+      return Object.jQuery_Execute ("outerHeight(true);");
+   end Outer_Height_To_Margin;
+
+   ---------------------------
+   -- Outer_Width_To_Margin --
+   ---------------------------
+
+   function Outer_Width_To_Margin (Object : Element_Type) return Integer is
+   begin
+      return Object.jQuery_Execute ("outerWidth(true);");
+   end Outer_Width_To_Margin;
+
    -------------------
    -- Client_Height --
    -------------------

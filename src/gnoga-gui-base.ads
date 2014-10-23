@@ -177,11 +177,18 @@ package Gnoga.Gui.Base is
 
    --  Object Properties --
 
+   --  For reference:
+   --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...
+
    procedure Height (Object : in out Base_Type; Value : in Integer);
    function Height (Object : Base_Type) return Integer;
+   --  Height of Element, or Window or Document
+   --  Results in Pixels and numeric unlike using the CSS size properties
 
    procedure Width (Object : in out Base_Type; Value : in Integer);
    function Width (Object : Base_Type) return Integer;
+   --  Width of Element, or Window or Document
+   --  Results in Pixels and numeric unlike using the CSS size properties
 
    --  Generic Access  --
 

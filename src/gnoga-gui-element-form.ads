@@ -87,9 +87,9 @@ package Gnoga.Gui.Element.Form is
    function Encoding (Form : Form_Type) return  Encoding_Type;
    --  Encoding affects how the form is send via the POST method only.
 
-   procedure Auto_Complete (Form  : in out Form_Type;
+   procedure Autocomplete (Form  : in out Form_Type;
                             Value : in     Boolean := True);
-   function Auto_Complete (Form : Form_Type) return Boolean;
+   function Autocomplete (Form : Form_Type) return Boolean;
 
    procedure Validate_On_Submit (Form  : in out Form_Type;
                                  Value : in     Boolean := True);
@@ -152,17 +152,17 @@ package Gnoga.Gui.Element.Form is
    --  Form_Element_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Auto_Complete (Element : in out Form_Element_Type;
+   procedure Autocomplete (Element : in out Form_Element_Type;
                             Value   : in     Boolean := True);
-   function Auto_Complete (Element : Form_Element_Type) return Boolean;
+   function Autocomplete (Element : Form_Element_Type) return Boolean;
 
-   procedure Auto_Focus (Element : in out Form_Element_Type;
+   procedure Autofocus (Element : in out Form_Element_Type;
                          Value   : in     Boolean := True);
-   function Auto_Focus (Element : Form_Element_Type) return Boolean;
+   function Autofocus (Element : Form_Element_Type) return Boolean;
 
    procedure Data_List (Element   : in out Form_Element_Type;
                         Data_List : in out Data_List_Type'Class);
-   --  Set the data list for Auto_Complete
+   --  Set the data list for Autocomplete
 
    procedure Disabled (Element : in out Form_Element_Type;
                        Value   : in     Boolean := True);

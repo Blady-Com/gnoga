@@ -128,26 +128,26 @@ package body Gnoga.Gui.Element.Form is
       end if;
    end Encoding;
 
-   -------------------
-   -- Auto_Complete --
-   -------------------
+   ------------------
+   -- Autocomplete --
+   ------------------
 
-   procedure Auto_Complete
+   procedure Autocomplete
      (Form  : in out Form_Type;
       Value : in  Boolean := True)
    is
    begin
       Form.Property ("autocomplete", Value);
-   end Auto_Complete;
+   end Autocomplete;
 
-   -------------------
-   -- Auto_Complete --
-   -------------------
+   ------------------
+   -- Autocomplete --
+   ------------------
 
-   function Auto_Complete (Form : Form_Type) return Boolean is
+   function Autocomplete (Form : Form_Type) return Boolean is
    begin
       return Form.Property ("autocomplete");
-   end Auto_Complete;
+   end Autocomplete;
 
    ------------------------
    -- Validate_On_Submit --
@@ -245,46 +245,46 @@ package body Gnoga.Gui.Element.Form is
    end Create_Element;
 
    -------------------
-   -- Auto_Complete --
+   -- Autocomplete --
    -------------------
 
-   procedure Auto_Complete
+   procedure Autocomplete
      (Element : in out Form_Element_Type;
       Value   : in     Boolean := True)
    is
    begin
       Element.Property ("autocomplete", Value);
-   end Auto_Complete;
+   end Autocomplete;
 
    -------------------
-   -- Auto_Complete --
+   -- Autocomplete --
    -------------------
 
-   function Auto_Complete (Element : Form_Element_Type) return Boolean is
+   function Autocomplete (Element : Form_Element_Type) return Boolean is
    begin
       return Element.Property ("autocomplete");
-   end Auto_Complete;
+   end Autocomplete;
 
    ----------------
-   -- Auto_Focus --
+   -- Autofocus --
    ----------------
 
-   procedure Auto_Focus
+   procedure Autofocus
      (Element : in out Form_Element_Type;
       Value   : in     Boolean := True)
    is
    begin
       Element.Property ("autofocus", Value);
-   end Auto_Focus;
+   end Autofocus;
 
-   ----------------
-   -- Auto_Focus --
-   ----------------
+   ---------------
+   -- Autofocus --
+   ---------------
 
-   function Auto_Focus (Element : Form_Element_Type) return Boolean is
+   function Autofocus (Element : Form_Element_Type) return Boolean is
    begin
       return Element.Property ("autofocus");
-   end Auto_Focus;
+   end Autofocus;
 
    ---------------
    -- Data_List --

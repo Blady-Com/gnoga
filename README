@@ -1,85 +1,87 @@
 GNOGA - The GNU Omnificent GUI for Ada
 http://www.gnoga.com
 
-Read through each README starting with /tutorial for the basics on writing Gnoga applications.
+Full documentation sets are in the works (user guids, reference manuals), in
+the interim read through each README in the /tutorial directories for the
+basics on writing Gnoga applications. The Ada specs are fairly well documented
+and will help as well.
 
-For now run:
+To get started:
 
-make  (or run "make release" for no debug options)
+git clone git://git.code.sf.net/p/gnoga/code gnoga-code
+cd gnoga-code
+make  (or run "make release" for no debug info in compile)
 
-then run the snake demo in /bin
+then run the snake demo or tutorials in /bin. There are additional demos in
+ /demo
 
-There are other applicaions in the /bin you can take a look. See /demo and /tutorial
+You can install gnoga as a gnat library using:
 
-You can now install gnoga as a gnat library using:
+make install (sudo make install if you don't have permissions)
 
-sudo make install
-
-Look through the code in the tutorials and the snake demo to get a feel for how things work for now.
-
-Once you are ready, go to a directory and use:
+Once you are ready to start your own apps, go to a directory and use:
 
 gnoga_make new My_App
 
-And it will generate a full project ready to go for your own application!
+And it will generate a full project ready to go for your own application.
 
-see: DEPLOYING_APPS and DEVELOPING_APPS for some tips on Gnoga applications
+see: DEPLOYING_APPS and DEVELOPING_APPS for more tips on Gnoga applications
 
-Gnoga has the following aspects to it:
+
+Gnoga currently has the following parts:
 
 1. The underlying communication platform between the Ada code and the browser
       Gnoga.Server.Connection
 
-2. Binding to nearly the entire DOM for later higher level development
-        Gnoga.Gui.Base (Not per se a binding of Node but takes its place)
-        Gnoga.Gui.Element, Gnoga.Gui.Element.* (HTML Elements)
-        Gnoga.Gui.Element.Canvas - HTML 5 Canvas bindings
-        Gnoga.Gui.Element.SVG - HTML SVG vector graphics
-        Gnoga.Gui.Element.Multimedia - HTML 5 Audio and Video
-        Gnoga.Gui.Element.Style - CSS Style blocks
-        Gnoga.Gui.Window, Gnoga.Gui.Navigator, Gnoga.Gui.Screen,
-        Gnoga.Gui.Location
-        Gnoga.Gui.Document
+2. Binding to the HTML5 DOM and Browser
+      Gnoga.Gui.Base (Not per se a binding of Node but takes its place)
+      Gnoga.Gui.Element, Gnoga.Gui.Element.* (HTML Elements)
+      Gnoga.Gui.Element.Canvas - HTML 5 Canvas bindings
+      Gnoga.Gui.Element.SVG - HTML SVG vector graphics
+      Gnoga.Gui.Element.Multimedia - HTML 5 Audio and Video
+      Gnoga.Gui.Element.Style - CSS Style blocks
+      Gnoga.Gui.Window, Gnoga.Gui.Navigator, Gnoga.Gui.Screen,
+      Gnoga.Gui.Location
+      Gnoga.Gui.Document
 
-3. Application startup and services
-        Gnoga.Server.Application.Singleton - Desktop apps
-        Gnoga.Server.Application.Multi_Connect - Multiuser / Web apps
+3. Application startup services
+      Gnoga.Server.Application.Singleton - Desktop apps
+      Gnoga.Server.Application.Multi_Connect - Multiuser / Web apps
 
 
-4. Gnoga Specific higher level containers and GUI widgets
-        Gnoga.Gui.Views.* - Auto layout of child elements and basis for future
-                            custom Gnoga widgets
-        Gnoga.Gui.Views.Docker - Dock child views to view sides
-        Gnoga.Gui.Views.Card - Stacks of views
+4. Gnoga higher level containers and GUI widgets
+      Gnoga.Gui.Views.* - Auto layout of child elements and basis for
+                          custom Gnoga Ada only widgets
+      Gnoga.Gui.Views.Docker - Dock child views to view sides
+      Gnoga.Gui.Views.Card - Stacks of views
 
-5. Gnoga Application APIs
-       Gnoga.Client.Storage - local persistent and session storage on browser
-       Gnoga.Client.Bind_Page - Binding pre-made html5 pages
+5. Gnoga client side application APIs
+      Gnoga.Client.Storage - local persistent and session storage on browser
+      Gnoga.Client.Bind_Page - Bind to all elments on pre-made html5 pages
 
 6. Gnoga database bindings and server side APIs
       Gnoga.Server.Database - support for MySQL and SQLite 3
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
-      Gnoga.Serve.Template_Parser - Parse files with Tokens, PHP or Python
+      Gnoga.Server.Template_Parser - Parse files with Tokens, PHP or Python
 
 7. Gnoga development tools
       tool/gnoga_make - Generate application scaffolds
-      Database tools for generating front ends, etc.
-      IDE for Delphi/VB like development
-      etc.
+                        and front ends to database tables
 
-8. Plugins to other JavaScript libraries
+8. Plugin bindings to existing JavaScript libraries
       Gnoga.Gui.Plugin.Ace_Editor - Full editor with Ada syntax highlighting
       Gnoga.Gui.Plugin.jQuery - jQuery support to acces non-Gnoga Elements
       Gnoga.Gui.Plugin.jQueryUI - all the JQueryUI Interactions and Effects
+      Gnoga.Gui.Plugin.jQueryUI.Widgets - the jQueryUI Widgets
 
-9. Native Desktop and Mobile Application Support
-      Expand on the existing support for Mac using MacGap
-      Create a simple WebKit frontend for Gtk to use on Linux or PC
-      Create a simple IE front end for PC
+9. Native Desktop and Mobile Application Support coming:
+      Expand on the existing support for Mac client only apps using MacGap
+      Create a simple WebKit frontend for Gtk to use for client only Linux apps
+      Create a simple IE front end for client only PC apps
 
 10. Planned additions...
-     Floating dialogs all in Ada
-     Tree and accordian controls all in Ada
-     Cairo graphic engine support for Canvas, Img and SVG use.
+     Cairo graphic engine support (same used in GtkAda) for Canvas, Img and
+     SVG use.
      Support for ODBC and PostgreSQL
+     Delphi/VB like IDE 

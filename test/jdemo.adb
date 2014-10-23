@@ -89,6 +89,9 @@ procedure jDemo is
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
 
+      Main_Window.Document.Body_Element.Font
+        (Family  => "Impact, Charcoal, sans-serif",
+         Height  => "12px");
       jQueryUI.Load_jQueryUI (Main_Window);
 
       jQueryUI.Widget.Turn_On_Tool_Tips (Main_Window);
@@ -107,8 +110,6 @@ procedure jDemo is
       List.List_Item_Access
         (App.Sorter.New_Element
            ("1", new List.List_Item_Type)).Create (App.Sorter, "Item 1");
-      List.List_Item_Access (App.Sorter.Element ("1")).Value ("4");
-
       List.List_Item_Access
         (App.Sorter.New_Element
            ("2", new List.List_Item_Type)).Create (App.Sorter, "Item 2");
@@ -207,6 +208,8 @@ procedure jDemo is
         (App.Tools.New_Element
            ("S3", new Common.DIV_Type)).Create
           (App.Tools, "Section 3 View");
+
+      App.Tools.Element ("S2").Font (Height => "10px");
 
       App.Tools.Render_Accordion;
    end On_Connect;

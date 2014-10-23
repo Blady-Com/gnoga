@@ -65,7 +65,11 @@ package Gnoga.Gui.Plugin.jQuery is
                      ID     : in     Gnoga.Types.Connection_ID;
                      Query  : in     String);
    --  Create a jQuery object based on Query and strore results in Object
-   --  Object = $(Query)
+   --  Object = $(Query).
+   --  Note: that most queries require adding quotes, for example:
+   --     Select all Div's -> jQuery (Main_Window, """div""");
+   --  However, selecting the document, window or body or script var would not
+   --     jQuery (Main_Window, "window");
 
    procedure Execute (Object : in out jQuery_Type; Method : in String);
    --  Execute method on jQuery Object. Method should include () but not

@@ -59,6 +59,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       View.Put_HTML ("<h3>" & Escape_Quotes (Heading) & "</h3>");
    end Create_Section;
 
+   ----------------------
+   -- Render_Accordion --
+   ----------------------
+
    procedure Render_Accordion
      (View           : in out Accordion_Type;
       Allow_Collapse : in     Boolean := False)
@@ -76,6 +80,50 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    begin
       View.jQuery_Execute ("accordion(" & params & ")");
    end Render_Accordion;
+
+   procedure Make_Button
+     (Element    : in out Gnoga.Gui.Element.Element_Type'Class;
+      Left_Icon  : in     String  := "";
+      Right_Icon : in     String  := "";
+      No_Text    : in     Boolean := False)
+   is
+      function params return String;
+
+      function params return String is
+         function Is_No_Text return String;
+         function Is_Icon return String;
+
+         function Is_No_Text return String is
+         begin
+            if No_Text then
+               return "false";
+            else
+               return "true";
+            end if;
+         end Is_No_Text;
+
+         function Is_Icon return String is
+         begin
+            if Left_Icon = "" and Right_Icon = "" then
+               return "";
+            else
+               return ", icons: { primary: """ & Left_Icon & """," &
+                 "secondary: """ & Right_Icon & """}";
+            end if;
+         end Is_Icon;
+      begin
+         return "{ text: " & Is_No_Text & Is_Icon & "}";
+      end params;
+   begin
+      Element.jQuery_Execute ("button(" & Escape_Quotes (params) & ")");
+   end Make_Button;
+
+   procedure Make_Button_Set
+     (View : in out Gnoga.Gui.View.View_Base_Type'Class)
+   is
+   begin
+      View.jQuery_Execute ("buttonset()");
+   end Make_Button_Set;
 
    ---------------
    -- Make_Menu --

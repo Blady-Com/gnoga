@@ -66,6 +66,25 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    --  Execute after all sections and views have been added
 
    -------------------------------------------------------------------------
+   --  jQueryUI Button
+   -------------------------------------------------------------------------
+
+   procedure Make_Button
+     (Element    : in out Gnoga.Gui.Element.Element_Type'Class;
+      Left_Icon  : in     String  := "";
+      Right_Icon : in     String  := "";
+      No_Text    : in     Boolean := False);
+   --  Turns Element in to a Button. A_Type, Button_Type, etc. are
+   --  will be single press buttons. A Check_Box_Types will become a
+   --  toggle button.
+
+   procedure Make_Button_Set
+     (View : in out Gnoga.Gui.View.View_Base_Type'Class);
+   --  Turn a view (no need to call Make_Button on each item) of
+   --  Check_Box_Types Boxes or Radio_Button_Types in to a set of
+   --  toggles or one per set toggles.
+
+   -------------------------------------------------------------------------
    --  jQueryUI Menus
    -------------------------------------------------------------------------
 

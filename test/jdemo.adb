@@ -124,6 +124,7 @@ procedure jDemo is
 
       App.Button.Create (App.Console, "Click Me");
       App.Button.On_Click_Handler (On_Click'Unrestricted_Access);
+      jQueryUI.Widget.Make_Button (App.Button);
       jQueryUI.Widget.Add_Tool_Tip (App.Button, "I do all sorts of stuff");
 
       App.Box2.Create (App.Console, "Drop on me");

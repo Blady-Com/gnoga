@@ -1,5 +1,7 @@
 with Cairo;
 with Cairo.Png;
+with Cairo.SVG;
+with Cairo.PDF;
 with Cairo.Font_Options;
 with Cairo.Surface;
 with Cairo.Image_Surface;
@@ -18,6 +20,19 @@ begin
      (Format => Cairo.Image_Surface.Cairo_Format_ARGB32,
       Width  => 240,
       Height => 80);
+
+--     Surface := Cairo.PDF.Create
+--       (Filename         => "hello.pdf",
+--        Width_In_Points  => 180.0,
+--        Height_In_Points => 180.0);
+
+--     Surface := Cairo.SVG.Create
+--       (Filename        => "hello.svg",
+--        Width_In_Point  => 180.0,
+--        Height_In_Point => 180.0);
+--
+--  The above can be used and hello.svg or .pdf output. You can still write
+--  out a Png at the end
 
    Context := Cairo.Create (Surface);
 

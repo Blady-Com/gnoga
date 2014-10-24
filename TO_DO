@@ -51,14 +51,6 @@ Paging view - display pages of data at a time from server w/ random access
 
 Print dialog (Server side printers) and cross platform server side printing support
 
-CSS animation support
-
-Auto Classing Elements on create
-
-Cairo bindings
-
-PDF manipulation and creation
-
 Reporting widgets
 
 * Apps

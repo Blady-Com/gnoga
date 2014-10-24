@@ -87,6 +87,16 @@ procedure jDemo is
       jQueryUI.Widget.Dialog_Access (Object.Parent).Close;
    end Close_Dialog;
 
+   procedure On_Open (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+   begin
+      Log ("Dialog Opened");
+   end On_Open;
+
+   procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+   begin
+      Log ("Dialog Closed");
+   end On_Close;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
@@ -236,6 +246,9 @@ procedure jDemo is
 --                           Close_On_Escape => ,
 --                         Draggable       => False);
 --                           ID              => );
+      App.Dialog.On_Open_Handler (On_Open'Unrestricted_Access);
+      App.Dialog.On_Close_Handler (On_Close'Unrestricted_Access);
+
       App.Dialog.Open;
 
       Common.Button_Access

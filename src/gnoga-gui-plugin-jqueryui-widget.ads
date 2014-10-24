@@ -132,6 +132,19 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    function Is_Open (Dialog : in out Dialog_Type) return Boolean;
 
+   procedure On_Open_Handler (Dialog  : in out Dialog_Type;
+                               Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure Fire_On_Open (Dialog : in out Dialog_Type);
+
+   procedure On_Close_Handler (Dialog  : in out Dialog_Type;
+                               Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure Fire_On_Close (Dialog : in out Dialog_Type);
+
+   overriding
+   procedure On_Message (Object  : in out Dialog_Type;
+                         Event   : in     String;
+                         Message : in     String);
+
    -------------------------------------------------------------------------
    --  jQueryUI Menus
    -------------------------------------------------------------------------
@@ -152,5 +165,10 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
 private
    type Accordion_Type is new Gnoga.Gui.View.View_Type with null record;
-   type Dialog_Type is new Gnoga.Gui.View.View_Base_Type with null record;
+
+   type Dialog_Type is new Gnoga.Gui.View.View_Base_Type with
+      record
+         On_Open_Event  : Gnoga.Gui.Base.Action_Event := null;
+         On_Close_Event : Gnoga.Gui.Base.Action_Event := null;
+      end record;
 end Gnoga.Gui.Plugin.jQueryUI.Widget;

@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 package body Gnoga.Gui.Plugin.jQueryUI.Widget is
+   use type Gnoga.Gui.Base.Action_Event;
 
    -------------
    --  Create --
@@ -196,7 +197,16 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
            "modal: " & Modal'Img & "," &
            "closeOnEscape: " & Close_On_Escape'Img & "," &
            "draggable: " & Draggable'Img & "})");
+
+      Dialog.Bind_Event (Event   => "dialogresizestop",
+                         Message => "");
    end Create;
+
+   procedure Open (Dialog : in out Dialog_Type) is
+   begin
+      Dialog.jQuery_Execute ("dialog(""open"")");
+      Dialog.Fire_On_Open;
+   end Open;
 
    procedure Close (Dialog : in out Dialog_Type) is
    begin
@@ -208,10 +218,57 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       return Dialog.jQuery_Execute ("dialog(""isOpen"")") = "true";
    end Is_Open;
 
-   procedure Open (Dialog : in out Dialog_Type) is
+   procedure On_Open_Handler (Dialog  : in out Dialog_Type;
+                              Handler : in     Gnoga.Gui.Base.Action_Event)
+   is
    begin
-      Dialog.jQuery_Execute ("dialog(""open"")");
-   end Open;
+      Dialog.On_Open_Event := Handler;
+   end On_Open_Handler;
+
+   procedure Fire_On_Open (Dialog : in out Dialog_Type) is
+   begin
+      if Dialog.On_Open_Event /= null then
+         Dialog.On_Open_Event (Dialog);
+      end if;
+   end Fire_On_Open;
+
+   procedure On_Close_Handler (Dialog  : in out Dialog_Type;
+                               Handler : in     Gnoga.Gui.Base.Action_Event)
+   is
+   begin
+      if Dialog.On_Close_Event /= null then
+         Dialog.Unbind_Event ("dialogclose");
+      end if;
+
+      Dialog.On_Close_Event := Handler;
+
+      if Handler /= null then
+         Dialog.Bind_Event (Event   => "dialogclose",
+                            Message => "");
+      end if;
+   end On_Close_Handler;
+
+   procedure Fire_On_Close (Dialog : in out Dialog_Type) is
+   begin
+      if Dialog.On_Close_Event /= null then
+         Dialog.On_Close_Event (Dialog);
+      end if;
+   end Fire_On_Close;
+
+   overriding
+   procedure On_Message (Object  : in out Dialog_Type;
+                         Event   : in     String;
+                         Message : in     String)
+   is
+   begin
+      if Event = "dialogclose" then
+         Object.Fire_On_Close;
+      elsif Event = "dialogresizestop" then
+         Dialog_Type'Class (Object).On_Resize;
+      else
+         Gnoga.Gui.Base.Base_Type (Object).On_Message (Event, Message);
+      end if;
+   end On_Message;
 
    ---------------
    -- Make_Menu --

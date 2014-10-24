@@ -126,11 +126,21 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    --  If Maximum_Height or Maximum_Width = 0 then no maximum will be set.
    --  Content can be used to set some initial text or HTML in to the Dialog.
 
+   -------------------------------------------------------------------------
+   --  Dialog_Type - Methods
+   -------------------------------------------------------------------------
+
    procedure Open (Dialog : in out Dialog_Type);
 
    procedure Close (Dialog : in out Dialog_Type);
 
+   procedure Move_To_Top (Dialog : in out Dialog_Type);
+
    function Is_Open (Dialog : in out Dialog_Type) return Boolean;
+
+   -------------------------------------------------------------------------
+   --  Dialog_Type - Event Handlers
+   -------------------------------------------------------------------------
 
    procedure On_Open_Handler (Dialog  : in out Dialog_Type;
                                Handler : in     Gnoga.Gui.Base.Action_Event);
@@ -139,6 +149,15 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    procedure On_Close_Handler (Dialog  : in out Dialog_Type;
                                Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Close (Dialog : in out Dialog_Type);
+
+   -------------------------------------------------------------------------
+   --  Dialog_Type - Event Methods
+   -------------------------------------------------------------------------
+   --  The first open of Dialog does not fire in jQueryUI dialogopen
+   --  since in Gnoga Dialog_Type.Open is the only method to open dialogopen
+   --  is not bound an instead just fired from Dailog_Type.Open
+   --
+   --  The jQueryUI dialogresizestop event is also bound to fire On_Resize
 
    overriding
    procedure On_Message (Object  : in out Dialog_Type;

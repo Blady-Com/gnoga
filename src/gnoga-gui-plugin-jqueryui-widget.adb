@@ -213,6 +213,11 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Dialog.jQuery_Execute ("dialog(""close"")");
    end Close;
 
+   procedure Move_To_Top (Dialog : in out Dialog_Type) is
+   begin
+      Dialog.jQuery_Execute ("dialog(""moveToTop"")");
+   end Move_To_Top;
+
    function Is_Open (Dialog : in out Dialog_Type) return Boolean is
    begin
       return Dialog.jQuery_Execute ("dialog(""isOpen"")") = "true";

@@ -50,10 +50,17 @@ package body Gnoga.Gui.Element.Form is
    procedure Create
      (Form    : in out Form_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "")
+      Action  : in     String           := "";
+      Method  : in     Form_Method_Type := Get;
+      Target  : in     String           := "_self";
+      ID      : in     String           := "")
    is
    begin
-      Form.Create_From_HTML (Parent, "<form />", ID);
+      Form.Create_From_HTML (Parent, "<form action=""" &
+                               Escape_Quotes (Action) &
+                               """ method=""" & Method'Img &
+                               """ target=""" & Target &
+                               """ />", ID);
    end Create;
 
    ------------

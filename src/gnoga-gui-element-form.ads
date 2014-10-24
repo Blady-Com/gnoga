@@ -51,12 +51,16 @@ package Gnoga.Gui.Element.Form is
    --  Form_Type - Creation Methods
    -------------------------------------------------------------------------
 
+   type Form_Method_Type is (Get, Post);
+
    procedure Create (Form    : in out Form_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     ID      : in     String  := "");
+                     Action  : in     String           := "";
+                     Method  : in     Form_Method_Type := Get;
+                     Target  : in     String           := "_self";
+                     ID      : in     String           := "");
    --  Create a Form element. This is used to group and set the action
-   --  taken on a submit of the form. If Attach is True has no effect
-   --  since Forms are not vissible.
+   --  taken on a submit of the form.
    --
    --  In Gnoga forms in general should be processed by handling the
    --  On_Submit event and accessing each element's value directly.
@@ -73,8 +77,6 @@ package Gnoga.Gui.Element.Form is
    procedure Action (Form : in out Form_Type; Value : in String);
    function Action (Form : Form_Type) return String;
    --  URL to submit form to using Method
-
-   type Form_Method_Type is (Get, Post);
 
    procedure Method (Form : in out Form_Type; Value : in Form_Method_Type);
    function Method (Form : Form_Type) return Form_Method_Type;

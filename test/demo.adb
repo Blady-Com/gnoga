@@ -139,7 +139,7 @@ procedure Demo is
       App.My_Input.Create (Form  => App.My_Form,
                            Size  => 40);
       App.My_Input.Data_List (App.My_List);
-      App.My_Input.Auto_Complete;
+      App.My_Input.Autocomplete;
 
       Label.Create (Form      => App.My_Form,
                     Label_For => App.My_Input,

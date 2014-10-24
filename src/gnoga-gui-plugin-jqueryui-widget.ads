@@ -69,6 +69,12 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
       Allow_Collapse : in     Boolean := False);
    --  Execute after all sections and views have been added
 
+   --  jQueryUI Autocomplete is not bound, use instead
+   --     Gnoga.Gui.Element.Form.Data_List_Type
+
+   --  jQueryUI Datapicker is not bound, use instead
+   --     Gnoga.Gui.Element.Form.Date_Type and its related types
+
    -------------------------------------------------------------------------
    --  jQueryUI Button
    -------------------------------------------------------------------------
@@ -87,6 +93,44 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    --  Turn a view (no need to call Make_Button on each item) of
    --  Check_Box_Types Boxes or Radio_Button_Types in to a set of
    --  toggles or one per set toggles.
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Dialog
+   -------------------------------------------------------------------------
+
+   type Dialog_Type is new Gnoga.Gui.View.View_Base_Type with private;
+   type Dialog_Access is access all Dialog_Type;
+   type Pointer_To_Dialog_Class is access all Dialog_Type'Class;
+
+   procedure Create
+     (Dialog          : in out Dialog_Type;
+      Parent          : in out Gnoga.Gui.Base.Base_Type'Class;
+      Title           : in     String;
+      Content         : in     String  := "";
+      Height          : in     Natural := 0;
+      Width           : in     Natural := 0;
+      Position_My     : in     String  := "center";
+      Position_At     : in     String  := "center";
+      Resizable       : in     Boolean := False;
+      Minimum_Height  : in     Natural := 150;
+      Minimum_Width   : in     Natural := 150;
+      Maximum_Height  : in     Natural := 0;
+      Maximum_Width   : in     Natural := 0;
+      Modal           : in     Boolean := True;
+      Close_On_Escape : in     Boolean := True;
+      Draggable       : in     Boolean := True;
+      ID              : in     String  := "");
+   --  Set Autofocus(True) and the control to make it first focus when Dialog
+   --  is opened. Position is relative using the Dialog center relative to
+   --  the window. If Height or Width are set to 0 will autosize to contents.
+   --  If Maximum_Height or Maximum_Width = 0 then no maximum will be set.
+   --  Content can be used to set some initial text or HTML in to the Dialog.
+
+   procedure Open (Dialog : in out Dialog_Type);
+
+   procedure Close (Dialog : in out Dialog_Type);
+
+   function Is_Open (Dialog : in out Dialog_Type) return Boolean;
 
    -------------------------------------------------------------------------
    --  jQueryUI Menus
@@ -108,4 +152,5 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
 private
    type Accordion_Type is new Gnoga.Gui.View.View_Type with null record;
+   type Dialog_Type is new Gnoga.Gui.View.View_Base_Type with null record;
 end Gnoga.Gui.Plugin.jQueryUI.Widget;

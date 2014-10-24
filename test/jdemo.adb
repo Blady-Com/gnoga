@@ -28,6 +28,7 @@ procedure jDemo is
          Menu        : aliased List.Unordered_List_Type;
          Sub_Menu    : aliased List.Unordered_List_Type;
          Tools       : aliased jQueryUI.Widget.Accordion_Type;
+         Dialog      : aliased jQueryUI.Widget.Dialog_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -57,6 +58,7 @@ procedure jDemo is
 
       jQueryUI.Toggle_With_Effect (Element            => App.Box,
                                    Effect_Name        => "explode");
+      App.Dialog.Open;
    end On_Click;
 
    procedure On_Menu_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -80,6 +82,11 @@ procedure jDemo is
       end if;
    end On_Drop;
 
+   procedure Close_Dialog (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+   begin
+      jQueryUI.Widget.Dialog_Access (Object.Parent).Close;
+   end Close_Dialog;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
@@ -90,8 +97,8 @@ procedure jDemo is
       App.Main_Window := Main_Window'Unchecked_Access;
 
       Main_Window.Document.Body_Element.Font
-        (Family  => "Impact, Charcoal, sans-serif",
-         Height  => "12px");
+        (Family  => "Verdana, Arial",
+         Height  => "10px");
       jQueryUI.Load_jQueryUI (Main_Window);
 
       jQueryUI.Widget.Turn_On_Tool_Tips (Main_Window);
@@ -212,6 +219,38 @@ procedure jDemo is
       App.Tools.Element ("S2").Font (Height => "10px");
 
       App.Tools.Render_Accordion;
+
+      App.Dialog.Create (Parent          => App.Console,
+                         Title           => "About jDemo",
+                         Content         => "Hello World!",
+                         Height          => 300,
+                         Width           => 300,
+                         Position_My     => "top",
+                         Position_At     =>"center top+5%");
+--                         Resizable       => True,
+--                           Minimum_Height  => ,
+--                           Minimum_Width   => ,
+--                           Maximum_Height  => ,
+--                           Maximum_Width   => ,
+--                         Modal           => False,
+--                           Close_On_Escape => ,
+--                         Draggable       => False);
+--                           ID              => );
+      App.Dialog.Open;
+
+      Common.Button_Access
+        (App.Dialog.New_Element ("ok", new Common.Button_Type)).Create (App.Dialog, "Ok");
+      Common.Button_Access
+        (App.Dialog.Element ("ok")).Focus;
+      Common.Button_Access
+        (App.Dialog.Element ("ok")).On_Click_Handler
+          (Close_Dialog'Unrestricted_Access);
+
+      jQueryUI.Position
+        (App.Dialog.Element ("ok").all,
+         Target   => App.Dialog,
+         Using_My => "bottom",
+         At_Target => "center bottom-10");
    end On_Connect;
 
 begin

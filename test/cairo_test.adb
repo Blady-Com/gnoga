@@ -5,6 +5,9 @@ with Cairo.Surface;
 with Cairo.Image_Surface;
 
 procedure Cairo_Test is
+   --  pragma Linker_Options ("-LC:\GtkAda\lib");
+   --  On Windows you will need to tell the linker where to find the cairo
+   --  libraries.
    pragma Linker_Options ("-lcairo");
 
    Surface : Cairo.Cairo_Surface;

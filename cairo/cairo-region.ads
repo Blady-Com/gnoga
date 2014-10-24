@@ -92,6 +92,7 @@ package Cairo.Region is
    --  Destroys a Cairo_Region object created with Create, Copy or
    --  Create_Rectangle.
 
+   overriding
    function "=" (A, B : Cairo_Region) return Boolean;
    --  Compares whether A is equivalent to B. Null_Region as an argument is
    --  equal to itself, but not to any non-Null_Region region.

@@ -27,6 +27,7 @@ package body Cairo.Region is
    -- Equal --
    -----------
 
+   overriding
    function "=" (A, B : Cairo_Region) return Boolean is
       function Internal (A, B : Cairo_Region) return Gboolean;
       pragma Import (C, Internal, "cairo_region_equal");

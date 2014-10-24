@@ -74,6 +74,42 @@ with Interfaces.C.Strings;
 
 package Cairo is
 
+   package C renames Interfaces.C;
+
+   type Gshort is new C.short;
+   type Glong  is new C.long;
+   type Gint   is new C.int;
+   type Gchar  is new C.char;
+   type Gboolean is new Gint;
+
+   type Gushort is new C.unsigned_short;
+   type Gulong  is new C.unsigned_long;
+   type Guint   is new C.unsigned;
+   type Guchar  is new C.unsigned_char;
+
+   type Gfloat  is new C.C_float;
+   type Gdouble is new C.double;
+
+   type Gint8  is range -(2 ** 7) .. (2 ** 7 - 1);
+   type Gint16 is range -(2 ** 15) .. (2 ** 15 - 1);
+   type Gint32 is range -(2 ** 31) .. (2 ** 31 - 1);
+   type Gint64 is range -(2 ** 63) .. (2 ** 63 - 1);
+
+   type Guint8  is mod 2 ** 8;
+   type Guint16 is mod 2 ** 16;
+   type Guint32 is mod 2 ** 32;
+   type Guint64 is mod 2 ** 64;
+
+   type Gsize is new C.size_t;
+   type Gssize is
+     range -(2 ** (C.size_t'Size - 1)) .. (2 ** (C.size_t'Size - 1) - 1);
+
+   type array_of_gsize is array (Natural range <>) of Gsize;
+
+   type Gunichar is new Guint32;
+
+   subtype UTF8_String is String;
+
    type Cairo_Context is private;
    --  A Cairo_Context contains the current state of the rendering device,
    --  including coordinates of yet to be drawn shapes.

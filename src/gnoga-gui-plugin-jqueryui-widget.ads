@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Gnoga.Gui.View;
+with Gnoga.Gui.Element.Form;
 
 package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
@@ -90,7 +91,7 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    procedure Make_Button_Set
      (View : in out Gnoga.Gui.View.View_Base_Type'Class);
-   --  Turn a view (no need to call Make_Button on each item) of
+   --  Turn a view (no need to call Make_Button on each item) full of
    --  Check_Box_Types Boxes or Radio_Button_Types in to a set of
    --  toggles or one per set toggles.
 
@@ -165,11 +166,58 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
                          Message : in     String);
 
    -------------------------------------------------------------------------
+   --  jQuery Progress Bar
+   -------------------------------------------------------------------------
+
+   type Progress_Bar_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Progress_Bar_Access is access all Progress_Bar_Type;
+   type Pointer_To_Progress_Bar_Class is access all Progress_Bar_Type'Class;
+
+   procedure Create (Progress_Bar : in out Progress_Bar_Type;
+                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Value        : in     Integer := 0;
+                     Maximum      : in     Integer := 100;
+                     ID           : in     String := "");
+
+   procedure Value (Progress_Bar : in out Progress_Bar_Type;
+                    Value        : in     Integer);
+   function Value (Progress_Bar : Progress_Bar_Type) return Integer;
+
+   -------------------------------------------------------------------------
    --  jQueryUI Menus
    -------------------------------------------------------------------------
 
    procedure Make_Menu
      (List : in out Gnoga.Gui.Element.List.Unordered_List_Type'Class);
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Select Menu
+   -------------------------------------------------------------------------
+
+   procedure Make_Select_Menu
+     (Element : in out Gnoga.Gui.Element.Form.Selection_Type'Class);
+
+   --  jQueryUI Spinner is not bound, use instead
+   --     Gnoga.Gui.Element.Form.Range_Type
+
+   -------------------------------------------------------------------------
+   --  jQueryUI Tabs
+   -------------------------------------------------------------------------
+
+   type Tabs_Type is new Gnoga.Gui.View.View_Base_Type with private;
+   type Tabs_Access is access all Tabs_Type;
+   type Pointer_To_Tabs_Class is access all Tabs_Type'Class;
+
+   procedure Create (Tabs   : in out Tabs_Type;
+                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+                     ID     : in     String := "");
+
+   procedure Add_Tab (Tabs  : in out Tabs_Type;
+                      Label : in     String;
+                      View  : in out Gui.View.View_Base_Type'Class);
+
+   procedure Render_Tabs (Tabs : in out Tabs_Type);
+   --  Call after all tabs added
 
    -------------------------------------------------------------------------
    --  jQueryUI Tool Tips
@@ -190,4 +238,13 @@ private
          On_Open_Event  : Gnoga.Gui.Base.Action_Event := null;
          On_Close_Event : Gnoga.Gui.Base.Action_Event := null;
       end record;
+
+   type Tabs_Type is new Gnoga.Gui.View.View_Base_Type with
+      record
+         Labels : Gnoga.Gui.Element.Element_Type;
+      end record;
+
+   type Progress_Bar_Type is
+     new Gnoga.Gui.Element.Element_Type with null record;
+
 end Gnoga.Gui.Plugin.jQueryUI.Widget;

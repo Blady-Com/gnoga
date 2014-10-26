@@ -286,6 +286,77 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       List.jQuery_Execute ("menu()");
    end Make_Menu;
 
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create (Progress_Bar : in out Progress_Bar_Type;
+                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+                     Value        : in     Integer := 0;
+                     Maximum      : in     Integer := 100;
+                     ID           : in     String := "")
+   is
+   begin
+      Progress_Bar.Create_From_HTML (Parent, "<div/>");
+      Progress_Bar.jQuery_Execute
+        ("progressbar ({ max:" & Maximum'Img & ", value:" & Value'Img & "})");
+   end Create;
+
+   procedure Value (Progress_Bar : in out Progress_Bar_Type;
+                    Value        : in     Integer)
+   is
+   begin
+      Progress_Bar.jQuery_Execute
+        ("progressbar ('option', 'value'," & Value'Img & ")");
+   end Value;
+
+   function Value (Progress_Bar : Progress_Bar_Type) return Integer is
+   begin
+      return Progress_Bar.jQuery_Execute ("progressbar ('option', 'value')");
+   end Value;
+
+   ----------------------
+   -- Make_Select_Menu --
+   ----------------------
+
+   procedure Make_Select_Menu
+     (Element : in out Gnoga.Gui.Element.Form.Selection_Type'Class) is
+   begin
+      Element.jQuery_Execute ("selectmenu()");
+   end Make_Select_Menu;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create (Tabs         : in out Tabs_Type;
+                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+                     ID           : in     String       := "")
+   is
+   begin
+      Tabs.Create_From_HTML (Parent, "<div />", ID);
+      Tabs.Labels.Create_From_HTML (Tabs, "<ul />");
+   end Create;
+
+   procedure Add_Tab (Tabs  : in out Tabs_Type;
+                      Label : in     String;
+                      View  : in out Gui.View.View_Base_Type'Class)
+   is
+      L : Gnoga.Gui.Element.Element_Type;
+   begin
+      L.Create_From_HTML (Tabs.Labels,
+                          "<li><a href=""#" & View.ID & """>" &
+                            Escape_Quotes (Label) &
+                            "</a></li>");
+      L.Place_Inside_Bottom_Of (Tabs.Labels);
+      View.Place_Inside_Bottom_Of (Tabs);
+   end Add_Tab;
+
+   procedure Render_Tabs (Tabs : in out Tabs_Type) is
+   begin
+      Tabs.jQuery_Execute ("tabs ({heightStyle: ""auto""})");
+   end Render_Tabs;
+
    -----------------------
    -- Turn_On_Tool_Tips --
    -----------------------

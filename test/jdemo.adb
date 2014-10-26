@@ -5,6 +5,7 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.List;
+with Gnoga.Gui.Element.Form;
 with Gnoga.Types;
 
 with Gnoga.Gui.Plugin.jQueryUI;
@@ -230,6 +231,28 @@ procedure jDemo is
 
       App.Tools.Render_Accordion;
 
+      declare
+         T  : jQueryUI.Widget.Tabs_Type;
+         D1 : Common.DIV_Type;
+         D2 : Common.DIV_Type;
+         D3 : Common.DIV_Type;
+      begin
+         T.Create (App.Console);
+
+         D1.Create (T, "This is tab 1");
+         D2.Create (T, "This is Tab 2");
+         D3.Create (T, "This is Tab 3");
+
+         T.Add_Tab ("Tab 1", D1);
+         T.Add_Tab ("Tab 2", D2);
+         T.Add_Tab ("Tab 3", D3);
+
+         T.Render_Tabs;
+
+         T.Width (400);
+      end;
+
+
       App.Dialog.Create (Parent          => App.Console,
                          Title           => "About jDemo",
                          Content         => "Hello World!",
@@ -249,6 +272,13 @@ procedure jDemo is
       App.Dialog.On_Open_Handler (On_Open'Unrestricted_Access);
       App.Dialog.On_Close_Handler (On_Close'Unrestricted_Access);
 
+      jQueryUI.Widget.Progress_Bar_Access
+        (App.Dialog.New_Element
+           ("progress", new jQueryUI.Widget.Progress_Bar_Type)). Create
+          (Parent  => App.Dialog,
+           Value   => 35,
+           Maximum => 100);
+
       App.Dialog.Open;
 
       Common.Button_Access
@@ -264,6 +294,12 @@ procedure jDemo is
          Target   => App.Dialog,
          Using_My => "bottom",
          At_Target => "center bottom-10");
+
+      for i in 35 .. 100 loop
+         jQueryUI.Widget.Progress_Bar_Access
+           (App.Dialog.Element ("progress")).value (i);
+         delay 0.10;
+      end loop;
    end On_Connect;
 
 begin

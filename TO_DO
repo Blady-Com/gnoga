@@ -7,13 +7,6 @@ File Dialogs (Files on server side)
 Font Picker Dialogs (Fonts on client side)
 Color Picker Dialog (client side)
 Find/replace Dialog
-Input and Alert on page and as popups
-
-Menus
-
-Tree View
-
-Dialog View, both on page or as popup
 
 Data View - View to display or setup for edit of Active_Record objects
 
@@ -29,7 +22,7 @@ Submit a canvas or img back to server
 * Server Side Tools
 
 Extend gnoga_make to handle:
-	new_composite_widgets
+	new_composite_widgets (Views)
 	new_controllers
 
 * Compiler side
@@ -72,7 +65,7 @@ GNAT JVM and minimal android browser widget
 Support AWS plugins
 Support alternative transports to Websockets as fall backs.
    1) Use a combination of buffer output until return from On_Connect,
-       then all bindings send back via Ajax, again buffern connection
-       on even and return via Ajax result.
+       then all bindings send back via Ajax, again buffer connection
+       on event and return via Ajax result.
    2) Use a local webkit instance to (or other method) write output to
        and return full HTML to browser with Ajax results.

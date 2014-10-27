@@ -43,13 +43,14 @@
 --     - and using one of the place methods in to the SVG element.
 
 with Gnoga.Types;
+with Gnoga.Gui.View;
 
 package Gnoga.Gui.Element.SVG is
    -------------------------------------------------------------------------
    --  SVG_Types
    -------------------------------------------------------------------------
 
-   type SVG_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type SVG_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type SVG_Access is access all SVG_Type;
    type Pointer_To_SVG_Class is access all SVG_Type'Class;
 
@@ -61,8 +62,15 @@ package Gnoga.Gui.Element.SVG is
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
                      Content : in     String := "";
                      ID      : in     String := "");
-   --  Create a SVG container use Content for SVG XML if set
+   --  Create a SVG container use Content for SVG XML if set.
+   --  To create new SVG Elements use Element_Type.Create_XML_Element
+   --  You can then use Element_Type.Style, Element_Type.Attribute
+   --  Element_Type.Execute (to access the SVG DOM). e.g.
+   --      Element.Execute ("height.baseVal.value", "50")
+   --
+   --  To just load an SVG document as an img, use:
+   --     Gnoga.Gui.Element.Common.IMG_Type
 
 private
-   type SVG_Type is new Gnoga.Gui.Element.Element_Type with null record;
+   type SVG_Type is new Gnoga.Gui.View.View_Base_Type with null record;
 end Gnoga.Gui.Element.SVG;

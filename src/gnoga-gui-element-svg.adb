@@ -54,5 +54,4 @@ package body Gnoga.Gui.Element.SVG is
                               Escape_Quotes (Content) &
                               "</svg>", ID);
    end Create;
-
 end Gnoga.Gui.Element.SVG;

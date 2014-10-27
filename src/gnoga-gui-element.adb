@@ -76,6 +76,38 @@ package body Gnoga.Gui.Element is
       Element.Parent (Parent);
    end Create_From_HTML;
 
+   procedure Create_XML_Element
+     (Element      : in out Element_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Namespace    : in     String;
+      Element_Type : in     String;
+      ID           : in     String := "")
+   is
+      function Adjusted_ID return String;
+
+      function Adjusted_ID return String is
+      begin
+         if ID = "" then
+            return Gnoga.Server.Connection.New_GID;
+         else
+            return ID;
+         end if;
+      end Adjusted_ID;
+
+      GID : String := Adjusted_ID;
+   begin
+      Element.Create_With_Script
+        (Connection_ID => Parent.Connection_ID,
+         ID            => GID,
+         Script        => "gnoga['" & GID & "']=$(" &
+           "document.createElementNS(""" & Namespace & """, '" &
+           Element_Type & "'));",
+         ID_Type       => Gnoga.Types.Gnoga_ID);
+      Element.Attribute ("id", GID);
+
+      Element.Parent (Parent);
+   end Create_XML_Element;
+
    -------------------------------------------------------------------------
    --  Element_Type - Properties
    -------------------------------------------------------------------------

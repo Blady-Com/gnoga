@@ -166,6 +166,22 @@ package Gnoga.Gui.Element is
    --  Place_Inside_Top_Of, Place_Inside_Botton_Of, Place_Before, Place_ After
    --  Note: ID _must_ be unique for use in Gnoga.
 
+   HTML_Namespace   : constant String := "http://www.w3.org/1999/xhtml";
+   MathML_Namespace : constant String := "http://www.w3.org/1998/Math/MathML";
+   SVG_Namespace    : constant String := "http://www.w3.org/2000/svg";
+   XLink_Namespace  : constant String := "http://www.w3.org/1999/xlink";
+   XMLNS_Namespace  : constant String := "http://www.w3.org/2000/xmlns/";
+   XML_Namespace    : constant String :=
+                        "http://www.w3.org/XML/1998/namespace";
+
+   procedure Create_XML_Element
+     (Element      : in out Element_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Namespace    : in     String;
+      Element_Type : in     String;
+      ID           : in     String := "");
+   --  Create an XML element not part of any DOM using XML Namespace.
+
    -------------------------------------------------------------------------
    --  Element_Type - Properties
    -------------------------------------------------------------------------

@@ -3,21 +3,10 @@ Stuff on my list of To Dos:
 
 * GUI
 
-File Dialogs (Files on server side)
-Font Picker Dialogs (Fonts on client side)
-Color Picker Dialog (client side)
-Find/replace Dialog
-
-Data View - View to display or setup for edit of Active_Record objects
-
-SVG DOM binding
-
-
 * Server Side
 
 Put variables
 File submit to server
-Submit a canvas or img back to server
 
 * Server Side Tools
 
@@ -35,16 +24,28 @@ GWindows IE embedded app with direct hooks to eval JS so for desktop apps no nee
 
 
 
-Someday To Dos post 1.0 for sure:
----------------------------------
+Someday To Dos likely post 1.0
+------------------------------
 
 * GUI
 
 Paging view - display pages of data at a time from server w/ random access
 
+Reporting widgets
+
+SVG DOM binding
+WebGL
+MathML
+
+Data View - View to display or setup for edit of Active_Record objects
+
+File Dialogs (Files on server side)
+Font Picker Dialogs (Fonts on client side)
+Color Picker Dialog (client side)
+Find/replace Dialog
 Print dialog (Server side printers) and cross platform server side printing support
 
-Reporting widgets
+Submit a canvas or img back to server
 
 * Apps
 

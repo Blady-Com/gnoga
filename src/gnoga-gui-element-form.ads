@@ -787,10 +787,13 @@ package Gnoga.Gui.Element.Form is
 
    procedure Create (Element    : in out Label_Type;
                      Form       : in out Form_Type'Class;
-                     Label_For  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Contents   : in     String := "";
-                     ID         : in     String := "");
+                     Label_For  : in out Element_Type'Class;
+                     Contents   : in     String  := "";
+                     Auto_Place : in     Boolean := True;
+                     ID         : in     String  := "");
    --  Creates a Label_For a form element in Form with Contents as label.
+   --  If Auto_Place is true, the label element will be moved in the DOM
+   --  to just before Label_For.
 
    -------------------------------------------------------------------------
    --  Selection_Types

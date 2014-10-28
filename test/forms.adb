@@ -63,6 +63,7 @@ procedure Forms is
       App     : App_Access := new App_Data;
       Button1 : Form.Input_Button_Type;
       Button2 : Form.Submit_Button_Type;
+      Label   : Form.Label_Type;
    begin
       Main_Window.Connection_Data (App);
 
@@ -77,6 +78,10 @@ procedure Forms is
                                 Input_Type => "text",
                                 Name       => "Some_Text");
       App.Input.Place_After (App.My_Form);
+
+      Label.Create (Form       => App.My_Form,
+                    Label_For  => App.Input,
+                    Contents   => "Type Text:");
 
       Button1.Create (Form       => App.My_Form,
                       Value      => "onclick button");

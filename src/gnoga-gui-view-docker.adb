@@ -64,36 +64,40 @@ package body Gnoga.Gui.View.Docker is
       if View.Top_Dock /= null then
          View.Top_Dock.Top (0);
          View.Top_Dock.Left (0);
-         View.Top_Dock.Box_Width (View.Width);
-         Top_Height := View.Top_Dock.Height;
+         View.Top_Dock.Box_Width (View.Outer_Width_To_Margin);
+         Top_Height := View.Top_Dock.Outer_Height_To_Margin;
       end if;
 
       if View.Bottom_Dock /= null then
          View.Bottom_Dock.Bottom (0);
          View.Bottom_Dock.Left (0);
-         View.Bottom_Dock.Box_Width (View.Width);
-         Bottom_Height := View.Bottom_Dock.Height;
+         View.Bottom_Dock.Box_Width (View.Outer_Width_To_Margin);
+         Bottom_Height := View.Bottom_Dock.Outer_Height_To_Margin;
       end if;
 
       if View.Left_Dock /= null then
          View.Left_Dock.Top (Top_Height);
          View.Left_Dock.Left (0);
-         View.Left_Dock.Box_Height (View.Height - Top_Height - Bottom_Height);
+         View.Left_Dock.Box_Height
+           (View.Outer_Height_To_Margin - Top_Height - Bottom_Height);
          Left_Width := View.Left_Dock.Width;
       end if;
 
       if View.Right_Dock /= null then
          View.Right_Dock.Top (Top_Height);
          View.Right_Dock.Right (0);
-         View.Right_Dock.Box_Height (View.Height - Top_Height - Bottom_Height);
+         View.Right_Dock.Box_Height
+           (View.Outer_Height_To_Margin - Top_Height - Bottom_Height);
          Right_Width := View.Right_Dock.Width;
       end if;
 
       if View.Fill_Dock /= null then
          View.Fill_Dock.Top (Top_Height);
          View.Fill_Dock.Left (Left_Width);
-         View.Fill_Dock.Box_Height (View.Height - Top_Height - Bottom_Height);
-         View.Fill_Dock.Box_Width (View.Width - Left_Width - Right_Width);
+         View.Fill_Dock.Box_Height
+           (View.Outer_Height_To_Margin - Top_Height - Bottom_Height);
+         View.Fill_Dock.Box_Width
+           (View.Outer_Width_To_Margin - Left_Width - Right_Width);
       end if;
    end Update_Dock;
 

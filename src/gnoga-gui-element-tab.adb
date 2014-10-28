@@ -154,7 +154,7 @@ package body Gnoga.Gui.Element.Tab is
          L : Element_Type;
       begin
          L.Attach_Using_Parent (Item, ID => Item.ID & "_a");
-         Parent.Height (L.Offset_Top + L.Offset_Height);
+         Parent.Height (L.Offset_Top * 2 + L.Client_Height);
       end;
 
       Item.Card_Name := Ada.Strings.Unbounded.To_Unbounded_String (Card);

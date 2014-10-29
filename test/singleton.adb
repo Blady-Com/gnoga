@@ -91,7 +91,7 @@ begin
    Gnoga.Log ("path on url : " & M.Location.Path_Name);
    Gnoga.Log ("page_id can be set using http://url:8080?page_id=xxx");
    Gnoga.Log ("page_id = " &
-                Gnoga.Server.Connection.Search_Parameter
+                Gnoga.Server.Connection.Form_Parameter
                 (M.Connection_ID, "page_id"));
 
    Gnoga.Log ("User Agent = " &

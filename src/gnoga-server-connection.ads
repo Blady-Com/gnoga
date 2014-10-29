@@ -96,11 +96,11 @@ package Gnoga.Server.Connection is
    procedure On_Connect_Handler (Event : in Connect_Event);
    --  Set event handler for new socket connections.
 
-   function Search_Parameter (ID   : Gnoga.Types.Connection_ID;
-                              Name : String)
-                              return String;
+   function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
+                            Name : String)
+                            return String;
    --  Returns the value of parameters passed in on URL. Returns "undefined"
-   --  if Name is not in URL search parameters.
+   --  if Name is not in URL search parameters or sent via post.
    --  For example: http://localhost:8080/?page_id=2
    --  Search_Parameter (ID, "page_id") = "2"
 

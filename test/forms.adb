@@ -114,7 +114,7 @@ procedure Forms is
 
       R.Create (Main_Window, "Results => " & Main_Window.Location.Search &
                   "<br />" &
-                  "Some_Text => " & Main_Window.Search_Parameter ("Some_Text"));
+                  "Some_Text => " & Main_Window.Form_Parameter ("Some_Text"));
       R.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
    end On_Connect_2;
 

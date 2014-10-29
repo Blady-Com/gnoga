@@ -161,9 +161,9 @@ procedure Tutorial_09 is
       Result_View.Dynamic;
       Result_View.Create (Main_Window);
 
-      Result_View.Put_Line ("Name : " & Main_Window.Search_Parameter ("Name"));
+      Result_View.Put_Line ("Name : " & Main_Window.Form_Parameter ("Name"));
       Result_View.Put_Line ("Message : " &
-                              Main_Window.Search_Parameter ("Message"));
+                              Main_Window.Form_Parameter ("Message"));
    end On_Result_Connect;
 
 begin

@@ -1006,13 +1006,13 @@ package body Gnoga.Server.Connection is
    -- Search_Parameter --
    ----------------------
 
-   function Search_Parameter (ID   : Gnoga.Types.Connection_ID;
+   function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
                               Name : String)
                               return String
    is
    begin
       return Execute_Script (ID, "params['" & Name & "'];");
-   end Search_Parameter;
+   end Form_Parameter;
 
    -----------
    -- Valid --

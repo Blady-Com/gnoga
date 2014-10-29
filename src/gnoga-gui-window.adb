@@ -392,17 +392,17 @@ package body Gnoga.Gui.Window is
       return Window.Property ("screenX");
    end Left;
 
-   ----------------------
-   -- Search_Parameter --
-   ----------------------
+   --------------------
+   -- Form_Parameter --
+   --------------------
 
-   function Search_Parameter (Window : Window_Type; Name  : String)
+   function Form_Parameter (Window : Window_Type; Name  : String)
                               return String
    is
    begin
-      return Gnoga.Server.Connection.Search_Parameter (Window.Connection_ID,
-                                                       Name);
-   end Search_Parameter;
+      return Gnoga.Server.Connection.Form_Parameter (Window.Connection_ID,
+                                                     Name);
+   end Form_Parameter;
 
    ----------------------
    -- Gnoga_Session_ID --

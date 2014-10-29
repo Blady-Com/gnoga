@@ -96,6 +96,21 @@ package Gnoga.Server.Connection is
    procedure On_Connect_Handler (Event : in Connect_Event);
    --  Set event handler for new socket connections.
 
+   type Post_Event is access
+     procedure (URI        : in String;
+                Parameters : in out Gnoga.Types.Data_Map_Type);
+
+   procedure On_Post_Handler (Event : Post_Event);
+   --  By default if a form "post" is received the post parameters will
+   --  be parsed and inserted in to the returned, bootstrap html. A custom
+   --  Post handler can be set to filter incoming form posts. Any changes
+   --  made to Paremeters will replace the recevied post parameters with those
+   --  changes.
+   --
+   --  In order to handle file uploads, you must move or rename them in the
+   --  On_Post_Handler files that are uploaded are destroyed once the
+   --  bootloader file has been uploaded.
+
    function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
                             Name : String)
                             return String;

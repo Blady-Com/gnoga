@@ -73,6 +73,7 @@ package body Gnoga.Server.Connection is
    Web_Dispatcher     : AWS.Services.Dispatchers.URI.Handler;
 
    On_Connect_Event : Connect_Event := null;
+   On_Post_Event    : Post_Event := null;
 
    Exit_Application_Requested : Boolean := False;
 
@@ -156,9 +157,16 @@ package body Gnoga.Server.Connection is
    is
    begin
       --  Setup server
-      AWS.Config.Set.Reuse_Address (Web_Config, True);
-      AWS.Config.Set.Server_Host   (Web_Config, Host);
-      AWS.Config.Set.Server_Port   (Web_Config, Port);
+      AWS.Config.Set.Reuse_Address    (Web_Config, True);
+      AWS.Config.Set.Server_Host      (Web_Config, Host);
+      AWS.Config.Set.Server_Port      (Web_Config, Port);
+
+      AWS.Config.Set.Max_WebSocket                (1024);
+      AWS.Config.Set.Max_WebSocket_Handler        (100);
+      AWS.Config.Set.WebSocket_Message_Queue_Size (100);
+
+      AWS.Config.Set.Upload_Directory (Web_Config,
+                                       Gnoga.Server.Upload_Directory);
 
       Boot_HTML := Ada.Strings.Unbounded.To_Unbounded_String ("/" & Boot);
 
@@ -166,6 +174,7 @@ package body Gnoga.Server.Connection is
          Write_To_Console ("Application root :" & Application_Directory);
          Write_To_Console ("Executable at    :" & Executable_Directory);
          Write_To_Console ("HTML root        :" & HTML_Directory);
+         Write_To_Console ("Upload directory :" & Upload_Directory);
          Write_To_Console ("Templates root   :" & Templates_Directory);
          Write_To_Console ("/js  at          :" & JS_Directory);
          Write_To_Console ("/css at          :" & CSS_Directory);
@@ -250,10 +259,11 @@ package body Gnoga.Server.Connection is
       use type AWS.Status.Request_Method;
       use Ada.Strings.Unbounded;
 
+      URI : constant String := AWS.Status.URI (Request);
+
       function Adjusted_URI return String;
 
       function Adjusted_URI return String is
-         URI : constant String := AWS.Status.URI (Request);
       begin
          if URI = "/" then
             return Ada.Strings.Unbounded.To_String (Boot_HTML);
@@ -262,9 +272,10 @@ package body Gnoga.Server.Connection is
          end if;
       end Adjusted_URI;
 
-      R    : Ada.Strings.Unbounded.Unbounded_String;
-      V    : Gnoga.Server.Template_Parser.View_Data;
-      File : constant String := HTML_Directory & Adjusted_URI;
+      R      : Ada.Strings.Unbounded.Unbounded_String;
+      Params : Gnoga.Types.Data_Map_Type;
+      V      : Gnoga.Server.Template_Parser.View_Data;
+      File   : constant String := HTML_Directory & Adjusted_URI;
    begin
       if AWS.Status.Method (Request) = AWS.Status.POST then
          R := To_Unbounded_String ("--><script>");
@@ -277,14 +288,22 @@ package body Gnoga.Server.Connection is
 
             procedure Add_Param (Name, Value : in String) is
             begin
-               R := R  & "params['" & Name & "']=""" &
-                 Escape_Quotes (Value) & """; ";
+               Params.Insert (Name, Value);
             end Add_Param;
          begin
             if P.Count > 0 then
                P.Iterate_Names ("|", Add_Param'Access);
             end if;
          end;
+
+         if On_Post_Event /= null then
+            On_Post_Event (URI, Params);
+         end if;
+
+         for C in Gnoga.Types.Data_Maps.Iterate (Params) loop
+            R := R  & "params['" & Gnoga.Types.Data_Maps.Key (C) & "']=""" &
+              Escape_Quotes (Gnoga.Types.Data_Maps.Element (C)) & """; ";
+         end loop;
 
          R := R & "</script><!--";
 
@@ -1001,6 +1020,15 @@ package body Gnoga.Server.Connection is
    begin
       On_Connect_Event := Event;
    end On_Connect_Handler;
+
+   ---------------------
+   -- On_Post_Handler --
+   ---------------------
+
+   procedure On_Post_Handler (Event : in Post_Event) is
+   begin
+      On_Post_Event := Event;
+   end On_Post_Handler;
 
    ----------------------
    -- Search_Parameter --

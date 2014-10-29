@@ -77,6 +77,9 @@ package Gnoga.Server is
    function IMG_Directory return String;
    --  Locates the /img directory for this application
 
+   function Upload_Directory return String;
+   --  Locates the /upload directory for this application
+
    function Templates_Directory return String;
    --  Locates the templates directory for this application
    --  If not in Application_Directory/templates, tries

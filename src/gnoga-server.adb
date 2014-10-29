@@ -129,6 +129,15 @@ package body Gnoga.Server is
       return Find_Subdirectory ("css");
    end CSS_Directory;
 
+   ----------------------
+   -- Upload_Directory --
+   ----------------------
+
+   function Upload_Directory return String is
+   begin
+      return Find_Subdirectory ("upload");
+   end Upload_Directory;
+
    -------------------------
    -- Templates_Directory --
    -------------------------

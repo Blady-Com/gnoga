@@ -85,6 +85,12 @@ package Gnoga.Gui.Document is
    function Body_Element (Document : Document_Type)
                           return Gnoga.Gui.Element.Element_Access;
 
+   function Document_Element (Document : Document_Type)
+                              return Gnoga.Gui.Element.Element_Access;
+   --  The document element is the root of the document, example <HTML>
+   --  in a text/html document. Using Document_Element.Outer_HTML will
+   --  return the entire document as per the current state in the browser.
+
    type Ready_State_Type is (Uninitialized, Loading, Interactive, Complete);
 
    function Ready_State (Document : Document_Type)
@@ -114,6 +120,7 @@ package Gnoga.Gui.Document is
 private
    type Document_Type is new Gnoga.Gui.Base.Base_Type with
       record
+         DOM_HTML : aliased Gnoga.Gui.Element.Element_Type;
          DOM_Head : aliased Gnoga.Gui.Element.Element_Type;
          DOM_Body : aliased Gnoga.Gui.Element.Element_Type;
       end record;

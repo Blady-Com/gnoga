@@ -645,6 +645,15 @@ package body Gnoga.Gui.Element is
       return Element.jQuery_Execute ("html();");
    end Inner_HTML;
 
+   ----------------
+   -- Outer_HTML --
+   ----------------
+
+   function Outer_HTML (Element : Element_Type) return String is
+   begin
+      return Element.Execute ("outerHTML");
+   end Outer_HTML;
+
    -----------------
    -- Spell_Check --
    -----------------

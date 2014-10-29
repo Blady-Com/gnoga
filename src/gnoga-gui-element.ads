@@ -236,6 +236,9 @@ package Gnoga.Gui.Element is
    --  will require all Gnoga elements to be Placed again in the DOM to
    --  display again.
 
+   function Outer_HTML (Element : Element_Type) return String;
+   --  Returns the HTML for element and all below element.
+
    procedure Language_Code (Element : in out Element_Type; Value : in String);
    function Language_Code (Element : Element_Type) return String;
 

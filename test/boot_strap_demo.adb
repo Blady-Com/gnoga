@@ -7,6 +7,7 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Section;
 with Gnoga.Gui.Element.List;
 with Gnoga.Types;
+with Gnoga.Server.Template_Parser;
 
 with Gnoga.Gui.Plugin.Boot_Strap;
 

@@ -59,6 +59,11 @@ package body Gnoga.Gui.Document is
                      ".document",
                    ID_Type       => Gnoga.Types.Script);
 
+      Document.DOM_HTML.Attach (Connection_ID => Connection_ID,
+                                ID            => Document.Script_Accessor &
+                                  ".documentElement",
+                                ID_Type       => Gnoga.Types.Script);
+
       Document.DOM_Head.Attach (Connection_ID => Connection_ID,
                                 ID            => Document.Script_Accessor &
                                   ".head",
@@ -128,6 +133,18 @@ package body Gnoga.Gui.Document is
    begin
       return Document.Property ("URL");
    end URL;
+
+   ----------------------
+   -- Document_Element --
+   ----------------------
+
+   function Document_Element
+     (Document : Document_Type)
+      return Gnoga.Gui.Element.Element_Access
+   is
+   begin
+      return Document.DOM_HTML'Unrestricted_Access;
+   end Document_Element;
 
    ------------------
    -- Head_Element --

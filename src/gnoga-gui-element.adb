@@ -1368,7 +1368,8 @@ package body Gnoga.Gui.Element is
    procedure Add_Class (Element : in out Element_Type; Class_Name : in String)
    is
    begin
-      Element.jQuery_Execute ("addClass(" & Escape_Quotes (Class_Name) & ")");
+      Element.jQuery_Execute
+        ("addClass(""" & Escape_Quotes (Class_Name) & """)");
    end Add_Class;
 
    procedure Remove_Class (Element    : in out Element_Type;
@@ -1376,7 +1377,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.jQuery_Execute
-        ("removeClass(" & Escape_Quotes (Class_Name) & ")");
+        ("removeClass(""" & Escape_Quotes (Class_Name) & """)");
    end Remove_Class;
 
    procedure Toggle_Class (Element    : in out Element_Type;

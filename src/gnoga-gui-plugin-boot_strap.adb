@@ -58,6 +58,25 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
            "bootstrap/3.2.0/js/bootstrap.min.js""></script>')");
    end Load_Boot_Strap;
 
+   procedure Create
+     (Container : in out Container_Type;
+      Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID        : in     String  := "")
+   is
+   begin
+      Container.Create_From_HTML (Parent, "<div class=""container"" />", ID);
+   end Create;
+
+   procedure Create
+     (Container : in out Fluid_Container_Type;
+      Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID        : in     String  := "")
+   is
+   begin
+      Container.Create_From_HTML
+        (Parent, "<div class=""container-fluid"" />", ID);
+   end Create;
+
    procedure Make_Container
      (View : in out Gnoga.Gui.View.View_Base_Type'Class)
    is
@@ -83,7 +102,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
 
    procedure Set_Columns (View   : in out Gnoga.Gui.View.View_Base_Type'Class;
                           Number : in     Natural;
-                          Device : in     Device_Type := Extra_Small)
+                          Device : in     Device_Type := Small)
    is
       function To_String (Device : Device_Type) return String;
 
@@ -104,7 +123,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    end Set_Columns;
 
    procedure Create
-     (Jumbotron : in out Row_Type;
+     (Jumbotron : in out Jumbotron_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
       Content   : in     String  := "";
       ID        : in     String  := "")
@@ -115,6 +134,40 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
                                     Escape_Quotes (Content) & "</div>",
                                   ID);
    end Create;
+
+   procedure Create
+     (Element   : in out Table_Type;
+      Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
+      Striped   : in     Boolean := True;
+      Bordered  : in     Boolean := True;
+      Condensed : in     Boolean := True;
+      ID        : in     String  := "")
+   is
+   begin
+      Element.Create_From_HTML (Parent, "<div class='table-responsive'/>", ID);
+      Element.Table.Create (Element);
+      Element.Table.Add_Class ("table");
+
+      if Striped then
+         Element.Table.Add_Class ("table-striped");
+      end if;
+
+      if Bordered then
+         Element.Table.Add_Class ("table-bordered");
+      end if;
+
+      if Condensed then
+         Element.Table.Add_Class ("table-condensed");
+      end if;
+   end Create;
+
+   procedure Put_Glyphicon
+     (View : in out Gnoga.Gui.View.View_Base_Type'Class;
+      Icon : in     String)
+   is
+   begin
+      View.Put_HTML ("<span class='glphicon glyphicon-" & Icon & "' />");
+   end Put_Glyphicon;
 
    procedure Create
      (Form_Group : in out Form_Group_Type;
@@ -145,7 +198,6 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
                           ID     => ID);
    end Add_Help_Block;
 
-   overriding
    procedure Create
      (Element : in out Check_Box_Type;
       Form    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
@@ -155,28 +207,24 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID      : in     String := "")
    is
    begin
-      Gnoga.Gui.Element.Form.Check_Box_Type (Element).Create
-        (Form, Checked, Value, Name, ID);
-
-      Element.Wrapper.Create_From_HTML
-        (Element, "<div class='checkbox'/>", ID);
+      Element.Create_From_HTML (Form, "<div class='checkbox'/>", ID);
+      Element.Box.Create (Form, Checked, Value, Name, ID);
+      Element.Box.Place_Inside_Top_Of (Element);
    end Create;
 
-   overriding
    procedure Disabled (Element : in out Check_Box_Type;
                        Value   : in     Boolean := True)
    is
    begin
-      Gnoga.Gui.Element.Form.Check_Box_Type (Element).Disabled (Value);
+      Element.Box.Disabled (Value);
 
       if Value then
-         Element.Wrapper.Add_Class ("disabled");
+         Element.Add_Class ("disabled");
       else
-         Element.Wrapper.Remove_Class ("disabled");
+         Element.Remove_Class ("disabled");
       end if;
    end Disabled;
 
-   overriding
    procedure Create
      (Element : in out Radio_Button_Type;
       Form    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
@@ -186,24 +234,21 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID      : in     String := "")
    is
    begin
-      Gnoga.Gui.Element.Form.Radio_Button_Type (Element).Create
-        (Form, Checked, Value, Name, ID);
-
-      Element.Wrapper.Create_From_HTML
-        (Element, "<div class='radio'/>", ID);
+      Element.Create_From_HTML (Form, "<div class='radio'/>", ID);
+      Element.Radio.Create (Form, Checked, Value, Name, ID);
+      Element.Radio.Place_Inside_Top_Of (Element);
    end Create;
 
-   overriding
    procedure Disabled (Element : in out Radio_Button_Type;
                        Value   : in     Boolean := True)
    is
    begin
-      Gnoga.Gui.Element.Form.Radio_Button_Type (Element).Disabled (Value);
+      Element.Radio.Disabled (Value);
 
       if Value then
-         Element.Wrapper.Add_Class ("disabled");
+         Element.Add_Class ("disabled");
       else
-         Element.Wrapper.Remove_Class ("disabled");
+         Element.Remove_Class ("disabled");
       end if;
    end Disabled;
 end Gnoga.Gui.Plugin.Boot_Strap;

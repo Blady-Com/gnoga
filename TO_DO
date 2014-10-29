@@ -1,26 +1,11 @@
 Stuff on my list of To Dos:
 ---------------------------
 
-* GUI
-
-* Server Side
-
-File submit to server
-
 * Server Side Tools
 
 Extend gnoga_make to handle:
 	new_composite_widgets (Views)
 	new_controllers
-
-* Compiler side
-
-GTK Webkit app, direct hooks to eval JS so for desktop apps no need for websockets.
-
-Further MacGap integration, direct hooks to eval JS so for desktop apps no need for websockets.
-
-GWindows IE embedded app with direct hooks to eval JS so for desktop apps no need for websockets.
-
 
 
 Someday To Dos likely post 1.0
@@ -59,6 +44,14 @@ Multiuser Application type with multiple levels of authentication / profiles
 GNAT with llvm to generate iOS apps
 GNAT with llvm to generate ASM JavaScript = Full client side Gnoga
 GNAT JVM and minimal android browser widget
+
+GTK Webkit app, direct hooks to eval JS so for desktop apps no need for websockets.
+
+Further MacGap integration, direct hooks to eval JS so for desktop apps no need for websockets.
+
+GWindows IE embedded app with direct hooks to eval JS so for desktop apps no need for websockets.
+
+
 
 * Server Side
 

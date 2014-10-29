@@ -70,6 +70,7 @@ procedure Forms is
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.My_Form.Create (Main_Window);
+      App.My_Form.Method (Form.Post);
       App.My_Form.Action ("/demo");
       App.My_Form.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
       App.My_Form.On_Submit_Handler (On_Submit'Unrestricted_Access);

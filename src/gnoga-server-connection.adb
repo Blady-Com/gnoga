@@ -55,9 +55,12 @@ with AWS.Services.Dispatchers.URI;
 with AWS.Status;
 with AWS.Server;
 with AWS.Dispatchers;
+with AWS.Parameters;
 with AWS.Net.WebSocket;
 with AWS.Net.WebSocket.Registry;
 with AWS.Net.WebSocket.Registry.Control;
+
+with Gnoga.Server.Template_Parser.Simple;
 
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Unique_ID;
@@ -244,6 +247,9 @@ package body Gnoga.Server.Connection is
    is
       pragma Unreferenced (Dispatcher);
 
+      use type AWS.Status.Request_Method;
+      use Ada.Strings.Unbounded;
+
       function Adjusted_URI return String;
 
       function Adjusted_URI return String is
@@ -256,8 +262,49 @@ package body Gnoga.Server.Connection is
          end if;
       end Adjusted_URI;
 
+      R    : Ada.Strings.Unbounded.Unbounded_String;
+      V    : Gnoga.Server.Template_Parser.View_Data;
       File : constant String := HTML_Directory & Adjusted_URI;
    begin
+      if AWS.Status.Method (Request) = AWS.Status.POST then
+         R := To_Unbounded_String ("--><script>");
+
+         declare
+            P : constant AWS.Parameters.List :=
+                  AWS.Status.Parameters (Request);
+
+            procedure Add_Param (Name, Value : in String);
+
+            procedure Add_Param (Name, Value : in String) is
+            begin
+               R := R  & "params['" & Name & "']=""" &
+                 Escape_Quotes (Value) & """; ";
+            end Add_Param;
+         begin
+            if P.Count > 0 then
+               P.Iterate_Names ("|", Add_Param'Access);
+            end if;
+         end;
+
+         R := R & "</script><!--";
+
+         V.Insert ("push_params", To_String (R));
+
+         if Ada.Directories.Exists (File) and
+           AWS.MIME.Content_Type (File) = AWS.MIME.Text_HTML
+         then
+            return AWS.Response.Build
+              (Content_Type => AWS.MIME.Text_HTML,
+               Message_Body => Gnoga.Server.Template_Parser.Simple.Load_View
+                 (File, V));
+         else
+            return AWS.Response.Build
+              (Content_Type => AWS.MIME.Text_HTML,
+               Message_Body => Gnoga.Server.Template_Parser.Simple.Load_View
+                 (HTML_Directory & To_String (Boot_HTML), V));
+         end if;
+      end if;
+
       if Ada.Directories.Exists (File) then
          return AWS.Response.File
            (Content_Type => AWS.MIME.Content_Type (File),
@@ -266,8 +313,7 @@ package body Gnoga.Server.Connection is
          --  Let application handle files not found in /html
          return AWS.Response.File
            (Content_Type => AWS.MIME.Text_HTML,
-            Filename     => HTML_Directory &
-              Ada.Strings.Unbounded.To_String (Boot_HTML));
+            Filename     => HTML_Directory & To_String (Boot_HTML));
       end if;
    end Dispatch;
 

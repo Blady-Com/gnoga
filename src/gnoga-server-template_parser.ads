@@ -192,6 +192,8 @@ private
 
    function Parse_Name (Name : String) return String;
    --  prefix path from Set_Templat_Directory to Name
+   --  unless Name contains a ':' (as in C:) or starts
+   --  with the OS speratory ('/' or '\' on Windows)
 
    Error_Queue : Gnoga.Types.Data_Array_Type;
    Info_Queue  : Gnoga.Types.Data_Array_Type;

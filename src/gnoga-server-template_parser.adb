@@ -412,9 +412,17 @@ package body Gnoga.Server.Template_Parser is
    ----------------
 
    function Parse_Name (Name : String) return String is
+      use Ada.Strings.Fixed;
+
       Templates_Dir : constant String :=
                         Ada.Strings.Unbounded.To_String (Template_Directory);
    begin
+      if Index (Name, ":") > 0 or
+        Name (Name'First) = GNAT.OS_Lib.Directory_Separator
+      then
+         return Name;
+      end if;
+
       if Templates_Dir = "" then
          return Name;
       else

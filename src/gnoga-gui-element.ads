@@ -584,7 +584,7 @@ package Gnoga.Gui.Element is
 
    procedure Shadow_None (Element : in out Element_Type);
 
-   type Outline_Style_Type is (None, Hidden, Dotted, Dashed, Dolid, Double,
+   type Outline_Style_Type is (None, Hidden, Dotted, Dashed, Solid, Double,
                                Groove, Ridge, Inset, Outset);
 
    procedure Outline (Element : in out Element_Type;

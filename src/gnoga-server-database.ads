@@ -35,7 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  Abstrac class for database access. Use one of the specific implementations
+--  Abstract class for database access. Use one of the specific implementations
 --  for MySQL, SQLLite, etc.
 
 with Ada.Finalization;
@@ -165,6 +165,8 @@ package Gnoga.Server.Database is
 
    function Number_Of_Rows (RS : Recordset) return Natural is abstract;
    --  Return number of rows in recordset
+   --  This function is not available in many implementations, check the
+   --  database specific package before considering use.
 
    function Number_Of_Fields (RS : Recordset) return Natural is abstract;
    --  Return number of fields in recordset
@@ -228,4 +230,7 @@ package Gnoga.Server.Database is
    Null_Field : exception;
    --  The value for a Null field was requested
 
+   Not_Implemented : exception;
+   --  If a database method is called that is not implemented by the specific
+   --  database engined used this exception will be raised.
 end Gnoga.Server.Database;

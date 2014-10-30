@@ -488,7 +488,7 @@ package body Gnoga.Server.Database.SQLite is
    overriding
    function Number_Of_Rows (RS : Recordset) return Natural is
    begin
-      raise NOT_IMPLEMENTED_ERROR
+      raise Not_Implemented
         with "SQLite does not support Number_Of_Rows";
       return 0;
    end Number_Of_Rows;

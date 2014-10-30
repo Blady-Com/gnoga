@@ -133,7 +133,7 @@ package body Gnoga.Application.Multi_Connect is
 
    procedure Message_Loop is
    begin
-      Gnoga.Server.Connection.Run (Wait_For_Q => False);
+      Gnoga.Server.Connection.Run;
    end Message_Loop;
 
    ---------------------

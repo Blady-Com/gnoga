@@ -48,10 +48,7 @@ package Gnoga.Gui.Window is
    --  Window_Type
    -------------------------------------------------------------------------
    --  Window_Type is the class encapsulating an individual Gnoga browser
-   --  windows and tabs. It can also encapsulate any window or iFrame
-   --  that is reachable by the DOM in a Gnoga browser window or tab, i.e.
-   --  that was loaded with a connection via websockets to the Gnoga app.
-   --  usually with Gnoga's standard bootstrap file.
+   --  window or tab.
 
    type Window_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Window_Access is access all Window_Type;
@@ -60,7 +57,9 @@ package Gnoga.Gui.Window is
    overriding
    procedure Finalize (Object : in out Window_Type);
    --  Will deallocate the Connection Data if marked dynamic.
-   --  Will deallocate its View if the view was marked dynamic.
+   --  Will deallocate an attached View (see Set_View) if the view is
+   --  marked dynamic.
+   --  See Base_Type.Dynamic
 
    Invalid_ID_Type    : exception;
 
@@ -71,18 +70,21 @@ package Gnoga.Gui.Window is
       Connection_ID : in     Gnoga.Types.Connection_ID;
       ID            : in     String                     := "window";
       ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script);
-   --  Attach a Gnoga Window_Type to Connection_ID. This can be used to attach
-   --  a non-Gnoga Window and events bound will use Connection_ID which should
-   --  be the parent window in this case.
-   --  ID_Type = DOM_ID will raise Invalid_ID_Type
+   --  Attach a Gnoga Window_Type to Connection_ID.
+   --  If ID_Type = DOM_ID it will raise Invalid_ID_Type
+   --
+   --  This can also be used to attach  a non-Gnoga Window and events bound
+   --  will use Connection_ID which must be the parent window in the DOM for
+   --  such cases.
 
    procedure Attach
      (Window  : in out Window_Type;
       Parent  : in out Window_Type'Class;
       ID      : in     String;
       ID_Type : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.Script);
-   --  Attach a Window with ID with in the Parent window.
-   --  ID_Type = DOM_ID will raise Invalid_ID_Type
+   --  Attach a Window with script ID with in the Parent window.
+   --  If ID_Type = DOM_ID it will raise Invalid_ID_Type
+   --
    --  Note: This will only work if the window pointed to by ID has
    --        a Gnoga connection in it. Raises Not_A_Gnoga_Window if window
    --        does not contain a gnoga connection.
@@ -97,16 +99,18 @@ package Gnoga.Gui.Window is
                        Object : in out Gnoga.Gui.Base.Base_Type'Class;
                        Place  : in     Boolean := True);
    --  Sets Object as the Window's View. Object will be auto resized to fill
-   --  the entire client area of Window.
+   --  the entire client area of Window. Views will automatically call Set_View
+   --  on their parent window by default (Attach = True in their Create method)
    --
    --  If Place is True then Object will first be placed using
-   --  Element.Place_Inside_Top_Of.
+   --  Object.Place_Inside_Top_Of (Window);
    --
    --  If Object is not a Gnoga.Gui.Element_Type or a child of it (such as
    --  all View_Base_Types) an exception will be raised.
    --
    --  If Object is marked dynamic (Element_Type.Dynamic) it will be
-   --  deallocated on finalization of Window
+   --  deallocated on finalization of Window if it has not been removed using
+   --  Window.Remove_View
 
    procedure Remove_View (Window : in out Window_Type);
    --  Remove the current View Object from Window
@@ -134,6 +138,9 @@ package Gnoga.Gui.Window is
    --  connection can run Reattach on it before adding any elements or events.
    --  Before running Reattach you need to be sure that the gnoga websocket
    --  has been established on the launched page.
+   --
+   --  Popups are highly unreliable and oustide of Google Chrome only work in
+   --  limitted ways beyond just a launch and forget situation.
 
    -------------------------------------------------------------------------
    --  Window_Type - Properties
@@ -275,7 +282,7 @@ package Gnoga.Gui.Window is
 
    overriding
    procedure On_Resize (Window : in out Window_Type);
-   --  Handle resizing an object set as a View for Window to new
+   --  Handles resizing the View attached to Window to new
    --  height and width of Window
 
    overriding

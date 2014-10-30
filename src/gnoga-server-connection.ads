@@ -45,15 +45,13 @@ package Gnoga.Server.Connection is
                          Port    : in Integer := 8080;
                          Boot    : in String  := "boot.html";
                          Verbose : in Boolean := True);
-   --  Ininialize connections web server and dispatchers
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
+   --  Ininialize connection to web server and dispatchers
+   --  If Host = "" then server will listen on all network interfaces.
+   --  If Host = "locahost" use will be constrained to local machine only.
    --  If Verbose then display start up details.
 
-   procedure Run (Wait_For_Q : in Boolean := True);
-   --  Start webserer
-   --  If Wait_For_Q then server shutdown will occur if the Q key pressed
-   --  on console. If not server must be shutdown using Stop.
+   procedure Run;
+   --  Start webserver.
 
    procedure Stop;
    --  Close all connections and Stop webserver

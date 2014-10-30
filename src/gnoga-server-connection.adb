@@ -216,25 +216,15 @@ package body Gnoga.Server.Connection is
    -- Run --
    ---------
 
-   procedure Run (Wait_For_Q : in Boolean := True) is
+   procedure Run is
    begin
       --  Start the server
 
       AWS.Server.Start (Web_Server, Web_Dispatcher, Web_Config);
 
-      if (Wait_For_Q) then
-         --  Wait for the Q key
-         Write_To_Console ("Press the Q key to close server.");
-         AWS.Server.Wait (AWS.Server.Q_Key_Pressed);
+      AWS.Server.Wait (AWS.Server.No_Server);
 
-         Exit_Application_Requested := True;
-
-         AWS.Server.Shutdown (Web_Server);
-      else
-         AWS.Server.Wait (AWS.Server.No_Server);
-
-         Exit_Application_Requested := True;
-      end if;
+      Exit_Application_Requested := True;
    end Run;
 
    -------------------

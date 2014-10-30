@@ -151,7 +151,7 @@ package Gnoga.Server.Database.SQLite is
    function Number_Of_Rows (RS : Recordset) return Natural;
    --  Return number of rows in recordset
    --  This function is not available for SQLite Databases
-   --  Call it will thrown an exception of NOT_IMPLEMENTED_ERROR
+   --  Call it will thrown an exception of Not_Implemented
 
    overriding
    function Number_Of_Fields (RS : Recordset) return Natural;
@@ -190,7 +190,6 @@ package Gnoga.Server.Database.SQLite is
    function Escape_String (C : Connection; S : String) return String;
    --  prepares a string for safe storage in a query
 
-   NOT_IMPLEMENTED_ERROR : exception;
 private
    type Connection is new Gnoga.Server.Database.Connection with
       record

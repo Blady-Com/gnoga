@@ -82,7 +82,7 @@ package body Gnoga.Application.Singleton is
    task body Web_Server_Task is
    begin
       accept Start;
-      Gnoga.Server.Connection.Run (Wait_For_Q => False);
+      Gnoga.Server.Connection.Run;
    end Web_Server_Task;
 
    procedure Initialize

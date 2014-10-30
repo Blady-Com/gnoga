@@ -12,7 +12,7 @@ with Gnoga.Gui.Plugin.jQuery;
 
 with Gnoga.Client.Bind_Page;
 
-with Gnoga.Server.Template_Parser;
+with Gnoga.Server.Template_Parser.PHP;
 with Gnoga.Server.Template_Parser.Python;
 with Gnoga.Server.Template_Parser.Simple;
 
@@ -216,7 +216,7 @@ procedure Demo is
 
          App.Console.Put_Line ("From PHP parser:");
          Set_Template_Directory (Gnoga.Server.Templates_Directory & "test/");
-         App.Console.Put_Line (Load_View ("test_sample.php", Items));
+         App.Console.Put_Line (PHP.Load_View ("test_sample.php", Items));
 
          App.Console.New_Line;
 

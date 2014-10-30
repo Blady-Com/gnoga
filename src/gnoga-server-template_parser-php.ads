@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                         G N O G A . S E R V E R                          --
+--      G N O G A . S E R V E R . T E M P L A T E _ P A R S E R . P H P     --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -35,57 +35,31 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  Serverside bindings and tools
+with Ada.Finalization;
+with Ada.Strings.Unbounded;
 
-package Gnoga.Server is
+with Gnoga.Types;
+with Gnoga.Server.Database;
+with Gnoga.Server.Model;
+with Gnoga.Server.Model.Queries;
 
-   --  Gnoga applications generally use the following layout. However
-   --  if the executable can be located in App Dir. Any missing standard
-   --  subdirectory will instead use the html root which if missing is
-   --  App Dir.
-   --
-   --  App Dir
-   --    |
-   --    |___ bin - your Gnoga app binary
-   --    |
-   --    |___ html - boot.html (or other boot loader used)
-   --    |
-   --    |___ js - must contain jquery.min.js
-   --    |
-   --    |___ css - optional, a directory for serving css files
-   --    |
-   --    |___ img - optional, a directory of serving graphics.
-   --    |
-   --    |___ templates - optional, if using Gnoga.Server.Template_Parser
-   --    |
-   --    |___ upload - option, optional directory for incoming files
+package Gnoga.Server.Template_Parser.PHP is
 
-   function Application_Directory return String;
-   --  This is the root directory for the application.
+   function Load_View (Name : String) return String;
+   --  Return named view with no passed data
 
-   function Executable_Directory return String;
-   --  Locates this application's executable directory
-   --  This is usually in Application_Directory/bin
+   function Load_View (Name     : String;
+                       Data_Map : Gnoga.Types.Data_Map_Type;
+                       Var_Name : String := "data")
+                       return String;
+   --  Return named view with data map
 
-   function HTML_Directory return String;
-   --  Locates the applications HTML Root for this application
+   function Load_View (Name : String; Data : View_Data)
+                       return String;
+   --  Return named view with Data
 
-   function JS_Directory return String;
-   --  Locates the /js directory for this application
-
-   function CSS_Directory return String;
-   --  Locates the /css director for this application
-
-   function IMG_Directory return String;
-   --  Locates the /img directory for this application
-
-   function Upload_Directory return String;
-   --  Locates the /upload directory for this application
-
-   function Templates_Directory return String;
-   --  Locates the templates directory for this application
-   --  If not in Application_Directory/templates, tries
-   --  Application_Directory/share/gnoga/templates, if not
-   --  uses Application_Directory
-
-end Gnoga.Server;
+   function Load_View (Name      : String;
+                       Data_List : View_Data_Array)
+                       return String;
+   --  Return named view with Data_List array of View_Data items
+end Gnoga.Server.Template_Parser.PHP;

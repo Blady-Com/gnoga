@@ -91,40 +91,40 @@ package body Gnoga.Server.Migration is
             Migration_Info.Value ("value", "0");
       end if;
 
-      Gnoga.Log ("Current migration level =" & Current_Level'Img);
+      Gnoga.Write_To_Console ("Current migration level =" & Current_Level'Img);
 
       if Level > Collection.Migrations_Up.Last_Index then
          Actual_Level := Collection.Migrations_Up.Last_Index;
       end if;
 
       if Actual_Level > Current_Level then
-         Gnoga.Log
+         Gnoga.Write_To_Console
            ("Requested migration level up to" & Actual_Level'Img);
          for i in Current_Level + 1 .. Actual_Level loop
-            Gnoga.Log ("Migrating to level" & i'Img);
+            Gnoga.Write_To_Console ("Migrating to level" & i'Img);
             Migration_Info.Value ("value", i'Img);
 
-            Gnoga.Log
+            Gnoga.Write_To_Console
               ("Running : " & Collection.Migrations_Up.Element (i));
             Connection.Execute_Query (Collection.Migrations_Up.Element (i));
          end loop;
-         Gnoga.Log ("Done migration");
+         Gnoga.Write_To_Console ("Done migration");
       end if;
 
       if Actual_Level < Current_Level then
-         Gnoga.Log
+         Gnoga.Write_To_Console
            ("Requested migration level down to" & Actual_Level'Img);
          for i in reverse Actual_Level + 1 .. Current_Level loop
-            Gnoga.Log ("Migrating from level" & i'Img);
+            Gnoga.Write_To_Console ("Migrating from level" & i'Img);
             Migration_Info.Value ("value", Integer'Image (i - 1));
-            Gnoga.Log
+            Gnoga.Write_To_Console
               ("Running : " & Collection.Migrations_Down.Element (i));
             Connection.Execute_Query (Collection.Migrations_Down.Element (i));
          end loop;
-         Gnoga.Log ("Done migration");
+         Gnoga.Write_To_Console ("Done migration");
       end if;
 
-      Gnoga.Log
+      Gnoga.Write_To_Console
         ("Saving new migration_level = " & Migration_Info.Value ("value"));
       Migration_Info.Value ("name", "migration_level");
       Migration_Info.Save;
@@ -145,7 +145,7 @@ package body Gnoga.Server.Migration is
             " (" & Connection.ID_Field_String & "," &
             "  name VARCHAR(80)," &
             "  value VARCHAR(80))");
-         Gnoga.Log ("gnogaparams table created");
+         Gnoga.Write_To_Console ("gnogaparams table created");
       exception
          when Gnoga.Server.Database.Query_Error =>
             null; -- table already exists

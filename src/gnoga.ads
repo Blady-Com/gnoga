@@ -36,8 +36,8 @@
 ------------------------------------------------------------------------------
 
 package Gnoga is
-   version      : constant String := "0.0";
-   version_high : constant        := 0;
+   version      : constant String := "1.0";
+   version_high : constant        := 1;
    version_low  : constant        := 0;
 
    function Escape_Quotes (S : String) return String;

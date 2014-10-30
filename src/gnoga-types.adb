@@ -83,13 +83,13 @@ package body Gnoga.Types is
          RGBA.Green := Integer'Value ("16#" & Value ((P + 5) .. (P + 6)));
          RGBA.Blue  := Integer'Value ("16#" & Value ((P + 7) .. (P + 8)));
       else
-         Log ("Invalid Hex converting to rbga value = " & Value);
+         Log ("Invalid Hex value for rbga value from " & Value);
       end if;
 
       return RGBA;
    exception
       when others =>
-         Log ("Error converting to rbga value = " & Value);
+         Log ("Error converting to rbga value from " & Value);
          return RGBA;
    end To_RGBA_From_Hex;
 
@@ -139,7 +139,7 @@ package body Gnoga.Types is
       return RGBA;
    exception
       when others =>
-         Log ("Error converting to rbga value = " & Value);
+         Log ("Error converting to rbga value from " & Value);
          return RGBA;
    end To_RGBA_From_RGB_or_RGBA;
 

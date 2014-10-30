@@ -45,12 +45,12 @@ with Gnoga.Server.Model.Queries;
 
 package Gnoga.Server.Template_Parser is
 
-   --  Gnoga.Server.Template_Parser uses PHP (or Python) as a powerful template
-   --  parsing engine. It also makes it possible to leverage and reuse existing
+   --  Gnoga.Server.Template_Parser uses PHP, Python or Ada as template parsing
+   --  engines. It also makes it possible to leverage and reuse existing
    --  web resources until they can be ported to Gnoga. To use Python instead
    --  of PHP see Gnoga.Server.Template_Parser.Python. If only simple parsing
    --  is needed (find and replace), use Gnoga.Server.Template_Parse.Simple
-   --  that uses simple Ada.Text_IO
+   --  that uses Ada.Text_IO
    --
    --  Note: Template_Parser is not intended to be used for web site / app
    --        development but for tools or for use by apps to manipulate files.
@@ -76,45 +76,48 @@ package Gnoga.Server.Template_Parser is
                      Key   : String;
                      Value : Integer);
    --  Add Key/Value pair to View Data
-   --  accessed in view as - $data[key]
+   --  accessed in view as - $data[key], data['key'] or @@data.key@@
 
    procedure Insert (Data  : in out View_Data;
                      Key   : String;
                      Value : String);
    --  Add Key/Value pair to View Data
-   --  accessed in view as - $data[key]
+   --  accessed in view as - $data[key], data['key'] or @@data.key@@
 
    procedure Insert_Array (Data   : in out View_Data;
                            Vector : Gnoga.Types.Data_Array_Type);
    --  Add an entire Array from a Data_Vector.Vector to View_Data
-   --  access in view as $data[Array Index]
+   --  access in view as $data[Index], data[Index] or @@data.Index@@
 
    procedure Insert_Array_Item (Data   : in out View_Data;
                                 Key    : String;
                                 Vector : Gnoga.Types.Data_Array_Type);
    --  Add an entire Array from a Data_Vector.Vector to View_Data
    --  as a single item.
-   --  access in view as $data[Key][Array Index]
+   --  access in view as $data[Key][Array Index], data[Key][Index] or
+   --  @@data.Key.Index@@
 
    procedure Insert_Map (Data   : in out View_Data;
                          Map    : Gnoga.Types.Data_Map_Type);
    --  Add an entire Map of Key/Value pairs from a Gnoga.Types.Data_Map_Type
    --  to View_Data each item will be accessed as - $data[key] where key is key
-   --  in Map
+   --  in Map, or for Python and Simple parser data['key'] or @@data.key@@
 
    procedure Insert_Map_Item (Data   : in out View_Data;
                               Key    : String;
                               Map    : Gnoga.Types.Data_Map_Type);
    --  Add an entire Map of Key/Value pairs from a Gnoga.Types.Data_Map_Type
    --  to View_Data as a single item.
-   --  access in view as $data[Key][Map's_Key]
+   --  access in view as $data[Key][Map's_Key], data['Key']['Map's_Key']
+   --  or @@data.Key.Map's_Key@@
 
    procedure Insert_Record_Item
      (Data   : in out View_Data;
       Key    : String;
       Row    : Gnoga.Server.Model.Active_Record'Class);
    --  Add field values of an Active_Record to View Data as a single item.
-   --  access in view as $data[Key][Row's Field Name]
+   --  access in view as $data[Key][Row's Field Name],
+   --  data['Key']['Row's Field Name'] or @@data.Key.Row's Field Name@@
 
    procedure Insert_Rows
      (Data   : in out View_Data;
@@ -122,12 +125,16 @@ package Gnoga.Server.Template_Parser is
    --  Add a vector of Active_Records to View_Data.
    --  Each Active_Record is keyed by row number
    --  access in view as $data[Row Number][Row's Field Name]
+   --  data[Row Number]['Row's Field Name'] or
+   --  @@data.Row Number.Row's Field Name@@
 
    procedure Insert_Recordset
      (Data   : in out View_Data;
       RS     : in out Gnoga.Server.Database.Recordset'Class);
    --  Add a recordset to View_Data. Each record is keyed by row number
    --  access in view as $data[Row Number][Row's Field Name]
+   --  data[Row Number]['Row's Field Name'] or
+   --  @@data.Row Number.Row's Field Name@@
 
    procedure Insert_Query
      (Data  : in out View_Data;
@@ -154,24 +161,6 @@ package Gnoga.Server.Template_Parser is
 
    Parser_Execution_Failure : exception;
    --  Raised if failed to execute parser application
-
-   function Load_View (Name : String) return String;
-   --  Return named view with no passed data
-
-   function Load_View (Name     : String;
-                       Data_Map : Gnoga.Types.Data_Map_Type;
-                       Var_Name : String := "data")
-                       return String;
-   --  Return named view with data map
-
-   function Load_View (Name : String; Data : View_Data)
-                       return String;
-   --  Return named view with Data
-
-   function Load_View (Name      : String;
-                       Data_List : View_Data_Array)
-                       return String;
-   --  Return named view with Data_List array of View_Data items
 
    procedure Set_Template_Directory (Directory : String);
    --  Set the default extension for views. By default this is at

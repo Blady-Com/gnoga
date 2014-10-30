@@ -17,10 +17,13 @@ App Dir
   |___ obj - Build objects
   |
   |___ templates - option, if using Gnoga.Server.Template_Parser
+  |
+  |___ upload - option, optional directory for incoming files
 
-  
-  The basic gpr file (assuming you have run "make install" to install gnoga as a library in gnat) for this setup of dirs would be (using my_app.gpr):
-  
+
+  The basic gpr file (assuming you have run "make install" to install gnoga as
+  a library in gnat) for this setup of dirs would be (using my_app.gpr):
+
   with "Gnoga";
 
   project My_App is
@@ -30,7 +33,7 @@ App Dir
      for Object_Dir use "../obj";
      for Exec_Dir use "../bin";
      for Main use ("my_app-main.adb");
-     
+
      package Builder is
         for Executable ("my_app-main.adb") use "myapp";
      end Builder;

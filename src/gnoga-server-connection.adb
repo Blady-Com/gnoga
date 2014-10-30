@@ -848,16 +848,34 @@ package body Gnoga.Server.Connection is
    task type Dispatch_Task_Type
      (Object : Gnoga.Gui.Base.Pointer_To_Base_Class)
    is
-      entry Start (Event : in String; Data : in String);
+      entry Start (Event : in String;
+                   Data  : in String;
+                   ID    : in Gnoga.Types.Unique_ID);
    end Dispatch_Task_Type;
+
+   type Dispatch_Task_Access is access all Dispatch_Task_Type;
+
+   procedure Free_Dispatch_Task is
+        new Ada.Unchecked_Deallocation (Dispatch_Task_Type,
+                                        Dispatch_Task_Access);
+
+   package Dispatch_Task_Maps is new Ada.Containers.Ordered_Maps
+     (Gnoga.Types.Unique_ID, Dispatch_Task_Access);
+
+   Dispatch_Task_Map : Dispatch_Task_Maps.Map;
 
    task body Dispatch_Task_Type is
       E : Ada.Strings.Unbounded.Unbounded_String;
       D : Ada.Strings.Unbounded.Unbounded_String;
+      I : Gnoga.Types.Unique_ID;
    begin
-      accept Start (Event : in String; Data : in String) do
+      accept Start (Event : in String;
+                    Data  : in String;
+                    ID    : in Gnoga.Types.Unique_ID)
+      do
          E := Ada.Strings.Unbounded.To_Unbounded_String (Event);
          D := Ada.Strings.Unbounded.To_Unbounded_String (Data);
+         I := ID;
       end Start;
 
       declare
@@ -872,6 +890,15 @@ package body Gnoga.Server.Connection is
             Object.On_Message (Event, Data);
          end if;
       end;
+
+      declare
+         T : Dispatch_Task_Access := Dispatch_Task_Map.Element (I);
+      begin
+         Free_Dispatch_Task (T);
+         --  http://adacore.com/developers/development-log/NF-65-H911-007-gnat
+         --  This will cause T to free upon task termination.
+         Dispatch_Task_Map.Delete (I);
+      end;
    exception
       when E : others =>
          Log ("Dispatch Error");
@@ -879,9 +906,6 @@ package body Gnoga.Server.Connection is
                 Ada.Exceptions.Exception_Message (E));
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Dispatch_Task_Type;
-
-   New_Dispatch_Task : access Dispatch_Task_Type;
-   --  ? Ada.Task_Termination should be used for cleanup of dangling task TCBs
 
    overriding procedure On_Message
      (Web_Socket : in out Socket_Type;
@@ -915,9 +939,13 @@ package body Gnoga.Server.Connection is
 
             Object : Gnoga.Gui.Base.Pointer_To_Base_Class :=
                        Object_Manager.Get_Object (Integer'Value (UID));
+
+            New_ID : Gnoga.Types.Unique_ID;
          begin
-            New_Dispatch_Task := new Dispatch_Task_Type (Object);
-            New_Dispatch_Task.Start (Event, Event_Data);
+            New_Unique_ID (New_ID);
+            Dispatch_Task_Map.Insert (New_ID, new Dispatch_Task_Type (Object));
+            Dispatch_Task_Map.Element (New_ID).Start
+              (Event, Event_Data, New_ID);
          end;
       end if;
    end On_Message;

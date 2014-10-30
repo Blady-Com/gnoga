@@ -62,6 +62,16 @@ begin
             Gnoga_Make.New_Application (Argument (2), Argument (3));
          end if;
 
+      elsif Command = "view" then
+         if Argument_Count < 3 then
+            Gnoga_Make.Display_View_Usage;
+         end if;
+
+      elsif Command = "controller" then
+         if Argument_Count < 3 then
+            Gnoga_Make.Display_Controller_Usage;
+         end if;
+
       else
          Gnoga_Make.Display_Help;
       end if;

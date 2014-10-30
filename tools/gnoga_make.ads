@@ -33,11 +33,24 @@ package Gnoga_Make is
    --  Display command line help for Gnoga_Make
 
    procedure Display_New_Usage;
-   --  Display command line help for New command
+   --  Display command line help for 'new' command
+
+   procedure Display_View_Usage;
+   --  Display command line help for 'view' command
+
+   procedure Display_Controller_Usage;
+   --  Display command line help for 'controller' command
 
    procedure New_Application (App_Name          : in String;
                               App_Template_Name : in String);
    --  Copy new_application template directory and make appropriate project
    --  name subsitutions
 
+   procedure New_View (App_Name           : in String;
+                       View_Name          : in String;
+                       View_Template_Name : in String);
+
+   procedure New_Controller (App_Name                 : in String;
+                             Controller_Name          : in String;
+                             Controller_Template_Name : in String);
 end Gnoga_Make;

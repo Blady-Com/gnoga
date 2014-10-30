@@ -152,7 +152,6 @@ procedure Boot_Strap_Demo is
             Panel_3.Put ("Bye World!");
          end loop;
       end;
-
    end On_Connect;
 
 begin

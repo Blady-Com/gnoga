@@ -38,6 +38,11 @@
 with Ada.Strings.Unbounded;
 
 package body Gnoga.Server.Model.Queries is
+
+   --------------
+   -- Find_All --
+   --------------
+
    function Find_All
      (Name       : access String;
       Connection : access Gnoga.Server.Database.Connection'Class;
@@ -49,10 +54,6 @@ package body Gnoga.Server.Model.Queries is
    begin
       return Find_All (R, Like, Order_By);
    end Find_All;
-
-   --------------
-   -- Find_All --
-   --------------
 
    function Find_All
      (Template : Active_Record'Class;
@@ -92,6 +93,10 @@ package body Gnoga.Server.Model.Queries is
          return Rows;
       end;
    end Find_All;
+
+   ----------------
+   -- Find_Items --
+   ----------------
 
    function Find_Items (Parent      : in     Active_Record'Class;
                         Child_Table : access String;

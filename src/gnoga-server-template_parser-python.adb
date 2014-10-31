@@ -174,6 +174,10 @@ package body Gnoga.Server.Template_Parser.Python is
       end if;
    end String_Data_List;
 
+   -------------------
+   -- Map_Data_List --
+   -------------------
+
    function Map_Data_List (Data     : Gnoga.Types.Map_of_Data_Maps_Type;
                            Var_Name : String)
                            return String

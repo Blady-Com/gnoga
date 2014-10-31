@@ -154,6 +154,10 @@ package body Gnoga.Server.Migration is
       Collection.Migrate_To (Connection, Collection.Migrations_Up.Last_Index);
    end Setup;
 
+   -------------------------------------
+   -- Migrations_Handled_Command_Line --
+   -------------------------------------
+
    function Migrations_Handled_Command_Line
      (Connection          : in     Gnoga.Server.Database.Connection_Access;
       Migration_Procedure : access procedure

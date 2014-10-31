@@ -68,6 +68,10 @@ package body Gnoga.Types is
       end if;
    end To_RGBA;
 
+   ----------------------
+   -- To_RGBA_From_Hex --
+   ----------------------
+
    function To_RGBA_From_Hex (Value : String) return RGBA_Type is
       RGBA : RGBA_Type;
       P    : Integer := Value'First;
@@ -92,6 +96,10 @@ package body Gnoga.Types is
          Log ("Error converting to rbga value from " & Value);
          return RGBA;
    end To_RGBA_From_Hex;
+
+   ------------------------------
+   -- To_RGBA_From_RGB_or_RGBA --
+   ------------------------------
 
    function To_RGBA_From_RGB_or_RGBA (Value : String) return RGBA_Type is
       use Ada.Strings.Fixed;

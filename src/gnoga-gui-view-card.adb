@@ -208,6 +208,10 @@ package body Gnoga.Gui.View.Card is
       end;
    end Create;
 
+   --------------
+   -- On_Click --
+   --------------
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)

@@ -53,6 +53,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Gnoga.Gui.View.View_Type (View).Create (Parent, Attach, ID);
    end Create;
 
+   --------------------
+   -- Create_Section --
+   --------------------
+
    procedure Create_Section
      (View : in out Accordion_Type; Heading : String)
    is
@@ -202,26 +206,46 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
                          Message => "");
    end Create;
 
+   ----------
+   -- Open --
+   ----------
+
    procedure Open (Dialog : in out Dialog_Type) is
    begin
       Dialog.jQuery_Execute ("dialog(""open"")");
       Dialog.Fire_On_Open;
    end Open;
 
+   -----------
+   -- Close --
+   -----------
+
    procedure Close (Dialog : in out Dialog_Type) is
    begin
       Dialog.jQuery_Execute ("dialog(""close"")");
    end Close;
+
+   -----------------
+   -- Move_To_Top --
+   -----------------
 
    procedure Move_To_Top (Dialog : in out Dialog_Type) is
    begin
       Dialog.jQuery_Execute ("dialog(""moveToTop"")");
    end Move_To_Top;
 
+   -------------
+   -- Is_Open --
+   -------------
+
    function Is_Open (Dialog : in out Dialog_Type) return Boolean is
    begin
       return Dialog.jQuery_Execute ("dialog(""isOpen"")") = "true";
    end Is_Open;
+
+   -------------
+   -- On_Open --
+   -------------
 
    procedure On_Open_Handler (Dialog  : in out Dialog_Type;
                               Handler : in     Gnoga.Gui.Base.Action_Event)
@@ -236,6 +260,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
          Dialog.On_Open_Event (Dialog);
       end if;
    end Fire_On_Open;
+
+   --------------
+   -- On_Close --
+   --------------
 
    procedure On_Close_Handler (Dialog  : in out Dialog_Type;
                                Handler : in     Gnoga.Gui.Base.Action_Event)
@@ -259,6 +287,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
          Dialog.On_Close_Event (Dialog);
       end if;
    end Fire_On_Close;
+
+   ----------------
+   -- On_Message --
+   ----------------
 
    overriding
    procedure On_Message (Object  : in out Dialog_Type;
@@ -302,6 +334,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
         ("progressbar ({ max:" & Maximum'Img & ", value:" & Value'Img & "})");
    end Create;
 
+   -----------
+   -- Value --
+   -----------
+
    procedure Value (Progress_Bar : in out Progress_Bar_Type;
                     Value        : in     Integer)
    is
@@ -338,6 +374,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Tabs.Labels.Create_From_HTML (Tabs, "<ul />");
    end Create;
 
+   -------------
+   -- Add_Tab --
+   -------------
+
    procedure Add_Tab (Tabs  : in out Tabs_Type;
                       Label : in     String;
                       View  : in out Gui.View.View_Base_Type'Class)
@@ -351,6 +391,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       L.Place_Inside_Bottom_Of (Tabs.Labels);
       View.Place_Inside_Bottom_Of (Tabs);
    end Add_Tab;
+
+   -----------------
+   -- Render_Tabs --
+   -----------------
 
    procedure Render_Tabs (Tabs : in out Tabs_Type) is
    begin

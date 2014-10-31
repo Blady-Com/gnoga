@@ -65,10 +65,8 @@ package Gnoga.Gui.Element.Form is
    --  In Gnoga forms in general should be processed by handling the
    --  On_Submit event and accessing each element's value directly.
    --  However it is possible to set an action (URL for form to submit to)
-   --  and that page can process the results. Note that the POST method
-   --  for forms does not work wih Gnoga currently. For the GET method
-   --  the results can be accessed via Gnoga.Window.Location.Search or
-   --  using Gnoga.Window.Connections.Search_Parameters.
+   --  and that page can process the results. For submitted forms access
+   --  using Gnoga.Gui.Window.Window_Type.Form_Parameters.
 
    -------------------------------------------------------------------------
    --  From_Type - Properties

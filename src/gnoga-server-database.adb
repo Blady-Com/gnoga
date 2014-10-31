@@ -40,6 +40,10 @@ with Ada.Strings.Unbounded;
 
 package body Gnoga.Server.Database is
 
+   ----------------
+   -- Field_Type --
+   ----------------
+
    function Field_Type (Field : Field_Description) return String is
       Data  : String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);
       Right : Natural := Ada.Strings.Fixed.Index (Data, "(");
@@ -69,6 +73,10 @@ package body Gnoga.Server.Database is
       end if;
    end Field_Size;
 
+   --------------------
+   -- Field_Decimals --
+   --------------------
+
    function Field_Decimals (Field : Field_Description) return Natural is
       Option : String  := Field_Options (Field);
       Comma  : Natural := Ada.Strings.Fixed.Index (Option, ",");
@@ -79,6 +87,10 @@ package body Gnoga.Server.Database is
          return Natural'Value (Option (Comma + 1 .. Option'Last));
       end if;
    end Field_Decimals;
+
+   -------------------
+   -- Field_Options --
+   -------------------
 
    function Field_Options (Field : Field_Description) return String is
       Data  : String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);

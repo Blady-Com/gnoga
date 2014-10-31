@@ -58,6 +58,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
            "bootstrap/3.2.0/js/bootstrap.min.js""></script>')");
    end Load_Boot_Strap;
 
+   ------------
+   -- Create --
+   ------------
+
    procedure Create
      (Container : in out Container_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -66,6 +70,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    begin
       Container.Create_From_HTML (Parent, "<div class=""container"" />", ID);
    end Create;
+
+   ------------
+   -- Create --
+   ------------
 
    procedure Create
      (Container : in out Fluid_Container_Type;
@@ -77,6 +85,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
         (Parent, "<div class=""container-fluid"" />", ID);
    end Create;
 
+   --------------------
+   -- Make_Container --
+   --------------------
+
    procedure Make_Container
      (View : in out Gnoga.Gui.View.View_Base_Type'Class)
    is
@@ -84,12 +96,20 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       View.Add_Class ("container");
    end Make_Container;
 
+   --------------------------
+   -- Make_Fluid_Container --
+   --------------------------
+
    procedure Make_Fluid_Container
      (View : in out Gnoga.Gui.View.View_Base_Type'Class)
    is
    begin
       View.Add_Class ("container-fluid");
    end Make_Fluid_Container;
+
+   ------------
+   -- Create --
+   ------------
 
    procedure Create
      (Row    : in out Row_Type;
@@ -99,6 +119,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    begin
       Row.Create_From_HTML (Parent, "<div class='row' />", ID);
    end Create;
+
+   -----------------
+   -- Set_Columns --
+   -----------------
 
    procedure Set_Columns (View   : in out Gnoga.Gui.View.View_Base_Type'Class;
                           Number : in     Natural;
@@ -122,6 +146,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       View.Add_Class (To_String (Device) & Left_Trim (Number'Img));
    end Set_Columns;
 
+   ------------
+   -- Create --
+   ------------
+
    procedure Create
      (Jumbotron : in out Jumbotron_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -134,6 +162,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
                                     Escape_Quotes (Content) & "</div>",
                                   ID);
    end Create;
+
+   ------------
+   -- Create --
+   ------------
 
    procedure Create
      (Element   : in out Table_Type;
@@ -161,6 +193,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       end if;
    end Create;
 
+   -------------------
+   -- Put_Glyphicon --
+   -------------------
+
    procedure Put_Glyphicon
      (View : in out Gnoga.Gui.View.View_Base_Type'Class;
       Icon : in     String)
@@ -168,6 +204,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    begin
       View.Put_HTML ("<span class='glphicon glyphicon-" & Icon & "' />");
    end Put_Glyphicon;
+
+   ------------
+   -- Create --
+   ------------
 
    procedure Create
      (Form_Group : in out Form_Group_Type;
@@ -185,6 +225,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       Element.Add_Class ("form-control");
    end Make_Boot_Strap_Form_Item;
 
+   --------------------
+   -- Add_Help_Block --
+   --------------------
+
    procedure Add_Help_Block
      (Element : in out Gnoga.Gui.Element.Form.Form_Element_Type'Class;
       Text    : in     String;
@@ -197,6 +241,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
                             Escape_Quotes (Text) & "</span>",
                           ID     => ID);
    end Add_Help_Block;
+
+   ------------
+   -- Create --
+   ------------
 
    procedure Create
      (Element : in out Check_Box_Type;
@@ -225,6 +273,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       end if;
    end Disabled;
 
+   ------------
+   -- Create --
+   ------------
+
    procedure Create
      (Element : in out Radio_Button_Type;
       Form    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
@@ -238,6 +290,10 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       Element.Radio.Create (Form, Checked, Value, Name, ID);
       Element.Radio.Place_Inside_Top_Of (Element);
    end Create;
+
+   --------------
+   -- Disabled --
+   --------------
 
    procedure Disabled (Element : in out Radio_Button_Type;
                        Value   : in     Boolean := True)

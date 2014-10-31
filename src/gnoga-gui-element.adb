@@ -76,6 +76,10 @@ package body Gnoga.Gui.Element is
       Element.Parent (Parent);
    end Create_From_HTML;
 
+   ------------------------
+   -- Create_XML_Element --
+   ------------------------
+
    procedure Create_XML_Element
      (Element      : in out Element_Type;
       Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -308,12 +312,20 @@ package body Gnoga.Gui.Element is
          return Visible;
    end Overflow;
 
+   ----------------
+   -- Overflow_X --
+   ----------------
+
    procedure Overflow_X (Element : in out Element_Type;
                          Value   : in     Overflow_Type)
    is
    begin
       Element.Style ("overflow-x", Value'Img);
    end Overflow_X;
+
+   ----------------
+   -- Overflow_Y --
+   ----------------
 
    procedure Overflow_Y (Element : in out Element_Type;
                          Value   : in     Overflow_Type)

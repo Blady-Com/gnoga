@@ -38,7 +38,7 @@
 package Gnoga.Gui.Element.Style_Block is
    --  Style elements are for creating CSS styles. In general it is better
    --  to create CSS style sheets as external files and load with
-   --  Window_Type.Document.Load_CSS or to use element properties. However
+   --  Window_Type.Document.Load_CSS or use element properties. However
    --  it is possible to generate CSS style sheets in Gnoga. They can be
    --  added like any element to views, windows, etc.
 

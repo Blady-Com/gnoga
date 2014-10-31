@@ -39,6 +39,7 @@ with Ada.Strings.Unbounded;
 with Ada.Calendar.Formatting;
 
 package body Gnoga.Server.Model is
+
    ----------------
    -- Initialize --
    ----------------
@@ -181,6 +182,7 @@ package body Gnoga.Server.Model is
 
    begin
       A.Values.Iterate (foreach'Access);
+
       if A.Is_New then
          declare
             f : String := To_String (fields);
@@ -298,6 +300,7 @@ package body Gnoga.Server.Model is
                         Create_New : in     Boolean := True)
    is
       Remove_s : String := Parent.Table_Name.all;
+
       Where_Clause : String := Remove_s (Remove_s'First .. Remove_s'Last - 1)
         & "_id = " & Parent.Value ("id");
    begin

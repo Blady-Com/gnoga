@@ -85,8 +85,11 @@ package Gnoga.Gui.Element is
    --  Create a Gnoga element with HTML not attached to the DOM. If ID is blank
    --  Gnoga will generate a unique one for it. The created object will be
    --  stored on the browser but will not be inserted in to the DOM until
-   --  Place_Inside_Top_Of, Place_Inside_Botton_Of, Place_Before, Place_ After
-   --  Note: ID _must_ be unique for use in Gnoga.
+   --  Place_Inside_Top_Of, Place_Inside_Botton_Of, Place_Before, Place_After
+   --  is called. This is done automatically if Parent is a child type of
+   --  Gnoga_Gui.View.View_Base_Type.
+   --
+   --  Note: All IDs _must_ be unique for use in Gnoga.
 
    HTML_Namespace   : constant String := "http://www.w3.org/1999/xhtml";
    MathML_Namespace : constant String := "http://www.w3.org/1998/Math/MathML";
@@ -102,7 +105,7 @@ package Gnoga.Gui.Element is
       Namespace    : in     String;
       Element_Type : in     String;
       ID           : in     String := "");
-   --  Create an XML element not part of any DOM using XML Namespace.
+   --  Create an XML element using XML Namespace.
 
    -------------------------------------------------------------------------
    --  Element_Type - Properties
@@ -131,35 +134,33 @@ package Gnoga.Gui.Element is
    function Class_Name (Element : Element_Type) return String;
    --  CSS Class name, can be multiple seperated by <space>
    --  See Add_Class, Remove_Class and Toggle_Class Methods for adding and
-   --  removing individual classes.
+   --  removing individual or groups of classes in an easier way.
 
    procedure Editable (Element : in out Element_Type;
                        Value   : in     Boolean := True);
    function Editable (Element : Element_Type) return Boolean;
+   --  Note: This will make almost any element with content editable, even
+   --        non form types in most browsers.
 
    procedure Draggable (Element    : in out Element_Type;
                         Value      : in     Boolean := True);
    function Draggable (Element : Element_Type) return Boolean;
-   --  In order to make an objet draggable in addition to Draggable being true
+   --  In order to make an object draggable in addition to Draggable being true
    --  the On_Drag_Start event _must_ be bound as well to set the Drag_Text.
-   --  To receive a drop, you need to bind On_Drop.
-
-   procedure Hidden (Element : in out Element_Type;
-                     Value   : in     Boolean := True);
-   function Hidden (Element : Element_Type) return Boolean;
-   --  The hidden property is practically speaking like Visible, however
-   --  visible uses CSS to hide the Element. Hidden implies the element is
-   --  semantically not relevant not just visually. It will also remove it
-   --  from layout unlike Element.Visible and just like Element.Display (None)
+   --  To receive a drop, you need to bind On_Drop. See Gnoga.Gui.Base
 
    procedure Inner_HTML (Element : in out Element_Type; Value : in String);
    function Inner_HTML (Element : Element_Type) return String;
-   --  This will completely replace the inner html of an element. This
-   --  will require all Gnoga elements to be Placed again in the DOM to
-   --  display again.
+   --  This will completely replace the inner html of an element. This will
+   --  remove any Elements with in Element from the DOM. If those elements
+   --  have ID_Types of Gnoga_ID they are still available and can be placed
+   --  in the DOM again using the Element.Place_* methods. However if they
+   --  were of ID_Type DOM_ID they are lost forever.
 
    function Outer_HTML (Element : Element_Type) return String;
-   --  Returns the HTML for element and all below element.
+   --  Returns the HTML for Element and all its contents.
+
+   --  Text Content Properties  --
 
    procedure Language_Code (Element : in out Element_Type; Value : in String);
    function Language_Code (Element : Element_Type) return String;
@@ -184,6 +185,16 @@ package Gnoga.Gui.Element is
    function Text_Direction (Element : Element_Type) return Text_Direction_Type;
    --  BiDi text direction
 
+   --  Visibility Properties --
+
+   procedure Hidden (Element : in out Element_Type;
+                     Value   : in     Boolean := True);
+   function Hidden (Element : Element_Type) return Boolean;
+   --  The hidden property will make an element invisible, however unlike
+   --  the property Visible which uses CSS to hide the Element. Hidden implies
+   --  the element is semantically not relevant not just visually and will
+   --  _also_ remove it from layout similar to setting Element.Display (None).
+
    procedure Visible (Element : in out Element_Type;
                       Value   : in     Boolean := True);
    function Visible (Element : Element_Type) return Boolean;
@@ -192,23 +203,8 @@ package Gnoga.Gui.Element is
    --  remove from layout.
    --  Note: that each property, Visible, Hidden and Display (None) all work
    --  independantly and do not reflect the actual client side visual state
-   --  but the property state. To check an object all three properties would
-   --  need to be checked to know if for sure is visible or not.
-
-   --  Properties curently not being supported:
-   --  contentmenu - property is currently only supported in FireFox
-   --  data-* - may be considered in future versions
-   --  dropzone - no browser support
-   --  translate - no browser support
-
-   --  Box Properties --
-
-   type Clear_Side_Type is (Left, Right, Both);
-
-   procedure Clear_Side (Element : in out Element_Type;
-                         Value   : in     Clear_Side_Type);
-   --  When using "float" for layout sets if the right or left side
-   --  of Block should be clear of any "floated" Element.
+   --  but the property state. To check if an object is for sure not visible
+   --  would require checking all three properties.
 
    procedure Display (Element : in out Element_Type;
                       Value   : in     String);
@@ -234,12 +230,35 @@ package Gnoga.Gui.Element is
    --
    --  flex         - Use the "flexbox" model
 
+   --  Box Properties --
+
+   type Clear_Side_Type is (Left, Right, Both);
+
+   procedure Clear_Side (Element : in out Element_Type;
+                         Value   : in     Clear_Side_Type);
+   --  When using "float" for layout sets if the right or left side
+   --  of Block should be clear of any "floated" Element.
+
+   type Float_Type is (None, Left, Right);
+
+   procedure Layout_Float (Element : in out Element_Type;
+                           Value   : in     Float_Type);
+   --  Sets if Element should "float" to the left or right until touching
+   --  the closest element.
+
    type Overflow_Type is (Visible, Hidden, Scroll, Auto);
 
    procedure Overflow (Element : in out Element_Type;
                        Value   : in     Overflow_Type);
    function Overflow (Element : Element_Type) return Overflow_Type;
    --  How to handle overflow of contents of an element's box
+   --  The default is Visible - no clipping.
+
+   procedure Overflow_X (Element : in out Element_Type;
+                         Value   : in     Overflow_Type);
+   procedure Overflow_Y (Element : in out Element_Type;
+                         Value   : in     Overflow_Type);
+   --  How to handle overflow of contents of an element's box for X or Y
    --  The default is Visible - no clipping.
 
    type Resizable_Type is (None, Both, Horizontal, Vertical);
@@ -257,6 +276,50 @@ package Gnoga.Gui.Element is
    function Position (Element : Element_Type) return Position_Type;
    --  Determins how the properties left, right, top and bottom are
    --  interpreted.
+
+   type Vertical_Align_Type is (Baseline, Sub, Super, Top, Middle, Bottom,
+                                Text_Top, Text_Bottom);
+
+   procedure Vertical_Align (Element : in out Element_Type;
+                             Value   : in     Vertical_Align_Type);
+   --  Vertical alignment of Element
+
+   type Box_Sizing_Type is (Content_Box, Border_Box);
+
+   procedure Box_Sizing (Element : in out Element_Type;
+                         Value   : in     Box_Sizing_Type);
+   function Box_Sizing (Element : Element_Type) return Box_Sizing_Type;
+   --  Affects if height and width properteries represent just the content or
+   --  the border, marging, padding, scroll and conent area as a whole.
+   --  The default is Content_Box
+
+   procedure Z_Index (Element : in out Element_Type;
+                      Value   : in     Integer);
+   --  Set stack order of element
+   --  Note: Z_Index only works on Elements with Position Type of absolute,
+   --        relative and fixed.
+
+   procedure Margin (Element : in out Element_Type;
+                     Top     : in     String := "0";
+                     Right   : in     String := "0";
+                     Bottom  : in     String := "0";
+                     Left    : in     String := "0");
+   --  Each can be - length|auto|initial|inherit
+
+   procedure Padding (Element : in out Element_Type;
+                     Top     : in     String := "0";
+                     Right   : in     String := "0";
+                     Bottom  : in     String := "0";
+                     Left    : in     String := "0");
+   --  Each can be - length|initial|inherit
+
+   function Position_Top (Element : Element_Type) return Integer;
+   function Position_Left (Element : Element_Type) return Integer;
+   --  Position in pixels relative to Element's parent in the DOM
+
+   function Offset_From_Top (Element : Element_Type) return Integer;
+   function Offset_From_Left (Element : Element_Type) return Integer;
+   --  Position in pixels relative to the document
 
    procedure Left (Element : in out Element_Type;
                    Value   : in     Integer;
@@ -285,15 +348,6 @@ package Gnoga.Gui.Element is
    procedure Bottom (Element : in out Element_Type;
                      Value   : in     String);
    function Bottom (Element : Element_Type) return String;
-
-   type Box_Sizing_Type is (Content_Box, Border_Box);
-
-   procedure Box_Sizing (Element : in out Element_Type;
-                         Value   : in     Box_Sizing_Type);
-   function Box_Sizing (Element : Element_Type) return Box_Sizing_Type;
-   --  Affects if height and width properteries represent just the content or
-   --  the border, marging, padding, scroll and conent area as a whole.
-   --  The default is Content_Box
 
    procedure Box_Height (Element : in out Element_Type;
                          Value   : in     Integer;
@@ -514,30 +568,14 @@ package Gnoga.Gui.Element is
                       Style   : in     Outline_Style_Type := None;
                       Width   : in     String             := "medium");
 
-   --  Margin --
-
-   procedure Margin (Element : in out Element_Type;
-                     Top     : in     String := "0";
-                     Right   : in     String := "0";
-                     Bottom  : in     String := "0";
-                     Left    : in     String := "0");
-   --  Each can be - length|auto|initial|inherit
-
-   --  Padding --
-
-   procedure Padding (Element : in out Element_Type;
-                     Top     : in     String := "0";
-                     Right   : in     String := "0";
-                     Bottom  : in     String := "0";
-                     Left    : in     String := "0");
-   --  Each can be - length|initial|inherit
-
    procedure Cursor (Element : in out Element_Type;
                      Value   : in     String);
    function Cursor (Element : Element_Type) return String;
    --  Sets the cursor to a standard type or an image
    --  if set to url(url_to_image). When using a url is best
    --  to suggest an alternate cursor, e.g. "url(url_to_image),auto"
+   --  A list of standard cursor types can be found at:
+   --  http://www.w3schools.com/cssref/pr_class_cursor.asp
 
    -- Text --
 
@@ -570,13 +608,6 @@ package Gnoga.Gui.Element is
                              Value   : in     Alignment_Type);
    --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
    --  in rtl languages At_Start = Right, and To_End = Left.
-
-   type Vertical_Align_Type is (Baseline, Sub, Super, Top, Middle, Bottom,
-                                Text_Top, Text_Bottom);
-
-   procedure Vertical_Align (Element : in out Element_Type;
-                             Value   : in     Vertical_Align_Type);
-   --  Vertical alignment of text
 
    --  General Access to Element --
 

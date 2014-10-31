@@ -98,6 +98,18 @@ procedure jDemo is
       Log ("Dialog Closed");
    end On_Close;
 
+   procedure On_Move (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   is
+      procedure Act (E : in out Element_Type'Class) is
+      begin
+         E.Text ("X =" & E.Offset_From_Left'Img &
+                   " Y = " & E.Offset_From_Top'Img);
+      end Act;
+   begin
+      Act (Element_Type (Object));
+   end On_Move;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
@@ -136,7 +148,9 @@ procedure jDemo is
            ("3", new List.List_Item_Type)).Create (App.Sorter, "Item 3");
 
       jQueryUI.Make_Draggable (App.Box);
-      jQueryUI.Make_Resizable (App.Box);
+
+      App.Box.Cursor ("move");
+      App.Box.On_Mouse_Move_Handler (On_Move'Unrestricted_Access);
 
       -- jQueryUI.Make_Sortable (App.Sorter);
       jQueryUI.Make_Selectable (App.Sorter);
@@ -148,8 +162,14 @@ procedure jDemo is
 
       App.Box2.Create (App.Console, "Drop on me");
       App.Box2.Border;
+      jQueryUI.Make_Resizable (App.Box2);
       jQueryUI.Make_Droppable (App.Box2);
       App.Box2.On_Message_Handler (On_Drop'Unrestricted_Access);
+
+      App.Box.Z_Index (1);
+      --  By making our draggable object the top of the stack of objects it
+      --  will float over our droppable target. If not when dropped on target
+      --  will be under the target.
 
       App.Menu.Create (App.Console);
 

@@ -261,6 +261,17 @@ package body Gnoga.Gui.Element is
       Element.Style ("clear", Value'Img);
    end Clear_Side;
 
+   ------------------
+   -- Layout_Float --
+   ------------------
+
+   procedure Layout_Float (Element : in out Element_Type;
+                    Value   : in     Float_Type)
+   is
+   begin
+      Element.Style ("float", Value'Img);
+   end Layout_Float;
+
    -------------
    -- Display --
    -------------
@@ -297,9 +308,34 @@ package body Gnoga.Gui.Element is
          return Visible;
    end Overflow;
 
-   --------------
+   procedure Overflow_X (Element : in out Element_Type;
+                         Value   : in     Overflow_Type)
+   is
+   begin
+      Element.Style ("overflow-x", Value'Img);
+   end Overflow_X;
+
+   procedure Overflow_Y (Element : in out Element_Type;
+                         Value   : in     Overflow_Type)
+   is
+   begin
+      Element.Style ("overflow-y", Value'Img);
+   end Overflow_Y;
+
+   -------------
+   -- Z_Index --
+   -------------
+
+   procedure Z_Index (Element : in out Element_Type;
+                      Value   : in     Integer)
+   is
+   begin
+      Element.Style ("z-index", Value'Img);
+   end Z_Index;
+
+   ---------------
    -- Resizable --
-   --------------
+   ---------------
 
    procedure Resizable (Element : in out Element_Type;
                         Value   : in     Resizable_Type)
@@ -334,6 +370,42 @@ package body Gnoga.Gui.Element is
       when others =>
          return Static;
    end Position;
+
+   ------------------
+   -- Position_Top --
+   ------------------
+
+   function Position_Top (Element : Element_Type) return Integer is
+   begin
+      return Element.jQuery_Execute ("position().top");
+   end Position_Top;
+
+   -------------------
+   -- Position_Left --
+   -------------------
+
+   function Position_Left (Element : Element_Type) return Integer is
+   begin
+      return Element.jQuery_Execute ("position().left");
+   end Position_Left;
+
+   ---------------------
+   -- Offset_From_Top --
+   ---------------------
+
+   function Offset_From_Top (Element : Element_Type) return Integer is
+   begin
+      return Element.jQuery_Execute ("offset().top");
+   end Offset_From_Top;
+
+   ----------------------
+   -- Offset_From_Left --
+   ----------------------
+
+   function Offset_From_Left (Element : Element_Type) return Integer is
+   begin
+      return Element.jQuery_Execute ("offset().left");
+   end Offset_From_Left;
 
    ----------
    -- Left --

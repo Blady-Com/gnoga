@@ -56,7 +56,8 @@ package Gnoga.Gui.Element.Section is
    -------------------------------------------------------------------------
 
    type Section_Description_Type is
-     (Address, Article, Aside, Header, Main, Nav, P, Pre, Section);
+     (Address, Article, Aside, Header, Main, Nav, P, Pre, Section,
+      BlockQuote, H1, H2, H3, H4, H5, H6, HGroup);
 
    procedure Create
      (View    : in out Section_Type;

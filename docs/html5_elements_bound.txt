@@ -1,4 +1,4 @@
-   HTML5 Tags Bound as Gui Elements in Gnoga
+*  HTML5 Tags Bound as Gui Elements in Gnoga
 
    <a>,<hr>,<br>,<button>,<div>,<img>,<meter>,<progress>,<p>
                - Element.Common, also see Gui.View for <div> and <span>
@@ -29,6 +29,10 @@
    <section>
                - Element.Section
 
+   <code>,<strong>,<em>,<dfn>,<samp>,<kbd>,<var>,<marked>,<del>,<ins>,
+   <s>,<q>,<big>,<small>,<time>,<tt>,<wbr>
+               - Element.Phrase
+
    <link>,<style>,<title>
                - Element.Style_Block, The Style property on Element_Type
                - Document.Load_CSS, Document.Title
@@ -37,7 +41,8 @@
    <table>,<caption>,<td>,<tr>,<th>,<col>,<colgroup>,<tfoot>,<thead>
                - Element.Table
 
-   HTML5 Tags Unbound as Gui Elements in Gnoga
+
+*  HTML5 Tags Unbound as Gui Elements in Gnoga
        Note: All tags can be bound and used with
              Element_Type.Create_With_HTML
              For various reasons as desribed here,
@@ -48,19 +53,11 @@
                - No spefic bindings currently for image maps, best
                - generated with an automated tool as regular HTML.
 
-   <abbr>,<b>,<bdi>,<bdo>,<i>,<sub>,<sup>,<h*>,<ruby>,<rp>,<rt>,<u>
+   <bdi>,<bdo>,<ruby>,<rp>,<rt>
+   <details>,<output>,<figure>,<flgcaption>
                - Text formatting tags are not bound. Have no application
                - specific use. Span_Type should be used to contain text
                - that needs interaction or interactive styling.
-
-   <code>,<strong>,<em>,<dfn>,<samp>,<kbd>,<var>,<marked>,<del>,<ins>,
-   <s>,<q>,<big>,<small>,<time>,<tt>,<wbr>
-               - No bindings for phrase tags, all of which even in HTML
-               - are more often best done with CSS
-
-   <blockquote>,<cite>,<del>,<details>,<output>,<figure>,<flgcaption>,
-   <hgroup>,
-               - No bindings for organizational html
 
    <object>,<embed>,<script>,<noscript>,<param>,<applet>
                - No bindings are made for external plugins or scripting

@@ -2,9 +2,9 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                 G N O G A . G U I . E L E M E N T . S V G                --
+--              G N O G A . G U I . E L E M E N T . P H R A S E             --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,44 +35,27 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  SVG - Scalable Vector Graphics
---     - The SVG DOM will be bound eventually for now can just pass in with
---     - content and can update SVG using innerHTML.
---     - I have not tried, but in theory you should be able to create and
---     - manipulate SVG elements already using Gnoga.Element.Create_With_HTML
---     - and using one of the place methods in to the SVG element.
+with Gnoga.Gui.Window;
 
-with Gnoga.Types;
-with Gnoga.Gui.View;
+package body Gnoga.Gui.Element.Phrase is
 
-package Gnoga.Gui.Element.SVG is
-   -------------------------------------------------------------------------
-   --  SVG_Types
-   -------------------------------------------------------------------------
+   ------------
+   -- Create --
+   ------------
 
-   type SVG_Type is new Gnoga.Gui.View.View_Base_Type with private;
-   type SVG_Access is access all SVG_Type;
-   type Pointer_To_SVG_Class is access all SVG_Type'Class;
+   procedure Create
+     (View   : in out Phrase_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Phrase : in     Phrase_Description_Type;
+      Attach : in     Boolean := True;
+      ID     : in     String  := "")
+   is
+   begin
+      View.Create_From_HTML (Parent, "<" & Phrase'Img & " />", ID);
 
-   -------------------------------------------------------------------------
-   --  SVG_Type - Creation Methods
-   -------------------------------------------------------------------------
+      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
+         Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
+      end if;
+   end Create;
 
-   procedure Create (SVG     : in out SVG_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String := "";
-                     ID      : in     String := "");
-   --  Create a SVG container use Content for SVG XML if set.
-   --  To create new SVG Elements use Element_Type.Create_XML_Element
-   --  You can then use Element_Type.Style, Element_Type.Attribute
-   --  Element_Type.Execute (to access the SVG DOM). e.g.
-   --      Element.Execute ("height.baseVal.value", "50")
-   --  You can also set mouse events on individual SVG elements using the
-   --  On_*_Handlers.
-   --
-   --  To just load an SVG document as an img, use:
-   --     Gnoga.Gui.Element.Common.IMG_Type
-
-private
-   type SVG_Type is new Gnoga.Gui.View.View_Base_Type with null record;
-end Gnoga.Gui.Element.SVG;
+end Gnoga.Gui.Element.Phrase;

@@ -72,7 +72,7 @@ package Gnoga.Gui.Element.Style_Block is
    procedure Add_Style_for_Element (Style : in out Style_Type;
                                     Name  : in     String;
                                     Text  : in     String);
-   --  Appends Name {Text}
+   --  Appends Name {Text} to Style Block
 
    procedure Add_Style_for_ID (Style : in out Style_Type;
                                ID    : in     String;
@@ -82,7 +82,7 @@ package Gnoga.Gui.Element.Style_Block is
    procedure Add_Style_for_Class (Style : in out Style_Type;
                                   Name  : in     String;
                                   Text  : in     String);
-   --  Appends a .Name {Text}
+   --  Appends a .Name {Text} to Style Block
 
 private
    type Style_Type is new Element_Type with null record;

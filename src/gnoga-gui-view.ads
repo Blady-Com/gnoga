@@ -36,7 +36,7 @@
 ------------------------------------------------------------------------------
 
 --  Views are used to handle auto insertion of objects in to the DOM and
---  placement.
+--  placement. They are also the base of creating custom widgets.
 
 with Gnoga.Types;
 
@@ -55,11 +55,11 @@ package Gnoga.Gui.View is
 
    overriding
    procedure Finalize (Object : in out View_Base_Type);
-   --  Deallocate any child element that was marked as Dynamic before
-   --  being added to View. Child element's marked as Dynamic by
-   --  Element_Type.Dynamic created with a View as the parent should
-   --  never be dealocated except by Finalize. If you plan on dealocating
-   --  a child element in your code, do not mark as Dynamic.
+   --  Deallocate any child element that was marked Dynamic before
+   --  being added to View. Child element's marked as Dynamic by calling
+   --  Element_Type.Dynamic then created with a View as the parent should
+   --  never be dealocated. If you plan on dealocating a child element in
+   --  your code, do not mark as Dynamic.
 
    -------------------------------------------------------------------------
    --  View_Base_Type - Methods

@@ -345,7 +345,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       L : Gnoga.Gui.Element.Element_Type;
    begin
       L.Create_From_HTML (Tabs.Labels,
-                          "<li><a href=""#" & View.ID & """>" &
+                          "<li><a href=""" & View.DOM_Selector & """>" &
                             Escape_Quotes (Label) &
                             "</a></li>");
       L.Place_Inside_Bottom_Of (Tabs.Labels);

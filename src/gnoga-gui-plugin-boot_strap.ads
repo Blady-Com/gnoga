@@ -50,7 +50,7 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    -------------------------------------------------------------------------
    --  http://getbootstrap.com/
    --  Bootstrap uses CSS classes to enhance layout of web pages.
-   --  These bindings are just to assist in using Boot strap, however
+   --  These "bindings" are just to assist in using Boot strap, however
    --  understanding its concepts and adding and removing classes as
    --  needed will give full access to boot strap's capabilities.
 

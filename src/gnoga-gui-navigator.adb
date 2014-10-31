@@ -43,9 +43,11 @@ package body Gnoga.Gui.Navigator is
    -- Code_Name --
    ---------------
 
-   function Code_Name (ID : Gnoga.Types.Connection_ID) return String is
+   function Code_Name (Window : Gnoga.Gui.Window.Window_Type'Class)
+                       return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID,
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
                                                      "navigator.appCodeName");
    end Code_Name;
 
@@ -53,18 +55,20 @@ package body Gnoga.Gui.Navigator is
    -- Name --
    ----------
 
-   function Name (ID : Gnoga.Types.Connection_ID) return String is
+   function Name (Window : Gnoga.Gui.Window.Window_Type'Class) return String is
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.appName");
+      return Gnoga.Server.Connection.Execute_Script
+        (Window.Connection_ID, "navigator.appName");
    end Name;
 
    -------------
    -- Version --
    -------------
 
-   function Version (ID : Gnoga.Types.Connection_ID) return String is
+   function Version (Window : Gnoga.Gui.Window.Window_Type'Class) return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID,
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
                                                      "navigator.appVersion");
    end Version;
 
@@ -72,46 +76,59 @@ package body Gnoga.Gui.Navigator is
    -- Cookie_Enabled --
    --------------------
 
-   function Cookie_Enabled (ID : Gnoga.Types.Connection_ID) return Boolean is
+   function Cookie_Enabled (Window : Gnoga.Gui.Window.Window_Type'Class)
+                            return Boolean
+   is
    begin
       return Gnoga.Server.Connection.Execute_Script
-        (ID, "navigator.cookieEnabled") = "true";
+        (Window.Connection_ID, "navigator.cookieEnabled") = "true";
    end Cookie_Enabled;
 
    --------------
    -- Language --
    --------------
 
-   function Language (ID : Gnoga.Types.Connection_ID) return String is
+   function Language (Window : Gnoga.Gui.Window.Window_Type'Class)
+                      return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.language");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
+                                                     "navigator.language");
    end Language;
 
    --------------
    -- Platform --
    --------------
 
-   function Platform (ID : Gnoga.Types.Connection_ID) return String is
+   function Platform (Window : Gnoga.Gui.Window.Window_Type'Class)
+                      return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.platform");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
+                                                     "navigator.platform");
    end Platform;
 
    -------------
    -- Product --
    -------------
 
-   function Product (ID : Gnoga.Types.Connection_ID) return String is
+   function Product (Window : Gnoga.Gui.Window.Window_Type'Class)
+                     return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID, "navigator.product");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
+                                                     "navigator.product");
    end Product;
 
    ----------------
    -- User_Agent --
    ----------------
 
-   function User_Agent (ID : Gnoga.Types.Connection_ID) return String is
+   function User_Agent (Window : Gnoga.Gui.Window.Window_Type'Class)
+                        return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script (ID,
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
                                                      "navigator.userAgent");
    end User_Agent;
 
@@ -119,11 +136,12 @@ package body Gnoga.Gui.Navigator is
    -- Navigate_To_URL --
    ---------------------
 
-   procedure Navigate_To_URL (ID  : in Gnoga.Types.Connection_ID;
-                              URL : in String)
+   procedure Navigate_To_URL
+     (Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      URL    : in     String)
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (ID, "window.location='" & URL & "'");
+        (Window.Connection_ID, "window.location='" & URL & "'");
    end Navigate_To_URL;
 end Gnoga.Gui.Navigator;

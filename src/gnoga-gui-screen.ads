@@ -36,27 +36,34 @@
 ------------------------------------------------------------------------------
 
 with Gnoga.Types;
+with Gnoga.Gui.Window;
 
 package Gnoga.Gui.Screen is
 
    --  Access informaton about user's screen
 
-   function Width (ID : Gnoga.Types.Connection_ID) return Integer;
+   function Width (Window : Gnoga.Gui.Window.Window_Type'Class)
+                   return Integer;
    --  Screen width
 
-   function Height (ID : Gnoga.Types.Connection_ID) return Integer;
+   function Height (Window : Gnoga.Gui.Window.Window_Type'Class)
+                    return Integer;
    --  Screen height
 
-   function Available_Height (ID : Gnoga.Types.Connection_ID) return Integer;
+   function Available_Height (Window : Gnoga.Gui.Window.Window_Type'Class)
+                              return Integer;
    --  Available total height = Height - Window treatments
 
-   function Available_Width (ID : Gnoga.Types.Connection_ID) return Integer;
+   function Available_Width (Window : Gnoga.Gui.Window.Window_Type'Class)
+                             return Integer;
    --  Available total width = Width - Window treatments
 
-   function Color_Depth (ID : Gnoga.Types.Connection_ID) return Integer;
+   function Color_Depth (Window : Gnoga.Gui.Window.Window_Type'Class)
+                         return Integer;
    --  Bit depth of rendering color palette
 
-   function Pixel_Depth (ID : Gnoga.Types.Connection_ID) return Integer;
+   function Pixel_Depth (Window : Gnoga.Gui.Window.Window_Type'Class)
+                         return Integer;
    --  Color depth of screen in bits per pixel
 
 end Gnoga.Gui.Screen;

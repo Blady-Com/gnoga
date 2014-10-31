@@ -66,21 +66,21 @@ package Gnoga.Application.Multi_Connect is
       Port    : in Integer                   := 8080;
       Boot    : in String                    := "boot.html";
       Verbose : in Boolean                   := True);
-   --  Initialize applicaiton for multiple connections using
+   --  Initialize an applicaiton for multiple connections using
    --  Event for the default Connection Handler and Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
+   --  If Host = "" then will listen on all netwrok interfaces.
+   --  Use Host = "localhost" to constrain to local use only.
 
    procedure On_Connect_Handler (Event : in Application_Connect_Event;
                                  Path  : in String := "default");
-   --  Set event handler for new application connections with Path. If
+   --  Set an event handler for new application connections with Path. If
    --  Path = "default" then Event will be the default handler for any
    --  connection not matching another Path. Note that http://myapp:8080/abc
    --  and http://myapp:8080/abc/ will both match Path = "/abc" or Path="abc"
    --  or Path="/abc/"
    --  This can be used to set or change connection handlers during application
-   --  execution for future connections or to to set the default handler if
-   --  wasn't set in Initialize.
+   --  execution for future connections or to to set the default handler if it
+   --  was not set in Initialize.
 
    procedure Message_Loop;
    --  Start serving connections to application and continue until
@@ -88,9 +88,4 @@ package Gnoga.Application.Multi_Connect is
 
    procedure End_Application;
    --  Terminate application.
-   --  This will disconnect application connection to browser and finalize
-   --  Gnoga objects, however Gnoga objects on finalization do not destroy
-   --  DOM object in browser so browser state will remain with document
-   --  after the loop has terminated and application has ended unless
-   --  Gnoga.Application.HTML_On_Close has been set.
 end Gnoga.Application.Multi_Connect;

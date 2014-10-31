@@ -42,9 +42,8 @@ package Gnoga.Application.Singleton is
 
    --  This package allows for the creation of simple GUI applications
    --  using Gnoga. It allows only a single connection and application
-   --  terminates whenever End_Application is called.
-
-   --  See test/singleton.adb for an example.
+   --  terminates whenever End_Application is called or the browser
+   --  window is closed and connection terminated to the application.
 
    procedure Initialize
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
@@ -53,16 +52,12 @@ package Gnoga.Application.Singleton is
       Boot        : in     String  := "boot.html";
       Verbose     : in     Boolean := True);
    --  Initialize applicaiton for single connection is Boot for bootstrap html.
-   --  If Host = "" then will listen on all interfaces.
-   --  Use Host = "locahost" to constrain to local use only.
+   --  If Host = "" then will listen on all netwrok interfaces.
+   --  Use Host = "localhost" to constrain to local use only.
 
    procedure Message_Loop;
    --  Remain running until connection to browser lost.
 
    procedure End_Application;
    --  Terminate application.
-   --  This will disconnect application connection to browser and finalize
-   --  Gnoga objects, however Gnoga objects on finalization do not destroy
-   --  DOM object in browser so browser state will remain with document
-   --  after the loop has terminated and application has ended.
 end Gnoga.Application.Singleton;

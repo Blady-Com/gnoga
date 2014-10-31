@@ -44,7 +44,8 @@ package Gnoga.Gui.Document is
    -------------------------------------------------------------------------
    --  Document_Type
    -------------------------------------------------------------------------
-   --  Document_Type is the class encapsulating the DOM document node
+   --  Document_Type is the class encapsulating the DOM's root document node
+   --  To use, access via Window_Type.Document
 
    type Document_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Document_Access is access all Document_Type;
@@ -74,7 +75,7 @@ package Gnoga.Gui.Document is
 
    function Referrer (Document : Document_Type) return String;
 
-   procedure Title (Document : in out Document_Type; Value : String);
+   procedure Title (Document : in out Document_Type; Value : in String);
    function Title (Document : Document_Type) return String;
 
    function URL (Document : Document_Type) return String;
@@ -100,23 +101,24 @@ package Gnoga.Gui.Document is
    --  Document_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Load_CSS (Document : in out Document_Type; URL : String);
+   procedure Load_CSS (Document : in out Document_Type; URL : in String);
    --  Loads a CSS file in to document from URL
 
-   procedure Write (Document : in out Document_Type; Value : String);
-   procedure Write_Line (Document : in out Document_Type; Value : String);
+   procedure Write (Document : in out Document_Type; Value : in String);
+   procedure Write_Line (Document : in out Document_Type; Value : in String);
    --  Write Value (with new line if Write_Line) to the document.
    --  Note that the first use of these procedures can erase elements already
    --  inserted in to the Document.Body_Element. Therefore to use these
    --  Write/Write_Line so that a text node is created before inserting any
    --  elements into the document body.
-   --  Using Write or Write_Line on Firefox will break the WebSocket connection
-   --  Use View.Put_Line instead.
+   --  In general, use View.Put_Line instead with in a view that is attached
+   --  to the window.
 
-   procedure Put_Line (Document : in out Document_Type; Value : String);
+   procedure Put_Line (Document : in out Document_Type; Value : in String);
    --  Calls Write_Line with Value + "<br />"
    --  Using Put_Line on Firefox will break the WebSocket connection
-   --  Use View.Put_Line instead.
+   --  In general, use View.Put_Line instead with in a view that is attached
+   --  to the window.
 private
    type Document_Type is new Gnoga.Gui.Base.Base_Type with
       record

@@ -48,8 +48,10 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    --  http://ace.c9.io/#nav=about
    --  Binding to the Ace Code Editor
    --
-   --  use: make ace_editor to clone in the editor to Gnoga
+   --  use: make ace_editor to clone in the editor javascript code for demo
    --  it will run cd js && git clone https://github.com/ajaxorg/ace-builds.git
+   --  the custom Ace javascript code should then be copied in to or checked
+   --  out in the same way for your project.
 
    type Ace_Editor_Type is new Gnoga.Gui.View.View_Type with private;
    type Ace_Editor_Access is access all Ace_Editor_Type;

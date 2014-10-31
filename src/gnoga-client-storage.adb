@@ -134,6 +134,9 @@ package body Gnoga.Client.Storage is
    -- Local_Storage --
    -------------------
 
+   function Local_Storage (ID : Gnoga.Types.Connection_ID)
+                           return Local_Storage_Type;
+
    function Local_Storage
      (ID : Gnoga.Types.Connection_ID)
       return Local_Storage_Type
@@ -141,10 +144,6 @@ package body Gnoga.Client.Storage is
    begin
       return Local_Storage_Type'(Connection_ID => ID);
    end Local_Storage;
-
-   -------------------
-   -- Local_Storage --
-   -------------------
 
    function Local_Storage
      (Object : Gnoga.Gui.Base.Base_Type'Class)
@@ -168,6 +167,9 @@ package body Gnoga.Client.Storage is
    -- Sessionl_Storage --
    ----------------------
 
+   function Session_Storage (ID : Gnoga.Types.Connection_ID)
+                             return Session_Storage_Type;
+
    function Session_Storage
      (ID : Gnoga.Types.Connection_ID)
       return Session_Storage_Type
@@ -175,10 +177,6 @@ package body Gnoga.Client.Storage is
    begin
       return Session_Storage_Type'(Connection_ID => ID);
    end Session_Storage;
-
-   ---------------------
-   -- Session_Storage --
-   ---------------------
 
    function Session_Storage
      (Object : Gnoga.Gui.Base.Base_Type'Class)

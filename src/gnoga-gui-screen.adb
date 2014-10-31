@@ -43,20 +43,24 @@ package body Gnoga.Gui.Screen is
    -- Width --
    -----------
 
-   function Width (ID : Gnoga.Types.Connection_ID) return Integer is
+   function Width (Window : Gnoga.Gui.Window.Window_Type'Class) return Integer
+   is
    begin
       return Integer'Value
-        (Gnoga.Server.Connection.Execute_Script (ID, "screen.width;"));
+        (Gnoga.Server.Connection.Execute_Script
+           (Window.Connection_ID, "screen.width;"));
    end Width;
 
    ------------
    -- Height --
    ------------
 
-   function Height (ID : Gnoga.Types.Connection_ID) return Integer is
+   function Height (Window : Gnoga.Gui.Window.Window_Type'Class) return Integer
+   is
    begin
       return Integer'Value
-        (Gnoga.Server.Connection.Execute_Script (ID, "screen.height;"));
+        (Gnoga.Server.Connection.Execute_Script
+           (Window.Connection_ID, "screen.height;"));
    end Height;
 
    ----------------------
@@ -64,42 +68,52 @@ package body Gnoga.Gui.Screen is
    ----------------------
 
    function Available_Height
-     (ID : Gnoga.Types.Connection_ID)
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
       return Integer
    is
    begin
       return Integer'Value
-        (Gnoga.Server.Connection.Execute_Script (ID, "screen.availHeight;"));
+        (Gnoga.Server.Connection.Execute_Script
+           (Window.Connection_ID, "screen.availHeight;"));
    end Available_Height;
 
    ---------------------
    -- Available_Width --
    ---------------------
 
-   function Available_Width (ID : Gnoga.Types.Connection_ID) return Integer is
+   function Available_Width (Window : Gnoga.Gui.Window.Window_Type'Class)
+                             return Integer
+   is
    begin
       return Integer'Value
-        (Gnoga.Server.Connection.Execute_Script (ID, "screen.availWidth;"));
+        (Gnoga.Server.Connection.Execute_Script
+           (Window.Connection_ID, "screen.availWidth;"));
    end Available_Width;
 
    -----------------
    -- Color_Depth --
    -----------------
 
-   function Color_Depth (ID : Gnoga.Types.Connection_ID) return Integer is
+   function Color_Depth (Window : Gnoga.Gui.Window.Window_Type'Class)
+                         return Integer
+   is
    begin
       return Integer'Value
-        (Gnoga.Server.Connection.Execute_Script (ID, "screen.colorDepth;"));
+        (Gnoga.Server.Connection.Execute_Script
+           (Window.Connection_ID, "screen.colorDepth;"));
    end Color_Depth;
 
    -----------------
    -- Pixel_Depth --
    -----------------
 
-   function Pixel_Depth (ID : Gnoga.Types.Connection_ID) return Integer is
+   function Pixel_Depth (Window : Gnoga.Gui.Window.Window_Type'Class)
+                         return Integer
+   is
    begin
       return Integer'Value
-        (Gnoga.Server.Connection.Execute_Script (ID, "screen.pixelDepth;"));
+        (Gnoga.Server.Connection.Execute_Script
+           (Window.Connection_ID, "screen.pixelDepth;"));
    end Pixel_Depth;
 
 end Gnoga.Gui.Screen;

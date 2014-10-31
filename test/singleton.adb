@@ -55,9 +55,9 @@ procedure Singleton is
    begin
       Gnoga.Log ("Visible = " & Element_Type (Object).Visible'Img);
       Gnoga.Log ("Screen.Available_Height = " &
-                   Gnoga.Gui.Screen.Available_Height (Element_Type (Object).Connection_ID)'Img);
+                   Gnoga.Gui.Screen.Available_Height (M)'Img);
       Gnoga.Log ("Screen.Height = " &
-                   Gnoga.Gui.Screen.Height (Element_Type (Object).Connection_ID)'Img);
+                   Gnoga.Gui.Screen.Height (M)'Img);
       Gnoga.Log ("Color = " & Gnoga.Types.To_String (Element_Type (Object).Color));
       Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
       Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
@@ -96,7 +96,7 @@ begin
 
    Gnoga.Log ("User Agent = " &
                 Gnoga.Gui.Navigator.User_Agent
-                (M.Connection_ID));
+                (M));
 
    T.Create (M, "<h1>Hello World!</h1>");
    T.Place_Inside_Top_Of (M.Document.Body_Element.all);

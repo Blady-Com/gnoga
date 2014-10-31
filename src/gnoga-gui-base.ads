@@ -142,8 +142,8 @@ package Gnoga.Gui.Base is
                             Value  : in Gnoga.Types.Connection_ID);
    --  The Gnoga Connection ID of Object.
    --  It is almost certainly always a mistake to set Connection_ID instead
-   --  of ussing Attach. Only change the Connection ID if if you fully
-   --  understand what you are doing.
+   --  of ussing Attach. Only change the Connection ID if you fully understand
+   --  what you are doing.
 
    function Valid (Object : Base_Type) return Boolean;
    --  Returns true if Connection_ID is valid, i.e. Object was created and
@@ -155,11 +155,15 @@ package Gnoga.Gui.Base is
                  ID_Type : in     Gnoga.Types.ID_Enumeration);
    --  The ID for Object. Use Attach for attaching to existing objects in,
    --  setting the ID should only be done with full understanding of the Gnoga
-   --  internalls.
+   --  internals.
 
    function ID_Type (Object : Base_Type) return Gnoga.Types.ID_Enumeration;
    --  Returns the type of ID stored for Object or No_ID if object has not
    --  been created or attached on the client side.
+
+   function DOM_Selector (Object : Base_Type) return String;
+   --  Returns the DOM_ID for Object, "#" & Object.ID or ID_Type is Gnoga_ID or
+   --  DOM_ID otherwise returns ID.
 
    function Connection_Data
      (Object : Base_Type)
@@ -171,9 +175,12 @@ package Gnoga.Gui.Base is
                      Value  : in out Base_Type'Class);
    procedure Parent (Object : in out Base_Type;
                      Value  : in Pointer_To_Base_Class);
-   --  Parent of Object. Setting the parent will on Parent_Added on parent.
+   --  Parent of Object. Setting/changing the parent will fire the
+   --  On_Parent_Added event on the Parent object and if changing the parent
+   --  On_Parent_Removed event on the old Parent
+   --
    --  Setting the parent Object does not change the position Object may have
-   --  in the DOM by default.
+   --  in the DOM by default. That should be done using Element_Type.Place_*
 
    --  Object Properties --
 
@@ -184,11 +191,13 @@ package Gnoga.Gui.Base is
    function Height (Object : Base_Type) return Integer;
    --  Height of Element, or Window or Document
    --  Results in Pixels and numeric unlike using the CSS size properties
+   --  See Element_Type for additional Heigth and Width properties
 
    procedure Width (Object : in out Base_Type; Value : in Integer);
    function Width (Object : Base_Type) return Integer;
    --  Width of Element, or Window or Document
    --  Results in Pixels and numeric unlike using the CSS size properties
+   --  See Element_Type for additional Heigth and Width properties
 
    --  Generic Access  --
 
@@ -196,11 +205,15 @@ package Gnoga.Gui.Base is
                        Name   : in     String;
                        Value  : in     String);
    function Property (Object : Base_Type; Name : String) return String;
+   --  General access to property Name
 
    procedure Property (Object : in out Base_Type;
                        Name   : in     String;
                        Value  : in     Integer);
    function Property (Object : Base_Type; Name : String) return Integer;
+   --  General access to property Name
+   --  If Property returns a float value it will be converted in to an
+   --  Integer.
 
    procedure Property (Object : in out Base_Type;
                        Name   : in     String;
@@ -217,9 +230,9 @@ package Gnoga.Gui.Base is
    --  will deallocate on finalization children that are marked as Dynamic
    --  _before_ being Created with the View as parent.
    --  See Gnoga.Gui.View
-   --  If you plan on dealocating a child element in your code, do not mark
-   --  as Dynamic. Marking Dynamic is to mark for automatic garbage collection
-   --  by Gnoga's framework.
+   --  If you plan on dealocating a child element in your code, do not mark it
+   --  as Dynamic. Marking Dynamic is for the purpose of automatic garbage
+   --  collection by Gnoga's framework.
 
    -------------------------------------------------------------------------
    --  Base_Type - Methods
@@ -242,8 +255,10 @@ package Gnoga.Gui.Base is
    -------------------------------------------------------------------------
    --  Base_Type - Event Handlers
    -------------------------------------------------------------------------
-   --  When an event handler is set any event binding to the browser will be
-   --  installed automatically.
+   --  When an event handler is set on any event, binding code will be sent
+   --  to the browser automatically for Gnoga to start receiving notifcations
+   --  of the event. In theory any event can be set on any object not all
+   --  will be fired by every object.
 
    type Action_Event is access
      procedure (Object : in out Base_Type'Class);
@@ -294,7 +309,7 @@ package Gnoga.Gui.Base is
                 Message  : in     String;
                 Continue : out    Boolean);
 
-   type Child_Added_Event is access
+   type Child_Changed_Event is access
      procedure (Object : in out Base_Type'Class;
                 Child  : in out Base_Type'Class);
 
@@ -347,7 +362,7 @@ package Gnoga.Gui.Base is
    procedure Fire_On_Reset (Object : in out Base_Type);
    --  If this event is bound it will stop automatic reset of form contents
    --  Gnoga.Element.Form_Type.Reset must be called in the handler for the
-   --  form to be reset.
+   --  form to be reset if desired.
 
    procedure On_Search_Handler (Object  : in out Base_Type;
                                 Handler : in     Action_Event);
@@ -362,7 +377,7 @@ package Gnoga.Gui.Base is
    procedure Fire_On_Submit (Object : in out Base_Type);
    --  If this event is bound it will stop automatic submission of a form
    --  Gnoga.Element.Form_Type.Submit must be called in the handler for
-   --  the form to be submitted.
+   --  the form to be submitted if desired.
 
    -- Mouse Events --
 
@@ -529,9 +544,14 @@ package Gnoga.Gui.Base is
    --  finalization of Object.
 
    procedure On_Child_Added_Handler (Object  : in out Base_Type;
-                                     Handler : in     Child_Added_Event);
+                                     Handler : in     Child_Changed_Event);
    procedure Fire_On_Child_Added (Object : in out Base_Type;
                                   Child  : in out Base_Type'Class);
+
+   procedure On_Child_Removed_Handler (Object  : in out Base_Type;
+                                       Handler : in     Child_Changed_Event);
+   procedure Fire_On_Child_Removed (Object : in out Base_Type;
+                                    Child  : in out Base_Type'Class);
 
    procedure On_Message_Handler (Object  : in out Base_Type;
                                  Handler : in     Message_Event);
@@ -566,6 +586,11 @@ package Gnoga.Gui.Base is
    procedure On_Child_Added (Object : in out Base_Type;
                              Child  : in out Base_Type'Class);
    --  Called when a Child is created claiming Object as its parent.
+
+   procedure On_Child_Removed (Object : in out Base_Type;
+                               Child  : in out Base_Type'Class);
+   --  Called when a Child's Parent changed and was claiming Object as its
+   --  parent.
 
    procedure On_Message (Object  : in out Base_Type;
                          Event   : in     String;
@@ -688,7 +713,8 @@ private
          --  Generic Events
          On_Create_Event             : Action_Event         := null;
          On_Destroy_Event            : Action_Event         := null;
-         On_Child_Added_Event        : Child_Added_Event    := null;
+         On_Child_Added_Event        : Child_Changed_Event  := null;
+         On_Child_Removed_Event      : Child_Changed_Event  := null;
          On_Message_Event            : Message_Event        := null;
       end record;
 end Gnoga.Gui.Base;

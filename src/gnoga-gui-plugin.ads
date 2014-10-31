@@ -35,7 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  Bindings to 3rd party HTML5/CSS/JS libraries
+--  Bindings to 3rd party HTML5/CSS/JS libraries for Gnoga only 3rd party
+--  additions see Gnoga.Gui.Modules
 
 package Gnoga.Gui.Plugin is
 end Gnoga.Gui.Plugin;

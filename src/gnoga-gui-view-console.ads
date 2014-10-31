@@ -35,8 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  A console view automatically sets padding around view for more readable
---  Put_Line use and auto scrolls down as items are added in to view.
+--  A console view automatically sets padding around view for readability.
+--  The view will also auto scrolls down as new items are added in to view.
 
 package Gnoga.Gui.View.Console is
 

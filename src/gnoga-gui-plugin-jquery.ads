@@ -73,7 +73,7 @@ package Gnoga.Gui.Plugin.jQuery is
 
    procedure Execute (Object : in out jQuery_Type; Method : in String);
    --  Execute method on jQuery Object. Method should include () but not
-   --  initial ., Object.Some_Method(); in Ada would be:
+   --  initial '.', Object.Some_Method(); in Ada would be:
    --  Object.Execute ("Some_Method()");
 
    function Execute (Object : jQuery_Type; Method : String) return String;

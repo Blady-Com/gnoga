@@ -44,10 +44,10 @@ package Gnoga.Client.Storage is
    --  Storage_Type
    -------------------------------------------------------------------------
    --  Base class for client side storage of data.
-   --  In order to ease access to client side data Storage types can be
-   --  accessed using any object instead of requiring the parent window or
-   --  by a Connection_ID. One local and one session storage is available
-   --  across an entire scheme://domain:port.
+   --  In order to ease access to client side data, the Storage_Type can be
+   --  accessed using any object instead of just through the parent window.
+   --  One local and one session storage is available across an entire
+   --  location defined as scheme://domain:port.
 
    type Storage_Type is tagged private;
    type Storage_Access is access all Storage_Type;
@@ -71,9 +71,6 @@ package Gnoga.Client.Storage is
    type Local_Storage_Access is access all Local_Storage_Type;
    type Pointer_To_Local_Storage_Class is access all Local_Storage_Type'Class;
 
-   function Local_Storage (ID : Gnoga.Types.Connection_ID)
-                           return Local_Storage_Type;
-
    function Local_Storage (Object : Gnoga.Gui.Base.Base_Type'Class)
                            return Local_Storage_Type;
 
@@ -84,9 +81,6 @@ package Gnoga.Client.Storage is
    type Session_Storage_Access is access all Session_Storage_Type;
    type Pointer_To_Session_Storage_Class is
      access all Session_Storage_Type'Class;
-
-   function Session_Storage (ID : Gnoga.Types.Connection_ID)
-                              return Session_Storage_Type;
 
    function Session_Storage (Object : Gnoga.Gui.Base.Base_Type'Class)
                              return Session_Storage_Type;

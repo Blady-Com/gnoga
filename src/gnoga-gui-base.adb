@@ -383,6 +383,20 @@ package body Gnoga.Gui.Base is
       return Object.ID_Type;
    end ID_Type;
 
+   ------------------
+   -- DOM_Selector --
+   ------------------
+
+   function DOM_Selector (Object : Base_Type) return String is
+      use Gnoga.Types;
+   begin
+      if Object.ID_Type = DOM_ID or Object.ID_Type = Gnoga_ID then
+         return "#" & Object.ID;
+      else
+         return Object.ID;
+      end if;
+   end DOM_Selector;
+
    ---------------------
    -- Connection_Data --
    ---------------------
@@ -410,6 +424,10 @@ package body Gnoga.Gui.Base is
                      Value  : in out Base_Type'Class)
    is
    begin
+      if Object.Parent_Object /= null then
+         Object.Parent_Object.On_Child_Removed (Object);
+      end if;
+
       Object.Parent_Object := Value'Unchecked_Access;
 
       Value.On_Child_Added (Object);
@@ -480,10 +498,7 @@ package body Gnoga.Gui.Base is
 
    function Property (Object : Base_Type; Name : String) return Integer is
    begin
-      return Integer'Value (Object.Property (Name));
-   exception
-      when others =>
-         return 0;
+      return Object.jQuery_Execute ("prop ('" & Name & "');");
    end Property;
 
    procedure Property (Object : in out Base_Type;
@@ -1766,7 +1781,7 @@ package body Gnoga.Gui.Base is
    end On_Child_Added;
 
    procedure On_Child_Added_Handler (Object  : in out Base_Type;
-                                     Handler : in     Child_Added_Event)
+                                     Handler : in     Child_Changed_Event)
    is
    begin
       Object.On_Child_Added_Event := Handler;
@@ -1780,6 +1795,33 @@ package body Gnoga.Gui.Base is
          Object.On_Child_Added_Event (Object, Child);
       end if;
    end Fire_On_Child_Added;
+
+   ----------------------
+   -- On_Child_Removed --
+   ----------------------
+
+   procedure On_Child_Removed (Object : in out Base_Type;
+                               Child  : in out Base_Type'Class)
+   is
+   begin
+      Object.Fire_On_Child_Removed (Child);
+   end On_Child_Removed;
+
+   procedure On_Child_Removed_Handler (Object  : in out Base_Type;
+                                       Handler : in     Child_Changed_Event)
+   is
+   begin
+      Object.On_Child_Removed_Event := Handler;
+   end On_Child_Removed_Handler;
+
+   procedure Fire_On_Child_Removed (Object : in out Base_Type;
+                                    Child  : in out Base_Type'Class)
+   is
+   begin
+      if Object.On_Child_Removed_Event /= null then
+         Object.On_Child_Removed_Event (Object, Child);
+      end if;
+   end Fire_On_Child_Removed;
 
    ----------------
    -- On_Message --

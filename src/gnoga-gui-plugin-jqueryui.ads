@@ -74,7 +74,8 @@ package Gnoga.Gui.Plugin.jQueryUI is
      (Element : in out Gnoga.Gui.Element.Element_Type'Class);
    --  To receive an On_Drop, bind the On_Message of Element
    --  check for Event = jQuery_Dropped_Event_Name
-   --  Message will be the Element.ID
+   --  Message will be the Element.ID of the Element being
+   --  dropped.
 
    procedure Make_Resizable
      (Element : in out Gnoga.Gui.Element.Element_Type'Class);

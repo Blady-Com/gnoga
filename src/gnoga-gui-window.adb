@@ -433,7 +433,7 @@ package body Gnoga.Gui.Window is
                         Ada.Strings.Maps.To_Mapping (".", "0"));
       end Generate_Session_ID;
 
-      S   : Session_Storage_Type := Session_Storage (Window.Connection_ID);
+      S   : Session_Storage_Type := Session_Storage (Window);
       Gid : String               := S.Get (Name);
    begin
       if Gid = "null" then

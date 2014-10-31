@@ -41,7 +41,7 @@ package body Gnoga.Gui.Location is
    -- URL --
    ---------
 
-   procedure URL (Location : in out Location_Type; Value : String) is
+   procedure URL (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("href", Value);
    end URL;
@@ -55,7 +55,7 @@ package body Gnoga.Gui.Location is
    -- Hash --
    ----------
 
-   procedure Hash (Location : in out Location_Type; Value : String) is
+   procedure Hash (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("hash", Value);
    end Hash;
@@ -69,7 +69,7 @@ package body Gnoga.Gui.Location is
    -- Host --
    ----------
 
-   procedure Host (Location : in out Location_Type; Value : String) is
+   procedure Host (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("host", Value);
    end Host;
@@ -83,7 +83,7 @@ package body Gnoga.Gui.Location is
    -- Host_Name --
    ---------------
 
-   procedure Host_Name (Location : in out Location_Type; Value : String) is
+   procedure Host_Name (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("hostname", Value);
    end Host_Name;
@@ -106,7 +106,7 @@ package body Gnoga.Gui.Location is
    -- Path_Name --
    ---------------
 
-   procedure Path_Name (Location : in out Location_Type; Value : String) is
+   procedure Path_Name (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("pathname", Value);
    end Path_Name;
@@ -120,7 +120,7 @@ package body Gnoga.Gui.Location is
    -- Port --
    ----------
 
-   procedure Port (Location : in out Location_Type; Value : String) is
+   procedure Port (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("port", Value);
    end Port;
@@ -134,7 +134,7 @@ package body Gnoga.Gui.Location is
    -- Protocol --
    --------------
 
-   procedure Protocol (Location : in out Location_Type; Value : String) is
+   procedure Protocol (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("protocol", Value);
    end Protocol;
@@ -148,7 +148,7 @@ package body Gnoga.Gui.Location is
    -- Search --
    ------------
 
-   procedure Search (Location : in out Location_Type; Value : String) is
+   procedure Search (Location : in out Location_Type; Value : in String) is
    begin
       Location.Property ("search", Value);
    end Search;

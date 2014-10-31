@@ -76,7 +76,7 @@ procedure Boot_Strap_Demo is
 
          Nav_Links.Create (App.M_Container);
          Nav_Links.Add_Class ("collapse navbar-collapse");
-         Nav_Button.Attribute ("data-target", "#" & Nav_Links.ID);
+         Nav_Button.Attribute ("data-target", Nav_Links.DOM_Selector);
 
          Nav_Menu.Create (Nav_Links);
          Nav_Menu.Add_Class ("nav navbar-nav");

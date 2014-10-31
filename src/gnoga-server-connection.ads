@@ -47,7 +47,7 @@ package Gnoga.Server.Connection is
                          Verbose : in Boolean := True);
    --  Ininialize connection to web server and dispatchers
    --  If Host = "" then server will listen on all network interfaces.
-   --  If Host = "locahost" use will be constrained to local machine only.
+   --  If Host = "localhost" use will be constrained to local machine only.
    --  If Verbose then display start up details.
 
    procedure Run;

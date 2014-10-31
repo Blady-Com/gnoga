@@ -44,6 +44,7 @@ package Gnoga.Gui.Location is
    --  Location_Type
    -------------------------------------------------------------------------
    --  Location_Type is the class encapsulating the DOM Location node
+   --  To use, access via Window_Type.Location
 
    type Location_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Location_Access is access all Location_Type;
@@ -53,32 +54,32 @@ package Gnoga.Gui.Location is
    --  Location_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure URL (Location : in out Location_Type; Value : String);
+   procedure URL (Location : in out Location_Type; Value : in String);
    function URL (Location : Location_Type) return String;
    --  Setting URL will navgigate the browser from the current location and
    --  close the current Gnoga Connection.
 
-   procedure Hash (Location : in out Location_Type; Value : String);
+   procedure Hash (Location : in out Location_Type; Value : in String);
    function Hash (Location : Location_Type) return String;
 
-   procedure Host (Location : in out Location_Type; Value : String);
+   procedure Host (Location : in out Location_Type; Value : in String);
    function Host (Location : Location_Type) return String;
 
-   procedure Host_Name (Location : in out Location_Type; Value : String);
+   procedure Host_Name (Location : in out Location_Type; Value : in String);
    function Host_Name (Location : Location_Type) return String;
 
    function Origin (Location : Location_Type) return String;
 
-   procedure Path_Name (Location : in out Location_Type; Value : String);
+   procedure Path_Name (Location : in out Location_Type; Value : in String);
    function Path_Name (Location : Location_Type) return String;
 
-   procedure Port (Location : in out Location_Type; Value : String);
+   procedure Port (Location : in out Location_Type; Value : in String);
    function Port (Location : Location_Type) return String;
 
-   procedure Protocol (Location : in out Location_Type; Value : String);
+   procedure Protocol (Location : in out Location_Type; Value : in String);
    function Protocol (Location : Location_Type) return String;
 
-   procedure Search (Location : in out Location_Type; Value : String);
+   procedure Search (Location : in out Location_Type; Value : in String);
    function Search (Location : Location_Type) return String;
 private
    type Location_Type is new Gnoga.Gui.Base.Base_Type with null record;

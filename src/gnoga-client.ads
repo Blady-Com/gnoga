@@ -35,7 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
---  client side bindings and tools
+--  Client side bindings or tools for services provided by the browser
 
 package Gnoga.Client is
 end Gnoga.Client;

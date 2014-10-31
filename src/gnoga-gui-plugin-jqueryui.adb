@@ -145,9 +145,9 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       S : Gnoga.Gui.Element.Style_Block.Style_Type;
    begin
       S.Create (List.Parent.all,
-                "#" & List.ID & " .ui-selecting { background: " &
+                List.DOM_Selector & " .ui-selecting { background: " &
                   Selecting_Color & "; } " &
-                  "#" & List.ID & " .ui-selected { background: " &
+                  List.DOM_Selector & " .ui-selected { background: " &
                   Selected_Color & "; } ");
 
       List.jQuery_Execute ("selectable()");

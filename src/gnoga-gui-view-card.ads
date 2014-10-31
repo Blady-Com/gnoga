@@ -39,6 +39,8 @@
 --  virtual stack with only one shown and the others hidden at any given
 --  time.
 
+with Ada.Strings.Unbounded;
+
 package Gnoga.Gui.View.Card is
 
    -------------------------------------------------------------------------
@@ -98,6 +100,90 @@ package Gnoga.Gui.View.Card is
    overriding
    procedure On_Resize (View : in out Card_View_Type);
    --  Handle layout of children
+
+   -------------------------------------------------------------------------
+   --  Tab_Types - For use with providing cards with tabs
+   -------------------------------------------------------------------------
+
+   type Tab_Type is new Gnoga.Gui.View.View_Base_Type with private;
+   type Tab_Access is access all Tab_Type;
+   type Pointer_To_Tab_Class is
+     access all Tab_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Tab_Types - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (Tab          : in out Tab_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Card_View    : in out Card_View_Type'Class;
+      Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
+      Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
+      Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
+      Attach       : in     Boolean               := True;
+      ID           : in     String                := "");
+
+   -------------------------------------------------------------------------
+   --  Tab_Types - Methods
+   -------------------------------------------------------------------------
+
+   procedure Add_Tab (Tab      : in out Tab_Type;
+                      Card     : in     String;
+                      Label    : in     String;
+                      Selected : in     Boolean := False);
+   --  Tabs can also be added using Tab_Item_Types
+
+   procedure Select_Tab (Tab  : in out Tab_Type;
+                         Card : in     String);
+
+   -------------------------------------------------------------------------
+   --  Tab_Item_Types
+   -------------------------------------------------------------------------
+
+   type Tab_Item_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Tab_Item_Access is access all Tab_Item_Type;
+   type Pointer_To_Tab_Item_Class is access all Tab_Item_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Tab_Item_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Item   : in out Tab_Item_Type;
+                     Parent : in out Tab_Type'Class;
+                     Card   : in     String;
+                     Label  : in     String;
+                     ID     : in     String := "");
+   --  Create a Tab Item with Text that when clicked will show Card on
+   --  on associated Card View
+   --
+   --  If the On_Click handler is set for Item Tab_Select must be called
+   --  from with in the handler for default card open behavior to take
+   --  place.
+
+   -------------------------------------------------------------------------
+   --  Tab_Item_Type - Properties
+   -------------------------------------------------------------------------
+
+   function Tab_Selected (Item : Tab_Item_Type) return Boolean;
+
+   -------------------------------------------------------------------------
+   --  Tab_Item_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Tab_Select (Item  : in out Tab_Item_Type);
 private
    type Card_View_Type is new View_Type with null record;
+
+   type Tab_Type is new Gnoga.Gui.View.View_Base_Type with
+      record
+         Card_View    : Pointer_To_Card_View_Class := null;
+         Select_Color : Gnoga.Types.RGBA_Type;
+         Tab_Color    : Gnoga.Types.RGBA_Type;
+      end record;
+
+   type Tab_Item_Type is new Gnoga.Gui.Element.Element_Type with
+      record
+         Card_Name    : Ada.Strings.Unbounded.Unbounded_String;
+      end record;
 end Gnoga.Gui.View.Card;

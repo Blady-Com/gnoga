@@ -7,7 +7,6 @@ with Gnoga.Gui.View.Docker;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
-with Gnoga.Gui.Element.Tab;
 
 procedure Layouts is
    use Gnoga;
@@ -30,7 +29,7 @@ procedure Layouts is
       Click_Count : Common.Span_Type;
       Count       : Natural;
    begin
-      Tab.Tab_Item_Type (Object).Tab_Select;
+      View.Card.Tab_Item_Type (Object).Tab_Select;
 
       Click_Count.Attach_Using_Parent (Object, "click_count");
       Count := Natural'Value (Click_Count.Text);
@@ -46,8 +45,8 @@ procedure Layouts is
       V      : View.Pointer_To_View_Class;
       Card_1 : View.Pointer_To_View_Class;
       Card_2 : View.Pointer_To_View_Base_Class;
-      Tabs   : Element.Tab.Tab_Access;
-      Tab    : Element.Tab.Tab_Item_Access;
+      Tabs   : View.Card.Tab_Access;
+      Tab    : View.Card.Tab_Item_Access;
       Dex    : View.Docker.Pointer_To_Docker_View_Class;
    begin
       Main_Window.Connection_Data (App);
@@ -65,7 +64,7 @@ procedure Layouts is
       App.View.Border;
       Dex.Fill_Dock (App.View'Access);
 
-      Tabs := new Element.Tab.Tab_Type;
+      Tabs := new View.Card.Tab_Type;
       Tabs.Dynamic;
       Tabs.Create (Parent       => Dex.all,
                    Card_View    => App.View,
@@ -73,11 +72,11 @@ procedure Layouts is
                    Tab_Color    => Gnoga.Types.RGBA_Type'(0,0,255,1.0),
                    Select_Color => Gnoga.Types.RGBA_Type'(0, 0, 128, 1.0));
 
-      Tab := new Element.Tab.Tab_Item_Type;
+      Tab := new View.Card.Tab_Item_Type;
       Tab.Dynamic;
       Tab.Create (Tabs.all, "1", "Card 1");
 
-      Tab := new Element.Tab.Tab_Item_Type;
+      Tab := new View.Card.Tab_Item_Type;
       Tab.Dynamic;
       Tab.Create (Tabs.all, "2", "Card 2");
       Tab.On_Click_Handler (On_Click'Unrestricted_Access);

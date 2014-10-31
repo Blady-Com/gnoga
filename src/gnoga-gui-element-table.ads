@@ -86,7 +86,7 @@ package Gnoga.Gui.Element.Table is
      (Row    : in out Table_Row_Type;
       Parent : in out Element_Type'Class;
       ID     : in     String  := "");
-   --  Use initial Content. Can be replaced or changes twith the Text or
+   --  Use initial Content. Can be replaced or changed later with the Text or
    --  Inner_HTML property.
    --  Parent can be Table_Type, Table_Header_Type, Table_Body_Type or
    --  Table_Footer type if not Constraint_Error will be raised.
@@ -110,7 +110,7 @@ package Gnoga.Gui.Element.Table is
       Column_Span : in     Positive := 1;
       Row_Span    : in     Positive := 1;
       ID          : in     String   := "");
-   --  Use initial Content. Can be replaced or changes twith the Text or
+   --  Use initial Content. Can be replaced or changed later with the Text or
    --  Inner_HTML property.
 
    -------------------------------------------------------------------------
@@ -132,7 +132,7 @@ package Gnoga.Gui.Element.Table is
       Column_Span : in     Positive := 1;
       Row_Span    : in     Positive := 1;
       ID          : in     String  := "");
-   --  Use initial Content. Can be replaced or changes twith the Text or
+   --  Use initial Content. Can be replaced or changed later with the Text or
    --  Inner_HTML property.
 
    -------------------------------------------------------------------------
@@ -169,7 +169,7 @@ package Gnoga.Gui.Element.Table is
      (TBody : in out Table_Body_Type;
       Table : in out Table_Type'Class;
       ID    : in     String  := "");
-   --  Create an optional table header section <tbody>
+   --  Create an optional table body section <tbody>
 
    -------------------------------------------------------------------------
    --  Table_Footer_Types
@@ -206,7 +206,7 @@ package Gnoga.Gui.Element.Table is
       Table : in out Table_Type'Class;
       ID    : in     String  := "");
    --  Create an optional column group <colgroup> to ease formatting
-   --  Must be at top of table_type.
+   --  Must be created or placed at top of table_type.
 
    -------------------------------------------------------------------------
    --  Column_Types
@@ -226,7 +226,7 @@ package Gnoga.Gui.Element.Table is
       Content     : in     String   := "";
       Column_Span : in     Positive := 1;
       ID          : in     String   := "");
-   --  Use initial Content. Can be replaced or changes twith the Text or
+   --  Use initial Content. Can be replaced or changed later with the Text or
    --  Inner_HTML property.
 
 private

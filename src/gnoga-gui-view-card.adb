@@ -35,6 +35,9 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Gnoga.Gui.Window;
+with Gnoga.Gui.Element.Style_Block;
+
 package body Gnoga.Gui.View.Card is
 
    ------------
@@ -159,5 +162,182 @@ package body Gnoga.Gui.View.Card is
 
       View_Type (View).On_Resize;
    end On_Resize;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Tab          : in out Tab_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Card_View    : in out Card_View_Type'Class;
+      Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
+      Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
+      Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
+      Attach       : in     Boolean := True;
+      ID           : in     String  := "")
+   is
+   begin
+      Tab.Card_View    := Card_View'Unrestricted_Access;
+      Tab.Tab_Color    := Tab_Color;
+      Tab.Select_Color := Select_Color;
+
+      Tab.Create_From_HTML (Parent, "<ul />", ID);
+
+      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
+         Gnoga.Gui.Window.Window_Type (Parent).Set_View (Tab);
+      end if;
+
+      declare
+         use Gnoga.Types;
+
+         Name  : constant String := Tab.ID;
+         Style : Gnoga.Gui.Element.Style_Block.Style_Type;
+      begin
+         Style.Create
+           (Parent,
+            "ul#" & Name & " {padding: 0;}" &
+              " ul#" & Name & " li {display: inline;}" &
+              " ul#" & Name &
+              "   li a {background-color: " & To_String (Tab_Color) & ";" &
+              "   color: " & To_String (Text_Color) & ";" &
+              "   padding: 10px 20px;" &
+              "   margin: 3px;" &
+              "   text-decoration: none;" &
+              "   border-radius: 4px 4px 0 0;}");
+      end;
+   end Create;
+
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+   begin
+      Tab_Item_Type (Object).Tab_Select;
+   end On_Click;
+
+   -------------
+   -- Add_Tab --
+   -------------
+
+   procedure Add_Tab (Tab      : in out Tab_Type;
+                      Card     : in     String;
+                      Label    : in     String;
+                      Selected : in     Boolean := False)
+   is
+      T : Tab_Item_Access := new Tab_Item_Type;
+   begin
+      T.Dynamic;
+      T.Create (Parent => Tab,
+                Card   => Card,
+                Label  => Label);
+
+      if Selected then
+         Tab.Select_Tab (Card);
+      end if;
+   end Add_Tab;
+
+   ----------------
+   -- Select_Tab --
+   ----------------
+
+   procedure Select_Tab (Tab  : in out Tab_Type;
+                         Card : in     String)
+   is
+      use type Gnoga.Gui.Element.Pointer_To_Element_Class;
+
+      P : Gnoga.Gui.Element.Pointer_To_Element_Class := Tab.Element (Card);
+   begin
+      if P /= null then
+         Tab_Item_Access (P).Tab_Select;
+      end if;
+   end Select_Tab;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Item   : in out Tab_Item_Type;
+      Parent : in out Tab_Type'Class;
+      Card   : in     String;
+      Label  : in     String;
+      ID     : in     String := "")
+   is
+   begin
+      Item.Create_From_HTML
+        (Parent, "<li />", ID);
+      Item.Inner_HTML ("<a id='" & Item.ID & "_a" &
+                         "' href='javascript:void(0)'>" &
+                         Escape_Quotes (Label) & "</a>");
+
+      Item.On_Click_Handler (On_Click'Access);
+
+      declare
+         L : Gnoga.Gui.Element.Element_Type;
+      begin
+         L.Attach_Using_Parent (Item, ID => Item.ID & "_a");
+         Parent.Height (L.Offset_Top * 2 + L.Client_Height);
+      end;
+
+      Item.Card_Name := Ada.Strings.Unbounded.To_Unbounded_String (Card);
+
+      Parent.Add_Element (Card, Item'Unrestricted_Access);
+      --  Allow for the Parent.Select_Tab to work
+   end Create;
+
+   ----------------
+   -- Tab_Select --
+   ----------------
+
+   procedure Tab_Select (Item  : in out Tab_Item_Type)
+   is
+      Link : Gnoga.Gui.Element.Element_Type;
+   begin
+      declare
+         C : Gnoga.Gui.Element. Element_Access :=
+               new Gnoga.Gui.Element.Element_Type;
+         N : Gnoga.Gui.Element.Element_Access;
+      begin
+         Gnoga.Gui.Element.Element_Access (Item.Parent).First_Child (C.all);
+
+         while C.ID /= "undefined" loop
+            declare
+               L : Gnoga.Gui.Element.Element_Type;
+            begin
+               L.Attach_Using_Parent (Item, ID => C.ID & "_a");
+               L.Background_Color (Tab_Access (Item.Parent).Tab_Color);
+            end;
+
+            N := new Gnoga.Gui.Element.Element_Type;
+            C.Next_Sibling (N.all);
+            C.Free;
+            C := N;
+         end loop;
+
+         C.Free;
+      end;
+
+      Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
+      Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
+
+      Tab_Access (Item.Parent).Card_View.Show_Card
+        (Ada.Strings.Unbounded.To_String (Item.Card_Name));
+   end Tab_Select;
+
+   ------------------
+   -- Tab_Selected --
+   ------------------
+
+   function Tab_Selected (Item : Tab_Item_Type) return Boolean
+   is
+      use type Gnoga.Types.RGBA_Type;
+
+      Link : Gnoga.Gui.Element.Element_Type;
+   begin
+      Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
+
+      return Link.Background_Color = Tab_Access (Item.Parent).Select_Color;
+   end Tab_Selected;
 
 end Gnoga.Gui.View.Card;

@@ -10,7 +10,6 @@ with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
-with Gnoga.Gui.Element.Tab;
 with Gnoga.Gui.View.Console;
 with Gnoga.Gui.View.Card;
 with Gnoga.Gui.View.Docker;
@@ -35,7 +34,7 @@ procedure Tutorial_09 is
          --  My_Deck will dock a set of tabs at the top and the
          --  remainder will a card view My_Cards
 
-         My_Tabs     : aliased Gnoga.Gui.Element.Tab.Tab_Type;
+         My_Tabs     : aliased Gnoga.Gui.View.Card.Tab_Type;
          My_Cards    : aliased Gnoga.Gui.View.Card.Card_View_Type;
 
          My_Widget_1 : aliased My_Widget_Type;

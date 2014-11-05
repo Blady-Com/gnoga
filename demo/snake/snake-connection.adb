@@ -27,7 +27,7 @@ package body Snake.Connection is
          "<H1>" & Snake.Title & "</H1>" &
            "<br />" &
            "<p>Use your kebyoard to move Sparky to pick up batteries.</p>" &
-           "<i>Becareful...</i><br />" &
+           "<i>Be careful...</i><br />" &
            "If sparky hits his tail he electrocutes himself to <b>death!!</b>" &
            "<br /><br />" &
            "Use the arrow keys or a,w,s,d for direction keys.<br/><br/>");

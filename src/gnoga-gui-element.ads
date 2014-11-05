@@ -87,7 +87,8 @@ package Gnoga.Gui.Element is
    --  stored on the browser but will not be inserted in to the DOM until
    --  Place_Inside_Top_Of, Place_Inside_Botton_Of, Place_Before, Place_After
    --  is called. This is done automatically if Parent is a child type of
-   --  Gnoga_Gui.View.View_Base_Type.
+   --  Gnoga_Gui.View.View_Base_Type unless the Auto_Place property is
+   --  set to False _before_ any creation method is called.
    --
    --  Note: All IDs _must_ be unique for use in Gnoga.
 
@@ -110,6 +111,16 @@ package Gnoga.Gui.Element is
    -------------------------------------------------------------------------
    --  Element_Type - Properties
    -------------------------------------------------------------------------
+
+   --  Frameowrk Properties --
+
+   procedure Auto_Place (Element : in out Element_Type; Value : Boolean);
+   function Auto_Place (Element : Element_Type) return Boolean;
+   --  Elements by default are created outside the DOM and therefore not
+   --  visisble. If Auto_Place is set to false _before_ Create is called on
+   --  an Element, View's will not place the Element in to the DOM as is
+   --  the View's default behavior. Custom widgets that have child widgets
+   --  should be designed to respect this property.
 
    --  Element Properties --
 
@@ -684,5 +695,8 @@ package Gnoga.Gui.Element is
    --  Simulate click on element
 
 private
-   type Element_Type is new Gnoga.Gui.Base.Base_Type with null record;
+   type Element_Type is new Gnoga.Gui.Base.Base_Type with
+      record
+         Auto_Place : Boolean := True;
+      end record;
 end Gnoga.Gui.Element;

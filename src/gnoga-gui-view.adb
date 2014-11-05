@@ -89,7 +89,9 @@ package body Gnoga.Gui.View is
       use Gnoga.Gui.Element;
    begin
       if Child in Element_Type'Class then
-         Element_Type (Child).Place_Inside_Bottom_Of (View);
+         if Element_Type (Child).Auto_Place then
+            Element_Type (Child).Place_Inside_Bottom_Of (View);
+         end if;
       end if;
 
       if Child.Dynamic then

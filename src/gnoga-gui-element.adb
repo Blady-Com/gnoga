@@ -116,6 +116,20 @@ package body Gnoga.Gui.Element is
    --  Element_Type - Properties
    -------------------------------------------------------------------------
 
+   ----------------
+   -- Auto_Place --
+   ----------------
+
+   procedure Auto_Place (Element : in out Element_Type; Value : Boolean) is
+   begin
+      Element.Auto_Place := Value;
+   end Auto_Place;
+
+   function Auto_Place (Element : Element_Type) return Boolean is
+   begin
+      return Element.Auto_Place;
+   end Auto_Place;
+
    -----------
    -- Style --
    -----------

@@ -1493,8 +1493,9 @@ package body Gnoga.Gui.Element.Form is
    procedure Remove_Option (Element  : in out Selection_Type;
                             Index    : in     Positive)
    is
+      JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute ("remove (" & Index'Img & ")");
+      Element.Execute ("remove (" & JS_Index'Img & ")");
    end Remove_Option;
 
    -------------------------------------------------------------------------

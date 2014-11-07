@@ -426,6 +426,21 @@ package body Gnoga.Server.Connection is
    package Connection_Data_Maps is new Ada.Containers.Ordered_Maps
      (Gnoga.Types.Unique_ID, Gnoga.Types.Pointer_to_Connection_Data_Class);
 
+   ---------------------
+   -- Event_Task_Type --
+   ---------------------
+
+   task type Event_Task_Type (ID : Gnoga.Types.Connection_ID);
+
+   type Event_Task_Access is access all Event_Task_Type;
+
+   procedure Free_Event_Task is
+        new Ada.Unchecked_Deallocation (Event_Task_Type,
+                                        Event_Task_Access);
+
+   package Event_Task_Maps is new Ada.Containers.Ordered_Maps
+     (Gnoga.Types.Unique_ID, Event_Task_Access);
+
    ------------------------
    -- Connection Manager --
    ------------------------
@@ -435,7 +450,7 @@ package body Gnoga.Server.Connection is
    --  Socket Maps are used for the Connection Manager to map connection IDs
    --  to web sockets.
 
-   protected type Connection_Manager_Type is
+   protected Connection_Manager is
       procedure Add_Connection (Socket : in  Socket_Type;
                                 New_ID : out Gnoga.Types.Connection_ID);
       --  Adds Socket to managed Connections and generates a New_ID.
@@ -481,9 +496,10 @@ package body Gnoga.Server.Connection is
       Socket_Count          : Gnoga.Types.Connection_ID := 0;
       Connection_Holder_Map : Connection_Holder_Maps.Map;
       Connection_Data_Map   : Connection_Data_Maps.Map;
-   end Connection_Manager_Type;
+      Event_Task_Map        : Event_Task_Maps.Map;
+   end Connection_Manager;
 
-   protected body Connection_Manager_Type is
+   protected body Connection_Manager is
       procedure Add_Connection (Socket : in  Socket_Type;
                                 New_ID : out Gnoga.Types.Connection_ID)
       is
@@ -491,6 +507,7 @@ package body Gnoga.Server.Connection is
          Socket_Count := Socket_Count + 1;
          New_ID := Socket_Count;
          Socket_Map.Insert (New_ID, Socket);
+         Event_Task_Map.Insert (New_ID, new Event_Task_Type (New_ID));
       end Add_Connection;
 
       procedure Add_Connection_Holder (ID     : in Gnoga.Types.Connection_ID;
@@ -541,6 +558,15 @@ package body Gnoga.Server.Connection is
             end if;
 
             Socket_Map.Delete (ID);
+
+            if Event_Task_Map.Contains (ID) then
+               declare
+                  E  : Event_Task_Access := Event_Task_Map.Element (ID);
+               begin
+                  Free_Event_Task (E);
+                  Event_Task_Map.Delete (ID);
+               end;
+            end if;
          end if;
       exception
          when others =>
@@ -590,85 +616,7 @@ package body Gnoga.Server.Connection is
       begin
          Socket_Map.Iterate (Do_Delete'Access);
       end Delete_All_Connections;
-   end Connection_Manager_Type;
-
-   Connection_Manager : Connection_Manager_Type;
-
-   ---------------------------
-   -- Message Queue Manager --
-   ---------------------------
-
-   function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
-                 return Boolean;
-   --  Properly identify equivelant objects
-
-   function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
-                 return Boolean
-   is
-   begin
-      return Left.Unique_ID = Right.Unique_ID;
-   end "=";
-
-   package Object_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Unique_ID, Gnoga.Gui.Base.Pointer_To_Base_Class);
-
-   protected type Object_Manager_Type is
-      function Get_Object (Index : Integer)
-                           return Gnoga.Gui.Base.Pointer_To_Base_Class;
-      procedure Insert
-        (ID     : in Gnoga.Types.Unique_ID;
-         Object : in Gnoga.Gui.Base.Pointer_To_Base_Class);
-
-      procedure Delete (ID : Gnoga.Types.Unique_ID);
-   private
-      Object_Map : Object_Maps.Map;
-   end Object_Manager_Type;
-
-   protected body Object_Manager_Type is
-      function Get_Object (Index : Integer)
-                           return Gnoga.Gui.Base.Pointer_To_Base_Class
-      is
-      begin
-         return Object_Map.Element (Index);
-      end Get_Object;
-
-      procedure Insert
-        (ID     : in Gnoga.Types.Unique_ID;
-         Object : in Gnoga.Gui.Base.Pointer_To_Base_Class)
-      is
-      begin
-         Object_Map.Insert (Key      => ID,
-                            New_Item => Object);
-      end Insert;
-
-      procedure Delete (ID : Gnoga.Types.Unique_ID) is
-      begin
-         Object_Map.Delete (ID);
-      end Delete;
-   end Object_Manager_Type;
-
-   Object_Manager : Object_Manager_Type;
-
-   -------------------
-   -- Socket_Create --
-   -------------------
-
-   function Socket_Type_Create
-     (Socket  : AWS.Net.Socket_Access;
-      Request : AWS.Status.Data)
-      return AWS.Net.WebSocket.Object'Class
-   is
-   begin
-      return Socket_Type'(AWS.Net.WebSocket.Object
-                          (AWS.Net.WebSocket.Create (Socket, Request))
-                          with null record);
-   end Socket_Type_Create;
-
-   -------------
-   -- On_Open --
-   -------------
-
-   task type Event_Task_Type (ID : Gnoga.Types.Connection_ID);
+   end Connection_Manager;
 
    task body Event_Task_Type is
       Connection_Holder : aliased Connection_Holder_Type;
@@ -696,17 +644,77 @@ package body Gnoga.Server.Connection is
                 Ada.Exceptions.Exception_Message (E));
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Event_Task_Type;
+   ---------------------------
+   -- Message Queue Manager --
+   ---------------------------
 
-   type Event_Task_Access is access all Event_Task_Type;
+   function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
+                 return Boolean;
+   --  Properly identify equivelant objects
 
-   procedure Free_Event_Task is
-        new Ada.Unchecked_Deallocation (Event_Task_Type,
-                                        Event_Task_Access);
+   function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
+                 return Boolean
+   is
+   begin
+      return Left.Unique_ID = Right.Unique_ID;
+   end "=";
 
-   package Event_Task_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Unique_ID, Event_Task_Access);
+   package Object_Maps is new Ada.Containers.Ordered_Maps
+     (Gnoga.Types.Unique_ID, Gnoga.Gui.Base.Pointer_To_Base_Class);
 
-   Event_Task_Map : Event_Task_Maps.Map;
+   protected Object_Manager is
+      function Get_Object (Index : Integer)
+                           return Gnoga.Gui.Base.Pointer_To_Base_Class;
+      procedure Insert
+        (ID     : in Gnoga.Types.Unique_ID;
+         Object : in Gnoga.Gui.Base.Pointer_To_Base_Class);
+
+      procedure Delete (ID : Gnoga.Types.Unique_ID);
+   private
+      Object_Map : Object_Maps.Map;
+   end Object_Manager;
+
+   protected body Object_Manager is
+      function Get_Object (Index : Integer)
+                           return Gnoga.Gui.Base.Pointer_To_Base_Class
+      is
+      begin
+         return Object_Map.Element (Index);
+      end Get_Object;
+
+      procedure Insert
+        (ID     : in Gnoga.Types.Unique_ID;
+         Object : in Gnoga.Gui.Base.Pointer_To_Base_Class)
+      is
+      begin
+         Object_Map.Insert (Key      => ID,
+                            New_Item => Object);
+      end Insert;
+
+      procedure Delete (ID : Gnoga.Types.Unique_ID) is
+      begin
+         Object_Map.Delete (ID);
+      end Delete;
+   end Object_Manager;
+
+   -------------------
+   -- Socket_Create --
+   -------------------
+
+   function Socket_Type_Create
+     (Socket  : AWS.Net.Socket_Access;
+      Request : AWS.Status.Data)
+      return AWS.Net.WebSocket.Object'Class
+   is
+   begin
+      return Socket_Type'(AWS.Net.WebSocket.Object
+                          (AWS.Net.WebSocket.Create (Socket, Request))
+                          with null record);
+   end Socket_Type_Create;
+
+   -------------
+   -- On_Open --
+   -------------
 
    overriding procedure On_Open
      (Web_Socket : in out Socket_Type; Message : String)
@@ -715,11 +723,11 @@ package body Gnoga.Server.Connection is
 
       ID : Gnoga.Types.Connection_ID;
    begin
-      Connection_Manager.Add_Connection (Socket => Web_Socket,
-                                         New_ID => ID);
-
       if On_Connect_Event /= null then
-         Event_Task_Map.Insert (ID, new Event_Task_Type (ID));
+         Connection_Manager.Add_Connection (Socket => Web_Socket,
+                                            New_ID => ID);
+      else
+         Web_Socket.Close ("No connection event set");
       end if;
    end On_Open;
 
@@ -733,11 +741,10 @@ package body Gnoga.Server.Connection is
    is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connetion_ID (Web_Socket);
-      E  : Event_Task_Access := Event_Task_Map.Element (ID);
    begin
-      Connection_Manager.Delete_Connection (ID);
-      Free_Event_Task (E);
-      Event_Task_Map.Delete (ID);
+      if ID /= Gnoga.Types.No_Connection then
+         Connection_Manager.Delete_Connection (ID);
+      end if;
    end On_Close;
 
    --------------
@@ -750,11 +757,8 @@ package body Gnoga.Server.Connection is
    is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connetion_ID (Web_Socket);
-      E  : Event_Task_Access := Event_Task_Map.Element (ID);
    begin
       Connection_Manager.Delete_Connection (ID);
-      Free_Event_Task (E);
-      Event_Task_Map.Delete (ID);
    end On_Error;
 
    --------------------
@@ -862,7 +866,41 @@ package body Gnoga.Server.Connection is
    package Dispatch_Task_Maps is new Ada.Containers.Ordered_Maps
      (Gnoga.Types.Unique_ID, Dispatch_Task_Access);
 
-   Dispatch_Task_Map : Dispatch_Task_Maps.Map;
+   protected Dispatch_Task_Objects is
+      procedure Add_Dispatch_Task (ID            : in Gnoga.Types.Unique_ID;
+                                   Dispatch_Task : in Dispatch_Task_Access);
+
+      function Object (ID : Gnoga.Types.Unique_ID) return Dispatch_Task_Access;
+
+      procedure Delete_Dispatch_Task (ID : in Gnoga.Types.Unique_ID);
+   private
+      Dispatch_Task_Map : Dispatch_Task_Maps.Map;
+   end Dispatch_Task_Objects;
+
+   protected body Dispatch_Task_Objects is
+      procedure Add_Dispatch_Task (ID            : in Gnoga.Types.Unique_ID;
+                                   Dispatch_Task : in Dispatch_Task_Access)
+      is
+      begin
+         Dispatch_Task_Map.Insert (ID, Dispatch_Task);
+      end Add_Dispatch_Task;
+
+      function Object (ID : Gnoga.Types.Unique_ID) return Dispatch_Task_Access
+      is
+      begin
+         return Dispatch_Task_Map.Element (ID);
+      end Object;
+
+      procedure Delete_Dispatch_Task (ID : in Gnoga.Types.Unique_ID)
+      is
+         T : Dispatch_Task_Access := Dispatch_Task_Map.Element (ID);
+      begin
+         Free_Dispatch_Task (T);
+         --  http://adacore.com/developers/development-log/NF-65-H911-007-gnat
+         --  This will cause T to free upon task termination.
+         Dispatch_Task_Map.Delete (ID);
+      end Delete_Dispatch_Task;
+   end Dispatch_Task_Objects;
 
    task body Dispatch_Task_Type is
       E : Ada.Strings.Unbounded.Unbounded_String;
@@ -891,14 +929,7 @@ package body Gnoga.Server.Connection is
          end if;
       end;
 
-      declare
-         T : Dispatch_Task_Access := Dispatch_Task_Map.Element (I);
-      begin
-         Free_Dispatch_Task (T);
-         --  http://adacore.com/developers/development-log/NF-65-H911-007-gnat
-         --  This will cause T to free upon task termination.
-         Dispatch_Task_Map.Delete (I);
-      end;
+      Dispatch_Task_Objects.Delete_Dispatch_Task (I);
    exception
       when E : others =>
          Log ("Dispatch Error");
@@ -943,8 +974,10 @@ package body Gnoga.Server.Connection is
             New_ID : Gnoga.Types.Unique_ID;
          begin
             New_Unique_ID (New_ID);
-            Dispatch_Task_Map.Insert (New_ID, new Dispatch_Task_Type (Object));
-            Dispatch_Task_Map.Element (New_ID).Start
+
+            Dispatch_Task_Objects.Add_Dispatch_Task
+              (New_ID, new Dispatch_Task_Type (Object));
+            Dispatch_Task_Objects.Object (New_ID).Start
               (Event, Event_Data, New_ID);
          end;
       end if;

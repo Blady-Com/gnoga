@@ -1,6 +1,8 @@
 <!doctype HTML>
 <HTML>
    <HEAD>
+      <meta http-equiv="Pragma" content="no-cache">
+      <meta http-equiv="Expires" content="-1">
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <script src="/js/jquery.min.js"></script>
@@ -24,7 +26,11 @@
            = decodeURIComponent(tokens[2]);
      }
 
-     ws = new WebSocket ("ws://" + location.hostname + ":" + location.port + "/gnoga");
+     var adr = "ws://" + location.hostname;
+     if (location.port != "") { adr = adr + ":" + location.port; }
+     adr = adr + "/gnoga";
+
+     ws = new WebSocket (adr);
 
      if (ws != null) {
         ws.onmessage = function (event) {
@@ -49,4 +55,5 @@
      }
   });
 </script>
+<!--@@data.push_params@@-->
 </HTML>

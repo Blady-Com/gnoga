@@ -152,13 +152,12 @@ procedure Demo is
 
       App.My_Select.Create (App.My_Form,
                             Multiple_Select => True,
-                            Visible_Lines   => 6);
+                            Visible_Lines   => 20);
       App.My_Select.Box_Width ("20em");
       App.My_Select.Add_Option (Value    => "1",
                                 Text     => "L1");
       App.My_Select.Add_Option (Value    => "2",
-                                Text     => "L2",
-                                Selected => True);
+                                Text     => "L2");
 
       Option := new Form.Option_Type;
       Option.Create (App.My_Form, App.My_Select, "3", "L3");
@@ -274,7 +273,6 @@ procedure Demo is
             Collection_View.Element (N).Color ("orange");
          end Loop;
       end;
-
    end On_Connect;
 
 begin

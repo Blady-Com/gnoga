@@ -989,7 +989,8 @@ package body Gnoga.Gui.Base is
       if Handler /= null and Object.On_Mouse_Right_Click_Event = null then
          Object.Bind_Event (Event   => "contextmenu",
                             Message => "",
-                            Script  => Mouse_Event_Script);
+                            Script  => Mouse_Event_Script,
+                            Cancel  => True);
       end if;
    end On_Context_Menu_Handler;
 
@@ -1021,7 +1022,8 @@ package body Gnoga.Gui.Base is
       if Handler /= null and Object.On_Context_Menu_Event = null then
          Object.Bind_Event (Event   => "contextmenu",
                             Message => "",
-                            Script  => Mouse_Event_Script);
+                            Script  => Mouse_Event_Script,
+                            Cancel  => True);
       end if;
    end On_Mouse_Right_Click_Handler;
 
@@ -1863,10 +1865,10 @@ package body Gnoga.Gui.Base is
       elsif Event = "click" then
          Object.Fire_On_Click;
          Object.Fire_On_Mouse_Click (Parse_Mouse_Event (Message));
-      elsif Event = "contextmenu" then
+      elsif Event = "dblclick" then
          Object.Fire_On_Double_Click;
          Object.Fire_On_Mouse_Double_Click (Parse_Mouse_Event (Message));
-      elsif Event = "dblclick" then
+      elsif Event = "contextmenu" then
          Object.Fire_On_Context_Menu;
          Object.Fire_On_Mouse_Right_Click (Parse_Mouse_Event (Message));
       elsif Event = "mouseenter" then

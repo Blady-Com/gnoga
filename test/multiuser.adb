@@ -123,7 +123,7 @@ end Color_Me_Task;
         (Main_Window.Document.Body_Element.all);
 
       App.Hello_World.On_Context_Menu_Handler (On_Context'Unrestricted_Access);
-      App.Hello_World.On_Mouse_Click_Handler (On_Click'Unrestricted_Access);
+      App.Hello_World.On_Mouse_Right_Click_Handler (On_Click'Unrestricted_Access);
       App.Hello_World.On_Mouse_Move_Handler (On_Move'Unrestricted_Access);
 
       Hr1.Create (Main_Window);

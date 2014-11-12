@@ -10,7 +10,7 @@ project Test is
                  "popups.adb", "forms.adb", "canvas_test.adb",
                  "db_sqlite.adb", "db_mysql.adb", "db_active.adb",
                  "storage.adb", "media.adb", "tables.adb", "bootjs.adb",
-                 "jdemo.adb", "cairo_test.adb", "svg_demo.adb",
+                 "jdemo.adb", "cairo_test.adb", "svg_demo.adb", "align.adb",
                  "boot_strap_demo.adb");
 
    package Builder is

@@ -1,6 +1,7 @@
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
@@ -23,6 +24,15 @@ procedure Align is
    Dec_Range      : Form.Range_Type;
    Range_Label    : Form.Label_Type;
    Range_Value    : Form.Label_Type;
+
+   Grid_Box : Gnoga.Gui.View.View_Type;
+
+   type Button_Column is array (1 .. 10) of Common.Button_Type;
+   type Button_Grid is array (1 .. 10) of Button_Column;
+
+   Buttons : Button_Grid;
+
+   C : Positive := 1;
 
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
@@ -81,6 +91,26 @@ begin
 
    Dec_Range.On_Change_Handler (Dec_Change'Unrestricted_Access);
 
+   F.Put_HTML ("<hr />");
+
+   Grid_Box.Create (Main_View);
+   Grid_Box.Border;
+
+   for i in Buttons'First .. Buttons'Last loop
+      for n in Buttons (i)'First .. Buttons (i)'Last loop
+         if C mod 5 = 1 then
+            Buttons (i) (n).Create (Grid_Box, "");
+            Buttons (i) (n).Vertical_Align (Middle);
+         else
+            Buttons (i) (n).Create (Grid_Box, Gnoga.Left_Trim (C'Img));
+         end if;
+         Buttons (i) (n).Box_Sizing (Border_Box);
+         Buttons (i) (n).Height (30);
+         Buttons (i) (n).Width (30);
+         C := C + 1;
+      end loop;
+      Grid_Box.Put_HTML ("<br />");
+   end loop;
 
    Gnoga.Application.Singleton.Message_Loop;
 end Align;

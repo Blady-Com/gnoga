@@ -29,7 +29,7 @@
            }
         }
         ws.onerror = function (event) {
-           alert ("Communication error");
+           //alert ("Communication error");
         }
         ws.onclose = function (event) {
            if (gnoga['html_on_close'] != "") {

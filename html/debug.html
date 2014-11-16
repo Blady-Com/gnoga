@@ -9,6 +9,7 @@
    </HEAD>
 <BODY>
 </BODY>
+<noscript>Your browser must support JavaScript and be HTML 5 compilant to see this site.</noscript>
 <script>
   var ws;
   var params={};
@@ -42,7 +43,6 @@
            }
         }
         ws.onerror = function (event) {
-           //alert ("Communication error");
         }
         ws.onclose = function (event) {
            if (gnoga['html_on_close'] != "") {
@@ -52,7 +52,7 @@
            }
         }
      } else {
-        alert ("Websocket connection is required.");
+        document.writeln ("If you are seeing this, either your browser is pre-html 5, not graphical or your connection to the internet is blocking websockets.");
      }
   });
 </script>

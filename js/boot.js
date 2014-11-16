@@ -29,7 +29,6 @@
            }
         }
         ws.onerror = function (event) {
-           //alert ("Communication error");
         }
         ws.onclose = function (event) {
            if (gnoga['html_on_close'] != "") {
@@ -39,6 +38,6 @@
            }
         }
      } else {
-        alert ("Websocket connection is required.");
+        document.writeln ("If you are seeing this, either your browser is pre-html 5, not graphical or your connection to the internet is blocking websockets.");
      }
   });

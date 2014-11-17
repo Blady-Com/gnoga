@@ -60,6 +60,9 @@ package Gnoga.Server is
    --    |
    --    |___ upload - option, optional directory for incoming files
 
+   function Directory_Separator return String;
+   --  Return the Directory Separator using for the OS Gnoga is compiled on.
+
    function Application_Directory return String;
    --  This is the root directory for the application.
 

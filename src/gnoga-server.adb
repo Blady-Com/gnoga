@@ -65,6 +65,15 @@ package body Gnoga.Server is
       end if;
    end Find_Subdirectory;
 
+   -------------------------
+   -- Directory_Separator --
+   -------------------------
+
+   function Directory_Separator return String is
+   begin
+      return GNAT.OS_Lib.Directory_Separator & "";
+   end Directory_Separator;
+
    ---------------------------
    -- Application_Directory --
    ---------------------------

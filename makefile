@@ -18,7 +18,7 @@ uninstall:
 	- cd tools && gprinstall -f --uninstall tools.gpr
 
 ace_editor:
-	cd js && git clone https://github.com/ajaxorg/ace-builds.git
+	- cd js && git clone https://github.com/ajaxorg/ace-builds.git
 
 demo: snake adaedit adablog
 

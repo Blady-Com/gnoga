@@ -44,7 +44,7 @@ procedure Align is
       Main_View.Put_Line (Number_Choice.Value);
    end Calculate;
 begin
-   Gnoga.Application.Open_URL_OSX;
+   --  Gnoga.Application.Open_URL_OSX;
    Gnoga.Application.Singleton.Initialize (Main_Window);
 
    Main_View.Create (Main_Window);
@@ -98,15 +98,11 @@ begin
 
    for i in Buttons'First .. Buttons'Last loop
       for n in Buttons (i)'First .. Buttons (i)'Last loop
-         if C mod 5 = 1 then
-            Buttons (i) (n).Create (Grid_Box, "");
-            Buttons (i) (n).Vertical_Align (Middle);
-         else
-            Buttons (i) (n).Create (Grid_Box, Gnoga.Left_Trim (C'Img));
-         end if;
-         Buttons (i) (n).Box_Sizing (Border_Box);
+         Buttons (i) (n).Create (Grid_Box, Gnoga.Left_Trim (C'Img));
+         Buttons (i) (n).Vertical_Align (Middle);
          Buttons (i) (n).Height (30);
          Buttons (i) (n).Width (30);
+         Buttons (i) (n).Margin ("3px", "3px", "3px", "3px");
          C := C + 1;
       end loop;
       Grid_Box.Put_HTML ("<br />");

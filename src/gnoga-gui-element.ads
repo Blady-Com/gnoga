@@ -411,25 +411,25 @@ package Gnoga.Gui.Element is
    --  All the following have the advantage of the CSS related size properties
    --  in that the results are always pixels and numeric.
 
-   procedure Inner_Height (Object : in out Element_Type; Value : in Integer);
-   function Inner_Height (Object : Element_Type) return Integer;
+   procedure Inner_Height (Element : in out Element_Type; Value : in Integer);
+   function Inner_Height (Element : Element_Type) return Integer;
    --  Includes padding but not border
 
-   procedure Inner_Width (Object : in out Element_Type; Value : in Integer);
-   function Inner_Width (Object : Element_Type) return Integer;
+   procedure Inner_Width (Element : in out Element_Type; Value : in Integer);
+   function Inner_Width (Element : Element_Type) return Integer;
    --  Includes padding but not border
 
-   function Outer_Height (Object : Element_Type) return Integer;
+   function Outer_Height (Element : Element_Type) return Integer;
    --  Includes padding and border but not margin
 
-   function Outer_Width (Object : Element_Type) return Integer;
+   function Outer_Width (Element : Element_Type) return Integer;
    --  Includes padding and border but not margin
 
-   function Outer_Height_To_Margin (Object : Element_Type) return Integer;
+   function Outer_Height_To_Margin (Element : Element_Type) return Integer;
    --  Includes padding and border and margin
 
    function Outer_Width_To_Margin
-     (Object : Element_Type) return Integer;
+     (Element : Element_Type) return Integer;
    --  Includes padding and border and margin
 
    function Client_Width (Element : Element_Type) return Natural;

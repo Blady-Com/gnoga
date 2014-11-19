@@ -447,7 +447,7 @@ package body Gnoga.Gui.Base is
    procedure Height (Object : in out Base_Type; Value : in Integer) is
    begin
       Object.jQuery_Execute ("height(" & Left_Trim (Value'Img) & ");");
-      Base_Type'Class (Object).On_Resize;
+      Object.On_Message ("resize", "");
    end Height;
 
    function Height (Object : Base_Type) return Integer is
@@ -462,7 +462,7 @@ package body Gnoga.Gui.Base is
    procedure Width (Object : in out Base_Type; Value : in Integer) is
    begin
       Object.jQuery_Execute ("width(" & Left_Trim (Value'Img) & ");");
-      Base_Type'Class (Object).On_Resize;
+      Object.On_Message ("resize", "");
    end Width;
 
    function Width (Object : Base_Type) return Integer is
@@ -585,7 +585,11 @@ package body Gnoga.Gui.Base is
    is
    begin
       if Object.On_Resize_Event /= null then
-         Object.On_Resize_Event (Object);
+         if not Object.In_Resize then
+            Object.In_Resize := True;
+            Object.On_Resize_Event (Object);
+            Object.In_Resize := False;
+         end if;
       end if;
    end Fire_On_Resize;
 
@@ -1932,6 +1936,12 @@ package body Gnoga.Gui.Base is
          Object.Fire_On_Cut;
       elsif Event = "paste" then
          Object.Fire_On_Paste;
+      elsif Event = "resize" then
+         if not Object.In_Resize then
+            Object.In_Resize := True;
+            Base_Type'Class (Object).On_Resize;
+            Object.In_Resize := False;
+         end if;
       else
          Gnoga.Log ("Unhandled Event : " & Event);
       end if;

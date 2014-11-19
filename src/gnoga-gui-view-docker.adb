@@ -99,6 +99,9 @@ package body Gnoga.Gui.View.Docker is
          View.Fill_Dock.Box_Width
            (View.Outer_Width_To_Margin - Left_Width - Right_Width);
       end if;
+   exception
+      when others =>
+         null;
    end Update_Dock;
 
    --------------
@@ -236,8 +239,6 @@ package body Gnoga.Gui.View.Docker is
    procedure On_Resize (View : in out Docker_View_Type) is
    begin
       View.Update_Dock;
-
-      View_Type (View).On_Resize;
    end On_Resize;
 
 end Gnoga.Gui.View.Docker;

@@ -5,6 +5,7 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
+with Gnoga.Gui.View.Docker;
 
 procedure Align is
    use Gnoga.Gui.Element;
@@ -25,14 +26,14 @@ procedure Align is
    Range_Label    : Form.Label_Type;
    Range_Value    : Form.Label_Type;
 
-   Grid_Box : Gnoga.Gui.View.View_Type;
+   Game_View   : Gnoga.Gui.View.Docker.Docker_View_Type;
+   Grid_Box    : aliased Gnoga.Gui.View.View_Type;
+   Control_Box : aliased Gnoga.Gui.View.View_Type;
 
-   type Button_Column is array (1 .. 10) of Common.Button_Type;
-   type Button_Grid is array (1 .. 10) of Button_Column;
+   type Button_Column is array (1 .. 30) of Common.Button_Type;
+   type Button_Grid is array (1 .. 15) of Button_Column;
 
    Buttons : Button_Grid;
-
-   C : Positive := 1;
 
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
@@ -44,7 +45,7 @@ procedure Align is
       Main_View.Put_Line (Number_Choice.Value);
    end Calculate;
 begin
-   --  Gnoga.Application.Open_URL_OSX;
+   Gnoga.Application.Open_URL_OSX;
    Gnoga.Application.Singleton.Initialize (Main_Window);
 
    Main_View.Create (Main_Window);
@@ -93,20 +94,36 @@ begin
 
    F.Put_HTML ("<hr />");
 
-   Grid_Box.Create (Main_View);
-   Grid_Box.Border;
+   Game_View.Create (Main_View);
+   Game_View.Position (Relative);
+
+   Grid_Box.Create (Game_View);
 
    for i in Buttons'First .. Buttons'Last loop
       for n in Buttons (i)'First .. Buttons (i)'Last loop
-         Buttons (i) (n).Create (Grid_Box, Gnoga.Left_Trim (C'Img));
+         Buttons (i) (n).Create (Grid_Box, "1");
+         Buttons (i) (n).Font (Family => "monospace", Height => "11px");
+         Buttons (i) (n).Background_Color ("lightgray");
          Buttons (i) (n).Vertical_Align (Middle);
-         Buttons (i) (n).Height (30);
-         Buttons (i) (n).Width (30);
-         Buttons (i) (n).Margin ("3px", "3px", "3px", "3px");
-         C := C + 1;
+         Buttons (i) (n).Minimum_Width (25);
+         Buttons (i) (n).Maximum_Width (25);
+         Buttons (i) (n).Minimum_Height (25);
+         Buttons (i) (n).Maximum_Height (25);
+         Buttons (i) (n).Text_Alignment (Center);
+         Buttons (i) (n).Overflow (Hidden);
+         Buttons (i) (n).Margin ("1px", "1px", "1px", "1px");
       end loop;
       Grid_Box.Put_HTML ("<br />");
    end loop;
+
+   Control_Box.Create (Game_View);
+   Control_Box.Put ("<button>Push Me</button><br />");
+   Control_Box.Put ("<button>Push Me</button><br />");
+   Control_Box.Put ("<button>Push Me</button><br />");
+
+   Game_View.Left_Dock (Grid_Box'Unchecked_Access);
+   Game_View.Right_Dock (Control_Box'Unchecked_Access);
+
 
    Gnoga.Application.Singleton.Message_Loop;
 end Align;

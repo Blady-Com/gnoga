@@ -624,25 +624,30 @@ package body Gnoga.Server.Connection is
       Connection_Manager.Add_Connection_Holder
         (ID, Connection_Holder'Unchecked_Access);
 
-      Execute_Script (ID, "gnoga['Connection_ID']=" & ID'Img);
+      begin
+         Execute_Script (ID, "gnoga['Connection_ID']=" & ID'Img);
 
-      Execute_Script (ID, "TRUE=true");
-      Execute_Script (ID, "FALSE=false");
-      --  By setting the variable TRUE and FALSE it is possible to set a
-      --  property or attribute with Boolean'Img which will result in TRUE or
-      --  FALSE not the case sensitive true or false expected.
+         Execute_Script (ID, "TRUE=true");
+         Execute_Script (ID, "FALSE=false");
+         --  By setting the variable TRUE and FALSE it is possible to set a
+         --  property or attribute with Boolean'Img which will result in TRUE
+         --  or FALSE not the case sensitive true or false expected.
 
-      On_Connect_Event (ID, Connection_Holder'Access);
+         On_Connect_Event (ID, Connection_Holder'Access);
+      exception
+         when Connection_Error =>
+            --  Browser was closed by user
+            Connection_Holder.Release;
+         when E : others =>
+            Connection_Holder.Release;
+
+            Log ("Error on Connection ID=" & ID'Img);
+            Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                   Ada.Exceptions.Exception_Message (E));
+            Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+      end;
 
       Connection_Manager.Delete_Connection_Holder (ID);
-   exception
-      when Connection_Error =>
-         null; -- Browser was closed by user
-      when E : others =>
-         Log ("Connection Error on ID=" & ID'Img);
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Event_Task_Type;
    ---------------------------
    -- Message Queue Manager --
@@ -998,7 +1003,8 @@ package body Gnoga.Server.Connection is
       end;
    exception
       when AWS.Net.Socket_Error =>
-         raise Connection_Error;
+         raise Connection_Error with
+           "Socker Error during execute of : " & Script;
    end Execute_Script;
 
    function Execute_Script (ID     : in Gnoga.Types.Connection_ID;
@@ -1022,15 +1028,17 @@ package body Gnoga.Server.Connection is
               ");";
          begin
             Socket.Send (Message);
-         end;
 
-         select
-            delay 3.0; --  Timeout for browser to return answer
-            Script_Manager.Delete_Script_Holder (Script_ID);
-            raise Script_Error;
-         then abort
-            Script_Holder.Hold;
-         end select;
+            select
+               delay 15.0; --  Timeout for browser to return answer
+
+               Script_Manager.Delete_Script_Holder (Script_ID);
+               raise Script_Error with
+                 "Timeout error, no browser response for: " & Message;
+            then abort
+               Script_Holder.Hold;
+            end select;
+         end;
 
          Script_Manager.Delete_Script_Holder (Script_ID);
 
@@ -1038,7 +1046,8 @@ package body Gnoga.Server.Connection is
       end;
    exception
       when AWS.Net.Socket_Error =>
-         raise Connection_Error;
+         raise Connection_Error with
+           "Socket Error, Browser dropped connection";
    end Execute_Script;
 
    ---------------------

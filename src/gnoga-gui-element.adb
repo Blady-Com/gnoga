@@ -543,7 +543,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("height", Left_Trim (Value'Img) & Unit);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Box_Height;
 
    procedure Box_Height (Element : in out Element_Type;
@@ -551,7 +551,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("height", Value);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Box_Height;
 
    function Box_Height (Element : Element_Type) return String
@@ -570,7 +570,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-height", Left_Trim (Value'Img) & Unit);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Minimum_Height;
 
    procedure Minimum_Height (Element : in out Element_Type;
@@ -578,7 +578,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-height", Value);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Minimum_Height;
 
    function Minimum_Height (Element : Element_Type) return String
@@ -597,7 +597,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-height", Left_Trim (Value'Img) & Unit);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Maximum_Height;
 
    procedure Maximum_Height (Element : in out Element_Type;
@@ -605,7 +605,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-height", Value);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Maximum_Height;
 
    function Maximum_Height (Element : Element_Type) return String
@@ -624,7 +624,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("width", Left_Trim (Value'Img) & Unit);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Box_Width;
 
    procedure Box_Width (Element : in out Element_Type;
@@ -632,7 +632,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("width", Value);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Box_Width;
 
    function Box_Width (Element : Element_Type) return String
@@ -651,7 +651,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-width", Left_Trim (Value'Img) & Unit);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Minimum_Width;
 
    procedure Minimum_Width (Element : in out Element_Type;
@@ -659,7 +659,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("min-width", Value);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Minimum_Width;
 
    function Minimum_Width (Element : Element_Type) return String
@@ -678,7 +678,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-width", Left_Trim (Value'Img) & Unit);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Maximum_Width;
 
    procedure Maximum_Width (Element : in out Element_Type;
@@ -686,7 +686,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("max-width", Value);
-      Element_Type'Class (Element).On_Resize;
+      Element.On_Message ("resize", "");
    end Maximum_Width;
 
    function Maximum_Width (Element : Element_Type) return String
@@ -875,66 +875,67 @@ package body Gnoga.Gui.Element is
    -- Inner_Height --
    ------------------
 
-   procedure Inner_Height (Object : in out Element_Type; Value : in Integer) is
+   procedure Inner_Height (Element : in out Element_Type; Value : in Integer)
+   is
    begin
-      Object.jQuery_Execute ("innerHeight(" & Left_Trim (Value'Img) & ");");
-      Element_Type'Class (Object).On_Resize;
+      Element.jQuery_Execute ("innerHeight(" & Left_Trim (Value'Img) & ");");
+      Element.On_Message ("resize", "");
    end Inner_Height;
 
-   function Inner_Height (Object : Element_Type) return Integer is
+   function Inner_Height (Element : Element_Type) return Integer is
    begin
-      return Object.jQuery_Execute ("innerHeight();");
+      return Element.jQuery_Execute ("innerHeight();");
    end Inner_Height;
 
    -----------------
    -- Inner_Width --
    -----------------
 
-   procedure Inner_Width (Object : in out Element_Type; Value : in Integer) is
+   procedure Inner_Width (Element : in out Element_Type; Value : in Integer) is
    begin
-      Object.jQuery_Execute ("innerWidth(" & Left_Trim (Value'Img) & ");");
-      Element_Type'Class (Object).On_Resize;
+      Element.jQuery_Execute ("innerWidth(" & Left_Trim (Value'Img) & ");");
+      Element.On_Message ("resize", "");
    end Inner_Width;
 
-   function Inner_Width (Object : Element_Type) return Integer is
+   function Inner_Width (Element : Element_Type) return Integer is
    begin
-      return Object.jQuery_Execute ("innerWidth();");
+      return Element.jQuery_Execute ("innerWidth();");
    end Inner_Width;
 
    ------------------
    -- Outer_Height --
    ------------------
 
-   function Outer_Height (Object : Element_Type) return Integer is
+   function Outer_Height (Element : Element_Type) return Integer is
    begin
-      return Object.jQuery_Execute ("outerHeight();");
+      return Element.jQuery_Execute ("outerHeight();");
    end Outer_Height;
 
    -----------------
    -- Outer_Width --
    -----------------
 
-   function Outer_Width (Object : Element_Type) return Integer is
+   function Outer_Width (Element : Element_Type) return Integer is
    begin
-      return Object.jQuery_Execute ("outerWidth();");
+      return Element.jQuery_Execute ("outerWidth();");
    end Outer_Width;
 
    ----------------------------
    -- Outer_Height_To_Margin --
    ----------------------------
 
-   function Outer_Height_To_Margin (Object : Element_Type) return Integer is
+   function Outer_Height_To_Margin (Element : Element_Type) return Integer is
    begin
-      return Object.jQuery_Execute ("outerHeight(true);");
+      return Element.jQuery_Execute ("outerHeight(true);");
    end Outer_Height_To_Margin;
 
    ---------------------------
    -- Outer_Width_To_Margin --
    ---------------------------
 
-   function Outer_Width_To_Margin (Object : Element_Type) return Integer is
+   function Outer_Width_To_Margin (Element : Element_Type) return Integer is
    begin
-      return Object.jQuery_Execute ("outerWidth(true);");
+      return Element.jQuery_Execute ("outerWidth(true);");
    end Outer_Width_To_Margin;
 
    -------------------

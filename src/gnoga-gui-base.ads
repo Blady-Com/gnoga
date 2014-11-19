@@ -658,6 +658,7 @@ private
                            Gnoga.Types.No_Connection;
          Parent_Object : Pointer_To_Base_Class      := null;
          Is_Dynamic    : Boolean                    := False;
+         In_Resize     : Boolean                    := False;
 
          --  Object Events
          On_Resize_Event             : Action_Event         := null;

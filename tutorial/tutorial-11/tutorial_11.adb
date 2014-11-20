@@ -51,15 +51,18 @@ procedure Tutorial_11 is
       --  plural 's'.
 
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Taft','Tucker')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Taft','Tucker')");
       M.Add_Migration_Down
         ("delete from users");
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Dewar','Robert')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Dewar','Robert')");
       M.Add_Migration_Down
         ("delete from users");
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Botton','David')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Botton','David')");
       M.Add_Migration_Down
         ("delete from users");
 
@@ -94,10 +97,10 @@ begin
          Gnoga.Application.Title ("Tutorial 11");
          Gnoga.Application.Singleton.Initialize (Main_Window => My_Window);
          My_View.Create (My_Window);
-         --  This could be a command line only tutorial as there is no dependancy
-         --  on the GUI elements of Gnoga in the database bindings.
+         --  This could be a command line only tutorial as there is no
+         --  dependancy on the GUI elements of Gnoga in the database bindings.
 
-         My_VIew.Put_Line ("Using Gnoga.Server.Model.Table");
+         My_View.Put_Line ("Using Gnoga.Server.Model.Table");
 
          declare
             package Users is new Gnoga.Server.Model.Table
@@ -129,7 +132,7 @@ begin
 
             Records := Users.Find_All;
 
-            My_VIew.Put_Line ("Records in table : " & Records.Length'Img);
+            My_View.Put_Line ("Records in table : " & Records.Length'Img);
 
             for i in Records.First_Index .. Records.Last_Index loop
                declare
@@ -138,23 +141,23 @@ begin
                   F  : Gnoga.Server.Model.Queries.Active_Record_Array.Vector;
                   F2 : Foods.Active_Record;
                begin
-                  My_VIew.Put_Line ("Record : " & i'Img);
-                  My_VIew.Put_Line ("First Name : " &
+                  My_View.Put_Line ("Record : " & i'Img);
+                  My_View.Put_Line ("First Name : " &
                                 Records.Element (i).Value ("firstname"));
-                  My_VIew.Put_Line ("Last Name : " &
+                  My_View.Put_Line ("Last Name : " &
                                 Records.Element (i).Value ("lastname"));
 
-                  -- One to Many Users -> Foods
+                  --  One to Many Users -> Foods
                   F := Foods.Find_Items (Parent => Records.Element (i));
                   for j in F.First_Index .. F.Last_Index loop
-                     My_VIew.Put_Line ("He Likes : " &
+                     My_View.Put_Line ("He Likes : " &
                                    F.Element (j).Value ("food"));
                   end loop;
 
-                  -- One to One Users -> Foods
+                  --  One to One Users -> Foods
                   F2.Find_Item (Parent => Records.Element (i));
                   if F2.Value ("id") /= "" then
-                     My_VIew.Put_Line ("The first thing he liked was " &
+                     My_View.Put_Line ("The first thing he liked was " &
                                    F2.Value ("food"));
                   end if;
 

@@ -1,4 +1,5 @@
 with "../../src/gnoga.gpr";
+with "../../settings.gpr";
 
 project AdaBlog is
 
@@ -12,7 +13,7 @@ project AdaBlog is
       for Executable ("adablog-main.adb") use "adablog";
    end Builder;
 
-   package Binder is
-     for Default_Switches ("ada") use ("-E");
-   end Binder;
+   package Compiler renames Settings.Compiler;
+   package Binder renames Settings.Binder;
+   package Linker renames Settings.Linker;
 end AdaBlog;

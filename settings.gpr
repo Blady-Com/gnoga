@@ -3,6 +3,9 @@ abstract project Settings is
    type Build_Type is ("Debug", "Release");
    Build : Build_Type := external ("PRJ_BUILD", "Debug");
 
+   type Target_Type is ("OSX", "Other");
+   Build_Target : Target_Type := external ("PRJ_TARGET", "Other");
+
    --------------
    -- Compiler --
    --------------
@@ -22,6 +25,14 @@ abstract project Settings is
          when "Release" =>
             for Default_Switches ("Ada") use Common_Options & Release_Options;
       end case;
+
+      case Build_Target is
+         when "OSX" =>
+            for Default_Switches ("Ada")
+              use Compiler'Default_Switches ("Ada") & ("-fno-common");
+         when others =>
+            null;
+      end case;
    end Compiler;
 
    ------------
@@ -31,5 +42,18 @@ abstract project Settings is
    package Binder is
       for Default_Switches ("Ada") use ("-E");
    end Binder;
+
+   ------------
+   -- Linker --
+   ------------
+
+   package Linker is
+      case Build_Target is
+         when "OSX" =>
+            for Default_Switches ("Ada") use ("-Wl", "-no_pie");
+         when others =>
+            null;
+      end case;
+   end Linker;
 
 end Settings;

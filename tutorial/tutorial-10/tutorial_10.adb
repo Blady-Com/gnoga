@@ -76,7 +76,8 @@ procedure Tutorial_10 is
       --  Our first migration level is to set up the users table.
 
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Taft','Tucker')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Taft','Tucker')");
       M.Add_Migration_Down
         ("delete from users");
       --  It is possible to also us migration levels to not just modify the
@@ -85,12 +86,14 @@ procedure Tutorial_10 is
       --  to bring down and changes the migration brings up.
 
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Dewar','Robert')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Dewar','Robert')");
       M.Add_Migration_Down
         ("delete from users");
 
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Botton','David')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Botton','David')");
       M.Add_Migration_Down
         ("delete from users");
    end Migrations;
@@ -119,15 +122,16 @@ begin
          Gnoga.Application.Title ("Tutorial 10");
          Gnoga.Application.Singleton.Initialize (Main_Window => My_Window);
          My_View.Create (My_Window);
-         --  This could be a command line only tutorial as there is no dependancy
-         --  on the GUI elements of Gnoga in the database bindings.
+         --  This could be a command line only tutorial as there is no
+         --  dependancy on the GUI elements of Gnoga in the database bindings.
 
          My_View.Put_Line ("Obtain list of tables from: test");
          Tables := Connection.List_Of_Tables;
 
          My_View.Put_Line ("Display list of tables: test");
          for I in 1 .. Natural (Tables.Length) loop
-            My_View.Put_Line ("Table Name in database : " & Tables.Element (I));
+            My_View.Put_Line ("Table Name in database : " &
+                                Tables.Element (I));
          end loop;
 
          Fields := Connection.List_Fields_Of_Table ("users");
@@ -142,14 +146,18 @@ begin
                                 To_String (Description.Column_Name));
             My_View.Put_Line ("Data Type   : " &
                                 To_String (Description.Data_Type));
-            My_View.Put_Line ("Field Type  : " &
-                                Gnoga.Server.Database.Field_Type (Description));
-            My_View.Put_Line ("Field Opts  : " &
-                                Gnoga.Server.Database.Field_Options (Description));
-            My_View.Put_Line ("Field Size  : " &
-                                Gnoga.Server.Database.Field_Size (Description)'Img);
-            My_View.Put_Line ("Decimals    : " &
-                                Gnoga.Server.Database.Field_Decimals (Description)'Img);
+            My_View.Put_Line
+              ("Field Type  : " &
+                 Gnoga.Server.Database.Field_Type (Description));
+            My_View.Put_Line
+              ("Field Opts  : " &
+                 Gnoga.Server.Database.Field_Options (Description));
+            My_View.Put_Line
+              ("Field Size  : " &
+                 Gnoga.Server.Database.Field_Size (Description)'Img);
+            My_View.Put_Line
+              ("Decimals    : " &
+                 Gnoga.Server.Database.Field_Decimals (Description)'Img);
             My_View.Put_Line ("Can Be Null : " & Description.Can_Be_Null'Img);
             My_View.Put_Line ("Default     : " &
                                 To_String (Description.Default_Value));
@@ -158,8 +166,8 @@ begin
          My_View.Put_Line
            (Connection.Escape_String
               ("This will escape things like a ' or "" or " &
-                 " \ or whatever may be needed like a ` based on the particular" &
-                 " database enginge."));
+                 " \ or whatever may be needed like a ` based on the " &
+                 "particular database enginge."));
 
          declare
             RS : Gnoga.Server.Database.Recordset'Class :=

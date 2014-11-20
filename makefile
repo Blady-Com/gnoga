@@ -1,3 +1,9 @@
+TARGET = $(shell gcc -dumpmachine)
+
+ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
+	PRJ_TARGET=OSX
+endif
+
 all: gnoga gnoga_tools tutorials snake
 
 gnoga:

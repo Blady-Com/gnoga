@@ -2,7 +2,6 @@
 --  we will explore other ways to interact with a form and various ways to
 --  layout views.
 
-
 with Gnoga.Types;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
@@ -52,18 +51,21 @@ procedure Tutorial_09 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Result_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup another path in to the application for submitting results
    --  /result, see On_Connect_Handler in body of this procedure.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access := new App_Data;
    begin
@@ -107,7 +109,8 @@ procedure Tutorial_09 is
       App.My_Tabs.Add_Tab ("Widget_1", "Static Form", Selected => True);
 
       App.My_Widget_2.Create (App.My_Cards);
-      App.My_Widget_2.Widget_Form.On_Submit_Handler (On_Submit'Unrestricted_Access);
+      App.My_Widget_2.Widget_Form.On_Submit_Handler
+        (On_Submit'Unrestricted_Access);
       App.My_Cards.Add_Card (Name => "Widget_2",
                              Card => App.My_Widget_2'Access);
       App.My_Tabs.Add_Tab ("Widget_2", "Interactive Form");
@@ -150,10 +153,10 @@ procedure Tutorial_09 is
       --  a call the Form's Submit method is made.
    end On_Submit;
 
-
    procedure On_Result_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       Result_View : Gnoga.Gui.View.View_Access := new Gnoga.Gui.View.View_Type;
    begin

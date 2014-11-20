@@ -9,7 +9,6 @@
 --  In order to help see the different approach to setting up the application
 --  we will do something similar to the previous tutorial.
 
-
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
@@ -62,7 +61,8 @@ procedure Tutorial_03 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Instead of creating and setting up our GUI in the main body of the
    --  application, we now set up the GUI in a connection event handler.
    --  The implementation is almost identical to the last tutorial except we
@@ -71,7 +71,8 @@ procedure Tutorial_03 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access := new App_Data;
    begin
@@ -89,7 +90,7 @@ procedure Tutorial_03 is
       App.My_Exit.Create (App.My_View, "End App");
       App.My_Exit.On_Click_Handler (On_Exit'Unrestricted_Access);
 
-      App.My_View.Put_Line ("<hr />");
+      App.My_View.Horizontal_Rule;
    end On_Connect;
 
 begin

@@ -96,7 +96,7 @@ package body AdaBlog.Controller is
                          "username ='" & username.Value & "'" &
                          " AND " &
                          "pass ='" & password.Value & "'",
-                       Create_New => false);
+                       Create_New => False);
       User.Value ("last_session", Value => Main_Window.Gnoga_Session_ID);
       User.Save;
 
@@ -129,7 +129,8 @@ package body AdaBlog.Controller is
 
    procedure Index
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       Content_Area : Element.Common.DIV_Type;
       Left_Area    : Element.Common.DIV_Type;
@@ -137,6 +138,8 @@ package body AdaBlog.Controller is
       Create_User  : Element.Common.Button_Type;
 
       User         : AdaBlog.Model.Users.Active_Record;
+
+      procedure Display_Row (Row : Gnoga.Types.Data_Map_Type);
 
       procedure Display_Row (Row : Gnoga.Types.Data_Map_Type) is
       begin
@@ -172,7 +175,8 @@ package body AdaBlog.Controller is
 
    procedure New_Entry
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       User         : AdaBlog.Model.Users.Active_Record;
 
@@ -207,7 +211,8 @@ package body AdaBlog.Controller is
 
    procedure Log_Out
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       User : AdaBlog.Model.Users.Active_Record;
    begin

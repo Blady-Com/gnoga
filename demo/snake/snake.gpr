@@ -1,4 +1,5 @@
 with "../../src/gnoga.gpr";
+with "../../settings.gpr";
 
 project Snake is
 
@@ -11,8 +12,8 @@ project Snake is
    package Builder is
       for Executable ("snake-main.adb") use "snake";
    end Builder;
-      
-   package Binder is
-     for Default_Switches ("ada") use ("-E");
-   end Binder;
+
+   package Compiler renames Settings.Compiler;
+   package Binder renames Settings.Binder;
+   package Linker renames Settings.Linker;
 end Snake;

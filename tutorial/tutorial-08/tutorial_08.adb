@@ -3,7 +3,6 @@
 --  see how to interat with forms in a more application centric way instead of
 --  as static forms.
 
-
 with Gnoga.Types;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
@@ -16,7 +15,7 @@ with Gnoga.Gui.Element.Table;
 procedure Tutorial_08 is
 
    -------------------------------------------------------------------------
-   -- My_Widget_Type
+   --  My_Widget_Type
    -------------------------------------------------------------------------
    --  In this tutorial we are going to create a custom Gnoga View that is a
    --  composite of other elements so that we can reuse the view in the
@@ -37,6 +36,7 @@ procedure Tutorial_08 is
                       ID      : in     String  := "");
    --  Used to create our custom view
 
+   overriding
    procedure Create (View    : in out My_Widget_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
                      Attach  : in     Boolean := True;
@@ -69,7 +69,7 @@ procedure Tutorial_08 is
          View.Name_Input.Create (Form  => View.Widget_Form,
                                  Size  => 40,
                                  Name  => "Name");
-         -- The Name of the element is its variable name when submitted.
+         --  The Name of the element is its variable name when submitted.
 
          View.Name_Input.Required;
          --  By marking Name_Input required, if the submit button is pushed
@@ -81,8 +81,8 @@ procedure Tutorial_08 is
          --  Allow only a-z, A-Z and space characters
 
          View.Name_Input.Place_Inside_Top_Of (col2.all);
-         -- Since forms are auto placed in side the Form. We need to move the
-         -- element where we would like it to display.
+         --  Since forms are auto placed in side the Form. We need to move the
+         --  element where we would like it to display.
       end;
 
       declare
@@ -133,18 +133,21 @@ procedure Tutorial_08 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Result_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup another path in to the application for submitting results
    --  /result, see On_Connect_Handler in body of this procedure.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access := new App_Data;
    begin
@@ -154,7 +157,7 @@ procedure Tutorial_08 is
       App.My_Exit.Create (App.My_View, "Exit Application");
       App.My_Exit.On_Click_Handler (On_Exit'Unrestricted_Access);
 
-      App.My_View.Put_HTML ("<hr>");
+      App.My_View.Horizontal_Rule;
 
       App.My_Widget.Create (App.My_View);
       App.My_Widget.Widget_Form.Action ("/result");
@@ -162,7 +165,8 @@ procedure Tutorial_08 is
 
    procedure On_Result_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       --  Since there will be no interactions with page once displayed there
       --  is no need to setup any data to associate with the main window.

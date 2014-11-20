@@ -1,4 +1,5 @@
 with "../../src/gnoga.gpr";
+with "../../settings.gpr";
 
 project Tutorial_08 is
 
@@ -8,7 +9,7 @@ project Tutorial_08 is
    for Exec_Dir use "../../bin";
    for Main use ("tutorial_08.adb");
 
-   package Binder is
-     for Default_Switches ("ada") use ("-E");
-   end Binder;
+   package Compiler renames Settings.Compiler;
+   package Binder renames Settings.Binder;
+   package Linker renames Settings.Linker;
 end Tutorial_08;

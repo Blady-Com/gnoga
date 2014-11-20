@@ -10,7 +10,6 @@ with Gnoga.Gui.Element.Common;
 
 procedure Tutorial_07 is
 
-
    type App_Data is new Gnoga.Types.Connection_Data_Type with
       record
          My_View   : Gnoga.Gui.View.View_Type;
@@ -86,12 +85,14 @@ procedure Tutorial_07 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access := new App_Data;
    begin
@@ -102,7 +103,7 @@ procedure Tutorial_07 is
       App.My_Exit.Create (App.My_View, "Exit Application");
       App.My_Exit.On_Click_Handler (On_Exit'Unrestricted_Access);
 
-      App.My_View.Put_Line ("<hr />");
+      App.My_View.Horizontal_Rule;
 
       App.Source.Create (App.My_View, "Drag Me");
 

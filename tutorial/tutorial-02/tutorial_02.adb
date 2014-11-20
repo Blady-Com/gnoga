@@ -4,7 +4,6 @@
 --  we introduce the idea of event handlers and how to interact live
 --  with the GUI you create in a view.
 
-
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
@@ -77,7 +76,7 @@ begin
    My_Exit.Create (My_View, "End App");
    My_Exit.On_Click_Handler (On_Exit'Unrestricted_Access);
 
-   My_View.Put_Line ("<hr />");
+   My_View.Horizontal_Rule;
 
    Gnoga.Application.Singleton.Message_Loop;
    --  In the previous example we terminated the application when we were

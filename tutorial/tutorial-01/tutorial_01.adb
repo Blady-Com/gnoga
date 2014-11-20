@@ -56,10 +56,10 @@ begin
 
    --  Now we can now start talking to our view
 
-   My_View.Put_Line ("<H1>Hello World!</H1>");
+   My_View.Put_HTML ("<H1>Hello World!</H1>");
 
    for i in 1 .. 50 loop
-      My_View.Put_Line (i'img & " - lines and lines overflowing the window.");
+      My_View.Put_Line (i'Img & " - lines and lines overflowing the window.");
    end loop;
 
    Gnoga.Application.Singleton.End_Application;

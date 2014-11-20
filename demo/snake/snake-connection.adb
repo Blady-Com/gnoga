@@ -28,20 +28,16 @@ package body Snake.Connection is
            "<br />" &
            "<p>Use your kebyoard to move Sparky to pick up batteries.</p>" &
            "<i>Be careful...</i><br />" &
-           "If sparky hits his tail he electrocutes himself to <b>death!!</b>" &
+           "If sparky hits his tail he electrocutes" &
+           " himself to <b>death!!</b>" &
            "<br /><br />" &
            "Use the arrow keys or a,w,s,d for direction keys.<br/><br/>");
       Main_Window.Set_View (Display);
       Display.Text_Alignment (Gnoga.Gui.Element.Center);
 
       for i in 1 .. 15 loop
-         declare
-            Blip : Span_Type;
-         begin
-            Blip.Create (Display, "&nbsp;*&nbsp;");
-            Blip.Place_Inside_Bottom_Of (Display);
-            delay 0.3;
-         end;
+         Display.Put ("&nbsp;*&nbsp;");
+         delay 0.3;
       end loop;
 
       Display.Visible (False);
@@ -50,6 +46,8 @@ package body Snake.Connection is
    type Snake_Direction_Type is (Left, Right, Up, Down);
 
    package Snake_Arrays is new Ada.Containers.Vectors (Natural, Point_Type);
+
+   function New_Food return Point_Type;
 
    function New_Food return Point_Type is
 
@@ -114,7 +112,7 @@ package body Snake.Connection is
                           Vertical_Position   => "3px",
                           Blur                => "5px");
 
-      -- Initialize Snake
+      --  Initialize Snake
       for i in reverse 0 .. Initial_Length - 1 loop
          App.Snake.Append (Point_Type'(i, 0));
       end loop;
@@ -154,6 +152,8 @@ package body Snake.Connection is
       Background_Rectangle : constant Rectangle_Type :=
         (0, 0, Display_Width, Display_Height);
 
+      procedure Draw_Segment (Cell : Point_Type);
+
       procedure Draw_Segment (Cell : Point_Type) is
          Cell_Rectangle : constant Rectangle_Type :=
            (Cell.X * Segment_Size, Cell.Y * Segment_Size,
@@ -161,6 +161,8 @@ package body Snake.Connection is
       begin
          Context.Fill_Rectangle (Cell_Rectangle);
       end Draw_Segment;
+
+      function Self_Collision (Cell : Point_Type) return Boolean;
 
       function Self_Collision (Cell : Point_Type) return Boolean is
       begin
@@ -176,6 +178,8 @@ package body Snake.Connection is
 
          return False;
       end Self_Collision;
+
+      function Food_Collision (Cell : Point_Type) return Boolean;
 
       function Food_Collision (Cell : Point_Type) return Boolean is
       begin
@@ -222,7 +226,7 @@ package body Snake.Connection is
             end loop;
 
             if Food_Collision (Head_Cell) then
-               -- clear old score
+               --  clear old score
                Context.Fill_Color ("white");
                Context.Font (Height => "12px");
                Context.Fill_Text

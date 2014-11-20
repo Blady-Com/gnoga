@@ -4,7 +4,7 @@ with Gnoga.Gui.View;
 
 package Tutorial_Widget is
    -------------------------------------------------------------------------
-   -- My_Widget_Type
+   --  My_Widget_Type
    -------------------------------------------------------------------------
 
    type My_Widget_Type is new Gnoga.Gui.View.View_Type with
@@ -21,5 +21,4 @@ package Tutorial_Widget is
                       Attach  : in     Boolean := True;
                       ID      : in     String  := "");
    --  Used to create our custom view
-
 end Tutorial_Widget;

@@ -58,12 +58,14 @@ procedure Tutorial_06 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       use type Gnoga.Gui.Document.Ready_State_Type;
 
@@ -78,7 +80,7 @@ procedure Tutorial_06 is
       App.My_Exit.Create (App.My_View, "Exit Application");
       App.My_Exit.On_Click_Handler (On_Exit'Unrestricted_Access);
 
-      App.My_View.Put_Line ("<hr />");
+      App.My_View.Horizontal_Rule;
 
       App.My_Frame.Create (Parent   => App.My_View,
                            URL      => "http://www.gnoga.com",
@@ -139,12 +141,13 @@ procedure Tutorial_06 is
       App.My_Popup2.Document.Title ("My Popup");
       App.My_PView.Create (App.My_Popup2);
       App.My_PView.Padding ("1em", "1em", "1em", "1em");
-      App.My_PView.Put_Line ("Since this popup is not a cross-site frame" &
-                               "we have full control over it " &
-                               "even though this popup was blank and has no " &
-                               "websocket connection to our application.");
-      App.My_PView.Put_Line ("We are piggy backing off the connection in the " &
-                               "main window.");
+      App.My_PView.Put_Line
+        ("Since this popup is not a cross-site frame" &
+           "we have full control over it " &
+           "even though this popup was blank and has no " &
+           "websocket connection to our application." &
+           "We are piggy backing off the connection in the " &
+           "main window.");
       App.My_PView.New_Line;
       App.My_PView.Put_Line
         ("Click the close popups buttons in the main window.");

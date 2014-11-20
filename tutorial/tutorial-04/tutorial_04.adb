@@ -6,14 +6,12 @@
 --  In this tutorial we will start and stop an Ada task that will interact
 --  with out Gnoga Gui.
 
-
 with Gnoga.Types;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Element.Common;
-
 
 procedure Tutorial_04 is
 
@@ -99,12 +97,14 @@ procedure Tutorial_04 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App          : App_Access := new App_Data;
       Flasher_Task : Color_Me_Task_Type (App.Flasher'Unchecked_Access);
@@ -137,7 +137,7 @@ procedure Tutorial_04 is
       --  Once a control from HTML is attached to a Gnoga object it can be
       --  used like any other.
 
-      App.My_View.Put_Line ("<hr />");
+      App.My_View.Horizontal_Rule;
 
       Flasher_Task.Start;
 

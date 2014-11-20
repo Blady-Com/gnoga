@@ -1,4 +1,5 @@
-TARGET = $(shell gcc -dumpmachine)
+PREFIX=$(dir $(shell which gnatls))..
+TARGET=$(shell gcc -dumpmachine)
 
 ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
 	PRJ_TARGET=OSX
@@ -16,8 +17,8 @@ release:
 	cd src && gprbuild -p -Pgnoga.gpr -XPRJ_BUILD=Release
 
 install: release gnoga_tools
-	cd src && gprinstall -f -p gnoga.gpr -XPRJ_BUILD=Release
-	cd tools && gprinstall -f -p --mode=usage tools.gpr
+	cd src && gprinstall -f --prefix=$(PREFIX) -p gnoga.gpr -XPRJ_BUILD=Release
+	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage tools.gpr
 
 uninstall:
 	- cd src && gprinstall -f --uninstall gnoga.gpr

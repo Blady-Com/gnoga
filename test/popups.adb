@@ -19,8 +19,8 @@ procedure Popups is
          Hello_World : Common.Button_Type;
          Click_Quit  : Common.Button_Type;
          Chld_Window : Window.Window_Type;
-         New_Div     : Common.Div_Type;
-         New_Div2    : Common.Div_Type;
+         New_Div     : Common.DIV_Type;
+         New_Div2    : Common.DIV_Type;
          Frame       : IFrame.IFrame_Type;
       end record;
    type App_Access is access all App_Data;
@@ -31,6 +31,10 @@ procedure Popups is
          New_Div     : Common.DIV_Type;
       end record;
    type App_Access2 is access all App_Data2;
+
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Click3 (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
@@ -46,13 +50,11 @@ procedure Popups is
       App.Frame.Window.Document.Body_Element.Background_Color ("Orange");
    end On_Click;
 
-
    procedure On_Click3 (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
       Log ("Click 3 worked");
    end On_Click3;
-
 
    procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -88,7 +90,13 @@ procedure Popups is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access := new App_Data;
       Hr1 : Gnoga.Gui.Element.Common.HR_Type;
@@ -121,7 +129,13 @@ procedure Popups is
 
    procedure On_Connect_2
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect_2
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access2 := new App_Data2;
       D : Gnoga.Gui.Element.Common.DIV_Type;
@@ -142,10 +156,10 @@ procedure Popups is
 begin
    Application.Multi_Connect.Initialize (Boot  => "debug.html");
 
-   Application.Multi_Connect.On_Connect_Handler (On_Connect'Unrestricted_Access,
-                                             "default");
-   Application.Multi_Connect.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
-                                             "/demo");
+   Application.Multi_Connect.On_Connect_Handler
+     (On_Connect'Unrestricted_Access, "default");
+   Application.Multi_Connect.On_Connect_Handler
+     (On_Connect_2'Unrestricted_Access, "/demo");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

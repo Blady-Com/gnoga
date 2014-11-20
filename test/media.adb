@@ -7,7 +7,6 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Multimedia;
 with Gnoga.Types;
 
-
 procedure Media is
    use Gnoga;
    use Gnoga.Types;
@@ -22,6 +21,12 @@ procedure Media is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -31,7 +36,8 @@ procedure Media is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : access App_Data := new App_Data;
       Play    : Common.Button_Type;
@@ -63,8 +69,9 @@ procedure Media is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
-                                     Boot  => "debug.html");
+   Application.Multi_Connect.Initialize
+     (Event => On_Connect'Unrestricted_Access,
+      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

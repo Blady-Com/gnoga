@@ -34,10 +34,14 @@ procedure Align is
 
    Buttons : Button_Grid;
 
+   procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Range_Value.Text (Dec_Range.Value);
    end Dec_Change;
+
+   procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
@@ -123,7 +127,6 @@ begin
 
    Game_View.Left_Dock (Grid_Box'Unchecked_Access);
    Game_View.Right_Dock (Control_Box'Unchecked_Access);
-
 
    Gnoga.Application.Singleton.Message_Loop;
 end Align;

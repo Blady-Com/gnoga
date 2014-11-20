@@ -21,6 +21,8 @@ procedure Canvas_Test is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -42,7 +44,13 @@ procedure Canvas_Test is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : App_Access := new App_Data;
       C       : Context_2D.Context_2D_Type;
@@ -75,8 +83,8 @@ procedure Canvas_Test is
       C.Fill;
       C.Fill_Color (RGBA_Type'(0, 0, 255, 0.75));
 
-      C.Fill_Rectangle ((20,20,150,100));
-      C.Fill_Color (RGBA_Type'(0,0,255,0.50));
+      C.Fill_Rectangle ((20, 20, 150, 100));
+      C.Fill_Color (RGBA_Type'(0, 0, 255, 0.50));
       C.Fill_Rectangle ((30, 30, 150, 100));
 
       G.Create_Linear_Gradient (Context => C,
@@ -84,11 +92,12 @@ procedure Canvas_Test is
                                 Y_1     => 0,
                                 X_2     => 200,
                                 Y_2     => 200);
-      G.Add_Color_Stop (Position => 0.0, Color => RGBA_Type'(255, 255, 255, 1.0));
+      G.Add_Color_Stop (Position => 0.0,
+                        Color    => RGBA_Type'(255, 255, 255, 1.0));
       G.Add_Color_Stop (Position => 1.0, Color => "purple");
       G.Add_Color_Stop (Position => 1.0, Color => "pink");
       C.Fill_Gradient (G);
-      C.Fill_Rectangle ((40,40, 150, 100));
+      C.Fill_Rectangle ((40, 40, 150, 100));
 
       G.Create_Radial_Gradient (Context => C,
                                 X_1     => 50,
@@ -125,8 +134,9 @@ procedure Canvas_Test is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
-                                     Boot  => "debug.html");
+   Application.Multi_Connect.Initialize
+     (Event => On_Connect'Unrestricted_Access,
+      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

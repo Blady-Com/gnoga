@@ -27,6 +27,10 @@ procedure Forms is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -40,7 +44,7 @@ procedure Forms is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       Log ("On submit.");
-      App.Main_Window.alert ("On Submit");
+      App.Main_Window.Alert ("On Submit");
       if App.Input.Value /= "no" then
          App.My_Form.Submit;
       end if;
@@ -54,7 +58,13 @@ procedure Forms is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : App_Access := new App_Data;
       Button1 : Form.Input_Button_Type;
@@ -99,7 +109,7 @@ procedure Forms is
       begin
          Form2.Create (Parent => App.Console,
                        Action => "/demo",
-                       Method => Form.POST);
+                       Method => Form.Post);
          Form2.Encoding (Form.Multi_Part);
          Form2.Put ("File to upload: ");
          F_Input.Create_Element (Form       => Form2,
@@ -114,7 +124,13 @@ procedure Forms is
 
    procedure On_Connect_2
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect_2
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       Console : View.Console.Console_View_Type;
    begin
@@ -129,6 +145,9 @@ procedure Forms is
       Console.Put_Line ("File Name => " &
                           Main_Window.Form_Parameter ("File_Name"));
    end On_Connect_2;
+
+   procedure On_Post (URI        : String;
+                      Parameters : in out Gnoga.Types.Data_Map_Type);
 
    procedure On_Post (URI        : String;
                       Parameters : in out Gnoga.Types.Data_Map_Type)
@@ -147,10 +166,10 @@ procedure Forms is
 begin
    Application.Multi_Connect.Initialize (Boot  => "debug.html");
 
-   Application.Multi_Connect.On_Connect_Handler (On_Connect'Unrestricted_Access,
-                                             "default");
-   Application.Multi_Connect.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
-                                             "/demo");
+   Application.Multi_Connect.On_Connect_Handler
+     (On_Connect'Unrestricted_Access, "default");
+   Application.Multi_Connect.On_Connect_Handler
+     (On_Connect_2'Unrestricted_Access,  "/demo");
 
    Gnoga.Server.Connection.On_Post_Handler (On_Post'Unrestricted_Access);
 

@@ -21,6 +21,8 @@ procedure Tables is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -28,10 +30,15 @@ procedure Tables is
       null;
    end On_Click;
 
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : App_Access := new App_Data;
    begin
@@ -69,7 +76,8 @@ procedure Tables is
 
             for cols in 1 .. 5 loop
                declare
-                  col : Table.Table_Column_Access := new Table.Table_Column_Type;
+                  col : Table.Table_Column_Access :=
+                          new Table.Table_Column_Type;
                begin
                   col.Dynamic;
                   col.Create (row.all, cols'Img);
@@ -82,8 +90,9 @@ procedure Tables is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
-                                     Boot  => "debug.html");
+   Application.Multi_Connect.Initialize
+     (Event => On_Connect'Unrestricted_Access,
+      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

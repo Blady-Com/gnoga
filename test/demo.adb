@@ -36,6 +36,15 @@ procedure Demo is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure End_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
+                   Drag_Text : in     String);
+
    procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
@@ -56,7 +65,7 @@ procedure Demo is
                                  App.My_Select.Selected (i)'Img);
       end loop;
 
-      For i in 1 .. 50 loop
+      for i in 1 .. 50 loop
          D := new Common.DIV_Type;
          D.Dynamic;
          D.Create (App.Console, "This is a dynamic DIV");
@@ -105,7 +114,13 @@ procedure Demo is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : App_Access := new App_Data;
       Play    : Common.Button_Access := new Common.Button_Type;
@@ -181,9 +196,8 @@ procedure Demo is
         (App.My_Form.New_Element ("op6", new Form.Option_Type)).Create
           (App.My_Form, App.My_Select, "6", "L6");
 
-      Form.Option_Access(App.My_Form.Add (new Form.Option_Type)).Create
+      Form.Option_Access (App.My_Form.Add (new Form.Option_Type)).Create
         (App.My_Form, App.My_Select, "7", "L7");
-
 
       optgrp := new Form.Option_Group_Type;
       optgrp.Create (App.My_Form, App.My_Select, "Group");
@@ -252,7 +266,7 @@ procedure Demo is
 
          for i in 1 .. 3 loop
             List.List_Item_Access
-              (ul1.Add (new List.List_Item_Type)).Create (ul1.all, i'img);
+              (ul1.Add (new List.List_Item_Type)).Create (ul1.all, i'Img);
          end loop;
       end;
 
@@ -271,13 +285,14 @@ procedure Demo is
          for N of Name_List loop
             App.Console.Put_Line ("Element ID : " & N);
             Collection_View.Element (N).Color ("orange");
-         end Loop;
+         end loop;
       end;
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
-                                     Boot  => "debug.html");
+   Application.Multi_Connect.Initialize
+     (Event => On_Connect'Unrestricted_Access,
+      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

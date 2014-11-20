@@ -25,6 +25,11 @@ procedure Storage is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Storage
+     (Object        : in out Gnoga.Gui.Base.Base_Type'Class;
+      Storage_Event : in     Gnoga.Gui.Window.Storage_Event_Record);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -51,7 +56,13 @@ procedure Storage is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App     : access App_Data := new App_Data;
       View    : Gnoga.Gui.View.View_Type;
@@ -85,14 +96,14 @@ procedure Storage is
 
       View.Put_Line ("Session id is " & Session.Get ("ID"));
 
-
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
-                                     Boot  => "debug.html");
+   Application.Multi_Connect.Initialize
+     (Event => On_Connect'Unrestricted_Access,
+      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

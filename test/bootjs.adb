@@ -19,6 +19,16 @@ procedure BootJS is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+   procedure On_BootJS_Demo_Page
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :
+      access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -28,7 +38,8 @@ procedure BootJS is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
    begin
       Main_Window.Document.Put_Line
@@ -37,7 +48,8 @@ procedure BootJS is
 
    procedure On_BootJS_Demo_Page
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :
+      access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App       : App_Access := new App_Data;
       Name_List : Gnoga.Types.Data_Array_Type;
@@ -53,7 +65,7 @@ procedure BootJS is
       Name_List := App.Page.Element_Names;
       for N of Name_List loop
          App.Page.Element (N).Color ("orange");
-      end Loop;
+      end loop;
 
       App.Page.Element ("my_button").On_Click_Handler
         (On_Click'Unrestricted_Access);

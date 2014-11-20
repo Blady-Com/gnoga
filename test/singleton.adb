@@ -13,7 +13,7 @@ procedure Singleton is
       entry start;
       entry stop;
    end Color_Me_Task;
-   -- Strobe color Element O
+   --  Strobe color Element O
 
    M : Gnoga.Gui.Window.Window_Type;
    T : aliased Gnoga.Gui.Element.Common.DIV_Type;
@@ -49,6 +49,8 @@ procedure Singleton is
       end loop;
    end Color_Me_Task;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       use Gnoga.Gui.Element;
@@ -58,7 +60,8 @@ procedure Singleton is
                    Gnoga.Gui.Screen.Available_Height (M)'Img);
       Gnoga.Log ("Screen.Height = " &
                    Gnoga.Gui.Screen.Height (M)'Img);
-      Gnoga.Log ("Color = " & Gnoga.Types.To_String (Element_Type (Object).Color));
+      Gnoga.Log ("Color = " &
+                   Gnoga.Types.To_String (Element_Type (Object).Color));
       Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
       Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
       Element_Type (Object).Color ("green");
@@ -69,6 +72,8 @@ procedure Singleton is
       Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
       Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
    end On_Click;
+
+   procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin

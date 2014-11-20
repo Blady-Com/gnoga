@@ -7,8 +7,8 @@ with Cairo.Surface;
 with Cairo.Image_Surface;
 
 procedure Cairo_Test is
-   --  On some platforms you may need to tell the linker where to find the cairo
-   --  libraries.
+   --  On some platforms you may need to tell the linker where to find the
+   --  cairo libraries.
 
    --  pragma Linker_Options ("-LC:\GtkAda\lib");
    --  Windows example

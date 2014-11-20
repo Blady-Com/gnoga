@@ -33,6 +33,13 @@ procedure jDemo is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Menu_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Event     : in     String;
+                      Message   : in     String;
+                      Continue  : out    Boolean);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -83,15 +90,21 @@ procedure jDemo is
       end if;
    end On_Drop;
 
+   procedure Close_Dialog (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure Close_Dialog (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       jQueryUI.Widget.Dialog_Access (Object.Parent).Close;
    end Close_Dialog;
 
+   procedure On_Open (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure On_Open (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Log ("Dialog Opened");
    end On_Open;
+
+   procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
@@ -99,8 +112,13 @@ procedure jDemo is
    end On_Close;
 
    procedure On_Move (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record);
+
+   procedure On_Move (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
                       Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
+      procedure Act (E : in out Element_Type'Class);
+
       procedure Act (E : in out Element_Type'Class) is
       begin
          E.Text ("X =" & E.Offset_From_Left'Img &
@@ -112,7 +130,13 @@ procedure jDemo is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access := new App_Data;
    begin
@@ -134,7 +158,6 @@ procedure jDemo is
       App.Box.Border;
       jQueryUI.Position (App.Box, 10, 10, Using_My => "left top");
 
-
       App.Sorter.Create (App.Console);
 
       List.List_Item_Access
@@ -152,7 +175,7 @@ procedure jDemo is
       App.Box.Cursor ("move");
       App.Box.On_Mouse_Move_Handler (On_Move'Unrestricted_Access);
 
-      -- jQueryUI.Make_Sortable (App.Sorter);
+      --  jQueryUI.Make_Sortable (App.Sorter);
       jQueryUI.Make_Selectable (App.Sorter);
 
       App.Button.Create (App.Console, "Click Me");
@@ -272,14 +295,13 @@ procedure jDemo is
          T.Width (400);
       end;
 
-
       App.Dialog.Create (Parent          => App.Console,
                          Title           => "About jDemo",
                          Content         => "Hello World!",
                          Height          => 300,
                          Width           => 300,
                          Position_My     => "top",
-                         Position_At     =>"center top+5%");
+                         Position_At     => "center top+5%");
 --                         Resizable       => True,
 --                           Minimum_Height  => ,
 --                           Minimum_Width   => ,
@@ -302,7 +324,8 @@ procedure jDemo is
       App.Dialog.Open;
 
       Common.Button_Access
-        (App.Dialog.New_Element ("ok", new Common.Button_Type)).Create (App.Dialog, "Ok");
+        (App.Dialog.New_Element ("ok", new Common.Button_Type)).Create
+          (App.Dialog, "Ok");
       Common.Button_Access
         (App.Dialog.Element ("ok")).Focus;
       Common.Button_Access
@@ -317,14 +340,15 @@ procedure jDemo is
 
       for i in 35 .. 100 loop
          jQueryUI.Widget.Progress_Bar_Access
-           (App.Dialog.Element ("progress")).value (i);
+           (App.Dialog.Element ("progress")).Value (i);
          delay 0.10;
       end loop;
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access,
-                                     Boot  => "debug.html");
+   Application.Multi_Connect.Initialize
+     (Event => On_Connect'Unrestricted_Access,
+      Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

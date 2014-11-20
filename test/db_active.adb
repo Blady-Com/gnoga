@@ -28,6 +28,9 @@ procedure DB_Active is
    Connection : Gnoga.Server.Database.Connection_Access;
 
    procedure Migrations
+     (M : in out Gnoga.Server.Migration.Migration_Collection);
+
+   procedure Migrations
      (M : in out Gnoga.Server.Migration.Migration_Collection)
    is
    begin
@@ -40,15 +43,18 @@ procedure DB_Active is
         ("DROP TABLE `users`");
 
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Taft','Tucker')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Taft','Tucker')");
       M.Add_Migration_Down
         ("delete from users");
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Dewar','Robert')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Dewar','Robert')");
       M.Add_Migration_Down
         ("delete from users");
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) VALUES ('Botton','David')");
+        ("INSERT INTO users (`lastname`, `firstname`) " &
+           "VALUES ('Botton','David')");
       M.Add_Migration_Down
         ("delete from users");
 
@@ -130,14 +136,14 @@ begin
             V.Put_Line ("Last Name : " &
                           Records.Element (i).Value ("lastname"));
 
-            -- One to Many Users -> Foods
+            --  One to Many Users -> Foods
             F := Foods.Find_Items (Parent => Records.Element (i));
             for j in F.First_Index .. F.Last_Index loop
                V.Put_Line ("He Likes : " &
                              F.Element (j).Value ("food"));
             end loop;
 
-            -- One to One Users -> Foods
+            --  One to One Users -> Foods
             F2.Find_Item (Parent => Records.Element (i));
             if F2.Value ("id") /= "" then
                V.Put_Line ("The first thing he liked was " &

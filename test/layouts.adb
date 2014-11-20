@@ -22,6 +22,8 @@ procedure Layouts is
       end record;
    type App_Access is access all App_Data;
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
@@ -39,7 +41,13 @@ procedure Layouts is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App    : App_Access := new App_Data;
       V      : View.Pointer_To_View_Class;
@@ -51,7 +59,6 @@ procedure Layouts is
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
-
 
       App.Docks.Create (Main_Window);
 
@@ -68,8 +75,8 @@ procedure Layouts is
       Tabs.Dynamic;
       Tabs.Create (Parent       => Dex.all,
                    Card_View    => App.View,
-                   Text_Color   => Gnoga.Types.RGBA_Type'(255,255,255,1.0),
-                   Tab_Color    => Gnoga.Types.RGBA_Type'(0,0,255,1.0),
+                   Text_Color   => Gnoga.Types.RGBA_Type'(255, 255, 255, 1.0),
+                   Tab_Color    => Gnoga.Types.RGBA_Type'(0, 0, 255, 1.0),
                    Select_Color => Gnoga.Types.RGBA_Type'(0, 0, 128, 1.0));
 
       Tab := new View.Card.Tab_Item_Type;

@@ -42,7 +42,7 @@ procedure Multiuser is
             delay 0.1;
          end select;
       end loop;
-end Color_Me_Task;
+   end Color_Me_Task;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -56,24 +56,37 @@ end Color_Me_Task;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record);
+
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                        Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Hello_World.Color ("green");
-      App.Hello_World.Background_Color (RGBA_Type'(255,255,255,1.0));
+      App.Hello_World.Background_Color (RGBA_Type'(255, 255, 255, 1.0));
       App.Main_Window.Log
         ("Color = " & Gnoga.Types.To_String (App.Hello_World.Color));
       App.Main_Window.Alert ("X = " & Event.X'Img & " Y = " & Event.Y'Img);
    end On_Click;
 
-   procedure On_Key_Press (Object : in out Gnoga.Gui.Base.Base_Type'Class;
-                           Event  : in     Gnoga.Gui.Base.Keyboard_Event_Record)
+   procedure On_Key_Press
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  : in     Gnoga.Gui.Base.Keyboard_Event_Record);
+
+   procedure On_Key_Press
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  : in     Gnoga.Gui.Base.Keyboard_Event_Record)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Key.Text (Event.Key_Code'Img);
    end On_Key_Press;
+
+   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record);
+   procedure On_Context (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
@@ -102,7 +115,13 @@ end Color_Me_Task;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : App_Access := new App_Data;
 
@@ -123,7 +142,8 @@ end Color_Me_Task;
         (Main_Window.Document.Body_Element.all);
 
       App.Hello_World.On_Context_Menu_Handler (On_Context'Unrestricted_Access);
-      App.Hello_World.On_Mouse_Right_Click_Handler (On_Click'Unrestricted_Access);
+      App.Hello_World.On_Mouse_Right_Click_Handler
+        (On_Click'Unrestricted_Access);
       App.Hello_World.On_Mouse_Move_Handler (On_Move'Unrestricted_Access);
 
       Hr1.Create (Main_Window);
@@ -167,7 +187,13 @@ end Color_Me_Task;
 
    procedure On_Connect_2
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+
+   procedure On_Connect_2
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
@@ -181,10 +207,10 @@ end Color_Me_Task;
 begin
    Application.Multi_Connect.Initialize (Boot => "debug.html");
 
-   Application.Multi_Connect.On_Connect_Handler (On_Connect'Unrestricted_Access,
-                                             "default");
-   Application.Multi_Connect.On_Connect_Handler (On_Connect_2'Unrestricted_Access,
-                                             "/demo");
+   Application.Multi_Connect.On_Connect_Handler
+     (On_Connect'Unrestricted_Access, "default");
+   Application.Multi_Connect.On_Connect_Handler
+     (On_Connect_2'Unrestricted_Access, "/demo");
 
    Application.Open_URL_OSX;
 

@@ -23,7 +23,6 @@ procedure Align is
    Calc_Dec_Label : Form.Label_Type;
 
    Dec_Range      : Form.Range_Type;
-   Range_Label    : Form.Label_Type;
    Range_Value    : Form.Label_Type;
 
    Game_View   : Gnoga.Gui.View.Docker.Docker_View_Type;
@@ -83,12 +82,7 @@ begin
                        Label_For  => Dec_Range,
                        Contents   => "0",
                        Auto_Place => False);
-   F.Put (" ");
-
-   Range_Label.Create (Form       => F,
-                       Label_For  => Dec_Range,
-                       Contents   => "Decimal(s)",
-                       Auto_Place => False);
+   F.Put (" Decimal(s)");
 
    Dec_Range.On_Change_Handler (Dec_Change'Unrestricted_Access);
 
@@ -123,9 +117,9 @@ begin
    end loop;
 
    Control_Box.Create (Game_View);
-   Control_Box.Put ("<button>Push Me</button><br />");
-   Control_Box.Put ("<button>Push Me</button><br />");
-   Control_Box.Put ("<button>Push Me</button><br />");
+   Control_Box.Put ("<button>Push Me</button>"); Control_Box.New_Line;
+   Control_Box.Put ("<button>Push Me</button>"); Control_Box.New_Line;
+   Control_Box.Put ("<button>Push Me</button>"); Control_Box.New_Line;
 
    Game_View.Left_Dock (Grid_Box'Unchecked_Access);
    Game_View.Right_Dock (Control_Box'Unchecked_Access);

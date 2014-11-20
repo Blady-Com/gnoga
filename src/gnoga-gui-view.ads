@@ -83,7 +83,10 @@ package Gnoga.Gui.View is
    --  an entire row.
 
    procedure New_Line (View : in out View_Base_Type);
-   --  Create a new DIV with <br /> and append to end of view
+   --  Create a new <br /> and append to end of view
+
+   procedure Horizontal_Rule (View : in out View_Base_Type);
+   --  Create a new <hr /> and append to end of View
 
    procedure Put_HTML (View  : in out View_Base_Type;
                        HTML  : in     String;

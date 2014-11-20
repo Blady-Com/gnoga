@@ -92,10 +92,16 @@ begin
 
    Dec_Range.On_Change_Handler (Dec_Change'Unrestricted_Access);
 
-   F.Put_HTML ("<hr />");
+   F.Horizontal_Rule;
 
    Game_View.Create (Main_View);
    Game_View.Position (Relative);
+   --  Docked views use absolute positioning which means they are relatively
+   --  positioned X,Y to the first non-static position control above them
+   --  in the DOM. Relative position means position X,Y from where it would
+   --  be static, so this has no affect on where Game_View would be located
+   --  but now that it's position is not statict docked views will be relative
+   --  to it.
 
    Grid_Box.Create (Game_View);
 
@@ -113,7 +119,7 @@ begin
          Buttons (i) (n).Overflow (Hidden);
          Buttons (i) (n).Margin ("1px", "1px", "1px", "1px");
       end loop;
-      Grid_Box.Put_HTML ("<br />");
+      Grid_Box.New_Line;
    end loop;
 
    Control_Box.Create (Game_View);

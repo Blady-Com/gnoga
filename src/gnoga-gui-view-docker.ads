@@ -60,6 +60,11 @@ package Gnoga.Gui.View.Docker is
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Attach        : in     Boolean := True;
       ID            : in     String  := "");
+   --  Docked Views are set to Position (Absolute) when added. In order to
+   --  use a Docker_View_Type statically positioned the position should be
+   --  set Position (Relative) in order to insure the Docks are positioned
+   --  relative to itm since Position (Absolute) elements are positioned
+   --  relative to the first non Position (Static) element above them.
 
    -------------------------------------------------------------------------
    --  Docker_View_Type - Properties

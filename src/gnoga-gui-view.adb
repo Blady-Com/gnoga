@@ -155,10 +155,18 @@ package body Gnoga.Gui.View is
    --------------
 
    procedure New_Line (View : in out View_Base_Type) is
-      D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
-      D.Create (View, "<br />");
+      View.Put_HTML ("<br />");
    end New_Line;
+
+   ---------------------
+   -- Horizontal_Rule --
+   ---------------------
+
+   procedure Horizontal_Rule (View : in out View_Base_Type) is
+   begin
+      View.Put_HTML ("<hr />");
+   end Horizontal_Rule;
 
    -----------------
    -- Add_Element --

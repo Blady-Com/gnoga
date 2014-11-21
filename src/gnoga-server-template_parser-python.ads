@@ -37,6 +37,10 @@
 
 package Gnoga.Server.Template_Parser.Python is
 
+   --  This Template_Parser uses libpython. You must add
+   --     pragma Linker_Options ("-lpython");
+   --  or otherwise add -lpython to the linker options.
+
    function Load_View (Name : String) return String;
    --  Return named view with no passed data
 

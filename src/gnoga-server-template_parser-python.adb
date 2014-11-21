@@ -35,8 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with GNAT.OS_Lib;
-with GNAT.Expect; use GNAT;
+with Interfaces.C;
+with Interfaces.C.Strings;
 
 package body Gnoga.Server.Template_Parser.Python is
 
@@ -112,21 +112,94 @@ package body Gnoga.Server.Template_Parser.Python is
    -- Excute_Python --
    -------------------
 
-   function Execute_Python (Code : String) return String is
-      Args   : OS_Lib.Argument_List (1 .. 0);
-      Result : aliased Integer            := 0;
-      RetStr : String := Expect.Get_Command_Output ("python",
-                                                    Args,
-                                                    Code & " quit();",
-                                                    Result'Access,
-                                                    True);
-   begin
-      if Result /= 0 then
-         raise Parser_Execution_Failure
-           with "Call to python executable failed";
-      end if;
+   protected Python_Execute is
+      procedure Execute (Code   : in  String;
+                         Result : out Ada.Strings.Unbounded.Unbounded_String);
+      --  Single threaded access to python interpreter
+   end Python_Execute;
 
-      return RetStr;
+   protected body Python_Execute is
+      procedure Execute (Code   : in  String;
+                         Result : out Ada.Strings.Unbounded.Unbounded_String)
+      is
+         nl  : constant Character := Character'Val (10);
+         nul : constant Character := Character'Val (0);
+
+         type Py_Object is access Integer;
+
+         procedure Py_Initialize;
+         pragma Import (C, Py_Initialize, "Py_Initialize");
+
+         procedure Py_Finalize;
+         pragma Import (C, Py_Finalize, "Py_Finalize");
+
+         function PyImport_AddModule (S : in String := "__main__" & nul)
+                                      return Py_Object;
+         pragma Import (C, PyImport_AddModule, "PyImport_AddModule");
+
+         procedure PyRun_SimpleStringFlags (S : in String;
+                                            F : access Integer := null);
+         pragma Import (C, PyRun_SimpleStringFlags, "PyRun_SimpleStringFlags");
+
+         procedure PyErr_Print;
+         pragma Import (C, PyErr_Print, "PyErr_Print");
+
+         function PyObject_GetAttrString (Object : Py_Object;
+                                          Method : String)
+                                          return Py_Object;
+         pragma Import (C, PyObject_GetAttrString, "PyObject_GetAttrString");
+
+         procedure PyString_AsStringAndSize
+           (Object : in     Py_Object;
+            Buffer : out    Interfaces.C.Strings.chars_ptr;
+            Length : out    Interfaces.C.size_t);
+         pragma Import (C, PyString_AsStringAndSize,
+                        "PyString_AsStringAndSize");
+
+         Redirect : String :=
+                      "import sys" & nl &
+                      "class CatchOutErr:" & nl &
+                      "    def __init__(self):" & nl &
+                      "        self.value = ''" & nl &
+                      "    def write(self, txt):" & nl &
+                      "        self.value += txt" & nl &
+                      "catchOutErr = CatchOutErr()" & nl &
+                      "sys.stdout = catchOutErr" & nl &
+                      "sys.stderr = catchOutErr" & nul;
+
+         Module   : Py_Object;
+         Catcher  : Py_Object;
+         P_Result : Py_Object;
+         C_Result : Interfaces.C.Strings.chars_ptr;
+         Length   : Interfaces.C.size_t;
+      begin
+         Py_Initialize;
+
+         Module := PyImport_AddModule;
+
+         PyRun_SimpleStringFlags (Redirect);
+         PyRun_SimpleStringFlags (Code & nul);
+
+         PyErr_Print;
+
+         Catcher := PyObject_GetAttrString (Module, "catchOutErr" & nul);
+         P_Result := PyObject_GetAttrString (Catcher, "value" & nul);
+
+         PyString_AsStringAndSize (P_Result, C_Result, Length);
+
+         Result := Ada.Strings.Unbounded.To_Unbounded_String
+           (Interfaces.C.Strings.Value (C_Result, Length));
+
+         Py_Finalize;
+      end Execute;
+   end Python_Execute;
+
+   function Execute_Python (Code : String) return String is
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      Python_Execute.Execute (Code, Result);
+
+      return Ada.Strings.Unbounded.To_String (Result);
    end Execute_Python;
 
    -----------------------
@@ -284,5 +357,4 @@ package body Gnoga.Server.Template_Parser.Python is
    begin
       return Execute_Python (Build_List & Python_Code);
    end Load_View;
-
 end Gnoga.Server.Template_Parser.Python;

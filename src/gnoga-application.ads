@@ -56,6 +56,11 @@ package Gnoga.Application is
    --  incoming connections. To change after connection has been established
    --  see Gnoga.Connections.HTML_On_Close
 
+   --  The following browser launcher procedures spaw processes. On some
+   --  OSes this can lead to instabilities for multi tasking apps if not
+   --  spawned at program start. Therefore these if used should be used
+   --  before the application initialization is called.
+
    procedure Open_URL_OSX (url : String := "http://localhost:8080");
    --  Open the default browser on Mac OS X
 

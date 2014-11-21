@@ -63,7 +63,7 @@ Gnoga currently has the following parts:
       Gnoga.Server.Database - support for MySQL and SQLite 3
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
-      Gnoga.Server.Template_Parser - Parse files with Tokens, PHP or Python
+      Gnoga.Server.Template_Parser - Parse files with Tokens or Python
 
 7. Gnoga development tools
       tool/gnoga_make - Generate application scaffolds

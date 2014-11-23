@@ -50,7 +50,7 @@ abstract project Settings is
    package Linker is
       case Build_Target is
          when "OSX" =>
-            for Default_Switches ("Ada") use ("-Wl", "-no_pie");
+            for Default_Switches ("Ada") use ("-Wl,-no_pie");
          when others =>
             null;
       end case;

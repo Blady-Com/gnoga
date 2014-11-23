@@ -18,11 +18,11 @@ release:
 
 install: release gnoga_tools
 	cd src && gprinstall -f --prefix=$(PREFIX) -p gnoga.gpr -XPRJ_BUILD=Release
-	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage tools.gpr
+	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
 
 uninstall:
-	- cd src && gprinstall -f --uninstall gnoga.gpr
-	- cd tools && gprinstall -f --uninstall tools.gpr
+	- cd src && gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr
+	- cd tools && gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
 
 ace_editor:
 	- cd js && git clone https://github.com/ajaxorg/ace-builds.git

@@ -7,7 +7,7 @@ with Gnoga.Gui.Element.Table;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 
-procedure Tables is
+procedure TTables is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
@@ -101,4 +101,4 @@ begin
    Application.Open_URL_OSX;
 
    Application.Multi_Connect.Message_Loop;
-end Tables;
+end TTables;

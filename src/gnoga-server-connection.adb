@@ -79,6 +79,12 @@ package body Gnoga.Server.Connection is
 
    Exit_Application_Requested : Boolean := False;
 
+   task Watchdog is
+      entry Start;
+      entry Stop;
+   end Watchdog;
+   --  Keep alive and check connections
+
    -------------
    -- Default --
    -------------
@@ -214,6 +220,8 @@ package body Gnoga.Server.Connection is
       AWS.Services.Dispatchers.URI.Register_Default_Callback
         (Web_Dispatcher,
          Action => Default_Dispatcher);
+
+      Watchdog.Start;
    end Initialize;
 
    ---------
@@ -454,6 +462,8 @@ package body Gnoga.Server.Connection is
    --  Socket Maps are used for the Connection Manager to map connection IDs
    --  to web sockets.
 
+   Socket_Map  : Socket_Maps.Map;
+
    protected Connection_Manager is
       procedure Add_Connection (Socket : in  Socket_Type;
                                 New_ID : out Gnoga.Types.Connection_ID);
@@ -496,7 +506,6 @@ package body Gnoga.Server.Connection is
       procedure Delete_All_Connections;
       --  Called by Stop to close down server
    private
-      Socket_Map            : Socket_Maps.Map;
       Socket_Count          : Gnoga.Types.Connection_ID := 0;
       Connection_Holder_Map : Connection_Holder_Maps.Map;
       Connection_Data_Map   : Connection_Data_Maps.Map;
@@ -655,6 +664,40 @@ package body Gnoga.Server.Connection is
 
       Connection_Manager.Delete_Connection_Holder (ID);
    end Event_Task_Type;
+
+   --------------
+   -- Watchdog --
+   --------------
+
+   task body Watchdog is
+      procedure Ping (C : in Socket_Maps.Cursor);
+
+      procedure Ping (C : in Socket_Maps.Cursor) is
+         ID : Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
+      begin
+         Execute_Script (ID, "0");
+      exception
+         when others =>
+            null;
+      end Ping;
+   begin
+      accept Start;
+
+      loop
+         begin
+            Socket_Map.Iterate (Ping'Access);
+         end;
+
+         select
+            accept Stop;
+            exit;
+         or
+            delay 60.0;
+         end select;
+      end loop;
+
+   end Watchdog;
+
    ---------------------------
    -- Message Queue Manager --
    ---------------------------
@@ -1218,6 +1261,7 @@ package body Gnoga.Server.Connection is
    procedure Stop is
    begin
       Exit_Application_Requested := True;
+      Watchdog.Stop;
       Connection_Manager.Delete_All_Connections;
       AWS.Server.Shutdown (Web_Server);
    end Stop;

@@ -236,6 +236,10 @@ procedure Demo is
 
          App.Console.Put_Line ("From Gnoga Simple parser:");
 
+         Gnoga.Server.Template_Parser.Set_Template_Directory
+           (Gnoga.Server.Templates_Directory & "test" &
+              Gnoga.Server.Directory_Separator);
+
          declare
             S : String := Simple.Load_View ("test_sample.tpl", Items);
          begin

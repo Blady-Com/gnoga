@@ -775,7 +775,7 @@ package body Gnoga.Server.Connection is
    is
       use type Gnoga.Types.Connection_ID;
 
-      ID : Gnoga.Types.Connection_ID;
+      ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
    begin
       if On_Connect_Event /= null then
          Connection_Manager.Add_Connection (Socket => Web_Socket,

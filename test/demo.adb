@@ -226,6 +226,10 @@ procedure Demo is
 
          Items : View_Data;
       begin
+         Set_Template_Directory
+           (Gnoga.Server.Templates_Directory & "test" &
+              Gnoga.Server.Directory_Separator);
+
          Items.Insert (Key => "say", Value => "Hello World");
 
          App.Console.Put_Line ("From Python parser:");
@@ -235,10 +239,6 @@ procedure Demo is
          App.Console.New_Line;
 
          App.Console.Put_Line ("From Gnoga Simple parser:");
-
-         Gnoga.Server.Template_Parser.Set_Template_Directory
-           (Gnoga.Server.Templates_Directory & "test" &
-              Gnoga.Server.Directory_Separator);
 
          declare
             S : String := Simple.Load_View ("test_sample.tpl", Items);

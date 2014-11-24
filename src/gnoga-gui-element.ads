@@ -163,7 +163,7 @@ package Gnoga.Gui.Element is
    procedure Inner_HTML (Element : in out Element_Type; Value : in String);
    function Inner_HTML (Element : Element_Type) return String;
    --  This will completely replace the inner html of an element. This will
-   --  remove any Elements with in Element from the DOM. If those elements
+   --  remove any Elements within Element from the DOM. If those elements
    --  have ID_Types of Gnoga_ID they are still available and can be placed
    --  in the DOM again using the Element.Place_* methods. However if they
    --  were of ID_Type DOM_ID they are lost forever.
@@ -202,7 +202,7 @@ package Gnoga.Gui.Element is
                      Value   : in     Boolean := True);
    function Hidden (Element : Element_Type) return Boolean;
    --  The hidden property will make an element invisible, however unlike
-   --  the property Visible which uses CSS to hide the Element. Hidden implies
+   --  the property Visible which uses CSS to hide the Element, Hidden implies
    --  the element is semantically not relevant not just visually and will
    --  _also_ remove it from layout similar to setting Element.Display (None).
 
@@ -479,7 +479,7 @@ package Gnoga.Gui.Element is
 
    procedure Scroll_Top (Element : in out Element_Type; Value : Integer);
    function Scroll_Top (Element : Element_Type) return Integer;
-   --  The number of pixels thant an element's content has been scrolled
+   --  The number of pixels that an element's content has been scrolled
    --  upward.
 
    ----------------------

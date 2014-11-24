@@ -140,7 +140,7 @@ package Gnoga.Gui.Window is
    --  has been established on the launched page.
    --
    --  Popups are highly unreliable and oustide of Google Chrome only work in
-   --  limitted ways beyond just a launch and forget situation.
+   --  limited ways beyond just a launch and forget situation.
 
    -------------------------------------------------------------------------
    --  Window_Type - Properties
@@ -277,7 +277,7 @@ package Gnoga.Gui.Window is
    --  Storage data was changed in another session
 
    -------------------------------------------------------------------------
-   --  Winow_Type - Event Methods
+   --  Window_Type - Event Methods
    -------------------------------------------------------------------------
 
    overriding

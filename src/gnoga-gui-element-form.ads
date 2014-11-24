@@ -211,7 +211,7 @@ package Gnoga.Gui.Element.Form is
    --  will validate against their Pattern if set on submit
    --  Pattern is included in Form_Element_Type since in cases where a specific
    --  input type is not suppored like (date, week, etc.) pattern can be set
-   --  to insure the expected results. This works since Input type will fall
+   --  to ensure the expected results. This works since Input type will fall
    --  back to a text input.
 
    procedure Required (Element : in out Form_Element_Type;

@@ -46,7 +46,7 @@ package Gnoga.Client.Bind_Page is
    procedure Bind_Page (View : in out Gnoga.Gui.View.View_Base_Type'Class);
    --  Attaches all HTML elements with an ID using View as parent. Elements
    --  will all be created and marked as dynamic and will be deallocated when
-   --  View is finalized. Elements are accessable using the View Element array.
+   --  View is finalized. Elements are accessible using the View Element array.
    --
    --  Note: If more than one element have the same ID they will be overwritten
    --        in the Element array.

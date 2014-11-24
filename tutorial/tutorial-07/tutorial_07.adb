@@ -26,13 +26,13 @@ procedure Tutorial_07 is
    procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure End_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  These two event handlers are for the drag Source. Using them we can
-   --  set some visual queues, in this case fading out Source during the drag.
+   --  set some visual cues, in this case fading out Source during the drag.
 
    procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
                    Drag_Text : in     String);
-   --  These three event handlers are used to show visual queues that Target
+   --  These three event handlers are used to show visual cues that Target
    --  is open to accept the drop, and to actually accept the drop.
 
    procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
@@ -110,7 +110,7 @@ procedure Tutorial_07 is
       App.Source.Position (Gnoga.Gui.Element.Fixed);
       App.Source.Top (50);
       App.Source.Left (20);
-      --  Place our Source DIV_Type and an fixed position in browser
+      --  Place our Source DIV_Type at a fixed position in browser
 
       App.Source.Width (100);
       App.Source.Height (100);
@@ -136,7 +136,7 @@ procedure Tutorial_07 is
 
       App.Target.Width (100);
       App.Target.Height (100);
-      --  Place our Target DIV_Type and an fixed position in browser
+      --  Place our Target DIV_Type at a fixed position in browser
 
       App.Target.Border;
 

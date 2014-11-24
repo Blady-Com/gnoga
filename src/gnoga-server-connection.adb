@@ -417,7 +417,7 @@ package body Gnoga.Server.Connection is
       begin
          null;
          --  Semiphore does not reset itself to a blocking state.
-         --  This insures that if Released before Hold that Hold
+         --  This ensures that if Released before Hold that Hold
          --  will not block and connection will be released.
          --  It also allows for On_Connect Handler to not have to use
          --  Connection.Hold unless there is a desire code such as to
@@ -843,7 +843,7 @@ package body Gnoga.Server.Connection is
       begin
          null;
          --  Semiphore does not reset itself to a blocking state.
-         --  This insures that if Released before Hold that Hold
+         --  This ensures that if Released before Hold that Hold
          --  will not block and connection will be released.
       end Hold;
 

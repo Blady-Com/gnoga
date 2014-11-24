@@ -1,4 +1,4 @@
---  With Gnoga it is possible to build your own custom widgets by composting
+--  With Gnoga it is possible to build your own custom widgets by compositing
 --  elements in to views and build web forms. In the next turorial we will
 --  see how to interat with forms in a more application centric way instead of
 --  as static forms.
@@ -81,7 +81,7 @@ procedure Tutorial_08 is
          --  Allow only a-z, A-Z and space characters
 
          View.Name_Input.Place_Inside_Top_Of (col2.all);
-         --  Since forms are auto placed in side the Form. We need to move the
+         --  Since forms are auto placed inside the Form, we need to move the
          --  element where we would like it to display.
       end;
 

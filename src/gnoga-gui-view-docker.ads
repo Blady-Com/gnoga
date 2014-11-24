@@ -62,7 +62,7 @@ package Gnoga.Gui.View.Docker is
       ID            : in     String  := "");
    --  Docked Views are set to Position (Absolute) when added. In order to
    --  use a Docker_View_Type statically positioned the position should be
-   --  set Position (Relative) in order to insure the Docks are positioned
+   --  set Position (Relative) in order to ensure the Docks are positioned
    --  relative to itm since Position (Absolute) elements are positioned
    --  relative to the first non Position (Static) element above them.
 

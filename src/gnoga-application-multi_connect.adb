@@ -49,7 +49,7 @@ package body Gnoga.Application.Multi_Connect is
    procedure On_Connect
      (ID         : in     Gnoga.Types.Connection_ID;
       Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
-   --  Handle connections by creating Main_Winow object and dispatching
+   --  Handle connections by creating Main_Window object and dispatching
    --  to correct On_Connect_Handler based on Path. It is not neccessary
    --  to call Connection.Hold unless you wish to hold the connection and
    --  then following it's release run additional such as to clean up some

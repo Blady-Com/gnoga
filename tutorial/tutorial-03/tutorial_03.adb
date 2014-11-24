@@ -3,7 +3,7 @@
 --  is no issue of concurrency outside of events from the same user. This
 --  allowed for programming in the familiar sequential patterns of regular
 --  console applications. In this tutorial we will create an application that
---  will allow for multiple connections on the same machine, network or accross
+--  will allow for multiple connections on the same machine, network or across
 --  the globe on the internet.
 --
 --  In order to help see the different approach to setting up the application
@@ -20,9 +20,9 @@ with Gnoga.Types;
 
 procedure Tutorial_03 is
 
-   --  Since this application will be used by mutliple connections, we need to
-   --  track and access that connections specific data. To do thise we create
-   --  a derivative of Gnoga.Types.Connection_Data_Type that will be accessable
+   --  Since this application will be used by multiple connections, we need to
+   --  track and access that connection's specific data. To do this we create
+   --  a derivative of Gnoga.Types.Connection_Data_Type that will be accessible
    --  to any object on a connection.
 
    type App_Data is new Gnoga.Types.Connection_Data_Type with
@@ -66,7 +66,7 @@ procedure Tutorial_03 is
    --  Instead of creating and setting up our GUI in the main body of the
    --  application, we now set up the GUI in a connection event handler.
    --  The implementation is almost identical to the last tutorial except we
-   --  places our GUI elment variables with in the App_Data data structure
+   --  place our GUI element variables within the App_Data data structure
    --  that will be associated with the connection.
 
    procedure On_Connect
@@ -78,7 +78,7 @@ procedure Tutorial_03 is
    begin
       Main_Window.Connection_Data (App);
       --  This associates our application data to this connection. Now any
-      --  object created on it has access to it using it's Connection_Data
+      --  object created on it has access to it using its Connection_Data
       --  property. When the connection is done it will deallocate the memory
       --  used.
 

@@ -40,7 +40,7 @@ with Gnoga.Gui.Element.Form;
 
 package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
-   --  jQueryUI adopts properties from the window. To insure UI objects
+   --  jQueryUI adopts properties from the window. To ensure UI objects
    --  are sized reasonably, it is good to set a font on the body, e.g.
    --    Main_Window.Document.Body_Element.Font (Height  => "12px");
    --  or to use custom CSS to style the body and other elements.

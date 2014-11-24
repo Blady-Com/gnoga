@@ -122,7 +122,7 @@ procedure Tutorial_09 is
 
       App.My_Deck.Top_Dock (App.My_Tabs'Access);
       --  We wait to dock My_Tabs until after we have added the tabs
-      --  this insures that My_Tabs's Height with content is known.
+      --  this ensures that My_Tabs's Height with content is known.
    end On_Connect;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is

@@ -56,7 +56,7 @@ package Gnoga.Application is
    --  incoming connections. To change after connection has been established
    --  see Gnoga.Connections.HTML_On_Close
 
-   --  The following browser launcher procedures spaw processes. On some
+   --  The following browser launcher procedures spawn processes. On some
    --  OSes this can lead to instabilities for multi tasking apps if not
    --  spawned at program start. Therefore these if used should be used
    --  before the application initialization is called.

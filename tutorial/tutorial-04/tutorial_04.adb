@@ -16,8 +16,8 @@ with Gnoga.Gui.Element.Common;
 procedure Tutorial_04 is
 
    --  The Color_Me_Task_Type is passed in a GUI element for its discriminant.
-   --  We give the task start and stop entry points in order to insure we
-   --  have setup the Element it will be accessing first and to insure we
+   --  We give the task start and stop entry points in order to ensure we
+   --  have setup the Element it will be accessing first and to ensure we
    --  stop the task before Element is finalized on close of the connection.
 
    task type Color_Me_Task_Type
@@ -66,7 +66,7 @@ procedure Tutorial_04 is
          --  the a DIV_Type is a "block" element and a Span_Type is an inline
          --  element. In simple terms DIV_Types will take up an entire row
          --  and Span_Types will be placed on the same line as the last inline
-         --  element. Think of Spans_Types as ways to mark text for
+         --  element. Think of Span_Types as ways to mark text for
          --  interaction with the user.
       end record;
    type App_Access is access all App_Data;
@@ -142,7 +142,7 @@ procedure Tutorial_04 is
       Flasher_Task.Start;
 
       Connection.Hold;
-      --  Since we want to "clean up" (in this case stop the Flaster_Task)
+      --  Since we want to "clean up" (in this case stop the Flasher_Task)
       --  once the connection has been closed. We manually "hold" the
       --  connection until it is "released" from with in the Gnoga framework
       --  meaning the connection has been lost to the browser.

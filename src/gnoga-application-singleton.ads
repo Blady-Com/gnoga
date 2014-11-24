@@ -51,8 +51,8 @@ package Gnoga.Application.Singleton is
       Port        : in     Integer := 8080;
       Boot        : in     String  := "boot.html";
       Verbose     : in     Boolean := True);
-   --  Initialize applicaiton for single connection is Boot for bootstrap html.
-   --  If Host = "" then will listen on all netwrok interfaces.
+   --  Initialize application for single connection is Boot for bootstrap html.
+   --  If Host = "" then will listen on all network interfaces.
    --  Use Host = "localhost" to constrain to local use only.
 
    procedure Message_Loop;

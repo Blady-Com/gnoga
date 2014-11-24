@@ -52,11 +52,11 @@ package Gnoga.Application.Multi_Connect is
                 Connection  : access Connection_Holder_Type);
    --  On each connection an Application_Connect_Event registered in
    --  On_Connect_Handler will be called. Main_Window will be attached
-   --  to the window of the browser, Connection can optionally be used
+   --  to the window of the browser. Connection can optionally be used
    --  to allow for "clean up" upon close of connection, or to prevent
    --  finalization of the called Application_Connect_Event procedure
    --  until the connection is closed. This allows for Gnoga objects to
-   --  be created on the stack with in the procedure and not be finalized
+   --  be created on the stack within the procedure and not be finalized
    --  prematurely and still able to respond to events, etc.
    --  Use: Connection.Hold;
 
@@ -66,9 +66,9 @@ package Gnoga.Application.Multi_Connect is
       Port    : in Integer                   := 8080;
       Boot    : in String                    := "boot.html";
       Verbose : in Boolean                   := True);
-   --  Initialize an applicaiton for multiple connections using
+   --  Initialize an application for multiple connections using
    --  Event for the default Connection Handler and Boot for bootstrap html.
-   --  If Host = "" then will listen on all netwrok interfaces.
+   --  If Host = "" then will listen on all network interfaces.
    --  Use Host = "localhost" to constrain to local use only.
 
    procedure On_Connect_Handler (Event : in Application_Connect_Event;
@@ -79,8 +79,8 @@ package Gnoga.Application.Multi_Connect is
    --  and http://myapp:8080/abc/ will both match Path = "/abc" or Path="abc"
    --  or Path="/abc/"
    --  This can be used to set or change connection handlers during application
-   --  execution for future connections or to to set the default handler if it
-   --  was not set in Initialize.
+   --  execution for future connections or to set the default handler if it was
+   --  not set in Initialize.
 
    procedure Message_Loop;
    --  Start serving connections to application and continue until

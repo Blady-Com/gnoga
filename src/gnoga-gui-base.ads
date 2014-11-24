@@ -56,12 +56,12 @@ package Gnoga.Gui.Base is
    type Pointer_To_Base_Class is access all Base_Type'Class;
 
    Object_Already_Created : exception;
-   --  Thrown when an attempt is made to perform a create method on an already
+   --  Raised when an attempt is made to perform a create method on an already
    --  created or attached Gnoga object.
 
    Object_Was_Not_Created : exception;
-   --  An attempt was made to use an object that has not yet been created on
-   --  the client.
+   --  Raised when an attempt was made to use an object that has not yet been
+   --  created on the client.
 
    overriding
    procedure Initialize (Object : in out Base_Type);
@@ -142,7 +142,7 @@ package Gnoga.Gui.Base is
                             Value  : in Gnoga.Types.Connection_ID);
    --  The Gnoga Connection ID of Object.
    --  It is almost certainly always a mistake to set Connection_ID instead
-   --  of ussing Attach. Only change the Connection ID if you fully understand
+   --  of using Attach. Only change the Connection ID if you fully understand
    --  what you are doing.
 
    function Valid (Object : Base_Type) return Boolean;
@@ -191,13 +191,13 @@ package Gnoga.Gui.Base is
    function Height (Object : Base_Type) return Integer;
    --  Height of Element, or Window or Document
    --  Results in Pixels and numeric unlike using the CSS size properties
-   --  See Element_Type for additional Heigth and Width properties
+   --  See Element_Type for additional Height and Width properties
 
    procedure Width (Object : in out Base_Type; Value : in Integer);
    function Width (Object : Base_Type) return Integer;
    --  Width of Element, or Window or Document
    --  Results in Pixels and numeric unlike using the CSS size properties
-   --  See Element_Type for additional Heigth and Width properties
+   --  See Element_Type for additional Height and Width properties
 
    --  Generic Access  --
 
@@ -565,7 +565,7 @@ package Gnoga.Gui.Base is
    -------------------------------------------------------------------------
    --  Base_Type - Event Methods
    -------------------------------------------------------------------------
-   --  When overiding events, to insure that the event handlers will still
+   --  When overiding events, to ensure that the event handlers will still
    --  be executed and internal functionality of the event is handled
    --  properly, always call the base class event method.
    --

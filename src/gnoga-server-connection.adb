@@ -68,12 +68,14 @@ package body Gnoga.Server.Connection is
 
    Boot_HTML : Ada.Strings.Unbounded.Unbounded_String;
 
+   Verbose_Output : Boolean := False;
+
    Web_Server         : AWS.Server.HTTP;
    Web_Config         : AWS.Config.Object;
    Web_Dispatcher     : AWS.Services.Dispatchers.URI.Handler;
 
    On_Connect_Event : Connect_Event := null;
-   On_Post_Event    : Post_Event := null;
+   On_Post_Event    : Post_Event    := null;
 
    Exit_Application_Requested : Boolean := False;
 
@@ -156,6 +158,8 @@ package body Gnoga.Server.Connection is
                          Verbose : in Boolean := True)
    is
    begin
+      Verbose_Output := Verbose;
+
       --  Setup server
       AWS.Config.Set.Reuse_Address    (Web_Config, True);
       AWS.Config.Set.Server_Host      (Web_Config, Host);
@@ -585,7 +589,9 @@ package body Gnoga.Server.Connection is
          return Socket_Map.Element (ID);
       exception
          when others =>
-            raise Connection_Error;
+            raise Connection_Error with
+              "Connection ID" & ID'Img & " not found in connection map. " &
+              "Connection most likely was previously closed.";
       end Connection_Socket;
 
       function Find_Connetion_ID (Socket : Socket_Type)
@@ -731,6 +737,9 @@ package body Gnoga.Server.Connection is
       if On_Connect_Event /= null then
          Connection_Manager.Add_Connection (Socket => Web_Socket,
                                             New_ID => ID);
+         if Verbose_Output then
+            Gnoga.Log ("New connection - ID" & ID'Img);
+         end if;
       else
          Web_Socket.Close ("No connection event set");
       end if;
@@ -749,6 +758,11 @@ package body Gnoga.Server.Connection is
    begin
       if ID /= Gnoga.Types.No_Connection then
          Connection_Manager.Delete_Connection (ID);
+
+         if Verbose_Output then
+            Gnoga.Log ("Connection disconnected - ID" & ID'Img &
+                         " with message : " & Message);
+         end if;
       end if;
    end On_Close;
 
@@ -764,6 +778,8 @@ package body Gnoga.Server.Connection is
              Connection_Manager.Find_Connetion_ID (Web_Socket);
    begin
       Connection_Manager.Delete_Connection (ID);
+      Gnoga.Log ("Connection error ID" & ID'Img &
+                   " with message : " & Message);
    end On_Error;
 
    --------------------
@@ -1004,7 +1020,7 @@ package body Gnoga.Server.Connection is
    exception
       when AWS.Net.Socket_Error =>
          raise Connection_Error with
-           "Socker Error during execute of : " & Script;
+           "Socket Error during execute of : " & Script;
    end Execute_Script;
 
    function Execute_Script (ID     : in Gnoga.Types.Connection_ID;

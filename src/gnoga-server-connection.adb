@@ -593,7 +593,9 @@ package body Gnoga.Server.Connection is
                Connection_Data_Map.Delete (ID);
             end if;
 
-            Socket_Map.Delete (ID);
+            if Socket_Map.Contains (ID) then
+               Socket_Map.Delete (ID);
+            end if;
 
             if Event_Task_Map.Contains (ID) then
                declare
@@ -710,6 +712,7 @@ package body Gnoga.Server.Connection is
                   if Verbose_Output then
                      Gnoga.Log ("Watchdog closed connection ID " & ID'Img);
                   end if;
+                  Socket_Map.Delete (ID);
                   Connection_Manager.Delete_Connection (ID);
             end;
       end Ping;

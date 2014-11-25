@@ -28,6 +28,10 @@
            }
         }
         ws.onerror = function (event) {
+           if (gnoga['Connection_ID'] == 'undefined') {
+              location.reload(true);
+           }
+
            if (reconnects < 2) {
               console.log ("onerror: reconnect " + reconnects);
               ws.onclose=null;

@@ -805,7 +805,7 @@ package body Gnoga.Server.Connection is
       if On_Connect_Event /= null then
          Connection_Manager.Add_Connection (Socket => Web_Socket,
                                             New_ID => ID);
-         if Old_ID /= "" then
+         if Old_ID /= "" and Old_ID /= "undefined" then
             if Verbose_Output then
                Gnoga.Log ("Swaping connections " & ID'Img & " => " & Old_ID);
             end if;

@@ -469,6 +469,13 @@ package body Gnoga.Server.Connection is
                                 New_ID : out Gnoga.Types.Connection_ID);
       --  Adds Socket to managed Connections and generates a New_ID.
 
+      procedure Start_Connection (New_ID : in Gnoga.Types.Connection_ID);
+      --  Start event task on connection
+
+      procedure Swap_Connection (New_ID : in Gnoga.Types.Connection_ID;
+                                 Old_ID : in Gnoga.Types.Connection_ID);
+      --  Reconnect old connection
+
       procedure Add_Connection_Holder (ID     : in Gnoga.Types.Connection_ID;
                                        Holder : in Connection_Holder_Access);
       --  Adds a connection holder to the connection
@@ -520,8 +527,24 @@ package body Gnoga.Server.Connection is
          Socket_Count := Socket_Count + 1;
          New_ID := Socket_Count;
          Socket_Map.Insert (New_ID, Socket);
-         Event_Task_Map.Insert (New_ID, new Event_Task_Type (New_ID));
       end Add_Connection;
+
+      procedure Start_Connection (New_ID : in Gnoga.Types.Connection_ID)
+      is
+      begin
+         Event_Task_Map.Insert (New_ID, new Event_Task_Type (New_ID));
+      end Start_Connection;
+
+      procedure Swap_Connection (New_ID : in Gnoga.Types.Connection_ID;
+                                 Old_ID : in Gnoga.Types.Connection_ID)
+      is
+      begin
+         if Socket_Map.Contains (Old_ID) then
+            Socket_Map.Replace (Old_ID, Socket_Map.Element (New_ID));
+         else
+            raise Connection_Error with "Old connection already gone";
+         end if;
+      end Swap_Connection;
 
       procedure Add_Connection_Holder (ID     : in Gnoga.Types.Connection_ID;
                                        Holder : in Connection_Holder_Access)
@@ -644,9 +667,10 @@ package body Gnoga.Server.Connection is
 
          Execute_Script (ID, "TRUE=true");
          Execute_Script (ID, "FALSE=false");
-         --  By setting the variable TRUE and FALSE it is possible to set a
-         --  property or attribute with Boolean'Img which will result in TRUE
-         --  or FALSE not the case sensitive true or false expected.
+         --  By setting the variable TRUE and FALSE it is possible to set
+         --  a property or attribute with Boolean'Img which will result
+         --  in TRUE or FALSE not the case sensitive true or false
+         --  expected.
 
          On_Connect_Event (ID, Connection_Holder'Access);
       exception
@@ -775,13 +799,27 @@ package body Gnoga.Server.Connection is
    is
       use type Gnoga.Types.Connection_ID;
 
-      ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+      ID     : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+      Old_ID : String := AWS.Status.Parameter (Web_Socket.Request, "Old_ID");
    begin
       if On_Connect_Event /= null then
          Connection_Manager.Add_Connection (Socket => Web_Socket,
                                             New_ID => ID);
-         if Verbose_Output then
-            Gnoga.Log ("New connection - ID" & ID'Img);
+         if Old_ID /= "" then
+            if Verbose_Output then
+               Gnoga.Log ("Swaping connections " & ID'Img & " => " & Old_ID);
+            end if;
+
+            Connection_Manager.Swap_Connection
+              (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
+
+            Connection_Manager.Delete_Connection (ID);
+         else
+            Connection_Manager.Start_Connection (ID);
+
+            if Verbose_Output then
+               Gnoga.Log ("New connection - ID" & ID'Img);
+            end if;
          end if;
       else
          Web_Socket.Close ("No connection event set");
@@ -792,9 +830,8 @@ package body Gnoga.Server.Connection is
    -- On_Close --
    --------------
 
-   overriding procedure On_Close
-     (Web_Socket : in out Socket_Type;
-      Message : String)
+   overriding
+   procedure On_Close (Web_Socket : in out Socket_Type; Message : in String)
    is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connetion_ID (Web_Socket);
@@ -813,16 +850,16 @@ package body Gnoga.Server.Connection is
    -- On_Error --
    --------------
 
-   overriding procedure On_Error
-     (Web_Socket : in out Socket_Type;
-      Message : String)
+   overriding
+   procedure On_Error (Web_Socket : in out Socket_Type; Message : in String)
    is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connetion_ID (Web_Socket);
    begin
-      Connection_Manager.Delete_Connection (ID);
       Gnoga.Log ("Connection error ID" & ID'Img &
                    " with message : " & Message);
+      --  Need to add a check for deleting connections that have not
+      --  reconnected
    end On_Error;
 
    --------------------
@@ -1070,43 +1107,59 @@ package body Gnoga.Server.Connection is
                             Script : in String)
                             return String
    is
-      Script_Holder : aliased Script_Holder_Type;
-   begin
-      declare
-         Script_ID : Gnoga.Types.Unique_ID;
-         Socket    : Socket_Type := Connection_Manager.Connection_Socket (ID);
+      function Try_Execute return String;
+
+      function Try_Execute return String is
+         Script_Holder : aliased Script_Holder_Type;
       begin
-         Script_Manager.Add_Script_Holder
-           (ID     => Script_ID,
-            Holder => Script_Holder'Unchecked_Access);
-
          declare
-            Message : constant String := "ws.send (" &
-              """S" & Script_ID'Img & "|""+" &
-              "eval (""" & Escape_Quotes (Script) & """)" &
-              ");";
+            Script_ID : Gnoga.Types.Unique_ID;
+            Socket    : Socket_Type :=
+                          Connection_Manager.Connection_Socket (ID);
          begin
-            Socket.Send (Message);
+            Script_Manager.Add_Script_Holder
+              (ID     => Script_ID,
+               Holder => Script_Holder'Unchecked_Access);
 
-            select
-               delay 15.0; --  Timeout for browser to return answer
+            declare
+               Message : constant String := "ws.send (" &
+                           """S" & Script_ID'Img & "|""+" &
+                           "eval (""" & Escape_Quotes (Script) & """)" &
+                           ");";
+            begin
+               Socket.Send (Message);
 
-               Script_Manager.Delete_Script_Holder (Script_ID);
-               raise Script_Error with
-                 "Timeout error, no browser response for: " & Message;
-            then abort
-               Script_Holder.Hold;
-            end select;
+               select
+                  delay 3.0; --  Timeout for browser to return answer
+
+                  Script_Manager.Delete_Script_Holder (Script_ID);
+
+                  raise Script_Error with
+                    "Timeout error, no browser response for: " & Message;
+               then abort
+                  Script_Holder.Hold;
+               end select;
+            end;
+
+            Script_Manager.Delete_Script_Holder (Script_ID);
+
+            return Script_Holder.Result;
          end;
-
-         Script_Manager.Delete_Script_Holder (Script_ID);
-
-         return Script_Holder.Result;
+      exception
+         when AWS.Net.Socket_Error =>
+            raise Connection_Error with
+              "Socket Error, Browser dropped connection";
+      end Try_Execute;
+   begin
+      begin
+         return Try_Execute;
+      exception
+         when others =>
+            begin
+               delay 2.0;
+               return Try_Execute;
+            end;
       end;
-   exception
-      when AWS.Net.Socket_Error =>
-         raise Connection_Error with
-           "Socket Error, Browser dropped connection";
    end Execute_Script;
 
    ---------------------

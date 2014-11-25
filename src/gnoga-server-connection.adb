@@ -171,9 +171,9 @@ package body Gnoga.Server.Connection is
       AWS.Config.Set.Server_Host      (Web_Config, Host);
       AWS.Config.Set.Server_Port      (Web_Config, Port);
 
-      --  AWS.Config.Set.Max_WebSocket                (1024);
-      --  AWS.Config.Set.Max_WebSocket_Handler        (100);
-      --  AWS.Config.Set.WebSocket_Message_Queue_Size (100);
+      AWS.Config.Set.Max_WebSocket                (1024);
+      AWS.Config.Set.Max_WebSocket_Handler        (100);
+      AWS.Config.Set.WebSocket_Message_Queue_Size (100);
 
       AWS.Config.Set.Upload_Directory (Web_Config,
                                        Gnoga.Server.Upload_Directory);

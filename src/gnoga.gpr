@@ -1,4 +1,4 @@
-with "../deps/aws/aws.gpr";
+with "aws";
 with "../settings";
 
 project Gnoga is

@@ -707,6 +707,9 @@ package body Gnoga.Server.Connection is
                Execute_Script (ID, "0");
             exception
                when others =>
+                  if Verbose_Output then
+                     Gnoga.Log ("Watchdog closed connection ID " & ID'Img);
+                  end if;
                   Connection_Manager.Delete_Connection (ID);
             end;
       end Ping;

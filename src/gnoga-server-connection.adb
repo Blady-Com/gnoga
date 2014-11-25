@@ -702,7 +702,13 @@ package body Gnoga.Server.Connection is
          Execute_Script (ID, "0");
       exception
          when others =>
-            null;
+            begin
+               delay 3.0;
+               Execute_Script (ID, "0");
+            exception
+               when others =>
+                  Connection_Manager.Delete_Connection (ID);
+            end;
       end Ping;
    begin
       accept Start;
@@ -858,8 +864,7 @@ package body Gnoga.Server.Connection is
    begin
       Gnoga.Log ("Connection error ID" & ID'Img &
                    " with message : " & Message);
-      --  Need to add a check for deleting connections that have not
-      --  reconnected
+      --  If not reconnected by next ping of ID, connection will be deleted.
    end On_Error;
 
    --------------------

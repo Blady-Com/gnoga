@@ -62,6 +62,7 @@
         }
   }
 
+window.onload = function() {
   $( document ).ready(function() {
      var s = document.location.search;
      var tokens;
@@ -81,11 +82,12 @@
      ws = new WebSocket (adr);
 
      if (ws != null) {
-        Setup_ws();
+        setTimeout (Setup_ws, 10);
      } else {
         document.writeln ("If you are seeing this your browser or your connection to the internet is blocking websockets.");
      }
   });
+}
 </script>
 <!--@@data.push_params@@-->
 </HTML>

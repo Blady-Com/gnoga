@@ -197,6 +197,7 @@ package body Gnoga.Server.Connection is
    procedure Do_Get_Head (Client : in out Gnoga_HTTP_Client;
                           Get    : in     Boolean)
    is
+      use Ada.Strings;
       use Ada.Strings.Unbounded;
       use Ada.Strings.Fixed;
 
@@ -213,8 +214,6 @@ package body Gnoga.Server.Connection is
          function Get_Extension return String;
 
          function Get_Extension return String is
-            use Ada.Strings;
-
             N : Integer := Index (File_Name, ".", Going => Backward);
          begin
             if N = 0 then
@@ -250,34 +249,58 @@ package body Gnoga.Server.Connection is
       end Mime_Type;
 
       function Adjust_Name return String is
+         function Base_Name return String;
+         function Start_Path return String;
+
+         function Base_Name return String is
+            Q : Integer := Index (Status.File, "?", Going => Backward);
+         begin
+            if Q = 0 then
+               Q := Index (Status.File, "#", Going => Backward);
+            end if;
+
+            if Q = 0 then
+               return Status.File;
+            else
+               return Status.File (Status.File'First .. Q - 1);
+            end if;
+         end Base_Name;
+
+         function Start_Path return String is
+            Q : Integer := Index (Status.File, "/");
+         begin
+            if Q = 0 then
+               return "";
+            else
+               return Status.File (Status.File'First .. Q - 1);
+            end if;
+         end Start_Path;
+
+         File_Name : String := Base_Name;
+         Start     : String := Start_Path;
       begin
-         if Status.File = "" then
+         if Start = "" and File_Name = "" then
             return Gnoga.Server.HTML_Directory & To_String (Boot_HTML);
-
-         elsif Index (Status.File, "js/") = Status.File'First then
-            return Gnoga.Server.Application_Directory & Status.File;
-
-         elsif Index (Status.File, "css/") = Status.File'First then
-            return Gnoga.Server.Application_Directory & Status.File;
-
-         elsif Index (Status.File, "img/") = Status.File'First then
-            return Gnoga.Server.Application_Directory & Status.File;
+         elsif Start = "js" or Start = "css" or Start = "img" then
+            return Gnoga.Server.Application_Directory & File_Name;
          else
-            return Gnoga.Server.HTML_Directory & Status.File;
+            if Ada.Directories.Exists
+              (Gnoga.Server.HTML_Directory & File_Name)
+            then
+               return Gnoga.Server.HTML_Directory & File_Name;
+            else
+               return Gnoga.Server.HTML_Directory & To_String (Boot_HTML);
+            end if;
          end if;
       end Adjust_Name;
 
    begin
-      Gnoga.Log ("Do_Get_Head Start");
-
       case Status.Kind is
          when None =>
             Gnoga.Log ("File kind none requested");
 
             Reply_Text (Client, 404, "Not found", "Not found");
          when File =>
-            Gnoga.Log ("File kind file requested - " & Status.File);
-
             Send_Status_Line (Client, 200, "OK");
             Send_Date (Client);
             Send (Client,
@@ -289,27 +312,20 @@ package body Gnoga.Server.Connection is
             declare
                F : String := Adjust_Name;
             begin
-               if Ada.Directories.Exists (F) then
-                  Send_Content_Type (Client, Mime_Type (F));
-                  declare
-                     use Ada.Streams.Stream_IO;
-                  begin
-                     if Is_Open (Client.Content.FS) then
-                        Close (Client.Content.FS);
-                     end if;
+               Send_Content_Type (Client, Mime_Type (F));
+               declare
+                  use Ada.Streams.Stream_IO;
+               begin
+                  if Is_Open (Client.Content.FS) then
+                     Close (Client.Content.FS);
+                  end if;
 
-                     Open (Client.Content.FS, In_File, F,
-                           Form => "shared=yes");
-                     Send_Body (Client,
-                                Stream (Client.Content.FS),
-                                Get);
-                  end;
-               else
-                  Reply_Text (Client,
-                              404,
-                              "Not found",
-                              "No file " & Quote (Status.File) & " found");
-               end if;
+                  Open (Client.Content.FS, In_File, F,
+                        Form => "shared=yes");
+                  Send_Body (Client,
+                             Stream (Client.Content.FS),
+                             Get);
+               end;
             end;
          when URI =>
             Gnoga.Log ("File kind URI requested - " & Status.Path);
@@ -918,7 +934,6 @@ package body Gnoga.Server.Connection is
    begin
       if ID /= Gnoga.Types.No_Connection then
          Connection_Manager.Delete_Connection (ID);
-         --  Watchdog will delete later if connection is really dead.
 
          if Verbose_Output then
             Gnoga.Log ("Connection disconnected - ID" & ID'Img &
@@ -1199,7 +1214,9 @@ package body Gnoga.Server.Connection is
       end Try_Execute;
 
    begin
-      Try_Execute;
+      if Connection_Manager.Valid (ID) then
+         Try_Execute;
+      end if;
    exception
       when others =>
          begin
@@ -1264,7 +1281,11 @@ package body Gnoga.Server.Connection is
       end Try_Execute;
    begin
       begin
-         return Try_Execute;
+         if Connection_Manager.Valid (ID) then
+            return Try_Execute;
+         else
+            raise Connection_Error with "Invalid ID " & ID'Img;
+         end if;
       exception
          when others =>
             begin

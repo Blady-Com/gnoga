@@ -45,34 +45,22 @@ with GNAT.Traceback.Symbolic;
 
 with Ada.Containers.Ordered_Maps;
 
-with AWS.Config;
-with AWS.Config.Set;
-with AWS.Messages;
-with AWS.MIME;
-with AWS.Services.Web_Block.Registry;
-with AWS.Response;
-with AWS.Services.Dispatchers.URI;
-with AWS.Status;
-with AWS.Server;
-with AWS.Dispatchers;
-with AWS.Parameters;
-with AWS.Net.WebSocket;
-with AWS.Net.WebSocket.Registry;
-with AWS.Net.WebSocket.Registry.Control;
-
-with Gnoga.Server.Template_Parser.Simple;
+with Strings_Edit.Quoted;
+with GNAT.Sockets.Server; use GNAT.Sockets.Server;
+with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
+with Ada.Text_IO;
+with Ada.Streams.Stream_IO;
 
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Unique_ID;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
 
-   Boot_HTML : Ada.Strings.Unbounded.Unbounded_String;
+   use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
+
+   Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
+   Server_Port : GNAT.Sockets.Port_Type;
 
    Verbose_Output : Boolean := False;
-
-   Web_Server         : AWS.Server.HTTP;
-   Web_Config         : AWS.Config.Object;
-   Web_Dispatcher     : AWS.Services.Dispatchers.URI.Handler;
 
    On_Connect_Event : Connect_Event := null;
    On_Post_Event    : Post_Event    := null;
@@ -85,74 +73,279 @@ package body Gnoga.Server.Connection is
    end Watchdog;
    --  Keep alive and check connections
 
+   type Gnoga_HTTP_Factory (Request_Length  : Positive;
+                            Output_Size     : Buffer_Length;
+                            Max_Connections : Positive)
+   is new Connections_Factory with null record;
+
+   overriding
+   function Create (Factory  : access Gnoga_HTTP_Factory;
+                    Listener : access Connections_Server'Class;
+                    From     : GNAT.Sockets.Sock_Addr_Type)
+                    return Connection_Ptr;
+
+   type Gnoga_HTTP_Content is
+      record
+         FS : Ada.Streams.Stream_IO.File_Type;
+      end record;
+   procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
+                    Item   : in     Gnoga_HTTP_Content);
+   for Gnoga_HTTP_Content'Write use Write;
+
+   procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
+                    Item   : in     Gnoga_HTTP_Content)
+   is
+   begin
+      null;
+   end Write;
+
+   type Gnoga_HTTP_Client is new HTTP_Client with
+      record
+         Content : Gnoga_HTTP_Content;
+      end record;
+
+   type Socket_Type is access all Gnoga_HTTP_Client;
+
+   overriding
+   procedure Do_Get  (Client : in out Gnoga_HTTP_Client);
+
+   overriding
+   procedure Do_Head (Client : in out Gnoga_HTTP_Client);
+
+   overriding
+   function WebSocket_Open (Client : access Gnoga_HTTP_Client)
+                            return WebSocket_Accept;
+
+   overriding
+   procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client);
+
+   overriding
+   procedure WebSocket_Received (Client  : in out Gnoga_HTTP_Client;
+                                 Message : in     String);
+
+   overriding
+   procedure WebSocket_Closed (Client  : in out Gnoga_HTTP_Client;
+                               Status  : in     WebSocket_Status;
+                               Message : in     String);
+
+   overriding
+   procedure WebSocket_Error
+     (Client : in out Gnoga_HTTP_Client;
+      Error  : in     Ada.Exceptions.Exception_Occurrence);
+
+   -----------------------
+   -- Gnoga_HTTP_Server --
+   -----------------------
+
+   Server_Wait : Connection_Holder_Type;
+
+   task Gnoga_HTTP_Server is
+      entry Start;
+      entry Stop;
+   end Gnoga_HTTP_Server;
+
+   task body Gnoga_HTTP_Server is
+   begin
+      accept Start;
+
+      declare
+         Factory : aliased Gnoga_HTTP_Factory (Request_Length  => 200,
+                                               Output_Size     => 1024,
+                                               Max_Connections => 100);
+         Server  : GNAT.Sockets.Server.
+           Connections_Server (Factory'Access,  Server_Port);
+      begin
+         if Verbose_Output then
+            Gnoga.Log ("HTTP Server Started");
+            --  Trace_On (Factory => Factory, Received => True, Sent => True);
+         end if;
+
+         accept Stop;
+
+         Server_Wait.Release;
+
+         if Verbose_Output then
+            Gnoga.Log ("HTTP Server Stopping");
+         end if;
+      end;
+   end Gnoga_HTTP_Server;
+
+   ------------
+   -- Create --
+   ------------
+
+   overriding
+   function Create (Factory  : access Gnoga_HTTP_Factory;
+                    Listener : access Connections_Server'Class;
+                    From     : GNAT.Sockets.Sock_Addr_Type)
+                    return Connection_Ptr
+   is
+   begin
+      return new Gnoga_HTTP_Client
+        (Listener       => Listener.all'Unchecked_Access,
+         Request_Length => Factory.Request_Length,
+         Output_Size    => Factory.Output_Size);
+   end Create;
+
+   -----------------
+   -- Do_Get_Head --
+   -----------------
+
+   procedure Do_Get_Head (Client : in out Gnoga_HTTP_Client;
+                          Get    : in     Boolean);
+
+   procedure Do_Get_Head (Client : in out Gnoga_HTTP_Client;
+                          Get    : in     Boolean)
+   is
+      use Ada.Strings.Unbounded;
+      use Ada.Strings.Fixed;
+
+      use Strings_Edit.Quoted;
+
+      CRLF : constant String := (Character'Val (13), Character'Val (10));
+
+      Status : Status_Line renames Get_Status_Line (Client);
+
+      function Adjust_Name return String;
+      function Mime_Type (File_Name : String) return String;
+
+      function Mime_Type (File_Name : String) return String is
+         function Get_Extension return String;
+
+         function Get_Extension return String is
+            use Ada.Strings;
+
+            N : Integer := Index (File_Name, ".", Going => Backward);
+         begin
+            if N = 0 then
+               return "";
+            else
+               return File_Name (N + 1 .. File_Name'Last);
+            end if;
+         end Get_Extension;
+
+         Ext : String := Get_Extension;
+      begin
+         if Ext = "js" then
+            return "text/javascript";
+         elsif Ext = "css" then
+            return "text/css";
+         elsif Ext = "jpg" or Ext = "jpeg" or Ext = "jpe" then
+            return "image/jpg";
+         elsif Ext = "png" then
+            return "image/png";
+         elsif Ext = "gif" then
+            return "image/gif";
+         elsif Ext = "pdf" then
+            return "application/pdf";
+         elsif Ext = "zip" then
+            return "application/zip";
+         elsif Ext = "ico" then
+            return "image/x-icon";
+         elsif Ext = "html" or Ext = "htm" then
+            return "text/html";
+         else
+            return "text/plain";
+         end if;
+      end Mime_Type;
+
+      function Adjust_Name return String is
+      begin
+         if Status.File = "" then
+            return Gnoga.Server.HTML_Directory & To_String (Boot_HTML);
+
+         elsif Index (Status.File, "js/") = Status.File'First then
+            return Gnoga.Server.Application_Directory & Status.File;
+
+         elsif Index (Status.File, "css/") = Status.File'First then
+            return Gnoga.Server.Application_Directory & Status.File;
+
+         elsif Index (Status.File, "img/") = Status.File'First then
+            return Gnoga.Server.Application_Directory & Status.File;
+         else
+            return Gnoga.Server.HTML_Directory & Status.File;
+         end if;
+      end Adjust_Name;
+
+   begin
+      Gnoga.Log ("Do_Get_Head Start");
+
+      case Status.Kind is
+         when None =>
+            Gnoga.Log ("File kind none requested");
+
+            Reply_Text (Client, 404, "Not found", "Not found");
+         when File =>
+            Gnoga.Log ("File kind file requested - " & Status.File);
+
+            Send_Status_Line (Client, 200, "OK");
+            Send_Date (Client);
+            Send (Client,
+                  "Cache-Control: no-cache, no-store, must-revalidate" & CRLF);
+            Send (Client, "Pragma: no-cache" & CRLF);
+            Send (Client, "Expires: 0" & CRLF);
+            Send_Server (Client);
+
+            declare
+               F : String := Adjust_Name;
+            begin
+               if Ada.Directories.Exists (F) then
+                  Send_Content_Type (Client, Mime_Type (F));
+                  declare
+                     use Ada.Streams.Stream_IO;
+                  begin
+                     if Is_Open (Client.Content.FS) then
+                        Close (Client.Content.FS);
+                     end if;
+
+                     Open (Client.Content.FS, In_File, F,
+                           Form => "shared=yes");
+                     Send_Body (Client,
+                                Stream (Client.Content.FS),
+                                Get);
+                  end;
+               else
+                  Reply_Text (Client,
+                              404,
+                              "Not found",
+                              "No file " & Quote (Status.File) & " found");
+               end if;
+            end;
+         when URI =>
+            Gnoga.Log ("File kind URI requested - " & Status.Path);
+
+            Reply_Text (Client,
+                        404,
+                        "Not found",
+                        "No URI " & Quote (Status.Path) & " found");
+      end case;
+   exception
+      when E : others =>
+         Log ("Do_Get_Head Error");
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+   end Do_Get_Head;
+
+   ------------
+   -- Do_Get --
+   ------------
+
+   overriding
+   procedure Do_Get  (Client : in out Gnoga_HTTP_Client) is
+   begin
+      Do_Get_Head (Client, True);
+   end Do_Get;
+
    -------------
-   -- Default --
+   -- Do_Head --
    -------------
 
-   type Default is new AWS.Services.Dispatchers.URI.Handler with null record;
-   --  Handle everything not covered by the other dispatchers (CSS, Image)
-
-   overriding function Dispatch
-     (Dispatcher : in Default;
-      Request    : in AWS.Status.Data) return AWS.Response.Data;
-
-   ---------
-   -- CSS --
-   ---------
-
-   type CSS is new AWS.Services.Dispatchers.URI.Handler with null record;
-
-   overriding function Dispatch
-     (Dispatcher : in CSS;
-      Request    : in AWS.Status.Data) return AWS.Response.Data;
-
-   ---------
-   -- JS --
-   ---------
-
-   type JS is new AWS.Services.Dispatchers.URI.Handler with null record;
-
-   overriding function Dispatch
-     (Dispatcher : in JS;
-      Request    : in AWS.Status.Data) return AWS.Response.Data;
-
-   -----------
-   -- Image --
-   -----------
-
-   type Image is new AWS.Services.Dispatchers.URI.Handler with null record;
-
-   overriding function Dispatch
-     (Dispatcher : in Image;
-      Request    : in AWS.Status.Data) return AWS.Response.Data;
-
-   ------------------
-   --  Socket_Type --
-   ------------------
-
-   type Socket_Type is new AWS.Net.WebSocket.Object with null record;
-
-   function Socket_Type_Create
-     (Socket  : AWS.Net.Socket_Access;
-      Request : AWS.Status.Data)
-      return AWS.Net.WebSocket.Object'Class;
-
-   overriding procedure On_Open
-     (Web_Socket : in out Socket_Type; Message : String);
-
-   overriding procedure On_Close
-     (Web_Socket : in out Socket_Type; Message : String);
-
-   overriding procedure On_Error
-     (Web_Socket : in out Socket_Type; Message : String);
-
-   overriding procedure On_Message
-     (Web_Socket : in out Socket_Type; Message : String);
-
-   Default_Dispatcher : Default;
-   CSS_Dispatcher     : CSS;
-   JS_Dispatcher      : JS;
-   Image_Dispatcher   : Image;
+   overriding
+   procedure Do_Head (Client : in out Gnoga_HTTP_Client) is
+   begin
+      Do_Get_Head (Client, False);
+   end Do_Head;
 
    ----------------
    -- Initialize --
@@ -166,19 +359,8 @@ package body Gnoga.Server.Connection is
    begin
       Verbose_Output := Verbose;
 
-      --  Setup server
-      AWS.Config.Set.Reuse_Address    (Web_Config, True);
-      AWS.Config.Set.Server_Host      (Web_Config, Host);
-      AWS.Config.Set.Server_Port      (Web_Config, Port);
-
-      AWS.Config.Set.Max_WebSocket                (1024);
-      AWS.Config.Set.Max_WebSocket_Handler        (100);
-      AWS.Config.Set.WebSocket_Message_Queue_Size (100);
-
-      AWS.Config.Set.Upload_Directory (Web_Config,
-                                       Gnoga.Server.Upload_Directory);
-
-      Boot_HTML := Ada.Strings.Unbounded.To_Unbounded_String ("/" & Boot);
+      Boot_HTML := Ada.Strings.Unbounded.To_Unbounded_String (Boot);
+      Server_Port := GNAT.Sockets.Port_Type (Port);
 
       if Verbose then
          Write_To_Console ("Application root :" & Application_Directory);
@@ -193,34 +375,6 @@ package body Gnoga.Server.Connection is
                              Left_Trim (Port'Img));
       end if;
 
-      AWS.Net.WebSocket.Registry.Register ("/gnoga",
-                                           Socket_Type_Create'Access);
-      AWS.Net.WebSocket.Registry.Control.Start;
-
-      --  Setup dispatchers
-
-      AWS.Services.Dispatchers.URI.Register
-        (Web_Dispatcher,
-         URI    => "/css/",
-         Action => CSS_Dispatcher,
-         Prefix => True);
-
-      AWS.Services.Dispatchers.URI.Register
-        (Web_Dispatcher,
-         URI    => "/js/",
-         Action => JS_Dispatcher,
-         Prefix => True);
-
-      AWS.Services.Dispatchers.URI.Register
-        (Web_Dispatcher,
-         URI    => "/img/",
-         Action => Image_Dispatcher,
-         Prefix => True);
-
-      AWS.Services.Dispatchers.URI.Register_Default_Callback
-        (Web_Dispatcher,
-         Action => Default_Dispatcher);
-
       Watchdog.Start;
    end Initialize;
 
@@ -230,11 +384,10 @@ package body Gnoga.Server.Connection is
 
    procedure Run is
    begin
-      --  Start the server
+      Gnoga_HTTP_Server.Start;
+      --  Neeeds Host config
 
-      AWS.Server.Start (Web_Server, Web_Dispatcher, Web_Config);
-
-      AWS.Server.Wait (AWS.Server.No_Server);
+      Server_Wait.Hold;
 
       Exit_Application_Requested := True;
    end Run;
@@ -247,166 +400,6 @@ package body Gnoga.Server.Connection is
    begin
       return Exit_Application_Requested;
    end Shutting_Down;
-
-   ----------------------
-   -- Default Dispatch --
-   ----------------------
-
-   overriding function Dispatch
-     (Dispatcher : in Default; Request : AWS.Status.Data)
-      return AWS.Response.Data
-   is
-      pragma Unreferenced (Dispatcher);
-
-      use type AWS.Status.Request_Method;
-      use Ada.Strings.Unbounded;
-
-      URI : constant String := AWS.Status.URI (Request);
-
-      function Adjusted_URI return String;
-
-      function Adjusted_URI return String is
-      begin
-         if URI = "/" then
-            return Ada.Strings.Unbounded.To_String (Boot_HTML);
-         else
-            return URI;
-         end if;
-      end Adjusted_URI;
-
-      R      : Ada.Strings.Unbounded.Unbounded_String;
-      Params : Gnoga.Types.Data_Map_Type;
-      V      : Gnoga.Server.Template_Parser.View_Data;
-      File   : constant String := HTML_Directory & Adjusted_URI;
-   begin
-      if AWS.Status.Method (Request) = AWS.Status.POST then
-         R := To_Unbounded_String ("--><script>");
-
-         declare
-            P : constant AWS.Parameters.List :=
-                  AWS.Status.Parameters (Request);
-
-            procedure Add_Param (Name, Value : in String);
-
-            procedure Add_Param (Name, Value : in String) is
-            begin
-               Params.Insert (Name, Value);
-            end Add_Param;
-         begin
-            if P.Count > 0 then
-               P.Iterate_Names ("|", Add_Param'Access);
-            end if;
-         end;
-
-         if On_Post_Event /= null then
-            On_Post_Event (URI, Params);
-         end if;
-
-         for C in Gnoga.Types.Data_Maps.Iterate (Params) loop
-            R := R  & "params['" & Gnoga.Types.Data_Maps.Key (C) & "']=""" &
-              Escape_Quotes (Gnoga.Types.Data_Maps.Element (C)) & """; ";
-         end loop;
-
-         R := R & "</script><!--";
-
-         V.Insert ("push_params", To_String (R));
-
-         if Ada.Directories.Exists (File) and
-           AWS.MIME.Content_Type (File) = AWS.MIME.Text_HTML
-         then
-            return AWS.Response.Build
-              (Content_Type => AWS.MIME.Text_HTML,
-               Message_Body => Gnoga.Server.Template_Parser.Simple.Load_View
-                 (File, V));
-         else
-            return AWS.Response.Build
-              (Content_Type => AWS.MIME.Text_HTML,
-               Message_Body => Gnoga.Server.Template_Parser.Simple.Load_View
-                 (HTML_Directory & To_String (Boot_HTML), V));
-         end if;
-      end if;
-
-      if Ada.Directories.Exists (File) then
-         return AWS.Response.File
-           (Content_Type => AWS.MIME.Content_Type (File),
-            Filename     => File);
-      else
-         --  Let application handle files not found in /html
-         return AWS.Response.File
-           (Content_Type => AWS.MIME.Text_HTML,
-            Filename     => HTML_Directory & To_String (Boot_HTML));
-      end if;
-   end Dispatch;
-
-   ------------------
-   -- CSS Dispatch --
-   ------------------
-
-   overriding
-   function Dispatch
-     (Dispatcher : in CSS;
-      Request    : in AWS.Status.Data) return AWS.Response.Data
-   is
-      pragma Unreferenced (Dispatcher);
-      URI  : constant String := AWS.Status.URI (Request);
-      File : constant String :=
-               CSS_Directory & URI (URI'First + 5 .. URI'Last);
-   begin
-      if Ada.Directories.Exists (File) then
-         return AWS.Response.File
-           (Content_Type => AWS.MIME.Text_CSS,
-            Filename     => File);
-      else
-         return AWS.Response.Acknowledge (AWS.Messages.S404);
-      end if;
-   end Dispatch;
-
-   -----------------
-   -- JS Dispatch --
-   -----------------
-
-   overriding
-   function Dispatch
-     (Dispatcher : in JS;
-      Request    : in AWS.Status.Data) return AWS.Response.Data
-   is
-      pragma Unreferenced (Dispatcher);
-      URI  : constant String := AWS.Status.URI (Request);
-      File : constant String :=
-               JS_Directory & URI (URI'First + 4 .. URI'Last);
-   begin
-      if Ada.Directories.Exists (File) then
-         return AWS.Response.File
-           (Content_Type => AWS.MIME.Text_Javascript,
-            Filename     => File);
-      else
-         return AWS.Response.Acknowledge (AWS.Messages.S404);
-      end if;
-   end Dispatch;
-
-   --------------------
-   -- Image Dispatch --
-   --------------------
-
-   overriding
-   function Dispatch
-     (Dispatcher : in Image;
-      Request    : in AWS.Status.Data) return AWS.Response.Data
-   is
-      pragma Unreferenced (Dispatcher);
-      URI  : constant String := AWS.Status.URI (Request);
-      File : constant String :=
-               IMG_Directory & URI (URI'First + 5 .. URI'Last);
-
-   begin
-      if Ada.Directories.Exists (File) then
-         return AWS.Response.File
-           (Content_Type => AWS.MIME.Content_Type (File),
-            Filename     => File);
-      else
-         return AWS.Response.Acknowledge (AWS.Messages.S404);
-      end if;
-   end Dispatch;
 
    ----------------------------
    -- Connection_Holder_Type --
@@ -542,7 +535,8 @@ package body Gnoga.Server.Connection is
          if Socket_Map.Contains (Old_ID) then
             Socket_Map.Replace (Old_ID, Socket_Map.Element (New_ID));
          else
-            raise Connection_Error with "Old connection already gone";
+            raise Connection_Error with
+              "Old connection " & Old_ID'Img & " already gone";
          end if;
       end Swap_Connection;
 
@@ -674,7 +668,7 @@ package body Gnoga.Server.Connection is
          --  in TRUE or FALSE not the case sensitive true or false
          --  expected.
 
-         On_Connect_Event (ID, Connection_Holder'Access);
+         On_Connect_Event (ID, Connection_Holder'Unchecked_Access);
       exception
          when Connection_Error =>
             --  Browser was closed by user
@@ -696,9 +690,9 @@ package body Gnoga.Server.Connection is
    --------------
 
    task body Watchdog is
-      procedure Ping (C : in Socket_Maps.Cursor);
+      procedure Ping (C : in out Socket_Maps.Cursor);
 
-      procedure Ping (C : in Socket_Maps.Cursor) is
+      procedure Ping (C : in out Socket_Maps.Cursor) is
          ID : Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
       begin
          Execute_Script (ID, "0");
@@ -712,16 +706,42 @@ package body Gnoga.Server.Connection is
                   if Verbose_Output then
                      Gnoga.Log ("Watchdog closed connection ID " & ID'Img);
                   end if;
-                  Socket_Map.Delete (ID);
-                  Connection_Manager.Delete_Connection (ID);
+
+                  begin
+                     Connection_Manager.Delete_Connection (ID);
+                  exception
+                     when E : others =>
+                        Log ("Watchdog error:");
+                        Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                               Ada.Exceptions.Exception_Message (E));
+                        Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+                  end;
             end;
       end Ping;
    begin
       accept Start;
 
       loop
+         declare
+            use Socket_Maps;
+
+            C : Socket_Maps.Cursor;
+            T : Socket_Maps.Cursor;
          begin
-            Socket_Map.Iterate (Ping'Access);
+            C := Socket_Map.First;
+
+            while C /= Socket_Map.Last loop
+               T := C;
+               C := Socket_Maps.Next (C);
+
+               Ping (T);
+            end loop;
+         exception
+            when E : others =>
+               Log ("Watchdog error:");
+               Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                      Ada.Exceptions.Exception_Message (E));
+               Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
          end;
 
          select
@@ -731,7 +751,6 @@ package body Gnoga.Server.Connection is
             delay 60.0;
          end select;
       end loop;
-
    end Watchdog;
 
    ---------------------------
@@ -787,91 +806,147 @@ package body Gnoga.Server.Connection is
       end Delete;
    end Object_Manager;
 
-   -------------------
-   -- Socket_Create --
-   -------------------
-
-   function Socket_Type_Create
-     (Socket  : AWS.Net.Socket_Access;
-      Request : AWS.Status.Data)
-      return AWS.Net.WebSocket.Object'Class
-   is
-   begin
-      return Socket_Type'(AWS.Net.WebSocket.Object
-                          (AWS.Net.WebSocket.Create (Socket, Request))
-                          with null record);
-   end Socket_Type_Create;
-
-   -------------
-   -- On_Open --
-   -------------
-
-   overriding procedure On_Open
-     (Web_Socket : in out Socket_Type; Message : String)
-   is
-      use type Gnoga.Types.Connection_ID;
-
-      ID     : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
-      Old_ID : String := AWS.Status.Parameter (Web_Socket.Request, "Old_ID");
-   begin
-      if On_Connect_Event /= null then
-         Connection_Manager.Add_Connection (Socket => Web_Socket,
-                                            New_ID => ID);
-         if Old_ID /= "" and Old_ID /= "undefined" then
-            if Verbose_Output then
-               Gnoga.Log ("Swaping connections " & ID'Img & " => " & Old_ID);
-            end if;
-
-            Connection_Manager.Swap_Connection
-              (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
-
-            Connection_Manager.Delete_Connection (ID);
-         else
-            Connection_Manager.Start_Connection (ID);
-
-            if Verbose_Output then
-               Gnoga.Log ("New connection - ID" & ID'Img);
-            end if;
-         end if;
-      else
-         Web_Socket.Close ("No connection event set");
-      end if;
-   end On_Open;
-
-   --------------
-   -- On_Close --
-   --------------
+   --------------------
+   -- WebSocket_Open --
+   --------------------
 
    overriding
-   procedure On_Close (Web_Socket : in out Socket_Type; Message : in String)
+   function WebSocket_Open (Client : access Gnoga_HTTP_Client)
+                            return WebSocket_Accept
    is
+      use Ada.Strings.Fixed;
+
+      use type Gnoga.Types.Connection_ID;
+
+      Status : Status_Line renames Get_Status_Line (Client.all);
+
+      F : String := Status.File;
+   begin
+      if F /= "gnoga" and Index (F, "gnoga?") = 0 then
+         Gnoga.Log ("Invalid URL for Websocket");
+         declare
+            Reason : constant String := "Invalid URL";
+         begin
+            return (False, Reason'Length, 400, Reason);
+         end;
+      end if;
+
+      if On_Connect_Event /= null then
+         return (True, 0, 1024, True, "");
+      else
+         Gnoga.Log ("No Connection event set.");
+         declare
+            Reason : constant String := "No connection event set";
+         begin
+            return (False, Reason'Length, 400, Reason);
+         end;
+      end if;
+   end WebSocket_Open;
+
+   --------------------------
+   -- WebSocket_Initialize --
+   --------------------------
+
+   overriding
+   procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client)
+   is
+      Status : Status_Line renames Get_Status_Line (Client);
+
+      F      : String := Status.File;
+      S      : Socket_Type := Client'Unchecked_Access;
+
+      ID     : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+
+      function Get_Old_ID return String;
+
+      function Get_Old_ID return String is
+         use Ada.Strings.Fixed;
+
+         C : String := "Old_ID=";
+
+         I : Integer := Index (F, C);
+      begin
+         if I > 0 then
+            return F (I + C'Length .. F'Last);
+         else
+            return "";
+         end if;
+      end Get_Old_ID;
+
+      Old_ID : String := Get_Old_ID;
+   begin
+      Connection_Manager.Add_Connection (Socket => S,
+                                         New_ID => ID);
+
+      if Old_ID /= "" and Old_ID /= "undefined" then
+         if Verbose_Output then
+            Gnoga.Log ("Swaping connections " & ID'Img & " => " & Old_ID);
+         end if;
+
+         Connection_Manager.Swap_Connection
+           (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
+
+         Connection_Manager.Delete_Connection (ID);
+      else
+         Connection_Manager.Start_Connection (ID);
+
+         if Verbose_Output then
+            Gnoga.Log ("New connection - ID" & ID'Img);
+         end if;
+      end if;
+   exception
+      when Error : others =>
+         Gnoga.Log ("Open error ID" & ID'Img &
+                   " with message : " &
+                   Ada.Exceptions.Exception_Name (Error) & " - " &
+                   Ada.Exceptions.Exception_Message (Error));
+   end WebSocket_Initialize;
+
+   ----------------------
+   -- WebSocket_Closed --
+   ----------------------
+
+   overriding
+   procedure WebSocket_Closed (Client  : in out Gnoga_HTTP_Client;
+                               Status  : in     WebSocket_Status;
+                               Message : in     String)
+   is
+      S  : Socket_Type := Client'Unchecked_Access;
+
       ID : Gnoga.Types.Connection_ID :=
-             Connection_Manager.Find_Connetion_ID (Web_Socket);
+             Connection_Manager.Find_Connetion_ID (S);
    begin
       if ID /= Gnoga.Types.No_Connection then
          Connection_Manager.Delete_Connection (ID);
+         --  Watchdog will delete later if connection is really dead.
 
          if Verbose_Output then
             Gnoga.Log ("Connection disconnected - ID" & ID'Img &
                          " with message : " & Message);
          end if;
       end if;
-   end On_Close;
+   end WebSocket_Closed;
 
-   --------------
-   -- On_Error --
-   --------------
+   ---------------------
+   -- WebSocket_Error --
+   ---------------------
 
    overriding
-   procedure On_Error (Web_Socket : in out Socket_Type; Message : in String)
+   procedure WebSocket_Error
+     (Client : in out Gnoga_HTTP_Client;
+      Error  : in     Ada.Exceptions.Exception_Occurrence)
    is
+      S  : Socket_Type := Client'Unchecked_Access;
+
       ID : Gnoga.Types.Connection_ID :=
-             Connection_Manager.Find_Connetion_ID (Web_Socket);
+             Connection_Manager.Find_Connetion_ID (S);
    begin
       Gnoga.Log ("Connection error ID" & ID'Img &
-                   " with message : " & Message);
+                   " with message : " &
+                   Ada.Exceptions.Exception_Name (Error) & " - " &
+                   Ada.Exceptions.Exception_Message (Error));
       --  If not reconnected by next ping of ID, connection will be deleted.
-   end On_Error;
+   end WebSocket_Error;
 
    --------------------
    -- Script_Manager --
@@ -957,9 +1032,9 @@ package body Gnoga.Server.Connection is
 
    Script_Manager : Script_Manager_Type;
 
-   ----------------
-   -- On_Message --
-   ----------------
+   ------------------------
+   -- WebSocket_Received --
+   ------------------------
 
    task type Dispatch_Task_Type
      (Object : Gnoga.Gui.Base.Pointer_To_Base_Class)
@@ -1050,9 +1125,9 @@ package body Gnoga.Server.Connection is
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Dispatch_Task_Type;
 
-   overriding procedure On_Message
-     (Web_Socket : in out Socket_Type;
-      Message    : String)
+   overriding
+   procedure WebSocket_Received (Client  : in out Gnoga_HTTP_Client;
+                                 Message : in     String)
    is
       use Ada.Strings.Fixed;
    begin
@@ -1093,7 +1168,13 @@ package body Gnoga.Server.Connection is
               (Event, Event_Data, New_ID);
          end;
       end if;
-   end On_Message;
+   exception
+      when E : others =>
+         Log ("Message Error");
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+   end WebSocket_Received;
 
    --------------------
    -- Execute_Script --
@@ -1102,16 +1183,29 @@ package body Gnoga.Server.Connection is
    procedure Execute_Script (ID     : in Gnoga.Types.Connection_ID;
                              Script : in String)
    is
-   begin
-      declare
+      procedure Try_Execute;
+
+      procedure Try_Execute is
          Socket  : Socket_Type := Connection_Manager.Connection_Socket (ID);
       begin
-         Socket.Send (Script);
-      end;
+         Socket.WebSocket_Send (Script);
+      exception
+         when Ada.Text_IO.End_Error =>
+            raise Connection_Error with
+              "Socket Closed before execute of : " & Script;
+         when others =>
+            raise Connection_Error with
+              "Socket Error during execute of : " & Script;
+      end Try_Execute;
+
+   begin
+      Try_Execute;
    exception
-      when AWS.Net.Socket_Error =>
-         raise Connection_Error with
-           "Socket Error during execute of : " & Script;
+      when others =>
+         begin
+            delay 2.0;
+            Try_Execute;
+         end;
    end Execute_Script;
 
    function Execute_Script (ID     : in Gnoga.Types.Connection_ID;
@@ -1138,7 +1232,7 @@ package body Gnoga.Server.Connection is
                            "eval (""" & Escape_Quotes (Script) & """)" &
                            ");";
             begin
-               Socket.Send (Message);
+               Socket.WebSocket_Send (Message);
 
                select
                   delay 3.0; --  Timeout for browser to return answer
@@ -1152,14 +1246,21 @@ package body Gnoga.Server.Connection is
                end select;
             end;
 
-            Script_Manager.Delete_Script_Holder (Script_ID);
+            declare
+               Result : String := Script_Holder.Result;
+            begin
+               Script_Manager.Delete_Script_Holder (Script_ID);
 
-            return Script_Holder.Result;
+               return Result;
+            end;
          end;
       exception
-         when AWS.Net.Socket_Error =>
+         when Ada.Text_IO.End_Error =>
             raise Connection_Error with
-              "Socket Error, Browser dropped connection";
+              "Socket Closed before execute of : " & Script;
+         when others =>
+            raise Connection_Error with
+              "Socket Error during execute of : " & Script;
       end Try_Execute;
    begin
       begin
@@ -1240,7 +1341,7 @@ package body Gnoga.Server.Connection is
 
    procedure Close (ID : Gnoga.Types.Connection_ID) is
    begin
-      Execute_Script (ID, "ws.close();");
+      Execute_Script (ID, "ws.close()");
    end Close;
 
    -------------------
@@ -1327,7 +1428,6 @@ package body Gnoga.Server.Connection is
       Exit_Application_Requested := True;
       Watchdog.Stop;
       Connection_Manager.Delete_All_Connections;
-      AWS.Server.Shutdown (Web_Server);
+      Gnoga_HTTP_Server.Stop;
    end Stop;
-
 end Gnoga.Server.Connection;

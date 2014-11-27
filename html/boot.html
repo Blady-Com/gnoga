@@ -1,8 +1,9 @@
 <!doctype HTML>
 <HTML>
    <HEAD>
-      <meta http-equiv="Pragma" content="no-cache">
-      <meta http-equiv="Expires" content="-1">
+      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+      <meta http-equiv="Pragma" content="no-cache" />
+      <meta http-equiv="Expires" content="0" />
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <script src="/js/jquery.min.js"></script>
@@ -46,10 +47,17 @@
            }
         }
         ws.onclose = function (event) {
-           if (gnoga['html_on_close'] != "") {
-             $(document.body).html(gnoga['html_on_close']);
+           if (reconnects < 2) {
+              console.log ("onerror: reconnect " + reconnects);
+              ws.onclose=null;
+              ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
+              setTimeout (Setup_ws, 100);
            } else {
-             alert ("Server connection lost " + event.reason);
+              if (gnoga['html_on_close'] != "") {
+                 $(document.body).html(gnoga['html_on_close']);
+              } else {
+                 alert ("Server connection lost " + event.reason);
+              }
            }
         }
   }

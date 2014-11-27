@@ -1,5 +1,5 @@
-with "aws";
 with "../settings";
+with "../deps/simple_components/components-connections_server-http_server.gpr";
 
 project Gnoga is
 

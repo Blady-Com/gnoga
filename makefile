@@ -55,7 +55,7 @@ tutorials:
 	- cd tutorial/tutorial-11 && gprbuild -p
 
 clean:
-	cd src && gprclean -Pgnoga.gpr
+	cd src && gprclean -r -Pgnoga.gpr
 	cd tools && gprclean -Ptools.gpr
 	cd test && gprclean
 	cd demo/adablog && gprclean

@@ -1,0 +1,31 @@
+with "components.gpr";
+
+project Components.SQLite is
+
+   for Source_Dirs use (".", "sqlite-sources");
+   for Languages use ("Ada", "C");
+
+   for Source_Files use
+   (  "persistent-sqlite_keys-arrays.ads",
+      "persistent-sqlite_keys-sets.ads",
+      "persistent-sqlite_keys.adb",
+      "persistent-sqlite_keys.ads",
+      "persistent-sqlite_links.adb",
+      "persistent-sqlite_links.ads",
+      "persistent-sqlite.adb",
+      "persistent-sqlite.ads",
+      "persistent-sqlite-text_io.adb",
+      "persistent-sqlite-text_io.ads",
+      "sqlite.adb",
+      "sqlite.ads",
+      "sqlite3.h",
+      "sqlite3.c"
+   );
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.SQLite;
+

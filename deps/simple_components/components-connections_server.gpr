@@ -1,0 +1,57 @@
+with "components.gpr";
+
+project Components.Connections_Server is
+
+   for Source_Files use
+   (  "gnat-sockets-connection_state_machine.adb",
+      "gnat-sockets-connection_state_machine.ads",
+      "gnat-sockets-connection_state_machine-big_endian.ads",
+	  "gnat-sockets-connection_state_machine-big_endian-generic_double_precision_ieee_754.ads",
+	  "gnat-sockets-connection_state_machine-big_endian-generic_double_precision_ieee_754.adb",
+	  "gnat-sockets-connection_state_machine-big_endian-generic_single_precision_ieee_754.ads",
+	  "gnat-sockets-connection_state_machine-big_endian-generic_single_precision_ieee_754.adb",
+	  "gnat-sockets-connection_state_machine-big_endian-ieee_754_floats.ads",
+	  "gnat-sockets-connection_state_machine-big_endian-ieee_754_long_floats.ads",
+      "gnat-sockets-connection_state_machine-big_endian-integers.adb",
+      "gnat-sockets-connection_state_machine-big_endian-integers.ads",
+      "gnat-sockets-connection_state_machine-big_endian-unsigneds.adb",
+      "gnat-sockets-connection_state_machine-big_endian-unsigneds.ads",
+	  "gnat-sockets-connection_state_machine-chain_code.ads",
+	  "gnat-sockets-connection_state_machine-chain_code-generic_integer.adb",
+	  "gnat-sockets-connection_state_machine-chain_code-generic_integer.ads",
+	  "gnat-sockets-connection_state_machine-chain_code-generic_unsigned.adb",
+	  "gnat-sockets-connection_state_machine-chain_code-generic_unsigned.ads",
+	  "gnat-sockets-connection_state_machine-chain_code-integers.ads",
+	  "gnat-sockets-connection_state_machine-chain_code-naturals.ads",
+      "gnat-sockets-connection_state_machine-expected_sequence.adb",
+      "gnat-sockets-connection_state_machine-expected_sequence.ads",
+      "gnat-sockets-connection_state_machine-little_endian.ads",
+	  "gnat-sockets-connection_state_machine-little_endian-generic_double_precision_ieee_754.ads",
+	  "gnat-sockets-connection_state_machine-little_endian-generic_double_precision_ieee_754.adb",
+	  "gnat-sockets-connection_state_machine-little_endian-generic_single_precision_ieee_754.ads",
+	  "gnat-sockets-connection_state_machine-little_endian-generic_single_precision_ieee_754.adb",
+	  "gnat-sockets-connection_state_machine-little_endian-ieee_754_floats.ads",
+	  "gnat-sockets-connection_state_machine-little_endian-ieee_754_long_floats.ads",
+      "gnat-sockets-connection_state_machine-little_endian-integers.adb",
+      "gnat-sockets-connection_state_machine-little_endian-integers.ads",
+      "gnat-sockets-connection_state_machine-little_endian-unsigneds.adb",
+      "gnat-sockets-connection_state_machine-little_endian-unsigneds.ads",
+      "gnat-sockets-connection_state_machine-terminated_strings.adb",
+      "gnat-sockets-connection_state_machine-terminated_strings.ads",
+      "gnat-sockets-connection_state_machine-variable_length_arrays.adb",
+      "gnat-sockets-connection_state_machine-variable_length_arrays.ads",
+	  "gnat-sockets-connection_state_machine-variable_length_strings.adb",
+      "gnat-sockets-connection_state_machine-variable_length_strings.ads",
+      "gnat-sockets-server.ads",
+      "gnat-sockets-server.adb",
+      "gnat-sockets-server-pooled.adb",
+	  "gnat-sockets-server-pooled.ads"
+   );
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Connections_Server;
+

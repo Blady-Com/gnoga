@@ -1,0 +1,18 @@
+with "components.gpr";
+with "components-connections_server-http_server.gpr";
+with "components-sqlite.gpr";
+
+project Components.Connections_Server.HTTP_Server.SQLite_Browser is
+
+   for Source_Files use
+       (  "gnat-sockets-connection_state_machine-http_server-sqlite_browser.adb",
+          "gnat-sockets-connection_state_machine-http_server-sqlite_browser.ads"
+       );
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Connections_Server.HTTP_Server.SQLite_Browser;
+

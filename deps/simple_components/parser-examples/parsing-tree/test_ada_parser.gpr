@@ -1,0 +1,9 @@
+with "../../components.gpr";
+
+project Test_Ada_parser is
+
+   for Source_Dirs use (".");
+   for Main use ("test_ada_parser.adb");
+
+end Test_Ada_parser;
+

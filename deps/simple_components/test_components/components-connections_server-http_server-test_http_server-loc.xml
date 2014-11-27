@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/components-connections_server-http_server-test_http_server.gpr</vfs_file>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_server.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 18" line=" 252" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 73" >
+      <vfs_file>/opt/gcc-4.9.1/lib/gcc/x86_64-apple-darwin13/4.9.1/adainclude/a-ststio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 18" line=" 252" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 73" >
+      <vfs_file>/opt/gcc-4.9.1/lib/gcc/x86_64-apple-darwin13/4.9.1/adainclude/a-ststio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 33" line=" 252" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 7" line=" 110" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 38" line=" 250" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 7" line=" 110" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 16" line=" 94" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 14" line=" 485" >
+      <vfs_file>/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.adb</vfs_file>
+    </file_marker>
+  </Project>
+  <Project >
+    <file_marker column=" 1" line=" 1">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_http_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_websocket_duplex_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 16" line=" 55">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_websocket_duplex_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 44">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_websocket_duplex_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 62">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/gnat-sockets-server.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 35" line=" 53">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_websocket_duplex_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 1450">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-http_server.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 50" line=" 12">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-http_server.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 17" line=" 42">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-http_server.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 16" line=" 55">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_websocket_duplex_servers.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 178">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_websocket_duplex_servers.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 1502">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-http_server.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 238">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-http_server.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 43">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-http_server.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 1" line=" 1">
+      <vfs_file >/Users/dbotton/Projects/gnoga/deps/simple_components/test_components/test_websocket_duplex_server.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

@@ -1,0 +1,75 @@
+project Tables is
+
+   type Legacy_Type is ("Ada95", "Ada2005", "Ada2012");
+   Legacy : Legacy_Type := external ("Legacy", "Ada2005");
+
+   type Development_Type is ("Debug", "Release");
+   Development : Development_Type := external ("Development", "Debug");
+
+   for Source_Dirs use (".");
+   for Object_Dir use ".";
+   
+   for Source_Files use
+       (  "tables-names.adb",
+          "tables-names.ads",
+          "tables.adb",
+          "tables.ads"
+       );
+
+   package Binder is
+      case Development is
+         when "Debug" =>
+            for Default_Switches ("ada") use ("-E");
+         when "Release" =>
+            for Default_Switches ("ada") use ();
+      end case;
+   end Binder;
+
+   package Builder is
+      case Development is
+         when "Debug" =>
+            for Default_Switches ("ada") use ("-g");
+         when "Release" =>
+            for Default_Switches ("ada") use ("-s");
+      end case;
+   end Builder;
+
+   package Compiler is
+      case Development is
+         when "Debug" =>
+            case Legacy is
+               when "Ada2012" =>
+                  for Default_Switches ("ada") use
+                     ("-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat12");
+               when "Ada2005" =>
+                  for Default_Switches ("ada") use
+                     ("-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat05");
+               when "Ada95" =>
+                  for Default_Switches ("ada") use
+                     ("-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check");
+            end case;
+         when "Release" =>
+            case Legacy is
+               when "Ada2012" =>
+                  for Default_Switches ("ada") use
+                     ("-gnato", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat12");
+               when "Ada2005" =>
+                  for Default_Switches ("ada") use
+                     ("-gnato", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat05");
+               when "Ada95" =>
+                  for Default_Switches ("ada") use
+                     ("-gnato", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat95");
+            end case;
+      end case;
+   end Compiler;
+
+   package Linker is
+      case Development is
+         when "Debug" =>
+            for Default_Switches ("ada") use ("-g");
+         when "Release" =>
+            for Default_Switches ("ada") use ("-O2", "-s");
+      end case;
+   end Linker;
+
+end Tables;

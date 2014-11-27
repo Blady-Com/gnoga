@@ -1,0 +1,32 @@
+with "gnade-odbc.gpr";
+with "components.gpr";
+
+project Components.GNADE is
+
+   for Source_Dirs use (".");
+
+   for Source_Files use
+   (  "gnu-db-sqlcli-api-keys-arrays.ads", 
+      "gnu-db-sqlcli-api-keys-edit.ads", 
+      "gnu-db-sqlcli-api-keys-sets.ads", 
+      "gnu-db-sqlcli-api-keys.adb", 
+      "gnu-db-sqlcli-api-keys.ads", 
+      "gnu-db-sqlcli-api-links.adb", 
+      "gnu-db-sqlcli-api-links.ads", 
+      "gnu-db-sqlcli-api-tracing.adb", 
+      "gnu-db-sqlcli-api-tracing.ads", 
+      "gnu-db-sqlcli-api.adb", 
+      "gnu-db-sqlcli-api.ads", 
+      "persistent-odbc.adb",
+      "persistent-odbc.ads",
+      "persistent-odbc-text_io.adb",
+      "persistent-odbc-text_io.ads"
+   );
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.GNADE;
+

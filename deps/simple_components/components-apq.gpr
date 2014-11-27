@@ -1,0 +1,78 @@
+with "components.gpr";
+with "apq.gpr";
+with "apq-mysql.gpr";
+with "apq-postgresql.gpr";
+with "apq-sybase.gpr";
+with "apq-ct_lib.gpr";
+
+project Components.APQ is
+
+   type Driver_Type is ("MySQL", "PostgreSQL", "SyBase", "CT_Lib");
+   Driver : Driver_Type := external ("Driver", "MySQL");
+   
+   for Source_Dirs use (".");
+
+   Common_Files :=
+      (  "apq-common.adb",
+         "apq-common.ads",
+         "apq-keys.adb",
+         "apq-keys.ads",
+         "apq-keys-arrays.ads",
+         "apq-keys-sets.ads",
+         "apq-links.adb",
+         "apq-links.ads",
+         "persistent-apq.adb",
+         "persistent-apq.ads"
+      );
+
+   package Naming is
+      case Driver is
+         when "MySQL" =>
+            for Spec ("apq.client") use "apq_mysql.ads";
+         when "PostgreSQL" =>
+            for Spec ("apq.client") use "apq_postgesql.ads";
+         when "SyBase" =>
+            for Spec ("apq.client") use "apq_sybase.ads";
+         when "CT_Lib" =>
+            for Spec ("apq.client") use "apq_ct_lib.ads";
+      end case;
+   end Naming;
+
+   case Driver is
+      when "MySQL" =>
+         for Source_Files use Common_Files & ("apq_mysql.ads");
+      when "PostgreSQL" =>
+         for Source_Files use Common_Files & ("apq_postgresql.ads");
+      when "SyBase" =>
+         for Source_Files use Common_Files & ("apq_sybase.ads");
+      when "CT_Lib" =>
+         for Source_Files use Common_Files & ("apq_ct_lib.ads");
+   end case;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   
+   package Linker is
+      case Driver is
+         when "MySQL" =>
+            for Default_Switches ("ada") use
+               Components.Linker'Default_Switches ("ada") &
+               APQ.MySQL.Linker'Default_Switches ("ada");
+         when "PostgreSQL" =>
+            for Default_Switches ("Ada") use
+               Components.Linker'Default_Switches ("ada") &
+               APQ.PostgreSQL.Linker'Default_Switches ("ada");
+         when "SyBase" =>
+            for Default_Switches ("Ada") use
+               Components.Linker'Default_Switches ("ada") &
+               APQ.SyBase.Linker'Default_Switches ("ada");
+         when "CT_Lib" =>
+            for Default_Switches ("Ada") use
+               Components.Linker'Default_Switches ("ada") &
+               APQ.CT_Lib.Linker'Default_Switches ("ada");
+      end case;
+   end Linker;
+
+end Components.APQ;
+

@@ -1,0 +1,833 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<link REL="SHORTCUT ICON" href="http://www.dmitry-kazakov.de/favicon.ico">
+  <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <META name="keywords" content="table, associative array, Ada, Ada 95, Ada 2005, Ada programming, case-sensitive, case-insensitive, Unicode, UTF-8">
+  <META name="Author" content="Dmitry Kazakov">
+  <META name="Description" content="Tables for Ada">
+  <TITLE>Tables for Ada</TITLE>
+</HEAD>
+<BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
+<P align="center">
+<BIG><BIG><BIG><B>TABLES</B></BIG></BIG><BR>
+<EM>version 1.12</EM><BR>
+by Dmitry A. Kazakov</BIG><BR>
+(<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
+<a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
+<P>
+This library is free software; you can redistribute it and/or modify it under 
+the terms of the GNU General Public License as published by the Free Software 
+Foundation; either version 2 of the License, or (at your option) any later 
+version. This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+FITNESS FOR A PARTICULAR PURPOSE. See the
+<a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a> 
+for more details. You should have received a copy of the GNU General Public 
+License along with this library; if not, write to the Free Software Foundation, 
+Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.</P>
+<P>
+As a special exception, if other files instantiate generics from this unit, or 
+you link this unit with other files to produce an executable, this unit does not 
+by itself cause the resulting executable to be covered by the GNU General Public 
+License. This exception does not however invalidate any other reasons why the 
+executable file might be covered by the GNU Public License.</P>
+<HR>
+<p>Tables project is a part of the
+<a href="http://www.dmitry-kazakov.de/ada/components.htm">simple components for 
+Ada</a> project and can be obtained with it. Alternatively the latest version 
+can be here.</p>
+<table border="0" cellspacing="0" cellpadding="0" style="border-top-width: 0px">
+	<tr>
+		<td style="border-top-style: none; border-top-width: medium"><b>Download Tables</b></td>
+		<td style="border-top-style: none; border-top-width: medium">&nbsp;</td>
+		<td style="border-top-style: none; border-top-width: medium">&nbsp;</td>
+		<td style="border-top-style: none; border-top-width: medium" align="right">
+		<b>Platform:</b></td>
+		<td>&nbsp;</td>
+		<td align="center">
+		64-</td>
+		<td align="center">
+		32bit</td>
+	</tr>
+	<tr>
+		<td style="border-top-style: solid; border-top-width: 1px">
+		<a name="Fedora_packages"></a>Fedora packages	<img border="0" src="fedora-logo.jpg" width="16" height="16" alt="Fedora"></td>
+		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
+		<td style="border-top-style: solid; border-top-width: 1px">precompiled and packaged using RPM</td>
+		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>
+		<a href="http://www.dmitry-kazakov.de/distributions/tables_fedora_x86_64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+		<td>
+		<a href="http://www.dmitry-kazakov.de/distributions/tables_fedora_i686.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+	</tr>
+	<tr>
+		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">
+		<a name="Debian_packages"></a>Debian packages	<img border="0" src="debian-logo.jpg" width="16" height="16" alt="Debian"></td>
+		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
+		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">precompiled and packaged for dpkg</td>
+		<td>&nbsp;</td>
+		<td>
+		<a href="http://www.dmitry-kazakov.de/distributions/tables_debian_x86_64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+		<td>
+		<a href="http://www.dmitry-kazakov.de/distributions/tables_debian_i686.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+	</tr>
+	<tr>
+		<td style="border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
+		<td style="border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
+		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2"><a href="http://www.dmitry-kazakov.de/ada/tables_1_12.tgz">tables_1_12.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
+		<td>&nbsp;</td>
+		<td colspan="2" align="center">
+		<a href="http://www.dmitry-kazakov.de/ada/tables_1_12.tgz"><img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
+	</tr>
+</table>
+<p>See also
+<a href="#changes_log">changes log</a>.</p>
+<hr>
+<P align="right">
+<A name="1"></A><a href="#6"><IMG src="index.gif" alt="[TOC]" width="29"
+    height="29"></A><A href="#2"><IMG src="next.gif" alt="[Next]" width="29"
+    height="29"></A>
+<H2>1. Tables</H2>
+<P>The generic package Tables provides tables searched using string keys. The binary
+search is used for names of known length (see <A href="#Find">Find</A>). It is also possible to search a
+table for names of unknown length, i.e. to parse a string using the table (<A href="#Get">Get</A>).
+In this case the search time is near to logarithmic, but in the worst case can
+be linear (when the table contains tokens like "a", "aa", "aaa&quot; and so on). The 
+package is generic. The instantiation parameter is the type of the data tag 
+associated with each table item. The table is initially empty. It is automatically 
+enlarged as new items are added. Upon destruction the memory used by the table is reclaimed. Items in the table can be accessed either by their offsets 
+(in alphabetical order) or by names. Text parsing is also supported. Table 
+assignment makes deep copy.<blockquote>
+<P>
+<tt><font color="#0000FF">generic<br>
+&nbsp;&nbsp; type </font>Tag <font color="#0000FF">is private</font>;<br>
+<font color="#0000FF">package</font> Tables <font color="#0000FF">is<br>
+&nbsp;&nbsp; type </font>Table <font color="#0000FF">is new</font> 
+Ada.Finalization.Controlled <font color="#0000FF">with private</font>;</tt></blockquote>
+<P>
+The following subroutines are provided by the package:</p>
+<BLOCKQUOTE>
+  <TABLE border="0" cellpadding="0" cellspacing="0">
+    <TR>
+      <TD><A href="#Add">Add</A></TD>
+      <TD>&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+      <TD>Insert item</TD>
+    </TR>
+    <TR>
+      <TD><A href="#Delete">Delete</A></TD>
+      <TD>&nbsp;</TD>
+      <TD>Remove item</TD>
+    </TR>
+    <TR>
+      <TD><a href="#Erase">Erase</a></TD>
+      <TD></TD>
+      <TD>Remove all items</TD>
+    </TR>
+    <TR>
+      <TD><A href="#Find">Find</A></TD>
+      <TD>&nbsp;</TD>
+      <TD>Find item by name</TD>
+    </TR>
+    <TR>
+      <TD><a href="#IsIn">IsIn</a></TD>
+      <TD></TD>
+      <TD>Membership test</TD>
+    </TR>
+    <TR>
+      <TD><A href="#Get">Get</A></TD>
+      <TD>&nbsp;</TD>
+      <TD>Parse string</TD>
+    </TR>
+    <TR>
+      <TD><A href="#GetName">GetName</A></TD>
+      <TD>&nbsp;</TD>
+      <TD>Get name of an item</TD>
+    </TR>
+    <TR>
+      <TD><A href="#GetSize">GetSize</A></TD>
+      <TD>&nbsp;</TD>
+      <TD>Get number of items</TD>
+    </TR>
+    <TR>
+      <TD><A href="#GetTag">GetTag</A></TD>
+      <TD>&nbsp;</TD>
+      <TD>Get tag of an item</TD>
+    </TR>
+    <TR>
+      <TD><a href="#Locate">Locate</a></TD>
+      <TD>&nbsp;</TD>
+      <TD>Find item or parse string returning an offset to</TD>
+    </TR>
+    <TR>
+      <TD><A href="#Replace">Replace</A></TD>
+      <TD>&nbsp;</TD>
+      <TD>Replace item</TD>
+    </TR>
+  </TABLE>
+  <P>
+  <A name="Add"></A><tt><font color="#0000FF">procedure
+  </FONT>Add<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  (<b>&nbsp; Folder</b> : <font color="#0000FF">in
+  out</FONT> Table;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>Name</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+	procedure
+  </FONT>Add<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  (<b>&nbsp; Folder</b> : <font color="#0000FF">in
+  out</FONT> Table;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>Name</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Offset</b> : <font color="#0000FF">out</font> Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></BLOCKQUOTE>
+<P>
+The procedure <A href="#Add">Add</A> inserts an item into the table
+<b>Folder</b>. The value of the parameter <b>Name</b>
+is the item name. The parameter <b>Data</b> defines the data associated
+with the inserted item. The procedure raises the exception Name_Error if
+an item with the same name is already in the table. When the parameter <b>Offset</b> 
+is specified it is set to the offset of the inserted item. All table items have 
+offsets starting from 1. Items are alphabetically ordered. See also
+<A href="#Replace">Replace</A>.</p>
+<BLOCKQUOTE>
+  <A name="Delete"></A><tt><font color="#0000FF">procedure
+  </FONT>Delete
+  (<b>Folder</b> : <font color="#0000FF">in
+  out</FONT> Table;
+  <b>Name</b> : String);</tt></BLOCKQUOTE>
+<P>
+The procedure Delete removes the item <b>Name</b> from the table
+<b>Folder</b>. Nothing happens when there is no item with the given
+name. See also <A href="#Replace">Replace</A>.</p>
+<BLOCKQUOTE>
+  <p><tt><font color="#0000FF">procedure
+  </FONT>Delete
+  (<b>Folder</b> : <font color="#0000FF">in
+  out</FONT> Table;
+  <b>Offset</b> : Positive);</tt></p>
+</BLOCKQUOTE>
+<P>
+This procedure removes an item by its offset. End_Error is propagated when there 
+is no item with such offset.</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF"><a name="Erase"></a>procedure
+  </FONT>Erase (<b>Folder</b> : <font color="#0000FF">in
+  out</FONT>  Table);</tt></BLOCKQUOTE>
+<P>
+The procedure Erase removes all items from the table <b>Folder</b>.</p>
+<BLOCKQUOTE>
+  <A name="Find"></A><tt><font color="#0000FF">function</FONT> Find (<b>Folder </b>: Table; <b>Name</b> : String) <font color="#0000FF">return</FONT> Tag;</tt></BLOCKQUOTE>
+<P>
+The function <A href="#Find">Find</A> returns the data associated with the
+item <b>Name</b> of the table <b>Folder</b>. The exception
+End_Error is propagated when there no such item in the table. See also
+<A href="#Get">Get</A>.</p>
+<BLOCKQUOTE>
+  <A name="Get"></A><tt><font color="#0000FF">procedure
+  </FONT>Get<BR>
+  &nbsp; &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp; ( &nbsp;<b>Source</b> &nbsp;: String;<BR>
+  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Pointer</b>
+  : <font color="#0000FF">in
+  out</FONT> Integer;<BR>
+  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;<b>Folder</b> &nbsp;: Table;<BR>
+  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;<b>Data</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">out</FONT> Tag<BR>
+  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;);</tt>
+</BLOCKQUOTE>
+<P>
+The procedure <A href="#Get">Get</A> is used to parse the string specified
+by the parameter <b>Source</b> using the table
+<b>Folder</b>. The procedure tries to find the item with the longest
+name that matches the string <b>Source</b> starting from the position
+defined by the parameter <b>Pointer</b>. On success
+<b>Pointer</b> is advanced to the first position following the
+name of the found item. I.e. <b>Source</b>
+(<EM>OldPointer</EM>..<b>Pointer</b> - 1) is the name of the found
+item. Note that unlike <A href="#Find">Find</A> that searches tables in
+logarithmic time, <A href="#Get">Get</A> could require linear time in some
+pathological cases. The exception End_Error is propagated when no table item
+matches the string. The exception Layout_Error is propagated when the value
+of <b>Pointer</b> is not in the range
+<b>Source</b>'First..<b>Source</b>'Last+1.</p>
+<BLOCKQUOTE>
+  <A name="GetName"></A><tt><font color="#0000FF">function</FONT> GetName (<b>Folder</b>
+  : Table; <b>Offset</b> : Positive) <font color="#0000FF">return</FONT> String;</tt></BLOCKQUOTE>
+<P>
+The function <A href="#GetName">GetName</A> returns the name of a table item.
+The parameter <b>Offset</b> specifies the item offset. All items
+in the table are enumerated in alphabetical order. The first item has the
+offset 1. The exception End_Error is propagated when there is no item with
+such offset. See also <A href="#GetSize">GetSize</A> and
+<A href="#GetTag">GetTag</A>.</p>
+<BLOCKQUOTE>
+  <A name="GetSize"></A><tt><font color="#0000FF">function</FONT> GetSize (<b>Folder</b>
+  : Table) <font color="#0000FF">return</FONT> Natural;</tt></BLOCKQUOTE>
+<P>
+The function <A href="#GetSize">GetSize</A> returns the number of items in
+the table <b>Folder</b>.</p>
+<BLOCKQUOTE>
+  <A name="GetTag"></A><tt><font color="#0000FF">function</FONT> GetTag (<b>Folder</b>
+  : Table; <b>Offset</b> : Positive) <font color="#0000FF">return</FONT> Tag;</tt></BLOCKQUOTE>
+<P>
+The function <A href="#GetTag">GetTag</A> returns the data associated with
+a table item. The parameter <b>Offset</b> specifies the item offset.
+All items in the table are enumerated in alphabetical order. The first item
+has the offset 1. The exception End_Error is propagated when there is no
+item with such offset. See also <A href="#GetSize">GetSize</A> and
+<A href="#GetName">GetName</A>.</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF"><a name="IsIn"></a>function</FONT>  IsIn (<b>Folder </b>: Table; <b>Name</b> : String) <font color="#0000FF">return</FONT> 
+  Boolean;</tt></BLOCKQUOTE>
+<P>
+The function <a href="#IsIn">IsIn</a> returns <i><font color="#800000">true</font></i>
+if <b>Folder</b> contains an item under the name <b>Name</b>.</p>
+<BLOCKQUOTE>
+  <A name="Locate"></A><tt><font color="#0000FF">function</FONT> Locate (<b>Folder </b>: Table; <b>Name</b> : String) <font color="#0000FF">return</FONT> 
+	Natural;</tt></BLOCKQUOTE>
+<P>
+The function <a href="#Locate">Locate</a> returns the positive offset to
+item specified by <b>Name</b>. The result 0 when no item is found. The offset 
+can be used in operations <a href="#GetName">GetName</a>, <a href="#GetTag">
+GetTag</a>. Note that the offset indicates the item no longer Folder is updated.</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF">procedure</font> Locate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Folder</b>&nbsp; : Table;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Offset</b>&nbsp; : <font color="#0000FF">out</font> Natural<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></BLOCKQUOTE>
+<P>
+This procedure is similar to
+<A href="#Get">Get</A> except that it returns offset to the matched item or else 
+0. The exception Layout_Error is propagated when the value
+of <b>Pointer</b> is not in the range
+<b>Source</b>'First..<b>Source</b>'Last+1.</p>
+<BLOCKQUOTE>
+  <A name="Replace"></A><tt><font color="#0000FF">procedure
+  </FONT>Replace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  (<b>&nbsp; Folder</b> : <font color="#0000FF">in
+  out</FONT> Table;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>Name</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag<br>
+	<font color="#0000FF">procedure
+  </FONT>Replace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  (<b>&nbsp; Folder</b> : <font color="#0000FF">in
+  out</FONT> Table;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>Name</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Offset</b> : <font color="#0000FF">out</font> Positive</tt></BLOCKQUOTE>
+<P>
+The procedure <A href="#Replace">Replace</A> inserts new or replaces an existing
+item of the table <b>Folder</b>. The value of the parameter
+<b>Name</b> is the item name. The parameter <b>Data</b>
+defines the data associated with the inserted item. When used, the parameter <b>
+Offset</b> will be set to the offset of the item. See also
+<A href="#Add">Add</A>.<BLOCKQUOTE>
+  <tt><font color="#0000FF">procedure
+  </FONT>Replace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  (<b>&nbsp; Folder</b> : <font color="#0000FF">in
+  out</FONT> Table;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>Offset</b> : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></BLOCKQUOTE>
+<P>
+This procedure replaces the data of an existing item specified by its <b>Offset</b>. 
+The offset shall be in 1..<A href="#GetSize">GetSize</A> (<b>Folder</b>) range, 
+otherwise End_Error is propagated. The parameter <b>Data</b> is the new data to 
+be associated with the item.<hr><p align="right">
+  <A name="2"></A><A href="#1"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></A><a href="#6"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><A
+      href="#3"><IMG src="next.gif" alt="[Next]" width="29" height="29"></A></p>
+<H2>2. Case-insensitive tables</H2>
+<h3>2.1. <a name="2.1"></a>Latin-1 case-insensitive tables </h3>
+<P><a name="Tables.Names"></a>The child package <a href="#Tables.Names">Tables.Names</a>
+<blockquote>
+<P>
+<tt><font color="#0000FF">generic<br>
+&nbsp;&nbsp; with procedure </font>Check_Spelling (Name : String)
+<font color="#0000FF">is</font> &lt;&gt;;<br>
+&nbsp;&nbsp; <font color="#0000FF">with function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>Check_Matched 
+(Source : String; 
+Pointer : Integer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">&nbsp;return</font> Boolean
+<font color="#0000FF">is</font> &lt;&gt;;<br>
+&nbsp;&nbsp; Blanks : Ada.Strings.Maps.Character_Set :=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ada.Strings.Maps.To_Set ('  ' &amp; Ada.Characters.Latin_1.HT);&nbsp;<font color="#0000FF"><br>
+package</font> Tables.Names <font color="#0000FF">is<br>
+&nbsp;&nbsp; type </font>Dictionary <font color="#0000FF">is new</font> Table <font color="#0000FF">with private</font>;</tt></blockquote>
+<P>
+provides the type Dictionary, a descendant of Table. An instance of Dictionary 
+has the same primitive operations (methods) as Table. The difference is that it 
+is intended for dealing with case-insensitive names. So only one of &quot;name&quot;, &quot;Name&quot;, 
+&quot;namE&quot; can be put into Dictionary. When matched by <a href="#Find">Find</a> or
+<a href="#Get">Get</a> the case of a token plays no role. However, the original 
+case is preserved by the table, so <a href="#GetName">GetName</a> would return the  name 
+of a token 
+exactly as it was given in <a href="#Add">Add</a> or <a href="#Replace">Replace</a>.
+The parameter <b>Blanks</b> is the set of characters considered blank. All
+non-empty chains of characters from <b>Blanks</b>  are considered equivalent
+when matched and compared. The original appearance of names
+containing blank characters is preserved by the table. By default <b>Blanks</b>
+contains space and horizontal tabulator.<P>
+The spelling of a name is checked before it is placed into a Dictionary. For 
+this the procedure Check_Spelling is called. It may raise Constraint_Error to 
+indicate a wrong spelling, which will then propagate out of <a href="#Add">Add</a> or <a href="#Replace">Replace</a>. 
+The procedure <a href="#Replace">Replace</a> does not change the spelling of the 
+replaced name with regard to the case of its letters and blank characters.<P>
+The function Check_Matched is called by
+<a href="#Get">Get</a> to ensure that the matched name ends correctly. For 
+example, when the table contains a token for <i>black</i> then
+<a href="#Get">Get</a> would call Check_Matched on the string &quot;<i>Blackbird</i>&quot; 
+with the parameter <b>Pointer</b> pointing to <i>bird</i>. Check_Matched could 
+then discard this matching returning <i> <font color="#800000">false</font></i>. Check_Matched 
+is never called with <b>Pointer</b> outside <b>Source</b>'Range.<h3>2.2. 
+<a name="2.2"></a>UTF-8 
+case-insensitive tables</h3>
+  <TABLE border="1" cellpadding="3" cellspacing="0">
+    <TR>
+      <TD><i>Implementation nodes</i>. The package described in this section is 
+		a part of the distribution of
+		<a href="http://www.dmitry-kazakov.de/ada/components.htm">Simple 
+		Components for Ada</a>, which is necessary in order to be able to use 
+		this package. Note that
+		<a href="http://www.dmitry-kazakov.de/ada/components.htm">Simple 
+		Components for Ada</a> contains the
+		<a href="http://www.dmitry-kazakov.de/ada/tables.htm">Tables</a> 
+		software as an integral part, so you don't need to install
+		<a href="http://www.dmitry-kazakov.de/ada/tables.htm">Tables</a> 
+		separately from
+		<a href="http://www.dmitry-kazakov.de/ada/components.htm">Simple 
+		Components for Ada</a> if you plan to use this package.</TD>
+    </TR>
+  </TABLE>
+
+<P><a name="Tables.UTF8_Names"></a>The child package 
+<a href="#Tables.UTF8_Names">Tables.UTF8_Names</a>
+<blockquote>
+<P>
+<tt><font color="#0000FF">generic<br>
+&nbsp;&nbsp; with procedure </font>Check_Spelling (Name : String)
+<font color="#0000FF">is</font> &lt;&gt;;<br>
+&nbsp;&nbsp; <font color="#0000FF">with function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>Check_Matched 
+(Source : String; 
+Pointer : Integer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">&nbsp;return</font> Boolean
+<font color="#0000FF">is</font> &lt;&gt;;<br>
+&nbsp;&nbsp; Blanks : Unicode_Set := <font color="#008000">&nbsp;-- Tabulator 
+and spaces</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To_Set (<font color="#800000">16#09#</font>)
+<font color="#0000FF">or</font> Strings_Edit.UTF8.Maps.Constants.Space_Set;<br>
+&nbsp;&nbsp; Ignored : Unicode_Set := <font color="#008000">-- Hyphen and others</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Strings_Edit.UTF8.Maps.Constants.Other_Format_Set;<font color="#0000FF"><br>
+package</font> Tables.UTF8_Names <font color="#0000FF">is<br>
+&nbsp;&nbsp; type </font>Dictionary <font color="#0000FF">is new</font> Table <font color="#0000FF">with private</font>;</tt></blockquote>
+<P>
+provides the type Dictionary, a descendant of Table. An instance of Dictionary 
+has the same primitive operations (methods) as Table. The difference is that it 
+is intended for dealing with case-insensitive UTF-8 encoded names. The case as 
+defined by the 
+<a href="http://www.unicode.org">
+		Unicode</a> standard plays no role when upon matching (such as by
+<a href="#Find">Find</a> or <a href="#Get">Get</a>). However, the original 
+case is preserved by the table, so <a href="#GetName">GetName</a> would return the  name 
+of a token 
+exactly as it was given in <a href="#Add">Add</a> or <a href="#Replace">Replace</a>.
+The parameter <b>Blanks</b> is the set of code points considered blank. All
+non-empty chains of characters from <b>Blanks</b>  are considered equivalent
+when matched and compared. The original appearance of names
+containing blank characters is preserved by the table. By default <b>Blanks</b>
+contains space and horizontal tabulator. The parameter <b>Ignored</b> is the set 
+of code points which are ignored upon matching. They are also removed when a 
+name is stored in the table. The default value of Ignored is the set of <a href="http://www.unicode.org">
+		Unicode</a> other format code points, which contains soft hyphen, for 
+example.<P>
+The spelling of a name is checked before it is placed into a Dictionary. For 
+this the procedure Check_Spelling is called. It may raise Constraint_Error to 
+indicate a wrong spelling, which will then propagate out of <a href="#Add">Add</a> or <a href="#Replace">Replace</a>. 
+The procedure <a href="#Replace">Replace</a> does not change the spelling of the 
+replaced name with regard to the case of its letters and blank characters. When 
+Name is an invalid UTF-8 string then it is recommended to propagate 
+Constraint_Error out of Check_Spelling. Otherwise <a href="#Add">Add</a>, <a href="#Replace">Replace</a> 
+will propagate Data_Error.<P>
+When <b>Name</b> is not a valid UTF-8 string in <a href="#Find">Find</a>, 
+End_Error is propagated. For such a string
+<a href="#IsIn">IsIn</a> returns <i><font color="#800000">false</font></i>.When 
+Soruce is not a valid UTF-8 string in <a href="#Get">Get</a> its valid substring 
+starting with <b>Source</b> (<b>Pointer</b>) is matched. <P>
+The function Check_Matched is called by
+<a href="#Get">Get</a> to ensure that the matched name ends correctly. For 
+example, when the table contains a token for <i>black</i> then
+<a href="#Get">Get</a> would call Check_Matched on the string &quot;<i>Blackbird</i>&quot; 
+with the parameter <b>Pointer</b> pointing to <i>bird</i>. Check_Matched could 
+then discard this matching returning <i> <font color="#800000">false</font></i>. Check_Matched 
+is never called with <b>Pointer</b> outside <b>Source</b>'Range.<P>
+Additionally the package provides:<BLOCKQUOTE>
+  <tt><font color="#0000FF">function</FONT> Canonize (<b>Name</b> : String)
+	<font color="#0000FF">return</FONT> String;</tt></BLOCKQUOTE>
+<P>
+This function returns <b>Name</b> with all code points from the set Ignored 
+removed. Constraint_Error is propagated when Name is an invalid UTF-8 string. 
+All names put in a Dictionary go through this function after being checked using Check_Spelling.<hr><p align="right">
+  <A name="3"></A><A href="#2"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></A><a href="#6"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#4"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H2>3. Example</H2>
+<P>The following small example illustrates instantiation of the package Tables
+using a data type declared in another package. First we declare the type
+Employee, instances of which will be used as the data associated with the
+tokens of the table. File <EM>data.ads</EM>:</p>
+<TABLE border="1" cellpadding="15" cellspacing="0">
+  <TR>
+    <TD bgcolor="#FFDEBD"><tt><font color="#0000FF">with</FONT> Ada.Strings.Unbounded; <font color="#0000FF">use</FONT> Ada.Strings.Unbounded;<BR>
+      <font color="#0000FF">with</FONT> Ada.Calendar; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <font color="#0000FF">use</FONT> Ada.Calendar;<BR>
+      <BR>
+      <font color="#0000FF">package</FONT> Data <font color="#0000FF">is</FONT><BR>
+      &nbsp;&nbsp; <font color="#0000FF">type</FONT> Employee <font color="#0000FF">is</FONT> record<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; HomeAddress :
+      Unbounded_String;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; DateOfBirth :
+      Time;<BR>
+      &nbsp;&nbsp; <font color="#0000FF">end
+      record</FONT>;<BR>
+      &nbsp;&nbsp; <font color="#0000FF">function</FONT> Create<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; ( &nbsp;Name&nbsp;&nbsp;: String;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; &nbsp;&nbsp; Year&nbsp;&nbsp;: Year_Number;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; &nbsp;&nbsp; Month :
+      Month_Number;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; &nbsp;&nbsp; Day&nbsp;&nbsp; : Day_Number<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; )&nbsp;&nbsp;<font color="#0000FF">return</FONT> Employee;<BR>
+      &nbsp;&nbsp; <font color="#0000FF">procedure</FONT> Put (Data : Employee);<BR>
+      <font color="#0000FF">end</FONT> Data;</tt></TD>
+  </TR>
+</TABLE>
+<P>
+Implementation, file <EM>data.adb</EM>:</p>
+<TABLE border="1" cellpadding="15" cellspacing="0">
+  <TR>
+    <TD bgcolor="#C0D8D6"><tt><font color="#0000FF">with</FONT> Text_IO; <font color="#0000FF">use</FONT> Text_IO;<BR>
+      <BR>
+      <font color="#0000FF">package
+      body</FONT> Data <font color="#0000FF">is</FONT><BR>
+      &nbsp;&nbsp; <font color="#0000FF">function</FONT> Create<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; ( &nbsp;Name&nbsp;&nbsp;: String;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; &nbsp;&nbsp; Year&nbsp;&nbsp;: Year_Number;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; &nbsp;&nbsp; Month :
+      Month_Number;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; &nbsp;&nbsp; Day&nbsp;&nbsp; : Day_Number<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; )&nbsp;&nbsp;<font color="#0000FF">return</FONT> Employee <font color="#0000FF">is</FONT><BR>
+      &nbsp;&nbsp; <font color="#0000FF">begin</FONT><BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; <font color="#0000FF">return</FONT><BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; ( &nbsp;To_Unbounded_String (Name),<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Time_Of (Year, Month,
+      Day)<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; );<BR>
+      &nbsp;&nbsp; <font color="#0000FF">end</FONT> Create;<BR>
+      &nbsp;&nbsp; <font color="#0000FF">procedure</FONT> Put (Data : Employee) <font color="#0000FF">is</FONT><BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Year
+      &nbsp;:
+      Year_Number;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Month :
+      Month_Number;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Day
+      &nbsp;&nbsp;:
+      Day_Number;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Sec
+      &nbsp;&nbsp;:
+      Day_Duration;<BR>
+      &nbsp;&nbsp; <font color="#0000FF">begin</FONT><BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Split (Data.DateOfBirth,
+      Year, Month, Day, Sec);<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Put
+      ("<FONT color="#FF0000">Address :
+      </FONT>" &amp; To_String
+      (Data.HomeAddress));<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; New_Line;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Put
+      ("<FONT color="#FF0000">Birth
+      &nbsp;&nbsp;:</FONT>");<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Put (Year_Number'Image
+      (Year));<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Put (Month_Number'Image
+      (Month));<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Put (Day_Number'Image
+      (Day));<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; New_Line;<BR>
+      &nbsp;&nbsp; end Put;<BR>
+      <font color="#0000FF">end</FONT> Data;</tt></TD>
+  </TR>
+</TABLE>
+<P>
+Now the package Tables is instantiated with the type Data.Employee as the
+parameter. Note that this shall be done at library level, so it is a separate
+file <EM>employee_list.ads</EM>:</p>
+<TABLE border="1" cellpadding="15" cellspacing="0">
+  <TR>
+    <TD bgcolor="#FFDEBD"><tt><font color="#0000FF">with</FONT> Tables;<BR>
+      <font color="#0000FF">with</FONT> Data;<BR>
+      <BR>
+      <font color="#0000FF">package</FONT> Employee_List <font color="#0000FF">is
+      new</FONT> Tables
+      (Data.Employee);</tt></TD>
+  </TR>
+</TABLE>
+<P>
+Here we build a small data base of employees using the package Employee_List to keep
+it. Then the TOC of the list is printed and the user is asked to enter a
+name. The list is searched for the name and if such an employee exists, his
+data are printed. File <EM>table_example.adb</EM>:</p>
+<TABLE border="1" cellpadding="15" cellspacing="0">
+  <TR>
+    <TD bgcolor="#B8D3D1"><tt><font color="#0000FF">with</FONT>
+      Data;&nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp;
+      &nbsp;<font color="#0000FF">use</FONT> Data;<BR>
+      <font color="#0000FF">with</FONT> Employee_List; <font color="#0000FF">use</FONT> Employee_List;<BR>
+      <font color="#0000FF">with</FONT>
+      Text_IO;&nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;<font color="#0000FF">use</FONT> Text_IO;<BR>
+      <BR>
+      <font color="#0000FF">procedure</FONT> Table_Example <font color="#0000FF">is</FONT><BR>
+      &nbsp;&nbsp; List : Table;<BR>
+      &nbsp;&nbsp; Name : String
+      (<FONT color="#800080">1</FONT>..<FONT color="#800080">80</FONT>);<BR>
+      &nbsp;&nbsp; Last : Natural;<BR>
+      &nbsp;&nbsp; Data : Employee;<BR>
+      <font color="#0000FF">begin</FONT><BR>
+      &nbsp;&nbsp; Add<BR>
+      &nbsp;&nbsp; (&nbsp;&nbsp;List,<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; "<FONT color="#FF0000"
+	 >Lou
+      Harris</FONT>",<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Create<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; (
+      "<FONT color="#FF0000">10 Midway St.,
+      New Yourk, N.Y.
+      73371</FONT>",<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <FONT color="#800080">1960</FONT>, <FONT color="#800080">12</FONT>, <FONT color="#800080">1</FONT><BR>
+      &nbsp;&nbsp;
+      )&nbsp;&nbsp;);<BR>
+      &nbsp;&nbsp; Add<BR>
+      &nbsp;&nbsp; (&nbsp;&nbsp;List,<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; "<FONT color="#FF0000"
+	 >John
+      M.Knight</FONT>",<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Create<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; (
+      "<FONT color="#FF0000">12 West 42 Rd.A-844,
+      Brooklin, N.Y.
+      27457</FONT>",<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <FONT color="#800080">1971</FONT>, <FONT color="#800080">5</FONT>, <FONT color="#800080">8</FONT><BR>
+      &nbsp;&nbsp; )&nbsp;&nbsp;);<BR>
+      &nbsp;&nbsp; Add<BR>
+      &nbsp;&nbsp; ( &nbsp;List,<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; "<FONT color="#FF0000"
+	 >Alice
+      Clark</FONT>",<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Create<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; (
+      "<FONT color="#FF0000">141 Penns. Avenue,
+      Washington, D.C.
+      10399</FONT>",<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <FONT color="#800080">1965</FONT>, <FONT color="#800080">10</FONT>, <FONT color="#800080">24</FONT><BR>
+      &nbsp;&nbsp; ) &nbsp;);<BR>
+      &nbsp;&nbsp; <font color="#0000FF">for</FONT> Index <font color="#0000FF">in</FONT> <FONT color="#800080">1</FONT>..GetSize (List) <font color="#0000FF">loop</FONT><BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Put (GetName (List,
+      Index));<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; New_Line;<BR>
+      &nbsp;&nbsp; <font color="#0000FF">end
+      loop</FONT>;<BR>
+      &nbsp;&nbsp; <font color="#0000FF">loop</FONT><BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Put
+      ("<FONT color="#FF0000">Enter a
+      name:</FONT>");<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; Get_Line (Name,
+      Last);<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; <font color="#0000FF">exit
+      when</FONT> Last = <FONT color="#800080">0</FONT>;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; <font color="#0000FF">begin</FONT><BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Data := Find (List,
+      Name
+      (<FONT color="#800080">1</FONT>..Last));<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Put (Data);<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; <font color="#0000FF">exception<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; when
+      </FONT>End_Error =&gt;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; Put
+      ("<FONT color="#FF0000">Unknown</FONT>");<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      &nbsp;&nbsp; New_Line;<BR>
+      &nbsp;&nbsp; &nbsp;&nbsp; <font color="#0000FF">end;<BR>
+      &nbsp;&nbsp; end loop;<BR>
+      end
+      </FONT>Table_Example;</tt></TD>
+  </TR>
+</TABLE>
+<P>
+&nbsp;<hr><p align="right">
+  <A name="4"></A><a href="#3"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><a href="#6"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#5"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H2>4. Installation</H2>
+<p>The software does not require special installation. The archive's content can 
+be put in a directory and used as-is. For users of <a href="http://libre.adacore.com/libre/">GNAT compiler</a> 
+the software provides gpr project files, which can be used in the
+<a href="https://libre.adacore.com/gps/main.html">Gnat Programming Studio</a> 
+(GPS).</p>
+<p>To ease use of the software with GPS, it can be integrated into the GPS 
+using the <a href="http://www.dmitry-kazakov.de/ada/gps_installer.htm">GPS 
+Library Installer</a> (gps_installer). Start the gps_installer as root (or with 
+the corresponding administrative rights to the GNAT installation directory) 
+specifying the source directory as the argument. Follow the instructions.</p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <TR>
+    <TD valign="top" bgcolor="#008080"><FONT color="#FFFFFF"><B>Project files</B></FONT></TD>
+    <TD valign="top" bgcolor="#008080"><FONT color="#FFFFFF"><B>Provides</B></FONT></TD>
+    <TD valign="top" bgcolor="#008080"><FONT color="#FFFFFF"><B>Use in custom 
+	project</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD valign="top">tables</TD>
+    <TD valign="top">Tables for Ada</TD>
+    <TD valign="top"><tt><font color="#0000FF">with</font> 
+	&quot;tables.gpr&quot;;</tt> </TD>
+  </TR>
+  </TABLE>
+<p>For Fedora and Debian Linux and their derivates packages are provided: see
+<a href="#Debian_packages">Debian</a> and
+<a href="#Fedora_packages">Fedora</a> packages.</p>
+<h3>4.1. <a name="4.1"></a>Fedora packages repository</h3>
+<p>The Fedora packages of this library are located in a <i>yum</i> software 
+package manager repository. They can be searched, installed and updated 
+automatically using <i>yum</i>. In order to do so, the file
+<a href="http://dmitry-kazakov.de/dmitry-kazakov.repo">dmitry-kazakov.repo</a> 
+can be put into the directory <i>/etc/yum.repos.d</i>.</p>
+<h3>4.2. <a name="4.2"></a>Debian packages repository</h3>
+<p>In order to use <i>apt</i> Debian repository for automatic install and update 
+these packages add the following line to <i>/etc/apt/sources.list</i>:</p>
+<blockquote>
+	<tt>deb http://dmitry-kazakov.de/distributions sid main</tt></blockquote>
+<hr><p align="right">
+  <A name="5"></A><a href="#4"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><a href="#6"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H2>5. <a name="changes_log"></a>Changes log</H2>
+<P>
+<i>
+The following versions were tested with the compilers:</i>
+<ul>
+  <li>
+<i>GNAT GPL 2014 (20140331)</i></li>
+	<li>
+<i>GNAT 4.8.2 (20131212)</i></li>
+  <li><i>GNAT 4.9.0</i></li>
+  </ul>
+<p>Changes (1 June 2014) to the version 1.11:</p>
+<ul>
+  <li>Compiled with GNAT 4.9</li>
+</ul>
+<p>Changes to the version 1.10:</p>
+<ul>
+  <li>Fedora and Debian packages are provided for both 32- and 64-bit 
+	architectures.</li>
+</ul>
+<p>Changes to the version 1.9:</p>
+<ul>
+  <li>The library is packaged for Fedora and Debian.</li>
+</ul>
+<p>Changes to the version 1.8:</p>
+<ul>
+  <li>Operations Locate were added to the package Tables and Tables.Names. 
+	Differently to Find and Get they return the offset to the found item;</li>
+	<li>Installation instructions added.</li>
+</ul>
+<p>Changes to the version 1.7:</p>
+<ul>
+  <li>Case-insensitive tables of UTF-8 names were added;</li>
+	<li>Minor bug fixes.</li>
+</ul>
+<p>Changes to the version 1.6:</p>
+<ul>
+  <li>For GNAT users GPS project files were added.</li>
+</ul>
+<p>Changes to the version 1.5:</p>
+<ul>
+  <li>Procedure Replace was added;</li>
+	<li>A variant of the procedure Add now returns the offset of the inserted 
+	item.</li>
+</ul>
+<p>Changes to the version 1.4:</p>
+<ul>
+  <li>The set of blank characters can be specified as the formal parameter of
+    the package Tables.Names.</li>
+</ul>
+<p>Changes to the version 1.3:</p>
+<ul>
+  <li>Function IsIn was added to provide membership test;</li>
+  <li>Bug fixes in the test programs.</li>
+</ul>
+<p>Changes to the version 1.2:</p>
+<ul>
+  <li>Licensing wording was corrected to comply with GMGPL</li>
+</ul>
+<P>
+Changes to the version 1.1:
+<ul>
+  <li>Delete also removes items by their offsets;</li>
+  <li>The child package Tables.Names for dealing with case-insensitive names.</li>
+</ul>
+<hr>
+<p align="right">
+  <a name="6"></a><a href="#5"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><a href="#6"><IMG src="index.gif"
+      alt="[TOC]" width="29" height="29"></a>
+</p>
+<H2>6. Table of Contents</H2>
+<P><A href="#1">1. Tables</A><BR>
+<A href="#2">2. Case-insensitive tables</A><BR>
+&nbsp;&nbsp;&nbsp;<A href="#2.1">2.1. Latin-1 case-insensitive tables</A><BR>
+&nbsp;&nbsp;&nbsp;<A href="#2.2">2.2. UTF-8 case-insensitive tables</A><BR>
+<A href="#3">3. Example</A><br>
+<A href="#4">4. Installation</A><br>
+&nbsp;&nbsp;&nbsp;<A href="#4.1">4.1. Fedora packages repository</A><BR>
+&nbsp;&nbsp;&nbsp;<A href="#4.2">4.2. Debian packages repository</A><BR>
+<A href="#5">5. Changes log</A><br>
+<A href="#6">6. Table of contents</A></BODY></HTML>

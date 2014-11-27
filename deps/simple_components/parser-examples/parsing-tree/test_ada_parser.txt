@@ -1,0 +1,235 @@
+--                                                                    --
+--  procedure Test_Ada_Parser       Copyright (c)  Dmitry A. Kazakov  --
+--  Test file                                      Luebeck            --
+--                                                 Winter, 2004       --
+--                                                                    --
+--                                Last revision :  13:43 19 Mar 2011  --
+--                                                                    --
+--  This  library  is  free software; you can redistribute it and/or  --
+--  modify it under the terms of the GNU General Public  License  as  --
+--  published by the Free Software Foundation; either version  2  of  --
+--  the License, or (at your option) any later version. This library  --
+--  is distributed in the hope that it will be useful,  but  WITHOUT  --
+--  ANY   WARRANTY;   without   even   the   implied   warranty   of  --
+--  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  --
+--  General  Public  License  for  more  details.  You  should  have  --
+--  received  a  copy  of  the GNU General Public License along with  --
+--  this library; if not, write to  the  Free  Software  Foundation,  --
+--  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.    --
+--                                                                    --
+--  As a special exception, if other files instantiate generics from  --
+--  this unit, or you link this unit with other files to produce  an  --
+--  executable, this unit does not by  itself  cause  the  resulting  --
+--  executable to be covered by the GNU General Public License. This  --
+--  exception  does not however invalidate any other reasons why the  --
+--  executable file might be covered by the GNU Public License.       --
+--____________________________________________________________________--
+
+-- Identifier examples from ARM 2.3(8)
+Count; X; Get_Symbol; Ethelyn; Marion; 
+Snobol_4; X1; Page_Count; Store_Next_Item; 
+
+-- Decimal literal examples from ARM 2.4.1(9)
+12;   0;   1E6;   123_456;           -- integer literals
+12.0; 0.0; 0.456; 3.14159_26;        -- real literals
+
+-- Based literal examples from ARM 2.4.2(9)
+2#1111_1111#; 16#FF#; 016#0ff#;      -- integer literals of value 255 
+16#E#E1; 2#1110_0000#;               -- integer literals of value 224 
+16#F.FF#E+2; 2#1.1111_1111_1110#E11; -- real literals of value 4095.0 
+
+-- Character literal examples from ARM 2.5(5)
+'A'; '*'; '''; ' ';
+
+-- String literal examples from ARM 2.6(9)
+"Message of the day:";
+"";                   -- a null string literal 
+" "; "A"; """";       -- three string literals of length 1 
+"Characters such as $, %, and } are allowed in string literals";
+"""";
+"""Hello""";
+"embed""dq";
+
+-- Indexed component examples from ARM 4.1.1(9)
+My_Schedule(Sat); -- a component of a one-dimensional array (see 3.6.1)
+Page(10);         -- a component of a one-dimensional array (see 3.6) 
+Board(M, J + 1);  -- a component of a two-dimensional array (see 3.6.1) 
+Page(10)(20);     -- a component of a component (see 3.6) 
+Request(Medium);  -- an entry in a family of entries (see 9.1) 
+Next_Frame(L)(M, N); -- a component of a function call (see 6.1)
+
+-- Slices from ARM 4.1.2
+Stars(1 .. 15);        -- a slice of 15 characters (see 3.6.3) 
+Page(10 .. 10 + Size); -- a slice of 1 + Size components (see 3.6) 
+Page(L)(A .. B);       -- a slice of the array Page(L) (see 3.6) 
+Stars(1 .. 0);         -- a null slice (see 3.6.3) 
+My_Schedule(Weekday);  -- bounds given by subtype (see 3.6.1 and 3.5.1) 
+Stars(5 .. 15)(K);     -- same as Stars(K) (see 3.6.3) 
+                       -- provided that K is in 5 .. 15 
+-- Selected component examples from ARM 4.1.3
+Tomorrow.Month;      -- a record component (see 3.8) 
+Next_Car.Owner;      -- a record component (see 3.10.1) 
+Next_Car.Owner.Age;  -- a record component (see 3.10.1) 
+                     -- the previous two lines involve
+                     -- implicit dereferences
+Writer.Unit;         -- a record component (a discriminant) (see 3.8.1)
+Min_Cell(H).Value;   -- a record component of the result (see 6.1) 
+                     -- of the function call Min_Cell(H) 
+Control.Seize;    -- an entry of a protected object (see 9.4) 
+Pool(K).Write;    -- an entry of the task Pool(K) (see 9.4)
+Key_Manager."<";  -- an operator of the visible part of
+                  -- a package (see 7.3.1) 
+Dot_Product.Sum;  -- a variable declared in a function body (see 6.1) 
+Buffer.Pool;      -- a variable declared in a protected unit (see 9.11) 
+Buffer.Read;      -- an entry of a protected unit (see 9.11) 
+Swap.Temp;        -- a variable declared in a block statement (see 5.6)
+Standard.Boolean; -- the name of a predefined type (see A.1)
+
+-- Examples of attributes from ARM 4.1.4
+Color'First;        -- minimum value of the enumeration type Color (see 3.5.1)
+Rainbow'Base'First; -- same as Color'First (see 3.5.1) 
+Real'Digits;        -- precision of the type Real (see 3.5.7) 
+Board'Last(2);      -- upper bound of the second dimension of Board (see 3.6.1) 
+Board'Range(1);     -- index range of the first dimension of Board (see 3.6.1) 
+Pool(K)'Terminated; -- True if task Pool(K) is terminated (see 9.1) 
+Date'Size;          -- number of bits for records of type Date (see 3.8) 
+Message'Address;    -- address of the record variable Message (see 3.7.1) 
+
+-- Record aggregate examples from ARM 4.3.1
+(4, July, 1776); -- see 3.8 
+(Day => 4, Month => July, Year => 1776); 
+(Month => July, Day => 4, Year => 1776);
+(Disk, Closed, Track => 5, Cylinder => 12); -- see 3.8.1 
+(Unit => Disk, Status => Closed, Cylinder => 9, Track => 1); 
+(Value => 0, Succ|Pred => new Cell'(0, null, null)); -- see 3.10.1 
+Expression'(null record); 
+Literal'(Value => 0.0);
+Painted_Point'(0.0, Pi/2.0, Paint => Red);
+
+-- Extension aggregates examples from ARM 4.3.2
+Painted_Point'(Point with Red);
+(Point'(P) with Paint => Black);
+
+(Expression with Left => 1.2, Right => 3.4);
+Addition'(Binop with null record);
+   -- presuming Binop is of type Binary_Operation 
+
+-- Array aggregates from ARM 4.3.3
+(7, 9, 5, 1, 3, 2, 4, 8, 6, 0);
+Table'(5, 8, 4, 1, others => 0); -- see 3.6 
+
+(1 .. 5 => (1 .. 8 => 0.0)); -- two-dimensional 
+(1 .. N => new Cell); -- N new cells, in particular for N = 0 
+
+Table'(2 | 4 | 10 => 1, others => 0); 
+Schedule'(Mon .. Fri => True, others => False); -- see 3.6 
+Schedule'(Wed | Sun => False, others => True);
+Vector'(1 => 2.5); -- single-component vector 
+
+((1.1, 1.2, 1.3), (2.1, 2.2, 2.3));
+(1 => (1.1, 1.2, 1.3), 2 => (2.1, 2.2, 2.3)); 
+(  1 => (1 => 1.1, 2 => 1.2, 3 => 1.3),
+   2 => (1 => 2.1, 2 => 2.2, 3 => 2.3)
+); 
+
+(7, 9, 5, 1, 3, 2, 4, 8, 6, 0); -- A(1)=7, A(10)=0 
+(2 | 4 | 10 => 1, others => 0); -- B(1)=0, B(10)=1 
+(1 .. 5 => (1 .. 8 => 0.0));    -- C'Last(1)=5, C'Last(2)=8
+
+(M .. N => True); -- see 3.6 
+(others => True); 
+(1 => 'F'); -- a one component aggregate: same as F
+
+-- Examples from ARM 4.4
+Volume;                      -- primary 
+not Destroyed;               -- factor 
+2*Line_Count;                -- term 
+-4.0;                        -- simple expression 
+-4.0 + A;                    -- simple expression 
+B**2 - 4.0*A*C;              -- simple expression 
+Password(1 .. 3) = "Bwv";    -- relation 
+Count in Small_Int;          -- relation 
+Count not in Small_Int;      -- relation 
+Index = 0 or Item_Hit;       -- expression 
+(Cold and Sunny) or Warm;    -- expression (parentheses are required) 
+A**(B**C);                   -- expression (parentheses are required) 
+
+-- Examples from ARM 4.5
+not Sunny or Warm;   -- same as (not Sunny) or Warm 
+X > 4.0 and Y > 0.0; -- same as (X > 4.0) and (Y > 0.0) 
+
+-4.0*A**2;      -- same as -(4.0 * (A**2)) 
+abs(1 + A) + B; -- same as (abs (1 + A)) + B 
+Y**(-3);        -- parentheses are necessary 
+A / B * C;      -- same as (A/B)*C 
+A + (B + C);    -- evaluate B + C before adding it to A 
+
+-- Examples from ARM 4.5.1
+Sunny or Warm; 
+Filter(1 .. 10) and Filter(15 .. 24); -- see 3.6.1 
+
+Next_Car.Owner /= null and then Next_Car.Owner.Age > 25; -- see 3.10.1 
+N = 0 or else A(N) = Hit_Value;
+
+-- Examples from ARM 4.5.2
+X /= Y;
+
+"" < "A" and "A" < "Aa"; -- True 
+"Aa" < "B" and "A" < "A "; -- True 
+
+My_Car = null; -- true if My_Car has been set to null (see 3.10.1) 
+My_Car = Your_Car; -- true if we both share the same car 
+My_Car.all = Your_Car.all; -- true if the two cars are identical 
+
+N not in 1 .. 10;     -- range membership test 
+Today in Mon .. Fri;  -- range membership test 
+Today in Weekday;     -- subtype membership test (see 3.5.1) 
+Archive in Disk_Unit; -- subtype membership test (see 3.8.1) 
+Tree.all in Addition'Class; -- class membership test (see 3.9.1) 
+
+-- Examples from ARM 4.5.3
+Z + 0.1; -- Z has to be of a real type 
+
+"A" & "BCD"; -- concatenation of two string literals 
+'A' & "BCD"; -- concatenation of a character literal and a string literal 
+'A' & 'A'; -- concatenation of two character literals
+
+-- Examples from ARM 4.5.4
+I*J;
+K/J; 
+K mod J; 
+X/Y; 
+F/2; 
+3*F;
+0.75*G;
+Fraction(F*G);
+Real(J)*Y;
+
+N = 0 or else A(N) = Hit_Value; -- Should stop at the semicolon
+
+A + 4 then      -- This is OK and should stop at then
+A or 4 else     -- This is also OK and should stop at else
+A not in not B; -- This is OK
+A in -B;        -- OK
+-B**C;          -- OK
+-abs A;         -- OK
+A and then B;
+A =>            -- Stops at =>
+A is            -- Stops at is
+A with          -- Stops at with
+A (B) do        -- Stops at do
+
+-- Now some erroneous stuff
+Cold and Sunny or Warm;        -- Brackets required
+Cold and Sunny and then Warm;  -- Brackets required
+Cold and then Sunny and Warm;  -- Brackets required
+
+A not B     -- in expected
+-+A;        -- Illegal
+A++B;       -- Illegal
+A**+B;      -- Illegal
+K'-Range;   -- Illegal
+abs -A;     -- Illegal
+abs not A;  -- Illegal
+ 
+A**B**C;                   -- expression (parentheses are required) 

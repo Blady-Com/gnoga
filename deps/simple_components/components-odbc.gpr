@@ -1,0 +1,49 @@
+with "components.gpr";
+with "odbc/odbc.gpr";
+
+project Components.ODBC is
+
+   type ODBC_Driver_Type is ("ODBC32", "unixODBC");
+   ODBC_Driver : ODBC_Driver_Type := external ("odbc", "ODBC32");
+   type Arch_Type is ("x86_64", "i686");
+   Arch : Arch_Type := external ("arch", "i686");
+
+   Common_Files :=
+       (  "odbc.ads",
+          "odbc-api.adb",
+          "odbc-api.ads",
+          "odbc-architecture_dependent.ads",
+          "odbc-api-keys-arrays.ads",
+          "odbc-api-keys-edit.ads",
+          "odbc-api-keys-sets.ads",
+          "odbc-api-keys.adb",
+          "odbc-api-keys.ads",
+          "odbc-api-links.adb",
+          "odbc-api-links.ads",
+          "odbc-bound_parameters.adb",
+          "odbc-bound_parameters.ads",
+          "odbc-driver_dependent.ads",
+          "odbc-sqltypes.adb",
+          "odbc-sqltypes.ads",
+          "odbc-thin.adb",
+          "odbc-thin.ads",
+          "persistent-native_odbc.adb",
+          "persistent-native_odbc.ads",
+          "persistent-native_odbc-text_io.adb",
+          "persistent-native_odbc-text_io.ads"
+      );
+   case ODBC_Driver is
+      when "ODBC32" =>
+         for Source_Dirs use (".", "./odbc", "./odbc/odbc32", "./odbc/odbc32/" & Arch);
+         for Source_Files use Common_Files;
+      when "unixODBC" =>
+         for Source_Dirs use (".", "./odbc", "./odbc/unixodbc", "./odbc/unixodbc/" & Arch);
+         for Source_Files use Common_Files;
+   end case;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.ODBC;

@@ -1,0 +1,48 @@
+with "../components-connections_server-http_server.gpr";
+
+project Components.Connections_Server.HTTP_Server.Test_HTTP_Server is
+
+   for Exec_Dir use ".";
+   for Source_Files use
+       (  "test_http_server.adb",
+    	  "test_http_servers.adb",
+    	  "test_http_servers.ads",
+          "test_websocket_duplex_server.adb",
+          "test_websocket_duplex_servers.adb",
+          "test_websocket_duplex_servers.ads",
+          "test_websocket_server.adb",
+          "test_websocket_servers.adb",
+          "test_websocket_servers.ads"
+	   );
+   for Main use
+       (  "test_http_server.adb",
+		  "test_websocket_server.adb",
+          "test_websocket_duplex_server.adb"
+	   );
+
+   package Compiler is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+	         HTTP_Server.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+	         HTTP_Server.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada")
+        use Components.Connections_Server.
+	         HTTP_Server.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+		     HTTP_Server.Linker'Default_Switches ("ada");
+   end Linker;
+   
+end Components.Connections_Server.HTTP_Server.Test_HTTP_Server;
+

@@ -1,0 +1,14 @@
+with "../../components.gpr";
+
+project Test_Operation_Stack is
+
+   for Source_Dirs use (".");
+   for Main use ("test_operation_stack.adb");
+   for Source_Files use
+       (  "operation_stack_expressions.adb",
+          "operation_stack_expressions.ads",
+          "test_operation_stack.adb"
+       );
+   
+end Test_Operation_Stack;
+

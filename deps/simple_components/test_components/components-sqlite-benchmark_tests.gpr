@@ -1,0 +1,28 @@
+with "../components-sqlite.gpr";
+
+project Components.SQLite.Benchmark_Tests is
+
+   for Exec_Dir use ".";
+   for Source_Files use
+       (  "test_sqlite_benchmark.adb",
+	      "test_string_b_trees.ads"
+       );
+   for Main use ("test_sqlite_benchmark.adb");
+
+   package Compiler is
+      for Default_Switches ("ada") use Components.SQLite.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use Components.SQLite.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada") use Components.SQLite.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada") use Components.SQLite.Linker'Default_Switches ("ada");
+   end Linker;
+
+end Components.SQLite.Benchmark_Tests;

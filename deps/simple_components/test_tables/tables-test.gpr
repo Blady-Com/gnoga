@@ -1,0 +1,19 @@
+with "../tables.gpr";
+
+project Tables.test is
+
+   for Main use ("test_tables.adb");
+   for Source_Files use
+       (  "test_tables_check_matched.adb",
+          "test_tables_check_spelling.adb",
+          "test_tables.adb",
+          "test_tables_names.ads",
+          "test_tables_table.ads"
+       );
+
+   package Binder   renames Tables.Binder;
+   package Builder  renames Tables.Builder;
+   package Compiler renames Tables.Compiler;
+   package Linker   renames Tables.Linker;
+
+end Tables.test;

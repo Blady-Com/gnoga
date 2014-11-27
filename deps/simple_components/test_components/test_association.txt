@@ -1,0 +1,56 @@
+/*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*\
+\                                                                      /
+/   Test_Association                Copyright (c)  Dmitry A. Kazakov   \
+\   Examples to parse                              Luebeck             /
+/                                                  Winter, 2004        \
+\                                                                      /
+/   This  library  is  free software; you can redistribute it and/or   \
+\   modify it under the terms of the GNU General Public  License  as   /
+/   published by the Free Software Foundation; either version  2  of   \
+\   the License, or (at your option) any later version. This library   /
+/   is distributed in the hope that it will be useful,  but  WITHOUT   \
+\   ANY   WARRANTY;   without   even   the   implied   warranty   of   /
+/   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU   \
+\   General  Public  License  for  more  details.  You  should  have   /
+/   received  a  copy  of  the GNU General Public License along with   \
+\   this library; if not, write to  the  Free  Software  Foundation,   /
+/   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.     \
+\                                                                      /
+/   As a special exception, if other files instantiate generics from   \
+\   this unit, or you link this unit with other files to produce  an   /
+/   executable, this unit does not by  itself  cause  the  resulting   \
+\   executable to be covered by the GNU General Public License. This   /
+/   exception  does not however invalidate any other reasons why the   \
+\   executable file might be covered by the GNU Public License.        /
+/                                                                      \
+\*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
+
+(A # B <:C:> D # E)              := "((A)SHARP, SHARP(B, COLON_OPEN(C)COLON_CLOSE, D)SHARP, SHARP(E))"
+(A # B <: C)                     := "((A)SHARP, SHARP(B, COLON_OPEN(C)))"
+(A # B <: C # D :> E # F)        := "((A)SHARP, SHARP(B, COLON_OPEN(COLON_OPEN(C)SHARP, SHARP(D)COLON_CLOSE)COLON_CLOSE, E)SHARP, SHARP(F))"
+(A<:B:>C)                        := "(A, COLON_OPEN(B)COLON_CLOSE, C)" 
+(A,B<:C,D:>E,F)                  := "(A, B, COLON_OPEN(C, D)COLON_CLOSE, E, F)"
+(A:B:C)                          := "((A)COLON, COLON(B)COLON, COLON(C))" 
+(A, B, C with D, E with F, G)    := "(A, B, C, EXTENSION(D, E, EXTENSION(F, G)))"
+(A + B : C, D | E : F, G | H, I) := "(((ADD(A, B))COLON, COLON(C, D)BAR)BAR, BAR(BAR(E)COLON, COLON(F, G)BAR)BAR, BAR(H, I))"
+(A|B)                            := "((A)BAR, BAR(B))"
+(A,B,C)                          := "(A, B, C)"
+(A,B:C,D:E,F)                    := "((A, B)COLON, COLON(C, D)COLON, COLON(E, F))"
+(A : B | C : D | E : F)          := "(((A)COLON, COLON(B)BAR)BAR, BAR(BAR(C)COLON, COLON(D)BAR)BAR, BAR(BAR(E)COLON, COLON(F)))"
+(A + B : C, D | E : F | G # H)   := "(((ADD(A, B))COLON, COLON(C, D)BAR)BAR, BAR(BAR(E)COLON, COLON(F)BAR)BAR, BAR(BAR(G)SHARP, SHARP(H)))"
+(A, B $ C, D $ E, F $ G, H)      := "((A, B)DOLLAR, DOLLAR(C, D)DOLLAR, DOLLAR(E, F)DOLLAR, DOLLAR(G, H))"
+(A, B, C with D, E out F, G)     := "(A, B, C, EXTENSION(D, E)CLOSURE, F, G)"
+(A | B <: C : D :> E | F)        := "((A)BAR, BAR(B, COLON_OPEN(C)COLON, COLON(D)COLON_CLOSE, E)BAR, BAR(F))"
+(A | B <: C | D :> E | F)        := "((A)BAR, BAR(B, COLON_OPEN(C)BAR)BAR, BAR(BAR(D)COLON_CLOSE, E)BAR, BAR(F))"
+(A : B <: C : D :> E : F)        := "((A)COLON, COLON(B, COLON_OPEN(C)COLON, COLON(D)COLON_CLOSE, E)COLON, COLON(F))"
+(A , B <: C , D :> E , F)        := "(A, B, COLON_OPEN(C, D)COLON_CLOSE, E, F)"
+(A | B :> C)                     := "((A)BAR, BAR(BAR(B)COLON_CLOSE, C))"
+(A # B :> C)                     := "(((A)SHARP, SHARP(B)COLON_CLOSE)COLON_CLOSE, C)"
+(A : B :> C)                     := "((A)COLON, COLON(B)COLON_CLOSE, C)"
+A - ++ -- B + C                  := "SUB(A, PREINC(PREDEC(B)), MINUS(C))"
+A + B * C + D + E                := "ADD(A, MUL(B, C), D, E)"
+A - B + C - D + E                := "SUB(A, B, MINUS(C), D, MINUS(E))"
+- A ** - B                       := "MINUS(POW(A, MINUS(B)))"
+A - ++ B ++ -- - C               := "SUB(A, POSTDEC(POSTINC(PREINC(B))), C)"
+A * ? B @ * C                    := "POST_AT(MUL(PRE_QUERY(MUL(A, B)), C))"
+A ** B (C, D + E)                := "LEFT_INDEX(POW(A, B), C, ADD(D, E))"

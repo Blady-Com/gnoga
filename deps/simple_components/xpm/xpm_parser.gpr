@@ -1,0 +1,13 @@
+with "../components.gpr";
+
+project xpm_parser is
+
+   for Source_Dirs use (".");
+   for Source_Files use
+      (  "parsers-generic_source-xpm.adb",
+         "parsers-generic_source-xpm.ads",
+         "parsers-multiline_source-xpm.ads"
+      );
+
+end xpm_parser;
+

@@ -1,0 +1,18 @@
+with "../components-odbc.gpr";
+
+project Components.ODBC.ODBC_Persistence_Tests is
+
+   for Exec_Dir use ".";
+   for Source_Files use
+       (  "test_native_odbc_persistence.adb",
+          "test_native_odbc_session.ads",
+          "test_native_odbc_session.adb",
+          "test_persistent_object.adb",
+          "test_persistent_object.ads",
+          "test_persistent_tree.adb",
+          "test_persistent_tree.ads"
+       );
+   for Main use ("test_native_odbc_persistence.adb");
+
+end Components.ODBC.ODBC_Persistence_Tests;
+

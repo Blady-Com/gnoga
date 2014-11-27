@@ -1,0 +1,38 @@
+with "../components.gpr";
+with "../components-connections_server-http_server-sqlite_browser.gpr";
+
+project Components.Test_SQLite_Browser is
+
+   for Exec_Dir use ".";
+   for Source_Files use
+       (  "test_http_sqlite_browser.adb",
+    	  "test_http_sqlite_servers.adb",
+    	  "test_http_sqlite_servers.ads"
+	   );
+   for Main use ("test_http_sqlite_browser.adb");
+
+   package Compiler is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+             HTTP_Server.SQLite_Browser.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+             HTTP_Server.SQLite_Browser.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada")
+        use Components.Connections_Server.
+            HTTP_Server.SQLite_Browser.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+             HTTP_Server.SQLite_Browser.Linker'Default_Switches ("ada");
+   end Linker;
+   
+end Components.Test_SQLite_Browser;

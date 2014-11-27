@@ -1,0 +1,30 @@
+with "../components-connections_server.gpr";
+
+project Components.Connections_Server.Test_Data_Server is
+
+   for Exec_Dir use ".";
+   for Source_Files use
+       (  "test_data_server.adb",
+	      "test_data_servers.adb",
+	      "test_data_servers.ads"
+	   );
+   for Main use ("test_data_server.adb");
+
+   package Compiler is
+      for Default_Switches ("ada") use Components.Connections_Server.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use Components.Connections_Server.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada") use Components.Connections_Server.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada") use Components.Connections_Server.Linker'Default_Switches ("ada");
+   end Linker;
+   
+end Components.Connections_Server.Test_Data_Server;
+

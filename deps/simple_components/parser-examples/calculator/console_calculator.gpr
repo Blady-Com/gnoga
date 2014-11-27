@@ -1,0 +1,10 @@
+with "../../components.gpr";
+
+project Console_Calculator is
+
+   for Source_Dirs use (".");
+   for Main use ("console_calculator.adb");
+   for Source_Files use ("calculator.adb", "calculator.ads", "console_calculator.adb");
+
+end Console_Calculator;
+

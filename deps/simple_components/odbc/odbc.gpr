@@ -1,0 +1,20 @@
+project ODBC is
+   type ODBC_Driver_Type is ("ODBC32", "unixODBC");
+   ODBC_Driver : ODBC_Driver_Type := external ("odbc", "ODBC32");
+   type Arch_Type is ("x86_64", "i686");
+   Arch : Arch_Type := external ("arch", "i686");
+   case ODBC_Driver is
+      when "unixODBC" =>
+         for Externally_Built use "true";
+         for Source_Files use ();
+         for Library_Dir use ".";
+         for Library_Name use "odbc";
+         for Library_Kind use "dynamic";
+      when "ODBC32" =>
+         for Externally_Built use "true";
+         for Source_Files use ();
+         for Library_Dir use ".";
+         for Library_Name use "odbc32";
+         for Library_Kind use "dynamic";
+   end case;
+end ODBC;

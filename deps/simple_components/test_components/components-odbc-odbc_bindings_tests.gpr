@@ -1,0 +1,26 @@
+with "../components-odbc.gpr";
+
+project Components.ODBC.ODBC_Bindings_Tests is
+
+   for Exec_Dir use ".";
+   for Source_Files use ("test_odbc_bindings.adb");
+   for Main use ("test_odbc_bindings.adb");
+
+   package Compiler is
+      for Default_Switches ("ada") use Components.ODBC.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use Components.ODBC.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada") use Components.ODBC.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada") use Components.ODBC.Linker'Default_Switches ("ada");
+   end Linker;
+   
+end Components.ODBC.ODBC_Bindings_Tests;
+

@@ -1,0 +1,34 @@
+with "../components-apq.gpr";
+
+project Components.APQ.APQ_Persistence_Tests is
+
+   for Exec_Dir use ".";
+   for Source_Files use
+   (  "test_apq_persistence.adb",
+      "test_apq_session.ads",
+      "test_apq_session.adb",
+      "test_persistent_object.adb",
+      "test_persistent_object.ads",
+      "test_persistent_tree.adb",
+      "test_persistent_tree.ads"
+   );
+   for Main use ("test_apq_persistence.adb");
+
+   package Compiler is
+      for Default_Switches ("ada") use Components.APQ.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use Components.APQ.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada") use Components.APQ.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada") use Components.APQ.Linker'Default_Switches ("ada");
+   end Linker;
+
+end Components.APQ.APQ_Persistence_Tests;
+

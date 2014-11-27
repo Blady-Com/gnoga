@@ -1146,6 +1146,10 @@ package body Gnoga.Server.Connection is
    is
       use Ada.Strings.Fixed;
    begin
+      if Message = "0" then
+         return;
+      end if;
+
       if Message (Message'First) = 'S' then
          declare
             P1 : Integer := Index (Source  => Message,

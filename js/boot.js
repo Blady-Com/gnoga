@@ -3,6 +3,13 @@
   var reconnects=0;
   var params={};
   var gnoga={};
+  var pingerid;
+
+  function Ping_ws() {
+     if (ws.readyState == 1) {
+        ws.send ("0");
+     }
+  }
 
   function Setup_ws() {
         reconnects++;
@@ -25,6 +32,7 @@
               ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
               setTimeout (Setup_ws, 100);
            } else {
+              clearInterval (pingerid);
               if (gnoga['html_on_close'] != "") {
                  $(document.body).html(gnoga['html_on_close']);
               } else {
@@ -39,6 +47,7 @@
               ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
               setTimeout (Setup_ws, 100);
            } else {
+              clearInterval (pingerid);
               if (gnoga['html_on_close'] != "") {
                  $(document.body).html(gnoga['html_on_close']);
               } else {
@@ -68,6 +77,7 @@
 
      if (ws != null) {
         setTimeout (Setup_ws, 10);
+        pingerid = setInterval (function () {Ping_ws ();}, 10000);
      } else {
         document.writeln ("If you are seeing this your browser or your connection to the internet is blocking websockets.");
      }

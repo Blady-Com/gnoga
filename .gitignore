@@ -3,3 +3,5 @@ bin/
 lib/
 gnatinspect.db
 .DS_Store
+*.o
+*.ali

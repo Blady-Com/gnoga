@@ -1,6 +1,52 @@
   var ws;
+  var adr;
+  var reconnects=0;
   var params={};
   var gnoga={};
+
+  function Setup_ws() {
+        reconnects++;
+        ws.onmessage = function (event) {
+           reconnects = 0;
+           try {
+              eval (event.data);
+           } catch (e) {
+              console.error (e.message);
+           }
+        }
+        ws.onerror = function (event) {
+           if (gnoga['Connection_ID'] == 'undefined') {
+              location.reload(true);
+           }
+
+           if (reconnects < 2) {
+              console.log ("onerror: reconnect " + reconnects);
+              ws.onclose=null;
+              ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
+              setTimeout (Setup_ws, 100);
+           } else {
+              if (gnoga['html_on_close'] != "") {
+                 $(document.body).html(gnoga['html_on_close']);
+              } else {
+                 alert ("Server connection lost " + event.reason);
+              }
+           }
+        }
+        ws.onclose = function (event) {
+           if (reconnects < 2) {
+              console.log ("onerror: reconnect " + reconnects);
+              ws.onclose=null;
+              ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
+              setTimeout (Setup_ws, 100);
+           } else {
+              if (gnoga['html_on_close'] != "") {
+                 $(document.body).html(gnoga['html_on_close']);
+              } else {
+                 alert ("Server connection lost " + event.reason);
+              }
+           }
+        }
+  }
 
   $( document ).ready(function() {
      var s = document.location.search;
@@ -14,30 +60,15 @@
            = decodeURIComponent(tokens[2]);
      }
 
-     var adr = "ws://" + location.hostname;
+     adr = "ws://" + location.hostname;
      if (location.port != "") { adr = adr + ":" + location.port; }
      adr = adr + "/gnoga";
 
      ws = new WebSocket (adr);
 
      if (ws != null) {
-        ws.onmessage = function (event) {
-           try {
-              eval (event.data);
-           } catch (e) {
-              console.error (e.message);
-           }
-        }
-        ws.onerror = function (event) {
-        }
-        ws.onclose = function (event) {
-           if (gnoga['html_on_close'] != "") {
-              $(document.body).html(gnoga['html_on_close']);
-           } else {
-              alert ("Server connection lost " + event.reason);
-           }
-        }
+        setTimeout (Setup_ws, 10);
      } else {
-        document.writeln ("If you are seeing this, either your browser is pre-html 5, not graphical or your connection to the internet is blocking websockets.");
+        document.writeln ("If you are seeing this your browser or your connection to the internet is blocking websockets.");
      }
   });

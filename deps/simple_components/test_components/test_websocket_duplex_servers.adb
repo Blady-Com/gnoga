@@ -73,7 +73,7 @@ package body Test_WebSocket_Duplex_Servers is
       "         var Close =" & CRLF &
       "             document.getElementById ('close');" & CRLF &
       "            // Create a new WebSocket" & CRLF &
-      "         var Socket = new WebSocket ('ws://localhost:8000');" & CRLF &
+      "         var Socket = new WebSocket ('ws://localhost');" & CRLF &
       "         Socket.onerror = function (error)" & CRLF &
       "         {  // Socket error" & CRLF &
       "            console.log ('Error: ' + error);" & CRLF &
@@ -169,11 +169,6 @@ package body Test_WebSocket_Duplex_Servers is
             );
       end case;
    end Do_Get_Head;
-
-   function Get_Name (Client : Chat_Client) return String is
-   begin
-      return "localhost";
-   end Get_Name;
 
    procedure Do_Get (Client : in out Chat_Client) is
    begin

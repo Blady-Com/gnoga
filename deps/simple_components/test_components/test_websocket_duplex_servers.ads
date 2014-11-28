@@ -51,7 +51,6 @@ package Test_WebSocket_Duplex_Servers is
 -- Chat_Client -- Chat HTTP site
 --
    type Chat_Client is new HTTP_Client with private;
-   function Get_Name (Client : Chat_Client) return String;
    procedure Do_Get  (Client : in out Chat_Client);
    procedure Do_Head (Client : in out Chat_Client);
    procedure WebSocket_Finalize (Client : in out Chat_Client);

@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.3</EM><BR>
+<EM>version 4.4</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -113,11 +113,11 @@ language standards.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_3.tgz">components_4_3.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_4.tgz">components_4_4.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td colspan="2" align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_3.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_4.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 	</tr>
 </table>
@@ -26857,14 +26857,91 @@ record<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> File =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; File : String (<font color="#800000">1</font>..Path_Length);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> URI =&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Host&nbsp; : String (<font color="#800000">1</font>..Host_Length);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Port&nbsp; : Port_Type;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Path&nbsp; : String (<font color="#800000">1</font>..Path_Length);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Query : String (<font color="#800000">1</font>..Query_Length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Scheme : Scheme_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Host&nbsp;&nbsp; : String (<font color="#800000">1</font>..Host_Length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Port&nbsp;&nbsp; : Port_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Path&nbsp;&nbsp; : String (<font color="#800000">1</font>..Path_Length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Query&nbsp; : String (<font color="#800000">1</font>..Query_Length);<br>
 &nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
 <font color="#0000FF">end record</font>;</tt></p>
 </blockquote>
-<p>Values of this type are used to store request's status line.</p>
+<p>Values of this type are used to store request's status line. The type 
+Scheme_Type specified supported URI schemes (see
+<a href="https://tools.ietf.org/html/rfc398">RFC 3986</a>):</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Scheme_Type"></a>type</font> 
+Scheme_Type is<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; HTTP_Scheme,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HTTPS_Scheme,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WS_Scheme,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WSS_Scheme<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>A URI like:</p>
+
+<blockquote>
+<table border="0" cellspacing="0" cellpadding="0" style="border-left-width: 0px">
+	<tr>
+		<td colspan="2"><font color="#800080"><tt>http</tt></font></td>
+		<td><tt>://</tt></td>
+		<td colspan="2"><font color="#008000"><tt>tools.ietf.org</tt></font></td>
+		<td><tt>:</tt></td>
+		<td colspan="2"><font color="#800000"><tt>80</tt></font></td>
+		<td><tt>/</tt></td>
+		<td colspan="2"><font color="#0000FF"><tt>html/rfc3986</tt></font></td>
+		<td><tt>#</tt></td>
+		<td colspan="2"><font color="#FF0000"><tt>section-3.2.2</tt></font></td>
+	</tr>
+	<tr>
+		<td style="border-left-style: none; border-left-width: medium">&nbsp;</td>
+		<td style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium; border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium">&nbsp;</td>
+		<td style="border-left-style: solid; border-left-width: 1px">&nbsp;</td>
+		<td style="border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium">&nbsp;</td>
+		<td style="border-left-style: solid; border-left-width: 1px">&nbsp;</td>
+		<td style="border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium">&nbsp;</td>
+		<td style="border-left-style: solid; border-left-width: 1px">&nbsp;</td>
+		<td style="border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium">&nbsp;</td>
+		<td style="border-left-style: solid; border-left-width: 1px">&nbsp;</td>
+	</tr>
+	<tr>
+		<td style="border-left-style: none; border-left-width: medium">&nbsp;</td>
+		<td style="border-left-style: solid; border-left-width: 1px">&nbsp;</td>
+		<td style="border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium; border-right-style: none; border-right-width: medium" colspan="2" align="center">
+		<i>Host</i></td>
+		<td style="border-left-style: none; border-left-width: medium; border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium">&nbsp;</td>
+		<td style="border-left-style: solid; border-left-width: 1px">&nbsp;</td>
+		<td style="border-right-style: none; border-right-width: medium">&nbsp;</td>
+		<td style="border-right-style: none; border-right-width: medium" colspan="2" align="center">
+		<i>Path</i></td>
+		<td>&nbsp;</td>
+		<td colspan="2" align="center"><i>Query</i></td>
+	</tr>
+	<tr>
+		<td colspan="3"><i>Scheme</i></td>
+		<td colspan="6" align="right"><i>Port</i></td>
+		<td colspan="2">&nbsp;</td>
+		<td>&nbsp;</td>
+		<td colspan="2">&nbsp;</td>
+	</tr>
+</table>
+</blockquote>
+<p>is parsed as follows:</p>
+<ul>
+	<li><i>Scheme</i> is <i> <font color="#800080">HTTP_Scheme</font></i>;</li>
+	<li><i>Host</i> is &quot;<font color="#008000"><tt>tools.ietf.org</tt></font>&quot;;</li>
+	<li><i>Port</i> is <font color="#800000">80</font>;</li>
+	<li><i>Path</i> is &quot;<font color="#0000FF"><tt>html/rfc3986</tt></font>&quot;;</li>
+	<li><i>Query</i> is &quot;<font color="#FF0000"><tt>section-3.2.2</tt></font>&quot;.</li>
+</ul>
 <h4><a name="16.11.1"></a>16.11.1. Common operations</h4>
 <blockquote>
 <p><tt><font color="#0000FF">function</font> Get_Allowed (<b>Client</b> : 
@@ -26929,32 +27006,35 @@ object indicated by <b>Client</b>.Listener.</p>
 e.g. GET:</p>
 <blockquote>
 <p><tt><font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Connect"></a>procedure</font> Do_Connect (<b>Client</b> :
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Connect"></a>procedure</font> Do_Connect&nbsp;&nbsp; (<b>Client</b> :
 <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Delete"></a>procedure</font> Do_Delete&nbsp; (<b>Client</b> :
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Delete"></a>procedure</font> Do_Delete&nbsp;&nbsp;&nbsp; (<b>Client</b> :
 <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Get"></a>procedure</font> Do_Get&nbsp;&nbsp;&nbsp;&nbsp; (<b>Client</b> 
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Get"></a>procedure</font> Do_Get&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; (<b>Client</b> 
 : <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Head"></a>procedure</font> Do_Head&nbsp;&nbsp;&nbsp; (<b>Client</b> 
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Head"></a>procedure</font> Do_Head&nbsp;&nbsp;&nbsp; &nbsp; (<b>Client</b> 
 : <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Options"></a>procedure</font> Do_Options (<b>Client</b> :
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Options"></a>procedure</font> Do_Options&nbsp;&nbsp; (<b>Client</b> :
 <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Patch"></a>procedure</font> Do_Patch&nbsp;&nbsp; (<b>Client</b> :
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Patch"></a>procedure</font> Do_Patch&nbsp;&nbsp;&nbsp;&nbsp; (<b>Client</b> :
 <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Post"></a>procedure</font> Do_Post&nbsp;&nbsp;&nbsp; (<b>Client</b> 
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Post"></a>procedure</font> Do_Post&nbsp;&nbsp;&nbsp; &nbsp; (<b>Client</b> 
 : <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Put"></a>procedure</font> Do_Put&nbsp;&nbsp;&nbsp;&nbsp; (<b>Client</b> 
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Put"></a>procedure</font> Do_Put&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; (<b>Client</b> 
 : <font color="#0000FF">in out</font> HTTP_Client);<br>
 <font color="#0000FF">
-<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Trace"></a>procedure</font> Do_Trace&nbsp;&nbsp; (<b>Client</b> :
-<font color="#0000FF">in out</font> HTTP_Client);</tt></p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_Trace"></a>procedure</font> Do_Trace&nbsp;&nbsp; &nbsp; (<b>Client</b> :
+<font color="#0000FF">in out</font> HTTP_Client);<br>
+<font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Do_WebSocket"></a>procedure</font> 
+Do_WebSocket (<b>Client</b> : <font color="#0000FF">in out</font> HTTP_Client);</tt></p>
 </blockquote>
 <p>The implementation should send a response to the client. The default 
 implementations of all methods except for GET, HEAD, OPTIONS respond with <i>501 
@@ -27212,8 +27292,8 @@ of the abstract type declared in the package:</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">type</font> Content_Destination
-<font color="#0000FF">is<br>
-&nbsp;&nbsp; abstract new </font>Ada.Finalization.Limited_Controlled<br>
+<font color="#0000FF">is abstract<br>
+&nbsp;&nbsp; new </font>Ada.Finalization.Limited_Controlled<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">with null record</font>;</tt></p>
 </blockquote>
 <p>The following primitive operations are defined:</p>
@@ -27317,7 +27397,9 @@ like:</p>
 </blockquote>
 <p>The request's body posted by such a form consists of pairs key/value. In the 
 above example it would be text/&lt;<i>some-user-input-text</i>&gt; and submit/save. 
-Such bodies can be received and parsed using Receive_CGI_Body.</p>
+Such bodies can be received and parsed using a
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Receive_Body_CGI">Receive_Body</a> 
+that takes as an argument a table or a list of expected keys.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">type</font> String_Ptr <font color="#0000FF">is 
@@ -28067,7 +28149,9 @@ nothing.</p>
 </a>procedure</font> WebSocket_Initialize (<b>Client</b> 
 : <font color="#0000FF">in out</font> HTTP_Client);</tt></p>
 </blockquote>
-<p>This is the first procedure called when the connection is established. The default implementation of this procedure does 
+<p>This is the first procedure called after 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Open">WebSocket_Open</a> 
+when the connection is established. The default implementation of this procedure does 
 nothing.</p>
 
 <blockquote>
@@ -28081,7 +28165,12 @@ return</font> WebSocket_Accept;</tt></p>
 </blockquote>
 <p>This function is called when the client requests a WebSocket connection. The 
 implementation should verify the header fields and the URI in order to decide to 
-accept or reject the request. The result's type is:</p>
+accept or reject the request. Custom initialization of the WebSocket exchange 
+should happen later in the implementation of
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Initialize">WebSocket_Initialize</a>. 
+The purpose of 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Open">WebSocket_Open</a> 
+is only to decide if the connection request is to be accepted or rejected. The result's type is:</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">type</font> WebSocket_Accept<br>
@@ -28287,7 +28376,8 @@ Message : String<br>
 </TABLE>
 <p>Next we override
 <a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Open">WebSocket_Open</a> 
-and <a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Send">WebSocket_Send</a>, 
+and 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Received">WebSocket_Received</a>, 
 the only WebSocket operations needed.</p>
 <p>The implementation of the package is as follows:</p>
 File<i> test_websocket_servers.adb</i>:
@@ -28582,7 +28672,7 @@ found</font>&quot;<br>
 &nbsp;&nbsp; <font color="#0000FF">end</font> Do_Head;</tt></TD>
   </TR>
 </TABLE>
-<p>On a HTTP request like GET or PUT when the file name is empty or else <i>
+<p>On a HTTP request like GET or HEAD when the file name is empty or else <i>
 index.htm</i> the page is sent back. The response's header contains current 
 date, server and content fields.</p>File<i> test_websocket_servers.adb</i> 
 (continued):
@@ -28600,7 +28690,7 @@ Client : <font color="#0000FF">access</font> Chat_Client<br>
 &nbsp;&nbsp; <font color="#0000FF">end</font> WebSocket_Open;</tt></TD>
   </TR>
 </TABLE>
-<p>When a WebSocket&nbsp; connection is requested, it is accepted. The 
+<p>When a WebSocket&nbsp;connection is requested, it is accepted. The 
 communication mode set to half-duplex as the server will send nothing on its own 
 initiative.</p>File<i> test_websocket_servers.adb</i> (continued):
 <TABLE border="1" cellpadding="15" cellspacing="0">
@@ -30705,6 +30795,11 @@ The following versions were tested with the compilers:</i>
 <i>GNAT 4.8.2 (20131212)</i></li>
   <li><i>GNAT 4.9.0</i></li>
   </ul>
+<P>
+Changes () to the version 4.3:<ul>
+	<li>URI scheme recognition added;</li>
+	<li>Documentation improved;</li>
+	</ul>
 <P>
 Changes (23 November 2014) to the version 4.2:<ul>
 	<li>Persistent.Memory_Pool.Generic_External_Ptr_B_Tree was added;</li>

@@ -69,7 +69,7 @@ package body Test_WebSocket_Servers is
       "         var Close =" & CRLF &
       "             document.getElementById ('close');" & CRLF &
       "            // Create a new WebSocket" & CRLF &
-      "         var Socket = new WebSocket ('ws://localhost:8000');" & CRLF &
+      "         var Socket = new WebSocket ('ws://localhost');" & CRLF &
       "         Socket.onerror = function (error)" & CRLF &
       "         {  // Socket error" & CRLF &
       "            console.log ('Error: ' + error);" & CRLF &

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  21:50 26 Nov 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -58,6 +58,15 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
         );
    type HTTP_Allowed is array (HTTP_Method) of Boolean;
    type HTTP_Version is delta 0.1 digits 6 range 1.0..1_000.0;
+--
+-- Scheme_Type -- Recognized schemes (RFC 3986)
+--
+   type Scheme_Type is
+        (  HTTP_Scheme,
+           HTTPS_Scheme,
+           WS_Scheme,
+           WSS_Scheme
+        );
 --
 -- Request_Header -- Request header fields
 --
@@ -271,10 +280,11 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          when File =>
             File : String (1..Path_Length);
          when URI =>
-            Host  : String (1..Host_Length);
-            Port  : Port_Type;
-            Path  : String (1..Path_Length);
-            Query : String (1..Query_Length);
+            Scheme : Scheme_Type;
+            Host   : String (1..Host_Length);
+            Port   : Port_Type;
+            Path   : String (1..Path_Length);
+            Query  : String (1..Query_Length);
       end case;
    end record;
 --
@@ -911,7 +921,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --    Client - The client connection object
 --    Index  - The key's position starting with 1
 --
--- The key/value  pairs are set  using a call to  Receive_CGI_Body which
+-- The  key/value  pairs  are set  using  a call to a Receive_Body which
 -- parses the application/x-www-form-urlencoded bodies.
 --
 -- Returns :
@@ -940,7 +950,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --    Client      - The client connection object
 --    Key / Index - The key name or position starting with 1
 --
--- The key/value  pairs are set  using a call to  Receive_CGI_Body which
+-- The  key/value  pairs are  set using  a call to a Receive_Body  which
 -- parses the application/x-www-form-urlencoded bodies.
 --
 -- Returns :
@@ -1602,6 +1612,7 @@ private
              );
    procedure Status_Line_Received
              (  Client  : in out HTTP_Client;
+                Scheme  : Scheme_Type;
                 Method  : HTTP_Method;
                 Host    : String;
                 Port    : Port_Type;
@@ -1689,11 +1700,16 @@ private
    package Connection_Tables is new Connection_Tables_Raw.Names;
    use Connection_Tables;
 
+   package Scheme_Tables_Raw is new Tables (Scheme_Type);
+   package Scheme_Tables is new Scheme_Tables_Raw.Names;
+   use Scheme_Tables;
+
    Commands        : HTTP_Tables.Dictionary;
    Request_Headers : Request_Header_Tables.Dictionary;
    Week_Days       : Day_Tables.Dictionary;
    Months          : Month_Tables.Dictionary;
    Zones           : Zone_Tables.Dictionary;
    Connections     : Connection_Tables.Dictionary;
+   Schemes         : Scheme_Tables.Dictionary;
 
 end GNAT.Sockets.Connection_State_Machine.HTTP_Server;

@@ -33,7 +33,7 @@ with GNAT.Sockets.Server.Pooled;
 
 procedure Test_WebSocket_Server is
    Minutes : constant := 3.0;
-   Port    : constant := 8000;
+   Port    : constant := 80;
    Tasks   : constant := 5;
 begin
    declare

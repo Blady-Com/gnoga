@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  21:10 28 Nov 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -249,7 +249,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          );
          return False;
       end if;
-
       begin
          case Integer'
               (  Value (Get_Header (This, Sec_WebSocket_Version))
@@ -295,13 +294,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             );
             return False;
       end case;
-      declare
-         Host    : String := Get_Header (This, Host_Header);
-         Checked : Boolean := False;
-      begin
-         Put_Line ("Websocket Host : " & Host);
-         Checked := True;
-
+--        declare -- Origin checks
+--           Host    : String := Get_Header (This, Host_Header);
+--           Checked : Boolean := False;
+--        begin
 --           if Host /= "localhost" then
 --              declare
 --                 Server : Host_Entry_Type := Get_Host_By_Name (Host_Name);
@@ -320,7 +316,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --                    end;
 --                 end loop Verify;
 --                 if not Checked then
---                    Put_Line ("Not Checked");
 --                    Reply_Text
 --                    (  This,
 --                       400,
@@ -342,7 +337,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --                 );
 --                 return False;
 --              end if;
-      end;
+--        end;
       return True;
    end Check_WebSocket;
 
@@ -601,7 +596,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             begin
                Socket.Data := Ptr.all'Unchecked_Access;
             end;
-            Client.Expecting := WebSocket_Header;
+            Socket.Max_Length := Result.Size;
+            Client.Expecting  := WebSocket_Header;
             if Result.Duplex then -- Allow full-duplex operation
                Set_Overlapped_Size (Client, Client.Output_Size);
             end if;
@@ -1520,14 +1516,25 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             Query_First : Integer := Request'First;
             Query_Next  : Integer := Request'First;
             Port        : Integer := 80;
+            Scheme      : Scheme_Type;
          begin
-            if not Is_Prefix ("http://", Request, Pointer, Lower) then
+            begin
+               Get (Request, Pointer, Schemes, Scheme);
+            exception
+               when others =>
+                  Raise_Exception
+                  (  Data_Error'Identity,
+                     (  "URI does not start with a supported scheme "
+                     &  "(e.g. http)"
+                  )  );
+            end;
+            if not Is_Prefix ("://", Request, Pointer) then
                Raise_Exception
                (  Data_Error'Identity,
-                  "URI does not start with http://"
+                  "Scheme of the URI is not followed by ://"
                );
             end if;
-            Pointer    := Pointer + 7;
+            Pointer := Pointer + 3;
             Host_First := Pointer;
             Host_Next  := Pointer;
             while Pointer <= Request'Last loop
@@ -1590,6 +1597,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             end if;
             Status_Line_Received
             (  Client  => Client,
+               Scheme  => Scheme,
                Method  => Client.Method,
                Port    => Port_Type (Port),
                Version => Get_Version,
@@ -2469,8 +2477,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                         "Data message length exceeds the limit set"
                      );
                   end if;
-                  Socket.Length_Count := Socket.Length_Count - 1;
-                  if Socket.Length_Count = 0 then
+                  if Socket.Length_Count = 1 then
                      Frame.Length := Frame.Length + Socket.Frame_Length;
                      if Frame.Length > Socket.Max_Length then
                         Raise_Exception
@@ -2479,6 +2486,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                         );
                      end if;
                      Client.Expecting := WebSocket_Mask;
+                  else
+                     Socket.Length_Count := Socket.Length_Count - 1;
                   end if;
                   Pointer := Pointer + 1;
                end;
@@ -3159,6 +3168,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 
    procedure Status_Line_Received
              (  Client  : in out HTTP_Client;
+                Scheme  : Scheme_Type;
                 Method  : HTTP_Method;
                 Host    : String;
                 Port    : Port_Type;
@@ -3171,6 +3181,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Ptr : Status_Ptr :=
                new Status_Line'
                    (  Kind         => URI,
+                      Scheme       => Scheme,
                       Path_Length  => Path'Length,
                       Host_Length  => Host'Length,
                       Query_Length => Query'Length,
@@ -4201,4 +4212,10 @@ begin
    Add (Connections, "close",      Connection_Close);
    Add (Connections, "keep-alive", Connection_Persistent);
    Add (Connections, "upgrade",    Connection_Upgrade);
+
+   Add (Schemes, "http",  HTTP_Scheme);
+   Add (Schemes, "https", HTTPS_Scheme);
+   Add (Schemes, "ws",    WS_Scheme);
+   Add (Schemes, "wss",   WSS_Scheme);
+
 end GNAT.Sockets.Connection_State_Machine.HTTP_Server;

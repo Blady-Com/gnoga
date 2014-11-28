@@ -36,9 +36,11 @@
 ------------------------------------------------------------------------------
 
 package Gnoga is
-   version      : constant String := "1.0";
-   version_high : constant        := 1;
-   version_low  : constant        := 0;
+   version      : constant String := "0.1";
+   version_high : constant        := 0;
+   version_low  : constant        := 1;
+
+   HTTP_Server_Name : constant String := "gnoga/" & version;
 
    function Escape_Quotes (S : String) return String;
    --  Escape quotes for Java Script.

@@ -109,6 +109,9 @@ package body Gnoga.Server.Connection is
    type Socket_Type is access all Gnoga_HTTP_Client;
 
    overriding
+   function Get_Name (Client : Gnoga_HTTP_Client) return String;
+
+   overriding
    procedure Do_Get  (Client : in out Gnoga_HTTP_Client);
 
    overriding
@@ -188,6 +191,16 @@ package body Gnoga.Server.Connection is
          Request_Length => Factory.Request_Length,
          Output_Size    => Factory.Output_Size);
    end Create;
+
+   --------------
+   -- Get_Name --
+   --------------
+
+   overriding
+   function Get_Name (Client : Gnoga_HTTP_Client) return String is
+   begin
+      return Gnoga.HTTP_Server_Name;
+   end Get_Name;
 
    -----------------
    -- Do_Get_Head --
@@ -381,7 +394,7 @@ package body Gnoga.Server.Connection is
    procedure Run is
    begin
       Gnoga_HTTP_Server.Start;
-      --  Neeeds Host config
+      --  To Do: Needs to restrict listen to Host from initialize
 
       Server_Wait.Hold;
 

@@ -214,6 +214,7 @@ package body Gnoga.Server.Connection is
       function Adjust_Name return String is
          function Base_Name return String;
          function Start_Path return String;
+         function After_Start_Path return String;
 
          function Base_Name return String is
             Q : Integer := Index (Status.File, "?", Going => Backward);
@@ -229,23 +230,39 @@ package body Gnoga.Server.Connection is
             end if;
          end Base_Name;
 
+         File_Name : String := Base_Name;
+
          function Start_Path return String is
-            Q : Integer := Index (Status.File, "/");
+            Q : Integer := Index (File_Name, "/");
          begin
             if Q = 0 then
                return "";
             else
-               return Status.File (Status.File'First .. Q - 1);
+               return File_Name (File_Name'First .. Q - 1);
             end if;
          end Start_Path;
 
-         File_Name : String := Base_Name;
-         Start     : String := Start_Path;
+         function After_Start_Path return String is
+            Q : Integer := Index (File_Name, "/");
+         begin
+            if Q = 0 then
+               return File_Name;
+            else
+               return File_Name (Q + 1 .. File_Name'Last);
+            end if;
+         end After_Start_Path;
+
+         Start              : String := Start_Path;
+         Path_Adjusted_Name : String := After_Start_Path;
       begin
          if Start = "" and File_Name = "" then
             return Gnoga.Server.HTML_Directory & To_String (Boot_HTML);
-         elsif Start = "js" or Start = "css" or Start = "img" then
-            return Gnoga.Server.Application_Directory & File_Name;
+         elsif Start = "js" then
+            return Gnoga.Server.JS_Directory & Path_Adjusted_Name;
+         elsif Start = "css" then
+            return Gnoga.Server.CSS_Directory & Path_Adjusted_Name;
+         elsif Start = "img" then
+            return Gnoga.Server.IMG_Directory & Path_Adjusted_Name;
          else
             if Ada.Directories.Exists
               (Gnoga.Server.HTML_Directory & File_Name)

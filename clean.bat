@@ -1,0 +1,9 @@
+cd obj
+rm *.*
+cd ..
+cd lib
+rm *.*
+cd ..
+cd bin
+rm *.*
+cd ..

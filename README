@@ -11,6 +11,7 @@ To get started:
 git clone git://git.code.sf.net/p/gnoga/code gnoga-code
 cd gnoga-code
 make  (or run "make release" for no debug info in compile)
+      (if using MinGW make.bat)
 
 then run the snake demo or tutorials in /bin. There are additional demos in
  /demo
@@ -50,7 +51,7 @@ Gnoga currently has the following parts:
 
 
 4. Gnoga higher level containers and GUI widgets
-      Gnoga.Gui.Views.* - Auto layout of child elements and basis for 
+      Gnoga.Gui.Views.* - Auto layout of child elements and basis for
                           custom Gnoga Ada only widgets
       Gnoga.Gui.Views.Docker - Dock child views to view sides
       Gnoga.Gui.Views.Card - Stacks of views
@@ -81,5 +82,5 @@ Gnoga currently has the following parts:
       Create a simple IE front end for client only PC apps
 
 10. Additional helper bindings:
-     Cairo graphic engine support (adopted from GtkAda) for Canvas, Img, PDF 
+     Cairo graphic engine support (adopted from GtkAda) for Canvas, Img, PDF
      and SVG use.

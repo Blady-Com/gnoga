@@ -843,18 +843,28 @@ package body Gnoga.Server.Connection is
          declare
             Reason : constant String := "Invalid URL";
          begin
-            return (False, Reason'Length, 400, Reason);
+            return (Accepted => False,
+                    Length   => Reason'Length,
+                    Code     => 400,
+                    Reason   => Reason);
          end;
       end if;
 
       if On_Connect_Event /= null then
-         return (True, 0, 1024, True, "");
+         return (Accepted  => True,
+                 Length    => 0,
+                 Size      => 10240,
+                 Duplex    => True,
+                 Protocols => "");
       else
          Gnoga.Log ("No Connection event set.");
          declare
             Reason : constant String := "No connection event set";
          begin
-            return (False, Reason'Length, 400, Reason);
+            return (Accepted => False,
+                    Length   => Reason'Length,
+                    Code     => 400,
+                    Reason   => Reason);
          end;
       end if;
    end WebSocket_Open;

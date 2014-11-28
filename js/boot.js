@@ -16,6 +16,9 @@
         ws.onmessage = function (event) {
            reconnects = 0;
            try {
+              if (gnoga_debug == true) {
+                 console.log ("eval data = " + event.data);
+              }
               eval (event.data);
            } catch (e) {
               console.error (e.message);
@@ -76,7 +79,7 @@
      ws = new WebSocket (adr);
 
      if (ws != null) {
-        setTimeout (Setup_ws, 10);
+        Setup_ws();
         pingerid = setInterval (function () {Ping_ws ();}, 10000);
      } else {
         document.writeln ("If you are seeing this your browser or your connection to the internet is blocking websockets.");

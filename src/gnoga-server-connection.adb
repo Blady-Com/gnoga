@@ -45,6 +45,8 @@ with GNAT.Traceback.Symbolic;
 
 with Ada.Containers.Ordered_Maps;
 
+with Gnoga.Server.Mime;
+
 with Strings_Edit.Quoted;
 with GNAT.Sockets.Server; use GNAT.Sockets.Server;
 with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
@@ -208,45 +210,6 @@ package body Gnoga.Server.Connection is
       Status : Status_Line renames Get_Status_Line (Client);
 
       function Adjust_Name return String;
-      function Mime_Type (File_Name : String) return String;
-
-      function Mime_Type (File_Name : String) return String is
-         function Get_Extension return String;
-
-         function Get_Extension return String is
-            N : Integer := Index (File_Name, ".", Going => Backward);
-         begin
-            if N = 0 then
-               return "";
-            else
-               return File_Name (N + 1 .. File_Name'Last);
-            end if;
-         end Get_Extension;
-
-         Ext : String := Get_Extension;
-      begin
-         if Ext = "js" then
-            return "text/javascript";
-         elsif Ext = "css" then
-            return "text/css";
-         elsif Ext = "jpg" or Ext = "jpeg" or Ext = "jpe" then
-            return "image/jpg";
-         elsif Ext = "png" then
-            return "image/png";
-         elsif Ext = "gif" then
-            return "image/gif";
-         elsif Ext = "pdf" then
-            return "application/pdf";
-         elsif Ext = "zip" then
-            return "application/zip";
-         elsif Ext = "ico" then
-            return "image/x-icon";
-         elsif Ext = "html" or Ext = "htm" then
-            return "text/html";
-         else
-            return "text/plain";
-         end if;
-      end Mime_Type;
 
       function Adjust_Name return String is
          function Base_Name return String;
@@ -312,7 +275,7 @@ package body Gnoga.Server.Connection is
             declare
                F : String := Adjust_Name;
             begin
-               Send_Content_Type (Client, Mime_Type (F));
+               Send_Content_Type (Client, Gnoga.Server.Mime.Mime_Type (F));
                declare
                   use Ada.Streams.Stream_IO;
                begin

@@ -33,7 +33,9 @@
               console.log ("onerror: reconnect " + reconnects);
               ws.onclose=null;
               ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
-              setTimeout (Setup_ws, 100);
+              ws.onopen = function (event) {
+                 Setup_ws();
+              }
            } else {
               clearInterval (pingerid);
               if (gnoga['html_on_close'] != "") {
@@ -45,10 +47,12 @@
         }
         ws.onclose = function (event) {
            if (reconnects < 2) {
-              console.log ("onerror: reconnect " + reconnects);
+              console.log ("onclose: reconnect " + reconnects);
               ws.onclose=null;
               ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
-              setTimeout (Setup_ws, 100);
+              ws.onopen = function (event) {
+                 Setup_ws();
+              }
            } else {
               clearInterval (pingerid);
               if (gnoga['html_on_close'] != "") {
@@ -76,10 +80,19 @@
      if (location.port != "") { adr = adr + ":" + location.port; }
      adr = adr + "/gnoga";
 
-     ws = new WebSocket (adr);
+     try {
+        console.log ("connecting to " + adr);
+        ws = new WebSocket (adr);
+     } catch (e) {
+        console.log ("trying again, connecting to " + adr);
+        ws = new WebSocket (adr);
+     }
 
      if (ws != null) {
-        Setup_ws();
+        ws.onopen = function (event) {
+           console.log ("connection open");
+           Setup_ws();
+        }
         pingerid = setInterval (function () {Ping_ws ();}, 10000);
      } else {
         document.writeln ("If you are seeing this your browser or your connection to the internet is blocking websockets.");

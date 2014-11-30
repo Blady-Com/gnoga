@@ -234,6 +234,10 @@ package Gnoga.Gui.Base is
    --  as Dynamic. Marking Dynamic is for the purpose of automatic garbage
    --  collection by Gnoga's framework.
 
+   function Buffer_Connection (Object : Base_Type) return Boolean;
+   procedure Buffer_Connection (Object : in out Base_Type; Value : Boolean);
+   --  Set buffering all output to browser on connection used by Object.
+
    -------------------------------------------------------------------------
    --  Base_Type - Methods
    -------------------------------------------------------------------------
@@ -251,6 +255,9 @@ package Gnoga.Gui.Base is
    procedure Execute (Object : in out Base_Type; Method : in String);
    function Execute (Object : Base_Type; Method : in String) return String;
    --  General access to execute a Method
+
+   procedure Flush_Buffer (Object : in out Base_Type);
+   --  Flush buffer to browser on connection used by Object
 
    -------------------------------------------------------------------------
    --  Base_Type - Event Handlers

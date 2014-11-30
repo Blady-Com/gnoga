@@ -59,6 +59,8 @@ package body Gnoga.Server.Connection is
 
    use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
 
+   CRLF : constant String := (Character'Val (13), Character'Val (10));
+
    Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
    Server_Port : GNAT.Sockets.Port_Type;
 
@@ -86,9 +88,27 @@ package body Gnoga.Server.Connection is
                     From     : GNAT.Sockets.Sock_Addr_Type)
                     return Connection_Ptr;
 
+   protected type String_Buffer is
+      procedure Buffering (Value : Boolean);
+      function Buffering return Boolean;
+
+      procedure Add (S : in String);
+      --  Add to buffer
+
+      function Get return String;
+      --  Retrive buffer
+
+      procedure Clear;
+      --  Clear buffer
+   private
+      Is_Buffering : Boolean := False;
+      Buffer       : Ada.Strings.Unbounded.Unbounded_String;
+   end String_Buffer;
+
    type Gnoga_HTTP_Content is
       record
-         FS : Ada.Streams.Stream_IO.File_Type;
+         FS        : Ada.Streams.Stream_IO.File_Type;
+         Buffer    : String_Buffer;
       end record;
    procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
                     Item   : in     Gnoga_HTTP_Content);
@@ -138,6 +158,12 @@ package body Gnoga.Server.Connection is
      (Client : in out Gnoga_HTTP_Client;
       Error  : in     Ada.Exceptions.Exception_Occurrence);
 
+   function Buffer_Add (ID     : Gnoga.Types.Connection_ID;
+                        Script : String)
+                        return Boolean;
+   --  If buffering add Script to the buffer for ID and return true, if not
+   --  buffering return false;
+
    -----------------------
    -- Gnoga_HTTP_Server --
    -----------------------
@@ -155,7 +181,7 @@ package body Gnoga.Server.Connection is
 
       declare
          Factory : aliased Gnoga_HTTP_Factory (Request_Length  => 200,
-                                               Output_Size     => 1024,
+                                               Output_Size     => 1_024_000,
                                                Max_Connections => 100);
          Server  : GNAT.Sockets.Server.
            Connections_Server (Factory'Access,  Server_Port);
@@ -217,8 +243,6 @@ package body Gnoga.Server.Connection is
       use Ada.Strings.Fixed;
 
       use Strings_Edit.Quoted;
-
-      CRLF : constant String := (Character'Val (13), Character'Val (10));
 
       Status : Status_Line renames Get_Status_Line (Client);
 
@@ -668,6 +692,9 @@ package body Gnoga.Server.Connection is
         (ID, Connection_Holder'Unchecked_Access);
 
       begin
+         delay 0.3;
+         --  Give time to finish handshaking
+
          Execute_Script (ID, "gnoga['Connection_ID']=" & ID'Img);
 
          Execute_Script (ID, "TRUE=true");
@@ -1134,6 +1161,8 @@ package body Gnoga.Server.Connection is
          end if;
       end;
 
+      Object.Flush_Buffer;
+
       Dispatch_Task_Objects.Delete_Dispatch_Task (I);
    exception
       when E : others =>
@@ -1198,6 +1227,95 @@ package body Gnoga.Server.Connection is
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end WebSocket_Received;
 
+   -------------------
+   -- String_Buffer --
+   -------------------
+
+   protected body String_Buffer is
+      procedure Buffering (Value : Boolean) is
+      begin
+         Is_Buffering := Value;
+      end Buffering;
+
+      function Buffering return Boolean is
+      begin
+         return Is_Buffering;
+      end Buffering;
+
+      procedure Add (S : in String) is
+         use type Ada.Strings.Unbounded.Unbounded_String;
+      begin
+         Buffer := Buffer & S;
+      end Add;
+
+      function Get return String is
+      begin
+         return Ada.Strings.Unbounded.To_String (Buffer);
+      end Get;
+
+      procedure Clear is
+      begin
+         Buffer := Ada.Strings.Unbounded.To_Unbounded_String ("");
+      end Clear;
+   end String_Buffer;
+
+   ----------------
+   -- Buffer_Add --
+   ----------------
+
+   function Buffer_Add (ID     : Gnoga.Types.Connection_ID;
+                        Script : String)
+                        return Boolean
+   is
+      Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+   begin
+      if Socket.Content.Buffer.Buffering then
+         Socket.Content.Buffer.Add (Script & CRLF);
+         return True;
+      else
+         return False;
+      end if;
+   end Buffer_Add;
+
+   -----------------------
+   -- Buffer_Connection --
+   -----------------------
+
+   function Buffer_Connection (ID : Gnoga.Types.Connection_ID) return Boolean
+   is
+      Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+   begin
+      return Socket.Content.Buffer.Buffering;
+   end Buffer_Connection;
+
+   procedure Buffer_Connection (ID    : in Gnoga.Types.Connection_ID;
+                                Value : in Boolean)
+   is
+      Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+   begin
+      if Value = False then
+         Flush_Buffer (ID);
+      end if;
+
+      Socket.Content.Buffer.Buffering (Value);
+   end Buffer_Connection;
+
+   ------------------
+   -- Flush_Buffer --
+   ------------------
+
+   procedure Flush_Buffer (ID : in Gnoga.Types.Connection_ID)
+   is
+      Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+   begin
+      if Socket.Content.Buffer.Buffering then
+         Socket.Content.Buffer.Buffering (False);
+         Execute_Script (ID, Socket.Content.Buffer.Get);
+         Socket.Content.Buffer.Clear;
+         Socket.Content.Buffer.Buffering (True);
+      end if;
+   end Flush_Buffer;
+
    --------------------
    -- Execute_Script --
    --------------------
@@ -1221,8 +1339,10 @@ package body Gnoga.Server.Connection is
       end Try_Execute;
 
    begin
-      if Connection_Manager.Valid (ID) then
-         Try_Execute;
+      if Connection_Manager.Valid (ID) and Script /= "" then
+         if not Buffer_Add (ID, Script) then
+            Try_Execute;
+         end if;
       end if;
    exception
       when others =>
@@ -1289,6 +1409,7 @@ package body Gnoga.Server.Connection is
    begin
       begin
          if Connection_Manager.Valid (ID) then
+            Flush_Buffer (ID);
             return Try_Execute;
          else
             raise Connection_Error with "Invalid ID " & ID'Img;

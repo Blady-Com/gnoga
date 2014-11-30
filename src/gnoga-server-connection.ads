@@ -68,6 +68,14 @@ package Gnoga.Server.Connection is
                             return String;
    --  Execute Script on Connection ID and return result of script
 
+   function Buffer_Connection (ID : Gnoga.Types.Connection_ID) return Boolean;
+   procedure Buffer_Connection (ID    : in Gnoga.Types.Connection_ID;
+                                Value : in Boolean);
+   --  Buffering Property of connection with ID
+
+   procedure Flush_Buffer (ID : in Gnoga.Types.Connection_ID);
+   --  Flush buffer of connection ID
+
    Script_Error : exception;
 
    protected type Connection_Holder_Type is

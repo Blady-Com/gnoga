@@ -6,6 +6,7 @@ with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.View.Docker;
+with Gnoga.Server.Connection;
 
 procedure Align is
    use Gnoga.Gui.Element;
@@ -102,6 +103,8 @@ begin
 
    Grid_Box.Create (Game_View);
 
+   Main_Window.Buffer_Connection (True);
+
    for i in Buttons'First .. Buttons'Last loop
       for n in Buttons (i)'First .. Buttons (i)'Last loop
          Buttons (i) (n).Create (Grid_Box, "1");
@@ -118,6 +121,8 @@ begin
       end loop;
       Grid_Box.New_Line;
    end loop;
+
+   Main_Window.Buffer_Connection (False);
 
    Control_Box.Create (Game_View);
    Control_Box.Put ("<button>Push Me</button>"); Control_Box.New_Line;

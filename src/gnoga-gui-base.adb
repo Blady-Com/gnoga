@@ -566,6 +566,29 @@ package body Gnoga.Gui.Base is
       return Object.jQuery_Execute ("get(0)." & Method);
    end Execute;
 
+   -----------------------
+   -- Buffer_Connection --
+   -----------------------
+
+   function Buffer_Connection (Object : Base_Type) return Boolean is
+   begin
+      return Gnoga.Server.Connection.Buffer_Connection (Object.Connection_ID);
+   end Buffer_Connection;
+
+   procedure Buffer_Connection (Object : in out Base_Type; Value : Boolean) is
+   begin
+      Gnoga.Server.Connection.Buffer_Connection (Object.Connection_ID, Value);
+   end Buffer_Connection;
+
+   ------------------
+   -- Flush_Buffer --
+   ------------------
+
+   procedure Flush_Buffer (Object : in out Base_Type) is
+   begin
+      Gnoga.Server.Connection.Flush_Buffer (Object.Connection_ID);
+   end Flush_Buffer;
+
    -------------------------------------------------------------------------
    --  Base_Type - Events
    -------------------------------------------------------------------------

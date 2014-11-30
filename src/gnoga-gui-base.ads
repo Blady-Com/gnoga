@@ -235,7 +235,8 @@ package Gnoga.Gui.Base is
    --  collection by Gnoga's framework.
 
    function Buffer_Connection (Object : Base_Type) return Boolean;
-   procedure Buffer_Connection (Object : in out Base_Type; Value : Boolean);
+   procedure Buffer_Connection (Object : in out Base_Type;
+                                Value  : in     Boolean := True);
    --  Set buffering all output to browser on connection used by Object.
 
    -------------------------------------------------------------------------

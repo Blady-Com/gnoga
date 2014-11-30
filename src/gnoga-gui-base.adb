@@ -575,7 +575,9 @@ package body Gnoga.Gui.Base is
       return Gnoga.Server.Connection.Buffer_Connection (Object.Connection_ID);
    end Buffer_Connection;
 
-   procedure Buffer_Connection (Object : in out Base_Type; Value : Boolean) is
+   procedure Buffer_Connection (Object : in out Base_Type;
+                                Value  : in     Boolean := True)
+   is
    begin
       Gnoga.Server.Connection.Buffer_Connection (Object.Connection_ID, Value);
    end Buffer_Connection;

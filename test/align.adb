@@ -103,7 +103,7 @@ begin
 
    Grid_Box.Create (Game_View);
 
-   Main_Window.Buffer_Connection (True);
+   Main_Window.Buffer_Connection;
 
    for i in Buttons'First .. Buttons'Last loop
       for n in Buttons (i)'First .. Buttons (i)'Last loop

@@ -181,7 +181,7 @@ package body Gnoga.Server.Connection is
 
       declare
          Factory : aliased Gnoga_HTTP_Factory (Request_Length  => 200,
-                                               Output_Size     => 1_024_000,
+                                               Output_Size     => 10240,
                                                Max_Connections => 100);
          Server  : GNAT.Sockets.Server.
            Connections_Server (Factory'Access,  Server_Port);

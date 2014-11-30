@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  21:10 28 Nov 2014  --
+--                                Last revision :  14:03 30 Nov 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1208,7 +1208,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                  );
       declare
          Message : Stream_Element_Array renames Ptr.Data;
-         Pointer : Stream_Element_Offset := Message'Length;
+         Pointer : Stream_Element_Offset := Message'First;
       begin
          for Index in Data'Range loop
             Message (Pointer) := Character'Pos (Data (Index));

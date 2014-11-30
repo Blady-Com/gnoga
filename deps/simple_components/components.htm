@@ -27166,9 +27166,9 @@ HTTP_Client) <font color="#0000FF">return</font> HTTP_Version;</tt></p>
 version</a> specified by the request, e.g. 1.1.</p>
 <h4><a name="16.11.4"></a>16.11.4. Receiving request bodies</h4>
 <p>The body of a request is potentially very large. Therefore differently to the 
-request header fields the server does not cache the body. Instead of that it 
+request's header fields being cached, the server does not cache the body. Instead of that it 
 uses an object provided by the user which accepts the body or several bodies in 
-the case of multipart content. For each body 
+the case of a multipart content. For each body 
 a primitive operation is called from which the server initiates body receipt:</p>
 
 <blockquote>
@@ -27187,7 +27187,9 @@ which has the effect that the body is received but ignored. For multipart bodies
 is called for each part.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">function</font> Get_Multipart_Header<br>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get_Multipart_Header"></a>
+function</font> Get_Multipart_Header<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
 HTTP_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Header</b> 
@@ -27203,7 +27205,9 @@ the content type specified as</p>
 	<pre><code class="text"><span class="line">Content-Type: multipart/form-data</span></code></pre>
 </blockquote>
 <p>Each part of the body may have header fields describing the content. These 
-are queried using the function.</p>
+are queried using
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get_Multipart_Header">
+Get_Multipart_Header</a>.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">

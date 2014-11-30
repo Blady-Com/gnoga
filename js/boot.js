@@ -12,6 +12,7 @@
   }
 
   function Shutdown_ws() {
+     ws = null;
      clearInterval (pingerid);
      if (gnoga['html_on_close'] != "") {
         $(document.body).html(gnoga['html_on_close']);

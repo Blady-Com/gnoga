@@ -729,14 +729,16 @@ package body Gnoga.Server.Connection is
       procedure Ping (C : in out Socket_Maps.Cursor);
 
       procedure Ping (C : in out Socket_Maps.Cursor) is
-         ID : Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
+         ID     : Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
+         Socket : Socket_Type := Socket_Maps.Element (C);
       begin
-         Execute_Script (ID, "0");
+         Socket.WebSocket_Send ("0");
       exception
          when others =>
             begin
                delay 3.0;
-               Execute_Script (ID, "0");
+               Socket := Socket_Maps.Element (C);
+               Socket.WebSocket_Send ("0");
             exception
                when others =>
                   if Verbose_Output then

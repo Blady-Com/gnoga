@@ -77,18 +77,14 @@ package body Gnoga.Application.Multi_Connect is
          if Path_Map.Contains (Path) then
             Path_Map.Element (Path) (Main_Window, Connection);
 
-            if Server.Connection.Valid (ID) then
-               Server.Connection.Flush_Buffer (ID);
-            end if;
+            Server.Connection.Flush_Buffer (ID);
 
             Connection.Hold;
             --  If connection was already released this will not block.
          elsif Path_Map.Contains ("default") then
             Path_Map.Element ("default") (Main_Window, Connection);
 
-            if Server.Connection.Valid (ID) then
-               Server.Connection.Flush_Buffer (ID);
-            end if;
+            Server.Connection.Flush_Buffer (ID);
 
             Connection.Hold;
             --  If connection was already released this will not block.

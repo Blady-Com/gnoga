@@ -725,6 +725,13 @@ package body Gnoga.Server.Connection is
       end;
 
       Connection_Manager.Delete_Connection_Holder (ID);
+
+   exception
+      when E : others =>
+         Log ("Connection Manager Error Connection ID=" & ID'Img);
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Event_Task_Type;
 
    --------------
@@ -1333,6 +1340,14 @@ package body Gnoga.Server.Connection is
          Socket.Content.Buffer.Clear;
          Socket.Content.Buffer.Buffering (True);
       end if;
+   exception
+      when Connection_Error =>
+         null; -- Connection already closed.
+      when E : others =>
+         Log ("Flush_Buffer Error");
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Flush_Buffer;
 
    --------------------

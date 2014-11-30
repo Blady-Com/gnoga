@@ -61,7 +61,7 @@ package body Gnoga.Server.Connection is
 
    CRLF : constant String := (Character'Val (13), Character'Val (10));
 
-   Max_Buffer_Length : constant := 64000;
+   Max_Buffer_Length : constant := 204800;
 
    Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
    Server_Port : GNAT.Sockets.Port_Type;

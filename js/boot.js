@@ -11,57 +11,54 @@
      }
   }
 
-  function Setup_ws() {
-        reconnects++;
-        ws.onmessage = function (event) {
-           reconnects = 0;
-           try {
-              if (gnoga_debug == true) {
-                 console.log ("eval data = " + event.data);
-              }
-              eval (event.data);
-           } catch (e) {
-              console.error (e.message);
-           }
-        }
-        ws.onerror = function (event) {
-           if (gnoga['Connection_ID'] == 'undefined') {
-              location.reload(true);
-           }
+  function Shutdown_ws() {
+     clearInterval (pingerid);
+     if (gnoga['html_on_close'] != "") {
+        $(document.body).html(gnoga['html_on_close']);
+      } else {
+        alert ("Server connection lost " + event.reason);
+      }
+  }
 
-           if (reconnects < 2) {
-              console.log ("onerror: reconnect " + reconnects);
-              ws.onclose=null;
-              ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
-              ws.onopen = function (event) {
-                 Setup_ws();
-              }
-           } else {
-              clearInterval (pingerid);
-              if (gnoga['html_on_close'] != "") {
-                 $(document.body).html(gnoga['html_on_close']);
-              } else {
-                 alert ("Server connection lost " + event.reason);
-              }
+  function Setup_ws() {
+     ws.onmessage = function (event) {
+        try {
+           if (gnoga_debug == true) {
+              console.log ("eval data = " + event.data);
            }
+           eval (event.data);
+        } catch (e) {
+           console.error (e.message);
+        }
+     }
+
+     ws.onerror = function (event) {
+        console.log ("onerror: reconnect");
+        ws=null;
+        ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
+        ws.onopen = function (event) {
+           console.log ("onerror: reconnect successful");
+           Setup_ws();
         }
         ws.onclose = function (event) {
-           if (reconnects < 2) {
-              console.log ("onclose: reconnect " + reconnects);
-              ws.onclose=null;
-              ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
-              ws.onopen = function (event) {
-                 Setup_ws();
-              }
-           } else {
-              clearInterval (pingerid);
-              if (gnoga['html_on_close'] != "") {
-                 $(document.body).html(gnoga['html_on_close']);
-              } else {
-                 alert ("Server connection lost " + event.reason);
-              }
-           }
+           console.log ("onerror: reconnect failure");
+           Shutdown_ws();
         }
+     }
+
+     ws.onclose = function (event) {
+        console.log ("onclose: reconnect");
+        ws=null;
+        ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
+        ws.onopen = function (event) {
+           console.log ("onclose: reconnect successful");
+           Setup_ws();
+        }
+        ws.onclose = function (event) {
+           console.log ("onclose: reconnect failure");
+           Shutdown_ws();
+        }
+     }
   }
 
   $( document ).ready(function() {
@@ -90,7 +87,7 @@
 
      if (ws != null) {
         ws.onopen = function (event) {
-           console.log ("connection open");
+           console.log ("connection successful");
            Setup_ws();
         }
         pingerid = setInterval (function () {Ping_ws ();}, 10000);

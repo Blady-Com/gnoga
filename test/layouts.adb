@@ -60,7 +60,7 @@ procedure Layouts is
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      Main_Window.Buffer_Connection;
+      --  Main_Window.Buffer_Connection;
 
       App.Docks.Create (Main_Window);
 

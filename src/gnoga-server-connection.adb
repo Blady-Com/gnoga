@@ -61,6 +61,8 @@ package body Gnoga.Server.Connection is
 
    CRLF : constant String := (Character'Val (13), Character'Val (10));
 
+   Max_Buffer_Length : constant := 64000;
+
    Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
    Server_Port : GNAT.Sockets.Port_Type;
 
@@ -97,6 +99,9 @@ package body Gnoga.Server.Connection is
 
       function Get return String;
       --  Retrive buffer
+
+      function Length return Natural;
+      --  Size of buffer
 
       procedure Clear;
       --  Clear buffer
@@ -180,9 +185,10 @@ package body Gnoga.Server.Connection is
       accept Start;
 
       declare
-         Factory : aliased Gnoga_HTTP_Factory (Request_Length  => 200,
-                                               Output_Size     => 10240,
-                                               Max_Connections => 100);
+         Factory : aliased Gnoga_HTTP_Factory
+           (Request_Length  => 200,
+            Output_Size     => Max_Buffer_Length,
+            Max_Connections => 100);
          Server  : GNAT.Sockets.Server.
            Connections_Server (Factory'Access,  Server_Port);
       begin
@@ -1250,6 +1256,11 @@ package body Gnoga.Server.Connection is
          Buffer := Buffer & S;
       end Add;
 
+      function Length return Natural is
+      begin
+         return Ada.Strings.Unbounded.Length (Buffer);
+      end Length;
+
       function Get return String is
       begin
          return Ada.Strings.Unbounded.To_String (Buffer);
@@ -1272,6 +1283,12 @@ package body Gnoga.Server.Connection is
       Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
       if Socket.Content.Buffer.Buffering then
+         if Socket.Content.Buffer.Length + Script'Length >=
+           Max_Buffer_Length
+         then
+            Flush_Buffer (ID);
+         end if;
+
          Socket.Content.Buffer.Add (Script & CRLF);
          return True;
       else

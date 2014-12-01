@@ -941,7 +941,7 @@ package body Gnoga.Server.Connection is
 
       if Old_ID /= "" and Old_ID /= "undefined" then
          if Verbose_Output then
-            Gnoga.Log ("Swaping connections " & ID'Img & " => " & Old_ID);
+            Gnoga.Log ("Swapping connections " & ID'Img & " => " & Old_ID);
          end if;
 
          Connection_Manager.Swap_Connection

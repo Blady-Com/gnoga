@@ -19,6 +19,10 @@ Q) Can I launch a browser on start up to access by Gnoga Application?
 A) Yes, See Gnoga.Applications.Open_URL_* there is a version of that procedure
    for Mac OSX, Windows and Linux
 
+Q) How do I use Gnoga with MinGW or Cygwin on Windows 32 or 64bits?
+
+A) Gnoga by default uses gprtools that are not included with those distros. The makefile contains simple directions of what to comment and uncomment in order to use gnatmake and gnatclean under MSYS or Cygwin environments. You can also compile Gnoga from the regular Windows command line see make.bat and clean.bat.
+
 Q) How to compile Gnoga on Debian (wheezy)?
 
 A) You will need to use a more recent version of gcc/ada currently. Using the gcc/ada from Debian Jesse / sid works well.

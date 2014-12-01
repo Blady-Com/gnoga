@@ -1,6 +1,9 @@
 PREFIX=$(dir $(shell which gnatls))..
 TARGET=$(shell gcc -dumpmachine)
 
+# If you do no have grptools comment out these two lines and uncomment one of
+# the lines below.
+
 BUILDER=gprbuild
 CLEANER=gprclean
 

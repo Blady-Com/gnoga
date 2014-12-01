@@ -12,6 +12,7 @@ git clone git://git.code.sf.net/p/gnoga/code gnoga-code
 cd gnoga-code
 make  (or run "make release" for no debug info in compile)
       (if using MinGW make.bat)
+      (if you do not have gprtools see the makefile to use gnatmake)
 
 then run the snake demo or tutorials in /bin. There are additional demos in
  /demo

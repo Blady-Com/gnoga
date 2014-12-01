@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  14:03 30 Nov 2014  --
+--                                Last revision :  22:29 01 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -47,6 +47,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    use GNAT.Sockets.Server.Stream_Element_Offset_Edit;
 
    CRLF : constant String := (Character'Val (13), Character'Val (10));
+
    Default_Response     : constant String := "Not implemented";
    Bad_Request_Response : constant String := "Bad request";
    Lower                : constant Character_Mapping :=
@@ -602,17 +603,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                Set_Overlapped_Size (Client, Client.Output_Size);
             end if;
             Socket.Duplex := Result.Duplex;
-            begin
-               WebSocket_Initialize (HTTP_Client'Class (Client));
-            exception
-               when Error : others =>
-                  Trace
-                  (  Client,
-                     (  "WebSocket initialization callback fault: "
-                     &  Exception_Information (Error)
-                  )  );
-                  raise;
-            end;
             Socket.State := Open_Socket;
             if Result.Duplex then -- Allow full-duplex operation
                Client.Mutex.Set (Idle);
@@ -655,6 +645,17 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                );
             end if;
             Send (Client, CRLF);
+            begin
+               WebSocket_Initialize (HTTP_Client'Class (Client));
+            exception
+               when Error : others =>
+                  Trace
+                  (  Client,
+                     (  "WebSocket initialization callback fault: "
+                     &  Exception_Information (Error)
+                  )  );
+                  raise;
+            end;
          else
             Reply_Text
             (  Client,
@@ -674,6 +675,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       WebSocket_Cleanup (Client);
       Finalize (State_Machine (Client));
+   end Finalize;
+
+   procedure Finalize (Lock : in out Holder) is
+   begin
+      Lock.Mutex.Release;
    end Finalize;
 
    function From_Escaped
@@ -1102,6 +1108,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Client.LF.Last := 1;
       Client.LF.Value (1) := 10;
       Initialize (State_Machine (Client));
+   end Initialize;
+
+   procedure Initialize (Lock : in out Holder) is
+   begin
+      Lock.Mutex.Take;
    end Initialize;
 
    function Is_Empty (Stream : Content_Stream) return Boolean is
@@ -1792,6 +1803,22 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             end case;
          end;
       end loop;
+   end Read;
+
+   procedure Read
+             (  Client  : in out HTTP_Client;
+                Factory : in out Connections_Factory'Class
+             )  is
+   begin
+      if Client.WebSocket.Duplex then
+         declare
+            Lock : Holder (Client.Mutex'Access);
+         begin
+            Read (Connection (Client), Factory);
+         end;
+      else
+         Read (Connection (Client), Factory);
+      end if;
    end Read;
 
    procedure Receive_Body
@@ -2485,7 +2512,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                            "Data message length exceeds the limit set"
                         );
                      end if;
-                     Client.Expecting := WebSocket_Mask;
+                     Socket.Mask_Index := 0;
+                     Client.Expecting  := WebSocket_Mask;
                   else
                      Socket.Length_Count := Socket.Length_Count - 1;
                   end if;
@@ -2734,7 +2762,9 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             &  Image (Queued_To_Send (Client))
             &  " elements queued, space for at least more "
             &  Image (Message'Last - Pointer + 1)
-            &  " requred"
+            &  " requred (available "
+            &  Image (Available_To_Send (Client))
+            &  ")"
          )  );
       end if;
    end Send;
@@ -2753,7 +2783,9 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             &  Image (Queued_To_Send (Client))
             &  " elements queued, space for at least more "
             &  Image (Message'Last - Pointer + 1)
-            &  " requred"
+            &  " requred (available "
+            &  Image (Available_To_Send (Client))
+            &  ")"
          )  );
       end if;
    end Send;
@@ -3660,16 +3692,48 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       begin
          if Data'Length > 0 then
             loop
-               Space := Available_To_Send (Client);
-               exit when Space >= Data'Last + 1 - Pointer;
-               Send (Client, Data (Pointer..Pointer + Space - 1));
+               declare
+                  Lock : Holder (Client.Mutex'Access);
+               begin
+                  Space := Available_To_Send (Client);
+                  exit when Space >= Data'Last + 1 - Pointer;
+                  if Client.Trace_Body then
+                     Trace
+                     (  Client,
+                        (  "WebSocket sending message part ["
+                        &  Image (Data (Pointer..Pointer + Space - 1))
+                        &  "] "
+                        &  Image (Pointer)
+                        &  ".."
+                        &  Image (Pointer + Space - 1)
+                        &  "/"
+                        &  Image (Data'Last)
+                     )  );
+                  end if;
+                  Send (Client, Data (Pointer..Pointer + Space - 1));
+               end;
                Pointer := Pointer + Space;
                Client.Mutex.Wait; -- Wait for more space
             end loop;
             if Last then
                Client.Mutex.Set (Last_Chunck);
             end if;
-            Send (Client, Data (Pointer..Data'Last));
+            declare
+               Lock : Holder (Client.Mutex'Access);
+            begin
+               if Client.Trace_Body then
+                  Trace
+                  (  Client,
+                     (  "WebSocket sending last message part ["
+                     &  Image (Data (Pointer..Data'Last))
+                     &  "] "
+                     &  Image (Pointer)
+                     &  ".."
+                     &  Image (Data'Last)
+                  )  );
+               end if;
+               Send (Client, Data (Pointer..Data'Last));
+            end;
          end if;
       exception
          when others =>
@@ -3693,22 +3757,55 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       begin
          if Data'Length > 0 then
             loop
-               Space := Available_To_Send (Client);
-               exit when
-                    (  Space
-                    >= Stream_Element_Offset (Data'Last + 1 - Pointer)
-                    );
-               Send
-               (  Client,
-                  Data (Pointer..Pointer + Integer (Space) - 1)
-               );
+               declare
+                  Lock : Holder (Client.Mutex'Access);
+               begin
+                  Space := Available_To_Send (Client);
+                  exit when
+                       (  Space
+                       >= Stream_Element_Offset
+                          (  Data'Last + 1 - Pointer
+                       )  );
+                  if Client.Trace_Body then
+                     Trace
+                     (  Client,
+                        (  "WebSocket sending text part ["
+                        &  Data (Pointer..Pointer + Integer (Space) - 1)
+                        &  "] "
+                        &  Image (Pointer)
+                        &  ".."
+                        &  Image (Pointer + Integer (Space) - 1)
+                        &  "/"
+                        &  Image (Data'Last)
+                     )  );
+                  end if;
+                  Send
+                  (  Client,
+                     Data (Pointer..Pointer + Integer (Space) - 1)
+                  );
+               end;
                Pointer := Pointer + Integer (Space);
                Client.Mutex.Wait; -- Wait for more space
             end loop;
             if Last then
                Client.Mutex.Set (Last_Chunck);
             end if;
-            Send (Client, Data (Pointer..Data'Last));
+            declare
+               Lock : Holder (Client.Mutex'Access);
+            begin
+               if Client.Trace_Body then
+                  Trace
+                  (  Client,
+                     (  "WebSocket sending last text part ["
+                     &  Data (Pointer..Data'Last)
+                     &  "] "
+                     &  Image (Pointer)
+                     &  ".."
+                     &  Image (Data'Last)
+                  )  );
+               end if;
+               Send (Client, Data (Pointer..Data'Last));
+            end;
          end if;
       exception
          when others =>
@@ -3769,6 +3866,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          end if;
          Socket.State     := Closed_Socket;
          Socket.Pending   := False;
+         Socket.Duplex    := False;
          Client.Expecting := Request_Line;
       end if;
    end WebSocket_Cleanup;
@@ -3974,6 +4072,22 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    end WebSocket_Send;
 
    procedure Write
+             (  Client  : in out HTTP_Client;
+                Factory : in out Connections_Factory'Class
+             )  is
+   begin
+      if Client.WebSocket.Duplex then
+         declare
+            Lock : Holder (Client.Mutex'Access);
+         begin
+            Write (Connection (Client), Factory);
+         end;
+      else
+         Write (Connection (Client), Factory);
+      end if;
+   end Write;
+
+   procedure Write
              (  Stream : in out Content_Stream;
                 Item   : Stream_Element_Array
              )  is
@@ -4037,14 +4151,29 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          end case;
       end Failed;
 
+      procedure Release is
+      begin
+         Locked := False;
+      end Release;
+
       entry Seize when State in Disabled..Idle is
       begin
          if State = Idle then
             State := Message_Chunk;
+         elsif State = Closing then
+            Raise_Exception
+            (  End_Error'Identity,
+               "WebSocket is being closed"
+            );
          else
             Raise_Exception (End_Error'Identity, "No WebSocket open");
          end if;
       end Seize;
+
+      entry Take when State in Disabled..Idle or else not Locked is
+      begin
+         Locked := True;
+      end Take;
 
       procedure Set (New_State : Duplex_Status) is
       begin
@@ -4093,7 +4222,12 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 
       entry Wait when State in Disabled..Closing or else Signaled is
       begin
-         if State in Disabled..Closing then
+         if State = Closing then
+            Raise_Exception
+            (  End_Error'Identity,
+               "WebSocket is being closed"
+            );
+         elsif State = Disabled then
             Raise_Exception (End_Error'Identity, "No WebSocket open");
          else
             Signaled := False;

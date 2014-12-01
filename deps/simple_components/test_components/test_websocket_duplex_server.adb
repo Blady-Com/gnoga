@@ -3,7 +3,7 @@
 --     Test_WebSocket_Server                       Luebeck            --
 --  Full-duplex WebSockets test                    Winter, 2013       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:30 01 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,14 +32,14 @@ with Test_WebSocket_Duplex_Servers;  use Test_WebSocket_Duplex_Servers;
 with GNAT.Sockets.Server.Pooled;
 
 procedure Test_WebSocket_Duplex_Server is
-   Minutes : constant := 3.0;
+   Minutes : constant := 10.0;
    Port    : constant := 80;
    Tasks   : constant := 5;
 begin
    declare
       Factory : aliased Chat_Factory
                         (  Request_Length  => 200,
-                           Output_Size     => 1024,
+                           Output_Size     => 256,
                            Max_Connections => 100
                         );
       Server  : GNAT.Sockets.Server.

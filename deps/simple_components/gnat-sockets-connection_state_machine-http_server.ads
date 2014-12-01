@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  21:50 26 Nov 2014  --
+--                                Last revision :  22:29 01 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1413,12 +1413,15 @@ private
         );
    protected type Send_Mutex (Client : access HTTP_Client'Class) is
       procedure Failed;
+      procedure Release;
       procedure Set (New_State : Duplex_Status);
       procedure Transition (Chain : out Action);
       entry Seize;
+      entry Take;
       entry Wait;
    private
       Signaled : Boolean       := True;     -- Output buffer is not full
+      Locked   : Boolean       := False;
       State    : Duplex_Status := Disabled; -- Socket is closed
    end Send_Mutex;
    procedure Write
@@ -1426,6 +1429,11 @@ private
                 Item   : Send_Mutex
              );
    for Send_Mutex'Write use Write;
+
+   type Holder (Mutex : access Send_Mutex) is
+      new Ada.Finalization.Limited_Controlled with null record;
+   procedure Finalize (Lock : in out Holder);
+   procedure Initialize (Lock : in out Holder);
 
    type WebSocket_State is (Open_Socket, Closing_Socket, Closed_Socket);
    type WebSocket_Data is record
@@ -1535,6 +1543,14 @@ private
    procedure Queue_Content
              (  Client : in out HTTP_Client;
                 Data   : String
+             );
+   procedure Read
+             (  Client  : in out HTTP_Client;
+                Factory : in out Connections_Factory'Class
+             );
+   procedure Write
+             (  Client  : in out HTTP_Client;
+                Factory : in out Connections_Factory'Class
              );
 
    type Completion is access

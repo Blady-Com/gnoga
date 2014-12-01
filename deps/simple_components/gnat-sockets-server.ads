@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:29 01 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -613,7 +613,29 @@ package GNAT.Sockets.Server is
    package Stream_Element_Offset_Edit is
       new Strings_Edit.Integer_Edit (Stream_Element_Offset);
    use Stream_Element_Offset_Edit;
-
+------------------------------------------------------------------------
+--
+-- Internal low-level socket I/O operations
+--
+-- Read -- Socket read
+--
+--    Client  - The client
+--    Factory - The factory object
+--
+   procedure Read
+             (  Client  : in out Connection;
+                Factory : in out Connections_Factory'Class
+             );
+--
+-- Write -- Socket write
+--
+--    Client  - The client
+--    Factory - The factory object
+--
+   procedure Write
+             (  Client  : in out Connection;
+                Factory : in out Connections_Factory'Class
+             );
 private
    pragma Inline (Available_To_Process);
    pragma Inline (Available_To_Send);
@@ -680,14 +702,6 @@ private
              (  Client  : in out Connection;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset
-             );
-   procedure Read
-             (  Client  : in out Connection'Class;
-                Factory : in out Connections_Factory'Class
-             );
-   procedure Write
-             (  Client  : in out Connection'Class;
-                Factory : in out Connections_Factory'Class
              );
 --
 -- Service_Postponed -- Postponed input data processing

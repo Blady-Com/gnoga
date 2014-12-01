@@ -3,7 +3,7 @@
 --     Test_WebSocket_Server                       Luebeck            --
 --  Half-duplex WebSockets tes                     Winter, 2013       --
 --                                                                    --
---                                Last revision :  14:03 30 Nov 2014  --
+--                                Last revision :  22:30 01 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,7 +39,7 @@ begin
    declare
       Factory : aliased Chat_Factory
                         (  Request_Length  => 200,
-                           Output_Size     => 256,
+                           Output_Size     => 255,
                            Max_Connections => 100
                         );
       Server  : GNAT.Sockets.Server.

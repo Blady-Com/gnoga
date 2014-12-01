@@ -61,7 +61,7 @@ package body Gnoga.Server.Connection is
 
    CRLF : constant String := (Character'Val (13), Character'Val (10));
 
-   Max_Buffer_Length : constant := 204800;
+   Max_Buffer_Length : constant := 2**16 - 1;
 
    Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
    Server_Port : GNAT.Sockets.Port_Type;
@@ -187,7 +187,7 @@ package body Gnoga.Server.Connection is
       declare
          Factory : aliased Gnoga_HTTP_Factory
            (Request_Length  => 200,
-            Output_Size     => Max_Buffer_Length,
+            Output_Size     => 1024,
             Max_Connections => 100);
          Server  : GNAT.Sockets.Server.
            Connections_Server (Factory'Access,  Server_Port);

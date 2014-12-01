@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:29 01 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -515,7 +515,7 @@ package body GNAT.Sockets.Server is
    end Queued_To_Send;
 
    procedure Read
-             (  Client  : in out Connection'Class;
+             (  Client  : in out Connection;
                 Factory : in out Connections_Factory'Class
              )  is
       Last : Stream_Element_Offset;
@@ -1087,7 +1087,7 @@ package body GNAT.Sockets.Server is
    end Trace_Sent;
 
    procedure Write
-             (  Client  : in out Connection'Class;
+             (  Client  : in out Connection;
                 Factory : in out Connections_Factory'Class
              )  is
       Next : Stream_Element_Count;

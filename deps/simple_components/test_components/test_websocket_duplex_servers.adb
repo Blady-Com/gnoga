@@ -4,7 +4,7 @@
 --  Test WebSocket                                 Winter, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:30 01 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -185,7 +185,9 @@ package body Test_WebSocket_Duplex_Servers is
          new Ada.Unchecked_Deallocation (Chat_Task, Chat_Task_Ptr);
    begin
       if Client.Chatter /= null then
-         Client.Chatter.Stop;
+         if not Client.Chatter'Terminated then
+            Client.Chatter.Stop;
+         end if;
          while not Client.Chatter'Terminated loop
             delay 0.010;
          end loop;
@@ -213,13 +215,48 @@ package body Test_WebSocket_Duplex_Servers is
       Client.Chatter.Show (Message);
    end WebSocket_Received;
 
-   task body Chat_Task is
-      Buffer : String (1..1024);
-      Last   : Integer;
+   function Fill (Length : Positive) return String is
+      Result : String (1..Length);
    begin
-      loop
+      for Index in Result'Range loop
+         Result (Index) :=
+            Character'Val (Character'Pos ('0') + Index mod 10);
+      end loop;
+      return Result;
+   end Fill;
+
+   task body Chat_Task is
+      Buffer  : String (1..1024*10);
+      Exiting : Boolean := False;
+      Last    : Integer;
+   begin
+      Trace (Client.all, "Task started");
+      WebSocket_Send (Client.all, "Random length strings");
+      for Length in 250..1_000 loop
          select
             accept Stop;
+            Exiting := True;
+            exit;
+         else
+            null;
+         end select;
+         Trace
+         (  Client.all,
+            "Sending length" & Integer'Image (Length)
+         );
+         declare
+            Header : String := "Length" & Integer'Image (Length) & ' ';
+         begin
+            WebSocket_Send
+            (  Client.all,
+               Header & Fill (Length - Header'Length)
+            );
+         end;
+      end loop;
+      while not Exiting loop
+         select
+            accept Stop;
+            Exiting := True;
             exit;
          or accept Show (Name : String) do
                Buffer (1..Name'Length) := Name;
@@ -272,6 +309,13 @@ package body Test_WebSocket_Duplex_Servers is
          or delay 1.0;
          end select;
       end loop;
+      Trace (Client.all, "Task stopped");
+   exception
+      when Error : others =>
+         Trace
+         (  Client.all,
+            "Task failed: " & Exception_Information (Error)
+         );
    end Chat_Task;
 
 end Test_WebSocket_Duplex_Servers;

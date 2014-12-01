@@ -1163,6 +1163,8 @@ package body Gnoga.Server.Connection is
          I := ID;
       end Start;
 
+      Object.Flush_Buffer;
+
       declare
          Continue : Boolean;
 

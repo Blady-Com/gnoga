@@ -105,8 +105,8 @@ begin
 
    Main_Window.Buffer_Connection;
 
-   for i in Buttons'First .. Buttons'Last loop
-      for n in Buttons (i)'First .. Buttons (i)'Last loop
+   for i in Buttons'Range loop
+      for n in Buttons (i)'Range loop
          Buttons (i) (n).Create (Grid_Box, "1");
          Buttons (i) (n).Font (Family => "monospace", Height => "11px");
          Buttons (i) (n).Background_Color ("lightgray");

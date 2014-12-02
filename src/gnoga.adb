@@ -99,8 +99,7 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (S'Last) = ' ' or S (S'Last) = Character'Val (9)
-      then
+      if S (S'Last) = ' ' or S (S'Last) = Character'Val (9) then
          return Right_Trim (S (S'First .. (S'Last - 1)));
       else
          return S;

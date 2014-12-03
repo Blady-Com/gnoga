@@ -44,7 +44,7 @@ project Strings_Edit is
           "strings_edit-streams-naturals.ads",
           "strings_edit-streams-unsigneds_32.ads",
           "strings_edit-streams-unsigneds_64.ads",
-          --  "strings_edit-text_edit.adb",
+          "strings_edit-text_edit.adb",
           "strings_edit-utf8-handling.adb",
           "strings_edit-utf8-handling.ads", 
           "strings_edit-utf8-categorization.adb", 

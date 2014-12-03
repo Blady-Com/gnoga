@@ -1,4 +1,5 @@
 with Ada.Strings.Fixed;
+with Ada.Strings.Unbounded;
 
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
@@ -16,6 +17,8 @@ procedure Forms is
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+
+   Last_Parameters : Gnoga.Types.Data_Map_Type;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -137,14 +140,32 @@ procedure Forms is
       Console.Create (Main_Window);
 
       Console.Put_Line ("Get Results => " & Main_Window.Location.Search);
-      Console.Put_Line ("Some_Text   => " &
-                          Main_Window.Form_Parameter ("Some_Text"));
+
+      if Last_Parameters.Contains ("Some_Text") then
+         Console.Put_Line ("Some_Text   => " &
+                             Last_Parameters.Element ("Some_Text"));
+      else
+         Console.Put_Line ("Some_Text   => ");
+      end if;
 
       Console.Put_Line ("File Name on Server  => " &
                           Main_Window.Form_Parameter ("File_Name_Server"));
       Console.Put_Line ("File Name => " &
                           Main_Window.Form_Parameter ("File_Name"));
    end On_Connect_2;
+
+   procedure On_Post_Request
+     (URI                 : in String;
+      Accepted_Parameters : out Ada.Strings.Unbounded.Unbounded_String);
+
+   procedure On_Post_Request
+     (URI                 : in String;
+      Accepted_Parameters : out Ada.Strings.Unbounded.Unbounded_String)
+   is
+   begin
+      Accepted_Parameters :=
+        Ada.Strings.Unbounded.To_Unbounded_String ("Some_Text");
+   end On_Post_Request;
 
    procedure On_Post (URI        : String;
                       Parameters : in out Gnoga.Types.Data_Map_Type);
@@ -153,15 +174,11 @@ procedure Forms is
                       Parameters : in out Gnoga.Types.Data_Map_Type)
    is
    begin
-      if Parameters.Contains ("fspec") then
-         declare
-            F : String  := Parameters.Element ("fspec");
-            S : Natural := Ada.Strings.Fixed.Index (F, "|");
-         begin
-            Parameters.Insert ("File_Name_Server", F (F'First .. S - 1));
-            Parameters.Insert ("File_Name", F (S + 1 .. F'Last));
-         end;
-      end if;
+      Last_Parameters := Parameters;
+      for C in Parameters.Iterate loop
+         Gnoga.Log (Gnoga.Types.Data_Maps.Key (C) & " = " &
+                      Gnoga.Types.Data_Maps.Element (C));
+      end loop;
    end On_Post;
 begin
    Application.Multi_Connect.Initialize (Boot  => "debug.html");
@@ -172,6 +189,8 @@ begin
      (On_Connect_2'Unrestricted_Access,  "/demo");
 
    Gnoga.Server.Connection.On_Post_Handler (On_Post'Unrestricted_Access);
+   Gnoga.Server.Connection.On_Post_Request_Handler
+     (On_Post_Request'Unrestricted_Access);
 
    Application.Open_URL_OSX;
 

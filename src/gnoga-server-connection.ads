@@ -36,6 +36,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded;
+
 with Gnoga.Types;
 with Gnoga.Gui.Base;
 
@@ -102,28 +104,31 @@ package Gnoga.Server.Connection is
    procedure On_Connect_Handler (Event : in Connect_Event);
    --  Set event handler for new socket connections.
 
+   type Post_Request_Event is access
+     procedure
+       (URI                 : in String;
+        Accepted_Parameters : out Ada.Strings.Unbounded.Unbounded_String);
+
+   procedure On_Post_Request_Handler (Event : Post_Request_Event);
+   --  Event is called when a post request is received. Only those CGI
+   --  parameters in the common seperated Accepted_Parameters list will be
+   --  parsed and sent to the On_Post Event.
+
    type Post_Event is access
      procedure (URI        : in String;
                 Parameters : in out Gnoga.Types.Data_Map_Type);
 
    procedure On_Post_Handler (Event : Post_Event);
-   --  By default if a form "post" is received the post parameters will
-   --  be parsed and inserted in to the returned, bootstrap html. A custom
-   --  Post handler can be set to filter incoming form posts. Any changes
-   --  made to Paremeters will replace the recevied post parameters with those
-   --  changes.
-   --
-   --  In order to handle file uploads, you must move or rename them in the
-   --  On_Post_Handler files that are uploaded are destroyed once the
-   --  bootloader file has been uploaded.
+   --  Called when a post has been received and parameters based on the
+   --  On_Post_Request event have been parsed in to Parameters
 
    function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
                             Name : String)
                             return String;
-   --  Returns the value of parameters passed in on URL. Returns "undefined"
-   --  if Name is not in URL search parameters or sent via post.
+   --  Returns the value of parameters passed in on URL.
+   --  Returns "undefined" if Name is not in URL query.
    --  For example: http://localhost:8080/?page_id=2
-   --  Search_Parameter (ID, "page_id") = "2"
+   --  Form_Parameter (ID, "page_id") = "2"
 
    function Valid (ID : Gnoga.Types.Connection_ID) return Boolean;
    --  If ID is valid return true. Note that a broken web socket that has not

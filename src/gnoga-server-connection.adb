@@ -68,8 +68,9 @@ package body Gnoga.Server.Connection is
 
    Verbose_Output : Boolean := False;
 
-   On_Connect_Event : Connect_Event := null;
-   On_Post_Event    : Post_Event    := null;
+   On_Connect_Event      : Connect_Event      := null;
+   On_Post_Event         : Post_Event         := null;
+   On_Post_Request_Event : Post_Request_Event := null;
 
    Exit_Application_Requested : Boolean := False;
 
@@ -138,6 +139,16 @@ package body Gnoga.Server.Connection is
 
    overriding
    procedure Do_Get  (Client : in out Gnoga_HTTP_Client);
+
+   overriding
+   procedure Do_Post (Client : in out Gnoga_HTTP_Client);
+
+   overriding
+   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
+                             Content : in out CGI_Keys.Table'Class);
+
+   overriding
+   procedure Do_Body (Client : in out Gnoga_HTTP_Client);
 
    overriding
    procedure Do_Head (Client : in out Gnoga_HTTP_Client);
@@ -375,6 +386,57 @@ package body Gnoga.Server.Connection is
    begin
       Do_Get_Head (Client, True);
    end Do_Get;
+
+   -------------
+   -- Do_Post --
+   -------------
+
+   overriding
+   procedure Do_Post (Client : in out Gnoga_HTTP_Client) is
+   begin
+      Do_Get_Head (Client, True);
+   end Do_Post;
+
+   -------------------
+   -- Body_Received --
+   -------------------
+
+   overriding
+   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
+                             Content : in out CGI_Keys.Table'Class)
+   is
+      Status : Status_Line renames Get_Status_Line (Client);
+
+      Parameters : Gnoga.Types.Data_Map_Type;
+   begin
+      if On_Post_Event /= null and Status.Kind = File then
+         for i in 1 .. Client.Get_CGI_Size loop
+            Parameters.Insert (Client.Get_CGI_Key (i),
+                               Client.Get_CGI_Value (i));
+         end loop;
+
+         On_Post_Event (Status.File, Parameters);
+      end if;
+   end Body_Received;
+
+   -------------
+   -- Do_Post --
+   -------------
+
+   overriding
+   procedure Do_Body (Client : in out Gnoga_HTTP_Client) is
+      Status : Status_Line renames Get_Status_Line (Client);
+   begin
+      if On_Post_Request_Event /= null and Status.Kind = File then
+         declare
+            Param_List : Ada.Strings.Unbounded.Unbounded_String;
+         begin
+            On_Post_Request_Event (Status.File, Param_List);
+
+            Client.Receive_Body (Ada.Strings.Unbounded.To_String (Param_List));
+         end;
+      end if;
+   end Do_Body;
 
    -------------
    -- Do_Head --
@@ -1489,6 +1551,15 @@ package body Gnoga.Server.Connection is
    begin
       On_Connect_Event := Event;
    end On_Connect_Handler;
+
+   -----------------------------
+   -- On_Post_Request_Handler --
+   -----------------------------
+
+   procedure On_Post_Request_Handler (Event : Post_Request_Event) is
+   begin
+      On_Post_Request_Event := Event;
+   end On_Post_Request_Handler;
 
    ---------------------
    -- On_Post_Handler --

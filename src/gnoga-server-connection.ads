@@ -122,6 +122,17 @@ package Gnoga.Server.Connection is
    --  Called when a post has been received and parameters based on the
    --  On_Post_Request event have been parsed in to Parameters
 
+   type Post_File_Event is access
+     procedure (URI       : in String;
+                File_Name : in String;
+                Temp_Name : in String);
+
+   procedure On_Post_File_Handler (Event : Post_File_Event);
+   --  Called when a file is received from a post. Note the name of the CGI
+   --  parameter for the file input must have been returned in the event
+   --  On_Post_Request_Event and there must be a On_Post_File_Event set
+   --  or the file will not be downloaded.
+
    function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
                             Name : String)
                             return String;

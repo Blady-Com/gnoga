@@ -71,6 +71,7 @@ package body Gnoga.Server.Connection is
    On_Connect_Event      : Connect_Event      := null;
    On_Post_Event         : Post_Event         := null;
    On_Post_Request_Event : Post_Request_Event := null;
+   On_Post_File_Event    : Post_File_Event    := null;
 
    Exit_Application_Requested : Boolean := False;
 
@@ -425,17 +426,85 @@ package body Gnoga.Server.Connection is
 
    overriding
    procedure Do_Body (Client : in out Gnoga_HTTP_Client) is
-      Status : Status_Line renames Get_Status_Line (Client);
-   begin
-      if On_Post_Request_Event /= null and Status.Kind = File then
-         declare
-            Param_List : Ada.Strings.Unbounded.Unbounded_String;
-         begin
-            On_Post_Request_Event (Status.File, Param_List);
+      use Ada.Strings.Fixed;
+      use Ada.Strings.Unbounded;
+      use Ada.Streams.Stream_IO;
 
-            Client.Receive_Body (Ada.Strings.Unbounded.To_String (Param_List));
-         end;
+      Status : Status_Line renames Get_Status_Line (Client);
+
+      Param_List : Ada.Strings.Unbounded.Unbounded_String;
+
+      Content_Type : String := Client.Get_Header (Content_Type_Header);
+      Disposition  : String := Client.Get_Multipart_Header
+        (Content_Disposition_Header);
+   begin
+      if On_Post_Request_Event /= null then
+         On_Post_Request_Event (Status.File, Param_List);
       end if;
+
+      if Content_Type = "application/x-www-form-urlencoded" then
+         Client.Receive_Body (Ada.Strings.Unbounded.To_String (Param_List));
+      end if;
+
+      if Index (Content_Type, "multipart/form-data") = Content_Type'First then
+         if Index (Disposition, "form-data") = Disposition'First  then
+            declare
+               Field_ID : constant String := "name=""";
+               File_ID  : constant String := "filename=""";
+
+               n : Natural := Index (Disposition, Field_ID);
+               f : Natural := Index (Disposition, File_ID);
+            begin
+               if n /= 0 then
+                  declare
+                     Eq : Natural := Index
+                       (Disposition, """", n + Field_ID'Length);
+                     Field_Name : String := Disposition
+                       (n + Field_ID'Length .. Eq - 1);
+                  begin
+                     if Index (To_String (Param_List), Field_Name) > 0 then
+                        if f /= 0 then
+                           declare
+                              Eq : Natural := Index
+                                (Disposition, """", f + File_ID'Length);
+                              File_Name : String := Disposition
+                                (f + File_ID'Length .. Eq - 1);
+                           begin
+                              if On_Post_File_Event = null then
+                                 Gnoga.Log ("Attempt to upload file with out" &
+                                              " a On_Post_File_Event set");
+                              else
+                                 if Is_Open (Client.Content.FS) then
+                                    Close (Client.Content.FS);
+                                 end if;
+
+                                 Create (Client.Content.FS,
+                                         Out_File,
+                                         Gnoga.Server.Upload_Directory &
+                                           File_Name & ".tmp",
+                                         "Text_Translation=No");
+
+                                 Receive_Body
+                                   (Client, Stream (Client.Content.FS));
+
+                                 On_Post_File_Event (Status.File,
+                                                     File_Name,
+                                                     File_Name & ".tmp");
+                              end if;
+                           end;
+                        end if;
+                     end if;
+                  end;
+               end if;
+            end;
+         end if;
+      end if;
+   exception
+      when E : others =>
+         Log ("Do_Body Error");
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Do_Body;
 
    -------------
@@ -1569,6 +1638,15 @@ package body Gnoga.Server.Connection is
    begin
       On_Post_Event := Event;
    end On_Post_Handler;
+
+   --------------------------
+   -- On_Post_File_Handler --
+   --------------------------
+
+   procedure On_Post_File_Handler (Event : in Post_File_Event) is
+   begin
+      On_Post_File_Event := Event;
+   end On_Post_File_Handler;
 
    ----------------------
    -- Search_Parameter --

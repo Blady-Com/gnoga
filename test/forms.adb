@@ -108,6 +108,7 @@ procedure Forms is
       declare
          Form2   : Form.Form_Type;
          F_Input : Form.Form_Element_Type;
+         H_Input : Form.Hidden_Type;
          S       : Form.Submit_Button_Type;
       begin
          Form2.Create (Parent => App.Console,
@@ -118,6 +119,10 @@ procedure Forms is
          F_Input.Create_Element (Form       => Form2,
                                  Input_Type => "file",
                                  Name       => "fspec");
+         H_Input.Create (Form  => Form2,
+                         Value => "test",
+                         Name  => "Some_Text");
+
          S.Create (Form2, "Submit File");
       end;
       Connection.Hold;
@@ -164,7 +169,7 @@ procedure Forms is
    is
    begin
       Accepted_Parameters :=
-        Ada.Strings.Unbounded.To_Unbounded_String ("Some_Text");
+        Ada.Strings.Unbounded.To_Unbounded_String ("Some_Text,fspec");
    end On_Post_Request;
 
    procedure On_Post (URI        : String;
@@ -180,6 +185,18 @@ procedure Forms is
                       Gnoga.Types.Data_Maps.Element (C));
       end loop;
    end On_Post;
+
+   procedure On_Post_File (URI       : in String;
+                           File_Name : in String;
+                           Temp_Name : in String);
+
+   procedure On_Post_File (URI       : in String;
+                           File_Name : in String;
+                           Temp_Name : in String)
+   is
+   begin
+      Gnoga.Log ("File received : " & File_Name & " in " & Temp_Name);
+   end On_Post_File;
 begin
    Application.Multi_Connect.Initialize (Boot  => "debug.html");
 
@@ -191,6 +208,8 @@ begin
    Gnoga.Server.Connection.On_Post_Handler (On_Post'Unrestricted_Access);
    Gnoga.Server.Connection.On_Post_Request_Handler
      (On_Post_Request'Unrestricted_Access);
+   Gnoga.Server.Connection.On_Post_File_Handler
+     (On_Post_File'Unrestricted_Access);
 
    Application.Open_URL_OSX;
 

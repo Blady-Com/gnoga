@@ -16,7 +16,7 @@ with Gnoga.Server.Template_Parser.Python;
 with Gnoga.Server.Template_Parser.Simple;
 
 procedure Demo is
-   pragma Linker_Options ("-lpython");
+   pragma Linker_Options ("-lpython2.7");
 
    use Gnoga;
    use Gnoga.Types;

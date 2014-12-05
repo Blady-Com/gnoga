@@ -28,7 +28,7 @@ ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
 	PRJ_TARGET=OSX
 endif
 
-all: gnoga gnoga_tools tutorials snake
+all: gnoga gnoga_tools snake mine_detector tutorials 
 
 gnoga:
 	cd src && $(BUILDER) -p -Pgnoga.gpr
@@ -56,13 +56,16 @@ uninstall:
 ace_editor:
 	- cd js && git clone https://github.com/ajaxorg/ace-builds.git
 
-demo: snake adaedit adablog
+demo: snake mine_detector adaedit adablog
 
 adablog:
 	cd demo/adablog && $(BUILDER) -Padablog.gpr
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr
+
+mine_detector:
+	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr
 
 adaedit: ace_editor
 	cd demo/adaedit && $(BUILDER) -Pace_editor.gpr

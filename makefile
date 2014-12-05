@@ -17,12 +17,12 @@ CLEANER=gprclean
 # If using MinGW on Cygwin32 or 64 you can use the following:
 #
 # For 32bit
-#BUILDER=i686-w64-ming32-gnatmake
-#CLEANER=i686-w64-ming32-gnatclean
+#BUILDER=i686-w64-ming32-gnatmake.exe
+#CLEANER=i686-w64-ming32-gnatclean.exe
 #
 # For 64bit
-#BUILDER=x86_64-mingw32-gnatmake
-#CLEANER=x86_64-mingw32-gnatclean
+#BUILDER=x86_64-w64-mingw32-gnatmake.exe
+#CLEANER=x86_64-w64-mingw32-gnatclean.exe
 
 ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
 	PRJ_TARGET=OSX

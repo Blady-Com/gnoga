@@ -68,7 +68,7 @@ mine_detector:
 	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr
 
 adaedit: ace_editor
-	cd demo/adaedit && $(BUILDER) -Pace_editor.gpr
+	cd demo/adaedit && $(BUILDER) -Padaedit.gpr
 
 tests:
 	cd test && $(BUILDER) -Ptest.gpr

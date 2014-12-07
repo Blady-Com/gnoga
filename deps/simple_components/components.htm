@@ -24768,6 +24768,17 @@ procedure it shall call it from its implementation.</p>
 <b>Listener</b>.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Server_Address (<b>Listener</b> 
+: Connections_Server)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Sock_Addr_Type;</tt></p>
+</blockquote>
+<p>This function is called before the server starts listening its socket. The 
+result is the address to listen. The default implementation returns an address 
+of the AF INET family with any address the host has and the port taken from the
+<b>Listener</b>'s discriminant Port. It can be overridden in order to limit the 
+addresses listened.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF">procedure</font> Initialize (<b>Listener</b> :
 <font color="#0000FF">in out</font>  
 Connections_Server);</tt></p>
@@ -27221,6 +27232,20 @@ Enable</b> : Boolean<br>
 </blockquote>
 <p>This procedure is called to enable or disable tracing of received bodies. 
 When enabled the server traces parts of the received bodies as it decodes them.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Receive_Header_Tracing">
+</a>procedure</font> Receive_Header_Tracing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> HTTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enable</b> : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called to enable or disable tracing of received headers. 
+When enabled the server traces parts of the received headers and multipart 
+headers.</p>
 <p><u><b>Stream body receiver</b></u>. A body can be written into a stream. The body receipt is started by calling
 <a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Receive_Body_stream">
 Receive_Body</a> from
@@ -27925,9 +27950,10 @@ Send_Body</a> only initiates file transfer, which the connection state machine
 takes care of.</p>
 <p><u><b>Custom body provider</b></u>. A body can be obtained from an object which 
 type is derived from the type:</p>
-
 <blockquote>
-<p><tt><font color="#0000FF">
+<p><tt>Content_Not_Ready : <font color="#0000FF">exception</font>;<br>
+<br>
+<font color="#0000FF">
 <a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Content_Source"></a>type</font> Content_Source<font color="#0000FF"> is<br>
 &nbsp;&nbsp; abstract new </font>Ada.Finalization.Limited_Controlled
 <font color="#0000FF">with null record</font>;</tt></p>
@@ -27935,14 +27961,24 @@ type is derived from the type:</p>
 <p>The following primitive operation shall be defined:</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">function</font> Get (<b>Source</b> :
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get"></a>function</font> Get (<b>Source</b> :
 <font color="#0000FF">access</font> Content_Source)<br>
 <font color="#0000FF">&nbsp;&nbsp; return</font> String <font color="#0000FF">is 
 abstract</font>;</tt></p>
 </blockquote>
 <p>This function is called to obtain next chunk of body. The length of returned 
 piece should not exceed the capacity of the output buffer including prefix and 
-suffix used for chunked transfer.</p>
+suffix used for chunked transfer. The body end is indicated by
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get">Get</a> 
+returning an empty string. Note that
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get">Get</a> shall 
+not block, because this will block the server. If the content is not yet ready
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get">Get</a> may 
+propagate 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Content_Not_Ready">Content_Not_Ready</a>. In this case
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get">Get</a> will be 
+called again when the server returns back to the socket some time later.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">
@@ -27972,6 +28008,17 @@ Content-Length</i> before sending the body. The object specified by the
 parameter <b>Content</b> shall exist until transfer completion. When the parameter <b>Get</b> is set to <font color="#800000">
 <i>false</i></font>, no body is sent. It is used when the response sent for a 
 HEAD request.</p>
+
+<blockquote>
+<p><font color="#0000FF">
+<tt>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Content_Not_Ready"></a></tt></font> 
+<tt>Content_Not_Ready : <font color="#0000FF">exception</font>;</tt></p>
+</blockquote>
+<p>This is an exception
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Get">Get</a> may 
+propagate to indicate that the content is not ready yet, but may become 
+available in the future.</p>
 
 <p><u><b>Accumulated body</b></u>. A body can be built in the dynamic memory of 
 the connection object and then sent. The following operations are used to build 
@@ -30802,6 +30849,8 @@ The following versions were tested with the compilers:</i>
 <P>
 Changes () to the version 4.3:<ul>
 	<li>URI scheme recognition added;</li>
+	<li>Get_Server_Address added to the connections server to allow limiting the 
+	addresses being listened;</li>
 	<li>Documentation improved;</li>
 	<li>Bug fixes.</li>
 	</ul>

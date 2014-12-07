@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  22:29 01 Dec 2014  --
+--                                Last revision :  13:05 07 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -494,6 +494,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          end if;
       end if;
    exception
+      when Content_Not_Ready =>
+         Continue (Client, Content_Chunk'Access);
       when Error : others =>
           Trace_Error
           (  Client.Listener.Factory.all,
@@ -621,12 +623,13 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                (  "Sec-WebSocket-Accept: "
                &  To_Base64
                   (  To_String
-                     (  Digest
-                        (  To_Base64
-                           (  Get_Header (Client, Sec_WebSocket_Key)
-                           )
-                        &  "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
-                  )  )  )
+                     (  Stream_Element_Array'
+                        (  Digest
+                           (  To_Base64
+                              (  Get_Header (Client, Sec_WebSocket_Key)
+                              )
+                           &  "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+                  )  )  )  )
                &  CRLF
             )  );
             if Result.Protocols = "" then
@@ -1168,7 +1171,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       case Header is
          when Multipart_Header =>
-            if Client.Headers (Header) = null then
+            if Client.Multipart (Header) = null then
                Ptr := new String'(Value);
                Client.Multipart (Header) := Ptr.all'Unchecked_Access;
                if Client.Part_Mark = null then
@@ -1233,6 +1236,19 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Continue (Client, Message_Chunk'Access);
    end Queue_Content;
 
+   procedure Process_Body_Tail (Client : in out HTTP_Client'Class) is
+      Request : String renames Client.Line.Value (1..Client.Line.Last);
+      Pointer : Integer := Request'First;
+   begin
+      if Request = "--" then
+         Client.Expecting := Multipart_Epilogue;
+      elsif Pointer > Request'Last then
+         Client.Expecting := Multipart_Header_Line;
+      else
+         Trace (Client, "Malformed ending of a multipart body: " & Request);
+      end if;
+   end Process_Body_Tail;
+
    procedure Process_Chunk_Line (Client : in out HTTP_Client'Class) is
       Request : String renames Client.Line.Value (1..Client.Line.Last);
       Pointer : Integer := Request'First;
@@ -1278,6 +1294,20 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Pointer : Integer := Request'First;
    begin
       if Pointer > Request'Last then
+         if Client.Trace_Header then
+            Trace (Client, "Header:");
+            for Index in Client.Headers'Range loop
+               if Client.Headers (Index) /= null then
+                  Trace
+                  (  Client,
+                     (  "   "
+                     &  Text_Header'Image (Index)
+                     &  '='
+                     &  Quote (Client.Headers (Index).all, ''')
+                  )  );
+               end if;
+            end loop;
+         end if;
          if Client.Boundary /= null then -- Multipart body
             Client.Expecting := Multipart_Preamble;
             Client.Multipart := (others => null);
@@ -1336,9 +1366,21 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Request : String renames Client.Line.Value (1..Client.Line.Last);
       Pointer : Integer := Request'First;
    begin
-      if Request = "--" then
-         Client.Expecting := Multipart_Epilogue;
-      elsif Pointer > Request'Last then
+      if Pointer > Request'Last then
+         if Client.Trace_Header then
+            Trace (Client, "Multipart header:");
+            for Index in Client.Multipart'Range loop
+               if Client.Multipart (Index) /= null then
+                  Trace
+                  (  Client,
+                     (  "   "
+                     &  Multipart_Header'Image (Index)
+                     &  '='
+                     &  Quote (Client.Multipart (Index).all, ''')
+                  )  );
+               end if;
+            end loop;
+         end if;
          Do_Body (Client);
          Client.Expecting := Multipart_Body_Data;
       else
@@ -2027,7 +2069,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                Client.Data_Length :=
                    Client.Data_Length - Pointer + Start;
                Client.Position  := Boundary'First;
-               Client.Expecting := Multipart_Header_Line;
+               Client.Expecting := Multipart_Body_Tail;
                if Client.Stream /= null then
                   Body_Received -- Dispatching call
                   (  HTTP_Client'Class (Client),
@@ -2351,6 +2393,13 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                      end if;
                   end if;
                end if;
+            when Multipart_Body_Tail =>
+               Receive_Multipart_Line
+               (  Client,
+                  Data,
+                  Pointer,
+                  Process_Body_Tail'Access
+               );
             when Multipart_Preamble => -- Multipart lines and headers
                Receive_Multipart_Line
                (  Client,
@@ -2593,6 +2642,14 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       Client.Trace_Body := Enable;
    end Receive_Body_Tracing;
+
+   procedure Receive_Header_Tracing
+             (  Client : in out HTTP_Client;
+                Enable : Boolean
+             )  is
+   begin
+      Client.Trace_Header := Enable;
+   end Receive_Header_Tracing;
 
    procedure Receive_Header_Line
              (  Client  : in out HTTP_Client'Class;

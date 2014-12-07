@@ -59,11 +59,26 @@ package body Gnoga.Server.Connection is
 
    use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
 
+   -------------------------------------------------------------------------
+   --  Gnoga Connection Settings
+   -------------------------------------------------------------------------
+
+   Max_HTTP_Request_Length : constant := 1024;
+   Max_HTTP_Connections    : constant := 200;
+   Max_HTTP_Output_Chunk   : constant := 1024;
+
+   Max_Buffer_Length : constant := 2 ** 16 - 1;
+   --  Maximum length of to Buffer output to Gnoga clients before an
+   --  automatic buffer flush is done.
+
+   -------------------------------------------------------------------------
+   --  Private Variables
+   -------------------------------------------------------------------------
+
    CRLF : constant String := (Character'Val (13), Character'Val (10));
 
-   Max_Buffer_Length : constant := 2**16 - 1;
-
    Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
+   Server_Host : Ada.Strings.Unbounded.Unbounded_String;
    Server_Port : GNAT.Sockets.Port_Type;
 
    Verbose_Output : Boolean := False;
@@ -75,22 +90,9 @@ package body Gnoga.Server.Connection is
 
    Exit_Application_Requested : Boolean := False;
 
-   task Watchdog is
-      entry Start;
-      entry Stop;
-   end Watchdog;
-   --  Keep alive and check connections
-
-   type Gnoga_HTTP_Factory (Request_Length  : Positive;
-                            Output_Size     : Buffer_Length;
-                            Max_Connections : Positive)
-   is new Connections_Factory with null record;
-
-   overriding
-   function Create (Factory  : access Gnoga_HTTP_Factory;
-                    Listener : access Connections_Server'Class;
-                    From     : GNAT.Sockets.Sock_Addr_Type)
-                    return Connection_Ptr;
+   -------------------------------------------------------------------------
+   --  Private Types
+   -------------------------------------------------------------------------
 
    protected type String_Buffer is
       procedure Buffering (Value : Boolean);
@@ -112,6 +114,19 @@ package body Gnoga.Server.Connection is
       Buffer       : Ada.Strings.Unbounded.Unbounded_String;
    end String_Buffer;
 
+   task Watchdog is
+      entry Start;
+      entry Stop;
+   end Watchdog;
+   --  Keep alive and check connection status
+
+   -------------------------------------------------------------------------
+   --  HTTP Server Setup for Gnoga_HTTP_Server
+   -------------------------------------------------------------------------
+
+   --  Gnoga_HTTP_Content  --
+   --  Per http connection data
+
    type Gnoga_HTTP_Content is
       record
          FS        : Ada.Streams.Stream_IO.File_Type;
@@ -127,6 +142,33 @@ package body Gnoga.Server.Connection is
    begin
       null;
    end Write;
+
+   --  Gnoga_HTTP_Factory  --
+   --  Creates Gnoga_HTTP_Client objects on incoming connections
+   --  from Gnoga_HTTP_Connection
+
+   type Gnoga_HTTP_Factory (Request_Length  : Positive;
+                            Output_Size     : Buffer_Length;
+                            Max_Connections : Positive)
+   is new Connections_Factory with null record;
+
+   overriding
+   function Create (Factory  : access Gnoga_HTTP_Factory;
+                    Listener : access Connections_Server'Class;
+                    From     : GNAT.Sockets.Sock_Addr_Type)
+                    return Connection_Ptr;
+
+   --  Gnoga_HTTP_Connection  --
+
+   type Gnoga_HTTP_Connection is
+     new GNAT.Sockets.Server.Connections_Server with null record;
+
+   overriding
+   function Get_Server_Address (Listener : Gnoga_HTTP_Connection)
+                                return GNAT.Sockets.Sock_Addr_Type;
+   --  Set the listening host if was set in Initialize
+
+   --  Gnoga_HTTP_Client  --
 
    type Gnoga_HTTP_Client is new HTTP_Client with
       record
@@ -198,11 +240,10 @@ package body Gnoga.Server.Connection is
 
       declare
          Factory : aliased Gnoga_HTTP_Factory
-           (Request_Length  => 200,
-            Output_Size     => 1024,
-            Max_Connections => 100);
-         Server  : GNAT.Sockets.Server.
-           Connections_Server (Factory'Access,  Server_Port);
+           (Request_Length  => Max_HTTP_Request_Length,
+            Output_Size     => Max_HTTP_Output_Chunk,
+            Max_Connections => Max_HTTP_Connections);
+         Server  : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
       begin
          if Verbose_Output then
             Gnoga.Log ("HTTP Server Started");
@@ -235,6 +276,30 @@ package body Gnoga.Server.Connection is
          Request_Length => Factory.Request_Length,
          Output_Size    => Factory.Output_Size);
    end Create;
+
+   -------------------------
+   --  Get_Server_Address --
+   -------------------------
+
+   overriding
+   function Get_Server_Address (Listener : Gnoga_HTTP_Connection)
+                                return GNAT.Sockets.Sock_Addr_Type
+   is
+      use GNAT.Sockets;
+
+      Address : Sock_Addr_Type;
+      Host    : String := Ada.Strings.Unbounded.To_String (Server_Host);
+   begin
+      if Host = "" then
+         Address.Addr := Any_Inet_Addr;
+      else
+         Address.Addr := Inet_Addr (Host);
+      end if;
+
+      Address.Port := Listener.Port;
+
+      return Address;
+   end Get_Server_Address;
 
    --------------
    -- Get_Name --
@@ -472,7 +537,7 @@ package body Gnoga.Server.Connection is
                            begin
                               if On_Post_File_Event = null then
                                  Gnoga.Log ("Attempt to upload file with out" &
-                                              " a On_Post_File_Event set");
+                                              " an On_Post_File_Event set");
                               else
                                  if Is_Open (Client.Content.FS) then
                                     Close (Client.Content.FS);
@@ -517,6 +582,10 @@ package body Gnoga.Server.Connection is
       Do_Get_Head (Client, False);
    end Do_Head;
 
+   -------------------------------------------------------------------------
+   --  Gnoga Server Connection Methods
+   -------------------------------------------------------------------------
+
    ----------------
    -- Initialize --
    ----------------
@@ -529,8 +598,9 @@ package body Gnoga.Server.Connection is
    begin
       Verbose_Output := Verbose;
 
-      Boot_HTML := Ada.Strings.Unbounded.To_Unbounded_String (Boot);
+      Boot_HTML   := Ada.Strings.Unbounded.To_Unbounded_String (Boot);
       Server_Port := GNAT.Sockets.Port_Type (Port);
+      Server_Host := Ada.Strings.Unbounded.To_Unbounded_String (Host);
 
       if Verbose then
          Write_To_Console ("Application root :" & Application_Directory);
@@ -541,6 +611,7 @@ package body Gnoga.Server.Connection is
          Write_To_Console ("/js  at          :" & JS_Directory);
          Write_To_Console ("/css at          :" & CSS_Directory);
          Write_To_Console ("/img at          :" & IMG_Directory);
+         Write_To_Console ("Boot file        :" & Boot);
          Write_To_Console ("Listening on     :" & Host & ":" &
                              Left_Trim (Port'Img));
       end if;
@@ -555,7 +626,6 @@ package body Gnoga.Server.Connection is
    procedure Run is
    begin
       Gnoga_HTTP_Server.Start;
-      --  To Do: Needs to restrict listen to Host from initialize
 
       Server_Wait.Hold;
 

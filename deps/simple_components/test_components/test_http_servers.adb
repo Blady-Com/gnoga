@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  10:10 07 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -79,7 +79,8 @@ package body Test_HTTP_Servers is
                    Request_Length => Factory.Request_Length,
                    Output_Size    => Factory.Output_Size
                 );
-         Receive_Body_Tracing (Test_Client (Result.all), True);
+         Receive_Body_Tracing   (Test_Client (Result.all), True);
+         Receive_Header_Tracing (Test_Client (Result.all), True);
          return Result;
       else
          return null;
@@ -241,6 +242,35 @@ package body Test_HTTP_Servers is
                Accumulate_Body
                (  Client,
                   "</form></body></html>"
+               );
+               Send_Body (Client, Get);
+            elsif Status.File = "test_forms_3.htm" then
+               Send_Status_Line (Client, 200, "OK");
+               Send_Date (Client);
+               Send_Server (Client);
+               Send_Content_Type (Client, "text/html");
+               Accumulate_Body
+               (  Client,
+                  "<html><head><title>Forms</title></head><body>"
+               );
+               Accumulate_Body
+               (  Client,
+                  (  "<form action=""/demo"" method=""POST"""
+                  &  "target=""_self"" id=""g27"""
+                  &  " enctype=""multipart/form-data"">"
+                  &  "<span id=""g29"">File to upload: </span>"
+                  &  "<input type=""file"" form=""g27"" value="""""
+                  &  " name=""fspec"" id=""g30"">"
+                  &  "<input type=""hidden"""
+                  &  " form=""g27"" value=""test"" name=""Some_Text"""
+                  &  " id=""g31"">"
+                  &  "<input type=""submit"" "
+                  &  "form=""g27"" value=""Submit File"" "
+                  &  "id=""g32""></form>"
+               )  );
+               Accumulate_Body
+               (  Client,
+                  "</body></html>"
                );
                Send_Body (Client, Get);
             elsif Is_Directory (Status.File) then

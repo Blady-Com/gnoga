@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  22:29 01 Dec 2014  --
+--                                Last revision :  13:05 07 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -189,6 +189,8 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       end case;
    end record;
 ------------------------------------------------------------------------
+   Content_Not_Ready : exception;
+--
 -- Content_Source -- User-provided content
 --
    type Content_Source is
@@ -204,6 +206,10 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 -- Returns :
 --
 --    The chunk of data
+--
+-- Exceptions :
+--
+--    Content_Not_Ready - No content ready yet
 --
    function Get (Source : access Content_Source)
       return String is abstract;
@@ -1031,12 +1037,22 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                 Content : access Content_Destination'Class
              );
 --
--- Receive_Body_Tracing -- Enable tracing onto strandard output
+-- Receive_Body_Tracing -- Enable tracing
 --
 --    Client - The HTTP client connection object
 --    Enable - Trace receiving bodies
 --
    procedure Receive_Body_Tracing
+             (  Client : in out HTTP_Client;
+                Enable : Boolean
+             );
+--
+-- Receive_Header_Tracing -- Enable tracing
+--
+--    Client - The HTTP client connection object
+--    Enable - Trace receiving bodies
+--
+   procedure Receive_Header_Tracing
              (  Client : in out HTTP_Client;
                 Enable : Boolean
              );
@@ -1287,6 +1303,7 @@ private
            Multipart_Preamble,    -- Multipart preamble
            Multipart_Header_Line, -- Header of multipart body
            Multipart_Body_Data,   -- Data of a multipart body
+           Multipart_Body_Tail,   -- The multipart body data tail
            Multipart_Epilogue,    -- Multipart epilogue
            WebSocket_Header,      -- Incoming frame beginning
            WebSocket_Length,      -- Length octet
@@ -1471,19 +1488,20 @@ private
            Output_Size    : Buffer_Length
         )  is new State_Machine (80, Output_Size) with
    record
-      Expecting   : Request_Line_Type    := Request_Line;
-      Data_Length : Stream_Element_Count := 0;
-      Chunk_Type  : Request_Line_Type;
-      Method      : HTTP_Method;
-      Stream      : Stream_Ptr;
-      Source      : Content_Source_Ptr;
-      Destination : Content_Destination_Ptr;
-      Boundary    : String_Ptr;       -- Multipart boundary
-      Position    : Integer;          -- Boundary character to match
-      Chain       : Action := null;
-      Connection  : Connection_Flags := 0;
-      Chunked     : Boolean := False; -- Using chunked transfer
-      Trace_Body  : Boolean := True;
+      Expecting    : Request_Line_Type    := Request_Line;
+      Data_Length  : Stream_Element_Count := 0;
+      Chunk_Type   : Request_Line_Type;
+      Method       : HTTP_Method;
+      Stream       : Stream_Ptr;
+      Source       : Content_Source_Ptr;
+      Destination  : Content_Destination_Ptr;
+      Boundary     : String_Ptr;       -- Multipart boundary
+      Position     : Integer;          -- Boundary character to match
+      Chain        : Action := null;
+      Connection   : Connection_Flags := 0;
+      Chunked      : Boolean := False; -- Using chunked transfer
+      Trace_Body   : Boolean := False;
+      Trace_Header : Boolean := False;
          -- Time header fields
       Date                : Time := Clock;
       Last_Modified       : Time := Clock;
@@ -1521,6 +1539,7 @@ private
             (  Client : access HTTP_Client
             )  return Boolean;
 
+   procedure Process_Body_Tail    (Client : in out HTTP_Client'Class);
    procedure Process_Chunk_Line   (Client : in out HTTP_Client'Class);
    procedure Process_Epilogue     (Client : in out HTTP_Client'Class);
    procedure Process_Header_Line  (Client : in out HTTP_Client'Class);

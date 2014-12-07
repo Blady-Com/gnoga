@@ -3,7 +3,7 @@
 --  HTTP server test                               Luebeck            --
 --                                                 Winter, 2013       --
 --                                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  00:20 06 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -48,7 +48,7 @@ begin
       Server  : GNAT.Sockets.Server.
                 Connections_Server (Factory'Access, Port);
    begin
-    Trace_On (Factory => Factory, Received => True, Sent => True);
+      Trace_On (Factory => Factory, Received => True, Sent => True);
       Put_Line ("HTTP server started");
       delay 60.0 * Minutes; -- Service
       Put_Line ("HTTP server stopping");

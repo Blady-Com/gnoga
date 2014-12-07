@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  22:29 01 Dec 2014  --
+--                                Last revision :  10:10 07 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -212,6 +212,23 @@ package GNAT.Sockets.Server is
 --
    function Get_Overlapped_Size (Client : Connection)
       return Stream_Element_Count;
+--
+-- Get_Server_Address -- Get the server socket address
+--
+--    Listener - The server object
+--
+-- This function is called  before  the  server  starts  listening.  The
+-- result  is the address to listen.  The default implementation returns
+-- an addressof  the  INET  family with  any  address and the port taken
+-- from the argument's port discriminant.
+--
+-- Returns :
+--
+--    The address to listen
+--
+   function Get_Server_Address
+            (  Listener : Connections_Server
+            )  return Sock_Addr_Type;
 --
 -- Get_Socket -- Get the socket
 --

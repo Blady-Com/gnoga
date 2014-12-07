@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  22:29 01 Dec 2014  --
+--                                Last revision :  10:10 07 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1163,16 +1163,25 @@ package body GNAT.Sockets.Server is
       end loop;
    end Write;
 
+   function Get_Server_Address
+            (  Listener : Connections_Server
+            )  return Sock_Addr_Type is
+      Address : Sock_Addr_Type;
+   begin
+      Address.Addr := Any_Inet_Addr;
+      Address.Port := Listener.Port;
+      return Address;
+   end Get_Server_Address;
+
    task body Worker is
-      Address       : Sock_Addr_Type;
+      Address       : Sock_Addr_Type :=
+                      Get_Server_Address (Listener.all);
       Server_Socket : Socket_Type;
       Client_Socket : Socket_Type;
       Read_Sockets  : Socket_Set_Type;
       Write_Sockets : Socket_Set_Type;
       Status        : Selector_Status;
    begin
-      Address.Addr := Any_Inet_Addr;
-      Address.Port := Listener.Port;
       Create_Socket (Server_Socket);
       Set_Socket_Option
       (  Server_Socket,

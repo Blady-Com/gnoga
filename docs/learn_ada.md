@@ -9,7 +9,7 @@
     A copy of the license is included in the section entitled "GNU
     Free Documentation License".
 
-The goal of this guide is not to teach programming, nor to teach everything about the Ada language, but to be a quick and simple guide to those familiar with programming concepts and other languages to quickly start writing or modifying Ada applications. Ada is so simple at its root that most can get rolling in hours and even be working with the higher level concurrency facilities.
+The goal of this guide is _not_ to teach programming, _nor_ to teach everything about the Ada language, but to be a **quick and simple guide** to those familiar with programming concepts and other languages to quickly start writing or modifying Ada applications. Ada is so simple at its root that most can get rolling in hours and even be working with the higher level concurrency facilities. After this guide check the learning resources on [GetAdaNow.com](http://getadanow.com/#step2) to go to the next level.
 
 * * *
 
@@ -28,14 +28,17 @@ The goal of this guide is not to teach programming, nor to teach everything abou
       - Blocks
       - Control Flow
    * Packages and Sub-Programs
-      - Packages
-      - Child packages
-      - Procedures
-      - Functions
+      - Packages and files
+      - Package privacy
+      - Sub-Programs (procedures and functions)
+   * Types the Heart and Soul of Ada
    * Exceptions
-   * Types the Heart of Ada
    * Object Oriented Programing
+   * Generics
+      - How to use generics
    * Concurrency
+      - Protected Objects
+      - Tasks
    * The Ada Standard Library
    
    
@@ -355,3 +358,149 @@ Labels also exist to allow for "goto"s:
 some_label:
     goto some_labe;
 ```
+
+## Packages and Sub-Programs
+
+### Packages and Files
+
+Outside of the main procedure, in Ada code, the most outer block is a Package. Packages are divided into two sections as described before. When packages are the outer most blocks in gcc/ada they are contained in files, the specification portion is contained in a file with the .ads extension and a body portion which is contained in a file with the .adb extension.
+
+The following spec should be saved in a file called talk.ads
+
+``` ada
+package Talk is
+   procedure Say (S : in String);
+end Talk;
+```
+
+This body then goes in talk.adb
+
+``` ada
+with Ada.Text_IO;
+
+package body Talk is
+   procedure Say (S : in String) is
+      use Ada.Text_IO;
+   begin
+      Put_Line (S);
+   end Say;
+end Talk;
+```
+
+To use the Talk package we will need a main procedure, place the following in say_sello.adb
+
+``` ada
+with Talk;
+
+procedure Say_Hello is
+begin
+   Talk.Say ("Hello World!");
+end Say_Hello;
+```
+
+It is also possible to have child packages. For gcc-ada child package file names are the parent "-" the child name dot extension. So for Talk.Double, use talk-double.ads for the spec.
+
+``` ada
+package Talk.Double is
+   procedure Say_More (S : in String);
+end Talk.Double;
+```
+
+For the body use talk-double.adb
+
+``` ada
+package body Talk.Double is
+   procedure Say_More (S : in String) is
+   begin
+      Talk.Say (S);
+      Say (S);
+      --  Since Talk.Double is a child of Talk, there is no need to specify the
+      --  parent package Talk.
+   end Say_More;
+end Talk.Double;
+```
+
+He is a main procedure using the parent and child packages.
+
+``` ada
+with Talk.Double;
+
+procedure Say_Hello2 is
+begin
+   Talk.Say ("Hello World!");
+   --  Since the child of Talk, Talk.Double was "with"ed the parent package
+   --  is automatically "with"ed.
+
+   Talk.Double.Say_More ("Hello again.");
+end Say_Hello2;
+```
+
+### Package privacy
+
+Packages can contain a private section that is accessible only to the body of the package or it's child packages. However anything declared in the body of a
+parent package is not visible to child packages. For example:
+
+talk2.ads
+``` ada
+package Talk2 is
+   procedure Say (S : in String);
+private
+   Talk_Count : Natural := 0;
+end Talk2;
+```
+
+talk2.adb
+``` ada
+with Ada.Text_IO;
+
+package body Talk2 is
+   Say_Count : Natural := 0;
+
+   procedure Say (S : in String) is
+      use Ada.Text_IO;
+   begin
+      Say_Count  := Say_Count + 1;
+      Talk_Count := Talk_Count + 1;
+
+      Put_Line (Natural'Image (Talk_Count) & " : " & S);
+      Put_Line ("Say was called" & Natural'Image (Say_Count) & " times.");
+      --  In Ada '&' is used to concatinate strings
+   end Say;
+```
+
+talk2-double.ads
+``` ada
+package Talk2.Double is
+   procedure Say_More (S : in String);
+end Talk2.Double;
+```
+
+talk2-double.adb
+``` ada
+package body Talk2.Double is
+   procedure Say_More (S : in String) is
+   begin
+      Talk2.Say (S);
+
+      Talk_Count := Talk_Count - 1;
+      --  Talk_Count is "private" in the Talk2 package and so accessible
+      --  to child packages. Say_Count is in the body of Talk2 and so
+      --  private even to child packages.
+
+      Say (S);
+   end Say_More;
+end Talk2.Double;
+```
+
+say_hello3.adb
+``` ada
+with Talk2.Double;
+
+procedure Say_Hello3 is
+begin
+   Talk2.Say ("Hello World!");
+
+   Talk2.Double.Say_More ("Hello again.");
+end Say_Hello3;
+```
+

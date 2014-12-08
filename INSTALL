@@ -1,0 +1,21 @@
+Gnoga can be installed as a gcc/ada standard library or can be used from its
+install directory.
+
+To install:
+
+make release
+sudo make install
+
+gnat_make will also be installed in to the gcc/ada bin directory. Make sure to
+check the permission on the gnat_make executable as some versions of gprinstall
+fail to correctly change permissions to execute for all users.
+
+To use with out installing:
+
+make release
+
+gnat_make is found in the bin directory.
+
+In your gpr file use:
+
+with "/path/to/gnoga/src/gnoga.gpr" instead of with "gnoga"

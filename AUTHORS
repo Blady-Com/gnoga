@@ -1,0 +1,11 @@
+GNOGA - The GNU Omnificent GUI for Ada
+--------------------------------------
+http://www.gnoga.com
+
+* The author of the Gnoga framework is David Botton.
+
+* Gnoga uses Simple Components written by Dmitry A. Kazakov for its http and
+  WebSockets communication layer. deps/simple_components
+
+* The Mind Detector demo application was written by Jeffery Carter.
+  demo/mind_detector

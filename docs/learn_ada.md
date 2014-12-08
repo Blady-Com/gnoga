@@ -17,6 +17,17 @@ The goal of this guide is not to teach programming, nor to teach everything abou
       - Hello World
       - Blocks
       - Control Flow
+   * Packages and Sub-Programs
+      - Packages
+      - Child packages
+      - Procedures
+      - Functions
+   * Exceptions
+   * Types the Heart of Ada
+   * Object Oriented Programing
+   * Concurrency
+   * The Ada Standard Library
+   
    
 ## Introduction
 ### Reliability Readability Efficiency
@@ -267,15 +278,18 @@ case expression is
      statement;
   when 5 | 6 | 7 => null;
 end case;
+```
 
 **Loops**
 
 ``` ada
 loop
-  statement
+  statement;
   exit when expression;
 end loop;
 ```
+
+**While loops**
 
 ``` ada
 while expression loop
@@ -283,3 +297,49 @@ while expression loop
 end loop;
 ```
 
+**For loops**
+
+``` ada
+for some_variable in 1 .. 10 loop
+  statement;
+end loop;
+```
+
+The count of a for loop can be reversed using:
+
+``` ada
+for some_variable in reverse 1 .. 10 loop
+   statement;
+end loop;
+```
+
+It is also possible to use an expression that evaluates to a range or attribute that evaluates to a range for the range.
+
+``` ada
+for some_variable in Some_Object'Range loop
+   statement;
+end loop;
+```
+
+**Labeled loops**
+
+Labels can be give to loops of any type to allow exiting from nested loops.
+
+``` ada
+Top_Loop:
+   while true loop
+      for c in Buffer'Range loop
+         exit when Buffer (C) = some_value;
+         exit Top_Loop when Buffer (c) = another_value;
+      end loop;
+   end loop;
+```
+
+**Goto**
+
+Labels also exist to allow for "goto"s:
+
+```ada
+some_label:
+    goto some_labe;
+```

@@ -25,6 +25,8 @@ App Dir
   a library in gnat) for this setup of dirs would be (using my_app.gpr):
 
   with "Gnoga";
+  --  If Gnoga is not installed replace with:
+  --  with "/path/to/gnoga/src/gnoga.gpr";
 
   project My_App is
 

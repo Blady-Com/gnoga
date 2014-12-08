@@ -1,9 +1,19 @@
 # Getting Started with Ada
 ## An Ada quick start guide for programmers
 
-The goal of this guide is not to teach programming, nor to teach everything about the Ada language, but to be a quick and simple guide to those familiar with programming concepts and other languages to quickly start writing or modifying Ada applications. Ada is so simple at its root that most can get rolling in hours and become even be working with the higher level concurrency facilities within days.
+(c) 2014 David Botton
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the GNU Free Documentation License, Version 1.3
+    or any later version published by the Free Software Foundation;
+    with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+    A copy of the license is included in the section entitled "GNU
+    Free Documentation License".
 
-## Table of Contents
+The goal of this guide is not to teach programming, nor to teach everything about the Ada language, but to be a quick and simple guide to those familiar with programming concepts and other languages to quickly start writing or modifying Ada applications. Ada is so simple at its root that most can get rolling in hours and even be working with the higher level concurrency facilities.
+
+* * *
+
+### Table of Contents
    * Introduction
       - Reliability Readability Efficiency
       - ISO Standard
@@ -102,7 +112,7 @@ An Ada program (unless a library) will have a main procedure and a number of "pa
 
 Comments in Ada are "inline" only and start with a double dash "--".
 
-Copy the following code in to a file hello.adb:
+Copy the following code in to a file called hello.adb:
 
 ``` ada
 with Ada.Text_IO;
@@ -183,6 +193,8 @@ end Name;
 "declare" above defines a "block statement", other examples of block statements include loops, case statements and if then blocks. The other blocks described are "declarative blocks".
 
 Here is an example of a main procedure with lots of nested blocks. Most often packages are at the "library level", the most outer blocks, but they too can be nested.
+
+Copy the following code in to a file called blocks.adb:
 
 ``` ada
 with Ada.Text_IO;

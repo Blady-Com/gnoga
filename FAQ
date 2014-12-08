@@ -25,7 +25,20 @@ A) Gnoga by default uses gprtools that are not included with those distros. The 
 
 Q) How to compile Gnoga on Debian (wheezy)?
 
-A) You will need to use a more recent version of gcc/ada currently. Using the gcc/ada from Debian Jesse / sid works well.
+A) You will need to use a more recent version of gcc/ada currently. Using the gcc/ada from Debian Jesse works well.
+
+Q) How to use Gnoga on a Rasbery Pi?
+
+A) If you are using Raspbian you need to make sure it is Raspbian based on Debian Jessie or later. If you are running the Raspbian based on Wheezy you can use the following to upgrade you Pi to Jessie:
+
+sudo vi /etc/apt/sources.list
+--  change all references to wheezy to jessie
+
+sudo apt-get update
+sudo apt-get upgrade 
+sudo apt-get dist-upgrade
+
+sudo apt-get install gnat
 
 Q) Do I need Sqlite3 or MySQL installed to use Gnoga?
 

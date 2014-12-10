@@ -354,7 +354,7 @@ Top_Loop:
 
 Labels also exist to allow for "goto"s:
 
-```ada
+``` ada
 some_label:
     goto some_labe;
 ```
@@ -441,6 +441,7 @@ Packages can contain a private section that is accessible only to the body of th
 parent package is not visible to child packages. For example:
 
 talk2.ads
+
 ``` ada
 package Talk2 is
    procedure Say (S : in String);
@@ -450,6 +451,7 @@ end Talk2;
 ```
 
 talk2.adb
+
 ``` ada
 with Ada.Text_IO;
 
@@ -469,6 +471,7 @@ package body Talk2 is
 ```
 
 talk2-double.ads
+
 ``` ada
 package Talk2.Double is
    procedure Say_More (S : in String);
@@ -476,6 +479,7 @@ end Talk2.Double;
 ```
 
 talk2-double.adb
+
 ``` ada
 package body Talk2.Double is
    procedure Say_More (S : in String) is
@@ -493,6 +497,7 @@ end Talk2.Double;
 ```
 
 say_hello3.adb
+
 ``` ada
 with Talk2.Double;
 

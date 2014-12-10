@@ -41,8 +41,13 @@ release:
 
 install: release gnoga_tools
 	touch deps/simple_components/strings_edit-text_edit.o
-	cd src && gprinstall -r -f --prefix=$(PREFIX) -p gnoga.gpr -XPRJ_BUILD=Release
+	cd src && gprinstall -f --prefix=$(PREFIX) -p gnoga.gpr -XPRJ_BUILD=Release
 	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server-http_server.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
 
 uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr

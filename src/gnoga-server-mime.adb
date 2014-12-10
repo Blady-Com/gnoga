@@ -60,6 +60,8 @@ package body Gnoga.Server.Mime is
          return "application/pdf";
       elsif Ext = "zip" then
          return "application/zip";
+      elsif Ext = "gz" or Ext = "z" then
+         return "application/x-gzip";
       elsif Ext = "ico" then
          return "image/x-icon";
       elsif Ext = "html" or Ext = "htm" then

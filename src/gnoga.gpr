@@ -4,7 +4,7 @@ with "../deps/simple_components/components-connections_server-http_server.gpr";
 project Gnoga is
 
    for Object_Dir use "../obj";
-   for Source_Dirs use (".", "../cairo");
+   for Source_Dirs use (".");
 
    for Library_Name use "gnoga";
    for Library_Dir use "../lib";

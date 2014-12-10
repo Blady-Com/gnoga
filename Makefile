@@ -104,6 +104,19 @@ clean:
 	cd tutorial/tutorial-09 && $(CLEANER) -Ptutorial_09.gpr
 	cd tutorial/tutorial-10 && $(CLEANER) -Ptutorial_10.gpr
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
+	- cd deps && rm -rf MultiMarkdown-4
+	- rm bin/multimarkdown
 	- cd bin && rm *.db
 	- cd bin && rm temp.txt
 	- cd js && rm -rf ace-builds
+
+bin/multimarkdown:
+	- cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git
+	- cd deps/MultiMarkdown-4 && git submodule init
+	- cd deps/MultiMarkdown-4 && git submodule update
+	- cd deps/MultiMarkdown-4 && make
+	- mv deps/MultiMarkdown-4/multimarkdown bin/
+
+html-docs: bin/multimarkdown
+	cd docs && ../bin/multimarkdown user_manual.md > user_manual.html
+	cd docs && ../bin/multimarkdown learn_ada.md > learn_ada.html

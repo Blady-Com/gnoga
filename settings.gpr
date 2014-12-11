@@ -13,7 +13,7 @@ abstract project Settings is
    Common_Options := ("-gnaty3abcdefhiklmnOprsStu","-gnat2012");
    --  Common options used for the Debug and Release modes
 
-   Debug_Options := ("-g", "-gnata");
+   Debug_Options := ("-g", "-gnata", "-gnatq", "-gnatQ");
 
    Release_Options := ("-O2");
 

@@ -1193,6 +1193,8 @@ package body GNAT.Sockets.Server is
       Set (Listener.Sockets, Server_Socket);
       Create_Selector (Listener.Selector);
       loop
+         delay 0.001;
+         --  Temporary fix to overcome 100% CPU issue
          Copy (Listener.Sockets, Read_Sockets);
          Copy (Listener.Sockets, Write_Sockets);
          Check_Selector

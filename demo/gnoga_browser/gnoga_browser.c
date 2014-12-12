@@ -9,7 +9,7 @@ int main (int argc, char* argv[])
     gtk_init (&argc, &argv);
 
     GtkWidget *Main_Window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size (GTK_WINDOW (Main_Window), 800, 600);
+    gtk_window_set_default_size (GTK_WINDOW (Main_Window), 1024, 600);
 
     WebKitWebView *Web_View = WEBKIT_WEB_VIEW (webkit_web_view_new ());
 

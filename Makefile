@@ -78,6 +78,9 @@ adaedit: ace_editor
 tests:
 	cd test && $(BUILDER) -Ptest.gpr
 
+gnoga_browser:
+	cd demo/gnoga_browser && make
+
 tutorials:
 	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr
@@ -95,6 +98,7 @@ clean:
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd tools && $(CLEANER) -Ptools.gpr
 	cd test && $(CLEANER) -Ptest.gpr
+	cd demo/gnoga_browser && make clean
 	cd demo/adablog && $(CLEANER) -Padablog.gpr
 	cd demo/snake && $(CLEANER) -Psnake.gpr
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr

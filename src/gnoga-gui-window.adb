@@ -116,6 +116,8 @@ package body Gnoga.Gui.Window is
          if Object.View.Dynamic then
             Object.View.Free;
             Object.View := null;
+         else
+            Object.View := null;
          end if;
       end if;
 

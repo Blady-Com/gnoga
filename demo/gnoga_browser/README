@@ -1,0 +1,6 @@
+This is a simple example of a WebKit2Gtk browser. It can be modifed and used as a front end to Gnoga apps instead of openning the system browser.
+
+The following packages for ubuntu and debian are needed. Similar packages would be needed on other platforms or distros.
+
+sudo apt-get install libwebkit2gtk-3.0-dev
+sudo apt-get install libgtk-3-dev

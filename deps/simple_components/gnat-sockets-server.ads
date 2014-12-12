@@ -748,8 +748,11 @@ private
           );
    use Connection_Arrays;
 
-   task type Worker (Listener : access Connections_Server'Class);
-   type Worker_Ptr is access Worker;
+   task type Read_Worker (Listener : access Connections_Server'Class);
+   type Read_Worker_Ptr is access Read_Worker;
+
+   task type Write_Worker (Listener : access Connections_Server'Class);
+   type Write_Worker_Ptr is access Write_Worker;
 
    type Connections_Factory is abstract
       new Ada.Finalization.Limited_Controlled with
@@ -769,12 +772,15 @@ private
            Port    : Port_Type
         )  is new Ada.Finalization.Limited_Controlled with
    record
-      Clients     : Natural := 0;
-      Selector    : Selector_Type;
-      Sockets     : Socket_Set_Type;
-      Postponed   : Connection_Ptr;
-      Connections : Unbounded_Array;
-      Doer        : Worker_Ptr;
+      Clients        : Natural := 0;
+      Server_Socket  : Socket_Type;
+      Write_Selector : Selector_Type;
+      Read_Selector  : Selector_Type;
+      Sockets        : Socket_Set_Type;
+      Postponed      : Connection_Ptr;
+      Connections    : Unbounded_Array;
+      Write_Doer     : Write_Worker_Ptr;
+      Read_Doer      : Read_Worker_Ptr;
    end record;
 --
 -- Queue operations

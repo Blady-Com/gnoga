@@ -126,6 +126,7 @@ package body GNAT.Sockets.Server is
                 Done    : out Boolean
              )  is
    begin
+      -- Mark - Start write
       if Reserve >= Client.Written'Length then
          Raise_Exception
          (  Data_Error'Identity,
@@ -204,15 +205,26 @@ package body GNAT.Sockets.Server is
 
    procedure Finalize (Listener : in out Connections_Server) is
       procedure Free is
-         new Ada.Unchecked_Deallocation (Worker, Worker_Ptr);
+         new Ada.Unchecked_Deallocation (Write_Worker, Write_Worker_Ptr);
+      procedure Free is
+         new Ada.Unchecked_Deallocation (Read_Worker, Read_Worker_Ptr);
    begin
-      if Listener.Doer /= null then
-         Abort_Selector (Listener.Selector);
-         while not Listener.Doer'Terminated loop
+      if Listener.Write_Doer /= null then
+         Abort_Selector (Listener.Write_Selector);
+         while not Listener.Write_Doer'Terminated loop
             delay 0.001;
          end loop;
-         Free (Listener.Doer);
-         Close_Selector (Listener.Selector);
+         Free (Listener.Write_Doer);
+         Close_Selector (Listener.Write_Selector);
+      end if;
+
+      if Listener.Read_Doer /= null then
+         Abort_Selector (Listener.Read_Selector);
+         while not Listener.Read_Doer'Terminated loop
+            delay 0.001;
+         end loop;
+         Free (Listener.Read_Doer);
+         Close_Selector (Listener.Read_Selector);
       end if;
    end Finalize;
 
@@ -321,7 +333,8 @@ package body GNAT.Sockets.Server is
 
    procedure Initialize (Listener : in out Connections_Server) is
    begin
-      Listener.Doer := new Worker (Listener'Unchecked_Access);
+      Listener.Write_Doer := new Write_Worker (Listener'Unchecked_Access);
+      Listener.Read_Doer := new Read_Worker (Listener'Unchecked_Access);
    end Initialize;
 
    procedure Process
@@ -1173,40 +1186,47 @@ package body GNAT.Sockets.Server is
       return Address;
    end Get_Server_Address;
 
-   task body Worker is
+   task body Write_Worker is
       Address       : Sock_Addr_Type :=
                       Get_Server_Address (Listener.all);
-      Server_Socket : Socket_Type;
       Client_Socket : Socket_Type;
       Read_Sockets  : Socket_Set_Type;
       Write_Sockets : Socket_Set_Type;
       Status        : Selector_Status;
    begin
-      Create_Socket (Server_Socket);
+      Create_Socket (Listener.Server_Socket);
       Set_Socket_Option
-      (  Server_Socket,
+      (  Listener.Server_Socket,
          Socket_Level,
          (Reuse_Address, True)
       );
-      Bind_Socket (Server_Socket, Address);
-      Listen_Socket (Server_Socket);
-      Set (Listener.Sockets, Server_Socket);
-      Create_Selector (Listener.Selector);
+      Bind_Socket ( Listener.Server_Socket, Address);
+      Listen_Socket ( Listener.Server_Socket);
+      Set (Listener.Sockets, Listener.Server_Socket);
+      Create_Selector (Listener.Write_Selector);
+
       loop
-         delay 0.001;
-         --  Temporary fix to overcome 100% CPU issue
-         Copy (Listener.Sockets, Read_Sockets);
+         if Listener.Clients > 0 then
+            delay 0.0001;
+         else
+            delay 1.0;
+         end if;
+
          Copy (Listener.Sockets, Write_Sockets);
+
          Check_Selector
-         (  Listener.Selector,
-            Read_Sockets,
-            Write_Sockets,
-            Status
-         );
+           (  Listener.Write_Selector,
+              Read_Sockets,
+              Write_Sockets,
+              Status,
+              0.00001
+           );
+
          case Status is
             when Completed =>
                loop -- Writing sockets
                   Get (Write_Sockets, Client_Socket);
+
                   exit when Client_Socket = No_Socket;
                   declare
                      Client : Connection_Ptr :=
@@ -1265,12 +1285,45 @@ package body GNAT.Sockets.Server is
                      end if;
                   end;
                end loop;
+            when Expired =>
+               null;
+            when Aborted =>
+               exit;
+         end case;
+         Service_Postponed (Listener.all);
+      end loop;
+   exception
+      when Error : others =>
+         Trace_Error (Listener.Factory.all, "Write Worker task", Error);
+   end Write_Worker;
+
+   task body Read_Worker is
+      Address       : Sock_Addr_Type :=
+                      Get_Server_Address (Listener.all);
+      Client_Socket : Socket_Type;
+      Read_Sockets  : Socket_Set_Type;
+      Write_Sockets : Socket_Set_Type;
+      Status        : Selector_Status;
+   begin
+      Create_Selector (Listener.Read_Selector);
+      loop
+         Copy (Listener.Sockets, Read_Sockets);
+
+         Check_Selector
+           (  Listener.Read_Selector,
+              Read_Sockets,
+              Write_Sockets,
+              Status
+           );
+
+         case Status is
+            when Completed =>
                loop -- Reading from sockets
                   Get (Read_Sockets, Client_Socket);
                   exit when Client_Socket = No_Socket;
-                  if Client_Socket = Server_Socket then
+                  if Client_Socket = Listener.Server_Socket then
                      Accept_Socket
-                     (  Server_Socket,
+                     (  Listener.Server_Socket,
                         Client_Socket,
                         Address
                      );
@@ -1391,7 +1444,6 @@ package body GNAT.Sockets.Server is
       end loop;
    exception
       when Error : others =>
-         Trace_Error (Listener.Factory.all, "Worker task", Error);
-   end Worker;
-
+         Trace_Error (Listener.Factory.all, "Read Worker task", Error);
+   end Read_Worker;
 end GNAT.Sockets.Server;

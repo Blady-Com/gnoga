@@ -356,7 +356,7 @@ Labels also exist to allow for "goto"s:
 
 ``` ada
 some_label:
-    goto some_labe;
+    goto some_label;
 ```
 
 ## Packages and Sub-Programs
@@ -508,4 +508,74 @@ begin
    Talk2.Double.Say_More ("Hello again.");
 end Say_Hello3;
 ```
+
+### Sub-Programs (procedures and functions)
+
+In Ada there are two types of subprograms, procedures and functions. Procedures have not return value.
+
+The syntax for declaring a procedure is:
+
+``` ada
+procedure My_Procedure (Param_Name : in out Param_Type);
+```
+
+The "in out" portion of the declaration is the "mode" and declares if the parameter contains data coming in to the procedure, out of the procedure or both.
+
+An "in" mode parameter cant be a constant, but out and in out need to be variables since they will contain any changes assigned to them in the procedure.
+
+If no "mode" is given the parameter is an "in" parameter.
+
+The implementation of the procedure is:
+
+``` ada
+procedure My_Procedure (Param_Name : in out Param_Type) is
+begin
+end My_Procedure;
+```
+
+Functions are declared in the same way but contain a return type:
+
+``` ada
+function My_Function (Param_Name : in Param_Type) return Return_Type;
+```
+
+The implementation of that function would be:
+
+
+``` ada
+function My_function (Param_Name : in Param_Type) return Return_Type is
+begin
+   return Some_Value_of_Return_Type;
+end My_Function
+```
+
+Invoking the above would be:
+
+``` ada
+declare
+   X : Param_Type;
+   Y : Param_Type;
+begin
+   My_Procecure (X);
+   Y := My_Function (X);
+end;
+```
+
+In Ada you can also use invoke  using named parameters:
+
+``` ada
+declare
+   X : Param_Type;
+   Y : Param_Type;
+begin
+   My_Procecure (Param_Name => X);
+   Y := My_Function (Param_Name => X);
+end;
+```
+
+## Types the Heart and Soul of Ada
+
+### Introduction
+
+One of the most important features of Ada is type safety through both strict static and dynamic typing. Strict typing insures that values are in bound and helps insure that the intet of the programer is fulfilled in the way it was intended.
 

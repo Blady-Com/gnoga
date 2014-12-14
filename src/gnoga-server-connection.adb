@@ -127,10 +127,13 @@ package body Gnoga.Server.Connection is
    --  Gnoga_HTTP_Content  --
    --  Per http connection data
 
+   type Gnoga_Connection_Type is (HTTP, WebSocket);
+
    type Gnoga_HTTP_Content is
       record
-         FS        : Ada.Streams.Stream_IO.File_Type;
-         Buffer    : String_Buffer;
+         Connection_Type : Gnoga_Connection_Type := HTTP;
+         FS              : Ada.Streams.Stream_IO.File_Type;
+         Buffer          : String_Buffer;
       end record;
    procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
                     Item   : in     Gnoga_HTTP_Content);
@@ -407,6 +410,10 @@ package body Gnoga.Server.Connection is
                   "Cache-Control: no-cache, no-store, must-revalidate" & CRLF);
             Send (Client, "Pragma: no-cache" & CRLF);
             Send (Client, "Expires: 0" & CRLF);
+            Send_Connection (Client, Persistent => False);
+            --  Tell browser not to hold connections open since they will
+            --  not be reused.
+
             Send_Server (Client);
 
             declare
@@ -1085,6 +1092,8 @@ package body Gnoga.Server.Connection is
                     Reason   => Reason);
          end;
       end if;
+
+      Client.Content.Connection_Type := WebSocket;
 
       if On_Connect_Event /= null then
          return (Accepted  => True,

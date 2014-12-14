@@ -4,6 +4,7 @@
 --
 -- Encapsulates the definition of the mine field
 --
+-- V7.1 2014 Dec 10          Protected field-updating operations
 -- V7.0 2014 Dec 01          First Gnoga version
 --
 with Gnoga.Types;
@@ -19,7 +20,7 @@ package Field is
 
    subtype Valid_Count is Natural range 0 .. 9; -- Count of # of mines in a cell & its neighbors
 
-   type Field_Info (App_Data : Gnoga.Types.Pointer_To_Connection_Data_Class) is private;
+   type Field_Info (App_Data : Gnoga.Types.Pointer_To_Connection_Data_Class) is limited private;
 private -- Field
    subtype Row_Id    is Integer range Valid_Row'First    - 1 .. Valid_Row'Last    + 1; -- Row around field makes things easier
    subtype Column_Id is Integer range Valid_Column'First - 1 .. Valid_Column'Last + 1;

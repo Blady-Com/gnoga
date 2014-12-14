@@ -2,6 +2,7 @@
 -- Copyright (C) 2014 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
+-- V7.1 2014 Dec 10          Protected field-updating operations
 -- V7.0 2014 Dec 01          First Gnoga version
 --
 
@@ -31,6 +32,18 @@ package body User_IF is
 
    type Button_Set is array (Field.Valid_Row, Field.Valid_Column) of Gnoga.Gui.Element.Common.Button_Type;
 
+   type Action_ID is (Button_Press, Right_Click, Restart, Quit);
+
+   type Atomic_Boolean is new Boolean;
+   pragma Atomic (Atomic_Boolean);
+
+   type App_Info;
+   type App_Ptr is access all App_Info;
+
+   protected type Sequentialize is
+      entry Respond (Action : in Action_ID; App_Data : in App_Ptr; Cell : in Field.Cell_Location := (Row => 1, Column => 1) );
+   end Sequentialize;
+
    type App_Info is new Gnoga.Types.Connection_Data_Type with record
       Field                     : Standard.Field.Field_Info (App_Data => App_Info'Unchecked_Access);
       Window                    : Gnoga.Gui.Window.Pointer_To_Window_Class;
@@ -40,7 +53,6 @@ package body User_IF is
       Mines_Left                : Gnoga.Gui.Element.Common.Span_Type;
       Button                    : Button_Set;
       Restart_Button            : Gnoga.Gui.Element.Common.Button_Type;
-      Restarting                : Boolean := False;
       Level_Form                : Gnoga.Gui.Element.Form.Form_Type;
       Level                     : Gnoga.Gui.Element.Form.Selection_Type;
       Mark_Form                 : Gnoga.Gui.Element.Form.Form_Type;
@@ -53,10 +65,10 @@ package body User_IF is
       About                     : Gnoga.Gui.Element.Common.Button_Type;
       Quit                      : Gnoga.Gui.Element.Common.Button_Type;
       Game_Over                 : Gnoga.Gui.Element.Common.Span_Type;
-      Auto_Marking_Desired      : Boolean := False;
-      Extended_Stepping_Desired : Boolean := False;
+      Auto_Marking_Desired      : Atomic_Boolean := False;
+      Extended_Stepping_Desired : Atomic_Boolean := False;
+      Sequentializer            : Sequentialize;
    end record;
-   type App_Ptr is access all App_Info;
 
    You_Won_Message  : constant String := "You Won";
    You_Lost_Message : constant String := "BOOM!";
@@ -160,7 +172,6 @@ package body User_IF is
    procedure Reset_Screen (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class) is
       App_Data : App_Ptr := App_Ptr (Data);
    begin -- Reset_Screen
-      App_Data.Restarting := True; -- Turn off Button_Press & Right_Click
       App_Data.Mines_Left.Text (Value => "0");
       App_Data.Game_Over.Text  (Value => "");
 
@@ -169,56 +180,36 @@ package body User_IF is
             Display_Blank (Data => Data, Cell => (Row => Row, Column => Column) );
          end loop Button_Column;
       end loop Button_Row;
-
-      App_Data.Restarting := False;
    end Reset_Screen;
 
    function Auto_Marking (Data : Gnoga.Types.Pointer_To_Connection_Data_Class) return Boolean is
       App_Data : App_Ptr := App_Ptr (Data);
    begin -- Auto_Marking
-      return App_Data.Auto_Marking_Desired;
+      return Boolean (App_Data.Auto_Marking_Desired);
    end Auto_Marking;
 
    function Extended_Stepping (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class) return Boolean is
       App_Data : App_Ptr := App_Ptr (Data);
    begin -- Extended_Stepping
-      return App_Data.Extended_Stepping_Desired;
+      return Boolean (App_Data.Extended_Stepping_Desired);
    end Extended_Stepping;
 
    procedure When_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App_Data : App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- When_Close
-      Disable_Rows : for Row in App_Data.Button'Range (1) loop
-         Disable_Columns : for Column in App_Data.Button'Range (2) loop
-            App_Data.Button (Row, Column).Disabled;
-         end loop Disable_Columns;
-      end loop Disable_Rows;
-
-      App_Data.Restart_Button.Disabled;
-      App_Data.Level.Disabled;
-      App_Data.Mark_Check.Disabled;
-      App_Data.Step_Check.Disabled;
-      App_Data.Rules.Disabled;
-      App_Data.About.Disabled;
-      App_Data.Quit.Disabled;
-
-      Move_Down : for I in 1 .. 25 loop
-         App_Data.Big_View.New_Line;
-      end loop Move_Down;
-
-      App_Data.Big_View.Put_Line (Message => "Mine Detector ended.");
+      App_Data.Sequentializer.Respond (Action => Quit, App_Data => App_Data);
    end When_Close;
 
    procedure Mark_Toggle (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App_Data : App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Mark_Toggle
-      App_Data.Auto_Marking_Desired := App_Data.Mark_Check.Checked;
+      App_Data.Auto_Marking_Desired := Atomic_Boolean (App_Data.Mark_Check.Checked);
    end Mark_Toggle;
 
    procedure Step_Toggle (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App_Data : App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Step_Toggle
-      App_Data.Extended_Stepping_Desired := App_Data.Step_Check.Checked;
+      App_Data.Extended_Stepping_Desired := Atomic_Boolean (App_Data.Step_Check.Checked);
    end Step_Toggle;
 
    procedure Button_Press (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -229,13 +220,7 @@ package body User_IF is
 
       App_Data : App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Button_Press
-      if not App_Data.Restarting then
-         if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
-            Show_Game_Over (App_Data => App_Data);
-         else
-            Field.Operations.Step (Field => App_Data.Field, Cell => (Row => Row, Column => Column) );
-         end if;
-      end if;
+      App_Data.Sequentializer.Respond (Action => Button_Press, App_Data => App_Data, Cell => (Row => Row, Column => Column) );
    end Button_Press;
 
    procedure Right_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -246,20 +231,13 @@ package body User_IF is
 
       App_Data : App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Right_Click
-      if not App_Data.Restarting then
-         if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
-            Show_Game_Over (App_Data => App_Data);
-         else
-            Field.Operations.Mark (Field => App_Data.Field, Cell => (Row => Row, Column => Column) );
-         end if;
-      end if;
+      App_Data.Sequentializer.Respond (Action => Right_Click, App_Data => App_Data, Cell => (Row => Row, Column => Column) );
    end Right_Click;
 
    procedure When_Restart_Button (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App_Data : App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- When_Restart_Button
-      Field.Operations.Set_Mine_Count (Field => App_Data.Field, New_Mine_Count => Levels (App_Data.Level.Selected_Index).Mines);
-      Field.Operations.Reset (Field => App_Data.Field);
+      App_Data.Sequentializer.Respond (Action => Restart, App_Data => App_Data);
    end When_Restart_Button;
 
    procedure Rules_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -456,6 +434,51 @@ package body User_IF is
       Main_Window.Buffer_Connection (Value => False);
       Field.Operations.Reset (Field => App_Data.Field);
    end On_Connect;
+
+   protected body Sequentialize is
+      entry Respond (Action : in Action_ID; App_Data : in App_Ptr; Cell : in Field.Cell_Location := (Row => 1, Column => 1) )
+      when True is
+      begin -- Respond
+         case Action is
+         when Button_Press =>
+               if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
+                  Show_Game_Over (App_Data => App_Data);
+               else
+                  Field.Operations.Step (Field => App_Data.Field, Cell => Cell);
+               end if;
+         when Right_Click =>
+               if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
+                  Show_Game_Over (App_Data => App_Data);
+               else
+                  Field.Operations.Mark (Field => App_Data.Field, Cell => Cell);
+               end if;
+         when Restart =>
+            Field.Operations.Set_Mine_Count
+               (Field => App_Data.Field, New_Mine_Count => Levels (App_Data.Level.Selected_Index).Mines);
+            Field.Operations.Reset (Field => App_Data.Field);
+         when Quit =>
+            Disable_Rows : for Row in App_Data.Button'Range (1) loop
+               Disable_Columns : for Column in App_Data.Button'Range (2) loop
+                  App_Data.Button (Row, Column).Disabled;
+               end loop Disable_Columns;
+            end loop Disable_Rows;
+
+            App_Data.Restart_Button.Disabled;
+            App_Data.Level.Disabled;
+            App_Data.Mark_Check.Disabled;
+            App_Data.Step_Check.Disabled;
+            App_Data.Rules.Disabled;
+            App_Data.About.Disabled;
+            App_Data.Quit.Disabled;
+
+            Move_Down : for I in 1 .. 25 loop
+               App_Data.Big_View.New_Line;
+            end loop Move_Down;
+
+            App_Data.Big_View.Put_Line (Message => "Mine Detector ended.");
+         end case;
+      end Respond;
+   end Sequentialize;
 begin -- User_IF
    Gnoga.Application.Title (Name => "Mine Detector");
    Gnoga.Application.HTML_On_Close (HTML => "Mine Detector ended.");

@@ -12,7 +12,10 @@ begin
    Gnoga.Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
    
-   Gnoga.Application.Singleton.Initialize (Main_Window);   
+   -- Gnoga.Application.Open_URL_OSX ("http://127.0.0.1:8080");
+   -- Gnoga.Application.Open_URL_Windows ("http://127.0.0.1:8080");
+   -- Gnoga.Application.Open_URL_Linux ("http://127.0.0.1:8080");
+   Gnoga.Application.Singleton.Initialize (Main_Window, Port => 8080);
 
    Main_View.Create (Main_Window); 
    Main_View.Put_Line ("Hello World!");

@@ -61,13 +61,13 @@ package Gnoga.Application is
    --  spawned at program start. Therefore these if used should be used
    --  before the application initialization is called.
 
-   procedure Open_URL_OSX (url : String := "http://localhost:8080");
+   procedure Open_URL_OSX (url : String := "http://127.0.0.1:8080");
    --  Open the default browser on Mac OS X
 
-   procedure Open_URL_Linux (url : String := "http://localhost:8080");
+   procedure Open_URL_Linux (url : String := "http://127.0.0.1:8080");
    --  Open the default browser on Linux
    --  Uses /usr/bin/xdg-open
 
-   procedure Open_URL_Windows (url : String := "http://localhost:8080");
+   procedure Open_URL_Windows (url : String := "http://127.0.0.1:8080");
    --  Open the default browser on Windows
 end Gnoga.Application;

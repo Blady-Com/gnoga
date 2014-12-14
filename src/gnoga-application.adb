@@ -78,7 +78,7 @@ package body Gnoga.Application is
    -- Open_URL_OSX --
    ------------------
 
-   procedure Open_URL_OSX (url : String := "http://localhost:8080") is
+   procedure Open_URL_OSX (url : String := "http://127.0.0.1:8080") is
       Args : GNAT.OS_Lib.Argument_List_Access;
       PID  : GNAT.OS_Lib.Process_Id;
    begin
@@ -92,7 +92,7 @@ package body Gnoga.Application is
    -- Open_URL_Linux --
    --------------------
 
-   procedure Open_URL_Linux (url : String := "http://localhost:8080") is
+   procedure Open_URL_Linux (url : String := "http://127.0.0.1:8080") is
       Args : GNAT.OS_Lib.Argument_List_Access;
       PID  : GNAT.OS_Lib.Process_Id;
    begin
@@ -106,7 +106,7 @@ package body Gnoga.Application is
    -- Open_URL_Windows --
    ----------------------
 
-   procedure Open_URL_Windows (url : String := "http://localhost:8080") is
+   procedure Open_URL_Windows (url : String := "http://127.0.0.1:8080") is
       Args : GNAT.OS_Lib.Argument_List_Access;
       PID  : GNAT.OS_Lib.Process_Id;
    begin

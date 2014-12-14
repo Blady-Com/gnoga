@@ -126,7 +126,6 @@ package body GNAT.Sockets.Server is
                 Done    : out Boolean
              )  is
    begin
-      -- Mark - Start write
       if Reserve >= Client.Written'Length then
          Raise_Exception
          (  Data_Error'Identity,
@@ -135,6 +134,7 @@ package body GNAT.Sockets.Server is
             &  ")"
          )  );
       end if;
+
       if Client.First_Written <= Client.Free_To_Write then
          --
          -- [     XXXXXXXXXXXXXXX        ]
@@ -655,6 +655,8 @@ package body GNAT.Sockets.Server is
              )  is
    begin
       for Index in Data'Range loop
+         Write_Throttle.Need_Write;
+
          if Queued_To_Send (Client) + 1 >= Client.Written'Length then
             Pointer := Index;
             return;
@@ -756,6 +758,7 @@ package body GNAT.Sockets.Server is
                &  " elements"
             )  );
          end if;
+
          Fill_From_Stream
          (  Client  => Client,
             Stream  => Stream,
@@ -833,6 +836,7 @@ package body GNAT.Sockets.Server is
                &  " elements"
             )  );
          end if;
+
          Fill_From_Stream
          (  Client  => Client,
             Stream  => Stream,
@@ -1105,6 +1109,8 @@ package body GNAT.Sockets.Server is
              )  is
       Next : Stream_Element_Count;
    begin
+      Write_Throttle.Done_Write;
+
       while Client.First_Written /= Client.Free_To_Write loop
          if Client.First_Written > Client.Free_To_Write then
             --
@@ -1186,6 +1192,25 @@ package body GNAT.Sockets.Server is
       return Address;
    end Get_Server_Address;
 
+   protected body Write_Throttle is
+      entry Ready when Need_Count > 0 is
+      begin
+         null;
+      end Ready;
+
+      procedure Need_Write is
+      begin
+         Need_Count := Need_Count + 1;
+      end Need_Write;
+
+      procedure Done_Write is
+      begin
+         if Need_Count > 0 then
+            Need_Count := Need_Count - 1;
+         end if;
+      end Done_Write;
+   end Write_Throttle;
+
    task body Write_Worker is
       Address       : Sock_Addr_Type :=
                       Get_Server_Address (Listener.all);
@@ -1206,11 +1231,7 @@ package body GNAT.Sockets.Server is
       Create_Selector (Listener.Write_Selector);
 
       loop
-         if Listener.Clients > 0 then
-            delay 0.0001;
-         else
-            delay 1.0;
-         end if;
+         Write_Throttle.Ready;
 
          Copy (Listener.Sockets, Write_Sockets);
 
@@ -1219,7 +1240,7 @@ package body GNAT.Sockets.Server is
               Read_Sockets,
               Write_Sockets,
               Status,
-              0.00001
+              0.0001
            );
 
          case Status is

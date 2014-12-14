@@ -659,6 +659,14 @@ private
    pragma Inline (Has_Data);
    pragma Inline (Queued_To_Send);
 
+   protected Write_Throttle is
+      entry Ready;
+      procedure Need_Write;
+      procedure Done_Write;
+   private
+      Need_Count : Natural := 0;
+   end Write_Throttle;
+
    type Connection
         (  Input_Size  : Buffer_Length;
            Output_Size : Buffer_Length

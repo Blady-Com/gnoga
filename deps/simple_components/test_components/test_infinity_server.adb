@@ -1,8 +1,8 @@
 --                                                                    --
---  package                         Copyright (c)  Dmitry A. Kazakov  --
---     Test_WebSocket_Servers                      Luebeck            --
---  Test WebSocket                                 Winter, 2014       --
---  Interface                                                         --
+--  procedure Test_HTTP_Server      Copyright (c)  Dmitry A. Kazakov  --
+--     Test_Infinity_Servers                       Luebeck            --
+--  Test HTTP content flood                        Winter, 2013       --
+--                                                                    --
 --                                Last revision :  13:01 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
@@ -25,38 +25,32 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;       use Ada.Exceptions;
-with GNAT.Sockets;         use GNAT.Sockets;
-with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
+with Ada.Exceptions;         use Ada.Exceptions;
+with Ada.Text_IO;            use Ada.Text_IO;
+with Test_Infinity_Servers;  use Test_Infinity_Servers;
 
-with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
-use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
+with GNAT.Sockets.Server.Pooled;
 
-package Test_WebSocket_Servers is
---
--- Chat_Factory -- Creates chat connection objects
---
-   type Chat_Factory
-        (  Request_Length  : Positive;
-           Output_Size     : Buffer_Length;
-           Max_Connections : Positive
-        )  is new Connections_Factory with null record;
-   function Create
-            (  Factory  : access Chat_Factory;
-               Listener : access Connections_Server'Class;
-               From     : Sock_Addr_Type
-            )  return Connection_Ptr;
---
--- Chat_Client -- Chat HTTP site
---
-   type Chat_Client is new HTTP_Client with null record;
-   procedure Do_Get  (Client : in out Chat_Client);
-   procedure Do_Head (Client : in out Chat_Client);
-   function WebSocket_Open
-            (  Client : access Chat_Client
-            )  return WebSocket_Accept;
-   procedure WebSocket_Received
-             (  Client  : in out Chat_Client;
-                Message : String
-             );
-end Test_WebSocket_Servers;
+procedure Test_Infinity_Server is
+   Minutes : constant := 3.0;
+   Port    : constant := 80;
+   Tasks   : constant := 5;
+begin
+   declare
+      Factory : aliased Flood_Factory
+                        (  Request_Length  => 200,
+                           Output_Size     => 512,
+                           Max_Connections => 100
+                        );
+      Server  : GNAT.Sockets.Server.
+                Connections_Server (Factory'Access, Port);
+   begin
+      Trace_On (Factory => Factory, Received => True, Sent => True);
+      Put_Line ("HTTP server started");
+      delay 60.0 * Minutes; -- Service
+      Put_Line ("HTTP server stopping");
+   end;
+exception
+   when Error : others =>
+      Put_Line ("Error: " & Exception_Information (Error));
+end Test_Infinity_Server;

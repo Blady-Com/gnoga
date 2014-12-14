@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  10:10 07 Dec 2014  --
+--                                Last revision :  13:01 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -190,6 +190,22 @@ package GNAT.Sockets.Server is
    function Get_Client_Address (Client : Connection)
       return Sock_Addr_Type;
 --
+-- Get_IO_Timeout -- The I/O timeout used by connections server
+--
+--    Factory - The factory object
+--
+-- When the connections server  waits for a socket to become readable or
+-- writable  this value specifies waiting timeout.  Upon the timeout the
+-- server re-enters the waiting.  The default value is 20ms.  It  can be
+-- changed by overriding this function.
+--
+-- Returns :
+--
+--    The timeout when waiting for sockets events
+--
+   function Get_IO_Timeout (Factory : Connections_Factory)
+      return Duration;
+--
 -- Get_Occurrence -- Get save client error
 --
 --    Client - The client connection object
@@ -268,6 +284,16 @@ package GNAT.Sockets.Server is
 -- when it replaces it.
 --
    procedure Initialize (Listener : in out Connections_Server);
+--
+-- Keep_On_Sending -- Delay stopping sending
+--
+--    Client - The client connection object
+--
+-- This procedure  is called  to hint  the connections  server  that  it
+-- should  not stop polling the socket for being writable,  because some
+-- content to send is about to come.
+--
+   procedure Keep_On_Sending (Client : in out Connection);
 --
 -- Process_Packet -- Packet processing
 --
@@ -525,58 +551,11 @@ package GNAT.Sockets.Server is
                 Message : String
              );
 --
--- Trace_Error -- Error tracing
---
---    Factory    - The factory object
---    Context    - Text description of the error context
---    Occurrence - The error occurrence
---
--- This procedure  is called when  an unanticipated exception is caught.
--- The default implementation calls to Trace.
---
-   procedure Trace_Error
-             (  Factory    : in out Connections_Factory;
-                Context    : String;
-                Occurrence : Exception_Occurrence
-             );
---
--- Trace_Received -- Tracing facility
+-- Trace_Off -- Disable tracing
 --
 --    Factory - The factory object
---    Client  - The client
---    Data    - The client's input buffer
---    From    - The first element received in the buffer
---    To      - The last element received in the buffer
 --
--- This procedure  is called when  tracing incoming data is active.  The
--- default implementation calls to Trace.
---
-   procedure Trace_Received
-             (  Factory : in out Connections_Factory;
-                Client  : Connection'Class;
-                Data    : Stream_Element_Array;
-                From    : Stream_Element_Offset;
-                To      : Stream_Element_Offset
-             );
---
--- Trace_Sent -- Tracing facility
---
---    Factory - The factory object
---    Client  - The client
---    Data    - The client's output buffer
---    From    - The first element sent in the buffer
---    To      - The last element sent in the buffer
---
--- This procedure is called when tracing outgoing data is active. The
--- default implementation calls to Trace.
---
-   procedure Trace_Sent
-             (  Factory : in out Connections_Factory;
-                Client  : Connection'Class;
-                Data    : Stream_Element_Array;
-                From    : Stream_Element_Offset;
-                To      : Stream_Element_Offset
-             );
+   procedure Trace_Off (Factory : in out Connections_Factory);
 --
 -- Trace_On -- Enable tracing onto strandard output
 --
@@ -611,11 +590,75 @@ package GNAT.Sockets.Server is
                 Sent     : Boolean := False
              );
 --
--- Trace_Off -- Disable tracing
+-- Trace_Error -- Error tracing
+--
+--    Factory    - The factory object
+--    Context    - Text description of the error context
+--    Occurrence - The error occurrence
+--
+-- This procedure  is called when  an unanticipated exception is caught.
+-- The default implementation calls to Trace.
+--
+   procedure Trace_Error
+             (  Factory    : in out Connections_Factory;
+                Context    : String;
+                Occurrence : Exception_Occurrence
+             );
+--
+-- Trace_Received -- Tracing facility
 --
 --    Factory - The factory object
+--    Client  - The client
+--    Data    - The client's input buffer
+--    From    - The first element received in the buffer
+--    To      - The last element received in the buffer
 --
-   procedure Trace_Off (Factory : in out Connections_Factory);
+-- This procedure  is called when  tracing incoming data is active.  The
+-- default implementation calls to Trace.
+--
+   procedure Trace_Received
+             (  Factory : in out Connections_Factory;
+                Client  : Connection'Class;
+                Data    : Stream_Element_Array;
+                From    : Stream_Element_Offset;
+                To      : Stream_Element_Offset
+             );
+--
+-- Trace_Sending -- Tracing facility
+--
+--    Factory - The factory object
+--    Client  - The client
+--    Enabled - Polling socket for writing is enabled/disabled
+--
+-- This  procedure is  called when the socket is enabled or disabled for
+-- polling.  Polling is  disabled  when  there  is nothing  to send  and
+-- enabled  when  output buffer is filled.  The  default  implementation
+-- calls to Trace.
+--
+   procedure Trace_Sending
+             (  Factory : in out Connections_Factory;
+                Client  : Connection'Class;
+                Enabled : Boolean
+             );
+--
+-- Trace_Sent -- Tracing facility
+--
+--    Factory - The factory object
+--    Client  - The client
+--    Data    - The client's output buffer
+--    From    - The first element sent in the buffer
+--    To      - The last element sent in the buffer
+--
+-- This procedure is called when tracing outgoing data is active. The
+-- default implementation calls to Trace.
+--
+   procedure Trace_Sent
+             (  Factory : in out Connections_Factory;
+                Client  : Connection'Class;
+                Data    : Stream_Element_Array;
+                From    : Stream_Element_Offset;
+                To      : Stream_Element_Offset
+             );
 --
 -- To_String -- Conversion to string
 --
@@ -648,10 +691,12 @@ package GNAT.Sockets.Server is
 --
 --    Client  - The client
 --    Factory - The factory object
+--    Blocked - Nothing to send, should block writing
 --
    procedure Write
              (  Client  : in out Connection;
-                Factory : in out Connections_Factory'Class
+                Factory : in out Connections_Factory'Class;
+                Blocked : out Boolean
              );
 private
    pragma Inline (Available_To_Process);
@@ -659,14 +704,7 @@ private
    pragma Inline (Has_Data);
    pragma Inline (Queued_To_Send);
 
-   protected Write_Throttle is
-      entry Ready;
-      procedure Need_Write;
-      procedure Done_Write;
-   private
-      Need_Count : Natural := 0;
-   end Write_Throttle;
-
+   type Connections_Server_Ptr is access all Connections_Server'Class;
    type Connection
         (  Input_Size  : Buffer_Length;
            Output_Size : Buffer_Length
@@ -682,8 +720,11 @@ private
       Failed           : Boolean := False;
       External_Action  : Boolean := False;
       Data_Sent        : Boolean := False;
+      Send_Blocked     : Boolean := False;
+      Dont_Block       : Boolean := False;
       Predecessor      : Connection_Ptr;
       Successor        : Connection_Ptr;
+      Listener         : Connections_Server_Ptr;
       Last_Error       : Exception_Occurrence;
       Client_Address   : Sock_Addr_Type;
       Read             : Stream_Element_Array (0..Input_Size);
@@ -695,6 +736,8 @@ private
       pragma Atomic (First_Written);
       pragma Atomic (Free_To_Read);
       pragma Atomic (Free_To_Write);
+      pragma Atomic (Send_Blocked);
+      pragma Atomic (Dont_Block);
    end record;
 --
 -- Data_Sent -- Data sent notification
@@ -756,11 +799,8 @@ private
           );
    use Connection_Arrays;
 
-   task type Read_Worker (Listener : access Connections_Server'Class);
-   type Read_Worker_Ptr is access Read_Worker;
-
-   task type Write_Worker (Listener : access Connections_Server'Class);
-   type Write_Worker_Ptr is access Write_Worker;
+   task type Worker (Listener : access Connections_Server'Class);
+   type Worker_Ptr is access Worker;
 
    type Connections_Factory is abstract
       new Ada.Finalization.Limited_Controlled with
@@ -780,15 +820,19 @@ private
            Port    : Port_Type
         )  is new Ada.Finalization.Limited_Controlled with
    record
-      Clients        : Natural := 0;
-      Server_Socket  : Socket_Type;
-      Write_Selector : Selector_Type;
-      Read_Selector  : Selector_Type;
-      Sockets        : Socket_Set_Type;
-      Postponed      : Connection_Ptr;
-      Connections    : Unbounded_Array;
-      Write_Doer     : Write_Worker_Ptr;
-      Read_Doer      : Read_Worker_Ptr;
+      Clients         : Natural := 0;
+      Selector        : Selector_Type;
+      Read_Sockets    : Socket_Set_Type;
+      Write_Sockets   : Socket_Set_Type;
+      Blocked_Sockets : Socket_Set_Type;
+      Postponed       : Connection_Ptr;
+      IO_Timeout      : Duration := 0.02;
+      Ready_To_End    : Boolean  := False;
+      Unblock_Send    : Boolean  := False;
+      Connections     : Unbounded_Array;
+      Doer            : Worker_Ptr;
+
+      pragma Atomic (Unblock_Send);
    end record;
 --
 -- Queue operations

@@ -3,7 +3,7 @@
 --     Test_WebSocket_Duplex_Servers               Luebeck            --
 --  Test WebSocket                                 Winter, 2014       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  13:01 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,7 +26,6 @@
 --____________________________________________________________________--
 
 with Ada.Exceptions;       use Ada.Exceptions;
-with Ada.Streams;          use Ada.Streams;
 with GNAT.Sockets;         use GNAT.Sockets;
 with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
 

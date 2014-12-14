@@ -24821,6 +24821,16 @@ be freed automatically. The implementation may deploy client filtering based on
 the address <b>From</b> and/or number of active connections.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">function</font> 
+Get_IO_Timeout (<b>Factory</b> : Connections_Factory)<br>
+<font color="#0000FF">&nbsp;&nbsp; return</font> Duration;</tt></p>
+</blockquote>
+<p>When the connections server waits for a socket to become readable or writable 
+this value specifies waiting timeout. Upon the timeout the server re-enters the 
+waiting. The default value of 20ms is returned by this function, which can be 
+overridden in order to change it.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace"></a>procedure</font> 
 Trace<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> : <font color="#0000FF">
@@ -24848,7 +24858,8 @@ Occurrence</b> is the exception occurrence. The default implementation uses
 <a href="#GNAT.Sockets.Server.Trace">Trace</a> to report exception information.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Trace_On<br>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace_On"></a>procedure</font> 
+Trace_On<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp; :
 <font color="#0000FF">in out</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -24885,29 +24896,60 @@ specify whether the incoming and outgoing data should be traced as well.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Trace_Received<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp; :
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;:
 <font color="#0000FF">in out</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Client</b>&nbsp;&nbsp; : Connection'Class;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp;&nbsp; 
-: Stream_Element_Array<br>
+Client</b>&nbsp;&nbsp;: Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp;&nbsp;: Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp; 
+: Stream_Element_Offset;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Stream_Element_Offset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
-<p>This procedure is called to trace data received for a client. The default 
+<p>This procedure is called to trace data received for a client. The data 
+received are <b>Data</b> (<b>From</b>..<b>To</b>). Tracing is enabled or 
+disabled by the <b>Received</b> parameter of
+<a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. The default 
 implementation uses <a href="#GNAT.Sockets.Server.Trace">Trace</a> to report 
 received data.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Trace_Sent<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp; :
+<p><tt><font color="#0000FF">procedure</font> Trace_Sending<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;:
 <font color="#0000FF">in out</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Client</b>&nbsp;&nbsp; : Connection'Class;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp;&nbsp; 
-: Stream_Element_Array<br>
+Client</b>&nbsp;&nbsp;: Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enabled</b> : Boolean<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
-<p>This procedure is called to trace data sent to a client. The default 
+<p>This procedure is called to trace enabling and disabling polling the client's 
+socket. The parameter <b>Enabled</b> is <font color="#800000"><i>true</i></font> 
+when polling is enabled and <i><font color="#800000">false</font></i> when 
+disabled. When there output buffer becomes empty, polling the socket for being 
+writable is stopped in order to reduce system load. When output buffer becomes 
+written, polling is started again. Tracing is enabled or disabled by the <b>Sent</b> 
+parameter of <a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. The default 
+implementation uses <a href="#GNAT.Sockets.Server.Trace">Trace</a> to report 
+sent data.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Trace_Sent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;:
+<font color="#0000FF">in out</font> Connections_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp;: Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp;&nbsp;: Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp; 
+: Stream_Element_Offset;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Stream_Element_Offset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called to trace data sent to a client. The data sent are <b>
+Data</b> (<b>From</b>..<b>To</b>). Tracing is enabled or disabled by the <b>Sent</b> 
+parameter of <a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. The default 
 implementation uses <a href="#GNAT.Sockets.Server.Trace">Trace</a> to report 
 sent data.</p>
 
@@ -30851,6 +30893,8 @@ Changes () to the version 4.3:<ul>
 	<li>URI scheme recognition added;</li>
 	<li>Get_Server_Address added to the connections server to allow limiting the 
 	addresses being listened;</li>
+	<li>Get_IO_Timeout is added to control waiting for socket events;</li>
+	<li>Socket send events are blocked when the server has no data to sent;</li>
 	<li>Documentation improved;</li>
 	<li>Bug fixes.</li>
 	</ul>

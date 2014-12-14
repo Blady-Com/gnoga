@@ -1,7 +1,7 @@
 --                                                                    --
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
---     Test_WebSocket_Servers                      Luebeck            --
---  Test WebSocket                                 Winter, 2014       --
+--     Test_Infinity_Servers                       Luebeck            --
+--  Test HTTP content flood                        Winter, 2014       --
 --  Interface                                                         --
 --                                Last revision :  13:01 14 Dec 2014  --
 --                                                                    --
@@ -25,38 +25,50 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
+with Ada.Calendar;         use Ada.Calendar;
 with Ada.Exceptions;       use Ada.Exceptions;
+with Ada.Streams;          use Ada.Streams;
 with GNAT.Sockets;         use GNAT.Sockets;
 with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
 
 with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
 use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
 
-package Test_WebSocket_Servers is
+package Test_Infinity_Servers is
 --
--- Chat_Factory -- Creates chat connection objects
+-- Flood_Factory -- Creates flood connection objects
 --
-   type Chat_Factory
+   type Flood_Factory
         (  Request_Length  : Positive;
            Output_Size     : Buffer_Length;
            Max_Connections : Positive
         )  is new Connections_Factory with null record;
    function Create
-            (  Factory  : access Chat_Factory;
+            (  Factory  : access Flood_Factory;
                Listener : access Connections_Server'Class;
                From     : Sock_Addr_Type
             )  return Connection_Ptr;
 --
--- Chat_Client -- Chat HTTP site
+-- Flood_Client -- Chat HTTP site
 --
-   type Chat_Client is new HTTP_Client with null record;
-   procedure Do_Get  (Client : in out Chat_Client);
-   procedure Do_Head (Client : in out Chat_Client);
-   function WebSocket_Open
-            (  Client : access Chat_Client
-            )  return WebSocket_Accept;
-   procedure WebSocket_Received
-             (  Client  : in out Chat_Client;
-                Message : String
+   type Flood_Client is new HTTP_Client with private;
+   procedure Do_Get  (Client : in out Flood_Client);
+   procedure Do_Head (Client : in out Flood_Client);
+
+private
+   type Flood_Content is new Content_Source with record
+      Head : Boolean := True;
+      Last : Time := Clock;
+   end record;
+   function Get (Source : access Flood_Content) return String;
+   procedure Write
+             (  Stream : access Root_Stream_Type'Class;
+                Item   : Flood_Content
              );
-end Test_WebSocket_Servers;
+   for Flood_Content'Write use Write;
+
+   type Flood_Client is new HTTP_Client with record
+      Content : aliased Flood_Content;
+   end record;
+
+end Test_Infinity_Servers;

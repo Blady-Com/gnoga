@@ -7,6 +7,9 @@ project Components.Connections_Server.HTTP_Server.Test_HTTP_Server is
        (  "test_http_server.adb",
     	  "test_http_servers.adb",
     	  "test_http_servers.ads",
+          "test_infinity_server.adb",
+    	  "test_infinity_servers.adb",
+    	  "test_infinity_servers.ads",
           "test_websocket_duplex_server.adb",
           "test_websocket_duplex_servers.adb",
           "test_websocket_duplex_servers.ads",
@@ -16,6 +19,7 @@ project Components.Connections_Server.HTTP_Server.Test_HTTP_Server is
 	   );
    for Main use
        (  "test_http_server.adb",
+          "test_infinity_server.adb",
 		  "test_websocket_server.adb",
           "test_websocket_duplex_server.adb"
 	   );

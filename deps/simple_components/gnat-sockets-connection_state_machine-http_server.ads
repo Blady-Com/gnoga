@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  13:05 07 Dec 2014  --
+--                                Last revision :  15:41 13 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1293,7 +1293,7 @@ private
    type Action is access procedure (Client : in out HTTP_Client'Class);
    procedure Skip (Source : String; Pointer : in out Integer);
 --
--- Request_Line_Type -- The list of a client request
+-- Request_Line_Type -- Types of request lines/processing states
 --
    type Request_Line_Type is
         (  Request_Line,          -- Request status line
@@ -1428,13 +1428,51 @@ private
            Last_Chunck,
            Message_Chunk
         );
+--
+-- Send_Mutex -- The  object  used  for  interlocking  send  buffer  and
+--               signaling its state when going multi-tasking.  The only
+-- case when it happens is in a WebSocket full-duplex exchange.
+--
    protected type Send_Mutex (Client : access HTTP_Client'Class) is
+   --
+   -- Failed -- Send failure notification
+   --
       procedure Failed;
+   --
+   -- Release -- Sending previously locked by Take
+   --
       procedure Release;
+   --
+   -- Set -- Change object state
+   --
+   --    New_State - The new state
+   --
       procedure Set (New_State : Duplex_Status);
+   --
+   -- Transition -- Go to the object state
+   --
+   --    Chain - The action to perfrom after the transition (output)
+   --
       procedure Transition (Chain : out Action);
+   --
+   -- Seize -- Begin a sending session
+   --
+   -- Only one session is active.  A session  is not to be confused with
+   -- locking performed by Take/Release.  A session  corresponds  to one
+   -- WebSocket  message being  send.  It can consist of many individual
+   -- sendings.  Seize  is used to interlock messages.  Take/Release  is
+   -- used to  protect the internal  state of  the send buffer state.  A
+   -- session ends by a call Transition  upon sending  the last  message
+   -- chunk.
+   --
       entry Seize;
+   --
+   -- Take -- Lock sending (released with Release)
+   --
       entry Take;
+   --
+   -- Wait -- For a send buffer event (that sending is available again)
+   --
       entry Wait;
    private
       Signaled : Boolean       := True;     -- Output buffer is not full
@@ -1569,7 +1607,8 @@ private
              );
    procedure Write
              (  Client  : in out HTTP_Client;
-                Factory : in out Connections_Factory'Class
+                Factory : in out Connections_Factory'Class;
+                Blocked : out Boolean
              );
 
    type Completion is access

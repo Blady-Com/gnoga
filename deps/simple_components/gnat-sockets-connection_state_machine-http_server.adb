@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  13:05 07 Dec 2014  --
+--                                Last revision :  13:01 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -495,6 +495,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       end if;
    exception
       when Content_Not_Ready =>
+         Keep_On_Sending (Client);
          Continue (Client, Content_Chunk'Access);
       when Error : others =>
           Trace_Error
@@ -3742,6 +3743,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              )  is
       Pointer : Stream_Element_Offset := Data'First;
       Space   : Stream_Element_Count;
+      Blocked : Boolean;
    begin
       if First then
          Client.Mutex.Seize;
@@ -3754,22 +3756,30 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                begin
                   Space := Available_To_Send (Client);
                   exit when Space >= Data'Last + 1 - Pointer;
-                  if Client.Trace_Body then
-                     Trace
-                     (  Client,
-                        (  "WebSocket sending message part ["
-                        &  Image (Data (Pointer..Pointer + Space - 1))
-                        &  "] "
-                        &  Image (Pointer)
-                        &  ".."
-                        &  Image (Pointer + Space - 1)
-                        &  "/"
-                        &  Image (Data'Last)
-                     )  );
+                  if Space > 0 then
+                     Space := Pointer + Space - 1;
+                     if Client.Trace_Body then
+                        Trace
+                        (  Client,
+                           (  "WebSocket sending message part ["
+                           &  Image (Data (Pointer..Space))
+                           &  "] "
+                           &  Image (Pointer)
+                           &  ".."
+                           &  Image (Space)
+                           &  "/"
+                           &  Image (Data'Last)
+                        )  );
+                     end if;
+                     Send (Client, Data (Pointer..Space));
                   end if;
-                  Send (Client, Data (Pointer..Pointer + Space - 1));
+                  Write -- Parent's implementation, no mutex again
+                  (  State_Machine (Client),
+                     Client.Listener.Factory.all,
+                     Blocked
+                  );
                end;
-               Pointer := Pointer + Space;
+               Pointer := Space + 1;
                Client.Mutex.Wait; -- Wait for more space
             end loop;
             if Last then
@@ -3790,6 +3800,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   )  );
                end if;
                Send (Client, Data (Pointer..Data'Last));
+               Write -- Parent's implementation, no mutex again
+               (  State_Machine (Client),
+                  Client.Listener.Factory.all,
+                  Blocked
+               );
             end;
          end if;
       exception
@@ -3806,7 +3821,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                 Last   : Boolean
              )  is
       Pointer : Integer := Data'First;
-      Space   : Stream_Element_Count;
+      Space   : Integer;
+      Blocked : Boolean;
    begin
       if First then
          Client.Mutex.Seize;
@@ -3817,31 +3833,32 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                declare
                   Lock : Holder (Client.Mutex'Access);
                begin
-                  Space := Available_To_Send (Client);
-                  exit when
-                       (  Space
-                       >= Stream_Element_Offset
-                          (  Data'Last + 1 - Pointer
-                       )  );
-                  if Client.Trace_Body then
-                     Trace
-                     (  Client,
-                        (  "WebSocket sending text part ["
-                        &  Data (Pointer..Pointer + Integer (Space) - 1)
-                        &  "] "
-                        &  Image (Pointer)
-                        &  ".."
-                        &  Image (Pointer + Integer (Space) - 1)
-                        &  "/"
-                        &  Image (Data'Last)
-                     )  );
+                  Space := Integer (Available_To_Send (Client));
+                  exit when Space >= Data'Last + 1 - Pointer;
+                  if Space > 0 then
+                     Space := Pointer + Space - 1;
+                     if Client.Trace_Body then
+                        Trace
+                        (  Client,
+                           (  "WebSocket sending text part ["
+                           &  Data (Pointer..Space)
+                           &  "] "
+                           &  Image (Pointer)
+                           &  ".."
+                           &  Image (Space)
+                           &  "/"
+                           &  Image (Data'Last)
+                        )  );
+                     end if;
+                     Send (Client, Data (Pointer..Space));
                   end if;
-                  Send
-                  (  Client,
-                     Data (Pointer..Pointer + Integer (Space) - 1)
+                  Write -- Parent's implementation, no mutex again
+                  (  State_Machine (Client),
+                     Client.Listener.Factory.all,
+                     Blocked
                   );
                end;
-               Pointer := Pointer + Integer (Space);
+               Pointer := Space + 1;
                Client.Mutex.Wait; -- Wait for more space
             end loop;
             if Last then
@@ -3862,6 +3879,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   )  );
                end if;
                Send (Client, Data (Pointer..Data'Last));
+               Write -- Parent's implementation, no mutex again
+               (  State_Machine (Client),
+                  Client.Listener.Factory.all,
+                  Blocked
+               );
             end;
          end if;
       exception
@@ -4130,17 +4152,18 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 
    procedure Write
              (  Client  : in out HTTP_Client;
-                Factory : in out Connections_Factory'Class
+                Factory : in out Connections_Factory'Class;
+                Blocked : out Boolean
              )  is
    begin
       if Client.WebSocket.Duplex then
          declare
             Lock : Holder (Client.Mutex'Access);
          begin
-            Write (Connection (Client), Factory);
+            Write (Connection (Client), Factory, Blocked);
          end;
       else
-         Write (Connection (Client), Factory);
+         Write (Connection (Client), Factory, Blocked);
       end if;
    end Write;
 

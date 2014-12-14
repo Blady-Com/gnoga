@@ -135,6 +135,8 @@ package body GNAT.Sockets.Server is
          )  );
       end if;
 
+      Write_Throttle.Need_Write;
+
       if Client.First_Written <= Client.Free_To_Write then
          --
          -- [     XXXXXXXXXXXXXXX        ]
@@ -670,6 +672,7 @@ package body GNAT.Sockets.Server is
          end if;
       end loop;
       Pointer := Data'Last + 1;
+      Write_Throttle.Need_Write;
    end Send;
 
    procedure Send

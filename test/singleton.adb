@@ -87,7 +87,9 @@ begin
    Gnoga.Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Gnoga.Application.Gtk_Window.Initialize;
+   Gnoga.Application.Gtk_Window.Initialize (Port   => 8080,
+                                            Width  => 800,
+                                            Height => 600);
 
    Gnoga.Application.Singleton.Initialize (Main_Window => M, Verbose => False);
 

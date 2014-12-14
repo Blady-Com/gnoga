@@ -14,6 +14,34 @@ Q) Can I distribute programs I compile with Gnoga as proprietary applications?
 
 A) Yes, unless you have used the GNAT-GPL shareware version from libre, which showcases AdaCore's GNAT-PRO. Their GPL version is designed to pass the "GPL virus" too anything compiled with it to encourage purchasing their support packages. Of course though we encourage the GPL license (or for libraries GMGPL) whenever reasonable :)
 
+Q) Can I build native Gtk Apps with Gnoga?
+
+A) Yes, using WebKit2Gtk and Gtk-3.0 you can build a Gtk front end easily for your Gnoga application.
+
+1) Make sure you have the following packages installed (modify for your distro):
+
+sudo apt-get install libwebkit2gtk-3.0-dev
+sudo apt-get install libgtk-3-dev
+
+2) Create the native support in Gnoga:
+
+make native_gtk 
+
+3) Create a singleton app as usual
+
+4) Initialize the the Gtk front end:
+
+   Gnoga.Application.Gtk_Window.Initialize (Port   => 8080,
+                                            Width  => 800,
+                                            Height => 600);
+
+5) Start your application with Verbose set to False to avoid seeing start up information:
+
+   Gnoga.Application.Singleton.Initialize (Main_Window => M, Verbose => False);
+
+6) Build your app as usual and it will now use the Gtk front end.
+
+
 Q) Can I launch a browser on start up to access by Gnoga Application?
 
 A) Yes, See Gnoga.Applications.Open_URL_* there is a version of that procedure

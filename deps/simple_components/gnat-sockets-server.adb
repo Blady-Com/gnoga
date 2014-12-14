@@ -1112,8 +1112,6 @@ package body GNAT.Sockets.Server is
              )  is
       Next : Stream_Element_Count;
    begin
-      Write_Throttle.Done_Write;
-
       while Client.First_Written /= Client.Free_To_Write loop
          if Client.First_Written > Client.Free_To_Write then
             --
@@ -1250,6 +1248,7 @@ package body GNAT.Sockets.Server is
             when Completed =>
                loop -- Writing sockets
                   Get (Write_Sockets, Client_Socket);
+                  Write_Throttle.Done_Write;
 
                   exit when Client_Socket = No_Socket;
                   declare
@@ -1310,8 +1309,9 @@ package body GNAT.Sockets.Server is
                   end;
                end loop;
             when Expired =>
-               null;
+               Write_Throttle.Done_Write;
             when Aborted =>
+               Write_Throttle.Done_Write;
                exit;
          end case;
          Service_Postponed (Listener.all);

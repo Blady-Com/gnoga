@@ -8,6 +8,8 @@ with Gnoga.Gui.Navigator;
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Window;
 
+with Gnoga.Application.Gtk_Window;
+
 procedure Singleton is
    task type Color_Me_Task (O : Gnoga.Gui.Element.Pointer_To_Element_Class) is
       entry start;
@@ -85,9 +87,9 @@ begin
    Gnoga.Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Gnoga.Application.Open_URL_OSX;
+   Gnoga.Application.Gtk_Window.Initialize;
 
-   Gnoga.Application.Singleton.Initialize (Main_Window => M);
+   Gnoga.Application.Singleton.Initialize (Main_Window => M, Verbose => False);
 
    Gnoga.Log ("Connection established.");
    Gnoga.Log ("You can add to the path of app, e.g. http://url:8080/abc");
@@ -120,6 +122,8 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
 
    C.Stop;
+
+   Gnoga.Application.Gtk_Window.Finalize;
 
    Gnoga.Log ("Done.");
 end Singleton;

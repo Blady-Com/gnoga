@@ -58,6 +58,9 @@ uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tables.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
 
+native_gtk: src/gnoga_gtk_window.c
+	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
+
 ace_editor:
 	- cd js && git clone https://github.com/ajaxorg/ace-builds.git
 

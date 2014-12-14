@@ -1337,7 +1337,8 @@ package body GNAT.Sockets.Server is
            (  Listener.Read_Selector,
               Read_Sockets,
               Write_Sockets,
-              Status
+              Status,
+              1.0
            );
 
          case Status is

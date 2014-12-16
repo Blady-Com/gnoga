@@ -268,7 +268,11 @@ package body Snake.Connection is
 
       Display_Splash (Main_Window);
 
-      Start_Game (Main_Window);
+      if Main_Window.Connection_Data /= null then
+         --  If Connection_Data is null then the browser was closed before
+         --  start of game.
+         Start_Game (Main_Window);
+      end if;
    end On_Connect_Default;
 
 begin

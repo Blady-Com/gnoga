@@ -206,7 +206,9 @@ package body Gnoga.Gui.Base is
    procedure Finalize (Object : in out Base_Type) is
       use type Gnoga.Types.ID_Enumeration;
    begin
-      if not Gnoga.Server.Connection.Shutting_Down then
+      if not Gnoga.Server.Connection.Shutting_Down and
+        Gnoga.Server.Connection.Valid (Object.Connection_ID)
+      then
          if Object.Connection_ID /= Gnoga.Types.No_Connection then
             Object.On_Destroy;
 

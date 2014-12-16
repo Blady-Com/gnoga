@@ -113,7 +113,7 @@ package body Gnoga.Gui.Window is
            Gnoga.Types.Pointer_to_Connection_Data_Class);
    begin
       if Object.View /= null then
-         if Object.View.Dynamic then
+         if Object.View.Dynamic and Object.View /= null then
             Object.View.Free;
             Object.View := null;
          else
@@ -121,11 +121,12 @@ package body Gnoga.Gui.Window is
          end if;
       end if;
 
-      if Object.Free_Connection_Data then
-         Free_Data (P);
-      end if;
-
       Gnoga.Gui.Base.Base_Type (Object).Finalize;
+
+      if Object.Free_Connection_Data and Object.View /= null then
+         Free_Data (P);
+         Object.Connection_Data (null);
+      end if;
    exception
       when E : others =>
          Log ("Error finalizing Window - " & Object.ID);

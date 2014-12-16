@@ -119,6 +119,10 @@ package body Snake.Connection is
       Context.Get_Drawing_Context_2D (App.Display);
 
       loop
+         if Main_Window.Connection_Data = null then
+            exit;
+         end if;
+
          Paint (Context, App, Game_Over);
 
          if Game_Over then

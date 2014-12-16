@@ -24831,6 +24831,37 @@ waiting. The default value of 20ms is returned by this function, which can be
 overridden in order to change it.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">function</font> 
+Get_Polling_Timeout (<b>Factory</b> : Connections_Factory)<br>
+<font color="#0000FF">&nbsp;&nbsp; return</font> Duration;</tt></p>
+</blockquote>
+<p>The connections server stops polling a socket for being writable for no 
+longer than the value returned by this function. The server stops polling the 
+socket for being writable when there is nothing to send. The polling is 
+automatically resumed when some data are sent. This is normally happens in 
+response to some data sent from by the client. In some cases socket must be 
+unblocked regardless the client. The value returned by this function specifies 
+the duration after which all sockets are unblocked. If there is still nothing to 
+send they will be blocked again. The default implementation returns 0.5s. This 
+function can be overridden in order to change the value.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> 
+Is_Trace_Received_On (<b>Factory</b> : Connections_Factory)<br>
+<font color="#0000FF">&nbsp;&nbsp; return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if tracing of 
+received data is enabled.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> 
+Is_Trace_Sent_On (<b>Factory</b> : Connections_Factory)<br>
+<font color="#0000FF">&nbsp;&nbsp; return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if tracing of 
+sent data is enabled.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace"></a>procedure</font> 
 Trace<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> : <font color="#0000FF">
@@ -24921,13 +24952,16 @@ received data.</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Client</b>&nbsp;&nbsp;: Connection'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Enabled</b> : Boolean<br>
+Enabled</b> : Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Reason</b>&nbsp; : String<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure is called to trace enabling and disabling polling the client's 
 socket. The parameter <b>Enabled</b> is <font color="#800000"><i>true</i></font> 
 when polling is enabled and <i><font color="#800000">false</font></i> when 
-disabled. When there output buffer becomes empty, polling the socket for being 
+disabled. <b>Reason</b> is the text describing the reason of enabling or 
+disabling polling. When there output buffer becomes empty, polling the socket for being 
 writable is stopped in order to reduce system load. When output buffer becomes 
 written, polling is started again. Tracing is enabled or disabled by the <b>Sent</b> 
 parameter of <a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. The default 
@@ -25066,6 +25100,14 @@ Connection) <font color="#0000FF">return</font> Socket_Type;</tt></p>
 </blockquote>
 <p>This function returns the socket used by the connection. The socket shall not 
 be read or written explicitly.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Keep_On_Sending (<b>Client</b> : <font color="#0000FF">in 
+out</font> Connection);</tt></p>
+</blockquote>
+<p>This procedure is called to hint the connections server that it should not 
+stop polling the socket for being writable, because some content to send is 
+about to come.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Process_Packet">
@@ -30893,8 +30935,11 @@ Changes () to the version 4.3:<ul>
 	<li>URI scheme recognition added;</li>
 	<li>Get_Server_Address added to the connections server to allow limiting the 
 	addresses being listened;</li>
-	<li>Get_IO_Timeout is added to control waiting for socket events;</li>
 	<li>Socket send events are blocked when the server has no data to sent;</li>
+	<li>Get_IO_Timeout is added to control waiting for socket events;</li>
+	<li>Get_Polling_Timeout is added to control maximal time socket send polling 
+	remain stopped;</li>
+	<li>Trace_Sending is added to trace socket polling events;</li>
 	<li>Documentation improved;</li>
 	<li>Bug fixes.</li>
 	</ul>

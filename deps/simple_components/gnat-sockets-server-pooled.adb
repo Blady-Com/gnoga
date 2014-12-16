@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Pooled                  Luebeck            --
 --  Implementation                                 Winter, 2013       --
 --                                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  23:36 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -167,8 +167,7 @@ package body GNAT.Sockets.Server.Pooled is
             end if;
          exception
             when Error : others =>
-               Save_Occurrence (Client.Last_Error, Error);
-               Client.Failed := True;
+               Set_Failed (Client.all, Error);
                Unref (Client.all);
          end;
       end loop;

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:01 14 Dec 2014  --
+--                                Last revision :  23:36 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,6 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
+with Ada.Calendar;           use Ada.Calendar;
 with Ada.Exceptions;         use Ada.Exceptions;
 with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
 with Strings_Edit;           use Strings_Edit;
@@ -207,7 +208,6 @@ package body GNAT.Sockets.Server is
          new Ada.Unchecked_Deallocation (Worker, Worker_Ptr);
    begin
       if Listener.Doer /= null then
-         Listener.Ready_To_End := True;
          Abort_Selector (Listener.Selector);
          while not Listener.Doer'Terminated loop
             delay 0.001;
@@ -265,6 +265,12 @@ package body GNAT.Sockets.Server is
    begin
       return Client.Overlapped_Read;
    end Get_Overlapped_Size;
+
+   function Get_Polling_Timeout (Factory : Connections_Factory)
+      return Duration is
+   begin
+      return 0.5;
+   end Get_Polling_Timeout;
 
    function Get_Socket (Client : Connection) return Socket_Type is
    begin
@@ -329,8 +335,22 @@ package body GNAT.Sockets.Server is
    procedure Initialize (Listener : in out Connections_Server) is
    begin
       Listener.IO_Timeout := Get_IO_Timeout (Listener.Factory.all);
+      Listener.Polling_Timeout :=
+         Get_Polling_Timeout (Listener.Factory.all);
       Listener.Doer := new Worker (Listener'Unchecked_Access);
    end Initialize;
+
+   function Is_Trace_Received_On (Factory : Connections_Factory)
+      return Boolean is
+   begin
+      return Factory.Trace_Received;
+   end Is_Trace_Received_On;
+
+   function Is_Trace_Sent_On (Factory : Connections_Factory)
+      return Boolean is
+   begin
+      return Factory.Trace_Sent;
+   end Is_Trace_Sent_On;
 
    procedure Keep_On_Sending (Client : in out Connection) is
    begin
@@ -691,7 +711,6 @@ package body GNAT.Sockets.Server is
          Client.Send_Blocked := False;
          Client.Listener.Unblock_Send := True;
       end if;
-      Abort_Selector (Client.Listener.Selector);
    end Send;
 
    procedure Send
@@ -1019,6 +1038,15 @@ package body GNAT.Sockets.Server is
       Listener.Postponed := Leftover;
    end Service_Postponed;
 
+   procedure Set_Failed
+             (  Client : in out Connection;
+                Error  : Exception_Occurrence
+             )  is
+   begin
+      Save_Occurrence (Client.Last_Error, Error);
+      Client.Failed := True;
+   end Set_Failed;
+
    procedure Set_Overlapped_Size
              (  Client : in out Connection;
                 Size   : Stream_Element_Count
@@ -1140,19 +1168,24 @@ package body GNAT.Sockets.Server is
    procedure Trace_Sending
              (  Factory : in out Connections_Factory;
                 Client  : Connection'Class;
-                Enabled : Boolean
+                Enabled : Boolean;
+                Reason  : String
              )  is
    begin
       if Enabled then
          Trace
          (  Factory,
-            Image (Get_Client_Address (Client)) & " < +++ Resume polling"
-         );
+            (  Image (Get_Client_Address (Client))
+            &  " < +++ Resume polling"
+            &  Reason
+         )  );
       else
          Trace
          (  Factory,
-            Image (Get_Client_Address (Client)) & " < --- Stop polling"
-         );
+            (  Image (Get_Client_Address (Client))
+            &  " < --- Stop polling"
+            &  Reason
+         )  );
       end if;
    end Trace_Sending;
 
@@ -1281,7 +1314,66 @@ package body GNAT.Sockets.Server is
       Client_Socket : Socket_Type;
       Read_Sockets  : Socket_Set_Type;
       Write_Sockets : Socket_Set_Type;
+      That_Time     : Time := Clock;
+      This_Time     : Time;
       Status        : Selector_Status;
+
+      procedure Unblock (Requested_Only : Boolean) is
+         Socket : Socket_Type;
+      begin
+         loop
+            Get (Listener.Blocked_Sockets, Socket);
+            exit when Socket = No_Socket;
+            declare
+               Client : Connection_Ptr :=
+                        Get (Listener.Connections, Socket);
+            begin
+               if Client = null then
+                  Clear (Listener.Read_Sockets,    Client_Socket);
+                  Clear (Listener.Write_Sockets,   Client_Socket);
+                  Clear (Listener.Blocked_Sockets, Client_Socket);
+               elsif Client.Failed then
+                  if (  Exception_Identity (Client.Last_Error)
+                     /= Connection_Error'Identity
+                     )
+                  then
+                     Trace_Error
+                     (  Listener.Factory.all,
+                        "Processing error",
+                        Client.Last_Error
+                     );
+                  end if;
+                  Stop (Listener.all, Client.Socket);
+               elsif Requested_Only and then Client.Send_Blocked then
+                     -- Keep it blocked
+                  Set (Read_Sockets, Client.Socket);
+               else -- Unblock
+                  Set (Listener.Write_Sockets, Client.Socket);
+                  Set (Write_Sockets, Client.Socket);
+                  Status := Completed;  -- Make sure it written later on
+                  Client.Send_Blocked := False;
+                  Client.Data_Sent    := True;
+                  if Listener.Factory.Trace_Sent then
+                     if Requested_Only then
+                        Trace_Sending
+                        (  Listener.Factory.all,
+                           Client.all,
+                           True,
+                           ", some data to send"
+                        );
+                     else
+                        Trace_Sending
+                        (  Listener.Factory.all,
+                           Client.all,
+                           True,
+                           ", blocking timeout expired"
+                        );
+                     end if;
+                  end if;
+               end if;
+            end;
+         end loop;
+      end Unblock;
    begin
       Create_Socket (Server_Socket);
       Set_Socket_Option
@@ -1301,9 +1393,9 @@ package body GNAT.Sockets.Server is
             R_Socket_Set => Read_Sockets,
             W_Socket_Set => Write_Sockets,
             Status       => Status,
-            Timeout      => 0.5
+            Timeout      => Listener.IO_Timeout
          );
-         exit when Status = Aborted and Listener.Ready_To_End = True;
+         exit when Status = Aborted;
          if Status = Completed then
             loop -- Reading from sockets
                Get (Read_Sockets, Client_Socket);
@@ -1424,39 +1516,19 @@ package body GNAT.Sockets.Server is
                end if;
             end loop;
          end if;
-         while Listener.Unblock_Send loop -- Unblock sockets
-            Listener.Unblock_Send := False;
-            declare
-               Socket : Socket_Type;
-            begin
-               loop
-                  Get (Listener.Blocked_Sockets, Socket);
-                  exit when Socket = No_Socket;
-                  declare
-                     Client : Connection_Ptr :=
-                              Get (Listener.Connections, Socket);
-                  begin
-                     if Client /= null then
-                        if Client.Send_Blocked then -- Still blocked
-                           Set (Read_Sockets, Client.Socket);
-                        else -- Make sure it written later on
-                           Set (Listener.Write_Sockets, Client.Socket);
-                           Set (Write_Sockets, Client.Socket);
-                           Status := Completed;
-                           if Listener.Factory.Trace_Sent then
-                              Trace_Sending
-                              (  Listener.Factory.all,
-                                 Client.all,
-                                 True
-                              );
-                           end if;
-                        end if;
-                     end if;
-                  end;
-               end loop;
+         This_Time := Clock;
+         if This_Time - That_Time > Listener.Polling_Timeout then
+            -- Unblock everything now
+            That_Time := This_Time;
+            Unblock (False);
+         else
+            -- Checking for explicit unblocking requests
+            while Listener.Unblock_Send loop
+               Listener.Unblock_Send := False;
+               Unblock (True);
                Copy (Read_Sockets, Listener.Blocked_Sockets);
-            end;
-         end loop;
+            end loop;
+         end if;
          if Status = Completed then
             loop -- Writing sockets
                Get (Write_Sockets, Client_Socket);
@@ -1500,7 +1572,8 @@ package body GNAT.Sockets.Server is
                               Trace_Sending
                               (  Listener.Factory.all,
                                  Client.all,
-                                 False
+                                 False,
+                                 ", nothing to send"
                               );
                            end if;
                         end if;

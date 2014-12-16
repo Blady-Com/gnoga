@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  13:01 14 Dec 2014  --
+--                                Last revision :  23:36 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -48,6 +48,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 
    CRLF : constant String := (Character'Val (13), Character'Val (10));
 
+   Block_Size           : constant := 1024;
    Default_Response     : constant String := "Not implemented";
    Bad_Request_Response : constant String := "Bad request";
    Lower                : constant Character_Mapping :=
@@ -495,7 +496,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       end if;
    exception
       when Content_Not_Ready =>
-         Keep_On_Sending (Client);
          Continue (Client, Content_Chunk'Access);
       when Error : others =>
           Trace_Error
@@ -607,9 +607,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             end if;
             Socket.Duplex := Result.Duplex;
             Socket.State := Open_Socket;
-            if Result.Duplex then -- Allow full-duplex operation
-               Client.Mutex.Set (Idle);
-            end if;
             if Client.Trace_Body then
                Trace (Client, "WebSocket connection accepted");
             end if;
@@ -649,6 +646,13 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                );
             end if;
             Send (Client, CRLF);
+            if Result.Duplex then -- Allow full-duplex operation
+               if Queued_To_Send (Client) > 0 then
+                  Client.Mutex.Set (Server_Sending);
+               else
+                  Client.Mutex.Set (Idle);
+               end if;
+            end if;
             begin
                WebSocket_Initialize (HTTP_Client'Class (Client));
             exception
@@ -679,11 +683,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       WebSocket_Cleanup (Client);
       Finalize (State_Machine (Client));
-   end Finalize;
-
-   procedure Finalize (Lock : in out Holder) is
-   begin
-      Lock.Mutex.Release;
    end Finalize;
 
    function From_Escaped
@@ -1112,11 +1111,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Client.LF.Last := 1;
       Client.LF.Value (1) := 10;
       Initialize (State_Machine (Client));
-   end Initialize;
-
-   procedure Initialize (Lock : in out Holder) is
-   begin
-      Lock.Mutex.Take;
    end Initialize;
 
    function Is_Empty (Stream : Content_Stream) return Boolean is
@@ -1846,22 +1840,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             end case;
          end;
       end loop;
-   end Read;
-
-   procedure Read
-             (  Client  : in out HTTP_Client;
-                Factory : in out Connections_Factory'Class
-             )  is
-   begin
-      if Client.WebSocket.Duplex then
-         declare
-            Lock : Holder (Client.Mutex'Access);
-         begin
-            Read (Connection (Client), Factory);
-         end;
-      else
-         Read (Connection (Client), Factory);
-      end if;
    end Read;
 
    procedure Receive_Body
@@ -3121,12 +3099,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Chain : Action;
    begin
       if Queued_To_Send (Client) = 0 then
-         if Client.WebSocket.Duplex then
-            Client.Mutex.Transition (Chain);
-         else
-            Chain := Client.Chain;
-            Client.Chain := null;
-         end if;
+         Chain := Client.Chain;
+         Client.Chain := null;
          if Chain /= null then
             Chain (Client);
          elsif 0 /= (Client.Connection and Connection_Close) then
@@ -3742,153 +3716,59 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                 Last   : Boolean
              )  is
       Pointer : Stream_Element_Offset := Data'First;
-      Space   : Stream_Element_Count;
-      Blocked : Boolean;
+      Next    : Stream_Element_Offset;
    begin
       if First then
          Client.Mutex.Seize;
       end if;
       begin
          if Data'Length > 0 then
-            loop
-               declare
-                  Lock : Holder (Client.Mutex'Access);
-               begin
-                  Space := Available_To_Send (Client);
-                  exit when Space >= Data'Last + 1 - Pointer;
-                  if Space > 0 then
-                     Space := Pointer + Space - 1;
-                     if Client.Trace_Body then
-                        Trace
-                        (  Client,
-                           (  "WebSocket sending message part ["
-                           &  Image (Data (Pointer..Space))
-                           &  "] "
-                           &  Image (Pointer)
-                           &  ".."
-                           &  Image (Space)
-                           &  "/"
-                           &  Image (Data'Last)
-                        )  );
-                     end if;
-                     Send (Client, Data (Pointer..Space));
-                  end if;
-                  Write -- Parent's implementation, no mutex again
-                  (  State_Machine (Client),
-                     Client.Listener.Factory.all,
-                     Blocked
+            while Pointer <= Data'Last loop
+               Send_Socket
+               (  Get_Socket (Client),
+                  Data (Pointer..Data'Last),
+                  Next
+               );
+               if Next < Pointer then
+                  raise Connection_Error;
+               end if;
+               if Is_Trace_Sent_On (Client.Listener.Factory.all) then
+                  Trace_Sent
+                  (  Factory => Client.Listener.Factory.all,
+                     Client  => Client,
+                     Data    => Data,
+                     From    => Pointer,
+                     To      => Next
                   );
-               end;
-               Pointer := Space + 1;
-               Client.Mutex.Wait; -- Wait for more space
-            end loop;
-            if Last then
-               Client.Mutex.Set (Last_Chunck);
-            end if;
-            declare
-               Lock : Holder (Client.Mutex'Access);
-            begin
+               end if;
                if Client.Trace_Body then
                   Trace
                   (  Client,
-                     (  "WebSocket sending last message part ["
-                     &  Image (Data (Pointer..Data'Last))
+                     (  "WebSocket message part sent ["
+                     &  Image (Data (Pointer..Next))
                      &  "] "
                      &  Image (Pointer)
                      &  ".."
+                     &  Image (Next)
+                     &  "/"
                      &  Image (Data'Last)
                   )  );
                end if;
-               Send (Client, Data (Pointer..Data'Last));
-               Write -- Parent's implementation, no mutex again
-               (  State_Machine (Client),
-                  Client.Listener.Factory.all,
-                  Blocked
-               );
-            end;
-         end if;
-      exception
-         when others =>
-            Client.Mutex.Failed;
-            raise;
-      end;
-   end WebSocket_Blocking_Send;
-
-   procedure WebSocket_Blocking_Send
-             (  Client : in out HTTP_Client'Class;
-                Data   : String;
-                First  : Boolean;
-                Last   : Boolean
-             )  is
-      Pointer : Integer := Data'First;
-      Space   : Integer;
-      Blocked : Boolean;
-   begin
-      if First then
-         Client.Mutex.Seize;
-      end if;
-      begin
-         if Data'Length > 0 then
-            loop
-               declare
-                  Lock : Holder (Client.Mutex'Access);
-               begin
-                  Space := Integer (Available_To_Send (Client));
-                  exit when Space >= Data'Last + 1 - Pointer;
-                  if Space > 0 then
-                     Space := Pointer + Space - 1;
-                     if Client.Trace_Body then
-                        Trace
-                        (  Client,
-                           (  "WebSocket sending text part ["
-                           &  Data (Pointer..Space)
-                           &  "] "
-                           &  Image (Pointer)
-                           &  ".."
-                           &  Image (Space)
-                           &  "/"
-                           &  Image (Data'Last)
-                        )  );
-                     end if;
-                     Send (Client, Data (Pointer..Space));
-                  end if;
-                  Write -- Parent's implementation, no mutex again
-                  (  State_Machine (Client),
-                     Client.Listener.Factory.all,
-                     Blocked
-                  );
-               end;
-               Pointer := Space + 1;
-               Client.Mutex.Wait; -- Wait for more space
+               Pointer := Next + 1;
             end loop;
             if Last then
-               Client.Mutex.Set (Last_Chunck);
+               Client.Mutex.Set (Idle);
             end if;
-            declare
-               Lock : Holder (Client.Mutex'Access);
-            begin
-               if Client.Trace_Body then
-                  Trace
-                  (  Client,
-                     (  "WebSocket sending last text part ["
-                     &  Data (Pointer..Data'Last)
-                     &  "] "
-                     &  Image (Pointer)
-                     &  ".."
-                     &  Image (Data'Last)
-                  )  );
-               end if;
-               Send (Client, Data (Pointer..Data'Last));
-               Write -- Parent's implementation, no mutex again
-               (  State_Machine (Client),
-                  Client.Listener.Factory.all,
-                  Blocked
-               );
-            end;
          end if;
       exception
-         when others =>
-            Client.Mutex.Failed;
+         when Error : Connection_Error =>
+            Client.Mutex.Failed (Error);
+            Raise_Exception
+            (  End_Error'Identity,
+               "Connection closed by peer"
+            );
+         when Error : others =>
+            Client.Mutex.Failed (Error);
             raise;
       end;
    end WebSocket_Blocking_Send;
@@ -4018,15 +3898,15 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       if Length < 126 then
          return
-         (  2#1000_0000# or Frame,
-            Stream_Element (Length)
+         (  1 => 2#1000_0000# or Frame,
+            2 => Stream_Element (Length)
          );
       elsif Length < 2**16 then
          return
-         (  2#1000_0000# or Frame,
-            126,
-            Stream_Element (Length / 256),
-            Stream_Element (Length mod 256)
+         (  1 => 2#1000_0000# or Frame,
+            2 => 126,
+            3 => Stream_Element (Length / 256),
+            4 => Stream_Element (Length mod 256)
          );
       else
          declare
@@ -4080,14 +3960,22 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       if Client.WebSocket.Duplex then
          if Client.WebSocket.Context = Current_Task then
             if Client.WebSocket.State = Open_Socket then
-               Queue_Content (Client, Header);
-               Queue_Content (Client, Message);
                declare
-                  Chain : Action;
+                  Seized : Boolean;
                begin
-                  Client.Mutex.Transition (Chain);
-                  if Chain /= null then -- Have mutex, send
-                     Chain (Client);
+                  Client.Mutex.Grab (Seized);
+                  if Seized then
+                     begin
+                        Send_Content (Client, Header);
+                        Send_Content (Client, Message);
+                     exception
+                        when others =>
+                           Client.Mutex.Release;
+                           raise;
+                     end;
+                  else
+                     Queue_Content (Client, Header);
+                     Queue_Content (Client, Message);
                   end if;
                end;
             else
@@ -4120,14 +4008,22 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       if Client.WebSocket.Duplex then
          if Client.WebSocket.Context = Current_Task then
             if Client.WebSocket.State = Open_Socket then
-               Queue_Content (Client, Header);
-               Queue_Content (Client, Message);
                declare
-                  Chain : Action;
+                  Seized : Boolean;
                begin
-                  Client.Mutex.Transition (Chain);
-                  if Chain /= null then -- Have mutex, send
-                     Chain (Client);
+                  Client.Mutex.Grab (Seized);
+                  if Seized then
+                     begin
+                        Send_Content (Client, Header);
+                        Send_Content (Client, Message);
+                     exception
+                        when others =>
+                           Client.Mutex.Release;
+                           raise;
+                     end;
+                  else
+                     Queue_Content (Client, Header);
+                     Queue_Content (Client, Message);
                   end if;
                end;
             else
@@ -4138,7 +4034,27 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             end if;
          else
             WebSocket_Blocking_Send (Client, Header,  True, False);
-            WebSocket_Blocking_Send (Client, Message, False, True);
+            declare
+               Pointer : Integer := Message'First;
+            begin
+               while Message'Last + 1 - Pointer > Block_Size loop
+                  WebSocket_Blocking_Send
+                  (  Client,
+                     From_String
+                     (  Message (Pointer..Pointer + Block_Size - 1)
+                     ),
+                     False,
+                     False
+                  );
+                  Pointer := Pointer + Block_Size;
+               end loop;
+               WebSocket_Blocking_Send
+               (  Client,
+                  From_String (Message (Pointer..Message'Last)),
+                  False,
+                  True
+               );
+            end;
          end if;
       else
          if Client.WebSocket.State = Open_Socket then
@@ -4158,9 +4074,23 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       if Client.WebSocket.Duplex then
          declare
-            Lock : Holder (Client.Mutex'Access);
+            Seized : Boolean;
          begin
-            Write (Connection (Client), Factory, Blocked);
+            Client.Mutex.Grab (Seized);
+            if Seized then
+               begin
+                  Write (Connection (Client), Factory, Blocked);
+                  if Blocked or else Queued_To_Send (Client) = 0 then
+                     Client.Mutex.Release;
+                  end if;
+               exception
+                  when others =>
+                     Client.Mutex.Release;
+                     raise;
+               end;
+            else
+               Blocked := False; -- Try later
+            end if;
          end;
       else
          Write (Connection (Client), Factory, Blocked);
@@ -4217,102 +4147,64 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 
    protected body Send_Mutex is
 
-      procedure Failed is
+      procedure Failed (Error : Exception_Occurrence) is
+      begin
+         Set_Failed (Client.all, Error);
+         if State in Idle..Task_Sending then
+            State := Server_Sending;
+         end if;
+      end Failed;
+
+      function Get_Status return Duplex_Status is
+      begin
+         return State;
+      end Get_Status;
+
+      procedure Grab (Seized : out Boolean) is
       begin
          case State is
-            when Disabled..Content_Chunk =>
-               null;
-            when Last_Chunck..Message_Chunk =>
-               if Is_Empty (Client.Content) then
-                  State := Idle;
-               else
-                  State := Content_Chunk;
-               end if;
+            when Disabled | Closing | Server_Sending =>
+               Seized := True;
+            when Idle =>
+               State  := Server_Sending;
+               Seized := True;
+            when Task_Sending =>
+               Seized := False;
          end case;
-      end Failed;
+      end Grab;
 
       procedure Release is
       begin
-         Locked := False;
+         case State is
+            when Disabled | Closing | Idle =>
+               null;
+            when Task_Sending | Server_Sending =>
+               State := Idle;
+         end case;
       end Release;
 
       entry Seize when State in Disabled..Idle is
       begin
-         if State = Idle then
-            State := Message_Chunk;
-         elsif State = Closing then
-            Raise_Exception
-            (  End_Error'Identity,
-               "WebSocket is being closed"
-            );
-         else
-            Raise_Exception (End_Error'Identity, "No WebSocket open");
-         end if;
+         case State is
+            when Idle =>
+               State := Task_Sending;
+            when Closing =>
+               Raise_Exception
+               (  End_Error'Identity,
+                  "WebSocket is being closed"
+               );
+            when others =>
+               Raise_Exception
+               (  End_Error'Identity,
+                  "No WebSocket open"
+               );
+         end case;
       end Seize;
-
-      entry Take when State in Disabled..Idle or else not Locked is
-      begin
-         Locked := True;
-      end Take;
 
       procedure Set (New_State : Duplex_Status) is
       begin
          State := New_State;
       end Set;
-
-      procedure Transition (Chain : out Action) is
-      begin
-         case State is
-            when Disabled =>
-               Chain := null;
-            when Idle =>
-               if Is_Empty (Client.Content) then
-                  Chain := null;
-               else
-                  Chain := Message_Chunk'Access;
-                  State := Content_Chunk;
-               end if;
-            when Last_Chunck =>
-               if Is_Empty (Client.Content) then
-                  State := Idle;
-                  Chain := null;
-               else
-                  Chain := Message_Chunk'Access;
-                  State := Content_Chunk;
-               end if;
-            when Message_Chunk =>
-               Signaled := True;
-               Chain    := null;
-            when Content_Chunk =>
-               if Is_Empty (Client.Content) then
-                  State := Idle;
-                  Chain := null;
-               else
-                  Chain := Message_Chunk'Access;
-               end if;
-            when Closing =>
-               if Is_Empty (Client.Content) then
-                  State := Disabled;
-                  Chain := null;
-               else
-                  Chain := WebSocket_Cleanup'Access;
-               end if;
-         end case;
-      end Transition;
-
-      entry Wait when State in Disabled..Closing or else Signaled is
-      begin
-         if State = Closing then
-            Raise_Exception
-            (  End_Error'Identity,
-               "WebSocket is being closed"
-            );
-         elsif State = Disabled then
-            Raise_Exception (End_Error'Identity, "No WebSocket open");
-         else
-            Signaled := False;
-         end if;
-      end Wait;
 
    end Send_Mutex;
 

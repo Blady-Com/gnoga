@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:01 14 Dec 2014  --
+--                                Last revision :  23:36 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -229,6 +229,21 @@ package GNAT.Sockets.Server is
    function Get_Overlapped_Size (Client : Connection)
       return Stream_Element_Count;
 --
+-- Get_Polling_Timeout -- The polling timeout used by connections server
+--
+--    Factory - The factory object
+--
+-- The connections  server stops polling a socket for being writable for
+-- no longer than the value returned by this function. The default value
+-- is 0.5s. The function can be overridden in order to change the value.
+--
+-- Returns :
+--
+--    The timeout before unblocking sending
+--
+   function Get_Polling_Timeout (Factory : Connections_Factory)
+      return Duration;
+--
 -- Get_Server_Address -- Get the server socket address
 --
 --    Listener - The server object
@@ -284,6 +299,28 @@ package GNAT.Sockets.Server is
 -- when it replaces it.
 --
    procedure Initialize (Listener : in out Connections_Server);
+--
+-- Is_Trace_Received_On -- Tracing state
+--
+--    Factory  - The factory object
+--
+-- Returns :
+--
+--    True if tracing received data is on
+--
+   function Is_Trace_Received_On (Factory : Connections_Factory)
+      return Boolean;
+--
+-- Is_Trace_Sent_On -- Tracing state
+--
+--    Factory  - The factory object
+--
+-- Returns :
+--
+--    True if tracing sent data is on
+--
+   function Is_Trace_Sent_On (Factory : Connections_Factory)
+      return Boolean;
 --
 -- Keep_On_Sending -- Delay stopping sending
 --
@@ -629,6 +666,7 @@ package GNAT.Sockets.Server is
 --    Factory - The factory object
 --    Client  - The client
 --    Enabled - Polling socket for writing is enabled/disabled
+--    Reason  - Of the action
 --
 -- This  procedure is  called when the socket is enabled or disabled for
 -- polling.  Polling is  disabled  when  there  is nothing  to send  and
@@ -638,7 +676,8 @@ package GNAT.Sockets.Server is
    procedure Trace_Sending
              (  Factory : in out Connections_Factory;
                 Client  : Connection'Class;
-                Enabled : Boolean
+                Enabled : Boolean;
+                Reason  : String
              );
 --
 -- Trace_Sent -- Tracing facility
@@ -697,6 +736,19 @@ package GNAT.Sockets.Server is
              (  Client  : in out Connection;
                 Factory : in out Connections_Factory'Class;
                 Blocked : out Boolean
+             );
+--
+-- Set_Failed -- Mark connection as failed
+--
+--    Client - The client connection object
+--    Error  - The error occurrence
+--
+-- This  procedure  is used to indicate  the connection  failed  from an
+-- external task. Failed connections are closed as soon as possible.
+--
+   procedure Set_Failed
+             (  Client : in out Connection;
+                Error  : Exception_Occurrence
              );
 private
    pragma Inline (Available_To_Process);
@@ -827,7 +879,7 @@ private
       Blocked_Sockets : Socket_Set_Type;
       Postponed       : Connection_Ptr;
       IO_Timeout      : Duration := 0.02;
-      Ready_To_End    : Boolean  := False;
+      Polling_Timeout : Duration := 0.5;
       Unblock_Send    : Boolean  := False;
       Connections     : Unbounded_Array;
       Doer            : Worker_Ptr;

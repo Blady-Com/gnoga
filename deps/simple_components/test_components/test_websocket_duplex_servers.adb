@@ -4,7 +4,7 @@
 --  Test WebSocket                                 Winter, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  22:30 01 Dec 2014  --
+--                                Last revision :  23:36 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -316,6 +316,7 @@ package body Test_WebSocket_Duplex_Servers is
          (  Client.all,
             "Task failed: " & Exception_Information (Error)
          );
+         accept Stop;
    end Chat_Task;
 
 end Test_WebSocket_Duplex_Servers;

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  15:41 13 Dec 2014  --
+--                                Last revision :  23:36 14 Dec 2014  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1424,9 +1424,8 @@ private
         (  Disabled,
            Closing,
            Idle,
-           Content_Chunk,
-           Last_Chunck,
-           Message_Chunk
+           Task_Sending,
+           Server_Sending
         );
 --
 -- Send_Mutex -- The  object  used  for  interlocking  send  buffer  and
@@ -1437,9 +1436,23 @@ private
    --
    -- Failed -- Send failure notification
    --
-      procedure Failed;
+      procedure Failed (Error : Exception_Occurrence);
    --
-   -- Release -- Sending previously locked by Take
+   -- Get_Status -- Get current status
+   --
+   -- Returns :
+   --
+   --    The current status
+   --
+      function Get_Status return Duplex_Status;
+   --
+   -- Grab -- Lock sending for the server
+   --
+   --    Seized - True if the lock was taken
+   --
+      procedure Grab (Seized : out Boolean);
+   --
+   -- Release -- Sending previously locked by Seize or Grab
    --
       procedure Release;
    --
@@ -1449,46 +1462,18 @@ private
    --
       procedure Set (New_State : Duplex_Status);
    --
-   -- Transition -- Go to the object state
-   --
-   --    Chain - The action to perfrom after the transition (output)
-   --
-      procedure Transition (Chain : out Action);
-   --
-   -- Seize -- Begin a sending session
-   --
-   -- Only one session is active.  A session  is not to be confused with
-   -- locking performed by Take/Release.  A session  corresponds  to one
-   -- WebSocket  message being  send.  It can consist of many individual
-   -- sendings.  Seize  is used to interlock messages.  Take/Release  is
-   -- used to  protect the internal  state of  the send buffer state.  A
-   -- session ends by a call Transition  upon sending  the last  message
-   -- chunk.
+   -- Seize -- Lock sending from an external task
    --
       entry Seize;
-   --
-   -- Take -- Lock sending (released with Release)
-   --
-      entry Take;
-   --
-   -- Wait -- For a send buffer event (that sending is available again)
-   --
-      entry Wait;
+
    private
-      Signaled : Boolean       := True;     -- Output buffer is not full
-      Locked   : Boolean       := False;
-      State    : Duplex_Status := Disabled; -- Socket is closed
+      State : Duplex_Status := Disabled;     -- Socket is closed
    end Send_Mutex;
    procedure Write
              (  Stream : access Root_Stream_Type'Class;
                 Item   : Send_Mutex
              );
    for Send_Mutex'Write use Write;
-
-   type Holder (Mutex : access Send_Mutex) is
-      new Ada.Finalization.Limited_Controlled with null record;
-   procedure Finalize (Lock : in out Holder);
-   procedure Initialize (Lock : in out Holder);
 
    type WebSocket_State is (Open_Socket, Closing_Socket, Closed_Socket);
    type WebSocket_Data is record
@@ -1601,10 +1586,6 @@ private
              (  Client : in out HTTP_Client;
                 Data   : String
              );
-   procedure Read
-             (  Client  : in out HTTP_Client;
-                Factory : in out Connections_Factory'Class
-             );
    procedure Write
              (  Client  : in out HTTP_Client;
                 Factory : in out Connections_Factory'Class;
@@ -1709,12 +1690,6 @@ private
    procedure WebSocket_Blocking_Send
              (  Client  : in out HTTP_Client'Class;
                 Data    : Stream_Element_Array;
-                First   : Boolean;
-                Last    : Boolean
-             );
-   procedure WebSocket_Blocking_Send
-             (  Client  : in out HTTP_Client'Class;
-                Data    : String;
                 First   : Boolean;
                 Last    : Boolean
              );

@@ -273,6 +273,9 @@ package body Snake.Connection is
          --  start of game.
          Start_Game (Main_Window);
       end if;
+   exception
+      when others =>
+         Gnoga.Log ("Exception in snake");
    end On_Connect_Default;
 
 begin

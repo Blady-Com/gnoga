@@ -65,6 +65,7 @@ Gnoga currently has the following packages:
 
 6. Gnoga database bindings and server side APIs
       Gnoga.Server.Database - support for MySQL and SQLite 3
+	(for ODBC bindings see deps/simple_components)
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
       Gnoga.Server.Template_Parser - Parse files with Tokens or Python

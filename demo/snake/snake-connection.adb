@@ -41,6 +41,9 @@ package body Snake.Connection is
       end loop;
 
       Display.Visible (False);
+   exception
+      when others =>
+         Gnoga.Log ("Exception in Display_Splash");
    end Display_Splash;
 
    type Snake_Direction_Type is (Left, Right, Up, Down);
@@ -68,6 +71,10 @@ package body Snake.Connection is
       Food_Cell :=  (Random_X.Random (X_Gen), Random_Y.Random (Y_Gen));
 
       return Food_Cell;
+   exception
+      when others =>
+         Gnoga.Log ("Exception in New_Food");
+         return Food_Cell;
    end New_Food;
 
    type App_Data is new Connection_Data_Type with
@@ -131,6 +138,9 @@ package body Snake.Connection is
 
          delay 0.1;
       end loop;
+   exception
+      when others =>
+         Gnoga.Log ("Exception in Start_Game");
    end Start_Game;
 
    procedure On_Key_Down (Object : in out Base_Type'Class;
@@ -147,6 +157,9 @@ package body Snake.Connection is
       elsif Key.Key_Code = 40 or Key.Key_Code = Character'Pos ('S') then
          App.Snake_Direction := Down;
       end if;
+   exception
+      when others =>
+         Gnoga.Log ("Exception in On_Key_Down");
    end On_Key_Down;
 
    procedure Paint (Context   : in out Context_2D_Type;
@@ -254,6 +267,9 @@ package body Snake.Connection is
       Context.Fill_Color ("green");
       Context.Font (Height => "12px");
       Context.Fill_Text ("Score :" & App.Score'Img, 5, Display_Height - 15);
+   exception
+      when others =>
+         Gnoga.Log ("Exception in Paint");
    end Paint;
 
    ------------------------

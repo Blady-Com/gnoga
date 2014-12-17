@@ -29,10 +29,13 @@ And it will generate a full project ready to go for your own application.
 
 see: DEPLOYING_APPS and DEVELOPING_APPS for more tips on Gnoga applications
 
+Gnoga includes a copy of Dmitry A. Kazakov's Simple Components and uses it for http and websockets. See deps/simple_components/components.htm for details. It includes an incredible wealth of Ada components you can incoroprate in your software freely and is under the GMGPLv2.
 
-Gnoga currently has the following parts:
+Previously a modified version of Cairo bindings for pdf, png and svg output was included. They are available seperately in the Gnoga Marketplace http://www.gnoga.com
 
-1. The underlying communication platform between the Ada code and the browser
+Gnoga currently has the following packages:
+
+1. The communication platform between the Ada code and the browser / native
       Gnoga.Server.Connection
 
 2. Binding to the HTML5 DOM and Browser
@@ -49,7 +52,6 @@ Gnoga currently has the following parts:
 3. Application startup services
       Gnoga.Server.Application.Singleton - Desktop apps
       Gnoga.Server.Application.Multi_Connect - Multiuser / Web apps
-
 
 4. Gnoga higher level containers and GUI widgets
       Gnoga.Gui.Views.* - Auto layout of child elements and basis for
@@ -78,10 +80,4 @@ Gnoga currently has the following parts:
       Gnoga.Gui.Plugin.jQueryUI.Widgets - the jQueryUI Widgets
 
 9. Native Desktop and Mobile Application Support coming:
-      Expand on the existing support for Mac client only apps using MacGap
-      Create a simple WebKit frontend for Gtk to use for client only Linux apps
-      Create a simple IE front end for client only PC apps
-
-10. Additional helper bindings:
-     Cairo graphic engine support (adopted from GtkAda) for Canvas, Img, PDF
-     and SVG use.
+      Gnoga.Server.Application.Gtk_Window - Native GTK front end

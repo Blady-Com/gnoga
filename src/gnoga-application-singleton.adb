@@ -50,6 +50,11 @@ package body Gnoga.Application.Singleton is
    procedure On_Connect
      (ID         : in     Gnoga.Types.Connection_ID;
       Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
+   --  Connection On_Connect handler
+
+   ----------------
+   -- On_Connect --
+   ----------------
 
    procedure On_Connect
      (ID         : in     Gnoga.Types.Connection_ID;
@@ -72,6 +77,10 @@ package body Gnoga.Application.Singleton is
       end if;
    end On_Connect;
 
+   ---------------------
+   -- Web_Server_Task --
+   ---------------------
+
    task type Web_Server_Task is
       entry Start;
    end Web_Server_Task;
@@ -84,6 +93,10 @@ package body Gnoga.Application.Singleton is
       accept Start;
       Gnoga.Server.Connection.Run;
    end Web_Server_Task;
+
+   ----------------
+   -- Initialize --
+   ----------------
 
    procedure Initialize
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
@@ -109,10 +122,18 @@ package body Gnoga.Application.Singleton is
       Main_Window.Document.Title (Title);
    end Initialize;
 
+   ------------------
+   -- Message_Loop --
+   ------------------
+
    procedure Message_Loop is
    begin
       Connection_Holder.Hold;
    end Message_Loop;
+
+   ---------------------
+   -- End_Application --
+   ---------------------
 
    procedure End_Application is
    begin

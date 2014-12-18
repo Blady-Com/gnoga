@@ -134,6 +134,7 @@ package body Gnoga.Server.Connection is
          Connection_Type : Gnoga_Connection_Type := HTTP;
          FS              : Ada.Streams.Stream_IO.File_Type;
          Buffer          : String_Buffer;
+         Finalized       : Boolean := False;
       end record;
    procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
                     Item   : in     Gnoga_HTTP_Content);
@@ -179,6 +180,9 @@ package body Gnoga.Server.Connection is
       end record;
 
    type Socket_Type is access all Gnoga_HTTP_Client;
+
+   overriding
+   procedure Finalize (Client : in out Gnoga_HTTP_Client);
 
    overriding
    function Get_Name (Client : Gnoga_HTTP_Client) return String;
@@ -313,6 +317,17 @@ package body Gnoga.Server.Connection is
    begin
       return Gnoga.HTTP_Server_Name;
    end Get_Name;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   overriding
+   procedure Finalize (Client : in out Gnoga_HTTP_Client) is
+   begin
+      Client.Content.Finalized := True;
+      HTTP_Client (Client).Finalize;
+   end Finalize;
 
    -----------------
    -- Do_Get_Head --
@@ -953,7 +968,12 @@ package body Gnoga.Server.Connection is
          ID     : Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
          Socket : Socket_Type := Socket_Maps.Element (C);
       begin
-         Socket.WebSocket_Send ("0");
+         if Socket.Content.Finalized then
+            Connection_Manager.Delete_Connection (ID);
+            return;
+         else
+            Socket.WebSocket_Send ("0");
+         end if;
       exception
          when others =>
             begin

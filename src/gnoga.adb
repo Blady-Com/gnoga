@@ -41,6 +41,9 @@ with Ada.Strings.Unbounded;
 
 package body Gnoga is
 
+   Use_File : Boolean := False;
+   Log_File : Ada.Text_IO.File_Type;
+
    -------------------
    -- Escape_Quotes --
    -------------------
@@ -157,13 +160,34 @@ package body Gnoga is
       Ada.Text_IO.Put_Line (Message);
    end Write_To_Console;
 
+   -----------------
+   -- Log_To_File --
+   -----------------
+
+   procedure Log_To_File (File_Name : in String) is
+      use Ada.Text_IO;
+   begin
+      Create (File => Log_File,
+              Mode => Append_File,
+              Name => File_Name);
+
+      Use_File := True;
+   exception
+      when others =>
+         Gnoga.Write_To_Console ("Failed to open log file " & File_Name);
+   end Log_To_File;
+
    ---------
    -- Log --
    ---------
 
    procedure Log (Message : in String) is
    begin
-      Ada.Text_IO.Put_Line (Message);
+      if Use_File then
+         Ada.Text_IO.Put_Line (Log_File, Message);
+      else
+         Write_To_Console (Message);
+      end if;
    end Log;
 
 end Gnoga;

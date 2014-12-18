@@ -60,4 +60,5 @@ package Gnoga.Application.Singleton is
 
    procedure End_Application;
    --  Terminate application.
+
 end Gnoga.Application.Singleton;

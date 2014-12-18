@@ -549,7 +549,10 @@ package Gnoga.Gui.Base is
                                 Handler : in     Action_Event);
    procedure Fire_On_Destroy (Object : in out Base_Type);
    --  Called before detaching Gnoga object from message queue during
-   --  finalization of Object.
+   --  finalization of Object. As it is possible the connection has been
+   --  broken, and the reason for the event, it is imperative to check if the
+   --  connection is still valid before calling any Gnoga methods with in an
+   --  On_Destroy event.
 
    procedure On_Child_Added_Handler (Object  : in out Base_Type;
                                      Handler : in     Child_Changed_Event);

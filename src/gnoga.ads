@@ -56,6 +56,9 @@ package Gnoga is
    procedure Write_To_Console (Message : in String);
    --  Output message to console
 
+   procedure Log_To_File (File_Name : in String);
+   --  Redirect logging to File_Name instead of console
+
    procedure Log (Message : in String);
    --  Output message to log (currently console)
 end Gnoga;

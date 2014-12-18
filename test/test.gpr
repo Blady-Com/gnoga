@@ -12,7 +12,7 @@ project Test is
                  "db_sqlite.adb", "db_mysql.adb", "db_active.adb",
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb",
                  "jdemo.adb", "svg_demo.adb", "align.adb",
-                 "boot_strap_demo.adb", "singleton.adb");
+                 "boot_strap_demo.adb", "mac_test.adb", "singleton.adb");
 
    package Builder is
       for Executable ("demo.adb") use "gnoga-demo";

@@ -16,12 +16,44 @@ For more information about Gnoga see http://www.gnoga.com
 ### Table of Contents
 
 * Introduction
+   - How does it work?
+   - Is it Mac App Store Compatible?
 * Getting Started
-* Available APIs
+* The MacGap Plugin
 
 ## Introduction
+
 ### How does it work?
 
-### Mac App Store Compatible
+Gnoga takes advantage of a project called MacGap to provide a ready to go XCode project that contains a WebView which is a standard feature of native OS X apps and various extensions to it that provide JavaScript access to common native Mac OS X functionality. A Gnoga app is placed in to the MacGap projet and all of its supporting files. When the MacGap application starts it loads the Gnoga application. Using the MacGap plugin for Gnoga the application has access to all the native features MacGap exposed view JavaScript.
+
+### Is it Mac App Store Compatible?
 
 MacGap which is used by Gnoga for native Mac apps makes use of WebViews which is a standard feature that is available when developing native OS X apps within Xcode. The API that is added is also based on official API's provided by Apple. Therefore there are no dirty hacks, no embedded chrome browser or anything that would stand in your way for Mac App Store submission.
+
+## Getting Started
+
+1. Create a singleton app using Gnoga
+2. Make native support for Mac using:
+     make native_osx
+3. Copy your project's invidual bin, js, etc. directories to deps/MacGap2/public
+4. Modify the index.html file in deps/MacGap2/public to contain the following lines:
+
+   ``` html
+   <script type="text/javascript" charset="utf-8">
+   var p = MacGap.resourcePath + "/public/bin/YOUR_GNOGA_APP_NAME";
+   MacGap.launch (p);
+   window.open("http://127.0.0.1:8080","_self")
+   </script>
+   ```
+
+   Note: The index.html page can be used to display some sort of "loading"
+         message if desired.
+5. From the deps directiory run - open MacGap2/MG.xcodeproj/
+6. Build as you would any native Mac OS X application for XCode
+
+## The MacGap Plugin
+
+Coming soon...
+
+For now use the connection's Execute_Script methods in Gnoga.Server.Connection

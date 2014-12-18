@@ -49,8 +49,6 @@ procedure Align is
       Main_View.Put_Line (Number_Choice.Value);
    end Calculate;
 begin
-   Gnoga.Application.Open_URL_Linux;
-
    Gnoga.Application.Singleton.Initialize (Main_Window);
 
    Main_View.Create (Main_Window);

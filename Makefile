@@ -61,6 +61,12 @@ uninstall:
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
 
+native_osx:
+	- cd deps && git clone https://github.com/MacGapProject/MacGap2.git
+	@echo
+	@echo "Native XCode project is now in deps/MacGap2"
+	@echo "See docs/native_mac_apps.md for instructions"
+
 ace_editor:
 	- cd js && git clone https://github.com/ajaxorg/ace-builds.git
 
@@ -117,6 +123,9 @@ clean:
 	cd tutorial/tutorial-10 && $(CLEANER) -Ptutorial_10.gpr
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
 	- cd deps && rm -rf MultiMarkdown-4
+	- cd docs && rm learn_ada.html
+	- cd docs && rm user_guide.html
+	- cd docs && rm native_mac_apps.html
 	- rm bin/multimarkdown
 	- cd bin && rm *.db
 	- cd bin && rm temp.txt
@@ -130,5 +139,6 @@ bin/multimarkdown:
 	- mv deps/MultiMarkdown-4/multimarkdown bin/
 
 html-docs: bin/multimarkdown
-	cd docs && ../bin/multimarkdown user_manual.md > user_manual.html
+	cd docs && ../bin/multimarkdown user_guide.md > user_guide.html
 	cd docs && ../bin/multimarkdown learn_ada.md > learn_ada.html
+	cd docs && ../bin/multimarkdown native_mac_apps.md > native_mac_apps.html

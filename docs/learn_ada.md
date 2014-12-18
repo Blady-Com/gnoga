@@ -40,8 +40,8 @@ The goal of this guide is _not_ to teach programming, _nor_ to teach everything 
       - Protected Objects
       - Tasks
    * The Ada Standard Library
-   
-   
+
+
 ## Introduction
 ### Reliability Readability Efficiency
 
@@ -96,7 +96,7 @@ If you are new to software development and would like a full text book [Programm
 Make sure that you have gcc/ada on your path:
 
 Type:
-```bash
+```
 gnatmake --version
 ```
 
@@ -270,7 +270,7 @@ The common operators for building an expression in Ada are:
 | high precedence         | **, abs, not        |
 
 /= is not equal
-&  is concatenate 
+&  is concatenate
 
 **Switch cases**
 
@@ -578,4 +578,3 @@ end;
 ### Introduction
 
 One of the most important features of Ada is type safety through both strict static and dynamic typing. Strict typing insures that values are in bound and helps insure that the intet of the programer is fulfilled in the way it was intended.
-

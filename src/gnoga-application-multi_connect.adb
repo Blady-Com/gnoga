@@ -92,6 +92,9 @@ package body Gnoga.Application.Multi_Connect is
             Server.Connection.HTML_On_Close (ID, "No route to path.");
          end if;
       end;
+   exception
+      when others =>
+         Gnoga.Log ("Connection" & ID'Img & " closed by exception.");
    end On_Connect;
 
    ----------------

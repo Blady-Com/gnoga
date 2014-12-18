@@ -36,7 +36,7 @@ MacGap which is used by Gnoga for native Mac apps makes use of WebViews which is
 1. Create a singleton app using Gnoga
 2. Make native support for Mac using:
      make native_osx
-3. Copy your project's invidual bin, js, etc. directories to deps/MacGap2/public
+3. Copy your project's individual bin, js, etc. directories to deps/MacGap2/public
 4. Modify the index.html file in deps/MacGap2/public to contain the following lines:
 
    ``` html
@@ -49,7 +49,7 @@ MacGap which is used by Gnoga for native Mac apps makes use of WebViews which is
 
    Note: The index.html page can be used to display some sort of "loading"
          message if desired.
-5. From the deps directiory run - open MacGap2/MG.xcodeproj/
+5. From the deps directory run - open MacGap2/MG.xcodeproj/
 6. Build as you would any native Mac OS X application for XCode
 
 ## The MacGap Plugin

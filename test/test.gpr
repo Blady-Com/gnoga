@@ -7,12 +7,12 @@ project Test is
    for Source_Dirs use (".");
    for Object_Dir use "../obj";
    for Exec_Dir use "../bin";
-   for Main use ("layouts.adb", "demo.adb", "singleton.adb", "multiuser.adb",
+   for Main use ("layouts.adb", "demo.adb",  "multiuser.adb",
                  "popups.adb", "forms.adb", "canvas_test.adb",
                  "db_sqlite.adb", "db_mysql.adb", "db_active.adb",
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb",
                  "jdemo.adb", "svg_demo.adb", "align.adb",
-                 "boot_strap_demo.adb");
+                 "boot_strap_demo.adb", "singleton.adb");
 
    package Builder is
       for Executable ("demo.adb") use "gnoga-demo";

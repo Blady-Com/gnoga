@@ -17,6 +17,12 @@ For more information about Gnoga see http://www.gnoga.com
 ### Table of Contents
 
 * Introduction to Gnoga
+   - What is Gnoga?
+   - How does Gnoga work?
+   - Where can I use Gnoga?
+   - What can I do with Gnoga?
+   - When would I not use Gnoga?
+   - Who wrote Gnoga?
 * Getting Started
 * Hello World in Gnoga
 * Basic Gnoga concepts
@@ -55,6 +61,20 @@ Gnoga's use of web technologies, lite requirements and flexible communication la
 2. In place of native GUI development that is with in the scope of available web technologies.
 3. Thin client multiuser applications
 4. Remote GUIs to embedded systems
-4. Web base applications
-5. Web site development
+5. Web base applications
+6. Web site development
+7. Collaborative realtime update applications
+8. and so much more...
+
+### When would I not use Gnoga?
+
+Gnoga is ideal for almost all GUI application development. however it wouldn't be the best choice for writing an application that required close integration with the operating system's native UI. That doesn't mean to say you can't combine native UI development with Gnoga or that even in this case often Gnoga is still the ideal solution. 
+
+For example, On Mac OS X, native Gnoga applications often use Mac Gap 2 (http://macgapproject.github.io/). Using Mac Gap Gnoga applications have direct access to most of the native GUI as well. It is also possible to create on any platform a native application with an embedded html 5 widget such as webkit and then have the best of both worlds.
+
+### Who wrote Gnoga?
+
+Gnoga's author is [David Botton](http://botton.com). Gnoga's http and websocket implementation is from Simple Components by [Dmitry A. Kazakov](http://www.dmitry-kazakov.de/).
+
+However with out the good people on the [Gnoga e-mail list](https://lists.sourceforge.net/lists/listinfo/gnoga-list) using, testing and pushing for more Gnoga would not be a reality. I'm sorry for not mentioned everyone by name but the e-mail archives will bear your fame forever.
 

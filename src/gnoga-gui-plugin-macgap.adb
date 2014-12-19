@@ -95,7 +95,7 @@ package body Gnoga.Gui.Plugin.MacGap is
                                  Name   : in     String)
    is
    begin
-      MacGap_Execute (Window, "bounce('" & Name & "')");
+      MacGap_Execute (Window, "launch('" & Name & "')");
    end Launch_Application;
 
    --------------
@@ -141,6 +141,109 @@ package body Gnoga.Gui.Plugin.MacGap is
                         "content: '" & Escape_Quotes (Message) & "', " &
                         "sound: " & Sound'Img & "})");
    end Display_Sheet;
+
+   ----------------
+   -- X_Position --
+   ----------------
+
+   function X_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer
+   is
+   begin
+      return Integer'Value (MacGap_Execute (Window, "Window.x"));
+   end X_Position;
+
+   ----------------
+   -- Y_Position --
+   ----------------
+
+   function Y_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer
+   is
+   begin
+      return Integer'Value (MacGap_Execute (Window, "Window.y"));
+   end Y_Position;
+
+   ------------------
+   -- Is_Maximized --
+   ------------------
+
+   function Is_Maximized (Window : Gnoga.Gui.Window.Window_Type)
+                          return Boolean
+   is
+   begin
+      return MacGap_Execute (Window, "Window.isMaximized") = "true";
+   end Is_Maximized;
+
+   ----------
+   -- Move --
+   ----------
+
+   procedure Move (Window : in out Gnoga.Gui.Window.Window_Type;
+                   X, Y   : in     Integer)
+   is
+   begin
+      MacGap_Execute (Window, "Window.move(" & X'Img & "," & Y'Img & ")");
+   end Move;
+
+   ------------
+   -- Resize --
+   ------------
+
+   procedure Resize (Window : in out Gnoga.Gui.Window.Window_Type;
+                     Width  : in     Integer;
+                     Height : in     Integer)
+   is
+   begin
+      MacGap_Execute (Window,
+                      "Window.resize(" & Width'Img & "," & Height'Img & ")");
+   end Resize;
+
+   -----------
+   -- Title --
+   -----------
+
+   procedure Title (Window : in out Gnoga.Gui.Window.Window_Type;
+                    Value  : in     String)
+   is
+   begin
+      MacGap_Execute (Window, "Window.title('" & Escape_Quotes (Value) & "')");
+   end Title;
+
+   --------------
+   -- Maximize --
+   --------------
+
+   procedure Maximize (Window : in out Gnoga.Gui.Window.Window_Type) is
+   begin
+      MacGap_Execute (Window, "Window.maximize()");
+   end Maximize;
+
+   --------------
+   -- Minimize --
+   --------------
+
+   procedure Minimize (Window : in out Gnoga.Gui.Window.Window_Type) is
+   begin
+      MacGap_Execute (Window, "Window.minimize()");
+   end Minimize;
+
+   -------------
+   -- Restore --
+   -------------
+
+   procedure Restore (Window : in out Gnoga.Gui.Window.Window_Type) is
+   begin
+      MacGap_Execute (Window, "Window.restore()");
+   end Restore;
+
+   ------------------------
+   -- Toggle_Full_Screen --
+   ------------------------
+
+   procedure Toggle_Full_Screen (Window : in out Gnoga.Gui.Window.Window_Type)
+   is
+   begin
+      MacGap_Execute (Window, "Window.toggleFullscreen()");
+   end Toggle_Full_Screen;
 
    ----------------------
    -- Application_Path --

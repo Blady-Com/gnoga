@@ -71,6 +71,29 @@ package Gnoga.Gui.Plugin.MacGap is
                             Sound   : in     Boolean := True);
    --  Display a "sheet" notification on window
 
+   function X_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer;
+   function Y_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer;
+   --  Position of window
+
+   function Is_Maximized (Window : Gnoga.Gui.Window.Window_Type)
+                          return Boolean;
+
+   procedure Move (Window : in out Gnoga.Gui.Window.Window_Type;
+                   X, Y   : in     Integer);
+   --  Move window to position X, Y
+
+   procedure Resize (Window : in out Gnoga.Gui.Window.Window_Type;
+                     Width  : in     Integer;
+                     Height : in     Integer);
+
+   procedure Title (Window : in out Gnoga.Gui.Window.Window_Type;
+                    Value  : in     String);
+
+   procedure Maximize (Window : in out Gnoga.Gui.Window.Window_Type);
+   procedure Minimize (Window : in out Gnoga.Gui.Window.Window_Type);
+   procedure Restore (Window : in out Gnoga.Gui.Window.Window_Type);
+   procedure Toggle_Full_Screen (Window : in out Gnoga.Gui.Window.Window_Type);
+
    function Application_Path (Window : Gnoga.Gui.Window.Window_Type)
                               return String;
    --  Path to Mac application

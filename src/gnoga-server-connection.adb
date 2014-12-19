@@ -183,6 +183,7 @@ package body Gnoga.Server.Connection is
 
    overriding
    procedure Finalize (Client : in out Gnoga_HTTP_Client);
+   --  Handle browser crashes or webkit abrupt closes
 
    overriding
    function Get_Name (Client : Gnoga_HTTP_Client) return String;
@@ -317,17 +318,6 @@ package body Gnoga.Server.Connection is
    begin
       return Gnoga.HTTP_Server_Name;
    end Get_Name;
-
-   --------------
-   -- Finalize --
-   --------------
-
-   overriding
-   procedure Finalize (Client : in out Gnoga_HTTP_Client) is
-   begin
-      Client.Content.Finalized := True;
-      HTTP_Client (Client).Finalize;
-   end Finalize;
 
    -----------------
    -- Do_Get_Head --
@@ -761,7 +751,7 @@ package body Gnoga.Server.Connection is
       --  Return the Socket_Type associated with ID
       --  Raises Connection_Error if ID is not Valid
 
-      function Find_Connetion_ID (Socket : Socket_Type)
+      function Find_Connection_ID (Socket : Socket_Type)
                                   return Gnoga.Types.Connection_ID;
       --  Find the Connetion_ID related to Socket.
 
@@ -884,7 +874,7 @@ package body Gnoga.Server.Connection is
               "Connection most likely was previously closed.";
       end Connection_Socket;
 
-      function Find_Connetion_ID (Socket : Socket_Type)
+      function Find_Connection_ID (Socket : Socket_Type)
                                return Gnoga.Types.Connection_ID
       is
          use type Socket_Maps.Cursor;
@@ -900,7 +890,7 @@ package body Gnoga.Server.Connection is
          end loop;
 
          return Gnoga.Types.No_Connection;
-      end Find_Connetion_ID;
+      end Find_Connection_ID;
 
       procedure Delete_All_Connections is
          procedure Do_Delete (C : in Socket_Maps.Cursor);
@@ -1009,7 +999,7 @@ package body Gnoga.Server.Connection is
          begin
             C := Socket_Map.First;
 
-            while C /= Socket_Map.Last loop
+            while Has_Element (C) loop
                T := C;
                C := Socket_Maps.Next (C);
 
@@ -1205,9 +1195,10 @@ package body Gnoga.Server.Connection is
       S  : Socket_Type := Client'Unchecked_Access;
 
       ID : Gnoga.Types.Connection_ID :=
-             Connection_Manager.Find_Connetion_ID (S);
+             Connection_Manager.Find_Connection_ID (S);
    begin
       if ID /= Gnoga.Types.No_Connection then
+         S.Content.Finalized := True;
          Connection_Manager.Delete_Connection (ID);
 
          if Verbose_Output then
@@ -1229,13 +1220,15 @@ package body Gnoga.Server.Connection is
       S  : Socket_Type := Client'Unchecked_Access;
 
       ID : Gnoga.Types.Connection_ID :=
-             Connection_Manager.Find_Connetion_ID (S);
+             Connection_Manager.Find_Connection_ID (S);
    begin
+      S.Content.Finalized := True;
+
       Gnoga.Log ("Connection error ID" & ID'Img &
                    " with message : " &
                    Ada.Exceptions.Exception_Name (Error) & " - " &
                    Ada.Exceptions.Exception_Message (Error));
-      --  If not reconnected by next ping of ID, connection will be deleted.
+      --  If not reconnected by next watchdog ping connection will be deleted.
    end WebSocket_Error;
 
    --------------------
@@ -1863,4 +1856,26 @@ package body Gnoga.Server.Connection is
       Connection_Manager.Delete_All_Connections;
       Gnoga_HTTP_Server.Stop;
    end Stop;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   overriding
+   procedure Finalize (Client : in out Gnoga_HTTP_Client) is
+   begin
+      if Client.Content.Connection_Type = WebSocket and
+        not Client.Content.Finalized
+      then
+         --  If websocket didn't report connection error or disconnect
+         --  browser crashed or was an embedded webkit shutdown
+         Connection_Manager.Delete_Connection
+           (Connection_Manager.Find_Connection_ID (Client'Unchecked_Access));
+      else
+         Client.Content.Finalized := True;
+      end if;
+
+      HTTP_Client (Client).Finalize;
+   end Finalize;
+
 end Gnoga.Server.Connection;

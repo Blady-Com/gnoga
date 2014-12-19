@@ -734,6 +734,34 @@ package body Gnoga.Gui.Window is
       end if;
    end Fire_On_Error;
 
+   ----------------------
+   -- On_Before_Unload --
+   ----------------------
+
+   procedure On_Before_Unload_Handler (Window  : in out Window_Type;
+                               Handler : in     Gnoga.Gui.Base.Action_Event)
+   is
+   begin
+      if Window.On_Before_Unload_Event /= null then
+         Window.Unbind_Event ("beforeunload");
+      end if;
+
+      Window.On_Before_Unload_Event := Handler;
+
+      if Handler /= null then
+         Window.Bind_Event (Event   => "beforeunload",
+                            Message => "");
+      end if;
+   end On_Before_Unload_Handler;
+
+   procedure Fire_On_Before_Unload (Window : in out Window_Type)
+   is
+   begin
+      if Window.On_Before_Unload_Event /= null then
+         Window.On_Before_Unload_Event (Window);
+      end if;
+   end Fire_On_Before_Unload;
+
    --------------------
    -- On_Hash_Change --
    --------------------
@@ -852,6 +880,8 @@ package body Gnoga.Gui.Window is
          Object.Fire_On_Abort;
       elsif Event = "error" then
          Object.Fire_On_Error;
+      elsif Event = "beforeunload" then
+         Object.Fire_On_Before_Unload;
       elsif Event = "hashchange" then
          Object.Fire_On_Hash_Change;
       elsif Event = "orientationchange" then

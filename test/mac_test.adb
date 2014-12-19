@@ -18,6 +18,7 @@ procedure Mac_Test is
    procedure On_Destroy_Event (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
+      Gnoga.Log ("On Destroy");
       Gnoga.Application.Singleton.End_Application;
    end On_Destroy_Event;
 
@@ -31,4 +32,5 @@ begin
    Main_View.Put_Line ("Hello World in a Mac App!");
 
    Gnoga.Application.Singleton.Message_Loop;
+   Gnoga.Log ("Done");
 end Mac_Test;

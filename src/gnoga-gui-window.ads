@@ -260,6 +260,11 @@ package Gnoga.Gui.Window is
                                Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Error (Window : in out Window_Type);
 
+   procedure On_Before_Unload_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure Fire_On_Before_Unload (Window : in out Window_Type);
+
    procedure On_Hash_Change_Handler
      (Window  : in out Window_Type;
       Handler : in     Gnoga.Gui.Base.Action_Event);
@@ -299,6 +304,7 @@ private
 
          On_Abort_Event              : Gnoga.Gui.Base.Action_Event := null;
          On_Error_Event              : Gnoga.Gui.Base.Action_Event := null;
+         On_Before_Unload_Event      : Gnoga.Gui.Base.Action_Event := null;
          On_Hash_Change_Event        : Gnoga.Gui.Base.Action_Event := null;
          On_Orientation_Change_Event : Gnoga.Gui.Base.Action_Event := null;
          On_Storage_Event            : Storage_Event               := null;

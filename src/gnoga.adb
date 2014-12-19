@@ -57,6 +57,8 @@ package body Gnoga is
       begin
          if C = '"' then
             return "\x22";
+         elsif C = ''' then
+            return "\x27";
          elsif C = Character'Val (10) then
             return "\x0A";
          elsif C = Character'Val (13) then

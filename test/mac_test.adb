@@ -24,12 +24,34 @@ procedure Mac_Test is
 
 begin
    Gnoga.Application.Singleton.Initialize (Main_Window, Verbose => True);
-   Main_Window.On_Destroy_Handler (On_Destroy_Event'Unrestricted_Access);
+   Gnoga.Log_To_File (MacGap.Temp_Path (Main_Window) & "log.txt");
 
    Main_View.Create (Main_Window);
    Main_View.Text_Alignment (Center);
 
    Main_View.Put_Line ("Hello World in a Mac App!");
+   Main_View.Put_Line ("Documents path = " &
+                         MacGap.Documents_Path (Main_Window));
+   Main_View.Put_Line ("Temp path = " &
+                         MacGap.Temp_Path (Main_Window)  & "log.txt");
+
+   MacGap.Open_URL (Main_Window, "http://www.google.com");
+
+   MacGap.System_Beep (Main_Window);
+
+   MacGap.Bounce_Dock_Icon (Main_Window);
+
+   MacGap.Notify_User (Window  => Main_Window,
+                       Title   => "Test message",
+                       Message => "This is cool!",
+                       Sound   => True);
+
+   MacGap.Activate_Application (Main_Window);
+
+   MacGap.Display_Sheet (Window  => Main_Window,
+                         Title   => "Test sheet",
+                         Message => "This is cool!",
+                         Sound   => True);
 
    Gnoga.Application.Singleton.Message_Loop;
    Gnoga.Log ("Done");

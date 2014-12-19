@@ -39,6 +39,175 @@ with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.MacGap is
 
+   --------------------------
+   -- Activate_Application --
+   --------------------------
+
+   procedure Activate_Application
+     (Window : in out Gnoga.Gui.Window.Window_Type)
+   is
+   begin
+      MacGap_Execute (Window, "activate()");
+   end Activate_Application;
+
+   ----------------------
+   -- Hide_Application --
+   ----------------------
+
+   procedure Hide_Application (Window : in out Gnoga.Gui.Window.Window_Type) is
+   begin
+      MacGap_Execute (Window, "hide()");
+   end Hide_Application;
+
+   ------------------------
+   -- Unhide_Application --
+   ------------------------
+
+   procedure Unhide_Application (Window : in out Gnoga.Gui.Window.Window_Type)
+   is
+   begin
+      MacGap_Execute (Window, "unhide()");
+   end Unhide_Application;
+
+   -----------------
+   -- System_Beep --
+   -----------------
+
+   procedure System_Beep (Window : in out Gnoga.Gui.Window.Window_Type) is
+   begin
+      MacGap_Execute (Window, "beep()");
+   end System_Beep;
+
+   ----------------------
+   -- Bounce_Dock_Icon --
+   ----------------------
+
+   procedure Bounce_Dock_Icon (Window : in out Gnoga.Gui.Window.Window_Type) is
+   begin
+      MacGap_Execute (Window, "bounce()");
+   end Bounce_Dock_Icon;
+
+   ------------------------
+   -- Launch_Application --
+   ------------------------
+
+   procedure Launch_Application (Window : in out Gnoga.Gui.Window.Window_Type;
+                                 Name   : in     String)
+   is
+   begin
+      MacGap_Execute (Window, "bounce('" & Name & "')");
+   end Launch_Application;
+
+   --------------
+   -- Open_URL --
+   --------------
+
+   procedure Open_URL (Window : in out Gnoga.Gui.Window.Window_Type;
+                       URL    : in     String)
+   is
+   begin
+      MacGap_Execute (Window, "openURL(""" & URL & """)");
+   end Open_URL;
+
+   -----------------
+   -- Notify_User --
+   -----------------
+
+   procedure Notify_User (Window  : in out Gnoga.Gui.Window.Window_Type;
+                          Title   : in     String;
+                          Message : in     String;
+                          Sound   : in     Boolean := True)
+   is
+   begin
+      MacGap_Execute (Window,
+                      "notify({title: '" & Escape_Quotes (Title) & "', " &
+                        "content: '" & Escape_Quotes (Message) & "', " &
+                        "sound: " & Sound'Img & "})");
+   end Notify_User;
+
+   -------------------
+   -- Display_Sheet --
+   -------------------
+
+   procedure Display_Sheet (Window  : in out Gnoga.Gui.Window.Window_Type;
+                            Title   : in     String;
+                            Message : in     String;
+                            Sound   : in     Boolean := True)
+   is
+   begin
+      MacGap_Execute (Window,
+                      "notify({type: 'sheet', " &
+                        "title: '" & Escape_Quotes (Title) & "', " &
+                        "content: '" & Escape_Quotes (Message) & "', " &
+                        "sound: " & Sound'Img & "})");
+   end Display_Sheet;
+
+   ----------------------
+   -- Application_Path --
+   ----------------------
+
+   function Application_Path (Window : Gnoga.Gui.Window.Window_Type)
+                              return String
+   is
+   begin
+      return MacGap_Execute (Window, "applicationPath");
+   end Application_Path;
+
+   -------------------
+   -- Resource_Path --
+   -------------------
+
+   function Resource_Path (Window : Gnoga.Gui.Window.Window_Type)
+                           return String
+   is
+   begin
+      return MacGap_Execute (Window, "resourcePath");
+   end Resource_Path;
+
+   --------------------
+   -- Documents_Path --
+   --------------------
+
+   function Documents_Path (Window : Gnoga.Gui.Window.Window_Type)
+                            return String
+   is
+   begin
+      return MacGap_Execute (Window, "documentsPath");
+   end Documents_Path;
+
+   ------------------
+   -- Library_Path --
+   ------------------
+
+   function Library_Path (Window : Gnoga.Gui.Window.Window_Type)
+                          return String
+   is
+   begin
+      return MacGap_Execute (Window, "libraryPath");
+   end Library_Path;
+
+   ---------------
+   -- Home_Path --
+   ---------------
+
+   function Home_Path (Window : Gnoga.Gui.Window.Window_Type)
+                       return String
+   is
+   begin
+      return MacGap_Execute (Window, "homePath");
+   end Home_Path;
+
+   ---------------
+   -- Temp_Path --
+   ---------------
+
+   function Temp_Path (Window : Gnoga.Gui.Window.Window_Type)
+                       return String
+   is
+   begin
+      return MacGap_Execute (Window, "tempPath");
+   end Temp_Path;
+
    ---------------------------
    -- Terminate_Application --
    ---------------------------

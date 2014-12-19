@@ -39,6 +39,62 @@ with Gnoga.Gui.Window;
 
 package Gnoga.Gui.Plugin.MacGap is
 
+   procedure Activate_Application
+     (Window : in out Gnoga.Gui.Window.Window_Type);
+
+   procedure Hide_Application (Window : in out Gnoga.Gui.Window.Window_Type);
+
+   procedure Unhide_Application (Window : in out Gnoga.Gui.Window.Window_Type);
+
+   procedure System_Beep (Window : in out Gnoga.Gui.Window.Window_Type);
+
+   procedure Bounce_Dock_Icon (Window : in out Gnoga.Gui.Window.Window_Type);
+
+   procedure Launch_Application (Window : in out Gnoga.Gui.Window.Window_Type;
+                                 Name   : in     String);
+   --  Launch application with Name or Name is a full path to executable, e.g.
+   --    Launch_Application (Window, "TextEdit");
+
+   procedure Open_URL (Window : in out Gnoga.Gui.Window.Window_Type;
+                       URL    : in     String);
+   --  Open URL in default browser
+
+   procedure Notify_User (Window  : in out Gnoga.Gui.Window.Window_Type;
+                          Title   : in     String;
+                          Message : in     String;
+                          Sound   : in     Boolean := True);
+   --  Create a system user notification
+
+   procedure Display_Sheet (Window  : in out Gnoga.Gui.Window.Window_Type;
+                            Title   : in     String;
+                            Message : in     String;
+                            Sound   : in     Boolean := True);
+   --  Display a "sheet" notification on window
+
+   function Application_Path (Window : Gnoga.Gui.Window.Window_Type)
+                              return String;
+   --  Path to Mac application
+
+   function Resource_Path (Window : Gnoga.Gui.Window.Window_Type)
+                           return String;
+   --  Path to Mac application's resource path
+
+   function Documents_Path (Window : Gnoga.Gui.Window.Window_Type)
+                            return String;
+   --  Path to user's documents directory
+
+   function Library_Path (Window : Gnoga.Gui.Window.Window_Type)
+                          return String;
+   --  Path to applications library directory
+
+   function Home_Path (Window : Gnoga.Gui.Window.Window_Type)
+                       return String;
+   --  Path to user's home directory or sandbox home directory
+
+   function Temp_Path (Window : Gnoga.Gui.Window.Window_Type)
+                       return String;
+   --  Path to applications temp directory
+
    procedure Terminate_Application
      (Window : in out Gnoga.Gui.Window.Window_Type);
    --  Closes Mac OS X application

@@ -48,12 +48,11 @@ MacGap which is used by Gnoga for native Mac apps makes use of WebViews which is
    ```
 
    Note: The index.html page can be used to display some sort of "loading"
-         message if desired.
+         message if desired, although usually loading is instant.
 5. From the deps directory run - open MacGap2/MG.xcodeproj/
 6. Build as you would any native Mac OS X application for XCode
 
 ## The MacGap Plugin
 
-Coming soon...
-
-For now use the connection's Execute_Script methods in Gnoga.Server.Connection
+There is extensive support for native Mac OS X functionality via the MacGap
+binding. See Gnoga.Gui.Plugin.MacGap

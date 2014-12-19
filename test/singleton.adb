@@ -76,12 +76,18 @@ procedure Singleton is
    end On_Click;
 
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Gnoga.Log ("Ending application.");
       Gnoga.Application.Singleton.End_Application;
    end End_App;
+
+   procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+   begin
+      Gnoga.Log ("Application terminating.");
+   end On_Destroy;
 begin
    Gnoga.Application.Title ("Test App for Gnoga");
    Gnoga.Application.HTML_On_Close
@@ -92,6 +98,7 @@ begin
                                             Height => 600);
 
    Gnoga.Application.Singleton.Initialize (Main_Window => M, Verbose => False);
+   M.On_Destroy_Handler (On_Destroy'Unrestricted_Access);
 
    Gnoga.Log ("Connection established.");
    Gnoga.Log ("You can add to the path of app, e.g. http://url:8080/abc");
@@ -122,6 +129,8 @@ begin
    C.Start;
 
    Gnoga.Application.Singleton.Message_Loop;
+
+   Gnoga.Log ("Message loop released.");
 
    C.Stop;
 

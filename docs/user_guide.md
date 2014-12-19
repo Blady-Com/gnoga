@@ -78,3 +78,49 @@ Gnoga's author is [David Botton](http://botton.com). Gnoga's http and websocket 
 
 However with out the good people on the [Gnoga e-mail list](https://lists.sourceforge.net/lists/listinfo/gnoga-list) using, testing and pushing for more Gnoga would not be a reality. I'm sorry for not mentioned everyone by name but the e-mail archives will bear your fame forever.
 
+## Getting Started
+
+### Setting up your development environment
+
+Gnoga requies a development environment with gcc/ada 4.7 or above that also implements GNAT.Sockets. Just about every OS, platform and target is supported.
+
+For most environments the instructions to get started can be found at GetAdaNow.com
+
+Once you have set up a gcc/ada compiler you will need to install the git version control system. This is installed by default on Mac OS X and some versions of linux. For Windows there are excellent free versions available on Sourceforge.net
+
+Use the following command with git to check out the latest version of Gnoga:
+
+git clone git://git.code.sf.net/p/gnoga/code gnoga
+
+Once you have cloned gnoga we are ready to starting building it.
+
+### Building Gnoga
+
+If your development environment includes gprtools then run:
+
+```
+make
+```
+
+If your development environment does now, open the Makefile and follow the directions in the Makefile to switch to use gnatmake in its place. Then run as above:
+
+```
+make
+```
+
+This should build the Gnoga framework a demo or two and the tutorials. You can give a try out now by typing:
+
+```
+bin/snake
+```
+
+This will run the snake demo. Open a browser and type http://127.0.0.1:8080 this will connect you to the demo and you can play the classic snake game.
+
+### Installing Gnoga
+
+
+
+
+
+
+

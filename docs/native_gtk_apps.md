@@ -23,7 +23,7 @@ For more information about Gnoga see http://www.gnoga.com
 
 ### How does it work?
 
-Gnoga takes advantage of a libwebkit2gtk to provide a simple Gtk window with an embedded WebKit View.
+Gnoga takes advantage of libwebkit2gtk to provide a simple Gtk window with an embedded WebKit View.
 
 ## Getting Started
 

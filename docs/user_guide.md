@@ -327,3 +327,84 @@ bin/hello
 
 Open a browser to http://127.0.0.1:8080
 
+### A singelton Application
+
+There are two basic application types in Gnoga, Singleton applications and Multi Connect applications. Singleton applications are ideal for desktop applications. They allow only a single connection and then exit when that connection is lost. Since the application will not be accessed in parallel by other connections there is no need to protect data except from parallel incoming events.
+
+To demonstrate the use of a singleton application we will create a simple utility that will allow executing and display the results of a command to the operating system. This example is purposely going to be a bit more complex to help demonstrate various UI concepts with in Gnoga.
+
+First let us generate the skelleton of our singleton application.
+
+```
+gnoga_make new GnogaCMD singleton
+```
+
+If Gnoga was not installed as a default library, we need to modify gnogacmd/src/gnogacmd.gpr with the path to the gnoga.gpr file.
+
+```
+with "../../gnoga/src/gnoga.gpr";
+```
+
+Let's modify the gnogacmd-main.adb file so that a browser window will popup when we start the application.
+
+Uncomment the Open_URL line that applies to your platform in gnogacmd-main.adb:
+
+``` ada
+   -- Gnoga.Application.Open_URL_OSX ("http://127.0.0.1:8080");
+   -- Gnoga.Application.Open_URL_Windows ("http://127.0.0.1:8080");
+   -- Gnoga.Application.Open_URL_Linux ("http://127.0.0.1:8080");
+```
+
+In the gnogacmd directory let's run make which since the first time will create our obj directory for our compiler temporaries and run our application.
+
+```
+cd ~/workspace/gnogacmd
+make
+bin/gnogacmd
+```
+
+Everything should build and your default browser should open with the application. Now let's close the browser window and that should cause the application to stop running as well. If your development environment does not include gprtools, you can replace gprbuild in the Makefile with gnatmake.
+
+We can now get started with creating our application.
+
+First let's discuss how we would like our application to work. Let's mimic the way a shell works by displaying a command prompt, then the results of the command and once the results are returned offer another command prompt.
+
+In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga appliations usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help making the layout of user elements easier and more efficient and also make it easier to reuse the entire interface as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser.
+
+The singelton skelleton application creates a custom view called Default_View_Type and in our application that is contained in GnogaCMD.View. We are going to change the base View_Type for Default_View_Type to a Console_View_Type which automatically provides a scroll bar and scrolls to the end of the last added elements to the Console_View_Type.
+
+To do this we will switch to "with" Gnoga.Gui.View.Console in place of Gnoga.Gui.View and then change the base type of Defaul_View_Type to Gnoga.View.Console.Console_View_Type.
+
+The skelleton provided a generic label and button type, but we are going to replace those with form types for a label, text input and a default submit button. So we will replace the with for Gnoga.Gui.Element.Common with Gnoga.Gui.Element.Form and add a form type to our view the and form elements.
+
+The resulting file should look like this now:
+
+```
+with Gnoga.Gui.Base;
+with Gnoga.Gui.View.Console;
+with Gnoga.Gui.Element.Form;
+
+package GnogaCMD.View is
+   
+   type Default_View_Type is new Gnoga.Gui.View.Console.Console_View_Type with
+      record
+         Entry_Form : Gnoga.Gui.Element.Form.Form_Type;
+         Prompt     : Gnoga.Gui.Element.Form.Label_Type;
+         Cmd_Line   : Gnoga.Gui.Element.Form.Text_Type;
+         Go_Button  : Gnoga.Gui.Element.Form.Submit_Button_Type;
+      end record;
+   type Default_View_Access is access all Default_View_Type;
+   type Pointer_to_Default_View_Class is access all Default_View_Type'Class;
+
+   overriding
+   procedure Create
+     (View    : in out Default_View_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "");
+   
+end GnogaCMD.View;
+```
+
+In gnogacmd-view.adb will set up the user elements in the create procedure.
+

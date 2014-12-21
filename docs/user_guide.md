@@ -16,18 +16,30 @@ For more information about Gnoga see http://www.gnoga.com
 
 ### Table of Contents
 
-* Introduction to Gnoga
-   - What is Gnoga?
-   - How does Gnoga work?
-   - Where can I use Gnoga?
-   - What can I do with Gnoga?
-   - When would I not use Gnoga?
-   - Who wrote Gnoga?
-* Getting Started
-* Hello World in Gnoga
-* Basic Gnoga concepts
-* Getting around the Gnoga packages
-
+   * Introduction to Gnoga
+      - What is Gnoga?
+      - How does Gnoga work?
+      - Where can I use Gnoga?
+      - What can I do with Gnoga?
+      - When would I not use Gnoga?
+      - Who wrote Gnoga?
+   * Getting Started
+      - Setting up your development environment
+      - Building Gnoga
+      - Installing Gnoga
+      - How to get help using Gnoga
+   * Writing Applications in Gnoga
+      - A simple Hello World program
+      - The gnoga_make tool
+      - A singleton application
+      - A multiconnect application
+   * Getting around the Gnoga packages
+   * Gnoga concepts
+      - Multiconnect, data and exceptions
+      - Views
+      - Display, Visible, Hidden
+      - Native applications
+   
 ## Introduction to Gnoga
 ### What is Gnoga
 
@@ -147,4 +159,171 @@ project Gnoga_Web is
    end Builder;
 end Gnoga_Web;
 ```
+
+### How to get help using Gnoga
+
+There is a great community around Gnoga and the Ada language. Here are a few good resources for reaching out for help:
+
+1. The Gnoga E-Mail Support List
+   https://lists.sourceforge.net/lists/listinfo/gnoga-list
+
+2. The Usenet Group - Comp.Lang.Ada
+   https://groups.google.com/forum/#!forum/comp.lang.ada
+
+3. The Freenode #Ada group
+
+## Hello World in Gnoga
+
+### A simple Hello World program
+
+Gnoga provides a tool for setting basic Gnoga projects but for this chapter we are going to manually create our hello world application to learn the details about how a Gnoga application is structured and works.
+
+We are going to assume for this little tutorial that you have checked out or unarchived gnoga in the same directory that we will be building this project.
+
+So lets say it is ~/workspace
+
+We can checkout and make gnoga using:
+
+```
+cd ~/workspace
+git clone git://git.code.sf.net/p/gnoga/code gnoga
+cd gnoga
+make
+```
+
+
+Next lets create our directory structure, we will call our application hello.
+
+```
+cd ~/workspace
+mkdir hello
+cd hello
+mkdir bin
+mkdir src
+mkdir html
+mkdir js
+```
+
+Our root directory for our project we are calling hello after the name of our program, any name of course could be used.
+
+Under our root directory we create a bin directory for our application. The binary for Gnoga applications can be in the bin director or in the root but it is cleaner to have everything in its own place.
+
+We will be place our src files in the src directory, there is no rule that the source files need to be in their own directory, but again it is cleaner.
+
+The additional two directories, html and js, are required. They will contain our "boot" html file in the html directory and the js directory will contain our boot.js and jquery.min.js files.
+
+Let's copy the needed boot files now:
+
+```
+cd ~/workspace/hello
+cp ../gnoga/html/* html/
+cp ../gnoga/js/* js/
+```
+
+Next let's writ our "hello world" application in the src directory. We will create two files, our hello.adb file containing our application and hello.gpr a project file that describes what the compiler should do.
+
+hello.adb:
+
+``` ada
+with Gnoga.Application.Singleton;
+with Gnoga.Gui.Window;
+with Gnoga.Gui.View.Console;
+
+procedure hello is
+   Main_Window : Gnoga.Gui.Window.Window_Type;
+   Main_View   : Gnoga.Gui.View.Console.Console_View_Type;
+begin
+   Gnoga.Application.Singleton.Initialize (Main_Window, Port => 8080);
+   --   Initialize Gnoga for a single connection application that will
+   --   respond to port 8080
+   
+   Main_View.Create (Main_Window);
+   --   Views are containers of elements and are the basic layout mechanism
+   --   for UI objects in Gnoga. In this case our view laysout UI elements
+   --   top to bottom left to right as they are created and offers some
+   --   console like methods for easy output.
+   
+   Main_View.Put_Line ("Hello World!");
+   --   The console view offers a convenient way to write text out to the UI
+   --   as if it was a console application.
+   
+   Gnoga.Application.Singleton.Message_Loop;
+   --   This tells Gnoga to wait until the user has closed the browser window
+   --   or our application notifies it otherwise.
+end hello;
+```
+
+hello.gpr
+
+```
+with "../../gnoga/src/gnoga.gpr";
+
+project hello is
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Exec_Dir use "../bin";
+   for Main use ("hello.adb");
+end hello;
+```
+
+To build our application we simple run:
+
+```
+gprbuild
+```
+
+or if you do not have gprtools use
+
+```
+gnatmake -P hello.gpr
+```
+
+We can now executre our application
+
+```
+cd ~/workspace/hello
+bin/hello
+```
+
+Open a browser and go to the URL: http://127.0.0.1:8080
+
+### The gnoga_make tool
+
+In order to make it easier to get started writing gnoga applications, a tool called gnoga_make is provided to quickly create the needed directories and provide the initial program structure including makefiles, etc.
+
+The syntax for creating a new project is:
+
+```
+gnoga_make new NAME_OF_PROJECT NAME_OF_TEMPLATE
+```
+
+The templates current available are:
+
+- hello_world
+- singleton
+- multi_connect
+
+
+So to to create a simple hello_world program we can do (assuming gnoga was checked out or unarchived at ~/workspace/gnoga):
+
+```
+cd ~/workspace
+gnoga/bin/gnoga_make new hello hello_world
+```
+
+If gnoga was installed use make install then you can skip the next step.
+
+In our gpr file, let's modify where to find gnoga by editting ~/workspace/hello/src/hello.gpr and setting the first line to read
+
+with "../../gnoga/src/gnoga.gpr";
+
+now we can make and run our hello world application:
+
+```
+cd ~/workspace/hello
+make
+bin/hello
+```
+
+Open a browser to http://127.0.0.1:8080
 

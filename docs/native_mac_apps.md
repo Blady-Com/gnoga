@@ -25,11 +25,11 @@ For more information about Gnoga see http://www.gnoga.com
 
 ### How does it work?
 
-Gnoga takes advantage of a project called MacGap to provide a ready to go XCode project that contains a WebView which is a standard feature of native OS X apps and various extensions to it that provide JavaScript access to common native Mac OS X functionality. A Gnoga app is placed in to the MacGap projet and all of its supporting files. When the MacGap application starts it loads the Gnoga application. Using the MacGap plugin for Gnoga the application has access to all the native features MacGap exposed view JavaScript.
+Gnoga takes advantage of a project called MacGap to provide a ready to go XCode project that contains a WebView which is a standard feature of native OS X apps and various extensions to it that provide JavaScript access to common native Mac OS X functionality. A Gnoga app is placed in to the MacGap project and all of its supporting files. When the MacGap application starts it loads the Gnoga application. Using the MacGap plugin for Gnoga the application has access to all the native features MacGap exposed view JavaScript.
 
 ### Is it Mac App Store Compatible?
 
-MacGap which is used by Gnoga for native Mac apps makes use of WebViews which is a standard feature that is available when developing native OS X apps within Xcode. The API that is added is also based on official API's provided by Apple. Therefore there are no dirty hacks, no embedded chrome browser or anything that would stand in your way for Mac App Store submission.
+MacGap which is used by Gnoga for native Mac apps makes use of WebViews which is a standard feature that is available when developing native OS X apps within XCode. The API that is added is also based on official API's provided by Apple. Therefore there are no dirty hacks, no embedded chrome browser or anything that would stand in your way for Mac App Store submission.
 
 ## Getting Started
 

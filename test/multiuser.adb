@@ -107,8 +107,6 @@ procedure Multiuser is
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Main_Window.Document.Body_Element.Inner_HTML ("Application closed.");
-
       Log ("Ending Application");
       Application.Multi_Connect.End_Application;
    end End_App;
@@ -133,6 +131,8 @@ procedure Multiuser is
       Img : Gnoga.Gui.Element.Common.IMG_Type;
    begin
       Main_Window.Connection_Data (App);
+      Main_Window.On_Destroy_Handler (End_App'Unrestricted_Access);
+      --  Turns multi_connect in to a single connect
 
       App.Main_Window := Main_Window'Unchecked_Access;
 

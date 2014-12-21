@@ -556,7 +556,7 @@ declare
    X : Param_Type;
    Y : Param_Type;
 begin
-   My_Procecure (X);
+   My_Procedure (X);
    Y := My_Function (X);
 end;
 ```
@@ -568,7 +568,7 @@ declare
    X : Param_Type;
    Y : Param_Type;
 begin
-   My_Procecure (Param_Name => X);
+   My_Procedure (Param_Name => X);
    Y := My_Function (Param_Name => X);
 end;
 ```

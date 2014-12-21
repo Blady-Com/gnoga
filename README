@@ -1,7 +1,7 @@
 GNOGA - The GNU Omnificent GUI for Ada
 http://www.gnoga.com
 
-Full documentation sets are in the works (user guids, reference manuals), in
+Full documentation sets are in the works (user guides, reference manuals), in
 the interim read through each README in the /tutorial directories for the
 basics on writing Gnoga applications. The Ada specs are fairly well documented
 and will help as well.
@@ -29,9 +29,9 @@ And it will generate a full project ready to go for your own application.
 
 see: DEPLOYING_APPS and DEVELOPING_APPS for more tips on Gnoga applications
 
-Gnoga includes a copy of Dmitry A. Kazakov's Simple Components and uses it for http and websockets. See deps/simple_components/components.htm for details. It includes an incredible wealth of Ada components you can incoroprate in your software freely and is under the GMGPLv2.
+Gnoga includes a copy of Dmitry A. Kazakov's Simple Components and uses it for http and websockets. See deps/simple_components/components.htm for details. It includes an incredible wealth of Ada components you can incorporate in your software freely and is under the GMGPLv2.
 
-Previously a modified version of Cairo bindings for pdf, png and svg output was included. They are available seperately in the Gnoga Marketplace http://www.gnoga.com
+Previously a modified version of Cairo bindings for pdf, png and svg output was included. They are available separately in the Gnoga Marketplace http://www.gnoga.com
 
 Gnoga currently has the following packages:
 
@@ -49,7 +49,7 @@ Gnoga currently has the following packages:
       Gnoga.Gui.Location
       Gnoga.Gui.Document
 
-3. Application startup services
+3. Application start up services
       Gnoga.Server.Application.Singleton - Desktop apps
       Gnoga.Server.Application.Multi_Connect - Multiuser / Web apps
 
@@ -61,7 +61,7 @@ Gnoga currently has the following packages:
 
 5. Gnoga client side application APIs
       Gnoga.Client.Storage - local persistent and session storage on browser
-      Gnoga.Client.Bind_Page - Bind to all elments on pre-made html5 pages
+      Gnoga.Client.Bind_Page - Bind to all elements on pre-made html5 pages
 
 6. Gnoga database bindings and server side APIs
       Gnoga.Server.Database - support for MySQL and SQLite 3
@@ -76,8 +76,8 @@ Gnoga currently has the following packages:
 
 8. Plugin bindings to existing JavaScript libraries
       Gnoga.Gui.Plugin.Ace_Editor - Full editor with Ada syntax highlighting
-      Gnoga.Gui.Plugin.jQuery - jQuery support to acces non-Gnoga Elements
-      Gnoga.Gui.Plugin.jQueryUI - all the JQueryUI Interactions and Effects
+      Gnoga.Gui.Plugin.jQuery - jQuery support to access non-Gnoga Elements
+      Gnoga.Gui.Plugin.jQueryUI - all the jQueryUI Interactions and Effects
       Gnoga.Gui.Plugin.jQueryUI.Widgets - the jQueryUI Widgets
 
 9. Native Desktop and Mobile Application Support coming:

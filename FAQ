@@ -55,7 +55,7 @@ Q) How to compile Gnoga on Debian (wheezy)?
 
 A) You will need to use a more recent version of gcc/ada currently. Using the gcc/ada from Debian Jesse works well.
 
-Q) How to use Gnoga on a Rasbery Pi?
+Q) How to use Gnoga on a Raspberry Pi?
 
 A) If you are using Raspbian you need to make sure it is Raspbian based on Debian Jessie or later. If you are running the Raspbian based on Wheezy you can use the following to upgrade you Pi to Jessie:
 
@@ -70,11 +70,7 @@ sudo apt-get install gnat
 
 Q) Do I need Sqlite3 or MySQL installed to use Gnoga?
 
-A) Only if you choose to build database apps or compilie the database examples. You can disable compiling the MySQL example if you want to just use SqlLite3.
-
-Q) Do I need to have Cairo installed?
-
-A) Only if you choose to use the Cairo bindings to produce bitmaps, PDFs or SVGs. They are not used by Gnoga internally.
+A) Only if you choose to build database apps or compile the database examples. You can disable compiling the MySQL example if you want to just use SqlLite3.
 
 Q) How do I get sqlite3 and MySQL on my Mac for use with Gnoga?
 
@@ -107,17 +103,17 @@ A) Yes, there are a number of ways of doing it. As time permits various examples
 - http://www.tidesdk.org/
 - https://github.com/apache/cordova-osx
 
-Q) Can I buid native iOS apps for my iPhone or iPad?
+Q) Can I build native iOS apps for my iPhone or iPad?
 
 A) In theory it should be possible using GNAT with an LLVM backend and PhoneGAP. I have not explored it yet.
 
-Q) Can I buid native Android Apps?
+Q) Can I build native Android Apps?
 
 A) In theory it should be possible using gcc/ada with an Android target and PhoneGAP. I have not explored it yet.
 
 Q) Can I build _native_ Chromebook apps?
 
-A) It should be possible using gcc/ada, I have not yet explored the requirements for it, but Chromebooks are running linux and Google does have a spec for it.
+A) It should be possible using gcc/ada, I have not yet explored the requirements for it, but Chromebooks are running Linux and Google does have a spec for it.
 
 Q) Is it possible to use a reverse proxies / load balancers with Gnoga Apps?
 
@@ -145,7 +141,7 @@ Example of Gnoga application as its own domain:
     CustomLog ${APACHE_LOG_DIR}/gnoga.log common
 </VirtualHost>
 
-Example of a Gnoga application as a subdirectory on a larger site using apache:
+Example of a Gnoga application as a subdirectory on a larger site using Apache:
 
 <VirtualHost *:80>
     ServerName gnoga.com

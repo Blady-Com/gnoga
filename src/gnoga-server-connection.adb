@@ -1740,13 +1740,13 @@ package body Gnoga.Server.Connection is
       On_Post_File_Event := Event;
    end On_Post_File_Handler;
 
-   ----------------------
-   -- Search_Parameter --
-   ----------------------
+   --------------------
+   -- Form_Parameter --
+   --------------------
 
    function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
-                              Name : String)
-                              return String
+                            Name : String)
+                            return String
    is
    begin
       return Execute_Script (ID, "params['" & Name & "'];");
@@ -1812,9 +1812,9 @@ package body Gnoga.Server.Connection is
       ID_Machine.Next_ID (New_ID);
    end New_Unique_ID;
 
-   --------------
+   -------------
    -- New_GID --
-   --------------
+   -------------
 
    function New_GID return String is
       New_ID : Gnoga.Types.Unique_ID;

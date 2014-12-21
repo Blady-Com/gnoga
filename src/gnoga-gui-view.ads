@@ -138,7 +138,7 @@ package Gnoga.Gui.View is
 
    function Element_Names (View : View_Base_Type)
                            return Gnoga.Types.Data_Array_Type;
-   --  Retrn an array of all the names of elements in the view's element
+   --  Return an array of all the names of elements in the view's element
    --  array
 
    -------------------------------------------------------------------------

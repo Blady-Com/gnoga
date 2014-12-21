@@ -292,11 +292,11 @@ package Gnoga.Gui.Base is
 
    type Keyboard_Event_Record is
       record
-         Key_Code      : Integer;
-         Alt           : Boolean := False;
-         Control       : Boolean := False;
-         Shift         : Boolean := False;
-         Meta          : Boolean := False;
+         Key_Code : Integer;
+         Alt      : Boolean := False;
+         Control  : Boolean := False;
+         Shift    : Boolean := False;
+         Meta     : Boolean := False;
       end record;
 
    type Keyboard_Event is access
@@ -396,8 +396,8 @@ package Gnoga.Gui.Base is
 
    procedure On_Mouse_Click_Handler (Object  : in out Base_Type;
                                      Handler : in     Mouse_Event);
-   procedure Fire_On_Mouse_Click (Object   : in out Base_Type;
-                                  Event    : in     Mouse_Event_Record);
+   procedure Fire_On_Mouse_Click (Object : in out Base_Type;
+                                  Event  : in     Mouse_Event_Record);
    --  Handle mouse click events, but also return mouse event data
 
    procedure On_Context_Menu_Handler (Object  : in out Base_Type;
@@ -407,8 +407,8 @@ package Gnoga.Gui.Base is
 
    procedure On_Mouse_Right_Click_Handler (Object  : in out Base_Type;
                                            Handler : in     Mouse_Event);
-   procedure Fire_On_Mouse_Right_Click (Object   : in out Base_Type;
-                                        Event    : in     Mouse_Event_Record);
+   procedure Fire_On_Mouse_Right_Click (Object : in out Base_Type;
+                                        Event  : in     Mouse_Event_Record);
    --  Handle mouse right click event, but also return mouse event data
 
    procedure On_Double_Click_Handler (Object  : in out Base_Type;
@@ -418,8 +418,8 @@ package Gnoga.Gui.Base is
 
    procedure On_Mouse_Double_Click_Handler (Object  : in out Base_Type;
                                             Handler : in     Mouse_Event);
-   procedure Fire_On_Mouse_Double_Click (Object   : in out Base_Type;
-                                         Event    : in     Mouse_Event_Record);
+   procedure Fire_On_Mouse_Double_Click (Object : in out Base_Type;
+                                         Event  : in     Mouse_Event_Record);
    --  Handle mouse double click events, but also return mouse event data
 
    procedure On_Mouse_Enter_Handler (Object  : in out Base_Type;
@@ -435,30 +435,30 @@ package Gnoga.Gui.Base is
    procedure On_Mouse_Over_Handler (Object  : in out Base_Type;
                                      Handler : in     Action_Event);
    procedure Fire_On_Mouse_Over (Object : in out Base_Type);
-   --  Handle mouse enter to object or it's children events
+   --  Handle mouse enter to object events or it's children events
 
    procedure On_Mouse_Out_Handler (Object  : in out Base_Type;
                                    Handler : in     Action_Event);
    procedure Fire_On_Mouse_Out (Object : in out Base_Type);
-   --  Handle mouse leave object or it's children events
+   --  Handle mouse leave object events or it's children events
 
    procedure On_Mouse_Down_Handler (Object  : in out Base_Type;
                                     Handler : in     Mouse_Event);
-   procedure Fire_On_Mouse_Down (Object   : in out Base_Type;
-                                 Event    : in     Mouse_Event_Record);
+   procedure Fire_On_Mouse_Down (Object : in out Base_Type;
+                                 Event  : in     Mouse_Event_Record);
    --  Handle mouse down events
 
    procedure On_Mouse_Up_Handler (Object  : in out Base_Type;
                                   Handler : in     Mouse_Event);
-   procedure Fire_On_Mouse_Up (Object   : in out Base_Type;
-                               Event    : in     Mouse_Event_Record);
-   --  Handle mouse down events
+   procedure Fire_On_Mouse_Up (Object : in out Base_Type;
+                               Event  : in     Mouse_Event_Record);
+   --  Handle mouse up events
 
    procedure On_Mouse_Move_Handler (Object  : in out Base_Type;
                                     Handler : in     Mouse_Event);
-   procedure Fire_On_Mouse_Move (Object   : in out Base_Type;
-                                 Event    : in     Mouse_Event_Record);
-   --  Handle mouse down events
+   procedure Fire_On_Mouse_Move (Object : in out Base_Type;
+                                 Event  : in     Mouse_Event_Record);
+   --  Handle mouse move events
 
    --  Drag and Drop Events --
 
@@ -546,7 +546,7 @@ package Gnoga.Gui.Base is
    --  queue.
 
    procedure On_Destroy_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event);
+                                 Handler : in     Action_Event);
    procedure Fire_On_Destroy (Object : in out Base_Type);
    --  Called before detaching Gnoga object from message queue during
    --  finalization of Object. As it is possible the connection has been

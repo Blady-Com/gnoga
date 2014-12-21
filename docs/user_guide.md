@@ -118,9 +118,33 @@ This will run the snake demo. Open a browser and type http://127.0.0.1:8080 this
 
 ### Installing Gnoga
 
+There are many ways to incorporate Gnoga in to new projects. In environments with GPR tools it is possible install Gnoga as a "standard" library using:
 
+```
+make install
+```
 
+Once done it is possible to incorporate Gnoga in to projects by just adding with "gnoga". It also installs gnoga_make in to the same directory as the gcc/ada executable gnat.
 
+It is not neccessary though to install Gnoga to use it. Only to place the correct path to gnoga in to the "with" in your gpr file. For example:
 
+```
+with "../../gnoga/src/gnoga.gpr";
 
+project Gnoga_Web is
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use "../obj";
+   for Exec_Dir use "../bin";
+   for Main use ("gnoga_web-main.adb","source_view.adb");
+
+   package Binder is
+     for Default_Switches ("ada") use ("-E");
+   end Binder;
+
+   package Builder is
+      for Executable ("gnoga_web-main.adb") use "gnoga_web";
+   end Builder;
+end Gnoga_Web;
+```
 

@@ -126,6 +126,7 @@ clean:
 	- cd docs && rm learn_ada.html
 	- cd docs && rm user_guide.html
 	- cd docs && rm native_mac_apps.html
+	- cd docs && rm native_gtk_apps.html
 	- rm bin/multimarkdown
 	- cd bin && rm *.db
 	- cd bin && rm temp.txt
@@ -142,3 +143,4 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown user_guide.md > user_guide.html
 	cd docs && ../bin/multimarkdown learn_ada.md > learn_ada.html
 	cd docs && ../bin/multimarkdown native_mac_apps.md > native_mac_apps.html
+	cd docs && ../bin/multimarkdown native_gtk_apps.md > native_gtk_apps.html

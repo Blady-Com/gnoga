@@ -18,7 +18,6 @@ For more information about Gnoga see http://www.gnoga.com
 * Introduction
    - How does it work?
 * Getting Started
-* The MacGap Plugin
 
 ## Introduction
 

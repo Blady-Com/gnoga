@@ -238,6 +238,17 @@ package body Gnoga.Gui.Window is
       Element_Type (Object).Box_Width (Window.Width);
    end Set_View;
 
+   --------------
+   -- Get_View --
+   --------------
+
+   function Get_View (Window : Window_Type)
+                      return Gnoga.Gui.Base.Pointer_To_Base_Class
+   is
+   begin
+      return Window.View;
+   end Get_View;
+
    -----------------
    -- Remove_View --
    -----------------

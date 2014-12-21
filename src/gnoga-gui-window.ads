@@ -112,6 +112,10 @@ package Gnoga.Gui.Window is
    --  deallocated on finalization of Window if it has not been removed using
    --  Window.Remove_View
 
+   function Get_View (Window : Window_Type)
+                      return Gnoga.Gui.Base.Pointer_To_Base_Class;
+   --  Returns the current view attached to Window or null
+
    procedure Remove_View (Window : in out Window_Type);
    --  Remove the current View Object from Window
 

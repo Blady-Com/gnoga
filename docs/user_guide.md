@@ -1,4 +1,4 @@
-# The Gnoga User Guide
+﻿# The Gnoga User Guide
 ## Gnoga - The GNU Omnificent GUI for Ada
 ## The Ada Open-Source Mission-Critical Cloud, Desktop and Mobile Application Development Framework
 
@@ -75,7 +75,7 @@ Gnoga's use of web technologies, lite requirements and flexible communication la
 4. Remote GUIs to embedded systems
 5. Web base applications
 6. Web site development
-7. Collaborative realtime update applications
+7. Collaborative real-time update applications
 8. and so much more...
 
 ### When would I not use Gnoga?
@@ -94,15 +94,17 @@ However with out the good people on the [Gnoga e-mail list](https://lists.source
 
 ### Setting up your development environment
 
-Gnoga requies a development environment with gcc/ada 4.7 or above that also implements GNAT.Sockets. Just about every OS, platform and target is supported.
+Gnoga requires a development environment with gcc/ada 4.7 or above that also implements GNAT.Sockets. Just about every OS, platform and target is supported.
 
 For most environments the instructions to get started can be found at GetAdaNow.com
 
-Once you have set up a gcc/ada compiler you will need to install the git version control system. This is installed by default on Mac OS X and some versions of linux. For Windows there are excellent free versions available on Sourceforge.net
+Once you have set up a gcc/ada compiler you will need to install the git version control system. This is installed by default on Mac OS X and some versions of Linux. For Windows there are excellent free versions available on Sourceforge.net
 
 Use the following command with git to check out the latest version of Gnoga:
 
+```
 git clone git://git.code.sf.net/p/gnoga/code gnoga
+```
 
 Once you have cloned gnoga we are ready to starting building it.
 
@@ -138,9 +140,9 @@ make install
 
 Once done it is possible to incorporate Gnoga in to projects by just adding with "gnoga". It also installs gnoga_make in to the same directory as the gcc/ada executable gnat.
 
-It is not neccessary though to install Gnoga to use it. Only to place the correct path to gnoga in to the "with" in your gpr file. For example:
+It is not necessary though to install Gnoga to use it. Only to place the correct path to gnoga in to the "with" in your gpr file. For example:
 
-```
+``` ada
 with "../../gnoga/src/gnoga.gpr";
 
 project Gnoga_Web is
@@ -239,7 +241,7 @@ begin
    
    Main_View.Create (Main_Window);
    --   Views are containers of elements and are the basic layout mechanism
-   --   for UI objects in Gnoga. In this case our view laysout UI elements
+   --   for UI objects in Gnoga. In this case our view lays out UI elements
    --   top to bottom left to right as they are created and offers some
    --   console like methods for easy output.
    
@@ -278,7 +280,7 @@ or if you do not have gprtools use
 gnatmake -P hello.gpr
 ```
 
-We can now executre our application
+We can now execute our application
 
 ```
 cd ~/workspace/hello
@@ -289,7 +291,7 @@ Open a browser and go to the URL: http://127.0.0.1:8080
 
 ### The gnoga_make tool
 
-In order to make it easier to get started writing gnoga applications, a tool called gnoga_make is provided to quickly create the needed directories and provide the initial program structure including makefiles, etc.
+In order to make it easier to get started writing gnoga applications, a tool called gnoga_make is provided to quickly create the needed directories and provide the initial program structure including Makefile, etc.
 
 The syntax for creating a new project is:
 
@@ -315,7 +317,9 @@ If gnoga was installed use make install then you can skip the next step.
 
 In our gpr file, let's modify where to find gnoga by editting ~/workspace/hello/src/hello.gpr and setting the first line to read
 
+```
 with "../../gnoga/src/gnoga.gpr";
+```
 
 now we can make and run our hello world application:
 
@@ -333,7 +337,7 @@ There are two basic application types in Gnoga, Singleton applications and Multi
 
 To demonstrate the use of a singleton application we will create a simple utility that will allow executing and display the results of a command to the operating system. This example is purposely going to be a bit more complex to help demonstrate various UI concepts with in Gnoga.
 
-First let us generate the skelleton of our singleton application.
+First let us generate the skeleton of our singleton application.
 
 ```
 gnoga_make new GnogaCMD singleton
@@ -345,7 +349,7 @@ If Gnoga was not installed as a default library, we need to modify gnogacmd/src/
 with "../../gnoga/src/gnoga.gpr";
 ```
 
-Let's modify the gnogacmd-main.adb file so that a browser window will popup when we start the application.
+Let's modify the gnogacmd-main.adb file so that a browser window will pop up when we start the application.
 
 Uncomment the Open_URL line that applies to your platform in gnogacmd-main.adb:
 
@@ -369,17 +373,17 @@ We can now get started with creating our application.
 
 First let's discuss how we would like our application to work. Let's mimic the way a shell works by displaying a command prompt, then the results of the command and once the results are returned offer another command prompt.
 
-In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga appliations usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help making the layout of user elements easier and more efficient and also make it easier to reuse the entire interface as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser.
+In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga applications usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help making the layout of user elements easier and more efficient and also make it easier to reuse the entire interface as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser.
 
-The singelton skelleton application creates a custom view called Default_View_Type and in our application that is contained in GnogaCMD.View. We are going to change the base View_Type for Default_View_Type to a Console_View_Type which automatically provides a scroll bar and scrolls to the end of the last added elements to the Console_View_Type.
+The singelton skeleton application creates a custom view called Default_View_Type and in our application that is contained in GnogaCMD.View. We are going to change the base View_Type for Default_View_Type to a Console_View_Type which automatically provides a scroll bar and scrolls to the end of the last added elements to the Console_View_Type.
 
 To do this we will switch to "with" Gnoga.Gui.View.Console in place of Gnoga.Gui.View and then change the base type of Defaul_View_Type to Gnoga.View.Console.Console_View_Type.
 
-The skelleton provided a generic label and button type, but we are going to replace those with form types for a label, text input and a default submit button. So we will replace the with for Gnoga.Gui.Element.Common with Gnoga.Gui.Element.Form and add a form type to our view the and form elements.
+The skeleton provided a generic label and button type, but we are going to replace those with form types for a label, text input and a default submit button. So we will replace the with for Gnoga.Gui.Element.Common with Gnoga.Gui.Element.Form and add a form type to our view the and form elements.
 
 The resulting file should look like this now:
 
-```
+``` ada
 with Gnoga.Gui.Base;
 with Gnoga.Gui.View.Console;
 with Gnoga.Gui.Element.Form;

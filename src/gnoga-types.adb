@@ -77,15 +77,21 @@ package body Gnoga.Types is
       P    : Integer := Value'First;
    begin
       if Value'Length = 7 then
-         RGBA.Red   := Integer'Value ("16#" & Value ((P + 1) .. (P + 2)));
-         RGBA.Green := Integer'Value ("16#" & Value ((P + 3) .. (P + 4)));
-         RGBA.Blue  := Integer'Value ("16#" & Value ((P + 5) .. (P + 6)));
+         RGBA.Red   := Integer'Value
+           ("16#" & Value ((P + 1) .. (P + 2)) & '#');
+         RGBA.Green := Integer'Value
+           ("16#" & Value ((P + 3) .. (P + 4)) & '#');
+         RGBA.Blue  := Integer'Value
+           ("16#" & Value ((P + 5) .. (P + 6)) & '#');
       elsif Value'Length = 9 then
          RGBA.Alpha := Alpha_Type
-           (Integer'Value ("16#" & Value ((P + 1) .. (P + 2)))) / 255;
-         RGBA.Red   := Integer'Value ("16#" & Value ((P + 3) .. (P + 4)));
-         RGBA.Green := Integer'Value ("16#" & Value ((P + 5) .. (P + 6)));
-         RGBA.Blue  := Integer'Value ("16#" & Value ((P + 7) .. (P + 8)));
+           (Integer'Value ("16#" & Value ((P + 1) .. (P + 2)) & '#')) / 255;
+         RGBA.Red   := Integer'Value
+           ("16#" & Value ((P + 3) .. (P + 4)) & '#');
+         RGBA.Green := Integer'Value
+           ("16#" & Value ((P + 5) .. (P + 6)) & '#');
+         RGBA.Blue  := Integer'Value
+           ("16#" & Value ((P + 7) .. (P + 8)) & '#');
       else
          Log ("Invalid Hex value for rbga value from " & Value);
       end if;

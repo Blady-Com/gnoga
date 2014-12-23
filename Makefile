@@ -31,6 +31,9 @@ else
 ifeq ($(strip $(findstring mingw32, $(TARGET))),mingw32)
 	PRJ_TARGET=Windows
 else
+ifeq ($(strip $(findstring cygwin, $(TARGET))),cygwin)
+	PRJ_TARGET=Windows
+else
 ifeq ($(strip $(findstring freebsd, $(TARGET))),freebsd)
 	PRJ_TARGET=Freebsd
 else
@@ -38,6 +41,7 @@ ifeq ($(strip $(findstring linux, $(TARGET))),linux)
 	PRJ_TARGET=Linux
 else
 	PRJ_TARGET=Unix
+endif
 endif
 endif
 endif

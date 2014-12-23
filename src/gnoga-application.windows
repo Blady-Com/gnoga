@@ -4,7 +4,7 @@
 --                                                                          --
 --                     G N O G A . A P P L I C A T I O N                    --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,45 +35,94 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Types;
+with Ada.Strings.Unbounded;
 
-package Gnoga.Application is
-   --  Application packages simplify the management of single or multipage
-   --  Gnoga GUIs.
+with GNAT.OS_Lib;
 
-   procedure Title (Name : in String);
-   function Title return String;
-   --  Set the name of the application. This will automatically set the
-   --  browser window title to Name on new connections.
+package body Gnoga.Application is
+   App_Name : Ada.Strings.Unbounded.Unbounded_String :=
+     Ada.Strings.Unbounded.To_Unbounded_String
+       ("Gnoga - The GNU Omnificent GUI for Ada");
 
-   procedure HTML_On_Close (HTML : String);
-   function HTML_On_Close return String;
-   --  Set the HTML that will display on all clients when connection is
-   --  terminated or application is closed. By default an alert box will
-   --  be displayed stating connection has been closed, but the current
-   --  state of the browser window will be left as is. This value is
-   --  sent on connection to application and therefore must be set before
-   --  incoming connections. To change after connection has been established
-   --  see Gnoga.Connections.HTML_On_Close
+   HTML_For_On_Close : Ada.Strings.Unbounded.Unbounded_String;
 
-   --  The following browser launcher procedures spawn processes. On some
-   --  OSes this can lead to instabilities for multi tasking apps if not
-   --  spawned at program start. Therefore these if used should be used
-   --  before the application initialization is called.
+   ----------------------
+   -- Application_Name --
+   ----------------------
 
-   procedure Open_URL_OSX (url : String := "http://127.0.0.1:8080");
-   --  Open the default browser on Mac OS X
+   procedure Title (Name : in String) is
+   begin
+      App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
+   end Title;
 
-   procedure Open_URL_Linux (url : String := "http://127.0.0.1:8080");
-   --  Open the default browser on Linux
-   --  Uses /usr/bin/xdg-open
+   function Title return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (App_Name);
+   end Title;
 
-   procedure Open_URL_Windows (url : String := "http://127.0.0.1:8080");
-   --  Open the default browser on Windows
+   -------------------
+   -- HTML_On_Close --
+   -------------------
 
-   procedure Open_URL (url : String := "http://127.0.0.1:8080");
-   --  By default this calls Open_URL_Linux, however the Makefile
-   --  if it identfies Gnoga is being compiled on Mac OS X or Windows
-   --  it will switch to use the appropriate procedure.
+   procedure HTML_On_Close (HTML : String) is
+   begin
+      HTML_For_On_Close := Ada.Strings.Unbounded.To_Unbounded_String (HTML);
+   end HTML_On_Close;
+
+   function HTML_On_Close return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (HTML_For_On_Close);
+   end HTML_On_Close;
+
+   ------------------
+   -- Open_URL_OSX --
+   ------------------
+
+   procedure Open_URL_OSX (url : String := "http://127.0.0.1:8080") is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/open " & url);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_OSX;
+
+   --------------------
+   -- Open_URL_Linux --
+   --------------------
+
+   procedure Open_URL_Linux (url : String := "http://127.0.0.1:8080") is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/xdg-open " & url);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_Linux;
+
+   ----------------------
+   -- Open_URL_Windows --
+   ----------------------
+
+   procedure Open_URL_Windows (url : String := "http://127.0.0.1:8080") is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("cmd /c start " & url);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_Windows;
+
+   --------------
+   -- Open_URL --
+   --------------
+
+   procedure Open_URL (url : String := "http://127.0.0.1:8080") is
+   begin
+      Open_URL_Windows (url);
+   end Open_URL;
 
 end Gnoga.Application;

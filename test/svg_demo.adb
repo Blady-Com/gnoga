@@ -78,7 +78,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL_OSX;
+   Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end SVG_Demo;

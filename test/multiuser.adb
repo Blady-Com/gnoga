@@ -212,7 +212,7 @@ begin
    Application.Multi_Connect.On_Connect_Handler
      (On_Connect_2'Unrestricted_Access, "/demo");
 
-   Application.Open_URL_OSX;
+   Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Multiuser;

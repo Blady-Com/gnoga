@@ -211,7 +211,7 @@ begin
    Gnoga.Server.Connection.On_Post_File_Handler
      (On_Post_File'Unrestricted_Access);
 
-   Application.Open_URL_OSX;
+   Application.Open_URL;
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

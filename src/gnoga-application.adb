@@ -116,4 +116,13 @@ package body Gnoga.Application is
          Args         => Args (Args'First + 1 .. Args'Last));
    end Open_URL_Windows;
 
+   --------------
+   -- Open_URL --
+   --------------
+
+   procedure Open_URL (url : String := "http://127.0.0.1:8080") is
+   begin
+      Open_URL_Linux (url);
+   end Open_URL;
+
 end Gnoga.Application;

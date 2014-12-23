@@ -1,5 +1,4 @@
 PREFIX=$(dir $(shell which gnatls))..
-TARGET=$(shell gcc -dumpmachine)
 
 # If you do no have grptools comment out these two lines and uncomment one of
 # the lines below.
@@ -24,19 +23,48 @@ CLEANER=gprclean
 #BUILDER=x86_64-w64-mingw32-gnatmake.exe
 #CLEANER=x86_64-w64-mingw32-gnatclean.exe
 
+TARGET=$(shell gcc -dumpmachine)
+
 ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
 	PRJ_TARGET=OSX
+else
+ifeq ($(strip $(findstring mingw32, $(TARGET))),mingw32)
+	PRJ_TARGET=Windows
+else
+ifeq ($(strip $(findstring freebsd, $(TARGET))),freebsd)
+	PRJ_TARGET=Freebsd
+else
+ifeq ($(strip $(findstring linux, $(TARGET))),linux)
+	PRJ_TARGET=Linux
+else
+	PRJ_TARGET=Unix
+endif
+endif
+endif
 endif
 
 all: gnoga gnoga_tools snake mine_detector tutorials 
 
-gnoga:
+setup:
+ifeq (${PRJ_TARGET}, Windows)
+	@echo "Setting up for Windows build"
+	cp src/gnoga-application.windows src/gnoga-application.adb
+else
+ifeq (${PRJ_TARGET}, OSX)
+	@echo "Setting up for Mac OS X build"
+	cp src/gnoga-application.osx src/gnoga-application.adb
+else
+	@echo "Linux/FreeBSD or Unix build"
+endif
+endif
+
+gnoga: setup
 	cd src && $(BUILDER) -p -Pgnoga.gpr
 
-gnoga_tools:
+gnoga_tools: 
 	cd tools && $(BUILDER) -p -Ptools.gpr
 
-release:
+release: setup
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release
 
 install: release gnoga_tools

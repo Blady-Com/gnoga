@@ -1,0 +1,4 @@
+Use the command:
+   gnoga_make new GnogaCMD singleton
+
+then place these files in the src directory.

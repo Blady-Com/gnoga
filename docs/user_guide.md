@@ -515,10 +515,53 @@ bin/gnogacmd
 
 ### A Multi Connect Application
 
-Just like whith the creation of a Singleton application we will start off using gnoga_make to generate a skelleton project.
+Just like with the creation of the Singleton application we will start off using gnoga_make to generate a skelleton project. In this case we will build a multi user white board.
 
 ```
-gnoga_make new GnogaCMD multi_connect
+gnoga_make new GnogaBoard multi_connect
+```
+
+As with the Singleton application example we will assume our project is now in ~/workspace/gnogaboard
+
+Modify, if needed, as per the Singleton example gnogaboard/src/gnogaboard.gpr to "with" in the location of gnoga.gpr
+
+Compile the project to make sure your changes (if you needed to make any) are correct:
+
+```
+cd ~/workspace/gnogaboard
+make
+bin/gnogaboard
+```
+
+When you are done testing the skelleton, press Ctr-C from the command line to close the application.
+
+The actual layout of the files and basic structure is the same as the Singleton application. The most important difference is in the "controller".
+
+In gnogaboard-controller.adb you will notice the procedure Default as an additional parameter called Connection and at the end of the body of the package there is a call to On_Connect_Handler.
+
+The On_Connect_Handler associates URLs with "controllers" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. Is this casue it is our procedure called Default.
+
+The extra parameter in our controller procedure "Default" can be used when you wish to block in the Default procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection loss are:
+
+1. To add code clean up on connection loss to the Default procedure, this could also have been added to the On_Destroy event for Main_Window.
+
+2. To prevent finalization of staticly defined GUI elements with in the Default procedure until the connection has been lost.
+
+An example of this second method would allow us to rewrite the skelleton procedure as:
+
+``` ada
+   procedure Default
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   is
+      View : GnogaBoard.View.Default_View_Type;
+   begin
+      View.Create (Main_Window);
+      View.Click_Button.On_Click_Handler (On_Click'Access);
+      
+      Connection.Hold;
+   end Default;
 ```
 
 ### A Multi Connect Application for a Single User

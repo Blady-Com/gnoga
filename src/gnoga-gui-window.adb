@@ -113,12 +113,10 @@ package body Gnoga.Gui.Window is
            Gnoga.Types.Pointer_to_Connection_Data_Class);
    begin
       if Object.View /= null and Object.View_Is_Dynamic then
-         if Object.View /= null then
-            Object.View.Free;
-            Object.View := null;
-         else
-            Object.View := null;
-         end if;
+         Object.View.Free;
+         Object.View := null;
+      else
+         Object.View := null;
       end if;
 
       Gnoga.Gui.Base.Base_Type (Object).Finalize;

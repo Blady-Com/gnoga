@@ -112,8 +112,8 @@ package body Gnoga.Gui.Window is
           (Gnoga.Types.Connection_Data_Type'Class,
            Gnoga.Types.Pointer_to_Connection_Data_Class);
    begin
-      if Object.View /= null then
-         if Object.View.Dynamic and Object.View /= null then
+      if Object.View /= null and Object.View_Is_Dynamic then
+         if Object.View /= null then
             Object.View.Free;
             Object.View := null;
          else
@@ -123,7 +123,7 @@ package body Gnoga.Gui.Window is
 
       Gnoga.Gui.Base.Base_Type (Object).Finalize;
 
-      if Object.Free_Connection_Data and Object.View /= null then
+      if Object.Free_Connection_Data then
          Free_Data (P);
          Object.Connection_Data (null);
       end if;
@@ -228,6 +228,7 @@ package body Gnoga.Gui.Window is
       end if;
 
       Window.View := Object'Unchecked_Access;
+      Window.View_Is_Dynamic := Object.Dynamic;
 
       Element_Type (Object).Box_Sizing (Border_Box);
       Element_Type (Object).Position (Gnoga.Gui.Element.Fixed);
@@ -473,10 +474,17 @@ package body Gnoga.Gui.Window is
       Dynamic : in     Boolean := True)
    is
    begin
-      Gnoga.Server.Connection.Connection_Data
-        (ID => Window.Connection_ID, Data => Data.all'Unrestricted_Access);
+      if Data = null then
+         Gnoga.Server.Connection.Connection_Data
+           (ID => Window.Connection_ID, Data => null);
 
-      Window.Free_Connection_Data := Dynamic;
+         Window.Free_Connection_Data := False;
+      else
+         Gnoga.Server.Connection.Connection_Data
+           (ID => Window.Connection_ID, Data => Data.all'Unrestricted_Access);
+
+         Window.Free_Connection_Data := Dynamic;
+      end if;
    end Connection_Data;
 
    ------------

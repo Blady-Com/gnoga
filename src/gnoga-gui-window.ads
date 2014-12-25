@@ -304,6 +304,7 @@ private
          DOM_Document         : aliased Gnoga.Gui.Document.Document_Type;
          Location             : aliased Gnoga.Gui.Location.Location_Type;
          View                 : Gnoga.Gui.Base.Pointer_To_Base_Class := null;
+         View_Is_Dynamic      : Boolean := False;
          Free_Connection_Data : Boolean := False;
 
          On_Abort_Event              : Gnoga.Gui.Base.Action_Event := null;

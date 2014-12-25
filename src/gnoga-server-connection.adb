@@ -1202,8 +1202,12 @@ package body Gnoga.Server.Connection is
          Connection_Manager.Delete_Connection (ID);
 
          if Verbose_Output then
-            Gnoga.Log ("Connection disconnected - ID" & ID'Img &
-                         " with message : " & Message);
+            if Message /= "" then
+               Gnoga.Log ("Connection disconnected - ID" & ID'Img &
+                            " with message : " & Message);
+            else
+               Gnoga.Log ("Connection disconnected - ID" & ID'Img);
+            end if;
          end if;
       end if;
    end WebSocket_Closed;

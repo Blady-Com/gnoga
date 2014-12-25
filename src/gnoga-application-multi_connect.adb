@@ -37,6 +37,10 @@
 
 with Ada.Containers.Indefinite_Ordered_Maps;
 with Ada.Strings.Unbounded;
+with Ada.Exceptions;
+
+with GNAT.Traceback.Symbolic;
+
 with Gnoga.Types;
 
 package body Gnoga.Application.Multi_Connect is
@@ -93,8 +97,14 @@ package body Gnoga.Application.Multi_Connect is
          end if;
       end;
    exception
-      when others =>
-         Gnoga.Log ("Connection" & ID'Img & " closed by exception.");
+      when Gnoga.Server.Connection.Connection_Error =>
+         null; -- Browser window was closed
+
+      when E : others =>
+         Log ("Connection" & ID'Img & " closed by exception.");
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end On_Connect;
 
    ----------------

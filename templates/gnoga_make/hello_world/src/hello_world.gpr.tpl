@@ -7,7 +7,11 @@ project @@data.App_Name@@ is
    for Exec_Dir use "../bin";
    for Main use ("@@data.App_Name_Lower@@.adb");
 
+   package Compiler is
+      for Default_Switches ("Ada") use ("-g", "-gnata", "-gnatq", "-gnatQ");
+   end Compiler;
+
    package Binder is
-     for Default_Switches ("ada") use ("-E");
+     for Default_Switches ("Ada") use ("-E");
    end Binder;
 end @@data.App_Name@@;

@@ -6,9 +6,9 @@ App Dir
   |
   |___ html - boot.html (or other boot loader used)
   |
-  |___ js - must contain jquery.min.js and jquery-ui.min.js
+  |___ js - must contain jquery.min.js and boot.js
   |
-  |___ css - must contain jquery-ui.css
+  |___ css - optional, all files served as css files
   |
   |___ img - optional, a directory of serving graphics.
   |

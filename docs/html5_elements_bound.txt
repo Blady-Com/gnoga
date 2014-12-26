@@ -66,7 +66,7 @@
    <base>, <meta>
                - base and meta only makes sense for static pages
 
-   <dialog>,<keygen>,<menu>,<menuitem>,
+   <dialog>,<keygen>,<menu>,<menuitem>
                - No broswers support tags in a way worth binding yet
 
    <frameset>,<frame>,<noframes>

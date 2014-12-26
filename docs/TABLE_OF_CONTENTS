@@ -7,7 +7,7 @@ user_guide.md             - The Gnoga User Guide
 native_mac_apps.md        - The Gnoga Native Mac Application User Guide
 native_gtk_apps.md        - The Gnoga Native Gtk Application User Guide
 
-**Reference**
+**Quick Reference**
 
 html5_elements_bound.txt  - List of HTML 5 elements bound in Gnoga
 developing_apps.txt       - Directory structure when developing Gnoga Apps

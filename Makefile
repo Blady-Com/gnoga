@@ -155,7 +155,6 @@ clean:
 	cd tutorial/tutorial-10 && $(CLEANER) -Ptutorial_10.gpr
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
 	- cd deps && rm -rf MultiMarkdown-4
-	- cd docs && rm learn_ada.html
 	- cd docs && rm user_guide.html
 	- cd docs && rm native_mac_apps.html
 	- cd docs && rm native_gtk_apps.html
@@ -173,6 +172,5 @@ bin/multimarkdown:
 
 html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown user_guide.md > user_guide.html
-	cd docs && ../bin/multimarkdown learn_ada.md > learn_ada.html
 	cd docs && ../bin/multimarkdown native_mac_apps.md > native_mac_apps.html
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > native_gtk_apps.html

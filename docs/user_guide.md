@@ -34,14 +34,19 @@ For more information about Gnoga see http://www.gnoga.com
       - A Singleton Application
       - A Multi Connect Application
       - A Multi Connect Application for a Single User
-   * Getting around the Gnoga packages
+   * Getting around Gnoga
+      - The Gnoga directory structure
+      - Directory structure when developing apps
+      - Directory structure when deploying apps
+      - Application, Types, Gui, Server, Client
+      - Plugin, Modules
+      - Tags bound in Gnoga
    * Gnoga concepts
       - Multi Connect, data and exceptions
       - Views
       - In and out of the DOM
       - Display, Visible, Hidden
       - Native applications
-      - Tags bound in Gnoga
    
 ## Introduction to Gnoga
 ### What is Gnoga
@@ -576,13 +581,120 @@ Some tips:
 
 3. Limit connections to the local machine only, In initialize use Initialize (Host => "127.0.0.1");
 
+## Getting around Gnoga
 
-## Gnoga Concepts
+### The Gnoga directory structure
+
+At the Gnoga distribution root directory there are a number of ALL CAPS files that contain licensing information, the FAQ and build and installation information.
+
+The following is the layout of files in the Gnoga distribution:
+
+```
+Root Dir
+  |
+  |___ bin - gnoga_make, demo and tuturial executables
+  |
+  |___ css - css files used by demos
+  |
+  |___ demo - Gnoga demos
+  |
+  |___ deps - Gnoga dependancies from other projects
+  |    |
+  |    |_ simple_components - Dmitry A. Kazakov - see components.htm
+  |
+  |___ docs - Gnoga documentation
+  |
+  |___ html - boot.html and other sample files useful for web Gnoga apps.
+  |
+  |___ img - image files for demos
+  |
+  |___ js - jquery.min.js and boot.js (required for all Gnoga apps)
+  |
+  |___ lib - after make - libgnoga.a for linking to Gnoga applications
+  |
+  |___ obj - intermediate build objects created during make
+  |
+  |___ src - Gnoga source files
+  |
+  |___ templates - templated for gnoga_make and demo template files
+  |
+  |___ test - files used to test gnoga during Gnoga's development
+  |
+  |___ tools - source code for gnoga_make
+  |
+  |___ tutorial - tutorials for using Gnoga features
+  |
+  |___ upload - upload directory for demos and tests
+
+```
+
+### Directory structure when developing apps
+
+If you use the gnoga_make tool it will setup a development directory structure in addition to creating a skelleton application. (see the Singleton and Multi Connect examples in the chapters above)
+
+For reference the following directory structure is the basic structure during development:
+
+```
+During development the following directory structure works well:
+
+App Dir
+  |
+  |___ bin - your gnoga app binary
+  |
+  |___ html - boot.html (or other boot loader used)
+  |
+  |___ js - must contain jquery.min.js and boot.js
+  |
+  |___ css - optional, all files served as css files
+  |
+  |___ img - optional, a directory of serving graphics.
+  |
+  |___ src - Source code for your gnoga app
+  |
+  |___ obj - Build objects
+  |
+  |___ templates - option, if using Gnoga.Server.Template_Parser
+  |
+  |___ upload - option, optional directory for incoming files
+
+```
+
+### Directory structure when deploying apps
+
+The ideal structure to deploy your apps for production is the following
+directory structure:
+
+```
+App Dir
+  |
+  |___ bin - your gnoga app binary
+  |
+  |___ html - boot.html (or other boot loader used)
+  |
+  |___ js - must contain jquery.min.js
+  |
+  |___ css - optional, a directory for serving css files
+  |
+  |___ img - optional, a directory of serving graphics.
+  |
+  |___ templates - optional, if using Gnoga.Server.Template_Parser
+  |
+  |___ upload - option, optional directory for incoming files
+```
+
+If any of the subdirectories is missing html is assumed and if html is
+missing the App Dir is assumed. The executable can be in the bin directory or
+in App Dir.
+
+### Application, Types, Gui, Server, Client
+
+### Plugin, Modules
 
 ### Tags Bound in Gnoga
 
 While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assistance in developing your application:
 
+```
 *  HTML5 Tags Bound as Gui Elements in Gnoga
 
    <a>,<hr>,<br>,<button>,<div>,<img>,<meter>,<progress>,<p>
@@ -651,9 +763,17 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
    <base>, <meta>
                - base and meta only makes sense for static pages
 
-   <dialog>,<keygen>,<menu>,<menuitem>,
+   <dialog>,<keygen>,<menu>,<menuitem>
                - No broswers support tags in a way worth binding yet
 
    <frameset>,<frame>,<noframes>
                - No window level frame support, see Element.IFrame
+```
 
+## Gnoga Concepts
+   * Gnoga concepts
+      - Multi Connect, data and exceptions
+      - Views
+      - In and out of the DOM
+      - Display, Visible, Hidden
+      - Native applications

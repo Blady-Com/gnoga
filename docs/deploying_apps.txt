@@ -17,9 +17,9 @@ App Dir
   |
   |___ upload - option, optional directory for incoming files
 
-You can use Gnoga.Application.Lauch_URL_* to start a default browser
+You can use Gnoga.Application.Open_URL to start a default browser
 pointed to the Gnoga app on startup.
 
-However, if any of the subdirectories is missing html is assumed and if html is
+If any of the subdirectories is missing html is assumed and if html is
 missing the App Dir is assumed. The executable can be in the bin directory or
 in App Dir.

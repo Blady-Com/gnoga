@@ -33,7 +33,7 @@ For more information about Gnoga see http://www.gnoga.com
       - The gnoga_make Tool
       - A Singleton Application
       - A Multi Connect Application
-      - A Multi Connect Application for a Single User
+      - Multi Connect Applications for a Single User
    * Getting around Gnoga
       - The Gnoga directory structure
       - Directory structure when developing apps
@@ -569,7 +569,7 @@ An example of this second method would allow us to rewrite the skelleton procedu
    end Default;
 ```
 
-### A Multi Connect Application for a Single User
+### Multi Connect Applications for a Single User
 
 A Multi Connect application allows multiple connections to the same application at the same time. This does not always imply multiple users, it could even be the same user with multiple browser windows connected to the same application. When use a multi connect application as a single user desktop application you simply need to restrict access to the application to the local machine and provide someway for the application to know it is time to shutdown.
 
@@ -688,7 +688,43 @@ in App Dir.
 
 ### Application, Types, Gui, Server, Client
 
+The Gnoga framework's root package is Gnoga. There are five child packages making up the five areas of development connected to Gnoga development.
+
+   * Gnoga.Application and its children are related initializing and managing the lifecycle of Gnoga applications.
+   * Gnoga.Types contains Gnoga specific types used through out the framework
+   * Gnoga.Gui contains the user interface portions of Gnoga. It is further divided in to the following child packages:
+     - Gnoga.Gui.Base - Common base functionality and events to all UI objects
+     - Gnoga.Gui.Document - Binding to root element of DOM in a window
+     - Gnoga.Gui.Element - General binding to all UI objects
+     - Gnoga.Gui.Element.Common - Commond UI elements
+     - Gnoga.Gui.Element.Form - Form related UI elements
+     - Gnoga.Gui.Ekement.Canvas - Binding to a drawing canvas
+     - Gnoga.Gui.Element.Multimedia - Multimedia bindings
+     - Gnoga.Gui.Element.SVG - SVG canvas binding
+     - Gnoga.Gui.Location - Browser window location control
+     - Gnoga.Gui.Navigator - Browser application control
+     - Gnoga.Gui.Screen - Desktop screen properties
+     - Gnoga.Gui.View - Layout control of UI elements
+     - Gnoga.Gui.Window - Control of connection to UI
+   * Gnoga.Server - Server side bindings and features
+     - Gnoga.Server - Application settings and directories
+     - Gnoga.Server.Connection - Low level control of connection to UI
+     - Gnoga.Server.Database - Database bindings (MySQL and SQLite3)
+     - Gnoga.Server.Migration - Datbase schema migration interface
+     - Gnoga.Server.Model - Active Record implementation for Database access
+     - Gnoga.Server.Template_Parser - Template parsing (Pythong or simple text)
+   * Gnoga.Client - Non GUI client side bindings
+     - Gnoga.Client.Storage - Local storage on client side
+     - Gnoga.Client.Bind_Page - Dynanicly create Gnoga objects for an HTML page
+
 ### Plugin, Modules
+
+Users can write and publish to the Gnoga Marketplace two Gnoga specific UI extension types, Plugins and Modules.
+
+Plugins such as the include jQuery, jQueryUI, Boot_Strap and Ace_Editor are bindings to JavaScript libraries for use on client side.
+
+Modules are unique Gnoga based UI elements written with Gnoga.
+
 
 ### Tags Bound in Gnoga
 

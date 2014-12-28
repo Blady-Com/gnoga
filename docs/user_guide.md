@@ -91,11 +91,11 @@ Gnoga's use of web technologies, lite requirements and flexible communication la
 
 Gnoga is ideal for almost all GUI application development. however it wouldn't be the best choice for writing an application that required close integration with the operating system's native UI. That doesn't mean to say you can't combine native UI development with Gnoga or that even in this case often Gnoga is still the ideal solution. 
 
-For example, On Mac OS X, native Gnoga applications often use Mac Gap 2 (http://macgapproject.github.io/). Using Mac Gap Gnoga applications have direct access to most of the native GUI as well. It is also possible to create on any platform a native application with an embedded html 5 widget such as webkit and then have the best of both worlds.
+For example, On Mac OS X, native Gnoga applications often use Mac Gap 2 (http://macgapproject.github.io/). Using Mac Gap Gnoga applications have direct access to most of the native GUI as well. It is also possible to create on any platform a native application with an embedded HTML 5 widget such as WebKit and then have the best of both worlds.
 
 ### Who wrote Gnoga?
 
-Gnoga's author is [David Botton](http://botton.com). Gnoga's http and websocket implementation is from Simple Components by [Dmitry A. Kazakov](http://www.dmitry-kazakov.de/).
+Gnoga's author is [David Botton](http://botton.com). Gnoga's http and websockets implementation is from Simple Components by [Dmitry A. Kazakov](http://www.dmitry-kazakov.de/).
 
 However with out the good people on the [Gnoga e-mail list](https://lists.sourceforge.net/lists/listinfo/gnoga-list) using, testing and pushing for more Gnoga would not be a reality. I'm sorry for not mentioned everyone by name but the e-mail archives will bear your fame forever.
 
@@ -140,7 +140,7 @@ This will run the snake demo. Open a browser and type http://127.0.0.1:8080 this
 
 ### Installing Gnoga
 
-There are many ways to incorporate Gnoga in to new projects. In environments with GPR tools it is possible install Gnoga as a "standard" library using:
+There are many ways to incorporate Gnoga in to new projects. In environments with g tools it is possible install Gnoga as a "standard" library using:
 
 ```
 make install
@@ -220,7 +220,7 @@ Under our root directory we create a bin directory for our application. The bina
 
 We will be place our src files in the src directory, there is no rule that the source files need to be in their own directory, but again it is cleaner.
 
-The additional two directories, html and js, are required. They will contain our "boot" html file in the html directory and the js directory will contain our boot.js and jquery.min.js files.
+The additional two directories, html and js, are required. They will contain our "boot" HTML file in the html directory and the js directory will contain our boot.js and jquery.min.js files.
 
 Let's copy the needed boot files now:
 
@@ -323,7 +323,7 @@ gnoga/bin/gnoga_make new hello hello_world
 
 If gnoga was installed use make install then you can skip the next step.
 
-In our gpr file, let's modify where to find gnoga by editting ~/workspace/hello/src/hello.gpr and setting the first line to read
+In our gpr file, let's modify where to find gnoga by editing ~/workspace/hello/src/hello.gpr and setting the first line to read
 
 ```
 with "../../gnoga/src/gnoga.gpr";
@@ -339,7 +339,7 @@ bin/hello
 
 It will open a browser to http://127.0.0.1:8080
 
-### A singelton Application
+### A Singleton Application
 
 There are two basic application types in Gnoga, Singleton applications and Multi Connect applications. Singleton applications are ideal for desktop applications. They allow only a single connection and then exit when that connection is lost. Since the application will not be accessed in parallel by other connections there is no need to protect data except from parallel incoming events.
 
@@ -373,9 +373,9 @@ First let's discuss how we would like our application to work. Let's mimic the w
 
 In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga applications usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help making the layout of user elements easier and more efficient and also make it easier to reuse the entire interface as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser.
 
-The singelton skeleton application creates a custom view called Default_View_Type and in our application that is contained in GnogaCMD.View. We are going to change the base View_Type for Default_View_Type to a Console_View_Type which automatically provides a scroll bar and scrolls to the end of the last added elements to the Console_View_Type.
+The singleton skeleton application creates a custom view called Default_View_Type and in our application that is contained in GnogaCMD.View. We are going to change the base View_Type for Default_View_Type to a Console_View_Type which automatically provides a scroll bar and scrolls to the end of the last added elements to the Console_View_Type.
 
-To do this we will switch to "with" Gnoga.Gui.View.Console in place of Gnoga.Gui.View and then change the base type of Defaul_View_Type to Gnoga.View.Console.Console_View_Type.
+To do this we will switch to "with" Gnoga.Gui.View.Console in place of Gnoga.Gui.View and then change the base type of Default_View_Type to Gnoga.View.Console.Console_View_Type.
 
 The skeleton provided a generic label and button type, but we are going to replace those with form types for a label, text input and a default submit button. So we will replace the with for Gnoga.Gui.Element.Common with Gnoga.Gui.Element.Form and add a form type to our view the and form elements.
 
@@ -521,7 +521,7 @@ bin/gnogacmd
 
 ### A Multi Connect Application
 
-Just like with the creation of the Singleton application we will start off using gnoga_make to generate a skelleton project. In this case we will build a multi user white board.
+Just like with the creation of the Singleton application we will start off using gnoga_make to generate a skeleton project. In this case we will build a multi user white board.
 
 ```
 gnoga_make new GnogaBoard multi_connect
@@ -539,7 +539,7 @@ make
 bin/gnogaboard
 ```
 
-When you are done testing the skelleton, press Ctr-C from the command line to close the application.
+When you are done testing the skeleton, press Ctr-C from the command line to close the application.
 
 The actual layout of the files and basic structure is the same as the Singleton application. The most important difference is in the "controller".
 
@@ -549,13 +549,13 @@ The On_Connect_Handler associates URLs with "controllers" procedures that will h
 
 Our white board will be a simple example. It will allow any number of people to connect to the application and any one of the users can write with their mouse on the board. This will then display on every user's board.
 
-We are going to need a way to keep track of each user. To do that we will keep a collection of the windows main views for each user in a Vector. Gnoga provides an instanciation of Ada.Containers.Vectors for Pointer_To_Base_Class, an access to Base_Type'Class (see below the section on Gnoga Types)
+We are going to need a way to keep track of each user. To do that we will keep a collection of the windows main views for each user in a Vector. Gnoga provides an instantiation of Ada.Containers.Vectors for Pointer_To_Base_Class, an access to Base_Type'Class (see below the section on Gnoga Types)
 
 ``` ada
    Users : Gnoga.Gui.Base.Base_Type_Array;
 ```
 
-We will also need to provide an event that can be called from the Views when a new segment is drawn, we will call that On_Change in the GnogaBoad.Controller package. On_Change can then access each view and call a Draw procedure that we will create for the view.
+We will also need to provide an event that can be called from the Views when a new segment is drawn, we will call that On_Change in the GnogaBoard.Controller package. On_Change can then access each view and call a Draw procedure that we will create for the view.
 
 We will also need to track the destruction of user Views to remove them from our Users collection. So for that we will create an event handler called On_Destroy.
 
@@ -641,7 +641,7 @@ package GnogaBoard.View is
    type Default_View_Type is new Gnoga.Gui.View.View_Type with
       record
          On_Change : Gnoga.Gui.Base.Action_Event := null;
-         --  Access to the controlers On_Change event to request broadcast
+         --  Access to the controller's On_Change event to request broadcast
          --  to all children.
          X1, Y1    : Integer;
          X2, Y2    : Integer;
@@ -783,7 +783,7 @@ package body GnogaBoard.View is
 end GnogaBoard.View;
 ```
 
-You can now give a try and open multiple browsers accessing the application (http://127.0.0.1:8080) and each will display instantaniously the changes made.
+You can now give a try and open multiple browsers accessing the application (http://127.0.0.1:8080) and each will display instantaneously the changes made.
 
 ```
 cd ~/workspace/gnogaboard
@@ -813,10 +813,10 @@ The extra parameter "Connection" in our controller procedure "Default" can be us
 
 1. To add code clean up on connection loss to the connection procedure, this could also have been added to the On_Destroy event for Main_Window.
 
-2. To prevent finalization of staticly defined GUI elements with in the connection procedure until the connection has been lost.
+2. To prevent finalization of statically defined GUI elements with in the connection procedure until the connection has been lost.
 
 
-An example of this second method would allow us to rewrite the skelleton procedure as:
+An example of this second method would allow us to rewrite the skeleton procedure as:
 
 ``` ada
    procedure Default
@@ -863,7 +863,7 @@ The following is an example
       App : App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
-      --  By default Connection_Data is assumened to be a dynamic object
+      --  By default Connection_Data is assumed to be a dynamic object
       --  and freed when the connection is closed. To use static app
       --  data pass Dynamic => False
       ...
@@ -878,7 +878,7 @@ Some tips:
 
 1. In the On_Connect procedure check if there has already been a connection and if a reconnect is tried return a view that indicates application is already running.
 
-2. If limitting to only one main window, use that windows On_Destroy event to tell the application to shut down using Gnoga.Application.Multi_Connect.End_Application if not provide some other way to exit the application or track if all connections are closed.
+2. If limiting to only one main window, use that windows On_Destroy event to tell the application to shut down using Gnoga.Application.Multi_Connect.End_Application if not provide some other way to exit the application or track if all connections are closed.
 
 3. Limit connections to the local machine only, In initialize use Initialize (Host => "127.0.0.1");
 
@@ -908,13 +908,13 @@ The following is the layout of files in the Gnoga distribution:
 ```
 Root Dir
   |
-  |___ bin - gnoga_make, demo and tuturial executables
+  |___ bin - gnoga_make, demo and tutorial executables
   |
-  |___ css - css files used by demos
+  |___ css - CSS files used by demos
   |
   |___ demo - Gnoga demos
   |
-  |___ deps - Gnoga dependancies from other projects
+  |___ deps - Gnoga dependencies from other projects
   |    |
   |    |_ simple_components - Dmitry A. Kazakov - see components.htm
   |
@@ -932,7 +932,7 @@ Root Dir
   |
   |___ src - Gnoga source files
   |
-  |___ templates - templated for gnoga_make and demo template files
+  |___ templates - templates for gnoga_make and demo template files
   |
   |___ test - files used to test gnoga during Gnoga's development
   |
@@ -946,7 +946,7 @@ Root Dir
 
 ### Directory structure when developing apps
 
-If you use the gnoga_make tool it will setup a development directory structure in addition to creating a skelleton application. (see the Singleton and Multi Connect examples in the chapters above)
+If you use the gnoga_make tool it will setup a development directory structure in addition to creating a skeleton application. (see the Singleton and Multi Connect examples in the chapters above)
 
 For reference the following directory structure is the basic structure during development:
 
@@ -961,7 +961,7 @@ App Dir
   |
   |___ js - must contain jquery.min.js and boot.js
   |
-  |___ css - optional, all files served as css files
+  |___ css - optional, all files served as CSS files
   |
   |___ img - optional, a directory of serving graphics.
   |
@@ -989,7 +989,7 @@ App Dir
   |
   |___ js - must contain jquery.min.js
   |
-  |___ css - optional, a directory for serving css files
+  |___ css - optional, a directory for serving CSS files
   |
   |___ img - optional, a directory of serving graphics.
   |
@@ -1006,13 +1006,13 @@ in App Dir.
 
 The Gnoga framework's root package is Gnoga. There are five child packages making up the five areas of development connected to Gnoga development.
 
-   * Gnoga.Application and its children are related initializing and managing the lifecycle of Gnoga applications.
+   * Gnoga.Application and its children are related initializing and managing the life cycle of Gnoga applications.
    * Gnoga.Types contains Gnoga specific types used through out the framework
    * Gnoga.Gui contains the user interface portions of Gnoga. It is further divided in to the following child packages:
      - Gnoga.Gui.Base - Common base functionality and events to all UI objects
      - Gnoga.Gui.Document - Binding to root element of DOM in a window
      - Gnoga.Gui.Element - General binding to all UI objects
-     - Gnoga.Gui.Element.Common - Commond UI elements
+     - Gnoga.Gui.Element.Common - Common UI elements
      - Gnoga.Gui.Element.Form - Form related UI elements
      - Gnoga.Gui.Ekement.Canvas - Binding to a drawing canvas
      - Gnoga.Gui.Element.Multimedia - Multimedia bindings
@@ -1026,12 +1026,12 @@ The Gnoga framework's root package is Gnoga. There are five child packages makin
      - Gnoga.Server - Application settings and directories
      - Gnoga.Server.Connection - Low level control of connection to UI
      - Gnoga.Server.Database - Database bindings (MySQL and SQLite3)
-     - Gnoga.Server.Migration - Datbase schema migration interface
+     - Gnoga.Server.Migration - Database schema migration interface
      - Gnoga.Server.Model - Active Record implementation for Database access
-     - Gnoga.Server.Template_Parser - Template parsing (Pythong or simple text)
+     - Gnoga.Server.Template_Parser - Template parsing (Python or simple text)
    * Gnoga.Client - Non GUI client side bindings
      - Gnoga.Client.Storage - Local storage on client side
-     - Gnoga.Client.Bind_Page - Dynanicly create Gnoga objects for an HTML page
+     - Gnoga.Client.Bind_Page - Dynamically create Gnoga objects for an HTML page
 
 ### Plugin, Modules
 
@@ -1099,7 +1099,7 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
 
 
    <map>,<area>
-               - No spefic bindings currently for image maps, best
+               - No specific bindings currently for image maps, best
                - generated with an automated tool as regular HTML.
 
    <bdi>,<bdo>,<ruby>,<rp>,<rt>
@@ -1116,7 +1116,7 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
                - base and meta only makes sense for static pages
 
    <dialog>,<keygen>,<menu>,<menuitem>
-               - No broswers support tags in a way worth binding yet
+               - No browsers support tags in a way worth binding yet
 
    <frameset>,<frame>,<noframes>
                - No window level frame support, see Element.IFrame
@@ -1125,7 +1125,7 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
 ## Gnoga Concepts
 ###  In and out of the DOM
 
-An HTML document is an hiearchical collection of objects. In a browser window, the displayed document is the browser's DOM, but it is possible with in JavaScript to have objects that are not in the DOM and have their own hiearchical collections, DOMs.
+An HTML document is an hierarchical collection of objects. In a browser window, the displayed document is the browser's DOM, but it is possible with in JavaScript to have objects that are not in the DOM and have their own hierarchical collections, DOMs.
 
 Gnoga maintains on the browser side a JavaScript references to GUI elements it creates, these elements may or may not also be in the browser's DOM. When creating a new object in Gnoga, if the parent is in the browser's DOM the child will be there as well. If not it will just be part of the parent's individual DOM and not be visible and even changing the visibility of that object will not make it appear on the browser window since they are not in the Browser's DOM.
 
@@ -1133,17 +1133,17 @@ To take an object and all it's children out of the DOM use Gnoga.Gui.Element.Rem
 
 ### Display, Visible, Hidden
 
-HTML5 uses a few different independantly working properties for visibility. 
+HTML5 uses a few different independently working properties for visibility. 
 
 Visible will turn on or off the visibility of an element and its children, but the objects will still take the same space on the page.
 
 Hidden will turn off visibility and the object and its children will no longer take up space on the page either.
 
-Display changes how the elements are layed out by the browser. Using Display (None) acts in the same fashion as Hidden.
+Display changes how the elements are laid out by the browser. Using Display (None) acts in the same fashion as Hidden.
 
 ### Inner_HTML, Text and Value
 
 Retrieving the contents of an Element in Gnoga differs depending on the type of Element. For form Elements the Value method is used. For others Text can be used to retrieve the text alone or Inner_HTML to retrieve the contents including any HTML tags present.
 
-Understand why there are different methods is based on the way the underlying HTML 5 works. Text and Inner_HTML are retrieving all child nodes with in the element while value is an attribut of Form elements. So when using Text or Inner_HTML they will return the contents of every child.
+Understand why there are different methods is based on the way the underlying HTML 5 works. Text and Inner_HTML are retrieving all child nodes with in the element while value is an attribute of Form elements. So when using Text or Inner_HTML they will return the contents of every child.
 

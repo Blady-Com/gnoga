@@ -44,12 +44,9 @@ For more information about Gnoga see http://www.gnoga.com
       - Plugin, Modules
       - Tags bound in Gnoga
    * Gnoga concepts
-      - Multi Connect, data and exceptions
-      - Views
       - In and out of the DOM
       - Display, Visible, Hidden
       - Inner_HTML, Text and Value
-      - Native applications
    
 ## Introduction to Gnoga
 ### What is Gnoga
@@ -849,6 +846,23 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
 ```
 
 ## Gnoga Concepts
+###  In and out of the DOM
+
+An HTML document is an hiearchical collection of objects. In a browser window, the displayed document is the browser's DOM, but it is possible with in JavaScript to have objects that are not in the DOM and have their own hiearchical collections, DOMs.
+
+Gnoga maintains on the browser side a JavaScript references to GUI elements it creates, these elements may or may not also be in the browser's DOM. When creating a new object in Gnoga, if the parent is in the browser's DOM the child will be there as well. If not it will just be part of the parent's individual DOM and not be visible and even changing the visibility of that object will not make it appear on the browser window since they are not in the Browser's DOM.
+
+To take an object and all it's children out of the DOM use Gnoga.Gui.Element.Remove to place it back in the DOM use on of the Place_* methods in Gnoga.Gui.Element.
+
+### Display, Visible, Hidden
+
+HTML5 uses a few different independantly working properties for visibility. 
+
+Visible will turn on or off the visibility of an element and its children, but the objects will still take the same space on the page.
+
+Hidden will turn off visibility and the object and its children will no longer take up space on the page either.
+
+Display changes how the elements are layed out by the browser. Using Display (None) acts in the same fashion as Hidden.
 
 ### Inner_HTML, Text and Value
 

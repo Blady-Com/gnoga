@@ -548,13 +548,13 @@ In gnogaboard-controller.adb you will notice the procedure Default as an additio
 
 The On_Connect_Handler associates URLs with "controllers" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. Is this case it is our procedure called Default.
 
-### Advanced: The Connection Parameter and GUI elements on the Stack
+### Advanced: The "Connection" Parameter and GUI elements on the Stack
 
-The extra parameter "Connection" in our controller procedure "Default" can be used when you wish to block in the Default procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection loss are:
+The extra parameter "Connection" in our controller procedure "Default" can be used when you wish to block the connection procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection loss are:
 
-1. To add code clean up on connection loss to the Default procedure, this could also have been added to the On_Destroy event for Main_Window.
+1. To add code clean up on connection loss to the connection procedure, this could also have been added to the On_Destroy event for Main_Window.
 
-2. To prevent finalization of staticly defined GUI elements with in the Default procedure until the connection has been lost.
+2. To prevent finalization of staticly defined GUI elements with in the connection procedure until the connection has been lost.
 
 An example of this second method would allow us to rewrite the skelleton procedure as:
 

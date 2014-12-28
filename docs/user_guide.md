@@ -48,6 +48,7 @@ For more information about Gnoga see http://www.gnoga.com
       - Views
       - In and out of the DOM
       - Display, Visible, Hidden
+      - Inner_HTML, Text and Value
       - Native applications
    
 ## Introduction to Gnoga
@@ -848,9 +849,10 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
 ```
 
 ## Gnoga Concepts
-   * Gnoga concepts
-      - Multi Connect, data and exceptions
-      - Views
-      - In and out of the DOM
-      - Display, Visible, Hidden
-      - Native applications
+
+### Inner_HTML, Text and Value
+
+Retrieving the contents of an Element in Gnoga differs depending on the type of Element. For form Elements the Value method is used. For others Text can be used to retrieve the text alone or Inner_HTML to retrieve the contents including any HTML tags present.
+
+Understand why there are different methods is based on the way the underlying HTML 5 works. Text and Inner_HTML are retrieving all child nodes with in the element while value is an attribut of Form elements. So when using Text or Inner_HTML they will return the contents of every child.
+

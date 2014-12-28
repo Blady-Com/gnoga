@@ -33,6 +33,8 @@ For more information about Gnoga see http://www.gnoga.com
       - The gnoga_make Tool
       - A Singleton Application
       - A Multi Connect Application
+      - Advanced: The Connection Parameter and GUI elements on the Stack
+      - Advanced: Per Connection App Data
       - Multi Connect Applications for a Single User
    * Getting around Gnoga
       - The Gnoga directory structure
@@ -544,9 +546,11 @@ The actual layout of the files and basic structure is the same as the Singleton 
 
 In gnogaboard-controller.adb you will notice the procedure Default as an additional parameter called Connection and at the end of the body of the package there is a call to On_Connect_Handler.
 
-The On_Connect_Handler associates URLs with "controllers" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. Is this casue it is our procedure called Default.
+The On_Connect_Handler associates URLs with "controllers" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. Is this case it is our procedure called Default.
 
-The extra parameter in our controller procedure "Default" can be used when you wish to block in the Default procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection loss are:
+### Advanced: The Connection Parameter and GUI elements on the Stack
+
+The extra parameter "Connection" in our controller procedure "Default" can be used when you wish to block in the Default procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection loss are:
 
 1. To add code clean up on connection loss to the Default procedure, this could also have been added to the On_Destroy event for Main_Window.
 
@@ -567,6 +571,43 @@ An example of this second method would allow us to rewrite the skelleton procedu
       
       Connection.Hold;
    end Default;
+```
+
+### Advanced: Per Connection App Data
+
+In the multi connect example above we use the connections main view to store data specific for each user connection. It is often more convenient to have a data structure containing the data specific to a connection. Gnoga offers a way to associate data to a connection and allow access to that data through any GUI element on that connection.
+
+The following is an example 
+
+``` ada
+   type App_Data is new Connection_Data_Type with
+      record
+         Main_Window : Window.Pointer_To_Window_Class;
+         Hello_World : aliased Common.DIV_Type;
+      end record;
+   type App_Access is access all App_Data;
+
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Hello_World.Text ("I've been clicked");
+   end On_Click;
+
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   is
+      App : App_Access := new App_Data;
+   begin
+      Main_Window.Connection_Data (App);
+      --  By default Connection_Data is assumened to be a dynamic object
+      --  and freed when the connection is closed. To use static app
+      --  data pass Dynamic => False
+      ...
+   end On_Connect;
 ```
 
 ### Multi Connect Applications for a Single User

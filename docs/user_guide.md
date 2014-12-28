@@ -37,6 +37,7 @@ For more information about Gnoga see http://www.gnoga.com
       - Advanced: Per Connection App Data
       - Multi Connect Applications for a Single User
    * Getting around Gnoga
+      - Gnoga Types
       - The Gnoga directory structure
       - Directory structure when developing apps
       - Directory structure when deploying apps
@@ -544,7 +545,267 @@ The actual layout of the files and basic structure is the same as the Singleton 
 
 In gnogaboard-controller.adb you will notice the procedure Default as an additional parameter called Connection and at the end of the body of the package there is a call to On_Connect_Handler.
 
-The On_Connect_Handler associates URLs with "controllers" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. Is this case it is our procedure called Default.
+The On_Connect_Handler associates URLs with "controllers" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. In this case it is our procedure called Default.
+
+Our white board will be a simple example. It will allow any number of people to connect to the application and any one of the users can write with their mouse on the board. This will then display on every user's board.
+
+We are going to need a way to keep track of each user. To do that we will keep a collection of the windows main views for each user in a Vector. Gnoga provides an instanciation of Ada.Containers.Vectors for Pointer_To_Base_Class, an access to Base_Type'Class (see below the section on Gnoga Types)
+
+``` ada
+   Users : Gnoga.Gui.Base.Base_Type_Array;
+```
+
+We will also need to provide an event that can be called from the Views when a new segment is drawn, we will call that On_Change in the GnogaBoad.Controller package. On_Change can then access each view and call a Draw procedure that we will create for the view.
+
+We will also need to track the destruction of user Views to remove them from our Users collection. So for that we will create an event handler called On_Destroy.
+
+Here is how our GnogaBoard.Controller will look:
+
+``` ada
+with Gnoga.Gui.Base;
+
+with GnogaBoard.View;
+
+package body GnogaBoard.Controller is
+   
+   Users : Gnoga.Gui.Base.Base_Type_Array;
+   
+   procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   --  Called by a view when a new line segment is drawn by the user. It will
+   --  update every user's view with the new segment.
+   
+   procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   --  Set to the On_Destroy event in each new event to remove it from that
+   --  view from the Users collection.
+   
+   procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      use GnogaBoard.View;
+      
+      View : Default_View_Type renames Default_View_Type (Object);
+   begin
+      for i in Users.First_Index .. Users.Last_Index loop
+         declare
+            User_View : GnogaBoard.View.Default_View_Access :=
+              GnogaBoard.View.Default_View_Access (Users.Element (i));
+         begin
+            User_View.Draw (View.X1, View.Y1, View.X2, View.Y2);
+         end;
+      end loop;
+   end On_Change;   
+   
+   procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      use Gnoga.Gui.Base.Base_Type_Arrays;
+      
+      N : Integer := Users.Find_Index (Object'Unchecked_Access);
+   begin
+      if N /= No_Index then
+         Users.Delete (N);
+      end if;
+   end On_Destroy;
+   
+   procedure Default
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  : access
+        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   is
+      View : GnogaBoard.View.Default_View_Access :=
+               new GnogaBoard.View.Default_View_Type;
+   begin
+      View.Dynamic;
+      View.Create (Main_Window);
+      Users.Append (Gnoga.Gui.Base.Pointer_To_Base_Class (View));
+
+      View.On_Change := On_Change'Access;
+      --  Give the View access to our On_Change event in the controller
+
+      View.On_Destroy_Handler (On_Destroy'Access);
+   end Default;
+
+begin
+   Gnoga.Application.Multi_Connect.On_Connect_Handler
+     (Default'Access, "default");   
+end GnogaBoard.Controller;
+```
+
+For the View we will use the following for the spec which also includes our new Draw procedure that will be called from the controller:
+
+``` ada
+with Gnoga.Gui.Base;
+with Gnoga.Gui.View;
+with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Element.Canvas;
+with Gnoga.Gui.Element.Canvas.Context_2D;
+
+package GnogaBoard.View is   
+   
+   type Default_View_Type is new Gnoga.Gui.View.View_Type with
+      record
+         On_Change : Gnoga.Gui.Base.Action_Event := null;
+         --  Access to the controlers On_Change event to request broadcast
+         --  to all children.
+         X1, Y1    : Integer;
+         X2, Y2    : Integer;
+         Canvas    : Gnoga.Gui.Element.Canvas.Canvas_Type;
+         Context   : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      end record;
+   type Default_View_Access is access all Default_View_Type;
+   type Pointer_to_Default_View_Class is access all Default_View_Type'Class;
+
+   overriding
+   procedure Create
+     (View    : in out Default_View_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "");     
+   
+   procedure Draw (View : in out Default_View_Type; X1, Y1, X2, Y2 : Integer);
+   --  Draw a line from X1,Y1 to X2, Y2
+   
+end GnogaBoard.View;
+```
+
+In the view body will will handle the mouse events and drawing:
+
+``` ada
+package body GnogaBoard.View is
+
+   procedure Mouse_Down
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record);
+   procedure Mouse_Move
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record);
+   procedure Mouse_Up
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record);
+
+   ------------
+   -- Create --
+   ------------
+
+   overriding
+   procedure Create
+     (View    : in out Default_View_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Attach  : in     Boolean := True;
+      ID      : in     String  := "")
+   is
+   begin
+      Gnoga.Gui.View.View_Type (View).Create (Parent, Attach, ID);
+      
+      View.Canvas.Create (Parent => View,
+                          Width  => 400,
+                          Height => 400);
+      View.Canvas.Border;
+
+      View.Canvas.On_Mouse_Down_Handler (Mouse_Down'Access);
+      
+      View.Context.Get_Drawing_Context_2D (View.Canvas);
+   end Create;
+
+   ----------
+   -- Draw --
+   ----------
+   
+   procedure Draw (View : in out Default_View_Type; X1, Y1, X2, Y2 : Integer)
+   is
+   begin
+      View.Context.Begin_Path;
+      View.Context.Stroke_Color ("Black");
+      View.Context.Move_To (X1, Y1);
+      View.Context.Line_To (X2, Y2);
+      View.Context.Stroke;
+   end Draw;
+   
+   ----------------
+   -- Mouse_Down --
+   ----------------
+   
+   procedure Mouse_Down
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   is
+      use Gnoga.Gui.Element.Canvas.Context_2D;
+
+      View : Default_View_Type renames Default_View_Type (Object.Parent.all);
+   begin      
+      View.X1 := Mouse_Event.X;
+      View.Y1 := Mouse_Event.Y;
+      View.X2 := Mouse_Event.X;
+      View.Y2 := Mouse_Event.Y;
+
+      View.Canvas.On_Mouse_Move_Handler (Mouse_Move'Unrestricted_Access);
+      View.Canvas.On_Mouse_Up_Handler (Mouse_Up'Unrestricted_Access);
+   end Mouse_Down;
+
+   ----------------
+   -- Mouse_Move --
+   ----------------
+   
+   procedure Mouse_Move
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   is
+      use Gnoga.Gui.Element.Canvas.Context_2D;
+
+      View : Default_View_Type renames Default_View_Type (Object.Parent.all);
+   begin
+      View.X1 := View.X2;
+      View.Y1 := View.Y2;
+      View.X2 := Mouse_Event.X;
+      View.Y2 := Mouse_Event.Y;
+      
+      View.On_Change (View);      
+   end Mouse_Move;
+
+   --------------
+   -- Mouse_Up --
+   --------------
+   
+   procedure Mouse_Up
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   is
+      use Gnoga.Gui.Element.Canvas.Context_2D;
+
+      View : Default_View_Type renames Default_View_Type (Object.Parent.all);
+   begin
+      View.X1 := View.X2;
+      View.Y1 := View.Y2;
+      View.X2 := Mouse_Event.X;
+      View.Y2 := Mouse_Event.Y;
+      
+      View.On_Change (View);
+
+      View.Canvas.On_Mouse_Move_Handler (null);
+      View.Canvas.On_Mouse_Up_Handler (null);
+   end Mouse_Up;
+end GnogaBoard.View;
+```
+
+You can now give a try and open multiple browsers accessing the application (http://127.0.0.1:8080) and each will display instantaniously the changes made.
+
+```
+cd ~/workspace/gnogaboard
+make
+bin/gnogaboard
+```
+
+While this example works, there is an issue. In Gnoga and in particular in Mutli Connect applications, two things must always be considered:
+
+1. Concurrency
+2. Exceptions
+
+Given that:
+
+While highly unlikely, it is possible that our Users container is access concurrently, something that that Ada collections are not designed to handle. If this was to be a production application, Users needs to be protected.
+
+While again highly unlikely given our application, it is possible that a view is destroyed during the On_Change event. This could result in trying to call User_View.Draw on an already deallocated object. Therefore it would be a good idea to capture exceptions in the On_Change event at the very least or as part of protecting the Users collection a means is included to insure that validity of the User_View before calling draw.
+
+Gnoga will handle most exceptional situations not handled in your code, but creating a solid Multi Connect application should include considerations for the above in all designs.
+
+Improving on our example is left as an exercise to the reader.
+
 
 ### Advanced: The "Connection" Parameter and GUI elements on the Stack
 
@@ -553,6 +814,7 @@ The extra parameter "Connection" in our controller procedure "Default" can be us
 1. To add code clean up on connection loss to the connection procedure, this could also have been added to the On_Destroy event for Main_Window.
 
 2. To prevent finalization of staticly defined GUI elements with in the connection procedure until the connection has been lost.
+
 
 An example of this second method would allow us to rewrite the skelleton procedure as:
 
@@ -621,6 +883,21 @@ Some tips:
 3. Limit connections to the local machine only, In initialize use Initialize (Host => "127.0.0.1");
 
 ## Getting around Gnoga
+
+### Gnoga Types
+
+By convention in Gnoga all types are usually defined in the following way and using the following naming convention:
+
+``` ada
+type Some_Type is ....;
+type Some_Access is access all Some_Type;
+```
+
+if Some_Type is a tagged type:
+
+``` ada
+type Pointer_to_Some_Class is access all Some_Type'Class
+```
 
 ### The Gnoga directory structure
 

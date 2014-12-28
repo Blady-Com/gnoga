@@ -1,0 +1,4 @@
+Use the command:
+   gnoga_make new GnogaBoard multi_connect
+
+then place these files in the src directory.

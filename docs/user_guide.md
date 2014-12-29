@@ -52,7 +52,7 @@ For more information about Gnoga see http://www.gnoga.com
 ## Introduction to Gnoga
 ### What is Gnoga
 
-Defining Gnoga is an important first step to using it. Gnoga is best defined as a framework and tools to develop GUI applications for the Ada language using web technologies as a rendering engine. Gnoga should not be confused with web development frameworks. While Gnoga is very capable of creating web applications, even more capable to do so than web development frameworks, using Gnoga for web applications is only one possible use that is a byproduct of using web technologies to render the GUI.
+Defining Gnoga is an important first step to using it. Gnoga is a framework and tools for developing GUI applications using the Ada language with web technologies providing the rendering engine. Gnoga should not be confused with web development frameworks. While Gnoga is very capable of creating web applications, and is even more capable than most web development frameworks, using Gnoga for web applications is only one possiblity, native applications are just as easy to create and with the same code base.
 
 ### How does Gnoga work?
 
@@ -60,11 +60,11 @@ A Gnoga application can be divided in to three parts:
 
 1. The application code written in Ada using the Gnoga framework and tools
 2. The communication layer
-3. The GUI rendering surface, an HTML 5 compliant browser or an embedded widget.
+3. The GUI rendering surface, an HTML 5 compliant browser or an embedded widget for native platform development.
 
-The communication layer is not passive as in typical web programming using http and perhaps Ajax calls to simulate a live active connection. It is rather an active connection using HTML5 websockets or direct access at the API level to an embedded widget.
+The communication layer is not passive as in typical web programming using http no does is it using Ajax calls to simulate a live active connection. It is rather an active open connection using HTML5 websockets or direct access at the API level to an embedded widget.
 
-Since the communication layer is always active there is a stateful constant connection to the rendering surface as there is in traditional desktop GUI development even if the rendering surface is a remote HTML 5 compliant browser.
+Since the communication layer is always active there is a stateful constant connection to the rendering surface as there is in traditional desktop GUI development even if the rendering surface is a remote browser.
 
 The idea of using publishing technologies to display a GUI is not new. Next used Postscript, Mac OS X PDF and Gnoga uses HTML 5.
 
@@ -89,15 +89,15 @@ Gnoga's use of web technologies, lite requirements and flexible communication la
 
 ### When would I not use Gnoga?
 
-Gnoga is ideal for almost all GUI application development. however it wouldn't be the best choice for writing an application that required close integration with the operating system's native UI. That doesn't mean to say you can't combine native UI development with Gnoga or that even in this case often Gnoga is still the ideal solution. 
+Gnoga is ideal for almost all GUI application development. however it wouldn't be the best choice for writing an application that required close integration with the operating system's native UI. That doesn't mean to say you can't combine native UI development with Gnoga and often still in this case Gnoga remains a good solution. 
 
-For example, On Mac OS X, native Gnoga applications often use Mac Gap 2 (http://macgapproject.github.io/). Using Mac Gap Gnoga applications have direct access to most of the native GUI as well. It is also possible to create on any platform a native application with an embedded HTML 5 widget such as WebKit and then have the best of both worlds.
+For example, On Mac OS X, native Gnoga applications use Mac Gap 2's APIs to access many native OS features. (http://macgapproject.github.io/). It is also possible to create on any platform a native application with an embedded HTML 5 widget such as WebKit and then have the best of both worlds.
 
 ### Who wrote Gnoga?
 
 Gnoga's author is [David Botton](http://botton.com). Gnoga's http and websockets implementation is from Simple Components by [Dmitry A. Kazakov](http://www.dmitry-kazakov.de/).
 
-However with out the good people on the [Gnoga e-mail list](https://lists.sourceforge.net/lists/listinfo/gnoga-list) using, testing and pushing for more Gnoga would not be a reality. I'm sorry for not mentioned everyone by name but the e-mail archives will bear your fame forever.
+However with out the good people on the [Gnoga e-mail list](https://lists.sourceforge.net/lists/listinfo/gnoga-list) using, testing and pushing for more, Gnoga would not be a reality. I'm sorry for not mentioning everyone by name but the e-mail archives will bear your fame forever.
 
 ## Getting Started
 ### Setting up your development environment
@@ -106,7 +106,7 @@ Gnoga requires a development environment with gcc/ada 4.7 or above that also imp
 
 For most environments the instructions to get started can be found at GetAdaNow.com
 
-Once you have set up a gcc/ada compiler you will need to install the git version control system. This is installed by default on Mac OS X and some versions of Linux. For Windows there are excellent free versions available on Sourceforge.net
+Once you have set up a gcc/ada compiler you can either download the lastest release of Gnoga from http://www.gnoga.com or you will need to install the git version control system. This is installed by default on Mac OS X and some versions of Linux. For Windows there are excellent free versions available on Sourceforge.net
 
 Use the following command with git to check out the latest version of Gnoga:
 
@@ -130,7 +130,7 @@ If your development environment does now, open the Makefile and follow the direc
 make
 ```
 
-This should build the Gnoga framework a demo or two and the tutorials. You can give a try out now by typing:
+This should build the Gnoga framework, the snake and mine demo and the tutorials. You can give a try out now by typing:
 
 ```
 bin/snake
@@ -140,15 +140,21 @@ This will run the snake demo. Open a browser and type http://127.0.0.1:8080 this
 
 ### Installing Gnoga
 
-There are many ways to incorporate Gnoga in to new projects. In environments with g tools it is possible install Gnoga as a "standard" library using:
+There are many ways to incorporate Gnoga in to new projects. In environments with gprtools it is possible install Gnoga as a "standard" library using:
 
 ```
 make install
 ```
 
-Once done it is possible to incorporate Gnoga in to projects by just adding with "gnoga". It also installs gnoga_make in to the same directory as the gcc/ada executable gnat.
+Once done it is possible to incorporate Gnoga in to gpr project file by just adding:
 
-It is not necessary though to install Gnoga to use it. Only to place the correct path to gnoga in to the "with" in your gpr file. For example:
+```
+with "gnoga";
+```
+
+When installing it also installs gnoga_make in to the same directory as the gcc/ada executable gnat.
+
+It is not necessary though to install Gnoga to use it. Only to place the correct path to gnoga into the "with" in your gpr file. For example:
 
 ``` ada
 with "../../gnoga/src/gnoga.gpr";
@@ -182,13 +188,15 @@ There is a great community around Gnoga and the Ada language. Here are a few goo
 
 3. The Freenode #Ada group
 
+4. Check GetAdaNow.com for more resources for Ada
+
 ## Hello World in Gnoga
 
 ### A Simple Hello World Program
 
-Gnoga provides a tool for setting basic Gnoga projects but for this chapter we are going to manually create our hello world application to learn the details about how a Gnoga application is structured and works.
+Gnoga provides a tool for setting up basic Gnoga projects but for this chapter we are going to manually create our hello world application to learn the details about how a Gnoga application is structured and works.
 
-We are going to assume for this little tutorial that you have checked out or unarchived gnoga in the same directory that we will be building this project.
+We are going to assume for this tutorial that you have cloned or unarchived gnoga in the same directory that we will be building this project.
 
 So lets say it is ~/workspace
 
@@ -214,11 +222,11 @@ mkdir html
 mkdir js
 ```
 
-Our root directory for our project we are calling hello after the name of our program, any name of course could be used.
+We are calling our project directory hello, but any name could be used.
 
-Under our root directory we create a bin directory for our application. The binary for Gnoga applications can be in the bin director or in the root but it is cleaner to have everything in its own place.
+Under our root directory we create a bin directory for our executable. The binary for Gnoga applications during deployment can be in the root directory or the bin directroy.
 
-We will be place our src files in the src directory, there is no rule that the source files need to be in their own directory, but again it is cleaner.
+We will be placing our source files in the src directory, there is no rule that the source files need to be in their own directory.
 
 The additional two directories, html and js, are required. They will contain our "boot" HTML file in the html directory and the js directory will contain our boot.js and jquery.min.js files.
 

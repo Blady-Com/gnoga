@@ -60,10 +60,13 @@ package body Gnoga.Gui.Base is
      "e.which + '|' + e.altKey + '|' + e.ctrlKey + '|' + e.shiftKey + '|' + " &
      "e.metaKey + '|'";
 
-   function Parse_Mouse_Event (Message : String) return Mouse_Event_Record;
+   function Parse_Mouse_Event (Message       : String;
+                               Mouse_Message : Mouse_Message_Type)
+                               return Mouse_Event_Record;
    --  Parse event message in to Mouse_Event_Record
 
-   function Parse_Keyboard_Event (Message : String)
+   function Parse_Keyboard_Event (Message          : String;
+                                  Keyboard_Message : Keyboard_Message_Type)
                                   return Keyboard_Event_Record;
    --  Parse event message in to Keyboard_Event_Record
 
@@ -74,7 +77,10 @@ package body Gnoga.Gui.Base is
    -- Parse_Mouse_Event --
    -----------------------
 
-   function Parse_Mouse_Event (Message : String) return Mouse_Event_Record is
+   function Parse_Mouse_Event (Message       : String;
+                               Mouse_Message : Mouse_Message_Type)
+                               return Mouse_Event_Record
+   is
       use Ada.Strings.Fixed;
 
       Event  : Mouse_Event_Record;
@@ -115,6 +121,7 @@ package body Gnoga.Gui.Base is
       Middle_Button : constant := 2;
       Right_Button  : constant := 3;
    begin
+      Event.Message := Mouse_Message;
       Event.X := Split;
       Event.Y := Split;
       Event.Screen_X := Split;
@@ -137,8 +144,10 @@ package body Gnoga.Gui.Base is
    -- Parse_Keyboard_Event --
    --------------------------
 
-   function Parse_Keyboard_Event (Message : String)
-                                  return Keyboard_Event_Record is
+   function Parse_Keyboard_Event (Message          : String;
+                                  Keyboard_Message : Keyboard_Message_Type)
+                                  return Keyboard_Event_Record
+   is
       use Ada.Strings.Fixed;
 
       Event  : Keyboard_Event_Record;
@@ -168,6 +177,7 @@ package body Gnoga.Gui.Base is
          return Split = "true";
       end Split;
    begin
+      Event.Message := Keyboard_Message;
       Event.Key_Code := Split;
       Event.Alt := Split;
       Event.Control := Split;
@@ -1896,13 +1906,15 @@ package body Gnoga.Gui.Base is
 
       elsif Event = "click" then
          Object.Fire_On_Click;
-         Object.Fire_On_Mouse_Click (Parse_Mouse_Event (Message));
+         Object.Fire_On_Mouse_Click (Parse_Mouse_Event (Message, Click));
       elsif Event = "dblclick" then
          Object.Fire_On_Double_Click;
-         Object.Fire_On_Mouse_Double_Click (Parse_Mouse_Event (Message));
+         Object.Fire_On_Mouse_Double_Click
+           (Parse_Mouse_Event (Message, Double_Click));
       elsif Event = "contextmenu" then
          Object.Fire_On_Context_Menu;
-         Object.Fire_On_Mouse_Right_Click (Parse_Mouse_Event (Message));
+         Object.Fire_On_Mouse_Right_Click
+           (Parse_Mouse_Event (Message, Right_Click));
       elsif Event = "mouseenter" then
          Object.Fire_On_Mouse_Enter;
       elsif Event = "mouseleave" then
@@ -1912,11 +1924,11 @@ package body Gnoga.Gui.Base is
       elsif Event = "mouseout" then
          Object.Fire_On_Mouse_Out;
       elsif Event = "mousedown" then
-         Object.Fire_On_Mouse_Down (Parse_Mouse_Event (Message));
+         Object.Fire_On_Mouse_Down (Parse_Mouse_Event (Message, Mouse_Down));
       elsif Event = "mouseup" then
-         Object.Fire_On_Mouse_Up (Parse_Mouse_Event (Message));
+         Object.Fire_On_Mouse_Up (Parse_Mouse_Event (Message, Mouse_Up));
       elsif Event = "mousemove" then
-         Object.Fire_On_Mouse_Move (Parse_Mouse_Event (Message));
+         Object.Fire_On_Mouse_Move (Parse_Mouse_Event (Message, Mouse_Move));
 
       elsif Event = "dragstart" then
          Object.Fire_On_Drag_Start;
@@ -1936,12 +1948,13 @@ package body Gnoga.Gui.Base is
       -- Keyboard Events --
 
       elsif Event = "keydown" then
-         Object.Fire_On_Key_Down (Parse_Keyboard_Event (Message));
+         Object.Fire_On_Key_Down (Parse_Keyboard_Event (Message, Key_Down));
       elsif Event = "keyup" then
-         Object.Fire_On_Key_Down (Parse_Keyboard_Event (Message));
+         Object.Fire_On_Key_Up (Parse_Keyboard_Event (Message, Key_Up));
       elsif Event = "keypress" then
          declare
-            E : Keyboard_Event_Record := Parse_Keyboard_Event (Message);
+            E : Keyboard_Event_Record :=
+              Parse_Keyboard_Event (Message, Key_Press);
             C : Character;
          begin
             Object.Fire_On_Key_Press (E);

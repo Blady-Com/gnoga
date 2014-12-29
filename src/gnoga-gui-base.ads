@@ -271,8 +271,12 @@ package Gnoga.Gui.Base is
    type Action_Event is access
      procedure (Object : in out Base_Type'Class);
 
+   type Mouse_Message_Type is (Unknown, Click, Double_Click, Right_Click,
+                               Mouse_Down, Mouse_Up, Mouse_Move);
+
    type Mouse_Event_Record is
       record
+         Message       : Mouse_Message_Type := Unknown;
          X             : Integer;
          Y             : Integer;
          Screen_X      : Integer;
@@ -290,8 +294,11 @@ package Gnoga.Gui.Base is
      procedure (Object      : in out Base_Type'Class;
                 Mouse_Event : in     Mouse_Event_Record);
 
+   type Keyboard_Message_Type is (Unknown, Key_Down, Key_Up, Key_Press);
+
    type Keyboard_Event_Record is
       record
+         Message  : Keyboard_Message_Type := Unknown;
          Key_Code : Integer;
          Alt      : Boolean := False;
          Control  : Boolean := False;

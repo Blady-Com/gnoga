@@ -1,5 +1,7 @@
-Gnoga can be installed as a gcc/ada standard library or can be used from its
-install directory.
+Gnoga can be installed as a gcc/ada standard library on many platforms and
+can always be used from its own directory.
+
+## As a Standard gcc/ada library:
 
 To install:
 
@@ -10,7 +12,9 @@ gnat_make will also be installed in to the gcc/ada bin directory. Make sure to
 check the permission on the gnat_make executable as some versions of gprinstall
 fail to correctly change permissions to execute for all users.
 
-# Gnoga _does not_ require installation, it is a convenience feature.
+## Using from Gnoga's own directory: 
+
+### Gnoga _does not_ require installation, it is a convenience feature.
 
 To use with out installing:
 

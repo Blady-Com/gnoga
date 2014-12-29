@@ -136,8 +136,9 @@ clean:
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd tools && $(CLEANER) -Ptools.gpr
 	cd test && $(CLEANER) -Ptest.gpr
-	cd demo/adablog && $(CLEANER) -Padablog.gpr
 	cd demo/snake && $(CLEANER) -Psnake.gpr
+	cd demo/mine_detector && $(CLEANER) -Pmine_detector.gpr
+	cd demo/adablog && $(CLEANER) -Padablog.gpr
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(CLEANER) -Ptutorial_02.gpr
@@ -150,6 +151,7 @@ clean:
 	cd tutorial/tutorial-09 && $(CLEANER) -Ptutorial_09.gpr
 	cd tutorial/tutorial-10 && $(CLEANER) -Ptutorial_10.gpr
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
+	- cd obj && rm gnoga_gtk_window.o
 	- cd deps && rm -rf MultiMarkdown-4
 	- cd docs && rm -rf html
 	- rm bin/multimarkdown

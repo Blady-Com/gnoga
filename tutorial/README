@@ -15,7 +15,7 @@ applications quickly.
 After reading the tutorial README carefully read through the tutorial
 application code and all comments with in the code.
 
-Each tutorial is built by changing in to the directory and running grpbuild,
+Each tutorial is built by changing in to the directory and running gprbuild,
 for example:
 
 cd tutorial-01

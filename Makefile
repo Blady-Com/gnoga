@@ -153,7 +153,7 @@ clean:
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
 	- cd obj && rm gnoga_gtk_window.o
 	- cd deps && rm -rf MultiMarkdown-4
-	- cd docs && rm -rf html
+	- cd docs && rm -rf html/*
 	- rm bin/multimarkdown
 	- cd bin && rm *.db
 	- cd bin && rm temp.txt
@@ -167,7 +167,6 @@ bin/multimarkdown:
 	- mv deps/MultiMarkdown-4/multimarkdown bin/
 
 html-docs: bin/multimarkdown
-	- mkdir docs/html
 	cd docs && ../bin/multimarkdown user_guide.md > html/user_guide.html
 	cd docs && ../bin/multimarkdown native_mac_apps.md > html/native_mac_apps.html
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html

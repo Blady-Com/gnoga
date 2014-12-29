@@ -1,6 +1,7 @@
 obj/
 bin/
 lib/
+docs/html
 gnatinspect.db
 .DS_Store
 *.o

@@ -15,7 +15,7 @@ project Gnoga is
    package Binder renames Settings.Binder;
 
    package IDE is
-      for Documentation_Dir use "../html/gnoga_docs";
+      for Documentation_Dir use "../docs/html/gnoga_rm";
    end IDE;
 
 end Gnoga;

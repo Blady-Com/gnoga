@@ -119,9 +119,6 @@ adaedit: ace_editor
 tests:
 	cd test && $(BUILDER) -Ptest.gpr
 
-gnoga_browser:
-	cd demo/gnoga_browser && make
-
 tutorials:
 	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr
@@ -139,7 +136,6 @@ clean:
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd tools && $(CLEANER) -Ptools.gpr
 	cd test && $(CLEANER) -Ptest.gpr
-	cd demo/gnoga_browser && make clean
 	cd demo/adablog && $(CLEANER) -Padablog.gpr
 	cd demo/snake && $(CLEANER) -Psnake.gpr
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
@@ -155,9 +151,7 @@ clean:
 	cd tutorial/tutorial-10 && $(CLEANER) -Ptutorial_10.gpr
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
 	- cd deps && rm -rf MultiMarkdown-4
-	- cd docs && rm user_guide.html
-	- cd docs && rm native_mac_apps.html
-	- cd docs && rm native_gtk_apps.html
+	- cd docs && rm -rf html
 	- rm bin/multimarkdown
 	- cd bin && rm *.db
 	- cd bin && rm temp.txt
@@ -171,6 +165,7 @@ bin/multimarkdown:
 	- mv deps/MultiMarkdown-4/multimarkdown bin/
 
 html-docs: bin/multimarkdown
-	cd docs && ../bin/multimarkdown user_guide.md > user_guide.html
-	cd docs && ../bin/multimarkdown native_mac_apps.md > native_mac_apps.html
-	cd docs && ../bin/multimarkdown native_gtk_apps.md > native_gtk_apps.html
+	- mkdir docs/html
+	cd docs && ../bin/multimarkdown user_guide.md > html/user_guide.html
+	cd docs && ../bin/multimarkdown native_mac_apps.md > html/native_mac_apps.html
+	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html

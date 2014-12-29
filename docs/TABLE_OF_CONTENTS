@@ -21,3 +21,4 @@ gnoga_the_killer_app.txt  - Why Gnoga is the Killer App for Ada (C.L.A)
 **Misc**
 
 user_guide/               - Sample code for user_guide.md
+html/                     - Ouput directory for "make html-docs" and gps docs

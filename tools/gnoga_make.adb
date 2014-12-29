@@ -75,15 +75,15 @@ package body Gnoga_Make is
         ("version                               - display version");
       Put_Line
         ("new        app_name [template]        - create a new application");
-      Put_Line
-        ("view       app_name name [template]   - add a new view");
-      Put_Line
-        ("controller app_name name [template]   - add a new controler");
-      New_Line;
-      Put_Line
-        ("With the exception of 'new', gnoga_make commands should be run in");
-      Put_Line
-        ("the applications directory.");
+--      Put_Line
+--        ("view       app_name name [template]   - add a new view");
+--      Put_Line
+--        ("controller app_name name [template]   - add a new controler");
+--      New_Line;
+--      Put_Line
+--        ("With the exception of 'new', gnoga_make commands should be run in");
+--      Put_Line
+--        ("the applications directory.");
       New_Line;
       Put_Line ("For more help run " & Ada.Command_Line.Command_Name &
                 " command with no other arguments.");

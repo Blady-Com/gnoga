@@ -224,7 +224,7 @@ mkdir js
 
 We are calling our project directory hello, but any name could be used.
 
-Under our root directory we create a bin directory for our executable. The binary for Gnoga applications during deployment can be in the root directory or the bin directroy.
+Under our root directory we create a bin directory for our executable. The executable for Gnoga applications during deployment can be in the root directory or the bin directroy.
 
 We will be placing our source files in the src directory, there is no rule that the source files need to be in their own directory.
 
@@ -238,9 +238,9 @@ cp ../gnoga/html/* html/
 cp ../gnoga/js/* js/
 ```
 
-Next let's writ our "hello world" application in the src directory. We will create two files, our hello.adb file containing our application and hello.gpr a project file that describes what the compiler should do.
+Next let's starting writing our "hello world" application in the src directory. We will create two files, our hello.adb file containing our application and hello.gpr a project file that describes what the compiler should do.
 
-hello.adb:
+~/workspace/hello/src/hello.adb:
 
 ``` ada
 with Gnoga.Application.Singleton;
@@ -251,6 +251,9 @@ procedure hello is
    Main_Window : Gnoga.Gui.Window.Window_Type;
    Main_View   : Gnoga.Gui.View.Console.Console_View_Type;
 begin
+   Gnoga.Application.Open_URL;
+   --  Open the browser to the default location of (http://127.0.0.1:8080)
+
    Gnoga.Application.Singleton.Initialize (Main_Window, Port => 8080);
    --   Initialize Gnoga for a single connection application that will
    --   respond to port 8080
@@ -271,7 +274,7 @@ begin
 end hello;
 ```
 
-hello.gpr
+~/workspace/hello/src/hello.gpr
 
 ```
 with "../../gnoga/src/gnoga.gpr";
@@ -303,8 +306,6 @@ cd ~/workspace/hello
 bin/hello
 ```
 
-Open a browser and go to the URL: http://127.0.0.1:8080
-
 ### The gnoga_make tool
 
 In order to make it easier to get started writing gnoga applications, a tool called gnoga_make is provided to quickly create the needed directories and provide the initial program structure including Makefile, etc.
@@ -322,7 +323,7 @@ The templates current available are:
 - multi_connect
 
 
-So to to create a simple hello_world program we can do (assuming gnoga was checked out or unarchived at ~/workspace/gnoga):
+So to to create a simple hello_world program we could run (assuming gnoga was checked out or unarchived at ~/workspace/gnoga):
 
 ```
 cd ~/workspace
@@ -345,13 +346,13 @@ make
 bin/hello
 ```
 
-It will open a browser to http://127.0.0.1:8080
+When hello executes it will also open the default browser to http://127.0.0.1:8080
 
 ### A Singleton Application
 
-There are two basic application types in Gnoga, Singleton applications and Multi Connect applications. Singleton applications are ideal for desktop applications. They allow only a single connection and then exit when that connection is lost. Since the application will not be accessed in parallel by other connections there is no need to protect data except from parallel incoming events.
+There are two basic application types in Gnoga, Singleton applications and Multi Connect applications. Singleton applications are ideal for desktop applications. They allow only a single connection and exit when that connection is lost. Since the application will not be accessed in parallel by other connections implementation is easier in that there is no need to protect data except from parallel incoming events from a single user.
 
-To demonstrate the use of a singleton application we will create a simple utility that will allow executing and display the results of a command to the operating system. This example is purposely going to be a bit more complex to help demonstrate various UI concepts with in Gnoga.
+To demonstrate the use of a singleton application we will create a simple utility that will allow executing and displaying the results of a command to the operating system. This example is purposely going to be a bit more complex to help demonstrate various UI concepts with in Gnoga.
 
 First let us generate the skeleton of our singleton application.
 
@@ -377,15 +378,15 @@ Everything should build and your default browser should open with the applicatio
 
 We can now get started with creating our application.
 
-First let's discuss how we would like our application to work. Let's mimic the way a shell works by displaying a command prompt, then the results of the command and once the results are returned offer another command prompt.
+First let's discuss how we would like our application to work. Let's mimic the way a shell works by displaying a command prompt, then the results of the command and once the results are returned offer another command prompt bellow the results.
 
-In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga applications usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help making the layout of user elements easier and more efficient and also make it easier to reuse the entire interface as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser.
+In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga applications usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help make the layout of user elements easier and more efficient, to make it easier to reuse the entire view as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser, which is not only poor practice it is forbidden in Singleton applications.
 
-The singleton skeleton application creates a custom view called Default_View_Type and in our application that is contained in GnogaCMD.View. We are going to change the base View_Type for Default_View_Type to a Console_View_Type which automatically provides a scroll bar and scrolls to the end of the last added elements to the Console_View_Type.
+The singleton skeleton application creates a custom view called Default_View_Type and in our application that is contained in the package GnogaCMD.View. We are going to change the base View_Type of Default_View_Type to a Console_View_Type which will automatically provide a scroll bar and scrolling to the end of the last added element.
 
 To do this we will switch to "with" Gnoga.Gui.View.Console in place of Gnoga.Gui.View and then change the base type of Default_View_Type to Gnoga.View.Console.Console_View_Type.
 
-The skeleton provided a generic label and button type, but we are going to replace those with form types for a label, text input and a default submit button. So we will replace the with for Gnoga.Gui.Element.Common with Gnoga.Gui.Element.Form and add a form type to our view the and form elements.
+The skeleton had provided a generic label and button type, but we are going to replace those with form types for a label, text input and a default submit button. We will also replace the "with" for Gnoga.Gui.Element.Common with Gnoga.Gui.Element.Form and add a form and form elements to our view.
 
 The resulting file should look like this now:
 
@@ -428,7 +429,7 @@ with Gnoga.Gui.Base;
 package body GnogaCMD.View is
    
    procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-   --  Handle submit of command line from either hitting the submit button
+   --  Handle submit of from from either hitting the submit button
    --  or pressing enter with in the command line.
       
    ------------
@@ -477,7 +478,7 @@ package body GnogaCMD.View is
    
    procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       View : Default_View_Type renames Default_View_Type (Object);
-      --  Renaming is a convenient way to "upcast"
+      --  Renaming is a convenient way to "upcast" in event handlers
       
       --  Our tutorial is focusing on Gnoga not the GNAT packages in gcc/ada
       --  so will will not go in to length about using GNAT.Expect, it is
@@ -487,6 +488,8 @@ package body GnogaCMD.View is
       Status : aliased Integer;
    begin
       Args := GNAT.OS_Lib.Argument_String_To_List (View.Cmd_Line.Value);
+      --  A form elements contents is contained in its Value property
+      --  not its Text propery.
       
       declare
          Result : String := Gnat.Expect.Get_Command_Output
@@ -497,18 +500,17 @@ package body GnogaCMD.View is
             Err_To_Out => True);
       begin
          View.Put_HTML ("<pre>" & Result & "</pre>");
-         --  Put_HTML is a convenient way to dump pure html in to a view at
-         --  the bottom of the view.
+         --  Put_HTML is a convenient way to dump pure html in to a view
          
          View.New_Line;
       end;
       
       View.Entry_Form.Place_Inside_Bottom_Of (View);
-      --  This will move entire Entry_Form (all of its children as well) to
+      --  This will move the entire Entry_Form (all of its children as well) to
       --  the bottom of the View.
       
       View.Cmd_Line.Focus;
-      --  Place the entry focus on Cmd_Line
+      --  Place the text entry focus on Cmd_Line
       
       View.Cmd_Line.Select_Text;
       --  Select the entire contents of Cmd_Line
@@ -551,21 +553,21 @@ When you are done testing the skeleton, press Ctr-C from the command line to clo
 
 The actual layout of the files and basic structure is the same as the Singleton application. The most important difference is in the "controller".
 
-In gnogaboard-controller.adb you will notice the procedure Default as an additional parameter called Connection and at the end of the body of the package there is a call to On_Connect_Handler.
+In gnogaboard-controller.adb you will notice the procedure Default has an additional parameter called "Connection" and at the end of the body of the package there is a call to "On_Connect_Handler".
 
-The On_Connect_Handler associates URLs with "controllers" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. In this case it is our procedure called Default.
+The On_Connect_Handler associates URLs with "controller" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. In this case it is our procedure called Default.
 
-Our white board will be a simple example. It will allow any number of people to connect to the application and any one of the users can write with their mouse on the board. This will then display on every user's board.
+Our white board will be a simple example. It will allow any number of people to connect to the application and any one of the users can write with their mouse on the board. This will then display on every user's browser.
 
-We are going to need a way to keep track of each user. To do that we will keep a collection of the windows main views for each user in a Vector. Gnoga provides an instantiation of Ada.Containers.Vectors for Pointer_To_Base_Class, an access to Base_Type'Class (see below the section on Gnoga Types)
+We are going to need a way to keep track of each user's connection. To do that we will keep a collection of the main views for each user in a Vector. Gnoga provides an instantiation of Ada.Containers.Vectors for Pointer_To_Base_Class, an access to Base_Type'Class (see below the section on Gnoga Types)
 
 ``` ada
    Users : Gnoga.Gui.Base.Base_Type_Array;
 ```
 
-We will also need to provide an event that can be called from the Views when a new segment is drawn, we will call that On_Change in the GnogaBoard.Controller package. On_Change can then access each view and call a Draw procedure that we will create for the view.
+We will also need to provide from the controller a procedure that can be called from the Views when a new segment needs to be drawn, we will call that procedure On_Change in the GnogaBoard.Controller package. On_Change can then access each view and call a Draw procedure that we will create for the view.
 
-We will also need to track the destruction of user Views to remove them from our Users collection. So for that we will create an event handler called On_Destroy.
+We will also need to track the destruction of user Views to remove them from our Users collection. For that we will create an event handler called On_Destroy and place it on each new view created.
 
 Here is how our GnogaBoard.Controller will look:
 
@@ -672,7 +674,7 @@ package GnogaBoard.View is
 end GnogaBoard.View;
 ```
 
-In the view body will will handle the mouse events and drawing:
+In the view body we will handle the mouse events and drawing:
 
 ``` ada
 package body GnogaBoard.View is
@@ -736,14 +738,16 @@ package body GnogaBoard.View is
       use Gnoga.Gui.Element.Canvas.Context_2D;
 
       View : Default_View_Type renames Default_View_Type (Object.Parent.all);
+      --  Since we place the mouse events on the Canvas Object will always
+      --  be the Canvas. We can get the parent view using Object.Parent.
    begin      
       View.X1 := Mouse_Event.X;
       View.Y1 := Mouse_Event.Y;
       View.X2 := Mouse_Event.X;
       View.Y2 := Mouse_Event.Y;
 
-      View.Canvas.On_Mouse_Move_Handler (Mouse_Move'Unrestricted_Access);
-      View.Canvas.On_Mouse_Up_Handler (Mouse_Up'Unrestricted_Access);
+      View.Canvas.On_Mouse_Move_Handler (Mouse_Move'Access);
+      View.Canvas.On_Mouse_Up_Handler (Mouse_Up'Access);
    end Mouse_Down;
 
    ----------------
@@ -791,7 +795,7 @@ package body GnogaBoard.View is
 end GnogaBoard.View;
 ```
 
-You can now give a try and open multiple browsers accessing the application (http://127.0.0.1:8080) and each will display instantaneously the changes made.
+You can now give a try and open multiple browsers accessing the application (http://127.0.0.1:8080) and each will display instantaneously the drawing done on any browser.
 
 ```
 cd ~/workspace/gnogaboard
@@ -806,7 +810,7 @@ While this example works, there is an issue. In Gnoga and in particular in Mutli
 
 Given that:
 
-While highly unlikely, it is possible that our Users container is access concurrently, something that that Ada collections are not designed to handle. If this was to be a production application, Users needs to be protected.
+While highly unlikely, it is possible that our Users container is accessed concurrently, something that that standard Ada collections are not designed to handle. If this was to be a production application, Users should be protected.
 
 While again highly unlikely given our application, it is possible that a view is destroyed during the On_Change event. This could result in trying to call User_View.Draw on an already deallocated object. Therefore it would be a good idea to capture exceptions in the On_Change event at the very least or as part of protecting the Users collection a means is included to insure that validity of the User_View before calling draw.
 
@@ -817,12 +821,11 @@ Improving on our example is left as an exercise to the reader.
 
 ### Advanced: The "Connection" Parameter and GUI elements on the Stack
 
-The extra parameter "Connection" in our controller procedure "Default" can be used when you wish to block the connection procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection loss are:
+The extra parameter "Connection" in our controller procedure "Default" can be used when you wish to block the connection procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection is lost are:
 
-1. To add code clean up on connection loss to the connection procedure, this could also have been added to the On_Destroy event for Main_Window.
+1. To add clean up copde on connection loss to the connection procedure, this could also have been added to the On_Destroy event for Main_Window.
 
 2. To prevent finalization of statically defined GUI elements with in the connection procedure until the connection has been lost.
-
 
 An example of this second method would allow us to rewrite the skeleton procedure as:
 
@@ -843,7 +846,7 @@ An example of this second method would allow us to rewrite the skeleton procedur
 
 ### Advanced: Per Connection App Data
 
-In the multi connect example above we use the connections main view to store data specific for each user connection. It is often more convenient to have a data structure containing the data specific to a connection. Gnoga offers a way to associate data to a connection and allow access to that data through any GUI element on that connection.
+In the multi connect example above we use the connections main view to store data specific for each user connection. It is often convenient to have a data structure containing the data specific to a connection. Gnoga offers a way to associate data to a connection and allow access to that data through any GUI element on that connection.
 
 The following is an example 
 
@@ -880,7 +883,7 @@ The following is an example
 
 ### Multi Connect Applications for a Single User
 
-A Multi Connect application allows multiple connections to the same application at the same time. This does not always imply multiple users, it could even be the same user with multiple browser windows connected to the same application. When use a multi connect application as a single user desktop application you simply need to restrict access to the application to the local machine and provide someway for the application to know it is time to shutdown.
+A Multi Connect application allows multiple connections to the same application at the same time. This does not always imply multiple users, it could even be the same user with multiple browser windows connected to the same application. When using a multi connect application as a single user desktop application you simply need to restrict access to the application to the local machine and provide someway for the application to know it is time to shutdown.
 
 Some tips:
 
@@ -1045,7 +1048,7 @@ The Gnoga framework's root package is Gnoga. There are five child packages makin
 
 Users can write and publish to the Gnoga Marketplace two Gnoga specific UI extension types, Plugins and Modules.
 
-Plugins such as the include jQuery, jQueryUI, Boot_Strap and Ace_Editor are bindings to JavaScript libraries for use on client side.
+Plugins such as the include jQuery, jQueryUI, Boot_Strap and Ace_Editor are bindings to JavaScript libraries for use on the client side.
 
 Modules are unique Gnoga based UI elements written with Gnoga.
 
@@ -1133,7 +1136,7 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
 ## Gnoga Concepts
 ###  In and out of the DOM
 
-An HTML document is an hierarchical collection of objects. In a browser window, the displayed document is the browser's DOM, but it is possible with in JavaScript to have objects that are not in the DOM and have their own hierarchical collections, DOMs.
+An HTML document is an hierarchical collection of objects. In a browser window, the displayed document is the browser's DOM, but it is possible with in JavaScript to have objects that are not in the main DOM and have their own hierarchical collections, DOMs.
 
 Gnoga maintains on the browser side a JavaScript references to GUI elements it creates, these elements may or may not also be in the browser's DOM. When creating a new object in Gnoga, if the parent is in the browser's DOM the child will be there as well. If not it will just be part of the parent's individual DOM and not be visible and even changing the visibility of that object will not make it appear on the browser window since they are not in the Browser's DOM.
 

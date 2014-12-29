@@ -59,14 +59,16 @@ package body GnogaBoard.View is
       use Gnoga.Gui.Element.Canvas.Context_2D;
 
       View : Default_View_Type renames Default_View_Type (Object.Parent.all);
+      --  Since we place the mouse events on the Canvas Object will always
+      --  be the Canvas. We can get the parent view using Object.Parent.
    begin      
       View.X1 := Mouse_Event.X;
       View.Y1 := Mouse_Event.Y;
       View.X2 := Mouse_Event.X;
       View.Y2 := Mouse_Event.Y;
 
-      View.Canvas.On_Mouse_Move_Handler (Mouse_Move'Unrestricted_Access);
-      View.Canvas.On_Mouse_Up_Handler (Mouse_Up'Unrestricted_Access);
+      View.Canvas.On_Mouse_Move_Handler (Mouse_Move'Access);
+      View.Canvas.On_Mouse_Up_Handler (Mouse_Up'Access);
    end Mouse_Down;
 
    ----------------

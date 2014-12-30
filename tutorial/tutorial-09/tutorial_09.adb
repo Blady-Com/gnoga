@@ -169,7 +169,7 @@ procedure Tutorial_09 is
    end On_Result_Connect;
 
 begin
-   Gnoga.Application.Title ("Tutorial 08");
+   Gnoga.Application.Title ("Tutorial 09");
 
    Gnoga.Application.HTML_On_Close ("Application ended.");
 

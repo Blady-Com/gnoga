@@ -153,7 +153,8 @@ clean:
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
 	- cd obj && rm gnoga_gtk_window.o
 	- cd deps && rm -rf MultiMarkdown-4
-	- cd docs && rm -rf html/*
+	- cd docs && rm html/*.html
+	- cd docs && rm -rf html/gnoga_rm
 	- rm bin/multimarkdown
 	- cd bin && rm *.db
 	- cd bin && rm temp.txt

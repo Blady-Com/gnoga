@@ -52,7 +52,7 @@ For more information about Gnoga see http://www.gnoga.com
 ## Introduction to Gnoga
 ### What is Gnoga
 
-Defining Gnoga is an important first step to using it. Gnoga is a framework and tools for developing GUI applications using the Ada language with web technologies providing the rendering engine. Gnoga should not be confused with web development frameworks. While Gnoga is very capable of creating web applications, and is even more capable than most web development frameworks, using Gnoga for web applications is only one possiblity, native applications are just as easy to create and with the same code base.
+Defining Gnoga is an important first step to using it. Gnoga is a framework and associated tools for developing GUI applications using the Ada language leveraging web technologies to provide a rendering engine. Gnoga should not be confused to a web development framework. While Gnoga is very capable of creating web applications and perform in that roll and is even more capable than most web development frameworks, using Gnoga for web applications is only one possiblity. Native applications for desktop and mobile are just as easy to create and all using the same code base.
 
 ### How does Gnoga work?
 
@@ -62,7 +62,7 @@ A Gnoga application can be divided in to three parts:
 2. The communication layer
 3. The GUI rendering surface, an HTML 5 compliant browser or an embedded widget for native platform development.
 
-The communication layer is not passive as in typical web programming using http no does is it using Ajax calls to simulate a live active connection. It is rather an active open connection using HTML5 websockets or direct access at the API level to an embedded widget.
+The communication layer is not passive as in typical web programming using http nor is it using Ajax calls to simulate a live active connection. It is an active open connection using HTML5 websockets or direct access at the API level to an embedded widget.
 
 Since the communication layer is always active there is a stateful constant connection to the rendering surface as there is in traditional desktop GUI development even if the rendering surface is a remote browser.
 
@@ -76,7 +76,7 @@ Gnoga is already being used on every major operating system and even in some emb
 
 ### What can I do with Gnoga?
 
-Gnoga's use of web technologies, lite requirements and flexible communication layer allows for an incredible variety of potential uses.
+Gnoga's use of web technologies, its lite requirements and flexible communication layer allow for an incredible variety of potential uses.
 
 1. Traditional cross platform GUI development that normally would be done in Gtk, Qt
 2. In place of native GUI development that is with in the scope of available web technologies.
@@ -89,9 +89,9 @@ Gnoga's use of web technologies, lite requirements and flexible communication la
 
 ### When would I not use Gnoga?
 
-Gnoga is ideal for almost all GUI application development. however it wouldn't be the best choice for writing an application that required close integration with the operating system's native UI. That doesn't mean to say you can't combine native UI development with Gnoga and often still in this case Gnoga remains a good solution. 
+Gnoga is ideal for almost all GUI application development. however it wouldn't be the best choice for writing an application that required close integration with the operating system's native UI. That doesn't mean to say you can't combine native UI development with Gnoga and in those case Gnoga often remains a good solution. 
 
-For example, On Mac OS X, native Gnoga applications use Mac Gap 2's APIs to access many native OS features. (http://macgapproject.github.io/). It is also possible to create on any platform a native application with an embedded HTML 5 widget such as WebKit and then have the best of both worlds.
+For example, On Mac OS X, native Gnoga applications use Mac Gap 2's APIs to access many native OS features. (http://macgapproject.github.io/). It is also possible to create on any platform a native application with an embedded HTML 5 widget and then have the best of both worlds.
 
 ### Who wrote Gnoga?
 
@@ -106,15 +106,13 @@ Gnoga requires a development environment with gcc/ada 4.7 or above that also imp
 
 For most environments the instructions to get started can be found at GetAdaNow.com
 
-Once you have set up a gcc/ada compiler you can either download the lastest release of Gnoga from http://www.gnoga.com or you will need to install the git version control system. This is installed by default on Mac OS X and some versions of Linux. For Windows there are excellent free versions available on Sourceforge.net
+Once you have set up a gcc/ada compiler you can either download the lastest release of Gnoga from http://www.gnoga.com or you will need to install the git version control system and close the current development repository. Git is installed by default on Mac OS X and some versions of Linux. For Windows there are excellent free versions available.
 
 Use the following command with git to check out the latest version of Gnoga:
 
 ```
 git clone git://git.code.sf.net/p/gnoga/code gnoga
 ```
-
-Once you have cloned gnoga we are ready to starting building it.
 
 ### Building Gnoga
 
@@ -124,37 +122,37 @@ If your development environment includes gprtools then run:
 make
 ```
 
-If your development environment does now, open the Makefile and follow the directions in the Makefile to switch to use gnatmake in its place. Then run as above:
+If your development environment does not, open the Makefile and follow the directions in the Makefile to switch the build toos to use gnatmake. Then run as above:
 
 ```
 make
 ```
 
-This should build the Gnoga framework, the snake and mine demo and the tutorials. You can give a try out now by typing:
+This should build the Gnoga framework, the snake and mine_detector demo and the tutorials. You can give a try out now by typing:
 
 ```
-bin/snake
+bin/snake  or   bin/mine_detector
 ```
 
-This will run the snake demo. Open a browser and type http://127.0.0.1:8080 this will connect you to the demo and you can play the classic snake game.
+This will run the snake demo. Open a browser and type http://127.0.0.1:8080 this will connect you to the demo and you can play the classic snake game or a mine detection simulator (read the instructions as there is less guess work used in this version and only numbered tiles are clickable).
 
 ### Installing Gnoga
 
-There are many ways to incorporate Gnoga in to new projects. In environments with gprtools it is possible install Gnoga as a "standard" library using:
+There are many ways to "with" Gnoga in to new projects. In many environments with gprtools it is possible to install Gnoga as a "standard" library using:
 
 ```
 make install
 ```
 
-Once done it is possible to incorporate Gnoga in to gpr project file by just adding:
+Once done it is possible to incorporate Gnoga in to a gpr project file by just adding:
 
 ```
 with "gnoga";
 ```
 
-When installing it also installs gnoga_make in to the same directory as the gcc/ada executable gnat.
+The install system will also install gnoga_make in to the same directory as the gcc/ada executables.
 
-It is not necessary though to install Gnoga to use it. Only to place the correct path to gnoga into the "with" in your gpr file. For example:
+It is not necessary though to install Gnoga. The only requirement is to place the correct path to gnoga into the "with" in your gpr file. For example:
 
 ``` ada
 with "../../gnoga/src/gnoga.gpr";
@@ -188,19 +186,19 @@ There is a great community around Gnoga and the Ada language. Here are a few goo
 
 3. The Freenode #Ada group
 
-4. Check GetAdaNow.com for more resources for Ada
+4. Check GetAdaNow.com for more Ada resource
 
 ## Hello World in Gnoga
 
 ### A Simple Hello World Program
 
-Gnoga provides a tool for setting up basic Gnoga projects but for this chapter we are going to manually create our hello world application to learn the details about how a Gnoga application is structured and works.
+Gnoga provides a tool for setting up basic Gnoga projects (gnoga_make) but for this tutorial we are going to manually create our hello world application to learn the details about how a Gnoga application is structured and works.
 
-We are going to assume for this tutorial that you have cloned or unarchived gnoga in the same directory that we will be building this project.
+We are going to assume for this tutorial that you have cloned or unarchived gnoga in the same directory that we will be creating the directory for this project.
 
 So lets say it is ~/workspace
 
-We can checkout and make gnoga using:
+So to checkout and make gnoga it would be:
 
 ```
 cd ~/workspace
@@ -208,7 +206,6 @@ git clone git://git.code.sf.net/p/gnoga/code gnoga
 cd gnoga
 make
 ```
-
 
 Next lets create our directory structure, we will call our application hello.
 
@@ -247,7 +244,7 @@ with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
 
-procedure hello is
+procedure Hello is
    Main_Window : Gnoga.Gui.Window.Window_Type;
    Main_View   : Gnoga.Gui.View.Console.Console_View_Type;
 begin
@@ -271,7 +268,7 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
    --   This tells Gnoga to wait until the user has closed the browser window
    --   or our application notifies it otherwise.
-end hello;
+end Hello;
 ```
 
 ~/workspace/hello/src/hello.gpr
@@ -279,21 +276,15 @@ end hello;
 ```
 with "../../gnoga/src/gnoga.gpr";
 
-project hello is
+project Hello is
    for Languages use ("Ada");
    for Source_Dirs use (".");
    for Exec_Dir use "../bin";
    for Main use ("hello.adb");
-end hello;
+end Hello;
 ```
 
-To build our application we simple run:
-
-```
-gprbuild
-```
-
-or if you do not have gprtools use
+To build our application we run:
 
 ```
 gnatmake -P hello.gpr
@@ -308,7 +299,7 @@ bin/hello
 
 ### The gnoga_make tool
 
-In order to make it easier to get started writing gnoga applications, a tool called gnoga_make is provided to quickly create the needed directories and provide the initial program structure including Makefile, etc.
+In order to make it easier to get started writing gnoga applications, a tool called gnoga_make is provided to quickly create the needed directories and provide the initial program structure including a Makefile, etc.
 
 The syntax for creating a new project is:
 
@@ -316,12 +307,11 @@ The syntax for creating a new project is:
 gnoga_make new NAME_OF_PROJECT NAME_OF_TEMPLATE
 ```
 
-The templates current available are:
+The templates currently available are:
 
-- hello_world
-- singleton
-- multi_connect
-
+- hello_world    - A simple hello world program using a single procedure
+- singleton      - A singleton application
+- multi_connect  - A mutli connection application
 
 So to to create a simple hello_world program we could run (assuming gnoga was checked out or unarchived at ~/workspace/gnoga):
 
@@ -346,11 +336,11 @@ make
 bin/hello
 ```
 
-When hello executes it will also open the default browser to http://127.0.0.1:8080
+When hello executes it will also open the default operating system browser to http://127.0.0.1:8080
 
 ### A Singleton Application
 
-There are two basic application types in Gnoga, Singleton applications and Multi Connect applications. Singleton applications are ideal for desktop applications. They allow only a single connection and exit when that connection is lost. Since the application will not be accessed in parallel by other connections implementation is easier in that there is no need to protect data except from parallel incoming events from a single user.
+There are two basic application types in Gnoga, Singleton applications and Multi Connect applications. Singleton applications are ideal for single user desktop use. They allow only a single connection and exit when that connection is lost. Since the application will not be accessed in parallel by other connections implementation is easier in that there is no need to protect data except from parallel incoming events from a single user (In Gnoga events are not serialized and are fired as they are generated concurrently).
 
 To demonstrate the use of a singleton application we will create a simple utility that will allow executing and displaying the results of a command to the operating system. This example is purposely going to be a bit more complex to help demonstrate various UI concepts with in Gnoga.
 
@@ -366,7 +356,7 @@ If Gnoga was not installed as a default library, we need to modify gnogacmd/src/
 with "../../gnoga/src/gnoga.gpr";
 ```
 
-In the gnogacmd directory let's run make which since the first time will create our obj directory for our compiler temporaries and run our application.
+In the gnogacmd directory let's run make which since the first run of make will create our obj directory for our compiler temporaries and run our application. If your development environment does not include gprtools, you can replace gprbuild in the Makefile with gnatmake.
 
 ```
 cd ~/workspace/gnogacmd
@@ -374,15 +364,15 @@ make
 bin/gnogacmd
 ```
 
-Everything should build and your default browser should open with the application. Now let's close the browser window and that should cause the application to stop running as well. If your development environment does not include gprtools, you can replace gprbuild in the Makefile with gnatmake.
+Everything should build and your default browser should open with the application. Now let's close the browser window and that should cause the application to stop running as well.
 
 We can now get started with creating our application.
 
 First let's discuss how we would like our application to work. Let's mimic the way a shell works by displaying a command prompt, then the results of the command and once the results are returned offer another command prompt bellow the results.
 
-In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga applications usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help make the layout of user elements easier and more efficient, to make it easier to reuse the entire view as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser, which is not only poor practice it is forbidden in Singleton applications.
+In Gnoga the top most user interface object is the Window. This represents the physical browser window and connection to it. While it would be possible to place user interface elements directly in the browser window Gnoga applications usually use a container of a View_Type or child of it that will fill the entire window. View_Types are designed to help make the layout of user elements easier and more efficient, to make it easier to reuse the entire view as a user interface element itself and to make it easy to switch the entire contents of the browser window to another view if desired and eliminate the need to create new connections to the browser, which is not only poor practice it is not allowed in Singleton applications.
 
-The singleton skeleton application creates a custom view called Default_View_Type and in our application that is contained in the package GnogaCMD.View. We are going to change the base View_Type of Default_View_Type to a Console_View_Type which will automatically provide a scroll bar and scrolling to the end of the last added element.
+The singleton skeleton application creates a custom view called Default_View_Type and in our application that is contained in the package GnogaCMD.View. We are going to change the base Type of Default_View_Type to a Console_View_Type which will automatically provide a scroll bar and scrolling to the end of the last added element.
 
 To do this we will switch to "with" Gnoga.Gui.View.Console in place of Gnoga.Gui.View and then change the base type of Default_View_Type to Gnoga.View.Console.Console_View_Type.
 
@@ -417,8 +407,7 @@ package GnogaCMD.View is
 end GnogaCMD.View;
 ```
 
-In gnogacmd-view.adb will set up the user elements in the create procedure and
-handle our new view's functionality.
+In gnogacmd-view.adb we will set up the user elements in the create procedure and handle our new view's functionality.
 
 ``` ada
 with GNAT.OS_Lib;
@@ -470,8 +459,7 @@ package body GnogaCMD.View is
       --  In our case instead of placing On_Submit on the View.Entry_Form
       --  we have placed it on the parent view.
    end Create;
-   
-   
+
    ---------------
    -- On_Submit --
    ---------------
@@ -553,19 +541,19 @@ When you are done testing the skeleton, press Ctr-C from the command line to clo
 
 The actual layout of the files and basic structure is the same as the Singleton application. The most important difference is in the "controller".
 
-In gnogaboard-controller.adb you will notice the procedure Default has an additional parameter called "Connection" and at the end of the body of the package there is a call to "On_Connect_Handler".
+In gnogaboard-controller.adb you will notice the procedure Default has an additional parameter called "Connection" and at the end of the body of the package there is a call to "On_Connect_Handler". (See below Advanced: The Connection Parameter and GUI elements on the Stack) 
 
-The On_Connect_Handler associates URLs with "controller" procedures that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. In this case it is our procedure called Default.
+The On_Connect_Handler associates URLs with the "controller" procedure that will handle each incoming connection from the browser. The special URL of "default" tells Gnoga to call that handler as the default, i.e. for any URL not handled by another On_Connect_Handler. In this case it is our procedure called Default.
 
 Our white board will be a simple example. It will allow any number of people to connect to the application and any one of the users can write with their mouse on the board. This will then display on every user's browser.
 
-We are going to need a way to keep track of each user's connection. To do that we will keep a collection of the main views for each user in a Vector. Gnoga provides an instantiation of Ada.Containers.Vectors for Pointer_To_Base_Class, an access to Base_Type'Class (see below the section on Gnoga Types)
+We are going to need a way to keep track of each user's connection. To do that we will keep a collection of the main views for each user in a Vector. Gnoga provides an instantiation of Ada.Containers.Vectors for Pointer_To_Base_Class, an access to Base_Type'Class (see below the section Gnoga Types)
 
 ``` ada
    Users : Gnoga.Gui.Base.Base_Type_Array;
 ```
 
-We will also need to provide from the controller a procedure that can be called from the Views when a new segment needs to be drawn, we will call that procedure On_Change in the GnogaBoard.Controller package. On_Change can then access each view and call a Draw procedure that we will create for the view.
+We will also need to provide from the controller a procedure that can be called from the Views when a new segment needs to be drawn, we will call that procedure On_Change in the GnogaBoard.Controller package. On_Change can then access each view and call a Draw procedure that we will create for the views.
 
 We will also need to track the destruction of user Views to remove them from our Users collection. For that we will create an event handler called On_Destroy and place it on each new view created.
 
@@ -810,7 +798,7 @@ While this example works, there is an issue. In Gnoga and in particular in Mutli
 
 Given that:
 
-While highly unlikely, it is possible that our Users container is accessed concurrently, something that that standard Ada collections are not designed to handle. If this was to be a production application, Users should be protected.
+While highly unlikely, it is possible that our Users vector is accessed concurrently, something that that standard Ada collections are not designed to handle. If this was to be a production application, Users should be protected.
 
 While again highly unlikely given our application, it is possible that a view is destroyed during the On_Change event. This could result in trying to call User_View.Draw on an already deallocated object. Therefore it would be a good idea to capture exceptions in the On_Change event at the very least or as part of protecting the Users collection a means is included to insure that validity of the User_View before calling draw.
 
@@ -821,7 +809,7 @@ Improving on our example is left as an exercise to the reader.
 
 ### Advanced: The "Connection" Parameter and GUI elements on the Stack
 
-The extra parameter "Connection" in our controller procedure "Default" can be used when you wish to block the connection procedure until the connection is closed. While not often used, the two common uses of Connection.Hold to block until connection is lost are:
+The extra parameter "Connection" in our controller procedure "Default" can be used when you wish to block the connection procedure until the connection is closed. The two common uses of Connection.Hold to block until connection loss are:
 
 1. To add clean up copde on connection loss to the connection procedure, this could also have been added to the On_Destroy event for Main_Window.
 
@@ -874,6 +862,8 @@ The following is an example
       App : App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
+      App.Main_Window := Main_Window'Unchecked_Access;
+      App.Hello_World.Create (Main_Window, "Click ME");
       --  By default Connection_Data is assumed to be a dynamic object
       --  and freed when the connection is closed. To use static app
       --  data pass Dynamic => False
@@ -1009,13 +999,13 @@ App Dir
   |___ upload - option, optional directory for incoming files
 ```
 
-If any of the subdirectories is missing html is assumed and if html is
+If any of the subdirectories are missing html is assumed and if html is
 missing the App Dir is assumed. The executable can be in the bin directory or
 in App Dir.
 
 ### Application, Types, Gui, Server, Client
 
-The Gnoga framework's root package is Gnoga. There are five child packages making up the five areas of development connected to Gnoga development.
+The Gnoga framework's root package is Gnoga. There are five child packages making up the five areas of Gnoga development.
 
    * Gnoga.Application and its children are related initializing and managing the life cycle of Gnoga applications.
    * Gnoga.Types contains Gnoga specific types used through out the framework
@@ -1044,7 +1034,7 @@ The Gnoga framework's root package is Gnoga. There are five child packages makin
      - Gnoga.Client.Storage - Local storage on client side
      - Gnoga.Client.Bind_Page - Dynamically create Gnoga objects for an HTML page
 
-### Plugin, Modules
+### Plugins, Modules
 
 Users can write and publish to the Gnoga Marketplace two Gnoga specific UI extension types, Plugins and Modules.
 

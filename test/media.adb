@@ -39,7 +39,7 @@ procedure Media is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : access App_Data := new App_Data;
+      App     : App_Access := new App_Data;
       Play    : Common.Button_Type;
       View    : Gnoga.Gui.View.View_Type;
    begin
@@ -66,16 +66,19 @@ procedure Media is
         (Parent   => View,
          Source   => "http://www.mindbodycures.com/archive/Ankle.mp4",
          Controls => True);
+
+      Connection.Hold;
    end On_Connect;
 
 begin
    Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+     (Event => On_Connect'Unrestricted_Access);
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
+
+   Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Media;

@@ -125,6 +125,8 @@ procedure Popups is
       App.Frame.Create (Main_Window, "/demo");
       App.Frame.Width (800);
       App.Frame.Place_After (B);
+
+      Connection.Hold;
    end On_Connect;
 
    procedure On_Connect_2
@@ -151,6 +153,8 @@ procedure Popups is
       B.Create (Main_Window, "click3");
       B.Place_Inside_Bottom_Of (Main_Window.Document.Body_Element.all);
       B.On_Click_Handler (On_Click3'Unrestricted_Access);
+
+      Connection.Hold;
    end On_Connect_2;
 
 begin

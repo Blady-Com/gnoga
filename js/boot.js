@@ -74,7 +74,12 @@
            = decodeURIComponent(tokens[2]);
      }
 
-     adr = "ws://" + location.hostname;
+     if (gnoga_ssl == true) {
+        adr = "wss://" + location.hostname;
+     } else {
+        adr = "ws://" + location.hostname;
+     }
+
      if (location.port != "") { adr = adr + ":" + location.port; }
      adr = adr + "/gnoga";
 

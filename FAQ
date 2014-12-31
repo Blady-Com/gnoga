@@ -120,3 +120,28 @@ Example of a Gnoga application as a subdirectory on a larger site using Apache:
     ErrorLog ${APACHE_LOG_DIR}/gnoga.err.log
     CustomLog ${APACHE_LOG_DIR}/gnoga.log common
 </VirtualHost>
+
+Q) Is it possible to use https and ssl websockets with Gnoga?
+
+A) Yes, setup your proxy to use an ssl connection and use the secure.html boot loader. Using Apache:
+
+1) Create your self signed certificate for testing. Of course for production you may want to purchase a real certificate:
+
+openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.key -out server.crt -subj '/O=Botton/OU=Gnoga/CN=snake.gnoga.com'
+
+2) I added a config:
+
+<VirtualHost *:443>
+    ServerName snake.gnoga.com
+    ServerAdmin david@botton.com
+
+    SSLEngine on
+    SSLCertificateFile /home/dbotton/workspace/ssl/server.crt
+    SSLCertificateKeyFile /home/dbotton/workspace/ssl/server.key
+
+    ProxyPass /gnoga ws://127.0.0.1:8080/gnoga
+    ProxyPass / http://127.0.0.1:8080/
+    ProxyPassReverse / http://127.0.0.1:8080/
+</VirtualHost>
+
+Now https://snake.gnoga.com/secure.html will be a secure connection.

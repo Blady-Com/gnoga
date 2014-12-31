@@ -3,8 +3,8 @@ abstract project Settings is
    type Build_Type is ("Debug", "Release");
    Build : Build_Type := external ("PRJ_BUILD", "Debug");
 
-   type Target_Type is ("OSX", "Other");
-   Build_Target : Target_Type := external ("PRJ_TARGET", "Other");
+   type Target_Type is ("OSX", "Windows", "Freebsd", "Linux", "Unix");
+   Build_Target : Target_Type := external ("PRJ_TARGET", "Unix");
 
    --------------
    -- Compiler --

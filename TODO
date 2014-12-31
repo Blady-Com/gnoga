@@ -1,0 +1,30 @@
+To Do 1.1:
+
+1. Complete multimedia bindings
+2. Create login and user profiles on Gnoga Web
+3. Create Marketplace on Gnoga Web
+4. Remove boot.js requirement for gnoga_debug and gnoga_ssl vars to be set before loading.
+DONE - 5. https/ssl websockets via proxy
+6. Add ability to directly server from code files via http
+7. Add packages to deliver jquery.min.js, boot.js and boot.html (or secure.html) directly so single executable can be delivered with out need for full deployment directory structure, perhaps other files too.
+8. Alternative to Websockets using long lived http connection and Ajax (or perhaps stick with WS but allow at least initial write via http to deal with crawlers).
+9. Complete Ace Editor plugin
+10. Complete MacGap support for menus
+
+To Do 1.1 or later:
+
+1. Complete SVG DOM bindings
+2. https/ssl direct support (I've put in a feature request with Dmitry)
+3. Direct connection to webkit via API instead of sockets for Gtk and Mac
+4. Windows native
+5. Database linked controls
+6. IDE and GUI Builder
+7. Expanded support for Gtk and Gnome
+8. Provide more enumerations for various properties in Gnoga.Gui.Element
+9. Lots and lots more Gnoga specific elements as modules and JS bindigns as plugins to be placed in Marketplace
+
+Some Ideas:
+
+1. Install maker GUI installs using Gnoga
+2. Documentation generator from Ada specs resulting in a Gnoga reference app
+

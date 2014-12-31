@@ -694,6 +694,10 @@ package body Gnoga.Gui.Window is
       Window.Execute ("scrollTo(" & X'Img & "," & Y'Img & ");");
    end Scroll_To;
 
+   ----------------------
+   -- Close_Connection --
+   ----------------------
+
    procedure Close_Connection (Window : in out Window_Type) is
    begin
       Gnoga.Server.Connection.Close (Window.Connection_ID);

@@ -227,6 +227,9 @@ package Gnoga.Gui.Window is
    procedure Scroll_To (Window : in out Window_Type; X, Y : Integer);
    --  Scroll contents in window to x, y
 
+   procedure Close_Connection (Window : in out Window_Type);
+   --  Close connection to browser used by Window
+
    -- Window Placement Methods --
 
    --  These methods will only work on child windows that have been launched

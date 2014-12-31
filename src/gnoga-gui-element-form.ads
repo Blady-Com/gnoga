@@ -119,7 +119,7 @@ package Gnoga.Gui.Element.Form is
    -------------------------------------------------------------------------
    --  Form_Element_Types
    -------------------------------------------------------------------------
-   --  Parent type for form elements
+   --  Parent type for all form elements
 
    type Form_Element_Type is new Gnoga.Gui.Element.Element_Type with private;
    type Form_Element_Access is access all Form_Element_Type;
@@ -433,6 +433,7 @@ package Gnoga.Gui.Element.Form is
    procedure Checked (Element : in out Radio_Button_Type;
                         Value   : in     Boolean := True);
    function Checked (Element : Radio_Button_Type) return Boolean;
+
    -------------------------------------------------------------------------
    --  Input_Image_Types
    -------------------------------------------------------------------------

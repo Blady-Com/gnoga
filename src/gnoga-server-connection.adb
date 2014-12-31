@@ -1854,11 +1854,23 @@ package body Gnoga.Server.Connection is
    ----------
 
    procedure Stop is
+      procedure Do_Close (C : in Socket_Maps.Cursor);
+
+      procedure Do_Close (C : in Socket_Maps.Cursor) is
+      begin
+         Close (Socket_Maps.Key (C));
+      end Do_Close;
    begin
-      Exit_Application_Requested := True;
-      Watchdog.Stop;
-      Connection_Manager.Delete_All_Connections;
-      Gnoga_HTTP_Server.Stop;
+      if not Exit_Application_Requested then
+         Exit_Application_Requested := True;
+         Watchdog.Stop;
+
+         Socket_Map.Iterate (Do_Close'Access);
+
+         Connection_Manager.Delete_All_Connections;
+
+         Gnoga_HTTP_Server.Stop;
+      end if;
    end Stop;
 
    --------------

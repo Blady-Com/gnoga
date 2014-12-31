@@ -63,13 +63,13 @@ endif
 endif
 
 gnoga: setup
-	cd src && $(BUILDER) -p -Pgnoga.gpr
+	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_tools: 
-	cd tools && $(BUILDER) -p -Ptools.gpr
+	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 release: setup
-	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release
+	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 
 install: release gnoga_tools
 	touch deps/simple_components/strings_edit-text_edit.o
@@ -105,32 +105,32 @@ ace_editor:
 demo: snake mine_detector adaedit adablog
 
 adablog:
-	cd demo/adablog && $(BUILDER) -Padablog.gpr
+	cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 snake:
-	cd demo/snake && $(BUILDER) -Psnake.gpr
+	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 mine_detector:
-	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr
+	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 adaedit: ace_editor
-	cd demo/adaedit && $(BUILDER) -Padaedit.gpr
+	cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
-	cd test && $(BUILDER) -Ptest.gpr
+	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tutorials:
-	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr
-	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr
-	cd tutorial/tutorial-03 && $(BUILDER) -Ptutorial_03.gpr
-	cd tutorial/tutorial-04 && $(BUILDER) -Ptutorial_04.gpr
-	cd tutorial/tutorial-05 && $(BUILDER) -Ptutorial_05.gpr
-	cd tutorial/tutorial-06 && $(BUILDER) -Ptutorial_06.gpr
-	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr
-	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr
-	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr
-	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr
-	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr
+	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-03 && $(BUILDER) -Ptutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-04 && $(BUILDER) -Ptutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-05 && $(BUILDER) -Ptutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-06 && $(BUILDER) -Ptutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean:
 	cd src && $(CLEANER) -r -Pgnoga.gpr

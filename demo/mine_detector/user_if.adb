@@ -472,7 +472,7 @@ package body User_IF is
 begin -- User_IF
    Gnoga.Application.Title (Name => "Mine Detector");
    Gnoga.Application.HTML_On_Close (HTML => End_Message);
-   Gnoga.Application.Multi_Connect.Initialize;
+   Gnoga.Application.Multi_Connect.Initialize (Port => 8081);
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access, Path  => "default");
    Gnoga.Application.Multi_Connect.Message_Loop;
 end User_IF;

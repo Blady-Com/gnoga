@@ -37,7 +37,7 @@ making up the five areas of Gnoga development.
      - Gnoga.Client.Bind_Page - Dynamically create Gnoga objects for an HTML
        page
 
-## Hiearchy for GUI Objects
+## Hiearchy for GUI Types
 
 Gnoga.GUI.Base.Base_Type
 |
@@ -102,9 +102,24 @@ Gnoga.GUI.Base.Base_Type
    |                          Term_Type
    |                          Description_Type
    |
-   |__ 
-
-
+   |__ Gnoga.Gui.Element.Multimedia.Multimedia_Type
+   |                                Audio_Type
+   |                                Video_Type
+   |
+   |__ Gnoga.Gui.Element.Phrase.Phase_Type (Abbr, Code, Strong, Em, Dfn, Samp,
+   |                                        Kbd, Var, Marked, Del, Ins, S, Q,
+   |                                        Big, Small, Time, Tt, Cite, I, B,
+   |                                        U, Sub, Sup)
+   |
+   |__ Gnoga.Gui.Element.Section.Section_Type (Address, Article, Aside, Header,
+   |                                           Main, Nav, P, Pre, Section,
+   |                                           BlockQuote, H1, H2, H3, H4, H5,
+   |                                           H6, HGroup)
+   |
+   |__ Gnoga.Gui.Element.Style.Style_Block.Style_Type
+   |
+   |__ Gnoga.Gui.Element.SVG.SVG_Type
+   |
    |__ Gnoga.Gui.Element.Table.Table_Type
    |                           Table_Row_Type
    |                           Table_Column_Type
@@ -114,3 +129,48 @@ Gnoga.GUI.Base.Base_Type
    |                           Table_Footer_Type
    |                           Table_Group_Type
    |                           Table_Column_Type
+   |
+   |__ Gnoga.Gui.Location.Location_Type
+   |
+   |__ Gnoga.Gui.Module - Place holder for 3rd party extensions
+   |
+   |__ Gnoga.Gui.Navigator
+   |
+   |__ Gnoga.Gui.Plugin - Place hordler for 3rd part JS bindings
+   |           included - Ace_Editor
+   |                      Boot_Strap
+   |                      |
+   |                      |__ Container_Type
+   |                          Fluid_Container_Type
+   |                          Row_Type
+   |                          Jumbotron_Type
+   |                          Table_Type
+   |                          Form_Group_Type
+   |                          Check_Box_Type
+   |                          Radio_Button_Type
+   |                      jQuery - Additional to Gnoga's use
+   |                      jQueryUI - Interactions, Effects, Utilities
+   |                      |
+   |                      |__ jQueryUI.Widget.Accordian_Type
+   |                                          jQueryUI Button
+   |                                          Dialog_Type
+   |                                          Progress_Bar_Type
+   |                                          jQueryUI Menu
+   |                                          jQueryUI Select Menu
+   |                                          Tabs_Type
+   |                                          jQueryUI Tool Tips
+   |                      MacGap - Native Mac OS X functionality
+   |__ Gnoga.Gui.Screen
+   |
+   |__ Gnoga.Gui.View.View_Base_Type
+   |             |    View_Type
+   |             |
+   |             |__ View.Card.Card_View_Type
+   |             |             Tab_Type
+   |             |             Tab_Item_Type
+   |             |
+   |             |__ View.Console.Console_View_Type
+   |             |
+   |             |__ View.Docker.Docker_View_Type
+   |
+   |__ Gnoga.Gui.Window.Window_Type

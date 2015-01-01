@@ -203,7 +203,8 @@ package Gnoga.Gui.Window is
       Dynamic : in     Boolean := True);
    --  Associates Data with the the connection Window is on.
    --  If Dynamic is true, Data will be unallocated when Window is
-   --  finalized.
+   --  finalized. The data can be access from any on same connection as
+   --  Window using Gnoga.Gui.Base.Connection_Data
 
    -------------------------------------------------------------------------
    --  Window_Type - Methods

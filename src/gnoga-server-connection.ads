@@ -96,6 +96,8 @@ package Gnoga.Server.Connection is
    function Connection_Data
      (ID : in Gnoga.Types.Connection_ID)
       return Gnoga.Types.Pointer_to_Connection_Data_Class;
+   --  Sets a connection specific Data object. Usually this is set with
+   --  Gnoga.Gui.Windows.Connection_Data
 
    type Connect_Event is access
      procedure (ID         : in Gnoga.Types.Connection_ID;

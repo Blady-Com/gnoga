@@ -168,6 +168,8 @@ package Gnoga.Gui.Base is
    function Connection_Data
      (Object : Base_Type)
       return Gnoga.Types.Pointer_to_Connection_Data_Class;
+   --  Returns the connection specific Data for the connection Object is on.
+   --  This is usually set with Gnoga.Gui.Window.Connection_Data
 
    function Parent (Object : Base_Type)
                     return Pointer_To_Base_Class;

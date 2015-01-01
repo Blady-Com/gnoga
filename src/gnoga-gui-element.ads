@@ -112,16 +112,6 @@ package Gnoga.Gui.Element is
    --  Element_Type - Properties
    -------------------------------------------------------------------------
 
-   --  Frameowrk Properties --
-
-   procedure Auto_Place (Element : in out Element_Type; Value : Boolean);
-   function Auto_Place (Element : Element_Type) return Boolean;
-   --  Elements by default are created outside the DOM and therefore not
-   --  visisble. If Auto_Place is set to false _before_ Create is called on
-   --  an Element, View's will not place the Element in to the DOM as is
-   --  the View's default behavior. Custom widgets that have child widgets
-   --  should be designed to respect this property.
-
    --  Element Properties --
 
    procedure Access_Key (Element : in out Element_Type; Value : String);
@@ -173,6 +163,11 @@ package Gnoga.Gui.Element is
 
    --  Text Content Properties  --
 
+   --  <tag>Text Content</tag> - Text content is the content contained by the
+   --                            tag. This should not be confused with the
+   --                            "Value" of a Form Tag.
+   --                            (See. Gnoga.Gui.Element.Form.Value)
+
    procedure Language_Code (Element : in out Element_Type; Value : in String);
    function Language_Code (Element : Element_Type) return String;
 
@@ -196,7 +191,7 @@ package Gnoga.Gui.Element is
    function Text_Direction (Element : Element_Type) return Text_Direction_Type;
    --  BiDi text direction
 
-   --  Visibility Properties --
+   --  Visibility and Layout Properties --
 
    procedure Hidden (Element : in out Element_Type;
                      Value   : in     Boolean := True);
@@ -482,9 +477,7 @@ package Gnoga.Gui.Element is
    --  The number of pixels that an element's content has been scrolled
    --  upward.
 
-   ----------------------
    -- Style Properties --
-   ----------------------
 
    --  Color  --
 
@@ -620,6 +613,16 @@ package Gnoga.Gui.Element is
    --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
    --  in rtl languages At_Start = Right, and To_End = Left.
 
+   --  Framework Properties --
+
+   procedure Auto_Place (Element : in out Element_Type; Value : Boolean);
+   function Auto_Place (Element : Element_Type) return Boolean;
+   --  Elements by default are created outside the DOM and therefore not
+   --  visisble. If Auto_Place is set to false _before_ Create is called on
+   --  an Element, View's will not place the Element in to the DOM as is
+   --  the View's default behavior. Custom widgets that have child widgets
+   --  should be designed to respect this property.
+
    --  General Access to Element --
 
    procedure Style (Element : in out Element_Type;
@@ -658,7 +661,10 @@ package Gnoga.Gui.Element is
    --  Element_Type - Methods
    -------------------------------------------------------------------------
 
-   -- Methods on Properties --
+   -- Element Methods --
+
+   procedure Click (Element : in out Element_Type);
+   --  Simulate click on element
 
    procedure Add_Class (Element : in out Element_Type; Class_Name : in String);
    --  Adds one or more Class_Name(s) to Element
@@ -688,11 +694,6 @@ package Gnoga.Gui.Element is
    procedure Remove (Element : in out Element_Type);
    --  Removes an element from the DOM, if the ID_Type is DOM_ID, the ID
    --  will be changed to a unique Gnoga_ID before removal.
-
-   -- Element Methods --
-
-   procedure Click (Element : in out Element_Type);
-   --  Simulate click on element
 
 private
    type Element_Type is new Gnoga.Gui.Base.Base_Type with

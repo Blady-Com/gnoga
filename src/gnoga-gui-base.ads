@@ -131,6 +131,23 @@ package Gnoga.Gui.Base is
    --  Base_Type - Properties
    -------------------------------------------------------------------------
 
+   --  Object Properties --
+
+   --  For reference:
+   --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...
+
+   procedure Height (Object : in out Base_Type; Value : in Integer);
+   function Height (Object : Base_Type) return Integer;
+   --  Height of Element, or Window or Document
+   --  Results in Pixels and numeric unlike using the CSS size properties
+   --  See Element_Type for additional Height and Width properties
+
+   procedure Width (Object : in out Base_Type; Value : in Integer);
+   function Width (Object : Base_Type) return Integer;
+   --  Width of Element, or Window or Document
+   --  Results in Pixels and numeric unlike using the CSS size properties
+   --  See Element_Type for additional Height and Width properties
+
    --  Framework Properties  --
 
    function Unique_ID (Object : Base_Type) return Gnoga.Types.Unique_ID;
@@ -184,22 +201,21 @@ package Gnoga.Gui.Base is
    --  Setting the parent Object does not change the position Object may have
    --  in the DOM by default. That should be done using Element_Type.Place_*
 
-   --  Object Properties --
+   procedure Dynamic (Object : in out Base_Type; Value : Boolean := True);
+   function Dynamic (Object : Base_Type) return Boolean;
+   --  Can be used to mark an object as dynamically allocated instead of
+   --  on the stack. This in of itself does not do anything, but Views
+   --  will deallocate on finalization children that are marked as Dynamic
+   --  _before_ being Created with the View as parent.
+   --  See Gnoga.Gui.View
+   --  If you plan on dealocating a child element in your code, do not mark it
+   --  as Dynamic. Marking Dynamic is for the purpose of automatic garbage
+   --  collection by Gnoga's framework.
 
-   --  For reference:
-   --  | Margin | Border | Padding | Scroll | [Element] | Scroll | Padding ...
-
-   procedure Height (Object : in out Base_Type; Value : in Integer);
-   function Height (Object : Base_Type) return Integer;
-   --  Height of Element, or Window or Document
-   --  Results in Pixels and numeric unlike using the CSS size properties
-   --  See Element_Type for additional Height and Width properties
-
-   procedure Width (Object : in out Base_Type; Value : in Integer);
-   function Width (Object : Base_Type) return Integer;
-   --  Width of Element, or Window or Document
-   --  Results in Pixels and numeric unlike using the CSS size properties
-   --  See Element_Type for additional Height and Width properties
+   function Buffer_Connection (Object : Base_Type) return Boolean;
+   procedure Buffer_Connection (Object : in out Base_Type;
+                                Value  : in     Boolean := True);
+   --  Set buffering all output to browser on connection used by Object.
 
    --  Generic Access  --
 
@@ -223,29 +239,11 @@ package Gnoga.Gui.Base is
    function Property (Object : Base_Type; Name : String) return Boolean;
    --  General access to property Name
 
-   --  Framework Properties  --
-
-   procedure Dynamic (Object : in out Base_Type; Value : Boolean := True);
-   function Dynamic (Object : Base_Type) return Boolean;
-   --  Can be used to mark an object as dynamically allocated instead of
-   --  on the stack. This in of itself does not do anything, but Views
-   --  will deallocate on finalization children that are marked as Dynamic
-   --  _before_ being Created with the View as parent.
-   --  See Gnoga.Gui.View
-   --  If you plan on dealocating a child element in your code, do not mark it
-   --  as Dynamic. Marking Dynamic is for the purpose of automatic garbage
-   --  collection by Gnoga's framework.
-
-   function Buffer_Connection (Object : Base_Type) return Boolean;
-   procedure Buffer_Connection (Object : in out Base_Type;
-                                Value  : in     Boolean := True);
-   --  Set buffering all output to browser on connection used by Object.
-
    -------------------------------------------------------------------------
    --  Base_Type - Methods
    -------------------------------------------------------------------------
 
-   --  Object Properties --
+   --  Object Methods --
 
    procedure Focus (Object : in out Base_Type);
    --  Set focus on Object
@@ -253,14 +251,16 @@ package Gnoga.Gui.Base is
    procedure Blur (Object : in out Base_Type);
    --  Remove focus from Object
 
+   -- Framework Methods --
+
+   procedure Flush_Buffer (Object : in out Base_Type);
+   --  Flush buffer to browser on connection used by Object
+
    --  Generic Methods --
 
    procedure Execute (Object : in out Base_Type; Method : in String);
    function Execute (Object : Base_Type; Method : in String) return String;
    --  General access to execute a Method
-
-   procedure Flush_Buffer (Object : in out Base_Type);
-   --  Flush buffer to browser on connection used by Object
 
    -------------------------------------------------------------------------
    --  Base_Type - Event Handlers

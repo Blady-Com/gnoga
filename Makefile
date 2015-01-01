@@ -169,5 +169,6 @@ bin/multimarkdown:
 
 html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown user_guide.md > html/user_guide.html
+	cd docs && ../bin/multimarkdown api_summary.md > html/api_summary.html
 	cd docs && ../bin/multimarkdown native_mac_apps.md > html/native_mac_apps.html
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html

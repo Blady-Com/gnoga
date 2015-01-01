@@ -5,6 +5,14 @@
   var gnoga={};
   var pingerid;
 
+  if (typeof gnoga_debug == 'undefined') {
+     gnoga_debug = false;
+  }
+
+  if (typeof gnoga_ssl == 'undefined') {
+     gnoga_ssl = false;
+  }
+
   function Ping_ws() {
      if (ws.readyState == 1) {
         ws.send ("0");

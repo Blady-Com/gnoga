@@ -3,7 +3,7 @@ To Do 1.1:
 1. Complete multimedia bindings
 2. Create login and user profiles on Gnoga Web
 3. Create Marketplace on Gnoga Web
-4. Remove boot.js requirement for gnoga_debug and gnoga_ssl vars to be set before loading.
+DONE - 4. Remove boot.js requirement for gnoga_debug and gnoga_ssl vars to be set before loading.
 DONE - 5. https/ssl websockets via proxy
 6. Add ability to directly server from code files via http
 7. Add packages to deliver jquery.min.js, boot.js and boot.html (or secure.html) directly so single executable can be delivered with out need for full deployment directory structure, perhaps other files too.

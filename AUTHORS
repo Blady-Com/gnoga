@@ -7,5 +7,5 @@ http://www.gnoga.com
 * Gnoga uses Simple Components written by Dmitry A. Kazakov for its http and
   WebSockets communication layer. deps/simple_components
 
-* The Mind Detector demo application was written by Jeffery Carter.
-  demo/mind_detector
+* The Mine Detector demo application was written by Jeffrey Carter.
+  demo/mine_detector

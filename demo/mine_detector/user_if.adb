@@ -2,6 +2,7 @@
 -- Copyright (C) 2014 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
+-- V7.2 2015 Jan 01          Improved "termination" screen
 -- V7.1 2014 Dec 10          Protected field-updating operations
 -- V7.0 2014 Dec 01          First Gnoga version
 --
@@ -435,9 +436,12 @@ package body User_IF is
       Field.Operations.Reset (Field => App_Data.Field);
    end On_Connect;
 
+   End_Message : constant String := "Mine Detector ended.";
+
    protected body Sequentialize is
       entry Respond (Action : in Action_ID; App_Data : in App_Ptr; Cell : in Field.Cell_Location := (Row => 1, Column => 1) )
       when True is
+         View : Gnoga.Gui.View.View_Type;
       begin -- Respond
          case Action is
          when Button_Press =>
@@ -457,32 +461,18 @@ package body User_IF is
                (Field => App_Data.Field, New_Mine_Count => Levels (App_Data.Level.Selected_Index).Mines);
             Field.Operations.Reset (Field => App_Data.Field);
          when Quit =>
-            Disable_Rows : for Row in App_Data.Button'Range (1) loop
-               Disable_Columns : for Column in App_Data.Button'Range (2) loop
-                  App_Data.Button (Row, Column).Disabled;
-               end loop Disable_Columns;
-            end loop Disable_Rows;
-
-            App_Data.Restart_Button.Disabled;
-            App_Data.Level.Disabled;
-            App_Data.Mark_Check.Disabled;
-            App_Data.Step_Check.Disabled;
-            App_Data.Rules.Disabled;
-            App_Data.About.Disabled;
-            App_Data.Quit.Disabled;
-
-            Move_Down : for I in 1 .. 25 loop
-               App_Data.Big_View.New_Line;
-            end loop Move_Down;
-
-            App_Data.Big_View.Put_Line (Message => "Mine Detector ended.");
+            App_Data.Big_View.Remove;
+            View.Create (Parent => App_Data.Window.all);
+            View.Put_Line (Message => End_Message);
+            App_Data.Window.Close;
+            App_Data.Window.Close_Connection;
          end case;
       end Respond;
    end Sequentialize;
 begin -- User_IF
    Gnoga.Application.Title (Name => "Mine Detector");
-   Gnoga.Application.HTML_On_Close (HTML => "Mine Detector ended.");
-   Gnoga.Application.Multi_Connect.Initialize (Port => 8081);
+   Gnoga.Application.HTML_On_Close (HTML => End_Message);
+   Gnoga.Application.Multi_Connect.Initialize;
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access, Path  => "default");
    Gnoga.Application.Multi_Connect.Message_Loop;
 end User_IF;

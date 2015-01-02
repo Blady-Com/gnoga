@@ -47,7 +47,7 @@ with Gnoga.Server.Template_Parser.Simple;
 with Strings_Edit;
 
 package body Gnoga_Doc is
-   type File_Loc is (Pre_Package, In_Package, Post_Subprogram);
+   type File_Loc is (Pre_Package, In_Package, Post_Block);
 
    Comments : Ada.Strings.Unbounded.Unbounded_String;
 
@@ -60,6 +60,9 @@ package body Gnoga_Doc is
 
    procedure Get_To_EOT (S : in String; P : in out Integer);
    --  Move to end of token. (' ', HT, ':', ';', ',', CR, LF)
+
+   function Is_Token (Token, S : String; P : Integer) return Boolean;
+   --  check if S at P is Token
 
    procedure Get_To_Semicolon (S : in String; P : in out Integer) is
       Par_Count : Natural := 0;
@@ -104,6 +107,53 @@ package body Gnoga_Doc is
       end loop;
    end Get_To_EOT;
 
+   function Is_Token (Token, S : String; P : Integer) return Boolean is
+      use Ada.Characters;
+      use Ada.Strings.Maps.Constants;
+
+      L : Integer;
+   begin
+      if not Strings_Edit.Is_Prefix (Prefix  => Token,
+                                     Source  => S,
+                                     Pointer => P,
+                                     Map     => Lower_Case_Map)
+      then
+         return False;
+      end if;
+
+      L := P + Token'Length;
+
+      if S (L) /= Latin_1.Space and
+        S (L) /= Latin_1.HT and
+        S (L) /= ':' and
+        S (L) /= ';' and
+        S (L) /= ',' and
+        S (L) /= Latin_1.CR and
+        S (L) /= Latin_1.LF
+      then
+         return False;
+      else
+         if S'First = P then
+            return True;
+         else
+            L := P - 1;
+
+            if S (L) /= Latin_1.Space and
+              S (L) /= Latin_1.HT and
+              S (L) /= ':' and
+              S (L) /= ';' and
+              S (L) /= ',' and
+              S (L) /= Latin_1.CR and
+              S (L) /= Latin_1.LF
+            then
+               return False;
+            else
+               return True;
+            end if;
+         end if;
+      end if;
+   end Is_Token;
+
    procedure Parse (File_Name : String) is
       use Ada.Characters;
       use Ada.Strings.Maps;
@@ -145,11 +195,7 @@ package body Gnoga_Doc is
                end if;
 
                P := P + 1;
-            elsif Strings_Edit.Is_Prefix (Prefix  => "procedure",
-                                          Source  => S,
-                                          Pointer => P,
-                                          Map     => Lower_Case_Map)
-            then
+            elsif Is_Token ("procedure", S, P) then
                L := P;
 
                P := P + String'("procedure")'Length + 1;
@@ -161,14 +207,12 @@ package body Gnoga_Doc is
                P := L;
                Get_To_Semicolon (S, P);
                Put_Line ("Procedure : " & S (L .. P));
-               Location := Post_Subprogram;
 
-               P := P + 2;
-            elsif Strings_Edit.Is_Prefix (Prefix  => "function",
-                                          Source  => S,
-                                          Pointer => P,
-                                          Map     => Lower_Case_Map)
-            then
+               P := P + 1;
+               Strings_Edit.Get (S, P, TabAndSpace);
+
+               Location := Post_Block;
+            elsif Is_Token ("function", S, P) then
                L := P;
 
                P := P + String'("function")'Length + 1;
@@ -180,13 +224,29 @@ package body Gnoga_Doc is
                P := L;
                Get_To_Semicolon (S, P);
                Put_Line ("Function : " & S (L .. P));
-               Location := Post_Subprogram;
 
-               P := P + 2;
-            elsif Strings_Edit.Is_Prefix (Prefix  => "package",
-                                          Source  => S,
-                                          Pointer => P,
-                                          Map     => Lower_Case_Map)
+               P := P + 1;
+               Strings_Edit.Get (S, P, TabAndSpace);
+
+               Location := Post_Block;
+            elsif Is_Token ("type", S, P) then
+               L := P;
+
+               P := P + String'("type")'Length + 1;
+               T := P;
+               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOT (S, P);
+               Put_Line ("Type Name : " & S (T .. P - 1));
+
+               P := L;
+               Get_To_Semicolon (S, P);
+               Put_Line ("Type : " & S (L .. P));
+
+               P := P + 1;
+               Strings_Edit.Get (S, P, TabAndSpace);
+
+               Location := Post_Block;
+            elsif Location = Pre_Package and then Is_Token ("package", S, P)
             then
                P := P + String'("package")'Length + 1;
                Strings_Edit.Get (S, P, TabAndSpace);
@@ -195,14 +255,16 @@ package body Gnoga_Doc is
                Put_Line ("Package Name : " & S (L .. P - 1));
 
                Location := In_Package;
+            elsif Is_Token ("private", S, P) then
+               return;
             elsif S (P) = Latin_1.CR or S (P) = Latin_1.LF then
-               if Comments /= Null_Unbounded_String and
-                 Location = Post_Subprogram
-               then
-                  Put_Line ("Comments :" & To_String (Comments));
-               end if;
+               if Location = Post_Block then
+                  if Comments /= Null_Unbounded_String then
+                     Put_Line ("Comments :" & To_String (Comments));
+                  end if;
 
-               Location := In_Package;
+                  Location := In_Package;
+               end if;
 
                Comments := Null_Unbounded_String;
                P := P + 1;

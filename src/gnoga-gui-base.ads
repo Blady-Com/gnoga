@@ -47,13 +47,13 @@ package Gnoga.Gui.Base is
    -------------------------------------------------------------------------
    --  Base_Type
    -------------------------------------------------------------------------
-   --  Base_Type is the parent class of all Gnoga GUI Objects.
-   --  It is generally used internally to create and bind Gnoga objects to
-   --  HTML5 DOM objects.
 
    type Base_Type is new Ada.Finalization.Limited_Controlled with private;
    type Base_Access is access all Base_Type;
    type Pointer_To_Base_Class is access all Base_Type'Class;
+   --  Base_Type is the parent class of all Gnoga GUI Objects.
+   --  It is generally used internally to create and bind Gnoga objects to
+   --  HTML5 DOM objects.
 
    Object_Already_Created : exception;
    --  Raised when an attempt is made to perform a create method on an already
@@ -114,7 +114,7 @@ package Gnoga.Gui.Base is
       Parent   : in     Gnoga.Gui.Base.Base_Type'Class;
       ID       : in     String;
       ID_Type  : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID);
-   --  Attache a Gnoga object using Connection ID from Parent to an existing
+   --  Attach a Gnoga object using Connection ID from Parent to an existing
    --  DOM object with ID. On_Create event is not fired.
    --  Note ID _must_ be unique for use in Gnoga.
 

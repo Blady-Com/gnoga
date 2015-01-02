@@ -48,13 +48,13 @@ package Gnoga.Gui.Element is
    -------------------------------------------------------------------------
    --  Element_Type
    -------------------------------------------------------------------------
-   --  Element_Type is the parent class of all Gnoga GUI elements.
-   --  It is generally used internally to create and bind Gnoga elements to
-   --  HTML5 DOM elements.
 
    type Element_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Element_Access is access all Element_Type;
    type Pointer_To_Element_Class is access all Element_Type'Class;
+   --  Element_Type is the parent class of all Gnoga GUI elements.
+   --  It is generally used internally to create and bind Gnoga elements to
+   --  HTML5 DOM elements.
 
    package Element_Type_Arrays is
      new Ada.Containers.Vectors

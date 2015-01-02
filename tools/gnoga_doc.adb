@@ -39,6 +39,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Characters.Latin_1;
 with Ada.Strings.Maps;
 with Ada.Strings.Maps.Constants;
+with Ada.Strings.Unbounded;
 
 with Gnoga;
 with Gnoga.Server.Template_Parser.Simple;
@@ -46,15 +47,35 @@ with Gnoga.Server.Template_Parser.Simple;
 with Strings_Edit;
 
 package body Gnoga_Doc is
-   type File_Loc is (Pre_Package, In_Package);
+   type File_Loc is (Pre_Package, In_Package, Post_Subprogram);
 
-   procedure Get_To_Semicolon (S : String; P : in out Integer);
-   procedure Get_To_EOL (S : String; P : in out Integer);
+   Comments : Ada.Strings.Unbounded.Unbounded_String;
 
-   procedure Get_To_Semicolon (S : String; P : in out Integer) is
+   procedure Get_To_Semicolon (S : in String; P : in out Integer);
+   --  Move P to semicolon, ignore semicolon with in paranthesis
+   --  ? ignore ',"
+
+   procedure Get_To_EOL (S : in String; P : in out Integer);
+   --  Move P to end of line (LF)
+
+   procedure Get_To_EOT (S : in String; P : in out Integer);
+   --  Move to end of token. (' ', HT, ':', ';', ',', CR, LF)
+
+   procedure Get_To_Semicolon (S : in String; P : in out Integer) is
+      Par_Count : Natural := 0;
    begin
-      while P <= S'Last and S (P) /= ';' loop
+      while P <= S'Last loop
+         if S (P) = '(' then
+            Par_Count := Par_Count + 1;
+         elsif S (P) = ')' then
+            Par_Count := Par_Count - 1;
+         end if;
+
          P := P + 1;
+
+         if Par_Count = 0 then
+            exit when S (P) = ';';
+         end if;
       end loop;
    end Get_To_Semicolon;
 
@@ -64,20 +85,35 @@ package body Gnoga_Doc is
       while P <= S'Last and S (P) /= Latin_1.LF loop
          P := P + 1;
       end loop;
-
-      if S (P) = Latin_1.CR then
-         P := P + 1;
-      end if;
    end Get_To_EOL;
+
+   procedure Get_To_EOT (S : String; P : in out Integer) is
+      use Ada.Characters;
+      --  (' ', HT, ':', ';', ',', CR, LF)
+   begin
+      while P <= S'Last and
+        S (P) /= Latin_1.Space and
+        S (P) /= Latin_1.HT and
+        S (P) /= ':' and
+        S (P) /= ';' and
+        S (P) /= ',' and
+        S (P) /= Latin_1.CR and
+        S (P) /= Latin_1.LF
+      loop
+         P := P + 1;
+      end loop;
+   end Get_To_EOT;
 
    procedure Parse (File_Name : String) is
       use Ada.Characters;
       use Ada.Strings.Maps;
       use Ada.Strings.Maps.Constants;
+      use Ada.Strings.Unbounded;
 
       TabAndSpace : Ada.Strings.Maps.Character_Set :=
         To_Set (Sequence => Latin_1.Space &
                   Latin_1.HT &
+                  Latin_1.CR &
                   Latin_1.LF);
 
       Location : File_Loc := Pre_Package;
@@ -90,6 +126,7 @@ package body Gnoga_Doc is
            (File_Name);
          P : Integer := S'First;
          L : Integer;
+         T : Integer;
       begin
          while P <= S'Last loop
             if Strings_Edit.Is_Prefix (Prefix  => "--",
@@ -97,42 +134,78 @@ package body Gnoga_Doc is
                                        Pointer => P,
                                        Map     => Lower_Case_Map)
             then
+               P := P + String'("--")'Length + 1;
+               Strings_Edit.Get (S, P, TabAndSpace);
+
                L := P;
                Get_To_EOL (S, P);
 
-               if Location = In_Package then
-                  Put_Line ("Comment Line : " & S (L .. P));
+               if Location /= Pre_Package then
+                  Comments := Comments & S (L .. P);
                end if;
+
+               P := P + 1;
             elsif Strings_Edit.Is_Prefix (Prefix  => "procedure",
                                           Source  => S,
                                           Pointer => P,
                                           Map     => Lower_Case_Map)
             then
                L := P;
-               Get_To_Semicolon (S, P);
 
+               P := P + String'("procedure")'Length + 1;
+               T := P;
+               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOT (S, P);
+               Put_Line ("Procedure Name : " & S (T .. P - 1));
+
+               P := L;
+               Get_To_Semicolon (S, P);
                Put_Line ("Procedure : " & S (L .. P));
+               Location := Post_Subprogram;
+
+               P := P + 2;
             elsif Strings_Edit.Is_Prefix (Prefix  => "function",
                                           Source  => S,
                                           Pointer => P,
                                           Map     => Lower_Case_Map)
             then
                L := P;
-               Get_To_Semicolon (S, P);
 
+               P := P + String'("function")'Length + 1;
+               T := P;
+               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOT (S, P);
+               Put_Line ("Function Name : " & S (T .. P - 1));
+
+               P := L;
+               Get_To_Semicolon (S, P);
                Put_Line ("Function : " & S (L .. P));
+               Location := Post_Subprogram;
+
+               P := P + 2;
             elsif Strings_Edit.Is_Prefix (Prefix  => "package",
                                           Source  => S,
                                           Pointer => P,
                                           Map     => Lower_Case_Map)
             then
-               P := P + 7;
+               P := P + String'("package")'Length + 1;
                Strings_Edit.Get (S, P, TabAndSpace);
                L := P;
-               Strings_Edit.Get (S, P, ISO_646_Set - TabAndSpace);
-               Put_Line ("Package Name : " & S (L .. P));
+               Get_To_EOT (S, P);
+               Put_Line ("Package Name : " & S (L .. P - 1));
 
                Location := In_Package;
+            elsif S (P) = Latin_1.CR or S (P) = Latin_1.LF then
+               if Comments /= Null_Unbounded_String and
+                 Location = Post_Subprogram
+               then
+                  Put_Line ("Comments :" & To_String (Comments));
+               end if;
+
+               Location := In_Package;
+
+               Comments := Null_Unbounded_String;
+               P := P + 1;
             else
                P := P + 1;
             end if;

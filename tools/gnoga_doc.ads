@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                           G N O G A _ M A K E                            --
+--                            G N O G A _ D O C                             --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
@@ -25,36 +25,18 @@
 --  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see   --
 --  <http://www.gnu.org/licenses/>.                                         --
 --                                                                          --
+--  As a special exception, if other files instantiate generics from this   --
+--  unit, or you link this unit with other files to produce an executable,  --
+--  this  unit  does not  by itself cause  the resulting executable to be   --
+--  covered by the GNU General Public License. This exception does not      --
+--  however invalidate any other reasons why the executable file  might be  --
+--  covered by the  GNU Public License.                                     --
+--                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-package Gnoga_Make is
+package Gnoga_Doc is
 
-   procedure Version;
-   --  Display version information
+   procedure Parse (File_Name : String);
 
-   procedure Display_Help;
-   --  Display command line help for Gnoga_Make
-
-   procedure Display_New_Usage;
-   --  Display command line help for 'new' command
-
-   procedure Display_View_Usage;
-   --  Display command line help for 'view' command
-
-   procedure Display_Controller_Usage;
-   --  Display command line help for 'controller' command
-
-   procedure New_Application (App_Name          : in String;
-                              App_Template_Name : in String);
-   --  Copy new_application template directory and make appropriate project
-   --  name subsitutions
-
-   procedure New_View (App_Name           : in String;
-                       View_Name          : in String;
-                       View_Template_Name : in String);
-
-   procedure New_Controller (App_Name                 : in String;
-                             Controller_Name          : in String;
-                             Controller_Template_Name : in String);
-end Gnoga_Make;
+end Gnoga_Doc;

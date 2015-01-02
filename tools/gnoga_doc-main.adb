@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                       G N O G A _ M A K E . M A I N                      --
+--                        G N O G A _ D O C . M A I N                       --
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
@@ -16,64 +16,44 @@
 --  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of --
 --  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                    --
 --                                                                          --
+--  As a special exception under Section 7 of GPL version 3, you are        --
+--  granted additional permissions described in the GCC Runtime Library     --
+--  Exception, version 3.1, as published by the Free Software Foundation.   --
+--                                                                          --
+--  You should have received a copy of the GNU General Public License and   --
+--  a copy of the GCC Runtime Library Exception along with this program;    --
+--  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see   --
+--  <http://www.gnu.org/licenses/>.                                         --
+--                                                                          --
+--  As a special exception, if other files instantiate generics from this   --
+--  unit, or you link this unit with other files to produce an executable,  --
+--  this  unit  does not  by itself cause  the resulting executable to be   --
+--  covered by the GNU General Public License. This exception does not      --
+--  however invalidate any other reasons why the executable file  might be  --
+--  covered by the  GNU Public License.                                     --
+--                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Command_Line; use Ada.Command_Line;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
-with Ada.Strings.Maps.Constants; use Ada.Strings.Maps.Constants;
-with Ada.Directories;
-
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
+with Ada.Command_Line;
 
 with Gnoga;
 
-with Gnoga_Make;
-
-procedure Gnoga_Make.Main is
+procedure Gnoga_Doc.Main is
 begin
-   if Argument_Count = 0 then
-      Gnoga_Make.Display_Help;
-      return;
+   if Ada.Command_Line.Argument_Count /= 1 then
+      Gnoga.Write_To_Console ("Usage: " & Ada.Command_Line.Command_Name &
+                                " filename");
    end if;
 
-   declare
-      Command : String := Translate (Argument (1), Lower_Case_Map);
-   begin
-      if Command = "version" or Command = "-v" or Command = "/v" then
-         Gnoga_Make.Version;
-
-      elsif Command = "help" or Command = "-h" or Command = "/h" then
-         Gnoga_Make.Display_Help;
-
-      elsif Command = "new" then
-         if Argument_Count < 2 then
-            Gnoga_Make.Display_New_Usage;
-         elsif Argument_Count = 2 then
-            Gnoga_Make.New_Application (Argument (2), "multi_connect");
-         else
-            Gnoga_Make.New_Application (Argument (2), Argument (3));
-         end if;
-
-      elsif Command = "view" then
-         if Argument_Count < 3 then
-            Gnoga_Make.Display_View_Usage;
-         end if;
-
-      elsif Command = "controller" then
-         if Argument_Count < 3 then
-            Gnoga_Make.Display_Controller_Usage;
-         end if;
-
-      else
-         Gnoga_Make.Display_Help;
-      end if;
-   end;
+   if Ada.Command_Line.Argument_Count = 1 then
+      Gnoga_Doc.Parse (Ada.Command_Line.Argument (1));
+   end if;
 exception
    when E : others =>
       Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
                    Ada.Exceptions.Exception_Message (E));
       Gnoga.Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
-end Gnoga_Make.Main;
+end Gnoga_Doc.Main;

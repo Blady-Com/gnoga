@@ -7,7 +7,7 @@ project Tools is
    for Source_Dirs use (".");
    for Object_Dir use "../obj";
    for Exec_Dir use "../bin";
-   for Main use ("gnoga_make-main.adb");
+   for Main use ("gnoga_make-main.adb", "gnoga_doc-main.adb");
 
    package Install is
       for Artifacts ("share/gnoga") use ("../templates");
@@ -19,5 +19,6 @@ project Tools is
 
    package Builder is
       for Executable ("gnoga_make-main.adb") use "gnoga_make";
+      for Executable ("gnoga_doc-main.adb") use "gnoga_doc";
    end Builder;
 end Tools;

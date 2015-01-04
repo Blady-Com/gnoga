@@ -46,113 +46,11 @@ with Gnoga.Server.Template_Parser.Simple;
 
 with Strings_Edit;
 
+with Gnoga_Doc.Token; use Gnoga_Doc.Token;
+
 package body Gnoga_Doc is
-   type File_Loc is (Pre_Package, In_Package, Post_Block);
 
    Comments : Ada.Strings.Unbounded.Unbounded_String;
-
-   procedure Get_To_Semicolon (S : in String; P : in out Integer);
-   --  Move P to semicolon, ignore semicolon with in paranthesis
-   --  ? ignore ',"
-
-   procedure Get_To_EOL (S : in String; P : in out Integer);
-   --  Move P to end of line (LF)
-
-   procedure Get_To_EOT (S : in String; P : in out Integer);
-   --  Move to end of token. (' ', HT, ':', ';', ',', CR, LF)
-
-   function Is_Token (Token, S : String; P : Integer) return Boolean;
-   --  check if S at P is Token
-
-   procedure Get_To_Semicolon (S : in String; P : in out Integer) is
-      Par_Count : Natural := 0;
-   begin
-      while P <= S'Last loop
-         if S (P) = '(' then
-            Par_Count := Par_Count + 1;
-         elsif S (P) = ')' then
-            Par_Count := Par_Count - 1;
-         end if;
-
-         P := P + 1;
-
-         if Par_Count = 0 then
-            exit when S (P) = ';';
-         end if;
-      end loop;
-   end Get_To_Semicolon;
-
-   procedure Get_To_EOL (S : String; P : in out Integer) is
-      use Ada.Characters;
-   begin
-      while P <= S'Last and S (P) /= Latin_1.LF loop
-         P := P + 1;
-      end loop;
-   end Get_To_EOL;
-
-   procedure Get_To_EOT (S : String; P : in out Integer) is
-      use Ada.Characters;
-      --  (' ', HT, ':', ';', ',', CR, LF)
-   begin
-      while P <= S'Last and
-        S (P) /= Latin_1.Space and
-        S (P) /= Latin_1.HT and
-        S (P) /= ':' and
-        S (P) /= ';' and
-        S (P) /= ',' and
-        S (P) /= Latin_1.CR and
-        S (P) /= Latin_1.LF
-      loop
-         P := P + 1;
-      end loop;
-   end Get_To_EOT;
-
-   function Is_Token (Token, S : String; P : Integer) return Boolean is
-      use Ada.Characters;
-      use Ada.Strings.Maps.Constants;
-
-      L : Integer;
-   begin
-      if not Strings_Edit.Is_Prefix (Prefix  => Token,
-                                     Source  => S,
-                                     Pointer => P,
-                                     Map     => Lower_Case_Map)
-      then
-         return False;
-      end if;
-
-      L := P + Token'Length;
-
-      if S (L) /= Latin_1.Space and
-        S (L) /= Latin_1.HT and
-        S (L) /= ':' and
-        S (L) /= ';' and
-        S (L) /= ',' and
-        S (L) /= Latin_1.CR and
-        S (L) /= Latin_1.LF
-      then
-         return False;
-      else
-         if S'First = P then
-            return True;
-         else
-            L := P - 1;
-
-            if S (L) /= Latin_1.Space and
-              S (L) /= Latin_1.HT and
-              S (L) /= ':' and
-              S (L) /= ';' and
-              S (L) /= ',' and
-              S (L) /= Latin_1.CR and
-              S (L) /= Latin_1.LF
-            then
-               return False;
-            else
-               return True;
-            end if;
-         end if;
-      end if;
-   end Is_Token;
 
    procedure Parse (File_Name : String) is
       use Ada.Characters;

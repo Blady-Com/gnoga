@@ -840,7 +840,8 @@ package Gnoga.Gui.Element.Form is
    overriding
    function Value (Element : Selection_Type) return String;
    --  Returns the value of the currently selected item. For multiple select
-   --  boxes get the value based on Index.
+   --  boxes get the value based on Index. The Value is the non-displayed
+   --  value of the currently selected item.
 
    function Length (Element : Selection_Type) return Natural;
    --  Number of options in Selection_Type
@@ -862,12 +863,17 @@ package Gnoga.Gui.Element.Form is
                     Value   : in     String);
    function Value (Element : Selection_Type; Index : Positive)
                    return String;
+   --  Value is the non-displayed value of the the item at Index. If the form
+   --  is submitted, the value not the "Text" is sent to the form's action
+   --  URL.
 
    procedure Text (Element : in out Selection_Type;
                    Index   : in     Positive;
                    Value   : in     String);
    function Text (Element : Selection_Type; Index : Positive)
                   return String;
+   --  The displayed text of the item at Index. The text is not submitted by
+   --  the form only its value if the form is submitted to its action URL.
 
    -------------------------------------------------------------------------
    --  Selection_Type - Methods
@@ -913,6 +919,9 @@ package Gnoga.Gui.Element.Form is
    --  standard Element_Type.Place_* methods and can also be removed using
    --  Element.Remove
    --  Selection can be an element of Selection_Type or Option_Group_Type
+   --  NOTE: A few browsers allow limitted styling of Element such as color
+   --        some do not allow any. Test accross your expected delivery
+   --        platforms to insure the styling you use works as expected.
 
    -------------------------------------------------------------------------
    --  Option_Type - Properties

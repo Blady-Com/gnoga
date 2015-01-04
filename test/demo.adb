@@ -159,7 +159,7 @@ procedure Demo is
 
       Label.Create (Form      => App.My_Form,
                     Label_For => App.My_Input,
-                    Contents  => "Type Stuff:");
+                    Content   => "Type Stuff:");
 
       Label.Place_Inside_Bottom_Of (App.FSet);
       App.My_Input.Place_Inside_Bottom_Of (App.FSet);

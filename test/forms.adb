@@ -89,9 +89,9 @@ procedure Forms is
                                 Input_Type => "text",
                                 Name       => "Some_Text");
 
-      Label.Create (Form       => App.My_Form,
-                    Label_For  => App.Input,
-                    Contents   => "Type Text:");
+      Label.Create (Form      => App.My_Form,
+                    Label_For => App.Input,
+                    Content   => "Type Text:");
 
       Button1.Create (Form       => App.My_Form,
                       Value      => "onclick button");

@@ -411,14 +411,14 @@ package body User_IF is
       App_Data.Mark_Check.Checked (Value => False);
       App_Data.Mark_Check.On_Click_Handler (Handler => Mark_Toggle'Access);
       App_Data.Mark_Label.Create
-         (Form => App_Data.Mark_Form, Label_For => App_Data.Mark_Check, Contents => "Auto Mark", Auto_Place => False);
+         (Form => App_Data.Mark_Form, Label_For => App_Data.Mark_Check, Content => "Auto Mark", Auto_Place => False);
       App_Data.Step_Form.Create (Parent => App_Data.Right_View);
       App_Data.Step_Form.Display (Value => "block");
       App_Data.Step_Check.Create (Form => App_Data.Step_Form);
       App_Data.Step_Check.Checked (Value => False);
       App_Data.Step_Check.On_Click_Handler (Handler => Step_Toggle'Access);
       App_Data.Step_Label.Create
-         (Form => App_Data.Step_Form, Label_For => App_Data.Step_Check, Contents => "Auto Step after Mark", Auto_Place => False);
+         (Form => App_Data.Step_Form, Label_For => App_Data.Step_Check, Content => "Auto Step after Mark", Auto_Place => False);
       App_Data.Rules.Create (Parent => App_Data.Right_View, Content => "Rules");
       App_Data.Rules.Display (Value => "block");
       App_Data.Rules.On_Click_Handler (Handler => Rules_Pressed'Access);

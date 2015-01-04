@@ -1209,7 +1209,7 @@ package body Gnoga.Gui.Element.Form is
    procedure Create (Element    : in out Label_Type;
                      Form       : in out Form_Type'Class;
                      Label_For  : in out Element_Type'Class;
-                     Contents   : in     String := "";
+                     Content    : in     String := "";
                      Auto_Place : in     Boolean := True;
                      ID         : in     String := "")
    is
@@ -1218,7 +1218,7 @@ package body Gnoga.Gui.Element.Form is
         (Parent => Form,
          HTML   => "<label for='" & Label_For.ID &
            "' form='" & Form.ID & "'>" &
-           Escape_Quotes (Contents) & "</label>",
+           Escape_Quotes (Content) & "</label>",
          ID     => ID);
 
       if Auto_Place then

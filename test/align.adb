@@ -64,9 +64,9 @@ begin
    Number_Choice.Create (Form  => F,
                          Size  => 20,
                          Value => "");
-   Choice_Label.Create (Form       => F,
-                        Label_For  => Number_Choice,
-                        Contents   => "Enter a number:");
+   Choice_Label.Create (Form      => F,
+                        Label_For => Number_Choice,
+                        Content   => "Enter a number:");
    Factor_Button.Create (Form  => F,
                          Value => "Factorial");
 
@@ -75,7 +75,7 @@ begin
    Calc_Dec.Create (Form => F);
    Calc_Dec_Label.Create (Form       => F,
                           Label_For  => Calc_Dec,
-                          Contents   => "Calculate Decimal",
+                          Content    => "Calculate Decimal",
                           Auto_Place => False);
 
    F.New_Line;
@@ -86,7 +86,7 @@ begin
    Dec_Range.Value (0);
    Range_Value.Create (Form       => F,
                        Label_For  => Dec_Range,
-                       Contents   => "0",
+                       Content    => "0",
                        Auto_Place => False);
    F.Put (" Decimal(s)");
 

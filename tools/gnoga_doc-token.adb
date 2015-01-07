@@ -58,6 +58,15 @@ package body Gnoga_Doc.Token is
       end if;
    end Is_EOT_Character;
 
+   function Is_Prefix (Prefix, S : in String; P : Integer) return Boolean is
+      use Ada.Strings.Maps.Constants;
+   begin
+      return Strings_Edit.Is_Prefix (Prefix  => Prefix,
+                                     Source  => S,
+                                     Pointer => P,
+                                     Map     => Lower_Case_Map);
+   end Is_Prefix;
+
    procedure Get_To_Semicolon (S : in String; P : in out Integer) is
       Par_Count : Natural := 0;
    begin
@@ -119,6 +128,19 @@ package body Gnoga_Doc.Token is
          P := P + 1;
       end loop;
    end Get_To_EOR;
+
+   procedure Get_To_Next_Token (S : in String; P : in out Integer) is
+   begin
+      Get_To_EOT (S, P);
+      Get_To_EOS (S, P);
+   end Get_To_Next_Token;
+
+   function Token_Name (S : String; P : Integer) return String is
+      T : Integer := P;
+   begin
+      Get_To_EOT (S, T);
+      return S (P .. T - 1);
+   end Token_Name;
 
    function Is_Token (Token, S : String; P : Integer) return Boolean is
       use Ada.Characters;

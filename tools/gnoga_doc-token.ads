@@ -40,6 +40,9 @@ package Gnoga_Doc.Token is
 
    function Is_EOT_Character (C : Character) return Boolean;
 
+   function Is_Prefix (Prefix, S : in String; P : Integer) return Boolean;
+   --  Case insensitive check if S (P .. Prefix'Length) = Prefix
+
    procedure Get_To_Semicolon (S : in String; P : in out Integer);
    --  Move P to semicolon, ignore semicolon with in paranthesis
    --  ? ignore ',"
@@ -55,6 +58,12 @@ package Gnoga_Doc.Token is
 
    procedure Get_To_EOR (S : in String; P : in out Integer);
    --  Move P to end of record
+
+   procedure Get_To_Next_Token (S : in String; P : in out Integer);
+   --  Move P to next token
+
+   function Token_Name (S : String; P : Integer) return String;
+   --  Return S (P .. EOT)
 
    function Is_Token (Token, S : String; P : Integer) return Boolean;
    --  check if S at P is Token

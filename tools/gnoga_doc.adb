@@ -44,8 +44,6 @@ with Ada.Strings.Unbounded;
 with Gnoga;
 with Gnoga.Server.Template_Parser.Simple;
 
-with Strings_Edit;
-
 with Gnoga_Doc.Token; use Gnoga_Doc.Token;
 
 package body Gnoga_Doc is
@@ -54,8 +52,6 @@ package body Gnoga_Doc is
 
    procedure Parse (File_Name : String) is
       use Ada.Characters;
-      use Ada.Strings.Maps;
-      use Ada.Strings.Maps.Constants;
       use Ada.Strings.Unbounded;
 
       Location : File_Loc := Pre_Package;
@@ -68,14 +64,9 @@ package body Gnoga_Doc is
            (File_Name);
          P : Integer := S'First;
          L : Integer;
-         T : Integer;
       begin
          while P <= S'Last loop
-            if Strings_Edit.Is_Prefix (Prefix  => "--",
-                                       Source  => S,
-                                       Pointer => P,
-                                       Map     => Lower_Case_Map)
-            then
+            if Is_Prefix ("--", S, P) then
                P := P + String'("--")'Length + 1;
                Get_To_EOS (S, P);
 
@@ -89,12 +80,9 @@ package body Gnoga_Doc is
                P := P + 1;
             elsif Is_Token ("procedure", S, P) then
                L := P;
+               Get_To_Next_Token (S, P);
 
-               P := P + String'("procedure")'Length + 1;
-               T := P;
-               Get_To_EOS (S, P);
-               Get_To_EOT (S, P);
-               Put_Line ("Procedure Name : " & S (T .. P - 1));
+               Put_Line ("Procedure Name : " & Token_Name (S, P));
 
                P := L;
                Get_To_Semicolon (S, P);
@@ -106,12 +94,9 @@ package body Gnoga_Doc is
                Location := Post_Block;
             elsif Is_Token ("function", S, P) then
                L := P;
+               Get_To_Next_Token (S, P);
 
-               P := P + String'("function")'Length + 1;
-               T := P;
-               Get_To_EOS (S, P);
-               Get_To_EOT (S, P);
-               Put_Line ("Function Name : " & S (T .. P - 1));
+               Put_Line ("Function Name : " & Token_Name (S, P));
 
                P := L;
                Get_To_Semicolon (S, P);
@@ -123,18 +108,14 @@ package body Gnoga_Doc is
                Location := Post_Block;
             elsif Is_Token ("type", S, P) then
                L := P;
+               Get_To_Next_Token (S, P);
 
-               P := P + String'("type")'Length + 1;
-               T := P;
-               Get_To_EOS (S, P);
-               Get_To_EOT (S, P);
-               Put_Line ("Type Name : " & S (T .. P - 1));
+               Put_Line ("Type Name : " & Token_Name (S, P));
 
                --  Check if a record type
                Get_To_EOS (S, P);
                if Is_Token ("is", S, P) then
-                  Get_To_EOT (S, P);
-                  Get_To_EOS (S, P);
+                  Get_To_Next_Token (S, P);
 
                   if Is_Token ("record", S, P) then
                      P := L;

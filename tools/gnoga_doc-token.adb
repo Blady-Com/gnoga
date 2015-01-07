@@ -76,6 +76,20 @@ package body Gnoga_Doc.Token is
       end loop;
    end Get_To_Semicolon;
 
+   procedure Get_To_EOS (S : in String; P : in out Integer) is
+      use Ada.Characters;
+      use Ada.Strings.Maps;
+      use Ada.Strings.Maps.Constants;
+
+      TabAndSpace : Ada.Strings.Maps.Character_Set :=
+        To_Set (Sequence => Latin_1.Space &
+                  Latin_1.HT &
+                  Latin_1.CR &
+                  Latin_1.LF);
+   begin
+      Strings_Edit.Get (S, P, TabAndSpace);
+   end Get_To_EOS;
+
    procedure Get_To_EOL (S : String; P : in out Integer) is
       use Ada.Characters;
    begin
@@ -92,6 +106,19 @@ package body Gnoga_Doc.Token is
          P := P + 1;
       end loop;
    end Get_To_EOT;
+
+   procedure Get_To_EOR (S : in String; P : in out Integer) is
+   begin
+      while P <= S'Last loop
+         if Is_Token ("end", S, P) then
+            Get_To_Semicolon (S, P);
+            P := P + 1;
+            exit;
+         end if;
+
+         P := P + 1;
+      end loop;
+   end Get_To_EOR;
 
    function Is_Token (Token, S : String; P : Integer) return Boolean is
       use Ada.Characters;

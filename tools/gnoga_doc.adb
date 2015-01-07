@@ -58,12 +58,6 @@ package body Gnoga_Doc is
       use Ada.Strings.Maps.Constants;
       use Ada.Strings.Unbounded;
 
-      TabAndSpace : Ada.Strings.Maps.Character_Set :=
-        To_Set (Sequence => Latin_1.Space &
-                  Latin_1.HT &
-                  Latin_1.CR &
-                  Latin_1.LF);
-
       Location : File_Loc := Pre_Package;
    begin
       Gnoga.Server.Template_Parser.Set_Template_Directory ("");
@@ -83,7 +77,7 @@ package body Gnoga_Doc is
                                        Map     => Lower_Case_Map)
             then
                P := P + String'("--")'Length + 1;
-               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOS (S, P);
 
                L := P;
                Get_To_EOL (S, P);
@@ -98,7 +92,7 @@ package body Gnoga_Doc is
 
                P := P + String'("procedure")'Length + 1;
                T := P;
-               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOS (S, P);
                Get_To_EOT (S, P);
                Put_Line ("Procedure Name : " & S (T .. P - 1));
 
@@ -106,8 +100,8 @@ package body Gnoga_Doc is
                Get_To_Semicolon (S, P);
                Put_Line ("Procedure : " & S (L .. P));
 
+               Get_To_EOL (S, P);
                P := P + 1;
-               Strings_Edit.Get (S, P, TabAndSpace);
 
                Location := Post_Block;
             elsif Is_Token ("function", S, P) then
@@ -115,7 +109,7 @@ package body Gnoga_Doc is
 
                P := P + String'("function")'Length + 1;
                T := P;
-               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOS (S, P);
                Get_To_EOT (S, P);
                Put_Line ("Function Name : " & S (T .. P - 1));
 
@@ -123,8 +117,8 @@ package body Gnoga_Doc is
                Get_To_Semicolon (S, P);
                Put_Line ("Function : " & S (L .. P));
 
+               Get_To_EOL (S, P);
                P := P + 1;
-               Strings_Edit.Get (S, P, TabAndSpace);
 
                Location := Post_Block;
             elsif Is_Token ("type", S, P) then
@@ -132,25 +126,41 @@ package body Gnoga_Doc is
 
                P := P + String'("type")'Length + 1;
                T := P;
-               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOS (S, P);
                Get_To_EOT (S, P);
                Put_Line ("Type Name : " & S (T .. P - 1));
 
-               P := L;
-               Get_To_Semicolon (S, P);
-               Put_Line ("Type : " & S (L .. P));
+               --  Check if a record type
+               Get_To_EOS (S, P);
+               if Is_Token ("is", S, P) then
+                  Get_To_EOT (S, P);
+                  Get_To_EOS (S, P);
 
+                  if Is_Token ("record", S, P) then
+                     P := L;
+                     Get_To_EOR (S, P);
+                     Put_Line ("Type : " & S (L .. P));
+                  else
+                     P := L;
+                     Get_To_Semicolon (S, P);
+                     Put_Line ("Type : " & S (L .. P));
+                  end if;
+               else
+                  Put_Line ("Type : Forward decleration of type.");
+               end if;
+
+               Get_To_EOL (S, P);
                P := P + 1;
-               Strings_Edit.Get (S, P, TabAndSpace);
 
                Location := Post_Block;
             elsif Location = Pre_Package and then Is_Token ("package", S, P)
             then
                P := P + String'("package")'Length + 1;
-               Strings_Edit.Get (S, P, TabAndSpace);
+               Get_To_EOS (S, P);
                L := P;
                Get_To_EOT (S, P);
                Put_Line ("Package Name : " & S (L .. P - 1));
+               New_Line;
 
                Location := In_Package;
             elsif Is_Token ("private", S, P) then
@@ -158,9 +168,10 @@ package body Gnoga_Doc is
             elsif S (P) = Latin_1.CR or S (P) = Latin_1.LF then
                if Location = Post_Block then
                   if Comments /= Null_Unbounded_String then
-                     Put_Line ("Comments :" & To_String (Comments));
+                     Put_Line ("Comments : " & To_String (Comments));
                   end if;
 
+                  New_Line;
                   Location := In_Package;
                end if;
 

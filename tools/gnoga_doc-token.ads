@@ -44,11 +44,17 @@ package Gnoga_Doc.Token is
    --  Move P to semicolon, ignore semicolon with in paranthesis
    --  ? ignore ',"
 
+   procedure Get_To_EOS (S : in String; P : in out Integer);
+   --  Move P to end of Space, Tab, CR and LF
+
    procedure Get_To_EOL (S : in String; P : in out Integer);
    --  Move P to end of line (LF)
 
    procedure Get_To_EOT (S : in String; P : in out Integer);
-   --  Move to end of token.
+   --  Move P to end of token
+
+   procedure Get_To_EOR (S : in String; P : in out Integer);
+   --  Move P to end of record
 
    function Is_Token (Token, S : String; P : Integer) return Boolean;
    --  check if S at P is Token

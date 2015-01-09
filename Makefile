@@ -47,7 +47,7 @@ endif
 endif
 endif
 
-all: gnoga gnoga_tools snake mine_detector tutorials 
+all: gnoga gnoga_tools snake mine_detector chattanooga tutorials 
 
 setup:
 ifeq (${PRJ_TARGET}, Windows)
@@ -102,10 +102,7 @@ native_osx:
 ace_editor:
 	- cd js && git clone https://github.com/ajaxorg/ace-builds.git
 
-demo: snake mine_detector adaedit adablog
-
-adablog:
-	cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
+demo: snake mine_detector chattanooga adaedit adablog
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -113,8 +110,14 @@ snake:
 mine_detector:
 	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+chattanooga:
+	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
 adaedit: ace_editor
 	cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
+adablog:
+	cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}

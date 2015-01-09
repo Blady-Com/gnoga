@@ -50,6 +50,13 @@ package body Gnoga_Doc is
 
    Comments : Ada.Strings.Unbounded.Unbounded_String;
 
+   procedure Parse_Elements (S : String; P, E : in out Integer);
+
+   procedure Parse_Elements (S : String; P, E : in out Integer) is
+   begin
+      null;
+   end Parse_Elements;
+
    procedure Parse (File_Name : String) is
       use Ada.Characters;
       use Ada.Strings.Unbounded;
@@ -67,17 +74,26 @@ package body Gnoga_Doc is
       begin
          while P <= S'Last loop
             if Is_Prefix ("--", S, P) then
-               P := P + String'("--")'Length + 1;
-               Get_To_EOS (S, P);
+               P := P + String'("--")'Length;
 
-               L := P;
-               Get_To_EOL (S, P);
+               if Is_EOL (S, P) then
+                  if Location /= Pre_Package then
+                     Comments := Comments & Latin_1.LF;
+                  end if;
 
-               if Location /= Pre_Package then
-                  Comments := Comments & S (L .. P);
+                  P := P + 1;
+               else
+                  Get_To_EOS (S, P);
+                  L := P;
+                  Get_To_EOL (S, P);
+
+                  if Location /= Pre_Package then
+                     Comments := Comments & S (L .. P);
+                  end if;
+
+                  P := P + 1;
                end if;
 
-               P := P + 1;
             elsif Is_Token ("procedure", S, P) then
                L := P;
                Get_To_Next_Token (S, P);
@@ -138,6 +154,7 @@ package body Gnoga_Doc is
             then
                P := P + String'("package")'Length + 1;
                Get_To_EOS (S, P);
+
                L := P;
                Get_To_EOT (S, P);
                Put_Line ("Package Name : " & S (L .. P - 1));
@@ -152,7 +169,6 @@ package body Gnoga_Doc is
                      Put_Line ("Comments : " & To_String (Comments));
                   end if;
 
-                  New_Line;
                   Location := In_Package;
                end if;
 

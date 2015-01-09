@@ -43,6 +43,9 @@ package Gnoga_Doc.Token is
    function Is_Prefix (Prefix, S : in String; P : Integer) return Boolean;
    --  Case insensitive check if S (P .. Prefix'Length) = Prefix
 
+   function Is_EOL (S : in String; P : Integer) return Boolean;
+   --  Return true if S (P) = CR or LF
+
    procedure Get_To_Semicolon (S : in String; P : in out Integer);
    --  Move P to semicolon, ignore semicolon with in paranthesis
    --  ? ignore ',"

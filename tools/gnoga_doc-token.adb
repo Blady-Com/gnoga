@@ -46,6 +46,7 @@ package body Gnoga_Doc.Token is
    begin
       if C = Latin_1.Space or
         C = Latin_1.HT or
+        C = '-' or
         C = ':' or
         C = ';' or
         C = ',' or
@@ -57,6 +58,18 @@ package body Gnoga_Doc.Token is
          return False;
       end if;
    end Is_EOT_Character;
+
+   function Is_EOL (S : in String; P : Integer) return Boolean is
+      use Ada.Characters;
+
+      C : Character := S (P);
+   begin
+      if C = Latin_1.CR or C = Latin_1.LF then
+         return True;
+      else
+         return False;
+      end if;
+   end Is_EOL;
 
    function Is_Prefix (Prefix, S : in String; P : Integer) return Boolean is
       use Ada.Strings.Maps.Constants;

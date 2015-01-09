@@ -80,6 +80,20 @@ package body Gnoga_Doc.Token is
                                      Map     => Lower_Case_Map);
    end Is_Prefix;
 
+   procedure Get_To_Character (C : in     Character;
+                               S : in     String;
+                               P : in out Integer)
+   is
+   begin
+      while P <= S'Last loop
+         if S (P) = C then
+            exit;
+         else
+            P := P + 1;
+         end if;
+      end loop;
+   end Get_To_Character;
+
    procedure Get_To_Semicolon (S : in String; P : in out Integer) is
       Par_Count : Natural := 0;
    begin
@@ -133,8 +147,6 @@ package body Gnoga_Doc.Token is
    begin
       while P <= S'Last loop
          if Is_Token ("end", S, P) then
-            Get_To_Semicolon (S, P);
-            P := P + 1;
             exit;
          end if;
 

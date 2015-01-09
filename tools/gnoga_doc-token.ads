@@ -50,6 +50,10 @@ package Gnoga_Doc.Token is
    --  Move P to semicolon, ignore semicolon with in paranthesis
    --  ? ignore ',"
 
+   procedure Get_To_Character (C : in     Character;
+                               S : in     String;
+                               P : in out Integer);
+
    procedure Get_To_EOS (S : in String; P : in out Integer);
    --  Move P to end of Space, Tab, CR and LF
 
@@ -60,7 +64,7 @@ package Gnoga_Doc.Token is
    --  Move P to end of token
 
    procedure Get_To_EOR (S : in String; P : in out Integer);
-   --  Move P to end of record
+   --  Move P to end of record, P at "end record;"
 
    procedure Get_To_Next_Token (S : in String; P : in out Integer);
    --  Move P to next token

@@ -50,10 +50,11 @@ package body Gnoga_Doc is
 
    Comments : Ada.Strings.Unbounded.Unbounded_String;
 
-   procedure Parse_Elements (S : String; P, E : in out Integer);
+   procedure Parse_Elements (S : String);
 
-   procedure Parse_Elements (S : String; P, E : in out Integer) is
+   procedure Parse_Elements (S : String) is
    begin
+      -- Put_Line ("{" & S & "}");
       null;
    end Parse_Elements;
 
@@ -70,6 +71,7 @@ package body Gnoga_Doc is
          S : String := Gnoga.Server.Template_Parser.Simple.Load_View
            (File_Name);
          P : Integer := S'First;
+         T : Integer;
          L : Integer;
       begin
          while P <= S'Last loop
@@ -100,6 +102,12 @@ package body Gnoga_Doc is
 
                Put_Line ("Procedure Name : " & Token_Name (S, P));
 
+               Get_To_EOT (S, P);
+               Get_To_EOS (S, P);
+               T := P + 1;
+               Get_To_Character (')', S, P);
+               Parse_Elements (S (T .. P - 1) & ";");
+
                P := L;
                Get_To_Semicolon (S, P);
                Put_Line ("Procedure : " & S (L .. P));
@@ -113,6 +121,12 @@ package body Gnoga_Doc is
                Get_To_Next_Token (S, P);
 
                Put_Line ("Function Name : " & Token_Name (S, P));
+
+               Get_To_EOT (S, P);
+               Get_To_EOS (S, P);
+               T := P + 1;
+               Get_To_Character (')', S, P);
+               Parse_Elements (S (T .. P - 1) & ";");
 
                P := L;
                Get_To_Semicolon (S, P);
@@ -129,13 +143,20 @@ package body Gnoga_Doc is
                Put_Line ("Type Name : " & Token_Name (S, P));
 
                --  Check if a record type
-               Get_To_EOS (S, P);
+               Get_To_Next_Token (S, P);
                if Is_Token ("is", S, P) then
                   Get_To_Next_Token (S, P);
 
                   if Is_Token ("record", S, P) then
-                     P := L;
+                     Get_To_Next_Token (S, P);
+
+                     T := P;
                      Get_To_EOR (S, P);
+                     Parse_Elements (S (T .. P - 1));
+
+                     Get_To_Semicolon (S, P);
+                     P := P + 1;
+
                      Put_Line ("Type : " & S (L .. P));
                   else
                      P := L;

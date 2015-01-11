@@ -4,7 +4,7 @@
 --
 -- Globally useful declarations
 --
--- V1.0B  2015 Jan 05     1st beta release
+-- V1.0B  2015 Jan 10     1st beta release, now with better message entry
 --
 with Ada.Strings.Unbounded;
 
@@ -35,7 +35,7 @@ package Chattanooga is
       Connect_Info  : Gnoga.Gui.Element.Common.Span_Type;
       Disconnect    : Gnoga.Gui.Element.Common.Button_Type;
       Messaging     : Gnoga.Gui.Element.Form.Text_Area_Type;
-      Message_Entry : Gnoga.Gui.Element.Form.Text_Type;
+      Message_Entry : Gnoga.Gui.Element.Form.Text_Area_Type;
       Send          : Gnoga.Gui.Element.Form.Submit_Button_Type;
       Friends       : aliased Gnoga.Gui.View.View_Type; -- Friends side
       Friend_Title  : Gnoga.Gui.Element.Common.Span_Type;

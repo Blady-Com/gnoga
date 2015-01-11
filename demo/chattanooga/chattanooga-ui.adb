@@ -4,7 +4,7 @@
 --
 -- User Interface
 --
--- V1.0B  2015 Jan 05     1st beta release
+-- V1.0B  2015 Jan 10     1st beta release, now with better message entry
 --
 with Ada.Characters.Handling;
 with Ada.Characters.Latin_1;
@@ -131,7 +131,7 @@ package body Chattanooga.UI is
       App.Messaging.Create (Form => App.Chat, Columns => 75, Rows => 35);
       App.Messaging.Editable (Value => False);
       App.Chat.New_Line;
-      App.Message_Entry.Create (Form => App.Chat, Size => 45);
+      App.Message_Entry.Create (Form => App.Chat, Columns => 65, Rows => 3);
       App.Message_Entry.Display (Value => "inline");
       App.Send.Create (Form => App.Chat, Value => "Send");
       App.Chat.New_Line;
@@ -285,7 +285,7 @@ package body Chattanooga.UI is
 begin -- Chattanooga.UI
    Gnoga.Application.Title (Name => "Chattanooga");
    Gnoga.Application.HTML_On_Close (HTML => End_Message);
-   Gnoga.Application.Multi_Connect.Initialize (Port => 8082);
+   Gnoga.Application.Multi_Connect.Initialize;
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);
    Gnoga.Application.Multi_Connect.Message_Loop;
 end Chattanooga.UI;

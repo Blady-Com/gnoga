@@ -1,24 +1,20 @@
 with "../settings";
+with "../src/gnoga.gpr";
 with "../deps/simple_components/components-connections_server-http_server.gpr";
 with "../deps/simple_components/components-connections_server-http_server.gpr";
 with "../deps/simple_components/components-connections_server-secure.gpr";
 
 
-project Gnoga is
+project Gnoga_Secure is
 
    for Object_Dir use "../obj";
    for Source_Dirs use (".");
 
-   for Library_Name use "gnoga";
+   for Library_Name use "gnoga_secure";
    for Library_Dir use "../lib";
    for Library_Kind use "static";
 
    package Compiler renames Settings.Compiler;
 
    package Binder renames Settings.Binder;
-
-   package IDE is
-      for Documentation_Dir use "../docs/html/gnoga_rm";
-   end IDE;
-
-end Gnoga;
+end Gnoga_Secure;

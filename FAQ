@@ -123,7 +123,16 @@ Example of a Gnoga application as a subdirectory on a larger site using Apache:
 
 Q) Is it possible to use https and ssl websockets with Gnoga?
 
-A) Yes, setup your proxy to use an ssl connection and use the secure.html boot loader. Using Apache:
+A) There are 2 methods, 1 is direct SSL support and second is to proxy support.
+
+See ssl/gnoga-server-secure.ads for direct gnoga support of ssl. It requires libgnutls28-dev is installed.
+
+Note:
+When purchasing SSL certificates, when using gnutls such as with Gnoga direct ssl support or using Apache that also uses gnutls, append the intermediate certificate to the bottom of your certificate if there is one to properly create a chain of trust back to the root certificates installed in the browsers visiting your secure server.
+
+Here is an example of using Apache to Proxy SSL:
+
+Setup your proxy to use an ssl connection and use the secure.html boot loader:
 
 1) Create your self signed certificate for testing. Of course for production you may want to purchase a real certificate:
 

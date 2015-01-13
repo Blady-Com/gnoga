@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Terminated_Strings                          Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,7 +29,12 @@ with Ada.Exceptions;         use Ada.Exceptions;
 with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
 
+with Ada.Unchecked_Deallocation;
+
 package body GNAT.Sockets.Connection_State_Machine.Terminated_Strings is
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation (String, String_Ptr);
 
    procedure Feed
              (  Item    : in out String_Data_Item;
@@ -64,6 +69,52 @@ package body GNAT.Sockets.Connection_State_Machine.Terminated_Strings is
          end if;
       end loop;
    end Feed;
+
+   procedure Feed
+             (  Item    : in out Dynamic_String_Data_Item;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Client  : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             )  is
+      This : Character;
+   begin
+      if Item.Value = null then
+         Raise_Exception
+         (  Data_Error'Identity,
+            "Terminated string length exceeds 0 characters"
+         );
+      end if;
+      if State = 0 then
+         Item.Last := 0;
+         State     := 1;
+      end if;
+      while Pointer <= Data'Last loop
+         This := Character'Val (Data (Pointer));
+         if This = Item.Terminator then
+            Pointer := Pointer + 1;
+            State := 0;
+            return;
+         elsif Item.Last = Item.Value'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Terminated string length exceeds "
+               &  Image (Integer'(Item.Value'Length))
+               &  " characters"
+            )  );
+         else
+            Item.Last := Item.Last + 1;
+            Item.Value (Item.Last) := This;
+            Pointer := Pointer + 1;
+         end if;
+      end loop;
+   end Feed;
+
+   procedure Finalize (Item : in out Dynamic_String_Data_Item) is
+   begin
+      Finalize (Data_Item (Item));
+      Free (Item.Value);
+   end Finalize;
 
    function Get
             (  Data       : Stream_Element_Array;
@@ -107,6 +158,33 @@ package body GNAT.Sockets.Connection_State_Machine.Terminated_Strings is
       );
    end Get;
 
+   function Get_Maximum_Size
+            (  Item : Dynamic_String_Data_Item
+            )  return Natural is
+   begin
+      if Item.Value = null then
+         return 0;
+      else
+         return Item.Value'Length;
+      end if;
+   end Get_Maximum_Size;
+
+   function Get_Value (Item : String_Data_Item) return String is
+   begin
+      return Item.Value (1..Item.Last);
+   end Get_Value;
+
+   function Get_Value
+            (  Item : Dynamic_String_Data_Item
+            )  return String is
+   begin
+      if Item.Value = null then
+         return "";
+      else
+         return Item.Value (1..Item.Last);
+      end if;
+   end Get_Value;
+
    procedure Put
              (  Data       : in out Stream_Element_Array;
                 Pointer    : in out Stream_Element_Offset;
@@ -146,5 +224,20 @@ package body GNAT.Sockets.Connection_State_Machine.Terminated_Strings is
       Data (Pointer) := Character'Pos (Terminator);
       Pointer := Pointer + 1;
    end Put;
+
+   procedure Set_Maximum_Size
+             (  Item : in out Dynamic_String_Data_Item;
+                Size : Positive
+             )  is
+   begin
+      if Item.Value = null then
+         Item.Value := new String (1..Size);
+         Item.Last := 0;
+      elsif Item.Value'Length < Size then
+         Free (Item.Value);
+         Item.Value := new String (1..Size);
+         Item.Last := 0;
+      end if;
+   end Set_Maximum_Size;
 
 end GNAT.Sockets.Connection_State_Machine.Terminated_Strings;

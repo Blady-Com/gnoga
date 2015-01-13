@@ -4,7 +4,7 @@
 --  Test WebSocket                                 Winter, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  23:36 14 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -129,6 +129,7 @@ package body Test_WebSocket_Duplex_Servers is
          new Chat_Client
              (  Listener       => Listener.all'Unchecked_Access,
                 Request_Length => Factory.Request_Length,
+                Input_Size     => Factory.Input_Size,
                 Output_Size    => Factory.Output_Size
              );
       Receive_Body_Tracing (Chat_Client (Result.all), True);

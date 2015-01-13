@@ -1,9 +1,9 @@
 --                                                                    --
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
---     HTTP server                                 Winter, 2013       --
+--     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  23:36 14 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -70,10 +70,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    function Accumulated_Body_Length (Client : HTTP_Client)
       return Stream_Element_Count is
    begin
-      if Client.Content.First = null then
+      if Client.Body_Content.First = null then
          return 0;
       else
-         return Client.Content.Length;
+         return Client.Body_Content.Length;
       end if;
    end Accumulated_Body_Length;
 
@@ -90,17 +90,17 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                 Content : Content_Item_Ptr
              )  is
    begin
-      if Client.Content.First = null then
-         Client.Content.First  := Content;
-         Client.Content.Length := Content.Length;
+      if Client.Body_Content.First = null then
+         Client.Body_Content.First  := Content;
+         Client.Body_Content.Length := Content.Length;
       else
-         if Client.Content.Last /= null then
-            Client.Content.Last.Next := Content;
+         if Client.Body_Content.Last /= null then
+            Client.Body_Content.Last.Next := Content;
          end if;
-         Client.Content.Length :=
-            Client.Content.Length + Content.Length;
+         Client.Body_Content.Length :=
+            Client.Body_Content.Length + Content.Length;
       end if;
-      Client.Content.Last := Content;
+      Client.Body_Content.Last := Content;
    end Accumulate_Body;
 
    procedure Accumulate_Body
@@ -500,7 +500,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       when Error : others =>
           Trace_Error
           (  Client.Listener.Factory.all,
-             "Content chunk fault",
+             "Sending content chunk",
              Error
           );
           Client.Source := null;
@@ -1110,6 +1110,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       Client.LF.Last := 1;
       Client.LF.Value (1) := 10;
+      Client.Line.Terminator := Character'Val (13);
+      Set_Maximum_Size (Client.Line, Client.Request_Length);
       Initialize (State_Machine (Client));
    end Initialize;
 
@@ -1123,7 +1125,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       Send
       (  Client        => Client,
-         Stream        => Client.Content,
+         Stream        => Client.Body_Content,
          End_Of_Stream => Done
       );
       if Done then
@@ -1240,7 +1242,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       elsif Pointer > Request'Last then
          Client.Expecting := Multipart_Header_Line;
       else
-         Trace (Client, "Malformed ending of a multipart body: " & Request);
+         Trace
+         (  Client,
+            "Malformed ending of a multipart body: " & Request
+         );
       end if;
    end Process_Body_Tail;
 
@@ -1522,21 +1527,21 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       if Pointer > Request'Last then
          Raise_Exception (Data_Error'Identity, "Missing request-URI");
       end if;
-      Client.Expecting     := Header_Line;
-      Client.Chunked       := False;
-      Client.Connection    := 0;
-      Client.Status        := null;
-      Client.Stream        := null;
-      Client.Source        := null;
-      Client.Destination   := null;
-      Client.Boundary      := null;
-      Client.Data_Length   := 0;
-      Client.Content.First := null;
-      Client.Headers       := (others => null);
-      Client.Multipart     := (others => null);
-      Client.Specific      := (others => False);
-      Client.Suffix        := Stream_Element_Count'First;
-      Client.CGI.Keys      := null;
+      Client.Expecting          := Header_Line;
+      Client.Chunked            := False;
+      Client.Connection         := 0;
+      Client.Status             := null;
+      Client.Stream             := null;
+      Client.Source             := null;
+      Client.Destination        := null;
+      Client.Boundary           := null;
+      Client.Data_Length        := 0;
+      Client.Body_Content.First := null;
+      Client.Headers            := (others => null);
+      Client.Multipart          := (others => null);
+      Client.Specific           := (others => False);
+      Client.Suffix             := Stream_Element_Count'First;
+      Client.CGI.Keys           := null;
       Erase (Client.Ranges);
       if Request (Pointer) = '*' then
          Pointer := Pointer + 1;
@@ -1666,7 +1671,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              )  is
       type Value_Ptr is access String;
       for Value_Ptr'Storage_Pool use Destination.Client.Pool;
-      Value : String  renames Destination.Client.Line.Value;
+      Value : String  renames Destination.Client.Line.Value.all;
       Last  : Natural renames Destination.Client.Line.Last;
    begin
       for Index in Data'Range loop
@@ -2952,7 +2957,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       Send_Body
       (  Client => Client,
-         Stream => Client.Content'Unchecked_Access,
+         Stream => Client.Body_Content'Unchecked_Access,
          Length => Accumulated_Body_Length (Client),
          Get    => Get
       );
@@ -3185,6 +3190,14 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       Client.Allowed := Allowed;
    end Set_Allowed;
+
+   procedure Set_Failed
+             (  Client : in out HTTP_Client;
+                Error  : Exception_Occurrence
+             )  is
+   begin
+      Client.Mutex.Failed (Error);
+   end Set_Failed;
 
    procedure Skip (Source : String; Pointer : in out Integer) is
    begin
@@ -3724,22 +3737,9 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       begin
          if Data'Length > 0 then
             while Pointer <= Data'Last loop
-               Send_Socket
-               (  Get_Socket (Client),
-                  Data (Pointer..Data'Last),
-                  Next
-               );
+               Push (Client, Data (Pointer..Data'Last), Next);
                if Next < Pointer then
                   raise Connection_Error;
-               end if;
-               if Is_Trace_Sent_On (Client.Listener.Factory.all) then
-                  Trace_Sent
-                  (  Factory => Client.Listener.Factory.all,
-                     Client  => Client,
-                     Data    => Data,
-                     From    => Pointer,
-                     To      => Next
-                  );
                end if;
                if Client.Trace_Body then
                   Trace
@@ -3762,13 +3762,13 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          end if;
       exception
          when Error : Connection_Error =>
-            Client.Mutex.Failed (Error);
+            Set_Failed (Client, Error);
             Raise_Exception
             (  End_Error'Identity,
                "Connection closed by peer"
             );
          when Error : others =>
-            Client.Mutex.Failed (Error);
+            Set_Failed (Client, Error);
             raise;
       end;
    end WebSocket_Blocking_Send;
@@ -4149,7 +4149,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 
       procedure Failed (Error : Exception_Occurrence) is
       begin
-         Set_Failed (Client.all, Error);
+         Set_Failed (State_Machine (Client.all), Error);
          if State in Idle..Task_Sending then
             State := Server_Sending;
          end if;

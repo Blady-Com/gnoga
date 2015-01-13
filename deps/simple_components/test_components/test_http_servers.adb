@@ -1,9 +1,9 @@
 --                                                                    --
---  package Test_HTTP_Server        Copyright (c)  Dmitry A. Kazakov  --
+--  package Test_HTTP_Servers       Copyright (c)  Dmitry A. Kazakov  --
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  10:10 07 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -77,6 +77,7 @@ package body Test_HTTP_Servers is
             new Test_Client
                 (  Listener       => Listener.all'Unchecked_Access,
                    Request_Length => Factory.Request_Length,
+                   Input_Size     => Factory.Input_Size,
                    Output_Size    => Factory.Output_Size
                 );
          Receive_Body_Tracing   (Test_Client (Result.all), True);

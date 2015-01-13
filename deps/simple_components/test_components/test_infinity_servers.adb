@@ -3,7 +3,7 @@
 --     Test_Infinity_Servers                       Luebeck            --
 --  Test HTTP content flood                        Winter, 2013       --
 --                                                                    --
---                                Last revision :  13:01 14 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -52,6 +52,7 @@ package body Test_Infinity_Servers is
          new Flood_Client
              (  Listener       => Listener.all'Unchecked_Access,
                 Request_Length => Factory.Request_Length,
+                Input_Size     => Factory.Input_Size,
                 Output_Size    => Factory.Output_Size
              );
       Receive_Body_Tracing (Flood_Client (Result.all), True);

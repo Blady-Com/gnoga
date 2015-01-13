@@ -3,7 +3,7 @@
 --     Test_WebSocket_Server                       Luebeck            --
 --  Half-duplex WebSockets tes                     Winter, 2013       --
 --                                                                    --
---                                Last revision :  22:30 01 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,13 +39,18 @@ begin
    declare
       Factory : aliased Chat_Factory
                         (  Request_Length  => 200,
+                           Input_Size      => 80,
                            Output_Size     => 255,
                            Max_Connections => 100
                         );
       Server  : GNAT.Sockets.Server.
                 Connections_Server (Factory'Access, Port);
    begin
-      Trace_On (Factory => Factory, Received => True, Sent => True);
+      Trace_On
+      (  Factory  => Factory,
+         Received => GNAT.Sockets.Server.Trace_Decoded,
+         Sent     => GNAT.Sockets.Server.Trace_Decoded
+      );
       Put_Line ("HTTP server started");
       delay 60.0 * Minutes; -- Service
       Put_Line ("HTTP server stopping");

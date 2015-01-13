@@ -39,19 +39,23 @@ with Ada.Directories;
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
+with Ada.Text_IO;
+with Ada.Streams.Stream_IO;
+with Ada.Containers.Ordered_Maps;
 
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 
-with Ada.Containers.Ordered_Maps;
-
-with Gnoga.Server.Mime;
-
+--  Simple Components packages, some are childen of the GNAT packages
 with Strings_Edit.Quoted;
 with GNAT.Sockets.Server; use GNAT.Sockets.Server;
 with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
-with Ada.Text_IO;
-with Ada.Streams.Stream_IO;
+with GNAT.Sockets.Server.Secure;
+with GNAT.Sockets.Server.Secure.Anonymous;
+with GNAT.Sockets.Server.Secure.X509;
+with GNUTLS;
+
+with Gnoga.Server.Mime;
 
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Unique_ID;
@@ -65,7 +69,7 @@ package body Gnoga.Server.Connection is
 
    Max_HTTP_Request_Length : constant := 1024;
    Max_HTTP_Connections    : constant := 200;
-   Max_HTTP_Input_Chunk    : constant := 40;
+   Max_HTTP_Input_Chunk    : constant := 1024;
    Max_HTTP_Output_Chunk   : constant := 1024;
 
    Max_Buffer_Length : constant := 2 ** 16 - 1;
@@ -164,6 +168,36 @@ package body Gnoga.Server.Connection is
                     From     : GNAT.Sockets.Sock_Addr_Type)
                     return Connection_Ptr;
 
+   type Anonymous_HTTPS_Factory (Request_Length  : Positive;
+                                 Input_Size      : Buffer_Length;
+                                 Output_Size     : Buffer_Length;
+                                 Decoded_Size    : Buffer_Length;
+                                 Max_Connections : Positive)
+   is new GNAT.Sockets.Server.Secure.Anonymous.Anonymous_Authentication_Factory
+     (Decoded_Size => Decoded_Size)
+   with null record;
+
+   overriding
+   function Create (Factory  : access Anonymous_HTTPS_Factory;
+                    Listener : access Connections_Server'Class;
+                    From     : GNAT.Sockets.Sock_Addr_Type)
+                    return Connection_Ptr;
+
+   type X509_HTTPS_Factory (Request_Length  : Positive;
+                            Input_Size      : Buffer_Length;
+                            Output_Size     : Buffer_Length;
+                            Decoded_Size    : Buffer_Length;
+                            Max_Connections : Positive)
+   is new GNAT.Sockets.Server.Secure.X509.X509_Authentication_Factory
+     (Decoded_Size => Decoded_Size)
+   with null record;
+
+   overriding
+   function Create (Factory  : access X509_HTTPS_Factory;
+                    Listener : access Connections_Server'Class;
+                    From     : GNAT.Sockets.Sock_Addr_Type)
+                    return Connection_Ptr;
+
    --  Gnoga_HTTP_Connection  --
 
    type Gnoga_HTTP_Connection is
@@ -249,25 +283,50 @@ package body Gnoga.Server.Connection is
       accept Start;
 
       declare
-         Factory : aliased Gnoga_HTTP_Factory
+--           Factory : aliased Gnoga_HTTP_Factory
+--             (Request_Length  => Max_HTTP_Request_Length,
+--              Input_Size      => Max_HTTP_Input_Chunk,
+--              Output_Size     => Max_HTTP_Output_Chunk,
+--              Max_Connections => Max_HTTP_Connections);
+--           Server  : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
+         Factory : aliased  X509_HTTPS_Factory
            (Request_Length  => Max_HTTP_Request_Length,
             Input_Size      => Max_HTTP_Input_Chunk,
             Output_Size     => Max_HTTP_Output_Chunk,
+            Decoded_Size    => Max_HTTP_Input_Chunk,
             Max_Connections => Max_HTTP_Connections);
-         Server  : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
       begin
-         if Verbose_Output then
-            Gnoga.Log ("HTTP Server Started");
-            --  Trace_On (Factory => Factory, Received => True, Sent => True);
-         end if;
+         Add_System_Trust (Factory);
+         Add_Key_From_PEM_File
+           (Factory          => Factory,
+            Certificate_File =>
+              "/home/dbotton/workspace/gnoga/bin/server.crt",
+            Key_File         =>
+              "/home/dbotton/workspace/gnoga/bin/server.key");
+         Generate_Diffie_Hellman_Parameters (Factory);
+--           Trace_On (Factory  => Factory,
+--                     Received => GNAT.Sockets.Server.Trace_Any,
+--                     Sent     => GNAT.Sockets.Server.Trace_Any);
+--           Set_TLS_Tracing (Factory => Factory,
+--                            Session => True,
+--                            Decoded => True);
 
-         accept Stop;
+         declare
+            Server  : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
+         begin
+            if Verbose_Output then
+               Gnoga.Log ("HTTP Server Started");
+               --  Trace_On (Factory => Factory, Received =>True, Sent =>True);
+            end if;
 
-         Server_Wait.Release;
+            accept Stop;
 
-         if Verbose_Output then
-            Gnoga.Log ("HTTP Server Stopping");
-         end if;
+            Server_Wait.Release;
+
+            if Verbose_Output then
+               Gnoga.Log ("HTTP Server Stopping");
+            end if;
+         end;
       end;
    end Gnoga_HTTP_Server;
 
@@ -277,6 +336,34 @@ package body Gnoga.Server.Connection is
 
    overriding
    function Create (Factory  : access Gnoga_HTTP_Factory;
+                    Listener : access Connections_Server'Class;
+                    From     : GNAT.Sockets.Sock_Addr_Type)
+                    return Connection_Ptr
+   is
+   begin
+      return new Gnoga_HTTP_Client
+        (Listener       => Listener.all'Unchecked_Access,
+         Request_Length => Factory.Request_Length,
+         Input_Size     => Factory.Input_Size,
+         Output_Size    => Factory.Output_Size);
+   end Create;
+
+   overriding
+   function Create (Factory  : access Anonymous_HTTPS_Factory;
+                    Listener : access Connections_Server'Class;
+                    From     : GNAT.Sockets.Sock_Addr_Type)
+                    return Connection_Ptr
+   is
+   begin
+      return new Gnoga_HTTP_Client
+        (Listener       => Listener.all'Unchecked_Access,
+         Request_Length => Factory.Request_Length,
+         Input_Size     => Factory.Input_Size,
+         Output_Size    => Factory.Output_Size);
+   end Create;
+
+   overriding
+   function Create (Factory  : access X509_HTTPS_Factory;
                     Listener : access Connections_Server'Class;
                     From     : GNAT.Sockets.Sock_Addr_Type)
                     return Connection_Ptr
@@ -629,7 +716,7 @@ package body Gnoga.Server.Connection is
          Write_To_Console ("/img at          :" & IMG_Directory);
          Write_To_Console ("Boot file        :" & Boot);
          Write_To_Console ("Listening on     :" & Host & ":" &
-                             Left_Trim (Port'Img));
+                             Left_Trim (Server_Port'Img));
       end if;
 
       Watchdog.Start;

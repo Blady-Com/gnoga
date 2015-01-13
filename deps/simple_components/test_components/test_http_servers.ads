@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Interface                                      Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -40,6 +40,7 @@ package Test_HTTP_Servers is
 
    type Test_HTTP_Factory
         (  Request_Length  : Positive;
+           Input_Size      : Buffer_Length;
            Output_Size     : Buffer_Length;
            Max_Connections : Positive
         )  is new Connections_Factory with private;
@@ -51,6 +52,7 @@ package Test_HTTP_Servers is
    type Test_Client
         (  Listener       : access Connections_Server'Class;
            Request_Length : Positive;
+           Input_Size     : Buffer_Length;
            Output_Size    : Buffer_Length
         )  is new HTTP_Client with private;
    procedure Body_Error
@@ -71,6 +73,7 @@ package Test_HTTP_Servers is
 private
    type Test_HTTP_Factory
         (  Request_Length  : Positive;
+           Input_Size      : Buffer_Length;
            Output_Size     : Buffer_Length;
            Max_Connections : Positive
         )  is new Connections_Factory with null record;
@@ -100,10 +103,12 @@ private
    type Test_Client
         (  Listener        : access Connections_Server'Class;
            Request_Length  : Positive;
+           Input_Size      : Buffer_Length;
            Output_Size     : Buffer_Length
         )  is new HTTP_Client
                   (  Listener       => Listener,
                      Request_Length => Request_Length,
+                     Input_Size     => Input_Size,
                      Output_Size    => Output_Size
                   )  with
    record

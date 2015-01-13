@@ -1,7 +1,7 @@
 --                                                                    --
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
---     Test_Infinity_Servers                       Luebeck            --
---  Test HTTP content flood                        Winter, 2014       --
+--     GNAT.Sockets.Server.Secure.                 Luebeck            --
+--     Anonymous                                   Winter, 2015       --
 --  Interface                                                         --
 --                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
@@ -25,51 +25,56 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;         use Ada.Calendar;
-with Ada.Exceptions;       use Ada.Exceptions;
-with Ada.Streams;          use Ada.Streams;
-with GNAT.Sockets;         use GNAT.Sockets;
-with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
-
-with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
-use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
-
-package Test_Infinity_Servers is
+package GNAT.Sockets.Server.Secure.Anonymous is
 --
--- Flood_Factory -- Creates flood connection objects
+-- The priorities applied if not set explicitly
 --
-   type Flood_Factory
-        (  Request_Length  : Positive;
-           Input_Size      : Buffer_Length;
-           Output_Size     : Buffer_Length;
-           Max_Connections : Positive
-        )  is new Connections_Factory with null record;
-   function Create
-            (  Factory  : access Flood_Factory;
-               Listener : access Connections_Server'Class;
-               From     : Sock_Addr_Type
-            )  return Connection_Ptr;
+   Default_Priorities : constant String := "NORMAL";
 --
--- Flood_Client -- Chat HTTP site
+-- Anonymous_Authentication_Factory -- Abstract  factory  for  anonymous
+--                                     authentication
 --
-   type Flood_Client is new HTTP_Client with private;
-   procedure Do_Get  (Client : in out Flood_Client);
-   procedure Do_Head (Client : in out Flood_Client);
+   type Anonymous_Authentication_Factory is
+      abstract new Abstract_GNUTLS_Factory with private;
+--
+-- Set_Priorities -- Set priorities for the anonymous authentication
+--
+--    Factory    - The anonymous credentials connection factory
+--    Priorities - The priorities to set
+--
+   procedure Set_Priorities
+             (  Factory    : in out Anonymous_Authentication_Factory;
+                Priorities : String
+             );
+--
+-- Overriddes ...HTTP_Server.Secure...
+--
+   procedure Prepare
+             (  Factory : in out Anonymous_Authentication_Factory;
+                Client  : in out Connection'Class;
+                Session : in out Session_Type
+             );
+--
+-- Overriddes ...HTTP_Server.Secure...
+--
+   procedure Finalize
+             (  Factory : in out Anonymous_Authentication_Factory
+             );
+--
+-- Overriddes ...HTTP_Server.Secure...
+--
+   procedure Initalize
+             (  Factory : in out Anonymous_Authentication_Factory
+             );
 
 private
-   type Flood_Content is new Content_Source with record
-      Head : Boolean := True;
-      Last : Time := Clock;
-   end record;
-   function Get (Source : access Flood_Content) return String;
-   procedure Write
-             (  Stream : access Root_Stream_Type'Class;
-                Item   : Flood_Content
-             );
-   for Flood_Content'Write use Write;
-
-   type Flood_Client is new HTTP_Client with record
-      Content : aliased Flood_Content;
+   type Priorities_Ptr is access String;
+   type Anonymous_Authentication_Factory is abstract
+      new Abstract_GNUTLS_Factory with
+   record
+      Credentials : Anon_Server_Credentials;
+      Parameters  : DH_Params;
+      Priorities  : Priorities_Ptr;
    end record;
 
-end Test_Infinity_Servers;
+end GNAT.Sockets.Server.Secure.Anonymous;

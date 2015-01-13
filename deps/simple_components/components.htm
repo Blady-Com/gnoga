@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.4</EM><BR>
+<EM>version 4.5</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -113,11 +113,11 @@ language standards.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_4.tgz">components_4_4.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_5.tgz">components_4_5.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td colspan="2" align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_4.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_5.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 	</tr>
 </table>
@@ -18089,7 +18089,7 @@ return</font> Location;</tt></p>
 image is searched backwards for an appearance of <b>Prefix</b>. If an image does 
 not follow <b>Prefix</b> search continues. The result is the location decoded 
 according to the format used by <a href="#Parsers.Generic_Source.Image">Image</a>. 
-If no image found the result is ((0,0), (0,0).</p>
+If no image found the result is ((0,0), (0,0)).</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="Parsers.Multiline_Source.Skip"></a>procedure</font> Skip (<b>Code</b> :
 <font color="#0000FF">in out</font> Source'Class; <b>Link</b> : Location);</tt></p>
@@ -21352,7 +21352,7 @@ Boolean;</tt></p>
   <A name="15.2"></A><a href="#15.1"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#20"><IMG
       src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#15.3"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>15.2. SQLite bindins</H3>
+<H3>15.2. SQLite bindings</H3>
 
 <p><a name="SQLite"></a>The package <a href="#SQLite">SQLite</a> provides bindings to <a href="http://www.sqlite.org/index.html">SQLite</a>. 
 The bindings are native and intended for static linking with the data base engine, 
@@ -21798,7 +21798,7 @@ a stream and then the written contents taken as a string.</p>
 <p align="right">
   <A name="15.6"></A><a href="#15.5"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#20"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#15.7"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>15.6. ODBC bindings</H3>
 
 <p><a name="ODBC_Bindings"></a>ODBC stands for <b>O</b>pen <b>D</b>ata<b>B</b>ase
@@ -24677,6 +24677,37 @@ Value</b>&nbsp;&nbsp;&nbsp;&nbsp; : Wide_String<br>
 corresponding to <b>Value</b>. Constraint_Error is propagated when <b>Value</b> 
 is larger than Length.</p>
 
+<p align="right">
+  <A name="15.7"></A><a href="#15.6"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#20"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>15.7. GNUTLS bindings</H3>
+
+<p><a name="GNUTLS"></a>The package GNUTLS provides bindings to the
+<a href="http://www.gnutls.org/">GNUTLS</a> library. The bindings are semi-high. 
+Where possible the objects requiring initialization and finalization are wrapped 
+into controlled types. Thus there is no explicit calls to functions like 
+gnutls_init because they are called automatically. The return codes are handled 
+by the bindings and a TLS_Error exception is propagated with the corresponding 
+message text. The original error code can be obtained from the exception 
+occurrence using the function:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Error_Code (<b>Error</b> : 
+Exception_Occurrence) <font color="#0000FF">return</font> int;</tt></p>
+</blockquote>
+<p>The naming of bound subprograms and data types follows the rules:</p>
+<ul>
+	<li>The prefix <i>gnutls_</i> is removed, thus, for example, <i>
+	Auth_Get_Type</i> instead of <i>gnutls_auth_server_get_type</i>;</li>
+	<li>Where possible, alternative variants of calls having numeric suffixex <i>
+	_2</i>, <i>_3</i> etc are overloaded with the suffix removed. Thus <i>
+	Certificate_Server_Set_OpenPGP_Key_File</i> instead of <i>
+	gnutls_certificate_set_openpgp_key_file2</i>;</li>
+	<li>Hungarian notation suffixes, like <i>_t </i>are consistently removed. 
+	Thus <i>Certificate_Credentials</i>, not <i>gnutls_certificate_credentials_t</i>.</li>
+</ul>
+
 <hr>
 <p align="right">
 <a name="16"></a><a href="#15.6"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#20"><IMG src="index.gif"
@@ -24690,10 +24721,10 @@ is larger than Length.</p>
 
 <p><a name="multiple_GNAT.Sockets.Servers"></a>A typical server implementation usually listens a socket for incoming 
 connections. When a connection is accepted, a separate task is started to handle 
-the connection. The task reads the socket in a blocking manner. This is very 
+the connection. The task reads the socket in a blocking manner. This is a very 
 simple, easy to implement and relatively efficient design when connections are 
 few. The problems arise with large number of connections. The number of tasks the 
-OS may handle is limited. Furthermore, with a large number of tasks, switching 
+OS can handle is limited. Furthermore, with a large number of tasks, switching 
 them would consume considerable resources. An alternative would be a single task 
 handling a set of sockets, one socket per connection. The available number of sockets is considerably greater than the number of tasks. However, 
 the design of 
@@ -24795,7 +24826,7 @@ Connections_Factory<font color="#0000FF"> is abstract<br>
 <font color="#0000FF">with private</font>;</tt></p>
 </blockquote>
 <p>The type <a href="#GNAT.Sockets.Server.Connections_Factory">Connections_Factory</a> is the type 
-a factory object that the server uses to create connection objects. The following 
+of a factory object that the server uses to create connection objects. The following 
 primitive operations defined on the factory:</p>
 
 <blockquote>
@@ -24815,51 +24846,87 @@ return</font> Connection_Ptr <font color="#0000FF">is abstract</font>;</tt></p>
 connection from a client. The implementation may refuse connection in which case 
 it returns <i><font color="#0000FF">null</font></i>. When connection is accepted 
 the implementation allocates a new <a href="#GNAT.Sockets.Server.Connection">
-connection object</a> and returns a pointer to it. From that it is the server's responsibility to free the object. Thus there is no need to care about 
+connection object</a> and returns a pointer to it. After this it is the server's responsibility to free the object. Thus there is no need to care about 
 the objects returned from <a href="#GNAT.Sockets.Server.Create">Create</a>, they will 
 be freed automatically. The implementation may deploy client filtering based on 
-the address <b>From</b> and/or number of active connections.</p>
+the address <b>From</b> and/or the number of active connections.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">function</font> 
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Get_IO_Timeout"></a>function</font> 
 Get_IO_Timeout (<b>Factory</b> : Connections_Factory)<br>
 <font color="#0000FF">&nbsp;&nbsp; return</font> Duration;</tt></p>
 </blockquote>
 <p>When the connections server waits for a socket to become readable or writable 
-this value specifies waiting timeout. Upon the timeout the server re-enters the 
-waiting. The default value of 20ms is returned by this function, which can be 
+this value specifies the waiting timeout. Upon the timeout expiration the server re-enters the 
+waiting. Some actions may require timeout expiration if there is no active 
+socket I/O. For example enabling polling of the sockets for being writable is 
+such an action. The default value of 20 ms is returned by this function, which can be 
 overridden in order to change it.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">function</font> 
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Get_Polling_Timeout"></a>function</font> 
 Get_Polling_Timeout (<b>Factory</b> : Connections_Factory)<br>
 <font color="#0000FF">&nbsp;&nbsp; return</font> Duration;</tt></p>
 </blockquote>
 <p>The connections server stops polling a socket for being writable for no 
 longer than the value returned by this function. The server stops polling the 
-socket for being writable when there is nothing to send. The polling is 
-automatically resumed when some data are sent. This is normally happens in 
-response to some data sent from by the client. In some cases socket must be 
-unblocked regardless the client. The value returned by this function specifies 
-the duration after which all sockets are unblocked. If there is still nothing to 
-send they will be blocked again. The default implementation returns 0.5s. This 
+socket for being writable when there is nothing to send in order to reduce 
+overhead. The polling is automatically resumed when some data are sent. This is 
+normally happens in response to some data sent from by the client. In some cases 
+socket must be unblocked regardless the client. The value returned by this 
+function specifies the duration after which all sockets are unblocked. If there is still nothing to 
+send they will be blocked again. The default implementation returns 0.5 s. Note 
+that in absence of socket I/O, unblocking cannot happen earlier than I/O timeout 
+expiration as defined by <a href="#GNAT.Sockets.Server.Get_IO_Timeout">Get_IO_Timeout</a>. This 
 function can be overridden in order to change the value.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">function</font> 
-Is_Trace_Received_On (<b>Factory</b> : Connections_Factory)<br>
-<font color="#0000FF">&nbsp;&nbsp; return</font> Boolean;</tt></p>
+Is_Trace_Received_On<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b> : Connections_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoded</b> 
+: IO_Tracing_Mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<font color="#0000FF">&nbsp; return</font> Boolean;</tt></p>
 </blockquote>
 <p>This function returns <font color="#800000"><i>true</i></font> if tracing of 
-received data is enabled.</p>
+received encoded/ciphered or plain data is enabled. See <a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. 
+The parameter <b>Encoded</b> 
+specifies the content type to query tracing. It has the type
+<a href="#GNAT.Sockets.Server.IO_Tracing_Mode">IO_Tracing_Mode</a>:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.IO_Tracing_Mode"></a>
+type</font> 
+IO_Tracing_Mode <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Trace_None,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trace_Encoded,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trace_Any,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trace_Decoded<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The meaning of the values is as follows:</p>
+<ul>
+	<li><i>Trace_None</i> specifies no tracing;</li>
+	<li><i>Trace_Encoded</i> specifies tracing of encoded or ciphered content;</li>
+	<li><i>Trace_Any</i> specifies any content tracing,</li>
+	<li><i>Trace_Decoded</i> specifiesp plain content tracing.</li>
+</ul>
 
 <blockquote>
 <p><tt><font color="#0000FF">function</font> 
-Is_Trace_Sent_On (<b>Factory</b> : Connections_Factory)<br>
-<font color="#0000FF">&nbsp;&nbsp; return</font> Boolean;</tt></p>
+Is_Trace_Sent_On<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b> : 
+Connections_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoded</b> 
+: IO_Tracing_Mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<font color="#0000FF">&nbsp; 
+return</font> 
+Boolean;</tt></p>
 </blockquote>
 <p>This function returns <font color="#800000"><i>true</i></font> if tracing of 
-sent data is enabled.</p>
+sent data is enabled. The parameter <b>Encoded</b> 
+specifies the content type to query tracing. It has the type
+<a href="#GNAT.Sockets.Server.IO_Tracing_Mode">IO_Tracing_Mode</a>. See <a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace"></a>procedure</font> 
@@ -24891,42 +24958,60 @@ Occurrence</b> is the exception occurrence. The default implementation uses
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace_On"></a>procedure</font> 
 Trace_On<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp; :
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 <font color="#0000FF">in out</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Received</b> : Boolean := False;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Sent</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+Received&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b> &nbsp;: Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Sent</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Encoded_Received</b> : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Encoded_Sent</b>&nbsp;&nbsp;&nbsp;&nbsp; 
 : Boolean := False<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure enables tracing into the standard output. The parameters <b>
-Received</b> and <b>Sent</b> specify whether the incoming and outgoing data 
+Received</b> and <b>Sent</b> specify whether plain incoming and outgoing data 
+should be traced as well. <b>
+Encoded_Received</b> and <b>
+Encoded_Sent</b> do whether encoded/ciphered incoming and outgoing data 
 should be traced as well.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Trace_On<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp; :
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 <font color="#0000FF">in out</font> Connections_Factory;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; : String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Received</b> : Boolean := False;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Sent</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+Received&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b> &nbsp;: Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Sent</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Encoded_Received</b> : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Encoded_Sent</b>&nbsp;&nbsp;&nbsp;&nbsp; 
 : Boolean := False<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure enables tracing into the specified file. When there is already 
 trace file open, it is closed first. This procedure propagates exceptions upon 
 errors on file closing and opening. The parameters <b>Received</b> and <b>Sent</b> 
-specify whether the incoming and outgoing data should be traced as well.</p>
+specify whether the incoming and outgoing data should be traced as well. <b>
+Encoded_Received</b> and <b>
+Encoded_Sent</b> do whether encoded/ciphered incoming and outgoing data 
+should be traced as well.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Trace_Off (<b>Factory</b> :
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace_Off"></a>procedure</font> 
+Trace_Off (<b>Factory</b> :
 <font color="#0000FF">in out</font> Connections_Factory);</tt></p>
 </blockquote>
 <p>This procedure disables all tracing.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Trace_Received<br>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace_Received"></a>procedure</font> 
+Trace_Received<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;:
 <font color="#0000FF">in out</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -24935,18 +25020,23 @@ Client</b>&nbsp;&nbsp;: Connection'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp; 
 : Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Stream_Element_Offset<br>
+: Stream_Element_Offset;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Encoded</b> : Boolean := False<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure is called to trace data received for a client. The data 
 received are <b>Data</b> (<b>From</b>..<b>To</b>). Tracing is enabled or 
 disabled by the <b>Received</b> parameter of
-<a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. The default 
+<a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. <b>Encoded</b> is
+<font color="#800000"><i>true</i></font> when <b>Data</b> contains encoded or 
+ciphered data. The default 
 implementation uses <a href="#GNAT.Sockets.Server.Trace">Trace</a> to report 
 received data.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Trace_Sending<br>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace_Sending"></a>procedure</font> 
+Trace_Sending<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;:
 <font color="#0000FF">in out</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -24969,7 +25059,8 @@ implementation uses <a href="#GNAT.Sockets.Server.Trace">Trace</a> to report
 sent data.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Trace_Sent<br>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Trace_Sent"></a>procedure</font> 
+Trace_Sent<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b>&nbsp;:
 <font color="#0000FF">in out</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -24978,12 +25069,16 @@ Client</b>&nbsp;&nbsp;: Connection'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp; 
 : Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Stream_Element_Offset<br>
+: Stream_Element_Offset;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Encoded</b> : Boolean := False<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure is called to trace data sent to a client. The data sent are <b>
 Data</b> (<b>From</b>..<b>To</b>). Tracing is enabled or disabled by the <b>Sent</b> 
-parameter of <a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. The default 
+parameter of <a href="#GNAT.Sockets.Server.Trace_On">Trace_On</a>. <b>Encoded</b> 
+is <font color="#800000"><i>true</i></font> when <b>Data</b> contains encoded or 
+ciphered data.. The default 
 implementation uses <a href="#GNAT.Sockets.Server.Trace">Trace</a> to report 
 sent data.</p>
 
@@ -24991,6 +25086,80 @@ sent data.</p>
 <p><tt>Connection_Error : <font color="#0000FF">exception</font>;</tt></p>
 </blockquote>
 <p>The exception indicating connection errors.</p>
+
+<p><u><b>Transport layer</b></u></p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Encoder"></a>type</font> 
+Encoder (Size : Buffer_Length)<font color="#0000FF"> is abstract<br>
+&nbsp;&nbsp; new </font>Ada.Finalization.Limited_Controlled
+<font color="#0000FF">with private</font>;<br>
+<font color="#0000FF">type</font> Encoder_Ptr <font color="#0000FF">is access all</font> Encoder'Class;</tt></p>
+</blockquote>
+<p>The type <a href="#GNAT.Sockets.Server.Encoder">Encoder</a> is the type 
+of a transport layer object that the server uses to handle encoded or ciphered 
+connections. Protocols like SSL/TSL decode incoming TCP/IP stream and encode the 
+outgoing one. The package
+<a href="#GNAT.Sockets.Server.Secure">GNAT.Sockets.Server.Secure</a> provides an 
+implementation of a SSL/TSL encoder. The following primitive
+<a href="#GNAT.Sockets.Server.Encoder">Encoder</a> operations are abstract:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Encode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Transport</b> 
+: <font color="#0000FF">in out</font> Encoder;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Last</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">out</font> Stream_Element_Offset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">is abstract</font>;</tt></p>
+</blockquote>
+<p>This procedure is called to encode/cipher outgoing data. The implementation 
+encodes a portion of <b>Data</b> and send it to the client. <b>Last</b> is set 
+to the last encoded element.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Process<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Transport</b> 
+: <font color="#0000FF">in out</font> Encoder;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Listener</b>&nbsp; : <font color="#0000FF">in out</font> 
+Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Data_Left</b> : <font color="#0000FF">out</font> Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">is abstract</font>;</tt></p>
+</blockquote>
+<p>This procedure is called to handle a portion of incoming encoded data. The 
+output parameter <b>Data_Left</b> is <i><font color="#800000">false</font></i> 
+when all data are processed. The implementation of the procedure must ultimately 
+call to the client's <a href="#GNAT.Sockets.Server.Received">
+Received</a> to feed the client with decoded data.</p>
+<p>The primitive connection factory function is called to create transport 
+layer:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Create_Transport<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp; :
+<font color="#0000FF">access</font> Connections_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Listener</b> 
+: <font color="#0000FF">access</font> Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Client</b>&nbsp;&nbsp; 
+: <font color="#0000FF">access</font> Connection'Class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Encoder_Ptr;</tt></p>
+</blockquote>
+<p>This function creates an instance of <a href="#GNAT.Sockets.Server.Encoder">
+Encoder</a> used to handle encoding/ciphered transport. The result is
+<font color="#0000FF">null</font>, which is the default implementation to 
+indicate than the transport is not coded. The returned object is handled by the 
+server, which finalizes and deallocates it when no more used.</p>
 
 <h4><a name="16.1.2"></a>16.1.2. Connection objects</h4>
 <p>The package
@@ -25014,7 +25183,7 @@ are created and returned by the factory operation
 <a href="#GNAT.Sockets.Server.Create">Create</a>. The discriminants are:</p>
 <ul>
 	<li><i>Input_Size</i> is the size of the input buffer used to read the 
-	socket into. Note that even if the input buffer is larger that the packets 
+	socket into. Note that even if the input buffer is larger than the packets 
 	sent by the client, that does not secure that each packet will be completely 
 	read when <a href="#GNAT.Sockets.Server.Received">Received</a> is called. The 
 	implementation of <a href="#GNAT.Sockets.Server.Received">Received</a> must 
@@ -25056,7 +25225,8 @@ Connection);</tt></p>
 </blockquote>
 <p>This is the first operation called on <b>Client</b>. The default 
 implementation does nothing. Typically the server may set some socket options 
-here.</p>
+here. The implementation may propagate Connection_Error if it decides to refuse 
+connection this late.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Finalize_Connection">
@@ -25082,7 +25252,7 @@ Get_Occurrence<br>
 Occurrence</b> : <font color="#0000FF">out</font> Exception_Occurrence<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
-<p>This procedure gets error occurrence saved using
+<p>This procedure gets the error occurrence saved using
 <a href="#GNAT.Sockets.Server.Save_Occurrence">Save_Occurence</a>.</p>
 
 <blockquote>
@@ -25102,12 +25272,31 @@ Connection) <font color="#0000FF">return</font> Socket_Type;</tt></p>
 be read or written explicitly.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Keep_On_Sending (<b>Client</b> : <font color="#0000FF">in 
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Server.Keep_On_Sending"></a>procedure</font> 
+Keep_On_Sending (<b>Client</b> : <font color="#0000FF">in 
 out</font> Connection);</tt></p>
 </blockquote>
 <p>This procedure is called to hint the connections server that it should not 
 stop polling the socket for being writable, because some content to send is 
-about to come.</p>
+about to come. See also <a href="#GNAT.Sockets.Server.Get_Polling_Timeout">
+Get_Polling_Timeout</a>, which provides a less resource consuming alternative of 
+resuming sending.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Process">
+</a>procedure</font> Process<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Client&nbsp;&nbsp; </b> &nbsp;: <font color="#0000FF">in 
+out</font> Connection;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data_Left</b> 
+: <font color="#0000FF">out</font> Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is used internally to handle a portion of incoming data. <b>
+Data_Left</b> is returned <font color="#800000"><i>true</i></font> if not all 
+data were processed. It should not be called explicitly. Note that the 
+implementation is aware of the transport layer and thus should not be called 
+from an implementation of <a href="#GNAT.Sockets.Server.Encoder">Encoder</a>.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Process_Packet">
@@ -25119,6 +25308,22 @@ derived from <a href="#GNAT.Sockets.Connection_State_Machine.Data_Item">Data_Ite
 been received from the client. The default implementation does nothing. 
 Exceptions propagating from the procedure cause the server to close the 
 connection.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Pull">
+</a>procedure</font> Pull<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> Connection;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
+: Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure can be used to extract input data skipping standard processing 
+them. E.g. it can be called from an overridden implementation of 
+<a href="#GNAT.Sockets.Server.Process">Process</a>. <b>
+Pointer</b> is advanced to the first unused element in <b>Data</b>.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Queued_To_Send"></a>function</font> Queued_To_Send (<b>Client</b> : 
@@ -25330,7 +25535,7 @@ Set_Expected_Count</a> must be called again.</p>
 <p>This procedure sets the read socket policy when there are data pending to 
 send. The parameter <b>Size</b> specifies the maximum amount of data queued for 
 send without blocking receiving. The default value is 0 meaning strictly 
-half-duplex behavior. That is nothing is read before the client accepts all 
+half-duplex behavior. That is, nothing is read before the client accepts all 
 data. Typically for a packet-oriented protocol, the server reads a packet 
 completely and then sends a response packet or a set of packets back. Doing that 
 it stops reading new packets. To implement such policy
@@ -25340,7 +25545,350 @@ guarantee that <a href="#GNAT.Sockets.Server.Send">Send</a> called from
 <a href="#GNAT.Sockets.Server.Received">Received</a> would always be able to 
 queue a complete packet.</p>
 
-<h4><a name="16.1.3"></a>16.1.3. Simple echo server sample</h4>
+<h4><a name="16.1.3"></a>16.1.3. Secure servers</h4>
+<p><a name="GNAT.Sockets.Server.Secure"></a>The package
+<a href="#GNAT.Sockets.Server.Secure">GNAT.Sockets.Server.Secure</a> provides an implementation 
+of servers using a secure SSL/TLS layer, e.g. HTTPS. The architecture of secure 
+SSL/TLS communication is that the encryption layer sits on top of the TCP/IP 
+stream. The original protocol (e.g. HTTP) exchange is not altered. The server 
+output goes to the SSL/TLS layer and gets encrypted before sending it over the 
+socket. Correspondingly the client input is first decrypted and then routed to 
+the original protocol.</p>
+<p>The implementation of SSL/TLS layer in this package is based on the
+<a href="http://www.gnutls.org/">GNUTLS</a> library. The following abstract data 
+type implements an abstract SSL/TLS connections factory:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Server.Secure.Abstract_GNUTLS_Factory"></a>type </font>
+Abstract_GNUTLS_Factory<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Decoded_Size : Buffer_Length<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is abstract new </font>
+<a href="#GNAT.Sockets.Server.Connections_Factory">Connections_Factory</a><font color="#0000FF"> 
+with private</font>;</tt></p>
+</blockquote>
+<p>Custom factories must be derived from this base type. When a connection to 
+the client is first established, the server using a factory derived from this 
+type engages a handshaking which includes exchange of certificates. When the 
+handshaking is successful the following exchange continues encrypted. There is 
+no need to change anything in the original protocol implementation. Both secure 
+and insecure factories may use same <a href="#GNAT.Sockets.Server.Connection">
+client connection</a> objects.</p>
+<p>Note that TLS encoding introduces per-record encoding overhead. Thus smaller 
+portions of sent data have relatively higher overhead. In order to prevent 
+excessive fragmentation the output buffer (discriminant Output_Size of
+<a href="#GNAT.Sockets.Server.Connection">
+Connection</a> object) should be reasonable large. </p>
+<p>The following primitive operations are defined on
+<a href="#GNAT.Sockets.Server.Secure.Abstract_GNUTLS_Factory">
+Abstract_GNUTLS_Factory</a>:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Secure.Handshake_Completed"></a>
+procedure </font>Handshake_Completed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> Abstract_GNUTLS_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp; : <font color="#0000FF">in out</font> Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Session</b> : <font color="#0000FF">in out</font> Session_Type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called upon TLS handshake completion. The implementation 
+may use it in order to check the session, e.g. verifying client's certificates. 
+The default implementation does nothing. When Connection_Error is propagated the 
+connection is silently dropped. Other exceptions drop connection as well.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Is_Trace_Decoded<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> : 
+Abstract_GNUTLS_Factory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if tracing of 
+original protocol output is enabled. See
+<a href="#GNAT.Sockets.Server.Secure.Set_TLS_Tracing">Set_TLS_Tracing</a>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Is_Trace_Session<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> : 
+Abstract_GNUTLS_Factory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if tracing of 
+TLS session state changes is enabled. See
+<a href="#GNAT.Sockets.Server.Secure.Set_TLS_Tracing">Set_TLS_Tracing</a>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Secure.Prepare"></a>
+procedure </font>Prepare<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> Abstract_GNUTLS_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp; : <font color="#0000FF">in out</font> Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Session</b> : <font color="#0000FF">in out</font> Session_Type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">is abstract</font>;</tt></p>
+</blockquote>
+<p>This abstract primitive operation is called when a connection is established.
+<b>Client</b> is the <a href="#GNAT.Sockets.Server.Connection">client connection 
+object</a>. Note that <a href="#GNAT.Sockets.Server.Secure.Prepare">Prepare</a> 
+is called prior to <a href="#GNAT.Sockets.Server.Connected">Connected</a>. The 
+objective of <a href="#GNAT.Sockets.Server.Secure.Prepare">Prepare</a> is to set 
+up the TLS session specified by the <b>Session</b> parameter. This normally 
+includes setting certificates and keys into <b>Session</b>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Server.Secure.Set_TLS_Tracing"></a>procedure </font>
+Set_TLS_Tracing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out </font>Abstract_GNUTLS_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Session</b> : Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Decoded</b> : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure enables or disables tracing of the decoded output and/or TLS 
+session state changes.</p>
+
+<p><u><b>X.509 authentication factory</b></u></p>
+<p><a name="GNAT.Sockets.Server.Secure.X509"></a>The package
+<a href="#GNAT.Sockets.Server.Secure">GNAT.Sockets.Server.Secure.X509</a> 
+provides an implementation of connection factory for X.509 and OpenPGP 
+certificates.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Server.Secure.X509.X509_Authentication_Factory"></a>type </font>X509_Authentication_Factory <font color="#0000FF">is abstract<br>
+&nbsp;&nbsp; new </font>
+<a href="#GNAT.Sockets.Server.Connections_Factory">Connections_Factory</a>
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>Custom factories must be derived from this base type. When a connection to 
+the client is first established, the server using a factory derived from this 
+type engages a handshaking which includes exchange of certificates. When the 
+handshaking is successful the following exchange continues encrypted. There is 
+no need to change anything in the original protocol implementation. Both secure 
+and insecure factories may use same <a href="#GNAT.Sockets.Server.Connection">
+client connection</a> objects. The following primitive operations are defined:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_CRL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>List</b>&nbsp;&nbsp;&nbsp; 
+: X509_CRL_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure adds the trusted CRLs in order to verify client certificates.
+<b>List</b> is the array containing CRL to add.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_CRL_From_<b>{</b>DER<b>|</b>PEM<b>}</b>_File<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>File</b>&nbsp;&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures add the trusted CRLs in order to verify client certificates 
+from a file with the name <b>File</b>. The procedure name corresponds to the 
+file format, <i>DER</i> for binary file format, <i>PEM</i> for text file format.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Public_Key</b>&nbsp; : OpenPGP_Crt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Private_Key</b> : OpenPGP_Privkey<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure adds a certificate/private OpenPGP key pair. <b>Public_Key</b> 
+is the public key, <b>Private_Key</b> is the private key. More than one keys 
+pair can be added.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Key_From_<b>{</b>DER<b>|</b>PEM<b>}</b>_File<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Certificate_File</b> : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Key_File</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>[ Encryption</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: PKCS_Encrypt_Flags;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Password</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String <b>]</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set a certificate/private key pair into factory. These 
+procedures may be called more than once. These procedures can also accept URLs 
+at <b>Certificate_File</b> and <b>Key_File</b>. In that case it will import the 
+private key and certificate indicated by the URLs. The supported URLs are the 
+ones indicated by URL_Is_Supported. In case the <b>Certificate_File</b> is 
+provided as a PKCS 11 URL, then the certificate, and its present issuers in the 
+token are are imported (i.e. the required trust chain). The procedure name 
+corresponds to the file format, <i>DER</i> for binary file format, <i>PEM</i> 
+for text file format.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Key_From_<b>{</b>Base64<b>|</b>Raw<b>}</b>_File<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Public_Key</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Private_Key</b>&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>[ Subkey_ID&nbsp; 
+] </b>: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures add OpenPGP keys into the factory. <b>Public_Key</b> is the 
+file name containing the public key, <b>Private_Key</b> is one of the private 
+key. The files should contain at least one valid non-encrypted subkey. The 
+procedure name corresponds to the file format, raw or else Base64.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Key_From_<b>{</b>Base64<b>|</b>Raw<b>}</b>_File<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Public_Key</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Private_Key</b>&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>[ Subkey_ID&nbsp; 
+] </b>: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures add OpenPGP keys into the factory. <b>Public_Key</b> is the 
+file name containing the public key, <b>Private_Key</b> is one of the private 
+key. The files should contain at least one valid non-encrypted subkey. These 
+procedures may be called more than once. The procedure name corresponds to the 
+file encoding, raw or else Base64.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Key_From_<b>{</b>Base64<b>|</b>Raw<b>}</b>_Ring<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>File
+</b>&nbsp;&nbsp; : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures add OpenPGP keys the into the factory. The keys are taken 
+from the keyring file <b>File</b>. The files should contain at least one valid 
+non-encrypted subkey. These procedures may be called more than once. The 
+procedure name corresponds to the keyring file format, raw or else Base64.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Trust<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>List
+</b>&nbsp;&nbsp; : X509_Crt_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure adds the trusted CAs in order to verify client certificates. 
+This procedure may be called more than once.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Trust_From_<b>{</b>DER<b>|</b>PEM<b>}</b>_File<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>File</b>&nbsp;&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures add the trusted CAs in order to verify client certificates. 
+They may be called multiple times. They can also accept URLs. In that case it 
+will import all certificates that are marked as trusted. The procedure name 
+corresponds to the file format, <i>DER</i> for binary file format, <i>PEM</i> 
+for text file format.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_System_Trust<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure adds the system's default trusted CAs in order to verify 
+client certificates.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Generate_Diffie_Hellman_Parameters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure generates Diffie-Hellman parameters. The operation is 
+time-consuming. If not generated explicitly, parameters are generated on demand.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Set_OCSP_Response_File<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>File</b>&nbsp;&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure sets the filename of an OCSP response, that will be sent to 
+the client if requests an OCSP certificate status.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Set_Priorities<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Priorities</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure sets priorities for the authentication. If not set explicitly, 
+&quot;NORMAL&quot; is used.</p>
+<p>A minimal initialization of a X509 connection factory may set a keys pair 
+generated by a tool like OpenSSL, e.g.</p>
+
+<blockquote>
+<p><tt>Add_Key_From_PEM_File<br>
+(&nbsp; Factory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; 
+Factory,<br>
+&nbsp;&nbsp; Certificate_File =&gt; &quot;<font color="#FF0000">cert.pem</font>&quot;,<br>
+&nbsp;&nbsp; Key_File&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; &quot;<font color="#FF0000">key.pem</font>&quot;<br>
+);</tt></p>
+</blockquote>
+
+<p><u><b>Anonymous authentication factory</b></u></p>
+<p><a name="GNAT.Sockets.Server.Secure.Anonymous"></a>The package
+<a href="#GNAT.Sockets.Server.Secure.Anonymous">GNAT.Sockets.Server.Secure.Anonymous</a> 
+provides an implementation of connection factory for anonymous authentication.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Server.Secure.Anonymous.Anonymous_Authentication_Factory"></a>type </font>
+Anonymous_Authentication_Factory <font color="#0000FF">is abstract<br>
+&nbsp;&nbsp; new </font>
+<a href="#GNAT.Sockets.Server.Connections_Factory">Connections_Factory</a>
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>Custom factories must be derived from this base type. The following primitive 
+operations are defined:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Set_Priorities<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Anonymous_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Priorities</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure sets priorities for the authentication. If not set explicitly, 
+&quot;NORMAL&quot; is used.</p>
+<h4><a name="16.1.4"></a>16.1.4. Simple echo server sample</h4>
 <p>The following sample illustrates implementation of a simple echo server. The 
 server sends back to the client what it receives from it. The package 
 Test_Echo_Servers contains the implementation: </p>
@@ -26564,7 +27112,44 @@ end record</font>;</tt></p>
 	string length exceeds the limit;</li>
 	<li><i>Terminator</i> is the string terminator character.</li>
 </ul>
-<p>The actual string value contained by the data item is Item.Value (1..Item.Last).</p>
+<p>The actual string value contained by the data item is Item.Value (1..Item.Last). 
+Or using the function:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Value (<b>Item</b> : 
+String_Data_Item) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>The package also provides a variant with dynamically allocated strings:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type </font>Dynamic_String_Data_Item<font color="#0000FF"> 
+is new </font>Data_Item<font color="#0000FF"> with record</font><br>
+&nbsp;&nbsp; Last&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Natural&nbsp;&nbsp; :=
+<font color="#800000">0</font>;<br>
+&nbsp;&nbsp; Terminator : Character := Character'Val (<font color="#800000">0</font>);<br>
+&nbsp;&nbsp; Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String_Ptr;<font color="#0000FF"><br>
+end record</font>;</tt></p>
+</blockquote>
+<p>The following operations are provided:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Maximum_Size (<b>Item</b> : 
+Dynamic_String_Data_Item) <font color="#0000FF">return</font> Natural;</tt></p>
+</blockquote>
+<p>This function returns current maximal number of characters.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Value (<b>Item</b> : 
+Dynamic_String_Data_Item) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns the current value.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Maximum_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Item</b> :
+<font color="#0000FF">in out</font> Dynamic_String_Data_Item;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Size</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure changes the maximum string size. The internally allocated 
+string buffer is expanded if necessary.</p>
 <p>Additionally the package declares:</p>
 <blockquote>
 <p><tt><font color="#0000FF">function</font> Get<br>
@@ -26829,6 +27414,7 @@ HTTP_Client<br>
 &nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 <font color="#0000FF">access</font> Connections_Server'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Request_Length : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp;&nbsp;&nbsp;&nbsp; : Buffer_Length;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size&nbsp;&nbsp;&nbsp; : 
 Buffer_Length<br>
 &nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
@@ -26840,6 +27426,8 @@ State_Machine <font color="#0000FF">with private</font>;</tt></p>
 	<li><i>Request_Length</i> is the maximum length of a HTTP request line. This 
 	limit applies to the request status line and the lines of the header fields. 
 	It does not limit the request body;</li>
+	<li><i>Input_Size</i> is the input buffer size. It is not required to be 
+	especially large, e.g. to accommodate all request or all request line;</li>
 	<li><i>Output_Size</i> is the output buffer size. The buffer must be large 
 	to accommodate the response status line and its fields. The same buffer is 
 	used for the response body when no chunked transfer is used. For chunked 
@@ -28423,7 +29011,7 @@ message must be sent or else a String (UTF-8 encoded) if the message is a text
 message. Note that
 <a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Send">WebSocket_Send</a> 
 does not check validity of UTF-8 encoding. End_Error is propagated when there is no connection.</p>
-<p><u><b>WebSocket char sample</b></u>. The following is a complete example of 
+<p><u><b>WebSocket chat sample</b></u>. The following is a complete example of 
 WebSocket based chat. We start with the package providing an implementation of 
 the server:</p>File <i>test_websocket_servers.ads</i>:
 <TABLE border="1" cellpadding="15" cellspacing="0">
@@ -28687,8 +29275,7 @@ return false;</font>&quot; &amp; CRLF &amp;<br>
   </TR>
 </TABLE>
 <p>Page is the web page source. It contains a web-form with chat text and two 
-buttons. The rest of the page is JavaScript program that deals with the 
-WebSocket at the client side. It opens a connection and then when the <i>send</i> 
+buttons. The rest of the page is a JavaScript program that deals with the WebSocket at the client side. It opens a connection and then when the <i>send</i> 
 button is pressed sends the text over the WebSocket to the server. The server's 
 message is put back into the text field.</p>File<i> test_websocket_servers.adb</i> 
 (continued):
@@ -29288,205 +29875,249 @@ Tests and examples are located in the subdirectory <i>test</i>.</p>
 <p>The following table describes the packages and other compilation units provided by the software.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0" style="border-left-width: 0px">
   <TR>
-    <TD bgcolor="#008080" colspan="15"><FONT color="#FFFFFF"><B>Package</B></FONT></TD>
+    <TD bgcolor="#008080" colspan="21"><FONT color="#FFFFFF"><B>Package</B></FONT></TD>
     <TD bgcolor="#008080"><FONT color="#FFFFFF"><B>Provides</B></FONT></TD>
   </TR>
   <tr>
-    <TD colspan="15" bgcolor="#C0C0C0">APQ</TD>
+    <TD colspan="21" bgcolor="#C0C0C0">APQ</TD>
     <TD>Implementation packages used for <a href="#Persistent.APQ">Persistent.APQ</a></TD>
   </tr>
   <tr>
-    <TD colspan="6" rowspan="4" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;</TD>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px">Common</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px">Common</TD>
     <TD>Thicker bindings to the APQ abstracting away data base specific details</TD>
   </tr>
   <tr>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px">Keys</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px">Keys</TD>
     <TD>Persistent objects identification in APQ</TD>
   </tr>
   <tr>
-    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Sets</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">Sets</TD>
     <TD style="border-left-style: solid; border-left-width: 1px">Sets of persistent objects keys</TD>
   </tr>
   <tr>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px">Links</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px">Links</TD>
     <TD>Management of persistent objects dependencies in APQ</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Backward_Link_Handles">Backward_Link_Handles</a></TD>
+    <TD colspan="21"><a href="#Backward_Link_Handles">Backward_Link_Handles</a></TD>
     <TD>An instance of <a href="#Object.Handle">Object.Handle</a> with <a href="#Backward_Link">Backward_Link</a></TD>
   </tr>
   <tr>
     <TD colspan="5" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px"><a href="#Backward_Link_Handles.Sets">Sets</a></TD>
+    <TD colspan="16" style="border-left-style: solid; border-left-width: 1px"><a href="#Backward_Link_Handles.Sets">Sets</a></TD>
     <TD>An instance of <a href="#Object.Handle.Generic_Handle_Set">
 	Object.Handle.Generic_Handle_Set</a> with <a href="#Backward_Link">Backward_Link</a></TD>
   </tr>
   <tr>
-    <TD colspan="15"> <a href="#Block_Streams">
+    <TD colspan="21"> <a href="#Block_Streams">
 Block_Streams</a></TD>
     <TD>Block-oriented I/O layer over a stream</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Deposit_Handles">Deposit_Handles</a></TD>
+    <TD colspan="21"><a href="#Deposit_Handles">Deposit_Handles</a></TD>
     <TD>An instance of <a href="#Object.Archived.Handle">
     Object.Archived.Handle</a> with <a href="#Deposit">Deposit</a></TD>
   </tr>
   <tr>
-    <TD colspan="15">
+    <TD colspan="21">
 <a href="#Gamma">Gamma</a></TD>
     <TD>Gamma function</TD>
   </tr>
   <tr>
-    <TD colspan="15">
+    <TD colspan="21">
 <a href="#Generic_Address_Order">Generic_Address_Order</a></TD>
     <TD>Comparison of objects by their addresses</TD>
   </tr>
   <tr>
-    <TD colspan="15">
+    <TD colspan="21">
 <a href="#Generic_Chebyshev_Polynomials">Generic_Chebyshev_Polynomials</a></TD>
     <TD>Chebyshev series (generic)</TD>
   </tr>
   <tr>
-    <TD colspan="15"> <a href="#Generic_B_Tree">Generic_B_Tree</a></TD>
+    <TD colspan="21"> <a href="#Generic_B_Tree">Generic_B_Tree</a></TD>
     <TD>An implementation of B-tree</TD>
   </tr>
   <tr>
-    <TD colspan="15"> <a href="#Generic_Blackboard">Generic_Blackboard</a></TD>
+    <TD colspan="21"> <a href="#Generic_Blackboard">Generic_Blackboard</a></TD>
     <TD>One-to-many lock-free generic blackboard</TD>
   </tr>
   <tr>
     <TD colspan="4" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_Blackboard.Generic_Task_Safe">Generic_Task_Safe</a></TD>
+    <TD colspan="17" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_Blackboard.Generic_Task_Safe">Generic_Task_Safe</a></TD>
     <TD style="border-left-style: solid; border-left-width: 1px">Many-to-many generic blackboard with lock-free read access</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Directed_Graph">Generic_Directed_Graph</a></TD>
+    <TD colspan="21"><a href="#Generic_Directed_Graph">Generic_Directed_Graph</a></TD>
     <TD>Generic directed graphs</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Directed_Weighted_Graph">Generic_Directed_Weighted_Graph</a></TD>
+    <TD colspan="21"><a href="#Generic_Directed_Weighted_Graph">Generic_Directed_Weighted_Graph</a></TD>
     <TD>Generic directed weighted graphs</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Doubly_Linked">Generic_Doubly_Linked</a></TD>
+    <TD colspan="21"><a href="#Generic_Doubly_Linked">Generic_Doubly_Linked</a></TD>
     <TD>Doubly-linked lists of items with referential semantics</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Doubly_Linked_Web">
+    <TD colspan="21"><a href="#Generic_Doubly_Linked_Web">
 	Generic_Doubly_Linked_Web</a></TD>
     <TD>Networks of doubly-linked items with referential semantics.</TD>
   </tr>
 	<tr>
     <TD colspan="4" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_Doubly_Linked_Web.Generic_List">
+    <TD colspan="17" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_Doubly_Linked_Web.Generic_List">
 	Generic_List</a></TD>
     <TD>A specialized list view of a network</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_FIFO">Generic_FIFO</a></TD>
+    <TD colspan="21"><a href="#Generic_FIFO">Generic_FIFO</a></TD>
     <TD>Peer-to-peer lock-free first in, first out generic queue</TD>
   </tr>
   <tr>
     <TD colspan="4" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_FIFO.Signaled_FIFO">Generic_Signaled</a></TD>
+    <TD colspan="17" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_FIFO.Signaled_FIFO">Generic_Signaled</a></TD>
     <TD>Peer-to-peer almost lock-free first in, first out generic queue</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Indefinite_B_Tree">Generic_Indefinite_B_Tree</a></TD>
+    <TD colspan="21"><a href="#Generic_Indefinite_B_Tree">Generic_Indefinite_B_Tree</a></TD>
     <TD>An implementation of B-tree with indefinite types of keys and objects</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Indefinite_FIFO">Generic_Indefinite_FIFO</a></TD>
+    <TD colspan="21"><a href="#Generic_Indefinite_FIFO">Generic_Indefinite_FIFO</a></TD>
     <TD>Peer-to-peer lock-free first in, first out generic queue of indefinite 
 	objects</TD>
   </tr>
 	<tr>
     <TD colspan="4" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_Indefinite_FIFO.Signaled_FIFO">Generic_Signaled</a></TD>
+    <TD colspan="17" style="border-left-style: solid; border-left-width: 1px"><a href="#Generic_Indefinite_FIFO.Signaled_FIFO">Generic_Signaled</a></TD>
     <TD>Peer-to-peer almost lock-free first in, first out generic queue of 
 	indefinite objects</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Map">Generic_Map</a></TD>
+    <TD colspan="21"><a href="#Generic_Map">Generic_Map</a></TD>
     <TD>The type <a href="#Map">Map</a></TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Generic_Random_Sequence">Generic_Random_Sequence</a></TD>
+    <TD colspan="21"><a href="#Generic_Random_Sequence">Generic_Random_Sequence</a></TD>
     <TD>Random sequences of non-repeating items</TD>
   </tr>
   <TR>
-    <TD colspan="15"><a href="#Generic_Set">Generic_Set</a></TD>
+    <TD colspan="21"><a href="#Generic_Set">Generic_Set</a></TD>
     <TD>The type <a href="#Set">Set</a></TD>
   </TR>
   <TR>
-    <TD colspan="15"><a href="#Generic_Stack">Generic_Stack</a></TD>
+    <TD colspan="21"><a href="#Generic_Stack">Generic_Stack</a></TD>
     <TD>The type <a href="#Stack">Stack</a>, a generic stack</TD>
   </TR>
   <TR>
-    <TD colspan="15"> <a href="#Generic_Segmented_Stack">Generic_Segmented_Stack</a></TD>
+    <TD colspan="21"> <a href="#Generic_Segmented_Stack">Generic_Segmented_Stack</a></TD>
     <TD>Stacks built of segments of same size (generic)</TD>
   </TR>
   <tr>
-    <TD colspan="15"><a href="#Generic_Unbounded_Array">Generic_Unbounded_Array</a></TD>
+    <TD colspan="21"><a href="#Generic_Unbounded_Array">Generic_Unbounded_Array</a></TD>
     <TD>The type <a href="#Unbounded_Array">Unbounded_Array</a> and operations 
 	on it</TD>
   </tr>
 	<tr>
-    <TD colspan="15"><a href="#Generic_Unbounded_Ptr_Array">
+    <TD colspan="21"><a href="#Generic_Unbounded_Ptr_Array">
 	Generic_Unbounded_Ptr_Array</a></TD>
     <TD>The type <a href="#Unbounded_Ptr_Array">Unbounded_Ptr_Array</a></TD>
   </tr>
   <tr>
-    <TD colspan="15">GNAT.Sockets</TD>
+    <TD colspan="21">GNAT.Sockets</TD>
     <TD>GNAT sockets implementation</TD>
   </tr>
 	<tr>
-    <TD colspan="3" rowspan="28" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;&nbsp;&nbsp;&nbsp; </TD>
-    <TD colspan="12" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="18" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#GNAT.Sockets.Server">Server</a></TD>
     <TD>Multiple TCP connections server, a low-level implementation</TD>
   </tr>
 	<tr>
-    <TD colspan="5" style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0">
-	&nbsp;</TD>
-    <TD colspan="7" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="10" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#GNAT.Sockets.Server.Pooled">Pooled</a></TD>
     <TD>Server with a pool of worker tasks</TD>
   </tr>
 	<tr>
-    <TD colspan="12" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="10" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#GNAT.Sockets.Server.Secure">Secure</a></TD>
+    <TD>Secure TLS connection server</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="10" style="border-style:none; border-width:medium; " bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#GNAT.Sockets.Server.Secure.Anonymous">Anonymous</a></TD>
+    <TD>&nbsp;</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="10" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#GNAT.Sockets.Server.Secure.X509">X509</a></TD>
+    <TD>Secure TLS connection server</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="18" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine">
 	Connection_State_Machine</a></TD>
     <TD>Multiple TCP connections server, a higher-level implementation</TD>
   </tr>
 	<tr>
-    <TD colspan="6" rowspan="25" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
-    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="13" style="border-left-style: solid; border-left-width: 1px; border-right-style:none; border-right-width:medium; border-bottom-style:solid; border-bottom-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Big_Endian">Big_Endian</a></TD>
     <TD>Big-endian encoded data items, parent package</TD>
   </tr>
 	<tr>
-    <TD colspan="3" rowspan="8" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" bgcolor="#C0C0C0">
-	&nbsp;&nbsp;&nbsp; </TD>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3" style="border-top-style:solid; border-top-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Big_Endian.Generic_Double_Precision_IEEE_754">
 	Generic_Double_Precision_IEEE_754</a></TD>
     <TD>Double-precision IEEE 754 numbers (generic)</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Big_Endian.Generic_Single_Precision_IEEE_754">
 	Generic_Single_Precision_IEEE_754</a></TD>
     <TD>Single-precision IEEE 754 numbers (generic)</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#HTTP_implementation">HTTP_Server</a></TD>
     <TD>HTTP server implementation</TD>
   </tr>
 	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
     <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium" colspan="2">
 	&nbsp;</TD>
     <TD style="border-left-style: solid; border-left-width: 1px">
@@ -29495,7 +30126,10 @@ Block_Streams</a></TD>
     <TD>HTTP browser of SQLite3 database</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Big_Endian.IEEE_754_Floats">
 	IEEE_754_Floats</a></TD>
     <TD>Instantiation of
@@ -29503,7 +30137,10 @@ Block_Streams</a></TD>
 	Generic_Single_Precision_IEEE_754</a> with Float</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Big_Endian.IEEE_754_Long_Floats">
 	IEEE_754_Long_Floats</a></TD>
     <TD>Instantiation of
@@ -29511,78 +30148,108 @@ Block_Streams</a></TD>
 	Generic_Double_Precision_IEEE_754</a> with Long_Float</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Big_Endian.Integers">
 	Integers</a></TD>
     <TD>Signed integers</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="3" style="border-bottom-style:solid; border-bottom-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Big_Endian.Unsigneds">
 	Unsigneds</a></TD>
     <TD>Unsigned modular integers</TD>
   </tr>
 	<tr>
-    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="12" style="border-left-style: solid; border-left-width: 1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code">Chain_Code</a></TD>
     <TD>Chain-coded data items, parent package</TD>
   </tr>
 	<tr>
-    <TD colspan="3" rowspan="4" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">
-	&nbsp;</TD>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3" style="border-top-style:solid; border-top-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Generic_Integer">
 	Generic_Integer</a></TD>
     <TD>Signed integers (generic)</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Generic_Unsigned">
 	Generic_Unsigneds</a></TD>
     <TD>Unsigned integers (generic)</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px"><a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Integers">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3"><a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Integers">
 	Integers</a></TD>
     <TD>Instantiation of
 	<a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Generic_Integer">
 	Generic_Integer</a> with Integer</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px"><a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Naturals">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="3" style="border-bottom-style:solid; border-bottom-width:1px"><a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Naturals">
 	Naturals</a></TD>
     <TD>Instantiation of
 	<a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Generic_Unsigned">
 	Generic_Unsigneds</a> with Natural</TD>
   </tr>
 	<tr>
-    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="13" style="border-left-style: solid; border-left-width: 1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Expected_Sequence">
 	Expected_Sequence</a></TD>
     <TD>Expected sequence of fixed content</TD>
   </tr>
 	<tr>
-    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="8" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:solid; border-top-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="4" style="border-top-style:solid; border-top-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian">
 	Little_Endian</a></TD>
     <TD>Little-endian encoded data items, parent package</TD>
   </tr>
 	<tr>
-    <TD colspan="3" rowspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">
-	&nbsp;</TD>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.Generic_Double_Precision_IEEE_754">
 	Generic_Double_Precision_IEEE_754</a></TD>
     <TD>Double-precision IEEE 754 numbers (generic)</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.Generic_Single_Precision_IEEE_754">
 	Generic_Single_Precision_IEEE_754</a></TD>
     <TD>Single-precision IEEE 754 numbers (generic)</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.IEEE_754_Floats">
 	IEEE_754_Floats</a></TD>
     <TD>Instantiation of
@@ -29590,7 +30257,10 @@ Block_Streams</a></TD>
 	Generic_Single_Precision_IEEE_754</a> with Float</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.IEEE_754_Floats">
 	IEEE_754_Long_Floats</a></TD>
     <TD>Instantiation of
@@ -29598,610 +30268,763 @@ Block_Streams</a></TD>
 	Generic_Double_Precision_IEEE_754</a> with Long_Float</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px"><a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.Integers">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="3"><a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.Integers">
 	Integers</a></TD>
     <TD>Signed integers</TD>
   </tr>
 	<tr>
-    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px"><a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.Unsigneds">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="9" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="3" style="border-bottom-style:solid; border-bottom-width:1px"><a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.Unsigneds">
 	Unsigneds</a></TD>
     <TD>Unsigned modular integers</TD>
   </tr>
 	<tr>
-    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="10" style="border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Terminated_Strings">
 	Terminated_Strings</a></TD>
     <TD>Strings terminated by a special character</TD>
   </tr>
 	<tr>
-    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:solid; border-top-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="4" style="border-top-style:solid; border-top-width:1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Variable_Length_Arrays">
 	Variable_Length_Arrays</a></TD>
     <TD>Variable-length arrays</TD>
   </tr>
 	<tr>
-    <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="7" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="7" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="4">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Variable_Length_Strings">
 	Variable_Length_Strings</a></TD>
     <TD>Variable-length strings</TD>
   </tr>
   <tr>
-    <TD colspan="15">GNU.DB.CLI.API</TD>
+    <TD colspan="21">GNU.DB.CLI.API</TD>
     <TD>Thick bindings to GNADE ODBC</TD>
   </tr>
   <tr>
-    <TD colspan="6" rowspan="4" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;</TD>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px">Keys</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15">Keys</TD>
     <TD>Persistent objects identification in GNADE ODBC</TD>
   </tr>
   <tr>
-    <TD rowspan="2" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Edit</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">Edit</TD>
     <TD>String conversions for GNADE ODBC objects keys</TD>
   </tr>
   <tr>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Sets</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14">Sets</TD>
     <TD>Sets of persistent objects keys for GNADE ODBC</TD>
   </tr>
   <tr>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px">Links</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px">Links</TD>
     <TD>Management of persistent objects dependencies in GNADE ODBC</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#IEEE_754">IEEE_754</a></TD>
+    <TD colspan="21">GNUTLS</TD>
+    <TD><a href="http://www.gnutls.org/">GNUTLS</a> bindings</TD>
+  </tr>
+  <tr>
+    <TD colspan="21"><a href="#IEEE_754">IEEE_754</a></TD>
     <TD>The parent package for dealing with <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
 	representations</TD>
   </tr>
   <tr>
-    <TD colspan="4" rowspan="4" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;</TD>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#IEEE_754.Floats">Floats</a></TD>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="17"><a href="#IEEE_754.Floats">Floats</a></TD>
     <TD>An instance of <a href="#IEEE_754.Generic_Double_Precision">IEEE_754.Generic_Double_Precision</a> 
 	with Float</TD>
   </tr>
   <tr>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#IEEE_754.Generic_Double_Precision">Generic_Double_Precision</a></TD>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="17"><a href="#IEEE_754.Generic_Double_Precision">Generic_Double_Precision</a></TD>
     <TD>64-bit double precision <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
 	floating-point representations</TD>
   </tr>
   <tr>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#IEEE_754.Generic_Single_Precision">Generic_Single_Precision</a></TD>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="17"><a href="#IEEE_754.Generic_Single_Precision">Generic_Single_Precision</a></TD>
     <TD>32-bit single precision <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
 	floating-point representations</TD>
   </tr>
   <tr>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"><a href="#IEEE_754.Long_Floats">Long_Floats</a></TD>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="17"><a href="#IEEE_754.Long_Floats">Long_Floats</a></TD>
     <TD>An instance of <a href="#IEEE_754.Generic_Double_Precision">IEEE_754.Generic_Double_Precision</a> 
 	with Long_Float</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Long_Chebyshev_Polynomials">
+    <TD colspan="21"><a href="#Long_Chebyshev_Polynomials">
 	Long_Chebyshev_Polynomials</a></TD>
     <TD>An instance of
 <a href="#Generic_Chebyshev_Polynomials">Generic_Chebyshev_Polynomials</a> with 
 	Long_Float</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Object">Object</a></TD>
+    <TD colspan="21"><a href="#Object">Object</a></TD>
     <TD>The type <a href="#Entity">Entity</a></TD>
   </tr>
   <tr>
-    <TD rowspan="10" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;</TD>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Archived">Archived</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20"><a href="#Object.Archived">Archived</a></TD>
     <TD>The types <a href="#Deposit">Deposit</a>, <a href="#Backward_Link">
     Backward_Link</a> and <a href="#Deposit_Container">Deposit_Container</a> for 
     handling persistency</TD>
   </tr>
   <tr>
-    <TD rowspan="4" bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Archived.Handle">Handle</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Archived.Handle">Handle</a></TD>
     <TD>The type <a href="#Object.Archived.Handle.Handle">Handle</a> (to 
     persistent objects) and operations on it. The package is generic</TD>
   </tr>
   <tr>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Archived.Iterators">Iterators</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Archived.Iterators">Iterators</a></TD>
     <TD>The type <a href="#References_Iterator">References_Iterator</a>, an 
     iterator of object's references</TD>
   </tr>
   <tr>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Archived.Lists">Lists</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Archived.Lists">Lists</a></TD>
     <TD>The type <a href="#Deposit_List">Deposit_List</a>, a list of persistent 
     objects</TD>
   </tr>
   <tr>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Archived.Sets">Sets</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Archived.Sets">Sets</a></TD>
     <TD>The type <a href="#Deposit_Set">Deposit_Set</a>, a set of persistent 
     objects</TD>
   </tr>
   <tr>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Handle">Handle</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Handle">Handle</a></TD>
     <TD>The type <a href="#Handle">Handle</a> and operations on it</TD>
   </tr>
   <tr>
-    <TD rowspan="4" bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Handle.Generic_Bounded_Array">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Handle.Generic_Bounded_Array">
     Generic_Bounded_Array</a></TD>
     <TD>The type <a href="#Bounded_Array">Bounded_Array</a>, a generic bounded array of 
     objects</TD>
   </tr>
   <tr>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Handle.Generic_Handle_Set">Generic_Handle_Set</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Handle.Generic_Handle_Set">Generic_Handle_Set</a></TD>
     <TD>The type <a href="#Object.Handle.Generic_Set.Set">Set</a>, a generic set of 
     objects</TD>
   </tr>
   <tr>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Handle.Generic_Set">Generic_Set</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Handle.Generic_Set">Generic_Set</a></TD>
     <TD>The type <a href="#Object.Handle.Generic_Set.Set">Set</a>, a generic set of 
     objects</TD>
   </tr>
   <tr>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Object.Handle.Generic_Unbounded_Array">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Object.Handle.Generic_Unbounded_Array">
     Generic_Unbounded_Array</a></TD>
     <TD>The type <a href="#Unbounded_Array">Unbounded_Array</a>, a generic unbounded 
     array of objects</TD>
   </tr>
   <TR>
-    <TD colspan="15"> ODBC</TD>
+    <TD colspan="21"> ODBC</TD>
     <TD>The parent package of <a href="#ODBC_Bindings">ODBC bindings</a></TD>
   </TR>
   <TR>
-    <TD colspan="5" rowspan="10" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium"> &nbsp;</TD>
-    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px"> Architecture_Dependent</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="16"> Architecture_Dependent</TD>
     <TD>ODBC declarations dependent on the machine architecture, e.g. x86_64, 
 	i686</TD>
   </TR>
   <TR>
-    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px"> <a href="#ODBC.API">API</a></TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="16"> <a href="#ODBC.API">API</a></TD>
     <TD>Persistent objects identification in ODBC</TD>
   </TR>
   <TR>
-    <TD colspan="2" rowspan="4" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style: none; border-right-width: medium"> &nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"> Keys</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="2" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="14"> Keys</TD>
     <TD>Persistent objects identification in ODBC</TD>
   </TR>
   <TR>
-    <TD rowspan="2" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" colspan="3"> &nbsp;&nbsp;&nbsp;&nbsp; </TD>
-    <TD style="border-left-style: solid; border-left-width: 1px" colspan="5"> Edit</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="2" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; "> &nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium" colspan="7"> &nbsp;&nbsp;&nbsp;&nbsp; </TD>
+    <TD colspan="7"> Edit</TD>
     <TD>String conversions for ODBC objects keys</TD>
   </TR>
   <TR>
-    <TD style="border-left-style: solid; border-left-width: 1px" colspan="5"> Sets</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="2" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; "> &nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium" colspan="7"> &nbsp;</TD>
+    <TD colspan="7"> Sets</TD>
     <TD>Sets of persistent objects keys for ODBC</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"> Links</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="2" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium"> &nbsp;</TD>
+    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"> Links</TD>
     <TD>Management of persistent objects dependencies in ODBC</TD>
   </TR>
   <TR>
-    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px"> <a href="#ODBC.Bound_Parameters">Bound_Parameters</a></TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="16"> <a href="#ODBC.Bound_Parameters">Bound_Parameters</a></TD>
     <TD>Data types used for bound parameters of prepared statements</TD>
   </TR>
   <TR>
-    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px"> Driver_Dependent</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="16"> Driver_Dependent</TD>
     <TD>ODBC declarations dependent on the ODBC driver manager, e.g. ODBC32, 
 	unixODBC</TD>
   </TR>
   <TR>
-    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px"> <a href="#ODBC.Thin">Thin</a></TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="16"> <a href="#ODBC.Thin">Thin</a></TD>
     <TD>Thin ODBC bindings</TD>
   </TR>
   <TR>
-    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px"> <a href="#ODBC.SQLTypes">SQLTypes</a></TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium"> &nbsp;</TD>
+    <TD colspan="16"> <a href="#ODBC.SQLTypes">SQLTypes</a></TD>
     <TD>ODBC data types</TD>
   </TR>
   <TR>
-    <TD colspan="15"> <a href="#Parsers">Parsers</a></TD>
+    <TD colspan="21"> <a href="#Parsers">Parsers</a></TD>
     <TD>The base package of syntax analyzers</TD>
   </TR>
   <TR>
-    <TD rowspan="34" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;</TD>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"><a href="#Parsers.Ada">Ada</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20"><a href="#Parsers.Ada">Ada</a></TD>
     <TD>The type Ada_Expression, an implementation of Ada 95 expression parser</TD>
   </TR>
   <TR>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"><a href="#Parsers.Generic_Argument">Generic_Argument</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20"><a href="#Parsers.Generic_Argument">Generic_Argument</a></TD>
     <TD>The type <a href="#Parsers.Generic_Argument.Stack">Stack</a>, the 
     abstract base for argument stacks (generic)</TD>
   </TR>
   <TR>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
     <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"> <a href="#Parsers.Generic_Argument.Segmented_Stack">
+    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"> <a href="#Parsers.Generic_Argument.Segmented_Stack">
     Segmented_Stack</a></TD>
     <TD>An implementation of argument stacks based on segmented stacks</TD>
   </TR>
   <TR>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20">
 <a href="#Parsers.Generic_Lexer">Generic_Lexer</a></TD>
     <TD>The type <a href="#Parsers.Generic_Lexer.Lexer">Lexer</a>, the abstract 
     base for expression analyzers (generic)</TD>
   </TR>
   <TR>
-    <TD rowspan="4" bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Lexer.Ada_Blanks">
     Ada_Blanks</a></TD>
     <TD>An analyzer supporting Ada 95 comments and blanks</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Lexer.Ada_2005_Blanks">Ada_2005_Blanks</a></TD>
     <TD>An analyzer supporting Ada 2005 comments and blanks</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Lexer.Blanks">
     Blanks</a></TD>
     <TD>An analyzer supporting blanks of spaces and formatting characters HT, 
     LF, CR, VT, FF</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Lexer.Cpp_Blanks">Cpp_Blanks</a></TD>
     <TD>An analyzer supporting C++ comments and blanks</TD>
   </TR>
   <TR>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20">
 <a href="#Parsers.Generic_Operation">Generic_Operation</a></TD>
     <TD>The expression operations and their descriptors (generic)</TD>
   </TR>
   <TR>
-    <TD rowspan="2" bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"> <a href="#Parsers.Generic_Operation.Generic_Stack">Generic_Stack</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"> <a href="#Parsers.Generic_Operation.Generic_Stack">Generic_Stack</a></TD>
     <TD>The type <a href="#Parsers.Generic_Operation.Generic_Stack.Stack">Stack</a>, 
     the abstract base of operation stacks</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"> <a href="#Parsers.Generic_Operation.Segmented_Stack">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14"> <a href="#Parsers.Generic_Operation.Segmented_Stack">
     Segmented_Stack</a></TD>
     <TD>An implementation of operation stacks based on segmented stacks</TD>
   </TR>
   <TR>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20">
 <a href="#Parsers.Generic_Source">Generic_Source</a></TD>
     <TD>An abstract interface of code source (generic)</TD>
   </TR>
   <TR>
-    <TD bgcolor="#C0C0C0" colspan="6" rowspan="10" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Get_Ada_Blank">Get_Ada_Blank</a></TD>
     <TD>Matching an Ada 95 comment (generic procedure)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Get_Ada_2005_Blank">Get_Ada_2005_Blank</a></TD>
     <TD>Matching an Ada 2005 comment (generic procedure)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Get_Blank">Get_Blank</a></TD>
     <TD>Matching blank characters (generic procedure)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Get_Cpp_Blank">Get_Cpp_Blank</a></TD>
     <TD>Matching an C++ comment (generic procedure)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Get_Text">Get_Text</a></TD>
     <TD>Matching a text in the Latin-1 code source (generic procedure)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Get_Token">Get_Token</a></TD>
     <TD>Matching a table against the code source (generic procedure)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Get_UTF8_Text">Get_UTF8_Text</a></TD>
     <TD>Matching a text in the UTF-8 code source (generic procedure)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Keywords">Keywords</a></TD>
     <TD>Keyword-matching generated from an enumeration type (generic)&nbsp;</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.Text_IO">Text_IO</a></TD>
     <TD>Debugging output for source code cursors</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Source.XPM">XPM</a></TD>
     <TD>Matching XPM image format (generic package)</TD>
   </TR>
   <TR>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"> <a href="#Parsers.Generic_Token">Generic_Token</a></TD>
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20"> <a href="#Parsers.Generic_Token">Generic_Token</a></TD>
     <TD>The table tokens for table-driven analyzers (generic)</TD>
   </TR>
   <TR>
-    <TD rowspan="2" bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Token.Generic_Token_Lexer">
     Generic_Token_Lexer</a></TD>
     <TD>The type <a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">
     Lexer</a>, the abstract base for table-driven analyzers</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Generic_Token.Segmented_Lexer">
     Segmented_Lexer</a></TD>
     <TD>An implementation of table-driven analyzers based on segmented argument 
     and operation stacks</TD>
   </TR>
   <TR>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="20">
 <a href="#Parsers.Multiline_Source">Multiline_Source</a></TD>
     <TD>The type <a href="#Parsers.Multiline_Source.Source">Source</a>, the 
     abstract base for sources having multiple lines of code</TD>
   </TR>
   <TR>
-    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" rowspan="7">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Multiline_Source.Latin1_Text_IO">Latin1_Text_IO</a></TD>
     <TD>The type <a href="#Parsers.Multiline_Source.Latin1_Text_IO.Source">Source</a>, 
     a code source based on Ada.Text_IO (with Latin-1 to UTF-8 recoding)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Multiline_Source.Location_Text_IO">Location_Text_IO</a></TD>
     <TD>Debugging output for source code cursors, an instance of
 	<a href="#Parsers.Generic_Source.Text_IO">Parsers.Generic_Source.Text_IO</a></TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Multiline_Source.Standard_Input">Standard_Input</a></TD>
     <TD>The type <a href="#Parsers.Multiline_Source.Standard_Input.Source">Source</a>, 
     a code source based on Ada.Text_IO</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Multiline_Source.Stream_IO">Stream_IO</a></TD>
     <TD>The type <a href="#Parsers.Multiline_Source.Stream_IO.Source">Source</a>, 
     a code source based on Ada streams</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Multiline_Source.Text_IO">Text_IO</a></TD>
     <TD>The type <a href="#Parsers.Multiline_Source.Text_IO.Source">Source</a>, 
     a code source based on Ada.Text_IO</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Multiline_Source.Wide_Text_IO">Wide_Text_IO</a></TD>
     <TD>The type <a href="#Parsers.Multiline_Source.Text_IO.Source">Source</a>, 
     a code source based on Ada.Wide_Text_IO (with recording into UTF-8)</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" colspan="6" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14">
 <a href="#Parsers.Multiline_Source.XPM">XPM</a></TD>
     <TD>An instance of <a href="#Parsers.Generic_Source.XPM">
 	Parsers.Generic_Source.XPM</a> based on
 <a href="#Parsers.Multiline_Source">Multiline_Source</a></TD>
   </TR>
   <TR>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">
+    <TD bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="20">
 <a href="#Parsers.String_Source">String_Source</a></TD>
     <TD>The type <a href="#Parsers.String_Source.Source">Source</a>, a single 
     string code source</TD>
   </TR>
   <TR>
-    <TD colspan="15"><a href="#Persistent">Persistent</a></TD>
+    <TD colspan="21"><a href="#Persistent">Persistent</a></TD>
     <TD>Abstract persistent storage interface</TD>
   </TR>
   <TR>
-    <TD colspan="6" rowspan="29" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;</TD>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.APQ">APQ</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15"><a href="#Persistent.APQ">APQ</a></TD>
     <TD>APQ implementation of persistent storage</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Blocking_Files">Blocking_Files</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15"><a href="#Persistent.Blocking_Files">Blocking_Files</a></TD>
     <TD>Blocking files access</TD>
   </TR>
   <TR>
-    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0" rowspan="3">&nbsp;</TD>
-    <TD colspan="7" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Blocking_Files.Text_IO">Text_IO</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Blocking_Files.Text_IO">Text_IO</a></TD>
     <TD>Text output of byte index and byte offset</TD>
   </TR>
   <TR>
-    <TD colspan="7" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.Blocking_Files.Transactional">Transactional</a></TD>
     <TD>Blocking files with transactions</TD>
   </TR>
   <TR>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" style="border-left-style: none; border-left-width: medium; border-bottom-style:solid; border-bottom-width:1px; border-right-style:none; border-right-width:medium; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">&nbsp;</TD>
     <TD colspan="3" style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.Blocking_Files.Transactional.Dump">Dump</a></TD>
     <TD>Textual output of internal structures of a transactional blocking file</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Directory">Directory</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15"><a href="#Persistent.Directory">Directory</a></TD>
     <TD>Persistent directory objects</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Data_Bank">Data_Bank</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15"><a href="#Persistent.Data_Bank">Data_Bank</a></TD>
     <TD>Abstract persistent storage with objects identified by keys</TD>
   </TR>
   <TR>
-    <TD rowspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Data_Bank.Index">Index</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Persistent.Data_Bank.Index">Index</a></TD>
     <TD>Index for an abstract persistent storage</TD>
   </TR>
   <TR>
-    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium" colspan="4">&nbsp;</TD>
-    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium" colspan="9">&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
     <TD>Text output of the persistent storage index</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Data_Bank.Indexed">Indexed</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Persistent.Data_Bank.Indexed">Indexed</a></TD>
     <TD>Abstract indexed persistent storage</TD>
   </TR>
   <TR>
-    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium" colspan="4">&nbsp;</TD>
-    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium" colspan="9">&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
     <TD>Text output of the persistent storage index</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Mutexes</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="14">Mutexes</TD>
     <TD>Interlocking of <a href="#Persistent.Data_Bank.Indexed.Indexed_Storage_Object">  Indexed_Storage_Object</a>
 	operations</TD>
   </TR>
   <TR>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Data_Bank.Reference">Reference</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="14"><a href="#Persistent.Data_Bank.Reference">Reference</a></TD>
     <TD>Persistent storage references for proxy objects</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Handle">Handle</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Handle">Handle</a></TD>
     <TD>Handles to persistent storage objects</TD>
   </TR>
   <TR>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
     <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Handle.Factory">Factory</a></TD>
+    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Handle.Factory">Factory</a></TD>
     <TD>Persistent storage factory</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Memory_Pools">Memory_Pools</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Memory_Pools">Memory_Pools</a></TD>
     <TD>Persistent memory pool backed by a direct access file</TD>
   </TR>
   <TR>
-    <TD colspan="2" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" rowspan="5">&nbsp;</TD>
-    <TD colspan="7" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Memory_Pools.Streams">Streams</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8"><a href="#Persistent.Memory_Pools.Streams">Streams</a></TD>
     <TD>Stream interface to persistent memory pool </TD>
   </TR>
   <TR>
-    <TD colspan="3" style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0" rowspan="4">&nbsp;</TD>
-    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="3" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.Memory_Pools.Streams.External_B_Tree">External_B_Tree</a></TD>
     <TD>Persistent storage raw B-tree</TD>
   </TR>
   <TR>
-    <TD colspan="2" style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0">
-	&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="3" style="border-style:none; border-width:medium; " bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD colspan="3" style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
     <TD colspan="2" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.Memory_Pools.Streams.External_B_Tree.Generic_Table">
 	Generic_Table</a></TD>
     <TD>Persistent storage multi-keyed table</TD>
   </TR>
   <TR>
-    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="3" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.Memory_Pools.Streams.Generic_External_B_Tree">Generic_External_B_Tree</a></TD>
     <TD>Persistent storage B-tree</TD>
   </TR>
   <TR>
-    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="3" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.Memory_Pools.Streams.Generic_External_Ptr_B_Tree">Generic_External_Ptr_B_Tree</a></TD>
     <TD>Persistent storage pointer-valued B-tree</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Native_ODBC">Native_ODBC</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.Native_ODBC">Native_ODBC</a></TD>
     <TD>ODBC implementation of persistent storage</TD>
   </TR>
   <TR>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
     <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
+    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
     <TD>Text output of the ODBC persistent storage index</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.ODBC">ODBC</a></TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px"><a href="#Persistent.ODBC">ODBC</a></TD>
     <TD>GNADE ODBC implementation of persistent storage</TD>
   </TR>
   <TR>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
     <TD style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
+    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
     <TD>Text output of the GNADE ODBC persistent storage index</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.Single_File">Single_File</a></TD>
     <TD>Single file implementation of persistent storage</TD>
   </TR>
   <TR>
-    <TD colspan="2" style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="7" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="7" style="border-left-style: none; border-left-width: medium" bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
     <TD>Text output of the persistent storage index and underlying file 
 	structures</TD>
   </TR>
   <TR>
-    <TD colspan="9" style="border-left-style: solid; border-left-width: 1px">
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Persistent.SQLite">SQLite</a></TD>
     <TD>SQLite implementation of persistent storage</TD>
   </TR>
   <TR>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
     <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
+    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
     <TD>Text output of the SQLite persistent storage index</TD>
   </TR>
   <tr>
-    <TD colspan="15"><a href="#SQLite">SQLite</a></TD>
+    <TD colspan="21"><a href="#SQLite">SQLite</a></TD>
     <TD>Native bindings to SQLite</TD>
   </tr>
   <tr>
-    <TD colspan="15"><a href="#Stack_Storage">Stack_Storage</a></TD>
+    <TD colspan="21"><a href="#Stack_Storage">Stack_Storage</a></TD>
     <TD>The stack pools implemented by the type <a href="#Stack_Storage.Pool">
     Pool</a></TD>
   </tr>
 	<tr>
     <TD bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"><a href="#Stack_Storage.Mark_And_Release">Mark_And_Release</a></TD>
+    <TD colspan="20" style="border-left-style: solid; border-left-width: 1px"><a href="#Stack_Storage.Mark_And_Release">Mark_And_Release</a></TD>
     <TD>Mark and release storage pools of limited controlled objects</TD>
   </tr>
 	<tr>
-    <TD colspan="15"><a href="#Storage_Streams">Storage_Streams</a></TD>
+    <TD colspan="21"><a href="#Storage_Streams">Storage_Streams</a></TD>
     <TD>Memory-allocated streams</TD>
   </tr>
 	<tr>
-    <TD colspan="15"><a href="http://www.dmitry-kazakov.de/ada/strings_edit.htm#Strings_Edit">Strings_Edit</a></TD>
+    <TD colspan="21"><a href="http://www.dmitry-kazakov.de/ada/strings_edit.htm#Strings_Edit">Strings_Edit</a></TD>
     <TD>The packages dealing with strings editing as described in a separate
 	<a href="http://www.dmitry-kazakov.de/ada/strings_edit.htm">document</a></TD>
   </tr>
 	<tr>
     <TD bgcolor="#C0C0C0">&nbsp;</TD>
-    <TD colspan="14" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.Symmetric_Serialization">
+    <TD colspan="20" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.Symmetric_Serialization">
 	Symmetric_Serialization</a></TD>
     <TD>Symmetric encoding and decoding strings.</TD>
   </tr>
   <TR>
-    <TD colspan="15"> <a href="#Synchronization">Synchronization</a></TD>
+    <TD colspan="21"> <a href="#Synchronization">Synchronization</a></TD>
     <TD>The parent package of the locking synchronization primitives</TD>
   </TR>
   <TR>
-    <TD colspan="4" rowspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium"> &nbsp;</TD>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"> <a href="#Synchronization.Events">Events</a></TD>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="17"> <a href="#Synchronization.Events">Events</a></TD>
     <TD>Plain events which can be signaled, reset and awaited for</TD>
   </TR>
   <TR>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"> <a href="#Synchronization.Generic_Events_Array">
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="17"> <a href="#Synchronization.Generic_Events_Array">
 	Generic_Events_Array</a></TD>
     <TD>Arrays of events which can be signaled, reset and awaited in any 
 	combination of in race condition free way</TD>
   </TR>
   <TR>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"> <a href="#Synchronization.Generic_Mutexes_Array">
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="17"> <a href="#Synchronization.Generic_Mutexes_Array">
 	Generic_Mutexes_Array</a></TD>
     <TD>Arrays of reentrant mutexes, deadlock-free with an enforced order of 
 	locking</TD>
   </TR>
   <TR>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"> <a href="#Synchronization.Generic_Pulse_Events">
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="17"> <a href="#Synchronization.Generic_Pulse_Events">
 	Generic_Pulse_Events</a></TD>
     <TD>Race condition free event distributing pulsed value to multiple tasks</TD>
   </TR>
   <TR>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"> <a href="#Synchronization.Mutexes">Muexes</a></TD>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
+    <TD colspan="17"> <a href="#Synchronization.Mutexes">Muexes</a></TD>
     <TD>Reentrant mutexes</TD>
   </TR>
   <TR>
-    <TD colspan="11" style="border-left-style: solid; border-left-width: 1px"> <a href="#Synchronization.Pulse_Events">Pulse_Events</a></TD>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium"> &nbsp;</TD>
+    <TD colspan="17"> <a href="#Synchronization.Pulse_Events">Pulse_Events</a></TD>
     <TD>Race condition free pulse events</TD>
   </TR>
   <TR>
-    <TD colspan="15"> <a href="http://www.dmitry-kazakov.de/ada/tables.htm">Tables</a></TD>
+    <TD colspan="21"> <a href="http://www.dmitry-kazakov.de/ada/tables.htm">Tables</a></TD>
     <TD>The packages related to tables management as described in a separate
 	<a href="http://www.dmitry-kazakov.de/ada/tables.htm">document</a></TD>
   </TR>
   <TR>
     <TD colspan="2" bgcolor="#C0C0C0"> &nbsp;</TD>
-    <TD colspan="13" style="border-left-style: solid; border-left-width: 1px"> <a href="http://www.dmitry-kazakov.de/ada/tables.htm#Tables.UTF8_Names">UTF8_Names</a></TD>
+    <TD colspan="19" style="border-left-style: solid; border-left-width: 1px"> <a href="http://www.dmitry-kazakov.de/ada/tables.htm#Tables.UTF8_Names">UTF8_Names</a></TD>
     <TD>Tables of UTF-8 encoded case-insensitive items</TD>
   </TR>
   </TABLE>
@@ -30391,6 +31214,18 @@ Block_Streams</a></TD>
     <TD align="center">no</TD>
     <TD>Implementation of a custom HTTP server</TD>
     <TD align="center">&nbsp;</TD>
+  </tr>
+  <tr>
+    <TD>test_http_servers-secure</TD>
+    <TD align="center">no</TD>
+    <TD>Implementation of a custom secure HTTP server factory</TD>
+    <TD align="center">&nbsp;</TD>
+  </tr>
+  <tr>
+    <TD bgcolor="#FFFF99">test_https_server</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Test for HTTPS server</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
   </tr>
   <tr>
     <TD bgcolor="#FFFF99">test_ieee_754</TD>
@@ -30848,50 +31683,191 @@ Persistence packages based on the <a href="http://gnade.sourceforge.net/">GNADE
   project</a> and the APQ require the corresponding software installed. When the 
 Simple Components for Ada are installed using
 <a href="http://www.dmitry-kazakov.de/ada/gps_installer.htm">GPS Library 
-Installer</a> without GNADE or APQ or SQLite, then the installation of the corresponding 
+Installer</a> without GNADE, APQ, SQLite etc, then the installation of the corresponding 
 parts of the Simple Components will fail. These faults can be safely ignored 
 during the installation.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <TR>
-    <TD valign="top" bgcolor="#008080"><FONT color="#FFFFFF"><B>Project files</B></FONT></TD>
-    <TD valign="top" bgcolor="#008080"><FONT color="#FFFFFF"><B>Provides</B></FONT></TD>
-    <TD valign="top" bgcolor="#008080"><FONT color="#FFFFFF"><B>Use in custom 
+    <TD valign="top" bgcolor="#008080" rowspan="2"><FONT color="#FFFFFF"><B>Project files</B></FONT></TD>
+    <TD valign="top" bgcolor="#008080" colspan="10"><FONT color="#FFFFFF"><B>Provides</B></FONT></TD>
+    <TD valign="top" bgcolor="#008080" rowspan="2"><FONT color="#FFFFFF"><B>Use in custom 
 	project</B></FONT></TD>
   </TR>
   <TR>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">Simple Components,<br>
+	Strings Edit,<br>
+	Tables</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">Multiple 
+	connections server</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">HTTP server</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">Secure 
+	connections server</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">SQLite</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">ODBC</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">SQLite HTTP 
+	browser</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">GNUTLS</font></b></TD>
+    <TD valign="top" bgcolor="#008080"><font color="#FFFFFF"><b>GNADE </b>
+	(depreciated)</font></TD>
+    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">APQ</font></b><font color="#FFFFFF"><br>
+	(depreciated)</font></TD>
+  </TR>
+  <TR>
     <TD valign="top">components</TD>
-    <TD valign="top">Simple Components for Ada, Strings Edit for Ada, Tables for 
-	Ada</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components.gpr&quot;;</tt></TD>
   </TR>
   <TR>
     <TD valign="top">components-apq</TD>
-    <TD valign="top">Same as above with persistence support over APQ (<i>depreciated</i>)</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-apq.gpr&quot;;</tt></TD>
   </TR>
   <tr>
+    <TD valign="top">components-connections_server</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-connections_server.gpr&quot;;</tt></TD>
+  </tr>
+	<tr>
+    <TD valign="top">components-connections_server-http_server</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-connections_server-http-server.gpr&quot;;</tt></TD>
+  </tr>
+  <tr>
+    <TD valign="top">components-connections_server-http_server-sqlite_browser</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-connections_server-http-server-sqlite_browser.gpr&quot;;</tt></TD>
+  </tr>
+  <tr>
+    <TD valign="top">components-connections_server-secure</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-connections_server-secure.gpr&quot;;</tt></TD>
+  </tr>
+  <tr>
     <TD valign="top">components-gnade</TD>
-    <TD valign="top">Same as above with persistence support over <a href="http://gnade.sourceforge.net/">GNADE</a> 
-	(<i>depreciated</i>)</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-gnade.gpr&quot;;</tt></TD>
   </tr>
   <tr>
+    <TD valign="top">components-gnutls</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-gnutls.gpr&quot;;</tt></TD>
+  </tr>
+  <tr>
     <TD valign="top">components-odbc</TD>
-    <TD valign="top">Same as above with persistence support over native ODBC 
-	bindings</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-odbc.gpr&quot;;</tt></TD>
   </tr>
   <TR>
     <TD valign="top">components-sqlite</TD>
-    <TD valign="top">Same as above with persistence support over&nbsp;native <a href="http://www.sqlite.org/index.html">SQLite</a></TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-sqlite.gpr&quot;;</tt></TD>
@@ -30931,7 +31907,16 @@ The following versions were tested with the compilers:</i>
   <li><i>GNAT 4.9.0</i></li>
   </ul>
 <P>
-Changes () to the version 4.3:<ul>
+Changes (2015) to the version 4.4:<ul>
+	<li>Dynamically allocated terminated strings added in the package 
+	GNAT.Sockets.Connection_State_Machine.Terminated_Strings;</li>
+	<li>Input buffer size discriminant added to HTTP_Client connection object;</li>
+	<li>Tracing primitive operation extended for encoded/ciphered content;</li>
+	<li>GNUTLS bindings added;</li>
+	<li>Secure HTTP implementation added.</li>
+	</ul>
+<P>
+Changes (20 December 2014) to the version 4.3:<ul>
 	<li>URI scheme recognition added;</li>
 	<li>Get_Server_Address added to the connections server to allow limiting the 
 	addresses being listened;</li>
@@ -31586,13 +32571,15 @@ usage of the operation stack</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.4">15.6.4. ODBC connections</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.5">15.6.5. Transactions</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.6">15.6.6. ODBC commands</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.7">15.6.7. Binding parameters</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.7">15.6.7. Binding parameters</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#15.7">15.7. GNUTLS bindings</a><br>
 <hr>
 <b><big><big>16</big></big></b>&nbsp;<a href="#16"><big>Networking</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.1">16.1. Multiple TCP connections server</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.1.1">16.1.1. Multiple connection servers</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.1.2">16.1.2. Connection objects</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.1.3">16.1.3. Simple echo server sample</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.1.3">16.1.3. Secure servers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.1.4">16.1.4. Simple echo server sample</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.2">16.2. Connection state machine</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.1">16.2.1. State machine connection object</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.2">16.2.2. State machine 
@@ -31644,12 +32631,8 @@ selector</a><br>
 <hr>
 <b><big><big>19</big></big></b>&nbsp;<a href="#19"><big>Changes log</big></a>
 <hr>
-<b><big><big>20</big></big></b>&nbsp;<a href="#20"><big>Table of contents</big></a><br>
-</td>
+<b><big><big>20</big></big></b>&nbsp;<a href="#20"><big>Table of contents</big></a></td>
 </tr>
 </table>
-<p>&nbsp;</p>
-<P>
-&nbsp;
 </BODY>
 </HTML>

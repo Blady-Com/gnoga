@@ -3,7 +3,7 @@
 --     Test_WebSocket_Servers                      Luebeck            --
 --  Test WebSocket                                 Winter, 2014       --
 --  Interface                                                         --
---                                Last revision :  13:01 14 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -38,6 +38,7 @@ package Test_WebSocket_Servers is
 --
    type Chat_Factory
         (  Request_Length  : Positive;
+           Input_Size      : Buffer_Length;
            Output_Size     : Buffer_Length;
            Max_Connections : Positive
         )  is new Connections_Factory with null record;

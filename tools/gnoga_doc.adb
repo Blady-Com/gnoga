@@ -43,6 +43,7 @@ with Ada.Strings.Unbounded;
 
 with Gnoga;
 with Gnoga.Server.Template_Parser.Simple;
+with Gnoga.Types;
 
 with Gnoga_Doc.Token; use Gnoga_Doc.Token;
 
@@ -53,9 +54,51 @@ package body Gnoga_Doc is
    procedure Parse_Elements (S : String);
 
    procedure Parse_Elements (S : String) is
+      P : Integer := S'First;
+
+      Names : Gnoga.Types.Data_Array_Type;
    begin
-      -- Put_Line ("{" & S & "}");
-      null;
+      while P <= S'Last loop
+
+         while S (P) /= ':' loop
+            Get_To_EOS (S, P);
+            Names.Prepend (Token_Name (S, P));
+            Get_To_EOT (S, P);
+            Get_To_EOS (S, P);
+
+            if S (P) = ',' then
+               P := P + 1;
+            end if;
+         end loop;
+
+         P := P + 1;
+         Get_To_EOS (S, P);
+
+         loop
+            declare
+               Type_Info : String := Token_Name (S, P);
+            begin
+               if Type_Info = "in" or
+                 Type_Info = "out" or
+                 Type_Info = "access"
+               then
+                  Put (Type_Info & " ");
+                  Get_To_Next_Token (S, P);
+               else
+                  for i in Names.First_Index .. Names.Last_Index loop
+                     Put_Line (Names.Element (i) & " : " & Type_Info);
+                  end loop;
+
+                  Names.Clear;
+                  exit;
+               end if;
+            end;
+         end loop;
+
+         Get_To_Semicolon (S, P);
+         P := P + 1;
+         Get_To_EOS (S, P);
+      end loop;
    end Parse_Elements;
 
    procedure Parse (File_Name : String) is

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine       Luebeck            --
 --  Interface                                      Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -50,8 +50,7 @@ package GNAT.Sockets.Connection_State_Machine is
 -- should contain a set of fields with the types derived from Data_Item.
 -- These objects will be read automatically in their order.
 --
-   type State_Machine is
-      abstract new Connection with private;
+   type State_Machine is abstract new Connection with private;
 --
 -- Connected -- Overrides Connections_Server...
 --

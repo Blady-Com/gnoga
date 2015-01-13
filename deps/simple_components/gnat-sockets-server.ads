@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  23:36 14 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,6 +39,15 @@ package GNAT.Sockets.Server is
    subtype Buffer_Length is
       Stream_Element_Offset range 1..Stream_Element_Offset'Last;
 --
+-- IO_Tracing_Mode -- Tracing incoming and outgoing data
+--
+   type IO_Tracing_Mode is
+        (  Trace_None,    -- Don't trace anything
+           Trace_Encoded, -- Trace encoded/ciphered data
+           Trace_Any,     -- Trace all data
+           Trace_Decoded  -- Trace plain data
+        );
+--
 -- Connection -- To derive custom object handling a client connection
 --
 --    Input_Size  - Input buffer size
@@ -61,6 +70,14 @@ package GNAT.Sockets.Server is
 --
    type Connections_Factory is abstract
       new Ada.Finalization.Limited_Controlled with private;
+--
+-- Encoder -- The transport layer, connection is encoded/ciphered
+--
+--    Size - The decoded content buffer size
+--
+   type Encoder (Size : Buffer_Length) is abstract
+      new Ada.Finalization.Limited_Controlled with private;
+   type Encoder_Ptr is access all Encoder'Class;
 --
 -- Server -- To derive a custom multiple connections server from
 --
@@ -104,6 +121,11 @@ package GNAT.Sockets.Server is
 -- The default  implementation  does nothing.  Typically  the server may
 -- set some socket options here.
 --
+-- Exceptions :
+--
+--    Connection_Error - Is propagated when decided to refuse connection
+--    other            - Other errors
+--
    procedure Connected (Client : in out Connection);
 --
 -- Create -- Client connection object
@@ -130,6 +152,28 @@ package GNAT.Sockets.Server is
                From     : Sock_Addr_Type
             )  return Connection_Ptr is abstract;
 --
+-- Create_Transport -- Client connection object
+--
+--    Factory  - The factory object
+--    Listener - The server object
+--    Client   - The client for which the transport is created
+--
+-- This function is  called after  accepting connection from a client to
+-- setup  transport  if  enoding/ciphering  is  required.  The  returned
+-- object is owned by the server, it is finalized and freed when no more
+-- used.   The  default  implementation  returns  null  to  indicate  no
+-- encoding.
+--
+-- Returns :
+--
+--    Pointer to the encoder object or null
+--
+   function Create_Transport
+            (  Factory  : access Connections_Factory;
+               Listener : access Connections_Server'Class;
+               Client   : access Connection'Class
+            )  return Encoder_Ptr;
+--
 -- Disconnected -- Server notification about client disconnection
 --
 --    Listener - The server object
@@ -141,6 +185,24 @@ package GNAT.Sockets.Server is
              (  Listener : in out Connections_Server;
                 Client   : in out Connection'Class
              );
+--
+-- Encode -- Encode and send
+--
+--    Transport - The transport object
+--    Client    - The client connection object
+--    Data      - To encode
+--    Last      - The last element encoded
+--
+-- This procedure  is called  when  the  transport  encoder is set.  The
+-- implementation  must  encode  a portion  of  Data  and send it to the
+-- client. Last is set to the last encoded element.
+--
+   procedure Encode
+             (  Transport : in out Encoder;
+                Client    : in out Connection'Class;
+                Data      : Stream_Element_Array;
+                Last      : out Stream_Element_Offset
+             )  is abstract;
 --
 -- Finalize -- Destruction
 --
@@ -302,25 +364,31 @@ package GNAT.Sockets.Server is
 --
 -- Is_Trace_Received_On -- Tracing state
 --
---    Factory  - The factory object
+--    Factory - The factory object
+--    Encoded - The type of content trace to check
 --
 -- Returns :
 --
 --    True if tracing received data is on
 --
-   function Is_Trace_Received_On (Factory : Connections_Factory)
-      return Boolean;
+   function Is_Trace_Received_On
+            (  Factory : Connections_Factory;
+               Encoded : IO_Tracing_Mode
+            )  return Boolean;
 --
 -- Is_Trace_Sent_On -- Tracing state
 --
---    Factory  - The factory object
+--    Factory - The factory object
+--    Encoded - The type of content trace to check
 --
 -- Returns :
 --
 --    True if tracing sent data is on
 --
-   function Is_Trace_Sent_On (Factory : Connections_Factory)
-      return Boolean;
+   function Is_Trace_Sent_On
+            (  Factory : Connections_Factory;
+               Encoded : IO_Tracing_Mode
+            )  return Boolean;
 --
 -- Keep_On_Sending -- Delay stopping sending
 --
@@ -331,6 +399,23 @@ package GNAT.Sockets.Server is
 -- content to send is about to come.
 --
    procedure Keep_On_Sending (Client : in out Connection);
+--
+-- Process -- Encoded data processing
+--
+--    Transport - The encoder object
+--    Listener  - The server object
+--    Client    - The connection client
+--    Data_Left - Unprocessed encoded input left
+--
+-- This  procedure  is called  to handle  a portion  of incoming encoded
+-- data.
+--
+   procedure Process
+             (  Transport : in out Encoder;
+                Listener  : in out Connections_Server'Class;
+                Client    : in out Connection'Class;
+                Data_Left : out Boolean
+             )  is abstract;
 --
 -- Process_Packet -- Packet processing
 --
@@ -588,6 +673,21 @@ package GNAT.Sockets.Server is
                 Message : String
              );
 --
+-- Trace_Error -- Error tracing
+--
+--    Factory    - The factory object
+--    Context    - Text description of the error context
+--    Occurrence - The error occurrence
+--
+-- This procedure  is called when  an unanticipated exception is caught.
+-- The default implementation calls to Trace.
+--
+   procedure Trace_Error
+             (  Factory    : in out Connections_Factory;
+                Context    : String;
+                Occurrence : Exception_Occurrence
+             );
+--
 -- Trace_Off -- Disable tracing
 --
 --    Factory - The factory object
@@ -602,8 +702,8 @@ package GNAT.Sockets.Server is
 --
    procedure Trace_On
              (  Factory  : in out Connections_Factory;
-                Received : Boolean := False;
-                Sent     : Boolean := False
+                Received : IO_Tracing_Mode := Trace_None;
+                Sent     : IO_Tracing_Mode := Trace_None
              );
 --
 -- Trace_On -- Enable tracing onto a file
@@ -623,23 +723,8 @@ package GNAT.Sockets.Server is
    procedure Trace_On
              (  Factory  : in out Connections_Factory;
                 Name     : String;
-                Received : Boolean := False;
-                Sent     : Boolean := False
-             );
---
--- Trace_Error -- Error tracing
---
---    Factory    - The factory object
---    Context    - Text description of the error context
---    Occurrence - The error occurrence
---
--- This procedure  is called when  an unanticipated exception is caught.
--- The default implementation calls to Trace.
---
-   procedure Trace_Error
-             (  Factory    : in out Connections_Factory;
-                Context    : String;
-                Occurrence : Exception_Occurrence
+                Received : IO_Tracing_Mode := Trace_None;
+                Sent     : IO_Tracing_Mode := Trace_None
              );
 --
 -- Trace_Received -- Tracing facility
@@ -649,6 +734,7 @@ package GNAT.Sockets.Server is
 --    Data    - The client's input buffer
 --    From    - The first element received in the buffer
 --    To      - The last element received in the buffer
+--    Encoded - True if Data is encoded/ciphered
 --
 -- This procedure  is called when  tracing incoming data is active.  The
 -- default implementation calls to Trace.
@@ -658,7 +744,8 @@ package GNAT.Sockets.Server is
                 Client  : Connection'Class;
                 Data    : Stream_Element_Array;
                 From    : Stream_Element_Offset;
-                To      : Stream_Element_Offset
+                To      : Stream_Element_Offset;
+                Encoded : Boolean := False
              );
 --
 -- Trace_Sending -- Tracing facility
@@ -687,6 +774,7 @@ package GNAT.Sockets.Server is
 --    Data    - The client's output buffer
 --    From    - The first element sent in the buffer
 --    To      - The last element sent in the buffer
+--    Encoded - True if Data is encoded/ciphered
 --
 -- This procedure is called when tracing outgoing data is active. The
 -- default implementation calls to Trace.
@@ -696,7 +784,8 @@ package GNAT.Sockets.Server is
                 Client  : Connection'Class;
                 Data    : Stream_Element_Array;
                 From    : Stream_Element_Offset;
-                To      : Stream_Element_Offset
+                To      : Stream_Element_Offset;
+                Encoded : Boolean := False
              );
 --
 -- To_String -- Conversion to string
@@ -716,7 +805,35 @@ package GNAT.Sockets.Server is
 --
 -- Internal low-level socket I/O operations
 --
--- Read -- Socket read
+--
+-- Process -- Input data processing
+--
+--    Listener  - The server
+--    Client    - The client connection to handle
+--    Data_Left - Unprocessed input left
+--
+-- This procedure  is used internally  to handle a portion  of  incoming
+-- data. The implementation is aware of the transport encoding.
+--
+   procedure Process
+             (  Listener  : in out Connections_Server;
+                Client    : Connection_Ptr;
+                Data_Left : out Boolean
+             );
+--
+-- Push -- Transport direct write
+--
+--    Client  - The client
+--    Data    - To send
+--    Last    - The last element sent
+--
+   procedure Push
+             (  Client : in out Connection;
+                Data   : Stream_Element_Array;
+                Last   : out Stream_Element_Offset
+             );
+--
+-- Read -- Socket buffered read
 --
 --    Client  - The client
 --    Factory - The factory object
@@ -724,18 +841,6 @@ package GNAT.Sockets.Server is
    procedure Read
              (  Client  : in out Connection;
                 Factory : in out Connections_Factory'Class
-             );
---
--- Write -- Socket write
---
---    Client  - The client
---    Factory - The factory object
---    Blocked - Nothing to send, should block writing
---
-   procedure Write
-             (  Client  : in out Connection;
-                Factory : in out Connections_Factory'Class;
-                Blocked : out Boolean
              );
 --
 -- Set_Failed -- Mark connection as failed
@@ -750,45 +855,172 @@ package GNAT.Sockets.Server is
              (  Client : in out Connection;
                 Error  : Exception_Occurrence
              );
+--
+-- Write -- Socket buffered write
+--
+--    Client  - The client
+--    Factory - The factory object
+--    Blocked - Nothing to send, should block writing
+--
+   procedure Write
+             (  Client  : in out Connection;
+                Factory : in out Connections_Factory'Class;
+                Blocked : out Boolean
+             );
 private
    pragma Inline (Available_To_Process);
    pragma Inline (Available_To_Send);
    pragma Inline (Has_Data);
    pragma Inline (Queued_To_Send);
-
+------------------------------------------------------------------------
+--
+-- Input_Buffer -- Input ring buffer
+--
+--    Size - Buffer size
+--
+   type Input_Buffer (Size : Buffer_Length) is record
+      Expected     : Stream_Element_Offset := 0;
+      First_Read   : Stream_Element_Offset := 0;
+      Free_To_Read : Stream_Element_Offset := 0;
+      Read         : Stream_Element_Array (0..Size);
+      pragma Atomic (First_Read);
+      pragma Atomic (Free_To_Read);
+   end record;
+--
+-- Has_Data -- Buffer has data
+--
+--    Buffer - The buffer
+--
+-- Returns :
+--
+--    True if the buffer contains data and not blocked
+--
+   function Has_Data (Buffer : Input_Buffer) return Boolean;
+--
+-- Process -- Data from the buffer
+--
+--    Buffer    - The buffer
+--    Receiver  - The data consumer (its Receive is called)
+--    Data_Left - Set to True if some data are left in the buffer
+--
+   procedure Process
+             (  Buffer    : in out Input_Buffer;
+                Receiver  : in out Connection'Class;
+                Data_Left : out Boolean
+             );
+--
+-- Pull -- Get data from the buffer
+--
+--    Buffer  - The buffer
+--    Data    - To store extracted data
+--    Pointer - The first position to store data, advanced
+--
+   procedure Pull
+             (  Buffer  : in out Input_Buffer;
+                Data    : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             );
+--
+-- Used -- Number of elements stored in the buffer
+--
+--    Buffer - The buffer
+--
+-- Returns :
+--
+--    Number of elements
+--
+   function Used (Buffer : Input_Buffer) return Stream_Element_Count;
+------------------------------------------------------------------------
+   type Output_Buffer (Size : Buffer_Length) is record
+      First_Written : Stream_Element_Offset := 0;
+      Free_To_Write : Stream_Element_Offset := 0;
+      Send_Blocked  : Boolean := False;
+      Written       : Stream_Element_Array (0..Size);
+      pragma Atomic (First_Written);
+      pragma Atomic (Free_To_Write);
+      pragma Atomic (Send_Blocked);
+   end record;
+--
+-- Fill_From_Stream -- Store stream output into the buffer
+--
+--    Buffer  - The buffer
+--    Count   - Maximal number of elements to store
+--    Reserve - Number of elements to reserve
+--    Last    - Points to the last written element
+--    Next    - Points to the element next to the last written
+--    Done    - True if end of stream was reached
+--
+   procedure Fill_From_Stream
+             (  Buffer  : in out Output_Buffer;
+                Stream  : in out Root_Stream_Type'Class;
+                Count   : Stream_Element_Count;
+                Reserve : Stream_Element_Count;
+                Last    : out Stream_Element_Offset;
+                Next    : out Stream_Element_Offset;
+                Done    : out Boolean
+             );
+--
+-- Free -- Number of free elements in the buffer
+--
+--    Buffer - The buffer
+--
+-- Returns :
+--
+--    Number of elements
+--
+   function Free (Buffer : Output_Buffer) return Stream_Element_Count;
+--
+-- Store -- Elements into the buffer
+--
+--    Buffer  - The buffer
+--    Data    - The data to store
+--    Pointer - The first item to store, advanced
+--    Unblock - Is set to True if some elements were stored
+--
+-- Returns :
+--
+--    Number of elements
+--
+   procedure Store
+             (  Buffer  : in out Output_Buffer;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Unblock : out Boolean
+             );
+--
+-- Used -- Number of elements stored in the buffer
+--
+--    Buffer - The buffer
+--
+-- Returns :
+--
+--    Number of elements
+--
+   function Used (Buffer : Output_Buffer) return Stream_Element_Count;
+------------------------------------------------------------------------
    type Connections_Server_Ptr is access all Connections_Server'Class;
    type Connection
         (  Input_Size  : Buffer_Length;
            Output_Size : Buffer_Length
         )  is abstract new Object.Entity with
    record
-      Socket           : Socket_Type := No_Socket;
-      Overlapped_Read  : Stream_Element_Count  := 0;
-      Expected         : Stream_Element_Offset := 0;
-      First_Read       : Stream_Element_Offset := 0;
-      First_Written    : Stream_Element_Offset := 0;
-      Free_To_Read     : Stream_Element_Offset := 0;
-      Free_To_Write    : Stream_Element_Offset := 0;
-      Failed           : Boolean := False;
-      External_Action  : Boolean := False;
-      Data_Sent        : Boolean := False;
-      Send_Blocked     : Boolean := False;
-      Dont_Block       : Boolean := False;
-      Predecessor      : Connection_Ptr;
-      Successor        : Connection_Ptr;
-      Listener         : Connections_Server_Ptr;
-      Last_Error       : Exception_Occurrence;
-      Client_Address   : Sock_Addr_Type;
-      Read             : Stream_Element_Array (0..Input_Size);
-      Written          : Stream_Element_Array (0..Output_Size);
+      Socket          : Socket_Type := No_Socket;
+      Overlapped_Read : Stream_Element_Count  := 0;
+      Failed          : Boolean := False;
+      External_Action : Boolean := False;
+      Data_Sent       : Boolean := False;
+      Dont_Block      : Boolean := False;
+      Predecessor     : Connection_Ptr;
+      Successor       : Connection_Ptr;
+      Listener        : Connections_Server_Ptr;
+      Transport       : Encoder_Ptr;
+      Last_Error      : Exception_Occurrence;
+      Client_Address  : Sock_Addr_Type;
+      Read            : Input_Buffer  (Input_Size);
+      Written         : Output_Buffer (Output_Size);
 
       pragma Atomic (Data_Sent);
       pragma Atomic (Failed);
-      pragma Atomic (First_Read);
-      pragma Atomic (First_Written);
-      pragma Atomic (Free_To_Read);
-      pragma Atomic (Free_To_Write);
-      pragma Atomic (Send_Blocked);
       pragma Atomic (Dont_Block);
    end record;
 --
@@ -802,20 +1034,6 @@ private
    procedure Data_Sent
              (  Listener : in out Connections_Server;
                 Client   : Connection_Ptr
-             );
---
--- Process -- Input data processing
---
---    Listener  - The server object
---    Client    - The client connection to handle
---    Data_Left - Unprocessed input left
---
--- This procedure is used internally to handle incoming data.
---
-   procedure Process
-             (  Listener  : in out Connections_Server;
-                Client    : Connection_Ptr;
-                Data_Left : out Boolean
              );
 
    procedure Queue
@@ -854,17 +1072,26 @@ private
    task type Worker (Listener : access Connections_Server'Class);
    type Worker_Ptr is access Worker;
 
+   type Factory_Flags is mod 2**5;
+   Standard_Output        : constant Factory_Flags := 2**0;
+   Trace_Encoded_Sent     : constant Factory_Flags := 2**1;
+   Trace_Decoded_Sent     : constant Factory_Flags := 2**2;
+   Trace_Encoded_Received : constant Factory_Flags := 2**3;
+   Trace_Decoded_Received : constant Factory_Flags := 2**4;
+
    type Connections_Factory is abstract
       new Ada.Finalization.Limited_Controlled with
    record
-      Standard_Output : Boolean := False;
-      Trace_Sent      : Boolean := False;
-      Trace_Received  : Boolean := False;
-      Trace_File      : Ada.Text_IO.File_Type;
+      Trace_Flags : Factory_Flags := 0;
+      Trace_File  : Ada.Text_IO.File_Type;
 
-      pragma Atomic (Standard_Output);
-      pragma Atomic (Trace_Sent);
-      pragma Atomic (Trace_Received);
+      pragma Atomic (Trace_Flags);
+   end record;
+
+   type Encoder (Size : Buffer_Length) is abstract
+      new Ada.Finalization.Limited_Controlled with
+   record
+      Buffer  : Input_Buffer (Size);
    end record;
 
    type Connections_Server
@@ -900,6 +1127,12 @@ private
                 Count : in out Integer
              );
    pragma Inline (Append);
+   pragma Inline (Available_To_Process);
+   pragma Inline (Available_To_Send);
+   pragma Inline (Has_Data);
+   pragma Inline (Free);
+   pragma Inline (Queued_To_Send);
    pragma Inline (Remove);
+   pragma Inline (Used);
 
 end GNAT.Sockets.Server;

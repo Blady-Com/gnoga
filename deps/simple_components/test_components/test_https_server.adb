@@ -1,7 +1,7 @@
 --                                                                    --
---  procedure Test_HTTP_Server      Copyright (c)  Dmitry A. Kazakov  --
---  HTTP server test                               Luebeck            --
---                                                 Winter, 2013       --
+--  procedure Test_HTTPS_Server     Copyright (c)  Dmitry A. Kazakov  --
+--  HTTPS server test                              Luebeck            --
+--                                                 Winter, 2015       --
 --                                                                    --
 --                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
@@ -25,40 +25,71 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;              use Ada.Exceptions;
-with Ada.Text_IO;                 use Ada.Text_IO;
---with GNAT.Exception_Traces;       use GNAT.Exception_Traces;
-with Test_HTTP_Servers;           use Test_HTTP_Servers;
+with Ada.Exceptions;            use Ada.Exceptions;
+with Ada.Text_IO;               use Ada.Text_IO;
+--with GNAT.Exception_Traces;     use GNAT.Exception_Traces;
+with Test_HTTP_Servers.Secure;  use Test_HTTP_Servers.Secure;
 
 with GNAT.Sockets.Server.Pooled;
+with GNAT.Sockets.Server.Secure.Anonymous;
+with GNAT.Sockets.Server.Secure.X509;
+with GNUTLS;
 
-procedure Test_HTTP_Server is
+procedure Test_HTTPS_Server is
    Minutes : constant := 3.0; -- * 60.0 * 24.0 * 10.0;
-   Port    : constant := 80;
+   Port    : constant := 443;
    Tasks   : constant := 5;
 begin
 -- Trace_On (Every_Raise);
+   GNUTLS.Set_TLS_Debug (5);
    declare
-      Factory : aliased Test_HTTP_Factory
+--        Factory : aliased Anonymous_HTTPS_Factory
+--                          (  Request_Length  => 200,
+--                             Input_Size      => 40,
+--                             Output_Size     => 1024,
+--                             Decoded_Size    => 40,
+--                             Max_Connections => 100
+--                          );
+      Factory : aliased X509_HTTPS_Factory
                         (  Request_Length  => 200,
-                           Input_Size      => 1024,
+                           Input_Size      => 40,
                            Output_Size     => 1024,
+                           Decoded_Size    => 40,
                            Max_Connections => 100
                         );
---    Server  : GNAT.Sockets.Server.Pooled.Pooled_Server (Factory'Access, Port, Tasks);
-      Server  : GNAT.Sockets.Server.
-                Connections_Server (Factory'Access, Port);
    begin
+      Add_System_Trust (Factory);
+      Add_Key_From_PEM_File
+      (  Factory          => Factory,
+         Certificate_File => "test.cert.pem",
+         Key_File         => "test.key.pem"
+      );
+      Generate_Diffie_Hellman_Parameters (Factory);
       Trace_On
       (  Factory  => Factory,
-         Received => GNAT.Sockets.Server.Trace_Decoded,
-         Sent     => GNAT.Sockets.Server.Trace_Decoded
+         Received => GNAT.Sockets.Server.Trace_Any,
+         Sent     => GNAT.Sockets.Server.Trace_Any
       );
-      Put_Line ("HTTP server started");
-      delay 60.0 * Minutes; -- Service
-      Put_Line ("HTTP server stopping");
+      Set_TLS_Tracing
+      (  Factory => Factory,
+         Session => True,
+         Decoded => True
+      );
+      declare
+--           Server  : GNAT.Sockets.Server.Pooled.Pooled_Server
+--                     (  Factory'Access,
+--                        Port,
+--                        Tasks
+--                     );
+         Server  : GNAT.Sockets.Server.
+                   Connections_Server (Factory'Access, Port);
+      begin
+         Put_Line ("HTTP server started");
+         delay 60.0 * Minutes; -- Service
+         Put_Line ("HTTP server stopping");
+      end;
    end;
 exception
    when Error : others =>
       Put_Line ("Error: " & Exception_Information (Error));
-end Test_HTTP_Server;
+end Test_HTTPS_Server;

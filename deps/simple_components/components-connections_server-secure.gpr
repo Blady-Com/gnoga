@@ -1,0 +1,17 @@
+with "components.gpr";
+with "components-connections_server.gpr";
+with "components-gnutls.gpr";
+
+project Components.Connections_Server.Secure is
+
+   for Source_Files use
+       (  "gnat-sockets-server-secure.adb",
+          "gnat-sockets-server-secure.ads",
+          "gnat-sockets-server-secure-anonymous.adb",
+          "gnat-sockets-server-secure-anonymous.ads",
+          "gnat-sockets-server-secure-x509.adb",
+          "gnat-sockets-server-secure-x509.ads"
+       );
+
+end Components.Connections_Server.Secure;
+

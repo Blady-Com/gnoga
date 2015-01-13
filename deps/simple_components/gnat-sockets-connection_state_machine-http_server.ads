@@ -1,9 +1,9 @@
 --                                                                    --
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
---     HTTP server                                 Winter, 2013       --
+--     HTTP_Server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  23:36 14 Dec 2014  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -249,6 +249,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --
 --    Listener       - The connection object
 --    Request_Length - The maximum length of one request line
+--    Input_Size     - The input buffer size
 --    Output_Size    - The output buffer size
 --
 -- The output  buffer  size should  be large  enough  to accommodate all
@@ -260,6 +261,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    type HTTP_Client
         (  Listener       : access Connections_Server'Class;
            Request_Length : Positive;
+           Input_Size     : Buffer_Length;
            Output_Size    : Buffer_Length
         )  is new State_Machine with private;
 --
@@ -1508,8 +1510,9 @@ private
    type HTTP_Client
         (  Listener       : access Connections_Server'Class;
            Request_Length : Positive;
+           Input_Size     : Buffer_Length;
            Output_Size    : Buffer_Length
-        )  is new State_Machine (80, Output_Size) with
+        )  is new State_Machine (Input_Size, Output_Size) with
    record
       Expecting    : Request_Line_Type    := Request_Line;
       Data_Length  : Stream_Element_Count := 0;
@@ -1544,17 +1547,20 @@ private
          --
       Ranges    : Content_Ranges.Set;    -- Request ranges
       Suffix    : Stream_Element_Offset := Stream_Element_Offset'First;
-      Line      : String_Data_Item (Request_Length, Character'Val (13));
-      LF        : Expected_Item (1);
-      Status    : Status_Line_Ptr;
-      Part_Mark : Text_Ptr;               -- Mark of part headers
-      Headers   : Request_Header_Array;   -- Request headers
-      Multipart : Multipart_Header_Array; -- Part headers
-      Specific  : Specific_Header_Array;  -- Specific headers
-      Content   : aliased Content_Stream;
-      CGI       : aliased CGI_Content (HTTP_Client'Unchecked_Access);
-      Pool      : Data_Pool (0, 4);
-      Mutex     : aliased Send_Mutex (HTTP_Client'Unchecked_Access);
+
+         -- Parsed line, CR LF terminated
+      Line         : Dynamic_String_Data_Item;
+      LF           : Expected_Item (1);
+
+      Status       : Status_Line_Ptr;
+      Part_Mark    : Text_Ptr;               -- Mark of part headers
+      Headers      : Request_Header_Array;   -- Request headers
+      Multipart    : Multipart_Header_Array; -- Part headers
+      Specific     : Specific_Header_Array;  -- Specific headers
+      Body_Content : aliased Content_Stream;
+      CGI          : aliased CGI_Content (HTTP_Client'Unchecked_Access);
+      Pool         : Data_Pool (0, 4);
+      Mutex        : aliased Send_Mutex (HTTP_Client'Unchecked_Access);
       pragma Atomic (Expecting);
    end record;
 
@@ -1585,6 +1591,10 @@ private
    procedure Queue_Content
              (  Client : in out HTTP_Client;
                 Data   : String
+             );
+   procedure Set_Failed
+             (  Client : in out HTTP_Client;
+                Error  : Exception_Occurrence
              );
    procedure Write
              (  Client  : in out HTTP_Client;

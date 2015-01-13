@@ -141,6 +141,7 @@ clean:
 	cd test && $(CLEANER) -Ptest.gpr
 	cd demo/snake && $(CLEANER) -Psnake.gpr
 	cd demo/mine_detector && $(CLEANER) -Pmine_detector.gpr
+	cd demo/chattanooga && $(CLEANER) -Pchattanooga.gpr
 	cd demo/adablog && $(CLEANER) -Padablog.gpr
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr

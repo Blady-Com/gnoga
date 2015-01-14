@@ -147,10 +147,13 @@ openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.ke
     SSLEngine on
     SSLCertificateFile /home/dbotton/workspace/ssl/server.crt
     SSLCertificateKeyFile /home/dbotton/workspace/ssl/server.key
+    SSLCertificateChainFile /home/dbotton/workspace/ssl/intermediate_certs.crt
 
     ProxyPass /gnoga ws://127.0.0.1:8080/gnoga
     ProxyPass / http://127.0.0.1:8080/
     ProxyPassReverse / http://127.0.0.1:8080/
 </VirtualHost>
+
+If you purchase your SSL certs from a CA that is lower tier you will need their intermediate certificate to validate their authority back to one of the main CAs. This is common for the less expensive SSL certs sold. This will also not be needed if using self generated certifcates for testing.
 
 Now https://snake.gnoga.com/secure.html will be a secure connection.

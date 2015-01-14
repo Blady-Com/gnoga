@@ -42,5 +42,9 @@ package Gnoga.Server.Connection.Secure is
       Key_File         : String;
       Port             : Integer := 443;
       Disable_Insecure : Boolean := False);
+   --  Register_Secure_Server should be called before the Initilize is
+   --  called on the application. Your gpr project file should have:
+   --  with "..path_to_gnoga_ssl../gnoga_secure.gpr";
+   --  Once called an https listener will be set on Port
 
 end Gnoga.Server.Connection.Secure;

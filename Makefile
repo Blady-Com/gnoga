@@ -47,7 +47,7 @@ endif
 endif
 endif
 
-all: gnoga gnoga_tools snake mine_detector chattanooga tutorials 
+all: gnoga gnoga_tools snake mine_detector tutorials chattanooga 
 
 setup:
 ifeq (${PRJ_TARGET}, Windows)

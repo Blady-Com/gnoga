@@ -57,6 +57,22 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                                       "abcdefghijklmnopqrstuvwxyz"
                                    );
 
+   function From_Digest (Data : Message_Digest) return String is
+      Result  : String (1..Data'Length / 2);
+      Pointer : Integer := Data'First;
+   begin
+      for Index in Result'Range loop
+         Result (Index) :=
+            Character'Val
+            (  Strings_Edit.Integers.Value
+               (  Source => Data (Pointer..Pointer + 1),
+                  Base   => 16
+            )  );
+         Pointer := Pointer + 2;
+      end loop;
+      return Result;
+   end From_Digest;
+
    function To_String (Data : Stream_Element_Array) return String is
       Result : String (1..Data'Length);
    begin
@@ -620,14 +636,13 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             (  Client,
                (  "Sec-WebSocket-Accept: "
                &  To_Base64
-                  (  To_String
-                     (  Stream_Element_Array'
-                        (  Digest
-                           (  To_Base64
-                              (  Get_Header (Client, Sec_WebSocket_Key)
-                              )
-                           &  "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
-                  )  )  )  )
+                  (  From_Digest
+                     (  Digest
+                        (  To_Base64
+                           (  Get_Header (Client, Sec_WebSocket_Key)
+                           )
+                        &  "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+                  )  )  )
                &  CRLF
             )  );
             if Result.Protocols = "" then

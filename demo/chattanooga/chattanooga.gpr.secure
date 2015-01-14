@@ -1,0 +1,18 @@
+with "../../src/gnoga.gpr";
+with "../../ssl/gnoga_secure.gpr";
+
+project Chattanooga is
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use "../../obj";
+   for Exec_Dir use "../../bin";
+   for Main use ("chattanooga-program.adb");
+
+   package Binder is
+      for Default_Switches ("ada") use ("-E");
+   end Binder;
+
+   package Builder is
+      for Executable ("chattanooga-program.adb") use "chattanooga";
+   end Builder;
+end Chattanooga;

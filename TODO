@@ -14,7 +14,7 @@ DONE - 5. https/ssl websockets via proxy
 To Do 1.1 or later:
 
 1. Complete SVG DOM bindings
-2. https/ssl direct support (I've put in a feature request with Dmitry)
+DONE - 2. https/ssl direct support
 3. Direct connection to webkit via API instead of sockets for Gtk and Mac
 4. Windows native
 5. Database linked controls
@@ -26,5 +26,5 @@ To Do 1.1 or later:
 Some Ideas:
 
 1. Install maker GUI installs using Gnoga
-2. Documentation generator from Ada specs resulting in a Gnoga reference app
+Gnoga_Doc - 2. Documentation generator from Ada specs resulting in a Gnoga reference app
 

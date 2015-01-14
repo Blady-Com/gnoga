@@ -143,8 +143,10 @@ tutorials:
 
 clean:
 	cd src && $(CLEANER) -r -Pgnoga.gpr
+	cd ssl && $(CLEANER) -r -Pgnoga_secure.gpr
 	cd tools && $(CLEANER) -Ptools.gpr
 	cd test && $(CLEANER) -Ptest.gpr
+	cd test_ssl && $(CLEANER) -Ptest_ssl.gpr
 	cd demo/snake && $(CLEANER) -Psnake.gpr
 	cd demo/mine_detector && $(CLEANER) -Pmine_detector.gpr
 	cd demo/chattanooga && $(CLEANER) -Pchattanooga.gpr

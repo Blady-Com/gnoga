@@ -40,7 +40,6 @@ package Gnoga.Server.Connection.Secure is
    procedure Register_Secure_Server
      (Certificate_File : String;
       Key_File         : String;
-      Boot             : String  := "secure.html";
       Port             : Integer := 443;
       Disable_Insecure : Boolean := False);
 

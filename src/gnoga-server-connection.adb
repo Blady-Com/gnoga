@@ -50,39 +50,15 @@ with Gnoga.Server.Mime;
 with Strings_Edit.Quoted;
 with GNAT.Sockets.Server; use GNAT.Sockets.Server;
 with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
+use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
 with Ada.Text_IO;
 with Ada.Streams.Stream_IO;
+
+with Gnoga.Server.Connection.Common; use Gnoga.Server.Connection.Common;
 
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Unique_ID;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
-
-   use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
-
-   -------------------------------------------------------------------------
-   --  Gnoga Connection Settings
-   -------------------------------------------------------------------------
-
-   Max_HTTP_Request_Length : constant := 1024;
-   Max_HTTP_Connections    : constant := 200;
-   Max_HTTP_Input_Chunk    : constant := 40;
-   Max_HTTP_Output_Chunk   : constant := 1024;
-
-   Max_Buffer_Length : constant := 2 ** 16 - 1;
-   --  Maximum length of to Buffer output to Gnoga clients before an
-   --  automatic buffer flush is done.
-
-   -------------------------------------------------------------------------
-   --  Private Variables
-   -------------------------------------------------------------------------
-
-   CRLF : constant String := (Character'Val (13), Character'Val (10));
-
-   Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
-   Server_Host : Ada.Strings.Unbounded.Unbounded_String;
-   Server_Port : GNAT.Sockets.Port_Type;
-
-   Verbose_Output : Boolean := False;
 
    On_Connect_Event      : Connect_Event      := null;
    On_Post_Event         : Post_Event         := null;
@@ -90,6 +66,16 @@ package body Gnoga.Server.Connection is
    On_Post_File_Event    : Post_File_Event    := null;
 
    Exit_Application_Requested : Boolean := False;
+
+   function Global_Gnoga_Client_Factory
+     (Listener       : access Connections_Server'Class;
+      Request_Length : Positive;
+      Input_Size     : Buffer_Length;
+      Output_Size    : Buffer_Length)
+      return Connection_Ptr;
+   --  Passed to Gnoga.Server.Connection.Common.Gnoga_Client_Factory
+   --  This allows a common HTTP client for secure and insecure connections
+   --  and when desired the secure libraries connection need not be linked in.
 
    -------------------------------------------------------------------------
    --  Private Types
@@ -254,14 +240,39 @@ package body Gnoga.Server.Connection is
             Input_Size      => Max_HTTP_Input_Chunk,
             Output_Size     => Max_HTTP_Output_Chunk,
             Max_Connections => Max_HTTP_Connections);
-         Server  : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
       begin
          if Verbose_Output then
             Gnoga.Log ("HTTP Server Started");
             --  Trace_On (Factory => Factory, Received => True, Sent => True);
          end if;
 
-         accept Stop;
+         if not Secure_Server then
+            declare
+               Server : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
+            begin
+               accept Stop;
+            end;
+         else
+            if not Secure_Only then
+               declare
+                  Server1 : Gnoga_HTTP_Connection
+                    (Factory'Access,  Server_Port);
+                  Server2 : Gnoga_HTTP_Connection
+                    (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all,
+                     Secure_Port);
+               begin
+                  accept Stop;
+               end;
+            else
+               declare
+                  Server : Gnoga_HTTP_Connection
+                    (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all,
+                     Secure_Port);
+               begin
+                  accept Stop;
+               end;
+            end if;
+         end if;
 
          Server_Wait.Release;
 
@@ -275,6 +286,21 @@ package body Gnoga.Server.Connection is
    -- Create --
    ------------
 
+   function Global_Gnoga_Client_Factory
+     (Listener       : access Connections_Server'Class;
+      Request_Length : Positive;
+      Input_Size     : Buffer_Length;
+      Output_Size    : Buffer_Length)
+      return Connection_Ptr
+   is
+   begin
+      return new Gnoga_HTTP_Client
+        (Listener       => Listener.all'Unchecked_Access,
+         Request_Length => Request_Length,
+         Input_Size     => Input_Size,
+         Output_Size    => Output_Size);
+   end Global_Gnoga_Client_Factory;
+
    overriding
    function Create (Factory  : access Gnoga_HTTP_Factory;
                     Listener : access Connections_Server'Class;
@@ -282,7 +308,7 @@ package body Gnoga.Server.Connection is
                     return Connection_Ptr
    is
    begin
-      return new Gnoga_HTTP_Client
+      return Gnoga.Server.Connection.Common.Gnoga_Client_Factory
         (Listener       => Listener.all'Unchecked_Access,
          Request_Length => Factory.Request_Length,
          Input_Size     => Factory.Input_Size,
@@ -627,9 +653,17 @@ package body Gnoga.Server.Connection is
          Write_To_Console ("/js  at          :" & JS_Directory);
          Write_To_Console ("/css at          :" & CSS_Directory);
          Write_To_Console ("/img at          :" & IMG_Directory);
-         Write_To_Console ("Boot file        :" & Boot);
-         Write_To_Console ("Listening on     :" & Host & ":" &
-                             Left_Trim (Port'Img));
+
+         if not Secure_Only then
+            Write_To_Console ("Boot file        :" & Boot);
+            Write_To_Console ("HTTP listen on   :" & Host & ":" &
+                                Left_Trim (Server_Port'Img));
+         end if;
+
+         if Secure_Server then
+            Write_To_Console ("HTTPS listen on  :" & Host & ":" &
+                                Left_Trim (Secure_Port'Img));
+         end if;
       end if;
 
       Watchdog.Start;
@@ -1898,4 +1932,7 @@ package body Gnoga.Server.Connection is
       HTTP_Client (Client).Finalize;
    end Finalize;
 
+begin
+   Gnoga.Server.Connection.Common.Gnoga_Client_Factory :=
+      Global_Gnoga_Client_Factory'Access;
 end Gnoga.Server.Connection;

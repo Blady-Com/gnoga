@@ -9,10 +9,6 @@
      gnoga_debug = false;
   }
 
-  if (typeof gnoga_ssl == 'undefined') {
-     gnoga_ssl = false;
-  }
-
   function Ping_ws() {
      if (ws.readyState == 1) {
         ws.send ("0");
@@ -82,7 +78,7 @@
            = decodeURIComponent(tokens[2]);
      }
 
-     if (gnoga_ssl == true) {
+     if (location.protocol == "https:") {
         adr = "wss://" + location.hostname;
      } else {
         adr = "ws://" + location.hostname;

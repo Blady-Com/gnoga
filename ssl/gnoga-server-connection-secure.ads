@@ -46,5 +46,7 @@ package Gnoga.Server.Connection.Secure is
    --  called on the application. Your gpr project file should have:
    --  with "..path_to_gnoga_ssl../gnoga_secure.gpr";
    --  Once called an https listener will be set on Port
+   --
+   --  Note: This requires libgnutls28-dev be installed.
 
 end Gnoga.Server.Connection.Secure;

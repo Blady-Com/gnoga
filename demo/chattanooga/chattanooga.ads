@@ -4,12 +4,13 @@
 --
 -- Globally useful declarations
 --
--- V1.0B  2015 Jan 10     1st beta release, now with better message entry
+-- V1.0B  2015 Jan 15     1st beta release, now with autoscrolling and dings
 --
 with Ada.Strings.Unbounded;
 
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
+with Gnoga.Gui.Element.Multimedia;
 with Gnoga.Gui.View.Docker;
 with Gnoga.Gui.Window;
 with Gnoga.Types;
@@ -48,6 +49,7 @@ package Chattanooga is
       Remove        : Gnoga.Gui.Element.Form.Submit_Button_Type;
       Explanation   : Gnoga.Gui.Element.Common.Span_Type;
       Chat_Help     : Gnoga.Gui.Element.Common.Button_Type;
+      Ding          : Gnoga.Gui.Element.Multimedia.Audio_Type;
    end record;
 
    type App_Ptr is access all App_Info;

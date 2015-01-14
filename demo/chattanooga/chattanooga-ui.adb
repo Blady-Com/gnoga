@@ -4,7 +4,7 @@
 --
 -- User Interface
 --
--- V1.0B  2015 Jan 10     1st beta release, now with better message entry
+-- V1.0B  2015 Jan 15     1st beta release, now with autoscrolling and dings
 --
 with Ada.Characters.Handling;
 with Ada.Characters.Latin_1;
@@ -17,8 +17,6 @@ with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Types.Colors;
-
-with Gnoga.Server.Connection.Secure;
 
 package body Chattanooga.UI is
    procedure Create_Email_Screen (App : in App_Ptr; Main_Window : in out Gnoga.Gui.Window.Window_Type'Class);
@@ -46,10 +44,15 @@ package body Chattanooga.UI is
 
    LF : constant Character := Ada.Characters.Latin_1.LF;
 
-   procedure Show (From : in Unbounded_String; Message : in String; App_Data : in App_Ptr) is
+   procedure Show (From : in Unbounded_String; Message : in String; App_Data : in App_Ptr; Ding : in Boolean := True) is
       -- Empty declarative part
    begin -- Show
       App_Data.Messaging.Value (Value => App_Data.Messaging.Value & LF & (+From) & ": " & Message);
+      App_Data.Messaging.Scroll_Top (Value => Integer'Last);
+
+      if Ding then
+         App_Data.Ding.Play;
+      end if;
    end Show;
 
    Star_Suffix : constant String := " *";
@@ -131,7 +134,7 @@ package body Chattanooga.UI is
       App.Disconnect.On_Click_Handler (Handler => On_Disconnect'Access);
       App.Chat.New_Line;
       App.Messaging.Create (Form => App.Chat, Columns => 75, Rows => 35);
-      App.Messaging.Editable (Value => False);
+      App.Messaging.Read_Only;
       App.Chat.New_Line;
       App.Message_Entry.Create (Form => App.Chat, Columns => 65, Rows => 3);
       App.Message_Entry.Display (Value => "inline");
@@ -159,7 +162,10 @@ package body Chattanooga.UI is
       App.List_Form.New_Line;
       App.List_Form.New_Line;
       App.Chat_Help.Create (Parent => App.List_Form, Content => "Help");
+      App.Chat_Help.Display (Value => "block");
       App.Chat_Help.On_Click_Handler (Handler => On_Chat_Help'Access);
+      App.Ding.Create (Parent => App.List_Form, Source => "glass.ogg", Controls => False, Preload =>  True);
+      App.Ding.Hidden;
       App.List_Form.On_Submit_Handler (Handler => On_Remove'Access);
       App.Window.Document.Title (Value => "Chattanooga - " & (+App.Email) );
    end Create_Chat_Screen;
@@ -217,7 +223,7 @@ package body Chattanooga.UI is
       end if;
 
       Count := DB.Send (From => App.Email, Message => Message);
-      Show (From => App.Email, Message => Message, App_Data => App);
+      Show (From => App.Email, Message => Message, App_Data => App, Ding => False);
       App.Message_Entry.Value (Value => "");
    end On_Send;
 
@@ -287,14 +293,7 @@ package body Chattanooga.UI is
 begin -- Chattanooga.UI
    Gnoga.Application.Title (Name => "Chattanooga");
    Gnoga.Application.HTML_On_Close (HTML => End_Message);
-
-   Gnoga.Server.Connection.Secure.Register_Secure_Server
-     (Certificate_File => "/home/dbotton/workspace/ssl/star_gnoga_com.crt",
-      Key_File         => "/home/dbotton/workspace/ssl/star_gnoga_com.key",
-      Port             => 8443,
-      Disable_Insecure => False);
-
-   Gnoga.Application.Multi_Connect.Initialize (Port => 8082);
+   Gnoga.Application.Multi_Connect.Initialize;
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);
    Gnoga.Application.Multi_Connect.Message_Loop;
 end Chattanooga.UI;

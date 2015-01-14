@@ -1,5 +1,4 @@
 with "../../src/gnoga.gpr";
-with "../../ssl/gnoga_secure.gpr";
 
 project Chattanooga is
    for Languages use ("Ada");

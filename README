@@ -30,6 +30,7 @@ Here is an overview of Gnoga's framework:
 
 1. The communication platform between the Ada code and the browser / native
       Gnoga.Server.Connection
+      Gnoga.Server.Connection.Secure - https / SSL Support
 
 2. Binding to the HTML5 DOM and Browser
       Gnoga.Gui.Base (Not per se a binding of Node but takes its place)

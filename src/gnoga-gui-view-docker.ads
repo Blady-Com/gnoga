@@ -64,7 +64,7 @@ package Gnoga.Gui.View.Docker is
    --  Window's View (the top level view) should be a Docker and every nested
    --  Docker's Parent a Docker above it.
    --
-.  --  If the Docker is not the top level view (or its Parent(s) are not
+   --  If the Docker is not the top level view (or its Parent(s) are not
    --  Docker(s)) it will not be resized automatically by its Parent
    --  nor will it receive the Resive events from Parent by default. Therefore
    --  if the Docker is not the child of another Docker or the Window's View

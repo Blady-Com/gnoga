@@ -60,11 +60,25 @@ package Gnoga.Gui.View.Docker is
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Attach        : in     Boolean := True;
       ID            : in     String  := "");
-   --  Docked Views are set to Position (Absolute) when added. In order to
-   --  use a Docker_View_Type statically positioned the position should be
-   --  set Position (Relative) in order to ensure the Docks are positioned
-   --  relative to itm since Position (Absolute) elements are positioned
-   --  relative to the first non Position (Static) element above them.
+   --  Dockers can be nested to create complex reflowing layouts. Ideally the
+   --  Window's View (the top level view) should be a Docker and every nested
+   --  Docker's Parent a Docker above it.
+   --
+.  --  If the Docker is not the top level view (or its Parent(s) are not
+   --  Docker(s)) it will not be resized automatically by its Parent
+   --  nor will it receive the Resive events from Parent by default. Therefore
+   --  if the Docker is not the child of another Docker or the Window's View
+   --  it must be sized after creation and if changes in size to the Parent are
+   --  to affect the size of the Docker the Parent element's (and perhaps all
+   --  of its Parent element's) On_Resize events should be overloaded to inform
+   --  the Docker of a size change.
+   --
+   --  Important Note:
+   --     Docked Views are set to Position (Absolute) when added. In order to
+   --     use a Docker_View_Type statically positioned the position should be
+   --     set Position (Relative) in order to ensure the Docks are positioned
+   --     relative to itm since Position (Absolute) elements are positioned
+   --     relative to the first non Position (Static) element above them.
 
    -------------------------------------------------------------------------
    --  Docker_View_Type - Properties

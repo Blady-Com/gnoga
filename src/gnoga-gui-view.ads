@@ -152,8 +152,9 @@ package Gnoga.Gui.View is
    --  All children of views should be Element_Type'Class, if it is not
    --  it will be ignored. Any child professing the View as its parent
    --  will automatially have Element.Place_Inside_Bottom_Of (View) applied
-   --  to it. If an element is marked as dynamic before its Create is called
-   --  it is slated for garbage collection.
+   --  to it.
+   --  Note: Only if an element is marked as dynamic before its Create is
+   --  called it is slated for garbage collection by View.
 
    -------------------------------------------------------------------------
    --  View_Types

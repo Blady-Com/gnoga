@@ -282,6 +282,14 @@ package Gnoga.Gui.Element is
    function Position (Element : Element_Type) return Position_Type;
    --  Determins how the properties left, right, top and bottom are
    --  interpreted.
+   --
+   --  Static   - According to document flow, position properties have no
+   --             affect.
+   --  Absolute - Position properties are relative to the first non-static
+   --             element in the DOM before Element
+   --  Fixed    - Position properties are relative to browser window
+   --  Relative - Position properties are relative to where the static position
+   --             of the element would in the normal document flow.
 
    type Vertical_Align_Type is (Baseline, Sub, Super, Top, Middle, Bottom,
                                 Text_Top, Text_Bottom);

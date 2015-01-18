@@ -10,7 +10,7 @@ project Test is
    for Main use ("layouts.adb", "boot_strap_demo.adb", "multiuser.adb",
                  "popups.adb", "forms.adb", "canvas_test.adb",
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb",
-                 "jdemo.adb", "svg_demo.adb", "align.adb",
+                 "jdemo.adb", "svg_demo.adb", "align.adb", "pack.adb",
                   "mac_test.adb","demo.adb", "singleton.adb",
                   "db_sqlite.adb", "db_active.adb", "db_mysql.adb");
 

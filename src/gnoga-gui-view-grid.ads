@@ -63,14 +63,12 @@ package Gnoga.Gui.View.Grid is
      (Grid          : in out Grid_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Layout        : in     Grid_Rows_Type;
+      Set_Sizes     : in     Boolean := True;
       Attach        : in     Boolean := True;
       ID            : in     String  := "");
-   --  Create a grid of views using Layout. Row heights and column widths are
-   --  not set and should be set following create. If no heights and widths are
-   --  set to give enough information to browser to decide how to layout
-   --  panels, results may be unpredictable or different between browsers.
-   --  Only change later the sizes of rows and columns of panels that were used
-   --  originally or results may be unpredictable.
+   --  Create a grid of views using Layout. If Set_Sizes is true then default
+   --  equal size columns and rows will be created and widths set as
+   --  percentages.
    --
    --  Example:
    --     Grid.Create (Main_Window,
@@ -78,13 +76,15 @@ package Gnoga.Gui.View.Grid is
    --                   (COL, COL),
    --                   (COL, SPN)),
    --                  Attach => True);
-   --     Grid.Panel (1, 1).Height (50);
-   --     Grid.Panel (2, 1).Width (100);
-   --     Grid.Panel (3, 1).Box_Height ("20%");
    --  This will create a top view two columns wide, left and right middle
    --  views and a bottom view two columns wide. Provided Main_Window is a
    --  window type, since Attach is True the grid will fill the entire browser
    --  window.
+   --
+   --  Note: If Set_Sizes is used any change in size of panels should be
+   --        done using percentages, e.g. Box_Width ("20%"). In all cases
+   --        changing the size of individual panels but not others may not
+   --        always give the expected results.
 
    -------------------------------------------------------------------------
    --  Grid_View_Type - Properties

@@ -50,6 +50,7 @@ package body Gnoga.Gui.View.Grid is
      (Grid          : in out Grid_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Layout        : in     Grid_Rows_Type;
+      Set_Sizes     : in     Boolean := True;
       Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
@@ -62,7 +63,34 @@ package body Gnoga.Gui.View.Grid is
       Span_Size : Natural;
       Column    : Positive;
 
+      P_Height : String := Left_Trim (Integer (100 / Layout'Length (1))'Img) &
+        "%";
+      P_Width  : String := Left_Trim (Integer (100 / Layout'Length (2))'Img) &
+        "%";
+
       Column_Object : View_Base_Access := null;
+
+      function TR_Height return String;
+      function TD_Width  return String;
+
+      function TR_Height return String is
+      begin
+         if Set_Sizes then
+            return " height:" & P_Height & ";";
+         else
+            return "";
+         end if;
+      end TR_Height;
+
+      function TD_Width return String is
+      begin
+         if Set_Sizes then
+            return " width:" & P_Width & ";";
+         else
+            return "";
+         end if;
+      end TD_Width;
+
    begin
       if Parent in Gnoga.Gui.Window.Window_Type'Class then
          C := To_Unbounded_String ("<div style='position:relative'>");
@@ -71,10 +99,9 @@ package body Gnoga.Gui.View.Grid is
       C := C & ("<table style='" &
                   " position:relative;" &
                   " border-spacing: 0px; border-collapse: collapse;" &
-                  " width:100%; height:100%'>");
+                  " width:100%; height:100%;'>");
       N := 0;
       for Row in Layout'Range (1) loop
-
          C := C & "<tr>";
 
          Column := Layout'First (2);
@@ -84,6 +111,7 @@ package body Gnoga.Gui.View.Grid is
             if Layout (Row, Column) = COL then
                N := N + 1;
                C := C & "<td style='" &
+                 TD_Width &
                  " position:relative;" &
                  " padding:0; text-align: left; vertical-align: top;" &
                  "' id='" & CID & "_" & Left_Trim (N'Img) & "'";
@@ -138,6 +166,10 @@ package body Gnoga.Gui.View.Grid is
                Column_Object.Dynamic (True);
                Column_Object.Attach_Using_Parent
                  (Grid, CID & "_" & Left_Trim (N'Img));
+
+               if Column = Layout'First (2) and Row = Layout'First (1) then
+                  Column_Object.Box_Height (P_Height);
+               end if;
             elsif Layout (Row, Column) = SPN then
                Span_Size := Span_Size + 1;
             end if;

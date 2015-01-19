@@ -65,10 +65,11 @@ package body Gnoga.Gui.View.Grid is
       Column_Object : View_Base_Access := null;
    begin
       if Parent in Gnoga.Gui.Window.Window_Type'Class then
-         C := To_Unbounded_String ("<div>");
+         C := To_Unbounded_String ("<div style='position:relative'>");
       end if;
 
       C := C & ("<table style='" &
+                  " position:relative;" &
                   " border-spacing: 0px; border-collapse: collapse;" &
                   " width:100%; height:100%'>");
       N := 0;
@@ -83,6 +84,7 @@ package body Gnoga.Gui.View.Grid is
             if Layout (Row, Column) = COL then
                N := N + 1;
                C := C & "<td style='" &
+                 " position:relative;" &
                  " padding:0; text-align: left; vertical-align: top;" &
                  "' id='" & CID & "_" & Left_Trim (N'Img) & "'";
                Span_Size := 1;

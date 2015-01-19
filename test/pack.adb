@@ -58,6 +58,7 @@ begin
    Split_View.Panel (2, 1).Background_Color (Brown);
 
    A_View.Create (Split_View.Panel (1, 1).all);
+   A_View.Position (Absolute);
    A_View.Box_Height ("100%");
    A_View.Box_Width ("100%");
    A_View.Border;

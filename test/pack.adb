@@ -59,9 +59,20 @@ begin
 
    A_View.Create (Split_View.Panel (1, 1).all);
    A_View.Position (Absolute);
+   --  By setting a child view to Absolute it's "world" is the next Element
+   --  above it in the DOM that is not position:static. In the case of grids
+   --  the cells are set to position:relative to insure that position:absolute
+   --  is in relation to the cell. The benefit of this is that now setting
+   --  a height of 100% will work since the layout engine knows the height
+   --  bounds of the cell. Normally on an HTML page setting height to 100%
+   --  does nothing.
    A_View.Box_Height ("100%");
    A_View.Box_Width ("100%");
+   A_View.Box_Sizing (Border_Box);
    A_View.Border;
+   --  Note that border extends beyond the regular box if box model is not
+   --  set to Border_Box since then border is outside "Content Box"
+
    A_View.Text_Alignment (Center);
 
    A_View.New_Line;

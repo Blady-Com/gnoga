@@ -22,6 +22,11 @@ procedure Pack is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
+      Main_View.Panel (2, 1).Width (200);
+      Split_View.Panel (1, 1).Box_Height ("90%");
+      --  Note that since the size were set on these panels the only
+      --  panels where size changes will work as expected will
+      --  be on those panels with sizes set
       Split_View.Panel (2, 1).Background_Color (Yellow_Green);
    end On_Click;
 begin
@@ -29,9 +34,10 @@ begin
 
    Gnoga.Application.Singleton.Initialize (Main_Window);
 
-   Main_View.Create (Main_Window, ((COL, SPN),
-                             (COL, COL),
-                             (COL, SPN)));
+   Main_View.Create (Main_Window,
+                     ((COL, SPN),
+                      (COL, COL),
+                      (COL, SPN)));
 
    Main_View.Panel (1, 1).Height (50);
    Main_View.Panel (1, 1).Background_Color (Pink);
@@ -41,12 +47,12 @@ begin
    Main_View.Panel (2, 1).Overflow (Auto);
    Main_View.Panel (2, 1).Resizable (Horizontal);
 
-   Main_View.Panel (3, 1).Height (50);
+   Main_View.Panel (3, 1).Box_Height ("20%");
    Main_View.Panel (3, 1).Background_Color (Blue);
 
    Split_View.Create (Main_View.Panel (2, 2).all, Vertical_Split);
 
-   Split_View.Panel (1, 1).Box_Height ("50%");
+   Split_View.Panel (1, 1).Box_Height ("30%");
    Split_View.Panel (1, 1).Background_Color (Purple);
 
    Split_View.Panel (2, 1).Background_Color (Brown);

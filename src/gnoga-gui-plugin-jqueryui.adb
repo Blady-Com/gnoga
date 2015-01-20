@@ -76,6 +76,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
         or Delay_Count > 10
       loop
          delay 0.25;
+         Delay_Count := Delay_Count + 1;
       end loop;
 
       if Delay_Count > 10 then

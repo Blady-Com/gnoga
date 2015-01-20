@@ -51,20 +51,27 @@ begin
 
    Split_View.Create (Main_View.Panel (2, 2).all, Vertical_Split);
 
-   Split_View.Panel (1, 1).Background_Color (Yellow);
+   Split_View.Panel (1, 1).Background_Color (Aqua);
    Split_View.Panel (2, 1).Background_Color (Brown);
 
    A_View.Create (Split_View.Panel (1, 1).all);
-   A_View.Position (Absolute);
+   --  A_View.Position (Absolute);
    --  By setting a child view to Absolute it's "world" is the next Element
    --  above it in the DOM that is not position:static. In the case of grids
    --  the cells are set to position:relative to insure that position:absolute
-   --  is in relation to the cell. The benefit of this is that now setting
-   --  a height of 100% will work since the layout engine knows the height
-   --  bounds of the cell. Normally on an HTML page setting height to 100%
-   --  does nothing.
+   --  is in relation to the cell.
+
+   --  A_View.Left (0);
+   --  A_View.Top (0);
+   --  A_View.Right (0);
+   --  A_View.Bottom (0);
+
+   A_View.Position (Relative);
    A_View.Box_Height ("100%");
    A_View.Box_Width ("100%");
+   --  This method will work on all browsers but on Chrome and Opera will
+   --  leave a bit of padding under border.
+
    A_View.Box_Sizing (Border_Box);
    A_View.Border;
    --  Note that border extends beyond the regular box if box model is not

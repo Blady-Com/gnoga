@@ -99,6 +99,21 @@ package body Gnoga.Gui.View is
       end if;
    end On_Child_Added;
 
+   ------------------
+   --  Fill_Parent --
+   ------------------
+
+   procedure Fill_Parent (View : in out View_Base_Type) is
+      use Gnoga.Gui.Element;
+   begin
+      View.Position (Absolute);
+      View.Box_Height ("100%");
+      View.Box_Width ("100%");
+      if View.Height = 0 then
+         View.Position (Relative);
+      end if;
+   end Fill_Parent;
+
    --------------
    -- Put_Line --
    --------------

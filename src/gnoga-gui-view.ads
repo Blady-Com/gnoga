@@ -65,6 +65,14 @@ package Gnoga.Gui.View is
    --  View_Base_Type - Methods
    -------------------------------------------------------------------------
 
+   procedure Fill_Parent (View : in out View_Base_Type);
+   --  Cause View to expand its height and width to fill its parent's client
+   --  area. View's parent must have Position set to Absolute, Fixed or
+   --  Relative for Fill_Parent to work properly.
+   --  Note:
+   --     Position will be modified for View to either Absolute or Relative
+   --     if Absolute positioning fails (i.e. on IE)
+
    procedure Put_Line (View    : in out View_Base_Type;
                        Message : in     String;
                        Class   : in     String := "";

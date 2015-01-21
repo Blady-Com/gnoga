@@ -15,6 +15,10 @@ procedure Pack is
    Main_View   : Gnoga.Gui.View.Grid.Grid_View_Type;
    Split_View  : Gnoga.Gui.View.Grid.Grid_View_Type;
 
+   Form_Grid   : Gnoga.Gui.View.Grid.Grid_View_Type;
+   L1, L2, L3  : Common.Span_Type;
+   B1, B2, B3  : Common.Button_Type;
+
    A_View   : Gnoga.Gui.View.View_Type;
    A_Button : Common.Button_Type;
 
@@ -75,6 +79,29 @@ begin
    Main_View.Panel (2, 1).Overflow (Auto);
    Main_View.Panel (2, 1).Box_Width ("30%");
    Main_View.Panel (2, 1).Resizable (Horizontal);
+
+   Form_Grid.Create (Main_View.Panel (2, 1).all,
+                     ((COL, COL),
+                      (COL, COL),
+                      (COL, COL)),
+                     Fill_Parent => False,
+                     Set_Sizes => False);
+
+   Form_Grid.Panel (1, 1).Padding ("5px", "5px", "5px", "5px");
+   Form_Grid.Panel (2, 1).Padding ("5px", "5px", "5px", "5px");
+   Form_Grid.Panel (3, 1).Padding ("5px", "5px", "5px", "5px");
+
+   Form_Grid.Panel (1, 2).Vertical_Align (Middle);
+   Form_Grid.Panel (2, 2).Vertical_Align (Middle);
+   Form_Grid.Panel (3, 2).Vertical_Align (Middle);
+
+   L1.Create (Form_Grid.Panel (1, 1).all, "Label 1");
+   L2.Create (Form_Grid.Panel (2, 1).all, "Label 2");
+   L3.Create (Form_Grid.Panel (3, 1).all, "Label 3");
+
+   B1.Create (Form_Grid.Panel (1, 2).all, "Button 1");
+   B2.Create (Form_Grid.Panel (2, 2).all, "Button 2");
+   B3.Create (Form_Grid.Panel (3, 2).all, "Button 3");
 
    Main_View.Panel (3, 1).Box_Height ("10%");
    Main_View.Panel (3, 1).Background_Color (Blue);

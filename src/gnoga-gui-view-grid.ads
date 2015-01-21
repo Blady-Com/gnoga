@@ -63,6 +63,7 @@ package Gnoga.Gui.View.Grid is
      (Grid          : in out Grid_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Layout        : in     Grid_Rows_Type;
+      Fill_Parent   : in     Boolean := True;
       Set_Sizes     : in     Boolean := True;
       Attach        : in     Boolean := True;
       ID            : in     String  := "");

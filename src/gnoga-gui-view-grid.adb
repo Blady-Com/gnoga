@@ -50,6 +50,7 @@ package body Gnoga.Gui.View.Grid is
      (Grid          : in out Grid_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
       Layout        : in     Grid_Rows_Type;
+      Fill_Parent   : in     Boolean := True;
       Set_Sizes     : in     Boolean := True;
       Attach        : in     Boolean := True;
       ID            : in     String  := "")
@@ -96,10 +97,16 @@ package body Gnoga.Gui.View.Grid is
          C := To_Unbounded_String ("<div style='position:relative'>");
       end if;
 
-      C := C & ("<table style='" &
-                  " position:relative;" &
-                  " border-spacing: 0px; border-collapse: collapse;" &
-                  " width:100%; height:100%;'>");
+      C := C & "<table style='" &
+        " position:relative;" &
+        " border-spacing: 0px; border-collapse: collapse;";
+
+      if Fill_Parent then
+         C := C & " width:100%; height:100%;'>";
+      else
+         C := C & "'>";
+      end if;
+
       N := 0;
       for Row in Layout'Range (1) loop
          C := C & "<tr>";

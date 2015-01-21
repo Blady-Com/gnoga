@@ -27,7 +27,7 @@ procedure Pack is
       Split_View.Panel (2, 1).Background_Color (Yellow_Green);
    end On_Click;
 begin
-   --  Gnoga.Application.Open_URL;
+   Gnoga.Application.Open_URL;
 
    Gnoga.Application.Singleton.Initialize (Main_Window);
 
@@ -39,6 +39,36 @@ begin
 
    Main_View.Panel (1, 1).Box_Height ("10%");
    Main_View.Panel (1, 1).Background_Color (Pink);
+
+   --  Demonstrate packing left and right
+
+   Common.Button_Access
+     (Main_View.Panel (1, 1).New_Element
+      ("Menu_Item_1", new Common.Button_Type)).Create
+       (Main_View.Panel (1, 1).all, "Item 1");
+
+   Common.Button_Access
+     (Main_View.Panel (1, 1).New_Element
+      ("Menu_Item_2", new Common.Button_Type)).Create
+       (Main_View.Panel (1, 1).all, "Item 2");
+
+   Common.Button_Access
+     (Main_View.Panel (1, 1).New_Element
+      ("Menu_Item_3", new Common.Button_Type)).Create
+       (Main_View.Panel (1, 1).all, "Item 3");
+
+   Common.Button_Access
+     (Main_View.Panel (1, 1).New_Element
+      ("Menu_Item_4", new Common.Button_Type)).Create
+       (Main_View.Panel (1, 1).all, "Item 4");
+
+   Common.Button_Access
+     (Main_View.Panel (1, 1).New_Element
+      ("Menu_Item_5", new Common.Button_Type)).Create
+       (Main_View.Panel (1, 1).all, "Item 5");
+
+   Main_View.Panel (1, 1).Element ("Menu_Item_4").Layout_Float (Right);
+   Main_View.Panel (1, 1).Element ("Menu_Item_5").Layout_Float (Right);
 
    Main_View.Panel (2, 1).Box_Height ("80%");
    Main_View.Panel (2, 1).Background_Color (Orange);

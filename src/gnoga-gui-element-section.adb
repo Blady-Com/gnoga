@@ -47,15 +47,10 @@ package body Gnoga.Gui.Element.Section is
      (View    : in out Section_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
       Section : in     Section_Description_Type;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "")
    is
    begin
       View.Create_From_HTML (Parent, "<" & Section'Img & " />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
-      end if;
    end Create;
 
 end Gnoga.Gui.Element.Section;

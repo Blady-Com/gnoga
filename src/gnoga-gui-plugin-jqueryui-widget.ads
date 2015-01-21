@@ -57,7 +57,6 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    procedure Create
      (View    : in out Accordion_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");
 
    procedure Create_Section

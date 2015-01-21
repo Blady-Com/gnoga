@@ -65,7 +65,6 @@ package Gnoga.Gui.View.Grid is
       Layout        : in     Grid_Rows_Type;
       Fill_Parent   : in     Boolean := True;
       Set_Sizes     : in     Boolean := True;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "");
    --  Create a grid of views using Layout. If Set_Sizes is true then default
    --  equal size columns and rows will be created and widths set as

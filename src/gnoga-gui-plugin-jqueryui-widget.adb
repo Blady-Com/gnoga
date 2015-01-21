@@ -46,11 +46,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    procedure Create
      (View    : in out Accordion_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "")
    is
    begin
-      Gnoga.Gui.View.View_Type (View).Create (Parent, Attach, ID);
+      Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
    end Create;
 
    --------------------

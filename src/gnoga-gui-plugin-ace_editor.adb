@@ -57,12 +57,11 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    overriding procedure Create
      (View          : in out Ace_Editor_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
       GID : String := Gnoga.Server.Connection.New_GID;
    begin
-      Gnoga.Gui.View.View_Type (View).Create (Parent, Attach, ID);
+      Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
       View.Script_ID := Ada.Strings.Unbounded.To_Unbounded_String
         ("gnoga['" & GID & "']");
       Gnoga.Server.Connection.Execute_Script

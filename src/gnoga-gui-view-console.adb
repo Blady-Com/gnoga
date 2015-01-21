@@ -45,12 +45,10 @@ package body Gnoga.Gui.View.Console is
    procedure Create
      (View          : in out Console_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
    begin
       View_Type (View).Create (Parent => Parent,
-                               Attach => Attach,
                                ID     => ID);
       View.Padding ("3px", "3px", "3px", "3px");
       View.Overflow (Gnoga.Gui.Element.Auto);

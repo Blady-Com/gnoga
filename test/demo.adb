@@ -276,7 +276,7 @@ procedure Demo is
          Collection_View : Gnoga.Gui.View.View_Type;
          Name_List       : Gnoga.Types.Data_Array_Type;
       begin
-         Collection_View.Create (Main_Window, Attach => False);
+         Collection_View.Create (Main_Window);
          Gnoga.Client.Bind_Page.Bind_Page (Collection_View);
 
          Name_List := Collection_View.Element_Names;

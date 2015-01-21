@@ -55,7 +55,6 @@ package Gnoga.Gui.Element.Table is
    procedure Create
      (Table  : in out Table_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach : in     Boolean := True;
       ID     : in     String  := "");
 
    -------------------------------------------------------------------------

@@ -60,7 +60,6 @@ package Gnoga.Gui.Element.Form.Fieldset is
    procedure Create
      (View          : in out Fieldset_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "");
    --  If Parent is a Window_Type'Class will automatically set itself
    --  as the View on Parent if Attach is True

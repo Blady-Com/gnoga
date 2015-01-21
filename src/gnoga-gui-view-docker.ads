@@ -58,7 +58,6 @@ package Gnoga.Gui.View.Docker is
    procedure Create
      (View          : in out Docker_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "");
    --  Dockers can be nested to create complex reflowing layouts. Ideally the
    --  Window's View (the top level view) should be a Docker and every nested

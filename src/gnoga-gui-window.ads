@@ -95,12 +95,18 @@ package Gnoga.Gui.Window is
    --  Will raise Not_A_Gnoga_Window if connection was not established in
    --  Window or is not a Gnoga window (i.e. if has no websocket to app).
 
+   procedure Disable_Auto_Set_View (Window : in out Window_Type;
+                                    Value  : in     Boolean := True);
+   --  By default if a View is created with Window as the Parent, Set_View
+   --  will be called to make it the View for the window.
+
    procedure Set_View (Window : in out Window_Type;
                        Object : in out Gnoga.Gui.Base.Base_Type'Class;
                        Place  : in     Boolean := True);
    --  Sets Object as the Window's View. Object will be auto resized to fill
-   --  the entire client area of Window. Views will automatically call Set_View
-   --  on their parent window by default (Attach = True in their Create method)
+   --  the entire client area of Window. By default any element with Window
+   --  as parent will automatically be set as the View. To change this use
+   --  Disablae_Auto_Set_View
    --
    --  If Place is True then Object will first be placed using
    --  Object.Place_Inside_Top_Of (Window);
@@ -299,6 +305,11 @@ package Gnoga.Gui.Window is
    --  height and width of Window
 
    overriding
+   procedure On_Child_Added (Object : in out Window_Type;
+                             Child  : in out Gnoga.Gui.Base.Base_Type'Class);
+   --  Handles auto attaching Views to Window.
+
+   overriding
    procedure On_Message (Object  : in out Window_Type;
                          Event   : in     String;
                          Message : in     String);
@@ -310,6 +321,7 @@ private
          View                 : Gnoga.Gui.Base.Pointer_To_Base_Class := null;
          View_Is_Dynamic      : Boolean := False;
          Free_Connection_Data : Boolean := False;
+         Auto_Set_View        : Boolean := True;
 
          On_Abort_Event              : Gnoga.Gui.Base.Action_Event := null;
          On_Error_Event              : Gnoga.Gui.Base.Action_Event := null;

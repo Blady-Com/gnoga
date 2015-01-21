@@ -52,7 +52,6 @@ package body Gnoga.Gui.View.Grid is
       Layout        : in     Grid_Rows_Type;
       Fill_Parent   : in     Boolean := True;
       Set_Sizes     : in     Boolean := True;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
       use Ada.Strings.Unbounded;
@@ -151,12 +150,6 @@ package body Gnoga.Gui.View.Grid is
       end if;
 
       Grid.Create_From_HTML (Parent, To_String (C), ID);
-
-      if Attach then
-         if Parent in Gnoga.Gui.Window.Window_Type'Class then
-            Gnoga.Gui.Window.Window_Type (Parent).Set_View (Grid);
-         end if;
-      end if;
 
       N := 0;
       for Row in Layout'Range (1) loop

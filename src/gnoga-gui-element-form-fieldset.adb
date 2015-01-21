@@ -46,15 +46,10 @@ package body Gnoga.Gui.Element.Form.Fieldset is
    procedure Create
      (View          : in out Fieldset_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
    begin
       View.Create_From_HTML (Parent, "<fieldset />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
-      end if;
    end Create;
 
    ----------------

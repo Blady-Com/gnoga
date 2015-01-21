@@ -47,15 +47,10 @@ package body Gnoga.Gui.Element.Table is
    overriding procedure Create
      (Table  : in out Table_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach : in     Boolean := True;
       ID     : in     String  := "")
    is
    begin
       Table.Create_From_HTML (Parent, "<table />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (Table);
-      end if;
    end Create;
 
    -------------

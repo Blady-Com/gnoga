@@ -47,15 +47,10 @@ package body Gnoga.Gui.Element.Phrase is
      (View   : in out Phrase_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       Phrase : in     Phrase_Description_Type;
-      Attach : in     Boolean := True;
       ID     : in     String  := "")
    is
    begin
       View.Create_From_HTML (Parent, "<" & Phrase'Img & " />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (View);
-      end if;
    end Create;
 
 end Gnoga.Gui.Element.Phrase;

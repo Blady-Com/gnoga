@@ -56,7 +56,9 @@ procedure BootJS is
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
-      App.Page.Create (Main_Window, Attach => False);
+
+      App.Main_Window.Disable_Auto_Set_View;
+      App.Page.Create (Main_Window);
 
       Main_Window.Alert (Main_Window.Document.Title);
 

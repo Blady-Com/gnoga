@@ -205,6 +205,16 @@ package body Gnoga.Gui.Window is
       Window.Connection_ID (Gnoga.Types.Connection_ID'Value (CID));
    end Reattach;
 
+   ---------------------------
+   -- Disable_Auto_Set_View --
+   ---------------------------
+
+   procedure Disable_Auto_Set_View (Window : in out Window_Type;
+                                    Value  : in     Boolean := True)
+   is
+   begin
+      Window.Auto_Set_View := not Value;
+   end Disable_Auto_Set_View;
    --------------
    -- Set_View --
    --------------
@@ -890,6 +900,21 @@ package body Gnoga.Gui.Window is
          Element_Access (Window.View).Box_Width (Window.Width);
       end if;
    end On_Resize;
+
+   --------------------
+   -- On_Child_Added --
+   --------------------
+
+   overriding
+   procedure On_Child_Added (Object : in out Window_Type;
+                             Child  : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+   begin
+      if Child in Gnoga.Gui.Element.Element_Type'Class and Object.Auto_Set_View
+      then
+         Object.Set_View (Child);
+      end if;
+   end On_Child_Added;
 
    ----------------
    -- On_Message --

@@ -47,11 +47,10 @@ package body Gnoga.Gui.View.Card is
    overriding procedure Create
      (View          : in out Card_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
    begin
-      View_Type (View).Create (Parent, Attach, ID);
+      View_Type (View).Create (Parent, ID);
 
       View.Element_Map.Insert ("current", null);
 
@@ -174,7 +173,6 @@ package body Gnoga.Gui.View.Card is
       Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
       Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
       Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
-      Attach       : in     Boolean := True;
       ID           : in     String  := "")
    is
    begin
@@ -183,10 +181,6 @@ package body Gnoga.Gui.View.Card is
       Tab.Select_Color := Select_Color;
 
       Tab.Create_From_HTML (Parent, "<ul />", ID);
-
-      if Parent in Gnoga.Gui.Window.Window_Type'Class and Attach then
-         Gnoga.Gui.Window.Window_Type (Parent).Set_View (Tab);
-      end if;
 
       declare
          use Gnoga.Types;

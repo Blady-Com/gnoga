@@ -59,7 +59,6 @@ package Gnoga.Gui.View.Card is
    procedure Create
      (View          : in out Card_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "");
 
    -------------------------------------------------------------------------
@@ -121,7 +120,6 @@ package Gnoga.Gui.View.Card is
       Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
       Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
       Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
-      Attach       : in     Boolean               := True;
       ID           : in     String                := "");
 
    -------------------------------------------------------------------------

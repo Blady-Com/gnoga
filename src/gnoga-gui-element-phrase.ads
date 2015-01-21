@@ -62,7 +62,6 @@ package Gnoga.Gui.Element.Phrase is
      (View   : in out Phrase_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       Phrase : in     Phrase_Description_Type;
-      Attach : in     Boolean := True;
       ID     : in     String  := "");
 
 private

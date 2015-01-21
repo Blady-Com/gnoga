@@ -54,7 +54,9 @@ procedure Boot_Strap_Demo is
 
       Boot_Strap.Load_Boot_Strap (Main_Window);
 
-      App.Nav_Bar.Create (Main_Window, Section.Nav, Attach => False);
+      Main_Window.Disable_Auto_Set_View;
+
+      App.Nav_Bar.Create (Main_Window, Section.Nav);
       App.Nav_Bar.Add_Class ("navbar navbar-inverse");
       App.Nav_Bar.Place_Inside_Top_Of
         (Main_Window.Document.Body_Element.all);

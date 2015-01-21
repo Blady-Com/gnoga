@@ -63,7 +63,6 @@ package Gnoga.Gui.Element.Section is
      (View    : in out Section_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
       Section : in     Section_Description_Type;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");
 
 private

@@ -65,7 +65,6 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    procedure Create
      (View          : in out Ace_Editor_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "");
 
    -------------------------------------------------------------------------

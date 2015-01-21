@@ -44,11 +44,10 @@ package body Gnoga.Gui.View.Docker is
    overriding procedure Create
      (View          : in out Docker_View_Type;
       Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach        : in     Boolean := True;
       ID            : in     String  := "")
    is
    begin
-      View_Type (View).Create (Parent, Attach, ID);
+      View_Type (View).Create (Parent, ID);
    end Create;
 
    -----------------

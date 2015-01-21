@@ -629,7 +629,8 @@ package Gnoga.Gui.Element is
    --  visisble. If Auto_Place is set to false _before_ Create is called on
    --  an Element, View's will not place the Element in to the DOM as is
    --  the View's default behavior. Custom widgets that have child widgets
-   --  should be designed to respect this property.
+   --  should be designed to respect this property. Auto_Place if set to
+   --  False will also prevent Auto_Set_View if Element's Parent is a Window
 
    --  General Access to Element --
 

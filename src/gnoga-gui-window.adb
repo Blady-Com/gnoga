@@ -46,6 +46,7 @@ with GNAT.Traceback.Symbolic;
 with Gnoga.Client.Storage;
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Element;
+with Gnoga.Gui.View;
 
 package body Gnoga.Gui.Window is
    use type Gnoga.Gui.Base.Action_Event;
@@ -910,9 +911,11 @@ package body Gnoga.Gui.Window is
                              Child  : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
-      if Child in Gnoga.Gui.Element.Element_Type'Class and Object.Auto_Set_View
+      if Child in Gnoga.Gui.View.View_Base_Type'Class and Object.Auto_Set_View
       then
-         Object.Set_View (Child);
+         if Gnoga.Gui.View.View_Base_Type (Child).Auto_Place then
+            Object.Set_View (Child);
+         end if;
       end if;
    end On_Child_Added;
 

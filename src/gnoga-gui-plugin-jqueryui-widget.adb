@@ -181,6 +181,8 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
          end if;
       end Is_False;
    begin
+      Dialog.Auto_Place (False);
+
       Dialog.Create_From_HTML
         (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
 

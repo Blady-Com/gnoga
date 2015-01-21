@@ -104,9 +104,10 @@ package Gnoga.Gui.Window is
                        Object : in out Gnoga.Gui.Base.Base_Type'Class;
                        Place  : in     Boolean := True);
    --  Sets Object as the Window's View. Object will be auto resized to fill
-   --  the entire client area of Window. By default any element with Window
-   --  as parent will automatically be set as the View. To change this use
-   --  Disablae_Auto_Set_View
+   --  the entire client area of Window. By default any View_Base_Type'Class
+   --  with Window as parent will automatically be set as the View. To change
+   --  this use Disable_Auto_Set_View or to prevent for a single create
+   --  set Auto_Place (False) before creating that view.
    --
    --  If Place is True then Object will first be placed using
    --  Object.Place_Inside_Top_Of (Window);

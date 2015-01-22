@@ -5,13 +5,12 @@ package body Tutorial_Widget is
    overriding
    procedure Create (View    : in out My_Widget_Type;
                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Attach  : in     Boolean := True;
                      ID      : in     String  := "")
    is
       use Gnoga.Gui.Element.Table;
       Layout_Table : Table_Access := new Table_Type;
    begin
-      Gnoga.Gui.View.View_Type (View).Create (Parent, Attach, ID);
+      Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
 
       View.Widget_Form.Create (View);
 

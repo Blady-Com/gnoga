@@ -18,7 +18,6 @@ package Tutorial_Widget is
    overriding
    procedure Create  (View    : in out My_Widget_Type;
                       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Attach  : in     Boolean := True;
                       ID      : in     String  := "");
    --  Used to create our custom view
 end Tutorial_Widget;

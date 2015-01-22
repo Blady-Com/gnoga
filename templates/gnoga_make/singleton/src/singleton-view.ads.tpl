@@ -14,9 +14,8 @@ package @@data.App_Name@@.View is
 
    overriding
    procedure Create
-     (View    : in out Default_View_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
-      ID      : in     String  := "");     
+     (View   : in out Default_View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String  := "");     
    
 end @@data.App_Name@@.View;

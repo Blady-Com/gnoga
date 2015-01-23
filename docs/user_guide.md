@@ -401,7 +401,6 @@ package GnogaCMD.View is
    procedure Create
      (View    : in out Default_View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");
    
 end GnogaCMD.View;
@@ -429,12 +428,11 @@ package body GnogaCMD.View is
    procedure Create
      (View    : in out Default_View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "")
    is
    begin
       Gnoga.Gui.View.Console.Console_View_Type
-        (View).Create (Parent, Attach, ID);
+        (View).Create (Parent, ID);
       
       View.Entry_Form.Create (Parent => View);
       
@@ -653,7 +651,6 @@ package GnogaBoard.View is
    procedure Create
      (View    : in out Default_View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");     
    
    procedure Draw (View : in out Default_View_Type; X1, Y1, X2, Y2 : Integer);
@@ -685,11 +682,10 @@ package body GnogaBoard.View is
    procedure Create
      (View    : in out Default_View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "")
    is
    begin
-      Gnoga.Gui.View.View_Type (View).Create (Parent, Attach, ID);
+      Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
       
       View.Canvas.Create (Parent => View,
                           Width  => 400,

@@ -114,6 +114,7 @@ begin
                 Gnoga.Gui.Navigator.User_Agent
                 (M));
 
+   M.Disable_Auto_Set_View;
    T.Create (M, "<h1>Hello World!</h1>");
    T.Place_Inside_Top_Of (M.Document.Body_Element.all);
 

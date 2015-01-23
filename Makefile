@@ -95,7 +95,6 @@ uninstall:
 
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
-	cd lib && ar -r libgnoga.a ../obj/gnoga_gtk_window.o
 
 native_osx:
 	- cd deps && git clone https://github.com/MacGapProject/MacGap2.git

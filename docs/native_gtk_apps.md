@@ -47,4 +47,4 @@ Gnoga takes advantage of libwebkit2gtk to provide a simple Gtk window with an em
    ``` ada
       Gnoga.Application.Singleton.Initialize (Main_Window => M, Verbose => False);
    ```
-6. Build your singleton as usual and now on launch will start it's own native Gtk Window.
+6. Build your singleton as usual and now on launch will start it's own native Gtk Window. (Note: That you need to make sure that gnoga_gtk_window.o from gnoga/obj is in your projects obj path)

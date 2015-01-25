@@ -488,11 +488,21 @@ package body Gnoga.Gui.Element.Form is
       Element.Property ("min", Value);
    end Minimum;
 
+   procedure Minimum (Element : in out Form_Element_Type; Value : in Integer)
+   is
+   begin
+      Element.Property ("min", Value);
+   end Minimum;
+
    function Minimum (Element : Form_Element_Type) return String is
    begin
       return Element.Property ("min");
    end Minimum;
 
+   function Minimum (Element : Form_Element_Type) return Integer is
+   begin
+      return Element.Property ("min");
+   end Minimum;
    -------------
    -- Maximum --
    -------------
@@ -502,7 +512,18 @@ package body Gnoga.Gui.Element.Form is
       Element.Property ("max", Value);
    end Maximum;
 
+   procedure Maximum (Element : in out Form_Element_Type; Value : in Integer)
+   is
+   begin
+      Element.Property ("max", Value);
+   end Maximum;
+
    function Maximum (Element : Form_Element_Type) return String is
+   begin
+      return Element.Property ("max");
+   end Maximum;
+
+   function Maximum (Element : Form_Element_Type) return Integer is
    begin
       return Element.Property ("max");
    end Maximum;

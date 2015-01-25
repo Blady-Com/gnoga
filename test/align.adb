@@ -81,8 +81,8 @@ begin
    F.New_Line;
 
    Dec_Range.Create (Form  => F);
-   Dec_Range.Minimum ("0");
-   Dec_Range.Maximum ("10");
+   Dec_Range.Minimum (0);
+   Dec_Range.Maximum (10);
    Dec_Range.Value (0);
    Range_Value.Create (Form       => F,
                        Label_For  => Dec_Range,

@@ -222,10 +222,14 @@ package Gnoga.Gui.Element.Form is
    --  Range oriented inputs
 
    procedure Minimum (Element : in out Form_Element_Type; Value : in String);
+   procedure Minimum (Element : in out Form_Element_Type; Value : in Integer);
    function Minimum (Element : Form_Element_Type) return String;
+   function Minimum (Element : Form_Element_Type) return Integer;
 
    procedure Maximum (Element : in out Form_Element_Type; Value : in String);
+   procedure Maximum (Element : in out Form_Element_Type; Value : in Integer);
    function Maximum (Element : Form_Element_Type) return String;
+   function Maximum (Element : Form_Element_Type) return Integer;
 
    procedure Step (Element : in out Form_Element_Type; Value : in String);
    procedure Step (Element : in out Form_Element_Type; Value : in Integer);

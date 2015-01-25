@@ -57,6 +57,26 @@ package Gnoga.Gui.Element.Multimedia is
    procedure Load (Media : in out Multimedia_Type);
    --  Loads or reloads media
 
+   function Can_Play (Media : in out Multimedia_Type; Media_Type : String)
+                      return Boolean;
+   --  Returns true if browser claims support of a media type. Browsers
+   --  report possibility but not guarantees of being able to support a
+   --  media type.
+   --
+   --  Common values:
+   --    video/ogg
+   --    video/mp4
+   --    video/webm
+   --    audio/mpeg
+   --    audio/ogg
+   --    audio/mp4
+   --  Common values, including codecs:
+   --    video/ogg; codecs="theora, vorbis"
+   --    video/mp4; codecs="avc1.4D401E, mp4a.40.2"
+   --    video/webm; codecs="vp8.0, vorbis"
+   --    audio/ogg; codecs="vorbis"
+   --    audio/mp4; codecs="mp4a.40.5"
+
    -------------------------------------------------------------------------
    --  Audio_Types
    -------------------------------------------------------------------------

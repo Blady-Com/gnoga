@@ -63,6 +63,13 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.Execute ("load()");
    end Load;
 
+   function Can_Play (Media : in out Multimedia_Type; Media_Type : String)
+                      return Boolean
+   is
+   begin
+      return Media.Execute ("canPlayType ('" & Media_Type & "')") /= "";
+   end Can_Play;
+
    ------------
    -- Create --
    ------------

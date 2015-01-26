@@ -47,7 +47,7 @@ package Gnoga.Gui.Element.Multimedia is
    type Pointer_To_Multimedia_Class is access all Multimedia_Type'Class;
 
    -------------------------------------------------------------------------
-   --  Audio_Type - Methods
+   --  Media_Type - Methods
    -------------------------------------------------------------------------
 
    procedure Play (Media : in out Multimedia_Type);
@@ -57,7 +57,7 @@ package Gnoga.Gui.Element.Multimedia is
    procedure Load (Media : in out Multimedia_Type);
    --  Loads or reloads media
 
-   function Can_Play (Media : in out Multimedia_Type; Media_Type : String)
+   function Can_Play (Media : Multimedia_Type; Media_Type : String)
                       return Boolean;
    --  Returns true if browser claims support of a media type. Browsers
    --  report possibility but not guarantees of being able to support a
@@ -70,12 +70,58 @@ package Gnoga.Gui.Element.Multimedia is
    --    audio/mpeg
    --    audio/ogg
    --    audio/mp4
+   --    audio/mp3
+   --
    --  Common values, including codecs:
    --    video/ogg; codecs="theora, vorbis"
    --    video/mp4; codecs="avc1.4D401E, mp4a.40.2"
    --    video/webm; codecs="vp8.0, vorbis"
    --    audio/ogg; codecs="vorbis"
    --    audio/mp4; codecs="mp4a.40.5"
+
+   -------------------------------------------------------------------------
+   --  Media_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Loop_Media (Media : in out Multimedia_Type; Value : in Boolean);
+   function Loop_Media (Media : Multimedia_Type) return Boolean;
+
+   function Media_Duration (Media : Multimedia_Type) return Integer;
+   --  Returns the duration of Media in seconds.
+
+   procedure Media_Source (Media : in out Multimedia_Type; Source : in String);
+   function Media_Source (Media : Multimedia_Type) return String;
+   --  Returns the URL of the current Media
+
+   procedure Media_Position (Media   : in out Multimedia_Type;
+                             Seconds : in     Integer);
+   function Media_Position (Media : Multimedia_Type) return Integer;
+   --  Position of Media in seconds
+
+   procedure Muted (Media : in out Multimedia_Type; Value : in Boolean);
+   function Muted (Media : Multimedia_Type) return Boolean;
+
+   function Paused (Media : Multimedia_Type) return Boolean;
+
+   function Playback_Ended (Media : Multimedia_Type) return Boolean;
+   --  Returns true of Media position has reached end of its duration
+
+   procedure Playback_Rate (Media : in out Multimedia_Type; Value : in Float);
+   function Playback_Rate (Media : Multimedia_Type) return Float;
+   --  Playback rate.
+   --  Common values - 1.0 normal, 0.5 half speed, -1.0 reverse
+
+   function Ready_To_Play (Media : Multimedia_Type) return Boolean;
+   --  True if media is ready to be played in element
+
+   function Seeking (Media : Multimedia_Type) return Boolean;
+   --  True if user is seeking through media
+
+   subtype Volume_Range is Float range 0.0 .. 1.0;
+
+   procedure Volume (Media : in out Multimedia_Type; Value : Volume_Range);
+   function Volume (Media : Multimedia_Type) return Volume_Range;
+   --  Media volume (not system volumne) in Volume_Range
 
    -------------------------------------------------------------------------
    --  Audio_Types
@@ -99,14 +145,6 @@ package Gnoga.Gui.Element.Multimedia is
                      Muted     : in     Boolean := False;
                      ID        : in     String  := "");
    --  Create an Audio control with audio from Content
-
-   -------------------------------------------------------------------------
-   --  Audio_Type - Properties
-   -------------------------------------------------------------------------
-
-   -------------------------------------------------------------------------
-   --  Audio_Type - Methods
-   -------------------------------------------------------------------------
 
    -------------------------------------------------------------------------
    --  Video_Types
@@ -133,13 +171,6 @@ package Gnoga.Gui.Element.Multimedia is
    --  Create an Video control with Video from Content. Poster is a URL
    --  to an image to display until play begins.
 
-   -------------------------------------------------------------------------
-   --  Video_Type - Properties
-   -------------------------------------------------------------------------
-
-   -------------------------------------------------------------------------
-   --  Video_Type - Methods
-   -------------------------------------------------------------------------
 private
    type Multimedia_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Audio_Type is new Multimedia_Type with null record;

@@ -63,12 +63,141 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.Execute ("load()");
    end Load;
 
-   function Can_Play (Media : in out Multimedia_Type; Media_Type : String)
+   function Can_Play (Media : Multimedia_Type; Media_Type : String)
                       return Boolean
    is
    begin
       return Media.Execute ("canPlayType ('" & Media_Type & "')") /= "";
    end Can_Play;
+
+   --------------------
+   -- Media_Duration --
+   --------------------
+
+   function Media_Duration (Media : Multimedia_Type) return Integer is
+   begin
+      return Media.Property ("duration");
+   end Media_Duration;
+
+   ------------------
+   -- Media_Source --
+   ------------------
+
+   procedure Media_Source (Media : in out Multimedia_Type; Source : in String)
+   is
+   begin
+      Media.Property ("src", Source);
+   end Media_Source;
+
+   function Media_Source (Media : Multimedia_Type) return String is
+   begin
+      return Media.Property ("src");
+   end Media_Source;
+
+   --------------------
+   -- Media_Position --
+   --------------------
+
+   procedure Media_Position (Media   : in out Multimedia_Type;
+                             Seconds : in     Integer)
+   is
+   begin
+      Media.Property ("currentTime", Seconds);
+   end Media_Position;
+
+   function Media_Position (Media : Multimedia_Type) return Integer is
+   begin
+      return Media.Property ("currentTime");
+   end Media_Position;
+
+   --------------------
+   -- Playback_Ended --
+   --------------------
+
+   function Playback_Ended (Media : Multimedia_Type) return Boolean is
+   begin
+      return Media.Property ("ended");
+   end Playback_Ended;
+
+   ----------------
+   -- Loop_Media --
+   ----------------
+
+   procedure Loop_Media (Media : in out Multimedia_Type; Value : Boolean) is
+   begin
+      Media.Property ("loop", Value);
+   end Loop_Media;
+
+   function Loop_Media (Media : Multimedia_Type) return Boolean is
+   begin
+      return Media.Property ("loop");
+   end Loop_Media;
+
+   -----------
+   -- Muted --
+   -----------
+
+   procedure Muted (Media : in out Multimedia_Type; Value : Boolean) is
+   begin
+      Media.Property ("muted", Value);
+   end Muted;
+
+   function Muted (Media : Multimedia_Type) return Boolean is
+   begin
+      return Media.Property ("muted");
+   end Muted;
+
+   ------------
+   -- Paused --
+   ------------
+
+   function Paused (Media : Multimedia_Type) return Boolean is
+   begin
+      return Media.Property ("paused");
+   end Paused;
+
+   -------------------
+   -- Playback_Rate --
+   -------------------
+
+   procedure Playback_Rate (Media : in out Multimedia_Type; Value : in Float)
+   is
+   begin
+      Media.Property ("playbackRate", Value);
+   end Playback_Rate;
+
+   function Playback_Rate (Media : Multimedia_Type) return Float is
+   begin
+      return Media.Property ("playbackRate");
+   end Playback_Rate;
+
+   -------------------
+   -- Ready_To_Play --
+   -------------------
+
+   function Ready_To_Play (Media : Multimedia_Type) return Boolean is
+   begin
+      return Media.Property ("readyState");
+   end Ready_To_Play;
+
+   -------------
+   -- Seeking --
+   -------------
+
+   function Seeking (Media : Multimedia_Type) return Boolean is
+   begin
+      return Media.Property ("seeking");
+   end Seeking;
+
+   procedure Volume (Media : in out Multimedia_Type; Value : Volume_Range) is
+   begin
+      Media.Property ("volume", Value);
+   end Volume;
+
+   function Volume (Media : Multimedia_Type) return Volume_Range is
+   begin
+      return Media.Property ("volume");
+   end Volume;
 
    ------------
    -- Create --

@@ -32,6 +32,11 @@ procedure Media is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Audio1.Play;
+      Gnoga.Log ("Current position : " & App.Audio1.Media_Position'Img);
+      Gnoga.Log ("Duration : " & App.Audio1.Media_Duration'Img);
+      Gnoga.Log ("Playback rate : " & App.Audio1.Playback_Rate'Img);
+      App.Audio1.Media_Position (0);
+      App.Audio1.Playback_Rate (App.Audio1.Playback_Rate * 1.25);
    end On_Click;
 
    procedure On_Connect
@@ -59,6 +64,10 @@ procedure Media is
          Source   => "http://www.teachittome.com/misc/IgeretHaramban.mp3",
          Controls => False,
          Preload  => True);
+
+      Gnoga.Log ("The browser can play MP3s? - " &
+                   App.Audio1.Can_Play ("audio/mp3")'Img);
+      Gnoga.Log ("Audio source is : " & App.Audio1.Media_Source);
 
       View.New_Line;
 

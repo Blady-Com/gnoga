@@ -516,6 +516,19 @@ package body Gnoga.Gui.Base is
 
    procedure Property (Object : in out Base_Type;
                        Name   : in     String;
+                       Value  : in     Float)
+   is
+   begin
+      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
+   end Property;
+
+   function Property (Object : Base_Type; Name : String) return Float is
+   begin
+      return Object.jQuery_Execute ("prop ('" & Name & "');");
+   end Property;
+
+   procedure Property (Object : in out Base_Type;
+                       Name   : in     String;
                        Value  : in     Boolean)
    is
    begin
@@ -2177,5 +2190,16 @@ package body Gnoga.Gui.Base is
    exception
       when others =>
          return 0;
+   end jQuery_Execute;
+
+   function jQuery_Execute (Object : Base_Type; Method : String)
+                            return Float
+   is
+      R : String := Object.jQuery_Execute (Method);
+   begin
+      return Float'Value (R);
+   exception
+      when others =>
+         return 0.0;
    end jQuery_Execute;
 end Gnoga.Gui.Base;

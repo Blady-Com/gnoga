@@ -223,21 +223,27 @@ package Gnoga.Gui.Base is
                        Name   : in     String;
                        Value  : in     String);
    function Property (Object : Base_Type; Name : String) return String;
-   --  General access to property Name
+   --  General access to property Name as a String
 
    procedure Property (Object : in out Base_Type;
                        Name   : in     String;
                        Value  : in     Integer);
    function Property (Object : Base_Type; Name : String) return Integer;
-   --  General access to property Name
+   --  General access to property Name as an Integer
    --  If Property returns a float value it will be converted in to an
    --  Integer.
 
    procedure Property (Object : in out Base_Type;
                        Name   : in     String;
+                       Value  : in     Float);
+   function Property (Object : Base_Type; Name : String) return Float;
+   --  General access to property Name as a Float
+
+   procedure Property (Object : in out Base_Type;
+                       Name   : in     String;
                        Value  : in     Boolean);
    function Property (Object : Base_Type; Name : String) return Boolean;
-   --  General access to property Name
+   --  General access to property Name as a Boolean
 
    -------------------------------------------------------------------------
    --  Base_Type - Methods
@@ -665,6 +671,8 @@ package Gnoga.Gui.Base is
    function jQuery_Execute (Object : Base_Type; Method : String) return String;
    function jQuery_Execute (Object : Base_Type; Method : String)
                             return Integer;
+   function jQuery_Execute (Object : Base_Type; Method : String)
+                            return Float;
    --  Execute Method of jQuery wrapper object
 private
    type Base_Type is

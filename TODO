@@ -1,6 +1,6 @@
 To Do 1.1:
 
-1. Complete multimedia bindings
+DONE - 1. Complete multimedia bindings
 2. Create login and user profiles on Gnoga Web
 3. Create Marketplace on Gnoga Web
 DONE - 4. Remove boot.js requirement for gnoga_debug and gnoga_ssl vars to be set before loading.

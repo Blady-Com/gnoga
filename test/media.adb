@@ -22,6 +22,8 @@ procedure Media is
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Progress (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access
@@ -38,6 +40,13 @@ procedure Media is
       App.Audio1.Media_Position (0);
       App.Audio1.Playback_Rate (App.Audio1.Playback_Rate * 1.25);
    end On_Click;
+
+   procedure On_Progress (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      Gnoga.Log ("Progress position : " & App.Audio1.Media_Position'Img);
+   end On_Progress;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
@@ -64,6 +73,7 @@ procedure Media is
          Source   => "http://www.teachittome.com/misc/IgeretHaramban.mp3",
          Controls => False,
          Preload  => True);
+      App.Audio1.On_Progress_Handler (On_Progress'Unrestricted_Access);
 
       Gnoga.Log ("The browser can play MP3s? - " &
                    App.Audio1.Can_Play ("audio/mp3")'Img);

@@ -70,7 +70,7 @@ package body Gnoga.Gui.Element is
         (Connection_ID => Parent.Connection_ID,
          ID            => GID,
          Script        => "gnoga['" & GID & "']=$(""" & Escape_Quotes (HTML) &
-             """).prop('id','" & GID & "');",
+             """); gnoga['" & GID & "'].first().prop('id','" & GID & "');",
          ID_Type       => Gnoga.Types.Gnoga_ID);
 
       Element.Parent (Parent);

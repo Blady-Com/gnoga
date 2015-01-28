@@ -4,8 +4,11 @@ with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
+with Gnoga.Gui.Element.Common;
 
+with Gnoga.Server;
 with Gnoga.Client.Bind_Page;
+
 procedure BootJS is
    use Gnoga;
    use Gnoga.Types;
@@ -41,9 +44,27 @@ procedure BootJS is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      App : App_Access := new App_Data;
+
+      View : Gnoga.Gui.View.View_Type;
+
+      My_Button : Gnoga.Gui.Element.Common.Button_Type;
    begin
-      Main_Window.Document.Put_Line
-        ("<a href='/bootjs_demo.html'>go to bootjs_demo.html</a>");
+      Main_Window.Connection_Data (App);
+      App.Main_Window := Main_Window'Unchecked_Access;
+
+      View.Create (Main_Window);
+      View.Put_Line ("<a href='/bootjs_demo.html'>go to bootjs_demo.html</a>");
+      View.Horizontal_Rule;
+      View.Put_Line ("HTML Injection from bootjs_demo.html:");
+      View.New_Line;
+      View.Load_HTML (Gnoga.Server.HTML_Directory & "bootjs_demo.html");
+
+      My_Button.Attach_Using_Parent (View, "my_button");
+
+      My_Button.On_Click_Handler (On_Click'Unrestricted_Access);
+
+      Connection.Hold;
    end On_Connect;
 
    procedure On_BootJS_Demo_Page

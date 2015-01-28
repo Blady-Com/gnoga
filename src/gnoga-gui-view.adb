@@ -35,9 +35,16 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Fixed;
+with Ada.Strings.Maps.Constants;
+
 with Gnoga.Gui.Window;
+with Gnoga.Gui.Document;
 with Gnoga.Gui.Element.Common;
+
 with Gnoga.Server.Connection;
+with Gnoga.Server.Template_Parser.Simple;
+
 package body Gnoga.Gui.View is
 
    --------------
@@ -177,6 +184,78 @@ package body Gnoga.Gui.View is
    begin
       View.Put_HTML ("<hr />");
    end Horizontal_Rule;
+
+   ---------------
+   -- Load_File --
+   ---------------
+
+   procedure Load_File (View      : in out View_Base_Type;
+                        File_Name : in     String;
+                        Class     : in     String := "";
+                        ID        : in     String := "")
+   is
+      S : String := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+   begin
+      View.Put_Line (S, Class, ID);
+   end Load_File;
+
+   ---------------
+   -- Load_HTML --
+   ---------------
+
+   procedure Load_HTML (View      : in out View_Base_Type;
+                        File_Name : in     String;
+                        Class     : in     String := "";
+                        ID        : in     String := "")
+   is
+      use Ada.Strings.Fixed;
+      use Ada.Strings.Maps.Constants;
+
+      S : String  := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+      B : Natural := Index (Source  => S,
+                            Pattern => "<body",
+                            Mapping => Lower_Case_Map);
+      T : Natural := Index (Source  => S,
+                            Pattern => ">",
+                            From    => B);
+      E : Natural := Index (Source  => S,
+                            Pattern => "</body",
+                            Mapping => Lower_Case_Map);
+   begin
+      if B > 0 and E > 0 then
+         View.Put_HTML (S (T + 1 .. E - 1), Class, ID);
+      end if;
+   end Load_HTML;
+
+   --------------
+   -- Load_CSS --
+   --------------
+
+   procedure Load_CSS (View : in out View_Base_Type;
+                       URL  : in     String)
+   is
+      Document : Gnoga.Gui.Document.Document_Type;
+   begin
+      Document.Attach (View.Connection_ID);
+      Document.Head_Element.jQuery_Execute
+        ("append ('<link rel=""stylesheet"" href=""" & URL & """ />')");
+   end Load_CSS;
+
+   -------------------
+   -- Load_CSS_File --
+   -------------------
+
+   procedure Load_CSS_File (View      : in out View_Base_Type;
+                            File_Name : in     String)
+   is
+      S : String := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+
+      Document : Gnoga.Gui.Document.Document_Type;
+   begin
+      Document.Attach (View.Connection_ID);
+      Document.Head_Element.jQuery_Execute
+        ("append ('<style>" & Escape_Quotes (S) & "</style>'");
+   end Load_CSS_File;
 
    -----------------
    -- Add_Element --

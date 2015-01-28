@@ -101,7 +101,37 @@ package Gnoga.Gui.View is
                        Class : in     String := "";
                        ID    : in     String := "");
    --  Place HTML directly in to view. The HTML will not be wrapped in a DIV
-   --  or Span.
+   --  or Span automatically, therefore HTML must be a complete block.
+   --  e.g.  <p>I'm a block</p>  <br>One line<br>Two Lines</br>But not a block
+   --  Use Put_Line or Put to wrap HTML.
+
+   procedure Load_File (View      : in out View_Base_Type;
+                        File_Name : in     String;
+                        Class     : in     String := "";
+                        ID        : in     String := "");
+   --  Load contents of _local_ File_Name in to a <div>.
+   --  Unless path given uses Gnoga.Server.Templates_Directory
+
+   procedure Load_HTML (View      : in out View_Base_Type;
+                        File_Name : in     String;
+                        Class     : in     String := "";
+                        ID        : in     String := "");
+   --  Load contents of _local_ HTML file called File_Name
+   --  All contents before <body> and after </body> will be discarded.
+   --  <body></body> will be replaced with <div></div> and Class and ID
+   --  set on them.
+   --  Unless path given uses Gnoga.Server.Templates_Directory
+
+   procedure Load_CSS (View : in out View_Base_Type;
+                       URL  : in     String);
+   --  Appends <style src=URL> to document head
+   --  Unless path given uses Gnoga.Server.Templates_Directory
+
+   procedure Load_CSS_File (View      : in out View_Base_Type;
+                            File_Name : in     String);
+   --  Load contents of local File_Name in to a <style> block and appends it
+   --  to document head.
+   --  Unless path given uses Gnoga.Server.Templates_Directory
 
    procedure Add_Element
      (View    : in out View_Base_Type;

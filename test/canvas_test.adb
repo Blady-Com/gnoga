@@ -57,6 +57,9 @@ procedure Canvas_Test is
       G       : Context_2D.Gradient_Type;
       P       : Context_2D.Pattern_Type;
       I       : Common.IMG_Type;
+
+      Img_Dat : Context_2D.Image_Data_Type;
+
       Button1 : Common.Button_Type;
    begin
       Main_Window.Connection_Data (App);
@@ -129,6 +132,20 @@ procedure Canvas_Test is
       C.Font (Height => "40px");
       C.Text_Alignment (Right);
       C.Fill_Text ("Hello World!", 200, 200);
+
+      C.Get_Image_Data (Image_Data => Img_Dat,
+                        Left       => 25,
+                        Top        => 25,
+                        Width      => 10,
+                        Height     => 10);
+
+      C.Put_Image_Data (Image_Data => Img_Dat,
+                        Left       => 100,
+                        Top        => 100);
+
+      Gnoga.Log ("Dimensions of Image Data " & Img_Dat.Width'Img & " x" &
+                   Img_Dat.Height'Img);
+      Gnoga.Log ("Data : " & Img_Dat.Data);
 
       Connection.Hold;
    end On_Connect;

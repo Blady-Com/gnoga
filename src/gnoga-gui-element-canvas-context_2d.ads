@@ -55,6 +55,10 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    type Pattern_Access is access all Pattern_Type;
    type Pointer_To_Pattern_Class is access all Pattern_Type'Class;
 
+   type Image_Data_Type is new Context_Type with private;
+   type Image_Data_Access is access all Image_Data_Type;
+   type Pointer_To_Image_Data is access all Image_Data_Type'Class;
+
    -------------------------------------------------------------------------
    --  Context_2D_Type - Creation Methods
    -------------------------------------------------------------------------
@@ -364,6 +368,34 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    --  Gnoga.Element.Common.IMG_Type, Canvas_Type or a
    --  Gnoga.Multimedia.Video_Type
 
+   --  Image Data
+
+   procedure Create_Image_Data (Context       : in out Context_2D_Type;
+                                Image_Data    : in out Image_Data_Type'Class;
+                                Width, Height : in     Integer);
+   --  Create a blank Image_Data_Type with Width and Height matching the pixel
+   --  properties of Context
+
+   procedure Get_Image_Data (Context       : in out Context_2D_Type;
+                             Image_Data    : in out Image_Data_Type'Class;
+                             Left, Top     : in     Integer;
+                             Width, Height : in     Integer);
+   --  Creates an Image_Data object containing pixel data from Context at
+   --  Left, Top with Width and Height dimensions
+
+   procedure Put_Image_Data (Context       : in out Context_2D_Type;
+                             Image_Data    : in out Image_Data_Type'Class;
+                             Left, Top     : in     Integer);
+   --   Put Image_Data at Left, Top of Context
+
+   function Width (Image_Data : Image_Data_Type) return Natural;
+
+   function Height (Image_Data : Image_Data_Type) return Natural;
+
+   procedure Data (Image_Data : in out Image_Data_Type; Value : in String);
+   function Data (Image_Data : Image_Data_Type) return String;
+   --  Data property of Image_Data_Type
+
    --  Other
 
    procedure Save (Context : in out Context_2D_Type);
@@ -376,4 +408,5 @@ private
    type Context_2D_Type is new Context_Type with null record;
    type Gradient_Type is new Context_Type with null record;
    type Pattern_Type is new Context_Type with null record;
+   type Image_Data_Type is new Context_Type with null record;
 end Gnoga.Gui.Element.Canvas.Context_2D;

@@ -84,6 +84,16 @@ package body Gnoga.Gui.Element.Canvas is
       return Context.Connection_ID;
    end Connection_ID;
 
+   --------
+   -- ID --
+   --------
+
+   function ID (Context : Context_Type) return String is
+      use Ada.Strings.Unbounded;
+   begin
+      return To_String (Context.Context_ID);
+   end ID;
+
    --------------
    -- Property --
    --------------
@@ -127,9 +137,7 @@ package body Gnoga.Gui.Element.Canvas is
    begin
       Gnoga.Server.Connection.Execute_Script
         (ID     => Context.Connection_ID,
-         Script => "gnoga['" &
-           Ada.Strings.Unbounded.To_String (Context.Context_ID) &
-           "']." & Method);
+         Script => "gnoga['" & Context.ID & "']." & Method);
    end Execute;
 
    function Execute (Context : Context_Type; Method : String)
@@ -138,8 +146,6 @@ package body Gnoga.Gui.Element.Canvas is
    begin
       return Gnoga.Server.Connection.Execute_Script
         (ID     => Context.Connection_ID,
-         Script => "gnoga['" &
-           Ada.Strings.Unbounded.To_String (Context.Context_ID) &
-           "']." & Method);
+         Script => "gnoga['" & Context.ID & "']." & Method);
    end Execute;
 end Gnoga.Gui.Element.Canvas;

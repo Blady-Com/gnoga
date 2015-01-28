@@ -92,6 +92,8 @@ package Gnoga.Gui.Element.Canvas is
 
    --  Internal Methods --
 
+   function ID (Context : Context_Type) return String;
+
    function Connection_ID (Context : Context_Type)
                            return Gnoga.Types.Connection_ID;
 

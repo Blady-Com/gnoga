@@ -824,8 +824,101 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    is
    begin
       Context.Execute ("drawImage (" & Image.jQuery & ".get(0)," &
-                         X'Img & "," & Y'Img & ");");
+                         X'Img & "," & Y'Img & ")");
    end Draw_Image;
+
+   -----------------------
+   -- Create_Image_Data --
+   -----------------------
+
+   procedure Create_Image_Data (Context       : in out Context_2D_Type;
+                                Image_Data    : in out Image_Data_Type'Class;
+                                Width, Height : in     Integer)
+   is
+      GID : String := Gnoga.Server.Connection.New_GID;
+   begin
+      Image_Data.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
+      Image_Data.Connection_ID := Context.Connection_ID;
+
+      Gnoga.Server.Connection.Execute_Script
+        (Context.Connection_ID, "gnoga['" & GID & "']=gnoga['" &
+           Context.ID & "'].createImageData(" &
+           Width'Img & "," & Height'Img & ")");
+   end Create_Image_Data;
+
+   --------------------
+   -- Get_Image_Data --
+   --------------------
+
+   procedure Get_Image_Data (Context       : in out Context_2D_Type;
+                             Image_Data    : in out Image_Data_Type'Class;
+                             Left, Top     : in     Integer;
+                             Width, Height : in     Integer)
+   is
+      GID : String := Gnoga.Server.Connection.New_GID;
+   begin
+      Image_Data.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
+      Image_Data.Connection_ID := Context.Connection_ID;
+
+      Gnoga.Server.Connection.Execute_Script
+        (Context.Connection_ID, "gnoga['" & GID &
+           "']=gnoga['" & Context.ID & "'].getImageData(" &
+           Left'Img & "," & Top'Img & "," &
+           Width'Img & "," & Height'Img & ")");
+   end Get_Image_Data;
+
+   --------------------
+   -- Put_Image_Data --
+   --------------------
+
+   procedure Put_Image_Data (Context       : in out Context_2D_Type;
+                             Image_Data    : in out Image_Data_Type'Class;
+                             Left, Top     : in     Integer)
+   is
+   begin
+      Context.Execute ("putImageData(gnoga['" & Image_Data.ID & "']," &
+                         Left'Img & "," & Top'Img & ")");
+   end Put_Image_Data;
+
+   -----------
+   -- Width --
+   -----------
+
+   function Width (Image_Data : Image_Data_Type) return Natural
+   is
+   begin
+      return Image_Data.Property ("width");
+   end Width;
+
+   ------------
+   -- Height --
+   ------------
+
+   function Height (Image_Data : Image_Data_Type) return Natural
+   is
+   begin
+      return Image_Data.Property ("height");
+   end Height;
+
+   ----------
+   -- Data --
+   ----------
+
+   procedure Data (Image_Data : in out Image_Data_Type; Value : in String) is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Image_Data.Connection_ID,
+         "Array.prototype.join.split.call (gnoga['" &
+           Image_Data.ID & "'].data,'" &
+           Gnoga.Escape_Quotes (Value) & "')");
+   end Data;
+
+   function Data (Image_Data : Image_Data_Type) return String is
+   begin
+      return Gnoga.Server.Connection.Execute_Script
+        (Image_Data.Connection_ID,
+         "Array.prototype.join.call (gnoga['" & Image_Data.ID & "'].data)");
+   end Data;
 
    ----------
    -- Save --

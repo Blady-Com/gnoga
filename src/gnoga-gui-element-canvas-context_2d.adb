@@ -244,6 +244,32 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       Context.Property ("miterLimit", Value);
    end Miter_Limit;
 
+   -------------------
+   -- Set_Line_Dash --
+   -------------------
+
+   procedure Set_Line_Dash (Context   : in out Context_2D_Type;
+                            Dash_List : in     Dash_Array_Type)
+   is
+      function Dash_String (Index : Natural) return String;
+      --  Iterate over Dash_List to create JS Array for setLineDash
+
+      function Dash_String (Index : Natural) return String is
+      begin
+         if Index > Dash_List'Last then
+            return "";
+         elsif Index = Dash_List'Last then
+            return Natural'Image (Dash_List (Index));
+         else
+            return Natural'Image
+              (Dash_List (Index)) & ',' & Dash_String (Index + 1);
+         end if;
+      end Dash_String;
+   begin
+      Context.Execute
+        ("setLineDash([" & Dash_String (Dash_List'First) & "]);");
+   end Set_Line_Dash;
+
    ----------
    -- Font --
    ----------

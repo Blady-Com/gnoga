@@ -140,6 +140,16 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                           Value   : in     Positive);
    --  Maximum miter length
 
+   type Dash_Array_Type is array (Positive range <>) of Natural;
+
+   Empty_Dash_List  : constant Dash_Array_Type (1 .. 0) := (others => 0);
+   Dotted_Dash_List : constant Dash_Array_Type          := (2, 2);
+   Center_Dash_List : constant Dash_Array_Type          := (4, 3, 6, 3);
+   Dashed_Dash_List : constant Dash_Array_Type          := (5, 3);
+
+   procedure Set_Line_Dash (Context   : in out Context_2D_Type;
+                            Dash_List : in     Dash_Array_Type);
+
    --  Text
 
    procedure Font (Context : in out Context_2D_Type;

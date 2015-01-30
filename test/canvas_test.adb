@@ -37,7 +37,7 @@ procedure Canvas_Test is
       Img.Create
         (Parent           => App.Main_Window.all,
          URL_Source       => "http://www.gnu.org/graphics/gplv3-127x51.png",
-         Alternative_Text => "GNAT Modified GNU GPL 3");
+         Alternative_Text => "GNU GPL 3");
 
       C.Draw_Image (Img, 100, 10);
    end On_Click;
@@ -136,16 +136,19 @@ procedure Canvas_Test is
       C.Get_Image_Data (Image_Data => Img_Dat,
                         Left       => 25,
                         Top        => 25,
-                        Width      => 100,
-                        Height     => 100);
+                        Width      => 150,
+                        Height     => 150);
 
       C.Put_Image_Data (Image_Data => Img_Dat,
                         Left       => 100,
                         Top        => 100);
 
+      Gnoga.Log ("Get Data");
       declare
          D : Gnoga.Types.Pixel_Data_Type := Img_Dat.Data;
       begin
+         Gnoga.Log ("Transform Data");
+
          Gnoga.Log ("Dimensions of Image Data " & D'Length (1)'Img & " x" &
                       D'Length (2)'Img);
 
@@ -162,11 +165,14 @@ procedure Canvas_Test is
             end loop;
          end loop;
 
+         Gnoga.Log ("Push Data");
          Img_Dat.Data (D);
 
+         Gnoga.Log ("Display Data");
          C.Put_Image_Data (Image_Data => Img_Dat,
                            Left       => 150,
                            Top        => 150);
+         Gnoga.Log ("Done with Data");
       end;
 
       Connection.Hold;

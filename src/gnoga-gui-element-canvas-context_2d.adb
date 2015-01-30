@@ -954,24 +954,25 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    is
       use Ada.Strings.Unbounded;
 
-      C : Unbounded_String := To_Unbounded_String (",");
-      S : Unbounded_String;
+      C : constant String := ",";
+      S : String (1 .. 16 * Value'Length (1) * Value'Length (2));
+      P : Positive := 1;
    begin
       for X in 1 .. Value'Length (1) loop
          for Y in 1 .. Value'Length (2) loop
-            S := S &
-              Gnoga.Left_Trim (Value (X, Y).Red'Img) & C &
-              Gnoga.Left_Trim (Value (X, Y).Green'Img) & C &
-              Gnoga.Left_Trim (Value (X, Y).Blue'Img) & C &
-              Gnoga.Left_Trim (Value (X, Y).Alpha'Img) & C;
+            declare
+               T : String := Gnoga.Left_Trim (Value (X, Y).Red'Img) & C &
+                 Gnoga.Left_Trim (Value (X, Y).Green'Img) & C &
+                 Gnoga.Left_Trim (Value (X, Y).Blue'Img) & C &
+                 Gnoga.Left_Trim (Value (X, Y).Alpha'Img) & C;
+            begin
+               S (P .. P + T'Length - 1) := T;
+               P := P + T'Length;
+            end;
          end loop;
       end loop;
 
-      declare
-         R : String := To_String (S);
-      begin
-         Data (Image_Data, (R (R'First .. R'Last - 1)));
-      end;
+      Data (Image_Data, S (1 .. P - 2));
    end Data;
 
    function Data (Image_Data : Image_Data_Type)

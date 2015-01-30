@@ -48,7 +48,7 @@ package Gnoga.Server.Connection.Common is
 
    Max_HTTP_Request_Length : constant := 1024;
    Max_HTTP_Connections    : constant := 200;
-   Max_HTTP_Input_Chunk    : constant := 40;
+   Max_HTTP_Input_Chunk    : constant := 1024;
    Max_HTTP_Output_Chunk   : constant := 1024;
    Max_Websocket_Message   : constant := 1024 * 512;
 

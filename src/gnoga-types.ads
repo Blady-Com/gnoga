@@ -83,11 +83,13 @@ package Gnoga.Types is
 
    subtype Alpha_Type is Frational_Range_Type;
 
+   type Color_Type is range 0 .. 255;
+
    type RGBA_Type is
       record
-         Red   : Integer    := 0;
-         Green : Integer    := 0;
-         Blue  : Integer    := 0;
+         Red   : Color_Type := 0;
+         Green : Color_Type := 0;
+         Blue  : Color_Type := 0;
          Alpha : Alpha_Type := 1.0;
       end record;
 
@@ -97,6 +99,17 @@ package Gnoga.Types is
    function To_RGBA (Value : String) return RGBA_Type;
    --  Will convert rgb(r,g,b) and rgba(r,g,b,a), or
    --  Hex color (include Hex with Alpha) to RGBA_Type
+
+   type Pixel_Type is
+      record
+         Red   : Color_Type := 0;
+         Green : Color_Type := 0;
+         Blue  : Color_Type := 0;
+         Alpha : Color_Type := 0;
+      end record;
+
+   type Pixel_Data_Type is
+     array (Positive range <>, Positive range <>) of Pixel_Type;
 
    type Point_Type is
       record

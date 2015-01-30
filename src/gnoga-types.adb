@@ -77,20 +77,20 @@ package body Gnoga.Types is
       P    : Integer := Value'First;
    begin
       if Value'Length = 7 then
-         RGBA.Red   := Integer'Value
+         RGBA.Red   := Color_Type'Value
            ("16#" & Value ((P + 1) .. (P + 2)) & '#');
-         RGBA.Green := Integer'Value
+         RGBA.Green := Color_Type'Value
            ("16#" & Value ((P + 3) .. (P + 4)) & '#');
-         RGBA.Blue  := Integer'Value
+         RGBA.Blue  := Color_Type'Value
            ("16#" & Value ((P + 5) .. (P + 6)) & '#');
       elsif Value'Length = 9 then
          RGBA.Alpha := Alpha_Type
            (Integer'Value ("16#" & Value ((P + 1) .. (P + 2)) & '#')) / 255;
-         RGBA.Red   := Integer'Value
+         RGBA.Red   := Color_Type'Value
            ("16#" & Value ((P + 3) .. (P + 4)) & '#');
-         RGBA.Green := Integer'Value
+         RGBA.Green := Color_Type'Value
            ("16#" & Value ((P + 5) .. (P + 6)) & '#');
-         RGBA.Blue  := Integer'Value
+         RGBA.Blue  := Color_Type'Value
            ("16#" & Value ((P + 7) .. (P + 8)) & '#');
       else
          Log ("Invalid Hex value for rbga value from " & Value);
@@ -115,7 +115,7 @@ package body Gnoga.Types is
       RGBA : RGBA_Type;
 
       function Split (P : String) return String;
-      function Split (P : String) return Integer;
+      function Split (P : String) return Color_Type;
       function Split (P : String) return Alpha_Type;
       --  Split string and extract values
 
@@ -128,9 +128,9 @@ package body Gnoga.Types is
          return Value (S .. (F - 1));
       end Split;
 
-      function Split (P : String) return Integer is
+      function Split (P : String) return Color_Type is
       begin
-         return Integer'Value (Split (P));
+         return Color_Type'Value (Split (P));
       end Split;
 
       function Split (P : String) return Alpha_Type is

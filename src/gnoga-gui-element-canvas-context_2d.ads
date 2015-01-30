@@ -392,8 +392,10 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
 
    function Height (Image_Data : Image_Data_Type) return Natural;
 
-   procedure Data (Image_Data : in out Image_Data_Type; Value : in String);
-   function Data (Image_Data : Image_Data_Type) return String;
+   procedure Data (Image_Data : in out Image_Data_Type;
+                   Value      : in     Gnoga.Types.Pixel_Data_Type);
+   function Data (Image_Data : Image_Data_Type)
+                  return Gnoga.Types.Pixel_Data_Type;
    --  Data property of Image_Data_Type
 
    --  Other

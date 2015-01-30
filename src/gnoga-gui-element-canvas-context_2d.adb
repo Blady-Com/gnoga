@@ -35,6 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Numerics;
 
@@ -904,13 +905,15 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    -- Data --
    ----------
 
+   procedure Data (Image_Data : in out Image_Data_Type; Value : in String);
+   function Data (Image_Data : Image_Data_Type) return String;
+
    procedure Data (Image_Data : in out Image_Data_Type; Value : in String) is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Image_Data.Connection_ID,
-         "Array.prototype.join.split.call (gnoga['" &
-           Image_Data.ID & "'].data,'" &
-           Gnoga.Escape_Quotes (Value) & "')");
+         "gnoga['" & Image_Data.ID & "'].data.set (('" & Value &
+           "').split(','))");
    end Data;
 
    function Data (Image_Data : Image_Data_Type) return String is
@@ -918,6 +921,73 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       return Gnoga.Server.Connection.Execute_Script
         (Image_Data.Connection_ID,
          "Array.prototype.join.call (gnoga['" & Image_Data.ID & "'].data)");
+   end Data;
+
+   procedure Data (Image_Data : in out Image_Data_Type;
+                   Value      : in     Gnoga.Types.Pixel_Data_Type)
+   is
+      use Ada.Strings.Unbounded;
+
+      C : Unbounded_String := To_Unbounded_String (",");
+      S : Unbounded_String;
+   begin
+      for X in 1 .. Value'Length (1) loop
+         for Y in 1 .. Value'Length (2) loop
+            S := S &
+              Gnoga.Left_Trim (Value (X, Y).Red'Img) & C &
+              Gnoga.Left_Trim (Value (X, Y).Green'Img) & C &
+              Gnoga.Left_Trim (Value (X, Y).Blue'Img) & C &
+              Gnoga.Left_Trim (Value (X, Y).Alpha'Img) & C;
+         end loop;
+      end loop;
+
+      declare
+         R : String := To_String (S);
+      begin
+         Data (Image_Data, (R (R'First .. R'Last - 1)));
+      end;
+   end Data;
+
+   function Data (Image_Data : Image_Data_Type)
+                  return Gnoga.Types.Pixel_Data_Type
+   is
+      use Ada.Strings.Fixed;
+      use Gnoga.Types;
+
+      Value : String := Data (Image_Data);
+
+      W : Positive := Image_Data.Width;
+      H : Positive := Image_Data.Height;
+
+      D : Gnoga.Types.Pixel_Data_Type (1 .. W, 1 .. H);
+
+      S    : Integer   := Value'First;
+      F    : Integer   := Value'First - 1;
+
+      function Split return Color_Type;
+      --  Split string and extract values
+
+      function Split return Color_Type is
+      begin
+         S := F + 1;
+         F := Index (Source  => Value,
+                     Pattern => ",",
+                     From    => S);
+
+         if F = 0 then
+            F := Value'Last;
+         end if;
+
+         return Color_Type'Value (Value (S .. (F - 1)));
+      end Split;
+   begin
+      for X in 1 .. W loop
+         for Y in 1 .. H loop
+            D (X, Y) := (Split, Split, Split, Split);
+         end loop;
+      end loop;
+
+      return D;
    end Data;
 
    ----------

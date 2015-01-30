@@ -143,9 +143,31 @@ procedure Canvas_Test is
                         Left       => 100,
                         Top        => 100);
 
-      Gnoga.Log ("Dimensions of Image Data " & Img_Dat.Width'Img & " x" &
-                   Img_Dat.Height'Img);
-      Gnoga.Log ("Data : " & Img_Dat.Data);
+      declare
+         D : Gnoga.Types.Pixel_Data_Type := Img_Dat.Data;
+      begin
+         Gnoga.Log ("Dimensions of Image Data " & D'Length (1)'Img & " x" &
+                      D'Length (2)'Img);
+
+         for X in 1 .. D'Length (1) loop
+            for Y in 1 .. D'Length (2) loop
+               declare
+                  Avg : Color_Type :=
+                    (D (X, Y).Red + D (X, Y).Green + D (X, Y).Blue) / 3;
+               begin
+                  D (X, Y).Red   := Avg;
+                  D (X, Y).Green := Avg;
+                  D (X, Y).Blue  := Avg;
+               end;
+            end loop;
+         end loop;
+
+         Img_Dat.Data (D);
+
+         C.Put_Image_Data (Image_Data => Img_Dat,
+                           Left       => 150,
+                           Top        => 150);
+      end;
 
       Connection.Hold;
    end On_Connect;

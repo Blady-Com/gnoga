@@ -1146,7 +1146,7 @@ package body Gnoga.Server.Connection is
       if On_Connect_Event /= null then
          return (Accepted  => True,
                  Length    => 0,
-                 Size      => 10240,
+                 Size      => Max_Websocket_Message,
                  Duplex    => True,
                  Protocols => "");
       else

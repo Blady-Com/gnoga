@@ -136,8 +136,8 @@ procedure Canvas_Test is
       C.Get_Image_Data (Image_Data => Img_Dat,
                         Left       => 25,
                         Top        => 25,
-                        Width      => 10,
-                        Height     => 10);
+                        Width      => 100,
+                        Height     => 100);
 
       C.Put_Image_Data (Image_Data => Img_Dat,
                         Left       => 100,

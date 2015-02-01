@@ -172,6 +172,11 @@ procedure Canvas_Test is
          C.Put_Image_Data (Image_Data => Img_Dat,
                            Left       => 150,
                            Top        => 150);
+
+         for X in 50 .. 75 loop
+            C.Pixel (X - 50, 125, C.Pixel (X, 20));
+         end loop;
+
          Gnoga.Log ("Done with Data");
       end;
 

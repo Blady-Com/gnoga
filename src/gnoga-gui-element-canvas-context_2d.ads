@@ -380,6 +380,13 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
 
    --  Image Data
 
+   function Pixel (Context : Context_2D_Type; X, Y : Integer)
+                   return Gnoga.Types.Pixel_Type;
+   procedure Pixel (Context : in out Context_2D_Type;
+                    X, Y    : in     Integer;
+                    Color   : in     Gnoga.Types.Pixel_Type);
+   --  Set or Get the Pixel at X, Y
+
    procedure Create_Image_Data (Context       : in out Context_2D_Type;
                                 Image_Data    : in out Image_Data_Type'Class;
                                 Width, Height : in     Integer);

@@ -42,6 +42,13 @@ with Ada.Numerics;
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Element.Canvas.Context_2D is
+   procedure Data (Image_Data : in out Image_Data_Type; Value : in String);
+   function Data (Image_Data : Image_Data_Type) return String;
+   --  Raw data transfer of pixel data from Browser
+
+   function String_To_Pixel_Data (Value : String; Width, Height : Positive)
+                                  return Gnoga.Types.Pixel_Data_Type;
+   --  Translate raw result from browser to Pixel_Data_Type
 
    ----------------------------
    -- Get_Drawing_Context_2D --
@@ -873,6 +880,83 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
            Width'Img & "," & Height'Img & ")");
    end Create_Image_Data;
 
+   --------------------------
+   -- String_To_Pixel_Data --
+   --------------------------
+
+   function String_To_Pixel_Data (Value : String; Width, Height : Positive)
+                                  return Gnoga.Types.Pixel_Data_Type
+   is
+      use Ada.Strings.Fixed;
+      use Gnoga.Types;
+
+      D : Gnoga.Types.Pixel_Data_Type (1 .. Width, 1 .. Height);
+
+      S    : Integer   := Value'First;
+      F    : Integer   := Value'First - 1;
+
+      function Split return Color_Type;
+      --  Split string and extract values
+
+      function Split return Color_Type is
+      begin
+         S := F + 1;
+         F := Index (Source  => Value,
+                     Pattern => ",",
+                     From    => S);
+
+         if F = 0 then
+            F := Value'Last;
+         end if;
+
+         return Color_Type'Value (Value (S .. (F - 1)));
+      end Split;
+   begin
+      for X in 1 .. Width loop
+         for Y in 1 .. Height loop
+            D (X, Y) := (Split, Split, Split, Split);
+         end loop;
+      end loop;
+
+      return D;
+   end String_To_Pixel_Data;
+
+   -----------
+   -- Pixel --
+   -----------
+
+   function Pixel (Context : Context_2D_Type; X, Y : Integer)
+                   return Gnoga.Types.Pixel_Type
+   is
+      D : String := Gnoga.Server.Connection.Execute_Script
+        (Context.Connection_ID, "Array.prototype.join.call" &
+           "(gnoga['" & Context.ID & "'].getImageData(" & X'Img & "," &
+           Y'Img & ",1,1).data);");
+
+      P : Gnoga.Types.Pixel_Data_Type := String_To_Pixel_Data (D, 1, 1);
+   begin
+      return P (1, 1);
+   end Pixel;
+
+   procedure Pixel (Context : in out Context_2D_Type;
+                    X, Y    : in     Integer;
+                    Color   : in     Gnoga.Types.Pixel_Type)
+   is
+      GID : String := Gnoga.Server.Connection.New_GID;
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Context.Connection_ID,
+           GID & "=gnoga['" & Context.ID & "'].createImageData(1,1); " &
+           GID & ".data.set (('" &
+           Color.Red'Img & "," &
+           Color.Green'Img & "," &
+           Color.Blue'Img & "," &
+           Color.Alpha'Img & "').split(',')); " &
+           "gnoga['g12'].putImageData(" & GID & "," &
+           X'Img & "," &
+           Y'Img & ")");
+   end Pixel;
+
    --------------------
    -- Get_Image_Data --
    --------------------
@@ -931,9 +1015,6 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    -- Data --
    ----------
 
-   procedure Data (Image_Data : in out Image_Data_Type; Value : in String);
-   function Data (Image_Data : Image_Data_Type) return String;
-
    procedure Data (Image_Data : in out Image_Data_Type; Value : in String) is
    begin
       Gnoga.Server.Connection.Execute_Script
@@ -978,43 +1059,10 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    function Data (Image_Data : Image_Data_Type)
                   return Gnoga.Types.Pixel_Data_Type
    is
-      use Ada.Strings.Fixed;
-      use Gnoga.Types;
-
       Value : String := Data (Image_Data);
-
-      W : Positive := Image_Data.Width;
-      H : Positive := Image_Data.Height;
-
-      D : Gnoga.Types.Pixel_Data_Type (1 .. W, 1 .. H);
-
-      S    : Integer   := Value'First;
-      F    : Integer   := Value'First - 1;
-
-      function Split return Color_Type;
-      --  Split string and extract values
-
-      function Split return Color_Type is
-      begin
-         S := F + 1;
-         F := Index (Source  => Value,
-                     Pattern => ",",
-                     From    => S);
-
-         if F = 0 then
-            F := Value'Last;
-         end if;
-
-         return Color_Type'Value (Value (S .. (F - 1)));
-      end Split;
    begin
-      for X in 1 .. W loop
-         for Y in 1 .. H loop
-            D (X, Y) := (Split, Split, Split, Split);
-         end loop;
-      end loop;
-
-      return D;
+      return String_To_Pixel_Data
+        (Data (Image_Data), Image_Data.Width, Image_Data.Height);
    end Data;
 
    ----------

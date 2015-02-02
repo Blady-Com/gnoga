@@ -1059,7 +1059,6 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    function Data (Image_Data : Image_Data_Type)
                   return Gnoga.Types.Pixel_Data_Type
    is
-      Value : String := Data (Image_Data);
    begin
       return String_To_Pixel_Data
         (Data (Image_Data), Image_Data.Width, Image_Data.Height);

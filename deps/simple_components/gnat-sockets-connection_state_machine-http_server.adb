@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  21:26 01 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -617,6 +617,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                Socket.Data := Ptr.all'Unchecked_Access;
             end;
             Socket.Max_Length := Result.Size;
+            Socket.Chunked    := Result.Chunked;
             Client.Expecting  := WebSocket_Header;
             if Result.Duplex then -- Allow full-duplex operation
                Set_Overlapped_Size (Client, Client.Output_Size);
@@ -2546,7 +2547,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                      (  Socket.Frame_Length * 256
                      +  Stream_Element_Count (Data (Pointer))
                      );
-                  if Socket.Frame_Length > Socket.Max_Length then
+                  if (  not Socket.Chunked
+                     and then
+                        Socket.Frame_Length > Socket.Max_Length
+                     )
+                  then
                      Raise_Exception
                      (  Status_Error'Identity,
                         "Data message length exceeds the limit set"
@@ -2554,7 +2559,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   end if;
                   if Socket.Length_Count = 1 then
                      Frame.Length := Frame.Length + Socket.Frame_Length;
-                     if Frame.Length > Socket.Max_Length then
+                     if (  not Socket.Chunked
+                        and then
+                           Frame.Length > Socket.Max_Length
+                        )
+                     then
                         Raise_Exception
                         (  Status_Error'Identity,
                            "Data message length exceeds the limit set"
@@ -2592,6 +2601,45 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                begin
                   while Pointer <= Data'Last loop
                      exit when Frame.Pointer > Frame.Length;
+                     if Socket.Chunked then
+                        if Frame.Pointer > Frame.Data'Last then
+                           if Socket.Duplex then
+                              Socket.Context := Current_Task;
+                           end if;
+                           if Socket.Frame_Type = WebSocket_Binary_Type then
+                               if Client.Trace_Body then
+                                  Trace
+                                  (  Client,
+                                     (  "WebSocket received binary "
+                                     &  "message part ["
+                                     &  Image (Frame.Data)
+                                     &  "]"
+                                  )  );
+                               end if;
+                               WebSocket_Received_Part
+                               (  HTTP_Client'Class (Client),
+                                  Frame.Data (1..Frame.Pointer - 1)
+                               );
+                           else
+                               if Client.Trace_Body then
+                                  Trace
+                                  (  Client,
+                                     (  "WebSocket received text "
+                                     &  "message part ["
+                                     &  To_String (Frame.Data)
+                                     &  "]"
+                                  )  );
+                               end if;
+                               WebSocket_Received_Part
+                               (  HTTP_Client'Class (Client),
+                                  To_String (Frame.Data)
+                               );
+                           end if;
+                           Frame.Pointer := Frame.Data'First;
+                           Frame.Length :=
+                              Frame.Length - Frame.Data'Length;
+                        end if;
+                     end if;
                      Frame.Data (Frame.Pointer) :=
                         (  Data (Pointer)
                         xor
@@ -3964,6 +4012,22 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       null;
    end WebSocket_Received;
+
+   procedure WebSocket_Received_Part
+             (  Client  : in out HTTP_Client;
+                Message : Stream_Element_Array
+             )  is
+   begin
+      null;
+   end WebSocket_Received_Part;
+
+   procedure WebSocket_Received_Part
+             (  Client  : in out HTTP_Client;
+                Message : String
+             )  is
+   begin
+      null;
+   end WebSocket_Received_Part;
 
    procedure WebSocket_Send
              (  Client  : in out HTTP_Client;

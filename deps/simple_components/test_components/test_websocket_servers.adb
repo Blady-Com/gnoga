@@ -4,7 +4,7 @@
 --  Test WebSocket                                 Winter, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  21:26 01 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -181,7 +181,14 @@ package body Test_WebSocket_Servers is
             (  Client : access Chat_Client
             )  return WebSocket_Accept is
    begin
-      return (True, 0, 1024, False, "");
+      return
+      (  Accepted  => True,
+         Length    => 0,
+         Size      => 125,
+         Duplex    => False,
+         Chunked   => True,
+         Protocols => ""
+      );
    end WebSocket_Open;
 
    procedure WebSocket_Received
@@ -189,7 +196,28 @@ package body Test_WebSocket_Servers is
                 Message : String
              ) is
    begin
-      WebSocket_Send (Client, To_HTTP (Clock) & " " & Quote (Message));
+      WebSocket_Send
+      (  Client,
+         (  To_HTTP (Clock)
+         &  " last chunk:"
+         &  Quote (Message)
+      )  );
+      Client.Chunk := 0;
    end WebSocket_Received;
+
+   procedure WebSocket_Received_Part
+             (  Client  : in out Chat_Client;
+                Message : String
+             ) is
+   begin
+      Client.Chunk := Client.Chunk + 1;
+      WebSocket_Send
+      (  Client,
+         (  To_HTTP (Clock)
+         &  Integer'Image (Client.Chunk)
+         &  " chunk:"
+         &  Quote (Message)
+      )  );
+   end WebSocket_Received_Part;
 
 end Test_WebSocket_Servers;

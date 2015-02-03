@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.5</EM><BR>
+<EM>version 4.6</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -57,6 +57,7 @@ language standards.</p>
 <a href="#Cryptography">Cryptography</a><br>
 <a href="#Generic_Doubly_Linked_Web">Doubly-linked webs and lists</a><br>
 <a href="#Generic_Blackboard">Blackboards</a> (lock-free)<br>
+<a href="#GNUTLS">GNUTLS bindings</a><br>
 <a href="#directed_graphs">Graphs</a> (directed, weighted, acyclic, trees)<br>
 <a href="#Events">Events</a> (plain, pulse, array of)<br>
 <a href="#HTTP_implementation">HTTP implementation</a><br>
@@ -113,11 +114,11 @@ language standards.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_5.tgz">components_4_5.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_6.tgz">components_4_6.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td colspan="2" align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_5.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_6.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 	</tr>
 </table>
@@ -24684,10 +24685,9 @@ is larger than Length.</p>
 <H3>15.7. GNUTLS bindings</H3>
 
 <p><a name="GNUTLS"></a>The package GNUTLS provides bindings to the
-<a href="http://www.gnutls.org/">GNUTLS</a> library. The bindings are semi-high. 
+<a href="http://www.gnutls.org/">GNUTLS</a> library. The bindings are semi-thick. 
 Where possible the objects requiring initialization and finalization are wrapped 
-into controlled types. Thus there is no explicit calls to functions like 
-gnutls_init because they are called automatically. The return codes are handled 
+into controlled types. Thus there is no explicit calls to functions like gnutls_init because they are called automatically. The return codes are handled 
 by the bindings and a TLS_Error exception is propagated with the corresponding 
 message text. The original error code can be obtained from the exception 
 occurrence using the function:</p>
@@ -24699,14 +24699,21 @@ Exception_Occurrence) <font color="#0000FF">return</font> int;</tt></p>
 <p>The naming of bound subprograms and data types follows the rules:</p>
 <ul>
 	<li>The prefix <i>gnutls_</i> is removed, thus, for example, <i>
-	Auth_Get_Type</i> instead of <i>gnutls_auth_server_get_type</i>;</li>
+	Auth_Get_Type</i> is used instead of original function name <i>gnutls_auth_server_get_type</i>;</li>
 	<li>Where possible, alternative variants of calls having numeric suffixex <i>
 	_2</i>, <i>_3</i> etc are overloaded with the suffix removed. Thus <i>
-	Certificate_Server_Set_OpenPGP_Key_File</i> instead of <i>
+	Certificate_Server_Set_OpenPGP_Key_File</i> is used instead of <i>
 	gnutls_certificate_set_openpgp_key_file2</i>;</li>
 	<li>Hungarian notation suffixes, like <i>_t </i>are consistently removed. 
-	Thus <i>Certificate_Credentials</i>, not <i>gnutls_certificate_credentials_t</i>.</li>
+	Thus, <i>Certificate_Credentials</i>, not <i>gnutls_certificate_credentials_t</i>.</li>
 </ul>
+
+<p>Where GNUTLS supports a user-defined void * data parameter, a controlled type 
+is used with an abstract primitive operation instead of callbacks, i.e. the 
+visitor pattern. Where GNUTLS does not have user data parameter, a generic 
+package is used with a formal procedure used as a callback.</p>
+<p>Where possible the parameters of the type <i>Datum_t</i> are replaced with 
+Stream_Element_Array or String as appropriate.</p>
 
 <hr>
 <p align="right">
@@ -25675,7 +25682,17 @@ type engages a handshaking which includes exchange of certificates. When the
 handshaking is successful the following exchange continues encrypted. There is 
 no need to change anything in the original protocol implementation. Both secure 
 and insecure factories may use same <a href="#GNAT.Sockets.Server.Connection">
-client connection</a> objects. The following primitive operations are defined:</p>
+client connection</a> objects. The following primitive operations are defined 
+subdivided into sections:</p>
+<ul>
+	<li><i>Certificate revocation list</i></li>
+	<li><i>Public and private keys</i></li>
+	<li><i>Trusted certificate list</i></li>
+	<li><i>Diffie-Hellman parameters</i></li>
+	<li><i>Online Certificate Status Protocol (OCSP)</i></li>
+</ul>
+<p><i><u>Certificate revocation list</u> </i>is specifying been revoked 
+certificates, which thus should no longer be trusted.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Add_CRL<br>
@@ -25687,6 +25704,16 @@ client connection</a> objects. The following primitive operations are defined:</
 </blockquote>
 <p>This procedure adds the trusted CRLs in order to verify client certificates.
 <b>List</b> is the array containing CRL to add.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_CRL_DER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Certificate</b> : Stream_Element_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedures adds a trusted CRL in order to verify client certificates.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Add_CRL_From_<b>{</b>DER<b>|</b>PEM<b>}</b>_File<br>
@@ -25701,6 +25728,19 @@ from a file with the name <b>File</b>. The procedure name corresponds to the
 file format, <i>DER</i> for binary file format, <i>PEM</i> for text file format.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_CRL_PEM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Certificate</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedures adds a trusted CRL in order to verify client certificates.</p>
+<p><u><i>Public and private keys</i></u> are pairs used for encryption, 
+decryption, and signing.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF">procedure </font>Add_Key<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; 
 : <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
@@ -25713,6 +25753,41 @@ Private_Key</b> : OpenPGP_Privkey<br>
 <p>This procedure adds a certificate/private OpenPGP key pair. <b>Public_Key</b> 
 is the public key, <b>Private_Key</b> is the private key. More than one keys 
 pair can be added.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Key_DER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Certificate</b> : Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>[
+Key</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Stream_Element_Array;<b> 
+]</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>[ Encryption</b>&nbsp;&nbsp;: PKCS_Encrypt_Flags;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Password</b>&nbsp;&nbsp;&nbsp;&nbsp;: String <b>]</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set a certificate/private key pair into factory. They may be 
+called more than once. The key may be omitted if only certificate need to be 
+added.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Key_PEM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Certificate</b> : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>[
+Key</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String;<b> ]</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>[ Encryption</b>&nbsp;&nbsp;: PKCS_Encrypt_Flags;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Password</b>&nbsp;&nbsp;&nbsp;&nbsp;: String <b>]</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set a certificate/private key pair into factory. They may be 
+called more than once. The key may be omitted if only certificate need to be 
+added.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Add_Key_From_<b>{</b>DER<b>|</b>PEM<b>}</b>_File<br>
@@ -25785,6 +25860,9 @@ file encoding, raw or else Base64.</p>
 from the keyring file <b>File</b>. The files should contain at least one valid 
 non-encrypted subkey. These procedures may be called more than once. The 
 procedure name corresponds to the keyring file format, raw or else Base64.</p>
+<p><i><u>Trusted certificates list</u> </i>contains certificates issued by trusted 
+certificate authority. All certificates should be tracked down to a trusted 
+source.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Add_Trust<br>
@@ -25796,6 +25874,17 @@ procedure name corresponds to the keyring file format, raw or else Base64.</p>
 </blockquote>
 <p>This procedure adds the trusted CAs in order to verify client certificates. 
 This procedure may be called more than once.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Trust_DER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Certificate</b> : Stream_Element_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures add the trusted CA in order to verify client certificates. 
+They may be called multiple times.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Add_Trust_From_<b>{</b>DER<b>|</b>PEM<b>}</b>_File<br>
@@ -25812,6 +25901,17 @@ corresponds to the file format, <i>DER</i> for binary file format, <i>PEM</i>
 for text file format.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">procedure </font>Add_Trust_PEM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">in out</font> X509_Authentication_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Certificate</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures add the trusted CA in order to verify client certificates. 
+They may be called multiple times.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF">procedure </font>Add_System_Trust<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b> :
 <font color="#0000FF">in out</font> X509_Authentication_Factory<br>
@@ -25819,6 +25919,8 @@ for text file format.</p>
 </blockquote>
 <p>This procedure adds the system's default trusted CAs in order to verify 
 client certificates.</p>
+<p><i><u>Diffie-Hellman parameters</u> </i>of securely exchanged cryptographic keys 
+over a public channel.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Generate_Diffie_Hellman_Parameters<br>
@@ -25828,6 +25930,8 @@ client certificates.</p>
 </blockquote>
 <p>This procedure generates Diffie-Hellman parameters. The operation is 
 time-consuming. If not generated explicitly, parameters are generated on demand.</p>
+<p><i>Online Certificate Status Protocol (OCSP) </i>is an Internet protocol used 
+for obtaining the revocation status of an X.509 digital certificate.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Set_OCSP_Response_File<br>
@@ -25839,6 +25943,7 @@ time-consuming. If not generated explicitly, parameters are generated on demand.
 </blockquote>
 <p>This procedure sets the filename of an OCSP response, that will be sent to 
 the client if requests an OCSP certificate status.</p>
+<p><u><i>General priorities</i></u>, parameters used for authentication.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Set_Priorities<br>
@@ -28896,7 +29001,9 @@ The purpose of
 is only to decide if the connection request is to be accepted or rejected. The result's type is:</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">type</font> WebSocket_Accept<br>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Accept">
+</a>type</font> WebSocket_Accept<br>
 &nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Accepted : Boolean;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Length&nbsp;&nbsp; : Natural<br>
 &nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
@@ -28906,6 +29013,8 @@ record<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 : WebSocket_Message_Size;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duplex&nbsp;&nbsp;&nbsp; : 
+Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Chunked&nbsp;&nbsp; : 
 Boolean;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protocols : String (<font color="#800000">1</font>..Length);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> False =&gt;<br>
@@ -28923,9 +29032,15 @@ further record members specify:</p>
 <ul>
 	<li><i>Size</i> determines the maximal length in octets of an incoming 
 	message. The client may split the message into several frames. The value 
-	specifies the maximal integral length of the message;</li>
+	specifies the maximal integral length of the message or the maximal length 
+	of the message chunk if chunked message receipt allowed (<i>Chunked</i> set
+	<i><font color="#800000">true</font></i>) ;</li>
 	<li><i>Duplex</i> specifies full-duplex operating mode when <font color="#800000"><i>
 	true</i></font>;</li>
+	<li><i>Chunked</i>, when <font color="#800000"><i>
+	true, </i></font>allows messages larger than <i>Size</i> received in chunks 
+	(see
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Received_Part">WebSocket_Received_Part</a>);</li>
 	<li><i>Protocols</i> is the list of protocols reported to the client as 
 	supported. If this string is empty the contents of <i>Sec-WebSocket-Protocol</i> 
 	is taken.</li>
@@ -28984,6 +29099,39 @@ Message</b> : String<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>These procedures are called on a message receipt. The parameter <b>Message</b> 
+is the message body. It is a Stream_Element_Array if the client has sent a binary 
+message or else a String (UTF-8 encoded) if the message was a text message. Note 
+that <b>Message</b> is not checked for being a correctly encoded UTF-8 text. The default 
+implementations do nothing.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Received_Part">
+</a>procedure</font> WebSocket_Received_Part<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> HTTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : Stream_Element_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> WebSocket_Received_Part<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> HTTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures are called when a message part is received. It is used only 
+when 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Open">WebSocket_Open</a> 
+returns the <i>Chunked</i> field of
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Accept">WebSocket_Accept</a>
+<font color="#800000"><i>true</i></font> and the message payload data exceeds 
+the message buffer (the field <i>Size</i>). In this case the message may be 
+delivered in chunks. Each time the message payload data buffer becomes full
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Received_Part">WebSocket_Received_Part</a> 
+is called.
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Received">WebSocket_Received</a> 
+is called for the last message part indicating that the receipt is completed. The parameter <b>Message</b> 
 is the message body. It is a Stream_Element_Array if the client has sent a binary 
 message or else a String (UTF-8 encoded) if the message was a text message. Note 
 that <b>Message</b> is not checked for being a correctly encoded UTF-8 text. The default 
@@ -31688,33 +31836,95 @@ parts of the Simple Components will fail. These faults can be safely ignored
 during the installation.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <TR>
-    <TD valign="top" bgcolor="#008080" rowspan="2"><FONT color="#FFFFFF"><B>Project files</B></FONT></TD>
-    <TD valign="top" bgcolor="#008080" colspan="10"><FONT color="#FFFFFF"><B>Provides</B></FONT></TD>
-    <TD valign="top" bgcolor="#008080" rowspan="2"><FONT color="#FFFFFF"><B>Use in custom 
-	project</B></FONT></TD>
+    <TD valign="bottom" bgcolor="#008080" rowspan="10"><FONT color="#FFFFFF"><B>Project files </B>
+	*.gpr</FONT></TD>
+    <TD valign="top" bgcolor="#008080" colspan="11" style="border-right-style: none; border-right-width: medium; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Simple Components,
+	Strings Edit,
+	Tables</font></b></TD>
   </TR>
   <TR>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">Simple Components,<br>
-	Strings Edit,<br>
-	Tables</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">Multiple 
-	connections server</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">HTTP server</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">Secure 
-	connections server</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">SQLite</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">ODBC</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">SQLite HTTP 
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="10" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Multiple 
+	TCP/IP connections server</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="9" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">HTTP server</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="8" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Secure 
+	SSL/TSL connections server</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="7" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="6" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">ODBC 
+	32/64</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="5" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3 HTTP 
 	browser</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">GNUTLS</font></b></TD>
-    <TD valign="top" bgcolor="#008080"><font color="#FFFFFF"><b>GNADE </b>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="4" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">GNUTLS</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="3" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><font color="#FFFFFF"><b>GNADE </b>
 	(depreciated)</font></TD>
-    <TD valign="top" bgcolor="#008080"><b><font color="#FFFFFF">APQ</font></b><font color="#FFFFFF"><br>
-	(depreciated)</font></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="2" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px"><b><font color="#FFFFFF">APQ</font></b><font color="#FFFFFF">
+	(depreciated)<B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Usage in 
+	a custom 
+	project</B></font></TD>
   </TR>
   <TR>
     <TD valign="top">components</TD>
-    <TD align="center">+</TD>
+    <TD align="center" style="border-top-style: solid; border-top-width: 1px">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -31856,7 +32066,7 @@ during the installation.</p>
 	<font color="#0000FF">with</font> 
 	&quot;components-odbc.gpr&quot;;</tt></TD>
   </tr>
-  <TR>
+  <tr>
     <TD valign="top">components-sqlite</TD>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -31868,10 +32078,10 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
-    <TD valign="top"><tt>
+    <TD valign="top" style="border-bottom-style: solid; border-bottom-width: 1px"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-sqlite.gpr&quot;;</tt></TD>
-  </TR>
+  </tr>
   </TABLE>
 <h3><a name="18.1"></a>18.1. Debian and Fedora packages</h3>
 <p>Under Fedora, Debian Linux and their derivates you can use packages for
@@ -31907,12 +32117,18 @@ The following versions were tested with the compilers:</i>
   <li><i>GNAT 4.9.0</i></li>
   </ul>
 <P>
-Changes (2015) to the version 4.4:<ul>
+Changes (2015) to the version 4.5:<ul>
+	<li>Receiving WebSocked messages in chunks was added.</li>
+	</ul>
+<P>
+Changes (17 January 2015) to the version 4.4:<ul>
 	<li>Dynamically allocated terminated strings added in the package 
 	GNAT.Sockets.Connection_State_Machine.Terminated_Strings;</li>
 	<li>Input buffer size discriminant added to HTTP_Client connection object;</li>
 	<li>Tracing primitive operation extended for encoded/ciphered content;</li>
 	<li>GNUTLS bindings added;</li>
+	<li>Secure SSL/TLS multiple-connections servers added. The implementation is 
+	based on GNUTLS;</li>
 	<li>Secure HTTP implementation added.</li>
 	</ul>
 <P>

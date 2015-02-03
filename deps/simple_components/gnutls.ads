@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  11:25 17 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -138,6 +138,8 @@ package GNUTLS is
           KX_RSA_PSK      -- RSA-PSK key-exchange algorithm
        );
    pragma Convention (C, KX_Algorithm);
+   type KX_Algorithm_Array is
+      array (Positive range <>) of aliased KX_Algorithm;
 --
 -- Enumeration of different TLS session parameter types.
 --
@@ -204,6 +206,8 @@ package GNUTLS is
           MAC_UMAC_128 => 202
        );
    pragma Convention (C, MAC_Algorithm);
+   type MAC_Algorithm_Array is
+      array (Positive range <>) of aliased MAC_Algorithm;
 
    MAC_SHA : constant MAC_Algorithm := MAC_SHA1;
 --
@@ -351,6 +355,11 @@ package GNUTLS is
    Handshake_Client_Hello_V2   : constant Handshake_Description := 1024;
    Handshake_Any               : constant Handshake_Description :=
                                           Handshake_Description'Last;
+
+   type Hook_Type is new int;
+   Hook_Post : constant Hook_Type := 1;
+   Hook_Pre  : constant Hook_Type := 0;
+   Hook_Both : constant Hook_Type := -1;
 --
 -- Enumeration of certificate status codes.  Note that the status
 -- bits may have different meanings in OpenPGP keys and X.509
@@ -581,10 +590,13 @@ package GNUTLS is
    type const_unsigned_chars_ptr is access constant unsigned_char;
    pragma Convention (C, unsigned_chars_ptr);
    type Datum is record
-      Data : const_unsigned_chars_ptr;
-      Size : unsigned := 0;
+      Data : System.Address := System.Null_Address;
+      Size : unsigned       := 0;
    end record;
    pragma Convention (C, Datum);
+   function New_Datum (Data : Stream_Element_Array) return Datum;
+   function To_Datum (Data : Stream_Element_Array) return Datum;
+   function To_Datum (Data : char_array) return Datum;
    type Datum_Array is array (Positive range <>) of aliased Datum;
    type Datum_Holder is
       new Ada.Finalization.Limited_Controlled with
@@ -722,12 +734,12 @@ package GNUTLS is
    type Certificate_Credentials is
       new Abstract_Credentials with private;
 
-   type Abstract_SRP_Credentials is abstract
-      new Abstract_Credentials with private;
-   type SRP_Client_Credentials is
-      new Abstract_SRP_Credentials with private;
-   type SRP_Server_Credentials is
-      new Abstract_SRP_Credentials with private;
+--     type Abstract_SRP_Credentials is abstract
+--        new Abstract_Credentials with private;
+--     type SRP_Client_Credentials is
+--        new Abstract_SRP_Credentials with private;
+--     type SRP_Server_Credentials is
+--        new Abstract_SRP_Credentials with private;
 
    type Anon_Client_Credentials_Ref is
       new Anon_Client_Credentials with private;
@@ -735,10 +747,10 @@ package GNUTLS is
       new Anon_Server_Credentials with private;
    type Certificate_Credentials_Ref is
       new Certificate_Credentials with private;
-   type SRP_Client_Credentials_Ref is
-      new SRP_Client_Credentials with private;
-   type SRP_Server_Credentials_Ref is
-      new SRP_Server_Credentials with private;
+--     type SRP_Client_Credentials_Ref is
+--        new SRP_Client_Credentials with private;
+--     type SRP_Server_Credentials_Ref is
+--        new SRP_Server_Credentials with private;
 --  --
 --  -- Credentials_Get -- Get previously provided credentials
 --  --
@@ -916,7 +928,7 @@ package GNUTLS is
 --
    function Alpn_Get_Selected_Protocol
             (  Session : Session_Type
-            )  return Datum;
+            )  return Stream_Element_Array;
 --
 -- Alpn_Set_Selected_Protocol -- Set ALPN protocol
 --
@@ -1137,7 +1149,7 @@ package GNUTLS is
             (  Credentials : Certificate_Credentials;
                Idx1        : unsigned;
                Idx2        : unsigned
-            )  return Datum;
+            )  return Stream_Element_Array;
 --
 -- Certificate_Get_Issuer -- Get certificate
 --
@@ -1173,7 +1185,7 @@ package GNUTLS is
 --
    function Certificate_Get_Ours
             (  Session : Session_Type
-            )  return Datum;
+            )  return Stream_Element_Array;
 --
 -- Certificate_Get_Peers -- Get certificates
 --
@@ -1197,15 +1209,16 @@ package GNUTLS is
 -- Certificate_Get_Peers_Subkey_ID -- Get subkey ID
 --
 --    Session - The session
---    ID      - The certificate
 --
--- Get the peer's subkey ID when  OpenPGP  certificates  are  used.  The
--- returned id should be treated as constant.
+-- Get the peer's subkey ID when  OpenPGP certificates are used
 --
-   procedure Certificate_Get_Peers_Subkey_ID
-             (  Session : Session_Type;
-                ID      : in out Datum
-             );
+-- Returns :
+--
+--    The subkey ID
+--
+   function Certificate_Get_Peers_Subkey_ID
+            (  Session : Session_Type
+            )  return String;
 --
 -- Certificate_Send_X509_RDN_Sequence -- Send status
 --
@@ -1358,14 +1371,14 @@ package GNUTLS is
 --
    procedure Certificate_Server_Set_OpenPGP_Key_Mem
              (  Credentials  : in out Certificate_Credentials;
-                Public_Keys  : Datum;
-                Private_Keys : Datum;
+                Public_Keys  : Stream_Element_Array;
+                Private_Keys : Stream_Element_Array;
                 Format       : OpenPGP_Crt_Fmt
              );
    procedure Certificate_Server_Set_OpenPGP_Key_Mem
              (  Credentials  : in out Certificate_Credentials;
-                Public_Keys  : Datum;
-                Private_Keys : Datum;
+                Public_Keys  : Stream_Element_Array;
+                Private_Keys : Stream_Element_Array;
                 Subkey_ID    : String;
                 Format       : OpenPGP_Crt_Fmt
              );
@@ -1487,7 +1500,7 @@ package GNUTLS is
    generic
       with procedure Handle
                      (  Session        : in out Session_Type;
-                        Req_CA_RDN     : Datum;
+                        Req_CA_RDN     : Stream_Element_Array;
                         Number_Of_Reqs : int;
                         Algorithms     : PK_Algorithm_Array;
                         Retrieve       : in out Retr2
@@ -1577,9 +1590,9 @@ package GNUTLS is
 --
 -- Certificate_Set_X509_CRL_Mem -- Set trusted CRLs
 --
---    Credentials - The credentials
---    List        - The list of trusted CRLs
---    Format      - PEM or DER
+--    Credentials        - The credentials
+--    List / Certificate - The list of trusted CRLs
+--    Format             - PEM or DER
 --
 -- This function adds the trusted  CRLs in  order to  verify  client  or
 -- server  certificates.  In  case of  a client  this is  not  required.
@@ -1588,6 +1601,11 @@ package GNUTLS is
    procedure Certificate_Set_X509_CRL_Mem
              (  Credentials : in out Certificate_Credentials;
                 List        : Datum_Array;
+                Format      : X509_Crt_Fmt
+             );
+   procedure Certificate_Set_X509_CRL_Mem
+             (  Credentials : in out Certificate_Credentials;
+                Certificate : Stream_Element_Array;
                 Format      : X509_Crt_Fmt
              );
 --
@@ -1707,28 +1725,28 @@ package GNUTLS is
 --
    procedure Certificate_Set_X509_Key_Mem
              (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
-                Key         : Datum;
+                Cert        : Stream_Element_Array;
+                Key         : Stream_Element_Array;
                 Format      : X509_Crt_Fmt;
                 Password    : String;
                 Flags       : PKCS_Encrypt_Flags
              );
    procedure Certificate_Set_X509_Key_Mem
              (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
-                Key         : Datum;
+                Cert        : Stream_Element_Array;
+                Format      : X509_Crt_Fmt;
+                Password    : String;
+                Flags       : PKCS_Encrypt_Flags
+             );
+   procedure Certificate_Set_X509_Key_Mem
+             (  Credentials : in out Certificate_Credentials;
+                Cert        : Stream_Element_Array;
+                Key         : Stream_Element_Array;
                 Format      : X509_Crt_Fmt
              );
    procedure Certificate_Set_X509_Key_Mem
              (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
-                Format      : X509_Crt_Fmt;
-                Password    : String;
-                Flags       : PKCS_Encrypt_Flags
-             );
-   procedure Certificate_Set_X509_Key_Mem
-             (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
+                Cert        : Stream_Element_Array;
                 Format      : X509_Crt_Fmt
              );
 --
@@ -1787,7 +1805,7 @@ package GNUTLS is
 --
    procedure Certificate_Set_X509_Simple_PKCS12_Mem
              (  Credentials : in out Certificate_Credentials;
-                P12blob     : Datum;
+                P12blob     : Stream_Element_Array;
                 Format      : X509_Crt_Fmt;
                 Password    : String
              );
@@ -1861,10 +1879,10 @@ package GNUTLS is
 -- Certificate_Set_X509_Trust_Mem -- Set from memory
 --
 --    Credentials - The credentials
---    Certificate - A list of trusted CAs or a DER certificate
+--    Certificate - A trusted CA
 --    Format      - PEM or DER
 --
--- This function adds the trusted CAs  in  order  to  verify  client  or
+-- This function adds the trusted CA   in  order  to  verify  client  or
 -- server certificates. In case of a client this is not  required.  This
 -- function may be called multiple times. In case of a  server  the  CAs
 -- set here will be sent to the client if a certificate request is sent.
@@ -1872,7 +1890,7 @@ package GNUTLS is
 --
    procedure Certificate_Set_X509_Trust_Mem
              (  Credentials : in out Certificate_Credentials;
-                Certificate : Datum;
+                Certificate : Stream_Element_Array;
                 Format      : X509_Crt_Fmt
              );
 --
@@ -2146,7 +2164,7 @@ package GNUTLS is
 --
    function DB_Check_Entry
             (  Session       : Session_Type;
-               Session_Entry : Datum
+               Session_Entry : Stream_Element_Array
             )  return Boolean;
 --
 -- DB_Remove_Session -- Remove session
@@ -2188,15 +2206,15 @@ package GNUTLS is
       new Ada.Finalization.Limited_Controlled with null record;
    procedure Remove
              (  Request : in out DB_Request;
-                Key     : Datum
+                Key     : Stream_Element_Array
              )  is abstract;
    function Retrieve
-            (  Request : in out DB_Request;
-               Key     : Datum
-            )  return Datum is abstract;
+            (  Request : access DB_Request;
+               Key     : Stream_Element_Array
+            )  return Stream_Element_Array is abstract;
    procedure Store
              (  Request : in out DB_Request;
-                Key     : Datum
+                Key     : Stream_Element_Array
              )  is abstract;
    procedure DB_Set_Functions
              (  Session : in out Session_Type;
@@ -2218,7 +2236,9 @@ package GNUTLS is
 --
 --    Time_Error - Time error
 --
-   function DB_Check_Entry_Time (DB_Entry : Datum) return Time;
+   function DB_Check_Entry_Time
+            (  DB_Entry : Stream_Element_Array
+            )  return Time;
 --
 -- DB_Get_Group -- Get group parameters
 --
@@ -2418,7 +2438,7 @@ package GNUTLS is
 --
    procedure DH_Params_Import_PKCS3
              (  Params       : in out DH_Params;
-                PKCS3_Params : Datum;
+                PKCS3_Params : Stream_Element_Array;
                 Format       : X509_Crt_Fmt
              );
 --
@@ -2433,8 +2453,8 @@ package GNUTLS is
 --
    procedure DH_Params_Import_Raw
              (  Params    : in out DH_Params;
-                Prime     : Datum;
-                Generator : Datum
+                Prime     : Stream_Element_Array;
+                Generator : Stream_Element_Array
              );
 --
 -- Digest_Get_ID -- Get digest algorithm
@@ -2661,6 +2681,133 @@ package GNUTLS is
             (  Description : Handshake_Description
             )  return String;
 --
+-- Handshake_Get_Last_In -- Get the last handshake message received
+--
+--    Session - The session
+--
+-- This function is only  useful  to  check  where  the  last  performed
+-- handshake  failed.  If  the  previous  handshake  succeed  or was not
+-- performed at all then no meaningful value will be returned.
+
+-- Returns :
+--
+--    The last handshake message type received
+--
+   function Handshake_Get_Last_In
+            (  Session : Session_Type
+            )  return Handshake_Description;
+--
+-- Handshake_Get_Last_Out -- Get the last handshake message sent
+--
+--    Session - The session
+--
+-- This function is only  useful  to  check  where  the  last  performed
+-- handshake  failed.  If  the  previous  handshake  succeed  or was not
+-- performed at all then no meaningful value will be returned.
+
+-- Returns :
+--
+--    The last handshake message type sent
+--
+   function Handshake_Get_Last_Out
+            (  Session : Session_Type
+            )  return Handshake_Description;
+--
+-- Handshake_Set_Hook_Function -- Handshake hook
+--
+--    Session - The session
+--    Message - The message to hook at
+--    Post    - When the hook function should be called
+--    Func    - The callback to call
+--
+-- This function will set a callback to be called after  or  before  the
+-- specified handshake message has been received or generated. This is a
+-- generalization  of  Handshake_Set_Post_Client_Hello_Function. To call
+-- the hook function prior  to  the  message  being  sent/generated  use
+-- Hook_Pre  as  post  parameter, Hook_Post to call after, and Hook_Both
+-- for  both  cases. This callback should raise a TLS_Error to terminate
+-- the  handshake. Note to hook at all handshake messages use an Message
+-- of  Handshake_Any.  Warning:  You  should  not  use  this function to
+-- terminate the handshake based on client input unless  you  know  what
+-- you are doing. Before the handshake is finished there is  no  way  to
+-- know if there is a man-in-the-middle attack being performed.
+--
+   generic
+      with procedure Hook
+                     (  Session  : in out Session_Type;
+                        Message  : Handshake_Description;
+                        Post     : Hook_Type;
+                        Incoming : unsigned
+                     );
+   package Handshake_Set_Hook_Function is
+      procedure Set
+                (  Session : in out Session_Type;
+                   Message : Handshake_Description;
+                   Post    : Hook_Type
+                );
+   end Handshake_Set_Hook_Function;
+--
+-- Handshake_Set_Max_Packet_Length -- Set the maximum packet length
+--
+--    Session - The session
+--    Max     - The maximum number
+--
+-- This function will set the maximum size of  all  handshake  messages.
+-- Handshakes over this size  are  rejected  with  E_Handshake_Too_Large
+-- error code. The default  value  is  48kb  which  is  typically  large
+-- enough. Set this to 0 if you do not want to set an upper  limit.  The
+-- reason for restricting the  handshake  message  sizes  are  to  limit
+-- Denial of Service attacks.
+--
+   procedure Handshake_Set_Max_Packet_Length
+             (  Session : in out Session_Type;
+                Max     : size_t
+             );
+--
+-- Handshake_Set_Post_Client_Hello_Function -- Handshake hello hook
+--
+--    Session - The session
+--
+-- This function will set a callback to be called after the client hello
+-- has  been  received (callback valid in server side only). This allows
+-- the server to adjust settings based  on  received  extensions.  Those
+-- settings could be ciphersuites, requesting certificate,  or  anything
+-- else except for version negotiation (this is done  before  the  hello
+-- message is parsed). This callback must raise TLS_Error  to  terminate
+-- the  handshake.  Since GnuTLS 3.3.5 the callback is allowed to return
+-- True  in  Hold  to  put the handshake on hold. In that case Handshake
+-- will  return  E_Interrupted  and can be resumed when needed. Warning:
+-- You  should not use this function to terminate the handshake based on
+-- client input unless you know what you are doing. Before the handshake
+-- is  finished  there is no way to know if there is a man-in-the-middle
+-- attack being performed.
+--
+   generic
+      with procedure Hello
+                     (  Session : in out Session_Type;
+                        Hold    : out Boolean
+                     );
+   package Handshake_Set_Post_Client_Hello_Function is
+      procedure Set (Session : in out Session_Type);
+   end Handshake_Set_Post_Client_Hello_Function;
+--
+-- Handshake_Set_Random -- Set random value
+--
+--    Session - The session
+--    Random  - The value
+--
+-- This  function  will explicitly set the server or client hello random
+-- value in the subsequent TLS handshake. Note that this function should
+-- not  normally  be  used  as GNUTLS will select automatically a random
+-- value for the handshake.  This  function  should  not  be  used  when
+-- resuming a session.
+--
+   subtype Random_Value is Stream_Element_Array (1..32);
+   procedure Handshake_Set_Random
+             (  Session : in out Session_Type;
+                Random  : Random_Value
+             );
+--
 -- Handshake_Set_Timeout -- Set handshake timeout
 --
 --    Session - The session
@@ -2704,9 +2851,205 @@ package GNUTLS is
 --
    function Is_Initialized (Cache : Priority) return Boolean;
 --
--- PK_Algorithm_Get_Name -- Get algorithm name
+-- KX_Get -- Get currently used key exchange algorithm
+--
+--    Session - The session
+--
+-- Returns :
+--
+--    The key exchange algorithm used in the last handshake
+--
+   function KX_Get (Session : Session_Type) return KX_Algorithm;
+--
+-- KX_Get_ID -- Get key exchange algorithm by name
+--
+--    Name - The key exchange algorithm by name
+--
+-- Returns :
+--
+--    The key exchange algorithm
+--
+   function KX_Get_ID (Name : String) return KX_Algorithm;
+--
+-- KX_Get_Name -- Get algorithm name
 --
 --    Algorithm - The algorithm
+--
+-- Returns :
+--
+--    The name of
+--
+-- Exceptions :
+--
+--    End_Error - Nothing matched
+--
+   function KX_Get_Name (Algorithm : KX_Algorithm) return String;
+--
+-- KX_List -- Get key exchange algorithms
+--
+-- Returns :
+--
+--    Supported key exchange algorithms
+--
+   function KX_List return KX_Algorithm_Array;
+--
+-- MAC_Get -- Get currently used MAC algorithm
+--
+--    Session - The session
+--
+-- Returns :
+--
+--    The MAC algorithm
+--
+   function MAC_Get (Session : Session_Type) return MAC_Algorithm;
+--
+-- MAC_Get_Key_Size -- Get the size of the MAC key used in TLS
+--
+--    Algorithm - The algorithm
+--
+-- Returns :
+--
+--    Returns the size of the MAC key used in TLS
+--
+   function MAC_Get_Key_Size (Algorithm : KX_Algorithm) return size_t;
+--
+-- MAC_Get_ID -- Get MAC algorithm by name
+--
+--    Name - The MAC algorithm by name
+--
+-- Returns :
+--
+--    The MAC algorithm
+--
+   function MAC_Get_ID (Name : String) return MAC_Algorithm;
+--
+-- MAC_Get_Name -- Get algorithm name
+--
+--    Algorithm - The algorithm
+--
+-- Returns :
+--
+--    The name of
+--
+-- Exceptions :
+--
+--    End_Error - Nothing matched
+--
+   function MAC_Get_Name (Algorithm : MAC_Algorithm) return String;
+--
+-- MAC_List -- Get MAC algorithms
+--
+-- Returns :
+--
+--    Supported MAC algorithms
+--
+   function MAC_List return MAC_Algorithm_Array;
+--
+-- OCSP_Status_Request_Is_Checked -- Check status
+--
+--    Session - The session
+--
+-- Check  whether  an OCSP status response was included in the handshake
+-- and whether it was checked and valid (not  too  old  or  superseded).
+-- This is a helper function when needing to decide whether  to  perform
+-- an OCSP validity check on the  peer's  certificate.  Must  be  called
+-- after Certificate_Verify_Peers is called.
+--
+-- Returns :
+--
+--    False if it wasn't sent, or sent and was invalid.
+--
+   function OCSP_Status_Request_Is_Checked
+            (  Session : Session_Type
+            )  return Boolean;
+--
+-- OpenPGP_Send_Cert -- Send OpenPGP certificate
+--
+--    Session - The session
+--    Status  - The status
+--
+-- This  function  will order GNUTLS to send the key fingerprint instead
+-- of  the  key  in the initial handshake procedure. This should be used
+-- with care and only when there is indication  or  knowledge  that  the
+-- server can obtain the client's key.
+--
+   procedure OpenPGP_Send_Cert
+             (  Session : Session_Type;
+                Status  : OpenPGP_Crt_Status
+             );
+--
+-- PEM_Base64_Decode -- Decode
+--
+--  [ Header ]  - To search for --BEGIN header
+--    Data      - To decode
+--  [ Result    - The result buffer
+--    Pointer ] - The first element to rewrite, advanced
+--
+-- This procedure will decode the given  encoded  data.  If  the  header
+-- given  is  specified  this procedure will search for "--BEGIN header"
+-- and decode only this part. Otherwise it will  decode  the  first  PEM
+-- packet found.
+--
+-- Returns :
+--
+--  [ The decoded result ]
+--
+-- Exceptions :
+--
+--    Layout_Error -- Pointer out of Result or no room
+--
+   procedure PEM_Base64_Decode
+             (  Header  : String;
+                Data    : Stream_Element_Array;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             );
+   procedure PEM_Base64_Decode
+             (  Header  : String;
+                Data    : String;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             );
+   procedure PEM_Base64_Decode
+             (  Data    : Stream_Element_Array;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             );
+   procedure PEM_Base64_Decode
+             (  Data    : String;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             );
+--
+-- PEM_Base64_Encode -- Encode
+--
+--    Data      - To encode
+--  [ Result    - The result buffer
+--    Pointer ] - The first element to rewrite, advanced
+--
+-- This function  will convert  the given data  to printable data, using
+-- the base64 encoding. This is the encoding used in PEM messages.
+--
+-- Returns :
+--
+--  [ The encoded result ]
+--
+-- Exceptions :
+--
+--    Layout_Error -- Pointer out of Result or no room
+--
+   procedure PEM_Base64_Encode
+             (  Data    : Stream_Element_Array;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             );
+   function PEM_Base64_Encode
+            (  Data : Stream_Element_Array
+            )  return Stream_Element_Array;
+--
+-- PK_Algorithm_Get_Name -- Get public key algorithm name
+--
+--    Algorithm - The public key algorithm
 --
 -- Returns :
 --
@@ -2736,6 +3079,53 @@ package GNUTLS is
             (  Algorithm : PK_Algorithm;
                Bits      : Positive
             )  return Sec_Param;
+--
+-- PK_Get_ID -- Get public key algorithm by name
+--
+--    Name - The public key algorithm by name
+--
+-- Returns :
+--
+--    The public key algorithm
+--
+   function PK_Get_ID (Name : String) return PK_Algorithm;
+--
+-- PK_Get_Name -- Get public key algorithm name
+--
+--    Algorithm - The public key algorithm
+--
+-- Returns :
+--
+--    The name of
+--
+-- Exceptions :
+--
+--    End_Error - Nothing matched
+--
+   function PK_Get_Name (Algorithm : PK_Algorithm) return String;
+--
+-- PK_List -- Get public key algorithms
+--
+-- Returns :
+--
+--    Supported public key algorithms
+--
+   function PK_List return PK_Algorithm_Array;
+--
+-- PK_To_Sign -- Maps  public  key and  hash algorithms  combinations to
+--               signature algorithms
+--
+--    PK     -  A public key algorithm
+--    Digest - A hash algorithm
+--
+-- Returns :
+--
+--    The signature algorithm
+--
+   function PK_To_Sign
+            (  PK     : PK_Algorithm;
+               Digest : Digest_Algorithm
+            )  return Sign_Algorithm;
 --
 -- Priority_Set -- Set priority cache
 --
@@ -3066,6 +3456,20 @@ package GNUTLS is
             (  Session : Session_Type
             )  return Boolean;
 --
+-- Sec_Param_Get_Name -- Get security parameter name
+--
+--    Param - A security parameter
+--
+-- Returns :
+--
+--    The parameter name
+--
+-- Exceptions :
+--
+--    End_Error - No parameter matched
+--
+   function Sec_Param_Get_Name (Param : Sec_Param) return String;
+--
 -- Sec_Param_To_PK_Bits -- Get certificate type by name
 --
 --    Algorithm - A public key algorithm
@@ -3127,7 +3531,7 @@ package GNUTLS is
 --
    procedure Session_Get_Data
              (  Session : Session_Type;
-                Data    : in out Datum_Holder
+                Data    : in out Datum_Holder'Class
              );
 --
 -- Session_Get_Desc -- Get session description
@@ -3149,7 +3553,9 @@ package GNUTLS is
 --
 --    The current session ID
 --
-   function Session_Get_ID (Session : Session_Type) return Datum;
+   function Session_Get_ID
+            (  Session : Session_Type
+            )  return Stream_Element_Array;
 --
 -- Session_Get_Ptr -- Get user pointer
 --
@@ -3197,7 +3603,7 @@ package GNUTLS is
 
    procedure Session_Set_Data
              (  Session : in out Session_Type;
-                Data    : Datum
+                Data    : Stream_Element_Array
              );
 --
 -- Session_Set_Ptr -- Set user pointer
@@ -3231,7 +3637,7 @@ package GNUTLS is
 
    procedure Session_Ticket_Enable_Server
              (  Session : in out Session_Type;
-                Key     : Datum
+                Key     : Stream_Element_Array
              );
 --
 -- Session_Ticket_Key_Generate -- Generate key
@@ -3243,7 +3649,7 @@ package GNUTLS is
 
    procedure Session_Ticket_Key_Generate
              (  Session : in out Session_Type;
-                Key     : in out Datum_Holder
+                Key     : in out Datum_Holder'Class
              );
 --
 -- Set_Default_Priority -- Set default parameters
@@ -3407,6 +3813,17 @@ package GNUTLS is
 --    The value interpreted as stream element array
 --
    function To_Stream_Element_Array (Data : Datum)
+      return Stream_Element_Array;
+--
+-- To_Stream_Element_Array -- Conversion to stream element array
+--
+--    Data - Text
+--
+-- Returns :
+--
+--    The value interpreted as stream element array
+--
+   function To_Stream_Element_Array (Data : String)
       return Stream_Element_Array;
 --
 -- To_String -- Conversion to string
@@ -3863,43 +4280,43 @@ private
              (  Credentials : in out Certificate_Credentials_Ref
              );
 
-   type Abstract_SRP_Credentials is abstract
-      new Abstract_Credentials with null record;
-   type SRP_Server_Credentials is
-      new Abstract_SRP_Credentials with null record;
-   procedure Finalize (Credentials : in out SRP_Server_Credentials);
-   procedure Initialize (Credentials : in out SRP_Server_Credentials);
-   procedure Credentials_Set
-             (  Session     : in out Session_Type;
-                Credentials : SRP_Server_Credentials
-             );
-
-   type SRP_Server_Credentials_Ref is
-      new SRP_Server_Credentials with null record;
-   procedure Finalize
-             (  Credentials : in out SRP_Server_Credentials_Ref
-             );
-   procedure Initialize
-             (  Credentials : in out SRP_Server_Credentials_Ref
-             );
-
-   type SRP_Client_Credentials is
-      new Abstract_SRP_Credentials with null record;
-   procedure Finalize (Credentials : in out SRP_Client_Credentials);
-   procedure Initialize (Credentials : in out SRP_Client_Credentials);
-   procedure Credentials_Set
-             (  Session     : in out Session_Type;
-                Credentials : SRP_Client_Credentials
-             );
-
-   type SRP_Client_Credentials_Ref is
-      new SRP_Client_Credentials with null record;
-   procedure Finalize
-             (  Credentials : in out SRP_Client_Credentials_Ref
-             );
-   procedure Initialize
-             (  Credentials : in out SRP_Client_Credentials_Ref
-             );
+--     type Abstract_SRP_Credentials is abstract
+--        new Abstract_Credentials with null record;
+--     type SRP_Server_Credentials is
+--        new Abstract_SRP_Credentials with null record;
+--     procedure Finalize (Credentials : in out SRP_Server_Credentials);
+--     procedure Initialize (Credentials : in out SRP_Server_Credentials);
+--     procedure Credentials_Set
+--               (  Session     : in out Session_Type;
+--                  Credentials : SRP_Server_Credentials
+--               );
+--
+--     type SRP_Server_Credentials_Ref is
+--        new SRP_Server_Credentials with null record;
+--     procedure Finalize
+--               (  Credentials : in out SRP_Server_Credentials_Ref
+--               );
+--     procedure Initialize
+--               (  Credentials : in out SRP_Server_Credentials_Ref
+--               );
+--
+--     type SRP_Client_Credentials is
+--        new Abstract_SRP_Credentials with null record;
+--     procedure Finalize (Credentials : in out SRP_Client_Credentials);
+--     procedure Initialize (Credentials : in out SRP_Client_Credentials);
+--     procedure Credentials_Set
+--               (  Session     : in out Session_Type;
+--                  Credentials : SRP_Client_Credentials
+--               );
+--
+--     type SRP_Client_Credentials_Ref is
+--        new SRP_Client_Credentials with null record;
+--     procedure Finalize
+--               (  Credentials : in out SRP_Client_Credentials_Ref
+--               );
+--     procedure Initialize
+--               (  Credentials : in out SRP_Client_Credentials_Ref
+--               );
 
    type Abstract_Params is abstract new Ada.Finalization.Controlled with
    record
@@ -3948,6 +4365,7 @@ private
    function To_Time (Stamp : time_t) return Time;
 
    pragma Assert (Stream_Element'Size = 8);
+
    pragma Import (C, Cipher_Get_Key_Size, "gnutls_cipher_get_key_size");
    pragma Import (C, Error_To_Alert,      "gnutls_error_to_alert");
    pragma Import (C, Sign_Get_Hash_Algorithm,
@@ -3956,5 +4374,7 @@ private
                                         "gnutls_sign_get_pk_algorithm");
    pragma Import (C, Est_Record_Overhead_Size,
                                      "gnutls_est_record_overhead_size");
+   pragma Import (C, MAC_Get_Key_Size, "gnutls_mac_get_key_size");
+   pragma Import (C, PK_To_Sign, "gnutls_pk_to_sign");
 
 end GNUTLS;

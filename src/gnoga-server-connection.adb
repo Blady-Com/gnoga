@@ -120,6 +120,7 @@ package body Gnoga.Server.Connection is
       record
          Connection_Type : Gnoga_Connection_Type := HTTP;
          FS              : Ada.Streams.Stream_IO.File_Type;
+         Input_Overflow  : String_Buffer;
          Buffer          : String_Buffer;
          Finalized       : Boolean := False;
       end record;
@@ -198,6 +199,10 @@ package body Gnoga.Server.Connection is
 
    overriding
    procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client);
+
+   overriding
+   procedure WebSocket_Received_Part (Client  : in out Gnoga_HTTP_Client;
+                                      Message : in     String);
 
    overriding
    procedure WebSocket_Received (Client  : in out Gnoga_HTTP_Client;
@@ -1148,6 +1153,7 @@ package body Gnoga.Server.Connection is
                  Length    => 0,
                  Size      => Max_Websocket_Message,
                  Duplex    => True,
+                 Chunked   => True,
                  Protocols => "");
       else
          Gnoga.Log ("No Connection event set.");
@@ -1357,6 +1363,18 @@ package body Gnoga.Server.Connection is
 
    Script_Manager : Script_Manager_Type;
 
+   -----------------------------
+   -- WebSocket_Received_Part --
+   -----------------------------
+
+   overriding
+   procedure WebSocket_Received_Part (Client  : in out Gnoga_HTTP_Client;
+                                      Message : in     String)
+   is
+   begin
+      Client.Content.Input_Overflow.Add (Message);
+   end WebSocket_Received_Part;
+
    ------------------------
    -- WebSocket_Received --
    ------------------------
@@ -1459,34 +1477,41 @@ package body Gnoga.Server.Connection is
                                  Message : in     String)
    is
       use Ada.Strings.Fixed;
+
+      Full_Message : String := Client.Content.Input_Overflow.Get & Message;
    begin
-      if Message = "0" then
+      Client.Content.Input_Overflow.Clear;
+
+      if Full_Message = "0" then
          return;
       end if;
 
-      if Message (Message'First) = 'S' then
+      if Full_Message (Full_Message'First) = 'S' then
          declare
-            P1 : Integer := Index (Source  => Message,
+            P1 : Integer := Index (Source  => Full_Message,
                                    Pattern => "|");
 
-            UID    : String := Message (Message'First + 2 .. (P1 - 1));
-            Result : String := Message ((P1 + 1) .. Message'Last);
+            UID    : String := Full_Message
+              (Full_Message'First + 2 .. (P1 - 1));
+            Result : String := Full_Message ((P1 + 1) .. Full_Message'Last);
          begin
             Script_Manager.Release_Hold (Gnoga.Types.Unique_ID'Value (UID),
                                          Result);
          end;
       else
          declare
-            P1 : Integer := Index (Source  => Message,
+            P1 : Integer := Index (Source  => Full_Message,
                                    Pattern => "|");
 
-            P2 : Integer := Index (Source  => Message,
+            P2 : Integer := Index (Source  => Full_Message,
                                    Pattern => "|",
                                    From    => P1 + 1);
 
-            UID        : String := Message (Message'First .. (P1 - 1));
-            Event      : String := Message ((P1 + 1) .. (P2 - 1));
-            Event_Data : String := Message ((P2 + 1) .. Message'Last);
+            UID        : String := Full_Message
+              (Full_Message'First .. (P1 - 1));
+            Event      : String := Full_Message ((P1 + 1) .. (P2 - 1));
+            Event_Data : String := Full_Message
+              ((P2 + 1) .. Full_Message'Last);
 
             Object : Gnoga.Gui.Base.Pointer_To_Base_Class :=
                        Object_Manager.Get_Object (Integer'Value (UID));

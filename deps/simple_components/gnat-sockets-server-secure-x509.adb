@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.X509             Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  18:53 15 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,7 +27,6 @@
 
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 
-with ada.text_io;
 package body GNAT.Sockets.Server.Secure.X509 is
 
    procedure Add_CRL
@@ -37,6 +36,18 @@ package body GNAT.Sockets.Server.Secure.X509 is
    begin
       Certificate_Set_X509_CRL (Factory.Credentials, List);
    end Add_CRL;
+
+   procedure Add_CRL_DER
+             (  Factory : in out X509_Authentication_Factory;
+                CRL     : Stream_Element_Array
+             )  is
+   begin
+      Certificate_Set_X509_CRL_Mem
+      (  Factory.Credentials,
+         CRL,
+         X509_Fmt_DER
+      );
+   end Add_CRL_DER;
 
    procedure Add_CRL_From_DER_File
              (  Factory    : in out X509_Authentication_Factory;
@@ -62,6 +73,18 @@ package body GNAT.Sockets.Server.Secure.X509 is
       );
    end Add_CRL_From_PEM_File;
 
+   procedure Add_CRL_PEM
+             (  Factory : in out X509_Authentication_Factory;
+                CRL     : String
+             )  is
+   begin
+      Certificate_Set_X509_CRL_Mem
+      (  Factory.Credentials,
+         To_Stream_Element_Array (CRL),
+         X509_Fmt_PEM
+      );
+   end Add_CRL_PEM;
+
    procedure Add_Key
              (  Factory     : in out X509_Authentication_Factory;
                 Public_Key  : OpenPGP_Crt;
@@ -74,6 +97,126 @@ package body GNAT.Sockets.Server.Secure.X509 is
          Private_Key
       );
    end Add_Key;
+
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array;
+                Key         : Stream_Element_Array;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         Certificate,
+         Key,
+         X509_Fmt_DER,
+         Password,
+         Encryption
+      );
+   end Add_Key_DER;
+
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         Certificate,
+         X509_Fmt_DER,
+         Password,
+         Encryption
+      );
+   end Add_Key_DER;
+
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array;
+                Key         : Stream_Element_Array
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         Certificate,
+         Key,
+         X509_Fmt_DER
+      );
+   end Add_Key_DER;
+
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         Certificate,
+         X509_Fmt_DER
+      );
+   end Add_Key_DER;
+
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String;
+                Key         : String;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         To_Stream_Element_Array (Certificate),
+         To_Stream_Element_Array (Key),
+         X509_Fmt_PEM,
+         Password,
+         Encryption
+      );
+   end Add_Key_PEM;
+
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         To_Stream_Element_Array (Certificate),
+         X509_Fmt_PEM,
+         Password,
+         Encryption
+      );
+   end Add_Key_PEM;
+
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String;
+                Key         : String
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         To_Stream_Element_Array (Certificate),
+         To_Stream_Element_Array (Key),
+         X509_Fmt_PEM
+      );
+   end Add_Key_PEM;
+
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String
+             )  is
+   begin
+      Certificate_Set_X509_Key_Mem
+      (  Factory.Credentials,
+         To_Stream_Element_Array (Certificate),
+         X509_Fmt_PEM
+      );
+   end Add_Key_PEM;
 
    procedure Add_Key_From_Base64_File
              (  Factory     : in out X509_Authentication_Factory;
@@ -222,6 +365,30 @@ package body GNAT.Sockets.Server.Secure.X509 is
          OpenPGP_Fmt_Raw
       );
    end Add_Key_From_Raw_Ring;
+
+   procedure Add_Trust_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array
+             )  is
+   begin
+      Certificate_Set_X509_Trust_Mem
+      (  Factory.Credentials,
+         Certificate,
+         X509_Fmt_DER
+      );
+   end Add_Trust_DER;
+
+   procedure Add_Trust_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String
+             )  is
+   begin
+      Certificate_Set_X509_Trust_Mem
+      (  Factory.Credentials,
+         To_Stream_Element_Array (Certificate),
+         X509_Fmt_PEM
+      );
+   end Add_Trust_PEM;
 
    procedure Add_Trust
              (  Factory : in out X509_Authentication_Factory;

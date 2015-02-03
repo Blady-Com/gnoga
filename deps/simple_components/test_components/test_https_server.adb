@@ -3,7 +3,7 @@
 --  HTTPS server test                              Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  18:25 16 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,13 +27,14 @@
 
 with Ada.Exceptions;            use Ada.Exceptions;
 with Ada.Text_IO;               use Ada.Text_IO;
+with Ada.Streams;               use Ada.Streams;
+with GNUTLS;                    use GNUTLS;
 --with GNAT.Exception_Traces;     use GNAT.Exception_Traces;
 with Test_HTTP_Servers.Secure;  use Test_HTTP_Servers.Secure;
 
 with GNAT.Sockets.Server.Pooled;
 with GNAT.Sockets.Server.Secure.Anonymous;
 with GNAT.Sockets.Server.Secure.X509;
-with GNUTLS;
 
 procedure Test_HTTPS_Server is
    Minutes : constant := 3.0; -- * 60.0 * 24.0 * 10.0;
@@ -59,6 +60,11 @@ begin
                         );
    begin
       Add_System_Trust (Factory);
+      Add_Key_From_PEM_File
+      (  Factory          => Factory,
+         Certificate_File => "test.cert.pem",
+         Key_File         => "test.key.pem"
+      );
       Add_Key_From_PEM_File
       (  Factory          => Factory,
          Certificate_File => "test.cert.pem",

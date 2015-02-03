@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  11:25 17 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -42,11 +42,8 @@ package body GNUTLS is
 
    type ssize_t is new ptrdiff_t;
    function To_Unsigned is new Ada.Unchecked_Conversion (int, unsigned);
-   function To_chars_ptr is
-      new Ada.Unchecked_Conversion
-          (  const_unsigned_chars_ptr,
-             chars_ptr
-          );
+   function To_Address is
+      new Ada.Unchecked_Conversion (chars_ptr, Address);
 
    package Certificate_Type_Pointers is
       new Interfaces.C.Pointers
@@ -74,7 +71,7 @@ package body GNUTLS is
           (  Index              => Positive,
              Element            => Datum,
              Element_Array      => Datum_Array,
-             Default_Terminator => (null, 0)
+             Default_Terminator => (Null_Address, 0)
           );
    package Digest_Algorithm_Pointers is
       new Interfaces.C.Pointers
@@ -89,6 +86,27 @@ package body GNUTLS is
              Element            => ECC_Curve,
              Element_Array      => ECC_Curve_Array,
              Default_Terminator => ECC_Curve_Invalid
+          );
+   package KX_Algorithm_Pointers is
+      new Interfaces.C.Pointers
+          (  Index              => Positive,
+             Element            => KX_Algorithm,
+             Element_Array      => KX_Algorithm_Array,
+             Default_Terminator => KX_Unknown
+          );
+   package MAC_Algorithm_Pointers is
+      new Interfaces.C.Pointers
+          (  Index              => Positive,
+             Element            => MAC_Algorithm,
+             Element_Array      => MAC_Algorithm_Array,
+             Default_Terminator => MAC_Unknown
+          );
+   package PK_Algorithm_Pointers is
+      new Interfaces.C.Pointers
+          (  Index              => Positive,
+             Element            => PK_Algorithm,
+             Element_Array      => PK_Algorithm_Array,
+             Default_Terminator => PK_Unknown
           );
    package Sign_Algorithm_Pointers is
       new Interfaces.C.Pointers
@@ -184,7 +202,7 @@ package body GNUTLS is
 
    function Alpn_Get_Selected_Protocol
             (  Session : Session_Type
-            )  return Datum is
+            )  return Stream_Element_Array is
       function Internal
                (  Session  : Address;
                   Protocol : access Datum
@@ -193,7 +211,7 @@ package body GNUTLS is
       Protocol : aliased Datum;
    begin
       Check (Internal (Session.Holder.Handle, Protocol'Access));
-      return Protocol;
+      return To_Stream_Element_Array (Protocol);
    end Alpn_Get_Selected_Protocol;
 
    procedure Alpn_Set_Selected_Protocol
@@ -460,7 +478,7 @@ package body GNUTLS is
             (  Credentials : Certificate_Credentials;
                Idx1        : unsigned;
                Idx2        : unsigned
-            )  return Datum is
+            )  return Stream_Element_Array is
       function Internal
                (  Credentials : Address;
                   Idx1        : unsigned;
@@ -471,7 +489,7 @@ package body GNUTLS is
       Result : aliased Datum;
    begin
       Check (Internal (Credentials.Handle, Idx1, Idx2, Result'Access));
-      return Result;
+      return To_Stream_Element_Array (Result);
    end Certificate_Get_Crt_Raw;
 
    function Certificate_Get_Issuer
@@ -499,11 +517,13 @@ package body GNUTLS is
 
    function Certificate_Get_Ours
             (  Session : Session_Type
-            )  return Datum is
+            )  return Stream_Element_Array is
       function Internal (Credentials : Address) return access Datum;
       pragma Import (C, Internal, "gnutls_certificate_get_ours");
    begin
-      return Internal (Session.Holder.Handle).all;
+      return To_Stream_Element_Array
+             (  Internal (Session.Holder.Handle).all
+             );
    end Certificate_Get_Ours;
 
    function Certificate_Get_Peers
@@ -526,10 +546,9 @@ package body GNUTLS is
       return Result;
    end Certificate_Get_Peers;
 
-   procedure Certificate_Get_Peers_Subkey_ID
-             (  Session : Session_Type;
-                ID      : in out Datum
-             )  is
+   function Certificate_Get_Peers_Subkey_ID
+            (  Session : Session_Type
+            )  return String is
       function Internal
                (  Credentials : Address;
                   ID          : access Datum
@@ -539,10 +558,10 @@ package body GNUTLS is
                 Internal,
                 "gnutls_certificate_get_peers_subkey_id"
              );
-      Result : aliased Datum := ID;
+      Result : aliased Datum;
    begin
       Check (Internal (Session.Holder.Handle, Result'Access));
-      ID := Result;
+      return To_String (Result);
    end Certificate_Get_Peers_Subkey_ID;
 
    procedure Certificate_Send_X509_RDN_Sequence
@@ -702,8 +721,8 @@ package body GNUTLS is
 
    procedure Certificate_Server_Set_OpenPGP_Key_Mem
              (  Credentials  : in out Certificate_Credentials;
-                Public_Keys  : Datum;
-                Private_Keys : Datum;
+                Public_Keys  : Stream_Element_Array;
+                Private_Keys : Stream_Element_Array;
                 Format       : OpenPGP_Crt_Fmt
              )  is
       function Internal
@@ -721,16 +740,16 @@ package body GNUTLS is
       Check
       (  Internal
          (  Credentials.Handle,
-            Public_Keys,
-            Private_Keys,
+            To_Datum (Public_Keys),
+            To_Datum (Private_Keys),
             Format
       )  );
    end Certificate_Server_Set_OpenPGP_Key_Mem;
 
    procedure Certificate_Server_Set_OpenPGP_Key_Mem
              (  Credentials  : in out Certificate_Credentials;
-                Public_Keys  : Datum;
-                Private_Keys : Datum;
+                Public_Keys  : Stream_Element_Array;
+                Private_Keys : Stream_Element_Array;
                 Subkey_ID    : String;
                 Format       : OpenPGP_Crt_Fmt
              )  is
@@ -750,8 +769,8 @@ package body GNUTLS is
       Check
       (  Internal
          (  Credentials.Handle,
-            Public_Keys,
-            Private_Keys,
+            To_Datum (Public_Keys),
+            To_Datum (Private_Keys),
             To_C (Subkey_ID),
             Format
       )  );
@@ -1050,7 +1069,7 @@ package body GNUTLS is
          if Algorithms_Length  = 0 then
             Handle
             (  Parent,
-               Req_CA_RDN,
+               To_Stream_Element_Array (Req_CA_RDN),
                NReqs,
                (1..0 => PK_Unknown),
                Retrieve.all
@@ -1058,7 +1077,7 @@ package body GNUTLS is
          else
             Handle
             (  Parent,
-               Req_CA_RDN,
+               To_Stream_Element_Array (Req_CA_RDN),
                NReqs,
                Value (Algorithms, ptrdiff_t (Algorithms_Length)),
                Retrieve.all
@@ -1227,6 +1246,37 @@ package body GNUTLS is
       end if;
    end Certificate_Set_X509_CRL_Mem;
 
+   procedure Certificate_Set_X509_CRL_Mem
+             (  Credentials : in out Certificate_Credentials;
+                Certificate : Stream_Element_Array;
+                Format      : X509_Crt_Fmt
+             )  is
+      function Internal
+               (  Credentials : Address;
+                  List        : Address;
+                  Size        : int;
+                  Format      : X509_Crt_Fmt
+               )  return int;
+      pragma Import
+             (  C,
+                Internal,
+                "gnutls_certificate_set_x509_crl_mem"
+             );
+      List   : Datum_Array (1..1) := (1 => To_Datum (Certificate));
+      Result : int;
+   begin
+      Result :=
+         Internal
+         (  Credentials.Handle,
+            List (List'First)'Address,
+            List'Length,
+            Format
+         );
+      if Result < 0 then
+         Raise_TLS_Error (Result);
+      end if;
+   end Certificate_Set_X509_CRL_Mem;
+
    procedure Certificate_Set_X509_Key
              (  Credentials : in out Certificate_Credentials;
                 List        : X509_CRL_Array;
@@ -1315,8 +1365,8 @@ package body GNUTLS is
 
    procedure Certificate_Set_X509_Key_Mem
              (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
-                Key         : Datum;
+                Cert        : Stream_Element_Array;
+                Key         : Stream_Element_Array;
                 Format      : X509_Crt_Fmt;
                 Password    : String;
                 Flags       : PKCS_Encrypt_Flags
@@ -1338,8 +1388,8 @@ package body GNUTLS is
       Check
       (  Internal
          (  Credentials.Handle,
-            Cert,
-            Key,
+            To_Datum (Cert),
+            To_Datum (Key),
             Format,
             To_C (Password),
             Flags
@@ -1348,28 +1398,7 @@ package body GNUTLS is
 
    procedure Certificate_Set_X509_Key_Mem
              (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
-                Key         : Datum;
-                Format      : X509_Crt_Fmt
-             )  is
-      function Internal
-               (  Credentials : Address;
-                  Cert        : Datum;
-                  Key         : Datum;
-                  Format      : X509_Crt_Fmt
-               )  return int;
-      pragma Import
-             (  C,
-                Internal,
-                "gnutls_certificate_set_x509_key_mem"
-             );
-   begin
-      Check (Internal (Credentials.Handle, Cert, Key, Format));
-   end Certificate_Set_X509_Key_Mem;
-
-   procedure Certificate_Set_X509_Key_Mem
-             (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
+                Cert        : Stream_Element_Array;
                 Format      : X509_Crt_Fmt;
                 Password    : String;
                 Flags       : PKCS_Encrypt_Flags
@@ -1391,7 +1420,7 @@ package body GNUTLS is
       Check
       (  Internal
          (  Credentials.Handle,
-            Cert,
+            To_Datum (Cert),
             Null_Address,
             Format,
             To_C (Password),
@@ -1401,7 +1430,34 @@ package body GNUTLS is
 
    procedure Certificate_Set_X509_Key_Mem
              (  Credentials : in out Certificate_Credentials;
-                Cert        : Datum;
+                Cert        : Stream_Element_Array;
+                Key         : Stream_Element_Array;
+                Format      : X509_Crt_Fmt
+             )  is
+      function Internal
+               (  Credentials : Address;
+                  Cert        : Datum;
+                  Key         : Datum;
+                  Format      : X509_Crt_Fmt
+               )  return int;
+      pragma Import
+             (  C,
+                Internal,
+                "gnutls_certificate_set_x509_key_mem"
+             );
+   begin
+      Check
+      (  Internal
+         (  Credentials.Handle,
+            To_Datum (Cert),
+            To_Datum (Key),
+            Format
+      )  );
+   end Certificate_Set_X509_Key_Mem;
+
+   procedure Certificate_Set_X509_Key_Mem
+             (  Credentials : in out Certificate_Credentials;
+                Cert        : Stream_Element_Array;
                 Format      : X509_Crt_Fmt
              )  is
       function Internal
@@ -1416,7 +1472,13 @@ package body GNUTLS is
                 "gnutls_certificate_set_x509_key_mem"
              );
    begin
-      Check (Internal (Credentials.Handle, Cert, Null_Address, Format));
+      Check
+      (  Internal
+         (  Credentials.Handle,
+            To_Datum (Cert),
+            Null_Address,
+            Format
+      )  );
    end Certificate_Set_X509_Key_Mem;
 
    procedure Certificate_Set_X509_Simple_PKCS12_File
@@ -1448,7 +1510,7 @@ package body GNUTLS is
 
    procedure Certificate_Set_X509_Simple_PKCS12_Mem
              (  Credentials : in out Certificate_Credentials;
-                P12blob     : Datum;
+                P12blob     : Stream_Element_Array;
                 Format      : X509_Crt_Fmt;
                 Password    : String
              )  is
@@ -1467,7 +1529,7 @@ package body GNUTLS is
       Check
       (  Internal
          (  Credentials.Handle,
-            P12blob,
+            To_Datum (P12blob),
             Format,
             To_C (Password)
       )  );
@@ -1571,7 +1633,7 @@ package body GNUTLS is
 
    procedure Certificate_Set_X509_Trust_Mem
              (  Credentials : in out Certificate_Credentials;
-                Certificate : Datum;
+                Certificate : Stream_Element_Array;
                 Format      : X509_Crt_Fmt
              )  is
       function Internal
@@ -1589,7 +1651,7 @@ package body GNUTLS is
       Result :=
          Internal
          (  Credentials.Handle,
-            Certificate,
+            To_Datum (Certificate),
             Format
          );
       if Result < 0 then
@@ -2101,45 +2163,45 @@ package body GNUTLS is
       )  );
    end Credentials_Set;
 
-   procedure Credentials_Set
-             (  Session     : in out Session_Type;
-                Credentials : SRP_Client_Credentials
-             )  is
-      function Internal
-               (  Session : Address;
-                  Type_Of : Credentials_Type;
-                  Cred    : Address
-               )  return int;
-      pragma Import (C, Internal, "gnutls_credentials_set");
-   begin
-      if Credentials.Handle = Null_Address then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "Invalid credentials"
-         );
-      end if;
-      Check (Internal (Session.Holder.Handle, Crd_SRP, Credentials.Handle));
-   end Credentials_Set;
-
-   procedure Credentials_Set
-             (  Session     : in out Session_Type;
-                Credentials : SRP_Server_Credentials
-             )  is
-      function Internal
-               (  Session : Address;
-                  Type_Of : Credentials_Type;
-                  Cred    : Address
-               )  return int;
-      pragma Import (C, Internal, "gnutls_credentials_set");
-   begin
-      if Credentials.Handle = Null_Address then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "Invalid credentials"
-         );
-      end if;
-      Check (Internal (Session.Holder.Handle, Crd_SRP, Credentials.Handle));
-   end Credentials_Set;
+--     procedure Credentials_Set
+--               (  Session     : in out Session_Type;
+--                  Credentials : SRP_Client_Credentials
+--               )  is
+--        function Internal
+--                 (  Session : Address;
+--                    Type_Of : Credentials_Type;
+--                    Cred    : Address
+--                 )  return int;
+--        pragma Import (C, Internal, "gnutls_credentials_set");
+--     begin
+--        if Credentials.Handle = Null_Address then
+--           Raise_Exception
+--           (  Constraint_Error'Identity,
+--              "Invalid credentials"
+--           );
+--        end if;
+--        Check (Internal (Session.Holder.Handle, Crd_SRP, Credentials.Handle));
+--     end Credentials_Set;
+--
+--     procedure Credentials_Set
+--               (  Session     : in out Session_Type;
+--                  Credentials : SRP_Server_Credentials
+--               )  is
+--        function Internal
+--                 (  Session : Address;
+--                    Type_Of : Credentials_Type;
+--                    Cred    : Address
+--                 )  return int;
+--        pragma Import (C, Internal, "gnutls_credentials_set");
+--     begin
+--        if Credentials.Handle = Null_Address then
+--           Raise_Exception
+--           (  Constraint_Error'Identity,
+--              "Invalid credentials"
+--           );
+--        end if;
+--        Check (Internal (Session.Holder.Handle, Crd_SRP, Credentials.Handle));
+--     end Credentials_Set;
 
    function Curve_To_Bits (Curve : ECC_Curve) return unsigned is
    begin
@@ -2148,14 +2210,17 @@ package body GNUTLS is
 
    function DB_Check_Entry
             (  Session       : Session_Type;
-               Session_Entry : Datum
+               Session_Entry : Stream_Element_Array
             )  return Boolean is
       function Internal
                (  Session       : Address;
                   Session_Entry : Datum
                )  return int;
       pragma Import (C, Internal, "gnutls_db_check_entry");
-      Result : int := Internal (Session.Holder.Handle, Session_Entry);
+      Result : int := Internal
+                      (  Session.Holder.Handle,
+                         To_Datum (Session_Entry)
+                      );
    begin
       case Result is
          when E_Success =>
@@ -2168,10 +2233,12 @@ package body GNUTLS is
       end case;
    end DB_Check_Entry;
 
-   function DB_Check_Entry_Time (DB_Entry : Datum) return Time is
+   function DB_Check_Entry_Time
+            (  DB_Entry : Stream_Element_Array
+            )  return Time is
       function Internal (DB_Entry : Datum) return time_t;
       pragma Import (C, Internal, "gnutls_db_check_entry_time");
-      Result : time_t := Internal (DB_Entry);
+      Result : time_t := Internal (To_Datum (DB_Entry));
    begin
       if Result = 0 then
          Raise_Exception
@@ -2247,7 +2314,7 @@ package body GNUTLS is
       if Data = null then
          return E_Internal_Error;
       else
-         Remove (Data.all, Key);
+         Remove (Data.all, To_Stream_Element_Array (Key));
          return E_Success;
       end if;
    exception
@@ -2275,13 +2342,15 @@ package body GNUTLS is
       Data : Object_Pointer := To_Pointer (Request);
    begin
       if Data = null then
-         return (null, 0);
+         return (Null_Address, 0);
       else
-         return Retrieve (Data.all, Key);
+         return New_Datum
+                (  Retrieve (Data, To_Stream_Element_Array (Key))
+                );
       end if;
    exception
       when Error : others =>
-         return (null, 0);
+         return (Null_Address, 0);
    end DB_Retrieve_Func;
 
    type DB_Store_Func_Ptr is access function
@@ -2306,7 +2375,7 @@ package body GNUTLS is
       if Data = null then
          return E_Internal_Error;
       else
-         Store (Data.all, Key);
+         Store (Data.all, To_Stream_Element_Array (Key));
          return E_Success;
       end if;
    exception
@@ -2523,7 +2592,7 @@ package body GNUTLS is
 
    procedure DH_Params_Import_PKCS3
              (  Params       : in out DH_Params;
-                PKCS3_Params : Datum;
+                PKCS3_Params : Stream_Element_Array;
                 Format       : X509_Crt_Fmt
              )  is
       function Internal
@@ -2533,13 +2602,13 @@ package body GNUTLS is
                )  return int;
       pragma Import (C, Internal, "gnutls_dh_params_import_pkcs3");
    begin
-      Check (Internal (Params.Handle, PKCS3_Params, Format));
+      Check (Internal (Params.Handle, To_Datum (PKCS3_Params), Format));
    end DH_Params_Import_PKCS3;
 
    procedure DH_Params_Import_Raw
              (  Params    : in out DH_Params;
-                Prime     : Datum;
-                Generator : Datum
+                Prime     : Stream_Element_Array;
+                Generator : Stream_Element_Array
              )  is
       function Internal
                (  Params    : Address;
@@ -2548,7 +2617,12 @@ package body GNUTLS is
                )  return int;
       pragma Import (C, Internal, "gnutls_dh_params_import_raw");
    begin
-      Check (Internal (Params.Handle, Prime, Generator));
+      Check
+      (  Internal
+         (  Params.Handle,
+            To_Datum (Prime),
+            To_Datum (Generator)
+      )  );
    end DH_Params_Import_Raw;
 
    procedure DB_Set_Prime_Bits
@@ -2643,12 +2717,12 @@ package body GNUTLS is
    end Error_Is_Fatal;
 
    procedure Finalize (Data : in out Datum_Holder) is
-      procedure Internal (Ptr : const_unsigned_chars_ptr);
+      procedure Internal (Ptr : Address);
       pragma Import (C, Internal, "gnutls_free");
    begin
-      if Data.Data.Data /= null then
+      if Data.Data.Data /= Null_Address then
          Internal (Data.Data.Data);
-         Data.Data.Data := null;
+         Data.Data.Data := Null_Address;
       end if;
       Data.Data.Size := 0;
    end Finalize;
@@ -2751,47 +2825,47 @@ package body GNUTLS is
       null;
    end Finalize;
 
-   procedure Finalize (Credentials : in out SRP_Client_Credentials) is
-      function Internal (Ptr : Address) return int;
-      pragma Import
-             (  C,
-                Internal,
-                "gnutls_srp_free_client_credentials"
-             );
-   begin
-      if Credentials.Handle /= Null_Address then
-         Check (Internal (Credentials.Handle));
-         Credentials.Handle := Null_Address;
-      end if;
-   end Finalize;
-
-   procedure Finalize
-             (  Credentials : in out SRP_Client_Credentials_Ref
-             )  is
-   begin
-      null;
-   end Finalize;
-
-   procedure Finalize (Credentials : in out SRP_Server_Credentials) is
-      function Internal (Ptr : Address) return int;
-      pragma Import
-             (  C,
-                Internal,
-                "gnutls_srp_free_server_credentials"
-             );
-   begin
-      if Credentials.Handle /= Null_Address then
-         Check (Internal (Credentials.Handle));
-         Credentials.Handle := Null_Address;
-      end if;
-   end Finalize;
-
-   procedure Finalize
-             (  Credentials : in out SRP_Server_Credentials_Ref
-             )  is
-   begin
-      null;
-   end Finalize;
+--     procedure Finalize (Credentials : in out SRP_Client_Credentials) is
+--        function Internal (Ptr : Address) return int;
+--        pragma Import
+--               (  C,
+--                  Internal,
+--                  "gnutls_srp_free_client_credentials"
+--               );
+--     begin
+--        if Credentials.Handle /= Null_Address then
+--           Check (Internal (Credentials.Handle));
+--           Credentials.Handle := Null_Address;
+--        end if;
+--     end Finalize;
+--
+--     procedure Finalize
+--               (  Credentials : in out SRP_Client_Credentials_Ref
+--               )  is
+--     begin
+--        null;
+--     end Finalize;
+--
+--     procedure Finalize (Credentials : in out SRP_Server_Credentials) is
+--        function Internal (Ptr : Address) return int;
+--        pragma Import
+--               (  C,
+--                  Internal,
+--                  "gnutls_srp_free_server_credentials"
+--               );
+--     begin
+--        if Credentials.Handle /= Null_Address then
+--           Check (Internal (Credentials.Handle));
+--           Credentials.Handle := Null_Address;
+--        end if;
+--     end Finalize;
+--
+--     procedure Finalize
+--               (  Credentials : in out SRP_Server_Credentials_Ref
+--               )  is
+--     begin
+--        null;
+--     end Finalize;
 
    procedure Finalize (Cache : in out Priority) is
       procedure Internal (Cache : Address);
@@ -2807,12 +2881,6 @@ package body GNUTLS is
             (  Algorithm : Digest_Algorithm;
                Data      : Stream_Element_Array
             )  return Stream_Element_Array is
-      type Stream_Element_Ptr is access constant Stream_Element;
-      function To_Ptr is
-         new Ada.Unchecked_Conversion
-             (  Stream_Element_Ptr,
-                const_unsigned_chars_ptr
-             );
       function Internal
                (  Algorithm : Digest_Algorithm;
                   Data      : Datum;
@@ -2820,16 +2888,13 @@ package body GNUTLS is
                   Size      : access size_t
                )  return int;
       pragma Import (C, Internal, "gnutls_fingerprint");
-      Argument : Datum;
       Result   : aliased Datum_Holder;
       Size     : aliased size_t;
    begin
-      Argument.Data := To_Ptr (Data (Data'First)'Unchecked_Access);
-      Argument.Size := Data'Length;
       Check
       (  Internal
          (  Algorithm,
-            Argument,
+            To_Datum (Data),
             Result.Data'Access,
             Size'Access
       )  );
@@ -2964,6 +3029,149 @@ package body GNUTLS is
       end if;
    end Handshake_Description_Get_Name;
 
+   function Handshake_Get_Last_In
+            (  Session : Session_Type
+            )  return Handshake_Description is
+      function Internal (Session : Address)
+         return Handshake_Description;
+      pragma Import (C, Internal, "gnutls_handshake_get_last_in");
+   begin
+      return Internal (Session.Holder.Handle);
+   end Handshake_Get_Last_In;
+
+   function Handshake_Get_Last_Out
+            (  Session : Session_Type
+            )  return Handshake_Description is
+      function Internal (Session : Address)
+         return Handshake_Description;
+      pragma Import (C, Internal, "gnutls_handshake_get_last_out");
+   begin
+      return Internal (Session.Holder.Handle);
+   end Handshake_Get_Last_Out;
+
+   package body Handshake_Set_Hook_Function is
+      type Handshake_Hook_Ptr is access function
+           (  Session  : Address;
+              Message  : Handshake_Description;
+              Post     : Hook_Type;
+              Incoming : unsigned
+           )  return int;
+      pragma Convention (C, Handshake_Hook_Ptr);
+
+      function Handshake_Hook
+               (  Session  : Address;
+                  Message  : Handshake_Description;
+                  Post     : Hook_Type;
+                  Incoming : unsigned
+               )  return int;
+      pragma Convention (C, Handshake_Hook);
+
+      function Handshake_Hook
+               (  Session  : Address;
+                  Message  : Handshake_Description;
+                  Post     : Hook_Type;
+                  Incoming : unsigned
+               )  return int is
+         Current : Session_Type (0);
+      begin
+         Current.Holder.Handle := Session;
+         Hook (Current, Message, Post, Incoming);
+         return E_Success;
+      exception
+         when Error : others =>
+            return Get_Error_Code (Error);
+      end Handshake_Hook;
+
+      procedure Set
+                (  Session : in out Session_Type;
+                   Message : Handshake_Description;
+                   Post    : Hook_Type
+                )  is
+         procedure Internal
+                   (  Session : Address;
+                      Message : Handshake_Description;
+                      Post    : Hook_Type;
+                      Hook    : Handshake_Hook_Ptr
+                   );
+         pragma Import
+                (  C,
+                   Internal,
+                   "gnutls_handshake_set_hook_function"
+                );
+      begin
+         Internal
+         (  Session.Holder.Handle,
+            Message,
+            Post,
+            Handshake_Hook'Access
+         );
+      end Set;
+   end Handshake_Set_Hook_Function;
+
+   procedure Handshake_Set_Max_Packet_Length
+             (  Session : in out Session_Type;
+                Max     : size_t
+             )  is
+      procedure Internal (Session : Address; Max : size_t);
+      pragma Import
+             (  C,
+                Internal,
+                "gnutls_handshake_set_max_packet_length"
+             );
+   begin
+      Internal (Session.Holder.Handle, Max);
+   end Handshake_Set_Max_Packet_Length;
+
+   package body Handshake_Set_Post_Client_Hello_Function is
+      type Handshake_Hook_Ptr is access function
+           (  Session : Address
+           )  return int;
+      pragma Convention (C, Handshake_Hook_Ptr);
+
+      function Handshake_Hook (Session : Address) return int;
+      pragma Convention (C, Handshake_Hook);
+
+      function Handshake_Hook (Session : Address) return int is
+         Current : Session_Type (0);
+         Hold    : Boolean;
+      begin
+         Current.Holder.Handle := Session;
+         Hello (Current, Hold);
+         if Hold then
+            return E_Interrupted;
+         else
+            return E_Success;
+         end if;
+      exception
+         when Error : others =>
+            return Get_Error_Code (Error);
+      end Handshake_Hook;
+
+      procedure Set (Session : in out Session_Type) is
+         procedure Internal
+                   (  Session : Address;
+                      Hook    : Handshake_Hook_Ptr
+                   );
+         pragma Import
+                (  C,
+                   Internal,
+                   "gnutls_handshake_set_post_client_hello_function"
+                );
+      begin
+         Internal (Session.Holder.Handle, Handshake_Hook'Access);
+      end Set;
+   end Handshake_Set_Post_Client_Hello_Function;
+
+   procedure Handshake_Set_Random
+             (  Session : in out Session_Type;
+                Random  : Random_Value
+             )  is
+      function Internal (Session : Address; Random : Datum) return int;
+      pragma Import (C, Internal, "gnutls_handshake_set_random");
+   begin
+      Check (Internal (Session.Holder.Handle, To_Datum (Random)));
+   end Handshake_Set_Random;
+
    procedure Handshake_Set_Timeout
              (  Session : Session_Type;
                 Timeout : Duration := Duration'First
@@ -3082,45 +3290,45 @@ package body GNUTLS is
       null;
    end Initialize;
 
-   procedure Initialize
-             (  Credentials : in out SRP_Client_Credentials
-             )  is
-      function Internal (Credentials : access Address) return int;
-      pragma Import
-             (  C,
-                Internal,
-                "gnutls_srp_allocate_client_credentials"
-             );
-   begin
-      Check (Internal (Credentials.Handle'Access));
-   end Initialize;
-
-   procedure Initialize
-             (  Credentials : in out SRP_Client_Credentials_Ref
-             )  is
-   begin
-      null;
-   end Initialize;
-
-   procedure Initialize
-             (  Credentials : in out SRP_Server_Credentials
-             )  is
-      function Internal (Credentials : access Address) return int;
-      pragma Import
-             (  C,
-                Internal,
-                "gnutls_srp_allocate_server_credentials"
-             );
-   begin
-      Check (Internal (Credentials.Handle'Access));
-   end Initialize;
-
-   procedure Initialize
-             (  Credentials : in out SRP_Server_Credentials_Ref
-             )  is
-   begin
-      null;
-   end Initialize;
+--     procedure Initialize
+--               (  Credentials : in out SRP_Client_Credentials
+--               )  is
+--        function Internal (Credentials : access Address) return int;
+--        pragma Import
+--               (  C,
+--                  Internal,
+--                  "gnutls_srp_allocate_client_credentials"
+--               );
+--     begin
+--        Check (Internal (Credentials.Handle'Access));
+--     end Initialize;
+--
+--     procedure Initialize
+--               (  Credentials : in out SRP_Client_Credentials_Ref
+--               )  is
+--     begin
+--        null;
+--     end Initialize;
+--
+--     procedure Initialize
+--               (  Credentials : in out SRP_Server_Credentials
+--               )  is
+--        function Internal (Credentials : access Address) return int;
+--        pragma Import
+--               (  C,
+--                  Internal,
+--                  "gnutls_srp_allocate_server_credentials"
+--               );
+--     begin
+--        Check (Internal (Credentials.Handle'Access));
+--     end Initialize;
+--
+--     procedure Initialize
+--               (  Credentials : in out SRP_Server_Credentials_Ref
+--               )  is
+--     begin
+--        null;
+--     end Initialize;
 
    procedure Initialize
              (  Cache      : in out Priority;
@@ -3163,6 +3371,360 @@ package body GNUTLS is
       return Cache.Handle /= Null_Address;
    end Is_Initialized;
 
+   function KX_Get (Session : Session_Type) return KX_Algorithm is
+      function Internal (Session : Address) return KX_Algorithm;
+      pragma Import (C, Internal, "gnutls_kx_get");
+   begin
+      return Internal (Session.Holder.Handle);
+   end KX_Get;
+
+   function KX_Get_ID (Name : String) return KX_Algorithm is
+      function Internal (Name : char_array) return KX_Algorithm;
+      pragma Import (C, Internal, "gnutls_kx_get_id");
+   begin
+      return Internal (To_C (Name));
+   end KX_Get_ID;
+
+   function KX_Get_Name (Algorithm : KX_Algorithm) return String is
+      function Internal (Algorithm : KX_Algorithm) return chars_ptr;
+      pragma Import (C, Internal, "gnutls_kx_get_name");
+      Result : chars_ptr := Internal (Algorithm);
+   begin
+      if Result = Null_Ptr then
+         Raise_Exception (End_Error'Identity, "No algorithm matched");
+      else
+         return Value (Result);
+      end if;
+   end KX_Get_Name;
+
+   function KX_List return KX_Algorithm_Array is
+      use KX_Algorithm_Pointers;
+      function Internal return Pointer;
+      pragma Import (C, Internal, "gnutls_kx_list");
+      Result : Pointer := Internal;
+   begin
+      if Result = null then
+         return (1..0 => KX_Unknown);
+      else
+         return Value (Result);
+      end if;
+   end KX_List;
+
+   function MAC_Get (Session : Session_Type) return MAC_Algorithm is
+      function Internal (Session : Address) return MAC_Algorithm;
+      pragma Import (C, Internal, "gnutls_mac_get");
+   begin
+      return Internal (Session.Holder.Handle);
+   end MAC_Get;
+
+   function MAC_Get_ID (Name : String) return MAC_Algorithm is
+      function Internal (Name : char_array) return MAC_Algorithm;
+      pragma Import (C, Internal, "gnutls_mac_get_id");
+   begin
+      return Internal (To_C (Name));
+   end MAC_Get_ID;
+
+   function MAC_Get_Name (Algorithm : MAC_Algorithm) return String is
+      function Internal (Algorithm : MAC_Algorithm) return chars_ptr;
+      pragma Import (C, Internal, "gnutls_mac_get_name");
+      Result : chars_ptr := Internal (Algorithm);
+   begin
+      if Result = Null_Ptr then
+         Raise_Exception (End_Error'Identity, "No algorithm matched");
+      else
+         return Value (Result);
+      end if;
+   end MAC_Get_Name;
+
+   function MAC_List return MAC_Algorithm_Array is
+      use MAC_Algorithm_Pointers;
+      function Internal return Pointer;
+      pragma Import (C, Internal, "gnutls_mac_list");
+      Result : Pointer := Internal;
+   begin
+      if Result = null then
+         return (1..0 => MAC_Unknown);
+      else
+         return Value (Result);
+      end if;
+   end MAC_List;
+
+   function New_Datum (Data : Stream_Element_Array) return Datum is
+      Result : Datum;
+   begin
+      if Data'Length > 0 then
+         declare
+            function Internal (Size : size_t) return Address;
+            pragma Import (C, Internal, "gnutls_malloc");
+            subtype Copy_Array is Stream_Element_Array (Data'Range);
+            Copy : Copy_Array;
+            for Copy'Address use Internal (Data'Length);
+         begin
+            Result.Size := Data'Length;
+            Result.Data := Copy'Address;
+            Copy := Data;
+         end;
+      end if;
+      return Result;
+   end New_Datum;
+
+   function OCSP_Status_Request_Is_Checked
+            (  Session : Session_Type
+            )  return Boolean is
+      function Internal (Session : Address; Flags : unsigned)
+         return int;
+      pragma Import
+             (  C,
+                Internal,
+                "gnutls_ocsp_status_request_is_checked"
+             );
+   begin
+      return Internal (Session.Holder.Handle, 0) /= 0;
+   end OCSP_Status_Request_Is_Checked;
+
+   procedure OpenPGP_Send_Cert
+             (  Session : Session_Type;
+                Status  : OpenPGP_Crt_Status
+             )  is
+      procedure Internal
+                (  Session : Address;
+                   Status  : OpenPGP_Crt_Status
+                );
+      pragma Import (C, Internal, "gnutls_openpgp_send_cert");
+   begin
+      Internal (Session.Holder.Handle, Status);
+   end OpenPGP_Send_Cert;
+
+   procedure PEM_Base64_Decode
+             (  Header  : String;
+                Data    : Stream_Element_Array;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             )  is
+      function Internal
+               (  Header : char_array;
+                  Data   : Datum;
+                  Result : Address;
+                  Size   : access size_t
+               )  return int;
+      pragma Import (C, Internal, "gnutls_pem_base64_decode");
+      Size : aliased size_t := Result'Length;
+   begin
+      if Pointer < Result'First or else Pointer > Result'Last then
+         Raise_Exception
+         (  Layout_Error'Identity,
+            "Invalid pointer is out of buffer range"
+         );
+      end if;
+      Check
+      (  Internal
+         (  To_C (Header),
+            To_Datum (Data),
+            Result (Pointer)'Address,
+            Size'Access
+      )  );
+      Pointer := Pointer + (Stream_Element_Offset (Size) - 1);
+   exception
+      when Error : TLS_Error =>
+         if Get_Error_Code (Error) = E_Short_Memory_Buffer then
+            Raise_Exception
+            (  Layout_Error'Identity,
+               "No room in the buffer"
+            );
+         else
+            raise;
+         end if;
+   end PEM_Base64_Decode;
+
+   procedure PEM_Base64_Decode
+             (  Header  : String;
+                Data    : String;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             )  is
+      function Internal
+               (  Header : char_array;
+                  Data   : Datum;
+                  Result : Address;
+                  Size   : access size_t
+               )  return int;
+      pragma Import (C, Internal, "gnutls_pem_base64_decode");
+      Size : aliased size_t := Result'Length;
+      Copy : char_array := To_C (Data);
+   begin
+      if Pointer < Result'First or else Pointer > Result'Last then
+         Raise_Exception
+         (  Layout_Error'Identity,
+            "Invalid pointer is out of buffer range"
+         );
+      end if;
+      Check
+      (  Internal
+         (  To_C (Header),
+            To_Datum (Copy),
+            Result (Pointer)'Address,
+            Size'Access
+      )  );
+      Pointer := Pointer + (Stream_Element_Offset (Size) - 1);
+   exception
+      when Error : TLS_Error =>
+         if Get_Error_Code (Error) = E_Short_Memory_Buffer then
+            Raise_Exception
+            (  Layout_Error'Identity,
+               "No room in the buffer"
+            );
+         else
+            raise;
+         end if;
+   end PEM_Base64_Decode;
+
+   procedure PEM_Base64_Decode
+             (  Data    : Stream_Element_Array;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             )  is
+      function Internal
+               (  Header : chars_ptr;
+                  Data   : Datum;
+                  Result : Address;
+                  Size   : access size_t
+               )  return int;
+      pragma Import (C, Internal, "gnutls_pem_base64_decode");
+      Size : aliased size_t := Result'Length;
+   begin
+      if Pointer < Result'First or else Pointer > Result'Last then
+         Raise_Exception
+         (  Layout_Error'Identity,
+            "Invalid pointer is out of buffer range"
+         );
+      end if;
+      Check
+      (  Internal
+         (  Null_Ptr,
+            To_Datum (Data),
+            Result (Pointer)'Address,
+            Size'Access
+      )  );
+      Pointer := Pointer + (Stream_Element_Offset (Size) - 1);
+   exception
+      when Error : TLS_Error =>
+         if Get_Error_Code (Error) = E_Short_Memory_Buffer then
+            Raise_Exception
+            (  Layout_Error'Identity,
+               "No room in the buffer"
+            );
+         else
+            raise;
+         end if;
+   end PEM_Base64_Decode;
+
+   procedure PEM_Base64_Decode
+             (  Data    : String;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             )  is
+      function Internal
+               (  Header : chars_ptr;
+                  Data   : Datum;
+                  Result : Address;
+                  Size   : access size_t
+               )  return int;
+      pragma Import (C, Internal, "gnutls_pem_base64_decode");
+      Size : aliased size_t := Result'Length;
+      Copy : char_array := To_C (Data);
+   begin
+      if Pointer < Result'First or else Pointer > Result'Last then
+         Raise_Exception
+         (  Layout_Error'Identity,
+            "Invalid pointer is out of buffer range"
+         );
+      end if;
+      Check
+      (  Internal
+         (  Null_Ptr,
+            To_Datum (Copy),
+            Result (Pointer)'Address,
+            Size'Access
+      )  );
+      Pointer := Pointer + (Stream_Element_Offset (Size) - 1);
+   exception
+      when Error : TLS_Error =>
+         if Get_Error_Code (Error) = E_Short_Memory_Buffer then
+            Raise_Exception
+            (  Layout_Error'Identity,
+               "No room in the buffer"
+            );
+         else
+            raise;
+         end if;
+   end PEM_Base64_Decode;
+
+   procedure PEM_Base64_Encode
+             (  Data    : Stream_Element_Array;
+                Result  : in out Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             )  is
+      function Internal
+               (  Header : chars_ptr;
+                  Data   : Datum;
+                  Result : Address;
+                  Size   : access size_t
+               )  return int;
+      pragma Import (C, Internal, "gnutls_pem_base64_encode");
+      Size : aliased size_t := Result'Length;
+   begin
+      if Pointer < Result'First or else Pointer > Result'Last then
+         Raise_Exception
+         (  Layout_Error'Identity,
+            "Invalid pointer is out of buffer range"
+         );
+      end if;
+      Check
+      (  Internal
+         (  Null_Ptr,
+            To_Datum (Data),
+            Result (Pointer)'Address,
+            Size'Access
+      )  );
+      Pointer := Pointer + (Stream_Element_Offset (Size) - 1);
+   exception
+      when Error : TLS_Error =>
+         if Get_Error_Code (Error) = E_Short_Memory_Buffer then
+            Raise_Exception
+            (  Layout_Error'Identity,
+               "No room in the buffer"
+            );
+         else
+            raise;
+         end if;
+   end PEM_Base64_Encode;
+
+   function PEM_Base64_Encode
+            (  Data : Stream_Element_Array
+            )  return Stream_Element_Array is
+      type Stream_Element_Ptr is access constant Stream_Element;
+      function From_Stream_Element_Ptr is
+         new Ada.Unchecked_Conversion
+             (  Stream_Element_Ptr,
+                const_unsigned_chars_ptr
+             );
+      function Internal
+               (  Header : chars_ptr;
+                  Data   : Datum;
+                  Result : access Datum
+               )  return int;
+      pragma Import (C, Internal, "gnutls_pem_base64_encode_alloc");
+      Output : Datum_Holder;
+   begin
+      Check
+      (  Internal
+         (  Null_Ptr,
+            To_Datum (Data),
+            Output.Data'Access
+      )  );
+      return To_Stream_Element_Array (Output.Data);
+   end PEM_Base64_Encode;
+
    function PK_Algorithm_Get_Name
             (  Algorithm : PK_Algorithm
             )  return String is
@@ -3193,6 +3755,38 @@ package body GNUTLS is
    begin
       return Internal (Algorithm, unsigned (Bits));
    end PK_Bits_To_Sec_Param;
+
+   function PK_Get_ID (Name : String) return PK_Algorithm is
+      function Internal (Name : char_array) return PK_Algorithm;
+      pragma Import (C, Internal, "gnutls_pk_get_id");
+   begin
+      return Internal (To_C (Name));
+   end PK_Get_ID;
+
+   function PK_Get_Name (Algorithm : PK_Algorithm) return String is
+      function Internal (Algorithm : PK_Algorithm) return chars_ptr;
+      pragma Import (C, Internal, "gnutls_pk_get_name");
+      Result : chars_ptr := Internal (Algorithm);
+   begin
+      if Result = Null_Ptr then
+         Raise_Exception (End_Error'Identity, "No algorithm matched");
+      else
+         return Value (Result);
+      end if;
+   end PK_Get_Name;
+
+   function PK_List return PK_Algorithm_Array is
+      use PK_Algorithm_Pointers;
+      function Internal return Pointer;
+      pragma Import (C, Internal, "gnutls_pk_list");
+      Result : Pointer := Internal;
+   begin
+      if Result = null then
+         return (1..0 => PK_Unknown);
+      else
+         return Value (Result);
+      end if;
+   end PK_List;
 
    procedure Priority_Set
              (  Session : in out Session_Type;
@@ -3509,6 +4103,21 @@ package body GNUTLS is
       return Internal (Session.Holder.Handle) /= 0;
    end Safe_Renegotiation_Status;
 
+   function Sec_Param_Get_Name (Param : Sec_Param) return String is
+      function Internal (Param : Sec_Param) return chars_ptr;
+      pragma Import (C, Internal, "gnutls_sec_param_get_name");
+      Result : chars_ptr := Internal (Param);
+   begin
+      if Result = Null_Ptr then
+         Raise_Exception
+         (  End_Error'Identity,
+            "No security parameter matched"
+         );
+      else
+         return Value (Result);
+      end if;
+   end Sec_Param_Get_Name;
+
    function Sec_Param_To_PK_Bits
             (  Algorithm : PK_Algorithm;
                Parameter : Sec_Param
@@ -3570,7 +4179,7 @@ package body GNUTLS is
 
    procedure Session_Get_Data
              (  Session : Session_Type;
-                Data    : in out Datum_Holder
+                Data    : in out Datum_Holder'Class
              )  is
       function Internal (Session : Address; Data : access Datum)
          return int;
@@ -3597,7 +4206,9 @@ package body GNUTLS is
       end if;
    end Session_Get_Desc;
 
-   function Session_Get_ID (Session : Session_Type) return Datum is
+   function Session_Get_ID
+            (  Session : Session_Type
+            )  return Stream_Element_Array is
       function Internal
                (  Session : Address;
                   Data    : access Datum
@@ -3606,7 +4217,7 @@ package body GNUTLS is
       Data : aliased Datum;
    begin
       Check (Internal (Session.Holder.Handle, Data'Access));
-      return Data;
+      return To_Stream_Element_Array (Data);
    end Session_Get_ID;
 
    function Session_Get_Ptr (Session : Session_Type) return Address is
@@ -3638,12 +4249,12 @@ package body GNUTLS is
 
    procedure Session_Set_Data
              (  Session : in out Session_Type;
-                Data    : Datum
+                Data    : Stream_Element_Array
              )  is
       function Internal (Session : Address; Data : Datum) return int;
       pragma Import (C, Internal, "gnutls_session_set_data");
    begin
-      Check (Internal (Session.Holder.Handle, Data));
+      Check (Internal (Session.Holder.Handle, To_Datum (Data)));
    end Session_Set_Data;
 
    procedure Session_Set_Ptr
@@ -3660,24 +4271,28 @@ package body GNUTLS is
              (  Session : in out Session_Type
              )  is
       function Internal (Session : Address) return int;
-      pragma Import (C, Internal, "gnutls_session_ticket_enable_client");
+      pragma Import
+             (  C,
+                Internal,
+                "gnutls_session_ticket_enable_client"
+             );
    begin
       Check (Internal (Session.Holder.Handle));
    end Session_Ticket_Enable_Client;
 
    procedure Session_Ticket_Enable_Server
              (  Session : in out Session_Type;
-                Key     : Datum
+                Key     : Stream_Element_Array
              )  is
       function Internal (Session : Address; Key : Datum) return int;
       pragma Import (C, Internal, "gnutls_session_ticket_enable_server");
    begin
-      Check (Internal (Session.Holder.Handle, Key));
+      Check (Internal (Session.Holder.Handle, To_Datum (Key)));
    end Session_Ticket_Enable_Server;
 
    procedure Session_Ticket_Key_Generate
              (  Session : in out Session_Type;
-                Key     : in out Datum_Holder
+                Key     : in out Datum_Holder'Class
              )  is
       function Internal
                (  Session : Address;
@@ -3796,7 +4411,7 @@ package body GNUTLS is
    function To_Stream_Element_Array (Data : Datum)
       return Stream_Element_Array is
    begin
-      if Data.Size = 0 or else Data.Data = null then
+      if Data.Size = 0 or else Data.Data = Null_Address then
          return (1..0 => 0);
       else
          declare
@@ -3805,19 +4420,44 @@ package body GNUTLS is
                                    .. Stream_Element_Offset (Data.Size)
                                    );
             Buffer : Buffer_Type;
-            for Buffer'Address use Data.Data.all'Address;
+            for Buffer'Address use Data.Data;
          begin
             return Buffer;
          end;
       end if;
    end To_Stream_Element_Array;
 
+   function To_Stream_Element_Array (Data : String)
+      return Stream_Element_Array is
+   begin
+      if Data'Length = 0 then
+         return (1..0 => 0);
+      else
+         declare
+            Result  : Stream_Element_Array (1..Data'Length);
+            Pointer : Stream_Element_Offset := Result'First;
+         begin
+            for Index in Data'Range loop
+               Result (Pointer) := Character'Pos (Data (Index));
+               Pointer := Pointer + 1;
+            end loop;
+            return Result;
+         end;
+      end if;
+   end To_Stream_Element_Array;
+
    function To_String (Data : Datum) return String is
    begin
-      if Data.Size = 0 or else Data.Data = null then
+      if Data.Size = 0 or else Data.Data = Null_Address then
          return "";
       else
-         return Value (To_chars_ptr (Data.Data), size_t (Data.Size));
+         declare
+            subtype Buffer_Type is char_array (1..size_t (Data.Size));
+            Buffer : Buffer_Type;
+            for Buffer'Address use Data.Data;
+         begin
+            return To_Ada (Buffer, False);
+         end;
       end if;
    end To_String;
 
@@ -4185,6 +4825,26 @@ package body GNUTLS is
       Audit_Log.Set;
       Debug_Log.Set (Level);
    end Set_TLS_Debug;
+
+   function To_Datum (Data : Stream_Element_Array) return Datum is
+      Result : Datum;
+   begin
+      if Data'Length > 0 then
+         Result.Size := Data'Length;
+         Result.Data := Data (Data'First)'Address;
+      end if;
+      return Result;
+   end To_Datum;
+
+   function To_Datum (Data : char_array) return Datum is
+      Result : Datum;
+   begin
+      if Data'Length > 0 then
+         Result.Size := Data'Length;
+         Result.Data := Data (Data'First)'Address;
+      end if;
+      return Result;
+   end To_Datum;
 
    function URL_Is_Supported (URL : String) return Boolean is
       function Internal (URL : char_array) return int;

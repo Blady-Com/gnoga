@@ -3,7 +3,7 @@
 --     Test_WebSocket_Servers                      Luebeck            --
 --  Test WebSocket                                 Winter, 2014       --
 --  Interface                                                         --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  21:26 01 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -50,13 +50,19 @@ package Test_WebSocket_Servers is
 --
 -- Chat_Client -- Chat HTTP site
 --
-   type Chat_Client is new HTTP_Client with null record;
+   type Chat_Client is new HTTP_Client with record
+      Chunk : Natural := 0;
+   end record;
    procedure Do_Get  (Client : in out Chat_Client);
    procedure Do_Head (Client : in out Chat_Client);
    function WebSocket_Open
             (  Client : access Chat_Client
             )  return WebSocket_Accept;
    procedure WebSocket_Received
+             (  Client  : in out Chat_Client;
+                Message : String
+             );
+   procedure WebSocket_Received_Part
              (  Client  : in out Chat_Client;
                 Message : String
              );

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.X509             Luebeck            --
 -- Interface                                       Winter, 2015       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  18:53 15 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -50,6 +50,23 @@ package GNAT.Sockets.Server.Secure.X509 is
                 List    : X509_CRL_Array
              );
 --
+-- Add_CRL_{DER|PEM} -- Add trusted CRL
+--
+--    Factory - The credentials connection factory
+--    CRL     - Trusted CRL
+--
+-- This procedure adds  the  trusted  CRL   in  order  to verify  client
+-- certificates
+--
+   procedure Add_CRL_DER
+             (  Factory : in out X509_Authentication_Factory;
+                CRL     : Stream_Element_Array
+             );
+   procedure Add_CRL_PEM
+             (  Factory : in out X509_Authentication_Factory;
+                CRL     : String
+             );
+--
 -- Add_CRL_From_{DER|PEM}_File -- Add CRLs from file PEM or DER format
 --
 --    Factory    - The credentials connection factory
@@ -81,6 +98,71 @@ package GNAT.Sockets.Server.Secure.X509 is
              (  Factory     : in out X509_Authentication_Factory;
                 Public_Key  : OpenPGP_Crt;
                 Private_Key : OpenPGP_Privkey
+             );
+--
+-- Add_Key_{DER|PEM} -- Add certificate and key from memory
+--
+--    Factory     - The credentials connection factory
+--    Certificate - The certificate
+--  [ Key      ]  - The key
+--  [ Encryption  - The method of encryption
+--    Password ]  - The password to decrypt the key
+--
+-- These procedures set a certificate/private key pair in factory. These
+-- procedures  may  be  called  more  than  once,   in   case   multiple
+-- keys/certificates  exist  for  the  server. These procedures can also
+-- accept URLs at Key_File and Certificate_File. In that  case  it  will
+-- import the private key and certificate indicated by  the  URLs.  Note
+-- that the supported URLs are the ones indicated  by  URL_Is_Supported.
+-- In  case  the Certificate_File is provided as a PKCS 11 URL, then the
+-- certificate, and its present issuers in the token  are  are  imported
+-- (i.e.,  the required trust chain). If the procedure fails to load the
+-- res structure is at an undefined state, it must not be reused to load
+-- other keys or certificates.
+--
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array;
+                Key         : Stream_Element_Array;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             );
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             );
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array;
+                Key         : Stream_Element_Array
+             );
+   procedure Add_Key_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array
+             );
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String;
+                Key         : String;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             );
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String;
+                Encryption  : PKCS_Encrypt_Flags;
+                Password    : String
+             );
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String;
+                Key         : String
+             );
+   procedure Add_Key_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String
              );
 --
 -- Add_Key_From_{DER|PEM}_File -- Add trusted CAs
@@ -181,7 +263,7 @@ package GNAT.Sockets.Server.Secure.X509 is
 -- Add_Trust -- Add trusted CAs
 --
 --    Factory - The credentials connection factory
---    List    - The array of trusted CAs
+--    List    - An array of trusted CAs
 --
 -- This  procedure  adds  the  trusted  CAs  in  order  to verify client
 -- certificates.
@@ -189,6 +271,23 @@ package GNAT.Sockets.Server.Secure.X509 is
    procedure Add_Trust
              (  Factory : in out X509_Authentication_Factory;
                 List    : X509_Crt_Array
+             );
+--
+-- Add_Trust_{DER|PEM} -- Add trusted CA
+--
+--    Factory     - The credentials connection factory
+--    Certificate - A trusted certificate to add
+--
+-- This  procedure  adds  the  trusted  CA   in  order  to verify client
+-- certificates.
+--
+   procedure Add_Trust_DER
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : Stream_Element_Array
+             );
+   procedure Add_Trust_PEM
+             (  Factory     : in out X509_Authentication_Factory;
+                Certificate : String
              );
 --
 -- Add_Trust_From_{DER|PEM}_File -- Add from file PEM or DER format

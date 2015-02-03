@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  21:26 01 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1158,6 +1158,13 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --           series of messages. While sending these messages the server
 --           stops receiving new messages;
 --
+--         - Chunked  controls  chunked  message  receipt.  When   False
+--           messages larger than Size cause error and the connection is
+--           dropped.   When   True   incomplete   message  parts  cause
+--           WebSocket_Received_Part  called.  The  last  part  of   the
+--           message   is   always   delivered   using   a    call    to
+--           WebSocket_Received.
+--
 --         - Protocols  is the list of protocols reported  to the client
 --           as supported.  If  this string  is  empty the  contents  of
 --           Sec-WebSocket-Protocol is taken.
@@ -1177,6 +1184,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          when True =>
             Size      : WebSocket_Message_Size;
             Duplex    : Boolean;
+            Chunked   : Boolean;
             Protocols : String (1..Length);
          when False =>
             Code      : Positive;
@@ -1205,6 +1213,30 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                 Message : Stream_Element_Array
              );
    procedure WebSocket_Received
+             (  Client  : in out HTTP_Client;
+                Message : String
+             );
+--
+-- WebSocket_Received_Part -- Socket message callback
+--
+--    Client  - The HTTP client connection object
+--    Message - From the client
+--
+-- These  procedures  are  called  on  receipt  of  a  part of WebSocket
+-- message. It is called only when  Chunked  field  of  WebSocket_Accept
+-- returned    by    WebSocket_Open    is   True.   The   variant   with
+-- Stream_Element_Array parameter is called when a  binary  message  has
+-- been  received. The variant with String is called when a text message
+-- has. The text messages are UTF-8 encoded (according to RFC 6455). The
+-- validity of the encoding  is  not  checked,  though.  Note  that  the
+-- maximal message length is  limited  by  the  value  set  upon  socket
+-- connection. The default implementations do nothing.
+--
+   procedure WebSocket_Received_Part
+             (  Client  : in out HTTP_Client;
+                Message : Stream_Element_Array
+             );
+   procedure WebSocket_Received_Part
              (  Client  : in out HTTP_Client;
                 Message : String
              );
@@ -1483,6 +1515,7 @@ private
       Final        : Boolean := False;        -- Current frame is last
       Pending      : Boolean := False;        -- A message is pending
       Duplex       : Boolean := False;        -- Use mutex
+      Chunked      : Boolean := False;        -- Chunked messages
       Frame_Type   : WebSocket_Frame_Type;    -- Current frame type
       Frame_Length : Stream_Element_Count;    -- Current frame length
       Length_Count : WebSocket_Length_Count;  -- Extended length

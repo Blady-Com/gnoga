@@ -4,7 +4,7 @@
 --  Test WebSocket                                 Winter, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  21:26 01 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -205,7 +205,7 @@ package body Test_WebSocket_Duplex_Servers is
             (  Client : access Chat_Client
             )  return WebSocket_Accept is
    begin
-      return (True, 0, 1024, True, "");
+      return (True, 0, 1024, True, False, "");
    end WebSocket_Open;
 
    procedure WebSocket_Received

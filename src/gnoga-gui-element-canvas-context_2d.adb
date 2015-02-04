@@ -952,7 +952,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
            Color.Green'Img & "," &
            Color.Blue'Img & "," &
            Color.Alpha'Img & "').split(',')); " &
-           "gnoga['g12'].putImageData(" & GID & "," &
+           "gnoga['" & Context.ID & "'].putImageData(" & GID & "," &
            X'Img & "," &
            Y'Img & ")");
    end Pixel;

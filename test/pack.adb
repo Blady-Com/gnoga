@@ -33,7 +33,7 @@ procedure Pack is
 begin
    Gnoga.Application.Open_URL;
 
-   Gnoga.Application.Singleton.Initialize (Main_Window);
+   Gnoga.Application.Singleton.Initialize (Main_Window, Boot => "ajax.html");
 
    Main_View.Create (Main_Window,
                      ((COL, SPN),

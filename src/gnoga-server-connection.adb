@@ -41,7 +41,6 @@ with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
 
 with Ada.Exceptions;
-with GNAT.Traceback.Symbolic;
 
 with Ada.Containers.Ordered_Maps;
 
@@ -599,7 +598,6 @@ package body Gnoga.Server.Connection is
          Log ("Do_Get_Head Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Do_Get_Head;
 
    ------------
@@ -728,7 +726,6 @@ package body Gnoga.Server.Connection is
          Log ("Do_Body Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Do_Body;
 
    -------------
@@ -1089,7 +1086,6 @@ package body Gnoga.Server.Connection is
             Log ("Error on Connection ID=" & ID'Img);
             Log (Ada.Exceptions.Exception_Name (E) & " - " &
                    Ada.Exceptions.Exception_Message (E));
-            Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
       end;
 
       Connection_Manager.Delete_Connection_Holder (ID);
@@ -1099,7 +1095,6 @@ package body Gnoga.Server.Connection is
          Log ("Connection Manager Error Connection ID=" & ID'Img);
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Event_Task_Type;
 
    --------------
@@ -1140,7 +1135,6 @@ package body Gnoga.Server.Connection is
                         Log ("Watchdog error:");
                         Log (Ada.Exceptions.Exception_Name (E) & " - " &
                                Ada.Exceptions.Exception_Message (E));
-                        Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
                   end;
             end;
       end Ping;
@@ -1167,7 +1161,6 @@ package body Gnoga.Server.Connection is
                Log ("Watchdog error:");
                Log (Ada.Exceptions.Exception_Name (E) & " - " &
                       Ada.Exceptions.Exception_Message (E));
-               Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
          end;
 
          select
@@ -1538,7 +1531,6 @@ package body Gnoga.Server.Connection is
          Log ("Websocket Message Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end WebSocket_Received;
 
    ----------------------
@@ -1635,7 +1627,6 @@ package body Gnoga.Server.Connection is
          Log ("Dispatch Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Dispatch_Task_Type;
 
    procedure Dispatch_Message (Message : in String) is
@@ -1686,7 +1677,6 @@ package body Gnoga.Server.Connection is
          Log ("Dispatch Message Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Dispatch_Message;
 
    -------------------
@@ -1811,7 +1801,6 @@ package body Gnoga.Server.Connection is
          Log ("Flush_Buffer Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Flush_Buffer;
 
    --------------------

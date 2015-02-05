@@ -1811,6 +1811,8 @@ package body Gnoga.Server.Connection is
          Execute_Script (ID, Socket.Content.Buffer.Get);
          Socket.Content.Buffer.Clear;
          Socket.Content.Buffer.Buffering (True);
+      elsif Socket.Content.Connection_Type = Long_Polling then
+         Socket.Unblock_Send;
       end if;
    exception
       when Connection_Error =>
@@ -1835,6 +1837,10 @@ package body Gnoga.Server.Connection is
       begin
          if Socket.Content.Connection_Type = Long_Polling then
             Socket.Content.Buffer.Add ("<script>" & Script & "</script>");
+
+            if not Socket.Content.Buffer.Buffering then
+               Socket.Unblock_Send;
+            end if;
          elsif Socket.Content.Connection_Type = WebSocket then
             Socket.WebSocket_Send (Script);
          end if;
@@ -1890,6 +1896,9 @@ package body Gnoga.Server.Connection is
                                                Message &
                                                "</script>" &
                                                CRLF);
+                  if not Socket.Content.Buffer.Buffering then
+                     Socket.Unblock_Send;
+                  end if;
                elsif Socket.Content.Connection_Type = WebSocket then
                   Socket.WebSocket_Send (Message);
                end if;

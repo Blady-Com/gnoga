@@ -25552,6 +25552,15 @@ guarantee that <a href="#GNAT.Sockets.Server.Send">Send</a> called from
 <a href="#GNAT.Sockets.Server.Received">Received</a> would always be able to 
 queue a complete packet.</p>
 
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Unblock_Send (<b>Client</b> :
+<font color="#0000FF">in out</font> Connection);</tt></p>
+</blockquote>
+<p>This procedure explicitly unblocks socket polling for send. Normally it 
+happens automatically when <a href="#GNAT.Sockets.Server.Send">Send</a> is 
+called or when the timeout expires (see
+<a href="#GNAT.Sockets.Server.Get_Polling_Timeout">Get_Polling_Timeout</a>).</p>
+
 <h4><a name="16.1.3"></a>16.1.3. Secure servers</h4>
 <p><a name="GNAT.Sockets.Server.Secure"></a>The package
 <a href="#GNAT.Sockets.Server.Secure">GNAT.Sockets.Server.Secure</a> provides an implementation 

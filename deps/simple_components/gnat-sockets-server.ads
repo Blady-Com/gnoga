@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  18:54 05 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -797,6 +797,16 @@ package GNAT.Sockets.Server is
 --    The result
 --
    function To_String (Data : Stream_Element_Array) return String;
+--
+-- Unblock_Send -- Request send socket polling
+--
+--    Client - The client connection object
+--
+-- Normally the socket polling is stopped when there is nothing to send.
+-- It is resumed  once a portion of data is sent, e.g. a Send is called.
+-- This procedure has the same effect without sending any data.
+--
+   procedure Unblock_Send (Client : in out Connection);
 
    package Stream_Element_Offset_Edit is
       new Strings_Edit.Integer_Edit (Stream_Element_Offset);

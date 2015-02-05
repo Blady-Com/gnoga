@@ -217,6 +217,7 @@ package body Gnoga.Gui.Base is
       use type Gnoga.Types.ID_Enumeration;
    begin
       Object.On_Destroy;
+      Object.Detach_From_Message_Queue;
 
       if not Gnoga.Server.Connection.Shutting_Down and
         Gnoga.Server.Connection.Valid (Object.Connection_ID)
@@ -233,9 +234,6 @@ package body Gnoga.Gui.Base is
                      null; --  Socket error to browser
                end;
             end if;
-
-            Object.Detach_From_Message_Queue;
-
             Object.Connection_ID := Gnoga.Types.No_Connection;
          end if;
       end if;

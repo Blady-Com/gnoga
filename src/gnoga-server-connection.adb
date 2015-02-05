@@ -136,9 +136,11 @@ package body Gnoga.Server.Connection is
    function Get (Source : access Gnoga_HTTP_Content) return String;
    --  Handle long polling method
 
+   pragma Warnings (Off);
    procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
                     Item   : in     Gnoga_HTTP_Content);
    for Gnoga_HTTP_Content'Write use Write;
+   pragma Warnings (On);
 
    -----------
    -- Write --
@@ -159,7 +161,11 @@ package body Gnoga.Server.Connection is
    function Get (Source : access Gnoga_HTTP_Content) return String is
    begin
       if Source.Buffer.Length = 0 then
-         if Source.Finalized then
+         if Source.Connection_Type = HTTP then
+            Source.Finalized := True;
+         end if;
+
+         if Source.Finalized = True then
             return "";
          else
             raise Content_Not_Ready;
@@ -276,8 +282,10 @@ package body Gnoga.Server.Connection is
    --  Connection Helpers
    -------------------------------------------------------------------------
 
+   pragma Warnings (Off);
    procedure Start_Long_Polling_Connect (Client : in out Gnoga_HTTP_Client);
    --  Start a long polling connection alternative to websocket
+   pragma Warnings (On);
 
    function Buffer_Add (ID     : Gnoga.Types.Connection_ID;
                         Script : String)
@@ -516,40 +524,51 @@ package body Gnoga.Server.Connection is
                   "Cache-Control: no-cache, no-store, must-revalidate" & CRLF);
             Send (Client, "Pragma: no-cache" & CRLF);
             Send (Client, "Expires: 0" & CRLF);
+            Send_Connection (Client, Persistent => True);
+            Send_Server (Client);
 
-            if Status.File = "ajax.html" then
-               Send_Connection (Client, Persistent => True);
-               Send_Server (Client);
+            declare
+               F : String := Adjust_Name;
+               M : String := Gnoga.Server.Mime.Mime_Type (F);
+            begin
+               if F = "gnoga_ajax" then
+                  Send_Body (Client, "", Get);
 
-               Client.Content.Buffer.Add
-                 (Gnoga.Server.Template_Parser.Simple.Load_View (Adjust_Name));
-
-               Client.Content.Connection_Type := Long_Polling;
-
-               Send_Body (Client, Client.Content'Access, Get);
-
-               Start_Long_Polling_Connect (Client);
-            else
-               Send_Connection (Client, Persistent => False);
-               Send_Server (Client);
-
-               declare
-                  F : String := Adjust_Name;
-               begin
-                  if F = "gnoga_ajax" then
-                     Send_Body (Client, "", Get);
+                  declare
+                     Q       : Integer := Index
+                       (Status.File, "?", Going => Backward);
+                     Message : String := Status.File
+                       (Q + 1 .. Status.File'Last);
+                  begin
+                     Dispatch_Message (Message);
+                  end;
+               else
+                  if M = "text/html" then
+                     Client.Content.Finalized := False;
 
                      declare
-                        Q       : Integer := Index
-                          (Status.File, "?", Going => Backward);
-                        Message : String := Status.File
-                          (Q + 1 .. Status.File'Last);
+                        F : String :=
+                          Gnoga.Server.Template_Parser.Simple.Load_View
+                            (Adjust_Name);
                      begin
-                        Dispatch_Message (Message);
+                        Client.Content.Buffer.Add
+                          (Gnoga.Server.Template_Parser.Simple.Load_View
+                             (Adjust_Name));
+
+                        if Index (F, "js/ajax.js") > 0 then
+                           Client.Content.Connection_Type := Long_Polling;
+
+                           Send_Body (Client, Client.Content'Access, Get);
+
+                           Start_Long_Polling_Connect (Client);
+                        else
+                           Client.Content.Connection_Type := HTTP;
+
+                           Send_Body (Client, Client.Content'Access, Get);
+                        end if;
                      end;
                   else
-                     Send_Content_Type (Client,
-                                        Gnoga.Server.Mime.Mime_Type (F));
+                     Send_Content_Type (Client, M);
                      declare
                         use Ada.Streams.Stream_IO;
                      begin
@@ -564,8 +583,8 @@ package body Gnoga.Server.Connection is
                                    Get);
                      end;
                   end if;
-               end;
-            end if;
+               end if;
+            end;
 
          when URI =>
             Gnoga.Log ("File kind URI requested - " & Status.Path);
@@ -1164,6 +1183,8 @@ package body Gnoga.Server.Connection is
    -- Message Queue Manager --
    ---------------------------
 
+   No_Object : exception;
+
    function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
                  return Boolean;
    --  Properly identify equivelant objects
@@ -1179,7 +1200,7 @@ package body Gnoga.Server.Connection is
      (Gnoga.Types.Unique_ID, Gnoga.Gui.Base.Pointer_To_Base_Class);
 
    protected Object_Manager is
-      function Get_Object (Index : Integer)
+      function Get_Object (ID : Gnoga.Types.Unique_ID)
                            return Gnoga.Gui.Base.Pointer_To_Base_Class;
       procedure Insert
         (ID     : in Gnoga.Types.Unique_ID;
@@ -1191,11 +1212,15 @@ package body Gnoga.Server.Connection is
    end Object_Manager;
 
    protected body Object_Manager is
-      function Get_Object (Index : Integer)
+      function Get_Object (ID : Gnoga.Types.Unique_ID)
                            return Gnoga.Gui.Base.Pointer_To_Base_Class
       is
       begin
-         return Object_Map.Element (Index);
+         if Object_Map.Contains (ID) then
+            return Object_Map.Element (ID);
+         else
+            raise No_Object;
+         end if;
       end Get_Object;
 
       procedure Insert
@@ -1209,7 +1234,9 @@ package body Gnoga.Server.Connection is
 
       procedure Delete (ID : Gnoga.Types.Unique_ID) is
       begin
-         Object_Map.Delete (ID);
+         if Object_Map.Contains (ID) then
+            Object_Map.Delete (ID);
+         end if;
       end Delete;
    end Object_Manager;
 
@@ -1652,6 +1679,9 @@ package body Gnoga.Server.Connection is
          end;
       end if;
    exception
+      when No_Object =>
+         Log ("Request to dispatch message to non-existant object");
+         return;
       when E : others =>
          Log ("Dispatch Message Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &

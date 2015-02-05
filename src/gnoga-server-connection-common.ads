@@ -51,6 +51,7 @@ package Gnoga.Server.Connection.Common is
    Max_HTTP_Input_Chunk    : constant := 1024;
    Max_HTTP_Output_Chunk   : constant := 1024;
    Max_Websocket_Message   : constant := 1024;
+   Script_Time_Out         : constant := 3.0;
 
    Max_Buffer_Length : constant := 2 ** 16 - 1;
    --  Maximum length of to Buffer output to Gnoga clients before an

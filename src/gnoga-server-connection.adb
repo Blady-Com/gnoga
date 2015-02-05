@@ -55,6 +55,7 @@ with Ada.Text_IO;
 with Ada.Streams.Stream_IO;
 
 with Gnoga.Server.Connection.Common; use Gnoga.Server.Connection.Common;
+with Gnoga.Server.Template_Parser.Simple;
 
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Unique_ID;
@@ -86,10 +87,16 @@ package body Gnoga.Server.Connection is
       function Buffering return Boolean;
 
       procedure Add (S : in String);
-      --  Add to buffer
+      --  Add to end of buffer
+
+      procedure Preface (S : in String);
+      --  Preface to buffer
 
       function Get return String;
       --  Retrive buffer
+
+      procedure Get_And_Clear (S : out Ada.Strings.Unbounded.Unbounded_String);
+      --  Retrive and clear buffer
 
       function Length return Natural;
       --  Size of buffer
@@ -114,9 +121,9 @@ package body Gnoga.Server.Connection is
    --  Gnoga_HTTP_Content  --
    --  Per http connection data
 
-   type Gnoga_Connection_Type is (HTTP, WebSocket);
+   type Gnoga_Connection_Type is (HTTP, Long_Polling, WebSocket);
 
-   type Gnoga_HTTP_Content is
+   type Gnoga_HTTP_Content is new Content_Source with
       record
          Connection_Type : Gnoga_Connection_Type := HTTP;
          FS              : Ada.Streams.Stream_IO.File_Type;
@@ -124,9 +131,18 @@ package body Gnoga.Server.Connection is
          Buffer          : String_Buffer;
          Finalized       : Boolean := False;
       end record;
+
+   overriding
+   function Get (Source : access Gnoga_HTTP_Content) return String;
+   --  Handle long polling method
+
    procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
                     Item   : in     Gnoga_HTTP_Content);
    for Gnoga_HTTP_Content'Write use Write;
+
+   -----------
+   -- Write --
+   -----------
 
    procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
                     Item   : in     Gnoga_HTTP_Content)
@@ -134,6 +150,44 @@ package body Gnoga.Server.Connection is
    begin
       null;
    end Write;
+
+   ---------
+   -- Get --
+   ---------
+
+   overriding
+   function Get (Source : access Gnoga_HTTP_Content) return String is
+   begin
+      if Source.Buffer.Length = 0 then
+         if Source.Finalized then
+            return "";
+         else
+            raise Content_Not_Ready;
+         end if;
+      else
+         declare
+            use Ada.Strings.Unbounded;
+
+            Chunk_Size : constant := Max_HTTP_Output_Chunk - 80;
+
+            S : Ada.Strings.Unbounded.Unbounded_String;
+         begin
+            Source.Buffer.Get_And_Clear (S);
+
+            if Length (S) > Chunk_Size then
+               Source.Buffer.Preface (Slice (Source => S,
+                                             Low    => 1 + Chunk_Size,
+                                             High   => Length (S)));
+
+               return Slice (Source => S,
+                             Low    => 1,
+                             High   => Chunk_Size);
+            else
+               return To_String (S);
+            end if;
+         end;
+      end if;
+   end Get;
 
    --  Gnoga_HTTP_Factory  --
    --  Creates Gnoga_HTTP_Client objects on incoming connections
@@ -165,7 +219,7 @@ package body Gnoga.Server.Connection is
 
    type Gnoga_HTTP_Client is new HTTP_Client with
       record
-         Content : Gnoga_HTTP_Content;
+         Content : aliased Gnoga_HTTP_Content;
       end record;
 
    type Socket_Type is access all Gnoga_HTTP_Client;
@@ -218,11 +272,21 @@ package body Gnoga.Server.Connection is
      (Client : in out Gnoga_HTTP_Client;
       Error  : in     Ada.Exceptions.Exception_Occurrence);
 
+   -------------------------------------------------------------------------
+   --  Connection Helpers
+   -------------------------------------------------------------------------
+
+   procedure Start_Long_Polling_Connect (Client : in out Gnoga_HTTP_Client);
+   --  Start a long polling connection alternative to websocket
+
    function Buffer_Add (ID     : Gnoga.Types.Connection_ID;
                         Script : String)
                         return Boolean;
    --  If buffering add Script to the buffer for ID and return true, if not
    --  buffering return false;
+
+   procedure Dispatch_Message (Message : in String);
+   --  Dispatch an incoming message from browser to event system
 
    -----------------------
    -- Gnoga_HTTP_Server --
@@ -418,7 +482,9 @@ package body Gnoga.Server.Connection is
          Start              : String := Start_Path;
          Path_Adjusted_Name : String := After_Start_Path;
       begin
-         if Start = "" and File_Name = "" then
+         if File_Name = "gnoga_ajax" then
+            return File_Name;
+         elsif Start = "" and File_Name = "" then
             return Gnoga.Server.HTML_Directory & To_String (Boot_HTML);
          elsif Start = "js" then
             return Gnoga.Server.JS_Directory & Path_Adjusted_Name;
@@ -450,30 +516,57 @@ package body Gnoga.Server.Connection is
                   "Cache-Control: no-cache, no-store, must-revalidate" & CRLF);
             Send (Client, "Pragma: no-cache" & CRLF);
             Send (Client, "Expires: 0" & CRLF);
-            Send_Connection (Client, Persistent => False);
-            --  Tell browser not to hold connections open since they will
-            --  not be reused.
 
-            Send_Server (Client);
+            if Status.File = "ajax.html" then
+               Send_Connection (Client, Persistent => True);
+               Send_Server (Client);
 
-            declare
-               F : String := Adjust_Name;
-            begin
-               Send_Content_Type (Client, Gnoga.Server.Mime.Mime_Type (F));
+               Client.Content.Buffer.Add
+                 (Gnoga.Server.Template_Parser.Simple.Load_View (Adjust_Name));
+
+               Client.Content.Connection_Type := Long_Polling;
+
+               Send_Body (Client, Client.Content'Access, Get);
+
+               Start_Long_Polling_Connect (Client);
+            else
+               Send_Connection (Client, Persistent => False);
+               Send_Server (Client);
+
                declare
-                  use Ada.Streams.Stream_IO;
+                  F : String := Adjust_Name;
                begin
-                  if Is_Open (Client.Content.FS) then
-                     Close (Client.Content.FS);
-                  end if;
+                  if F = "gnoga_ajax" then
+                     Send_Body (Client, "", Get);
 
-                  Open (Client.Content.FS, In_File, F,
-                        Form => "shared=yes");
-                  Send_Body (Client,
-                             Stream (Client.Content.FS),
-                             Get);
+                     declare
+                        Q       : Integer := Index
+                          (Status.File, "?", Going => Backward);
+                        Message : String := Status.File
+                          (Q + 1 .. Status.File'Last);
+                     begin
+                        Dispatch_Message (Message);
+                     end;
+                  else
+                     Send_Content_Type (Client,
+                                        Gnoga.Server.Mime.Mime_Type (F));
+                     declare
+                        use Ada.Streams.Stream_IO;
+                     begin
+                        if Is_Open (Client.Content.FS) then
+                           Close (Client.Content.FS);
+                        end if;
+
+                        Open (Client.Content.FS, In_File, F,
+                              Form => "shared=yes");
+                        Send_Body (Client,
+                                   Stream (Client.Content.FS),
+                                   Get);
+                     end;
+                  end if;
                end;
-            end;
+            end if;
+
          when URI =>
             Gnoga.Log ("File kind URI requested - " & Status.Path);
 
@@ -1004,7 +1097,9 @@ package body Gnoga.Server.Connection is
          if Socket.Content.Finalized then
             Connection_Manager.Delete_Connection (ID);
             return;
-         else
+         elsif Socket.Content.Connection_Type = Long_Polling then
+            Socket.Content.Buffer.Add ("<!--0--!>");
+         elsif Socket.Content.Connection_Type = WebSocket then
             Socket.WebSocket_Send ("0");
          end if;
       exception
@@ -1279,6 +1374,24 @@ package body Gnoga.Server.Connection is
       --  If not reconnected by next watchdog ping connection will be deleted.
    end WebSocket_Error;
 
+   --------------------------------
+   -- Start_Long_Polling_Connect --
+   --------------------------------
+
+   procedure Start_Long_Polling_Connect (Client : in out Gnoga_HTTP_Client) is
+      S  : Socket_Type := Client'Unchecked_Access;
+
+      ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+   begin
+      Connection_Manager.Add_Connection (Socket => S,
+                                         New_ID => ID);
+      Connection_Manager.Start_Connection (ID);
+
+      if Verbose_Output then
+         Gnoga.Log ("New long polling connection - ID" & ID'Img);
+      end if;
+   end Start_Long_Polling_Connect;
+
    --------------------
    -- Script_Manager --
    --------------------
@@ -1379,6 +1492,32 @@ package body Gnoga.Server.Connection is
    -- WebSocket_Received --
    ------------------------
 
+   overriding
+   procedure WebSocket_Received (Client  : in out Gnoga_HTTP_Client;
+                                 Message : in     String)
+   is
+      Full_Message : String := Client.Content.Input_Overflow.Get & Message;
+   begin
+      Client.Content.Input_Overflow.Clear;
+
+      if Full_Message = "0" then
+         return;
+      end if;
+
+      Dispatch_Message (Full_Message);
+
+   exception
+      when E : others =>
+         Log ("Websocket Message Error");
+         Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                Ada.Exceptions.Exception_Message (E));
+         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+   end WebSocket_Received;
+
+   ----------------------
+   -- Dispatch_Message --
+   ----------------------
+
    task type Dispatch_Task_Type
      (Object : Gnoga.Gui.Base.Pointer_To_Base_Class)
    is
@@ -1472,46 +1611,32 @@ package body Gnoga.Server.Connection is
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Dispatch_Task_Type;
 
-   overriding
-   procedure WebSocket_Received (Client  : in out Gnoga_HTTP_Client;
-                                 Message : in     String)
-   is
+   procedure Dispatch_Message (Message : in String) is
       use Ada.Strings.Fixed;
-
-      Full_Message : String := Client.Content.Input_Overflow.Get & Message;
    begin
-      Client.Content.Input_Overflow.Clear;
-
-      if Full_Message = "0" then
-         return;
-      end if;
-
-      if Full_Message (Full_Message'First) = 'S' then
+      if Message (Message'First) = 'S' then
          declare
-            P1 : Integer := Index (Source  => Full_Message,
+            P1 : Integer := Index (Source  => Message,
                                    Pattern => "|");
 
-            UID    : String := Full_Message
-              (Full_Message'First + 2 .. (P1 - 1));
-            Result : String := Full_Message ((P1 + 1) .. Full_Message'Last);
+            UID    : String := Message (Message'First + 2 .. (P1 - 1));
+            Result : String := Message ((P1 + 1) .. Message'Last);
          begin
             Script_Manager.Release_Hold (Gnoga.Types.Unique_ID'Value (UID),
                                          Result);
          end;
       else
          declare
-            P1 : Integer := Index (Source  => Full_Message,
+            P1 : Integer := Index (Source  => Message,
                                    Pattern => "|");
 
-            P2 : Integer := Index (Source  => Full_Message,
+            P2 : Integer := Index (Source  => Message,
                                    Pattern => "|",
                                    From    => P1 + 1);
 
-            UID        : String := Full_Message
-              (Full_Message'First .. (P1 - 1));
-            Event      : String := Full_Message ((P1 + 1) .. (P2 - 1));
-            Event_Data : String := Full_Message
-              ((P2 + 1) .. Full_Message'Last);
+            UID        : String := Message (Message'First .. (P1 - 1));
+            Event      : String := Message ((P1 + 1) .. (P2 - 1));
+            Event_Data : String := Message ((P2 + 1) .. Message'Last);
 
             Object : Gnoga.Gui.Base.Pointer_To_Base_Class :=
                        Object_Manager.Get_Object (Integer'Value (UID));
@@ -1528,11 +1653,11 @@ package body Gnoga.Server.Connection is
       end if;
    exception
       when E : others =>
-         Log ("Message Error");
+         Log ("Dispatch Message Error");
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
          Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
-   end WebSocket_Received;
+   end Dispatch_Message;
 
    -------------------
    -- String_Buffer --
@@ -1555,6 +1680,12 @@ package body Gnoga.Server.Connection is
          Buffer := Buffer & S;
       end Add;
 
+      procedure Preface (S : in String) is
+         use type Ada.Strings.Unbounded.Unbounded_String;
+      begin
+         Buffer := S & Buffer;
+      end Preface;
+
       function Length return Natural is
       begin
          return Ada.Strings.Unbounded.Length (Buffer);
@@ -1564,6 +1695,13 @@ package body Gnoga.Server.Connection is
       begin
          return Ada.Strings.Unbounded.To_String (Buffer);
       end Get;
+
+      procedure Get_And_Clear (S : out Ada.Strings.Unbounded.Unbounded_String)
+      is
+      begin
+         S := Buffer;
+         Buffer := Ada.Strings.Unbounded.To_Unbounded_String ("");
+      end Get_And_Clear;
 
       procedure Clear is
       begin
@@ -1581,7 +1719,9 @@ package body Gnoga.Server.Connection is
    is
       Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
-      if Socket.Content.Buffer.Buffering then
+      if Socket.Content.Buffer.Buffering and
+        Socket.Content.Connection_Type = WebSocket
+      then
          if Socket.Content.Buffer.Length + Script'Length >=
            Max_Buffer_Length
          then
@@ -1626,7 +1766,9 @@ package body Gnoga.Server.Connection is
    is
       Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
-      if Socket.Content.Buffer.Buffering then
+      if Socket.Content.Buffer.Buffering and
+        Socket.Content.Connection_Type = WebSocket
+      then
          Socket.Content.Buffer.Buffering (False);
          Execute_Script (ID, Socket.Content.Buffer.Get);
          Socket.Content.Buffer.Clear;
@@ -1654,7 +1796,11 @@ package body Gnoga.Server.Connection is
       procedure Try_Execute is
          Socket  : Socket_Type := Connection_Manager.Connection_Socket (ID);
       begin
-         Socket.WebSocket_Send (Script);
+         if Socket.Content.Connection_Type = Long_Polling then
+            Socket.Content.Buffer.Add ("<script>" & Script & "</script>");
+         elsif Socket.Content.Connection_Type = WebSocket then
+            Socket.WebSocket_Send (Script);
+         end if;
       exception
          when Ada.Text_IO.End_Error =>
             raise Connection_Error with
@@ -1702,10 +1848,17 @@ package body Gnoga.Server.Connection is
                            "eval (""" & Escape_Quotes (Script) & """)" &
                            ");";
             begin
-               Socket.WebSocket_Send (Message);
+               if Socket.Content.Connection_Type = Long_Polling then
+                  Socket.Content.Buffer.Add ("<script>" &
+                                               Message &
+                                               "</script>" &
+                                               CRLF);
+               elsif Socket.Content.Connection_Type = WebSocket then
+                  Socket.WebSocket_Send (Message);
+               end if;
 
                select
-                  delay 3.0; --  Timeout for browser to return answer
+                  delay Script_Time_Out; --  Timeout for browser answer
 
                   Script_Manager.Delete_Script_Holder (Script_ID);
 
@@ -1833,8 +1986,13 @@ package body Gnoga.Server.Connection is
    -----------
 
    procedure Close (ID : Gnoga.Types.Connection_ID) is
+      Socket  : Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
-      Execute_Script (ID, "ws.close()");
+      if Socket.Content.Connection_Type = Long_Polling then
+         Socket.Content.Finalized := True;
+      else
+         Execute_Script (ID, "ws.close()");
+      end if;
    end Close;
 
    -------------------
@@ -1943,15 +2101,26 @@ package body Gnoga.Server.Connection is
    overriding
    procedure Finalize (Client : in out Gnoga_HTTP_Client) is
    begin
-      if Client.Content.Connection_Type = WebSocket and
-        not Client.Content.Finalized
-      then
-         --  If websocket didn't report connection error or disconnect
-         --  browser crashed or was an embedded webkit shutdown
-         Connection_Manager.Delete_Connection
-           (Connection_Manager.Find_Connection_ID (Client'Unchecked_Access));
-      else
-         Client.Content.Finalized := True;
+      if Client.Content.Connection_Type = Long_Polling then
+         declare
+            ID : Gnoga.Types.Connection_ID :=
+              Connection_Manager.Find_Connection_ID (Client'Unchecked_Access);
+         begin
+            if Verbose_Output then
+               Gnoga.Log
+                 ("Long Polling Connection disconnected - ID" & ID'Img);
+            end if;
+
+            Connection_Manager.Delete_Connection (ID);
+         end;
+      elsif Client.Content.Connection_Type = WebSocket then
+         if not Client.Content.Finalized then
+            --  If websocket didn't report connection error or disconnect
+            --  browser crashed or was an embedded webkit shutdown
+            Connection_Manager.Delete_Connection
+              (Connection_Manager.Find_Connection_ID
+                 (Client'Unchecked_Access));
+         end if;
       end if;
 
       HTTP_Client (Client).Finalize;

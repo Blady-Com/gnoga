@@ -68,7 +68,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
            "jqueryui/1.11.2/themes/smoothness/jquery-ui.css"" />')");
       Window.Document.Head_Element.jQuery_Execute
         ("append ('<script src=""//ajax.googleapis.com/ajax/libs/" &
-           "jqueryui/1.11.2/jquery-ui.min.js""></script>')");
+           "jqueryui/1.11.2/jquery-ui.min.js"" />')");
 
       while
         Gnoga.Server.Connection.Execute_Script

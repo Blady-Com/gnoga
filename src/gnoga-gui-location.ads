@@ -81,6 +81,22 @@ package Gnoga.Gui.Location is
 
    procedure Search (Location : in out Location_Type; Value : in String);
    function Search (Location : Location_Type) return String;
+
+   -------------------------------------------------------------------------
+   --  Location_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Reload (Location : in out Location_Type);
+   --  Reload the current page
+
+   procedure Replace (Location : in out Location_Type; URL : in String);
+   --  Replace the current page with URL (the current page will be removed
+   --  from the browser history)
+
+   procedure Assign (Location : in out Location_Type; URL : in String);
+   --  Assign URL to the current page, the current page will be available
+   --  using the back button.
+
 private
    type Location_Type is new Gnoga.Gui.Base.Base_Type with null record;
 end Gnoga.Gui.Location;

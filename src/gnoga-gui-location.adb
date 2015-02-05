@@ -158,4 +158,31 @@ package body Gnoga.Gui.Location is
       return Location.Property ("search");
    end Search;
 
+   ------------
+   -- Reload --
+   ------------
+
+   procedure Reload (Location : in out Location_Type) is
+   begin
+      Location.Execute ("reload()");
+   end Reload;
+
+   -------------
+   -- Replace --
+   -------------
+
+   procedure Replace (Location : in out Location_Type; URL : in String) is
+   begin
+      Location.Execute ("replace('" & Gnoga.Escape_Quotes (URL) & "')");
+   end Replace;
+
+   ------------
+   -- Assign --
+   ------------
+
+   procedure Assign (Location : in out Location_Type; URL : in String) is
+   begin
+      Location.Execute ("assign('" & Gnoga.Escape_Quotes (URL) & "')");
+   end Assign;
+
 end Gnoga.Gui.Location;

@@ -67,6 +67,11 @@ package body Gnoga.Server.Connection is
 
    Exit_Application_Requested : Boolean := False;
 
+   procedure String_Replace
+     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
+      Pattern     : in     String;
+      Replacement : in     String);
+
    function Global_Gnoga_Client_Factory
      (Listener       : access Connections_Server'Class;
       Request_Length : Positive;
@@ -161,10 +166,8 @@ package body Gnoga.Server.Connection is
    begin
       if Source.Buffer.Length = 0 then
          if Source.Connection_Type = HTTP then
-            Source.Finalized := True;
-         end if;
-
-         if Source.Finalized = True then
+            return "";
+         elsif Source.Finalized = True then
             return "";
          else
             raise Content_Not_Ready;
@@ -282,7 +285,9 @@ package body Gnoga.Server.Connection is
    -------------------------------------------------------------------------
 
    pragma Warnings (Off);
-   procedure Start_Long_Polling_Connect (Client : in out Gnoga_HTTP_Client);
+   procedure Start_Long_Polling_Connect
+     (Client : in out Gnoga_HTTP_Client;
+      ID     : out    Gnoga.Types.Connection_ID);
    --  Start a long polling connection alternative to websocket
    pragma Warnings (On);
 
@@ -546,22 +551,32 @@ package body Gnoga.Server.Connection is
                      Client.Content.Finalized := False;
 
                      declare
-                        F : String :=
-                          Gnoga.Server.Template_Parser.Simple.Load_View
-                            (Adjust_Name);
-                     begin
-                        Client.Content.Buffer.Add
+                        ID : Gnoga.Types.Connection_ID;
+                        F  : Unbounded_String := To_Unbounded_String
                           (Gnoga.Server.Template_Parser.Simple.Load_View
                              (Adjust_Name));
-
-                        if Index (F, "js/ajax.js") > 0 then
+                        L  : Boolean := False;
+                     begin
+                        if Index (F, "/js/ajax.js") > 0 then
                            Client.Content.Connection_Type := Long_Polling;
+                           Client.Content.Buffer.Add (To_String (F));
 
                            Send_Body (Client, Client.Content'Access, Get);
 
-                           Start_Long_Polling_Connect (Client);
+                           Start_Long_Polling_Connect (Client, ID);
+                        elsif Index (F, "/js/auto.js") > 0 then
+                           Client.Content.Connection_Type := Long_Polling;
+                           Start_Long_Polling_Connect (Client, ID);
+
+                           String_Replace (Source      => F,
+                                           Pattern     => "@@Connection_ID@@",
+                                           Replacement => ID'Img);
+                           Client.Content.Buffer.Add (To_String (F));
+
+                           Send_Body (Client, Client.Content'Access, Get);
                         else
                            Client.Content.Connection_Type := HTTP;
+                           Client.Content.Buffer.Add (To_String (F));
 
                            Send_Body (Client, Client.Content'Access, Get);
                         end if;
@@ -937,6 +952,7 @@ package body Gnoga.Server.Connection is
       is
       begin
          if Socket_Map.Contains (Old_ID) then
+            Socket_Map.Element (Old_ID).Content.Finalized := True;
             Socket_Map.Replace (Old_ID, Socket_Map.Element (New_ID));
          else
             raise Connection_Error with
@@ -1320,7 +1336,8 @@ package body Gnoga.Server.Connection is
 
       if Old_ID /= "" and Old_ID /= "undefined" then
          if Verbose_Output then
-            Gnoga.Log ("Swapping connections " & ID'Img & " => " & Old_ID);
+            Gnoga.Log ("Swapping websocket connection " &
+                         ID'Img & " => " & Old_ID);
          end if;
 
          Connection_Manager.Swap_Connection
@@ -1398,10 +1415,11 @@ package body Gnoga.Server.Connection is
    -- Start_Long_Polling_Connect --
    --------------------------------
 
-   procedure Start_Long_Polling_Connect (Client : in out Gnoga_HTTP_Client) is
+   procedure Start_Long_Polling_Connect
+     (Client : in out Gnoga_HTTP_Client;
+      ID     : out    Gnoga.Types.Connection_ID)
+   is
       S  : Socket_Type := Client'Unchecked_Access;
-
-      ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
    begin
       Connection_Manager.Add_Connection (Socket => S,
                                          New_ID => ID);
@@ -2144,6 +2162,31 @@ package body Gnoga.Server.Connection is
 
       HTTP_Client (Client).Finalize;
    end Finalize;
+
+   --------------------
+   -- String_Replace --
+   --------------------
+
+   procedure String_Replace
+     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
+      Pattern     : in     String;
+      Replacement : in     String)
+   is
+      use Ada.Strings.Unbounded;
+
+      I : Natural;
+   begin
+      loop
+         I := Index (Source => Source, Pattern => Pattern);
+
+         exit when I = 0;
+
+         Replace_Slice (Source => Source,
+                        Low    => I,
+                        High   => I + Pattern'Length - 1,
+                        By     => Replacement);
+      end loop;
+   end String_Replace;
 
 begin
    Gnoga.Server.Connection.Common.Gnoga_Client_Factory :=

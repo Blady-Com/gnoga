@@ -7,7 +7,7 @@ DONE - 4. Remove boot.js requirement for gnoga_debug and gnoga_ssl vars to be se
 DONE - 5. https/ssl websockets via proxy
 6. Add ability to directly server from code files via http
 7. Add packages to deliver jquery.min.js, boot.js and boot.html (or secure.html) directly so single executable can be delivered with out need for full deployment directory structure, perhaps other files too.
-8. Alternative to Websockets using long lived http connection and Ajax (or perhaps stick with WS but allow at least initial write via http to deal with crawlers).
+DONE - 8. Alternative to Websockets using long polling http connection and Ajax
 9. Complete Ace Editor plugin
 10. Complete MacGap support for menus
 

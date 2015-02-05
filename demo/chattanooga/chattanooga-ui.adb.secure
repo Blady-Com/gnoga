@@ -182,6 +182,9 @@ package body Chattanooga.UI is
 
       Connection.Hold;
       DB.Remove (User => App.Email);
+   exception -- On_Connect
+   when E : others =>
+      Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E) );
    end On_Connect;
 
    procedure On_Connect_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -201,7 +204,7 @@ package body Chattanooga.UI is
    when Constraint_Error =>
       App.Error.Text (Value => Email & " is already connected. Try again.");
    when E : others =>
-      App.Error.Text (Value => Ada.Exceptions.Exception_Information (E) );
+      Gnoga.Log (Message => "On_Connect_Submit: " & Ada.Exceptions.Exception_Information (E) );
    end On_Connect_Submit;
 
    procedure On_Connect_Help (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -211,6 +214,9 @@ package body Chattanooga.UI is
                                    "Chattanooga does not permanently store any information about you. E-mail addresses, " &
                                    "being case-insensitive, are converted to all lower case. Once connected, you " &
                                    "will be taken to the chat screen.");
+   exception -- On_Connect_Help
+   when E : others =>
+      Gnoga.Log (Message => "On_Connect_Help: " & Ada.Exceptions.Exception_Information (E) );
    end On_Connect_Help;
 
    procedure On_Send (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -227,6 +233,9 @@ package body Chattanooga.UI is
       Count := DB.Send (From => App.Email, Message => Message);
       Show (From => App.Email, Message => Message, App_Data => App, Ding => False);
       App.Message_Entry.Value (Value => "");
+   exception -- On_Send
+   when E : others =>
+      Gnoga.Log (Message => "On_Send: " & Ada.Exceptions.Exception_Information (E) );
    end On_Send;
 
    procedure On_Add (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -241,6 +250,9 @@ package body Chattanooga.UI is
 
       DB.Add_Friend (User => App.Email, Friend => +Friend);
       App.Friend_Entry.Value (Value => "");
+   exception -- On_Add
+   when E : others =>
+      Gnoga.Log (Message => "On_Add: " & Ada.Exceptions.Exception_Information (E) );
    end On_Add;
 
    procedure On_Remove (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -255,6 +267,9 @@ package body Chattanooga.UI is
             DB.Remove_Friend (User => App.Email, Friend => +Name);
          end Get_Name;
       end if;
+   exception -- On_Remove
+   when E : others =>
+      Gnoga.Log (Message => "On_Remove: " & Ada.Exceptions.Exception_Information (E) );
    end On_Remove;
 
    End_Message : constant String := "Chattanooga ended.";
@@ -271,6 +286,9 @@ package body Chattanooga.UI is
       App.Window.Document.Title (Value => "Chattanooga");
       App.Window.Close;
       App.Window.Close_Connection;
+   exception -- On_Disconnect
+   when E : others =>
+      Gnoga.Log (Message => "On_Disconnect: " & Ada.Exceptions.Exception_Information (E) );
    end On_Disconnect;
 
    procedure On_Chat_Help (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -291,6 +309,9 @@ package body Chattanooga.UI is
                                    LF & LF &
                                    "The Disconnect button will disconnect you from Chattanooga. You will then appear as " &
                                    "disconnected in your friends' lists.");
+   exception -- On_Chat_Help
+   when E : others =>
+      Gnoga.Log (Message => "On_Chat_Help: " & Ada.Exceptions.Exception_Information (E) );
    end On_Chat_Help;
 begin -- Chattanooga.UI
    Gnoga.Application.Title (Name => "Chattanooga");
@@ -304,6 +325,9 @@ begin -- Chattanooga.UI
    Gnoga.Application.Multi_Connect.Initialize (Port => 8082);
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);
    Gnoga.Application.Multi_Connect.Message_Loop;
+exception -- Chattanooga.UI
+when E : others =>
+   Gnoga.Log (Message => "UI: " & Ada.Exceptions.Exception_Information (E) );
 end Chattanooga.UI;
 --
 -- This is free software; you can redistribute it and/or modify it under

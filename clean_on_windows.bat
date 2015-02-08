@@ -1,9 +1,10 @@
 cd obj
-rm *.*
+del /Q *.*
 cd ..
 cd lib
-rm *.*
+del /Q *.*
 cd ..
 cd bin
-rm *.*
+del /Q *.*
 cd ..
+

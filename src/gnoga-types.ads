@@ -108,6 +108,10 @@ package Gnoga.Types is
          Alpha : Color_Type := 0;
       end record;
 
+   function To_RGBA (Value : in Pixel_Type) return RGBA_Type;
+
+   function To_Pixel (Value : in RGBA_Type) return Pixel_Type;
+
    type Pixel_Data_Type is
      array (Positive range <>, Positive range <>) of Pixel_Type;
 

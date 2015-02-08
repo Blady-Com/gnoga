@@ -157,4 +157,23 @@ package body Gnoga.Types is
          return RGBA;
    end To_RGBA_From_RGB_or_RGBA;
 
+   -------------
+   -- To_RGBA --
+   -------------
+
+   function To_RGBA (Value : in Pixel_Type) return RGBA_Type is
+   begin
+      return (Value.Red, Value.Green, Value.Blue,
+              Frational_Range_Type (Value.Alpha) / 255.0);
+   end To_RGBA;
+
+   --------------
+   -- To_Pixel --
+   --------------
+
+   function To_Pixel (Value : in RGBA_Type) return Pixel_Type is
+   begin
+      return (Value.Red, Value.Green, Value.Blue,
+              Gnoga.Types.Color_Type (Value.Alpha * 255.0));
+   end To_Pixel;
 end Gnoga.Types;

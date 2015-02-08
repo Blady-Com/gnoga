@@ -48,6 +48,6 @@
        console.error ("gnoga_ajax error - " & xhr.statusText);
     };
 
-    xhr.open ("GET", adr + "?" + message , true);
+    xhr.open ("GET", adr + "?m=" + encodeURIComponent(message), true);
     xhr.send (null);
   }

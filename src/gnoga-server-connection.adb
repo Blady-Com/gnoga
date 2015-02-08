@@ -456,7 +456,7 @@ package body Gnoga.Server.Connection is
          function After_Start_Path return String;
 
          function Base_Name return String is
-            Q : Integer := Index (Status.File, "?", Going => Backward);
+            Q : Integer := Index (Status.File, "?", Going => Forward);
          begin
             if Q = 0 then
                Q := Index (Status.File, "#", Going => Backward);
@@ -539,10 +539,11 @@ package body Gnoga.Server.Connection is
                   Send_Body (Client, "", Get);
 
                   declare
+                     MH      : constant String := "?m=";
                      Q       : Integer := Index
-                       (Status.File, "?", Going => Backward);
+                       (Status.File, MH, Going => Forward);
                      Message : String := Status.File
-                       (Q + 1 .. Status.File'Last);
+                       (Q + MH'Length .. Status.File'Last);
                   begin
                      Dispatch_Message (Message);
                   end;

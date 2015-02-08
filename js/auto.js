@@ -123,7 +123,7 @@
        console.error ("gnoga_ajax error - " & xhr.statusText);
     };
 
-    xhr.open ("GET", xadr + "?" + message , true);
+    xhr.open ("GET", xadr + "?m=" + encodeURIComponent(message), true);
     xhr.send (null);
   }
 

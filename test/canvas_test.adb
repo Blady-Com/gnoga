@@ -173,6 +173,19 @@ procedure Canvas_Test is
                            Left       => 150,
                            Top        => 150);
 
+         C.Pixel (0, 0, (0, 0, 0, 0));
+
+         declare
+            P : Gnoga.Types.Pixel_Type := C.Pixel (10, 10);
+            R : Gnoga.Types.RGBA_Type := To_RGBA (P);
+         begin
+            Gnoga.Log ("P = " & P.Red'Img & P.Green'Img &
+                         P.Blue'Img & P.Alpha'Img);
+            Gnoga.Log ("R = " & R.Red'Img & R.Green'Img &
+                         R.Blue'Img & R.Alpha'Img);
+            Button1.Background_Color (R);
+         end;
+
          for X in 50 .. 75 loop
             C.Pixel (X - 50, 125, C.Pixel (X, 20));
          end loop;

@@ -907,9 +907,10 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
 
          if F = 0 then
             F := Value'Last;
+            return Color_Type'Value (Value (S .. F));
          end if;
 
-         return Color_Type'Value (Value (S .. (F - 1)));
+         return Color_Type'Value (Value (S .. F - 1));
       end Split;
    begin
       for X in 1 .. Width loop

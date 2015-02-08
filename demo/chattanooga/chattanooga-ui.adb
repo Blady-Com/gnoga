@@ -18,8 +18,6 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Types.Colors;
 
-with Gnoga.Server.Connection.Secure;
-
 package body Chattanooga.UI is
    procedure Create_Email_Screen (App : in App_Ptr; Main_Window : in out Gnoga.Gui.Window.Window_Type'Class);
    -- Initialize the window for entering the user's e-mail address
@@ -316,11 +314,6 @@ package body Chattanooga.UI is
 begin -- Chattanooga.UI
    Gnoga.Application.Title (Name => "Chattanooga");
    Gnoga.Application.HTML_On_Close (HTML => End_Message);
-   Gnoga.Server.Connection.Secure.Register_Secure_Server
-     (Certificate_File => "/home/dbotton/workspace/ssl/star_gnoga_com.crt",
-      Key_File         => "/home/dbotton/workspace/ssl/star_gnoga_com.key",
-      Port             => 8443,
-      Disable_Insecure => False);
 
    Gnoga.Application.Multi_Connect.Initialize (Port => 8082);
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);

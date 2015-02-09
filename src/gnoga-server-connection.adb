@@ -67,11 +67,6 @@ package body Gnoga.Server.Connection is
 
    Exit_Application_Requested : Boolean := False;
 
-   procedure String_Replace
-     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
-      Pattern     : in     String;
-      Replacement : in     String);
-
    function Global_Gnoga_Client_Factory
      (Listener       : access Connections_Server'Class;
       Request_Length : Positive;
@@ -124,8 +119,6 @@ package body Gnoga.Server.Connection is
 
    --  Gnoga_HTTP_Content  --
    --  Per http connection data
-
-   type Gnoga_Connection_Type is (HTTP, Long_Polling, WebSocket);
 
    type Gnoga_HTTP_Content is new Content_Source with
       record
@@ -1824,6 +1817,18 @@ package body Gnoga.Server.Connection is
                 Ada.Exceptions.Exception_Message (E));
    end Flush_Buffer;
 
+   -------------------
+   -- Buffer_Append --
+   -------------------
+
+   procedure Buffer_Append (ID    : in Gnoga.Types.Connection_ID;
+                            Value : in String)
+   is
+      Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+   begin
+      Socket.Content.Buffer.Add (Value);
+   end Buffer_Append;
+
    --------------------
    -- Execute_Script --
    --------------------
@@ -1979,6 +1984,21 @@ package body Gnoga.Server.Connection is
    begin
       On_Connect_Event := Event;
    end On_Connect_Handler;
+
+   ---------------------
+   -- Connection_Type --
+   ---------------------
+
+   function Connection_Type (ID : Gnoga.Types.Connection_ID)
+                             return Gnoga_Connection_Type
+   is
+      Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+   begin
+      return Socket.Content.Connection_Type;
+   exception
+      when Connection_Error =>
+         return None;
+   end Connection_Type;
 
    -----------------------------
    -- On_Post_Request_Handler --
@@ -2172,32 +2192,6 @@ package body Gnoga.Server.Connection is
 
       HTTP_Client (Client).Finalize;
    end Finalize;
-
-   --------------------
-   -- String_Replace --
-   --------------------
-
-   procedure String_Replace
-     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
-      Pattern     : in     String;
-      Replacement : in     String)
-   is
-      use Ada.Strings.Unbounded;
-
-      I : Natural;
-   begin
-      loop
-         I := Index (Source => Source, Pattern => Pattern);
-
-         exit when I = 0;
-
-         Replace_Slice (Source => Source,
-                        Low    => I,
-                        High   => I + Pattern'Length - 1,
-                        By     => Replacement);
-      end loop;
-   end String_Replace;
-
 begin
    Gnoga.Server.Connection.Common.Gnoga_Client_Factory :=
       Global_Gnoga_Client_Factory'Access;

@@ -35,15 +35,20 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded;
+
 package Gnoga is
-   version      : constant String := "0.1";
-   version_high : constant        := 0;
+   version      : constant String := "1.1";
+   version_high : constant        := 1;
    version_low  : constant        := 1;
 
    HTTP_Server_Name : constant String := "gnoga/" & version;
 
    function Escape_Quotes (S : String) return String;
    --  Escape quotes for Java Script.
+
+   function Unescape_Quotes (S : String) return String;
+   --  Unescape a string quoted for Java Script
 
    function Left_Trim (S : String) return String;
    function Right_Trim (S : String) return String;
@@ -52,6 +57,12 @@ package Gnoga is
    function Left_Trim_Slashes (S : String) return String;
    function Right_Trim_Slashes (S : String) return String;
    --  Remove extra spaces, tabs and '/'s
+
+   procedure String_Replace
+     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
+      Pattern     : in     String;
+      Replacement : in     String);
+   --  Replace all instances of Pattern with Replacement in Source
 
    procedure Write_To_Console (Message : in String);
    --  Output message to console

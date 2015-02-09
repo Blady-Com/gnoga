@@ -37,7 +37,6 @@
 
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
-with Ada.Strings.Unbounded;
 
 package body Gnoga is
 
@@ -76,6 +75,53 @@ package body Gnoga is
 
       return Ada.Strings.Unbounded.To_String (R);
    end Escape_Quotes;
+
+   ---------------------
+   -- Unescape_Quotes --
+   ---------------------
+
+   function Unescape_Quotes (S : String) return String is
+      use type Ada.Strings.Unbounded.Unbounded_String;
+
+      C : Integer := S'First;
+
+      function Translate_Character return String;
+
+      function Translate_Character return String is
+      begin
+         if C < S'Last - 1 then
+            if S (C .. C + 1) = "\\" then
+               C := C + 2;
+               return "\";
+            elsif S (C .. C + 1) = "\x" then
+               declare
+                  H : Integer := Integer'Value
+                    ("16#" & S (C + 2 .. C + 3) & "#");
+               begin
+                  C := C + 4;
+
+                  return Character'Val (H) & "";
+               end;
+            end if;
+         end if;
+
+         declare
+            R : String := S (C) & "";
+         begin
+            C := C + 1;
+            return R;
+         end;
+      end Translate_Character;
+
+      R : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      loop
+         R := R & Translate_Character;
+         exit when C > S'Last;
+      end loop;
+
+      return Ada.Strings.Unbounded.To_String (R);
+   end Unescape_Quotes;
 
    ---------------
    -- Left_Trim --
@@ -152,6 +198,31 @@ package body Gnoga is
          return S;
       end if;
    end Right_Trim_Slashes;
+
+   --------------------
+   -- String_Replace --
+   --------------------
+
+   procedure String_Replace
+     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
+      Pattern     : in     String;
+      Replacement : in     String)
+   is
+      use Ada.Strings.Unbounded;
+
+      I : Natural;
+   begin
+      loop
+         I := Index (Source => Source, Pattern => Pattern);
+
+         exit when I = 0;
+
+         Replace_Slice (Source => Source,
+                        Low    => I,
+                        High   => I + Pattern'Length - 1,
+                        By     => Replacement);
+      end loop;
+   end String_Replace;
 
    ----------------------
    -- Write_To_Console --

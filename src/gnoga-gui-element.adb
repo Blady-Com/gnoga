@@ -36,6 +36,8 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with Ada.Strings.Fixed;
+
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Element is
@@ -53,6 +55,8 @@ package body Gnoga.Gui.Element is
                                HTML    : in     String;
                                ID      : in     String := "")
    is
+      use Gnoga.Server.Connection;
+
       function Adjusted_ID return String;
 
       function Adjusted_ID return String is
@@ -66,12 +70,45 @@ package body Gnoga.Gui.Element is
 
       GID : String := Adjusted_ID;
    begin
-      Element.Create_With_Script
-        (Connection_ID => Parent.Connection_ID,
-         ID            => GID,
-         Script        => "gnoga['" & GID & "']=$(""" & Escape_Quotes (HTML) &
-             """); gnoga['" & GID & "'].first().prop('id','" & GID & "');",
-         ID_Type       => Gnoga.Types.Gnoga_ID);
+      if Gnoga.Server.Connection.Connection_Type (Parent.Connection_ID) =
+        Long_Polling
+      then
+         declare
+            use Ada.Strings.Fixed;
+
+            P : Natural := Index (Source  => HTML,
+                                  Pattern => ">");
+         begin
+            if P = 0 then
+               Gnoga.Log ("Malformed HTML = " & HTML);
+            else
+               if HTML (P - 1) = '/' then
+                  P := P - 1;
+               end if;
+            end if;
+
+            declare
+               S : String := HTML (HTML'First .. P - 1) &
+                 " id='" & GID & "'" &
+                 HTML (P .. HTML'Last);
+            begin
+               Gnoga.Server.Connection.Buffer_Append
+                 (Parent.Connection_ID, Unescape_Quotes (S));
+
+               Element.Attach_Using_Parent (Parent  => Parent,
+                                            ID      => GID,
+                                            ID_Type => Gnoga.Types.DOM_ID);
+            end;
+         end;
+      else
+         Element.Create_With_Script
+           (Connection_ID => Parent.Connection_ID,
+            ID            => GID,
+            Script        => "gnoga['" & GID & "']=$(""" &
+              Escape_Quotes (HTML) &
+              """); gnoga['" & GID & "'].first().prop('id','" & GID & "');",
+            ID_Type       => Gnoga.Types.Gnoga_ID);
+      end if;
 
       Element.Parent (Parent);
    end Create_From_HTML;

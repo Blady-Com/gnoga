@@ -78,6 +78,11 @@ package Gnoga.Server.Connection is
    procedure Flush_Buffer (ID : in Gnoga.Types.Connection_ID);
    --  Flush buffer of connection ID
 
+   procedure Buffer_Append (ID    : in Gnoga.Types.Connection_ID;
+                            Value : in String);
+   --  Append Value to output buffer. This can be used to output HTML directly
+   --  on a Long_Polling connection.
+
    Script_Error : exception;
 
    protected type Connection_Holder_Type is
@@ -105,6 +110,15 @@ package Gnoga.Server.Connection is
 
    procedure On_Connect_Handler (Event : in Connect_Event);
    --  Set event handler for new socket connections.
+
+   type Gnoga_Connection_Type is (HTTP, Long_Polling, WebSocket, None);
+
+   function Connection_Type (ID : Gnoga.Types.Connection_ID)
+                             return Gnoga_Connection_Type;
+   --  Returns the connection type for ID
+   --  The connection type may change during the life time of an ID as part
+   --  of fall back mechanisms to support different network conditions and
+   --  browsers. Returns none if ID is not valid.
 
    type Post_Request_Event is access
      procedure

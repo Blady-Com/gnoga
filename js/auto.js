@@ -4,7 +4,7 @@
   var xadr;
   var reconnects=0;
   var params={};
-  var pingerid;
+  var pingerid=null;
 
   if (typeof gnoga_debug == 'undefined') {
      gnoga_debug = false;
@@ -27,6 +27,10 @@
   }
 
   function Setup_ws() {
+     if (pingerid == null) {
+        pingerid = setInterval (function () {Ping_ws ();}, 10000);
+     }
+
      ws.onmessage = function (event) {
         try {
            if (gnoga_debug == true) {
@@ -128,12 +132,9 @@
   }
 
   if (new_ws != null) {
-     ws = new_ws;
-
-     ws.onopen = function (event) {
+     new_ws.onopen = function (event) {
         console.log ("websocket connection successful");
+        ws = new_ws;
         Setup_ws();
      }
-
-     pingerid = setInterval (function () {Ping_ws ();}, 10000);
   }

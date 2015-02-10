@@ -943,17 +943,16 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                     X, Y    : in     Integer;
                     Color   : in     Gnoga.Types.Pixel_Type)
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
    begin
       Gnoga.Server.Connection.Execute_Script
         (Context.Connection_ID,
-           GID & "=gnoga['" & Context.ID & "'].createImageData(1,1); " &
-           GID & ".data.set (('" &
+           "var p=gnoga['" & Context.ID & "'].createImageData(1,1); " &
+           "p.data.set (('" &
            Color.Red'Img & "," &
            Color.Green'Img & "," &
            Color.Blue'Img & "," &
            Color.Alpha'Img & "').split(',')); " &
-           "gnoga['" & Context.ID & "'].putImageData(" & GID & "," &
+           "gnoga['" & Context.ID & "'].putImageData(p," &
            X'Img & "," &
            Y'Img & ")");
    end Pixel;

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  21:33 05 Feb 2015  --
+--                                Last revision :  21:07 11 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1469,11 +1469,7 @@ package body GNAT.Sockets.Server is
    procedure Unblock_Send (Client : in out Connection) is
       Buffer : Output_Buffer renames Client.Written;
    begin
-      if (  Buffer.Send_Blocked
-         and then
-            Buffer.Free_To_Write /= Buffer.First_Written
-         )
-      then -- Request socket unblocking
+      if Buffer.Send_Blocked then -- Request socket unblocking
          Buffer.Send_Blocked := False;
          Client.Listener.Unblock_Send := True;
          Abort_Selector (Client.Listener.Selector);

@@ -5,6 +5,9 @@ project Components.Connections_Server.HTTP_Server.Test_HTTP_Server is
    for Exec_Dir use ".";
    for Source_Files use
        (  "test_http_server.adb",
+    	  "test_http_continuous_server.adb",
+    	  "test_http_continuous_servers.adb",
+    	  "test_http_continuous_servers.ads",
     	  "test_http_servers.adb",
     	  "test_http_servers.ads",
           "test_infinity_server.adb",
@@ -19,6 +22,7 @@ project Components.Connections_Server.HTTP_Server.Test_HTTP_Server is
 	   );
    for Main use
        (  "test_http_server.adb",
+    	  "test_http_continuous_server.adb",
           "test_infinity_server.adb",
 		  "test_websocket_server.adb",
           "test_websocket_duplex_server.adb"

@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  18:54 05 Feb 2015  --
+--                                Last revision :  21:33 05 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1118,6 +1118,7 @@ private
       IO_Timeout      : Duration := 0.02;
       Polling_Timeout : Duration := 0.5;
       Unblock_Send    : Boolean  := False;
+      Finalizing      : Boolean  := False;
       Connections     : Unbounded_Array;
       Doer            : Worker_Ptr;
 

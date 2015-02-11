@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  18:54 05 Feb 2015  --
+--                                Last revision :  21:33 05 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -226,6 +226,7 @@ package body GNAT.Sockets.Server is
          new Ada.Unchecked_Deallocation (Worker, Worker_Ptr);
    begin
       if Listener.Doer /= null then
+         Listener.Finalizing := True;
          Abort_Selector (Listener.Selector);
          while not Listener.Doer'Terminated loop
             delay 0.001;
@@ -1475,6 +1476,7 @@ package body GNAT.Sockets.Server is
       then -- Request socket unblocking
          Buffer.Send_Blocked := False;
          Client.Listener.Unblock_Send := True;
+         Abort_Selector (Client.Listener.Selector);
       end if;
    end Unblock_Send;
 
@@ -1741,7 +1743,7 @@ package body GNAT.Sockets.Server is
             Status       => Status,
             Timeout      => Listener.IO_Timeout
          );
-         exit when Status = Aborted;
+         exit when Status = Aborted and then Listener.Finalizing;
          if Status = Completed then
             loop -- Reading from sockets
                Get (Read_Sockets, Client_Socket);

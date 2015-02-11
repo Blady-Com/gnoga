@@ -1751,16 +1751,22 @@ package body Gnoga.Server.Connection is
    is
       Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
-      if Socket.Content.Buffer.Buffering and
-        Socket.Content.Connection_Type = WebSocket
-      then
+      if Socket.Content.Buffer.Buffering then
          if Socket.Content.Buffer.Length + Script'Length >=
            Max_Buffer_Length
          then
             Flush_Buffer (ID);
          end if;
 
-         Socket.Content.Buffer.Add (Script & CRLF);
+         if Socket.Content.Connection_Type = WebSocket then
+            Socket.Content.Buffer.Add (Script & CRLF);
+         elsif Socket.Content.Connection_Type = Long_Polling then
+            Socket.Content.Buffer.Add
+              ("<script>" & Script & "</script>" & CRLF);
+         else
+            Gnoga.Log ("Buffer_Add called on unsupported connection type.");
+         end if;
+
          return True;
       else
          return False;
@@ -1902,9 +1908,7 @@ package body Gnoga.Server.Connection is
                                                Message &
                                                "</script>" &
                                                CRLF);
-                  if not Socket.Content.Buffer.Buffering then
-                     Socket.Unblock_Send;
-                  end if;
+                  Socket.Unblock_Send;
                elsif Socket.Content.Connection_Type = WebSocket then
                   Socket.WebSocket_Send (Message);
                end if;

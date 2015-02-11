@@ -120,6 +120,12 @@ package Gnoga.Server.Connection is
    --  of fall back mechanisms to support different network conditions and
    --  browsers. Returns none if ID is not valid.
 
+   function Connection_Path (ID : Gnoga.Types.Connection_ID)
+                             return String;
+   --  Returns the original connection path used to reach boot file, not the
+   --  specific path used for ID (e.g. not the WebSocket URL). Returns "" if
+   --  ID is invalid.
+
    type Post_Request_Event is access
      procedure
        (URI                 : in String;

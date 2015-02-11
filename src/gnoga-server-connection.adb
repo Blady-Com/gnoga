@@ -123,6 +123,7 @@ package body Gnoga.Server.Connection is
    type Gnoga_HTTP_Content is new Content_Source with
       record
          Connection_Type : Gnoga_Connection_Type := HTTP;
+         Connection_Path : Ada.Strings.Unbounded.Unbounded_String;
          FS              : Ada.Streams.Stream_IO.File_Type;
          Input_Overflow  : String_Buffer;
          Buffer          : String_Buffer;
@@ -515,6 +516,9 @@ package body Gnoga.Server.Connection is
 
             Reply_Text (Client, 404, "Not found", "Not found");
          when File =>
+            Client.Content.Connection_Path :=
+              To_Unbounded_String (Status.File);
+
             Send_Status_Line (Client, 200, "OK");
             Send_Date (Client);
             Send (Client,
@@ -947,6 +951,8 @@ package body Gnoga.Server.Connection is
       begin
          if Socket_Map.Contains (Old_ID) then
             Socket_Map.Element (Old_ID).Content.Finalized := True;
+            Socket_Map.Element (New_ID).Content.Connection_Path :=
+              Socket_Map.Element (Old_ID).Content.Connection_Path;
             Socket_Map.Replace (Old_ID, Socket_Map.Element (New_ID));
          else
             raise Connection_Error with
@@ -2003,6 +2009,23 @@ package body Gnoga.Server.Connection is
       when Connection_Error =>
          return None;
    end Connection_Type;
+
+   ---------------------
+   -- Connection_Path --
+   ---------------------
+
+   function Connection_Path (ID : Gnoga.Types.Connection_ID)
+                             return String
+   is
+      use Ada.Strings.Unbounded;
+
+      Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+   begin
+      return To_String (Socket.Content.Connection_Path);
+   exception
+      when Connection_Error =>
+         return "";
+   end Connection_Path;
 
    -----------------------------
    -- On_Post_Request_Handler --

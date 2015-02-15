@@ -386,6 +386,7 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                     X, Y    : in     Integer;
                     Color   : in     Gnoga.Types.Pixel_Type);
    --  Set or Get the Pixel at X, Y
+   --  Note: Left and Top are absolute and not affected by Translate
 
    procedure Create_Image_Data (Context       : in out Context_2D_Type;
                                 Image_Data    : in out Image_Data_Type'Class;
@@ -399,11 +400,13 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                              Width, Height : in     Integer);
    --  Creates an Image_Data object containing pixel data from Context at
    --  Left, Top with Width and Height dimensions
+   --  Note: Left and Top are absolute and not affected by Translate
 
    procedure Put_Image_Data (Context       : in out Context_2D_Type;
                              Image_Data    : in out Image_Data_Type'Class;
                              Left, Top     : in     Integer);
    --   Put Image_Data at Left, Top of Context
+   --  Note: Left and Top are absolute and not affected by Translate
 
    function Width (Image_Data : Image_Data_Type) return Natural;
 

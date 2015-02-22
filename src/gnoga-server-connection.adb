@@ -2195,6 +2195,10 @@ package body Gnoga.Server.Connection is
    overriding
    procedure Finalize (Client : in out Gnoga_HTTP_Client) is
    begin
+      if Ada.Streams.Stream_IO.Is_Open (Client.Content.FS) then
+         Ada.Streams.Stream_IO.Close (Client.Content.FS);
+      end if;
+
       if Client.Content.Connection_Type = Long_Polling then
          declare
             ID : Gnoga.Types.Connection_ID :=

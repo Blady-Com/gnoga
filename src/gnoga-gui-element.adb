@@ -1530,7 +1530,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.jQuery_Execute
-        ("toggleClass(" & Escape_Quotes (Class_Name) & ")");
+        ("toggleClass(""" & Escape_Quotes (Class_Name) & """)");
    end Toggle_Class;
 
    -------------------------

@@ -950,10 +950,16 @@ package body Gnoga.Server.Connection is
       is
       begin
          if Socket_Map.Contains (Old_ID) then
-            Socket_Map.Element (Old_ID).Content.Finalized := True;
-            Socket_Map.Element (New_ID).Content.Connection_Path :=
-              Socket_Map.Element (Old_ID).Content.Connection_Path;
-            Socket_Map.Replace (Old_ID, Socket_Map.Element (New_ID));
+            declare
+               Old_Socket : Socket_Type := Socket_Map.Element (Old_ID);
+               New_Socket : Socket_Type := Socket_Map.Element (New_ID);
+            begin
+               Old_Socket.Content.Finalized := True;
+               New_Socket.Content.Connection_Path :=
+                 Old_Socket.Content.Connection_Path;
+               Socket_Map.Replace (Old_ID, New_Socket);
+               Socket_Map.Replace (New_ID, Old_Socket);
+            end;
          else
             raise Connection_Error with
               "Old connection " & Old_ID'Img & " already gone";
@@ -1342,8 +1348,6 @@ package body Gnoga.Server.Connection is
 
          Connection_Manager.Swap_Connection
            (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
-
-         Connection_Manager.Delete_Connection (ID);
       else
          Connection_Manager.Start_Connection (ID);
 
@@ -1960,6 +1964,10 @@ package body Gnoga.Server.Connection is
             begin
                delay 2.0;
                return Try_Execute;
+            exception
+               when others =>
+                  Close (ID);
+                  raise Connection_Error with "Invalid ID " & ID'Img;
             end;
       end;
    end Execute_Script;
@@ -2020,8 +2028,23 @@ package body Gnoga.Server.Connection is
       use Ada.Strings.Unbounded;
 
       Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
+
+      S : String := To_String (Socket.Content.Connection_Path);
    begin
-      return To_String (Socket.Content.Connection_Path);
+      if Socket.Content.Connection_Type = Long_Polling then
+         return S;
+      else
+         if S = "" then
+            Socket.Content.Connection_Path :=
+              To_Unbounded_String (Left_Trim_Slashes
+                                   (Execute_Script
+                                      (ID, "window.location.pathname")));
+
+            return To_String (Socket.Content.Connection_Path);
+         else
+            return S;
+         end if;
+      end if;
    exception
       when Connection_Error =>
          return "";
@@ -2080,12 +2103,20 @@ package body Gnoga.Server.Connection is
    -----------
 
    procedure Close (ID : Gnoga.Types.Connection_ID) is
-      Socket  : Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
-      if Socket.Content.Connection_Type = Long_Polling then
-         Socket.Content.Finalized := True;
-      else
-         Execute_Script (ID, "ws.close()");
+      if Valid (ID) then
+         declare
+            Socket  : Socket_Type := Connection_Manager.Connection_Socket (ID);
+         begin
+            if Socket.Content.Connection_Type = Long_Polling then
+               Socket.Content.Finalized := True;
+            else
+               Execute_Script (ID, "ws.close()");
+            end if;
+         exception
+            when others =>
+               null;
+         end;
       end if;
    end Close;
 
@@ -2194,31 +2225,15 @@ package body Gnoga.Server.Connection is
 
    overriding
    procedure Finalize (Client : in out Gnoga_HTTP_Client) is
+      ID : Gnoga.Types.Connection_ID :=
+             Connection_Manager.Find_Connection_ID (Client'Unchecked_Access);
    begin
       if Ada.Streams.Stream_IO.Is_Open (Client.Content.FS) then
          Ada.Streams.Stream_IO.Close (Client.Content.FS);
       end if;
 
-      if Client.Content.Connection_Type = Long_Polling then
-         declare
-            ID : Gnoga.Types.Connection_ID :=
-              Connection_Manager.Find_Connection_ID (Client'Unchecked_Access);
-         begin
-            if Verbose_Output then
-               Gnoga.Log
-                 ("Long Polling Connection disconnected - ID" & ID'Img);
-            end if;
-
-            Connection_Manager.Delete_Connection (ID);
-         end;
-      elsif Client.Content.Connection_Type = WebSocket then
-         if not Client.Content.Finalized then
-            --  If websocket didn't report connection error or disconnect
-            --  browser crashed or was an embedded webkit shutdown
-            Connection_Manager.Delete_Connection
-              (Connection_Manager.Find_Connection_ID
-                 (Client'Unchecked_Access));
-         end if;
+      if ID /= Gnoga.Types.No_Connection then
+         Connection_Manager.Delete_Connection (ID);
       end if;
 
       HTTP_Client (Client).Finalize;

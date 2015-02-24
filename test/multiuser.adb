@@ -93,6 +93,7 @@ procedure Multiuser is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
+      Gnoga.Log ("Mouse Move - " & Event.X'Img & " X " & Event.Y'Img);
       App.X.Text (Event.X'Img);
       App.Y.Text (Event.Y'Img);
    end On_Move;
@@ -131,8 +132,10 @@ procedure Multiuser is
       Img : Gnoga.Gui.Element.Common.IMG_Type;
    begin
       Main_Window.Connection_Data (App);
-      Main_Window.On_Destroy_Handler (End_App'Unrestricted_Access);
+      --  Main_Window.On_Destroy_Handler (End_App'Unrestricted_Access);
       --  Turns multi_connect in to a single connect
+
+      Main_Window.Disable_Auto_Set_View;
 
       App.Main_Window := Main_Window'Unchecked_Access;
 

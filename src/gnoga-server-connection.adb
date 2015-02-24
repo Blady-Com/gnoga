@@ -2095,7 +2095,11 @@ package body Gnoga.Server.Connection is
 
    function Valid (ID : Gnoga.Types.Connection_ID) return Boolean is
    begin
-      return Connection_Manager.Valid (ID);
+      if ID = Gnoga.Types.No_Connection then
+         return False;
+      else
+         return Connection_Manager.Valid (ID);
+      end if;
    end Valid;
 
    -----------
@@ -2237,6 +2241,9 @@ package body Gnoga.Server.Connection is
       end if;
 
       HTTP_Client (Client).Finalize;
+   exception
+      when others =>
+         null;
    end Finalize;
 begin
    Gnoga.Server.Connection.Common.Gnoga_Client_Factory :=

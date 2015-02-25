@@ -120,8 +120,12 @@ package body Gnoga.Server.Connection is
    --  Gnoga_HTTP_Content  --
    --  Per http connection data
 
+   type Gnoga_HTTP_Client;
+   type Socket_Type is access all Gnoga_HTTP_Client;
+
    type Gnoga_HTTP_Content is new Content_Source with
       record
+         Socket          : Socket_Type           := null;
          Connection_Type : Gnoga_Connection_Type := HTTP;
          Connection_Path : Ada.Strings.Unbounded.Unbounded_String;
          FS              : Ada.Streams.Stream_IO.File_Type;
@@ -139,57 +143,6 @@ package body Gnoga.Server.Connection is
                     Item   : in     Gnoga_HTTP_Content);
    for Gnoga_HTTP_Content'Write use Write;
    pragma Warnings (On);
-
-   -----------
-   -- Write --
-   -----------
-
-   procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
-                    Item   : in     Gnoga_HTTP_Content)
-   is
-   begin
-      null;
-   end Write;
-
-   ---------
-   -- Get --
-   ---------
-
-   overriding
-   function Get (Source : access Gnoga_HTTP_Content) return String is
-   begin
-      if Source.Buffer.Length = 0 then
-         if Source.Connection_Type = HTTP then
-            return "";
-         elsif Source.Finalized = True then
-            return "";
-         else
-            raise Content_Not_Ready;
-         end if;
-      else
-         declare
-            use Ada.Strings.Unbounded;
-
-            Chunk_Size : constant := Max_HTTP_Output_Chunk - 80;
-
-            S : Ada.Strings.Unbounded.Unbounded_String;
-         begin
-            Source.Buffer.Get_And_Clear (S);
-
-            if Length (S) > Chunk_Size then
-               Source.Buffer.Preface (Slice (Source => S,
-                                             Low    => 1 + Chunk_Size,
-                                             High   => Length (S)));
-
-               return Slice (Source => S,
-                             Low    => 1,
-                             High   => Chunk_Size);
-            else
-               return To_String (S);
-            end if;
-         end;
-      end if;
-   end Get;
 
    --  Gnoga_HTTP_Factory  --
    --  Creates Gnoga_HTTP_Client objects on incoming connections
@@ -224,7 +177,7 @@ package body Gnoga.Server.Connection is
          Content : aliased Gnoga_HTTP_Content;
       end record;
 
-   type Socket_Type is access all Gnoga_HTTP_Client;
+   --  type Socket_Type is access all Gnoga_HTTP_Client;
 
    overriding
    procedure Finalize (Client : in out Gnoga_HTTP_Client);
@@ -368,12 +321,15 @@ package body Gnoga.Server.Connection is
       Output_Size    : Buffer_Length)
       return Connection_Ptr
    is
-   begin
-      return new Gnoga_HTTP_Client
+      Socket : Socket_Type := new Gnoga_HTTP_Client
         (Listener       => Listener.all'Unchecked_Access,
          Request_Length => Request_Length,
          Input_Size     => Input_Size,
          Output_Size    => Output_Size);
+   begin
+      Socket.Content.Socket := Socket;
+
+      return Connection_Ptr (Socket);
    end Global_Gnoga_Client_Factory;
 
    overriding
@@ -589,7 +545,7 @@ package body Gnoga.Server.Connection is
                         end if;
 
                         Open (Client.Content.FS, In_File, F,
-                              Form => "shared=yes");
+                              Form => "shared=no");
                         Send_Body (Client,
                                    Stream (Client.Content.FS),
                                    Get);
@@ -1004,6 +960,8 @@ package body Gnoga.Server.Connection is
       procedure Delete_Connection (ID : in Gnoga.Types.Connection_ID) is
       begin
          if (ID > 0) then
+            Gnoga.Log ("Deleting connection -" & ID'Img);
+
             if Connection_Holder_Map.Contains (ID) then
                Connection_Holder_Map.Element (ID).Release;
                Connection_Holder_Map.Delete (ID);
@@ -1140,25 +1098,31 @@ package body Gnoga.Server.Connection is
          end if;
       exception
          when others =>
-            begin
-               delay 3.0;
-               Socket := Socket_Maps.Element (C);
-               Socket.WebSocket_Send ("0");
-            exception
-               when others =>
-                  if Verbose_Output then
-                     Gnoga.Log ("Watchdog closed connection ID " & ID'Img);
-                  end if;
+            if Socket.Content.Connection_Type = Long_Polling then
+               Gnoga.Log ("Long polling error closing ID " & ID'Img);
+               Socket.Content.Finalized := True;
+               Connection_Manager.Delete_Connection (ID);
+            else
+               begin
+                  delay 3.0;
+                  Socket := Socket_Maps.Element (C);
+                  Socket.WebSocket_Send ("0");
+               exception
+                  when others =>
+                     if Verbose_Output then
+                        Gnoga.Log ("Watchdog closed connection ID " & ID'Img);
+                     end if;
 
-                  begin
-                     Connection_Manager.Delete_Connection (ID);
-                  exception
-                     when E : others =>
-                        Log ("Watchdog error:");
-                        Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                               Ada.Exceptions.Exception_Message (E));
-                  end;
-            end;
+                     begin
+                        Connection_Manager.Delete_Connection (ID);
+                     exception
+                        when E : others =>
+                           Log ("Watchdog error:");
+                           Log (Ada.Exceptions.Exception_Name (E) & " - " &
+                                  Ada.Exceptions.Exception_Message (E));
+                     end;
+               end;
+            end if;
       end Ping;
    begin
       accept Start;
@@ -1343,7 +1307,7 @@ package body Gnoga.Server.Connection is
       if Old_ID /= "" and Old_ID /= "undefined" then
          if Verbose_Output then
             Gnoga.Log ("Swapping websocket connection " &
-                         ID'Img & " => " & Old_ID);
+                         ID'Img & " <=> " & Old_ID);
          end if;
 
          Connection_Manager.Swap_Connection
@@ -1379,16 +1343,17 @@ package body Gnoga.Server.Connection is
    begin
       if ID /= Gnoga.Types.No_Connection then
          S.Content.Finalized := True;
-         Connection_Manager.Delete_Connection (ID);
 
          if Verbose_Output then
             if Message /= "" then
-               Gnoga.Log ("Connection disconnected - ID" & ID'Img &
+               Gnoga.Log ("Websocket connection closed - ID" & ID'Img &
                             " with message : " & Message);
             else
-               Gnoga.Log ("Connection disconnected - ID" & ID'Img);
+               Gnoga.Log ("Websocket connection closed - ID" & ID'Img);
             end if;
          end if;
+
+         Connection_Manager.Delete_Connection (ID);
       end if;
    end WebSocket_Closed;
 
@@ -2223,6 +2188,65 @@ package body Gnoga.Server.Connection is
       end if;
    end Stop;
 
+   -----------
+   -- Write --
+   -----------
+
+   procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
+                    Item   : in     Gnoga_HTTP_Content)
+   is
+   begin
+      null;
+   end Write;
+
+   ---------
+   -- Get --
+   ---------
+
+   overriding
+   function Get (Source : access Gnoga_HTTP_Content) return String is
+   begin
+      if Source.Buffer.Length = 0 then
+         if Source.Connection_Type = HTTP then
+            return "";
+         elsif Source.Finalized = True then
+            declare
+               ID : Gnoga.Types.Connection_ID :=
+                 Connection_Manager.Find_Connection_ID
+                   (Source.Socket);
+            begin
+               Gnoga.Log ("Shutting down long polling connection -" & ID'Img);
+               Connection_Manager.Delete_Connection (ID);
+               return "";
+            end;
+         else
+            raise Content_Not_Ready;
+         end if;
+      else
+         declare
+            use Ada.Strings.Unbounded;
+
+            Chunk_Size : constant := Max_HTTP_Output_Chunk - 80;
+
+            S : Ada.Strings.Unbounded.Unbounded_String;
+         begin
+            Source.Buffer.Get_And_Clear (S);
+
+            if Length (S) > Chunk_Size then
+               Source.Buffer.Preface (Slice (Source => S,
+                                             Low    => 1 + Chunk_Size,
+                                             High   => Length (S)));
+
+               return Slice (Source => S,
+                             Low    => 1,
+                             High   => Chunk_Size);
+            else
+               return To_String (S);
+            end if;
+         end;
+      end if;
+   end Get;
+
    --------------
    -- Finalize --
    --------------
@@ -2232,6 +2256,9 @@ package body Gnoga.Server.Connection is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connection_ID (Client'Unchecked_Access);
    begin
+      --  Gnoga.Log ("Finalizing - " & Ada.Strings.Unbounded.To_String
+      --             (Client.Content.Connection_Path));
+
       if Ada.Streams.Stream_IO.Is_Open (Client.Content.FS) then
          Ada.Streams.Stream_IO.Close (Client.Content.FS);
       end if;

@@ -92,7 +92,7 @@ package body Gnoga.Server.Template_Parser.Simple is
          Open (File => F,
                Mode => In_File,
                Name => Parse_Name (Name),
-               Form => "shared=yes");
+               Form => "shared=no");
 
          while not End_Of_File (F) loop
             if Length (Parsed_File) > 0 then

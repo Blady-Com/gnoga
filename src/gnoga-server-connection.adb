@@ -1310,8 +1310,17 @@ package body Gnoga.Server.Connection is
                          ID'Img & " <=> " & Old_ID);
          end if;
 
-         Connection_Manager.Swap_Connection
-           (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
+         begin
+            Connection_Manager.Swap_Connection
+              (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
+         exception
+            when E : Connection_Error =>
+               Client.Content.Finalized := True;
+               Connection_Manager.Delete_Connection (ID);
+               Client.WebSocket_Close (Status  => WebSocket_Aborted,
+                                       Message => "Refresh page.");
+               Gnoga.Log (Ada.Exceptions.Exception_Message (E));
+         end;
       else
          Connection_Manager.Start_Connection (ID);
 
@@ -1737,7 +1746,7 @@ package body Gnoga.Server.Connection is
             Socket.Content.Buffer.Add (Script & CRLF);
          elsif Socket.Content.Connection_Type = Long_Polling then
             Socket.Content.Buffer.Add
-              ("<script>" & Script & "</script>" & CRLF);
+              ("<script>" & Script & "</script>");
          else
             Gnoga.Log ("Buffer_Add called on unsupported connection type.");
          end if;
@@ -1881,8 +1890,7 @@ package body Gnoga.Server.Connection is
                if Socket.Content.Connection_Type = Long_Polling then
                   Socket.Content.Buffer.Add ("<script>" &
                                                Message &
-                                               "</script>" &
-                                               CRLF);
+                                               "</script>");
                   Socket.Unblock_Send;
                elsif Socket.Content.Connection_Type = WebSocket then
                   Socket.WebSocket_Send (Message);
@@ -2256,9 +2264,6 @@ package body Gnoga.Server.Connection is
       ID : Gnoga.Types.Connection_ID :=
              Connection_Manager.Find_Connection_ID (Client'Unchecked_Access);
    begin
-      --  Gnoga.Log ("Finalizing - " & Ada.Strings.Unbounded.To_String
-      --             (Client.Content.Connection_Path));
-
       if Ada.Streams.Stream_IO.Is_Open (Client.Content.FS) then
          Ada.Streams.Stream_IO.Close (Client.Content.FS);
       end if;

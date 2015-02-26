@@ -37,6 +37,9 @@
 
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
+with Ada.Calendar;
+with Ada.Calendar.Formatting;
+with Ada.Calendar.Time_Zones;
 
 package body Gnoga is
 
@@ -255,11 +258,18 @@ package body Gnoga is
    ---------
 
    procedure Log (Message : in String) is
+      T : Ada.Calendar.Time := Ada.Calendar.Clock;
    begin
       if Use_File then
          Ada.Text_IO.Put_Line (Log_File, Message);
       else
-         Write_To_Console (Message);
+         Write_To_Console
+           (Ada.Calendar.Formatting.Image
+              (Date                  => T,
+               Include_Time_Fraction => True,
+               Time_Zone             =>
+                 Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
+              " : " & Message);
       end if;
    end Log;
 

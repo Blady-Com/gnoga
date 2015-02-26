@@ -1090,6 +1090,8 @@ package body Gnoga.Server.Connection is
          ID     : Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
          Socket : Socket_Type := Socket_Maps.Element (C);
       begin
+         Gnoga.Log ("Ping -" & ID'Img);
+
          if Socket.Content.Finalized then
             Connection_Manager.Delete_Connection (ID);
             return;
@@ -2269,6 +2271,7 @@ package body Gnoga.Server.Connection is
       end if;
 
       if ID /= Gnoga.Types.No_Connection then
+         Gnoga.Log ("Deleting connection during finalize -" & ID'Img);
          Connection_Manager.Delete_Connection (ID);
       end if;
 

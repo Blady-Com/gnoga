@@ -910,11 +910,11 @@ package body Gnoga.Server.Connection is
                Old_Socket : Socket_Type := Socket_Map.Element (Old_ID);
                New_Socket : Socket_Type := Socket_Map.Element (New_ID);
             begin
-               Old_Socket.Content.Finalized := True;
                New_Socket.Content.Connection_Path :=
                  Old_Socket.Content.Connection_Path;
                Socket_Map.Replace (Old_ID, New_Socket);
                Socket_Map.Replace (New_ID, Old_Socket);
+               Old_Socket.Content.Finalized := True;
             end;
          else
             raise Connection_Error with
@@ -983,6 +983,8 @@ package body Gnoga.Server.Connection is
                   Event_Task_Map.Delete (ID);
                end;
             end if;
+
+            Gnoga.Log ("Delete connection complete -" & ID'Img);
          end if;
       exception
          when others =>
@@ -1315,11 +1317,10 @@ package body Gnoga.Server.Connection is
               (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
          exception
             when E : Connection_Error =>
+               Gnoga.Log (Ada.Exceptions.Exception_Message (E));
                Client.Content.Finalized := True;
                Connection_Manager.Delete_Connection (ID);
-               Client.WebSocket_Close (Status  => WebSocket_Aborted,
-                                       Message => "Refresh page.");
-               Gnoga.Log (Ada.Exceptions.Exception_Message (E));
+               Gnoga.Log ("Connection aborted - " & ID'Img);
          end;
       else
          Connection_Manager.Start_Connection (ID);
@@ -2224,7 +2225,6 @@ package body Gnoga.Server.Connection is
                    (Source.Socket);
             begin
                Gnoga.Log ("Shutting down long polling connection -" & ID'Img);
-               Connection_Manager.Delete_Connection (ID);
                return "";
             end;
          else

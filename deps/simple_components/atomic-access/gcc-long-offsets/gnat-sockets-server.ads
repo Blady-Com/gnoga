@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  21:33 05 Feb 2015  --
+--                                Last revision :  08:20 11 Jan 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -661,6 +661,16 @@ package GNAT.Sockets.Server is
                 Size   : Stream_Element_Count
              );
 --
+-- Shutdown -- Request connection shutdown
+--
+--    Client - The client connection object
+--
+-- This procedure  is called to request connection shutdown.  The object
+-- shall  not be  used afterwards.  As soon  as  the server  closes  the
+-- connection the object is finalized and deallocated.
+--
+   procedure Shutdown (Client : in out Connection);
+--
 -- Trace -- Tracing facility
 --
 --    Factory - The factory object
@@ -889,12 +899,10 @@ private
 --    Size - Buffer size
 --
    type Input_Buffer (Size : Buffer_Length) is record
-      Expected     : Stream_Element_Offset := 0;
-      First_Read   : Stream_Element_Offset := 0;
-      Free_To_Read : Stream_Element_Offset := 0;
+      Expected     : Stream_Element_Offset         := 0;
+      First_Read   : aliased Stream_Element_Offset := 0;
+      Free_To_Read : aliased Stream_Element_Offset := 0;
       Read         : Stream_Element_Array (0..Size);
-      pragma Atomic (First_Read);
-      pragma Atomic (Free_To_Read);
    end record;
 --
 -- Has_Data -- Buffer has data
@@ -942,32 +950,35 @@ private
    function Used (Buffer : Input_Buffer) return Stream_Element_Count;
 ------------------------------------------------------------------------
    type Output_Buffer (Size : Buffer_Length) is record
-      First_Written : Stream_Element_Offset := 0;
-      Free_To_Write : Stream_Element_Offset := 0;
+      First_Written : aliased Stream_Element_Offset := 0;
+      Free_To_Write : aliased Stream_Element_Offset := 0;
       Send_Blocked  : Boolean := False;
       Written       : Stream_Element_Array (0..Size);
-      pragma Atomic (First_Written);
-      pragma Atomic (Free_To_Write);
+
       pragma Atomic (Send_Blocked);
    end record;
 --
 -- Fill_From_Stream -- Store stream output into the buffer
 --
---    Buffer  - The buffer
---    Count   - Maximal number of elements to store
---    Reserve - Number of elements to reserve
---    Last    - Points to the last written element
---    Next    - Points to the element next to the last written
---    Done    - True if end of stream was reached
+--    Buffer        - The buffer
+--    First_Written - Buffer pointer, pre-loaded
+--    Free_To_Write - Buffer pointer, pre-loaded
+--    Count         - Maximal number of elements to store
+--    Reserve       - Number of elements to reserve
+--    Last          - Points to the last written element
+--    Next          - Points to the element next to the last written
+--    Done          - True if end of stream was reached
 --
    procedure Fill_From_Stream
-             (  Buffer  : in out Output_Buffer;
-                Stream  : in out Root_Stream_Type'Class;
-                Count   : Stream_Element_Count;
-                Reserve : Stream_Element_Count;
-                Last    : out Stream_Element_Offset;
-                Next    : out Stream_Element_Offset;
-                Done    : out Boolean
+             (  Buffer        : in out Output_Buffer;
+                First_Written : in out Stream_Element_Offset;
+                Free_To_Write : in out Stream_Element_Offset;
+                Stream        : in out Root_Stream_Type'Class;
+                Count         : Stream_Element_Count;
+                Reserve       : Stream_Element_Count;
+                Last          : out Stream_Element_Offset;
+                Next          : out Stream_Element_Offset;
+                Done          : out Boolean
              );
 --
 -- Free -- Number of free elements in the buffer
@@ -1020,6 +1031,7 @@ private
       External_Action : Boolean := False;
       Data_Sent       : Boolean := False;
       Dont_Block      : Boolean := False;
+      Down            : Boolean := False;
       Predecessor     : Connection_Ptr;
       Successor       : Connection_Ptr;
       Listener        : Connections_Server_Ptr;
@@ -1032,6 +1044,7 @@ private
       pragma Atomic (Data_Sent);
       pragma Atomic (Failed);
       pragma Atomic (Dont_Block);
+      pragma Atomic (Down);
    end record;
 --
 -- Data_Sent -- Data sent notification

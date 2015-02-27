@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  21:07 11 Feb 2015  --
+--                                Last revision :  17:58 25 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -50,6 +50,69 @@ package body GNAT.Sockets.Server is
                       Trace_Any     => Trace_Encoded_Sent
                                     or Trace_Decoded_Sent
                    );
+
+   pragma Assert (Stream_Element_Offset'Size = 64);
+
+   type Stream_Element_Offset_Ref is
+      access constant Stream_Element_Offset;
+   function Load
+            (  Source : Stream_Element_Offset_Ref;
+               Model  : Interfaces.C.int := 0
+            )  return Stream_Element_Offset;
+   pragma Import (Intrinsic, Load,  "__atomic_load_8");
+
+   type Stream_Element_Offset_Ptr is access all Stream_Element_Offset;
+   procedure Store
+             (  Destination : Stream_Element_Offset_Ptr;
+                Value       : Stream_Element_Offset;
+                Model       : Interfaces.C.int := 0
+             );
+   pragma Import (Intrinsic, Store, "__atomic_store_8");
+
+   function Used
+            (  Buffer       : Input_Buffer;
+               First_Read   : Stream_Element_Offset;
+               Free_To_Read : Stream_Element_Offset
+            )  return Stream_Element_Count is
+      pragma Inline (Used);
+      Diff : Stream_Element_Offset := Free_To_Read - First_Read;
+   begin
+      if Diff < 0 then
+         return Buffer.Read'Length - Diff;
+      else
+         return Diff;
+      end if;
+   end Used;
+
+   function Used
+            (  Buffer        : Output_Buffer;
+               First_Written : Stream_Element_Offset;
+               Free_To_Write : Stream_Element_Offset
+            )  return Stream_Element_Count is
+      pragma Inline (Used);
+   begin
+      if Free_To_Write >= First_Written then
+         return Free_To_Write - First_Written;
+      else
+         return Buffer.Written'Length - First_Written + Free_To_Write;
+      end if;
+   end Used;
+
+   function Has_Data
+            (  Buffer       : Input_Buffer;
+               First_Read   : Stream_Element_Offset;
+               Free_To_Read : Stream_Element_Offset
+            )  return Boolean is
+      pragma Inline (Has_Data);
+   begin
+      return
+      (  Free_To_Read /= First_Read
+      and then
+         (  Buffer.Expected = 0
+         or else
+            Used (Buffer, First_Read, Free_To_Read) >= Buffer.Size - 1
+      )  );
+   end Has_Data;
 
    procedure Append
              (  List  : in out Connection_Ptr;
@@ -136,13 +199,15 @@ package body GNAT.Sockets.Server is
    end Disconnected;
 
    procedure Fill_From_Stream
-             (  Buffer  : in out Output_Buffer;
-                Stream  : in out Root_Stream_Type'Class;
-                Count   : Stream_Element_Count;
-                Reserve : Stream_Element_Count;
-                Last    : out Stream_Element_Offset;
-                Next    : out Stream_Element_Offset;
-                Done    : out Boolean
+             (  Buffer        : in out Output_Buffer;
+                First_Written : in out Stream_Element_Offset;
+                Free_To_Write : in out Stream_Element_Offset;
+                Stream        : in out Root_Stream_Type'Class;
+                Count         : Stream_Element_Count;
+                Reserve       : Stream_Element_Count;
+                Last          : out Stream_Element_Offset;
+                Next          : out Stream_Element_Offset;
+                Done          : out Boolean
              )  is
    begin
       if Reserve >= Buffer.Written'Length then
@@ -153,7 +218,7 @@ package body GNAT.Sockets.Server is
             &  ")"
          )  );
       end if;
-      if Buffer.First_Written <= Buffer.Free_To_Write then
+      if First_Written <= Free_To_Write then
          --
          -- [     XXXXXXXXXXXXXXX        ]
          --       |              |
@@ -161,19 +226,19 @@ package body GNAT.Sockets.Server is
          --
          declare
             Tail : constant Stream_Element_Offset :=
-               Reserve + Buffer.Written'First - Buffer.First_Written;
+                   Reserve + Buffer.Written'First - First_Written;
          begin
             if Tail > 0 then
-               if Buffer.Free_To_Write + Tail = Buffer.Written'Last then
+               if Free_To_Write + Tail = Buffer.Written'Last then
                   Done := False;
                else
                   Next := Buffer.Written'Last - Tail;
-                  if Count < Next - Buffer.Free_To_Write then
-                     Next := Buffer.Free_To_Write + Count - 1;
+                  if Count < Next - Free_To_Write then
+                     Next := Free_To_Write + Count - 1;
                   end if;
                   Read
                   (  Stream,
-                     Buffer.Written (Buffer.Free_To_Write..Next),
+                     Buffer.Written (Free_To_Write..Next),
                      Last
                   );
                   Done := Last < Next;
@@ -181,12 +246,12 @@ package body GNAT.Sockets.Server is
                end if;
             else
                Next := Buffer.Written'Last;
-               if Count < Next - Buffer.Free_To_Write then
-                  Next := Buffer.Free_To_Write + Count - 1;
+               if Count < Next - Free_To_Write then
+                  Next := Free_To_Write + Count - 1;
                end if;
                Read
                (  Stream,
-                  Buffer.Written (Buffer.Free_To_Write..Next),
+                  Buffer.Written (Free_To_Write..Next),
                   Last
                );
                Done := Last < Next;
@@ -203,16 +268,16 @@ package body GNAT.Sockets.Server is
          --       |              |
          --       Free_To_Write  First_Written
          --
-         if Buffer.Free_To_Write + Reserve >= Buffer.First_Written then
+         if Free_To_Write + Reserve >= First_Written then
             Done := False;
          else
-            Next := Buffer.First_Written - Reserve;
-            if Count < Next - Buffer.Free_To_Write then
-               Next := Buffer.Free_To_Write + Count - 1;
+            Next := First_Written - Reserve;
+            if Count < Next - Free_To_Write then
+               Next := Free_To_Write + Count - 1;
             end if;
             Read
             (  Stream,
-               Buffer.Written (Buffer.Free_To_Write..Next),
+               Buffer.Written (Free_To_Write..Next),
                Last
             );
             Done := Last < Next;
@@ -299,19 +364,33 @@ package body GNAT.Sockets.Server is
       return 0.5;
    end Get_Polling_Timeout;
 
+   function Get_Server_Address
+            (  Listener : Connections_Server
+            )  return Sock_Addr_Type is
+      Address : Sock_Addr_Type;
+   begin
+      Address.Addr := Any_Inet_Addr;
+      Address.Port := Listener.Port;
+      return Address;
+   end Get_Server_Address;
+
    function Get_Socket (Client : Connection) return Socket_Type is
    begin
       return Client.Socket;
    end Get_Socket;
 
    function Has_Data (Buffer : Input_Buffer) return Boolean is
+      First_Read   : Stream_Element_Offset :=
+                     Load (Buffer.First_Read'Unchecked_Access);
+      Free_To_Read : Stream_Element_Offset :=
+                     Load (Buffer.Free_To_Read'Unchecked_Access);
    begin
       return
-      (  Buffer.Free_To_Read /= Buffer.First_Read
+      (  Free_To_Read /= First_Read
       and then
          (  Buffer.Expected = 0
          or else
-            Used (Buffer) >= Buffer.Size - 1
+            Used (Buffer, First_Read, Free_To_Read) >= Buffer.Size - 1
       )  );
    end Has_Data;
 
@@ -398,22 +477,26 @@ package body GNAT.Sockets.Server is
                 Receiver  : in out Connection'Class;
                 Data_Left : out Boolean
              )  is
-      Last    : Stream_Element_Offset;
-      Pointer : Stream_Element_Offset;
+      First_Read   : Stream_Element_Offset :=
+                     Load (Buffer.First_Read'Unchecked_Access);
+      Free_To_Read : Stream_Element_Offset :=
+                     Load (Buffer.Free_To_Read'Unchecked_Access);
+      Last         : Stream_Element_Offset;
+      Pointer      : Stream_Element_Offset;
    begin
-      while Has_Data (Buffer) loop
-         if Buffer.Free_To_Read < Buffer.First_Read then
+      while Has_Data (Buffer, First_Read, Free_To_Read) loop
+         if Free_To_Read < First_Read then
             --
             -- [XXXXXXXXXXXXXX              XXXXX]
             --   Free_To_Read |  First_Read |
             --
-            if Buffer.First_Read > Buffer.Read'Last then
+            if First_Read > Buffer.Read'Last then
                --
                -- [XXXXXXXXXXXXXX                   ]
                --   Free_To_Read |        First_Read |
                --
-               Buffer.First_Read := Buffer.Read'First; -- Wrap
-               Last := Buffer.Free_To_Read - 1;
+               First_Read := Buffer.Read'First; -- Wrap
+               Last := Free_To_Read - 1;
             else
                Last := Buffer.Read'Last;
             end if;
@@ -422,34 +505,35 @@ package body GNAT.Sockets.Server is
             -- [           XXXXXXXXX             ]
             --  First_Read |        | Free_To_Read
             --
-            Last := Buffer.Free_To_Read - 1;
+            Last := Free_To_Read - 1;
          end if;
          Pointer := Last + 1;
          Received
          (  Receiver,
-            Buffer.Read (Buffer.First_Read..Last),
+            Buffer.Read (First_Read..Last),
             Pointer
          );
-         if Pointer < Buffer.First_Read or else Pointer > Last + 1 then
+         if Pointer < First_Read or else Pointer > Last + 1 then
             Raise_Exception
             (  Layout_Error'Identity,
                (  "Subscript error, pointer "
                &  Image (Pointer)
                &  " out of range "
-               &  Image (Buffer.First_Read)
+               &  Image (First_Read)
                &  ".."
                &  Image (Last)
                &  "+"
             )  );
          elsif Pointer > Buffer.Read'Last then
-            if Buffer.Free_To_Read <= Buffer.Read'Last then
-               Buffer.First_Read := Buffer.Read'First; -- Wrap
+            if Free_To_Read <= Buffer.Read'Last then
+               First_Read := Buffer.Read'First; -- Wrap
             else
-               Buffer.First_Read := Pointer; -- Not yet
+               First_Read := Pointer; -- Not yet
             end if;
          else
-            Buffer.First_Read := Pointer;
+            First_Read := Pointer;
          end if;
+         Store (Buffer.First_Read'Unchecked_Access, First_Read);
          if Pointer <= Last then -- Some input left unprocessed
             Data_Left := True;
             return;
@@ -486,22 +570,30 @@ package body GNAT.Sockets.Server is
                 Data    : in out Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset
              )  is
-      Last   : Stream_Element_Offset;
-      Offset : Stream_Element_Offset;
+      First_Read   : Stream_Element_Offset :=
+                     Load (Buffer.First_Read'Unchecked_Access);
+      Free_To_Read : Stream_Element_Offset :=
+                     Load (Buffer.Free_To_Read'Unchecked_Access);
+      Last         : Stream_Element_Offset;
+      Offset       : Stream_Element_Offset;
    begin
-      while Pointer <= Data'Last and then Has_Data (Buffer) loop
-         if Buffer.Free_To_Read < Buffer.First_Read then
+      while (  Pointer <= Data'Last
+            and then
+               Has_Data (Buffer, First_Read, Free_To_Read)
+            )
+      loop
+         if Free_To_Read < First_Read then
             --
             -- [XXXXXXXXXXXXXX              XXXXX]
             --   Free_To_Read |  First_Read |
             --
-            if Buffer.First_Read > Buffer.Read'Last then
+            if First_Read > Buffer.Read'Last then
                --
                -- [XXXXXXXXXXXXXX                   ]
                --   Free_To_Read |        First_Read |
                --
-               Buffer.First_Read := Buffer.Read'First; -- Wrap
-               Last := Buffer.Free_To_Read - 1;
+               First_Read := Buffer.Read'First; -- Wrap
+               Last := Free_To_Read - 1;
             else
                Last := Buffer.Read'Last;
             end if;
@@ -510,26 +602,27 @@ package body GNAT.Sockets.Server is
             -- [           XXXXXXXXX             ]
             --  First_Read |        | Free_To_Read
             --
-            Last := Buffer.Free_To_Read - 1;
+            Last := Free_To_Read - 1;
          end if;
-         Offset := Last - Buffer.First_Read;
+         Offset := Last - First_Read;
          if Offset > Data'Last - Pointer then
             Offset := Data'Last - Pointer;
-            Last   := Buffer.First_Read + Offset;
+            Last   := First_Read + Offset;
          end if;
          Data (Pointer..Pointer + Offset) :=
-            Buffer.Read (Buffer.First_Read..Last);
+            Buffer.Read (First_Read..Last);
          Pointer := Pointer + Offset + 1;
          if Last >= Buffer.Read'Last then
-            if Buffer.Free_To_Read <= Buffer.Read'Last then
-               Buffer.First_Read := Buffer.Read'First; -- Wrap
+            if Free_To_Read <= Buffer.Read'Last then
+               First_Read := Buffer.Read'First; -- Wrap
             else
-               Buffer.First_Read := Last + 1; -- Not yet
+               First_Read := Last + 1; -- Not yet
             end if;
          else
-            Buffer.First_Read := Last + 1;
+            First_Read := Last + 1;
          end if;
       end loop;
+      Store (Buffer.First_Read'Unchecked_Access, First_Read);
    end Pull;
 
    procedure Push
@@ -587,18 +680,22 @@ package body GNAT.Sockets.Server is
              (  Client  : in out Connection;
                 Factory : in out Connections_Factory'Class
              )  is
-      Buffer : Input_Buffer renames Client.Read;
-      Last   : Stream_Element_Offset;
+      Buffer       : Input_Buffer renames Client.Read;
+      Last         : Stream_Element_Offset;
+      First_Read   : Stream_Element_Offset :=
+                     Load (Buffer.First_Read'Unchecked_Access);
+      Free_To_Read : Stream_Element_Offset :=
+                     Load (Buffer.Free_To_Read'Unchecked_Access);
    begin
       if Client.Overlapped_Read < Queued_To_Send (Client) then
          return; -- Not ready to read yet
-      elsif Buffer.Free_To_Read < Buffer.First_Read then
+      elsif Free_To_Read < First_Read then
          --
          -- [XXXXXXXXXXXXXX              XXXXX]
          --   Free_To_Read |  First_Read |
          --
-         Last := Buffer.First_Read - 2;
-         if Last <= Buffer.First_Read then -- Read buffer is full
+         Last := First_Read - 2;
+         if Last <= First_Read then -- Read buffer is full
             return;
          end if;
       else
@@ -606,21 +703,20 @@ package body GNAT.Sockets.Server is
          -- [           XXXXXXXXX             ]
          --  First_Read |        | Free_To_Read
          --
-         if (  Buffer.Free_To_Read - Buffer.First_Read
-            >= Buffer.Read'Length
-            )
-         then -- Read buffer is full
+         if Free_To_Read - First_Read >= Buffer.Read'Length then
+            -- Read buffer is full
             return;
-         elsif Buffer.Free_To_Read > Buffer.Read'Last then -- Wrap
-            Buffer.Free_To_Read := Buffer.Read'First;
-            Last := Buffer.First_Read - 2;
+         elsif Free_To_Read > Buffer.Read'Last then -- Wrap
+            Free_To_Read := Buffer.Read'First;
+            Store (Buffer.First_Read'Unchecked_Access, First_Read);
+            Last := First_Read - 2;
          else
             Last := Buffer.Read'Last;
          end if;
       end if;
       Receive_Socket
       (  Client.Socket,
-         Buffer.Read (Buffer.Free_To_Read..Last),
+         Buffer.Read (Free_To_Read..Last),
          Last
       );
       if Client.Transport = null then
@@ -629,7 +725,7 @@ package body GNAT.Sockets.Server is
             (  Factory => Factory,
                Client  => Client,
                Data    => Buffer.Read,
-               From    => Buffer.Free_To_Read,
+               From    => Free_To_Read,
                To      => Last,
                Encoded => False
             );
@@ -640,21 +736,21 @@ package body GNAT.Sockets.Server is
             (  Factory => Factory,
                Client  => Client,
                Data    => Buffer.Read,
-               From    => Buffer.Free_To_Read,
+               From    => Free_To_Read,
                To      => Last,
                Encoded => True
             );
          end if;
       end if;
-      if Last = Buffer.Free_To_Read - 1 then -- Nothing read
+      if Last = Free_To_Read - 1 then -- Nothing read
          raise Connection_Error;
       end if;
       Buffer.Expected :=
          Stream_Element_Offset'Max
-         (  Buffer.Expected - (Last - Buffer.Free_To_Read + 1),
+         (  Buffer.Expected - (Last - Free_To_Read + 1),
             0
          );
-      Buffer.Free_To_Read := Last + 1;
+      Store (Buffer.Free_To_Read'Unchecked_Access, Last + 1);
    exception
       when Error : Socket_Error | Layout_Error =>
          Receive_Error (Client, Error);
@@ -726,14 +822,21 @@ package body GNAT.Sockets.Server is
          Raise_Exception (Layout_Error'Identity, "Subscript error");
       end if;
       Store (Buffer, Data, Pointer, Client.Listener.Unblock_Send);
-      if (  Buffer.Send_Blocked
-         and then
-            Buffer.Free_To_Write /= Buffer.First_Written
-         )
-      then -- Request socket unblocking
-         Buffer.Send_Blocked := False;
-         Client.Listener.Unblock_Send := True;
-      end if;
+      declare
+         First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+         Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
+      begin
+         if (  Buffer.Send_Blocked
+            and then
+               Free_To_Write /= First_Written
+            )
+         then -- Request socket unblocking
+            Buffer.Send_Blocked := False;
+            Client.Listener.Unblock_Send := True;
+         end if;
+      end;
    end Send;
 
    procedure Send
@@ -741,25 +844,33 @@ package body GNAT.Sockets.Server is
                 Data    : String;
                 Pointer : in out Integer
              )  is
-      Buffer : Output_Buffer renames Client.Written;
+      Buffer        : Output_Buffer renames Client.Written;
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
       Pointer := Data'Last + 1;
       for Index in Data'Range loop
-         if Used (Buffer) + 1 >= Buffer.Written'Length then
+         if (  Used (Buffer, First_Written, Free_To_Write) + 1
+            >= Buffer.Written'Length
+            )
+         then
             Pointer := Index;
             exit;
          end if;
-         Buffer.Written (Buffer.Free_To_Write) :=
+         Buffer.Written (Free_To_Write) :=
             Stream_Element (Character'Pos (Data (Index)));
-         if Buffer.Free_To_Write = Buffer.Written'Last then
-            Buffer.Free_To_Write := Buffer.Written'First;
+         if Free_To_Write = Buffer.Written'Last then
+            Free_To_Write := Buffer.Written'First;
          else
-            Buffer.Free_To_Write := Buffer.Free_To_Write + 1;
+            Free_To_Write := Free_To_Write + 1;
          end if;
+         Store (Buffer.Free_To_Write'Unchecked_Access, Free_To_Write);
       end loop;
       if (  Buffer.Send_Blocked
          and then
-            Buffer.Free_To_Write /= Buffer.First_Written
+            Free_To_Write /= First_Written
          )
       then -- Request socket unblocking
          Buffer.Send_Blocked := False;
@@ -772,23 +883,29 @@ package body GNAT.Sockets.Server is
                 Stream : in out Root_Stream_Type'Class;
                 End_Of_Stream : out Boolean
              )  is
-      Buffer : Output_Buffer renames Client.Written;
-      Last   : Stream_Element_Offset;
-      Next   : Stream_Element_Offset;
+      Buffer        : Output_Buffer renames Client.Written;
+      Last          : Stream_Element_Offset;
+      Next          : Stream_Element_Offset;
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
       Fill_From_Stream
-      (  Buffer  => Buffer,
-         Stream  => Stream,
-         Count   => Stream_Element_Count'Last,
-         Reserve => 1,
-         Last    => Last,
-         Next    => Next,
-         Done    => End_Of_Stream
+      (  Buffer        => Buffer,
+         First_Written => First_Written,
+         Free_To_Write => Free_To_Write,
+         Stream        => Stream,
+         Count         => Stream_Element_Count'Last,
+         Reserve       => 1,
+         Last          => Last,
+         Next          => Next,
+         Done          => End_Of_Stream
       );
-      Buffer.Free_To_Write := Next;
+      Store (Buffer.Free_To_Write'Unchecked_Access, Next);
       if (  Buffer.Send_Blocked
          and then
-            Buffer.Free_To_Write /= Buffer.First_Written
+            Free_To_Write /= First_Written
          )
       then -- Request socket unblocking
          Buffer.Send_Blocked := False;
@@ -802,24 +919,31 @@ package body GNAT.Sockets.Server is
                 Count  : in out Stream_Element_Count;
                 End_Of_Stream : out Boolean
              )  is
-      Buffer : Output_Buffer renames Client.Written;
-      Last   : Stream_Element_Offset;
-      Next   : Stream_Element_Offset;
+      Buffer        : Output_Buffer renames Client.Written;
+      Last          : Stream_Element_Offset;
+      Next          : Stream_Element_Offset;
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
       Fill_From_Stream
-      (  Buffer  => Buffer,
-         Stream  => Stream,
-         Count   => Count,
-         Reserve => 1,
-         Last    => Last,
-         Next    => Next,
-         Done    => End_Of_Stream
+      (  Buffer        => Buffer,
+         First_Written => First_Written,
+         Free_To_Write => Free_To_Write,
+         Stream        => Stream,
+         Count         => Count,
+         Reserve       => 1,
+         Last          => Last,
+         Next          => Next,
+         Done          => End_Of_Stream
       );
-      Count := Count - (Last + 1 - Buffer.Free_To_Write);
-      Buffer.Free_To_Write := Next;
+      Count := Count - (Last + 1 - Free_To_Write);
+      Free_To_Write := Next;
+      Store (Buffer.Free_To_Write'Unchecked_Access, Free_To_Write);
       if (  Buffer.Send_Blocked
          and then
-            Buffer.Free_To_Write /= Buffer.First_Written
+            Free_To_Write /= First_Written
          )
       then -- Request socket unblocking
          Buffer.Send_Blocked := False;
@@ -857,11 +981,15 @@ package body GNAT.Sockets.Server is
                 Get_Suffix    : Create_Stream_Element_Array;
                 End_Of_Stream : out Boolean
              )  is
-      Buffer : Output_Buffer renames Client.Written;
-      Last   : Stream_Element_Offset;
-      Next   : Stream_Element_Offset;
+      Buffer        : Output_Buffer renames Client.Written;
+      Last          : Stream_Element_Offset;
+      Next          : Stream_Element_Offset;
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
-      if Buffer.Free_To_Write = Buffer.First_Written then
+      if Free_To_Write = First_Written then
          if Buffer.Written'Length <= Reserve then
             Raise_Exception
             (  Data_Error'Identity,
@@ -873,26 +1001,28 @@ package body GNAT.Sockets.Server is
             )  );
          end if;
          Fill_From_Stream
-         (  Buffer  => Buffer,
-            Stream  => Stream,
-            Count   => Count,
-            Reserve => Reserve + 1,
-            Last    => Last,
-            Next    => Next,
-            Done    => End_Of_Stream
+         (  Buffer        => Buffer,
+            First_Written => First_Written,
+            Free_To_Write => Free_To_Write,
+            Stream        => Stream,
+            Count         => Count,
+            Reserve       => Reserve + 1,
+            Last          => Last,
+            Next          => Next,
+            Done          => End_Of_Stream
          );
-         Count := Count - (Last + 1 - Buffer.Free_To_Write);
+         Count := Count - (Last + 1 - Free_To_Write);
          declare
             Header : Stream_Element_Array :=
                      Get_Prefix.all
                      (  Client'Unchecked_Access,
-                        Buffer.Written (Buffer.Free_To_Write..Last),
+                        Buffer.Written (Free_To_Write..Last),
                         End_Of_Stream
                      );
             Tail   : Stream_Element_Array :=
                      Get_Suffix.all
                      (  Client'Unchecked_Access,
-                        Buffer.Written (Buffer.Free_To_Write..Last),
+                        Buffer.Written (Free_To_Write..Last),
                         End_Of_Stream
                      );
          begin
@@ -904,7 +1034,7 @@ package body GNAT.Sockets.Server is
                   &  " elements"
                )  );
             elsif Header'Length > 0 then
-               Last := Buffer.First_Written;
+               Last := First_Written;
                for Index in reverse Header'Range loop
                   if Last = Buffer.Written'First then
                      Last := Buffer.Written'Last;
@@ -914,8 +1044,16 @@ package body GNAT.Sockets.Server is
                   Buffer.Written (Last) := Header (Index);
                end loop;
             end if;
-            Buffer.First_Written := Last;
-            Buffer.Free_To_Write := Next;
+            First_Written := Last;
+            Free_To_Write := Next;
+            Store
+            (  Buffer.First_Written'Unchecked_Access,
+               First_Written
+            );
+            Store
+            (  Buffer.Free_To_Write'Unchecked_Access,
+               Free_To_Write
+            );
             if Tail'Length > 0 then
                Last := Tail'First;
                Store (Buffer, Tail, Last, Client.Listener.Unblock_Send);
@@ -926,7 +1064,7 @@ package body GNAT.Sockets.Server is
       end if;
       if (  Buffer.Send_Blocked
          and then
-            Buffer.Free_To_Write /= Buffer.First_Written
+            Free_To_Write /= First_Written
          )
       then -- Request socket unblocking
          Buffer.Send_Blocked := False;
@@ -943,11 +1081,15 @@ package body GNAT.Sockets.Server is
                 Get_Suffix    : Create_String;
                 End_Of_Stream : out Boolean
              )  is
-      Buffer : Output_Buffer renames Client.Written;
-      Last   : Stream_Element_Offset;
-      Next   : Stream_Element_Offset;
+      Buffer        : Output_Buffer renames Client.Written;
+      Last          : Stream_Element_Offset;
+      Next          : Stream_Element_Offset;
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
-      if Buffer.Free_To_Write = Buffer.First_Written then
+      if Free_To_Write = First_Written then
          if Buffer.Written'Length <= Reserve then
             Raise_Exception
             (  Data_Error'Identity,
@@ -959,26 +1101,28 @@ package body GNAT.Sockets.Server is
             )  );
          end if;
          Fill_From_Stream
-         (  Buffer  => Buffer,
-            Stream  => Stream,
-            Count   => Count,
-            Reserve => Stream_Element_Count (Reserve) + 1,
-            Last    => Last,
-            Next    => Next,
-            Done    => End_Of_Stream
+         (  Buffer        => Buffer,
+            First_Written => First_Written,
+            Free_To_Write => Free_To_Write,
+            Stream        => Stream,
+            Count         => Count,
+            Reserve       => Stream_Element_Count (Reserve) + 1,
+            Last          => Last,
+            Next          => Next,
+            Done          => End_Of_Stream
          );
-         Count := Count - (Last + 1 - Buffer.Free_To_Write);
+         Count := Count - (Last + 1 - Free_To_Write);
          declare
             Header : String :=
                      Get_Prefix.all
                      (  Client'Unchecked_Access,
-                        Buffer.Written (Buffer.Free_To_Write..Last),
+                        Buffer.Written (Free_To_Write..Last),
                         End_Of_Stream
                      );
             Tail   : String :=
                      Get_Suffix.all
                      (  Client'Unchecked_Access,
-                        Buffer.Written (Buffer.Free_To_Write..Last),
+                        Buffer.Written (Free_To_Write..Last),
                         End_Of_Stream
                      );
          begin
@@ -990,7 +1134,7 @@ package body GNAT.Sockets.Server is
                   &  " elements"
                )  );
             elsif Header'Length > 0 then
-               Last := Buffer.First_Written;
+               Last := First_Written;
                for Index in reverse Header'Range loop
                   if Last = Buffer.Written'First then
                      Last := Buffer.Written'Last;
@@ -1001,8 +1145,16 @@ package body GNAT.Sockets.Server is
                      Stream_Element (Character'Pos (Header (Index)));
                end loop;
             end if;
-            Buffer.First_Written := Last;
-            Buffer.Free_To_Write := Next;
+            First_Written := Last;
+            Free_To_Write := Next;
+            Store
+            (  Buffer.First_Written'Unchecked_Access,
+               First_Written
+            );
+            Store
+            (  Buffer.Free_To_Write'Unchecked_Access,
+               Free_To_Write
+            );
             if Tail'Length > 0 then
                declare
                   Pointer : Integer := Tail'First;
@@ -1016,7 +1168,7 @@ package body GNAT.Sockets.Server is
       end if;
       if (  Buffer.Send_Blocked
          and then
-            Buffer.Free_To_Write /= Buffer.First_Written
+            Free_To_Write /= First_Written
          )
       then -- Request socket unblocking
          Buffer.Send_Blocked := False;
@@ -1122,6 +1274,15 @@ package body GNAT.Sockets.Server is
       Client.Overlapped_Read := Size;
    end Set_Overlapped_Size;
 
+   procedure Shutdown (Client : in out Connection) is
+      Listener : Connections_Server'Class renames Client.Listener.all;
+   begin
+      Client.Down   := True;
+      Client.Failed := True;
+      Listener.Unblock_Send := True;
+      Abort_Selector (Listener.Selector);
+   end Shutdown;
+
    procedure Stop
              (  Listener : in out Connections_Server'Class;
                 Socket   : Socket_Type
@@ -1145,10 +1306,14 @@ package body GNAT.Sockets.Server is
                 Pointer : in out Stream_Element_Offset;
                 Unblock : out Boolean
              )  is
-      Free  : Stream_Element_Offset;
-      Count : Stream_Element_Offset := Data'Last - Pointer + 1;
+      Free          : Stream_Element_Offset;
+      Count         : Stream_Element_Offset := Data'Last - Pointer + 1;
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
-      if Buffer.First_Written = Buffer.Free_To_Write then
+      if First_Written = Free_To_Write then
          --
          -- Moving  First_Written  as far back  as possible  to diminish
          -- buffer  fragmenting.  We cannot  move  it further  than  the
@@ -1168,19 +1333,21 @@ package body GNAT.Sockets.Server is
             );
          Free := Stream_Element_Offset'Max
                  (  Buffer.Written'First,
-                    Buffer.Free_To_Write - Count
+                    Free_To_Write - Count
                  );
          Buffer.Written (Free..Free + Count - 1) :=
             Data (Pointer..Pointer + Count - 1);
          Pointer := Pointer + Count;
-         Buffer.First_Written := Free;
-         Buffer.Free_To_Write := Free + Count;
+         First_Written := Free;
+         Free_To_Write := Free + Count;
+         Store (Buffer.First_Written'Unchecked_Access, First_Written);
+         Store (Buffer.Free_To_Write'Unchecked_Access, Free_To_Write);
          if Buffer.Send_Blocked then
             Buffer.Send_Blocked := False;
             Unblock := True;
          end if;
          return;
-      elsif Buffer.First_Written < Buffer.Free_To_Write then
+      elsif First_Written < Free_To_Write then
          --
          -- [     XXXXXXXXXXXXXXX        ]
          --       |              |
@@ -1188,8 +1355,8 @@ package body GNAT.Sockets.Server is
          --
          Free :=
             (  Buffer.Written'Length
-            -  Buffer.Free_To_Write
-            +  Buffer.First_Written
+            -  Free_To_Write
+            +  First_Written
             -  1  -- Last element is never written
             );
          if Free <= 0 then
@@ -1198,36 +1365,44 @@ package body GNAT.Sockets.Server is
          declare
             Tail : Stream_Element_Offset :=
                    Stream_Element_Offset'Min
-                   (  Buffer.Written'Last - Buffer.Free_To_Write + 1,
+                   (  Buffer.Written'Last - Free_To_Write + 1,
                       Free
                    );
          begin
             if Count <= Tail then -- Can queue all Count elements
                Buffer.Written
-               (  Buffer.Free_To_Write
-               .. Buffer.Free_To_Write + Count - 1
+               (  Free_To_Write
+               .. Free_To_Write + Count - 1
                )  := Data (Pointer..Data'Last);
                Pointer := Data'Last + 1;
-               Free := Buffer.Free_To_Write + Count;
+               Free := Free_To_Write + Count;
                if Free > Buffer.Written'Last then
-                  Buffer.Free_To_Write := Buffer.Written'First;
+                  Free_To_Write := Buffer.Written'First;
                else
-                  Buffer.Free_To_Write := Free;
+                  Free_To_Write := Free;
                end if;
+               Store
+               (  Buffer.Free_To_Write'Unchecked_Access,
+                  Free_To_Write
+               );
                return;
             end if; -- Can queue only Tail elements
             Buffer.Written
-            (  Buffer.Free_To_Write
-            .. Buffer.Free_To_Write + Tail - 1
+            (  Free_To_Write
+            .. Free_To_Write + Tail - 1
             )  := Data (Pointer..Pointer + Tail - 1);
             Pointer := Pointer + Tail;
             Count   := Count   - Tail;
             Free    := Free    - Tail;
-            if Buffer.Free_To_Write + Tail > Buffer.Written'Last then
-               Buffer.Free_To_Write := Buffer.Written'First;
+            if Free_To_Write + Tail > Buffer.Written'Last then
+               Free_To_Write := Buffer.Written'First;
             else
-               Buffer.Free_To_Write := Buffer.Free_To_Write + Tail;
+               Free_To_Write := Free_To_Write + Tail;
             end if;
+            Store
+            (  Buffer.Free_To_Write'Unchecked_Access,
+               Free_To_Write
+            );
          end;
       else
          --
@@ -1236,8 +1411,8 @@ package body GNAT.Sockets.Server is
          --       Free_To_Write  First_Written
          --
          Free :=
-            (  Buffer.First_Written
-            +  Buffer.Free_To_Write
+            (  First_Written
+            +  Free_To_Write
             -  1  -- Last element is never written
             );
       end if;
@@ -1246,11 +1421,12 @@ package body GNAT.Sockets.Server is
       end if;
       Count := Stream_Element_Offset'Min (Count, Free);
       Buffer.Written
-      (  Buffer.Free_To_Write
-      .. Buffer.Free_To_Write + Count - 1
+      (  Free_To_Write
+      .. Free_To_Write + Count - 1
       ) := Data (Pointer..Pointer + Count - 1);
       Pointer := Pointer + Count;
-      Buffer.Free_To_Write := Buffer.Free_To_Write + Count;
+      Free_To_Write := Free_To_Write + Count;
+      Store (Buffer.Free_To_Write'Unchecked_Access, Free_To_Write);
       if Buffer.Send_Blocked then
          Buffer.Send_Blocked := False;
          Unblock := True;
@@ -1477,9 +1653,13 @@ package body GNAT.Sockets.Server is
    end Unblock_Send;
 
    function Used (Buffer : Input_Buffer) return Stream_Element_Count is
-      Diff : Stream_Element_Offset :=
-             Buffer.Free_To_Read - Buffer.First_Read;
+      First_Read   : Stream_Element_Offset :=
+                     Load (Buffer.First_Read'Unchecked_Access);
+      Free_To_Read : Stream_Element_Offset :=
+                     Load (Buffer.Free_To_Read'Unchecked_Access);
+      Diff         : Stream_Element_Offset;
    begin
+      Diff := Free_To_Read - First_Read;
       if Diff < 0 then
          return Buffer.Read'Length - Diff;
       else
@@ -1488,12 +1668,15 @@ package body GNAT.Sockets.Server is
    end Used;
 
    function Used (Buffer : Output_Buffer) return Stream_Element_Count is
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
-      if Buffer.Free_To_Write >= Buffer.First_Written then
-         return Buffer.Free_To_Write - Buffer.First_Written;
+      if Free_To_Write >= First_Written then
+         return Free_To_Write - First_Written;
       else
-         return Buffer.Written'Length - Buffer.First_Written +
-                Buffer.Free_To_Write;
+         return Buffer.Written'Length - First_Written + Free_To_Write;
       end if;
    end Used;
 
@@ -1502,10 +1685,14 @@ package body GNAT.Sockets.Server is
                 Factory : in out Connections_Factory'Class;
                 Blocked : out Boolean
              )  is
-      Buffer : Output_Buffer renames Client.Written;
-      Next   : Stream_Element_Count;
+      Buffer        : Output_Buffer renames Client.Written;
+      Next          : Stream_Element_Count;
+      First_Written : Stream_Element_Offset :=
+                      Load (Buffer.First_Written'Unrestricted_Access);
+      Free_To_Write : Stream_Element_Offset :=
+                      Load (Buffer.Free_To_Write'Unrestricted_Access);
    begin
-      Blocked := Buffer.First_Written = Buffer.Free_To_Write;
+      Blocked := First_Written = Free_To_Write;
       if Blocked then
          if Client.Dont_Block then
             Blocked           := False;
@@ -1514,7 +1701,7 @@ package body GNAT.Sockets.Server is
          end if;
       else
          loop
-            if Buffer.First_Written > Buffer.Free_To_Write then
+            if First_Written > Free_To_Write then
                --
                -- [XXXXX               XXXXXXX]
                --       |              |
@@ -1524,7 +1711,7 @@ package body GNAT.Sockets.Server is
                   Send_Socket
                   (  Client.Socket,
                      Buffer.Written
-                     (  Buffer.First_Written
+                     (  First_Written
                      .. Buffer.Written'Last
                      ),
                      Next
@@ -1534,14 +1721,14 @@ package body GNAT.Sockets.Server is
                   (  Client.Transport.all,
                      Client,
                      Buffer.Written
-                     (  Buffer.First_Written
+                     (  First_Written
                      .. Buffer.Written'Last
                      ),
                      Next
                   );
                end if;
                Next := Next + 1;
-               if Next = Buffer.First_Written then
+               if Next = First_Written then
                   exit; -- Cannot send anything right now
                elsif Next <= Buffer.Written'Last then
                   if 0 /= (Factory.Trace_Flags and Trace_Decoded_Sent)
@@ -1550,12 +1737,16 @@ package body GNAT.Sockets.Server is
                      (  Factory => Factory,
                         Client  => Client,
                         Data    => Buffer.Written,
-                        From    => Buffer.First_Written,
+                        From    => First_Written,
                         To      => Next - 1,
                         Encoded => False
                      );
                   end if;
-                  Buffer.First_Written := Next;
+                  First_Written := Next;
+                  Store
+                  (  Buffer.First_Written'Unchecked_Access,
+                     First_Written
+                  );
                   Client.Data_Sent := True;
                   exit;
                end if;
@@ -1564,12 +1755,16 @@ package body GNAT.Sockets.Server is
                   (  Factory => Factory,
                      Client  => Client,
                      Data    => Buffer.Written,
-                     From    => Buffer.First_Written,
+                     From    => First_Written,
                      To      => Next - 1,
                      Encoded => False
                   );
                end if;
-               Buffer.First_Written := 0;
+               First_Written := 0;
+               Store
+               (  Buffer.First_Written'Unchecked_Access,
+                  First_Written
+               );
                Client.Data_Sent := True;
             else
                --
@@ -1581,8 +1776,8 @@ package body GNAT.Sockets.Server is
                   Send_Socket
                   (  Client.Socket,
                      Buffer.Written
-                     (  Buffer.First_Written
-                     .. Buffer.Free_To_Write - 1
+                     (  First_Written
+                     .. Free_To_Write - 1
                      ),
                      Next
                   );
@@ -1591,28 +1786,32 @@ package body GNAT.Sockets.Server is
                   (  Client.Transport.all,
                      Client,
                      Buffer.Written
-                     (  Buffer.First_Written
-                     .. Buffer.Free_To_Write - 1
+                     (  First_Written
+                     .. Free_To_Write - 1
                      ),
                      Next
                   );
                end if;
                Next := Next + 1;
-               if Next = Buffer.First_Written then
+               if Next = First_Written then
                   exit;
-               elsif Next <= Buffer.Free_To_Write then
+               elsif Next <= Free_To_Write then
                   if 0 /= (Factory.Trace_Flags and Trace_Decoded_Sent)
                   then
                      Trace_Sent
                      (  Factory => Factory,
                         Client  => Client,
                         Data    => Buffer.Written,
-                        From    => Buffer.First_Written,
+                        From    => First_Written,
                         To      => Next - 1,
                         Encoded => False
                      );
                   end if;
-                  Buffer.First_Written := Next;
+                  First_Written := Next;
+                  Store
+                  (  Buffer.First_Written'Unchecked_Access,
+                     First_Written
+                  );
                   Client.Data_Sent := True;
                   exit;
                end if;
@@ -1621,28 +1820,22 @@ package body GNAT.Sockets.Server is
                   (  Factory => Factory,
                      Client  => Client,
                      Data    => Buffer.Written,
-                     From    => Buffer.First_Written,
+                     From    => First_Written,
                      To      => Next - 1,
                      Encoded => False
                   );
                end if;
-               Buffer.First_Written := Next;
+               First_Written := Next;
+               Store
+               (  Buffer.First_Written'Unchecked_Access,
+                  First_Written
+               );
                Client.Data_Sent := True;
             end if;
-            exit when Buffer.First_Written = Buffer.Free_To_Write;
+            exit when First_Written = Free_To_Write;
          end loop;
       end if;
    end Write;
-
-   function Get_Server_Address
-            (  Listener : Connections_Server
-            )  return Sock_Addr_Type is
-      Address : Sock_Addr_Type;
-   begin
-      Address.Addr := Any_Inet_Addr;
-      Address.Port := Listener.Port;
-      return Address;
-   end Get_Server_Address;
 
    task body Worker is
       Address       : Sock_Addr_Type :=
@@ -1670,15 +1863,17 @@ package body GNAT.Sockets.Server is
                   Clear (Listener.Write_Sockets,   Client_Socket);
                   Clear (Listener.Blocked_Sockets, Client_Socket);
                elsif Client.Failed then
-                  if (  Exception_Identity (Client.Last_Error)
-                     /= Connection_Error'Identity
-                     )
-                  then
-                     Trace_Error
-                     (  Listener.Factory.all,
-                        "Unblocking socket",
-                        Client.Last_Error
-                     );
+                  if not Client.Down then
+                     if (  Exception_Identity (Client.Last_Error)
+                        /= Connection_Error'Identity
+                        )
+                     then
+                        Trace_Error
+                        (  Listener.Factory.all,
+                           "Unblocking socket",
+                           Client.Last_Error
+                        );
+                     end if;
                   end if;
                   Stop (Listener.all, Client.Socket);
                elsif (  Requested_Only
@@ -1810,15 +2005,17 @@ package body GNAT.Sockets.Server is
                         Clear (Listener.Write_Sockets,   Client_Socket);
                         Clear (Listener.Blocked_Sockets, Client_Socket);
                      elsif Client.Failed then
-                        if (  Exception_Identity (Client.Last_Error)
-                           /= Connection_Error'Identity
-                           )
-                        then
-                           Trace_Error
-                           (  Listener.Factory.all,
-                              "Preparing to receive",
-                              Client.Last_Error
-                           );
+                        if not Client.Down then
+                           if (  Exception_Identity (Client.Last_Error)
+                              /= Connection_Error'Identity
+                              )
+                           then
+                              Trace_Error
+                              (  Listener.Factory.all,
+                                 "Preparing to receive",
+                                 Client.Last_Error
+                              );
+                           end if;
                         end if;
                         Stop (Listener.all, Client.Socket);
                      else
@@ -1897,15 +2094,17 @@ package body GNAT.Sockets.Server is
                      Clear (Listener.Write_Sockets,   Client_Socket);
                      Clear (Listener.Blocked_Sockets, Client_Socket);
                   elsif Client.Failed then
-                     if (  Exception_Identity (Client.Last_Error)
-                        /= Connection_Error'Identity
-                        )
-                     then
-                        Trace_Error
-                        (  Listener.Factory.all,
-                           "Preparing to send",
-                           Client.Last_Error
-                        );
+                     if not Client.Down then
+                        if (  Exception_Identity (Client.Last_Error)
+                           /= Connection_Error'Identity
+                           )
+                        then
+                           Trace_Error
+                           (  Listener.Factory.all,
+                              "Preparing to send",
+                              Client.Last_Error
+                           );
+                        end if;
                      end if;
                      Stop (Listener.all, Client.Socket);
                   else

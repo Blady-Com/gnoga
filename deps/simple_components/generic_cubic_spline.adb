@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  11:56 13 Oct 2012  --
+--                                Last revision :  23:15 18 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -226,7 +226,7 @@ package body Generic_Cubic_Spline is
                 Points : in out Map
              )  is
    begin
-      case Points.Get_Size is
+      case Get_Size (Points) is
          when 0 | 1 =>
             null;
          when 2 =>

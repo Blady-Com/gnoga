@@ -25553,6 +25553,15 @@ guarantee that <a href="#GNAT.Sockets.Server.Send">Send</a> called from
 queue a complete packet.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">procedure</font> Shutdown (<b>Client</b> :
+<font color="#0000FF">in out</font> Connection);</tt></p>
+</blockquote>
+<p>The connection object is removed when the client closes the connection. This procedure 
+can be used to explicitly drop the connection. It can be used from any task. The 
+object shall not be used afterwards because the server may finalize and 
+deallocate it at any time. </p>
+
+<blockquote>
 <p><tt><font color="#0000FF">procedure</font> Unblock_Send (<b>Client</b> :
 <font color="#0000FF">in out</font> Connection);</tt></p>
 </blockquote>
@@ -32140,7 +32149,10 @@ The following versions were tested with the compilers:</i>
   </ul>
 <P>
 Changes (2015) to the version 4.5:<ul>
-	<li>Receiving WebSocked messages in chunks was added.</li>
+	<li>Receiving WebSocked messages in chunks was added;</li>
+	<li>Shutdown was added to connection object to drop connection explicitly;</li>
+	<li>Support for atomic access to 64-bit Stream_Element_Offset on 32-bit 
+	platforms.</li>
 	</ul>
 <P>
 Changes (17 January 2015) to the version 4.4:<ul>

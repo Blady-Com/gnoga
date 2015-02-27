@@ -271,7 +271,9 @@ package body Gnoga.Server.Connection is
       begin
          if Verbose_Output then
             Gnoga.Log ("HTTP Server Started");
-            --  Trace_On (Factory => Factory, Received => True, Sent => True);
+            Trace_On (Factory  => Factory,
+                      Received => Trace_Any,
+                      Sent     => Trace_Any);
          end if;
 
          if not Secure_Server then
@@ -1119,7 +1121,11 @@ package body Gnoga.Server.Connection is
                Gnoga.Log ("Ping on long polling -" & ID'Img);
             end if;
 
-            Socket.Content.Buffer.Add ("<!--0--!>");
+            declare
+               T : String := Execute_Script (ID, "0");
+            begin
+               null;
+            end;
          elsif Socket.Content.Connection_Type = WebSocket then
             if Verbose_Output then
                Gnoga.Log ("Ping on websocket -" & ID'Img);
@@ -1135,7 +1141,7 @@ package body Gnoga.Server.Connection is
             if Socket.Content.Connection_Type = Long_Polling then
                Gnoga.Log ("Long polling error closing ID " & ID'Img);
                Socket.Content.Finalized := True;
-               Connection_Manager.Delete_Connection (ID);
+               Socket.Shutdown;
             else
                begin
                   delay 3.0;

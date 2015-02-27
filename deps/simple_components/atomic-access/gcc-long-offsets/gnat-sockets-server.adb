@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  17:25 27 Feb 2015  --
+--                                Last revision :  17:44 27 Feb 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1859,7 +1859,9 @@ package body GNAT.Sockets.Server is
                         Get (Listener.Connections, Socket);
             begin
                if Client = null then
-                  null;
+                  Clear (Listener.Read_Sockets,    Socket);
+                  Clear (Listener.Write_Sockets,   Socket);
+                  Clear (Listener.Blocked_Sockets, Socket);
                elsif Client.Failed then
                   if not Client.Down then
                      if (  Exception_Identity (Client.Last_Error)

@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Exceptions;
-with GNAT.Traceback.Symbolic;
 
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
@@ -242,7 +241,6 @@ package body Gnoga.Gui.Base is
          Log ("Error finalizing - " & Object.ID);
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Finalize;
 
    ----------

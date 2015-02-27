@@ -41,7 +41,6 @@ with Ada.Strings.Maps;
 with Ada.Calendar.Formatting;
 with Ada.Unchecked_Deallocation;
 with Ada.Exceptions;
-with GNAT.Traceback.Symbolic;
 
 with Gnoga.Client.Storage;
 with Gnoga.Server.Connection;
@@ -131,7 +130,6 @@ package body Gnoga.Gui.Window is
          Log ("Error finalizing Window - " & Object.ID);
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Finalize;
 
    ------------

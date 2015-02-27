@@ -37,7 +37,6 @@
 
 with Ada.Strings.Unbounded;
 with Ada.Exceptions;
-with GNAT.Traceback.Symbolic;
 
 with Gnoga.Server.Connection;
 
@@ -91,7 +90,6 @@ package body Gnoga.Gui.Plugin.jQuery is
          Log ("Error finalizing jQuery Object - " & Gnoga_Var (Object));
          Log (Ada.Exceptions.Exception_Name (E) & " - " &
                 Ada.Exceptions.Exception_Message (E));
-         Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
    end Finalize;
 
    ------------

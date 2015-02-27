@@ -808,7 +808,7 @@ package body Gnoga.Server.Connection is
    -- Event_Task_Type --
    ---------------------
 
-   task type Event_Task_Type (ID : Gnoga.Types.Connection_ID);
+   task type Event_Task_Type (TID : Gnoga.Types.Connection_ID);
 
    type Event_Task_Access is access all Event_Task_Type;
 
@@ -863,6 +863,9 @@ package body Gnoga.Server.Connection is
       procedure Delete_Connection (ID : in Gnoga.Types.Connection_ID);
       --  Delete Connection with ID.
       --  Releases connection holder if present.
+
+      procedure Finalize_Connection (ID : in Gnoga.Types.Connection_ID);
+      --  Mark Connection with ID for deletion.
 
       function Valid (ID : in Gnoga.Types.Connection_ID) return Boolean;
       --  Return True if ID is in connection map.
@@ -983,13 +986,22 @@ package body Gnoga.Server.Connection is
                   Event_Task_Map.Delete (ID);
                end;
             end if;
-
-            Gnoga.Log ("Delete connection complete -" & ID'Img);
          end if;
       exception
          when others =>
             null;
       end Delete_Connection;
+
+      procedure Finalize_Connection (ID : in Gnoga.Types.Connection_ID) is
+      begin
+         if (ID > 0) and Socket_Map.Contains (ID) then
+            if Verbose_Output then
+               Gnoga.Log ("Finalizing connection -" & ID'Img);
+            end if;
+
+            Socket_Map.Element (ID).Content.Finalized := True;
+         end if;
+      end Finalize_Connection;
 
       function Valid (ID : in Gnoga.Types.Connection_ID) return Boolean is
       begin
@@ -1040,7 +1052,11 @@ package body Gnoga.Server.Connection is
 
    task body Event_Task_Type is
       Connection_Holder : aliased Connection_Holder_Type;
+      ID : Gnoga.Types.Connection_ID;
    begin
+      ID := TID;
+      --  Insure that TID is retained even if task is "deleted"
+
       Connection_Manager.Add_Connection_Holder
         (ID, Connection_Holder'Unchecked_Access);
 
@@ -1071,7 +1087,8 @@ package body Gnoga.Server.Connection is
       end;
 
       Connection_Manager.Delete_Connection_Holder (ID);
-
+      Connection_Manager.Finalize_Connection (ID);
+      --  Insure cleanup even if socket not closed by external connection
    exception
       when E : others =>
          Log ("Connection Manager Error Connection ID=" & ID'Img);
@@ -1088,20 +1105,32 @@ package body Gnoga.Server.Connection is
 
       procedure Ping (C : in out Socket_Maps.Cursor) is
          ID     : Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
-         Socket : Socket_Type := Socket_Maps.Element (C);
+         Socket : Socket_Type               := Socket_Maps.Element (C);
       begin
          if Socket.Content.Finalized then
-            Gnoga.Log ("Ping on Finalized -" & ID'Img);
+            if Verbose_Output then
+               Gnoga.Log ("Ping on Finalized -" & ID'Img);
+            end if;
+
             Connection_Manager.Delete_Connection (ID);
             return;
          elsif Socket.Content.Connection_Type = Long_Polling then
-            Gnoga.Log ("Ping on long polling -" & ID'Img);
+            if Verbose_Output then
+               Gnoga.Log ("Ping on long polling -" & ID'Img);
+            end if;
+
             Socket.Content.Buffer.Add ("<!--0--!>");
          elsif Socket.Content.Connection_Type = WebSocket then
-            Gnoga.Log ("Ping on websocket -" & ID'Img);
+            if Verbose_Output then
+               Gnoga.Log ("Ping on websocket -" & ID'Img);
+            end if;
+
             Socket.WebSocket_Send ("0");
          end if;
       exception
+         when Storage_Error =>
+            Gnoga.Log ("Invalid socket, Deleting ID -" & ID'Img);
+            Connection_Manager.Delete_Connection (ID);
          when others =>
             if Socket.Content.Connection_Type = Long_Polling then
                Gnoga.Log ("Long polling error closing ID " & ID'Img);
@@ -1122,7 +1151,7 @@ package body Gnoga.Server.Connection is
                         Connection_Manager.Delete_Connection (ID);
                      exception
                         when E : others =>
-                           Log ("Watchdog error:");
+                           Log ("Watchdog ping error:");
                            Log (Ada.Exceptions.Exception_Name (E) & " - " &
                                   Ada.Exceptions.Exception_Message (E));
                      end;

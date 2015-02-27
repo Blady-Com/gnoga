@@ -1113,9 +1113,8 @@ package body Gnoga.Server.Connection is
             if Verbose_Output then
                Gnoga.Log ("Ping on Finalized -" & ID'Img);
             end if;
-
             Connection_Manager.Delete_Connection (ID);
-            return;
+            Socket.Shutdown;
          elsif Socket.Content.Connection_Type = Long_Polling then
             if Verbose_Output then
                Gnoga.Log ("Ping on long polling -" & ID'Img);

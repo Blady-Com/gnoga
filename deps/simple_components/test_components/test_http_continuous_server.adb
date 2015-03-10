@@ -3,7 +3,7 @@
 --     Test_HTTP_Continuous_Server                 Luebeck            --
 --  HTTP server test                               Winter, 2015       --
 --                                                                    --
---                                Last revision :  21:07 11 Feb 2015  --
+--                                Last revision :  22:24 02 Mar 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,7 +36,7 @@ procedure Test_HTTP_Continuous_Server is
    Port  : constant := 80;
    Tasks : constant := 5;
 begin
--- Trace_On (Every_Raise);
+--   Trace_On (Every_Raise);
    declare
       Factory : aliased Test_HTTP_Factory
                         (  Request_Length  => 200,

@@ -271,9 +271,9 @@ package body Gnoga.Server.Connection is
       begin
          if Verbose_Output then
             Gnoga.Log ("HTTP Server Started");
-            --              Trace_On (Factory  => Factory,
-            --                        Received => Trace_Any,
-            --                        Sent     => Trace_Any);
+            --  Trace_On (Factory  => Factory,
+            --            Received => Trace_Any,
+            --            Sent     => Trace_Any);
          end if;
 
          if not Secure_Server then

@@ -3,7 +3,7 @@
 --     Test_HTTP_Continuous_Server                 Luebeck            --
 --  Interface                                      Winter, 2015       --
 --                                                                    --
---                                Last revision :  21:07 11 Feb 2015  --
+--                                Last revision :  22:24 02 Mar 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -79,7 +79,6 @@ private
       Generator : Content_Generator_Ptr;
       pragma Atomic (Ready);
    end record;
-   procedure Finalize (Source : in out Infinite_Content);
    function Get (Source : access Infinite_Content) return String;
    procedure Initialize (Source : in out Infinite_Content);
    procedure Write
@@ -102,6 +101,7 @@ private
    record
       Content : aliased Infinite_Content (Test_Client'Unchecked_Access);
    end record;
+   procedure Finalize (Client : in out Test_Client);
 
    procedure Do_Get_Head (Client : in out Test_Client; Get : Boolean);
 

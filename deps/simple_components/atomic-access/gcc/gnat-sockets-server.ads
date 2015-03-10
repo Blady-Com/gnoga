@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  21:33 05 Feb 2015  --
+--                                Last revision :  18:50 09 Mar 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1073,11 +1073,11 @@ private
 -- Stop -- Stop servicing a socket
 --
 --    Listener - The server object
---    Socket   - The socket
+--    Client   - The client connection
 --
    procedure Stop
              (  Listener : in out Connections_Server'Class;
-                Socket   : Socket_Type
+                Client   : in out Connection_Ptr
              );
 
    package Connection_Handles is
@@ -1121,20 +1121,24 @@ private
            Port    : Port_Type
         )  is new Ada.Finalization.Limited_Controlled with
    record
-      Clients         : Natural := 0;
-      Selector        : Selector_Type;
-      Read_Sockets    : Socket_Set_Type;
-      Write_Sockets   : Socket_Set_Type;
-      Blocked_Sockets : Socket_Set_Type;
-      Postponed       : Connection_Ptr;
-      IO_Timeout      : Duration := 0.02;
-      Polling_Timeout : Duration := 0.5;
-      Unblock_Send    : Boolean  := False;
-      Finalizing      : Boolean  := False;
-      Connections     : Unbounded_Array;
-      Doer            : Worker_Ptr;
+      Clients          : Natural := 0;
+      Selector         : Selector_Type;
+      Read_Sockets     : Socket_Set_Type;
+      Write_Sockets    : Socket_Set_Type;
+      Blocked_Sockets  : Socket_Set_Type;
+      Ready_To_Read    : Socket_Set_Type;
+      Ready_To_Write   : Socket_Set_Type;
+      Postponed        : Connection_Ptr;
+      IO_Timeout       : Duration := 0.02;
+      Polling_Timeout  : Duration := 0.5;
+      Unblock_Send     : Boolean  := False;
+      Shutdown_Request : Boolean  := False;
+      Finalizing       : Boolean  := False;
+      Connections      : Unbounded_Array;
+      Doer             : Worker_Ptr;
 
       pragma Atomic (Unblock_Send);
+      pragma Atomic (Shutdown_Request);
    end record;
 --
 -- Queue operations

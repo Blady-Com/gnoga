@@ -3,7 +3,7 @@
 --     Test_HTTP_Continuous_Server                 Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  21:07 11 Feb 2015  --
+--                                Last revision :  22:24 02 Mar 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,7 +31,7 @@ with Strings_Edit;           use Strings_Edit;
 with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
 
 with Ada.Unchecked_Deallocation;
-with ada.Text_IO;
+
 package body Test_HTTP_Continuous_Servers is
 
    Content_Timeout    : constant Duration := 1.0;
@@ -115,12 +115,13 @@ package body Test_HTTP_Continuous_Servers is
       Do_Get_Head (Client, False);
    end Do_Head;
 
-   procedure Finalize (Source : in out Infinite_Content) is
+   procedure Finalize (Client : in out Test_Client) is
      procedure Free is
         new Ada.Unchecked_Deallocation
             (  Content_Generator,
                Content_Generator_Ptr
             );
+     Source : Infinite_Content renames Client.Content;
    begin
       if Source.Generator /= null then
          Source.Generator.Stop;

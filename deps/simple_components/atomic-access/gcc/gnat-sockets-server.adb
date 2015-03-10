@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  17:25 27 Feb 2015  --
+--                                Last revision :  18:50 09 Mar 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1102,14 +1102,14 @@ package body GNAT.Sockets.Server is
             end if;
          exception
             when Connection_Error =>
-               Stop (Listener, Client.Socket);
+               Stop (Listener, Client);
             when Error : others =>
                Trace_Error
                (  Listener.Factory.all,
                   "Postponed service",
                   Error
                );
-               Stop (Listener, Client.Socket);
+               Stop (Listener, Client);
          end;
       end loop;
       Listener.Postponed := Leftover;
@@ -1137,25 +1137,34 @@ package body GNAT.Sockets.Server is
    begin
       Client.Down   := True;
       Client.Failed := True;
-      Listener.Unblock_Send := True;
+      Listener.Shutdown_Request := True;
       Abort_Selector (Listener.Selector);
    end Shutdown;
 
    procedure Stop
              (  Listener : in out Connections_Server'Class;
-                Socket   : Socket_Type
+                Client   : in out Connection_Ptr
              )  is
-      Client : Socket_Type := Socket;
-      This   : Connection_Ptr := Get (Listener.Connections, Client);
    begin
-      if This /= null then
-         Disconnected (Listener, This.all);
-         Listener.Clients := Listener.Clients - 1;
-      end if;
-      Clear (Listener.Read_Sockets,    Client);
-      Clear (Listener.Write_Sockets,   Client);
-      Clear (Listener.Blocked_Sockets, Client);
-      Put (Listener.Connections, Client, null);
+      Trace_Sending
+      (  Listener.Factory.all,
+         Client.all,
+         False,
+         ", dropping connection"
+      );
+      Clear (Listener.Read_Sockets,    Client.Socket);
+      Clear (Listener.Write_Sockets,   Client.Socket);
+      Clear (Listener.Blocked_Sockets, Client.Socket);
+      Clear (Listener.Ready_To_Read,   Client.Socket);
+      Clear (Listener.Ready_To_Write,  Client.Socket);
+      Disconnected (Listener, Client.all);
+      Listener.Clients := Listener.Clients - 1;
+      Put (Listener.Connections, Client.Socket, null);
+      Client := null;
+   exception
+      when Error : others =>
+         Trace_Error (Listener.Factory.all, "Stopping", Error);
+         raise;
    end Stop;
 
    procedure Store
@@ -1658,11 +1667,77 @@ package body GNAT.Sockets.Server is
                       Get_Server_Address (Listener.all);
       Server_Socket : Socket_Type;
       Client_Socket : Socket_Type;
-      Read_Sockets  : Socket_Set_Type;
-      Write_Sockets : Socket_Set_Type;
       That_Time     : Time := Clock;
       This_Time     : Time;
       Status        : Selector_Status;
+
+      function Set_Image (Socket : Socket_Type) return String is
+         function Is_In
+                  (  Set  : Socket_Set_Type;
+                     Text : String
+                  )  return String is
+         begin
+            if Is_Set (Set, Socket) then
+               return Text;
+            else
+               return "";
+            end if;
+         end Is_In;
+      begin
+         return
+         (  Image (Socket)
+         &  ", listener:"
+         &  Is_In (Listener.Read_Sockets,    "R")
+         &  Is_In (Listener.Write_Sockets,   "W")
+         &  Is_In (Listener.Blocked_Sockets, "B")
+         &  ", ready:"
+         &  Is_In (Listener.Ready_To_Read,   "R")
+         &  Is_In (Listener.Ready_To_Write,  "W")
+         );
+      end Set_Image;
+
+      procedure Check
+                (  Sockets : in out Socket_Set_Type;
+                   Message : String
+                )  is
+         Socket : Socket_Type;
+      begin
+         loop
+            Get (Sockets, Socket);
+            exit when Socket = No_Socket;
+            if Socket /= Server_Socket then
+               declare
+                  Client : Connection_Ptr :=
+                           Get (Listener.Connections, Socket);
+               begin
+                  if Client = null then
+                     Trace
+                     (  Listener.Factory.all,
+                        (  "Missing client when checking socket "
+                        &  Set_Image (Socket)
+                     )  );
+                     Clear (Listener.Read_Sockets,    Socket);
+                     Clear (Listener.Write_Sockets,   Socket);
+                     Clear (Listener.Blocked_Sockets, Socket);
+                  elsif Client.Failed then
+                     if (  not Client.Down
+                        and then
+                           (  Exception_Identity (Client.Last_Error)
+                           /= Connection_Error'Identity
+                        )  )
+                     then
+                        Trace_Error
+                        (  Listener.Factory.all,
+                           Message,
+                           Client.Last_Error
+                        );
+                     end if;
+                     Stop (Listener.all, Client);
+                  end if;
+               end;
+            end if;
+         end loop;
+      end Check;
 
       procedure Unblock (Requested_Only : Boolean) is
          Socket : Socket_Type;
@@ -1670,17 +1745,26 @@ package body GNAT.Sockets.Server is
          loop
             Get (Listener.Blocked_Sockets, Socket);
             exit when Socket = No_Socket;
-            declare
-               Client : Connection_Ptr :=
-                        Get (Listener.Connections, Socket);
-            begin
-               if Client = null then
-                  null;
-               elsif Client.Failed then
-                  if not Client.Down then
-                     if (  Exception_Identity (Client.Last_Error)
-                        /= Connection_Error'Identity
-                        )
+            if Socket /= Server_Socket then
+               declare
+                  Client : Connection_Ptr :=
+                           Get (Listener.Connections, Socket);
+               begin
+                  if Client = null then
+                     Trace
+                     (  Listener.Factory.all,
+                        (  "Missing client when unblocking socket "
+                        &  Set_Image (Socket)
+                     )  );
+                     Clear (Listener.Read_Sockets,   Socket);
+                     Clear (Listener.Write_Sockets,  Socket);
+                     Clear (Listener.Ready_To_Write, Socket);
+                  elsif Client.Failed then
+                     if (  not Client.Down
+                        and then
+                           (  Exception_Identity (Client.Last_Error)
+                           /= Connection_Error'Identity
+                        )  )
                      then
                         Trace_Error
                         (  Listener.Factory.all,
@@ -1688,43 +1772,43 @@ package body GNAT.Sockets.Server is
                            Client.Last_Error
                         );
                      end if;
-                     Stop (Listener.all, Client.Socket);
-                  end if;
-               elsif (  Requested_Only
-                     and then
-                        Client.Written.Send_Blocked
-                     )  then -- Keep it blocked
-                  Set (Read_Sockets, Client.Socket);
-               else -- Unblock
-                  Set (Listener.Write_Sockets, Client.Socket);
-                  Set (Write_Sockets, Client.Socket);
-                  Status := Completed;  -- Make sure it written later on
-                  Client.Written.Send_Blocked := False;
-                  Client.Data_Sent := True;
-                  if (  0
-                     /= (  Listener.Factory.Trace_Flags
-                        and
-                           (Trace_Encoded_Sent or Trace_Decoded_Sent)
-                     )  )
-                  then
-                     if Requested_Only then
-                        Trace_Sending
-                        (  Listener.Factory.all,
-                           Client.all,
-                           True,
-                           ", some data to send"
-                        );
-                     else
-                        Trace_Sending
-                        (  Listener.Factory.all,
-                           Client.all,
-                           True,
-                           ", blocking timeout expired"
-                        );
+                     Stop (Listener.all, Client);
+                  elsif (  Requested_Only
+                        and then
+                           Client.Written.Send_Blocked
+                        )  then -- Keep it blocked
+                     Set (Listener.Ready_To_Read, Client.Socket);
+                  else -- Unblock
+                     Set (Listener.Write_Sockets,  Client.Socket);
+                     Set (Listener.Ready_To_Write, Client.Socket);
+                     Status := Completed;  -- Make sure it written later
+                     Client.Written.Send_Blocked := False;
+                     Client.Data_Sent := True;
+                     if (  0
+                        /= (  Listener.Factory.Trace_Flags
+                           and
+                              (Trace_Encoded_Sent or Trace_Decoded_Sent)
+                        )  )
+                     then
+                        if Requested_Only then
+                           Trace_Sending
+                           (  Listener.Factory.all,
+                              Client.all,
+                              True,
+                              ", some data to send"
+                           );
+                        else
+                           Trace_Sending
+                           (  Listener.Factory.all,
+                              Client.all,
+                              True,
+                              ", blocking timeout expired"
+                           );
+                        end if;
                      end if;
                   end if;
-               end if;
-            end;
+               end;
+            end if;
          end loop;
       end Unblock;
    begin
@@ -1739,19 +1823,25 @@ package body GNAT.Sockets.Server is
       Set (Listener.Read_Sockets, Server_Socket);
       Create_Selector (Listener.Selector);
       loop
-         Copy (Listener.Read_Sockets,  Read_Sockets);
-         Copy (Listener.Write_Sockets, Write_Sockets);
+         if Listener.Shutdown_Request then
+            Listener.Shutdown_Request := False;
+            Check (Listener.Read_Sockets,    "Receive socket");
+            Check (Listener.Write_Sockets,   "Send socket");
+            Check (Listener.Blocked_Sockets, "Block socket");
+         end if;
+         Copy (Listener.Read_Sockets,  Listener.Ready_To_Read);
+         Copy (Listener.Write_Sockets, Listener.Ready_To_Write);
          Check_Selector
          (  Selector     => Listener.Selector,
-            R_Socket_Set => Read_Sockets,
-            W_Socket_Set => Write_Sockets,
+            R_Socket_Set => Listener.Ready_To_Read,
+            W_Socket_Set => Listener.Ready_To_Write,
             Status       => Status,
             Timeout      => Listener.IO_Timeout
          );
          exit when Status = Aborted and then Listener.Finalizing;
          if Status = Completed then
             loop -- Reading from sockets
-               Get (Read_Sockets, Client_Socket);
+               Get (Listener.Ready_To_Read, Client_Socket);
                exit when Client_Socket = No_Socket;
                if Client_Socket = Server_Socket then
                   Accept_Socket
@@ -1795,8 +1885,7 @@ package body GNAT.Sockets.Server is
                   exception
                      when Connection_Error =>
                         if Client /= null then
-                           Stop (Listener.all, Client.Socket);
-                           Client := null;
+                           Stop (Listener.all, Client);
                         end if;
                      when Error : others =>
                         Trace_Error
@@ -1805,8 +1894,7 @@ package body GNAT.Sockets.Server is
                            Error
                         );
                         if Client /= null then
-                           Stop (Listener.all, Client.Socket);
-                           Client := null;
+                           Stop (Listener.all, Client);
                         end if;
                   end;
                else
@@ -1815,42 +1903,45 @@ package body GNAT.Sockets.Server is
                               Get (Listener.Connections, Client_Socket);
                   begin
                      if Client = null then
+                        Trace
+                        (  Listener.Factory.all,
+                           (  "Missing client when reading from socket "
+                           &  Set_Image (Client_Socket)
+                        )  );
                         Clear (Listener.Read_Sockets,    Client_Socket);
                         Clear (Listener.Write_Sockets,   Client_Socket);
                         Clear (Listener.Blocked_Sockets, Client_Socket);
+                        Clear (Listener.Ready_To_Write,  Client_Socket);
                      elsif Client.Failed then
-                        if not Client.Down then
-                           if (  Exception_Identity (Client.Last_Error)
+                        if (  not Client.Down
+                           and then
+                              (  Exception_Identity (Client.Last_Error)
                               /= Connection_Error'Identity
-                              )
-                           then
-                              Trace_Error
-                              (  Listener.Factory.all,
-                                 "Preparing to receive",
-                                 Client.Last_Error
-                              );
-                           end if;
+                           )  )
+                        then
+                           Trace_Error
+                           (  Listener.Factory.all,
+                              "Preparing to receive",
+                              Client.Last_Error
+                           );
                         end if;
-                        Stop (Listener.all, Client.Socket);
+                        Stop (Listener.all, Client);
                      else
                         begin
                            Read (Client.all, Listener.Factory.all);
                         exception
                            when Connection_Error =>
-                              Stop (Listener.all, Client.Socket);
-                              Client := null;
+                              Stop (Listener.all, Client);
                            when Error : Socket_Error =>
                               Send_Error (Client.all, Error);
-                              Stop (Listener.all, Client.Socket);
-                              Client := null;
+                              Stop (Listener.all, Client);
                            when Error : others =>
                               Trace_Error
                               (  Listener.Factory.all,
                                  "Receive socket",
                                  Error
                               );
-                              Stop (Listener.all, Client.Socket);
-                              Client := null;
+                              Stop (Listener.all, Client);
                         end;
                         declare
                            Data_Left : Boolean;
@@ -1868,50 +1959,67 @@ package body GNAT.Sockets.Server is
                            end if;
                         exception
                            when Connection_Error =>
-                              Stop (Listener.all, Client.Socket);
+                              Stop (Listener.all, Client);
                            when Error : others =>
                               Trace_Error
                               (  Listener.Factory.all,
                                  "Processing received",
                                  Error
                               );
-                              Stop (Listener.all, Client.Socket);
+                              Stop (Listener.all, Client);
                         end;
                      end if;
                   end;
                end if;
             end loop;
+         else
+            Empty (Listener.Ready_To_Read); -- Clear the set
          end if;
          This_Time := Clock;
          if This_Time - That_Time > Listener.Polling_Timeout then
             -- Unblock everything now
             That_Time := This_Time;
             Unblock (False);
+            if not Is_Set (Listener.Read_Sockets, Server_Socket) then
+               Trace
+               (  Listener.Factory.all,
+                  "Server socket fell out of the read sockets list"
+               );
+               Set (Listener.Read_Sockets, Server_Socket);
+            end if;
          else
             -- Checking for explicit unblocking requests
             while Listener.Unblock_Send loop
                Listener.Unblock_Send := False;
-               Unblock (True);
-               Copy (Read_Sockets, Listener.Blocked_Sockets);
+               Unblock (True); -- Still blocked are now in Ready_To_Read
+               Copy (Listener.Ready_To_Read, Listener.Blocked_Sockets);
+               Empty (Listener.Ready_To_Read); -- Clear the set
             end loop;
          end if;
          if Status = Completed then
             loop -- Writing sockets
-               Get (Write_Sockets, Client_Socket);
+               Get (Listener.Ready_To_Write, Client_Socket);
                exit when Client_Socket = No_Socket;
-               declare
-                  Client : Connection_Ptr :=
-                           Get (Listener.Connections, Client_Socket);
-               begin
-                  if Client = null then
-                     Clear (Listener.Read_Sockets,    Client_Socket);
-                     Clear (Listener.Write_Sockets,   Client_Socket);
-                     Clear (Listener.Blocked_Sockets, Client_Socket);
-                  elsif Client.Failed then
-                     if not Client.Down then
-                        if (  Exception_Identity (Client.Last_Error)
-                           /= Connection_Error'Identity
-                           )
+               if Client_Socket /= Server_Socket then
+                  declare
+                     Client : Connection_Ptr :=
+                              Get (Listener.Connections, Client_Socket);
+                  begin
+                     if Client = null then
+                        Trace
+                        (  Listener.Factory.all,
+                           (  "Missing client when writing to socket "
+                           &  Set_Image (Client_Socket)
+                        )  );
+                        Clear (Listener.Read_Sockets,    Client_Socket);
+                        Clear (Listener.Write_Sockets,   Client_Socket);
+                        Clear (Listener.Blocked_Sockets, Client_Socket);
+                     elsif Client.Failed then
+                        if (  not Client.Down
+                           and then
+                              (  Exception_Identity (Client.Last_Error)
+                              /= Connection_Error'Identity
+                           )  )
                         then
                            Trace_Error
                            (  Listener.Factory.all,
@@ -1919,84 +2027,86 @@ package body GNAT.Sockets.Server is
                               Client.Last_Error
                            );
                         end if;
-                     end if;
-                     Stop (Listener.all, Client.Socket);
-                  else
-                     declare
-                        Block : Boolean;
-                     begin
-                        Write
-                        (  Client.all,
-                           Listener.Factory.all,
-                           Block
-                        );
-                        if (  Block
-                           and then
-                              not Client.Written.Send_Blocked
-                           )
-                        then
-                           Client.Written.Send_Blocked := True;
-                           Set
-                           (  Client.Listener.Blocked_Sockets,
-                              Client.Socket
+                        Stop (Listener.all, Client);
+                     else
+                        declare
+                           Block : Boolean;
+                        begin
+                           Write
+                           (  Client.all,
+                              Listener.Factory.all,
+                              Block
                            );
-                           Clear
-                           (  Client.Listener.Write_Sockets,
-                              Client.Socket
-                           );
-                           if (  0
-                              /= (  Listener.Factory.Trace_Flags
-                                 and
-                                    (  Trace_Encoded_Sent
-                                    or Trace_Decoded_Sent
-                              )  )  )
+                           if (  Block
+                              and then
+                                 not Client.Written.Send_Blocked
+                              )
                            then
-                              Trace_Sending
-                              (  Listener.Factory.all,
-                                 Client.all,
-                                 False,
-                                 ", nothing to send"
+                              Client.Written.Send_Blocked := True;
+                              Set
+                              (  Client.Listener.Blocked_Sockets,
+                                 Client.Socket
                               );
+                              Clear
+                              (  Client.Listener.Write_Sockets,
+                                 Client.Socket
+                              );
+                              if (  0
+                                 /= (  Listener.Factory.Trace_Flags
+                                    and
+                                       (  Trace_Encoded_Sent
+                                       or Trace_Decoded_Sent
+                                 )  )  )
+                              then
+                                 Trace_Sending
+                                 (  Listener.Factory.all,
+                                    Client.all,
+                                    False,
+                                    ", nothing to send"
+                                 );
+                              end if;
                            end if;
-                        end if;
-                     exception
-                        when Connection_Error =>
-                           Stop (Listener.all, Client.Socket);
-                           Client := null;
-                        when Error : Socket_Error =>
-                           Send_Error (Client.all, Error);
-                           Stop (Listener.all, Client.Socket);
-                           Client := null;
-                        when Error : others =>
-                           Trace_Error
-                           (  Listener.Factory.all,
-                              "Send socket",
-                              Error
-                           );
-                           Stop (Listener.all, Client.Socket);
-                           Client := null;
-                     end;
-                     begin
-                        if Client /= null and then Client.Data_Sent then
-                           Data_Sent (Listener.all, Client);
-                        end if;
-                     exception
-                        when Connection_Error =>
-                           Stop (Listener.all, Client.Socket);
-                        when Error : others =>
-                           Trace_Error
-                           (  Listener.Factory.all,
-                              "Processing sent notification",
-                              Error
-                           );
-                           Stop (Listener.all, Client.Socket);
-                     end;
-                  end if;
-               end;
+                        exception
+                           when Connection_Error =>
+                              Stop (Listener.all, Client);
+                           when Error : Socket_Error =>
+                              Send_Error (Client.all, Error);
+                              Stop (Listener.all, Client);
+                           when Error : others =>
+                              Trace_Error
+                              (  Listener.Factory.all,
+                                 "Send socket",
+                                 Error
+                              );
+                              Stop (Listener.all, Client);
+                           end;
+                        begin
+                           if Client /= null and then Client.Data_Sent
+                           then
+                              Data_Sent (Listener.all, Client);
+                           end if;
+                        exception
+                           when Connection_Error =>
+                              Stop (Listener.all, Client);
+                           when Error : others =>
+                              Trace_Error
+                              (  Listener.Factory.all,
+                                 "Processing sent notification",
+                                 Error
+                              );
+                              Stop (Listener.all, Client);
+                        end;
+                     end if;
+                  end;
+               end if;
             end loop;
+         else
+            Empty (Listener.Ready_To_Write); -- Clear the set
          end if;
          Service_Postponed (Listener.all);
       end loop;
+      Close (Server_Socket);
+      Trace (Listener.Factory.all, "Worker task exiting");
    exception
       when Error : others =>
          Trace_Error (Listener.Factory.all, "Worker task", Error);

@@ -56,6 +56,8 @@ with Ada.Streams.Stream_IO;
 with Gnoga.Server.Connection.Common; use Gnoga.Server.Connection.Common;
 with Gnoga.Server.Template_Parser.Simple;
 
+with Strings_Edit.UTF8.Handling;
+
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Unique_ID;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
@@ -1864,32 +1866,34 @@ package body Gnoga.Server.Connection is
    procedure Execute_Script (ID     : in Gnoga.Types.Connection_ID;
                              Script : in String)
    is
+      UTF8_Script : String := Strings_Edit.UTF8.Handling.To_UTF8 (Script);
+
       procedure Try_Execute;
 
       procedure Try_Execute is
          Socket  : Socket_Type := Connection_Manager.Connection_Socket (ID);
       begin
          if Socket.Content.Connection_Type = Long_Polling then
-            Socket.Content.Buffer.Add ("<script>" & Script & "</script>");
+            Socket.Content.Buffer.Add ("<script>" & UTF8_Script & "</script>");
 
             if not Socket.Content.Buffer.Buffering then
                Socket.Unblock_Send;
             end if;
          elsif Socket.Content.Connection_Type = WebSocket then
-            Socket.WebSocket_Send (Script);
+            Socket.WebSocket_Send (UTF8_Script);
          end if;
       exception
          when Ada.Text_IO.End_Error =>
             raise Connection_Error with
-              "Socket Closed before execute of : " & Script;
+              "Socket Closed before execute of : " & UTF8_Script;
          when others =>
             raise Connection_Error with
-              "Socket Error during execute of : " & Script;
+              "Socket Error during execute of : " & UTF8_Script;
       end Try_Execute;
 
    begin
-      if Connection_Manager.Valid (ID) and Script /= "" then
-         if not Buffer_Add (ID, Script) then
+      if Connection_Manager.Valid (ID) and UTF8_Script /= "" then
+         if not Buffer_Add (ID, UTF8_Script) then
             Try_Execute;
          end if;
       end if;
@@ -1905,6 +1909,8 @@ package body Gnoga.Server.Connection is
                             Script : in String)
                             return String
    is
+      UTF8_Script : String := Strings_Edit.UTF8.Handling.To_UTF8 (Script);
+
       function Try_Execute return String;
 
       function Try_Execute return String is
@@ -1922,7 +1928,7 @@ package body Gnoga.Server.Connection is
             declare
                Message : constant String := "ws.send (" &
                            """S" & Script_ID'Img & "|""+" &
-                           "eval (""" & Escape_Quotes (Script) & """)" &
+                           "eval (""" & Escape_Quotes (UTF8_Script) & """)" &
                            ");";
             begin
                if Socket.Content.Connection_Type = Long_Polling then
@@ -1957,10 +1963,10 @@ package body Gnoga.Server.Connection is
       exception
          when Ada.Text_IO.End_Error =>
             raise Connection_Error with
-              "Socket Closed before execute of : " & Script;
+              "Socket Closed before execute of : " & UTF8_Script;
          when others =>
             raise Connection_Error with
-              "Socket Error during execute of : " & Script;
+              "Socket Error during execute of : " & UTF8_Script;
       end Try_Execute;
    begin
       begin

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  18:50 09 Mar 2015  --
+--                                Last revision :  19:55 16 Mar 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,7 +33,7 @@ with Strings_Edit.Integers;  use Strings_Edit.Integers;
 
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
-
+with system.Address_Image;
 package body GNAT.Sockets.Server is
 
    Receive_Masks : constant array (IO_Tracing_Mode) of Factory_Flags :=
@@ -1146,6 +1146,9 @@ package body GNAT.Sockets.Server is
                 Client   : in out Connection_Ptr
              )  is
    begin
+Trace (Listener.Factory.all, "deleting connection client "
+& system.Address_Image(client.all'address)
+& " socket="&image(client.socket));
       Trace_Sending
       (  Listener.Factory.all,
          Client.all,
@@ -1686,24 +1689,22 @@ package body GNAT.Sockets.Server is
       begin
          return
          (  Image (Socket)
-         &  ", listener:"
-         &  Is_In (Listener.Read_Sockets,    "R")
-         &  Is_In (Listener.Write_Sockets,   "W")
-         &  Is_In (Listener.Blocked_Sockets, "B")
-         &  ", ready:"
-         &  Is_In (Listener.Ready_To_Read,   "R")
-         &  Is_In (Listener.Ready_To_Write,  "W")
+         &  ", listener"
+         &  " read: "     & Image (Listener.Read_Sockets)
+         &  ", write: "   & Image (Listener.Write_Sockets)
+         &  ", blocked: " & Image (Listener.Blocked_Sockets)
+         &  ", ready"
+         &  " read: "     & Image (Listener.Ready_To_Read)
+         &  ", write: "   & Image (Listener.Ready_To_Write)
          );
       end Set_Image;
 
-      procedure Check
-                (  Sockets : in out Socket_Set_Type;
-                   Message : String
-                )  is
+      procedure Check (Sockets : Socket_Set_Type) is
          Socket : Socket_Type;
+         List   : Socket_Set_Type := Sockets;
       begin
          loop
-            Get (Sockets, Socket);
+            Get (List, Socket);
             exit when Socket = No_Socket;
             if Socket /= Server_Socket then
                declare
@@ -1728,7 +1729,7 @@ package body GNAT.Sockets.Server is
                      then
                         Trace_Error
                         (  Listener.Factory.all,
-                           Message,
+                           "Dropping connection on request",
                            Client.Last_Error
                         );
                      end if;
@@ -1825,9 +1826,7 @@ package body GNAT.Sockets.Server is
       loop
          if Listener.Shutdown_Request then
             Listener.Shutdown_Request := False;
-            Check (Listener.Read_Sockets,    "Receive socket");
-            Check (Listener.Write_Sockets,   "Send socket");
-            Check (Listener.Blocked_Sockets, "Block socket");
+            Check (Listener.Read_Sockets);
          end if;
          Copy (Listener.Read_Sockets,  Listener.Ready_To_Read);
          Copy (Listener.Write_Sockets, Listener.Ready_To_Write);
@@ -2106,6 +2105,7 @@ package body GNAT.Sockets.Server is
          Service_Postponed (Listener.all);
       end loop;
       Close (Server_Socket);
+      Close_Selector (Listener.Selector);
       Trace (Listener.Factory.all, "Worker task exiting");
    exception
       when Error : others =>

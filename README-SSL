@@ -1,0 +1,35 @@
+There are 2 methods of using SSL with Gnoga, 1 is direct SSL support and the second is via proxy.
+
+See ssl/gnoga-server-secure.ads for direct gnoga support of ssl. It requires installing libgnutls28-dev (e.g. apt-get install libgnutls28-dev on Debian)
+You can run make test_ssl to create a test ssl app using a localy signed certificate, then to run bin/layouts_ssl
+
+Note:
+When purchasing SSL certificates, when using gnutls such as with Gnoga direct ssl support or using Apache that also uses gnutls, append the intermediate certificate to the bottom of your certificate, if there is one (and there usually is with cheaper certificates), to properly create a chain of trust back to the root certificates installed in the browsers visiting your secure server.
+
+Here is an example of using Apache to Proxy SSL:
+
+Setup your proxy to use an ssl connection and use the secure.html boot loader:
+
+1) Create your self signed certificate for testing. Of course for production you will want to purchase a real certificate:
+
+openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.key -out server.crt -subj '/O=Botton/OU=Gnoga/CN=snake.gnoga.com'
+
+2) I added a config:
+
+<VirtualHost *:443>
+    ServerName snake.gnoga.com
+    ServerAdmin david@botton.com
+
+    SSLEngine on
+    SSLCertificateFile /home/dbotton/workspace/ssl/server.crt
+    SSLCertificateKeyFile /home/dbotton/workspace/ssl/server.key
+    SSLCertificateChainFile /home/dbotton/workspace/ssl/intermediate_certs.crt
+
+    ProxyPass /gnoga ws://127.0.0.1:8080/gnoga
+    ProxyPass / http://127.0.0.1:8080/
+    ProxyPassReverse / http://127.0.0.1:8080/
+</VirtualHost>
+
+If you purchase your SSL certs from a CA that is lower tier you will need their intermediate certificate to validate their authority back to one of the main CAs. This is common for the less expensive SSL certs sold. This will also not be needed if using self generated certifcates for testing.
+
+Now https://snake.gnoga.com/secure.html will be a secure connection.

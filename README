@@ -9,8 +9,8 @@ Either download and unarchive the stable version of Gnoga from
 http://www.gnoga.com or use git to get the latest development version:
 
 ```
-git clone git://git.code.sf.net/p/gnoga/code gnoga-code
-cd gnoga-code
+git clone git://git.code.sf.net/p/gnoga/code gnoga
+cd gnoga
 make  (or run "make release" for no debug info in compile)
       (if using MinGW make.bat and do not have make)
       (if you do not have gprtools see the Makefile to use gnatmake)
@@ -63,6 +63,7 @@ Here is an overview of Gnoga's framework:
       Gnoga.Server.Model - Active Data models like in Rails
       Gnoga.Server.Migrations - Rails like database schema migrations
       Gnoga.Server.Template_Parser - Parse files with tokens or Python 2.7
+           (install libpython27-dev to use the Python parser)
 
 7. Gnoga development tools
       tool/gnoga_make - Generate application scaffolds

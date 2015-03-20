@@ -11,6 +11,16 @@ with Gnoga.Server.Connection;
 procedure Align is
    use Gnoga.Gui.Element;
 
+   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record);
+
+   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   is
+   begin
+      Gnoga.Log (Event.X'Img & " x " & Event.Y'Img);
+   end On_Move;
+
    Main_Window : Gnoga.Gui.Window.Window_Type;
    Main_View   : Gnoga.Gui.View.View_Type;
 
@@ -29,6 +39,7 @@ procedure Align is
    Game_View   : Gnoga.Gui.View.Docker.Docker_View_Type;
    Grid_Box    : aliased Gnoga.Gui.View.View_Type;
    Control_Box : aliased Gnoga.Gui.View.View_Type;
+   Mouse_Box   : Gnoga.Gui.View.View_Type;
 
    type Button_Column is array (1 .. 30) of Common.Button_Type;
    type Button_Grid is array (1 .. 15) of Button_Column;
@@ -133,6 +144,16 @@ begin
 
    Game_View.Left_Dock (Grid_Box'Unchecked_Access);
    Game_View.Right_Dock (Control_Box'Unchecked_Access);
+
+   Mouse_Box.Create (Main_View);
+   Mouse_Box.Position (Absolute);
+   Mouse_Box.Width (200);
+   Mouse_Box.Height (200);
+   Mouse_Box.Top (500);
+   Mouse_Box.Left (500);
+   Mouse_Box.Border;
+   Mouse_Box.Background_Color ("orange");
+   Mouse_Box.On_Mouse_Move_Handler (On_Move'Unrestricted_Access);
 
    Gnoga.Application.Singleton.Message_Loop;
 end Align;

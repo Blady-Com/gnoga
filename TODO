@@ -8,8 +8,6 @@ DONE - 5. https/ssl websockets via proxy
 6. Add ability to directly server from code files via http
 7. Add packages to deliver jquery.min.js, boot.js and boot.html (or secure.html) directly so single executable can be delivered with out need for full deployment directory structure, perhaps other files too.
 DONE - 8. Alternative to Websockets using long polling http connection and Ajax
-9. Complete Ace Editor plugin
-10. Complete MacGap support for menus
 
 To Do 1.1 or later:
 
@@ -22,6 +20,8 @@ DONE - 2. https/ssl direct support
 7. Expanded support for Gtk and Gnome
 8. Provide more enumerations for various properties in Gnoga.Gui.Element
 9. Lots and lots more Gnoga specific elements as modules and JS bindigns as plugins to be placed in Marketplace
+10. Complete Ace Editor plugin
+11. Complete MacGap support for menus
 
 Some Ideas:
 

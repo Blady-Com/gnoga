@@ -147,6 +147,8 @@ clean:
 	cd tools && $(CLEANER) -Ptools.gpr
 	cd test && $(CLEANER) -Ptest.gpr
 	cd test_ssl && $(CLEANER) -Ptest_ssl.gpr
+	cd test/tickets/001 && $(CLEANER) -Ptest.gpr
+	cd test/tickets/002 && $(CLEANER) -Ptest.gpr
 	cd demo/snake && $(CLEANER) -Psnake.gpr
 	cd demo/mine_detector && $(CLEANER) -Pmine_detector.gpr
 	cd demo/chattanooga && $(CLEANER) -Pchattanooga.gpr
@@ -170,6 +172,7 @@ clean:
 	- rm bin/multimarkdown
 	- cd bin && rm *.db
 	- cd bin && rm temp.txt
+	- cd bin && rm gnoga-test
 	- cd js && rm -rf ace-builds
 
 bin/multimarkdown:

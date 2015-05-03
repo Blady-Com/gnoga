@@ -85,7 +85,7 @@ package Gnoga.Gui.Element is
    --  Create a Gnoga element with HTML not attached to the DOM. If ID is blank
    --  Gnoga will generate a unique one for it. The created object will be
    --  stored on the browser but will not be inserted in to the DOM until
-   --  Place_Inside_Top_Of, Place_Inside_Botton_Of, Place_Before, Place_After
+   --  Place_Inside_Top_Of, Place_Inside_Bottom_Of, Place_Before, Place_After
    --  is called. This is done automatically if Parent is a child type of
    --  Gnoga_Gui.View.View_Base_Type unless the Auto_Place property is
    --  set to False _before_ any creation method is called.

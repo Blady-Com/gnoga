@@ -364,7 +364,7 @@ package body Gnoga.Gui.Element.Form is
 
    function Validate_On_Submit (Element : Form_Element_Type) return Boolean is
    begin
-      return Element.Property ("length");
+      return Element.Property ("noValidate");
    end Validate_On_Submit;
 
    ----------

@@ -141,7 +141,7 @@ package Gnoga.Gui.Element.Form is
                              ID         : in     String := "");
    --  Create a form element of Input_Type. Setting Name on form element
    --  is only important if the form will be submitted via a GET or POST.
-   --  Value is the inital value for the element.
+   --  Value is the initial value for the element.
    --
    --  Valid HTML5 Input_Types are:
    --     button, checkbox, color, date, datetime, datetime-local, email
@@ -207,10 +207,10 @@ package Gnoga.Gui.Element.Form is
 
    procedure Pattern (Element : in out Form_Element_Type; Value : in String);
    function Pattern (Element : Form_Element_Type) return String;
-   --  Form validation pattern. I Validate_On_Submit fields with input
-   --  will validate against their Pattern if set on submit
+   --  Form validation pattern. Validate_On_Submit fields with input
+   --  will validate against their Pattern if set on submit.
    --  Pattern is included in Form_Element_Type since in cases where a specific
-   --  input type is not suppored like (date, week, etc.) pattern can be set
+   --  input type is not supported like (date, week, etc.) Pattern can be set
    --  to ensure the expected results. This works since Input type will fall
    --  back to a text input.
 
@@ -431,7 +431,7 @@ package Gnoga.Gui.Element.Form is
                      ID         : in     String := "");
 
    ----------------------------------------------------------
-   --  Check_Box_Type - Properties
+   --  Radio_Button_Type - Properties
    -------------------------------------------------------------------------
 
    procedure Checked (Element : in out Radio_Button_Type;

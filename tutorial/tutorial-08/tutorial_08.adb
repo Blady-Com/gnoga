@@ -1,6 +1,6 @@
 --  With Gnoga it is possible to build your own custom widgets by compositing
 --  elements in to views and build web forms. In the next turorial we will
---  see how to interat with forms in a more application centric way instead of
+--  see how to interact with forms in a more application centric way instead of
 --  as static forms.
 
 with Gnoga.Types;

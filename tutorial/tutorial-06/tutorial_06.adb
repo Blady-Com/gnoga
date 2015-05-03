@@ -142,10 +142,10 @@ procedure Tutorial_06 is
       App.My_PView.Create (App.My_Popup2);
       App.My_PView.Padding ("1em", "1em", "1em", "1em");
       App.My_PView.Put_Line
-        ("Since this popup is not a cross-site frame" &
+        ("Since this popup is not a cross-site frame " &
            "we have full control over it " &
            "even though this popup was blank and has no " &
-           "websocket connection to our application." &
+           "websocket connection to our application. " &
            "We are piggy backing off the connection in the " &
            "main window.");
       App.My_PView.New_Line;

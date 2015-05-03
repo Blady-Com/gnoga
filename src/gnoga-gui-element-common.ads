@@ -80,7 +80,7 @@ package Gnoga.Gui.Element.Common is
 
    type Button_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Button_Access is access all Button_Type;
-   type Pointer_To_Botton_Class is access all Button_Type'Class;
+   type Pointer_To_Button_Class is access all Button_Type'Class;
 
    -------------------------------------------------------------------------
    --  Button_Type - Creation Methods

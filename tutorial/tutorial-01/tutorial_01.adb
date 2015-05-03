@@ -15,7 +15,7 @@ with Gnoga.Gui.View.Console;
 --  a Window is one of the easiest ways. Different view types provide
 --  different ways to organize or place GUI elements.
 --  Gnoga.Gui.View.Console.Console_Type automatically adds new GUI elements
---  to the next row in the view and provdes scroll bars for the over flow.
+--  to the next row in the view and provides scroll bars for the over flow.
 --  It also provides a simple console like way to add HTML or text to the
 --  page using its Put_Line method.
 
@@ -32,7 +32,7 @@ begin
    --  This title will appear on the browser title when the browser
    --  connects to our application.
 
-   --  Gnoga.Application.Launch_URL_* could be used here to start the user's
+   --  Gnoga.Application.Open_URL_* could be used here to start the user's
    --  default browser pointing to this tutorial application.
 
    Gnoga.Application.Singleton.Initialize (Main_Window => My_Window);

@@ -165,7 +165,12 @@ package Gnoga.Gui.Window is
                       return Gnoga.Gui.Location.Location_Access;
    --  Browser location object
 
-   procedure Name (Window : in out Window_Type; Value : String);
+   procedure Browser_Status_Bar (Window : in out Window_Type;
+                                 Value  : in     String);
+   function Browser_Status_Bar (Window : Window_Type) return String;
+   --  Status bar on browser window (not supported on all browsers)
+
+   procedure Name (Window : in out Window_Type; Value : in String);
    function Name (Window : Window_Type) return String;
    --  Hyperlink "target" Name for Window
 

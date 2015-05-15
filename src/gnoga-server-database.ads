@@ -53,10 +53,14 @@ package Gnoga.Server.Database is
    --  Disconnect from server
 
    procedure Execute_Query (C : in out Connection; SQL : String) is abstract;
-   --  Execute a SQL Query with no result set
+   --  Execute an SQL Query with no result set
+
+   function Execute_Update (C : in out Connection; SQL : String)
+                            return Natural is abstract;
+   --  Executes and SQL Query and returns the number of affected rows
 
    function Affected_Rows (C : Connection) return Natural is abstract;
-   --  Returns the number of rows affected by and Execute_Query
+   --  Returns the number of rows affected by an Execute_Query
 
    function Insert_ID (C : Connection) return Natural is abstract;
    --  Returns the last value assigned to an auto increment field upon insert
@@ -134,7 +138,7 @@ package Gnoga.Server.Database is
    procedure Next (RS : in out Recordset) is abstract;
    --  Go to next row
 
-   function Next (RS : Recordset) return Boolean is abstract;
+   function Next (RS : in out Recordset) return Boolean is abstract;
    --  Go to next row and return true if not End of Recordset
 
    procedure Iterate

@@ -63,11 +63,16 @@ package Gnoga.Server.Database.SQLite is
 
    overriding
    procedure Execute_Query (C : in out Connection; SQL : String);
-   --  Execute a SQL Query with no result set
+   --  Execute an SQL Query with no result set
+
+   overriding
+   function Execute_Update (C : in out Connection; SQL : String)
+                            return Natural;
+   --  Executes a SQL Query and retuns the number of affected rows
 
    overriding
    function Affected_Rows (C : Connection) return Natural;
-   --  Returns the number of rows affected by and Execute_Query
+   --  Returns the number of rows affected by an Execute_Query
 
    overriding
    function Insert_ID (C : Connection) return Natural;
@@ -116,7 +121,7 @@ package Gnoga.Server.Database.SQLite is
    --  Go to next row
 
    overriding
-   function Next (RS : Recordset) return Boolean;
+   function Next (RS : in out Recordset) return Boolean;
    --  Go to next row and return true if not End of Recordset
 
    overriding

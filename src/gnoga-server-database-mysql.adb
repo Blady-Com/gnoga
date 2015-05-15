@@ -149,6 +149,19 @@ package body Gnoga.Server.Database.MySQL is
       end if;
    end Execute_Query;
 
+   --------------------
+   -- Execute_Update --
+   --------------------
+
+   overriding
+   function Execute_Update (C : in out Connection; SQL : String)
+                            return Natural
+   is
+   begin
+      Execute_Query (C, SQL);
+      return Affected_Rows (C);
+   end Execute_Update;
+
    ---------------
    -- Insert_ID --
    ---------------
@@ -368,7 +381,7 @@ package body Gnoga.Server.Database.MySQL is
    ----------
 
    overriding
-   function Next (RS : Recordset) return Boolean is
+   function Next (RS : in out Recordset) return Boolean is
       R : access Recordset := RS'Unrestricted_Access;
 
       function MYSQL_Fetch_Row (Result : MySQL_ID := RS.Query_ID)

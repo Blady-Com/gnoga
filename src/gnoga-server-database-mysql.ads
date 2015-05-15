@@ -75,6 +75,11 @@ package Gnoga.Server.Database.MySQL is
    --  Execute a SQL Query with no result set
 
    overriding
+   function Execute_Update (C : in out Connection; SQL : String)
+                            return Natural;
+   --  Executes a SQL Query and retuns the number of affected rows
+
+   overriding
    function Affected_Rows (C : Connection) return Natural;
    --  Returns the number of rows affected by and Execute_Query
 
@@ -124,7 +129,7 @@ package Gnoga.Server.Database.MySQL is
    --  Go to next row
 
    overriding
-   function Next (RS : Recordset) return Boolean;
+   function Next (RS : in out Recordset) return Boolean;
    --  Go to next row and return true if not End of Recordset
 
    overriding

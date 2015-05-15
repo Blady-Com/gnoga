@@ -288,11 +288,28 @@ package body Gnoga.Gui.Window is
       return Window.Location'Unrestricted_Access;
    end Location;
 
+   ------------------------
+   -- Browser_Status_Bar --
+   ------------------------
+
+   procedure Browser_Status_Bar (Window : in out Window_Type;
+                                 Value  : in     String)
+   is
+   begin
+      Window.Property ("status", Value);
+   end Browser_Status_Bar;
+
+   function Browser_Status_Bar (Window : Window_Type) return String
+   is
+   begin
+      return Window.Property ("status");
+   end Browser_Status_Bar;
+
    ----------
    -- Name --
    ----------
 
-   procedure Name (Window : in out Window_Type; Value : String) is
+   procedure Name (Window : in out Window_Type; Value : in String) is
    begin
       Window.Property ("name", Value);
    end Name;

@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  12:25 15 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -96,6 +96,8 @@ package body Test_HTTP_Servers is
             Receive_Body (Client, "text,submit,a,b");
          elsif Status.File = "test_forms_2.htm" then
             Receive_Body (Client, Client.Content.Keys'Access);
+         elsif Status.File = "test_forms_4.htm" then
+            Receive_Body (Client);
          else
             declare
                Disposition : String renames
@@ -210,7 +212,10 @@ package body Test_HTTP_Servers is
                   "</form></body></html>"
                );
                Send_Body (Client, Get);
-            elsif Status.File = "test_forms_2.htm" then
+            elsif (  Status.File = "test_forms_2.htm"
+                  or else
+                     Status.File = "test_forms_4.htm"
+                  )  then
                Send_Status_Line (Client, 200, "OK");
                Send_Date (Client);
                Send_Server (Client);
@@ -312,12 +317,16 @@ package body Test_HTTP_Servers is
                );
             end if;
          when URI =>
-            Reply_Text
-            (  Client,
-               404,
-               "Not found",
-               "No URI " & Quote (Status.Path) & " found"
-            );
+            if Status.Path = "" then
+               Do_Directory (Get_Current_Dir);
+            else
+               Reply_Text
+               (  Client,
+                  404,
+                  "Not found",
+                  "No URI " & Quote (Status.Path) & " found"
+               );
+            end if;
       end case;
    end Do_Get_Head;
 
@@ -406,6 +415,7 @@ package body Test_HTTP_Servers is
                &  "</form><br>"
                &  "<a href=""test_forms.htm"">test forms</a><br>"
                &  "<a href=""test_forms_2.htm"">another test forms</a>"
+               &  "<a href=""test_forms_4.htm"">yet another one</a>"
                &  "</body></html>"
                );
       function Item (Name : String) return String is

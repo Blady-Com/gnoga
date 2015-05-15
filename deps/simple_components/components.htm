@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.6</EM><BR>
+<EM>version 4.7</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -81,10 +81,19 @@ language standards.</p>
 </blockquote>
 <table border="0" cellspacing="0" cellpadding="0" style="border-top-width: 0px">
 	<tr>
+		<td style="border-top-style: none; border-top-width: medium" colspan="3">&nbsp;</td>
+		<td style="border-top-style: none; border-top-width: medium" align="right">
+		&nbsp;</td>
+		<td>&nbsp;</td>
+		<td align="center">ARM</td>
+		<td align="center" colspan="2">Intel</td>
+	</tr>
+	<tr>
 		<td style="border-top-style: none; border-top-width: medium" colspan="3"><b>Download Simple Components for Ada</b></td>
 		<td style="border-top-style: none; border-top-width: medium" align="right">
 		<b>Platform:</b></td>
 		<td>&nbsp;</td>
+		<td align="center">v7</td>
 		<td align="center">64-</td>
 		<td align="center">32bit</td>
 	</tr>
@@ -96,6 +105,8 @@ language standards.</p>
 		and packaged using RPM</td>
 		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
 		<td>&nbsp;</td>
+		<td align="right">
+		<a href="http://www.dmitry-kazakov.de/distributions/components_fedora_armv7hl.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/components_fedora_x86_64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/components_fedora_i686.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 	</tr>
@@ -105,21 +116,25 @@ language standards.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; ">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium" colspan="2">precompiled and packaged for dpkg</td>
 		<td>&nbsp;</td>
+		<td align="right"><a href="http://www.dmitry-kazakov.de/distributions/components_debian_armhf.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/components_debian_x86_64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
-		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/distributions/components_debian_i686.htm">
+		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/components_debian_i686.htm">
 		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 	</tr>
 	<tr>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_6.tgz">components_4_6.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_7.tgz">components_4_7.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
-		<td colspan="2" align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_6.tgz">
+		<td align="center">
+		&nbsp;</td>
+		<td align="center">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_7.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
+		<td align="center">
+		&nbsp;</td>
 	</tr>
 </table>
 <P align="left">
@@ -24745,7 +24760,7 @@ such servers targeting heavy duty or small embedded solutions.</p>
 <h4><a name="16.1.1"></a>16.1.1. Multiple connections servers</h4>
 <p><a name="GNAT.Sockets.Server"></a>The package
 <a href="#GNAT.Sockets.Server">GNAT.Sockets.Server</a> provides basic tools for 
-implementation of multiple connection servers. The implementation is based on 
+implementation of multiple connection servers and clients. The implementation is based on 
 GNAT sockets.</p>
 <p><u><b>Connections server</b></u>.</p>
 
@@ -24764,7 +24779,8 @@ a connections server. The discriminants are:</p>
 <ul>
 	<li><i>Factory</i> is the <a href="#GNAT.Sockets.Server.Connections_Factory">factory</a> 
 	object used to create client <a href="#GNAT.Sockets.Server.Connection">connection objects</a>;</li>
-	<li><i>Port</i> is the port the server will listen to.</li>
+	<li><i>Port</i> is the port the server will listen to. If zero server does 
+	not listen any port.</li>
 </ul>
 <p>The&nbsp;server starts one task which does all socket I/O and services 
 connected client requests. See also 
@@ -24772,12 +24788,53 @@ connected client requests. See also
 which provides a server backed by a pool of worker tasks. Note also that a 
 server may run any TCP/IP-based protocols. It is up to the
 <a href="#GNAT.Sockets.Server.Connection">connection objec</a>t it implement the 
-protocol.</p>
+protocol. The server can handle both incoming and outgoing connections. The only 
+the latter is intended <i>Port</i> can be specified as 0.</p>
 <p>The following primitive operations are defined on <a href="#GNAT.Sockets.Server.Connections_Server">Connections_Server</a>:</p>
 
 <blockquote>
-<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Disconnected"></a>
-procedure</font> Disconnected<br>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connect"></a>
+procedure</font> Connect<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Listener</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Connections_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Connection_Ptr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Host</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Port</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; 
+: Port_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Max_Connect_No</b> : Positive := Positive'Last;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<b>Overlapped</b>&nbsp;&nbsp;&nbsp;&nbsp; : Stream_Element_Count :=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stream_Element_Count'Last<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called to make <b>Listener</b> connecting to a remove host 
+and thus acting as a client. <b>Client</b> is a newly created <a href="#GNAT.Sockets.Server.Connection">
+connection object</a> which will handle the connection when it becomes 
+established. The server manages the object (see also
+<a href="#memory-management-of-connection-objects">memory management of 
+connection objects</a>). In particular the object will be 
+finalized and deallocated by the server. <b>Host</b> is the name or IP address 
+of the remote host. <b>Port</b> is the port to connect to. <b>Max_Connect_No</b> 
+is the maximum number of consecutive attempts to connect. <b>Overlapped</b> is 
+the amount of overlapped read to use (see
+<a href="#GNAT.Sockets.Server.Set_Overlapped_Size">Set_Overlapped_Size</a>). The 
+default value enables full-duplex exchange which is customary for clients. The 
+procedure only initiates connecting, which is dealt asynchronously. Once 
+connection is established <a href="#GNAT.Sockets.Server.Connected">Connected</a> 
+is called, as usual. When connection is lost
+<a href="#GNAT.Sockets.Server.Disconnected">Disconnected</a> is called. Note 
+that differently to incoming connections, for an outgoing connection like this, 
+the server attempts (<b>Max_Connect_No</b> times) to reconnect to the host if the connection is lost. In order 
+to prevent this behavior <a href="#GNAT.Sockets.Server.Disconnected">
+Disconnected</a> may propagate Connection_Error exception. One can use 
+<a href="#GNAT.Sockets.Server.Shutdown">Shutdown</a> 
+as well. Socket_Error is propagated on errors resolving remove host name.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Disconnected"></a>procedure</font> Disconnected<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Listener</b> :
 <font color="#0000FF">in out</font> Connections_Server;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -24786,7 +24843,8 @@ Client</b>&nbsp;&nbsp; : <font color="#0000FF">in out</font> Connection'Class<br
 </blockquote>
 <p>This procedure is called to notify the server <b>Listener</b> that the client 
 is being disconnected. The implementation removes the client from the list of 
-clients postponed for service.</p>
+clients postponed for service. The implementation may propagate Connection_Error 
+to prevent further connection attempts for outgoing connections.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Finalize (<b>Listener</b> :
@@ -24847,7 +24905,7 @@ Connections_Server;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp;&nbsp; 
 : Sock_Addr_Type<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-return</font> Connection_Ptr <font color="#0000FF">is abstract</font>;</tt></p>
+return</font> Connection_Ptr;</tt></p>
 </blockquote>
 <p>This function is called when the server is about to accept an incoming 
 connection from a client. The implementation may refuse connection in which case 
@@ -24855,8 +24913,11 @@ it returns <i><font color="#0000FF">null</font></i>. When connection is accepted
 the implementation allocates a new <a href="#GNAT.Sockets.Server.Connection">
 connection object</a> and returns a pointer to it. After this it is the server's responsibility to free the object. Thus there is no need to care about 
 the objects returned from <a href="#GNAT.Sockets.Server.Create">Create</a>, they will 
-be freed automatically. The implementation may deploy client filtering based on 
-the address <b>From</b> and/or the number of active connections.</p>
+be freed automatically (see also
+<a href="#memory-management-of-connection-objects">memory management of 
+connection objects</a>). The implementation may deploy client filtering based on 
+the address <b>From</b> and/or the number of active connections. The default 
+implementation returns <i><font color="#0000FF">null</font></i>.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Get_IO_Timeout"></a>function</font> 
@@ -25185,9 +25246,11 @@ Object.Entity
 all </font> 
 Connection'Class;</tt></p>
 </blockquote>
-<p>Objects of a type derived from <a href="#GNAT.Sockets.Server.Connection">Connection</a> 
+<p>For incoming connections objects of a type derived from <a href="#GNAT.Sockets.Server.Connection">Connection</a> 
 are created and returned by the factory operation
-<a href="#GNAT.Sockets.Server.Create">Create</a>. The discriminants are:</p>
+<a href="#GNAT.Sockets.Server.Create">Create</a>. For outgoing connections the 
+object are created by the caller of <a href="#GNAT.Sockets.Server.Connect">
+Connect</a>. The discriminants are:</p>
 <ul>
 	<li><i>Input_Size</i> is the size of the input buffer used to read the 
 	socket into. Note that even if the input buffer is larger than the packets 
@@ -25207,7 +25270,28 @@ are created and returned by the factory operation
 	allows more than one incoming packets to be received the output buffer 
 	should be increased accordingly to prevent need in secondary buffering.</li>
 </ul>
-<p>The following primitive operations are defined:</p>
+<p><u><i><a name="memory-management-of-connection-objects"></a></i></u>
+Connection objects are reference-counted. When
+<a href="#GNAT.Sockets.Server.Create">Create</a> or
+<a href="#GNAT.Sockets.Server.Connect">Connect</a> pass an object to the server 
+this increases its reference count. When the server drops the object the 
+reference count is decreased. Once the count reaches zero the object is 
+finalized and deallocated. When a newly created object simply returned from
+<a href="#GNAT.Sockets.Server.Create">Create</a> or passed to
+<a href="#GNAT.Sockets.Server.Connect">Connect</a> there is nothing to worry 
+about. The object will be collected when no more in use. If the object creator 
+want to keep the object it should create a handle to it (see
+<a href="#Object.Handle">Object.Handle</a>) and store the handle somewhere. This 
+will increase the reference count and will hold the object so long the handle 
+object exist. The handles to connection objects can be created this way:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">package </font>Connection_Handles
+<font color="#0000FF">is<br>
+&nbsp;&nbsp; new</font> Object.Handle (Connection, Connection_Ptr);</tt></p>
+</blockquote>
+<p>The following primitive operations are defined on the <a href="#GNAT.Sockets.Server.Connection">Connection</a> 
+type:</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Available_To_Process">
 </a>function</font> Available_To_Process (<b>Client</b> : Connection)<br>
@@ -25225,15 +25309,56 @@ Available_To_Send (<b>Client</b> : Connection)<br>
 <a href="#GNAT.Sockets.Server.Send">Send</a> is guaranteed to accept. Larger 
 number may cause <a href="#GNAT.Sockets.Server.Send">Send</a> returning the 
 parameter Pointer less or equal to Data'Last.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connect_Error"></a>
+procedure</font> Connect_Error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Client</b> 
+: <font color="#0000FF">in out</font> Connection;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Error</b>&nbsp; 
+: Error_Type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called when the server fails to connect to the remote host. 
+It may propagate Connection_Error in order to prevent further attempts to 
+connect. The default implementation does nothing.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connect_Parameters_Set"></a>
+procedure</font> Connect_Parameters_Set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Connection;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Host</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Sock_Addr_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Max_Connect_No</b> : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called when connection parameters are set for an outgoing 
+connection. The default implementation does nothing. If overridden, the new 
+implementation should probably call the parent's&nbsp; implementation.</p>
+
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connected"></a>
 procedure</font> Connected (<b>Client</b> : <font color="#0000FF">in out</font> 
 Connection);</tt></p>
 </blockquote>
-<p>This is the first operation called on <b>Client</b>. The default 
-implementation does nothing. Typically the server may set some socket options 
+<p>This is the first operation called on <b>Client</b> when connected to a 
+remote host. If overridden, the parent's implementation must be called from the 
+override. Typically the server may set some socket options 
 here. The implementation may propagate Connection_Error if it decides to refuse 
 connection this late.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Disconnected (<b>Client</b> : <font color="#0000FF">in out</font> 
+Connection);</tt></p>
+</blockquote>
+<p>This is procedure is called when connection is dropped. If overridden, the 
+parent's implementation must be called from the override. The implementation may propagate Connection_Error 
+to prevent reconnection if the object services an outgoing connection.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Finalize_Connection">
@@ -25277,6 +25402,62 @@ Connection) <font color="#0000FF">return</font> Socket_Type;</tt></p>
 </blockquote>
 <p>This function returns the socket used by the connection. The socket shall not 
 be read or written explicitly.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Get_Session_State"></a>function</font> Get_Session_State (<b>Client</b> : 
+Connection) <font color="#0000FF">return</font> Session_State;</tt></p>
+</blockquote>
+<p>This function returns session state of the connection. It may have one of 
+<a href="#GNAT.Sockets.Server.Session_State">Session_State</a> values.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Session_State"></a>
+type</font> Session_State <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Session_Down,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Disconnected,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Connecting,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Connected,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Busy<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The values are:</p>
+<ul>
+	<li><i>Session_Down</i> indicates that the object is no more in use (it is 
+	same as <a href="#GNAT.Sockets.Server.Is_Down">Is_Down</a>);</li>
+	<li><i>Session_Disconnected</i> is of an object that is not connected to any 
+	host and is not attempted to connect to any;</li>
+	<li><i>Session_Connecting</i> indicates a pending connection to a remote 
+	host;</li>
+	<li><i>Session_Connected</i> indicates an established connection;</li>
+	<li><i>Session_Busy</i> is like <i>Session_Connected</i> and also indicated 
+	that there is a modal operation is pending, e.g. a request is being sent to 
+	the remote host and no new operation may start until this is complete.</li>
+</ul>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Is_Connected"></a>function</font> 
+Is_Connected (<b>Client</b> : 
+Connection) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Client</b> 
+is connected.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Is_Down"></a>function</font> 
+Is_Down (<b>Client</b> : 
+Connection) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Client</b> 
+can be reused. Normally objects are collected when no more service a connection 
+(see
+<a href="#memory-management-of-connection-objects">memory management of 
+connection objects</a>). An object for which this function returns
+<font color="#800000"><i>true</i></font>, the object can be again returned from
+<a href="#GNAT.Sockets.Server.Create">Create</a> or passed to
+<a href="#GNAT.Sockets.Server.Connect">Connect</a>. Note that doing so, you 
+should clean up the object's extension fields if any. Usually
+<a href="#GNAT.Sockets.Server.Connected">Connected</a> is an appropriate place 
+to do this.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">
@@ -25348,8 +25529,7 @@ Received<br>
 : Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
-<font color="#0000FF">is abstract</font>;</tt></p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure is called when a portion of data is read from the socket. The 
 parameter <b>Pointer</b> is initially set to <b>Data</b>'Last + 1. The 
@@ -25360,7 +25540,8 @@ the first unprocessed element. The data in <b>Data</b> (<b>Pointer</b>..<b>Data<
 will stay in the buffer until a next call to <a href="#GNAT.Sockets.Server.Received">
 Received</a>. Connection_Error is propagated to close the connection. Other 
 exceptions also cause the server to close the connection, but also call to
-<a href="#GNAT.Sockets.Server.Trace_Error">Trace_Error</a>.</p>
+<a href="#GNAT.Sockets.Server.Trace_Error">Trace_Error</a>. The default 
+implementation raises Connection_Error.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Receive_Error<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -25371,6 +25552,14 @@ Occurrence</b> : Exception_Occurrence<br>
 </blockquote>
 <p>This procedure is called upon a socket receive error before the connection is 
 dropped. The default implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Released"></a>procedure</font> 
+Released (<b>Client</b> 
+: <font color="#0000FF">in out </font>Connection);</tt></p>
+</blockquote>
+<p>This procedure is called when <b>Client</b> is no more in use. The default 
+implementation does nothing.</p>
+
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Save_Occurrence"></a>procedure</font> 
 Save_Occurrence<br>
@@ -25553,7 +25742,8 @@ guarantee that <a href="#GNAT.Sockets.Server.Send">Send</a> called from
 queue a complete packet.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Shutdown (<b>Client</b> :
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Shutdown">
+</a>procedure</font> Shutdown (<b>Client</b> :
 <font color="#0000FF">in out</font> Connection);</tt></p>
 </blockquote>
 <p>The connection object is removed when the client closes the connection. This procedure 
@@ -26217,7 +26407,7 @@ State_Machine <font color="#0000FF">is abstract<br>
 
 <h4><span style="font-weight: 400">When <a href="#GNAT.Sockets.Server.Connected">
 Connected</a>, <a href="#GNAT.Sockets.Server.Disconnected">Disconnected</a> or 
-Finalize are overridden the new implementation must call them 
+Finalize are overridden the new implementation shall call them 
 from its body. The implementation of
 <a href="#GNAT.Sockets.Server.Received">Received</a></span>
 <span style="font-weight: 400">inputs the fields of the derived type, which 
@@ -27514,14 +27704,15 @@ procedure it shall call it from its implementation.</p>
 <p align="right">
   <A name="16.11"></A><a href="#16.10"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#20"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>16.11. HTTP protocol implementation</H3>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.12"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.11. HTTP server protocol implementation</H3>
 
 <p>
-<a name="HTTP_implementation"></a>The package 
+<a name="HTTP_implementation"></a>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server"></a>The package 
 <a href="#HTTP_implementation">
 GNAT.Sockets.Connection_State_Machine.HTTP_Server</a> provides an implementation of 
-<a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP 1.1</a> protocol suitable for working with a
+<a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP 1.1</a> server protocol suitable for working with a
 <a href="#GNAT.Sockets.Server.Connections_Server">multiple connections</a> 
 server, e.g. with a single task handling multiple connections. It can also be 
 used with a <a href="#GNAT.Sockets.Server.Pooled.Pooled_Server">server backed by 
@@ -27574,6 +27765,19 @@ HTTP_Method <font color="#0000FF">is</font><br>
 &nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This type defines methods of HTTP requests.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Connection_Flags"></a>
+type</font> Connection_Flags <font color="#0000FF">is mod</font>
+<font color="#800000">2</font>**<font color="#800000">3</font>;<br>
+Connection_Close&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Connection_Flags :=
+<font color="#800000">1</font>;<br>
+Connection_Persistent : Connection_Flags := <font color="#800000">2</font>;<br>
+Connection_Upgrade&nbsp;&nbsp;&nbsp; : Connection_Flags := <font color="#800000">
+4</font>;</tt></p>
+</blockquote>
+<p>This type defines values of the <i>Connection</i> header.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">
@@ -28362,6 +28566,37 @@ Delimiter</b> : Character := '<font color="#FF0000">,</font>'<br>
 <p>This variant specifies keys using a string. The parameter <b>Content</b> 
 lists expected keys. The keys in the string are separated using the character <b>
 Delimiter</b>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Receive_Body_CGI_Validated">
+</a>procedure</font> Receive_Body (<b>Client</b> 
+: <font color="#0000FF">in out</font> HTTP_Client);</tt></p>
+</blockquote>
+<p>This variant allows any key for which the primitive operation 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Validate_Key">Validate_Key</a> 
+returns <font color="#800000"><i>true</i></font>. Note that this behavior is 
+potentially unsafe against attacks because the 
+memory for each key/value pair is allocated dynamically. If this variant is used 
+the default implementation of 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Validate_Key">Validate_Key</a> should be overridden in order to 
+limit the memory use.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.Validate_Key">
+</a>function</font> Validate_Key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+HTTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Key</b>&nbsp;&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function is called when
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Receive_Body_CGI_Validated">
+Receive_Body</a> is used in order to validate a <b>Key</b>. When
+<font color="#800000"><i>true</i></font> is returned the value corresponding to 
+the key is stored. Otherwise the key/value pair is discarded. The default 
+implementation accepts all keys, which is potentially unsafe.</p>
 <h4><a name="16.11.5"></a>16.11.5. Sending short responses</h4>
 <p>The following procedures are used to send short responses, usually indicating 
 errors:</p>
@@ -29697,6 +29932,13 @@ UTF-8 string.</p>
 	<pre>Sun, 17 Feb 2013 21:02:43 +0100</pre>
 </blockquote>
 
+<blockquote>
+<p><tt><font color="#0000FF">function</font> To_Time (<b>Date</b> : String)
+<font color="#0000FF">return</font> Time;</tt></p>
+</blockquote>
+<p>This function converts time represented in HTTP format to Ada.Calendar.Time. 
+Time_Error is propagated on errors.</p>
+
 <h4><a name="16.11.10"></a>16.11.10. SQLite3 database browser</h4>
 
 <p><a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.SQLite_Browser">
@@ -30026,17 +30268,699 @@ Statement</b> : String<br>
 its result set as a part of the content. The execution happens when the content 
 is sent using Send_Body. Typically it is set from the CGI key <i>statement</i>.</p>
 
+<p align="right">
+  <A name="16.12"></A><a href="#16.11"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#20"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.12. HTTP client protocol implementation</H3>
+
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client"></a>The package 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client">GNAT.Sockets.Connection_State_Machine.HTTP_Client</a> provides an implementation of 
+<a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP 1.1</a> client protocol suitable for working with a
+<a href="#GNAT.Sockets.Server.Connections_Server">multiple connections</a> 
+server, e.g. with a single task handling multiple connections. It can also be 
+used with a <a href="#GNAT.Sockets.Server.Pooled.Pooled_Server">server backed by 
+a pool of tasks</a>. The package declares the 
+HTTP connection object type:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.HTTP_Session"></a>type</font> 
+HTTP_Session<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">access</font> Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Response_Length : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp;&nbsp; &nbsp;&nbsp; : Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size&nbsp;&nbsp; &nbsp; : Buffer_Length<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
+State_Machine <font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The discriminants are</p>
+<ul>
+	<li><i>Listener</i> is the server object to handle the connection;</li>
+	<li><i>Response_Length</i> is the maximum length of a HTTP response line. This 
+	limit applies to the response status line and the lines of the response header fields. 
+	It does not limit the response message;</li>
+	<li><i>Input_Size</i> is the input buffer size. It is not required to be 
+	especially large, e.g. to accommodate all request or all request line;</li>
+	<li><i>Output_Size</i> is the output buffer size. The buffer must be large 
+	to accommodate the response status line and its fields. The same buffer is 
+	used for the response body when no chunked transfer is used. For chunked 
+	transfer the buffer size determines the maximum size of the chunk.</li>
+</ul>
+<p align="left">The implementation functions asynchronously as other
+<a href="#GNAT.Sockets.Server.Connection">connection objects</a> on the context 
+of the multiple connections server's task. When used from another task note that 
+the connection might be missing or the object might be already active with a 
+request. The object operations such as Get only initiate a request. Their 
+completion must be awaited. The following primitive operations are provided:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Connect_Parameters_Set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Host</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Sock_Addr_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Max_Connect_No</b> : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure overrides the default implementation of
+<a href="#GNAT.Sockets.Server.Connect_Parameters_Set">Connect_Parameters_Set</a>. 
+It sets the <i>Host</i> header to <b>Host</b>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Connected (<b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session);</tt></p>
+</blockquote>
+<p>The procedure overrides the default implementation of
+<a href="#GNAT.Sockets.Server.Connected">Connected</a>.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Completed"></a><tt>
+<font color="#0000FF">procedure</font> Completed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Method</b>&nbsp; : HTTP_Server.HTTP_Method;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Status</b>&nbsp; : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>
+Message</b> : <font color="#0000FF">access</font> <i>destination of the response message</i> 
+]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>One of the procedures is called upon response message receipt. <b>Method</b> 
+is the HTTP method which was used in the request. <b>Status</b> is the response 
+status code. <b>Message</b> is the object where the message response was stored. 
+If any, it can be of ether of the types:</p>
+<ul>
+	<li><i>Root_Stream_Type'Class</i></li>
+	<li><i>Content_Destination'Class</i></li>
+</ul>
+<p>The default implementation does nothing.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Delete"></a><tt>
+<font color="#0000FF">procedure</font> Delete<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>
+Message</b> : <font color="#0000FF">access</font> <i>destination of the response message</i> 
+]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures issue a request with the DELETE method. <b>Name</b> is the 
+requested URI. <b>Message</b>, when specified, is the container to receive the 
+response's message. It can be of ether of the types:</p>
+<ul>
+	<li><i>Root_Stream_Type'Class</i></li>
+	<li><i>Content_Destination'Class</i></li>
+</ul>
+<p>Use_Error is propagated when there is no connection or else 
+another request is still pending.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get"></a><tt>
+<font color="#0000FF">procedure</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Message</b> :
+<font color="#0000FF">access</font> <i>destination of the response message</i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp; : Stream_Element_Count := 
+<font color="#800000">1</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Stream_Element_Count := 
+<font color="#800000">0</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</tt></p>
+</blockquote>
+<p>These procedures issue a request with the GET method. <b>Name</b> is the 
+requested URI. <b>Message</b> is the container to receive the 
+response's message. It can be of ether of the types:</p>
+<ul>
+	<li><i>Root_Stream_Type'Class</i></li>
+	<li><i>Content_Destination'Class</i></li>
+</ul>
+<p><b>From</b>..<b>To</b> is the range to send as the <i>Range</i> 
+header. When <b>From</b> is greater than <b>To</b> no <i>Range</i> header is 
+sent. Use_Error is propagated when there is no connection or else another 
+request is still pending.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Keep_Alive"></a><tt>
+<font color="#0000FF">function</font> Get_Keep_Alive (<b>Session</b> : 
+HTTP_Session) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if the <i>
+Connection</i> header used in request is <i>keep-alive</i>. Otherwise it is <i>
+close</i>. See also
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Keep_Alive">
+Set_Keep_Alive</a>.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Request_Header"></a>
+<tt>
+<font color="#0000FF">function</font> Get_Request_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> : 
+HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Header</b>&nbsp; 
+: HTTP_Server.Text_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This function returns the value of text header used in requests. When empty 
+string is returned the corresponding header will not be used in the requests. 
+The request header values are set with 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Request_Header">Set_Request_Header</a>. 
+Some of them can be set explicitly upon method invocation, when they are 
+required by the method.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Request_Method"></a>
+<tt>
+<font color="#0000FF">function</font> Get_Request_Method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> : 
+HTTP_Session<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> HTTP_Server.HTTP_Method;</tt></p>
+</blockquote>
+<p>This function returns the method used in the last request. E.g. it is <i>
+HTTP_GET</i> after calling
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get">Get</a>.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Request_Range"></a>
+<tt>
+<font color="#0000FF">procedure</font> Get_Request_Range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> : 
+HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">out</font> Stream_Element_Count;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">out</font> Stream_Element_Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure uses the range (zero-based bytes of content) used in the last 
+request. When <b>From</b> is greater than <b>To</b>, no range was used.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Response_Code"></a>
+<tt>
+<font color="#0000FF">function</font> Get_Response_Code (<b>Session</b> : 
+HTTP_Session) <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>This function returns the status code as retuned in the response to the last 
+request. E.g. 200, 404 etc.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Response_Connection_Flags"></a>
+<tt>
+<font color="#0000FF">function</font> Get_Response_Connection_Flags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> : 
+HTTP_Session<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> HTTP_Server.Connection_Flags;</tt></p>
+</blockquote>
+<p>This function returns the 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.Connection_Flags">value</a> of the <i>Connection</i> header in the last 
+response. Note that when the server returns <i>Connection</i>: <i>close</i>, the 
+client drops the session. In that case client must explicitly reconnect to the 
+server again, e.g. by calling <a href="#GNAT.Sockets.Server.Connect">Connect</a>.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Response_Header"></a>
+<tt>
+<font color="#0000FF">function</font> Get_Response_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> : HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Header</b>&nbsp; 
+: Text_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns the 
+value of the header as returned in the last server response. For headers not 
+specified in the response the result is an empty string.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Response_Reason"></a>
+<tt>
+<font color="#0000FF">function</font> Get_Response_Reason (<b>Session</b> : HTTP_Session)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns the 
+reason text from the last server response, e.g. &quot;OK&quot;.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Response_Version"></a>
+<tt>
+<font color="#0000FF">function</font> Get_Response_Version (<b>Session</b> : HTTP_Session)
+<font color="#0000FF">return</font> HTTP_Server.HTTP_Version;</tt></p>
+</blockquote>
+<p>This function returns the 
+protocol version number as given in the last server response. Typically, it is 
+1.1.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Head"></a><tt>
+<font color="#0000FF">procedure</font> Head<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp; : Stream_Element_Count := 
+<font color="#800000">1</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Stream_Element_Count := 
+<font color="#800000">0</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</tt></p>
+</blockquote>
+<p>This procedures issues a request with the HEAD method. <b>Name</b> is the 
+requested URI. <b>From</b>..<b>To</b> is the range to send as the <i>Range</i> 
+header. When <b>From</b> is greater than <b>To</b> no <i>Range</i> header is 
+sent. Use_Error is propagated when there is no connection or else another 
+request is still pending.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Initialize"></a><tt>
+<font color="#0000FF">procedure</font> Initialize (<b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session);</tt></p>
+</blockquote>
+<p>This procedure must be called from the new implementation if overridden.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Is_Active"></a>
+<tt>
+<font color="#0000FF">function </font>Is_Active (<b>Session</b> : HTTP_Session)
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if there is a 
+request pending on the connection.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Message_Store_Error"></a>
+<tt>
+<font color="#0000FF">procedure </font>Message_Store_Error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Stream</b>&nbsp; : <font color="#0000FF">in out</font> Root_Stream_Type'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Error</b>&nbsp;&nbsp; : Exception_Occurrence<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure </font>Message_Store_Error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :<font color="#0000FF"> 
+in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content</b> :<font color="#0000FF"> in out</font> 
+HTTP_Server.Content_Destination'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Error</b>&nbsp;&nbsp; : Exception_Occurrence<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>One of these procedures is called on an error occurred during storing the 
+response data. The method caused the error can be obtained using 
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Get_Request_Method">Get_Request_Method</a>. The default implementations raise Data_Error exception which 
+causes the connection to be dropped.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Options"></a><tt>
+<font color="#0000FF">procedure</font> Options<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Message</b> :
+<font color="#0000FF">access</font> <i>destination of the response message</i> ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</tt></p>
+</blockquote>
+<p>These procedures issue a request with the OPTIONS method. <b>Name</b> is the 
+requested URI. <b>Message</b> is the container to receive the 
+response's message. It can be of ether of the types:</p>
+<ul>
+	<li><i>Root_Stream_Type'Class</i></li>
+	<li><i>Content_Destination'Class</i></li>
+</ul>
+<p>Use_Error is propagated when there is no connection or else another 
+request is still pending.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Post"></a><tt>
+<font color="#0000FF">procedure</font> Post<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content</b> : <i>source of the request body</i>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Length</b>&nbsp; 
+: Stream_Element_Count; ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : <font color="#0000FF">access</font> <i>destination of the response 
+message</i>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>MIME</b>&nbsp;&nbsp;&nbsp; 
+: String := Post_MIME<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</tt></p>
+</blockquote>
+<p>These procedures issue a request with the POST method. <b>Name</b> is the 
+requested URI. The request body is specified by the parameter Content. It can be 
+one of the following types:</p>
+<ul>
+	<li><i>String</i></li>
+	<li><i>Stream_Element_Array</i></li>
+	<li><i>Root_Stream_Type'Class</i>. In this case when <b>Length</b> is 
+	present, it is the total number of bytes in the body to take from the 
+	stream and a plain body transfer is used. When <b>Length</b> is absent, the body is sent using 
+	a chunked 
+	transfer;</li>
+	<li><i>Content_Source'Class</i>. When <b>Length</b> is present, it is the 
+	total number of bytes in the body to take from and a plain body transfer is 
+	used. When <b>Length</b> 
+	is absent, the body is sent using a chunked transfer.</li>
+</ul>
+<p>&nbsp;<b>Message</b> is the container to receive the 
+response's message. It can be of ether of the types:</p>
+<ul>
+	<li><i>Root_Stream_Type'Class</i></li>
+	<li><i>Content_Destination'Class</i></li>
+</ul>
+<p>The parameter <b>MIME</b> is the value to be used with the <i>Content-Type</i> 
+header. By default it is <i>application/x-www-form-urlencoded</i>. Use_Error is propagated when there is no connection or else another 
+request is still pending.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Put"></a><tt>
+<font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content</b> : <i>source of the request body</i>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Length</b>&nbsp; 
+: Stream_Element_Count; ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : <font color="#0000FF">access</font> <i>destination of the response 
+message</i>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>MIME</b>&nbsp;&nbsp;&nbsp; 
+: String := Post_MIME<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</tt></p>
+</blockquote>
+<p>These procedures issue a request with the PUT method. <b>Name</b> is the 
+requested URI. The request body is specified by the parameter Content. It can be 
+one of the following types:</p>
+<ul>
+	<li><i>String</i></li>
+	<li><i>Stream_Element_Array</i></li>
+	<li><i>Root_Stream_Type'Class</i>. In this case when <b>Length</b> is 
+	present, it is the total number of bytes in the body to take from the 
+	stream and a plain body transfer is used. When <b>Length</b> is absent, the body is sent using 
+	a chunked 
+	transfer;</li>
+	<li><i>Content_Source'Class</i>. When <b>Length</b> is present, it is the 
+	total number of bytes in the body to take from and a plain body transfer is 
+	used. When <b>Length</b> 
+	is absent, the body is sent using a chunked transfer.</li>
+</ul>
+<p>&nbsp;<b>Message</b> is the container to receive the 
+response's message. It can be of ether of the types:</p>
+<ul>
+	<li><i>Root_Stream_Type'Class</i></li>
+	<li><i>Content_Destination'Class</i></li>
+</ul>
+<p>The parameter <b>MIME</b> is the value to be used with the <i>Content-Type</i> 
+header. By default it is <i>text/html; charset=utf-8</i>. Use_Error is propagated when there is no connection or else another 
+request is still pending.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Receive_Header_Tracing"></a>
+<tt>
+<font color="#0000FF">procedure</font> Receive_Header_Tracing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enable</b>&nbsp; : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure enables or disables response header tracing.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Receive_Message_Tracing"></a>
+<tt>
+<font color="#0000FF">procedure</font> Receive_Message_Tracing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enable</b>&nbsp; : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure enables or disables response message tracing.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Keep_Alive"></a>
+<tt>
+<font color="#0000FF">procedure</font> Set_Keep_Alive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enable</b>&nbsp; : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>Normally when a query is completed the client disconnects from the server. 
+The connection object is collected. This behavior is matched by the request 
+header <i>Connection</i> set to <i>close</i>. Alternatively the client may stay 
+connected in which case the header is set to <i>keep-alive</i>. This procedure 
+is used to change the behavior. Note that the server may request dropping 
+connection anyway.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Request_Date"></a>
+<tt>
+<font color="#0000FF">procedure</font> Set_Request_Date<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enable</b>&nbsp; : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure enables or disables the header <i>Date</i> to be used with the 
+requests. By default the <i>Date</i> header is enabled.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Request_Header"></a>
+<tt>
+<font color="#0000FF">procedure</font> Set_Request_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Header</b>&nbsp; : HTTP_Server.Text_Header;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Value</b>&nbsp;&nbsp; : String := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This procedure sets the value of a text header used in requests. When empty 
+string is set the corresponding header will not be used in the requests.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Request_If_Modified_Since"></a>
+<tt>
+<font color="#0000FF">procedure</font> Set_Request_If_Modified_Since<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>
+Date&nbsp; </b>&nbsp; : Time ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure enables or disables the header <i>If-Modified-Since</i> to be 
+used with the requests. By default the header is disabled. To enable the header 
+the parameter
+<b>Date</b> must be specified, which will be the header value. To disable the 
+header <b>Date</b> must be omitted. Time_Error is propagated when <b>Date</b> is 
+invalid.&nbsp; </p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Request_If_Unmodified_Since"></a>
+<tt>
+<font color="#0000FF">procedure</font> Set_Request_If_Unmodified_Since<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>
+Date&nbsp; </b>&nbsp; : Time ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure enables or disables the header <i>If-Unmodified-Since</i> to 
+be used with the requests. By default the header is disabled. To enable the 
+header the parameter
+<b>Date</b> must be specified, which will be the header value. To disable the 
+header <b>Date</b> must be omitted. Time_Error is propagated when <b>Date</b> is 
+invalid.&nbsp; </p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Request_If_Unmodified_Since0"></a>
+<tt>
+<font color="#0000FF">procedure</font> Set_Request_If_Unmodified_Since<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>
+Date&nbsp; </b>&nbsp; : Time ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure enables or disables the header <i>If-Unmodified-Since</i> to 
+be used with the requests. By default the header is disabled. To enable the 
+header the parameter
+<b>Date</b> must be specified, which will be the header value. To disable the 
+header <b>Date</b> must be omitted. Time_Error is propagated when <b>Date</b> is 
+invalid.&nbsp; </p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Request_If_Unmodified_Since1"></a>
+<tt>
+<font color="#0000FF">procedure</font> Trace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b> :
+<font color="#0000FF">in out</font> HTTP_Session;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is used to write trace.</p>
+
+<h4><a name="16.12.1"></a>16.12.1. Signaled client</h4>
+
+<p><a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled"></a>The package
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled">
+GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled</a> provides 
+a client to use with an external task. The client
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.HTTP_Session">
+HTTP_Session</a> is driven by the task of the multiple connection server. The 
+task can service more than one socket and one connection. When operating in this 
+mode <a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.HTTP_Session">
+HTTP_Session</a> should be extended to implement higher level logic from 
+call-backs such as <a href="#GNAT.Sockets.Server.Connected">Connected</a> and
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Completed">Completed</a>. 
+A more straightforward would be non-busy waiting for a connection to be 
+established and a pending request to complete in some independent task as 
+implemented in this package:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.HTTP_Session.Signaled.HTTP_Session_Signaled"></a>type</font> 
+HTTP_Session_Signaled <font color="#0000FF">is new </font>HTTP_Session <font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>This is the type of a client to used from an external task. Note that when 
+created the object must be referenced using a handle in order to prevent its 
+premature destruction (see <a href="#memory-management-of-connection-objects">memory management of 
+connection objects</a>).</p>
+<p align="left">The implementation functions asynchronously as other
+<a href="#GNAT.Sockets.Server.Connection">connection objects</a> on the context 
+of the multiple connections server's task. When used from another task note that 
+the connection might be missing or the object might be already active with a 
+request. The object operations such as Get only initiate a request. Their 
+completion must be awaited. The following primitive operations are provided:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled.Connect">
+</a>procedure</font> Connect<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> HTTP_Session_Signaled;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Host</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Port</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Port_Type := <font color="#800000">80</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Max_Connect_No</b> : Positive&nbsp; := Positive'Last;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Timeout</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Duration&nbsp; := 
+Duration'Last<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is a synchronous variant of asynchronous
+<a href="#GNAT.Sockets.Server.Connect">Connect</a>. Unlike the latter it awaits 
+for the connection to be established. <b>Timeout</b> is the connection timeout. 
+Timeout_Error is propagated when the timeout expires. Note that the server may 
+continue connection attempts in background. Status_Error is propagated when the 
+number of attempts was exhausted. Other errors, e.g. Socket_Error indicate I/O 
+errors.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled.Wait">
+</a>procedure</font> Wait<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Session</b>&nbsp;&nbsp; :
+<font color="#0000FF">in out</font> HTTP_Session_Signaled;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Connected</b> : Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Timeout</b>&nbsp;&nbsp; : Duration := Duration'Last<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure awaits the session to become ready for another request when <b>
+Connected</b> is <i><font color="#800000">true</font></i>. If the connection 
+gets lost an exception is propagated as described below. When <b>Connected</b> 
+is <i><font color="#800000">false</font></i> the procedure waits for any pending 
+request to complete, the connection can be dropped without raising an exception.</p>
+<ul>
+	<li>When the client is used in a keep-alive mode (persistent connections),
+	<b>Connected</b> should be <font color="#800000"><i>true</i></font>, and 
+	after getting an exception
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled.Connect">
+	Connect</a> is called.</li>
+	<li>When connection is not persistent.
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Set_Keep_Alive">
+	Set_Keep_Alive</a> is used with <b>Enable</b> set to <i>
+	<font color="#800000">false</font></i>. <b>Connected</b> is <i>
+	<font color="#800000">false</font></i>
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled.Connect">
+	Connect</a> is called before each new request.</li>
+</ul>
+<p><b>Timeout</b> is the connection timeout. 
+Timeout_Error is propagated when the timeout expires. Note that the server may 
+continue connection attempts in background. Status_Error is propagated when the 
+number of attempts was exhausted. Other errors, e.g. Socket_Error indicate I/O 
+errors.</p>
 <hr>
 <p align="right">
-<a name="17"></a><a href="#16.9"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#20"><IMG src="index.gif"
+<a name="17"></a><a href="#16.12"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#20"><IMG src="index.gif"
  alt="[TOC]" width="29" height="29"></A><a href="#17.1"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H2>17. Packages</H2>
-<p>The root directory contains only the packages required for software use.
-Tests and examples are located in the subdirectory <i>test</i>.</p>
-<p align="right">
+<H2>17. Packages<p align="right">
   <A name="17.1"></A><a href="#17"><IMG src="prev.gif" alt="[Back]" width="29"
-      height="29"></a><A href="#20"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17.2"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+      height="29"></a><A href="Set_Request_If_Modified_Sincerc="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17.2"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>17.1. Source packages</H3>
 <p>The following table describes the packages and other compilation units provided by the software.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0" style="border-left-width: 0px">
@@ -30206,6 +31130,15 @@ Block_Streams</a></TD>
   </tr>
 	<tr>
     <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="10" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
+	Handles</TD>
+    <TD>Instantiation of <a href="#Object.Handle">Object.Handle</a> with
+	<a href="#GNAT.Sockets.Server.Connection">Connection</a> type</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
     <TD colspan="10" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
     <TD colspan="8" style="border-left-style: solid; border-left-width: 1px">
@@ -30228,7 +31161,7 @@ Block_Streams</a></TD>
 	&nbsp;</TD>
     <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#GNAT.Sockets.Server.Secure.Anonymous">Anonymous</a></TD>
-    <TD>&nbsp;</TD>
+    <TD>An implementation of connection factory for anonymous authentication</TD>
   </tr>
 	<tr>
     <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
@@ -30238,7 +31171,7 @@ Block_Streams</a></TD>
 	&nbsp;</TD>
     <TD colspan="6" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#GNAT.Sockets.Server.Secure.X509">X509</a></TD>
-    <TD>Secure TLS connection server</TD>
+    <TD>An implementation of connection factory for X509 authentication</TD>
   </tr>
 	<tr>
     <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
@@ -30448,6 +31381,29 @@ Block_Streams</a></TD>
     <TD colspan="3" style="border-bottom-style:solid; border-bottom-width:1px"><a href="#GNAT.Sockets.Connection_State_Machine.Little_Endian.Unsigneds">
 	Unsigneds</a></TD>
     <TD>Unsigned modular integers</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="13" style="border-left-style: solid; border-left-width: 1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px">
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server">HTTP_Server</a></TD>
+    <TD>An implementation of HTTP server</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="13" style="border-left-style: solid; border-left-width: 1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px">
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client">HTTP_Client</a></TD>
+    <TD>An implementation of HTTP client</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8" bgcolor="#C0C0C0" style="border-style:none; border-width:medium; ">&nbsp;</TD>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px; border-top-style:solid; border-top-width:1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="4" style="border-top-style:solid; border-top-width:1px">
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled">
+	Signaled</a></TD>
+    <TD>A HTTP client to use with an external task</TD>
   </tr>
 	<tr>
     <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
@@ -31316,6 +32272,12 @@ Block_Streams</a></TD>
     <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
   </tr>
 	<tr>
+    <TD bgcolor="#FFFF99">test_echo_client_async</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Echo client test using multiple connections server</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
+	<tr>
     <TD bgcolor="#FFFF99">test_echo_server</TD>
     <TD align="center" bgcolor="#FFFF99">yes</TD>
     <TD bgcolor="#FFFF99">Echo server test</TD>
@@ -31355,6 +32317,12 @@ Block_Streams</a></TD>
     <TD bgcolor="#FFFF99">test_handles</TD>
     <TD align="center" bgcolor="#FFFF99">yes</TD>
     <TD bgcolor="#FFFF99">Test for handles to objects</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
+  <tr>
+    <TD bgcolor="#FFFF99">test_http_client</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Test for HTTP client</TD>
     <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
   </tr>
   <tr>
@@ -32148,11 +33116,18 @@ The following versions were tested with the compilers:</i>
   <li><i>GNAT 4.9.0</i></li>
   </ul>
 <P>
-Changes (2015) to the version 4.5:<ul>
+Changes () to the version 4.6:<ul>
+	<li>GNAT.Sockets.Server supports outgoing connections as well;</li>
+	<li>Stack_Storage.Deallocate_All bug fix.</li>
+	</ul>
+<P>
+Changes (2 April 2015) to the version 4.5:<ul>
 	<li>Receiving WebSocked messages in chunks was added;</li>
 	<li>Shutdown was added to connection object to drop connection explicitly;</li>
 	<li>Support for atomic access to 64-bit Stream_Element_Offset on 32-bit 
-	platforms.</li>
+	platforms;</li>
+	<li>Added support for custom validation of CGI keys;</li>
+	<li>ARMv7 (AKA armhf) support.</li>
 	</ul>
 <P>
 Changes (17 January 2015) to the version 4.4:<ul>
@@ -32857,7 +33832,7 @@ selector</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.8">16.8. Variable-length arrays</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.9">16.9. Expected sequence</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.10">16.10. Server with a pool of worker tasks</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#16.11">16.11. HTTP protocol implementation</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.11">16.11. HTTP server protocol implementation</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.1">16.11.1. Common operations</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.2">16.11.2. Method callbacks</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.3">16.11.3. Request header fields</a><br>
@@ -32867,7 +33842,9 @@ selector</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.7">16.11.7. Sending response bodies</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.8">16.11.8. WebSockets</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.9">16.11.9. Utility routines</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.10">16.11.10. SQLite3 database browser</a><hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.10">16.11.10. SQLite3 database browser</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.12">16.12. HTTP client protocol implementation</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.12.1">16.12.1. Signaled client</a><hr>
 <b><big><big>17</big></big></b>&nbsp;<a href="#17"><big>Packages</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.1">17.1. Source packages</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.2">17.2. Tests and examples</a><br>

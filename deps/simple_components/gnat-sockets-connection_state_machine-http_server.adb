@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  21:26 01 Feb 2015  --
+--                                Last revision :  12:25 15 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,7 +26,6 @@
 --____________________________________________________________________--
 
 with Ada.Characters.Handling;  use Ada.Characters.Handling;
-with Ada.Strings.Maps;         use Ada.Strings.Maps;
 with Ada.Tags;                 use Ada.Tags;
 with GNAT.SHA1;                use GNAT.SHA1;
 with Interfaces;               use Interfaces;
@@ -46,16 +45,9 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    use Content_Ranges;
    use GNAT.Sockets.Server.Stream_Element_Offset_Edit;
 
-   CRLF : constant String := (Character'Val (13), Character'Val (10));
-
    Block_Size           : constant := 1024;
    Default_Response     : constant String := "Not implemented";
    Bad_Request_Response : constant String := "Bad request";
-   Lower                : constant Character_Mapping :=
-                                   To_Mapping
-                                   (  "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                                      "abcdefghijklmnopqrstuvwxyz"
-                                   );
 
    function From_Digest (Data : Message_Digest) return String is
       Result  : String (1..Data'Length / 2);
@@ -269,7 +261,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       end if;
       begin
          case Integer'
-              (  Value (Get_Header (This, Sec_WebSocket_Version))
+              (  Value (Get_Header (This, Sec_WebSocket_Version_Header))
               )  is
             when 13 =>
                null;
@@ -292,7 +284,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             );
             return False;
       end;
-      case Get_Header (This, Sec_WebSocket_Key)'Length is
+      case Get_Header (This, Sec_WebSocket_Key_Header)'Length is
          when 16 =>
             null;
          when 0 =>
@@ -640,18 +632,24 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   (  From_Digest
                      (  Digest
                         (  To_Base64
-                           (  Get_Header (Client, Sec_WebSocket_Key)
-                           )
+                           (  Get_Header
+                              (  Client,
+                                 Sec_WebSocket_Key_Header
+                           )  )
                         &  "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
                   )  )  )
                &  CRLF
             )  );
             if Result.Protocols = "" then
-               if Client.Headers (Sec_WebSocket_Protocol) /= null then
+               if Client.Headers (Sec_WebSocket_Protocol_Header) /= null
+               then
                   Send -- Copy protocols
                   (  Client,
                      (  "Sec-WebSocket-Protocol: "
-                     &  Get_Header (Client, Sec_WebSocket_Protocol)
+                     &  Get_Header
+                        (  Client,
+                           Sec_WebSocket_Protocol_Header
+                        )
                      &  CRLF
                   )  );
                end if;
@@ -953,7 +951,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          if Client.Headers (Header) /= null then
             return; -- The value is already set
          end if;
-         if Header = Sec_WebSocket_Key then
+         if Header = Sec_WebSocket_Key_Header then
             declare
                Key : String := From_Base64 (Value);
             begin
@@ -1023,29 +1021,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             Client.If_Unmodified_Since := To_Time (Value);
             Client.Specific (If_Unmodified_Since_Header) := True;
          when Connection_Header =>
-            declare
-               procedure Add (Field : String) is
-                  Index : Integer := Locate (Connections, Trim (Field));
-               begin
-                  if Index > 0 then
-                     Client.Connection := Client.Connection
-                                       or GetTag (Connections, Index);
-                  end if;
-               end Add;
-               Start : Integer := Value'First;
-            begin
-               for Pointer in Value'Range loop
-                  if Value (Pointer) = ',' then
-                     if Start <= Pointer - 1 then
-                        Add (Value (Start..Pointer - 1));
-                     end if;
-                     Start := Pointer + 1;
-                  end if;
-               end loop;
-               if Start <= Value'Last then
-                  Add (Value (Start..Value'Last));
-               end if;
-            end;
+            Client.Connection := To_Flags (Value);
          when Range_Header =>
             declare
                Pointer : Integer := Value'First;
@@ -1121,6 +1097,24 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             end;
       end case;
    end Header_Received;
+
+   function Image (Header : Request_Header) return String is
+      Result     : String  := Request_Header'Image (Header);
+      Capitalize : Boolean := True;
+   begin
+      for Index in Result'First..Result'Last - 7 loop
+         if Result (Index) = '_' then
+            Result (Index) := '-';
+            Capitalize := True;
+         elsif Capitalize then
+            Result (Index) := To_Upper (Result (Index));
+            Capitalize := False;
+         else
+            Result (Index) := To_Lower (Result (Index));
+         end if;
+      end loop;
+      return Result (Result'First..Result'Last - 7);
+   end Image;
 
    procedure Initialize (Client : in out HTTP_Client) is
    begin
@@ -1749,22 +1743,39 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             when CGI_Key =>
                if Data (Index) = '=' then
                   begin
-                     Destination.Offset :=
-                        Locate
-                        (  Destination.Keys.all,
-                           From_Escaped
-                           (  Value (Value'First..Last),
-                              True
-                        )  );
-                     if (  GetTag
+                     declare
+                        Key : constant String :=
+                                 From_Escaped
+                                 (  Value (Value'First..Last),
+                                    True
+                                 );
+                     begin
+                        Destination.Offset :=
+                           Locate (Destination.Keys.all, Key);
+                        if Destination.Offset > 0 then
+                           if (  GetTag
+                                 (  Destination.Keys.all,
+                                    Destination.Offset
+                                 )
+                              /= null
+                              )
+                           then
+                              Destination.Offset := 0;
+                           end if;
+                        elsif (  Destination.Client.Validate_CGI
+                              and then
+                                 Validate_Key
+                                 (  Destination.Client.all,
+                                    Key
+                              )  )  then
+                           Add
                            (  Destination.Keys.all,
+                              Key,
+                              null,
                               Destination.Offset
-                           )
-                        /= null
-                        )
-                     then
-                        Destination.Offset := 0;
-                     end if;
+                           );
+                        end if;
+                     end;
                   exception
                      when others =>
                         Destination.Offset := 0;
@@ -1887,11 +1898,12 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       for Offset in 1..GetSize (Content.all) loop
          Replace (Content.all, Offset, null);
       end loop;
-      Client.Destination := Client.CGI'Unchecked_Access;
-      Client.CGI.Keys    := Content.all'Unchecked_Access;
-      Client.CGI.State   := CGI_Key;
-      Client.CGI.Offset  := 0;
-      Client.Line.Last   := 0;
+      Client.Destination  := Client.CGI'Unchecked_Access;
+      Client.CGI.Keys     := Content.all'Unchecked_Access;
+      Client.CGI.State    := CGI_Key;
+      Client.CGI.Offset   := 0;
+      Client.Line.Last    := 0;
+      Client.Validate_CGI := False;
    end Receive_Body;
 
    procedure Receive_Body
@@ -1910,11 +1922,23 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             Replace (Client.CGI.Map, Content (Start..Index), null);
          end if;
       end loop;
-      Client.Destination := Client.CGI'Unchecked_Access;
-      Client.CGI.Keys    := Client.CGI.Map'Unchecked_Access;
-      Client.CGI.State   := CGI_Key;
-      Client.CGI.Offset  := 0;
-      Client.Line.Last   := 0;
+      Client.Destination  := Client.CGI'Unchecked_Access;
+      Client.CGI.Keys     := Client.CGI.Map'Unchecked_Access;
+      Client.CGI.State    := CGI_Key;
+      Client.CGI.Offset   := 0;
+      Client.Line.Last    := 0;
+      Client.Validate_CGI := False;
+   end Receive_Body;
+
+   procedure Receive_Body (Client : in out HTTP_Client) is
+   begin
+      Erase (Client.CGI.Map);
+      Client.Destination  := Client.CGI'Unchecked_Access;
+      Client.CGI.Keys     := Client.CGI.Map'Unchecked_Access;
+      Client.CGI.State    := CGI_Key;
+      Client.CGI.Offset   := 0;
+      Client.Line.Last    := 0;
+      Client.Validate_CGI := True;
    end Receive_Body;
 
    procedure Received
@@ -3426,6 +3450,32 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       end;
    end To_Escaped;
 
+   function To_Flags (Value : String) return Connection_Flags is
+      Result : Connection_Flags := 0;
+      Start  : Integer := Value'First;
+
+      procedure Add (Field : String) is
+         Index : Integer := Locate (Connections, Trim (Field));
+      begin
+         if Index > 0 then
+            Result := Result or GetTag (Connections, Index);
+         end if;
+      end Add;
+   begin
+      for Pointer in Value'Range loop
+         if Value (Pointer) = ',' then
+            if Start <= Pointer - 1 then
+               Add (Value (Start..Pointer - 1));
+            end if;
+            Start := Pointer + 1;
+         end if;
+      end loop;
+      if Start <= Value'Last then
+         Add (Value (Start..Value'Last));
+      end if;
+      return Result;
+   end To_Flags;
+
    function To_HTML (Text : String) return String is
       use Strings_Edit.UTF8;
       Length  : Natural := 0;
@@ -3719,7 +3769,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          when End_Error =>
             Raise_Exception
             (  Data_Error'Identity,
-               "Wrong or missing week day"
+               "Wrong or missing week day: " & Date (Pointer..Date'Last)
             );
       end;
       if Date (Pointer) = ',' then
@@ -3781,9 +3831,30 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       Trace
       (  Client.Listener.Factory.all,
-         Image (Get_Client_Address (Client)) & ' ' &  Message
+         Image (Get_Client_Address (Client)) & ' ' & Message
       );
    end Trace;
+
+   function Validate_Key
+            (  Client : HTTP_Client;
+               Key    : String
+            )  return Boolean is
+   begin
+      return True;
+   end Validate_Key;
+
+   function Value (Text : String) return Header_Value is
+      Index : Integer := Locate (Request_Headers, Text);
+   begin
+      if Index > 0 then
+         return
+         (  None   => False,
+            Header => GetTag (Request_Headers, Index)
+         );
+      else
+         return (None => True);
+      end if;
+   end Value;
 
    procedure WebSocket_Blocking_Send
              (  Client : in out HTTP_Client'Class;
@@ -4336,12 +4407,12 @@ begin
    Add (Request_Headers, "Range",             Range_Header);
    Add (Request_Headers, "Referer",           Referer_Header);
    Add (Request_Headers, "Sec-WebSocket-Extensions",
-                                       Sec_WebSocket_Extensions);
-   Add (Request_Headers, "Sec-WebSocket-Key", Sec_WebSocket_Key);
+                                       Sec_WebSocket_Extensions_Header);
+   Add (Request_Headers, "Sec-WebSocket-Key", Sec_WebSocket_Key_Header);
    Add (Request_Headers, "Sec-WebSocket-Protocol",
-                                       Sec_WebSocket_Protocol);
+                                       Sec_WebSocket_Protocol_Header);
    Add (Request_Headers, "Sec-WebSocket-Version",
-                                       Sec_WebSocket_Version);
+                                       Sec_WebSocket_Version_Header);
    Add (Request_Headers, "TE",                TE_Header);
    Add (Request_Headers, "Trailer",           Trailer_Header);
    Add (Request_Headers, "Transfer-Encoding", Transfer_Encoding_Header);

@@ -482,9 +482,12 @@ package body Gnoga.Server.Connection is
             Send_Status_Line (Client, 200, "OK");
             Send_Date (Client);
             Send (Client,
-                  "Cache-Control: no-cache, no-store, must-revalidate" & CRLF);
-            Send (Client, "Pragma: no-cache" & CRLF);
-            Send (Client, "Expires: 0" & CRLF);
+                  "Cache-Control: no-cache, no-store, must-revalidate" &
+                    Gnoga.Server.Connection.Common.CRLF);
+            Send (Client, "Pragma: no-cache" &
+                    Gnoga.Server.Connection.Common.CRLF);
+            Send (Client, "Expires: 0" &
+                    Gnoga.Server.Connection.Common.CRLF);
             Send_Connection (Client, Persistent => True);
             Send_Server (Client);
 
@@ -1783,7 +1786,8 @@ package body Gnoga.Server.Connection is
          end if;
 
          if Socket.Content.Connection_Type = WebSocket then
-            Socket.Content.Buffer.Add (Script & CRLF);
+            Socket.Content.Buffer.Add (Script &
+                                         Gnoga.Server.Connection.Common.CRLF);
          elsif Socket.Content.Connection_Type = Long_Polling then
             Socket.Content.Buffer.Add
               ("<script>" & Script & "</script>");

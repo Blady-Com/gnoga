@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  19:55 16 Mar 2015  --
+--                                Last revision :  12:25 15 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -48,6 +48,16 @@ package GNAT.Sockets.Server is
            Trace_Decoded  -- Trace plain data
         );
 --
+-- Session_State -- Of a connection
+--
+   type Session_State is
+        (  Session_Down,         -- Not in use
+           Session_Disconnected, -- Not connected
+           Session_Connecting,   -- Pending connection to a remote host
+           Session_Connected,    -- Connected
+           Session_Busy          -- Pending modal operation
+        );
+--
 -- Connection -- To derive custom object handling a client connection
 --
 --    Input_Size  - Input buffer size
@@ -68,7 +78,7 @@ package GNAT.Sockets.Server is
 --
 -- Connections_Factory -- Factory of client connection objects
 --
-   type Connections_Factory is abstract
+   type Connections_Factory is
       new Ada.Finalization.Limited_Controlled with private;
 --
 -- Encoder -- The transport layer, connection is encoded/ciphered
@@ -114,12 +124,82 @@ package GNAT.Sockets.Server is
    function Available_To_Send (Client : Connection)
       return Stream_Element_Count;
 --
--- Connected -- The first operation called on connection object
+-- Connect -- Connect to a server
+--
+--    Listener       - The server object
+--    Client         - The client connection object
+--    Host           - The host name or IP address
+--    Port           - The port number
+--    Max_Connect_No - Maximal number of connection attempts
+--    Overlapped     - The overlapped read size (full-duplex by default)
+--
+-- This procedure  is used  to create  a client  connection to a server.
+-- This is opposite to accepting connection. Connection is asynchronous.
+-- When successful  Connected  is called  as usual.  When the connection
+-- is dropped  Disconnect is called and  an attempt made  to  reconnect.
+-- Note that the connection object is passed by pointer an maintained by
+-- Listener.
+--
+-- Exceptions :
+--
+--    Socket_Error - Socket error
+--    Use_Error    - Client is already in use
+--
+   procedure Connect
+             (  Listener       : in out Connections_Server;
+                Client         : Connection_Ptr;
+                Host           : String;
+                Port           : Port_Type;
+                Max_Connect_No : Positive := Positive'Last;
+                Overlapped     : Stream_Element_Count :=
+                                 Stream_Element_Count'Last
+             );
+--
+-- Connect_Error -- Failed to connect
+--
+--    Client - The client connection object
+--    Error  - The socket error
+--
+-- This  procedure  is called on a connection  object  if  an attempt to
+-- connect to a remote host initiated by Connect failed. Next connection
+-- attempt  will be made after  return from the procedure.  The  default
+-- implementation does nothing.
+--
+-- Exceptions :
+--
+--    Connection_Error - Stop attempts and collect the object
+--
+   procedure Connect_Error
+             (  Client : in out Connection;
+                Error  : Error_Type
+             );
+--
+-- Connect_Parameters_Set -- Failed to connect
+--
+--    Client         - The client connection object
+--    Host           - Remote host name or address as given in Connect
+--    Address        - Remote host address
+--    Max_Connect_No - Maximal number of connection attempts
+--
+-- This  procedure  is called when connection  parameters are set for an
+-- outgoing  connection.  The  default  implementation does nothing.  If
+-- overridden,  the new implementation should probably call the parent's
+-- implementation.
+--
+   procedure Connect_Parameters_Set
+             (  Client         : in out Connection;
+                Host           : String;
+                Address        : Sock_Addr_Type;
+                Max_Connect_No : Positive
+             );
+--
+-- Connected -- The first operation called on a connection object
 --
 --    Client - The client connection object
 --
 -- The default  implementation  does nothing.  Typically  the server may
--- set some socket options here.
+-- set  some  socket options here.  The  implementation  must  call  the
+-- parent's implementation of this procedure from the overriding.
 --
 -- Exceptions :
 --
@@ -140,7 +220,7 @@ package GNAT.Sockets.Server is
 -- connection  object and returns a pointer to it.  Note that  it is the
 -- server object responsibility to free the object.  The  implementation
 -- may deploy client  filtering based on the address From and/or  number
--- of connections.
+-- of connections. The default implementation returns null.
 --
 -- Returns :
 --
@@ -150,7 +230,7 @@ package GNAT.Sockets.Server is
             (  Factory  : access Connections_Factory;
                Listener : access Connections_Server'Class;
                From     : Sock_Addr_Type
-            )  return Connection_Ptr is abstract;
+            )  return Connection_Ptr;
 --
 -- Create_Transport -- Client connection object
 --
@@ -158,11 +238,11 @@ package GNAT.Sockets.Server is
 --    Listener - The server object
 --    Client   - The client for which the transport is created
 --
--- This function is  called after  accepting connection from a client to
--- setup  transport  if  enoding/ciphering  is  required.  The  returned
--- object is owned by the server, it is finalized and freed when no more
--- used.   The  default  implementation  returns  null  to  indicate  no
--- encoding.
+-- This function is  called after  accepting connection from a client or
+-- successfull connection  to a server to setup  transport  if  enoding/
+-- ciphering is required. The returned object is owned by the server, it
+-- is finalized and freed when no more used.  The default implementation
+-- returns  null to indicate no encoding.
 --
 -- Returns :
 --
@@ -174,12 +254,29 @@ package GNAT.Sockets.Server is
                Client   : access Connection'Class
             )  return Encoder_Ptr;
 --
+-- Disconnected -- Client disconnection notification
+--
+--    Client - The client object
+--
+-- The  default  implementation  does nothing.  If  overridden  the  new
+-- implementation shall call the parent's one.
+--
+-- Exceptions :
+--
+--    Connection_Error - Do not reconnect
+--
+   procedure Disconnected (Client : in out Connection);
+--
 -- Disconnected -- Server notification about client disconnection
 --
 --    Listener - The server object
 --    Client   - The client object being deleted
 --
 -- The server may do some bookkeeping here.
+--
+-- Exceptions :
+--
+--    Connection_Error - Do not reconnect
 --
    procedure Disconnected
              (  Listener : in out Connections_Server;
@@ -268,7 +365,18 @@ package GNAT.Sockets.Server is
    function Get_IO_Timeout (Factory : Connections_Factory)
       return Duration;
 --
--- Get_Occurrence -- Get save client error
+-- Get_Session_State -- Session state
+--
+--    Client - The client connection object
+--
+-- Returns :
+--
+--    Current state
+--
+   function Get_Session_State (Client : Connection)
+      return Session_State;
+--
+-- Get_Occurrence -- Get saved client error
 --
 --    Client - The client connection object
 --    Source - Saved exception occurence
@@ -362,6 +470,31 @@ package GNAT.Sockets.Server is
 --
    procedure Initialize (Listener : in out Connections_Server);
 --
+-- Is_Connected -- Connection status
+--
+--    Client - The client connection object
+--
+-- Returns :
+--
+--    True if the client is connected
+--
+   function Is_Connected (Client : Connection) return Boolean;
+--
+-- Is_Down -- Connection object status
+--
+--    Client - The client connection object
+--
+-- This function  is used  to check  if the object  is still functional,
+-- that whether  it is connected or else tries to connect.  When True is
+-- returned an outgoing connection object can be reused,  e.g. connected
+-- again.
+--
+-- Returns :
+--
+--    True if the client is down
+--
+   function Is_Down (Client : Connection) return Boolean;
+--
 -- Is_Trace_Received_On -- Tracing state
 --
 --    Factory - The factory object
@@ -447,7 +580,8 @@ package GNAT.Sockets.Server is
 -- This  procedure  is called  when  a portion  of data is read from the
 -- socket. The parameter Pointer is Data'Last + 1.  It can be changed to
 -- indicate the  first  unprocessed  element.  Data (Pointer..Data'Last)
--- stay in the buffer until a next call to Received.
+-- stay  in  the buffer  until a next  call  to  Received.  The  default
+-- implementation raises Connection_Error.
 --
 -- Exceptions :
 --
@@ -457,7 +591,7 @@ package GNAT.Sockets.Server is
              (  Client  : in out Connection;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset
-             )  is abstract;
+             );
 --
 -- Receive_Error -- Data receive error
 --
@@ -471,6 +605,15 @@ package GNAT.Sockets.Server is
              (  Client     : in out Connection;
                 Occurrence : Exception_Occurrence
              );
+--
+-- Released -- Notification
+--
+--    Client - The connection client
+--
+-- This procedure is called when Client is no more in use.  The  default
+-- implementation does nothing.
+--
+   procedure Released (Client : in out Connection);
 --
 -- Save_Occurrence -- Save client error occurence
 --
@@ -1025,12 +1168,15 @@ private
         )  is abstract new Object.Entity with
    record
       Socket          : Socket_Type := No_Socket;
-      Overlapped_Read : Stream_Element_Count  := 0;
+      Overlapped_Read : Stream_Element_Count := 0;
+      Session         : Session_State := Session_Down;
       Failed          : Boolean := False;
       External_Action : Boolean := False;
       Data_Sent       : Boolean := False;
       Dont_Block      : Boolean := False;
-      Down            : Boolean := False;
+      Client          : Boolean := False;
+      Connect_No      : Natural := 0;
+      Max_Connect_No  : Natural := Natural'Last;
       Predecessor     : Connection_Ptr;
       Successor       : Connection_Ptr;
       Listener        : Connections_Server_Ptr;
@@ -1039,12 +1185,32 @@ private
       Client_Address  : Sock_Addr_Type;
       Read            : Input_Buffer  (Input_Size);
       Written         : Output_Buffer (Output_Size);
-
       pragma Atomic (Data_Sent);
+      pragma Atomic (Connect_No);
       pragma Atomic (Failed);
       pragma Atomic (Dont_Block);
-      pragma Atomic (Down);
+      pragma Atomic (Session);
    end record;
+--
+-- Connected -- Start servicing a client socket
+--
+--    Listener - The server object
+--    Client   - The client connection
+--
+   procedure Connected
+             (  Listener : in out Connections_Server'Class;
+                Client   : in out Connection'Class
+             );
+--
+-- Do_Connect -- Initiate connection
+--
+--    Listener - The server object
+--    Client   - The client connection
+--
+   procedure Do_Connect
+             (  Listener : in out Connections_Server'Class;
+                Client   : in out Connection_Ptr
+             );
 --
 -- Data_Sent -- Data sent notification
 --
@@ -1101,7 +1267,7 @@ private
    Trace_Encoded_Received : constant Factory_Flags := 2**3;
    Trace_Decoded_Received : constant Factory_Flags := 2**4;
 
-   type Connections_Factory is abstract
+   type Connections_Factory is
       new Ada.Finalization.Limited_Controlled with
    record
       Trace_Flags : Factory_Flags := 0;
@@ -1116,12 +1282,23 @@ private
       Buffer  : Input_Buffer (Size);
    end record;
 
+   protected type Box (Listener : access Connections_Server'Class) is
+      entry Connect (Client : Connection_Ptr);
+      entry Accepted (Client : Connection_Ptr);
+      procedure Get (Client : out Connection_Ptr);
+      procedure Activate;
+   private
+      Pending : Connection_Ptr := null;
+      Active  : Boolean        := False;
+   end Box;
+
    type Connections_Server
         (  Factory : access Connections_Factory'Class;
            Port    : Port_Type
         )  is new Ada.Finalization.Limited_Controlled with
    record
       Clients          : Natural := 0;
+      Servers          : Natural := 0;
       Selector         : Selector_Type;
       Read_Sockets     : Socket_Set_Type;
       Write_Sockets    : Socket_Set_Type;
@@ -1133,11 +1310,13 @@ private
       Polling_Timeout  : Duration := 0.5;
       Unblock_Send     : Boolean  := False;
       Shutdown_Request : Boolean  := False;
+      Connect_Request  : Boolean  := False;
       Finalizing       : Boolean  := False;
       Connections      : Unbounded_Array;
       Doer             : Worker_Ptr;
-
+      Request          : Box (Connections_Server'Unchecked_Access);
       pragma Atomic (Unblock_Send);
+      pragma Atomic (Connect_Request);
       pragma Atomic (Shutdown_Request);
    end record;
 --

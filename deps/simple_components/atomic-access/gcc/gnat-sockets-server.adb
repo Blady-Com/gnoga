@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  19:55 16 Mar 2015  --
+--                                Last revision :  12:25 15 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,7 +33,7 @@ with Strings_Edit.Integers;  use Strings_Edit.Integers;
 
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
-with system.Address_Image;
+
 package body GNAT.Sockets.Server is
 
    Receive_Masks : constant array (IO_Tracing_Mode) of Factory_Flags :=
@@ -84,6 +84,21 @@ package body GNAT.Sockets.Server is
       return Free (Client.Written);
    end Available_To_Send;
 
+   procedure Clear (Client : in out Connection'Class) is
+   begin
+      Client.Failed                := False; -- Clean I/O state
+      Client.External_Action       := False;
+      Client.Data_Sent             := False;
+      Client.Dont_Block            := False;
+      Client.Read.Expected         := 0;
+      Client.Read.First_Read       := 0;
+      Client.Read.Free_To_Read     := 0;
+      Client.Written.First_Written := 0;
+      Client.Written.Free_To_Write := 0;
+      Client.Written.Send_Blocked  := False;
+      Client.Transport             := null;
+   end Clear;
+
    procedure Close (Socket : in out Socket_Type) is
    begin
       if Socket /= No_Socket then
@@ -103,10 +118,105 @@ package body GNAT.Sockets.Server is
       end if;
    end Close;
 
+   procedure Connect
+             (  Listener       : in out Connections_Server;
+                Client         : Connection_Ptr;
+                Host           : String;
+                Port           : Port_Type;
+                Max_Connect_No : Positive := Positive'Last;
+                Overlapped     : Stream_Element_Count :=
+                                 Stream_Element_Count'Last
+             )  is
+      Address : Sock_Addr_Type renames Client.Client_Address;
+      Option  : Request_Type := (Non_Blocking_IO, True);
+   begin
+      if Client.Socket /= No_Socket then
+         Raise_Exception
+         (  Use_Error'Identity,
+            "Connection " & Image (Address) & " is already in use"
+         );
+      end if;
+      Address.Addr := Addresses (Get_Host_By_Name (Host), 1);
+      Address.Port := Port;
+      Create_Socket (Client.Socket);
+      Set_Socket_Option
+      (  Client.Socket,
+         Socket_Level,
+         (Reuse_Address, True)
+      );
+      Control_Socket (Client.Socket, Option);
+      Connect_Parameters_Set
+      (  Client.all,
+         Host,
+         Address,
+         Max_Connect_No
+      );
+      Client.Session         := Session_Disconnected;
+      Client.Client          := True;
+      Client.Connect_No      := 0;
+      Client.Max_Connect_No  := Max_Connect_No;
+      Client.Listener        := Listener'Unchecked_Access;
+      Client.Overlapped_Read := Stream_Element_Count'Min
+                                (  Overlapped,
+                                   Client.Output_Size
+                                );
+      Listener.Request.Connect (Client);
+   end Connect;
+
+   procedure Connect_Error
+             (  Client : in out Connection;
+                Error  : Error_Type
+             )  is
+   begin
+      null;
+   end Connect_Error;
+
+   procedure Connect_Parameters_Set
+             (  Client         : in out Connection;
+                Host           : String;
+                Address        : Sock_Addr_Type;
+                Max_Connect_No : Positive
+             )  is
+   begin
+      null;
+   end Connect_Parameters_Set;
+
    procedure Connected (Client : in out Connection) is
    begin
       null;
    end Connected;
+
+   procedure Connected
+             (  Listener : in out Connections_Server'Class;
+                Client   : in out Connection'Class
+             )  is
+   begin
+      Client.Connect_No := 0;
+      Client.Session    := Session_Connected;
+      Trace_Sending
+      (  Listener.Factory.all,
+         Client,
+         False,
+         ", connected"
+      );
+      Client.Transport :=
+         Create_Transport
+         (  Listener.Factory,
+            Listener'Unchecked_Access,
+            Client'Unchecked_Access
+         );
+      Set (Listener.Read_Sockets, Client.Socket);
+      Connected (Client);
+   end Connected;
+
+   function Create
+            (  Factory  : access Connections_Factory;
+               Listener : access Connections_Server'Class;
+               From     : Sock_Addr_Type
+            )  return Connection_Ptr is
+   begin
+      return null;
+   end Create;
 
    function Create_Transport
             (  Factory  : access Connections_Factory;
@@ -126,6 +236,11 @@ package body GNAT.Sockets.Server is
       Sent (Client.all);
    end Data_Sent;
 
+   procedure Disconnected (Client : in out Connection) is
+   begin
+      null;
+   end Disconnected;
+
    procedure Disconnected
              (  Listener : in out Connections_Server;
                 Client   : in out Connection'Class
@@ -134,6 +249,57 @@ package body GNAT.Sockets.Server is
    begin
       Remove (Listener.Postponed, Client, Count);
    end Disconnected;
+
+   procedure Do_Connect
+             (  Listener : in out Connections_Server'Class;
+                Client   : in out Connection_Ptr
+             )  is
+   begin
+      Client.Connect_No := Client.Connect_No + 1;
+      Client.Session    := Session_Connecting;
+      if Client.Connect_No > Client.Max_Connect_No then
+         Client.Client := False; -- Ensure connection object killed
+         Save_Occurrence (Client.Last_Error, Null_Occurrence);
+         Stop (Listener, Client);
+      else
+         Clear (Client.all);
+         Connect_Socket (Client.Socket, Client.Client_Address);
+         Set (Listener.Read_Sockets, Client.Socket);
+         Connected (Listener, Client.all);
+      end if;
+   exception
+      when Connection_Error =>
+         Client.Client := False; -- Ensure connection object killed
+         Save_Occurrence (Client.Last_Error, Null_Occurrence);
+         Stop (Listener, Client);
+      when Error : Socket_Error =>
+         if Resolve_Exception (Error) = Operation_Now_In_Progress then
+            Trace_Sending
+            (  Listener.Factory.all,
+               Client.all,
+               False,
+               ", connecting to ..."
+            );
+         else
+            Trace_Error
+            (  Listener.Factory.all,
+               "Connect socket",
+               Error
+            );
+            Client.Client := False; -- Ensure connection object killed
+            Save_Occurrence (Client.Last_Error, Error);
+            Stop (Listener, Client);
+         end if;
+      when Error : others =>
+         Trace_Error
+         (  Listener.Factory.all,
+            "Connect socket",
+            Error
+         );
+         Client.Client := False; -- Ensure connection object killed
+         Save_Occurrence (Client.Last_Error, Error);
+         Stop (Listener, Client);
+   end Do_Connect;
 
    procedure Fill_From_Stream
              (  Buffer  : in out Output_Buffer;
@@ -309,6 +475,21 @@ package body GNAT.Sockets.Server is
       return Address;
    end Get_Server_Address;
 
+   function Get_Session_State (Client : Connection)
+      return Session_State is
+      Result : Session_State := Client.Session;
+   begin
+      if Result = Session_Down then
+         if Client.Socket = No_Socket then
+            return Session_Down;
+         else
+            return Session_Disconnected; -- Almost here
+         end if;
+      else
+         return Result;
+      end if;
+   end Get_Session_State;
+
    function Get_Socket (Client : Connection) return Socket_Type is
    begin
       return Client.Socket;
@@ -381,6 +562,20 @@ package body GNAT.Sockets.Server is
          Get_Polling_Timeout (Listener.Factory.all);
       Listener.Doer := new Worker (Listener'Unchecked_Access);
    end Initialize;
+
+   function Is_Connected (Client : Connection) return Boolean is
+   begin
+      return Client.Session in Session_Connected..Session_Busy;
+   end Is_Connected;
+
+   function Is_Down (Client : Connection) return Boolean is
+   begin
+      return
+      (  Client.Session = Session_Down
+      and then
+         Client.Socket = No_Socket
+      );
+   end Is_Down;
 
    function Is_Trace_Received_On
             (  Factory : Connections_Factory;
@@ -679,6 +874,20 @@ package body GNAT.Sockets.Server is
    begin
       Receive_Socket (Client.Socket, Data, Last);
    end Receive_Socket;
+
+   procedure Received
+             (  Client  : in out Connection;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset
+             )  is
+   begin
+      raise Connection_Error;
+   end Received;
+
+   procedure Released (Client : in out Connection) is
+   begin
+      null;
+   end Released;
 
    procedure Remove
              (  List  : in out Connection_Ptr;
@@ -1133,22 +1342,23 @@ package body GNAT.Sockets.Server is
    end Set_Overlapped_Size;
 
    procedure Shutdown (Client : in out Connection) is
-      Listener : Connections_Server'Class renames Client.Listener.all;
    begin
-      Client.Down   := True;
-      Client.Failed := True;
-      Listener.Shutdown_Request := True;
-      Abort_Selector (Listener.Selector);
+      if Client.Session /= Session_Down then
+         Client.Session := Session_Down;
+         if Client.Listener /= null then
+            Client.Failed  := True;
+            Client.Listener.Shutdown_Request := True;
+            Abort_Selector (Client.Listener.Selector);
+         end if;
+      end if;
    end Shutdown;
 
    procedure Stop
              (  Listener : in out Connections_Server'Class;
                 Client   : in out Connection_Ptr
              )  is
+      Reconnect : Boolean := True;
    begin
-Trace (Listener.Factory.all, "deleting connection client "
-& system.Address_Image(client.all'address)
-& " socket="&image(client.socket));
       Trace_Sending
       (  Listener.Factory.all,
          Client.all,
@@ -1156,12 +1366,84 @@ Trace (Listener.Factory.all, "deleting connection client "
          ", dropping connection"
       );
       Clear (Listener.Read_Sockets,    Client.Socket);
-      Clear (Listener.Write_Sockets,   Client.Socket);
       Clear (Listener.Blocked_Sockets, Client.Socket);
       Clear (Listener.Ready_To_Read,   Client.Socket);
       Clear (Listener.Ready_To_Write,  Client.Socket);
-      Disconnected (Listener, Client.all);
-      Listener.Clients := Listener.Clients - 1;
+      Clear (Listener.Write_Sockets,   Client.Socket);
+      Clear (Listener.Ready_To_Write,  Client.Socket);
+      if Client.Session in Session_Connected..Session_Busy then
+         begin -- Connected
+            Client.Session := Session_Disconnected;
+            Disconnected (Client.all);
+         exception
+            when Connection_Error =>
+               Reconnect := False;
+            when Error : others =>
+               Trace_Error
+               (  Listener.Factory.all,
+                  "Disconnected (client)",
+                  Error
+               );
+         end;
+         begin
+            Disconnected (Listener, Client.all);
+         exception
+            when Connection_Error =>
+               Reconnect := False;
+            when Error : others =>
+               Trace_Error
+               (  Listener.Factory.all,
+                  "Disconnected (server)",
+                  Error
+               );
+         end;
+      end if;
+      if Client.Client then -- Try to reconnect
+         if Reconnect and then Client.Session /= Session_Down then
+            declare
+               Old_Socket : Socket_Type := Client.Socket;
+            begin
+               Close (Client.Socket);
+               declare
+                  Option : Request_Type := (Non_Blocking_IO, True);
+               begin
+                  Create_Socket (Client.Socket);
+                  Set_Socket_Option
+                  (  Client.Socket,
+                     Socket_Level,
+                     (Reuse_Address, True)
+                  );
+               end;
+               if Old_Socket /= Client.Socket then -- Move client
+                  Put (Listener.Connections, Client.Socket, Client);
+                  Put (Listener.Connections, Old_Socket,    null);
+               end if;
+               Set (Listener.Write_Sockets, Client.Socket);
+               Do_Connect (Listener, Client);
+               return;
+            exception
+               when Error : Socket_Error => -- Kill the object
+                  Trace_Error
+                  (  Listener.Factory.all,
+                     "Reconnecting",
+                     Error
+                  );
+            end;
+         end if;
+         Listener.Servers := Listener.Servers - 1;
+      else
+         Listener.Clients := Listener.Clients - 1;
+      end if;
+      if Client.Socket /= No_Socket then
+         Close (Client.Socket);
+      end if;
+      Client.Session := Session_Down;
+      begin
+         Released (Client.all);
+      exception
+         when others =>
+            null;
+      end;
       Put (Listener.Connections, Client.Socket, null);
       Client := null;
    exception
@@ -1668,24 +1950,13 @@ Trace (Listener.Factory.all, "deleting connection client "
    task body Worker is
       Address       : Sock_Addr_Type :=
                       Get_Server_Address (Listener.all);
-      Server_Socket : Socket_Type;
+      Server_Socket : Socket_Type := No_Socket;
       Client_Socket : Socket_Type;
       That_Time     : Time := Clock;
       This_Time     : Time;
       Status        : Selector_Status;
 
       function Set_Image (Socket : Socket_Type) return String is
-         function Is_In
-                  (  Set  : Socket_Set_Type;
-                     Text : String
-                  )  return String is
-         begin
-            if Is_Set (Set, Socket) then
-               return Text;
-            else
-               return "";
-            end if;
-         end Is_In;
       begin
          return
          (  Image (Socket)
@@ -1721,7 +1992,7 @@ Trace (Listener.Factory.all, "deleting connection client "
                      Clear (Listener.Write_Sockets,   Socket);
                      Clear (Listener.Blocked_Sockets, Socket);
                   elsif Client.Failed then
-                     if (  not Client.Down
+                     if (  Client.Session /= Session_Down
                         and then
                            (  Exception_Identity (Client.Last_Error)
                            /= Connection_Error'Identity
@@ -1761,7 +2032,7 @@ Trace (Listener.Factory.all, "deleting connection client "
                      Clear (Listener.Write_Sockets,  Socket);
                      Clear (Listener.Ready_To_Write, Socket);
                   elsif Client.Failed then
-                     if (  not Client.Down
+                     if (  Client.Session /= Session_Down
                         and then
                            (  Exception_Identity (Client.Last_Error)
                            /= Connection_Error'Identity
@@ -1813,20 +2084,37 @@ Trace (Listener.Factory.all, "deleting connection client "
          end loop;
       end Unblock;
    begin
-      Create_Socket (Server_Socket);
-      Set_Socket_Option
-      (  Server_Socket,
-         Socket_Level,
-         (Reuse_Address, True)
-      );
-      Bind_Socket (Server_Socket, Address);
-      Listen_Socket (Server_Socket);
-      Set (Listener.Read_Sockets, Server_Socket);
+      if Listener.Port /= 0 then
+         Create_Socket (Server_Socket);
+         Set_Socket_Option
+         (  Server_Socket,
+            Socket_Level,
+            (Reuse_Address, True)
+         );
+         Bind_Socket (Server_Socket, Address);
+         Listen_Socket (Server_Socket);
+         Set (Listener.Read_Sockets, Server_Socket);
+      end if;
       Create_Selector (Listener.Selector);
+      Listener.Request.Activate;
       loop
          if Listener.Shutdown_Request then
             Listener.Shutdown_Request := False;
             Check (Listener.Read_Sockets);
+         end if;
+         if Listener.Connect_Request then
+            declare
+               Client : Connection_Ptr;
+            begin
+               loop
+                  Listener.Request.Get (Client);
+                  exit when Client = null;
+                  Set (Listener.Write_Sockets, Client.Socket);
+                  Put (Listener.Connections, Client.Socket, Client);
+                  Listener.Servers := Listener.Servers + 1;
+                  Do_Connect (Listener.all, Client);
+               end loop;
+            end;
          end if;
          Copy (Listener.Read_Sockets,  Listener.Ready_To_Read);
          Copy (Listener.Write_Sockets, Listener.Ready_To_Write);
@@ -1857,11 +2145,14 @@ Trace (Listener.Factory.all, "deleting connection client "
                         Close (Client_Socket);
                      else
                         declare
-                           This : Connection'Class renames
-                                  Client.all;
+                           This : Connection'Class renames Client.all;
                         begin
+                           This.Session        := Session_Connected;
+                           This.Client         := False;
+                           This.Connect_No     := 0;
                            This.Client_Address := Address;
-                           This.Socket := Client_Socket;
+                           This.Socket         := Client_Socket;
+                           Clear (This);
                            This.Listener :=
                               Listener.all'Unchecked_Access;
                            Set (Listener.Read_Sockets,  Client_Socket);
@@ -1871,7 +2162,7 @@ Trace (Listener.Factory.all, "deleting connection client "
                               Client_Socket,
                               Client
                            );
-                           Listener.Clients :=  Listener.Clients + 1;
+                           Listener.Clients := Listener.Clients + 1;
                            This.Transport :=
                               Create_Transport
                               (  Listener.Factory,
@@ -1912,7 +2203,7 @@ Trace (Listener.Factory.all, "deleting connection client "
                         Clear (Listener.Blocked_Sockets, Client_Socket);
                         Clear (Listener.Ready_To_Write,  Client_Socket);
                      elsif Client.Failed then
-                        if (  not Client.Down
+                        if (  Client.Session /= Session_Down
                            and then
                               (  Exception_Identity (Client.Last_Error)
                               /= Connection_Error'Identity
@@ -1979,7 +2270,11 @@ Trace (Listener.Factory.all, "deleting connection client "
             -- Unblock everything now
             That_Time := This_Time;
             Unblock (False);
-            if not Is_Set (Listener.Read_Sockets, Server_Socket) then
+            if (  Server_Socket /= No_Socket
+               and then
+                  not Is_Set (Listener.Read_Sockets, Server_Socket)
+               )
+            then
                Trace
                (  Listener.Factory.all,
                   "Server socket fell out of the read sockets list"
@@ -2014,7 +2309,7 @@ Trace (Listener.Factory.all, "deleting connection client "
                         Clear (Listener.Write_Sockets,   Client_Socket);
                         Clear (Listener.Blocked_Sockets, Client_Socket);
                      elsif Client.Failed then
-                        if (  not Client.Down
+                        if (  Client.Session /= Session_Down
                            and then
                               (  Exception_Identity (Client.Last_Error)
                               /= Connection_Error'Identity
@@ -2027,7 +2322,50 @@ Trace (Listener.Factory.all, "deleting connection client "
                            );
                         end if;
                         Stop (Listener.all, Client);
-                     else
+                     elsif Client.Session = Session_Connecting then
+                        declare
+                            This : Connection'Class renames Client.all;
+                            Code : Error_Type :=
+                                      Get_Socket_Option
+                                      (  Client.Socket,
+                                         Socket_Level,
+                                         Error
+                                      ) .Error;
+                        begin
+                           if Code = Success then -- Connected
+                              Connected (Listener.all, This);
+                              Set
+                              (  Listener.Read_Sockets,
+                                 Client_Socket
+                              );
+                           else -- Connect error
+                              Trace_Sending
+                              (  Listener.Factory.all,
+                                 This,
+                                 False,
+                                 ", failed to connect"
+                              );
+                              Connect_Error (This, Code);
+                              Do_Connect (Listener.all, Client);
+                           end if;
+                        exception
+                           when Connection_Error =>
+                              if Client /= null then
+                                 Client.Client := False;
+                                 Stop (Listener.all, Client);
+                              end if;
+                           when Error : others =>
+                              Trace_Error
+                              (  Listener.Factory.all,
+                                 "Connect socket",
+                                 Error
+                              );
+                              if Client /= null then
+                                 Client.Client := False;
+                                 Stop (Listener.all, Client);
+                              end if;
+                        end;
+                     else -- Have space to write
                         declare
                            Block : Boolean;
                         begin
@@ -2104,12 +2442,48 @@ Trace (Listener.Factory.all, "deleting connection client "
          end if;
          Service_Postponed (Listener.all);
       end loop;
-      Close (Server_Socket);
+      if Server_Socket /= No_Socket then
+         Close (Server_Socket);
+      end if;
       Close_Selector (Listener.Selector);
       Trace (Listener.Factory.all, "Worker task exiting");
    exception
       when Error : others =>
          Trace_Error (Listener.Factory.all, "Worker task", Error);
    end Worker;
+
+   protected body Box is
+      entry Connect (Client : Connection_Ptr)
+         when Active and then Pending = null is
+      begin
+         if Client /= null then
+            Pending := Client;
+            Client.Listener.Connect_Request := True;
+            Abort_Selector (Listener.Selector);
+            requeue Accepted;
+         end if;
+      end Connect;
+
+      entry Accepted (Client : Connection_Ptr) when Pending = null is
+      begin
+         null;
+      end Accepted;
+
+      procedure Activate is
+      begin
+          Active := True;
+      end Activate;
+
+      procedure Get (Client : out Connection_Ptr) is
+      begin
+         if Pending = null then
+            Client := null;
+         else
+            Client  := Pending;
+            Pending := null;
+            Client.Listener.Connect_Request := False;
+         end if;
+      end Get;
+   end Box;
 
 end GNAT.Sockets.Server;

@@ -128,6 +128,10 @@
 ./gnat-sockets-connection_state_machine-expected_sequence.ads
 ./gnat-sockets-connection_state_machine-generic_key.adb
 ./gnat-sockets-connection_state_machine-generic_key.ads
+./gnat-sockets-connection_state_machine-http_client-signaled.adb
+./gnat-sockets-connection_state_machine-http_client-signaled.ads
+./gnat-sockets-connection_state_machine-http_client.adb
+./gnat-sockets-connection_state_machine-http_client.ads
 ./gnat-sockets-connection_state_machine-http_server-sqlite_browser.adb
 ./gnat-sockets-connection_state_machine-http_server-sqlite_browser.ads
 ./gnat-sockets-connection_state_machine-http_server.adb
@@ -151,6 +155,7 @@
 ./gnat-sockets-connection_state_machine-variable_length_strings.ads
 ./gnat-sockets-connection_state_machine.adb
 ./gnat-sockets-connection_state_machine.ads
+./gnat-sockets-server-handles.ads
 ./gnat-sockets-server-pooled.adb
 ./gnat-sockets-server-pooled.ads
 ./gnat-sockets-server-secure-anonymous.adb
@@ -212,6 +217,7 @@
 ./odbc/odbc32/i686/odbc-architecture_dependent.ads
 ./odbc/odbc32/odbc-driver_dependent.ads
 ./odbc/odbc32/x86_64/odbc-architecture_dependent.ads
+./odbc/unixodbc/armhf/odbc-architecture_dependent.ads
 ./odbc/unixodbc/i686/odbc-architecture_dependent.ads
 ./odbc/unixodbc/odbc-driver_dependent.ads
 ./odbc/unixodbc/x86_64/odbc-architecture_dependent.ads
@@ -422,6 +428,7 @@
 ./test_components/components-connections_server-test_data_client.gpr
 ./test_components/components-connections_server-test_data_server.gpr
 ./test_components/components-connections_server-test_echo_client.gpr
+./test_components/components-connections_server-test_echo_client_async.gpr
 ./test_components/components-connections_server-test_echo_server.gpr
 ./test_components/components-gnade-odbc_persistence_tests.gpr
 ./test_components/components-odbc-odbc_bindings_tests.gpr
@@ -454,6 +461,9 @@
 ./test_components/test_discrete_maps.ads
 ./test_components/test_discrete_sets.ads
 ./test_components/test_echo_client.adb
+./test_components/test_echo_clients.adb
+./test_components/test_echo_clients.ads
+./test_components/test_echo_client_async.adb
 ./test_components/test_echo_server.adb
 ./test_components/test_echo_servers.adb
 ./test_components/test_echo_servers.ads
@@ -464,6 +474,7 @@
 ./test_components/test_graphs.adb
 ./test_components/test_handles.adb
 ./test_components/test_https_server.adb
+./test_components/test_http_client.adb
 ./test_components/test_http_continuous_server.adb
 ./test_components/test_http_continuous_servers.adb
 ./test_components/test_http_continuous_servers.ads

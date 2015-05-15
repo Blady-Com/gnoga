@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  21:26 01 Feb 2015  --
+--                                Last revision :  12:24 15 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,6 +30,7 @@ with Ada.Calendar.Time_Zones;  use Ada.Calendar.Time_Zones;
 with Ada.Calendar;             use Ada.Calendar;
 with Ada.Exceptions;           use Ada.Exceptions;
 with Ada.Streams;              use Ada.Streams;
+with Ada.Strings.Maps;         use Ada.Strings.Maps;
 with Ada.Task_Identification;  use Ada.Task_Identification;
 with Ada.Text_IO;              use Ada.Text_IO;
 with GNAT.Sockets.Server;      use GNAT.Sockets.Server;
@@ -104,10 +105,10 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
            Upgrade_Header,
            User_Agent_Header,
            Via_Header,
-           Sec_WebSocket_Extensions,
-           Sec_WebSocket_Protocol,
-           Sec_WebSocket_Version,
-           Sec_WebSocket_Key,
+           Sec_WebSocket_Extensions_Header,
+           Sec_WebSocket_Protocol_Header,
+           Sec_WebSocket_Version_Header,
+           Sec_WebSocket_Key_Header,
            Warning_Header,
 
            Range_Header,
@@ -119,6 +120,35 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
            If_Unmodified_Since_Header,
            Last_Modified_Header
         );
+--
+-- Image -- Header name
+--
+--    Header - The header type
+--
+-- Returns :
+--
+--    The corresponding name, e.g. Keep-Alive
+--
+   function Image (Header : Request_Header) return String;
+--
+-- Value -- String to header type conversion
+--
+--    Text - The header name (case-insensitive)
+--
+-- Returns :
+--
+--    The header type
+--
+   type Header_Value (None : Boolean := True) is record
+      case None is
+         when True =>
+            null;
+         when False =>
+            Header : Request_Header;
+      end case;
+   end record;
+   function Value (Text : String) return Header_Value;
+
    subtype Text_Header is Request_Header
       range Accept_Header..Warning_Header;
    subtype Multipart_Header is Request_Header
@@ -245,7 +275,8 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    type String_Ptr is access all String;
    package CGI_Keys is new Tables (String_Ptr);
 ------------------------------------------------------------------------
--- HTTP_Client -- A connection object implementing HTTP 1.1
+-- HTTP_Client -- An object  implementing  HTTP 1.1  connection  from  a
+--                client
 --
 --    Listener       - The connection object
 --    Request_Length - The maximum length of one request line
@@ -319,7 +350,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --
 --    Client - The client connection object
 --
--- This function can be overridden to provide a custem name  of the HTTP
+-- This function can be overridden to provide a custom name  of the HTTP
 -- server.
 --
 -- Returns :
@@ -991,7 +1022,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 -- Receive_Body -- Start receipt into a CGI key/value pairs
 --
 --    Client      - The HTTP client connection object
---    Content     - The mapping of the expected keys (table or text)
+--  [ Content   ] - The mapping of the expected keys (table or text)
 --  [ Delimiter ] - Keys delimiter in Content
 --
 -- This procedure is typically  called  from  Do_Body to start receiving
@@ -1001,7 +1032,11 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 -- set  if the key was present  in the body or  empty  string otherwise.
 -- The object  Content shall  exist at least until  CGI_Body_Received is
 -- called. When Content is a string it is a list of keys separated using
--- Delimiter character
+-- Delimiter character. When Content is omitted any key is accepted  for
+-- which the primitive operation Validate_Key returns True, which is the
+-- default. Note that this behavior is unsafe.  When the variant of this
+-- procedure without the Content parameter is used,  Validate_Key should
+-- be overridden.
 --
    procedure Receive_Body
              (  Client  : in out HTTP_Client;
@@ -1012,6 +1047,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                 Content   : String;
                 Delimiter : Character := ','
              );
+   procedure Receive_Body (Client : in out HTTP_Client);
 --
 -- Receive_Body -- Start receipt into a stream
 --
@@ -1058,6 +1094,25 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              (  Client : in out HTTP_Client;
                 Enable : Boolean
              );
+--
+-- Validate_Key -- Validate a CGI key
+--
+--    Client - The HTTP client connection object
+--    Key    - The CGI key to validate
+--
+-- This function is called for each CGI key when Receive_Body is used to
+-- receive  CGI key/value pairs without the content parameter.  The keys
+-- for which  the  function  returns  false  are  ignored.  The  default
+-- implementation accepts any key.
+--
+-- Returns :
+--
+--    True if the CGI key is accepted
+--
+   function Validate_Key
+            (  Client : HTTP_Client;
+               Key    : String
+            )  return Boolean;
 ------------------------------------------------------------------------
 -- WebSocket operations. WebSockets are defined in RFC 6455
 --
@@ -1317,7 +1372,44 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --    Sun, 17 Feb 2013 21:02:43 +0100
 --
    function To_HTTP (Date : Time) return String;
+--
+-- To_Time -- Time conversion
+--
+--    Date - To convert
+--
+-- Supported formats:
+--
+--    Fri, 31 Dec 1999 23:59:59 GMT
+--    Friday, 31-Dec-99 23:59:59 GMT
+--    Fri Dec 31 23:59:59 1999
+--
+-- Exceptions :
+--
+--    Time_Error - On error
+--
+   function To_Time (Date : String) return Time;
+------------------------------------------------------------------------
+   CRLF  : constant String := (Character'Val (13), Character'Val (10));
+   Lower : constant Character_Mapping :=
+                    To_Mapping
+                    (  "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                       "abcdefghijklmnopqrstuvwxyz"
+                    );
 
+   type Connection_Flags is mod 2**3;
+   Connection_Close      : Connection_Flags := 1; -- "close"
+   Connection_Persistent : Connection_Flags := 2; -- "keep-alive"
+   Connection_Upgrade    : Connection_Flags := 4; -- "upgrade"
+--
+-- To_Flags -- Conversion of connection header value into flags
+--
+--    Value - The header value
+--
+-- Returns :
+--
+--    Connection flags
+--
+   function To_Flags (Value : String) return Connection_Flags;
 private
    use GNAT.Sockets.Connection_State_Machine.Expected_Sequence;
    use GNAT.Sockets.Connection_State_Machine.Terminated_Strings;
@@ -1535,11 +1627,6 @@ private
              );
    for WebSocket_Data'Write use Write;
 
-   type Connection_Flags is mod 2**3;
-   Connection_Close      : Connection_Flags := 1; -- "close"
-   Connection_Persistent : Connection_Flags := 2; -- "keep-alive"
-   Connection_Upgrade    : Connection_Flags := 4; -- "upgrade"
-
    type HTTP_Client
         (  Listener       : access Connections_Server'Class;
            Request_Length : Positive;
@@ -1561,6 +1648,7 @@ private
       Chunked      : Boolean := False; -- Using chunked transfer
       Trace_Body   : Boolean := False;
       Trace_Header : Boolean := False;
+      Validate_CGI : Boolean := False;
          -- Time header fields
       Date                : Time := Clock;
       Last_Modified       : Time := Clock;
@@ -1742,18 +1830,6 @@ private
 --    Client - The HTTP client connection object
 --
    procedure WebSocket_Cleanup (Client : in out HTTP_Client'Class);
---
--- To_Time -- Time conversion
---
---    Date - To convert
---
--- Supported formats:
---
---    Fri, 31 Dec 1999 23:59:59 GMT
---    Friday, 31-Dec-99 23:59:59 GMT
---    Fri Dec 31 23:59:59 1999
---
-   function To_Time (Date : String) return Time;
 
    type Multipart_Body (Boundary : access String) is abstract
       new Content_Destination with

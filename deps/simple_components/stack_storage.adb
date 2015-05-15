@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2003       --
 --                                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  12:25 15 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -144,7 +144,7 @@ package body Stack_Storage is
                else
                   This.Free := This.Memory'First;
                end if;
-               if Stack.Current > 0 then
+               if Stack.Current > 1 then
                   Stack.Current := Stack.Current - 1;
                else
                   raise Storage_Error;
@@ -159,10 +159,13 @@ package body Stack_Storage is
 
    procedure Deallocate_All (Stack : in out Pool) is
    begin
-      while Stack.Current > 0 loop
-         Get (Stack.Blocks, Stack.Current).Free := 1;
-         Stack.Current := Stack.Current - 1;
-      end loop;
+      if Stack.Current > 0 then
+         loop
+            Get (Stack.Blocks, Stack.Current).Free := 1;
+            exit when Stack.Current = 1;
+            Stack.Current := Stack.Current - 1;
+         end loop;
+      end if;
       Stack.Total_Size := 0;
    end Deallocate_All;
 

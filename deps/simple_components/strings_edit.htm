@@ -11,7 +11,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800000">
 <P align="center">
 <BIG><BIG><BIG><B>STRINGS EDIT</B></BIG></BIG><BR>
-<EM>version 3.1</EM><BR>
+<EM>version 3.2</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a>
@@ -86,10 +86,22 @@ Ada</a> project and can be obtained with it. Alternatively the latest version
 can be here.</p>
 <table border="0" cellspacing="0" cellpadding="0" style="border-top-width: 0px">
 	<tr>
+		<td style="border-top-style: none; border-top-width: medium" colspan="3">&nbsp;</td>
+		<td style="border-top-style: none; border-top-width: medium" align="right">
+&nbsp;</td>
+		<td>&nbsp;</td>
+		<td align="center">
+		ARM</td>
+		<td align="center" colspan="2">
+		Intel</td>
+	</tr>
+	<tr>
 		<td style="border-top-style: none; border-top-width: medium" colspan="3"><b>Download Strings Edit</b></td>
 		<td style="border-top-style: none; border-top-width: medium" align="right">
 <b>Platform:</b></td>
 		<td>&nbsp;</td>
+		<td align="center">
+		v7</td>
 		<td align="center">
 		64-</td>
 		<td align="center">
@@ -102,6 +114,9 @@ can be here.</p>
 		<td style="border-top-style: solid; border-top-width: 1px">precompiled and packaged using RPM</td>
 		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
 		<td>&nbsp;</td>
+		<td align="right">
+		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_fedora_armv7hl.htm">
+		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td>
 		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_fedora_x86_64.htm">
 		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
@@ -115,6 +130,9 @@ can be here.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">precompiled and packaged for dpkg</td>
 		<td>&nbsp;</td>
+		<td align="right">
+		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_debian_armhf.htm">
+		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td>
 		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_debian_x86_64.htm">
 		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
@@ -126,11 +144,15 @@ can be here.</p>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-<a href="http://www.dmitry-kazakov.de/ada/strings_3_1.tgz">strings_3_1.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
+<a href="http://www.dmitry-kazakov.de/ada/strings_3_2.tgz">strings_3_2.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
-		<td colspan="2" align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/strings_3_1.tgz">
+		<td align="center">
+		&nbsp;</td>
+		<td align="center">
+		<a href="http://www.dmitry-kazakov.de/ada/strings_3_2.tgz">
  <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
+		<td align="center">
+		&nbsp;</td>
 	</tr>
 </table>
 <P>See also
@@ -1342,7 +1364,7 @@ are illegal UTF-8 strings. </p>
 	: Character_Set := SpaceAndTab<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean;</tt></blockquote>
-<P>This function has one additional parameter <b>Map</b> which is a mapping used 
+<P>This function has one additional parameter <b>Map</b> which is the mapping used 
 to convert two non-blank code points before they are compared. Blank code points 
 when <b>Wide_Space</b> is <i><font color="#800000">true</font></i> are compared 
 as-is. The following example to match ignoring case the function can be used as 
@@ -2970,6 +2992,10 @@ The following versions were tested with the compilers:</i><ul>
 <i>GNAT 4.8.2 (20131212)</i></li>
   <li><i>GNAT 4.9.0</i></li>
   </ul>
+<p>Changes (2 April 2015) to the version 3.1:</p>
+<ul>
+  <li>ARMv7 (AKA armhf) support.</li>
+</ul>
 <p>Changes (22 November 2014) to the version 3.0:</p>
 <ul>
 	<li>String_Edit.Streams.Generic_Integer package was added for chain-encoded 

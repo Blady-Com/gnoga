@@ -3,7 +3,7 @@
 --  HTTP client test                               Luebeck            --
 --                                                 Spring, 2015       --
 --                                                                    --
---                                Last revision :  12:25 15 May 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -159,6 +159,7 @@ begin
                delay 0.1;
             end loop;
             Put_Line ("HTTP client connected to httpbin.org");
+            Set_Request_Header (Client, Accept_Header, "text/plain");
             Get
             (  Client,
                "http://httpbin.org/get",
@@ -372,10 +373,10 @@ begin
 --       Test_Head;
 --       Test_Options;
 --       Test_Delete;
---       Test_Get_1;
+         Test_Get_1;
 --       Test_Get_2;
 --       Test_Post_1;
-         Test_Put_1;
+--       Test_Put_1;
 --       Test_Put_2;
       end;
    end;

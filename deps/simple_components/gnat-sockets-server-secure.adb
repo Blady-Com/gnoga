@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -51,27 +51,39 @@ package body GNAT.Sockets.Server.Secure is
                Listener : access Connections_Server'Class;
                Client   : access Connection'Class
             )  return Encoder_Ptr is
-      Result : Encoder_Ptr :=
-                  new TLS_Session
-                      (  Client.all'Unchecked_Access,
-                         Factory.Decoded_Size
-                      );
-      TLS    : TLS_Session renames TLS_Session (Result.all);
+      Result : Encoder_Ptr;
    begin
-      Session_Set_Ptr (TLS.Session, Client'Address);
-      Socket_Pull.Set (TLS.Session, Client);
-      Socket_Push.Set (TLS.Session, Client);
-      if Factory.Trace_Session then
-         Trace (Factory.all, "TLS setting up session");
+      if Client.Client then
+         Result := new TLS_Session
+                       (  Client.all'Unchecked_Access,
+                          Factory.Decoded_Size,
+                          Init_Client or Init_Nonblock
+                       );
+      else
+         Result := new TLS_Session
+                       (  Client.all'Unchecked_Access,
+                          Factory.Decoded_Size,
+                          Init_Server or Init_Nonblock
+                       );
       end if;
-      Prepare
-      (  Abstract_GNUTLS_Factory'Class (Factory.all),
-         Client.all,
-         TLS.Session
-      );
-      if Factory.Trace_Session then
-         Trace (Factory.all, "TLS handshake engaged");
-      end if;
+      declare
+         TLS : TLS_Session renames TLS_Session (Result.all);
+      begin
+         Session_Set_Ptr (TLS.Session, Client'Address);
+         Socket_Pull.Set (TLS.Session, Client);
+         Socket_Push.Set (TLS.Session, Client);
+         if Factory.Trace_Session then
+            Trace (Factory.all, "TLS setting up session");
+         end if;
+         Prepare
+         (  Abstract_GNUTLS_Factory'Class (Factory.all),
+            Client.all,
+            TLS.Session
+         );
+         if Factory.Trace_Session then
+            Trace (Factory.all, "TLS handshake engaged");
+         end if;
+      end;
       return Result;
    end Create_Transport;
 
@@ -159,7 +171,8 @@ package body GNAT.Sockets.Server.Secure is
                 Session : in out Session_Type
              )  is
    begin
-      null;
+      Client.Session := Session_Connected;
+      Connected (Client);
    end Handshake_Completed;
 
    function Is_Trace_Decoded (Factory : Abstract_GNUTLS_Factory)

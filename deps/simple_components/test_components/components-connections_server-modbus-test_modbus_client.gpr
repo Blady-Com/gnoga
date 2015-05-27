@@ -1,0 +1,38 @@
+with "../components-connections_server-modbus.gpr";
+
+project Components.Connections_Server.MODBUS.Test_MODBUS_Client is
+
+   for Exec_Dir use ".";
+   for Source_Files use
+       (  "test_modbus_client.adb"
+	   );
+   for Main use
+       (  "test_modbus_client.adb"
+	   );
+
+   package Compiler is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+	         MODBUS.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+	         MODBUS.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada")
+        use Components.Connections_Server.
+	         MODBUS.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada")
+         use Components.Connections_Server.
+		     MODBUS.Linker'Default_Switches ("ada");
+   end Linker;
+   
+end Components.Connections_Server.MODBUS.Test_MODBUS_Client;
+

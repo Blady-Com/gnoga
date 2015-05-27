@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client.Signaled                        Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  12:25 15 May 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,6 +30,11 @@ with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 
 package body GNAT.Sockets.Connection_State_Machine.
              HTTP_Client.Signaled is
+
+   procedure Cancel (Session : in out HTTP_Session_Signaled) is
+   begin
+      Session.Event.Cancel;
+   end Cancel;
 
    procedure Connect
              (  Session        : in out HTTP_Session_Signaled;
@@ -81,8 +86,8 @@ package body GNAT.Sockets.Connection_State_Machine.
 
    procedure Connected (Session : in out HTTP_Session_Signaled) is
    begin
-       Connected (HTTP_Session (Session));
-       Session.Event.Set;
+      Connected (HTTP_Session (Session));
+      Session.Event.Set;
    end Connected;
 
    procedure End_Of_Query (Session : in out HTTP_Session_Signaled) is
@@ -93,8 +98,8 @@ package body GNAT.Sockets.Connection_State_Machine.
 
    procedure Released (Session : in out HTTP_Session_Signaled) is
    begin
-       Released (HTTP_Session (Session));
-       Session.Event.Set;
+      Released (HTTP_Session (Session));
+      Session.Event.Set;
    end Released;
 
    procedure Wait
@@ -123,15 +128,26 @@ package body GNAT.Sockets.Connection_State_Machine.
    end Write;
 
    protected body Event_Type is
-      entry Released when Down is
+      entry Cancel when Event_Type.Released'Count = 0 and then
+                        Event_Type.Wait'Count = 0 is
+      begin
+         null;
+      end Cancel;
+
+      entry Released when Down or else Event_Type.Cancel'Count > 0 is
       begin
          if Get_Session_State (Session.all) /= Session_Down then
             Down := False;
-            requeue Released with abort;
+            if Event_Type.Cancel'Count > 0 then
+               Raise_Exception (Cancel_Error'Identity, "Canceled");
+            else
+               requeue Released with abort;
+            end if;
          end if;
       end Released;
 
-      entry Wait (Connected : in out Boolean) when Ready or Down is
+      entry Wait (Connected : in out Boolean)
+         when Ready or else Down or else Event_Type.Cancel'Count > 0 is
       begin
          case Get_Session_State (Session.all) is
             when Session_Down =>
@@ -155,10 +171,14 @@ package body GNAT.Sockets.Connection_State_Machine.
                   Connected := False;
                end if;
             when Session_Disconnected | Session_Connecting |
-                 Session_Busy =>
+                 Session_Handshaking  | Session_Busy =>
                Ready := False;
                Down  := False;
-               requeue Wait with abort;
+               if Event_Type.Cancel'Count > 0 then
+                  Raise_Exception (Cancel_Error'Identity, "Canceled");
+               else
+                  requeue Wait with abort;
+               end if;
             when Session_Connected =>
                Ready     := True;
                Down      := False;
@@ -173,7 +193,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                Ready := False;
                Down  := True;
             when Session_Disconnected | Session_Connecting |
-                 Session_Busy =>
+                 Session_Handshaking  | Session_Busy =>
                Ready := False;
                Down  := False;
             when Session_Connected =>

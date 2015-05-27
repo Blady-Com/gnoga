@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client.Signaled                        Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  12:24 15 May 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,10 +30,21 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled is
 -- Timeout_Error -- Timeout expired
 --
    Timeout_Error : exception;
+   Cancel_Error  : exception;
 --
 -- HTTP_Session_Signaled -- An object with event
 --
    type HTTP_Session_Signaled is new HTTP_Session with private;
+--
+-- Cancel -- Waiting
+--
+--    Session - The connection object
+--
+-- This  procedure  is used to cancel Connect  or Wait  pending in other
+-- tasks. It does not influence the communication itself. The operations
+-- will propagate Cancel_Error if not yet completed.
+--
+   procedure Cancel (Session : in out HTTP_Session_Signaled);
 --
 -- Connect -- Connect to a server
 --
@@ -49,6 +60,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled is
 --
 -- Exceptions :
 --
+--    Cancel_Error  - Waiting canceled by a call to Cancel
 --    Socket_Error  - Socket error
 --    Status_Error  - Connection failure, e.g. attempts exhausted
 --    Timeout_Error - Timeout expired
@@ -72,6 +84,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled is
 --
 -- Exceptions :
 --
+--    Cancel_Error  - Waiting canceled by a call to Cancel
 --    Socket_Error  - Socket error
 --    Status_Error  - Connection failure, e.g. attempts exhausted
 --    Timeout_Error - Timeout expired
@@ -85,6 +98,7 @@ private
    protected type Event_Type
                   (  Session : access HTTP_Session_Signaled'Class
                   )  is
+      entry Cancel;
       entry Released;
       entry Wait (Connected : in out Boolean);
       procedure Set;

@@ -33,6 +33,7 @@
 ./components-apq.gpr
 ./components-connections_server-http_server-sqlite_browser.gpr
 ./components-connections_server-http_server.gpr
+./components-connections_server-modbus.gpr
 ./components-connections_server-secure.gpr
 ./components-connections_server.gpr
 ./components-gnade.gpr
@@ -147,6 +148,10 @@
 ./gnat-sockets-connection_state_machine-little_endian-unsigneds.adb
 ./gnat-sockets-connection_state_machine-little_endian-unsigneds.ads
 ./gnat-sockets-connection_state_machine-little_endian.ads
+./gnat-sockets-connection_state_machine-modbus_client-synchronous.adb
+./gnat-sockets-connection_state_machine-modbus_client-synchronous.ads
+./gnat-sockets-connection_state_machine-modbus_client.adb
+./gnat-sockets-connection_state_machine-modbus_client.ads
 ./gnat-sockets-connection_state_machine-terminated_strings.adb
 ./gnat-sockets-connection_state_machine-terminated_strings.ads
 ./gnat-sockets-connection_state_machine-variable_length_arrays.adb
@@ -425,6 +430,7 @@
 ./test_components/components-apq-apq_persistence_tests.gpr
 ./test_components/components-connections_server-http_server-test_https_server.gpr
 ./test_components/components-connections_server-http_server-test_http_server.gpr
+./test_components/components-connections_server-modbus-test_modbus_client.gpr
 ./test_components/components-connections_server-test_data_client.gpr
 ./test_components/components-connections_server-test_data_server.gpr
 ./test_components/components-connections_server-test_echo_client.gpr
@@ -473,6 +479,7 @@
 ./test_components/test_generic_sets.adb
 ./test_components/test_graphs.adb
 ./test_components/test_handles.adb
+./test_components/test_https_client.adb
 ./test_components/test_https_server.adb
 ./test_components/test_http_client.adb
 ./test_components/test_http_continuous_server.adb
@@ -508,6 +515,7 @@
 ./test_components/test_linked_lists_scheduler.adb
 ./test_components/test_linked_lists_scheduler.ads
 ./test_components/test_linked_lists_scheduler_test.adb
+./test_components/test_modbus_client.adb
 ./test_components/test_my_string-handle.adb
 ./test_components/test_my_string-handle.ads
 ./test_components/test_my_string.ads

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  12:24 15 May 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -123,7 +123,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Client is
 -- HTTP_Session -- An  object  implementing  HTTP 1.1  connection  to  a
 --                 server
 --
---    Listener        - The connection object
+--    Listener        - The connections server object
 --    Response_Length - The maximum length of one response header line
 --    Input_Size      - The input buffer size
 --    Output_Size     - The output buffer size

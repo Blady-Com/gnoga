@@ -1,0 +1,18 @@
+with "components.gpr";
+with "components-connections_server.gpr";
+
+project Components.Connections_Server.MODBUS is
+
+   for Source_Files use
+       (  "gnat-sockets-connection_state_machine-modbus_client.adb",
+          "gnat-sockets-connection_state_machine-modbus_client.ads",
+		  "gnat-sockets-connection_state_machine-modbus_client-synchronous.adb",
+		  "gnat-sockets-connection_state_machine-modbus_client-synchronous.ads"
+       );
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Connections_Server.MODBUS;

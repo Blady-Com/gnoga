@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  12:25 15 May 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -54,6 +54,7 @@ package GNAT.Sockets.Server is
         (  Session_Down,         -- Not in use
            Session_Disconnected, -- Not connected
            Session_Connecting,   -- Pending connection to a remote host
+           Session_Handshaking,  -- Pending handshake
            Session_Connected,    -- Connected
            Session_Busy          -- Pending modal operation
         );
@@ -451,6 +452,16 @@ package GNAT.Sockets.Server is
 --
    function Has_Data (Client : Connection) return Boolean;
 --
+-- Image -- Conversion to string
+--
+--    Code - Socket error type
+--
+-- Returns :
+--
+--    Textual representation of
+--
+   function Image (Code : Error_Type) return String;
+--
 -- Image -- Printable representation of stream array
 --
 --    Data - To convert
@@ -494,6 +505,16 @@ package GNAT.Sockets.Server is
 --    True if the client is down
 --
    function Is_Down (Client : Connection) return Boolean;
+--
+-- Is_Incoming -- Connection type
+--
+--    Client - The client connection object
+--
+-- Returns :
+--
+--    True if client handles and incoming connection
+--
+   function Is_Incoming (Client : Connection) return Boolean;
 --
 -- Is_Trace_Received_On -- Tracing state
 --
@@ -968,7 +989,6 @@ package GNAT.Sockets.Server is
 --
 -- Internal low-level socket I/O operations
 --
---
 -- Process -- Input data processing
 --
 --    Listener  - The server
@@ -1300,6 +1320,7 @@ private
    record
       Clients          : Natural := 0;
       Servers          : Natural := 0;
+      Postponed_Count  : Natural := 0;
       Selector         : Selector_Type;
       Read_Sockets     : Socket_Set_Type;
       Write_Sockets    : Socket_Set_Type;

@@ -5,14 +5,16 @@ project Components.Connections_Server.HTTP_Server.Test_HTTPS_Server is
 
    for Exec_Dir use ".";
    for Source_Files use
-       (  "test_https_server.adb",
+       (  "test_https_client.adb",
+    	  "test_https_server.adb",
     	  "test_http_servers.adb",
     	  "test_http_servers.ads",
     	  "test_http_servers-secure.adb",
     	  "test_http_servers-secure.ads"
 	   );
    for Main use
-       (  "test_https_server.adb"
+       (  "test_https_client.adb",
+	      "test_https_server.adb"
 	   );
 
 end Components.Connections_Server.HTTP_Server.Test_HTTPS_Server;

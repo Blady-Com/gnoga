@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  12:25 15 May 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,11 +25,12 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;           use Ada.Calendar;
-with Ada.Exceptions;         use Ada.Exceptions;
-with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
-with Strings_Edit;           use Strings_Edit;
-with Strings_Edit.Integers;  use Strings_Edit.Integers;
+with Ada.Calendar;             use Ada.Calendar;
+with Ada.Characters.Handling;  use Ada.Characters.Handling;
+with Ada.Exceptions;           use Ada.Exceptions;
+with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
+with Strings_Edit;             use Strings_Edit;
+with Strings_Edit.Integers;    use Strings_Edit.Integers;
 
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
@@ -50,6 +51,9 @@ package body GNAT.Sockets.Server is
                       Trace_Any     => Trace_Encoded_Sent
                                     or Trace_Decoded_Sent
                    );
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Encoder'Class, Encoder_Ptr);
 
    procedure Append
              (  List  : in out Connection_Ptr;
@@ -96,7 +100,7 @@ package body GNAT.Sockets.Server is
       Client.Written.First_Written := 0;
       Client.Written.Free_To_Write := 0;
       Client.Written.Send_Blocked  := False;
-      Client.Transport             := null;
+      Free (Client.Transport);
    end Clear;
 
    procedure Close (Socket : in out Socket_Type) is
@@ -192,13 +196,13 @@ package body GNAT.Sockets.Server is
              )  is
    begin
       Client.Connect_No := 0;
-      Client.Session    := Session_Connected;
       Trace_Sending
       (  Listener.Factory.all,
          Client,
          False,
          ", connected"
       );
+      Free (Client.Transport);
       Client.Transport :=
          Create_Transport
          (  Listener.Factory,
@@ -206,7 +210,17 @@ package body GNAT.Sockets.Server is
             Client'Unchecked_Access
          );
       Set (Listener.Read_Sockets, Client.Socket);
-      Connected (Client);
+      if Client.Transport = null then -- No handshaking
+         Client.Session := Session_Connected;
+         Connected (Client);
+      else
+         Client.Session := Session_Handshaking;
+         Append
+         (  Listener.Postponed,
+            Client'Unchecked_Access,
+            Listener.Postponed_Count
+         );
+      end if;
    end Connected;
 
    function Create
@@ -245,9 +259,8 @@ package body GNAT.Sockets.Server is
              (  Listener : in out Connections_Server;
                 Client   : in out Connection'Class
              )  is
-      Count : Natural := 1;
    begin
-      Remove (Listener.Postponed, Client, Count);
+      Remove (Listener.Postponed, Client, Listener.Postponed_Count);
    end Disconnected;
 
    procedure Do_Connect
@@ -403,8 +416,6 @@ package body GNAT.Sockets.Server is
    end Finalize;
 
    procedure Finalize (Client : in out Connection) is
-      procedure Free is
-         new Ada.Unchecked_Deallocation (Encoder'Class, Encoder_Ptr);
    begin
       Close (Client.Socket);
       Free (Client.Transport);
@@ -511,6 +522,19 @@ package body GNAT.Sockets.Server is
       return Has_Data (Client.Read);
    end Has_Data;
 
+   function Image (Code : Error_Type) return String is
+      Result : String := Error_Type'Image (Code);
+   begin
+      for Index in Result'First + 1..Result'Last loop
+         if Result (Index) = '_' then
+            Result (Index) := ' ';
+         else
+            Result (Index) := To_Lower (Result (Index));
+         end if;
+      end loop;
+      return Result;
+   end Image;
+
    function Image (Data : Stream_Element_Array) return String is
       Length : Natural := 0;
    begin
@@ -576,6 +600,11 @@ package body GNAT.Sockets.Server is
          Client.Socket = No_Socket
       );
    end Is_Down;
+
+   function Is_Incoming (Client : Connection) return Boolean is
+   begin
+      return not Client.Client;
+   end Is_Incoming;
 
    function Is_Trace_Received_On
             (  Factory : Connections_Factory;
@@ -1298,16 +1327,23 @@ package body GNAT.Sockets.Server is
       Leftover  : Connection_Ptr;
       Client    : Connection_Ptr;
       Data_Left : Boolean;
-      Count     : Integer := 0;
    begin
       loop
          Client := Listener.Postponed;
          exit when Client = null;
-         Remove (Listener.Postponed, Client.all, Count);
+         Remove
+         (  Listener.Postponed,
+            Client.all,
+            Listener.Postponed_Count
+         );
          begin
-            Process (Listener, Client, Data_Left);
+            Process
+            (  Connections_Server'Class (Listener),
+               Client,
+               Data_Left
+            );
             if Data_Left then
-               Append (Leftover, Client, Count);
+               Append (Leftover, Client, Listener.Postponed_Count);
             end if;
          exception
             when Connection_Error =>
@@ -1371,6 +1407,7 @@ package body GNAT.Sockets.Server is
       Clear (Listener.Ready_To_Write,  Client.Socket);
       Clear (Listener.Write_Sockets,   Client.Socket);
       Clear (Listener.Ready_To_Write,  Client.Socket);
+      Free (Client.Transport);
       if Client.Session in Session_Connected..Session_Busy then
          begin -- Connected
             Client.Session := Session_Disconnected;
@@ -2147,7 +2184,6 @@ package body GNAT.Sockets.Server is
                         declare
                            This : Connection'Class renames Client.all;
                         begin
-                           This.Session        := Session_Connected;
                            This.Client         := False;
                            This.Connect_No     := 0;
                            This.Client_Address := Address;
@@ -2169,7 +2205,12 @@ package body GNAT.Sockets.Server is
                                  Listener,
                                  Client
                               );
-                           Connected (This);
+                           if This.Transport = null then -- Ready
+                              This.Session := Session_Connected;
+                              Connected (This);
+                           else
+                              This.Session := Session_Handshaking;
+                           end if;
                         end;
                      end if;
                   exception
@@ -2235,7 +2276,6 @@ package body GNAT.Sockets.Server is
                         end;
                         declare
                            Data_Left : Boolean;
-                           Count     : Integer := 0;
                         begin
                            if Client /= null then
                               Process (Listener.all, Client, Data_Left);
@@ -2243,7 +2283,7 @@ package body GNAT.Sockets.Server is
                                  Append
                                  (  Listener.Postponed,
                                     Client,
-                                    Count
+                                    Listener.Postponed_Count
                                  );
                               end if;
                            end if;
@@ -2343,8 +2383,10 @@ package body GNAT.Sockets.Server is
                               (  Listener.Factory.all,
                                  This,
                                  False,
-                                 ", failed to connect"
-                              );
+                                 (  ", failed to connect to "
+                                 &  Image (This.Client_Address)
+                                 &  ": " & Image (Code)
+                              )  );
                               Connect_Error (This, Code);
                               Do_Connect (Listener.all, Client);
                            end if;

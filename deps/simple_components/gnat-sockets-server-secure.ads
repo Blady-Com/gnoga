@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Interface                                      Winter, 2015       --
 --                                                           --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  22:35 24 May 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -142,10 +142,11 @@ private
 
    type TLS_Session
         (  Client : access Connection'Class;
-           Size   : Buffer_Length
+           Size   : Buffer_Length;
+           Flags  : Init_Flags
         )  is new Encoder (Size) with
    record
-      Session : aliased Session_Type (Init_Server or Init_Nonblock);
+      Session : aliased Session_Type (Flags);
       State   : TLS_Session_State := TLS_Handshake;
    end record;
 --

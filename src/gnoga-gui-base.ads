@@ -308,6 +308,7 @@ package Gnoga.Gui.Base is
       record
          Message  : Keyboard_Message_Type := Unknown;
          Key_Code : Integer;
+         Key_Char : Wide_Character;
          Alt      : Boolean := False;
          Control  : Boolean := False;
          Shift    : Boolean := False;

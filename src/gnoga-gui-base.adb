@@ -40,6 +40,7 @@ with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
+with Ada.Characters.Conversions;
 
 with Gnoga.Server.Connection;
 
@@ -56,8 +57,8 @@ package body Gnoga.Gui.Base is
    --  to the actual X,Y of the target.
 
    Keyboard_Event_Script : constant String :=
-     "e.which + '|' + e.altKey + '|' + e.ctrlKey + '|' + e.shiftKey + '|' + " &
-     "e.metaKey + '|'";
+     "e.keyCode + '|' + e.charCode + '|' + e.altKey + '|' + e.ctrlKey + '|'" &
+     " + e.shiftKey + '|' + e.metaKey + '|'";
 
    function Parse_Mouse_Event (Message       : String;
                                Mouse_Message : Mouse_Message_Type)
@@ -156,6 +157,7 @@ package body Gnoga.Gui.Base is
       function Split return String;
       function Split return Integer;
       function Split return Boolean;
+      function Split return Wide_Character;
 
       function Split return String is
       begin
@@ -175,9 +177,15 @@ package body Gnoga.Gui.Base is
       begin
          return Split = "true";
       end Split;
+
+      function Split return Wide_Character is
+      begin
+         return Wide_Character'Val (Split);
+      end Split;
    begin
       Event.Message := Keyboard_Message;
       Event.Key_Code := Split;
+      Event.Key_Char := Split;
       Event.Alt := Split;
       Event.Control := Split;
       Event.Shift := Split;
@@ -1964,10 +1972,11 @@ package body Gnoga.Gui.Base is
          declare
             E : Keyboard_Event_Record :=
               Parse_Keyboard_Event (Message, Key_Press);
-            C : Character;
+            C : Character :=
+              Ada.Characters.Conversions.To_Character (E.Key_Char);
          begin
             Object.Fire_On_Key_Press (E);
-            Object.Fire_On_Wide_Character (Wide_Character'Val (E.Key_Code));
+            Object.Fire_On_Wide_Character (E.Key_Char);
 
             if E.Key_Code > 255 then
                C := Character'Val (0);

@@ -1977,13 +1977,6 @@ package body Gnoga.Gui.Base is
          begin
             Object.Fire_On_Key_Press (E);
             Object.Fire_On_Wide_Character (E.Key_Char);
-
-            if E.Key_Code > 255 then
-               C := Character'Val (0);
-            else
-               C := Character'Val (E.Key_Code);
-            end if;
-
             Object.Fire_On_Character (C);
          end;
 

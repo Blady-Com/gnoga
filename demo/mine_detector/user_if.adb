@@ -1,7 +1,8 @@
 -- Mine Detector Game
--- Copyright (C) 2014 by PragmAda Software Engineering.  All rights reserved.
+-- Copyright (C) 2015 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
+-- V7.3 2015 Jun 15          Changed from Docker to Grid and added touch-screen support
 -- V7.2 2015 Jan 01          Improved "termination" screen
 -- V7.1 2014 Dec 10          Protected field-updating operations
 -- V7.0 2014 Dec 01          First Gnoga version
@@ -20,7 +21,7 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Element.Table;
-with Gnoga.Gui.View.Docker;
+with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Window;
 with Gnoga.Types;
 
@@ -48,7 +49,7 @@ package body User_IF is
    type App_Info is new Gnoga.Types.Connection_Data_Type with record
       Field                     : Standard.Field.Field_Info (App_Data => App_Info'Unchecked_Access);
       Window                    : Gnoga.Gui.Window.Pointer_To_Window_Class;
-      Big_View                  : Gnoga.Gui.View.Docker.Docker_View_Type;
+      Big_View                  : Gnoga.Gui.View.Grid.Grid_View_Type;
       Left_View                 : aliased Gnoga.Gui.View.View_Type;
       Right_View                : aliased Gnoga.Gui.View.View_Type;
       Mines_Left                : Gnoga.Gui.Element.Common.Span_Type;
@@ -66,6 +67,9 @@ package body User_IF is
       About                     : Gnoga.Gui.Element.Common.Button_Type;
       Quit                      : Gnoga.Gui.Element.Common.Button_Type;
       Game_Over                 : Gnoga.Gui.Element.Common.Span_Type;
+      Mode_Form                 : Gnoga.Gui.Element.Form.Form_Type;
+      Mode_Check                : Gnoga.Gui.Element.Form.Check_Box_Type;
+      Mode_Label                : Gnoga.Gui.Element.Form.Label_Type;
       Auto_Marking_Desired      : Atomic_Boolean := False;
       Extended_Stepping_Desired : Atomic_Boolean := False;
       Sequentializer            : Sequentialize;
@@ -309,7 +313,12 @@ package body User_IF is
          "The 'Auto Step after Mark' check box enables the auto-" &
          "stepping algorithm after a cell is marked, either " &
          "directly or indirectly through the auto-marking " &
-         "algorithm.";
+         "algorithm." & Latin_1.LF & Latin_1.LF &
+         "The 'Mark' check box is for use with touch screens or other " &
+         "systems for which right clicking is difficult or impossible. " &
+         "When this box is not checked, clicking on a cells steps on the " &
+         "cell. When this box is checked, clicking on a cell marks or " &
+         "unmarks the cell.";
    begin -- Rules_Pressed
       App_Data.Window.Alert (Message => Rules);
    end Rules_Pressed;
@@ -318,7 +327,7 @@ package body User_IF is
       App_Data : App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- About_Pressed
       App_Data.Window.Alert (Message => "Mine Detector" & Latin_1.LF &
-                               		"Copyright (C) 2014 by" & Latin_1.LF &
+                               		"Copyright (C) 2015 by" & Latin_1.LF &
                                		"PragmAda Software Engineering" & Latin_1.LF &
                                		"Released as Free Software under the terms" & Latin_1.LF &
                                		"of the GNU Public License" & Latin_1.LF &
@@ -365,9 +374,8 @@ package body User_IF is
       Main_Window.Connection_Data (Data => App_Data);
       Field.Operations.Set_Mine_Count (Field => App_Data.Field, New_Mine_Count => Levels (Default_Level).Mines);
       Main_Window.Buffer_Connection;
-      App_Data.Big_View.Create (Parent => Main_Window);
-      App_Data.Left_View.Create (Parent => App_Data.Big_View);
-      App_Data.Big_View.Left_Dock (Dock => App_Data.Left_View'Access);
+      App_Data.Big_View.Create (Parent => Main_Window, Layout => Gnoga.Gui.View.Grid.Horizontal_Split, Set_Sizes => False);
+      App_Data.Left_View.Create (Parent => App_Data.Big_View.Panel (1, 1).all);
       App_Data.Left_View.Hidden;
 
       Button_Row    : for Row in App_Data.Button'Range(1) loop
@@ -390,8 +398,8 @@ package body User_IF is
       end loop Button_Row;
 
       App_Data.Left_View.Hidden (Value => False);
-      App_Data.Right_View.Create (Parent => App_Data.Big_View);
-      App_Data.Big_View.Right_Dock (Dock => App_Data.Right_View'Access);
+      
+      App_Data.Right_View.Create (Parent => App_Data.Big_View.Panel (1, 2).all);
       App_Data.Mines_Left.Create (Parent => App_Data.Right_View, Content => "0");
       App_Data.Mines_Left.Width (Value => 100);
       App_Data.Mines_Left.Text_Alignment (Value => Gnoga.Gui.Element.Center);
@@ -432,6 +440,12 @@ package body User_IF is
       App_Data.Game_Over.Width (Value => 100);
       App_Data.Game_Over.Text_Alignment (Value => Gnoga.Gui.Element.Center);
       App_Data.Game_Over.Display (Value => "block");
+      App_Data.Mode_Form.Create (Parent => App_Data.Right_View);
+      App_Data.Mode_Form.Display (Value => "block");
+      App_Data.Mode_Check.Create (Form => App_Data.Mode_Form);
+      App_Data.Mode_Check.Checked (Value => False);
+      App_Data.Mode_Label.Create
+         (Form => App_Data.Mode_Form, Label_For => App_Data.Mode_Check, Content => "Mark", Auto_Place => False);
       Main_Window.Buffer_Connection (Value => False);
       Field.Operations.Reset (Field => App_Data.Field);
    end On_Connect;
@@ -447,6 +461,8 @@ package body User_IF is
          when Button_Press =>
                if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
                   Show_Game_Over (App_Data => App_Data);
+               elsif App_Data.Mode_Check.Checked then
+                  Field.Operations.Mark (Field => App_Data.Field, Cell => Cell);
                else
                   Field.Operations.Step (Field => App_Data.Field, Cell => Cell);
                end if;

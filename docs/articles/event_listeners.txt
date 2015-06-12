@@ -1,0 +1,133 @@
+Event Listener Interfaces with Gnoga
+====================================
+By Jeremiah Breedan
+
+An option that I have used is to create event listener interface.  I extend the button class to include an event generator that maintains a list of listeners and I add an Add_Listener procedure so outside views can add themselves as listeners.  I create a handler that Gnoga expects but have that handler operate the generator to fire the events out of the button class.
+
+Then I extend whichever view I am using to implement the listening interface, override the create procedure, and have it call the Add_Listener procedure mentioned above.  Then I just have to override the listener procedure that handles the event and I have both the parent view that is interested in the event and the button that sourced the original event.
+
+It's a bit complex, but it allows me to have any structure I want be able to respond to any event just by adding itself as a listener to the event.
+
+The big thing is Handle_On_Click gives you the containing view type which allows you to modify other controls using the on click from the button.  You can also pass the on click event to other parent views who may want to modify their own layouts based on that button event.  You would just need to add a public Add_On_Click_Listener (or whatever name) procedure to Listener_View.View_Type (or whatever view you create) and have it call the button's Add_On_Click_Listener procedure.
+
+Button_For_Listeners is the extended class for Gnoga's Button_Type
+Listener_View is just a test view type that would contain a Button among other controls.
+
+button_for_listeners.ads
+-----------------------------------------------------------------------------------------------------------------------------------
+with Gnoga.Gui.Element.Common;
+with Ada.Containers.Vectors;
+
+package Button_For_Listeners is
+
+   type Listener_Type is limited interface;
+
+   type Button_Type is new Gnoga.Gui.Element.Common.Button_Type with private;
+
+   procedure Add_On_Click_Listener
+     (Self     : in out Button_Type;
+      Listener : not null access Listener_Type'Class);
+
+   procedure Handle_On_Click(Listener : in out Listener_Type;
+                             Source   : in out Button_Type'Class) is abstract;
+
+
+private
+   type Listener_Class_Access is access all Listener_Type'Class;
+   package Vectors is new Ada.Containers.Vectors(Natural,Listener_Class_Access);
+
+   type Button_Type is new Gnoga.Gui.Element.Common.Button_Type with record
+      On_Click_Listeners : Vectors.Vector;
+   end record;
+
+end Button_For_Listeners;
+
+
+
+button_for_listeners.adb
+-----------------------------------------------------------------------------------------------------------------------------------
+with Gnoga.Gui.Base;
+
+package body Button_For_Listeners is
+
+   procedure Gnoga_On_Click(Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      Cursor : Vectors.Cursor := Button_Type(Object).On_Click_Listeners.First;
+   begin
+      while Vectors.Has_Element(Cursor) loop
+         Vectors.Element(Cursor).Handle_On_Click(Button_Type(Object));
+         Cursor := Vectors.Next(Cursor);
+      end loop;
+   end Gnoga_On_Click;
+
+   procedure Add_On_Click_Listener
+     (Self     : in out Button_Type;
+      Listener : not null access Listener_Type'Class) is
+   begin
+      Self.On_Click_Listeners.Append(Listener);
+      Self.On_Click_Handler(Gnoga_On_Click'Access);
+   end Add_On_Click_Listener;
+
+end Button_For_Listeners;
+
+
+
+
+listener_view.ads
+-----------------------------------------------------------------------------------------------------------------------------------
+with Gnoga.Gui.View;
+with Gnoga.Gui.Base;
+with Button_For_Listeners;
+
+package Listener_View is
+   package Buttons renames Button_For_Listeners;
+
+   type View_Type is new Gnoga.Gui.View.View_Type
+                         and Buttons.Listener_Type with private;
+
+   overriding
+   procedure Create
+     (Self   : in out View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String  := "");
+
+private
+   type Self_Ref_Type(Ref : access Buttons.Listener_Type'Class)
+      is limited null record;
+
+   type View_Type is new Gnoga.Gui.View.View_Type
+                         and Buttons.Listener_Type with record
+      Button : Buttons.Button_Type;
+      Self_Reference : Self_Ref_Type(View_Type'Access);
+   end record;
+
+   overriding
+   procedure Handle_On_Click(Listener : in out View_Type;
+                             Source   : in out Buttons.Button_Type'Class);
+
+end Listener_View;
+
+
+
+listener_view.adb
+-----------------------------------------------------------------------------------------------------------------------------------
+package body Listener_View is
+   procedure Create(Self   : in out View_Type;
+                    Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+                    ID     : in     String  := "") is
+   begin
+      Gnoga.Gui.View.View_Type(Self).Create(Parent);
+      Self.Button.Create(Self,"Test Button");
+      Self.Button.Add_On_Click_Listener(Self.Self_Reference.Ref);
+   end Create;
+
+   Test_Count : Natural := 0;
+
+   overriding
+   procedure Handle_On_Click(Listener : in out View_Type;
+                             Source   : in out Buttons.Button_Type'Class) is
+   begin
+      Listener.Button.Text("Testing: " & Integer'Image(Test_Count));
+      Test_Count := Test_Count + 1;
+   end Handle_On_Click;
+
+end Listener_View;

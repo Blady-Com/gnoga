@@ -110,7 +110,7 @@ package body Chattanooga.UI is
       App.Connect_Button.Create (Form => App.Email_Form, Value => "Connect");
       App.Email_Form.New_Line;
       App.Error.Create (Parent => App.Email_Form, Content => "");
-      App.Error.Color (Value => Gnoga.Types.Colors.Red);
+      App.Error.Color (Value => Gnoga.Types.Colors.To_String (Gnoga.Types.Colors.Red));
       App.Error.Display (Value => "block");
       App.Email_Form.New_Line;
       App.Email_Form.New_Line;

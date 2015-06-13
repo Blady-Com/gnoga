@@ -28,7 +28,7 @@ procedure Pack is
    begin
       Main_View.Panel (2, 1).Box_Width ("10%");
       Split_View.Panel (1, 1).Box_Height ("90%");
-      Split_View.Panel (2, 1).Background_Color (Yellow_Green);
+      Split_View.Panel (2, 1).Background_Color (To_RGBA (Yellow_Green));
    end On_Click;
 begin
    Gnoga.Application.Open_URL;
@@ -42,7 +42,7 @@ begin
                      Set_Sizes => True);
 
    Main_View.Panel (1, 1).Box_Height ("10%");
-   Main_View.Panel (1, 1).Background_Color (Pink);
+   Main_View.Panel (1, 1).Background_Color (To_RGBA (Pink));
 
    --  Demonstrate packing left and right
 
@@ -75,7 +75,7 @@ begin
    Main_View.Panel (1, 1).Element ("Menu_Item_5").Layout_Float (Right);
 
    Main_View.Panel (2, 1).Box_Height ("80%");
-   Main_View.Panel (2, 1).Background_Color (Orange);
+   Main_View.Panel (2, 1).Background_Color (To_RGBA (Orange));
    Main_View.Panel (2, 1).Overflow (Auto);
    Main_View.Panel (2, 1).Box_Width ("30%");
    Main_View.Panel (2, 1).Resizable (Horizontal);
@@ -104,12 +104,12 @@ begin
    B3.Create (Form_Grid.Panel (3, 2).all, "Button 3");
 
    Main_View.Panel (3, 1).Box_Height ("10%");
-   Main_View.Panel (3, 1).Background_Color (Blue);
+   Main_View.Panel (3, 1).Background_Color (To_RGBA (Blue));
 
    Split_View.Create (Main_View.Panel (2, 2).all, Vertical_Split);
 
-   Split_View.Panel (1, 1).Background_Color (Aqua);
-   Split_View.Panel (2, 1).Background_Color (Brown);
+   Split_View.Panel (1, 1).Background_Color (To_RGBA (Aqua));
+   Split_View.Panel (2, 1).Background_Color (To_RGBA (Brown));
 
    A_View.Create (Split_View.Panel (1, 1).all);
    A_View.Fill_Parent;

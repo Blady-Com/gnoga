@@ -7,7 +7,7 @@
 --                                 S p e c                                  --
 --                                                                          --
 --                                                                          --
---                     Copyright (C) 2014 Jeff Carter                       --
+--                     Copyright (C) 2015 Pascal Pignard                    --
 --                                                                          --
 --  This library is free software;  you can redistribute it and/or modify   --
 --  it under terms of the  GNU General Public License  as published by the  --
@@ -37,144 +37,159 @@
 ------------------------------------------------------------------------------
 
 package Gnoga.Types.Colors is
-   Alice_Blue              : constant String := "AliceBlue";
-   Antique_White           : constant String := "AntiqueWhite";
-   Aqua                    : constant String := "Aqua";
-   Aquamarine              : constant String := "Aquamarine";
-   Azure                   : constant String := "Azure";
-   Beige                   : constant String := "Beige";
-   Bisque                  : constant String := "Bisque";
-   Black                   : constant String := "Black";
-   Blanched_Almond         : constant String := "BlanchedAlmond";
-   Blue                    : constant String := "Blue";
-   Blue_Violet             : constant String := "BlueViolet";
-   Brown                   : constant String := "Brown";
-   Burly_Wood              : constant String := "BurlyWood";
-   Cadet_Blue              : constant String := "CadetBlue";
-   Chartreuse              : constant String := "Chartreuse";
-   Chocolate               : constant String := "Chocolate";
-   Coral                   : constant String := "Coral";
-   Cornflower_Blue         : constant String := "CornflowerBlue";
-   Cornsilk                : constant String := "Cornsilk";
-   Crimson                 : constant String := "Crimson";
-   Cyan                    : constant String := "Cyan";
-   Dark_Blue               : constant String := "DarkBlue";
-   Dark_Cyan               : constant String := "DarkCyan";
-   Dark_Golden_Rod         : constant String := "DarkGoldenRod";
-   Dark_Gray               : constant String := "DarkGray";
-   Dark_Green              : constant String := "DarkGreen";
-   Dark_Khaki              : constant String := "DarkKhaki";
-   Dark_Magenta            : constant String := "DarkMagenta";
-   Dark_Olive_Green        : constant String := "DarkOliveGreen";
-   Dark_Orange             : constant String := "DarkOrange";
-   Dark_Orchid             : constant String := "DarkOrchid";
-   Dark_Red                : constant String := "DarkRed";
-   Dark_Salmon             : constant String := "DarkSalmon";
-   Dark_Sea_Green          : constant String := "DarkSeaGreen";
-   Dark_Slate_Blue         : constant String := "DarkSlateBlue";
-   Dark_Slate_Gray         : constant String := "DarkSlateGray";
-   Dark_Turquoise          : constant String := "DarkTurquoise";
-   Dark_Violet             : constant String := "DarkViolet";
-   DeepPink                : constant String := "DeepPink";
-   Deep_Sky_Blue           : constant String := "DeepSkyBlue";
-   Dim_Gray                : constant String := "DimGray";
-   Dodger_Blue             : constant String := "DodgerBlue";
-   Fire_Brick              : constant String := "FireBrick";
-   Floral_White            : constant String := "FloralWhite";
-   Forest_Green            : constant String := "ForestGreen";
-   Fuchsia                 : constant String := "Fuchsia";
-   Gainsboro               : constant String := "Gainsboro";
-   Ghost_White             : constant String := "GhostWhite";
-   Gold_Deep_Sky_Blue      : constant String := "GoldDeepSkyBlue";
-   Golden_Rod              : constant String := "GoldenRod";
-   Gray                    : constant String := "Gray";
-   Green                   : constant String := "Green";
-   Green_Yellow            : constant String := "GreenYellow";
-   Honey_Dew               : constant String := "HoneyDew";
-   Hot_Pink                : constant String := "HotPink";
-   Indian_Red              : constant String := "IndianRed";
-   Indigo                  : constant String := "Indigo";
-   Ivory                   : constant String := "Ivory";
-   Khaki                   : constant String := "Khaki";
-   Lavender                : constant String := "Lavender";
-   Lavender_Blush          : constant String := "LavenderBlush";
-   Lawn_Green              : constant String := "LawnGreen";
-   Lemon_Chiffon           : constant String := "LemonChiffon";
-   Light_Blue              : constant String := "LightBlue";
-   Light_Coral             : constant String := "LightCoral";
-   Light_Cyan              : constant String := "LightCyan";
-   Light_Golden_Rod_Yellow : constant String := "LightGoldenRodYellow";
-   Light_Gray              : constant String := "LightGray";
-   Light_Green             : constant String := "LightGreen";
-   Light_Pink              : constant String := "LightPink";
-   Light_Salmon            : constant String := "LightSalmon";
-   Light_Sea_Green         : constant String := "LightSeaGreen";
-   Light_Sky_Blue          : constant String := "LightSkyBlue";
-   Light_Slate_Gray        : constant String := "LightSlateGray";
-   Light_Steel_Blue        : constant String := "LightSteelBlue";
-   Light_Yellow            : constant String := "LightYellow";
-   Lime                    : constant String := "Lime";
-   Lime_Green              : constant String := "LimeGreen";
-   Linen                   : constant String := "Linen";
-   Magenta                 : constant String := "Magenta";
-   Maroon                  : constant String := "Maroon";
-   Medium_Aqua_Marine      : constant String := "MediumAquaMarine";
-   Medium_Blue             : constant String := "MediumBlue";
-   Medium_Orchid           : constant String := "MediumOrchid";
-   Medium_Purple           : constant String := "MediumPurple";
-   Medium_Sea_Green        : constant String := "MediumSeaGreen";
-   Medium_Slate_Blue       : constant String := "MediumSlateBlue";
-   Medium_Spring_Green     : constant String := "MediumSpringGreen";
-   Medium_Turquoise        : constant String := "MediumTurquoise";
-   Medium_Violet_Red       : constant String := "MediumVioletRed";
-   Midnight_Blue           : constant String := "MidnightBlue";
-   Mint_Cream              : constant String := "MintCream";
-   Misty_Rose              : constant String := "MistyRose";
-   Moccasin                : constant String := "Moccasin";
-   Navajo_White            : constant String := "NavajoWhite";
-   Navy                    : constant String := "Navy";
-   Old_Lace                : constant String := "OldLace";
-   Olive                   : constant String := "Olive";
-   Olive_Drab              : constant String := "OliveDrab";
-   Orange                  : constant String := "Orange";
-   Orange_Red              : constant String := "OrangeRed";
-   Orchid                  : constant String := "Orchid";
-   Pale_Golden_Rod         : constant String := "PaleGoldenRod";
-   Pale_Green              : constant String := "PaleGreen";
-   Pale_Turquoise          : constant String := "PaleTurquoise";
-   Pale_Violet_Red         : constant String := "PaleVioletRed";
-   Papaya_Whip             : constant String := "PapayaWhip";
-   Peach_Puff              : constant String := "PeachPuff";
-   Peru                    : constant String := "Peru";
-   Pink                    : constant String := "Pink";
-   Plum                    : constant String := "Plum";
-   Powder_Blue             : constant String := "PowderBlue";
-   Purple                  : constant String := "Purple";
-   Red                     : constant String := "Red";
-   Rosy_Brown              : constant String := "RosyBrown";
-   Royal_Blue              : constant String := "RoyalBlue";
-   Saddle_Brown            : constant String := "SaddleBrown";
-   Salmon                  : constant String := "Salmon";
-   Sandy_Brown             : constant String := "SandyBrown";
-   Sea_Green               : constant String := "SeaGreen";
-   Sea_Shell               : constant String := "SeaShell";
-   Sienna                  : constant String := "Sienna";
-   Silver                  : constant String := "Silver";
-   Sky_Blue                : constant String := "SkyBlue";
-   Slate_Blue              : constant String := "SlateBlue";
-   Slate_Gray              : constant String := "SlateGray";
-   Snow                    : constant String := "Snow";
-   Spring_Green            : constant String := "SpringGreen";
-   Steel_Blue              : constant String := "SteelBlue";
-   Tan                     : constant String := "Tan";
-   Teal                    : constant String := "Teal";
-   Thistle                 : constant String := "Thistle";
-   Tomato                  : constant String := "Tomato";
-   Turquoise               : constant String := "Turquoise";
-   Violet                  : constant String := "Violet";
-   Wheat                   : constant String := "Wheat";
-   White                   : constant String := "White";
-   White_Smoke             : constant String := "WhiteSmoke";
-   Yellow                  : constant String := "Yellow";
-   Yellow_Green            : constant String := "YellowGreen";
+   type Color_Enumeration is
+     (Alice_Blue,
+      Antique_White,
+      Aqua,
+      Aquamarine,
+      Azure,
+      Beige,
+      Bisque,
+      Black,
+      Blanched_Almond,
+      Blue,
+      Blue_Violet,
+      Brown,
+      Burly_Wood,
+      Cadet_Blue,
+      Chartreuse,
+      Chocolate,
+      Coral,
+      Cornflower_Blue,
+      Cornsilk,
+      Crimson,
+      Cyan,
+      Dark_Blue,
+      Dark_Cyan,
+      Dark_Golden_Rod,
+      Dark_Gray,
+      Dark_Green,
+      Dark_Grey,
+      Dark_Khaki,
+      Dark_Magenta,
+      Dark_Olive_Green,
+      Dark_Orange,
+      Dark_Orchid,
+      Dark_Red,
+      Dark_Salmon,
+      Dark_Sea_Green,
+      Dark_Slate_Blue,
+      Dark_Slate_Gray,
+      Dark_Slate_Grey,
+      Dark_Turquoise,
+      Dark_Violet,
+      DeepPink,
+      Deep_Sky_Blue,
+      Dim_Gray,
+      Dim_Grey,
+      Dodger_Blue,
+      Fire_Brick,
+      Floral_White,
+      Forest_Green,
+      Fuchsia,
+      Gainsboro,
+      Ghost_White,
+      Gold_Deep_Sky_Blue,
+      Golden_Rod,
+      Gray,
+      Green,
+      Green_Yellow,
+      Grey,
+      Honey_Dew,
+      Hot_Pink,
+      Indian_Red,
+      Indigo,
+      Ivory,
+      Khaki,
+      Lavender,
+      Lavender_Blush,
+      Lawn_Green,
+      Lemon_Chiffon,
+      Light_Blue,
+      Light_Coral,
+      Light_Cyan,
+      Light_Golden_Rod_Yellow,
+      Light_Gray,
+      Light_Green,
+      Light_Grey,
+      Light_Pink,
+      Light_Salmon,
+      Light_Sea_Green,
+      Light_Sky_Blue,
+      Light_Slate_Gray,
+      Light_Slate_Grey,
+      Light_Steel_Blue,
+      Light_Yellow,
+      Lime,
+      Lime_Green,
+      Linen,
+      Magenta,
+      Maroon,
+      Medium_Aqua_Marine,
+      Medium_Blue,
+      Medium_Orchid,
+      Medium_Purple,
+      Medium_Sea_Green,
+      Medium_Slate_Blue,
+      Medium_Spring_Green,
+      Medium_Turquoise,
+      Medium_Violet_Red,
+      Midnight_Blue,
+      Mint_Cream,
+      Misty_Rose,
+      Moccasin,
+      Navajo_White,
+      Navy,
+      Old_Lace,
+      Olive,
+      Olive_Drab,
+      Orange,
+      Orange_Red,
+      Orchid,
+      Pale_Golden_Rod,
+      Pale_Green,
+      Pale_Turquoise,
+      Pale_Violet_Red,
+      Papaya_Whip,
+      Peach_Puff,
+      Peru,
+      Pink,
+      Plum,
+      Powder_Blue,
+      Purple,
+      Red,
+      Rosy_Brown,
+      Royal_Blue,
+      Saddle_Brown,
+      Salmon,
+      Sandy_Brown,
+      Sea_Green,
+      Sea_Shell,
+      Sienna,
+      Silver,
+      Sky_Blue,
+      Slate_Blue,
+      Slate_Gray,
+      Slate_Grey,
+      Snow,
+      Spring_Green,
+      Steel_Blue,
+      Tan,
+      Teal,
+      Thistle,
+      Tomato,
+      Turquoise,
+      Violet,
+      Wheat,
+      White,
+      White_Smoke,
+      Yellow,
+      Yellow_Green);
+
+   function To_String (Value : Color_Enumeration) return String;
+   --  Returns color name
+
+   function To_RGBA (Value : Color_Enumeration) return Gnoga.Types.RGBA_Type;
+   --  Returns color RGBA_Type
+
 end Gnoga.Types.Colors;

@@ -47,7 +47,7 @@ endif
 endif
 endif
 
-all: gnoga gnoga_tools snake mine_detector tutorials chattanooga 
+all: gnoga gnoga_tools demo tutorials
 
 setup:
 ifeq (${PRJ_TARGET}, Windows)
@@ -68,7 +68,7 @@ gnoga: setup
 gnoga_secure: gnoga
 	cd ssl && $(BUILDER) -p -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-gnoga_tools: 
+gnoga_tools:
 	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 release: setup
@@ -81,6 +81,16 @@ install: release gnoga_tools
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server-http_server.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
+
+install_debug: gnoga gnoga_tools
+	touch deps/simple_components/strings_edit-text_edit.o
+	cd src && gprinstall -a -f --prefix=$(PREFIX) -p gnoga.gpr
+	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components.gpr
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server.gpr --install-name=components-connections_server
+	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server-http_server.gpr --install-name=components-connections_server-http_server
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
 
@@ -105,7 +115,7 @@ native_osx:
 ace_editor:
 	- cd js && git clone https://github.com/ajaxorg/ace-builds.git
 
-demo: snake mine_detector chattanooga adaedit adablog
+demo: snake mine_detector chattanooga adaedit adablog connect_four
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -121,6 +131,9 @@ adaedit: ace_editor
 
 adablog:
 	cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
+connect_four:
+	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -153,6 +166,7 @@ clean:
 	cd demo/mine_detector && $(CLEANER) -Pmine_detector.gpr
 	cd demo/chattanooga && $(CLEANER) -Pchattanooga.gpr
 	cd demo/adablog && $(CLEANER) -Padablog.gpr
+	cd demo/connect_four && $(CLEANER) -Pconnect_four.gpr
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(CLEANER) -Ptutorial_02.gpr

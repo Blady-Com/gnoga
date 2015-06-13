@@ -5,3 +5,5 @@ gnatinspect.db
 .DS_Store
 *.o
 *.ali
+*.npp
+*.cgpr

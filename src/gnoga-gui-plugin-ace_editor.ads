@@ -85,12 +85,15 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    procedure Current_Line (View  : in out Ace_Editor_Type;
                            Value : in     Positive);
 
-   --   function Current_Line (View : Ace_Editor_Type) return Natural;
+   function Current_Line (View : Ace_Editor_Type) return Natural;
 
-   --   function Current_Column (View : Ace_Editor_Type) return Natural;
+   function Current_Column (View : Ace_Editor_Type) return Natural;
 
    function Length (View : Ace_Editor_Type) return Natural;
    --  Total lines in View
+
+   function Get_New_Line_Character
+     (View : Gnoga.Gui.Plugin.Ace_Editor.Ace_Editor_Type) return String;
 
    procedure Default_Tab_Size (View  : in out Ace_Editor_Type;
                                Value : in     Positive);
@@ -123,8 +126,10 @@ package Gnoga.Gui.Plugin.Ace_Editor is
                         Reg_Exp        : in     Boolean := False);
 
    procedure Find_Next (View : in out Ace_Editor_Type);
+
    procedure Replace_Text (View : in out Ace_Editor_Type;
                            Text : in     String);
+
    procedure Replace_All (View : in out Ace_Editor_Type;
                           Text : in     String);
    --  Requires a previous Find_Text
@@ -134,6 +139,88 @@ package Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Set_Language_Mode (View     : in out Ace_Editor_Type;
                                 Language : in     String);
+
+   procedure Scroll_To_Line
+     (View            : in out Ace_Editor_Type;
+      Line            :        Positive;
+      Center, Animate :        Boolean := False);
+
+   procedure Move_Cursor_To
+     (View        : in out Ace_Editor_Type;
+      Row, Column :        Natural);
+
+   procedure Navigate_To
+     (View        : in out Ace_Editor_Type;
+      Row, Column :        Natural);
+
+   procedure Navigate_Left
+     (View  : in out Ace_Editor_Type;
+      Times :        Natural);
+
+   procedure Navigate_Right
+     (View  : in out Ace_Editor_Type;
+      Times :        Natural);
+
+   procedure Navigate_Up
+     (View  : in out Ace_Editor_Type;
+      Times :        Natural);
+
+   procedure Navigate_Down
+     (View  : in out Ace_Editor_Type;
+      Times :        Natural);
+
+   procedure Navigate_Line_End (View : in out Ace_Editor_Type);
+
+   procedure Navigate_Line_Start (View : in out Ace_Editor_Type);
+
+   procedure Delete (View : in out Ace_Editor_Type);
+
+   procedure Backspace (View : in out Ace_Editor_Type);
+
+   procedure Remove_To_Line_End (View : in out Ace_Editor_Type);
+
+   procedure Remove_To_Line_Start (View : in out Ace_Editor_Type);
+
+   procedure Remove_In_Line
+     (View                          : in out Ace_Editor_Type;
+      Row, Start_Column, End_Column :        Natural);
+
+   procedure Remove_Lines
+     (View                : in out Ace_Editor_Type;
+      First_Row, Last_Row :        Natural);
+
+   procedure Set_Highlight_Active_Line
+     (View             : in out Ace_Editor_Type;
+      Should_Highlight :        Boolean);
+
+   procedure Set_Highlight_Selected_Word
+     (View             : in out Ace_Editor_Type;
+      Should_Highlight :        Boolean);
+
+   procedure Set_Overwrite
+     (View      : in out Ace_Editor_Type;
+      Overwrite :        Boolean);
+
+   procedure Set_Show_Print_Margin
+     (View              : in out Ace_Editor_Type;
+      Show_Print_Margin :        Boolean);
+
+   procedure Set_Use_Wrap_Mode
+     (View          : in out Ace_Editor_Type;
+      Use_Wrap_Mode :        Boolean);
+
+   procedure Set_Wrap_Limit_Range
+     (View     : in out Ace_Editor_Type;
+      Min, Max :        Natural);
+
+   procedure Insert
+     (View             : in out Ace_Editor_Type;
+      Start_Row, Index :        Natural;
+      Text             :        String);
+
+   procedure InsertNewLine
+     (View             : in out Ace_Editor_Type;
+      Start_Row, Index :        Natural);
 
    -------------------------------------------------------------------------
    --  Ace_Editor_Type - Internal Methods

@@ -47,7 +47,7 @@ package Gnoga.Server.Connection is
                          Port    : in Integer := 8080;
                          Boot    : in String  := "boot.html";
                          Verbose : in Boolean := True);
-   --  Ininialize connection to web server and dispatchers
+   --  Ininialize connection to webserver and dispatchers
    --  If Host = "" then server will listen on all network interfaces.
    --  If Host = "localhost" use will be constrained to local machine only.
    --  If Verbose then display start up details.

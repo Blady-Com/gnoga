@@ -37,6 +37,9 @@
 
 with Ada.Strings.Unbounded;
 
+with Gnoga.Server.Connection;
+pragma Elaborate_All (Gnoga.Server.Connection);
+
 with Gnoga.Types;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Document;

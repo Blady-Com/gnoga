@@ -339,6 +339,7 @@ package Gnoga.Gui.Base is
 
    type Drop_Event is access
      procedure (Object    : in out Base_Type'Class;
+                X, Y      : in     Integer;
                 Drag_Text : in     String);
 
    -- Object Events --
@@ -507,6 +508,7 @@ package Gnoga.Gui.Base is
                               Handler   : in     Drop_Event;
                               Drag_Type : in     String := "text/plain");
    procedure Fire_On_Drop (Object    : in out Base_Type;
+                           X, Y      : in     Integer;
                            Drag_Text : in     String);
    --  To become a drop target an element only needs to handle On_Drop
    --  On_Drag_Enter and On_Drag_Leave can be used to show indication

@@ -70,7 +70,8 @@ package body Gnoga.Gui.Base is
                                   return Keyboard_Event_Record;
    --  Parse event message in to Keyboard_Event_Record
 
-   function Parse_Drop_Event (Message : String) return String;
+   function Parse_Drop_Event (X, Y : out Integer; Message : in String)
+                              return String;
    --  Parse on_drop event message
 
    -----------------------
@@ -198,11 +199,41 @@ package body Gnoga.Gui.Base is
    -- Parse_Drop_Event --
    ----------------------
 
-   function Parse_Drop_Event (Message : String) return String is
+   function Parse_Drop_Event (X, Y : out Integer; Message : in String)
+                              return String
+   is
       use Ada.Strings.Fixed;
+
+      S      : Integer := Message'First;
+      F      : Integer := Message'First - 1;
+
+      function Split return String;
+      function Split return Integer;
+
+      function Split return String is
+      begin
+         S := F + 1;
+         F := Index (Source  => Message,
+                     Pattern => "|",
+                     From    => S);
+         return Message (S .. (F - 1));
+      end Split;
+
+      function Split return Integer is
+      begin
+         return Integer'Value (Split);
+      end Split;
    begin
-      return Message (Index (Source  => Message, Pattern => "|") + 1 ..
-                        Message'Last);
+      declare
+         temp : String := Split;
+         --  The first param is undefined since was a JS procedure call
+      begin
+         null;
+      end;
+
+      X := Split;
+      Y := Split;
+      return Split;
    end Parse_Drop_Event;
 
    ----------------
@@ -1508,17 +1539,20 @@ package body Gnoga.Gui.Base is
                             Message => "",
                             Script  =>
                               "e.preventDefault() + '|' + " &
+                              "e.originalEvent.clientX + '|' + " &
+                              "e.originalEvent.clientY + '|' + " &
                               "e.originalEvent.dataTransfer.getData(""" &
-                              Drag_Type & """)");
+                              Drag_Type & """) + '|'");
       end if;
    end On_Drop_Handler;
 
    procedure Fire_On_Drop (Object    : in out Base_Type;
+                           X, Y      : in     Integer;
                            Drag_Text : in     String)
    is
    begin
       if Object.On_Drop_Event /= null then
-         Object.On_Drop_Event (Object, Drag_Text);
+         Object.On_Drop_Event (Object, X, Y, Drag_Text);
       end if;
    end Fire_On_Drop;
 
@@ -1960,7 +1994,12 @@ package body Gnoga.Gui.Base is
       elsif Event = "dragover" then
          null;
       elsif Event = "drop" then
-         Object.Fire_On_Drop (Parse_Drop_Event (Message));
+         declare
+            D_X, D_Y : Integer;
+            D_S      : String := Parse_Drop_Event (D_X, D_Y, Message);
+         begin
+            Object.Fire_On_Drop (D_X, D_Y, D_S);
+         end;
 
       -- Keyboard Events --
 

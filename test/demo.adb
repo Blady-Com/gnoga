@@ -44,6 +44,7 @@ procedure Demo is
    procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
+                   X, Y      : in     Integer;
                    Drag_Text : in     String);
 
    procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -105,12 +106,13 @@ procedure Demo is
    end Leave_Drag;
 
    procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
+                   X, Y      : in     Integer;
                    Drag_Text : in     String)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => "Green");
-      App.Target.Text (Drag_Text);
+      App.Target.Text (Drag_Text & "@" &  X'Img & Y'Img);
    end Drop;
 
    procedure On_Connect

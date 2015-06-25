@@ -4,8 +4,14 @@ http://www.gnoga.com
 
 * The author of the Gnoga framework is David Botton.
 
+* Additional maintainers of Gnoga currently are: Pascal Pignard and Gautier de
+  Montmollin
+
 * Gnoga uses Simple Components written by Dmitry A. Kazakov for its http and
   WebSockets communication layer. deps/simple_components
 
 * The Mine Detector demo application was written by Jeffrey Carter.
   demo/mine_detector
+  
+* The Connect Four demo was written originally for GNAT-JVM by Barry Fagin and
+  Martin Carlisle and adopted to Gnoga by Pascal Pignard 

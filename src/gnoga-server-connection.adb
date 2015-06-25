@@ -109,10 +109,13 @@ package body Gnoga.Server.Connection is
       Buffer       : Ada.Strings.Unbounded.Unbounded_String;
    end String_Buffer;
 
-   task Watchdog is
+   task type Watchdog_Type is
       entry Start;
       entry Stop;
-   end Watchdog;
+   end Watchdog_Type;
+
+   Watchdog : access Watchdog_Type := null;
+
    --  Keep alive and check connection status
 
    -------------------------------------------------------------------------
@@ -255,12 +258,14 @@ package body Gnoga.Server.Connection is
 
    Server_Wait : Connection_Holder_Type;
 
-   task Gnoga_HTTP_Server is
+   task type Gnoga_HTTP_Server_Type is
       entry Start;
       entry Stop;
-   end Gnoga_HTTP_Server;
+   end Gnoga_HTTP_Server_Type;
 
-   task body Gnoga_HTTP_Server is
+   Gnoga_HTTP_Server : access Gnoga_HTTP_Server_Type := null;
+
+   task body Gnoga_HTTP_Server_Type is
    begin
       accept Start;
 
@@ -312,7 +317,7 @@ package body Gnoga.Server.Connection is
             Gnoga.Log ("HTTP Server Stopping");
          end if;
       end;
-   end Gnoga_HTTP_Server;
+   end Gnoga_HTTP_Server_Type;
 
    ------------
    -- Create --
@@ -756,6 +761,7 @@ package body Gnoga.Server.Connection is
          end if;
       end if;
 
+      Watchdog := new Watchdog_Type;
       Watchdog.Start;
    end Initialize;
 
@@ -765,6 +771,7 @@ package body Gnoga.Server.Connection is
 
    procedure Run is
    begin
+      Gnoga_HTTP_Server := new Gnoga_HTTP_Server_Type;
       Gnoga_HTTP_Server.Start;
 
       Server_Wait.Hold;
@@ -1107,7 +1114,7 @@ package body Gnoga.Server.Connection is
    -- Watchdog --
    --------------
 
-   task body Watchdog is
+   task body Watchdog_Type is
       procedure Ping (C : in out Socket_Maps.Cursor);
 
       procedure Ping (C : in out Socket_Maps.Cursor) is
@@ -1200,7 +1207,7 @@ package body Gnoga.Server.Connection is
             delay 60.0;
          end select;
       end loop;
-   end Watchdog;
+   end Watchdog_Type;
 
    ---------------------------
    -- Message Queue Manager --
@@ -2232,15 +2239,20 @@ package body Gnoga.Server.Connection is
          Close (Socket_Maps.Key (C));
       end Do_Close;
    begin
-      if not Exit_Application_Requested then
+      if not Exit_Application_Requested and
+        Watchdog /= null and
+        Gnoga_HTTP_Server /= null
+      then
          Exit_Application_Requested := True;
          Watchdog.Stop;
+         Watchdog := null;
 
          Socket_Map.Iterate (Do_Close'Access);
 
          Connection_Manager.Delete_All_Connections;
 
          Gnoga_HTTP_Server.Stop;
+         Gnoga_HTTP_Server := null;
       end if;
    end Stop;
 

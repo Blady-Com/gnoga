@@ -53,6 +53,9 @@ package Gnoga.Gui.View is
    type View_Base_Access is access all View_Base_Type;
    type Pointer_To_View_Base_Class is access all View_Base_Type'Class;
 
+   --  Note: In order for views to receive keyboard events the Tab_Index
+   --        property should be set to any value.
+
    overriding
    procedure Finalize (Object : in out View_Base_Type);
    --  Deallocate any child element that was marked Dynamic before

@@ -1,0 +1,19 @@
+with "../../../src/gnoga.gpr";
+with "../../../settings.gpr";
+
+project Test is
+
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use ".";
+   for Exec_Dir use "../../../bin/";
+   for Main use ("essai11.adb");
+
+   package Builder is
+      for Executable ("essai11.adb") use "gnoga-test";
+   end Builder;
+
+   package Compiler renames Settings.Compiler;
+   package Binder renames Settings.Binder;
+   package Linker renames Settings.Linker;
+end Test;

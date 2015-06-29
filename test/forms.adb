@@ -33,6 +33,7 @@ procedure Forms is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Submit_Get (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
@@ -53,6 +54,13 @@ procedure Forms is
       end if;
    end On_Submit;
 
+   procedure On_Submit_Get (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.My_Form.Method (Form.Get);
+      App.My_Form.Submit;
+   end On_Submit_Get;
+
    procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
@@ -72,6 +80,7 @@ procedure Forms is
       App     : App_Access := new App_Data;
       Button1 : Form.Input_Button_Type;
       Button2 : Form.Submit_Button_Type;
+      Button3 : Form.Input_Button_Type;
       Label   : Form.Label_Type;
    begin
       Main_Window.Connection_Data (App);
@@ -98,7 +107,12 @@ procedure Forms is
       Button1.On_Click_Handler (On_Click'Unrestricted_Access);
 
       Button2.Create (Form       => App.My_Form,
-                      Value      => "send to demo");
+                      Value      => "send to demo via post");
+
+      Button3.Create (Form       => App.My_Form,
+                      Value      => "send to demo via get");
+      Button3.On_Click_Handler (On_Submit_Get'Unrestricted_Access);
+
       App.Pick.Create (Form       => App.My_Form,
                        Name       => "My_Color");
       App.Pick.On_Change_Handler (On_Change'Unrestricted_Access);
@@ -144,19 +158,33 @@ procedure Forms is
    begin
       Console.Create (Main_Window);
 
-      Console.Put_Line ("Get Results => " & Main_Window.Location.Search);
+      --  Full Get string
+      if Main_Window.Location.Search /= "" then
+         Console.Put_Line ("Get Results => " & Main_Window.Location.Search);
+      end if;
 
+      --  Check if Some_Text is in the Get form parameters
+      if Main_Window.Form_Parameter ("Some_Text") /= "undefined" then
+         Last_Parameters.Include ("Some_Text",
+                                  Main_Window.Form_Parameter ("Some_Text"));
+      end if;
+
+      --  If wa post was stored in On_Post
       if Last_Parameters.Contains ("Some_Text") then
          Console.Put_Line ("Some_Text   => " &
                              Last_Parameters.Element ("Some_Text"));
       else
-         Console.Put_Line ("Some_Text   => ");
+         Console.Put_Line ("Some_Text   => No value sent");
       end if;
 
-      Console.Put_Line ("File Name on Server  => " &
-                          Main_Window.Form_Parameter ("File_Name_Server"));
-      Console.Put_Line ("File Name => " &
-                          Main_Window.Form_Parameter ("File_Name"));
+      if Last_Parameters.Contains ("file_name") then
+         Console.Put_Line ("File Name on Server  => " &
+                             Last_Parameters.Element ("file_name"));
+         Console.Put_Line ("File Name => " &
+                             Last_Parameters.Element ("temp_name"));
+      end if;
+
+      Last_Parameters.Clear;
    end On_Connect_2;
 
    procedure On_Post_Request
@@ -195,6 +223,9 @@ procedure Forms is
                            Temp_Name : in String)
    is
    begin
+      Last_Parameters.Include ("file_name", File_Name);
+      Last_Parameters.Include ("temp_name", Temp_Name);
+
       Gnoga.Log ("File received : " & File_Name & " in " & Temp_Name);
    end On_Post_File;
 begin

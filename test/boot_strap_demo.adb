@@ -52,7 +52,11 @@ procedure Boot_Strap_Demo is
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      Boot_Strap.Load_Boot_Strap (Main_Window);
+      --  When using boot_boostrap3.html there is no need to dynamically load
+      --  boostrap. It is also more reliable and faster to have it loaded as
+      --  part of the boot.html instead of via code.
+      --
+      --  Boot_Strap.Load_Boot_Strap (Main_Window);
 
       Main_Window.Disable_Auto_Set_View;
 
@@ -167,7 +171,7 @@ procedure Boot_Strap_Demo is
 begin
    Application.Multi_Connect.Initialize
      (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+      Boot  => "boot_bootstrap3.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

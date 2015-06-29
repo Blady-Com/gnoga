@@ -143,10 +143,13 @@ procedure jDemo is
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      Main_Window.Document.Body_Element.Font
-        (Family  => "Verdana, Arial",
-         Height  => "10px");
-      jQueryUI.Load_jQueryUI (Main_Window);
+      --  It is more efficient and faster to load jQueryUI and setup basic
+      --  UI styes in the bootfile. See boot_jqueryui.html
+      --
+      --        Main_Window.Document.Body_Element.Font
+      --          (Family  => "Verdana, Arial",
+      --           Height  => "10px");
+      --        jQueryUI.Load_jQueryUI (Main_Window);
 
       jQueryUI.Widget.Turn_On_Tool_Tips (Main_Window);
 
@@ -154,7 +157,8 @@ procedure jDemo is
 
       App.Box.Create (App.Console);
       App.Box.Put_Line ("Drag me around!");
-      App.Box.Width (200);
+      App.Box.Width (100);
+      App.Box.Height (20);
       App.Box.Border;
       jQueryUI.Position (App.Box, 10, 10, Using_My => "left top");
 
@@ -184,6 +188,7 @@ procedure jDemo is
       jQueryUI.Widget.Add_Tool_Tip (App.Button, "I do all sorts of stuff");
 
       App.Box2.Create (App.Console, "Drop on me");
+      App.Box2.Height (100);
       App.Box2.Border;
       jQueryUI.Make_Resizable (App.Box2);
       jQueryUI.Make_Droppable (App.Box2);
@@ -348,7 +353,7 @@ procedure jDemo is
 begin
    Application.Multi_Connect.Initialize
      (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+      Boot  => "boot_jqueryui.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

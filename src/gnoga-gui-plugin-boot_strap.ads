@@ -59,6 +59,7 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    --  Load Boot Strap CSS and Scripting code in to Window
    --  This proceure loads them from MaxCDN
    --  You can also modify boot.html to include them directly
+   --  See boot_bootstrap3.html for an example.
 
    --  Boot Strap Containers  --
    --

@@ -131,9 +131,13 @@ package Gnoga.Gui.View.Card is
                       Label    : in     String;
                       Selected : in     Boolean := False);
    --  Tabs can also be added using Tab_Item_Types
+   --  Tab's have two properties, the Card they are associated with and
+   --  their Label displayed on the tab. By default the Show_Card is called
+   --  on the associated Card_View with Card when the tab is clicked.
 
    procedure Select_Tab (Tab  : in out Tab_Type;
                          Card : in     String);
+   --  Selects the Tab that is associated with Card
 
    -------------------------------------------------------------------------
    --  Tab_Item_Types

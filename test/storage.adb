@@ -98,6 +98,11 @@ procedure Storage is
 
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);
+      Gnoga.Log ("Session len = " & Session.Length'Img);
+      Gnoga.Log ("Local len = " & Storage.Length'Img);
+      Gnoga.Log ("Session 1 = " & Session.Key (1));
+      Gnoga.Log ("Local 1 = " & Storage.Key (1));
+      Gnoga.Log ("END");
    end On_Connect;
 
 begin

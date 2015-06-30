@@ -96,8 +96,9 @@ package body Gnoga.Client.Storage is
    ---------
 
    function Key (Storage : Storage_Type; Value : Positive) return String is
+      JS_Value : constant Natural := Value - 1;
    begin
-      return Execute (Storage, "Key (" & Value'Img & ")");
+      return Execute (Storage, "key(" & JS_Value'Img & ")");
    end Key;
 
    ---------

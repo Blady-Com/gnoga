@@ -52,7 +52,8 @@ all: gnoga gnoga_tools demo tutorials
 setup:
 ifeq (${PRJ_TARGET}, Windows)
 	@echo "Setting up for Windows build"
-	cp src/gnoga-application.windows src/gnoga-application.adb
+	- copy src\gnoga-application.windows src\gnoga-application.adb
+	- cp src/gnoga-application.windows src/gnoga-application.adb
 else
 ifeq (${PRJ_TARGET}, OSX)
 	@echo "Setting up for Mac OS X build"

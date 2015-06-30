@@ -60,6 +60,7 @@ begin
    Canvas_View.Fill_Parent;
    My_Canvas.Create (Canvas_View, 640, 480);
    My_Canvas.Border;
+
    Text_View.Create (Layout_View.Panel (3, 1).all);
    Text_View.Fill_Parent;
 

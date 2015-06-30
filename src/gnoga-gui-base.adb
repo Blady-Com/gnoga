@@ -47,8 +47,9 @@ with Gnoga.Server.Connection;
 package body Gnoga.Gui.Base is
 
    Mouse_Event_Script : constant String :=
-     "(e.clientX - e.target.offsetLeft) + '|' + " &
-     "(e.clientY - e.target.offsetTop) + '|' + e.screenX + '|' + " &
+     "(e.clientX - e.target.getBoundingClientRect().left) + '|' + " &
+     "(e.clientY - e.target.getBoundingClientRect().top) + '|' + " &
+     "e.screenX + '|' + " &
      "e.screenY + '|' + e.which + '|' + e.altKey + '|' + " &
      "e.ctrlKey + '|' + e.shiftKey + '|' + e.metaKey + '|'";
    --  e.buttons would be better but not supported currently outside

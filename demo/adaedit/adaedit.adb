@@ -68,7 +68,9 @@ procedure AdaEdit is
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
-      Gnoga.Gui.Plugin.Ace_Editor.Load_Ace_Editor (Main_Window);
+
+      --  If not using a custom boot loader like boot_ace.html use:
+      --  Gnoga.Gui.Plugin.Ace_Editor.Load_Ace_Editor (Main_Window);
 
       App.Dock.Create (Main_Window);
       App.Control_Form.Create (App.Dock);
@@ -99,7 +101,8 @@ procedure AdaEdit is
 
 begin
    Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access);
+     (Event => On_Connect'Unrestricted_Access,
+      Boot  => "boot_ace.html");
 
    Application.Title ("AdaEdit");
    Application.HTML_On_Close

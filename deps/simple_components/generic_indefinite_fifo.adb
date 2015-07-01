@@ -3,7 +3,7 @@
 --     Generic_Indefinite_FIFO                     Luebeck            --
 --                                                 Summer, 2008       --
 --  Implementation                                                    --
---                                Last revision :  22:06 23 Jul 2014  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -124,7 +124,7 @@ package body Generic_Indefinite_FIFO is
    function Get (Queue : FIFO) return Element_Type is
       type Element_Ptr is access Element_Type;
       for Element_Ptr'Size use Integer_Address'Size;
-      for Element_Ptr'Storage_Pool use Queue.Self.all;
+      for Element_Ptr'Storage_Pool use FIFO (Queue.Self.all);
       function To_Pointer is
          new Ada.Unchecked_Conversion (System.Address, Element_Ptr);
       procedure Free is
@@ -155,7 +155,7 @@ package body Generic_Indefinite_FIFO is
    function Peek (Queue : FIFO) return Element_Type is
       type Element_Ptr is access Element_Type;
       for Element_Ptr'Size use Integer_Address'Size;
-      for Element_Ptr'Storage_Pool use Queue.Self.all;
+      for Element_Ptr'Storage_Pool use FIFO (Queue.Self.all);
       function To_Pointer is
          new Ada.Unchecked_Conversion (System.Address, Element_Ptr);
    begin

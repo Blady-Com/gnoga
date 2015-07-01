@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Autumn, 2006       --
 --                                                                    --
---                                Last revision :  22:35 02 Dec 2011  --
+--                                Last revision :  09:08 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,6 +35,46 @@ with Test_String_Signaled_FIFO;
 
 procedure Test_FIFO is
 begin
+   Put_Line ("Plain String FIFO test---------------------------------");
+   declare
+      use Test_String_FIFO;
+      Queue : FIFO (31);
+   begin
+      Put (Queue, "1234");
+      Put (Queue, "5678");
+      declare
+         Item : String := Get (Queue);
+      begin
+         if "1234" /= Item then
+            Raise_Exception
+            (  Program_Error'Identity,
+               "Indefinite FIFO error got '" & Item & "'/='1234'"
+            );
+         end if;
+      end;
+      if Is_Empty (Queue) then
+         Raise_Exception
+         (  Program_Error'Identity,
+            "Indefinite FIFO is empty"
+         );
+      end if;
+      declare
+         Item : String := Get (Queue);
+      begin
+         if "5678" /= Item then
+            Raise_Exception
+            (  Program_Error'Identity,
+               "Indefinite FIFO error got '" & Item & "'/='5678'"
+            );
+         end if;
+      end;
+      if not Is_Empty (Queue) then
+         Raise_Exception
+         (  Program_Error'Identity,
+            "Indefinite FIFO is not empty"
+         );
+      end if;
+   end;
    Put_Line ("Signaled String FIFO test------------------------------");
    declare
       use Test_String_Signaled_FIFO;

@@ -3,7 +3,7 @@
 --     Test_HTTP_SQLite_Servers                    Luebeck            --
 --  Test server to browse SQLite3 Database         Winter, 2014       --
 --  Interface                                                         --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -41,6 +41,7 @@ package Test_HTTP_SQLite_Servers is
 
    type Test_HTTP_Factory
         (  Request_Length  : Positive;
+           Input_Size      : Buffer_Length;
            Output_Size     : Buffer_Length;
            Max_Connections : Positive
         )  is new Connections_Factory with private;
@@ -52,6 +53,7 @@ package Test_HTTP_SQLite_Servers is
    type Test_Client
         (  Listener       : access Connections_Server'Class;
            Request_Length : Positive;
+           Input_Size     : Buffer_Length;
            Output_Size    : Buffer_Length
         )  is new HTTP_Client with private;
    procedure Do_Body (Client : in out Test_Client);
@@ -62,6 +64,7 @@ package Test_HTTP_SQLite_Servers is
 private
    type Test_HTTP_Factory
         (  Request_Length  : Positive;
+           Input_Size      : Buffer_Length;
            Output_Size     : Buffer_Length;
            Max_Connections : Positive
         )  is new Connections_Factory with null record;
@@ -69,10 +72,12 @@ private
    type Test_Client
         (  Listener       : access Connections_Server'Class;
            Request_Length : Positive;
+           Input_Size     : Buffer_Length;
            Output_Size    : Buffer_Length
         )  is new HTTP_Client
                   (  Listener       => Listener,
                      Request_Length => Request_Length,
+                     Input_Size     => Input_Size,
                      Output_Size    => Output_Size
                   )  with
    record

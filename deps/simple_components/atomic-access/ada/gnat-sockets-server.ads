@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -209,6 +209,24 @@ package GNAT.Sockets.Server is
 --
    procedure Connected (Client : in out Connection);
 --
+-- Connected -- Server notification about client connection
+--
+--    Listener - The server object
+--    Client   - The client object
+--
+-- The server may do some bookkeeping here.  It is called after Client's
+-- Connected is. The default implementation does nothing.
+--
+-- Exceptions :
+--
+--    Connection_Error - Is propagated when decided to refuse connection
+--    other            - Other errors
+--
+   procedure Connected
+             (  Listener : in out Connections_Server;
+                Client   : in out Connection'Class
+             );
+--
 -- Create -- Client connection object
 --
 --    Factory  - The factory object
@@ -273,7 +291,8 @@ package GNAT.Sockets.Server is
 --    Listener - The server object
 --    Client   - The client object being deleted
 --
--- The server may do some bookkeeping here.
+-- The server may do some bookkeeping here. It is called before Client's
+-- Disconnected is.
 --
 -- Exceptions :
 --
@@ -1212,12 +1231,12 @@ private
       pragma Atomic (Session);
    end record;
 --
--- Connected -- Start servicing a client socket
+-- On_Connected -- Start servicing a client socket
 --
 --    Listener - The server object
 --    Client   - The client connection
 --
-   procedure Connected
+   procedure On_Connected
              (  Listener : in out Connections_Server'Class;
                 Client   : in out Connection'Class
              );

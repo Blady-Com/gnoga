@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -404,15 +404,13 @@ private
 
    package Data_Base_Handles is
       new Object.Handle (Data_Base_Object, Data_Base_Object_Ptr);
-   type Data_Base is new Data_Base_Handles.Handle with null record;
---
--- Ref -- Overrides Object...
---
-   function Ref (Thing : Data_Base_Object_Ptr) return Data_Base;
+   type Data_Base is tagged record
+      Handle : Data_Base_Handles.Handle;
+   end record;
 
    type Statement_Object is new Object.Entity with record
       Handle : aliased SQLite_Handle;
-      Base   : Data_Base;
+      Base   : Data_Base_Handles.Handle;
    end record;
    type Statement_Object_Ptr is access Statement_Object'Class;
 --
@@ -422,10 +420,8 @@ private
 
    package Statement_Handles is
       new Object.Handle (Statement_Object, Statement_Object_Ptr);
-   type Statement is new Statement_Handles.Handle with null record;
---
--- Ref -- Overrides Object...
---
-   function Ref (Thing : Statement_Object_Ptr) return Statement;
+   type Statement is tagged record
+      Handle : Statement_Handles.Handle;
+   end record;
 
 end SQLite;

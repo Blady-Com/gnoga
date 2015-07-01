@@ -131,7 +131,7 @@ procedure Test_Strings_Edit is
             ToLast  => True
          );
       if Temp /= Value then
-         Diff := abs (2.0 * (Temp - Value) / (Temp + Value));
+         Diff := abs ((Temp - Value) / Temp);
          if Diff > Eps then
             Put
             (  "Base:" & NumberBase'Image (Base)

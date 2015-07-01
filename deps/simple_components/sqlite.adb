@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -34,7 +34,9 @@ with System;                 use System;
 with Ada.Unchecked_Conversion;
 
 package body SQLite is
+   use Data_Base_Handles;
    use Object;
+   use Statement_Handles;
       -- Return codes
    SQLITE_OK         : constant := 0;
    SQLITE_ERROR      : constant := 1;
@@ -143,7 +145,7 @@ package body SQLite is
                   Value     : double
                )  return int;
       pragma Import (C, Internal, "sqlite3_bind_double");
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       Check
       (  Ptr (Object.Base).Handle,
@@ -162,7 +164,7 @@ package body SQLite is
                   Value     : int
                )  return int;
       pragma Import (C, Internal, "sqlite3_bind_int");
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       Check
       (  Ptr (Object.Base).Handle,
@@ -181,7 +183,7 @@ package body SQLite is
                   Value     : Integer_64
                )  return int;
       pragma Import (C, Internal, "sqlite3_bind_int64");
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       Check
       (  Ptr (Object.Base).Handle,
@@ -195,7 +197,7 @@ package body SQLite is
                 Value     : Stream_Element_Array
              )  is
       pragma Assert ((Stream_Element'Size) mod 8 = 0);
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       if Value'Length = 0 then
          declare
@@ -249,7 +251,7 @@ package body SQLite is
                   Copy      : Address := Null_Address
                )  return int; -- SQLITE_STATIC
       pragma Import (C, Internal, "sqlite3_bind_blob");
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       Check
       (  Ptr (Object.Base).Handle,
@@ -275,7 +277,7 @@ package body SQLite is
                )  return int;
       pragma Import (C, Internal, "sqlite3_bind_text");
       Data   : char_array renames To_C (Value);
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       Check
       (  Ptr (Object.Base).Handle,
@@ -292,7 +294,7 @@ package body SQLite is
                 Parameter : Positive;
                 Value     : access String
              )  is
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       if Value'Length = 0 then
          declare
@@ -349,7 +351,7 @@ package body SQLite is
                   Copy      : Address := Null_Address
                )  return int; -- SQLITE_STATIC
       pragma Import (C, Internal, "sqlite3_bind_text");
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       Check
       (  Ptr (Object.Base).Handle,
@@ -370,7 +372,7 @@ package body SQLite is
                   Index     : int
                )  return int;
       pragma Import (C, Internal, "sqlite3_bind_null");
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
    begin
       Check
       (  Ptr (Object.Base).Handle,
@@ -388,7 +390,7 @@ package body SQLite is
                )  return double;
       pragma Import (C, Internal, "sqlite3_column_double");
    begin
-      return Internal (Ptr (Command).Handle, int (Position) - 1);
+      return Internal (Ptr (Command.Handle).Handle, int (Position) - 1);
    end Column;
 
    function Column
@@ -401,7 +403,7 @@ package body SQLite is
                )  return int;
       pragma Import (C, Internal, "sqlite3_column_int");
    begin
-      return Internal (Ptr (Command).Handle, int (Position) - 1);
+      return Internal (Ptr (Command.Handle).Handle, int (Position) - 1);
    end Column;
 
    function Column
@@ -414,7 +416,7 @@ package body SQLite is
                )  return Integer_64;
       pragma Import (C, Internal, "sqlite3_column_int64");
    begin
-      return Internal (Ptr (Command).Handle, int (Position) - 1);
+      return Internal (Ptr (Command.Handle).Handle, int (Position) - 1);
    end Column;
 
    function Column
@@ -431,7 +433,7 @@ package body SQLite is
                   Index     : int
                )  return chars_ptr;
       pragma Import (C, Text, "sqlite3_column_text");
-      Handle : constant SQLite_Handle := Ptr (Command).Handle;
+      Handle : constant SQLite_Handle := Ptr (Command.Handle).Handle;
       Index  : constant int       := int (Position) - 1;
       Result : constant chars_ptr := Text (Handle, Index);
       Count  : constant int       := Bytes (Handle, Index);
@@ -453,7 +455,7 @@ package body SQLite is
                   Index     : int
                )  return int;
       pragma Import (C, Bytes, "sqlite3_column_bytes");
-      Handle : constant SQLite_Handle := Ptr (Command).Handle;
+      Handle : constant SQLite_Handle := Ptr (Command.Handle).Handle;
       Index  : constant int := int (Position) - 1;
       Count  : constant int := Bytes (Handle, Index);
    begin
@@ -485,7 +487,7 @@ package body SQLite is
       function Internal (Statement : SQLite_Handle) return int;
       pragma Import (C, Internal, "sqlite3_column_count");
    begin
-      return Natural (Internal (Ptr (Command).Handle));
+      return Natural (Internal (Ptr (Command.Handle).Handle));
    end Column_Count;
 
    function Column_Type
@@ -497,7 +499,7 @@ package body SQLite is
                   Index     : int
                )  return int;
       pragma Import (C, Internal, "sqlite3_column_type");
-      Handle : constant SQLite_Handle := Ptr (Command).Handle;
+      Handle : constant SQLite_Handle := Ptr (Command.Handle).Handle;
       Index  : constant int := int (Position) - 1;
    begin
       return Datatype (Internal (Handle, Index));
@@ -553,20 +555,20 @@ package body SQLite is
                )  return int;
       pragma Import (C, Internal, "sqlite3_column_type");
    begin
-      return Internal (Ptr (Command).Handle, int (Position) - 1) = 5;
+      return Internal (Ptr (Command.Handle).Handle, int (Position) - 1) = 5;
    end Is_Null;
 
    function Is_Valid (Command : Statement) return Boolean is
       use Statement_Handles;
    begin
-      return Is_Valid (Statement_Handles.Handle (Command));
+      return Is_Valid (Command.Handle);
    end Is_Valid;
 
    function Last_Insert_Row (Base : Data_Base'Class) return Row_ID is
       function Internal (Statement : SQLite_Handle) return Row_ID;
       pragma Import (C, Internal, "sqlite3_last_insert_rowid");
    begin
-      return Internal (Ptr (Base).Handle);
+      return Internal (Ptr (Base.Handle).Handle);
    end Last_Insert_Row;
 
    function Message (Result : int) return String is
@@ -647,13 +649,14 @@ package body SQLite is
                   zVfs     : Address := Null_Address
                )  return int;
       pragma Import (C, Internal, "sqlite3_open_v2");
-      Result : Data_Base := Ref (new Data_Base_Object);
+      Result : Data_Base;
    begin
+      Set (Result.Handle, new Data_Base_Object);
       Check
       (  null,
          Internal
          (  To_C (File_Name),
-            Ptr (Result).Handle'Access,
+            Ptr (Result.Handle).Handle'Access,
             Flags
       )  );
       return Result;
@@ -671,43 +674,37 @@ package body SQLite is
                   pzTail : Address := Null_Address
                )  return int;
       pragma Import (C, Internal, "sqlite3_prepare_v2");
-      Result : Statement := Ref (new Statement_Object);
-      Object : Data_Base_Object'Class renames Ptr (Base).all;
+      Result : Statement;
    begin
-      Check
-      (  Object.Handle,
-         Internal
+      Set (Result.Handle, new Statement_Object);
+      declare
+         Object : Data_Base_Object'Class renames Ptr (Base.Handle).all;
+      begin
+         Check
          (  Object.Handle,
-            To_C (Command),
-            -1,
-            Ptr (Result).Handle'Access
-      )  );
-      Set (Ptr (Result).Base, Ptr (Base));
+            Internal
+            (  Object.Handle,
+               To_C (Command),
+               -1,
+               Ptr (Result.Handle).Handle'Access
+         )  );
+         Set (Ptr (Result.Handle).Base, Ptr (Base.Handle));
+      end;
       return Result;
    end Prepare;
-
-   function Ref (Thing : Data_Base_Object_Ptr) return Data_Base is
-   begin
-      return (Data_Base_Handles.Ref (Thing) with null record);
-   end Ref;
-
-   function Ref (Thing : Statement_Object_Ptr) return Statement is
-   begin
-      return (Statement_Handles.Ref (Thing) with null record);
-   end Ref;
 
    procedure Reset (Command : Statement) is
       function Internal (pStmt : SQLite_Handle) return int;
       pragma Import (C, Internal, "sqlite3_reset");
       Result : int;  -- Ignoring result code since sqlite3_reset would
    begin             -- repeat the last execution fault
-      Result := Internal (Ptr (Command).Handle);
+      Result := Internal (Ptr (Command.Handle).Handle);
    end Reset;
 
    function Step (Command : Statement) return Boolean is
       function Internal (pStmt : SQLite_Handle) return int;
       pragma Import (C, Internal, "sqlite3_step");
-      Object : Statement_Object'Class renames Ptr (Command).all;
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
       Result : int := Internal (Object.Handle);
    begin
       case Result is

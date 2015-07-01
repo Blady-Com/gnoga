@@ -3,7 +3,7 @@
 --     Test_HTTP_SQLite_Browser                    Luebeck            --
 --  HTTP SQLite3 browsing server test              Winter, 2014       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  09:08 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -41,6 +41,7 @@ begin
    declare
       Factory : aliased Test_HTTP_Factory
                         (  Request_Length  => 200,
+                           Input_Size      => 1024,
                            Output_Size     => 1024,
                            Max_Connections => 100
                         );
@@ -48,7 +49,11 @@ begin
       Server  : GNAT.Sockets.Server.
                 Connections_Server (Factory'Access, Port);
    begin
-    Trace_On (Factory => Factory, Received => True, Sent => True);
+      Trace_On
+      (  Factory  => Factory,
+         Received => GNAT.Sockets.Server.Trace_Decoded,
+         Sent     => GNAT.Sockets.Server.Trace_Decoded
+      );
       Put_Line ("HTTP server started");
       delay 60.0 * Minutes; -- Service
       Put_Line ("HTTP server stopping");

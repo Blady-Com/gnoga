@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -254,36 +254,11 @@ package body GNAT.Sockets.Server is
    end Connected;
 
    procedure Connected
-             (  Listener : in out Connections_Server'Class;
+             (  Listener : in out Connections_Server;
                 Client   : in out Connection'Class
              )  is
    begin
-      Client.Connect_No := 0;
-      Trace_Sending
-      (  Listener.Factory.all,
-         Client,
-         False,
-         ", connected"
-      );
-      Free (Client.Transport);
-      Client.Transport :=
-         Create_Transport
-         (  Listener.Factory,
-            Listener'Unchecked_Access,
-            Client'Unchecked_Access
-         );
-      Set (Listener.Read_Sockets, Client.Socket);
-      if Client.Transport = null then -- No handshaking
-         Client.Session := Session_Connected;
-         Connected (Client);
-      else
-         Client.Session := Session_Handshaking;
-         Append
-         (  Listener.Postponed,
-            Client'Unchecked_Access,
-            Listener.Postponed_Count
-         );
-      end if;
+      null;
    end Connected;
 
    function Create
@@ -341,7 +316,7 @@ package body GNAT.Sockets.Server is
          Clear (Client.all);
          Connect_Socket (Client.Socket, Client.Client_Address);
          Set (Listener.Read_Sockets, Client.Socket);
-         Connected (Listener, Client.all);
+         On_Connected (Listener, Client.all);
       end if;
    exception
       when Connection_Error =>
@@ -695,6 +670,40 @@ package body GNAT.Sockets.Server is
    begin
       Client.Dont_Block := True;
    end Keep_On_Sending;
+
+   procedure On_Connected
+             (  Listener : in out Connections_Server'Class;
+                Client   : in out Connection'Class
+             )  is
+   begin
+      Client.Connect_No := 0;
+      Trace_Sending
+      (  Listener.Factory.all,
+         Client,
+         False,
+         ", connected"
+      );
+      Free (Client.Transport);
+      Client.Transport :=
+         Create_Transport
+         (  Listener.Factory,
+            Listener'Unchecked_Access,
+            Client'Unchecked_Access
+         );
+      Set (Listener.Read_Sockets, Client.Socket);
+      if Client.Transport = null then -- No handshaking
+         Client.Session := Session_Connected;
+         Connected (Client);
+         Connected (Listener, Client);
+      else
+         Client.Session := Session_Handshaking;
+         Append
+         (  Listener.Postponed,
+            Client'Unchecked_Access,
+            Listener.Postponed_Count
+         );
+      end if;
+   end On_Connected;
 
    procedure Process
              (  Buffer    : in out Input_Buffer;
@@ -2392,6 +2401,7 @@ package body GNAT.Sockets.Server is
                            if This.Transport = null then -- Ready
                               This.Session := Session_Connected;
                               Connected (This);
+                              Connected (Listener.all, This);
                            else
                               This.Session := Session_Handshaking;
                            end if;
@@ -2557,7 +2567,7 @@ package body GNAT.Sockets.Server is
                                       ) .Error;
                         begin
                            if Code = Success then -- Connected
-                              Connected (Listener.all, This);
+                              On_Connected (Listener.all, This);
                               Set
                               (  Listener.Read_Sockets,
                                  Client_Socket

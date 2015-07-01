@@ -71,6 +71,14 @@
 ./strings_edit.gpr
 ./strings_edit.htm
 ./strings_edit_scale.gif
+./test_strings_edit/b__strings_edit-utf8-categorization_generator.adb
+./test_strings_edit/b__strings_edit-utf8-categorization_generator.ads
+./test_strings_edit/b__test_base64.adb
+./test_strings_edit/b__test_base64.ads
+./test_strings_edit/b__test_strings_edit.adb
+./test_strings_edit/b__test_strings_edit.ads
+./test_strings_edit/b__test_string_streams.adb
+./test_strings_edit/b__test_string_streams.ads
 ./test_strings_edit/readme_strings_edit.txt
 ./test_strings_edit/strings_edit-test.gpr
 ./test_strings_edit/strings_edit-utf8-categorization_generator.adb

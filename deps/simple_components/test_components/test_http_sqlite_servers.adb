@@ -3,7 +3,7 @@
 --     Test_HTTP_SQLite_Servers                    Luebeck            --
 --  Test server to browse SQLite3 Database         Winter, 2014       --
 --  Implementation                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  09:08 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -60,6 +60,7 @@ package body Test_HTTP_SQLite_Servers is
             new Test_Client
                 (  Listener       => Listener.all'Unchecked_Access,
                    Request_Length => Factory.Request_Length,
+                   Input_Size     => Factory.Input_Size,
                    Output_Size    => Factory.Output_Size
                 );
          Receive_Body_Tracing (Test_Client (Result.all), True);

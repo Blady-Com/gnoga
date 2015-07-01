@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.7</EM><BR>
+<EM>version 4.8</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -126,13 +126,13 @@ language standards.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_7.tgz">components_4_7.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_8.tgz">components_4_8.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_7.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_8.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -24835,6 +24835,21 @@ Disconnected</a> may propagate Connection_Error exception. One can use
 as well. Socket_Error is propagated on errors resolving remove host name.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connected_Server"></a>procedure</font> 
+Connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Listener</b> :
+<font color="#0000FF">in out</font> Connections_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp; : <font color="#0000FF">in out</font> Connection'Class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called to notify the server <b>Listener</b> that the client 
+is being connected. It is called after <b>Client</b>'s 
+<a href="#GNAT.Sockets.Server.Connected">Connected</a>. The default implementation 
+does nothing. The implementation may propagate Connection_Error 
+to refuse connection.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Disconnected"></a>procedure</font> Disconnected<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Listener</b> :
 <font color="#0000FF">in out</font> Connections_Server;<br>
@@ -24843,8 +24858,11 @@ Client</b>&nbsp;&nbsp; : <font color="#0000FF">in out</font> Connection'Class<br
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure is called to notify the server <b>Listener</b> that the client 
-is being disconnected. The implementation removes the client from the list of 
-clients postponed for service. The implementation may propagate Connection_Error 
+is being disconnected. It is called before <b>Client</b>'s 
+<a href="#GNAT.Sockets.Server.Disconnected_Client">Disconnected</a> operation is 
+called. The implementation removes the client from the list of 
+clients postponed for service. If overridden the new implementation should call 
+the parent's one. The implementation may propagate Connection_Error 
 to prevent further connection attempts for outgoing connections.</p>
 
 <blockquote>
@@ -25363,7 +25381,8 @@ here. The implementation may propagate Connection_Error if it decides to refuse
 connection this late.</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Disconnected (<b>Client</b> : <font color="#0000FF">in out</font> 
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Disconnected_Client"></a>
+procedure</font> Disconnected (<b>Client</b> : <font color="#0000FF">in out</font> 
 Connection);</tt></p>
 </blockquote>
 <p>This is procedure is called when connection is dropped. If overridden, the 
@@ -25426,6 +25445,7 @@ type</font> Session_State <font color="#0000FF">is</font><br>
 &nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Session_Down,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Disconnected,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Connecting,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Handshaking,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Connected,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session_Busy<br>
 &nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
@@ -25438,6 +25458,8 @@ type</font> Session_State <font color="#0000FF">is</font><br>
 	host and is not attempted to connect to any;</li>
 	<li><i>Session_Connecting</i> indicates a pending connection to a remote 
 	host;</li>
+	<li><i>Session_Handshaking</i> is the state between transport being already 
+	connected and the encrypted exchange is not yet started;</li>
 	<li><i>Session_Connected</i> indicates an established connection;</li>
 	<li><i>Session_Busy</i> is like <i>Session_Connected</i> and also indicated 
 	that there is a modal operation is pending, e.g. a request is being sent to 
@@ -25450,7 +25472,7 @@ Is_Connected (<b>Client</b> :
 Connection) <font color="#0000FF">return</font> Boolean;</tt></p>
 </blockquote>
 <p>This function returns <font color="#800000"><i>true</i></font> if <b>Client</b> 
-is connected.</p>
+is connected. This corresponds to the states <i>Session_Connected</i> and <i>Session_Busy</i>.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Is_Down"></a>function</font> 
@@ -34462,13 +34484,28 @@ these packages add the following line to <i>/etc/apt/sources.list</i>:</p>
 The following versions were tested with the compilers:</i>
 <ul>
   <li>
+<i>GNAT GPL 2015 (20150428-49)</i></li>
+	<li><i>GNAT 4.9.2</i></li>
+  </ul>
+<P>
+Changes (29 June 2015) to the version 4.7:<ul>
+	<li>Adapted to GNAT GPL 2015;</li>
+	<li>Bug fix in Persistent-Single_File;</li>
+	<li>Connected callback added to GNAT.Sockets.Server.</li>
+	</ul>
+<p>
+<i>
+The following versions were tested with the compilers:</i>
+</p>
+<ul>
+  <li>
 <i>GNAT GPL 2014 (20140331)</i></li>
 	<li>
 <i>GNAT 4.8.2 (20131212)</i></li>
   <li><i>GNAT 4.9.0</i></li>
   </ul>
 <P>
-Changes () to the version 4.6:<ul>
+Changes (13 June 2015) to the version 4.6:<ul>
 	<li>GNAT.Sockets.Server supports outgoing connections as well;</li>
 	<li>MODBUS client implementation is provided;</li>
 	<li>HTTP client implementation is provided;</li>

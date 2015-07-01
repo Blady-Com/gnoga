@@ -14,7 +14,7 @@ project Components is
            "GCC-built-ins",
            "GCC-long-offsets"
         );
-   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "GCC-built-ins");
+   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "GCC-long-offsets");
 
    case Object_Tracing is
       when "Off" =>

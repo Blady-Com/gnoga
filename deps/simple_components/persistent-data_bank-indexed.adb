@@ -3,7 +3,7 @@
 --     Persistent.Data_Bank.Indexed                Luebeck            --
 --  Implementation                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

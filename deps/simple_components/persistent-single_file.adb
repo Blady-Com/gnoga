@@ -3,7 +3,7 @@
 --     Persistent.Single_File                      Luebeck            --
 --  Implementation                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  09:07 27 Jun 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -106,7 +106,7 @@ package body Persistent.Single_File is
       else
          Raise_Exception
          (  Use_Error'Identity,
-            (  "Attemped other's transaction commit by "
+            (  "Attempted other's transaction commit by "
             &  Image (Current_Task)
          )  );
       end if;
@@ -1256,7 +1256,7 @@ package body Persistent.Single_File is
                   Output (Stream'Access, ID);
                   Replace
                   (  Storage.Links.all,
-                     Get_Byte_Index (ID, Object.ID),
+                     Get_Byte_Index (Object.ID, ID),
                      0
                   );
                end;

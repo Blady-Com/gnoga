@@ -46,7 +46,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('<script src=""js/ace-builds/src-noconflict/ace.js""" &
+      ("append('<script src=""/js/ace-builds/src-noconflict/ace.js""" &
        " type=""text/javascript"" charset=""utf-8""></script>')");
    end Load_Ace_Editor;
 

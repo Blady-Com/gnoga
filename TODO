@@ -1,24 +1,15 @@
-To Do 1.1:
-
-DONE - 1. Complete multimedia bindings
-DONE - 2. Remove boot.js requirement for gnoga_debug and gnoga_ssl vars to be set before loading.
-DONE - 3. https/ssl websockets via proxy
-DONE - 4. Alternative to Websockets using long polling http connection and Ajax
-5. Bug fixes
-
-To Do 1.1 or later:
+To Do 1.2
 
 1. Complete SVG DOM bindings
-DONE - 2. https/ssl direct support
-3. Direct connection to webkit via API instead of sockets for Gtk and Mac
-4. Windows native
-5. Database linked controls
-6. IDE and GUI Builder
-7. Expanded support for Gtk and Gnome
-8. Provide more enumerations for various properties in Gnoga.Gui.Element
-9. Lots and lots more Gnoga specific elements as modules and JS bindigns as plugins to be placed in Marketplace
-10. Complete Ace Editor plugin
-11. Complete MacGap support for menus
+2. Direct connection to webkit via API instead of sockets for Gtk and Mac
+3. Windows native
+4. Database linked controls
+5. IDE and GUI Builder
+6. Expanded support for Gtk and Gnome
+7. Provide more enumerations for various properties in Gnoga.Gui.Element
+8. Lots and lots more Gnoga specific elements as modules and JS bindigns as plugins to be placed in Marketplace
+9. Complete Ace Editor plugin
+10. Complete MacGap support for menus
 
 Some Ideas:
 

@@ -158,6 +158,9 @@ package Gnoga.Gui.Element.Common is
    --  Create an image element. Use width and height properties before
    --  placing image to constrain image size.
 
+   procedure URL_Source (IMG : in out IMG_Type; Value : in String);
+   --  Change URL Source for IMG
+
    -------------------------------------------------------------------------
    --  HR_Types
    -------------------------------------------------------------------------

@@ -183,6 +183,15 @@ package body Gnoga.Gui.Element.Common is
                               """>", ID);
    end Create;
 
+   -----------------
+   --  URL_Source --
+   -----------------
+
+   procedure URL_Source (IMG : in out IMG_Type; Value : in String) is
+   begin
+      IMG.Attribute ("src", Value);
+   end URL_Source;
+
    -------------------------------------------------------------------------
    --  HR_Types
    -------------------------------------------------------------------------

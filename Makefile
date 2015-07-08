@@ -196,7 +196,7 @@ bin/multimarkdown:
 	- cd deps/MultiMarkdown-4 && git submodule update
 	- cd deps/MultiMarkdown-4 && make
 	- mv deps/MultiMarkdown-4/multimarkdown bin/
-rm-docs:
+rm-docs: gnoga
 	gnatdoc -Psrc/gnoga.gpr --no-subprojects -XDevelopment=Debug -XLegacy=Ada2005 -XAtomic_Access=GCC-long-offsets -XTasking=Multiple -XTraced_objects=Off -XPRJ_TARGET=Unix -XPRJ_BUILD=Debug
 
 html-docs: bin/multimarkdown

@@ -7,39 +7,41 @@ with Gnoga.Gui.Element.List;
 
 procedure Tree is
    use Gnoga;
+   use Gnoga.Gui.View;
    use Gnoga.Gui.Element;
+   use Gnoga.Gui.Element.List;
 
    --  Views
 
-   type Tree_Test_View is new Gnoga.Gui.View.View_Type with
+   type Tree_Test_View_Type is new Gnoga.Gui.View.View_Type with
       record
          null;
       end record;
-   type Pointer_To_Tree_Text_View is access all Tree_Test_View'Class;
+   type Pointer_To_Tree_Text_View is access all Tree_Test_View_Type'Class;
 
    overriding
    procedure Create
-     (View   : in out Tree_Test_View;
+     (View   : in out Tree_Test_View_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       ID     : in     String  := "");
    --  Create tree
 
    overriding
-   procedure On_Message (Object  : in out Tree_Test_View;
+   procedure On_Message (Object  : in out Tree_Test_View_Type;
                          Event   : in     String;
                          Message : in     String);
    --  Capture tree events
 
    overriding
    procedure Create
-     (View   : in out Tree_Test_View;
+     (View   : in out Tree_Test_View_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       ID     : in     String  := "")
    is
-      use Gnoga.Gui.View;
-      use Gnoga.Gui.Element.List;
    begin
       View_Type (View).Create (Parent, ID);
+      View.Width (200);
+
       Unordered_List_Access
         (View.New_Element ("root", new Unordered_List_Type)).Create (View);
 
@@ -84,11 +86,10 @@ procedure Tree is
    end Create;
 
    overriding
-   procedure On_Message (Object  : in out Tree_Test_View;
+   procedure On_Message (Object  : in out Tree_Test_View_Type;
                          Event   : in     String;
                          Message : in     String)
    is
-      use Gnoga.Gui.View;
    begin
       if Event = "select_node.jstree" then
          Gnoga.Log ("Node selected - " & Message);
@@ -104,15 +105,64 @@ procedure Tree is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      E : Element_Type renames Element_Type (Object);
+   begin
+      Gnoga.Log (E.Text);
+   end On_Click;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      Main_View : Pointer_To_Tree_Text_View := new Tree_Test_View;
+      Main_View : Pointer_To_View_Class := new View_Type;
+      Tree_View : Pointer_To_Tree_Text_View := new Tree_Test_View_Type;
    begin
       Main_View.Dynamic;
       Main_View.Create (Main_Window);
+
+      Unordered_List_Access
+        (Main_View.New_Element ("Menu", new Unordered_List_Type)).Create
+          (Main_View.all);
+      List.List_Item_Access
+        (Main_View.New_Element ("Item1", new List_Item_Type)).Create
+          (Unordered_List_Type'Class
+             (Main_View.Element ("Menu").all), "Item1");
+      List.List_Item_Access
+        (Main_View.New_Element ("Item2", new List_Item_Type)).Create
+          (Unordered_List_Type'Class
+             (Main_View.Element ("Menu").all), "Item2");
+      Main_View.Element ("Item2").On_Click_Handler
+        (On_Click'Unrestricted_Access);
+
+      Unordered_List_Access
+        (Main_View.New_Element
+           ("SubMenu1", new Unordered_List_Type)).Create (Main_View.all);
+      Main_View.Element ("SubMenu1").Place_Inside_Bottom_Of
+        (Main_View.Element ("Item1").all);
+      List.List_Item_Access
+        (Main_View.New_Element ("SubItem1", new List_Item_Type)).Create
+          (Unordered_List_Type'Class
+             (Main_View.Element ("SubMenu1").all), "SubItem1");
+      Main_View.Element ("SubItem1").On_Click_Handler
+        (On_Click'Unrestricted_Access);
+      List.List_Item_Access
+        (Main_View.New_Element ("SubItem2", new List_Item_Type)).Create
+          (Unordered_List_Type'Class
+             (Main_View.Element ("SubMenu1").all), "SubItem2");
+      Main_View.Element ("SubItem2").On_Click_Handler
+        (On_Click'Unrestricted_Access);
+
+      Main_View.Element ("Menu").jQuery_Execute ("mnmenu()");
+
+      Tree_View.Dynamic;
+      Tree_View.Create (Main_View.all);
+      Tree_View.Border;
+
+      Main_View.Put_Line ("Some more text");
    end On_Connect;
 begin
    Application.Multi_Connect.Initialize

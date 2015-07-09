@@ -11,7 +11,7 @@ project Test is
                  "popups.adb", "forms.adb", "canvas_test.adb",
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb",
                  "jdemo.adb", "svg_demo.adb", "align.adb", "pack.adb",
-                 "message_boxes.adb",
+                 "message_boxes.adb", "tree.adb",
                  "demo.adb", "db_sqlite.adb", "db_active.adb", "db_mysql.adb",
                  "singleton.adb", "mac_test.adb");
 

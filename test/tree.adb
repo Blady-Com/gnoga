@@ -11,9 +11,6 @@ procedure Tree is
 
    --  Views
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-   --  Handle click of nodes
-
    type Tree_Test_View is new Gnoga.Gui.View.View_Type with
       record
          null;
@@ -84,10 +81,6 @@ procedure Tree is
            "r.push(data.instance.get_node(data.selected[i]).text);" &
            "}",
          Script => "r.join(', ')");
-
-      View.Element ("node1").On_Click_Handler (On_Click'Unrestricted_Access);
-      View.Element ("node2").On_Click_Handler (On_Click'Unrestricted_Access);
-      View.Element ("node3").On_Click_Handler (On_Click'Unrestricted_Access);
    end Create;
 
    overriding
@@ -103,11 +96,6 @@ procedure Tree is
          View_Type (Object).On_Message (Event, Message);
       end if;
    end On_Message;
-
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-   begin
-      Gnoga.Log (Element_Type (Object).Text);
-   end On_Click;
 
    --  Connections
 

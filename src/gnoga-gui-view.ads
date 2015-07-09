@@ -164,7 +164,8 @@ package Gnoga.Gui.View is
    --  Only use for dynamic objects.
    --  Marks Element as Dynamic and returns Element. This is primarly of value
    --  for creating a dynamic element that you will no longer interact with
-   --  in the future since all reference is lost. Use the idiom:
+   --  in the future since all reference is lost. Use New_Element if future
+   --  named access desired instead. Use with the following idiom:
    --  Common.Button_Access
    --    (View.Add (new Common.Button_Type)).Create (View);
 

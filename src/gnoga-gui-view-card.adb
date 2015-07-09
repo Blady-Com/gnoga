@@ -55,7 +55,7 @@ package body Gnoga.Gui.View.Card is
       View.Element_Map.Insert ("current", null);
 
       View.Bind_Event (Event   => "resize",
-                         Message => "");
+                       Message => "");
    end Create;
 
    ------------------

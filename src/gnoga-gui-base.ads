@@ -636,10 +636,18 @@ package Gnoga.Gui.Base is
    procedure Bind_Event (Object  : in out Base_Type;
                          Event   : in     String;
                          Message : in     String;
+                         Eval    : in     String    := "";
                          Script  : in     String    := "";
                          Cancel  : in     Boolean   := False);
    --  On Event occuring to Object Gnoga will fire Object.On_Message with
    --  Event and Message, the result of Script is concatinated to Message.
+   --
+   --  Eval if set is java script to be run before processing the
+   --  return message which is the result of ("Message|" + Script).
+   --  The Eval script has access to the event "e" and an optional event
+   --  parameter "data". The Eval script must be terminated with a ';' if
+   --  not a block statement.
+   --
    --  If Cancel is true then JS will cancel the default behavior of Event
    --  from occuring on browser. (e.g. stopping a form submit in onsubmit)
 

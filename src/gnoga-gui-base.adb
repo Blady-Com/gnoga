@@ -171,8 +171,12 @@ package body Gnoga.Gui.Base is
       end Split;
 
       function Split return Integer is
+         S : String := Split;
       begin
-         return Integer'Value (Split);
+         return Integer'Value (S);
+      exception
+         when Constraint_Error =>
+            return Integer (Float'Value (S));
       end Split;
 
       function Split return Boolean is
@@ -221,19 +225,17 @@ package body Gnoga.Gui.Base is
       end Split;
 
       function Split return Integer is
+         S : String := Split;
       begin
-         return Integer'Value (Split);
+         return Integer'Value (S);
+      exception
+         when Constraint_Error =>
+            return Integer (Float'Value (S));
       end Split;
    begin
-      declare
-         temp : String := Split;
-         --  The first param is undefined since was a JS procedure call
-      begin
-         null;
-      end;
-
       X := Split;
       Y := Split;
+
       return Split;
    end Parse_Drop_Event;
 
@@ -1410,9 +1412,9 @@ package body Gnoga.Gui.Base is
          Object.Bind_Event
            (Event   => "dragstart",
             Message => "",
-            Script  =>
+            Eval  =>
              "e.originalEvent.dataTransfer.setData(""" & Drag_Type & """, """ &
-             Escape_Quotes (Drag_Text) & """)");
+             Escape_Quotes (Drag_Text) & """);");
       end if;
    end On_Drag_Start_Handler;
 
@@ -1535,15 +1537,18 @@ package body Gnoga.Gui.Base is
       if Handler /= null then
          Object.Bind_Event (Event   => "dragover",
                             Message => "",
-                            Script  => "e.preventDefault()");
-         Object.Bind_Event (Event   => "drop",
-                            Message => "",
-                            Script  =>
-                              "e.preventDefault() + '|' + " &
-                              "e.originalEvent.clientX + '|' + " &
-                              "e.originalEvent.clientY + '|' + " &
-                              "e.originalEvent.dataTransfer.getData(""" &
-                              Drag_Type & """) + '|'");
+                            Eval  => "e.preventDefault();");
+         Object.Bind_Event
+           (Event   => "drop",
+            Message => "",
+            Eval    => "e.preventDefault();",
+            Script  =>
+              "(e.originalEvent.clientX - " &
+              "e.target.getBoundingClientRect().left) + '|' + " &
+              "(e.originalEvent.clientY - " &
+              "e.target.getBoundingClientRect().top)  + '|' + " &
+              "e.originalEvent.dataTransfer.getData(""" &
+              Drag_Type & """) + '|'");
       end if;
    end On_Drop_Handler;
 
@@ -2070,6 +2075,7 @@ package body Gnoga.Gui.Base is
    procedure Bind_Event (Object  : in out Base_Type;
                          Event   : in     String;
                          Message : in     String;
+                         Eval    : in     String    := "";
                          Script  : in     String    := "";
                          Cancel  : in     Boolean   := False)
    is
@@ -2101,7 +2107,7 @@ package body Gnoga.Gui.Base is
    begin
       Bind_Event_Script (Object => Object,
                          Event  => Event,
-                         Script => "ws.send (""" &
+                         Script => Eval & "ws.send (""" &
                            Escape_Quotes (Full_Message) & """" &
                            If_Script & ");" & Cancel_Event);
    end Bind_Event;
@@ -2115,7 +2121,7 @@ package body Gnoga.Gui.Base is
                                 Script : in     String)
    is
    begin
-      Object.jQuery_Execute ("on (""" & Event & """, function (e) {" &
+      Object.jQuery_Execute ("on (""" & Event & """, function (e, data) {" &
                                Script & "});");
    end Bind_Event_Script;
 

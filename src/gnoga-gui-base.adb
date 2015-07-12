@@ -835,11 +835,11 @@ package body Gnoga.Gui.Base is
                                    Handler : in     Action_Event)
    is
    begin
-      if Object.On_Focus_In_Event /= null then
+      if Object.On_Focus_Out_Event /= null then
          Object.Unbind_Event ("focusout");
       end if;
 
-      Object.On_Focus_In_Event := Handler;
+      Object.On_Focus_Out_Event := Handler;
 
       if Handler /= null then
          Object.Bind_Event (Event   => "focusout",

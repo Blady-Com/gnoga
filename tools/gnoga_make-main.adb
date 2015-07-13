@@ -57,6 +57,9 @@ begin
             Gnoga_Make.New_Application (Argument (2), Argument (3));
          end if;
 
+      elsif Command = "list" then
+         Gnoga_Make.List_Templates;
+
       elsif Command = "view" then
          if Argument_Count < 3 then
             Gnoga_Make.Display_View_Usage;

@@ -45,6 +45,8 @@ package Gnoga_Make is
    procedure Display_Controller_Usage;
    --  Display command line help for 'controller' command
 
+   procedure List_Templates;
+
    procedure New_Application (App_Name          : in String;
                               App_Template_Name : in String);
    --  Copy new_application template directory and make appropriate project

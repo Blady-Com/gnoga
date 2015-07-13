@@ -78,6 +78,8 @@ package body Gnoga_Make is
       Put_Line
         ("version                               - display version");
       Put_Line
+        ("list                                  - list available templates");
+      Put_Line
         ("new        app_name [template]        - create a new application");
 --      Put_Line
 --        ("view       app_name name [template]   - add a new view");
@@ -170,6 +172,27 @@ package body Gnoga_Make is
       Put_Line ("Some templates may allow for additional arguments, see the" &
                   " templates's README file for more details.");
    end Display_Controller_Usage;
+
+   --------------------
+   -- List_Templates --
+   --------------------
+
+   procedure List_Templates is
+      procedure Template_Names (Directory_Entry : Directory_Entry_Type);
+
+      procedure Template_Names (Directory_Entry : Directory_Entry_Type) is
+      begin
+         if Kind (Directory_Entry) = Directory and then
+           Index (Simple_Name (Directory_Entry), ".") /= 1
+         then
+            Put_Line (Simple_Name (Directory_Entry));
+         end if;
+      end Template_Names;
+   begin
+      Search (Directory => Gnoga_Make_Templates,
+              Pattern   => "",
+              Process   => Template_Names'Access);
+   end List_Templates;
 
    ---------------------
    -- New_Application --

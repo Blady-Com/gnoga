@@ -1,14 +1,23 @@
 PREFIX=$(dir $(shell which gnatls))..
+GPRCHECK=$(shell gprbuild --version)
 
+ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
+	BUILDER=gprbuild
+	CLEANER=gprclean
+else
+	BUILDER=gnatmake
+	CLEANER=gnatclean
+endif
+
+# To overide gprtool check use:
+#
 # If you do no have grptools comment out these two lines and uncomment one of
 # the lines below.
-
-BUILDER=gprbuild
-CLEANER=gprclean
-
+#BUILDER=gprbuild
+#CLEANER=gprclean
 # If you do not have gprtools switch to gnatmake and gnatclean
-# this is the case on MSYS with MinGW, using Cygwin's own gcc/ada
-# or on some linux distros
+# this is the case on MSYS with MinGW, using Cygwin's own gcc/ada,
+# with TDM-GCC for win32 or win64, or on some linux distros
 #
 #BUILDER=gnatmake
 #CLEANER=gnatclean
@@ -24,6 +33,8 @@ CLEANER=gprclean
 #CLEANER=x86_64-w64-mingw32-gnatclean.exe
 
 TARGET=$(shell gcc -dumpmachine)
+SET_READONLY=chmod -w *
+UNSET_READONLY=chmod +w *
 
 ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
 	PRJ_TARGET=OSX
@@ -33,6 +44,8 @@ ifeq ($(strip $(findstring mingw32, $(TARGET))),mingw32)
 else
 ifeq ($(strip $(findstring cygwin, $(TARGET))),cygwin)
 	PRJ_TARGET=Windows
+	SET_READONLY=attrib +R
+	UNSET_READONLY=attrib -R
 else
 ifeq ($(strip $(findstring freebsd, $(TARGET))),freebsd)
 	PRJ_TARGET=Freebsd

@@ -48,6 +48,8 @@ with GNAT.Sockets.Server.Secure.X509;
 with GNUTLS;
 
 package body Gnoga.Server.Connection.Secure is
+   pragma Linker_Options ("-lgnutls");
+
    function Secure_Server_Factory return Pointer_To_Connections_Factory_Class;
 
    type X509_HTTPS_Factory (Request_Length  : Positive;

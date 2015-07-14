@@ -1,0 +1,4 @@
+This directory after running make gnoga will contain the spec files for Gnoga
+and Simple_Components for building gnoga apps using gnoga as a static library.
+
+See Readme.lib in ../lib for more information

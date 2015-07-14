@@ -9,19 +9,6 @@ else
 	CLEANER=gnatclean
 endif
 
-# To overide gprtool check use:
-#
-# If you do no have grptools comment out these two lines and uncomment one of
-# the lines below.
-#BUILDER=gprbuild
-#CLEANER=gprclean
-# If you do not have gprtools switch to gnatmake and gnatclean
-# this is the case on MSYS with MinGW, using Cygwin's own gcc/ada,
-# with TDM-GCC for win32 or win64, or on some linux distros
-#
-#BUILDER=gnatmake
-#CLEANER=gnatclean
-#
 # If using MinGW on Cygwin32 or 64 you can use the following:
 #
 # For 32bit
@@ -33,8 +20,6 @@ endif
 #CLEANER=x86_64-w64-mingw32-gnatclean.exe
 
 TARGET=$(shell gcc -dumpmachine)
-SET_READONLY=chmod -w *
-UNSET_READONLY=chmod +w *
 
 ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
 	PRJ_TARGET=OSX
@@ -44,8 +29,6 @@ ifeq ($(strip $(findstring mingw32, $(TARGET))),mingw32)
 else
 ifeq ($(strip $(findstring cygwin, $(TARGET))),cygwin)
 	PRJ_TARGET=Windows
-	SET_READONLY=attrib +R
-	UNSET_READONLY=attrib -R
 else
 ifeq ($(strip $(findstring freebsd, $(TARGET))),freebsd)
 	PRJ_TARGET=Freebsd
@@ -60,13 +43,32 @@ endif
 endif
 endif
 
+ifdef ComSpec
+	COPY=copy
+	RM=del
+	PATHSEP2=\\
+else
+	COPY=cp
+	RM=rm
+	PATHSEP2=/
+endif
+
+PATHSEP=$(strip $(PATHSEP2))
+
+ifeq (${PRJ_TARGET}, Windows)
+        SET_READONLY=attrib +R
+        UNSET_READONLY=attrib -R
+else
+	SET_READONLY=chmod -w
+	UNSET_READONLY=chmod +w
+endif
+
 all: gnoga gnoga_tools demo tutorials
 
 setup:
 ifeq (${PRJ_TARGET}, Windows)
 	@echo "Setting up for Windows build"
-	- copy src\gnoga-application.windows src\gnoga-application.adb
-	- cp src/gnoga-application.windows src/gnoga-application.adb
+	$(COPY) src$(PATHSEP)gnoga-application.windows src$(PATHSEP)gnoga-application.adb
 else
 ifeq (${PRJ_TARGET}, OSX)
 	@echo "Setting up for Mac OS X build"
@@ -77,10 +79,20 @@ endif
 endif
 
 gnoga: setup
+	- cd lib && $(UNSET_READONLY) *.ali
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
+	$(COPY) src$(PATHSEP)*.ads include
+	$(COPY) src$(PATHSEP)gnoga-server-model-table.adb include
+	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ads include
+	- $(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ali lib
+	cd lib && $(SET_READONLY) *.ali
 
 gnoga_secure: gnoga
+	- cd lib && $(UNSET_READONLY) *.ali
 	cd ssl && $(BUILDER) -p -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
+	cd lib && $(SET_READONLY) *.ali
 
 gnoga_tools:
 	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -169,6 +181,9 @@ tutorials:
 	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean:
+	cd lib && $(UNSET_READONLY) *.ali
+	- cd lib && $(RM) *.a*
+	- cd include && $(RM) *.ads
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd ssl && $(CLEANER) -r -Pgnoga_secure.gpr
 	cd tools && $(CLEANER) -Ptools.gpr
@@ -193,15 +208,15 @@ clean:
 	cd tutorial/tutorial-09 && $(CLEANER) -Ptutorial_09.gpr
 	cd tutorial/tutorial-10 && $(CLEANER) -Ptutorial_10.gpr
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
-	- cd obj && rm gnoga_gtk_window.o
-	- cd deps && rm -rf MultiMarkdown-4
-	- cd docs && rm html/*.html
-	- cd docs && rm -rf html/gnoga_rm
-	- rm bin/multimarkdown
-	- cd bin && rm *.db
-	- cd bin && rm temp.txt
-	- cd bin && rm gnoga-test
+	- cd obj && $(RM) gnoga_gtk_window.o
+	- cd docs && $(RM) html/*.html
+	- cd bin && $(RM) *.db
+	- cd bin && $(RM) temp.txt
+	- cd bin && $(RM) gnoga-test
 	- cd js && rm -rf ace-builds
+	- cd docs && rm -rf html/gnoga_rm
+	- cd deps && rm -rf MultiMarkdown-4
+	- rm bin/multimarkdown
 
 bin/multimarkdown:
 	- cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git

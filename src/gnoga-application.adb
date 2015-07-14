@@ -122,7 +122,7 @@ package body Gnoga.Application is
 
    procedure Open_URL (url : String := "http://127.0.0.1:8080") is
    begin
-      Open_URL_Linux (url);
+      Open_URL_OSX (url);
    end Open_URL;
 
 end Gnoga.Application;

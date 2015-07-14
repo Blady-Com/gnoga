@@ -1,4 +1,4 @@
-with "../src/gnoga.gpr";
+with "../lib/gnoga.gpr";
 with "../settings.gpr";
 
 project Test is

@@ -1,0 +1,8 @@
+Install components in your local project by copying the entire compnent to your
+local subdirectory components and then running the containing Makefile with:
+make install
+
+If you wish to install the component into your global Gnoga installation (it
+will become part of libgnoga.a) cd to the component and run: make install
+there. Then you _must_ rerun the make gonga make file with: make gnoga
+that will add the new component to libgnoga.a

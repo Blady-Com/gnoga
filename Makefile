@@ -59,8 +59,8 @@ ifeq (${PRJ_TARGET}, Windows)
         SET_READONLY=attrib +R
         UNSET_READONLY=attrib -R
 else
-	SET_READONLY=chmod -w
-	UNSET_READONLY=chmod +w
+	SET_READONLY=chmod -w *
+	UNSET_READONLY=chmod +w *
 endif
 
 all: gnoga gnoga_tools demo tutorials
@@ -79,20 +79,20 @@ endif
 endif
 
 gnoga: setup
-	- cd lib && $(UNSET_READONLY) *.ali
+	- cd lib && $(UNSET_READONLY)
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
 	$(COPY) src$(PATHSEP)*.ads include
 	$(COPY) src$(PATHSEP)gnoga-server-model-table.adb include
 	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ads include
 	- $(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ali lib
-	cd lib && $(SET_READONLY) *.ali
+	cd lib && $(SET_READONLY)
 
 gnoga_secure: gnoga
-	- cd lib && $(UNSET_READONLY) *.ali
+	- cd lib && $(UNSET_READONLY)
 	cd ssl && $(BUILDER) -p -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
-	cd lib && $(SET_READONLY) *.ali
+	cd lib && $(SET_READONLY)
 
 gnoga_tools:
 	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -181,7 +181,7 @@ tutorials:
 	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean:
-	cd lib && $(UNSET_READONLY) *.ali
+	cd lib && $(UNSET_READONLY)
 	- cd lib && $(RM) *.a*
 	- cd include && $(RM) *.ads
 	cd src && $(CLEANER) -r -Pgnoga.gpr

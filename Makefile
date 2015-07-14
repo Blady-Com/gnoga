@@ -161,10 +161,10 @@ adablog:
 connect_four:
 	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-tests:
+tests: setup
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-tests_ssl:
+tests_ssl: setup
 	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tutorials:

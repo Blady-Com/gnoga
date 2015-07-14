@@ -5,6 +5,10 @@ Please see the docs directory for documentation and the FAQ.
 
 To get started:
 
+Install GNAT (see http://GetAdaNow.com)
+
+On Windows - if using TDM-GCC replace make below with ming32-make
+
 Either download and unarchive the stable version of Gnoga from
 http://www.gnoga.com or use git to get the latest development version:
 
@@ -12,8 +16,6 @@ http://www.gnoga.com or use git to get the latest development version:
 git clone git://git.code.sf.net/p/gnoga/code gnoga
 cd gnoga
 make  (or run "make release" for no debug info in compile)
-      (if using MinGW make.bat and do not have make)
-      (if you do not have gprtools see the Makefile to use gnatmake)
 ```
 
 then run the snake demo or tutorials in /bin. There are additional demos in

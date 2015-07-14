@@ -7,7 +7,7 @@ To get started:
 
 Install GNAT (see http://GetAdaNow.com)
 
-On Windows - if using TDM-GCC replace make below with ming32-make
+On Windows - if using TDM-GCC replace make below with mingw32-make
 
 Either download and unarchive the stable version of Gnoga from
 http://www.gnoga.com or use git to get the latest development version:

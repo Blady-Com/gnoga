@@ -21,9 +21,9 @@ install:
 	$(COPY) js$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)js
 
 uninstall:
-	$(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-boot_strap.ad?
-	$(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)bootstrap*
-	$(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)boot_bootstrap3.html
-	$(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)fonts$(PATHSEP)glyphicons-*
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-boot_strap.ad?
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)bootstrap*
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)boot_bootstrap3.html
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)fonts$(PATHSEP)glyphicons-*
 	- rmdir ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)fonts
-	$(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)bootstrap.min.js
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)bootstrap.min.js

@@ -21,9 +21,9 @@ install:
 	$(COPY) js$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)js
 
 uninstall:
-	$(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-jqueryui*
-	$(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)jquery-ui*
-	$(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)boot_jqueryui.html
-	$(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images$(PATHSEP)*.png
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-jqueryui*
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)jquery-ui*
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)boot_jqueryui.html
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images$(PATHSEP)*.png
 	- rmdir ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
-	$(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)jquery-ui.min.js
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)jquery-ui.min.js

@@ -16,4 +16,4 @@ install:
 	$(COPY) src$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)src
 
 uninstall:
-	$(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-message_boxes.ad?
+	- $(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-message_boxes.ad?

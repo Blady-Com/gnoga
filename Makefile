@@ -45,11 +45,15 @@ endif
 
 ifdef ComSpec
 	COPY=copy
+	MOVE=move
 	RM=del
+	RMS=del /S
 	PATHSEP2=\\
 else
 	COPY=cp
+	MOVE=mv
 	RM=rm
+	RMS=rm -rf
 	PATHSEP2=/
 endif
 
@@ -63,7 +67,7 @@ else
 	UNSET_READONLY=chmod +w *
 endif
 
-all: gnoga gnoga_tools demo tutorials
+all: basic_components gnoga gnoga_tools demo tutorials
 
 setup:
 ifeq (${PRJ_TARGET}, Windows)
@@ -77,6 +81,9 @@ else
 	@echo "Linux/FreeBSD or Unix build"
 endif
 endif
+
+basic_components:
+	$(MAKE) -C components
 
 gnoga: setup
 	- cd lib && $(UNSET_READONLY)
@@ -139,11 +146,6 @@ native_osx:
 	@echo "Native XCode project is now in deps/MacGap2"
 	@echo "See docs/native_mac_apps.md for instructions"
 
-ace_editor:
-	- cd js && git clone https://github.com/ajaxorg/ace-builds.git
-
-demo: snake mine_detector chattanooga adaedit adablog connect_four
-
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
@@ -153,8 +155,8 @@ mine_detector:
 chattanooga:
 	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-adaedit: ace_editor
-	cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
+adaedit:
+	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 adablog:
 	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -162,10 +164,10 @@ adablog:
 connect_four:
 	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-tests: setup
+tests: gnoga
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-tests_ssl: setup
+tests_ssl: gnoga_secure
 	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tutorials:
@@ -182,6 +184,7 @@ tutorials:
 	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean:
+	$(MAKE) -C components uninstall
 	cd lib && $(UNSET_READONLY)
 	- cd lib && $(RM) *.a*
 	- cd include && $(RM) *.ad?
@@ -214,17 +217,16 @@ clean:
 	- cd bin && $(RM) *.db
 	- cd bin && $(RM) temp.txt
 	- cd bin && $(RM) gnoga-test
-	- cd js && rm -rf ace-builds
-	- cd docs && rm -rf html/gnoga_rm
-	- cd deps && rm -rf MultiMarkdown-4
-	- rm bin/multimarkdown
+	- cd docs && $(RMS) html/gnoga_rm
+	- cd deps && $(RMS) MultiMarkdown-4
+	- $(RM) bin/multimarkdown
 
 bin/multimarkdown:
 	- cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git
 	- cd deps/MultiMarkdown-4 && git submodule init
 	- cd deps/MultiMarkdown-4 && git submodule update
 	- cd deps/MultiMarkdown-4 && make
-	- mv deps/MultiMarkdown-4/multimarkdown bin/
+	- $(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 rm-docs: gnoga
 	gnatdoc -Psrc/gnoga.gpr --no-subprojects -XDevelopment=Debug -XLegacy=Ada2005 -XAtomic_Access=GCC-long-offsets -XTasking=Multiple -XTraced_objects=Off -XPRJ_TARGET=Unix -XPRJ_BUILD=Debug
 

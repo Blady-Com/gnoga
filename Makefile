@@ -82,7 +82,7 @@ gnoga: setup
 	- cd lib && $(UNSET_READONLY)
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
-	- $(RM) include$(PATHSEP)*.ads
+	- $(RM) include$(PATHSEP)*.ad?
 	$(COPY) src$(PATHSEP)*.ads include
 	$(COPY) src$(PATHSEP)gnoga-server-model-table.adb include
 	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ads include
@@ -184,7 +184,7 @@ tutorials:
 clean:
 	cd lib && $(UNSET_READONLY)
 	- cd lib && $(RM) *.a*
-	- cd include && $(RM) *.ads
+	- cd include && $(RM) *.ad?
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd ssl && $(CLEANER) -r -Pgnoga_secure.gpr
 	cd tools && $(CLEANER) -Ptools.gpr

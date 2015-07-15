@@ -82,7 +82,7 @@ gnoga: setup
 	- cd lib && $(UNSET_READONLY)
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
-	$(RM) include$(PATHSEP)*.ads
+	- $(RM) include$(PATHSEP)*.ads
 	$(COPY) src$(PATHSEP)*.ads include
 	$(COPY) src$(PATHSEP)gnoga-server-model-table.adb include
 	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ads include

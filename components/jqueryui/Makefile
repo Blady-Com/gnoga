@@ -17,7 +17,7 @@ install:
 	$(COPY) css$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)css
 	$(COPY) html$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)html
 	- mkdir ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
-	$(COPY) cssl$(PATHSEP)images$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
+	$(COPY) css$(PATHSEP)images$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
 	$(COPY) js$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)js
 
 uninstall:

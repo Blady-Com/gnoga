@@ -54,8 +54,11 @@ package body Snake.Connection is
 
    function New_Food return Point_Type is
 
-      subtype X_Range is Integer range 0 .. Display_Width / Segment_Size;
-      subtype Y_Range is Integer range 0 .. Display_Height / Segment_Size;
+      subtype X_Range is
+        Integer range 0 .. (Display_Width / Segment_Size) - 1;
+
+      subtype Y_Range is
+        Integer range 0 .. (Display_Height / Segment_Size) - 1;
 
       package Random_X is new Ada.Numerics.Discrete_Random (X_Range);
       package Random_Y is new Ada.Numerics.Discrete_Random (Y_Range);

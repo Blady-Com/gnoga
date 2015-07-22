@@ -47,7 +47,7 @@ ifdef ComSpec
 	COPY=copy
 	MOVE=move
 	RM=del
-	RMS=del /S
+	RMS=del /S /Q
 	PATHSEP2=\\
 else
 	COPY=cp
@@ -145,6 +145,8 @@ native_osx:
 	@echo
 	@echo "Native XCode project is now in deps/MacGap2"
 	@echo "See docs/native_mac_apps.md for instructions"
+
+demo: snake mine_detector connect_four chattanooga adaedit adablog
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}

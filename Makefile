@@ -185,8 +185,14 @@ tutorials:
 	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-clean:
+cleanall:
 	$(MAKE) -C components uninstall
+	- cd deps && $(RMS) MultiMarkdown-4
+	- $(RM) bin/multimarkdown
+	- cd docs && $(RM) html/*.html
+	- cd docs && $(RMS) html/gnoga_rm
+
+clean:
 	cd lib && $(UNSET_READONLY)
 	- cd lib && $(RM) *.a*
 	- cd include && $(RM) *.ad?
@@ -215,13 +221,9 @@ clean:
 	cd tutorial/tutorial-10 && $(CLEANER) -Ptutorial_10.gpr
 	cd tutorial/tutorial-11 && $(CLEANER) -Ptutorial_11.gpr
 	- cd obj && $(RM) gnoga_gtk_window.o
-	- cd docs && $(RM) html/*.html
 	- cd bin && $(RM) *.db
 	- cd bin && $(RM) temp.txt
 	- cd bin && $(RM) gnoga-test
-	- cd docs && $(RMS) html/gnoga_rm
-	- cd deps && $(RMS) MultiMarkdown-4
-	- $(RM) bin/multimarkdown
 
 bin/multimarkdown:
 	- cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git

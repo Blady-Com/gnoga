@@ -70,17 +70,7 @@ endif
 all: basic_components gnoga gnoga_tools demo tutorials
 
 setup:
-ifeq (${PRJ_TARGET}, Windows)
-	@echo "Setting up for Windows build"
-	$(COPY) src$(PATHSEP)gnoga-application.windows src$(PATHSEP)gnoga-application.adb
-else
-ifeq (${PRJ_TARGET}, OSX)
-	@echo "Setting up for Mac OS X build"
-	cp src/gnoga-application.osx src/gnoga-application.adb
-else
-	@echo "Linux/FreeBSD or Unix build"
-endif
-endif
+	$(MAKE) -C src
 
 basic_components:
 	$(MAKE) -C components
@@ -187,6 +177,7 @@ tutorials:
 
 cleanall: clean
 	$(MAKE) -C components uninstall
+	- cd src && $(RM) gnoga-application.adb
 	- cd deps && $(RMS) MultiMarkdown-4
 	- $(RM) bin/multimarkdown
 	- cd docs && $(RM) html/*.html

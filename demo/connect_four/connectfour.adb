@@ -1104,16 +1104,16 @@ package body ConnectFour is
               (X    => 0,
                Y    => 285,
                Text => "I win! - Press left mouse button");
-         elsif This.Tie then
-            Display_Text
-              (X    => 0,
-               Y    => 285,
-               Text => "Tie Game! - Press Left Mouse Button");
          elsif This.User_Won then
             Display_Text
               (X    => 0,
                Y    => 285,
                Text => "You win! - Press left mouse button");
+         elsif This.Tie then
+            Display_Text
+              (X    => 0,
+               Y    => 285,
+               Text => "Tie Game! - Press Left Mouse Button");
          end if;
       end Print_Board;
    begin

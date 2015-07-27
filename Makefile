@@ -102,7 +102,7 @@ gnoga_secure: gnoga
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
 	cd lib && $(SET_READONLY)
 
-gnoga_tools:
+gnoga_tools: gnoga
 	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 release: setup

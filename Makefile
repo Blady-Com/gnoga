@@ -185,7 +185,7 @@ tutorials:
 	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-cleanall:
+cleanall: clean
 	$(MAKE) -C components uninstall
 	- cd deps && $(RMS) MultiMarkdown-4
 	- $(RM) bin/multimarkdown

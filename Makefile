@@ -177,11 +177,13 @@ tutorials:
 	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-sqlite3:
+lib/libsqlite3.a:
 	cd deps/simple_components/sqlite-sources && gcc -s -c -O2 -o sqlite3.o sqlite3.c
 	cd deps/simple_components/sqlite-sources && ar rcs libsqlite3.a sqlite3.o
 	cd deps/simple_components/sqlite-sources && $(MOVE) libsqlite3.a ..$(PATHSEP)..$(PATHSEP)..$(PATHSEP)lib
 	cd deps/simple_components/sqlite-sources && $(RM) sqlite3.o
+
+sqlite3: lib/libsqlite3.a
 
 cleanall: clean
 	$(MAKE) -C components uninstall

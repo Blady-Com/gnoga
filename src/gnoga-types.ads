@@ -114,6 +114,7 @@ package Gnoga.Types is
 
    type Pixel_Data_Type is
      array (Positive range <>, Positive range <>) of Pixel_Type;
+   type Pixel_Data_Access is access Pixel_Data_Type;
 
    type Point_Type is
       record

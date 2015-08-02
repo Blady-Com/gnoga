@@ -286,14 +286,14 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
 
    procedure Quadractic_Curve_To (Context           : in out Context_2D_Type;
                                   CP_X, CP_Y, X, Y  : Integer);
-   --  Creates a quadratic Bézier curve, using control point CP_X, CP_Y to
+   --  Creates a quadratic BÃ©zier curve, using control point CP_X, CP_Y to
    --  point X, Y.
 
    procedure Bezier_Curve_To
      (Context                        : in out Context_2D_Type;
       CP_X_1, CP_Y_1, CP_X_2, CP_Y_2 : in     Integer;
       X, Y                           : in     Integer);
-   --  Creates a cubic Bézier curve
+   --  Creates a cubic BÃ©zier curve
 
    procedure Arc_Radians
      (Context                      : in out Context_2D_Type;
@@ -417,6 +417,10 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    function Data (Image_Data : Image_Data_Type)
                   return Gnoga.Types.Pixel_Data_Type;
    --  Data property of Image_Data_Type
+
+   procedure New_From_XPM (Image : out Gnoga.Types.Pixel_Data_Access;
+                           File_Name : String);
+   --  Read XPM data from File_Name to Image which is allocated with XPM size
 
    --  Other
 

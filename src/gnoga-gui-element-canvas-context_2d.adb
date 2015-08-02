@@ -38,8 +38,11 @@
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Numerics;
+with Ada.Text_IO;
 
 with Gnoga.Server.Connection;
+with Parsers.Multiline_Source.XPM;
+with Parsers.Multiline_Source.Text_IO;
 
 package body Gnoga.Gui.Element.Canvas.Context_2D is
    procedure Data (Image_Data : in out Image_Data_Type; Value : in String);
@@ -1063,6 +1066,50 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       return String_To_Pixel_Data
         (Data (Image_Data), Image_Data.Width, Image_Data.Height);
    end Data;
+
+   ------------------
+   -- New_From_XPM --
+   ------------------
+
+   procedure New_From_XPM (Image : out Gnoga.Types.Pixel_Data_Access;
+                           File_Name : String) is
+      use Parsers.Multiline_Source.XPM;
+      use Parsers.Multiline_Source.Text_IO;
+      use Ada.Text_IO;
+      function To_Red
+        (Value : RGB_Color) return Gnoga.Types.Color_Type is
+        (Gnoga.Types.Color_Type (Value / 16#10000#));
+      function To_Green
+        (Value : RGB_Color) return Gnoga.Types.Color_Type is
+        (Gnoga.Types.Color_Type ((Value mod 16#10000#) / 16#100#));
+      function To_Blue
+        (Value : RGB_Color) return Gnoga.Types.Color_Type is
+        (Gnoga.Types.Color_Type (Value mod 16#100#));
+      XPM_File : aliased File_Type;
+   begin
+      Open (XPM_File, In_File, File_Name);
+      declare
+         XPM_Source : aliased Source (XPM_File'Access);
+         XPM_Header : constant Descriptor         := Get (XPM_Source'Access);
+         XMP_Map    : constant Color_Tables.Table := Get (XPM_Source'Access,
+                                                          XPM_Header);
+         XPM_Image  : constant Pixel_Buffer       := Get (XPM_Source'Access,
+                                                          XPM_Header, XMP_Map);
+      begin
+         Image := new Gnoga.Types.Pixel_Data_Type (1 .. XPM_Header.Width,
+                                                   1 .. XPM_Header.Height);
+         for X in Image'Range (1) loop
+            for Y in Image'Range (2) loop
+               Image (X, Y) :=
+                 (To_Red (XPM_Image (X, Y)),
+                  To_Green (XPM_Image (X, Y)),
+                  To_Blue (XPM_Image (X, Y)),
+                  Alpha => 255);
+            end loop;
+         end loop;
+      end;
+      Close (XPM_File);
+   end New_From_XPM;
 
    ----------
    -- Save --

@@ -69,7 +69,7 @@ else
 	BUILD_SQLITE3=
 endif
 
-all: basic_components gnoga gnoga_tools $(BUILD_SQLITE3) demo tutorials
+all: basic_components xpm_parser gnoga gnoga_tools $(BUILD_SQLITE3) demo tutorials
 
 setup:
 	$(MAKE) -C src
@@ -77,15 +77,21 @@ setup:
 basic_components:
 	$(MAKE) -C components
 
+xpm_parser:
+	cd deps/simple_components/xpm && $(BUILDER) -p -Pxpm_parser.gpr
+
 gnoga: setup
 	- cd lib && $(UNSET_READONLY)
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
+	cd deps/simple_components/xpm && ar rc ../../../lib/libgnoga.a *.o
 	- $(RM) include$(PATHSEP)*.ad?
 	$(COPY) src$(PATHSEP)*.ads include
 	$(COPY) src$(PATHSEP)gnoga-server-model-table.adb include
 	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ads include
 	- $(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ali lib
+	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)xpm$(PATHSEP)*.ads include
+	- $(COPY) deps$(PATHSEP)simple_components$(PATHSEP)xpm$(PATHSEP)*.ali lib
 	cd lib && $(SET_READONLY)
 
 gnoga_secure: gnoga
@@ -109,16 +115,18 @@ install: release gnoga_tools
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server-http_server.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
+	cd deps/simple_components/xpm && gprinstall -f --prefix=$(PREFIX) -p xpm_parser.gpr
 
 install_debug: gnoga gnoga_tools
 	touch deps/simple_components/strings_edit-text_edit.o
-	cd src && gprinstall -a -f --prefix=$(PREFIX) -p gnoga.gpr
+	cd src && gprinstall -a -f --prefix=$(PREFIX) -p gnoga.gpr --install-name=gnoga
 	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server.gpr --install-name=components-connections_server
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server-http_server.gpr --install-name=components-connections_server-http_server
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
+	cd deps/simple_components/xpm && gprinstall -f --prefix=$(PREFIX) -p xpm_parser.gpr
 
 uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr
@@ -127,6 +135,7 @@ uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall components-connections_server-http_server.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall strings_edit.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tables.gpr
+	- gprinstall -f --prefix=$(PREFIX) --uninstall xpm.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
 
 native_gtk: src/gnoga_gtk_window.c
@@ -199,6 +208,7 @@ clean:
 	- cd include && $(RM) *.ad?
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd ssl && $(CLEANER) -r -Pgnoga_secure.gpr
+	cd deps/simple_components/xpm && $(CLEANER) -r -Pxpm_parser.gpr
 	cd tools && $(CLEANER) -Ptools.gpr
 	cd test && $(CLEANER) -Ptest.gpr
 	cd test_ssl && $(CLEANER) -Ptest_ssl.gpr

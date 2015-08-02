@@ -62,12 +62,14 @@ PATHSEP=$(strip $(PATHSEP2))
 ifeq (${PRJ_TARGET}, Windows)
         SET_READONLY=attrib +R
         UNSET_READONLY=attrib -R
+	BUILD_SQLITE3=sqlite3
 else
 	SET_READONLY=chmod -w *
 	UNSET_READONLY=chmod +w *
+	BUILD_SQLITE3=
 endif
 
-all: basic_components gnoga gnoga_tools sqlite3 demo tutorials
+all: basic_components gnoga gnoga_tools $(BUILD_SQLITE3) demo tutorials
 
 setup:
 	$(MAKE) -C src

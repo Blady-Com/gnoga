@@ -577,8 +577,7 @@ package body Gnoga.Server.Connection is
    exception
       when E : others =>
          Log ("Do_Get_Head Error");
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Do_Get_Head;
 
    ------------
@@ -705,8 +704,7 @@ package body Gnoga.Server.Connection is
    exception
       when E : others =>
          Log ("Do_Body Error");
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Do_Body;
 
    -------------
@@ -1096,8 +1094,7 @@ package body Gnoga.Server.Connection is
             Connection_Holder.Release;
 
             Log ("Error on Connection ID=" & ID'Img);
-            Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
+            Log (Ada.Exceptions.Exception_Information (E));
       end;
 
       Connection_Manager.Delete_Connection_Holder (ID);
@@ -1106,8 +1103,7 @@ package body Gnoga.Server.Connection is
    exception
       when E : others =>
          Log ("Connection Manager Error Connection ID=" & ID'Img);
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Event_Task_Type;
 
    --------------
@@ -1169,8 +1165,7 @@ package body Gnoga.Server.Connection is
                      exception
                         when E : others =>
                            Log ("Watchdog ping error:");
-                           Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                                  Ada.Exceptions.Exception_Message (E));
+                           Log (Ada.Exceptions.Exception_Information (E));
                      end;
                end;
             end if;
@@ -1196,8 +1191,7 @@ package body Gnoga.Server.Connection is
          exception
             when E : others =>
                Log ("Watchdog error:");
-               Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                      Ada.Exceptions.Exception_Message (E));
+               Log (Ada.Exceptions.Exception_Information (E));
          end;
 
          select
@@ -1379,11 +1373,10 @@ package body Gnoga.Server.Connection is
          end if;
       end if;
    exception
-      when Error : others =>
+      when E : others =>
          Gnoga.Log ("Open error ID" & ID'Img &
                    " with message : " &
-                   Ada.Exceptions.Exception_Name (Error) & " - " &
-                   Ada.Exceptions.Exception_Message (Error));
+                      Ada.Exceptions.Exception_Information (E));
    end WebSocket_Initialize;
 
    ----------------------
@@ -1434,8 +1427,7 @@ package body Gnoga.Server.Connection is
 
       Gnoga.Log ("Connection error ID" & ID'Img &
                    " with message : " &
-                   Ada.Exceptions.Exception_Name (Error) & " - " &
-                   Ada.Exceptions.Exception_Message (Error));
+                   Ada.Exceptions.Exception_Information (Error));
       --  If not reconnected by next watchdog ping connection will be deleted.
    end WebSocket_Error;
 
@@ -1575,8 +1567,7 @@ package body Gnoga.Server.Connection is
    exception
       when E : others =>
          Log ("Websocket Message Error");
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end WebSocket_Received;
 
    ----------------------
@@ -1671,8 +1662,7 @@ package body Gnoga.Server.Connection is
    exception
       when E : others =>
          Log ("Dispatch Error");
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Dispatch_Task_Type;
 
    procedure Dispatch_Message (Message : in String) is
@@ -1721,8 +1711,7 @@ package body Gnoga.Server.Connection is
          return;
       when E : others =>
          Log ("Dispatch Message Error");
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Dispatch_Message;
 
    -------------------
@@ -1854,8 +1843,7 @@ package body Gnoga.Server.Connection is
          null; -- Connection already closed.
       when E : others =>
          Log ("Flush_Buffer Error");
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Flush_Buffer;
 
    -------------------

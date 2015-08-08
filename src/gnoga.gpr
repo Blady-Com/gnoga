@@ -19,4 +19,8 @@ project Gnoga is
       for Documentation_Dir use "../docs/html/gnoga_rm";
    end IDE;
 
+   package Install is
+      for Artifacts ("share/gnoga") use ("../docs/html", "../docs/user_guide");
+   end Install;
+
 end Gnoga;

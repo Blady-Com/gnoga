@@ -34,6 +34,7 @@
 --                                                                          --
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
+with Ada.Strings.Fixed;
 
 package body Gnoga.Gui.Location is
 
@@ -157,6 +158,57 @@ package body Gnoga.Gui.Location is
    begin
       return Location.Property ("search");
    end Search;
+
+   -----------
+   -- Parse --
+   -----------
+
+   function Parse (URL : in String; Encoding : String := "")
+                   return Gnoga.Types.Data_Map_Type is
+      P : Gnoga.Types.Data_Map_Type;
+      Ind1, Ind2, Ind3 : Natural;
+      use Ada.Strings.Fixed;
+   begin
+      Ind1 := Index (URL, "?");
+      if Ind1 > 0 then
+         loop
+            Ind2 := Index (URL, "=", Ind1);
+            if Ind2 > 0 then
+               Ind3 := Index (URL, "&", Ind2);
+               if Ind3 > 0 then
+                  if Encoding /= "" then
+                     P.Include
+                     (URL_Decode
+                        (URL (Ind1 + 1 .. Ind2 - 1),
+                         Encoding), URL_Decode
+                        (URL (Ind2 + 1 .. Ind3 - 1),
+                         Encoding));
+                  else
+                     P.Include (URL (Ind1 + 1 .. Ind2 - 1),
+                                URL (Ind2 + 1 .. Ind3 - 1));
+                  end if;
+                  Ind1 := Ind3;
+               else
+                  if Encoding /= "" then
+                     P.Include
+                     (URL_Decode
+                        (URL (Ind1 + 1 .. Ind2 - 1),
+                         Encoding), URL_Decode
+                        (URL (Ind2 + 1 .. URL'Last),
+                         Encoding));
+                  else
+                     P.Include (URL (Ind1 + 1 .. Ind2 - 1),
+                                URL (Ind2 + 1 .. URL'Last));
+                  end if;
+                  exit;
+               end if;
+            else
+               exit;
+            end if;
+         end loop;
+      end if;
+      return P;
+   end Parse;
 
    ------------
    -- Reload --

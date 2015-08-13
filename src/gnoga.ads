@@ -50,6 +50,12 @@ package Gnoga is
    function Unescape_Quotes (S : String) return String;
    --  Unescape a string quoted for Java Script
 
+   function URL_Encode (S : String; Encoding : String := "") return String;
+   function URL_Decode (S : String; Encoding : String := "") return String;
+   --  Encode and decode form URL
+   --  Supported encodings are ISO-8859-1 (default)
+   --  and UTF-8 (typically from Input_Encoding function)
+
    function Left_Trim (S : String) return String;
    function Right_Trim (S : String) return String;
    --  Remove extra spaces and tabs

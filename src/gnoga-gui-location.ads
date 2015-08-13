@@ -82,6 +82,13 @@ package Gnoga.Gui.Location is
    procedure Search (Location : in out Location_Type; Value : in String);
    function Search (Location : Location_Type) return String;
 
+   function Parse (URL : in String; Encoding : String := "")
+                   return Gnoga.Types.Data_Map_Type;
+   --  Parse form GET parameters in URL (typically from Search function)
+   --  to Data_Map_Type
+   --  Supported encodings are ISO-8859-1 (default)
+   --  and UTF-8 (typically from Input_Encoding function)
+
    -------------------------------------------------------------------------
    --  Location_Type - Methods
    -------------------------------------------------------------------------

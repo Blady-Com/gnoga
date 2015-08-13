@@ -40,6 +40,8 @@ with Ada.Strings.Fixed;
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Calendar.Time_Zones;
+with Ada.Integer_Text_IO;
+with Ada.Strings.UTF_Encoding.Strings;
 
 package body Gnoga is
 
@@ -125,6 +127,86 @@ package body Gnoga is
 
       return Ada.Strings.Unbounded.To_String (R);
    end Unescape_Quotes;
+
+   ----------------
+   -- URL_Encode --
+   ----------------
+
+   function URL_Encode (S : String; Encoding : String := "") return String is
+      use type Ada.Strings.Unbounded.Unbounded_String;
+
+      function Translate_Character (C : Character) return String;
+
+      function Translate_Character (C : Character) return String is
+      begin
+         if C in 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '*' | '_'
+         then
+            return (1 => C);
+         elsif C = ' ' then
+            return "+";
+         else
+            declare
+               V : String (1 .. 6); -- 16#HH#
+            begin
+               Ada.Integer_Text_IO.Put (V, Character'Pos (C), 16);
+               return "%" & V (4 .. 5);
+            end;
+         end if;
+      end Translate_Character;
+
+      R, T : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      if Encoding = "UTF-8" then
+         T :=
+           Ada.Strings.Unbounded.To_Unbounded_String
+             (Ada.Strings.UTF_Encoding.Strings.Encode (S));
+      else
+         T := Ada.Strings.Unbounded.To_Unbounded_String (S);
+      end if;
+
+      for C in 1 .. Ada.Strings.Unbounded.Length (T) loop
+         R := R & Translate_Character (Ada.Strings.Unbounded.Element (T, C));
+      end loop;
+
+      return Ada.Strings.Unbounded.To_String (R);
+   end URL_Encode;
+
+   ----------------
+   -- URL_Decode --
+   ----------------
+
+   function URL_Decode (S : String; Encoding : String := "") return String is
+      C : Integer := S'First;
+
+      function Translate_Character return Character;
+
+      function Translate_Character return Character is
+         R : Character := S (C);
+      begin
+         if R = '+' then
+            R := ' ';
+         elsif R = '%' and C < S'Last - 1 then
+            R := Character'Val (Integer'Value ("16#" & S (C + 1 .. C + 2)
+                                & "#"));
+            C := C + 2;
+         end if;
+         C := C + 1;
+         return R;
+      end Translate_Character;
+
+      R : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      while C in S'Range loop
+         Ada.Strings.Unbounded.Append (R, Translate_Character);
+      end loop;
+
+      if Encoding = "UTF-8" then
+         return Ada.Strings.UTF_Encoding.Strings.Decode
+           (Ada.Strings.Unbounded.To_String (R));
+      else
+         return Ada.Strings.Unbounded.To_String (R);
+      end if;
+   end URL_Decode;
 
    ---------------
    -- Left_Trim --

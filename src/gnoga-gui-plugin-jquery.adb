@@ -88,8 +88,7 @@ package body Gnoga.Gui.Plugin.jQuery is
          null; --  Socket error to browser
       when E : others =>
          Log ("Error finalizing jQuery Object - " & Gnoga_Var (Object));
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Finalize;
 
    ------------

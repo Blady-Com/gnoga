@@ -123,8 +123,7 @@ package body Gnoga.Application.Multi_Connect is
          Connection.Release;
 
          Log ("Connection" & ID'Img & " closed by exception.");
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end On_Connect;
 
    ----------------

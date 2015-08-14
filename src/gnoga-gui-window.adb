@@ -128,8 +128,7 @@ package body Gnoga.Gui.Window is
    exception
       when E : others =>
          Log ("Error finalizing Window - " & Object.ID);
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Finalize;
 
    ------------

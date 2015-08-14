@@ -281,8 +281,7 @@ package body Gnoga.Gui.Base is
    exception
       when E : others =>
          Log ("Error finalizing - " & Object.ID);
-         Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                Ada.Exceptions.Exception_Message (E));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Finalize;
 
    ----------

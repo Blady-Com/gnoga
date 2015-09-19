@@ -1,4 +1,4 @@
-To Do 1.2
+To Do 1.2:
 
 1. Complete SVG DOM bindings
 2. Direct connection to webkit via API instead of sockets for Gtk and Mac
@@ -10,9 +10,75 @@ To Do 1.2
 8. Lots and lots more Gnoga specific elements as modules and JS bindigns as plugins to be placed in Marketplace
 9. Complete Ace Editor plugin
 10. Complete MacGap support for menus
+11. Add coding style rules documentation
 
 Some Ideas:
 
 1. Install maker GUI installs using Gnoga
-Gnoga_Doc - 2. Documentation generator from Ada specs resulting in a Gnoga reference app
-
+2. Gnoga_Doc - Documentation generator from Ada specs resulting in a Gnoga reference app
+3. Add comments with gnatdoc tags
+(see http://www.adacore.com/developers/documentation/gnatdoc-users-guide/)
+4. Add Ada 2012 contracts
+5. Use OAuth and/or OpenID, Stephane Carrez wrote the Ada-Security framework that do just that.
+(see https://code.google.com/p/ada-security/)
+    1. Username/Password and would be nice OAuth with google and Facebook
+    2. Permission levels
+    3. Permissions by assignment of permission groups at Level
+    4. Tree structure of resources to ease assignment to groups
+6. How GUI designers would want to do the design for Gnoga applications:
+    1 - The tools they use for web design cannot be changed at the request of Ada programmers.
+    2 - It might be necessary to alter the design without recompiling the program.
+    3 - a web page may need to present more content than the Gnoga application proper.
+    4 - Interoperation with CMSs and web site building setups may be required.
+    5 - placement of parts of the views might need to adapt to devices.
+A minimum requirement would be that Gnoga be capable of creating static HTML 5 pages that would act as drawing
+boards or mockup for designers. They shan't use Gnoga's GUI builder. Instead, what they produce
+needs to be mapped to or merged with what the Create (I guess) family of functions of Gnoga needs to do.
+7. How about a identity / login package  which can validate via google or facebook to establish the identity?
+8. How would you go about genrating/sending mail from a gnoga app?
+(There is mail support in AWS, pretty comprehesive. Basil was made for MIME, http://hafdconsulting.com/projects/basil/)
+9. How to get the content of the clipboard and how to modify it ?
+(see https://w3c.github.io/clipboard-apis/)
+http://sourceforge.net/p/gnoga/tickets/17/
+10. Add tips or compile faq in a wiki
+11. Add menu bar widget
+(see https://github.com/manusa/mnmenu)
+http://sourceforge.net/p/gnoga/tickets/18/
+12. Equivalent of List_View_Control_Type (GWindows.Common_Controls) ?
+The matching functionalities are roughly:
+    - headers
+    - possibility of fixing column widths
+    - possibly, multiple selection
+Nice to have, features of Ex_List_View_Control_Type in
+GWindows.Common_Controls.Ex_List_View :
+    - row colors
+    - alternate colors
+    - payload
+    - sorting on various columns
+13. Add example with a JavaFX webview browser object (HTML5 rendering, minimal user interaction)
+14. Add more support for HTML5 (header, hgroup, h, footer, section, aside, article, nav, time,
+    details, address, figure, role...)
+15. ConnectFour : Some instruction on the nature of the game and how to play might be in order.
+A way to start a new game  other than reloading the page might be good.
+A way to quit without closing the browser window/tab would help, too.
+16. An installer using GNOGA would be a nice way to demonstrate package management.
+You may get some inspiration from the GWindows installer, made completely in Ada and using GWindows for the UI:
+http://sf.net/p/gnavi/code/HEAD/tree/gwindows/installer/
+17. Provide components not just of Gnoga GUI elements but to also package up for use things like
+Jeff's PargmArc (http://pragmada.x10hosting.com/pragmarc.htm) etc.
+18. Install also tutorials and demos
+19. Internationalisation with language translation of displayed text.
+(see http://zanyblue.sourceforge.net/)
+20. How I can let a user choose a file for loading (and later saving).
+21. Conventional dialogs like file selection, printer selection, color selection etc.
+http://sourceforge.net/p/gnoga/tickets/4/
+22. Create a CMS / web site system using Gnoga.
+23. Screen update triggered by data change.
+24. Add a way to disconnect if there is no activity on connection for a period of time.
+Adding something to add for framework since will be easier to track if there has been connection traffic.
+If not you will need to manually tell your watchdog to reset its disconnect timer.
+25. Improve Gnoga.Gui.Plugin.jQueryUI.Widget with Make_Select_Menu, Refresh_Select_Menu, Clear_Select_Menu.
+26. 3D graphics in GNOGA: possible/how?
+(see http://www.puffgames.com/3d_rubiks_kube_puzzle/)
+27. Chart functions inside gnoga for things like line or bar charts.
+(see PLplot is a fully-featured plotting package with two thick Ada bindings. http://plplot.org/)

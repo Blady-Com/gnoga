@@ -489,7 +489,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
          "); " &
          View.Editor_Var &
          ".getSession().getDocument().insert(p, """ &
-         Text &
+         Escape_Quotes (Text) &
          """)");
    end Insert;
 

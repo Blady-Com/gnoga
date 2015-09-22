@@ -202,6 +202,24 @@ package body Gnoga.Gui.View.Card is
       end;
    end Create;
 
+   procedure Create
+     (Tab          : in out Tab_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Card_View    : in out Card_View_Type'Class;
+      Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration;
+      Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration;
+      Select_Color : in     Gnoga.Types.Colors.Color_Enumeration;
+      ID           : in     String                := "")
+   is
+   begin
+      Create (Tab, Parent,
+              Card_View,
+              Gnoga.Types.Colors.To_RGBA (Text_Color),
+              Gnoga.Types.Colors.To_RGBA (Tab_Color),
+              Gnoga.Types.Colors.To_RGBA (Select_Color),
+              ID);
+   end Create;
+
    --------------
    -- On_Click --
    --------------

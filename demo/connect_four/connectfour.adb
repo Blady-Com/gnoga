@@ -348,9 +348,7 @@ package body ConnectFour is
 
    --  Uses lookahead and live tuple heuristic
 
-   procedure Computer_Turn
-     (Board  : in     Board_Array_Type;
-      Column :    out Integer);
+   procedure Computer_Turn (Board : in Board_Array_Type; Column : out Integer);
    procedure Computer_Turn
      (Board  : in     Board_Array_Type;
       Column :    out Integer)
@@ -873,9 +871,8 @@ package body ConnectFour is
       is
       begin
          --           Setcolor(G1,Java.Awt.Color.Black);
-         G1.Stroke_Color
-         (Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.Black));
-         G1.Fill_Color (Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.Black));
+         G1.Stroke_Color (Gnoga.Types.Colors.Black);
+         G1.Fill_Color (Gnoga.Types.Colors.Black);
          --           Drawstring(G1,+Text,X,Y);
          G1.Stroke_Text (Text, X, Y);
       end Display_Text;
@@ -890,13 +887,13 @@ package body ConnectFour is
          Y1  : in Integer;
          X2  : in Integer;
          Y2  : in Integer;
-         Hue :    Gnoga.Types.RGBA_Type);
+         Hue :    Gnoga.Types.Colors.Color_Enumeration);
       procedure Draw_Line
         (X1  : in Integer;
          Y1  : in Integer;
          X2  : in Integer;
          Y2  : in Integer;
-         Hue :    Gnoga.Types.RGBA_Type)
+         Hue :    Gnoga.Types.Colors.Color_Enumeration)
       is
       begin
          --           Setcolor(G1,Hue);
@@ -918,13 +915,13 @@ package body ConnectFour is
         (X      : in Integer;
          Y      : in Integer;
          Radius : in Integer;
-         Hue    :    Gnoga.Types.RGBA_Type;
+         Hue    :    Gnoga.Types.Colors.Color_Enumeration;
          Filled : in Boolean);
       procedure Draw_Circle
         (X      : in Integer;
          Y      : in Integer;
          Radius : in Integer;
-         Hue    :    Gnoga.Types.RGBA_Type;
+         Hue    :    Gnoga.Types.Colors.Color_Enumeration;
          Filled : in Boolean)
       is
       begin
@@ -954,14 +951,14 @@ package body ConnectFour is
          Y1     : in Integer;
          X2     : in Integer;
          Y2     : in Integer;
-         Hue    :    Gnoga.Types.RGBA_Type;
+         Hue    :    Gnoga.Types.Colors.Color_Enumeration;
          Filled : in Boolean);
       procedure Draw_Box
         (X1     : in Integer;
          Y1     : in Integer;
          X2     : in Integer;
          Y2     : in Integer;
-         Hue    :    Gnoga.Types.RGBA_Type;
+         Hue    :    Gnoga.Types.Colors.Color_Enumeration;
          Filled : in Boolean)
       is
       begin
@@ -1023,7 +1020,7 @@ package body ConnectFour is
            (X      => X_First + Integer (Float (Column - 1) * X_Space),
             Y      => Y_First + Integer (Float (Row - 1) * Y_Space),
             Radius => Circle_Radius,
-            Hue    => Gnoga.Types.Colors.To_RGBA (Color),
+            Hue    => Color,
             Filled => True);
       end Draw_Position;
 
@@ -1049,7 +1046,7 @@ package body ConnectFour is
                Y1     => 0,
                X2     => 499,
                Y2     => 299,
-               Hue    => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.Pink),
+               Hue    => Gnoga.Types.Colors.Pink,
                Filled => True);
          elsif This.Computer_Won then
             Draw_Box
@@ -1057,16 +1054,15 @@ package body ConnectFour is
                Y1     => 0,
                X2     => 499,
                Y2     => 299,
-               Hue    => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.Gray),
+               Hue    => Gnoga.Types.Colors.Gray,
                Filled => True);
          else
             Draw_Box
-              (X1  => 0,
-               Y1  => 0,
-               X2  => 499,
-               Y2  => 299,
-               Hue =>
-                 Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.Light_Gray),
+              (X1     => 0,
+               Y1     => 0,
+               X2     => 499,
+               Y2     => 299,
+               Hue    => Gnoga.Types.Colors.Light_Gray,
                Filled => True);
          end if;
 
@@ -1087,8 +1083,7 @@ package body ConnectFour is
                   Y1  => Ytop,
                   X2  => Column_Breaks (Column),
                   Y2  => Ybottom,
-                  Hue =>
-                    Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.Black));
+                  Hue => Gnoga.Types.Colors.Black);
             end if;
             for Row in 1 .. Num_Rows loop
                Draw_Position

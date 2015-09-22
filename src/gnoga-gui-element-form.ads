@@ -606,6 +606,11 @@ package Gnoga.Gui.Element.Form is
                      Value      : in     Gnoga.Types.RGBA_Type;
                      Name       : in     String := "";
                      ID         : in     String := "");
+   procedure Create (Element    : in out Color_Picker_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     Gnoga.Types.Colors.Color_Enumeration;
+                     Name       : in     String := "";
+                     ID         : in     String := "");
 
    -------------------------------------------------------------------------
    --  Color_Picker_Type - Properties
@@ -613,7 +618,13 @@ package Gnoga.Gui.Element.Form is
 
    overriding
    procedure Color (Element : in out Color_Picker_Type;
-                    Value   : in     Gnoga.Types.RGBA_Type);
+                    Value   : in     String);
+   overriding
+   procedure Color (Element : in out Color_Picker_Type;
+                    RGBA    : in     Gnoga.Types.RGBA_Type);
+   overriding
+   procedure Color (Element : in out Color_Picker_Type;
+                    Enum    : in     Gnoga.Types.Colors.Color_Enumeration);
    overriding
    function Color (Element : Color_Picker_Type) return Gnoga.Types.RGBA_Type;
 

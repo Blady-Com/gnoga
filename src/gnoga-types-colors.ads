@@ -186,10 +186,19 @@ package Gnoga.Types.Colors is
       Yellow,
       Yellow_Green);
 
+   Color_Error : exception;
+
    function To_String (Value : Color_Enumeration) return String;
    --  Returns color name
 
    function To_RGBA (Value : Color_Enumeration) return Gnoga.Types.RGBA_Type;
    --  Returns color RGBA_Type
+
+   function To_Color_Enumeration
+     (Value : Gnoga.Types.RGBA_Type) return Color_Enumeration;
+   --  Returns Color_Enumeration if it exists else raises Color_Error exception
+
+   function To_Color_Enumeration (Value : String) return Color_Enumeration;
+   --  Returns Color_Enumeration if it exists else raises Color_Error exception
 
 end Gnoga.Types.Colors;

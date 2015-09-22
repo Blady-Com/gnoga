@@ -1109,6 +1109,13 @@ package body Gnoga.Gui.Element is
       Element.Style ("color", Gnoga.Types.To_String (RGBA));
    end Color;
 
+   procedure Color (Element : in out Element_Type;
+                    Enum    : Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Element.Style ("color", Gnoga.Types.Colors.To_String (Enum));
+   end Color;
+
    function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type is
    begin
       return Gnoga.Types.To_RGBA (Element.Style ("color"));
@@ -1173,6 +1180,13 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("background-color", Gnoga.Types.To_String (RGBA));
+   end Background_Color;
+
+   procedure Background_Color (Element : in out Element_Type;
+                               Enum    : Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Element.Style ("background-color", Gnoga.Types.Colors.To_String (Enum));
    end Background_Color;
 
    function Background_Color (Element : Element_Type)

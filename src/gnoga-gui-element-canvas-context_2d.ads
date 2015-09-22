@@ -78,6 +78,9 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                          Value   : in     Gnoga.Types.RGBA_Type);
    procedure Fill_Color (Context : in out Context_2D_Type;
                          Value   : in     String);
+   procedure Fill_Color
+     (Context : in out Context_2D_Type;
+      Value   : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Color used to fill in the drawing
 
    procedure Fill_Gradient (Context : in out Context_2D_Type;
@@ -92,6 +95,9 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                            Value   : in     Gnoga.Types.RGBA_Type);
    procedure Stroke_Color (Context : in out Context_2D_Type;
                            Value   : in     String);
+   procedure Stroke_Color
+     (Context : in out Context_2D_Type;
+      Value   : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Color used for strokes
 
    procedure Stroke_Gradient (Context : in out Context_2D_Type;
@@ -105,6 +111,9 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                            Value   : in     Gnoga.Types.RGBA_Type);
    procedure Shadow_Color (Context : in out Context_2D_Type;
                            Value   : in     String);
+   procedure Shadow_Color
+     (Context : in out Context_2D_Type;
+      Value   : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Color to use for shadows
 
    procedure Shadow_Blur (Context : in out Context_2D_Type;
@@ -233,6 +242,10 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
      (Gradient : in out Gradient_Type;
       Position : in     Gnoga.Types.Frational_Range_Type;
       Color    : in     String);
+   procedure Add_Color_Stop
+     (Gradient : in out Gradient_Type;
+      Position : in     Gnoga.Types.Frational_Range_Type;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Specifies the colors and stop positions in a gradient object
 
    type Repeat_Type is (Repeat, Repeat_X_Only, Repeat_Y_Only, No_Repeat);
@@ -385,6 +398,9 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    procedure Pixel (Context : in out Context_2D_Type;
                     X, Y    : in     Integer;
                     Color   : in     Gnoga.Types.Pixel_Type);
+   procedure Pixel (Context : in out Context_2D_Type;
+                    X, Y    : in     Integer;
+                    Color   : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Set or Get the Pixel at X, Y
    --  Note: Left and Top are absolute and not affected by Translate
 

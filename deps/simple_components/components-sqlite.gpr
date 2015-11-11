@@ -28,4 +28,3 @@ project Components.SQLite is
    package Linker   renames Components.Linker;
 
 end Components.SQLite;
-

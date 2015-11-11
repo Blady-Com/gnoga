@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  19:56 08 Aug 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,7 +39,7 @@ begin
       Server  : Connections_Server (Factory'Access, Port);
    begin
       Put_Line ("Data server started");
-      Trace_On (Factory, True, True);
+      Trace_On (Factory, Trace_Any, Trace_Any);
       delay 60.0 * Minutes; -- Service
       Put_Line ("Data server stopping");
    end;

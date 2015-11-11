@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  19:56 08 Aug 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -552,7 +552,6 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
 
    procedure Initialize (Session : in out HTTP_Session) is
    begin
-      Session.LF.Last := 1;
       Session.LF.Value (1) := 10;
       Session.Line.Terminator := Character'Val (13);
       Set_Maximum_Size (Session.Line, Session.Response_Length);

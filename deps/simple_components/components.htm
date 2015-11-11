@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.8</EM><BR>
+<EM>version 4.10</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -57,9 +57,11 @@ language standards.</p>
 <a href="#Cryptography">Cryptography</a><br>
 <a href="#Generic_Doubly_Linked_Web">Doubly-linked webs and lists</a><br>
 <a href="#Generic_Blackboard">Blackboards</a> (lock-free)<br>
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client">ELV/eQ-3 
+MAX! client implementation</a><br>
+<a href="#Events">Events</a> (plain, pulse, array of)<br>
 <a href="#GNUTLS">GNUTLS bindings</a><br>
 <a href="#directed_graphs">Graphs</a> (directed, weighted, acyclic, trees)<br>
-<a href="#Events">Events</a> (plain, pulse, array of)<br>
 <a href="#HTTP_implementation">HTTP implementation</a><br>
 <a href="#Generic_FIFO">FIFO</a> (lock-free)<br>
 <a href="#IEEE_754">IEEE 754</a><br>
@@ -126,13 +128,13 @@ language standards.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_8.tgz">components_4_8.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_10.tgz">components_4_10.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_8.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_10.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -24832,7 +24834,8 @@ the server attempts (<b>Max_Connect_No</b> times) to reconnect to the host if th
 to prevent this behavior <a href="#GNAT.Sockets.Server.Disconnected">
 Disconnected</a> may propagate Connection_Error exception. One can use 
 <a href="#GNAT.Sockets.Server.Shutdown">Shutdown</a> 
-as well. Socket_Error is propagated on errors resolving remove host name.</p>
+as well. Host_Error is propagated on errors resolving remove host name. Socket_Error 
+is propagated on socket errors.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connected_Server"></a>procedure</font> 
@@ -25179,6 +25182,13 @@ sent data.</p>
 <font color="#0000FF">return</font> String;</tt></p>
 </blockquote>
 <p>This function returns text corresponding to a socket error code.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> To_Addr (<b>Host</b> : String)
+<font color="#0000FF">return</font> Inet_Addr_Type;</tt></p>
+</blockquote>
+<p>This function returns the IP address corresponding to <b>Host</b>. <b>Host</b> 
+can be name or a dotted address. Socket_Error is propagated on errors.</p>
 
 <p><u><b>Transport layer</b></u></p>
 <blockquote>
@@ -27672,7 +27682,6 @@ data item type is:</p>
 <blockquote>
 <p><tt><font color="#0000FF">type </font>Expected_Item (Size : Stream_Element_Count)
 <font color="#0000FF">is new </font>Data_Item<font color="#0000FF"> with record</font><br>
-&nbsp;&nbsp; Last&nbsp; : Stream_Element_Offset := <font color="#800000">0</font>;<br>
 &nbsp;&nbsp; Value : Stream_Element_Array (<font color="#800000">1</font>..Size);<font color="#0000FF"><br>
 end record</font>;</tt></p>
 </blockquote>
@@ -31024,7 +31033,7 @@ errors.</p>
 <p align="right">
   <A name="16.13"></A><a href="#16.12"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#20"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.14"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>16.13. MODBUS client protocol implementation</H3>
 
 <p>
@@ -32151,8 +32160,7 @@ query.</p>
 
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <CAPTION align="top">
-    <I>Exceptions</I>
-  </CAPTION>
+    <I>Exceptions</I></CAPTION>
   <TR>
     <TD>  Cancel_Error</TD>
     <TD>Canceled by
@@ -32198,8 +32206,7 @@ query.</p>
 
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <CAPTION align="top">
-    <I>Exceptions</I>
-  </CAPTION>
+    <I>Exceptions</I></CAPTION>
   <TR>
     <TD>  Cancel_Error</TD>
     <TD>Canceled by
@@ -32223,6 +32230,1135 @@ query.</p>
     <TD>Not connected</TD>
   </TR>
   </TABLE>
+
+<p align="right">
+  <A name="16.14"></A><a href="#16.13"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#20"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.14. ELV/e-Q3 MAX! Cube protocol implementation</H3>
+
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client"></a>The package 
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client">GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client</a> provides an implementation of 
+the ELV/e-Q3 MAX! Cube protocol. The device is a gateway to the radio-controlled 
+home automation devices such as thermostats and shutter contacts. The client is 
+suitable for working with a
+<a href="#GNAT.Sockets.Server.Connections_Server">multiple connections</a> 
+server, e.g. with a single task handling multiple connections. It can also be 
+used with a <a href="#GNAT.Sockets.Server.Pooled.Pooled_Server">server backed by 
+a pool of tasks</a>.</p>
+<p>
+<b><u>Basic types and operations</u>:</b> The following data types are declared 
+in the package:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Room_ID"></a>type</font> 
+Room_ID <font color="#0000FF">is range</font> <font color="#800000">0</font>..<font color="#800000">2</font>**<font color="#800000">8</font>-<font color="#800000">1</font>;<br>
+No_Room : <font color="#0000FF">constant</font> Room_ID;</tt></p>
+</blockquote>
+<p>Each room has an unique ID of this type. Devices, e.g. thermostats are 
+assigned to the rooms. However some devices may have no room assigned.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+type</font> 
+Ratio <font color="#0000FF">is delta</font> <font color="#800000">0.001</font>
+<font color="#0000FF">range</font> <font color="#800000">0.0</font>..<font color="#800000">1.0</font>;</tt></p>
+</blockquote>
+<p>This type is used, in particular, for valve positions. Ratio'First 
+corresponds to a closed valve.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Centigrade <font color="#0000FF">is 
+delta</font> <font color="#800000">0.1 </font><font color="#0000FF">digits</font><font color="#800000"> 
+4</font> <font color="#0000FF">range</font> 
+-<font color="#800000">4.0</font>..<font color="#800000">135.0</font>;</tt></p>
+</blockquote>
+<p>This type is used for temperatures. Values are specified in Celsius degrees. 
+The value precision is 0.5 degree.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Value</b> : Centigrade)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of temperature.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> RF_Address <font color="#0000FF">is 
+range</font> <font color="#800000">0</font>..<font color="#800000">2</font>**<font color="#800000">24</font>-<font color="#800000">1</font>;</tt></p>
+</blockquote>
+<p>This type is used for radio frequency addresses. Each device has a unique 
+address.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Value</b> : RF_Address)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the address <b>Value</b>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Type">
+</a>type</font> Device_Type <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Cube,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Radiator_Thermostat,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Radiator_Thermostat_Plus,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wall_Thermostat,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Shutter_Contact,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Eco_Button,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unknown<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>Values of this type correspond to types of devices.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Kind_Of</b> : Device_Type)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the device type.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Week_Day <font color="#0000FF">is</font> 
+(Mo, Tu, We, Th, Fr, Sa, Su);</tt></p>
+</blockquote>
+<p>This type describes days of week used in thermostat programming.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Day</b> : Week_Day; <b>
+Short</b> : Boolean := True)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the week day. When Short is 
+true, the result is two characters long, e.g. <i>Mo</i>. Otherwise it is the 
+full name, e.g. <i>Monday</i>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Week_Time <font color="#0000FF">is 
+record</font><br>
+&nbsp;&nbsp; Day&nbsp; : Week_Day;<br>
+&nbsp;&nbsp; Time : Day_Duration;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>This type represents a week time. The field <i>Day</i> is the week day. The 
+field <i>Time</i> is the time within the day (see Ada.Calendar).</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Minutes (<b>Day</b> : Day_Duration)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the day time in minutes. 
+The highest resolution of times used is in minutes.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Minutes (<b>Time</b> : Day_Duration)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the day time in hours and 
+minutes. E.g. <i>13:00</i>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Time</b> : Week_Time; <b>
+Short</b> : Boolean := True) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the week time, e.g. <i>Mo 
+05:00</i>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Set_Point <font color="#0000FF">is 
+record</font><br>
+&nbsp;&nbsp; Last&nbsp; : Day_Duration;<br>
+&nbsp;&nbsp; Point : Centigrade;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>A set point of the temperature profile defines the time <b>Last</b> until the 
+temperature <b>Point</b> applies.</p>
+<blockquote>
+<p><tt><font color="#0000FF">subtype</font> Point_Count <font color="#0000FF">is
+</font>Integer <font color="#0000FF">range</font> <font color="#800000">0</font>..<font color="#800000">13</font>;<br>
+<font color="#0000FF">subtype</font> Point_Number <font color="#0000FF">is</font> 
+Point_Count <font color="#0000FF">range</font> <font color="#800000">1</font>..Point_Count'Last;<br>
+<font color="#0000FF">type</font> Points_List <font color="#0000FF">is array</font> 
+(Point_Number range &lt;&gt;) <font color="#0000FF">of</font> Set_Point;<br>
+<font color="#0000FF">type</font> Day_Schedule (Length : Point_Count :=
+<font color="#800000">0</font>) <font color="#0000FF">is record</font><br>
+&nbsp;&nbsp; Points : Points_List (<font color="#800000">1</font>..Length);<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>The day schedule is an array of set points in time progressing order. The 
+temperature of the last point applies to the rest of the day.</p>
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Week_Schedule <font color="#0000FF">is 
+array</font> (Week_Day) <font color="#0000FF">of</font> Day_Schedule;</tt></p>
+</blockquote>
+<p>The week schedule is an array of day schedules.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Operating_Mode">
+</a>type</font> Operating_Mode <font color="#0000FF">is</font> (Automatic, 
+Manual, Vacation, Boost);</tt></p>
+</blockquote>
+<p>This type specifies the operating mode of a device like thermostat:</p>
+<ul>
+	<li><i>Automatic</i>, in this mode the device functions according to its 
+	week schedule;</li>
+	<li><i>Manual</i>, in this mode a thermostat keeps the temperature set for 
+	indefinite time;</li>
+	<li><i>Vacation</i>, in this mode a thermostat keeps the temperature set 
+	until specified time (end of vacation) and the switches into the automatic 
+	mode;</li>
+	<li><i>Boost</i>, in this mode a thermostat moves the valve into the 
+	specified position and holds it for the specified period of time. After that 
+	it switches back to the previous mode.</li>
+</ul>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Data">
+</a>type</font> Device_Data (Kind_Of : Device_Type) <font color="#0000FF">is 
+record</font><br>
+&nbsp;&nbsp; Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : RF_Address :=
+<font color="#800000">0</font>;<br>
+&nbsp;&nbsp; Error&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Boolean := 
+False;<br>
+&nbsp;&nbsp; Initialized&nbsp;&nbsp; : Boolean := False;<br>
+&nbsp;&nbsp; Battery_Low&nbsp;&nbsp;&nbsp;: Boolean := False;<br>
+&nbsp;&nbsp; Link_Error&nbsp;&nbsp;&nbsp;&nbsp;: Boolean := False;<br>
+&nbsp;&nbsp; Panel_Locked&nbsp;&nbsp;: Boolean := False;<br>
+&nbsp;&nbsp; Gateway_Known&nbsp;: 
+Boolean := False;<br>
+&nbsp;&nbsp; DST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Boolean 
+:= False;<br>
+&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;: Operating_Mode 
+:= Automatic;<br>
+&nbsp;&nbsp; <font color="#0000FF">case</font> Kind_Of <font color="#0000FF">is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> Cube | Eco_Button | 
+Unknown =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> Shutter_Contact 
+=&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Open : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> 
+Radiator_Thermostat..Wall_Thermostat =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set_Temperature : Centigrade :=
+<font color="#800000">18.0</font>;
+<font color="#008000">-- As kept by the thermostat<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>New_Temperature : 
+Centigrade := <font color="#800000">18.0</font>; <font color="#008000">-- Last requested temperature</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">case</font> 
+Kind_Of <font color="#0000FF">is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>
+Radiator_Thermostat |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Radiator_Thermostat_Plus =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Valve_Position&nbsp;: Ratio := <font color="#800000">0.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#0000FF">when</font> Wall_Thermostat =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Temperature : Centigrade; <font color="#008000">-- Measured temperature</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#0000FF">when others</font> =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>Values of this type describe the state of a device as obtained from the cube. 
+Meaning of the fields:</p>
+<ul>
+	<li><i>DST</i> when <i><font color="#800000">true</font></i> indicates day 
+	saving time;</li>
+	<li><i>Set_Temperature</i> is the temperature kept by the thermostat;</li>
+	<li><i>New_Temperature</i> is the temperature requested by last command, 
+	e.g. by a
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Temperature">
+	Set_Thermostat_Temperature</a> call. When a response refreshes the <i>
+	Set_Temperature</i> field, the value is also set into <i>New_Temperature</i>. 
+	This field can be used to increment/decrement set temperature under the 
+	condition that the thermostat response may be very too slow to use <i>
+	Set_Temperature</i> value as the increment/decrement base;</li>
+	<li><i>Temperature</i> is the measured temperature;</li>
+	<li><i>Valve</i> is the radiator thermostat position. 0 is closed. 1 is 
+	open.</li>
+</ul>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Data</b> : Device_Data) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the device data.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Parameters">
+</a>type</font> Device_Parameters<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Kind_Of&nbsp;&nbsp;&nbsp;&nbsp; : Device_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name_Length : Natural<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
+record</font><br>
+&nbsp;&nbsp; Room&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Room_ID;<br>
+&nbsp;&nbsp; Address&nbsp;&nbsp; : RF_Address;<br>
+&nbsp;&nbsp; Serial_No : String (<font color="#800000">1</font>..<font color="#800000">10</font>);<br>
+&nbsp;&nbsp; Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String (<font color="#800000">1</font>..Name_Length);<br>
+&nbsp;&nbsp; <font color="#0000FF">case</font> Kind_Of <font color="#0000FF">is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> Cube | Shutter_Contact | Eco_Button | Unknown =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> 
+Radiator_Thermostat..Wall_Thermostat =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comfort&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Eco&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Max&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Schedule&nbsp;: Week_Schedule;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">case</font> 
+Kind_Of<font color="#0000FF"> is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> 
+Radiator_Thermostat | Radiator_Thermostat_Plus =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Offset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade := <font color="#800000">0.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Window_Open&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Window_Time&nbsp;&nbsp;&nbsp;&nbsp; 
+: Duration&nbsp;&nbsp; := <font color="#800000">10.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Boost_Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Duration&nbsp;&nbsp; := <font color="#800000">1.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Boost_Valve&nbsp;&nbsp;&nbsp;&nbsp; 
+: Ratio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <font color="#800000">0.5</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Decalcification : Week_Time;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Max_Valve&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Ratio;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Valve_Offset&nbsp;&nbsp;&nbsp; 
+: Ratio;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#0000FF">when others</font> =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>This type describes parameters of a device.</p>
+<blockquote>
+	<p><tt>ELV_MAX_Cube_Port : <font color="#0000FF">constant</font> Port_Type 
+	:= <font color="#800000">62910</font>;</tt></p>
+</blockquote>
+<p>This is the default MAX! cube port.</p>
+<p>
+<b><u>Client type and operations</u>:</b></p>
+<p>
+The package declares the
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.ELV_MAX_Cube_Client">
+ELV_MAX_Cube_Client</a> connection object type:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.ELV_MAX_Cube_Client"></a>type</font> 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp; &nbsp;:
+<font color="#0000FF">access</font> Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Line_Length : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp; : Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size : Buffer_Length<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
+State_Machine <font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The discriminants are:</p>
+<ul>
+	<li><i>Listener</i> is the server object to handle the connection;</li>
+	<li><i>Line_Length</i> is the maximum response line length. A value about 
+	1024 should be sufficient;</li>
+	<li><i>Input_Size</i> is the input buffer size it determines the amount of 
+	data received in one piece;</li>
+	<li><i>Output_Size</i> is the output buffer size. It should be large enough 
+	to hold any outgoing command. A value about 200 can be used.</li>
+</ul>
+<p>The following operations are defined of the client:</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+procedure</font> Configuration_Updated<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Update</b> : Update_Data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called upon connection handshake when a portion data is 
+received. The parameter <b>Update</b> indicates what was updated:</p>
+<blockquote>
+	<p><tt><font color="#0000FF">type</font> Update_Type <font color="#0000FF">
+	is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Cube_Update,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Topology_Update,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Device_Parameters_Update<br>
+&nbsp;&nbsp;&nbsp;&nbsp; ); <br>
+	<font color="#0000FF">type</font> Update_Data (Kind_Of : Update_Type)
+	<font color="#0000FF">is record<br>
+&nbsp;&nbsp; case</font> Kind_Of<font color="#0000FF"> is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> Cube_Update | Topology_Update =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> 
+	Device_Parameters_Update =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Device&nbsp; : Device_Type;
+	<font color="#008000">-- The device type</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Address : RF_Address;&nbsp;
+	<font color="#008000">-- Of the device updated</font><br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+	<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>The default implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Data_Received">
+</a>procedure</font> Data_Received<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data&nbsp;
+</b>&nbsp;: Device_Data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called when data from a device are received. The cube polls 
+the devices and their data back to the client upon handshake or when data are 
+requested (see
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Query_Devices">Query_Devices</a>). The default implementation does some tracing. It 
+likely should be overridden, e.g. to store the data. The parameter <b>Data</b> 
+has the type
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Data">
+Device_Data</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Disconnected (<b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client);</tt></p>
+</blockquote>
+<p>This procedure is called when the client loses connection to the cube. If 
+overridden the new implementation shall call the parent's one from its body.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Initialize (<b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client);</tt></p>
+</blockquote>
+<p>This procedure is called upon object construction. It must be called from the 
+new implementation if overridden.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Find_Room<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ID</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Room_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>This function is called to find a room by its ID. The returned value is the 
+room number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">Get_Number_Of_Rooms</a> 
+(<b>Client</b>). End_Error is propagated when there is no room with ID.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Clock_Difference<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Duration;</tt></p>
+</blockquote>
+<p>This function returns the time skew between cube and host clocks: T<i><sub>cube</sub></i> 
+- T<sub><i>host</i></sub>. Status_Error is propagated when there is no 
+connection to the cube.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>This function returns the number of the device with the given radio frequency 
+address. The result is in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>).</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Device</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;<font color="#0000FF"><br>
+function</font> Get_Device<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ID&nbsp;
+</b>&nbsp;&nbsp; : Room_ID;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Device</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>This function returns the number of the device in the room specified by the 
+room number <b>Index</b> in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">Get_Number_Of_Rooms</a> 
+(<b>Client</b>) or the room identifier and the number <b>Device</b> counted from 1 through all devices 
+in the room. The result is in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>). Constraint_Error is propagated when room or device number is 
+out of range. The function allows to enumerate all devices in a room. The number 
+of devices in a room is returned by the variant of
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices_room">
+Get_Number_Of_Devices</a> with the room number as the parameter. End_Error is 
+propagated when there is no such room.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device_Data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Device_Data;<font color="#0000FF"><br>
+function</font> Get_Device_Data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Device_Data;</tt></p>
+</blockquote>
+<p align="left">These functions return the
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Data">device 
+data</a>. The device can be specified by its number in the range 
+1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. Constraint_Error is 
+propagated when the device number is out of range. End_Error is propagated when 
+there is no device with the specified address. Status_Error is propagated when 
+the device has not yet sent any data.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device_Name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;<font color="#0000FF"><br>
+function</font> Get_Device_Name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>These functions return the device name. The device can be specified by its 
+number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. Constraint_Error is 
+propagated when the device number is out of range. End_Error is propagated when 
+there is no device with the specified address.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device_Room<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Room_ID;<font color="#0000FF"><br>
+function</font> Get_Device_Room<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Room_ID;</tt></p>
+</blockquote>
+<p>These functions return the room of device. The device can be specified by its 
+number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. Constraint_Error is 
+propagated when the device number is out of range. End_Error is propagated when 
+there is no device with the specified address. Note that some devices may have 
+no room associated with them. For such devices No_Room is returned.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device_Parameters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Device_Parameters;<font color="#0000FF"><br>
+function</font> Get_Device_Parameters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Device_Parameters;</tt></p>
+</blockquote>
+<p>These functions return the
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Parameters">
+device parameters</a>. The device can be specified by its number in the range 
+1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. Constraint_Error is 
+propagated when the device number is out of range. End_Error is propagated when 
+there is no device with the specified address.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device_RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> RF_Address;</tt></p>
+</blockquote>
+<p>This function returns the
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Parameters">
+device parameters</a>. The device is specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>). Constraint_Error is propagated when the device number is out of 
+range.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device_Serial_No<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;<font color="#0000FF"><br>
+function</font> Get_Device_Serial_No<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>These functions return the device serial number, e.g. <i>KEQ0828854</i>. It 
+is ten characters long. The device can be specified by its number in the range 
+1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. Constraint_Error is 
+propagated when the device number is out of range. End_Error is propagated when 
+there is no device with the specified address.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Device_Type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Device_Type;<font color="#0000FF"><br>
+function</font> Get_Device_Type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Device_Type;</tt></p>
+</blockquote>
+<p>These functions return the
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Type">
+device type</a>. The device can be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. Constraint_Error is 
+propagated when the device number is out of range. End_Error is propagated when 
+there is no device with the specified address.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> RF_Address;</tt></p>
+</blockquote>
+<p>This function returns the radio frequency address of the cube. Status_Error 
+is propagated when there is no connection yet.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">
+</a>function</font> Get_Number_Of_Devices<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Natural;</tt></p>
+</blockquote>
+<p>This function returns the number of devices. It becomes known shortly after 
+successful connection to the cube, when the cube sends its configuration to the 
+client. Between connections the number of devices is 0.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices_room">
+</a>function</font> Get_Number_Of_Devices<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Natural;<br>
+<font color="#0000FF">
+function</font> Get_Number_Of_Devices<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ID</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Room_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Natural;</tt></p>
+</blockquote>
+<p>This function returns the number of devices in the room specified by its 
+number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">Get_Number_Of_Rooms</a> 
+(<b>Client</b>) or by its identifier. Constraint_Error is propagated when <b>
+Index</b> is out of the range. End_Error is propagated when there is no room 
+with the specified identifier.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">
+</a>function</font> Get_Number_Of_Rooms<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Natural;</tt></p>
+</blockquote>
+<p>This function returns the number of rooms. The number becomes known shortly 
+after successful connection to the cube, when the cube sends its configuration 
+to the client. Between connections the number of rooms is 0.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Room_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Room_ID;</tt></p>
+</blockquote>
+<p>This function returns the room ID. The room is specified by its number in the 
+range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">Get_Number_Of_Rooms</a> 
+(<b>Client</b>). Constraint_Error is propagated when <b>Room</b> is out of the 
+range.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Room_Name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;<br>
+<font color="#0000FF">function</font> Get_Room_Name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ID</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Room_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This functions return the room name. The room is specified by its number in 
+the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">Get_Number_Of_Rooms</a> 
+(<b>Client</b>) or by its identifier. Constraint_Error is propagated when <b>Room</b> is out of the 
+range. End_Error is propagated when there is no room with the specified 
+identifier.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Room_RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> RF_Address;<br>
+<font color="#0000FF">function</font> Get_Room_RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ID</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Room_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> RF_Address</tt></p>
+</blockquote>
+<p>This functions return the room radio frequency address. The address is one of 
+the main room device. The room is specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">Get_Number_Of_Rooms</a> 
+(<b>Client</b>) or by its identifier. Constraint_Error is propagated when <b>Room</b> is out of the 
+range. End_Error is propagated when there is no room with the specified 
+identifier.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Serial_No<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This function returns the ten characters serial number of the cube. 
+Status_Error is propagated when there is no connection yet.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Version<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This function returns the firmware version of the cube, e.g. <i>1.1.3</i>. 
+Status_Error is propagated when there is no connection yet.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_In<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Device</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;<br>
+<font color="#0000FF">function</font> Is_In<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ID</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Room_ID;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Device</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This functions return <i><font color="#800000">true</font></i> if the room 
+specified by the room number <b>Index</b> in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Rooms">Get_Number_Of_Rooms</a> 
+(<b>Client</b>) contains a device with the number <b>Device</b> counted from 1 
+through all devices in the room. The room can also be specified by its 
+identifier. When either of the numbers is out of range the 
+result is <font color="#800000"><i>false</i></font>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Query_Devices">
+</a>procedure</font> Query_Devices<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The cube sends actual status of the devices once immediately after 
+connection. To actualize the status this procedure is called. In both cases when 
+a response is obtained
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Data_Received">
+Data_Received</a> is called per each device which data are found in the 
+response. Socket_Error is propagated on I/O errors. Use_Error is propagated when 
+the output buffer is full. In the latter case the connection is not dropped and 
+the application may try to call this procedure later (from another callback).</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Automatic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp; : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Thermostat_Automatic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b> : RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set a thermostat device in the automatic mode. The device 
+can be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The device number is out of range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a></TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>There is no device with the specified address</TD>
+  </TR>
+  <TR>
+    <TD>  Mode_Error</TD>
+    <TD>The device is not a thermostat</TD>
+  </TR>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>The output buffer is full (connection is preserved)</TD>
+  </TR>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Boost<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp; : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Thermostat_Boost<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b> : RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set a thermostat device in the boost mode. After boost 
+sequence completion the device returns to its previous mode. The device can be 
+specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The device number is out of range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a></TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>There is no device with the specified address</TD>
+  </TR>
+  <tr>
+    <TD>  Mode_Error</TD>
+    <TD>The device is not a thermostat</TD>
+  </tr>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>The output buffer is full (connection is preserved)</TD>
+  </TR>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Parameters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Comfort</b>&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Eco</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Max</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Min</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>
+Offset</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Window_Open</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Window_Time</b> : Day_Duration ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Thermostat_Parameters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b>&nbsp;&nbsp;&nbsp;&nbsp; : RF_Address;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Comfort</b>&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Eco</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Max</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Min</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>
+Offset</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Window_Open</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Window_Time</b> : Day_Duration ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set thermostat device parameters. For a wall mounted 
+thermostat parameters <b>Offset</b>..<b>Window_Time</b> are omitted. The device can be 
+specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The device number is out of range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a></TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>There is no device with the specified address</TD>
+  </TR>
+  <tr>
+    <TD>  Mode_Error</TD>
+    <TD>The device is not a thermostat</TD>
+  </tr>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>The output buffer is full (connection is preserved)</TD>
+  </TR>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Schedule<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp;&nbsp;&nbsp; : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Day</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Week_Day;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Schedule</b> : Points_List<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Thermostat_Schedule<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b>&nbsp; : RF_Address;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Day</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Week_Day;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Schedule</b> : Points_List<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures are used to set the thermostat's day program. The device can 
+be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. The list of points must be 
+sorted end time ascending. Note that there is no way to get confirmation that 
+the schedule is set. The object assumes that it was and updates the schedule 
+cached in the memory. The actual schedule will be read only upon a new 
+connection.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The device number is out of range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a></TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>There is no device with the specified address</TD>
+  </TR>
+  <TR>
+    <TD>  Mode_Error</TD>
+    <TD>Illegal program or not a thermostat</TD>
+  </TR>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>The output buffer is full (connection is preserved)</TD>
+  </TR>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Temperature">
+</a>procedure</font> Set_Thermostat_Temperature<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Temperature</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Up_Until</b>&nbsp;&nbsp;&nbsp; 
+: Time ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Thermostat_Temperature<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b>&nbsp;&nbsp;&nbsp;&nbsp; : RF_Address;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Temperature</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Up_Until</b>&nbsp;&nbsp;&nbsp; 
+: Time ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set thermostat temperature. When the parameter Up_Until is 
+specified, it is the time until the temperature is set before the device returns 
+to its previous mode. The device can be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The device number is out of range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a></TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>There is no device with the specified address</TD>
+  </TR>
+  <tr>
+    <TD>  Mode_Error</TD>
+    <TD>The device is not a thermostat</TD>
+  </tr>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>The output buffer is full (connection is preserved)</TD>
+  </TR>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Status_Received<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Error</b>&nbsp; : Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Duty</b>&nbsp;&nbsp; 
+: Ratio;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Slots</b>&nbsp; : Natural<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called when command response from a device is received. The 
+default implementation calls to Trace. It likely should be overridden, e.g. to 
+store the data. <b>Error</b> is <font color="#800000"><i>true</i></font> when 
+the last command was rejected. <b>Duty</b> indicates how much the radio traffic 
+was used. When it reaches 1 the cube stops communicating with the device. <b>
+Slots</b> is the number of free memory slots.</p>
+<p><b><u>LAN discovery</u>:</b> MAX! cubes in the LAN can be discovered via 
+broadcast. The following data types describe a cube:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+type</font> 
+Cube_Descriptor <font color="#0000FF">is record</font><br>
+&nbsp;&nbsp; Address&nbsp;&nbsp; : Inet_Addr_Type;<br>
+&nbsp;&nbsp; Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String (<font color="#800000">1</font>..<font color="#800000">8</font>);<br>
+&nbsp;&nbsp; Serial_No : String (<font color="#800000">1</font>..<font color="#800000">10</font>);<br>
+<font color="#0000FF">end record</font>;<br>
+<font color="#0000FF">type</font> Cube_Descriptor_Array <font color="#0000FF">is<br>
+&nbsp;&nbsp; array</font> (Positive <font color="#0000FF">range</font> &lt;&gt;)
+<font color="#0000FF">of</font> Cube_Descriptor;</tt></p>
+</blockquote>
+<p>Here:</p>
+<ul>
+	<li><i>Address</i> is the IP address of the cube. GNAT.Sockets.Image can be 
+	used to obtain the IP address of;</li>
+	<li><i>Name</i> is the name of;</li>
+	<li><i>Serial_No</i> is the serial number of (e.g. KEQ0821071)</li>
+</ul>
+<p>The function</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Discover<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Timeout</b>&nbsp; : 
+Timeval_Duration := <font color="#800000">2.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Attempts</b> 
+: Positive&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :=
+<font color="#800000">2</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Host</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Port</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Port_Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <font color="#800000">
+23272</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Cube_Descriptor_Array;</tt></p>
+</blockquote>
+<p>returns an array of discovered MAX! cubes. <b>Timeout</b> is the overall 
+operation duration. <b>Attempts</b> is the number of broadcast queries sent. <b>
+Host</b> is the official address of the host in the LAN. When omitted the first 
+host address is taken. <b>Port</b> is the broadcast port. Socket_Error is 
+propagated on I/O errors. Host_Error is propagated on host naming errors.</p>
+
+<h4><a name="16.14.1"></a>16.14.1. Stream I/O</h4>
+
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Stream_IO">
+</a>The package
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Stream_IO">GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Stream_IO</a> provides 
+stream I/O operations for basic types declared in the parent package. The 
+operations can be used for storing schedules and device parameters into files or 
+databases.</p>
 
 <hr>
 <p align="right">
@@ -32581,6 +33717,26 @@ Block_Streams</a></TD>
     <TD>Instantiation of
 	<a href="#GNAT.Sockets.Connection_State_Machine.Chain_Code.Generic_Unsigned">
 	Generic_Unsigneds</a> with Natural</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="5" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8" style="border-style:solid; border-width:1px; ">
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client">
+	ELV_MAX_Cube_Client</a></TD>
+    <TD style="border-left-style: solid; border-left-width: 1px">An 
+	implementation of ELV/e-Q3 MAX! cube client</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8" style="border-style:none; border-width:medium; " bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Stream_IO">
+	Stream_IO</a></TD>
+    <TD>Stream I/O operations for ELV/e-Q3 MAX! cube data</TD>
   </tr>
 	<tr>
     <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
@@ -33610,6 +34766,12 @@ Block_Streams</a></TD>
     <TD align="center">&nbsp;</TD>
   </tr>
   <tr>
+    <TD bgcolor="#FFFF99">test_elv_max_cube_client</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Test for ELV/e-Q3 MAX! cube client</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
+  <tr>
     <TD bgcolor="#FFFF99">test_fifo</TD>
     <TD align="center" bgcolor="#FFFF99">yes</TD>
     <TD bgcolor="#FFFF99">Test for FIFO</TD>
@@ -34167,26 +35329,34 @@ parts of the Simple Components will fail. These faults can be safely ignored
 during the installation.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <TR>
-    <TD valign="bottom" bgcolor="#008080" rowspan="11"><FONT color="#FFFFFF"><B>Project files </B>
+    <TD valign="bottom" bgcolor="#008080" rowspan="12"><FONT color="#FFFFFF"><B>Project files </B>
 	*.gpr</FONT></TD>
-    <TD valign="top" bgcolor="#008080" colspan="12" style="border-right-style: none; border-right-width: medium; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Simple Components,
+    <TD valign="top" bgcolor="#008080" colspan="13" style="border-right-style: none; border-right-width: medium; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Simple Components,
 	Strings Edit,
 	Tables</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="11" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Multiple 
+    <TD valign="top" bgcolor="#008080" colspan="12" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Multiple 
 	TCP/IP connections server</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="10" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">HTTP server 
+    <TD valign="top" bgcolor="#008080" colspan="11" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">HTTP server 
 	and client</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="10">
+	<b><font color="#FFFFFF">ELV/e-Q3 MAX! cube client</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="9">
 	<b><font color="#FFFFFF">MODBUS client</font></b></TD>
@@ -34194,6 +35364,7 @@ during the installation.</p>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" colspan="8" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Secure 
@@ -34205,11 +35376,13 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" colspan="7" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
@@ -34225,12 +35398,14 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" colspan="5" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3 HTTP 
 	browser</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
@@ -34249,12 +35424,14 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" colspan="3" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><font color="#FFFFFF"><b>GNADE </b>
 	(depreciated)</font></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
@@ -34281,6 +35458,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components.gpr&quot;;</tt></TD>
@@ -34288,6 +35466,7 @@ during the installation.</p>
   <TR>
     <TD valign="top">components-apq</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -34315,6 +35494,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server.gpr&quot;;</tt></TD>
@@ -34323,8 +35503,9 @@ during the installation.</p>
     <TD valign="top">components-connections_server-http_server</TD>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
-    <TD align="center" bgcolor="#C0C0C0">+</TD>
-    <TD align="center" bgcolor="#C0C0C0">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -34340,7 +35521,8 @@ during the installation.</p>
     <TD valign="top">components-connections_server-http_server-sqlite_browser</TD>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
-    <TD align="center">&nbsp;</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center">+</TD>
@@ -34354,9 +35536,28 @@ during the installation.</p>
 	&quot;components-connections_server-http_server-sqlite_browser.gpr&quot;;</tt></TD>
   </tr>
   <tr>
+    <TD valign="top">components-connections_server-elv_max_cube_client</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#FFFFFF">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-connections_server-elv_max_cube_client.gpr&quot;;</tt></TD>
+  </tr>
+  <tr>
     <TD valign="top">components-connections_server-modbus_client</TD>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -34374,6 +35575,7 @@ during the installation.</p>
     <TD valign="top">components-connections_server-secure</TD>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center">+</TD>
@@ -34398,6 +35600,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
@@ -34407,6 +35610,7 @@ during the installation.</p>
   <tr>
     <TD valign="top">components-gnutls</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -34429,6 +35633,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -34441,6 +35646,7 @@ during the installation.</p>
   <tr>
     <TD valign="top">components-sqlite</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -34485,8 +35691,21 @@ The following versions were tested with the compilers:</i>
 <ul>
   <li>
 <i>GNAT GPL 2015 (20150428-49)</i></li>
-	<li><i>GNAT 4.9.2</i></li>
+	<li><i>GNAT 5.2</i></li>
   </ul>
+<P>
+Changes (18 October 2015) to the version 4.9:<ul>
+	<li>ELV/e-Q3 MAX! client wall thermostat support added;</li>
+	<li>ELV/e-Q3 MAX! device data available through Get_Device_Data;</li>
+	<li>ELV/e-Q3 MAX! interface calls querying topology, device parameters and 
+	data are task-safe;</li>
+	<li>Socket_Error 11004 workaround added.</li>
+	</ul>
+<P>
+Changes (24 August 2015) to the version 4.8:<ul>
+	<li>ELV/e-Q3 MAX! client implementation is provided;</li>
+	<li>Bug fix in test server.</li>
+	</ul>
 <P>
 Changes (29 June 2015) to the version 4.7:<ul>
 	<li>Adapted to GNAT GPL 2015;</li>
@@ -35239,7 +36458,9 @@ selector</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.12">16.12. HTTP client protocol implementation</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.12.1">16.12.1. Signaled client</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.13">16.13. MODBUS client protocol implementation</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.13.1">16.13.1. Synchronous client</a><hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.13.1">16.13.1. Synchronous client</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.14">16.14. ELV/e-Q3 MAX! Cube protocol implementation</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.14.1">16.14.1. Stream I/O</a><hr>
 <b><big><big>17</big></big></b>&nbsp;<a href="#17"><big>Packages</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.1">17.1. Source packages</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.2">17.2. Tests and examples</a><br>

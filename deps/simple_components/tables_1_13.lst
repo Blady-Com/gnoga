@@ -13,8 +13,6 @@
 ./tables.ads
 ./tables.gpr
 ./tables.htm
-./test_tables/b__test_tables.adb
-./test_tables/b__test_tables.ads
 ./test_tables/readme_tables.txt
 ./test_tables/tables-test.gpr
 ./test_tables/test_tables.adb

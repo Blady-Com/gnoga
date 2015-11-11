@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  09:07 27 Jun 2015  --
+--                                Last revision :  19:33 15 Oct 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -58,6 +58,20 @@ package GNAT.Sockets.Server is
            Session_Connected,    -- Connected
            Session_Busy          -- Pending modal operation
         );
+--
+-- To_Addr -- Convert host name or dotted address to address
+--
+--    Host - The host name or address
+--
+-- Returns :
+--
+--    The corresponding address
+--
+-- Exceptions :
+--
+--    Socket_Error - Invalid address or host name
+--
+   function To_Addr (Host : String) return Inet_Addr_Type;
 --
 -- Connection -- To derive custom object handling a client connection
 --
@@ -136,13 +150,14 @@ package GNAT.Sockets.Server is
 --
 -- This procedure  is used  to create  a client  connection to a server.
 -- This is opposite to accepting connection. Connection is asynchronous.
--- When successful  Connected  is called  as usual.  When the connection
+-- When successful, Connected  is called  as usual.  When the connection
 -- is dropped  Disconnect is called and  an attempt made  to  reconnect.
 -- Note that the connection object is passed by pointer an maintained by
 -- Listener.
 --
 -- Exceptions :
 --
+--    Host_Error   - Invalid host name
 --    Socket_Error - Socket error
 --    Use_Error    - Client is already in use
 --
@@ -175,7 +190,7 @@ package GNAT.Sockets.Server is
                 Error  : Error_Type
              );
 --
--- Connect_Parameters_Set -- Failed to connect
+-- Connect_Parameters_Set -- Notification
 --
 --    Client         - The client connection object
 --    Host           - Remote host name or address as given in Connect
@@ -857,7 +872,7 @@ package GNAT.Sockets.Server is
 -- Trace -- Tracing facility
 --
 --    Factory - The factory object
---    Message - Text description of the error context
+--    Message - Text to trace
 --
 -- This procedure is called to trace message.
 --
@@ -1206,29 +1221,31 @@ private
            Output_Size : Buffer_Length
         )  is abstract new Object.Entity with
    record
-      Socket          : Socket_Type := No_Socket;
-      Overlapped_Read : Stream_Element_Count := 0;
-      Session         : Session_State := Session_Down;
-      Failed          : Boolean := False;
-      External_Action : Boolean := False;
-      Data_Sent       : Boolean := False;
-      Dont_Block      : Boolean := False;
-      Client          : Boolean := False;
-      Connect_No      : Natural := 0;
-      Max_Connect_No  : Natural := Natural'Last;
-      Predecessor     : Connection_Ptr;
-      Successor       : Connection_Ptr;
-      Listener        : Connections_Server_Ptr;
-      Transport       : Encoder_Ptr;
-      Last_Error      : Exception_Occurrence;
-      Client_Address  : Sock_Addr_Type;
-      Read            : Input_Buffer  (Input_Size);
-      Written         : Output_Buffer (Output_Size);
+      Socket           : Socket_Type := No_Socket;
+      Overlapped_Read  : Stream_Element_Count := 0;
+      Session          : Session_State := Session_Down;
+      Failed           : Boolean := False;
+      Shutdown_Request : Boolean := False;
+      External_Action  : Boolean := False;
+      Data_Sent        : Boolean := False;
+      Dont_Block       : Boolean := False;
+      Client           : Boolean := False;
+      Connect_No       : Natural := 0;
+      Max_Connect_No   : Natural := Natural'Last;
+      Predecessor      : Connection_Ptr;
+      Successor        : Connection_Ptr;
+      Listener         : Connections_Server_Ptr;
+      Transport        : Encoder_Ptr;
+      Last_Error       : Exception_Occurrence;
+      Client_Address   : Sock_Addr_Type;
+      Read             : Input_Buffer  (Input_Size);
+      Written          : Output_Buffer (Output_Size);
       pragma Atomic (Data_Sent);
       pragma Atomic (Connect_No);
       pragma Atomic (Failed);
       pragma Atomic (Dont_Block);
       pragma Atomic (Session);
+      pragma Atomic (Shutdown_Request);
    end record;
 --
 -- On_Connected -- Start servicing a client socket
@@ -1323,7 +1340,6 @@ private
 
    protected type Box (Listener : access Connections_Server'Class) is
       entry Connect (Client : Connection_Ptr);
-      entry Accepted (Client : Connection_Ptr);
       procedure Get (Client : out Connection_Ptr);
       procedure Activate;
    private
@@ -1339,7 +1355,7 @@ private
       Clients          : Natural := 0;
       Servers          : Natural := 0;
       Postponed_Count  : Natural := 0;
-      Selector         : Selector_Type;
+      Selector         : aliased Selector_Type;
       Read_Sockets     : Socket_Set_Type;
       Write_Sockets    : Socket_Set_Type;
       Blocked_Sockets  : Socket_Set_Type;
@@ -1355,6 +1371,7 @@ private
       Connections      : Unbounded_Array;
       Doer             : Worker_Ptr;
       Request          : Box (Connections_Server'Unchecked_Access);
+      pragma Atomic (Finalizing);
       pragma Atomic (Unblock_Send);
       pragma Atomic (Connect_Request);
       pragma Atomic (Shutdown_Request);

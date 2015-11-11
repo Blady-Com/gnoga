@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Expected_Sequence                           Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  19:56 08 Aug 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,17 +39,17 @@ package body GNAT.Sockets.Connection_State_Machine.Expected_Sequence is
              )  is
    begin
       if State = 0 then
-         State := Item.Last;
+         State := Item.Size;
       end if;
       while Pointer <= Data'Last and then State > 0 loop
-         if Item.Value (Item.Last - State + 1) /= Data (Pointer) then
+         if Item.Value (Item.Size - State + 1) /= Data (Pointer) then
             Raise_Exception
             (  Data_Error'Identity,
                (  "Wrong input octet"
                &  Stream_Element'Image (Data (Pointer))
                &  ", expected"
                &  Stream_Element'Image
-                  (  Item.Value (Item.Last - State + 1)
+                  (  Item.Value (Item.Size - State + 1)
             )  )  );
          end if;
          State   := State - 1;

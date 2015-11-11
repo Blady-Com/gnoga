@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Expected_Sequence                           Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  19:56 08 Aug 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,8 +36,7 @@ package GNAT.Sockets.Connection_State_Machine.Expected_Sequence is
    type Expected_Item (Size : Stream_Element_Count) is
       new Data_Item with
    record
-      Last   : Stream_Element_Offset := 0;
-      Value  : Stream_Element_Array (1..Size);
+      Value : Stream_Element_Array (1..Size);
    end record;
 --
 -- Feed -- Implementation of the feed operation

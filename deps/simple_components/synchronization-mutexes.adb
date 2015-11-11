@@ -3,7 +3,7 @@
 --      Synchronization.Mutexes                    Luebeck            --
 --  Inmplementation                                Spring, 2008       --
 --                                                                    --
---                                Last revision :  16:09 11 May 2008  --
+--                                Last revision :  17:20 09 Oct 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,7 +26,6 @@
 --____________________________________________________________________--
 
 package body Synchronization.Mutexes is
-
    procedure Finalize (Object : in out Holder) is
    begin
       Object.Resource.Release;
@@ -86,6 +85,9 @@ package body Synchronization.Mutexes is
       begin
          if Seize'Caller = Owner then
             Count := Count + 1;
+         elsif Owner = Null_Task_ID then
+            Owner := Seize'Caller;
+            Count := 1;
          else
             requeue Lounge with abort;
          end if;

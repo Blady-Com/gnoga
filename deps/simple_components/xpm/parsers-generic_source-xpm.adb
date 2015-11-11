@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.XPM                  Luebeck            --
 --  Implementation                                 Summer, 2006       --
 --                                                                    --
---                                Last revision :  19:53 12 Jan 2008  --
+--                                Last revision :  19:56 08 Aug 2015  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -338,13 +338,16 @@ package body Parsers.Generic_Source.XPM is
       Skip (This, False);
       Get_Line (This, Line, Pointer, Last);
       Start := Pointer;
-      while (  Pointer < Last
-            and then
-               (  Is_Alphanumeric (Line (Pointer))
-               or else
-                  '_' = Line (Pointer)
-            )  )  loop
-         Pointer := Pointer + 1;
+      while Pointer < Last loop
+          case Line (Pointer) is
+             when 'A'..'Z' | 'a'..'z' | '0'..'9' | '_' =>
+                Pointer := Pointer + 1;
+             when '/' | '\' | ':' =>
+                Pointer := Pointer + 1;
+                Start   := Pointer;
+             when others =>
+                exit;
+          end case;
       end loop;
       if Pointer = Start then
          Set_Pointer (This, Pointer);

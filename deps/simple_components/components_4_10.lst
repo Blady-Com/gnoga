@@ -31,6 +31,7 @@
 ./block_streams.adb
 ./block_streams.ads
 ./components-apq.gpr
+./components-connections_server-elv_max_cube.gpr
 ./components-connections_server-http_server-sqlite_browser.gpr
 ./components-connections_server-http_server.gpr
 ./components-connections_server-modbus.gpr
@@ -125,6 +126,10 @@
 ./gnat-sockets-connection_state_machine-chain_code-integers.ads
 ./gnat-sockets-connection_state_machine-chain_code-naturals.ads
 ./gnat-sockets-connection_state_machine-chain_code.ads
+./gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.adb
+./gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads
+./gnat-sockets-connection_state_machine-elv_max_cube_client.adb
+./gnat-sockets-connection_state_machine-elv_max_cube_client.ads
 ./gnat-sockets-connection_state_machine-expected_sequence.adb
 ./gnat-sockets-connection_state_machine-expected_sequence.ads
 ./gnat-sockets-connection_state_machine-generic_key.adb
@@ -428,6 +433,7 @@
 ./tables-utf8_names.adb
 ./tables-utf8_names.ads
 ./test_components/components-apq-apq_persistence_tests.gpr
+./test_components/components-connections_server-elv_max_cube-test_elv_max_cube_client.gpr
 ./test_components/components-connections_server-http_server-test_https_server.gpr
 ./test_components/components-connections_server-http_server-test_http_server.gpr
 ./test_components/components-connections_server-modbus-test_modbus_client.gpr
@@ -473,6 +479,7 @@
 ./test_components/test_echo_server.adb
 ./test_components/test_echo_servers.adb
 ./test_components/test_echo_servers.ads
+./test_components/test_elv_max_cube_client.adb
 ./test_components/test_fifo.adb
 ./test_components/test_generic_indefinite_sets.adb
 ./test_components/test_generic_maps.adb

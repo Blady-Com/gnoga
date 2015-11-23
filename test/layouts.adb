@@ -56,16 +56,25 @@ procedure Layouts is
       Tabs   : View.Card.Tab_Access;
       Tab    : View.Card.Tab_Item_Access;
       Dex    : View.Docker.Pointer_To_Docker_View_Class;
+      Stop_B : Common.DIV_Access;
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
 
       App.Docks.Create (Main_Window);
+      App.Docks.Focus;
 
       Dex := new View.Docker.Docker_View_Type;
       Dex.Dynamic;
       Dex.Create (App.Docks);
       App.Docks.Fill_Dock (Dex);
+
+      --  Prevent backspace from causing browser to go to previous page
+      Stop_B := new Common.DIV_Type;
+      Stop_B.Create (Main_Window);
+      Stop_B.Hidden;
+      Stop_B.Editable;
+      Stop_B.Focus;
 
       App.View.Create (Dex.all);
       App.View.Border;

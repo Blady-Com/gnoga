@@ -1,6 +1,10 @@
 PREFIX=$(dir $(shell which gnatls))..
 GPRCHECK=$(shell gprbuild --version)
 
+ATOMIC_ACCESS=GCC-long-offsets
+#if using GNAT GPL prior to 2014 or earlier you need to change this to:
+#ATOMIC_ACCESS=GCC-built-ins
+
 ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
 	BUILDER=gprbuild
 	CLEANER=gprclean
@@ -82,7 +86,7 @@ xpm_parser:
 
 gnoga: setup
 	- cd lib && $(UNSET_READONLY)
-	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
 	cd deps/simple_components/xpm && ar rc ../../../lib/libgnoga.a *.o
 	- $(RM) include$(PATHSEP)*.ad?
@@ -96,7 +100,7 @@ gnoga: setup
 
 gnoga_secure: gnoga
 	- cd lib && $(UNSET_READONLY)
-	cd ssl && $(BUILDER) -p -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd ssl && $(BUILDER) -p -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
 	cd lib && $(SET_READONLY)
 
@@ -104,7 +108,7 @@ gnoga_tools: gnoga
 	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 release: setup
-	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
+	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
 
 install: release gnoga_tools
 	touch deps/simple_components/strings_edit-text_edit.o

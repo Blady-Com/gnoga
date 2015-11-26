@@ -1,13 +1,16 @@
 PREFIX=$(dir $(shell which gnatls))..
 GPRCHECK=$(shell gprbuild --version)
+TARGET=$(shell gcc -dumpmachine)
 
 ATOMIC_ACCESS=GCC-long-offsets
-#if using GNAT GPL prior to 2014 or earlier you need to change this to:
+#if using GNAT GPL prior to 2014 or earlier on a 32bit host (Windows or Linux)
+#you need to change this to:
+#
 #ATOMIC_ACCESS=GCC-built-ins
 
 ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
-	BUILDER=gprbuild
-	CLEANER=gprclean
+	BUILDER=gprbuild --target=${TARGET}
+	CLEANER=gprclean --target=${TARGET}
 else
 	BUILDER=gnatmake
 	CLEANER=gnatclean
@@ -22,8 +25,6 @@ endif
 # For 64bit
 #BUILDER=x86_64-w64-mingw32-gnatmake.exe
 #CLEANER=x86_64-w64-mingw32-gnatclean.exe
-
-TARGET=$(shell gcc -dumpmachine)
 
 ifeq ($(strip $(findstring darwin, $(TARGET))),darwin)
 	PRJ_TARGET=OSX

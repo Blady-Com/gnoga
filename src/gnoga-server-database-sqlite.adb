@@ -662,4 +662,58 @@ package body Gnoga.Server.Database.SQLite is
       return To_String (New_String);
    end Escape_String;
 
+   -----------------------
+   -- Full_Column_Names --
+   -----------------------
+
+   procedure Full_Column_Names
+     (C      : in out Connection;
+      Active :        Boolean := True)
+   is
+   begin
+      C.Execute_Query ("PRAGMA full_column_names = " & Active'Img);
+   end Full_Column_Names;
+   function Full_Column_Names (C : in out Connection) return Boolean is
+      RS : Gnoga.Server.Database.Recordset'Class :=
+        C.Query ("PRAGMA full_column_names");
+      Result : Boolean := False;
+   begin
+      if RS.Next then
+         return
+           Result : Boolean := Boolean'Val (Integer'Value (RS.Field_Value (1)))
+         do
+            RS.Close;
+         end return;
+      else
+         RS.Close;
+         return False;
+      end if;
+   end Full_Column_Names;
+
+   ------------------------
+   -- Short_Column_Names --
+   ------------------------
+
+   procedure Short_Column_Names
+     (C      : in out Connection;
+      Active :        Boolean := True)
+   is
+   begin
+      C.Execute_Query ("PRAGMA short_column_names = " & Active'Img);
+   end Short_Column_Names;
+   function Short_Column_Names (C : in out Connection) return Boolean is
+      RS : Gnoga.Server.Database.Recordset'Class :=
+        C.Query ("PRAGMA short_column_names");
+   begin
+      if RS.Next then
+         return
+           Result : Boolean := Boolean'Val (Integer'Value (RS.Field_Value (1)))
+         do
+            RS.Close;
+         end return;
+      else
+         RS.Close;
+         return False;
+      end if;
+   end Short_Column_Names;
 end Gnoga.Server.Database.SQLite;

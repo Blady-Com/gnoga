@@ -195,6 +195,31 @@ package Gnoga.Server.Database.SQLite is
    function Escape_String (C : Connection; S : String) return String;
    --  prepares a string for safe storage in a query
 
+   procedure Full_Column_Names
+     (C      : in out Connection;
+      Active :        Boolean := True);
+   function Full_Column_Names (C : in out Connection) return Boolean;
+   procedure Short_Column_Names
+     (C      : in out Connection;
+      Active :        Boolean := True);
+   function Short_Column_Names (C : in out Connection) return Boolean;
+   --  The above functions determine the way SQLite assigns names to result
+   --  columns of SELECT statements.
+   --  Result columns are named by applying the following rules in order:
+   --  * If there is an AS clause on the result, then the name of the column is
+   --  the right-hand side of the AS clause.
+   --  * If the result is a general expression, not a just the name of a source
+   --  table column, then the name of the result is a copy of the expression
+   --  text.
+   --  * If the short_column_names pragma is ON, then the name of the result is
+   --  the name of the source table column without the source table name
+   --  prefix: COLUMN.
+   --  * If both pragmas short_column_names and full_column_names are OFF then
+   --  case (2) applies.
+   --  * The name of the result column is a combination of the source table and
+   --  source column name: TABLE.COLUMN
+   --  Source: http://www.sqlite.org/pragma.html#pragma_full_column_names
+
 private
    type Connection is new Gnoga.Server.Database.Connection with
       record

@@ -220,18 +220,44 @@ package Gnoga.Server.Database.SQLite is
    --  source column name: TABLE.COLUMN
    --  Source: http://www.sqlite.org/pragma.html#pragma_full_column_names
 
+   procedure Encoding (C : in out Connection; Value : String);
+   --  This procedure sets the encoding that the main database will be created
+   --  with if it is created by this session. The string "UTF-16" is
+   --  interpreted as "UTF-16 encoding using native machine byte-ordering".
+   --  It is not possible to change the text encoding of a database after
+   --  it has been created and any attempt to do so will be silently ignored.
+   --  Source: http://www.sqlite.org/pragma.html#pragma_full_column_names
+   function Encoding (C : in out Connection) return String;
+   --  If the main database has already been created, then this function
+   --  returns the text encoding used by the main database, one of "UTF-8",
+   --  "UTF-16le" (little-endian UTF-16 encoding) or "UTF-16be" (big-endian
+   --  UTF-16 encoding). If the main database has not already been created,
+   --  then the value returned is the text encoding that will be used to
+   --  create the main database, if it is created by this session.
+   --  Source: http://www.sqlite.org/pragma.html#pragma_full_column_names
+
+   procedure UTF8_STring (C : in out Connection; Active : Boolean := True);
+   function UTF8_STring (C : in out Connection) return Boolean;
+   --  Property to treat String as UTF-8 (default) or treat String as Latin-1
+
 private
    type Connection is new Gnoga.Server.Database.Connection with
       record
          Server_ID : aliased SQLite_ID := null;
+         UTF8_STring : Boolean         := True;
+         --  Consider string query parameter
+         --  with UTF-8 encoding otherwise with Ada native Latin-1 encoding
       end record;
 
    type Recordset (Server_ID : SQLite_ID) is
      new Gnoga.Server.Database.Recordset with
       record
-         Query_ID    : aliased SQLite_ID      := null;
-         Field_Count : Natural                := 0;
-         Last_Result : Integer                := 0;
-         First_Row   : Boolean                := False;
+         Query_ID    : aliased SQLite_ID := null;
+         Field_Count : Natural           := 0;
+         Last_Result : Integer           := 0;
+         First_Row   : Boolean           := False;
+         UTF8_STring : Boolean           := True;
+         --  Consider string query result
+         --  with UTF-8 encoding otherwise with Ada native Latin-1 encoding
       end record;
 end Gnoga.Server.Database.SQLite;

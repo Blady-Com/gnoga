@@ -91,7 +91,7 @@ gnoga: setup
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
 	cd deps/simple_components/xpm && ar rc ../../../lib/libgnoga.a *.o
 	- $(RM) include$(PATHSEP)*.ad?
-	$(COPY) src$(PATHSEP)*.ads include
+	$(COPY) src$(PATHSEP)*.ad[sb] include
 	$(COPY) src$(PATHSEP)gnoga-server-model-table.adb include
 	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ads include
 	- $(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ali lib

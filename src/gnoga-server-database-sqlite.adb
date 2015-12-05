@@ -36,8 +36,9 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
-
+with Ada.Exceptions;
 with Interfaces.C;
+with Ada.Strings.UTF_Encoding.Strings;
 
 package body Gnoga.Server.Database.SQLite is
 
@@ -125,13 +126,15 @@ package body Gnoga.Server.Database.SQLite is
 
    overriding
    procedure Execute_Query (C : in out Connection; SQL : String) is
+      LSQL : String := (if C.UTF8_STring then SQL else
+                           Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
       Q  : aliased SQLite_ID;
       P  : aliased SQLite_ID;
 
       function sqlite3_prepare
         (sqlite  : SQLite_ID      := C.Server_ID;
-         sq      : String         := SQL;
-         l       : Natural        := SQL'Length;
+         sq      : String         := LSQL;
+         l       : Natural        := LSQL'Length;
          ppStmt  : access SQLite_ID := Q'Access;
          ppzTail : access SQLite_ID := P'Access)
          return Integer;
@@ -328,14 +331,16 @@ package body Gnoga.Server.Database.SQLite is
    function Query (C : Connection; SQL : String)
                    return Gnoga.Server.Database.Recordset'Class
    is
+      LSQL : String := (if C.UTF8_STring then SQL else
+                           Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
       RS : Recordset (C.Server_ID);
       Q  : aliased SQLite_ID;
       P  : aliased SQLite_ID;
 
       function sqlite3_prepare
         (sqlite  : SQLite_ID        := C.Server_ID;
-         sq      : String           := SQL;
-         l       : Natural          := SQL'Length;
+         sq      : String           := LSQL;
+         l       : Natural          := LSQL'Length;
          ppStmt  : access SQLite_ID := Q'Access;
          ppzTail : access SQLite_ID := P'Access)
          return Integer;
@@ -372,6 +377,7 @@ package body Gnoga.Server.Database.SQLite is
 
       RS.Last_Result := R;
       RS.First_Row := True;
+      RS.UTF8_STring := C.UTF8_STring;
 
       RS.Field_Count := sqlite3_column_count;
       if RS.Field_Count = 0 then
@@ -456,7 +462,9 @@ package body Gnoga.Server.Database.SQLite is
       Process : not null access
         procedure (RS : Gnoga.Server.Database.Recordset'Class))
    is
-      RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
+      LSQL : String := (if C.UTF8_STring then SQL else
+                           Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
+      RS : Gnoga.Server.Database.Recordset'Class := C.Query (LSQL);
    begin
       RS.Iterate (Process);
    end Iterate;
@@ -479,7 +487,9 @@ package body Gnoga.Server.Database.SQLite is
       SQL   : in     String;
       Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
    is
-      RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
+      LSQL : String := (if C.UTF8_STring then SQL else
+                           Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
+      RS : Gnoga.Server.Database.Recordset'Class := C.Query (LSQL);
    begin
       RS.Iterate (Process);
    end Iterate;
@@ -536,7 +546,14 @@ package body Gnoga.Server.Database.SQLite is
         return charbuf_access;
       pragma Import (C, sqlite3_column_name, "sqlite3_column_name");
    begin
-      return Interfaces.C.To_Ada (sqlite3_column_name.all);
+      return (if RS.UTF8_STring then Interfaces.C.To_Ada
+              (sqlite3_column_name.all) else
+                 Ada.Strings.UTF_Encoding.Strings.Decode
+                (Interfaces.C.To_Ada (sqlite3_column_name.all)));
+   exception
+      when E : Ada.Strings.UTF_Encoding.Encoding_Error =>
+         Log (Ada.Exceptions.Exception_Information (E));
+         return Interfaces.C.To_Ada (sqlite3_column_name.all);
    end Field_Name;
 
    -----------------
@@ -575,8 +592,20 @@ package body Gnoga.Server.Database.SQLite is
             raise Null_Field;
          end if;
       else
-         return To_Ada
-           (sqlite3_column_text.all (0 .. size_t (sqlite3_column_bytes)));
+         begin
+            return (if RS.UTF8_STring then To_Ada
+                    (sqlite3_column_text.all
+                         (0 .. size_t (sqlite3_column_bytes))) else
+                         Ada.Strings.UTF_Encoding.Strings.Decode
+                      (To_Ada (sqlite3_column_text.all
+                           (0 .. size_t (sqlite3_column_bytes)))));
+         exception
+            when E : Ada.Strings.UTF_Encoding.Encoding_Error =>
+               Log (Ada.Exceptions.Exception_Information (E));
+               return Interfaces.C.To_Ada
+                 (sqlite3_column_text.all
+                    (0 .. size_t (sqlite3_column_bytes)));
+         end;
       end if;
    end Field_Value;
 
@@ -716,4 +745,39 @@ package body Gnoga.Server.Database.SQLite is
          return False;
       end if;
    end Short_Column_Names;
+
+   --------------
+   -- Encoding --
+   --------------
+
+   procedure Encoding (C : in out Connection; Value : String) is
+   begin
+      C.Execute_Query ("PRAGMA encoding = '" & Value & ''');
+   end Encoding;
+   function Encoding (C : in out Connection) return String is
+      RS : Gnoga.Server.Database.Recordset'Class :=
+        C.Query ("PRAGMA encoding");
+   begin
+      if RS.Next then
+         return Result : String := RS.Field_Value (1) do
+            RS.Close;
+         end return;
+      else
+         RS.Close;
+         return "";
+      end if;
+   end Encoding;
+
+   -----------------
+   -- UTF8_STring --
+   -----------------
+
+   procedure UTF8_STring (C : in out Connection; Active : Boolean := True) is
+   begin
+      C.UTF8_STring := Active;
+   end UTF8_STring;
+   function UTF8_STring (C : in out Connection) return Boolean is
+   begin
+      return C.UTF8_STring;
+   end UTF8_STring;
 end Gnoga.Server.Database.SQLite;

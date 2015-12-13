@@ -1,4 +1,11 @@
-To Do 1.2:
+Introduction:
+
+Among various followings ideas, if you want to have one available in your favorite Gnoga:
+ - open a discussion: https://sourceforge.net/p/gnoga/mailman/
+ - open a ticket: https://sourceforge.net/p/gnoga/tickets/
+
+
+To do 1.2:
 
 1. Complete SVG DOM bindings
 2. Direct connection to webkit via API instead of sockets for Gtk and Mac
@@ -12,7 +19,8 @@ To Do 1.2:
 10. Complete MacGap support for menus
 11. Add coding style rules documentation
 
-Some Ideas:
+
+Some other ideas:
 
 1. Install maker GUI installs using Gnoga
 2. Gnoga_Doc - Documentation generator from Ada specs resulting in a Gnoga reference app
@@ -82,3 +90,4 @@ If not you will need to manually tell your watchdog to reset its disconnect time
 (see http://www.puffgames.com/3d_rubiks_kube_puzzle/)
 27. Chart functions inside gnoga for things like line or bar charts.
 (see PLplot is a fully-featured plotting package with two thick Ada bindings. http://plplot.org/)
+28. Support database compatible with OpenOffice Base (HSQLDB)

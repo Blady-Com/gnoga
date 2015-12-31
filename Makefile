@@ -152,6 +152,20 @@ native_osx:
 	@echo "Native XCode project is now in deps/MacGap2"
 	@echo "See docs/native_mac_apps.md for instructions"
 
+electron:
+	@echo "Please insure that Node.js - npm is installed and on path."
+	@echo
+	- cd deps && git clone https://github.com/atom/electron-quick-start
+	- cd deps/electron-quick-start && npm install
+	$(COPY) html$(PATHSEP)electron.html deps$(PATHSEP)electron-quick-start$(PATHSEP)index.html
+	$(COPY) js$(PATHSEP)electron_boot.js deps$(PATHSEP)electron-quick-start
+	$(COPY) js$(PATHSEP)jquery.min.js deps$(PATHSEP)electron-quick-start
+	@echo
+	@echo "Native desktop using electron is now in deps/electron-quick-start"
+	@echo "The example is set to connect to any running gnoga app on localhost:8080"
+	@echo "Start your gnoga app and then run 'nmp start' in deps/electron-quick-start"
+	@echo "See docs/native_desktop_apps.md for instructions on full desktop development"
+
 demo: snake mine_detector connect_four chattanooga adaedit adablog
 
 snake:
@@ -203,6 +217,8 @@ cleanall: clean
 	$(MAKE) -C components uninstall
 	- cd src && $(RM) gnoga-application.adb
 	- cd deps && $(RMS) MultiMarkdown-4
+	- cd deps && $(RM) dpm-debug.log
+	- cd deps && $(RMS) electron-quick-start
 	- $(RM) bin/multimarkdown
 	- cd docs && $(RM) html/*.html
 	- cd docs && $(RMS) html/gnoga_rm

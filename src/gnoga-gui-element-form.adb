@@ -1001,6 +1001,7 @@ package body Gnoga.Gui.Element.Form is
    begin
       return Element.Property ("checked");
    end Checked;
+
    -------------------------------------------------------------------------
    --  Color_Picker_Type
    -------------------------------------------------------------------------
@@ -1036,6 +1037,19 @@ package body Gnoga.Gui.Element.Form is
                       ID         => ID);
    end Create;
 
+   procedure Create (Element    : in out Color_Picker_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     Gnoga.Types.Colors.Color_Enumeration;
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create (Form       => Form,
+                      Value      => Gnoga.Types.Colors.To_String (Value),
+                      Name       => Name,
+                      ID         => ID);
+   end Create;
+
    -------------------------------------------------------------------------
    --  Color_Picker_Type - Properties
    -------------------------------------------------------------------------
@@ -1046,10 +1060,26 @@ package body Gnoga.Gui.Element.Form is
 
    overriding
    procedure Color (Element : in out Color_Picker_Type;
-                    Value   : in     Gnoga.Types.RGBA_Type)
+                    Value   : in     String)
    is
    begin
-      Element.Property ("value", Gnoga.Types.To_String (Value));
+      Element.Property ("value", Value);
+   end Color;
+
+   overriding
+   procedure Color (Element : in out Color_Picker_Type;
+                    RGBA    : in     Gnoga.Types.RGBA_Type)
+   is
+   begin
+      Element.Property ("value", Gnoga.Types.To_String (RGBA));
+   end Color;
+
+   overriding
+   procedure Color (Element : in out Color_Picker_Type;
+                    Enum    : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Element.Property ("value", Gnoga.Types.Colors.To_String (Enum));
    end Color;
 
    overriding

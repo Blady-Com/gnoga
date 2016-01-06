@@ -42,6 +42,7 @@ with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 
 with Gnoga.Types;
+with Gnoga.Types.Colors;
 with Gnoga.Gui.Base;
 
 package Gnoga.Gui.Element is
@@ -492,6 +493,8 @@ package Gnoga.Gui.Element is
    procedure Color (Element : in out Element_Type; Value : String);
    procedure Color (Element : in out Element_Type;
                     RGBA    : in     Gnoga.Types.RGBA_Type);
+   procedure Color (Element : in out Element_Type;
+                    Enum    : Gnoga.Types.Colors.Color_Enumeration);
    function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type;
 
    procedure Opacity (Element : in out Element_Type;
@@ -512,6 +515,9 @@ package Gnoga.Gui.Element is
                                Value   : in     String);
    procedure Background_Color (Element : in out Element_Type;
                                RGBA    : in     Gnoga.Types.RGBA_Type);
+   procedure Background_Color
+     (Element : in out Element_Type;
+      Enum    : in     Gnoga.Types.Colors.Color_Enumeration);
    function Background_Color (Element : Element_Type)
                               return Gnoga.Types.RGBA_Type;
 
@@ -553,7 +559,8 @@ package Gnoga.Gui.Element is
    procedure Border (Element : in out Element_Type;
                      Width   : in     String       := "medium";
                      Style   : in     Border_Style := Solid;
-                     Color   : in     String       := "black");
+                     Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
+                       Gnoga.Types.Colors.Black);
    --  Width = medium|thin|thick|length|initial|inherit;
    --  If Color is "" then border is same as Element.Color
 
@@ -567,7 +574,8 @@ package Gnoga.Gui.Element is
                      Vertical_Position   : in     String;
                      Blur                : in     String := "";
                      Spread              : in     String := "";
-                     Color               : in     String := "black";
+                     Color               : in     Gnoga.Types.Colors.
+                       Color_Enumeration := Gnoga.Types.Colors.Black;
                      Inset_Shadow        : in     Boolean := False);
 
    procedure Shadow_None (Element : in out Element_Type);

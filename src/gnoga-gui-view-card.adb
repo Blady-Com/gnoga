@@ -170,15 +170,18 @@ package body Gnoga.Gui.View.Card is
      (Tab          : in out Tab_Type;
       Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
       Card_View    : in out Card_View_Type'Class;
-      Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
-      Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
-      Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
+      Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
+        Gnoga.Types.Colors.White;
+      Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
+        Gnoga.Types.Colors.Black;
+      Select_Color : in     Gnoga.Types.Colors.Color_Enumeration :=
+        Gnoga.Types.Colors.Gray;
       ID           : in     String  := "")
    is
    begin
       Tab.Card_View    := Card_View'Unrestricted_Access;
-      Tab.Tab_Color    := Tab_Color;
-      Tab.Select_Color := Select_Color;
+      Tab.Tab_Color    := Gnoga.Types.Colors.To_RGBA (Tab_Color);
+      Tab.Select_Color := Gnoga.Types.Colors.To_RGBA (Select_Color);
 
       Tab.Create_From_HTML (Parent, "<ul />", ID);
 
@@ -193,8 +196,9 @@ package body Gnoga.Gui.View.Card is
             "ul#" & Name & " {padding: 0;}" &
               " ul#" & Name & " li {display: inline;}" &
               " ul#" & Name &
-              "   li a {background-color: " & To_String (Tab_Color) & ";" &
-              "   color: " & To_String (Text_Color) & ";" &
+              "   li a {background-color: " &
+              Gnoga.Types.Colors.To_String (Tab_Color) & ";" &
+              "   color: " & Gnoga.Types.Colors.To_String (Text_Color) & ";" &
               "   padding: 10px 20px;" &
               "   margin: 3px;" &
               "   text-decoration: none;" &

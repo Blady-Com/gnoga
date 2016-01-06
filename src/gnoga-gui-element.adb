@@ -1109,6 +1109,13 @@ package body Gnoga.Gui.Element is
       Element.Style ("color", Gnoga.Types.To_String (RGBA));
    end Color;
 
+   procedure Color (Element : in out Element_Type;
+                    Enum    : Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Element.Style ("color", Gnoga.Types.Colors.To_String (Enum));
+   end Color;
+
    function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type is
    begin
       return Gnoga.Types.To_RGBA (Element.Style ("color"));
@@ -1173,6 +1180,13 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.Style ("background-color", Gnoga.Types.To_String (RGBA));
+   end Background_Color;
+
+   procedure Background_Color (Element : in out Element_Type;
+                               Enum    : Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Element.Style ("background-color", Gnoga.Types.Colors.To_String (Enum));
    end Background_Color;
 
    function Background_Color (Element : Element_Type)
@@ -1289,10 +1303,12 @@ package body Gnoga.Gui.Element is
    procedure Border (Element : in out Element_Type;
                      Width   : in     String       := "medium";
                      Style   : in     Border_Style := Solid;
-                     Color   : in     String       := "black")
+                     Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
+                       Gnoga.Types.Colors.Black)
    is
    begin
-      Element.Style ("border", Width & " " & Style'Img & " " & Color);
+      Element.Style ("border", Width & " " & Style'Img & " " &
+                       Gnoga.Types.Colors.To_String (Color));
    end Border;
 
    -------------------
@@ -1315,7 +1331,8 @@ package body Gnoga.Gui.Element is
                      Vertical_Position   : in     String;
                      Blur                : in     String := "";
                      Spread              : in     String := "";
-                     Color               : in     String := "black";
+                     Color               : in     Gnoga.Types.Colors.
+                       Color_Enumeration := Gnoga.Types.Colors.Black;
                      Inset_Shadow        : in     Boolean := False)
    is
       function Inset return String;
@@ -1331,7 +1348,8 @@ package body Gnoga.Gui.Element is
    begin
       Element.Style ("box-shadow", Horizontal_Position & " " &
                        Vertical_Position & " " & Blur & " " & Spread &
-                       " " & Color & " " & Inset);
+                       " " & Gnoga.Types.Colors.To_String (Color) &
+                       " " & Inset);
    end Shadow;
 
    -----------------

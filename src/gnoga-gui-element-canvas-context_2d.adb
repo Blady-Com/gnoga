@@ -89,6 +89,14 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       Context.Property ("fillStyle", Value);
    end Fill_Color;
 
+   procedure Fill_Color
+     (Context : in out Context_2D_Type;
+      Value   : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Context.Fill_Color (Gnoga.Types.Colors.To_String (Value));
+   end Fill_Color;
+
    -------------------
    -- Fill_Gradient --
    -------------------
@@ -133,6 +141,14 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       Context.Property ("strokeStyle", Value);
    end Stroke_Color;
 
+   procedure Stroke_Color
+     (Context : in out Context_2D_Type;
+      Value   : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Context.Stroke_Color (Gnoga.Types.Colors.To_String (Value));
+   end Stroke_Color;
+
    ---------------------
    -- Stroke_Gradient --
    ---------------------
@@ -175,6 +191,14 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    is
    begin
       Context.Property ("shadowColor", Value);
+   end Shadow_Color;
+
+   procedure Shadow_Color
+     (Context : in out Context_2D_Type;
+      Value   : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Context.Shadow_Color (Gnoga.Types.Colors.To_String (Value));
    end Shadow_Color;
 
    -----------------
@@ -459,6 +483,15 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    begin
       Gradient.Execute ("addColorStop (" & Position'Img &
                           ", '" & Color & "');");
+   end Add_Color_Stop;
+
+   procedure Add_Color_Stop
+     (Gradient : in out Gradient_Type;
+      Position : in     Gnoga.Types.Frational_Range_Type;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Gradient.Add_Color_Stop (Position, Gnoga.Types.Colors.To_String (Color));
    end Add_Color_Stop;
 
    ----------------------------
@@ -958,6 +991,16 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
            "gnoga['" & Context.ID & "'].putImageData(p," &
            X'Img & "," &
            Y'Img & ")");
+   end Pixel;
+
+   procedure Pixel (Context : in out Context_2D_Type;
+                    X, Y    : in     Integer;
+                    Color   : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+      C : Gnoga.Types.Pixel_Type :=
+        Gnoga.Types.To_Pixel (Gnoga.Types.Colors.To_RGBA (Color));
+   begin
+      Pixel (Context, X, Y, C);
    end Pixel;
 
    --------------------

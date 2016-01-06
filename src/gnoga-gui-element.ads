@@ -559,7 +559,8 @@ package Gnoga.Gui.Element is
    procedure Border (Element : in out Element_Type;
                      Width   : in     String       := "medium";
                      Style   : in     Border_Style := Solid;
-                     Color   : in     String       := "black");
+                     Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
+                       Gnoga.Types.Colors.Black);
    --  Width = medium|thin|thick|length|initial|inherit;
    --  If Color is "" then border is same as Element.Color
 
@@ -573,7 +574,8 @@ package Gnoga.Gui.Element is
                      Vertical_Position   : in     String;
                      Blur                : in     String := "";
                      Spread              : in     String := "";
-                     Color               : in     String := "black";
+                     Color               : in     Gnoga.Types.Colors.
+                       Color_Enumeration := Gnoga.Types.Colors.Black;
                      Inset_Shadow        : in     Boolean := False);
 
    procedure Shadow_None (Element : in out Element_Type);

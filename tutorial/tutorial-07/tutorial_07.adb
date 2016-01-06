@@ -7,6 +7,7 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Element.Common;
+with Gnoga.Types.Colors;
 
 procedure Tutorial_07 is
 
@@ -54,14 +55,14 @@ procedure Tutorial_07 is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Target.Border (Color => "Red");
+      App.Target.Border (Color => Gnoga.Types.Colors.Red);
    end Enter_Drag;
 
    procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Target.Border (Color => "Black");
+      App.Target.Border (Color => Gnoga.Types.Colors.Black);
    end Leave_Drag;
 
    procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -70,7 +71,7 @@ procedure Tutorial_07 is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Target.Border (Color => "Green");
+      App.Target.Border (Color => Gnoga.Types.Colors.Green);
       App.Target.Text (Drag_Text);
    end Drop;
 

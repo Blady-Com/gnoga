@@ -118,31 +118,13 @@ package Gnoga.Gui.View.Card is
      (Tab          : in out Tab_Type;
       Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
       Card_View    : in out Card_View_Type'Class;
-      Text_Color   : in     Gnoga.Types.RGBA_Type := (255, 255, 255, 1.0);
-      Tab_Color    : in     Gnoga.Types.RGBA_Type := (0, 0, 0, 1.0);
-      Select_Color : in     Gnoga.Types.RGBA_Type := (128, 128, 128, 1.0);
-      ID           : in     String                := "");
-
-   procedure Create
-     (Tab          : in out Tab_Type;
-      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-      Card_View    : in out Card_View_Type'Class;
-      Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration;
-      Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration;
-      Select_Color : in     Gnoga.Types.Colors.Color_Enumeration;
-      ID           : in     String                := "");
-
-   procedure Create2
-     (Tab          : in out Tab_Type;
-      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-      Card_View    : in out Card_View_Type'Class;
       Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
         Gnoga.Types.Colors.White;
       Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
         Gnoga.Types.Colors.Black;
       Select_Color : in     Gnoga.Types.Colors.Color_Enumeration :=
         Gnoga.Types.Colors.Gray;
-      ID           : in     String                := "") renames Create;
+      ID           : in     String                := "");
 
    -------------------------------------------------------------------------
    --  Tab_Types - Methods

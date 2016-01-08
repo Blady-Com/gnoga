@@ -67,6 +67,9 @@ procedure Align is
    procedure Radio_Select (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
       Radio : Form.Radio_Button_Type renames Form.Radio_Button_Type (Element);
    begin
+      --  On_Change for radios is only evoked when a radio is selected not
+      --  deselected, which makes checking for Radio.Checked unnecessary.
+
       Gnoga.Log ("Radio Group #" & Radio.Value & " is now the checked radio");
    end Radio_Select;
 

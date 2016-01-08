@@ -13,13 +13,9 @@ procedure Align is
 
    procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record);
-
-   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
-   is
-   begin
-      Gnoga.Log (Event.X'Img & " x " & Event.Y'Img);
-   end On_Move;
+   procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Radio_Select (Element : in out Gnoga.Gui.Base.Base_Type'Class);
 
    Main_Window    : Gnoga.Gui.Window.Window_Type;
    Main_View      : Gnoga.Gui.View.View_Type;
@@ -51,19 +47,29 @@ procedure Align is
 
    Buttons        : Button_Grid;
 
-   procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   is
+   begin
+      Gnoga.Log (Event.X'Img & " x " & Event.Y'Img);
+   end On_Move;
 
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Range_Value.Text (Dec_Range.Value);
    end Dec_Change;
 
-   procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class);
-
    procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Main_View.Put_Line (Number_Choice.Value);
    end Calculate;
+
+   procedure Radio_Select (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
+      Radio : Form.Radio_Button_Type renames Form.Radio_Button_Type (Element);
+   begin
+      Gnoga.Log ("Radio Group #" & Radio.Value & " is now the checked radio");
+   end Radio_Select;
+
 begin
    Gnoga.Application.Open_URL;
 
@@ -125,7 +131,8 @@ begin
    --  as groups based on the Name attribute, in this case "Group1"
 
    for i in Radio_Group'Range loop
-      Radio_Group (i).Create (F, Name => "Group1");
+      Radio_Group (i).Create (F, Name => "Group1", Value => i'Img);
+      Radio_Group (i).On_Change_Handler (Radio_Select'Unrestricted_Access);
       F.Put ("Radio Group #" & i'Img);
       F.New_Line;
    end loop;

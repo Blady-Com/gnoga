@@ -419,6 +419,9 @@ package Gnoga.Gui.Element.Form is
    type Radio_Button_Access is access all Radio_Button_Type;
    type Pointer_To_Radio_Button_Class is access all Radio_Button_Type'Class;
 
+   --  These radio buttons will operate as groups based on having a common
+   --  Name attribute.
+
    -------------------------------------------------------------------------
    --  Radio_Button_Type - Creation Methods
    -------------------------------------------------------------------------

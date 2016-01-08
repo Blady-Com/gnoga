@@ -21,14 +21,14 @@ procedure Align is
       Gnoga.Log (Event.X'Img & " x " & Event.Y'Img);
    end On_Move;
 
-   Main_Window : Gnoga.Gui.Window.Window_Type;
-   Main_View   : Gnoga.Gui.View.View_Type;
+   Main_Window    : Gnoga.Gui.Window.Window_Type;
+   Main_View      : Gnoga.Gui.View.View_Type;
 
-   F             : Form.Form_Type;
+   F              : Form.Form_Type;
 
-   Number_Choice : Form.Text_Type;
-   Choice_Label  : Form.Label_Type;
-   Factor_Button : Form.Submit_Button_Type;
+   Number_Choice  : Form.Text_Type;
+   Choice_Label   : Form.Label_Type;
+   Factor_Button  : Form.Submit_Button_Type;
 
    Calc_Dec       : Form.Check_Box_Type;
    Calc_Dec_Label : Form.Label_Type;
@@ -36,15 +36,20 @@ procedure Align is
    Dec_Range      : Form.Range_Type;
    Range_Value    : Form.Label_Type;
 
-   Game_View   : Gnoga.Gui.View.Docker.Docker_View_Type;
-   Grid_Box    : aliased Gnoga.Gui.View.View_Type;
-   Control_Box : aliased Gnoga.Gui.View.View_Type;
-   Mouse_Box   : Gnoga.Gui.View.View_Type;
+   Game_View      : Gnoga.Gui.View.Docker.Docker_View_Type;
+   Grid_Box       : aliased Gnoga.Gui.View.View_Type;
+   Control_Box    : aliased Gnoga.Gui.View.View_Type;
+   Mouse_Box      : Gnoga.Gui.View.View_Type;
 
-   type Button_Column is array (1 .. 30) of Common.Button_Type;
+   type Radio_Array is array (1 .. 5) of Form.Radio_Button_Type;
+
+   Radios         : Radio_Array;
+   Radio_Group    : Radio_Array;
+
+   type Button_Column is array (1 .. 15) of Common.Button_Type;
    type Button_Grid is array (1 .. 15) of Button_Column;
 
-   Buttons : Button_Grid;
+   Buttons        : Button_Grid;
 
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class);
 
@@ -105,13 +110,35 @@ begin
 
    F.Horizontal_Rule;
 
+   --  These radio buttons will operate individually since Radios function
+   --  as groups based on the Name attribute
+
+   for i in Radios'Range loop
+      Radios (i).Create (F);
+      F.Put ("Radio #" & i'Img);
+      F.New_Line;
+   end loop;
+
+   F.Horizontal_Rule;
+
+   --  These radio buttons will operate together since Radios function
+   --  as groups based on the Name attribute, in this case "Group1"
+
+   for i in Radio_Group'Range loop
+      Radio_Group (i).Create (F, Name => "Group1");
+      F.Put ("Radio Group #" & i'Img);
+      F.New_Line;
+   end loop;
+
+   F.Horizontal_Rule;
+
    Game_View.Create (Main_View);
    Game_View.Position (Relative);
    --  Docked views use absolute positioning which means they are relatively
    --  positioned X,Y to the first non-static position control above them
    --  in the DOM. Relative position means position X,Y from where it would
    --  be static, so this has no affect on where Game_View would be located
-   --  but now that it's position is not statict docked views will be relative
+   --  but now that it's position is not static, docked views will be relative
    --  to it.
 
    Grid_Box.Create (Game_View);

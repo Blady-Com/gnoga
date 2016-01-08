@@ -5,6 +5,7 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
+with Gnoga.Types.Colors;
 with Gnoga.Gui.Element.Form.Fieldset;
 with Gnoga.Gui.Element.List;
 with Gnoga.Gui.Element.Style_Block;
@@ -95,14 +96,14 @@ procedure Demo is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Target.Border (Color => "Red");
+      App.Target.Border (Color => Colors.Red);
    end Enter_Drag;
 
    procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Target.Border (Color => "Black");
+      App.Target.Border (Color => Colors.Black);
    end Leave_Drag;
 
    procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -111,7 +112,7 @@ procedure Demo is
    is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Target.Border (Color => "Green");
+      App.Target.Border (Color => Colors.Green);
       App.Target.Text (Drag_Text & "@" &  X'Img & Y'Img);
    end Drop;
 

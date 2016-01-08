@@ -56,7 +56,7 @@ procedure BootJS is
       View.Create (Main_Window);
       View.Put_Line ("<a href='/bootjs_demo.html'>go to bootjs_demo.html</a>");
       View.Horizontal_Rule;
-      View.Put_Line ("Test of French - Bienvenue dans le XXIième siècle.");
+      View.Put_Line ("Test of French - Bienvenue.");
       View.Horizontal_Rule;
       View.Put_Line ("HTML Injection from bootjs_demo.html:");
       View.New_Line;

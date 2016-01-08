@@ -1,4 +1,5 @@
 with Gnoga.Types;
+with Gnoga.Types.Colors;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Card;
@@ -84,9 +85,9 @@ procedure Layouts is
       Tabs.Dynamic;
       Tabs.Create (Parent       => Dex.all,
                    Card_View    => App.View,
-                   Text_Color   => Gnoga.Types.RGBA_Type'(255, 255, 255, 1.0),
-                   Tab_Color    => Gnoga.Types.RGBA_Type'(0, 0, 255, 1.0),
-                   Select_Color => Gnoga.Types.RGBA_Type'(0, 0, 128, 1.0));
+                   Text_Color   => Gnoga.Types.Colors.Black,
+                   Tab_Color    => Gnoga.Types.Colors.Blue,
+                   Select_Color => Gnoga.Types.Colors.Light_Blue);
 
       Tab := new View.Card.Tab_Item_Type;
       Tab.Dynamic;

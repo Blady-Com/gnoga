@@ -1,0 +1,27 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "mydir" to the value ".*zbtest.commands.rename.rename04"
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.rename.zbt"
+zbtest.rename (1) desc Test rename functionality
+Set the test description to "Test rename functionality"
+zbtest.rename (2) 
+zbtest.rename (3) prepend searchpath $mydir
+zbtest.rename \(3> prepend searchpath .*zbtest.commands.rename.rename04
+zbtest.rename (4) 
+zbtest.rename (5) copy file1.dat
+Copied the file "file1.dat" to the test area file "file1.dat"
+zbtest.rename (6) copy file2.dat
+Copied the file "file2.dat" to the test area file "file2.dat"
+zbtest.rename (7) filestat file1.dat log-01.log
+Generated status report on the file "file1.dat" to "log-01.log"
+zbtest.rename (8) filestat file2.dat log-02.log
+Generated status report on the file "file2.dat" to "log-02.log"
+zbtest.rename (9) rename file1.dat file2.dat
+Error, failed to rename "file1.dat" to "file2.dat": .*
+Executing the "end scope" action: delete file2.dat
+Deleted the file "file2.dat"
+Executing the "end scope" action: delete file1.dat
+Deleted the file "file1.dat"
+Status for "zbtest.rename": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

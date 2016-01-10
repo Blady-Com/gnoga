@@ -1,0 +1,6 @@
+desc Test filestat functionality
+
+prepend searchpath $mydir
+
+copy -r xmpl
+filestat xmpl filestat.log

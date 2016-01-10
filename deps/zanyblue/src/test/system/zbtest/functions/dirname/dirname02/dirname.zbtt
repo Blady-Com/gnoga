@@ -1,0 +1,4 @@
+desc Test the dirname text function
+
+echo $(dirname /home/mrohan/xyz)
+echo $(dirname $(dirname /home/mrohan/xyz))

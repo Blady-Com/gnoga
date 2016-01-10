@@ -1,0 +1,13 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.getenv.zbt"
+zbtest.getenv (1) desc Test getenv functionality
+Set the test description to "Test getenv functionality"
+zbtest.getenv (2) 
+zbtest.getenv (3) getenv
+Usage: getenv [ -l | -s | -p | -a ] name [ parameter ]
+zbtest.getenv (4) getenv MYVAR abc xyz
+Usage: getenv [ -l | -s | -p | -a ] name [ parameter ]
+Status for "zbtest.getenv": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

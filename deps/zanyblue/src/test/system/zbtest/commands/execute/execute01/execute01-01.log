@@ -1,0 +1,45 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.help.zbt"
+zbtest.help (1) desc Test the help text for the zbtest execute command
+Set the test description to "Test the help text for the zbtest execute command"
+zbtest.help (2) 
+zbtest.help (3) help execute
+Execute a command given the command name and an optional list
+of command arguments.  The command to execute is located by search the
+value of the "path" list parameter (initialized to the value of the "PATH"
+environment variable).  The search attempts to find the first file with
+an extension defined by the "exes" list parameter that matches the command
+name.  For example, on Windows, the directories listed on the "path" parameter
+are searched for files with extensions "bat", "cmd", "com" or "exe".
+
+Once an executable is found, a new process is spawned to execute it.
+If the "-o" option is given, then the command output (standard output
+and standard error) is sent to the named file.
+
+The "-s" option defines a command that is expected to execute successfully.
+This is the default and the "-s" option is normally not given.
+
+The "-f" option defines a command that is expected fail (non-zero exit
+status).
+
+An execute failure file is generated if a command does not exit with the
+expected status.
+
+Examples:
+
+    ZBTest> execute ls
+       Execute the "ls" command, the output is sent to the "screen".
+
+    ZBTest> execute -o ls.out ls
+       Execute the "ls" command, the output is sent to the the file "ls.out"
+       in the test area.
+
+    ZBTest> execute -f -o ls.out ls nosuchfile
+       Execute the "ls" command, the output is sent to the the file "ls.out"
+       in the test area.  The command is expected to exit with a failure
+       status in this case, i.e., the file "nosuchfile" is not expected to
+       exist.
+Status for "zbtest.help": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

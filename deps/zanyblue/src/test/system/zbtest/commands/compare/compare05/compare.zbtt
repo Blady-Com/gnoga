@@ -1,0 +1,6 @@
+desc Test compare functionality
+
+prepend searchpath $mydir
+
+copy test.log
+compare test.log ref.log

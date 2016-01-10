@@ -1,0 +1,7 @@
+desc Test setenv functionality: successful script
+
+prepend path $mydir
+
+set llw Lilongwe
+setenv -p LLW llw
+execute setenv03-cmd

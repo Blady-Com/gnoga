@@ -1,0 +1,4 @@
+desc Test getenv functionality
+
+getenv -l MYLIST mylist
+print -l mylist

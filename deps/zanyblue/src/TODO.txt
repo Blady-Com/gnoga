@@ -1,0 +1,37 @@
+* Should CLDR defined defaults be applied to locales?  E.g., the set currently
+  defined by the CLDR data (see cldr/common/supplemental/likelySubtags.xml) is
+      az_AZ=az_Latn_AZ
+      az_IR=az_Arab_IR
+      ha_GH=ha_Latn_GH
+      ha_NE=ha_Latn_NE
+      ha_NG=ha_Latn_NG
+      ha_SD=ha_Arab_SD
+      kk_KZ=kk_Cyrl_KZ
+      ku_IQ=ku_Arab_IQ
+      ku_IR=ku_Arab_IR
+      ku_SY=ku_Latn_SY
+      ku_TR=ku_Latn_TR
+      mn_CN=mn_Mong_CN
+      mn_MN=mn_Cyrl_MN
+      pa_IN=pa_Guru_IN
+      pa_PK=pa_Arab_PK
+      shi_MA=shi_Latn_MA
+      sr_BA=sr_Cyrl_BA
+      sr_CS=sr_Cyrl_CS
+      sr_ME=sr_Latn_ME
+      sr_RS=sr_Cyrl_RS
+      tg_TJ=tg_Cyrl_TJ
+      tzm_MA=tzm_Latn_MA
+      ug_CN=ug_Arab_CN
+      uz_AF=uz_Arab_AF
+      uz_UZ=uz_Cyrl_UZ
+      wo_SN=wo_Latn_SN
+      zh_CN=zh_Hans_CN
+      zh_HK=zh_Hant_HK
+      zh_MO=zh_Hant_MO
+      zh_SG=zh_Hans_SG
+      zh_TW=zh_Hant_TW
+  Maybe via an "normalize locale" routine?
+* Should regions be handled, e.g., es_149 would cover Latin America.  Would
+  need to determine if the current territory, e.g., AR, is with the region
+  defined by 419.

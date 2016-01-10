@@ -1,0 +1,3 @@
+desc Test filestat functionality
+
+filestat missing.dat filestat.log

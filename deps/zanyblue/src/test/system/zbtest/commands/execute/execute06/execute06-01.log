@@ -1,0 +1,17 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "mydir" to the value ".*zbtest.commands.execute.execute06"
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.execute.zbt"
+zbtest.execute (1) desc Test execute functionality: output file
+Set the test description to "Test execute functionality: output file"
+zbtest.execute (2) 
+zbtest.execute (3) prepend path $mydir
+zbtest.execute \(3> prepend path .*zbtest.commands.execute.execute06
+zbtest.execute (4) 
+zbtest.execute (5) execute -o execute.log execute06-cmd
+Executing the command ".*zbtest.commands.execute.execute06.execute06-cmd.*"
+zbtest.execute (6) filestat execute.log status.log
+Generated status report on the file "execute.log" to "status.log"
+Status for "zbtest.execute": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

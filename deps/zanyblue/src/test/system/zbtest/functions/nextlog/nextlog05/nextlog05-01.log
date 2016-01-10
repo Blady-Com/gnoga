@@ -1,0 +1,27 @@
+This is ZBTest, Version .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.nextlog.zbt"
+zbtest.nextlog (1) desc Test the nextlog text function: counter name
+Set the test description to "Test the nextlog text function: counter name"
+zbtest.nextlog (2) 
+zbtest.nextlog (3) # This should not generate an undo compare action 
+zbtest.nextlog (4) echo nextlog file is $(nextlog -c build)
+zbtest.nextlog (4> echo nextlog file is nextlog-build-01.log
+nextlog file is nextlog-build-01.log
+zbtest.nextlog (5) # This should generate an undo compare action 
+zbtest.nextlog (6) echo nextlog file is $(nextlog -c build -n)
+zbtest.nextlog (6> echo nextlog file is nextlog-build-02.log
+nextlog file is nextlog-build-02.log
+zbtest.nextlog (7) # This should also generate an undo compare action 
+zbtest.nextlog (8) echo nextlog file is $(nextlog -n -c build)
+zbtest.nextlog (8> echo nextlog file is nextlog-build-03.log
+nextlog file is nextlog-build-03.log
+Executing the "end scope" action: compare nextlog-build-03.log
+Error, the reference log file "nextlog-build-03.log" was not found
+Test "zbtest.nextlog.nextlog-build-03" failed
+Executing the "end scope" action: compare nextlog-build-02.log
+Error, the reference log file "nextlog-build-02.log" was not found
+Test "zbtest.nextlog.nextlog-build-02" failed
+Status for "zbtest.nextlog": 2 failures, 0 OK
+ZBTest completed on .*

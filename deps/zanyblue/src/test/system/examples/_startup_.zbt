@@ -1,0 +1,5 @@
+# Define the location of the top level examples directory.
+# Other tests in this tree will attempt to build and run
+# examples under this directory.
+
+set examples_dir $(joinpaths $(dirname $(dirname $(which -e zbmcompile))) examples)

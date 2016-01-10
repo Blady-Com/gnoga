@@ -1,0 +1,3 @@
+desc Test delete usage messages: invalid option
+
+delete -x a

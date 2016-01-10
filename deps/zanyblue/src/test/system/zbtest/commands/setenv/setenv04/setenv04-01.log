@@ -1,0 +1,23 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "mydir" to the value ".*zbtest.commands.setenv.setenv04"
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.setenv.zbt"
+zbtest.setenv (1) desc Test setenv functionality: successful script
+Set the test description to "Test setenv functionality: successful script"
+zbtest.setenv (2) 
+zbtest.setenv (3) prepend path $mydir
+zbtest.setenv \(3> prepend path .*zbtest.commands.setenv.setenv04
+zbtest.setenv (4) 
+zbtest.setenv (5) set mypath /bin
+zbtest.setenv (6) append mypath /usr/bin
+zbtest.setenv (7) append mypath /usr/local/bin
+zbtest.setenv (8) setenv -l MYPATH mypath
+Setting the environment variable "MYPATH" to "/bin[:;]/usr/bin[:;]/usr/local/bin"
+zbtest.setenv (9) execute setenv04-cmd
+Executing the command ".*zbtest.commands.setenv.setenv04.setenv04-cmd.*"
+MYPATH is /bin[;:]/usr/bin[;:]/usr/local/bin
+Executing the "end scope" action: delenv MYPATH
+Deleting environment variable "MYPATH"
+Status for "zbtest.setenv": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

@@ -1,0 +1,4 @@
+desc Test mkdir usage messages
+
+mkdir
+mkdir a b

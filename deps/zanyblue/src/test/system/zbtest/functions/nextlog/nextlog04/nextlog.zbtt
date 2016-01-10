@@ -1,0 +1,5 @@
+desc Test the nextlog text function
+
+echo nextlog file is $(nextlog -x)
+echo nextlog file is $(nextlog a)
+echo nextlog file is $(nextlog ab cd)

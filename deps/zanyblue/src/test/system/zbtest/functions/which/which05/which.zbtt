@@ -1,0 +1,3 @@
+desc Test the which text function
+
+echo Missing executable is located at $(which -e nosuchcmd)

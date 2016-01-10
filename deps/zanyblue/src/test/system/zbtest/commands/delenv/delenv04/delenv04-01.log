@@ -1,0 +1,13 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.delenv.zbt"
+zbtest.delenv (1) desc Test delenv functionality: invalid usage
+Set the test description to "Test delenv functionality: invalid usage"
+zbtest.delenv (2) 
+zbtest.delenv (3) delenv
+Usage: delenv name
+zbtest.delenv (4) delenv a b
+Usage: delenv name
+Status for "zbtest.delenv": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

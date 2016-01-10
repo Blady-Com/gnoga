@@ -1,0 +1,15 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "mydir" to the value ".*zbtest.functions.which.which02"
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.which.zbt"
+zbtest.which (1) desc Test the which text function
+Set the test description to "Test the which text function"
+zbtest.which (2) 
+zbtest.which (3) prepend searchpath $mydir
+zbtest.which \(3> prepend searchpath .*zbtest.functions.which.which02
+zbtest.which (4) echo which.zbtt is located at $(which which.zbtt)
+zbtest.which \(4> echo which.zbtt is located at .*zbtest.functions.which.which02.which.zbtt
+which.zbtt is located at .*zbtest.functions.which.which02.which.zbtt
+Status for "zbtest.which": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

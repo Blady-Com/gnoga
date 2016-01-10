@@ -1,0 +1,11 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.help.zbt"
+zbtest.help (1) desc Test the help command
+Set the test description to "Test the help command"
+zbtest.help (2) 
+zbtest.help (3) help nosuchcmd
+Not a known command.
+Status for "zbtest.help": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

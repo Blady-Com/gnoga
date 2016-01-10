@@ -1,0 +1,10 @@
+# Define the location of the top level text examples directory.
+# Other tests in this tree will attempt to build and run
+# examples under this directory.
+
+set text_examples_dir $(joinpaths $examples_dir text)
+
+# Prevent additional messages from "make(1)"
+delenv MAKEFLAGS
+delenv MAKELEVEL
+

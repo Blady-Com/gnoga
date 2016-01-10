@@ -1,0 +1,6 @@
+desc Test set functionality
+
+set -x a b
+set
+set a
+set a b c

@@ -1,0 +1,17 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.mkdir.zbt"
+zbtest.mkdir (1) desc Test mkdir functionality
+Set the test description to "Test mkdir functionality"
+zbtest.mkdir (2) 
+zbtest.mkdir (3) filestat mydir dir1.log
+Generated status report on the file "mydir" (non-existent) to "dir1.log"
+zbtest.mkdir (4) mkdir mydir
+Created the directory "mydir"
+zbtest.mkdir (5) filestat mydir dir2.log
+Generated status report on the file "mydir" to "dir2.log"
+Executing the "end scope" action: delete -r mydir
+Deleted the directory "mydir"
+Status for "zbtest.mkdir": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

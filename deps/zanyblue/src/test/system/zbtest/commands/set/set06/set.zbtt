@@ -1,0 +1,4 @@
+desc Test set functionality
+
+set -t t now
+print t

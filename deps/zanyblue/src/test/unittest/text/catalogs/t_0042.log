@@ -1,0 +1,14 @@
+Catalog dump
+------------
+Number_Of_Facilities    :  1
+    "f"
+Number_Of_Keys          :  1
+    "k"
+Number_Of_Locales       :  1
+    ""
+Number_Of_Messages      :  1
+ 1: "f", "k", "", "f-k message"
+Dynmaic Pool            :  11           11
+---START OF STRING POOL---
+f-k message
+---END OF STRING POOL---

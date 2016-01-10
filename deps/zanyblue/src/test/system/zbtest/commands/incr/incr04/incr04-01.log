@@ -1,0 +1,29 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.incr.zbt"
+zbtest.incr (1) desc Test incr functionality
+Set the test description to "Test incr functionality"
+zbtest.incr (2) 
+zbtest.incr (3) set -i num 0
+zbtest.incr (4) print num
+0
+zbtest.incr (5) incr num
+Incremented the parmeter "num" to 1
+zbtest.incr (6) print num
+1
+zbtest.incr (7) begin
+zbtest.incr (8) print num
+1
+zbtest.incr (9) incr num
+Incremented the parmeter "num" to 2
+zbtest.incr (10) set -i num 1000
+zbtest.incr (11) print num
+1000
+zbtest.incr (12) incr -a num
+Incremented the parmeter "num" to 1001
+zbtest.incr (13) end
+zbtest.incr (14) print num
+3
+Status for "zbtest.incr": 0 failures, 0 OK
+ZBTest completed on .* at .* elapsed time .*

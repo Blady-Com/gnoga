@@ -1,0 +1,24 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.print.zbt"
+zbtest.print (1) desc Test print functionality
+Set the test description to "Test print functionality"
+zbtest.print (2) 
+zbtest.print (3) set a b
+zbtest.print (4) print a
+b
+zbtest.print (5) set -i a 10
+zbtest.print (6) print a
+10
+zbtest.print (7) set -b a true
+zbtest.print (8) print a
+true
+zbtest.print (9) set -f a 10.4
+zbtest.print (10) print a
+1.04000E+01
+zbtest.print (11) set -t a now
+zbtest.print (12) print a
+.*
+Status for "zbtest.print": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

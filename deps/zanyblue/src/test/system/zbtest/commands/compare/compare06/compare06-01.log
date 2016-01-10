@@ -1,0 +1,19 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "mydir" to the value ".*zbtest.commands.compare.compare06"
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.compare.zbt"
+zbtest.compare (1) desc Test compare functionality
+Set the test description to "Test compare functionality"
+zbtest.compare (2) 
+zbtest.compare (3) prepend searchpath $mydir
+zbtest.compare \(3> prepend searchpath .*zbtest.commands.compare.compare06
+zbtest.compare (4) 
+zbtest.compare (5) copy test.log
+Copied the file "test.log" to the test area file "test.log"
+zbtest.compare (6) compare test.log ref.log
+Test "zbtest.compare.test" failed
+Executing the "end scope" action: delete test.log
+Deleted the file "test.log"
+Status for "zbtest.compare": 1 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

@@ -1,0 +1,8 @@
+desc Test dump functionality
+
+begin
+dump -o dump1.log
+filestat dump1.log
+
+dump -a -o dump2.log
+filestat dump2.log

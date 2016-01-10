@@ -1,0 +1,9 @@
+desc Test copy functionality
+
+prepend searchpath $mydir
+
+filestat copy.in log1.log
+copy copy.in
+filestat copy.in log2.log
+copy copy.in copy1.in
+filestat copy1.in log3.log

@@ -1,0 +1,27 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.help.zbt"
+zbtest.help (1) desc Test the help text for the zbtest copy command
+Set the test description to "Test the help text for the zbtest copy command"
+zbtest.help (2) 
+zbtest.help (3) help copy
+Copy a file to the test area to use as input to commands under test.
+The file copied is located by searching the directories listed on the
+'searchpath' parameter.
+
+The file copied retains the name of the source file.  To use another name
+the optional second argument can be used.
+
+Examples:
+
+* copy xmpl.in
+  Copy the file named "xmpl.in" to the test area retaining the name.
+* copy xmpl.in example.dat
+  Copy the file "xmpl.in" to the name "example.dat" in the test area.
+
+Files or directories copied to the test area are automatically removed
+when the current scope exited (either at the end of the test script or
+via an explicit "end").
+Status for "zbtest.help": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

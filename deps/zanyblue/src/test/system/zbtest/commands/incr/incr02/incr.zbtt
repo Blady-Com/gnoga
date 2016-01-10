@@ -1,0 +1,11 @@
+desc Test incr functionality
+
+set -i num 0
+print num
+incr num
+print num
+begin
+print num
+incr num
+end
+print num

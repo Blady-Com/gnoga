@@ -1,0 +1,4 @@
+desc Test the which text function
+
+prepend searchpath $mydir
+echo which.zbtt is located at $(which which.zbtt)

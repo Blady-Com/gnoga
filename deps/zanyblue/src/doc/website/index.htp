@@ -1,0 +1,70 @@
+<file include="defs.hti">
+<set page_title="ZanyBlue Project: Ada Electromagnetics Finite Elements">
+<set page_keywords="Ada, g11n, i18n, l10n, finite element, testing, properties">
+<file include="header.hti" name="Home">
+
+<file include="title.hti">
+
+<div id="contents">
+
+<p>
+ZanyBlue is a project to implementing a finite element based solution of the
+Maxwell field equations.  En route to that goal, supporting libraries and
+applications are being implemented.
+</p>
+
+<h1>Globalization Support</h1>
+
+The initial functionality covers globalization support for Ada.  Globalization,
+(normally abbreviated to simply g11n) covers support within the source code
+for multiple languages (this is termed internationalization or i18n) and the
+ability to supply translations for strings used in an application (this is
+termed localization or l10n).  Globalization is supported by the ZanyBlue
+text library by providing routines to access and format messages in Ada
+sources (the i18n aspect of g11n) and localization via the externalization
+of messages strings to properties files.  For example, the following properties
+file defines a simple message refered to in the source code via the key
+<tt>Hello</tt>:
+<pre>
+    Hello=Hello World, I am {0}
+</pre>
+An Ada application code could print this message using the accessor routine
+<pre>
+    Name : constant String := "Michael";
+    ...
+    Print_Hello (+Name);
+</pre>
+See the <a href="${chp:text:url}">text package</a> documentation and the
+<a href="${sec:zbmcompile:url}">zbmcompile</a> application.
+
+<h1>Parameter Handling</h1>
+
+To support command line handling and user defined parameters and scopes
+in the <tt>zbtest</tt> application, the <tt>Parameters</tt> packages is
+available, e.g.,
+<pre>
+    Parameters : Parameter_Set_Type;
+    ...
+    Parameters.Set_Boolean ("verbose", True);
+    if Parameters.Get_Boolean ("verbose") then
+        Print_Debug_Banner;
+    end if;
+</pre>
+
+<h1>Testing Application</h1>
+
+The stability of the code based is improved via a large set of tests.  These
+tests are split between AUnit based unit-tests and a set of tests designed to
+exercise the ZanyBlue utilities, more black-box style testing.  These tests
+use the <tt>zbtest</tt> utility.  There is no formal documentation on this
+at this time other than the built-in help and the example test scripts in
+the <tt>tests</tt> directory.
+
+<h1>License</h1>
+
+ZanyBlue is distributed under the terms of a BSD-style license.  See the
+<a href="/license.html">license</a> page for details.
+
+</div>
+
+<file include="trailer.hti">

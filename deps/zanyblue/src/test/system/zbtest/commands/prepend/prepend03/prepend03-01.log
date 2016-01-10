@@ -1,0 +1,14 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.prepend.zbt"
+zbtest.prepend (1) desc Test prepend usage messages
+Set the test description to "Test prepend usage messages"
+zbtest.prepend (2) 
+zbtest.prepend (3) prepend
+Usage: prepend parameter value
+zbtest.prepend (4) prepend a
+Usage: prepend parameter value
+zbtest.prepend (5) prepend a b
+Status for "zbtest.prepend": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

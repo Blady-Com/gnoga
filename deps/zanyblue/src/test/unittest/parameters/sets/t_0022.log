@@ -1,0 +1,7 @@
+<parameter-set name="XMPL">
+  <parameter name="f1" type="float" value="1.00000E+00" />
+  <parameter name="t1" type="time" value="10/31/11, 4:48 PM" />
+  <parameter name="b1" type="boolean" value="true" />
+  <parameter name="i1" type="integer" value="2011" />
+  <parameter name="s1" type="string" value="a string" />
+</parameter-set>

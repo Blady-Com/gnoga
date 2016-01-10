@@ -1,0 +1,17 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.set.zbt"
+zbtest.set (1) desc Test set functionality
+Set the test description to "Test set functionality"
+zbtest.set (2) 
+zbtest.set (3) set -x a b
+Usage: set [ -s | -i | -b | -f | -t | -u ] parameter value
+zbtest.set (4) set
+Usage: set [ -s | -i | -b | -f | -t | -u ] parameter value
+zbtest.set (5) set a
+Usage: set [ -s | -i | -b | -f | -t | -u ] parameter value
+zbtest.set (6) set a b c
+Usage: set [ -s | -i | -b | -f | -t | -u ] parameter value
+Status for "zbtest.set": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

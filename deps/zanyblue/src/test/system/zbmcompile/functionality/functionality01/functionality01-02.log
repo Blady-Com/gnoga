@@ -1,0 +1,21 @@
+DUMPING LOCALE: ""
+[myapp1] Hello, this is an example
+[myapp1] OK, goodbye
+DUMPING LOCALE: "fr"
+[FR] [myapp1] Hello, this is an example
+[FR] [myapp1] OK, goodbye
+DUMPING LOCALE: "de"
+[myapp1] Hello, this is an example
+[myapp1] OK, goodbye
+DUMPING LOCALE: ""
+[myapp2] Hello, this is an example
+[myapp2] OK, goodbye
+[myapp2] An extra message
+DUMPING LOCALE: "fr"
+[FR] [myapp2] Hello, this is an example
+[FR] [myapp2] OK, goodbye
+[FR] [myapp2] An extra message
+DUMPING LOCALE: "de"
+[myapp2] Hello, this is an example
+[myapp2] OK, goodbye
+[myapp2] An extra message

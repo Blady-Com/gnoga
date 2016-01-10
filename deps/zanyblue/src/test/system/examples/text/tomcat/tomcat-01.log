@@ -1,0 +1,36 @@
+.*: ".*" up to date.*
+This is TOMCAT, Version .*
+Error pausing endpoint
+Configuration error:  Must be attached to a Context
+Protocol handler resume failed
+createSession: Too many active sessions
+Cant load data replication sender mapping list
+Cannot invoke host manager servlet through invoker
+Error initializing socket factory
+Negative Length given in write method
+IMPORTANT: Do not modify the generated servlets
+Cannot auto-reload unless our Container is a Context
+Deploy directory or WAR file located on server
+No naming context bound to this thread
+Resources has not yet been started
+An exception occurs when running the PrivilegedExceptionAction block.
+Cannot call invoker servlet with a named dispatcher
+The database connection is null or was found to be closed. Trying to re-open it.
+Error closing application web.xml
+Unable to perform replication request.
+User database has been configured to be read only. Changes cannot be saved
+Bad hexadecimal digit
+Non-Authoritative Information
+Caught exception trying to close socket
+Web Application Manifest
+Semaphore valve has already been started
+Request Parameters Example
+Path ../example.dat does not start with a "/" character
+MBean xmpl already registered!
+Alias name xyz does not identify a key entry
+The JMX connector server could not be created or failed to start for the www.example.com server
+MBean xmpl already registered!
+JAAS LoginContext created for username "mrohan"
+Not an ISO 8859-1 character: ٤
+MBean xmpl already registered!
+Caught exception (NullPointerException) executing WorkerThread, terminating thread

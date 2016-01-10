@@ -1,0 +1,4 @@
+desc Test the which text function
+
+prepend path $mydir
+echo which03-cmd is located at $(which -e which03-cmd)

@@ -1,0 +1,4 @@
+desc Test set functionality
+
+set -f x 3.141592
+print x

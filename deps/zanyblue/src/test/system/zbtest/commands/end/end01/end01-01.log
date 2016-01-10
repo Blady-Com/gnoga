@@ -1,0 +1,26 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.help.zbt"
+zbtest.help (1) desc Test the help text for the zbtest end command
+Set the test description to "Test the help text for the zbtest end command"
+zbtest.help (2) 
+zbtest.help (3) help end
+Exit a parameter scope.  Any assignments to made duing the scope
+are lost.  Previous definitions are restored, e.g.,
+
+    ZBTest> set xyz abc
+    ZBTest> begin
+    ZBTest> set xyz 123
+    ZBTest> echo $xyz
+    ZBTest> end
+    ZBTest> echo $xyz
+
+The first "echo" prints the value "123" which the second prints the value
+"abc".
+
+It not normally necessary to use the "begin" and "end" commands as running
+a test script automatically start a new scope which is ended when the script
+completes.
+Status for "zbtest.help": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

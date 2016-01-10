@@ -1,0 +1,4 @@
+desc Test filestat functionality
+
+filestat source-name
+filestat source-name log-name extra

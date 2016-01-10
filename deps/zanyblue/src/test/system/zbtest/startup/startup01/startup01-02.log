@@ -1,0 +1,13 @@
+This is ZBTest, Version .* on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.noop.zbt"
+Loading the initialization script ".*test-area._startup_.zbt"
+zbtest._startup_ (1) desc This is _startup_
+Set the test description to "This is _startup_"
+zbtest.noop (1) desc noop test
+Set the test description to "noop test"
+zbtest.noop (2) 
+zbtest.noop (3) noop
+Status for "zbtest.noop": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

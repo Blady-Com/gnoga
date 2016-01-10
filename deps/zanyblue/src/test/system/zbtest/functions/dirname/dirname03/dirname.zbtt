@@ -1,0 +1,3 @@
+desc Test the dirname text function
+
+echo $(dirname)

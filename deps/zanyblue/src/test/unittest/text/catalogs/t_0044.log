@@ -1,0 +1,22 @@
+Catalog dump
+------------
+Number_Of_Facilities    :  3
+    "f1"
+    "f2"
+    "f3"
+Number_Of_Keys          :  3
+    "k1"
+    "k2"
+    "k3"
+Number_Of_Locales       :  3
+    ""
+    "en"
+    "fr"
+Number_Of_Messages      :  3
+ 1: "f1", "k1", "", "f1-k1 message"
+ 2: "f2", "k2", "en", "f2-k2 message"
+ 3: "f3", "k3", "fr", "f3-k3 message"
+Dynmaic Pool            :  39           39
+---START OF STRING POOL---
+f1-k1 messagef2-k2 messagef3-k3 message
+---END OF STRING POOL---

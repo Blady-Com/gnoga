@@ -1,0 +1,3 @@
+desc Test begin dump messages: usage error, missing output file
+
+dump -o

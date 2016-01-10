@@ -1,0 +1,100 @@
+#
+#  ZanyBlue, an Ada library and framework for finite element analysis.
+#
+#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions
+#  are met:
+#
+#    * Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#
+#    * Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
+#      documentation and/or other materials provided with the distribution.
+#
+#    * Neither the name of ZanyBlue nor the names of its contributors may
+#      be used to endorse or promote products derived from this software
+#      without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+#  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+#  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+#  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+desc Test the "zbmcompile" compilations
+
+run compile01
+run compile02
+run compile03
+run compile04
+run compile05
+run compile06
+run compile07
+run compile08
+run compile09
+run compile10
+run compile11
+run compile12
+run compile13
+run compile14
+run compile15
+run compile16
+run compile17
+run compile18
+run compile19
+run compile20
+run compile21
+run compile22
+run compile23
+run compile24
+run compile25
+run compile26
+run compile27
+run compile28
+run compile29
+run compile30
+run compile31
+run compile32
+run compile33
+run compile34
+run compile35
+run compile36
+run compile37
+run compile38
+run compile39
+run compile40
+run compile41
+run compile42
+run compile43
+run compile44
+run compile45
+run compile46
+run compile47
+run compile48
+run compile49
+run compile50
+run compile51
+run compile52
+run compile53
+run compile54
+run compile55
+run compile56
+run compile57
+run compile58
+run compile59
+run compile60
+run compile61
+run compile62
+run slocales
+run types

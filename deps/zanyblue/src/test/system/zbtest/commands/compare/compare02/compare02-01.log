@@ -1,0 +1,44 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "mydir" to the value ".*zbtest.commands.compare.compare02"
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.compare.zbt"
+zbtest.compare (1) desc Test compare functionality
+Set the test description to "Test compare functionality"
+zbtest.compare (2) 
+zbtest.compare (3) prepend searchpath $mydir
+zbtest.compare \(3> prepend searchpath .*zbtest.commands.compare.compare02
+zbtest.compare (4) 
+zbtest.compare (5) # Comparing with itself should be OK
+zbtest.compare (6) copy test.log test1.log
+Copied the file "test.log" to the test area file "test1.log"
+zbtest.compare (7) compare test1.log test.log
+Test "zbtest.compare.test1" successful
+zbtest.compare (8) 
+zbtest.compare (9) # Comparing with regex masking should be OK
+zbtest.compare (10) copy test.log test2.log
+Copied the file "test.log" to the test area file "test2.log"
+zbtest.compare (11) compare test2.log regex.log
+Test "zbtest.compare.test2" successful
+zbtest.compare (12) 
+zbtest.compare (13) # Comparing with different file should FAIL
+zbtest.compare (14) copy test.log test3.log
+Copied the file "test.log" to the test area file "test3.log"
+zbtest.compare (15) compare test3.log other.log
+Test "zbtest.compare.test3" failed
+zbtest.compare (16) 
+zbtest.compare (17) # Comparing with different file with regex should FAIL
+zbtest.compare (18) copy test.log test4.log
+Copied the file "test.log" to the test area file "test4.log"
+zbtest.compare (19) compare test4.log otherregex.log
+Test "zbtest.compare.test4" failed
+Executing the "end scope" action: delete test4.log
+Deleted the file "test4.log"
+Executing the "end scope" action: delete test3.log
+Deleted the file "test3.log"
+Executing the "end scope" action: delete test2.log
+Deleted the file "test2.log"
+Executing the "end scope" action: delete test1.log
+Deleted the file "test1.log"
+Status for "zbtest.compare": 2 failures, 2 OK
+ZBTest completed on .* at .*, elapsed time .*

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zanyblue-message-usage>
+<message facility="myfac1"
+         key="mykey2"
+         locale="fr_FR"
+         count="0" />
+<message facility="myfac1"
+         key="mykey3"
+         locale=""
+         count="30" />
+<message facility="myfac1"
+         key="mykey2"
+         locale=""
+         count="20" />
+<message facility="myfac1"
+         key="mykey3"
+         locale="fr_FR"
+         count="0" />
+<message facility="myfac1"
+         key="mykey1"
+         locale="fr_FR"
+         count="0" />
+<message facility="myfac1"
+         key="mykey1"
+         locale=""
+         count="10" />
+</zanyblue-message-usage>

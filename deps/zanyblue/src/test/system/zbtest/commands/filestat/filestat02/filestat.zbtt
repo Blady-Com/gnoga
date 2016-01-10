@@ -1,0 +1,6 @@
+desc Test filestat functionality
+
+prepend searchpath $mydir
+
+copy filestat.dat
+filestat filestat.dat filestat.log

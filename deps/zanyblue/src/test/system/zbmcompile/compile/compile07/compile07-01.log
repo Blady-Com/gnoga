@@ -1,0 +1,47 @@
+<parameter-set name="OPTIONS">
+  <parameter name="accessor:prints" type="boolean" value="false" />
+  <parameter name="generate_accessors" type="boolean" value="false" />
+  <parameter name="facilities" type="list">
+    <value>myapp</value>
+  </parameter>
+  <parameter name="force" type="boolean" value="false" />
+  <parameter name="accessor_comments" type="boolean" value="true" />
+  <parameter name="body_initialize" type="boolean" value="false" />
+  <parameter name="reference_locale" type="string" value="" />
+  <parameter name="use_export_name" type="boolean" value="false" />
+  <parameter name="locales" type="list">
+    <value></value>
+  </parameter>
+  <parameter name="accessor:strings" type="boolean" value="false" />
+  <parameter name="disable_checks" type="boolean" value="false" />
+  <parameter name="optimize" type="boolean" value="false" />
+  <parameter name="output_directory" type="string" value="." />
+  <parameter name="verbose" type="boolean" value="true" />
+  <parameter name="extension" type="string" value="properties" />
+  <parameter name="n_facilities" type="integer" value="1" />
+  <parameter name="accessor:wprints" type="boolean" value="false" />
+  <parameter name="quiet" type="boolean" value="false" />
+  <parameter name="package" type="string" value="My_Package" />
+  <parameter name="accessor:wstrings" type="boolean" value="false" />
+  <parameter name="base_locale" type="boolean" value="false" />
+  <parameter name="pool_size" type="integer" value="60" />
+  <parameter name="debug" type="boolean" value="true" />
+  <parameter name="mesg_dirs" type="list">
+    <value>mesg</value>
+  </parameter>
+  <parameter name="positional_elements" type="boolean" value="false" />
+  <parameter name="cur_dir" type="string" value="mesg" />
+  <parameter name="source_root_locale" type="string" value="" />
+  <parameter name="comment_size" type="integer" value="55" />
+  <parameter name="parameter_modes" type="boolean" value="false" />
+  <parameter name="accessor:exceptions" type="boolean" value="false" />
+</parameter-set>
+This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Loaded 2 messages for the facility "myapp" (1 locales)
+Performing consistency checks for the facility "myapp"
+Loaded 1 facilities, 2 keys, 1 locales and 2 messages
+Loaded total 36 characters, stored 36 unique characters, 0% saving
+Wrote the spec "My_Package" to the file "..my_package.ads"
+Wrote the body "My_Package" to the file "..my_package.adb"
+ZBMCompile completed on .* at .*, elapsed time .*

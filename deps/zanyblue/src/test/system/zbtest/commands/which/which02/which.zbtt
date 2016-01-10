@@ -1,0 +1,5 @@
+desc Test which functionality
+
+prepend searchpath $mydir
+
+which which02.dat

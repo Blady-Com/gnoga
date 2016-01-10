@@ -1,0 +1,6 @@
+desc Test set functionality
+
+set SFO "San Francisco"
+print SFO
+set -s LLW Lilongwe
+print LLW 

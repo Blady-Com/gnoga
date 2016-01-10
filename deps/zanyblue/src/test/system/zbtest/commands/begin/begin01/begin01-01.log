@@ -1,0 +1,23 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.help.zbt"
+zbtest.help (1) desc Test the help text for the zbtest begin command
+Set the test description to "Test the help text for the zbtest begin command"
+zbtest.help (2) 
+zbtest.help (3) help begin
+Start a new scope level.  Variable assignments, e.g.,
+
+    set xyx abc
+
+retain their effect for the lifetime of the scope.  Ending the scope
+using the "end" command restores any previous values for the parameters
+adjusted during the scope.
+
+It is not normally necessary to explicitly begin a new scope, each test
+script run automatically starts a new scope which is automatically ended
+when the test script completes.
+
+The "begin" command does not have options.
+Status for "zbtest.help": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

@@ -1,0 +1,6 @@
+desc Test execute functionality: successful script expecting failure
+
+prepend path $mydir
+
+execute -f execute04-cmd
+filestat zbtest.execute-exec1.fail status.log

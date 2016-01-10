@@ -1,0 +1,22 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.help.zbt"
+zbtest.help (1) desc Test the help text for the zbtest which text function
+Set the test description to "Test the help text for the zbtest which text function"
+zbtest.help (2) 
+zbtest.help (3) help -f which
+The "which" function returns the path to a file searched on the
+"searchpath" list, using the "-f" option (the default) or an executable
+on the "path" list, using the "-e" option.
+
+The "which" function is primarily used to determine where applications are
+installed with the result normally processed by the "dirname" function to
+to determine the parent directory, e.g.
+
+    ZBTest> set project_dir $(dirname $(dirname $(which zbmcompile)))
+
+where "project_dir" is set to "/usr/zb" for an installed "zbmcompile" located
+at "/usr/zb/bin/zbmcompile".
+Status for "zbtest.help": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

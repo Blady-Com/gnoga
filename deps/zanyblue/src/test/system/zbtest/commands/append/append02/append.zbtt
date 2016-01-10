@@ -1,0 +1,8 @@
+desc Test append functionality
+
+print xyz
+append xyz a
+print xyz
+append xyz b
+print xyz
+print -l xyz

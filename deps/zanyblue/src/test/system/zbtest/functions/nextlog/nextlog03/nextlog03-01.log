@@ -1,0 +1,20 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.nextlog.zbt"
+zbtest.nextlog (1) desc Test the nextlog text function
+Set the test description to "Test the nextlog text function"
+zbtest.nextlog (2) 
+zbtest.nextlog (3) # The following should generate nextlog-01.log, nextlog-02.log, nextlog-03.log
+zbtest.nextlog (4) # The undo actions to compare are not enabled.
+zbtest.nextlog (5) echo nextlog file is $(nextlog -n)
+zbtest.nextlog \(5> echo nextlog file is nextlog-01.log
+nextlog file is nextlog-01.log
+zbtest.nextlog (6) echo nextlog file is $(nextlog -n)
+zbtest.nextlog \(6> echo nextlog file is nextlog-02.log
+nextlog file is nextlog-02.log
+zbtest.nextlog (7) echo nextlog file is $(nextlog -n)
+zbtest.nextlog \(7> echo nextlog file is nextlog-03.log
+nextlog file is nextlog-03.log
+Status for "zbtest.nextlog": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

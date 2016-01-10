@@ -1,0 +1,4 @@
+desc Test incr functionality
+
+set a b
+incr a

@@ -1,0 +1,5 @@
+desc Test run functionality
+
+run
+run a b
+run a b c

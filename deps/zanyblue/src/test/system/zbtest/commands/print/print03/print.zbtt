@@ -1,0 +1,7 @@
+desc Test print usage messages
+
+append l a
+append l b
+append l c
+print l
+print -l l

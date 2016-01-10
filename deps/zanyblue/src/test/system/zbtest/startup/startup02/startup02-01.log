@@ -1,0 +1,22 @@
+This is ZBTest, Version .* on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.testtree.testtree.zbt"
+Loading the initialization script ".*test-area.testtree._startup_.zbt"
+zbtest._startup_ (1) desc This is parent _startup_
+Set the test description to "This is parent _startup_"
+zbtest.testtree (1) desc This is an example tree of tests (just 1!)
+Set the test description to "This is an example tree of tests (just 1!)"
+zbtest.testtree (2) 
+zbtest.testtree (3) run test01
+Executing the ZBTest script ".*test-area.testtree.test01.test01.zbt"
+Loading the initialization script ".*test-area.testtree.test01._startup_.zbt"
+zbtest.testtree._startup_ (1) desc This is test01 _startup_
+Set the test description to "This is test01 _startup_"
+zbtest.testtree.test01 (1) desc test01 test
+Set the test description to "test01 test"
+zbtest.testtree.test01 (2) 
+zbtest.testtree.test01 (3) noop
+Status for "zbtest.testtree.test01": 0 failures, 0 OK
+Status for "zbtest.testtree": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

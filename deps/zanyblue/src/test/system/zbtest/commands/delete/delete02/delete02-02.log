@@ -1,0 +1,25 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "mydir" to the value ".*zbtest.commands.delete.delete02"
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.delete02.zbt"
+zbtest.delete02 (1) desc Test delete functionality
+Set the test description to "Test delete functionality"
+zbtest.delete02 (2) 
+zbtest.delete02 (3) prepend searchpath $mydir
+zbtest.delete02 \(3> prepend searchpath .*zbtest.commands.delete.delete02
+zbtest.delete02 (4) 
+zbtest.delete02 (5) filestat xmpl log1.log
+Generated status report on the file "xmpl" (non-existent) to "log1.log"
+zbtest.delete02 (6) copy -r xmpl
+Copied the directory "xmpl" to the test area directory "xmpl"
+zbtest.delete02 (7) filestat xmpl log2.log
+Generated status report on the file "xmpl" to "log2.log"
+zbtest.delete02 (8) delete -r xmpl
+Deleted the directory "xmpl"
+zbtest.delete02 (9) filestat xmpl log3.log
+Generated status report on the file "xmpl" (non-existent) to "log3.log"
+Executing the "end scope" action: delete -r xmpl
+Warning, failed to delete "xmpl": "xmpl" not a directory
+Status for "zbtest.delete02": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

@@ -1,0 +1,11 @@
+desc Test delete functionality
+
+prepend searchpath $mydir
+
+filestat xmpl.in log1.log
+copy xmpl.in
+filestat xmpl.in log2.log
+delete -r xmpl.in
+filestat xmpl.in log3.log
+delete xmpl.in
+filestat xmpl.in log3.log

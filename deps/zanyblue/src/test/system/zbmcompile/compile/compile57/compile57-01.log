@@ -1,0 +1,14 @@
+This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Loaded 149 messages for the facility "ZBTest" (1 locales)
+Performing consistency checks for the facility "ZBTest"
+Performing consistency checks for the accessor package generation
+Loaded 1 facilities, 149 keys, 1 locales and 149 messages
+Loaded total 8472 characters, stored 8358 unique characters, 1% saving
+Wrote the spec "ZBTest_Messages" to the file "..zbtest_messages.ads"
+Wrote the body "ZBTest_Messages" to the file "..zbtest_messages.adb"
+Generated accessor package spec "ZBTest_Messages.ZBTest_Exceptions" to "..zbtest_messages-zbtest_exceptions.ads"
+Generated accessor package body "ZBTest_Messages.ZBTest_Exceptions" to "..zbtest_messages-zbtest_exceptions.adb"
+Generated accessor package spec "ZBTest_Messages.ZBTest_Wide_Prints" to "..zbtest_messages-zbtest_wide_prints.ads"
+Generated accessor package body "ZBTest_Messages.ZBTest_Wide_Prints" to "..zbtest_messages-zbtest_wide_prints.adb"
+ZBMCompile completed on .* at .*, elapsed time .*

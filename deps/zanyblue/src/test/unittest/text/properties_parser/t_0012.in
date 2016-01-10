@@ -1,0 +1,3 @@
+# Test duplicate key errors are noticed
+0012=abc
+0012=xyz

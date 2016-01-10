@@ -1,0 +1,12 @@
+desc Test print functionality
+
+set a b
+print a
+set -i a 10
+print a
+set -b a true
+print a
+set -f a 10.4
+print a
+set -t a now
+print a

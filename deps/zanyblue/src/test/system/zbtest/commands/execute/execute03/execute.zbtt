@@ -1,0 +1,5 @@
+desc Test execute functionality: failure script
+
+prepend path $mydir
+
+execute -f execute03-cmd

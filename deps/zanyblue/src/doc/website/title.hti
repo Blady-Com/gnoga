@@ -1,0 +1,45 @@
+  <div id="hdr">
+    <span>
+    <table id="hdrtable">
+      <tr>
+        <td id="zblogo"><img src="zb.png" alt=""></td>
+        <td id="title">ZanyBlue</td>
+      </tr>
+    </table>
+    </span>
+    <span id="sflogo">
+      <a href="$projecturl" >
+        <img src="$sflogo" width="120" height="30"
+             alt="Get ZanyBlue at SourceForge.net. Fast, secure and Free Open Source software downloads" /> 
+      </a>
+    </span>
+    <hr />
+    <div id="hdrnav">
+      <ul>
+        <li class="first">
+          <a href="index.html">Home</a>
+        </li>
+        <li>
+          <a href="docs.html">Documentation</a>
+        </li>
+        <li>
+          <a href="license.html">License</a>
+        </li>
+        <li>
+          <a href="notices.html">Notices</a>
+        </li>
+        <li>
+          <a href="download.html">Download</a>
+        </li>
+        <li>
+          <a href="zbxmpls.cgi">Examples</a>
+        </li>
+        <li>
+          <a href="$trackerurl">Bug Tracker</a>
+        </li>
+        <li>
+          <a href="$projecturl">Project Page</a>
+        </li>
+      </ul>
+    </div>
+  </div>

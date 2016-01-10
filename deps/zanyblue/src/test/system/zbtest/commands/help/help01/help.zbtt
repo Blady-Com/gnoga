@@ -1,0 +1,4 @@
+desc Test the help text for the zbtest help command
+
+help
+help help

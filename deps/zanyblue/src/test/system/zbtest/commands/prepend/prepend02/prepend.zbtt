@@ -1,0 +1,8 @@
+desc Test prepend functionality
+
+print xyz
+prepend xyz a
+print xyz
+prepend xyz b
+print xyz
+print -l xyz

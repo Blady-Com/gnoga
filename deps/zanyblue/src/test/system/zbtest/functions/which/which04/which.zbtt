@@ -1,0 +1,3 @@
+desc Test the which text function
+
+echo Missing datafile is located at $(which nosuchdatafile)

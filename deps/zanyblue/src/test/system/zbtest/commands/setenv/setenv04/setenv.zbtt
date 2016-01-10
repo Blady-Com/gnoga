@@ -1,0 +1,9 @@
+desc Test setenv functionality: successful script
+
+prepend path $mydir
+
+set mypath /bin
+append mypath /usr/bin
+append mypath /usr/local/bin
+setenv -l MYPATH mypath
+execute setenv04-cmd

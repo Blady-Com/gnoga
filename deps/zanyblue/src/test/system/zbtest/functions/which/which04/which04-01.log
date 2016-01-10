@@ -1,0 +1,13 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.which.zbt"
+zbtest.which (1) desc Test the which text function
+Set the test description to "Test the which text function"
+zbtest.which (2) 
+zbtest.which (3) echo Missing datafile is located at $(which nosuchdatafile)
+Warning, the file "nosuchdatafile" was not found
+zbtest.which \(3> echo Missing datafile is located at 
+Missing datafile is located at
+Status for "zbtest.which": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

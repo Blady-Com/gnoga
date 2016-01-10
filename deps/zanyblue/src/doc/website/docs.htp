@@ -1,0 +1,30 @@
+<file include="defs.hti">
+<set page_title="ZanyBlue Project: Ada Electromagnetics Finite Elements">
+<set page_keywords="Ada, documentation">
+<file include="header.hti" name="Documentation">
+
+<file include="title.hti">
+
+<div id="contents">
+
+<p>
+There are two main documentation categories available at this time:
+<ol>
+  <li>
+    The standard documentation available as either a set of
+    <a href="/zanyblue/index.html">browsable html</a> pages generated from
+    the LaTeX source via <a href="http://www.latex2html.org/">LaTeX2HTML</a>
+    or as a single <a href="/zanyblue.pdf">PDF file</a>.
+  </li>
+  <li>
+    Documentation generated from the <a href="/zanyblue/ref/index.html">Ada
+    spec</a> files via GNAT's gnathtml (select 'Z' under Files).  This is
+    currently the only documentation available for the non-Text packages,
+    e.g., the parameters handling, etc.
+  </li>
+</ol>
+</p>
+
+</div>
+
+<file include="trailer.hti">

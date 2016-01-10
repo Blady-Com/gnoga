@@ -1,0 +1,6 @@
+desc Test execute functionality: successful script
+
+prepend path $mydir
+
+execute execute02-cmd
+execute -s execute02-cmd

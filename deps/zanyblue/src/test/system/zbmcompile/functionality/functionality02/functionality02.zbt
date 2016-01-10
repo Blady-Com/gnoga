@@ -1,0 +1,58 @@
+#
+#  ZanyBlue, an Ada library and framework for finite element analysis.
+#
+#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions
+#  are met:
+#
+#    * Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#
+#    * Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
+#      documentation and/or other materials provided with the distribution.
+#
+#    * Neither the name of ZanyBlue nor the names of its contributors may
+#      be used to endorse or promote products derived from this software
+#      without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+#  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+#  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+#  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+desc Test the "zbmcompile" generated code, GPS example base
+
+set -u build_opt ""
+
+set zbmcompile $(which -e zbmcompile)
+set project_dir $(joinpaths $(dirname $(dirname $zbmcompile)) lib gnat)
+
+copy -r gps
+
+execute -o $(nextlog) zbmcompile GPS_Text -d gps/action_editor/mesg Action_Editor -d gps/ada_module/mesg Ada_Module -d gps/aliases/mesg Aliases -d gps/aunit/mesg Aunit -d gps/browsers/mesg Browsers -d gps/builder/mesg Builder -d gps/code_analysis/mesg Code_Analysis -d gps/codefix/mesg Codefix -d gps/completion/mesg Completion -d gps/cpp_module/mesg Cpp -d gps/custom/mesg Custom -d gps/docgen2/mesg Docgen2 -d gps/gbuilder/mesg Gbuilder -d gps/gvd/mesg GVD -d gps/help/mesg Help -d gps/kernel/mesg Kernel -d gps/keymanager/mesg KeyManager -d gps/navigation/mesg Navigation -d gps/prj_editor/mesg Prj_Editor -d gps/python/mesg Python -d gps/refactoring/mesg Refactoring -d gps/remote/mesg Remote -d gps/shell/mesg Shell -d gps/socket/mesg Socket -d gps/src_editor/mesg Src_Editor -d gps/theme_manager/mesg Theme_Manager -d gps/toolchains/mesg Toolchains -d gps/toolchains_editor/mesg Toolchains_Editor -d gps/vcs/mesg VCS -d gps/vdiff/mesg Vdiff -d gps/views/mesg Views -d gps/gps/mesg GPS -d gps/vfs/mesg VFS -d gps/vsearch/mesg Vsearch -d gps/widgets/mesg Widgets
+
+copy main.adb
+copy main.gpr
+copy tzbmapp.gpr
+execute -o $(nextlog -c build) gnatmake -aP$project_dir $build_opt -P main
+execute -o $(nextlog) main
+rename gps_text.ads $(nextlog)
+rename gps_text.adb $(nextlog)
+
+execute -o $(nextlog -c build) gnatclean -aP$project_dir -P main
+
+delete gps_text.ali
+delete gps_text.obj
+delete gps_text.o

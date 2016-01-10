@@ -1,0 +1,122 @@
+.*: ".*" up to date.*
+This is DUMPLOCALE, Version .*
+
+Dump of the locale "ja"
+
+    Language                  "ja"
+    Script                    ""
+    Territory                 ""
+    Name                      "ja"
+    Traits Name               "ja"
+    Traits Tag                "JA        "
+    Locale Level              1
+    Is Root Locale            false
+    Layout                    LEFT_TO_RIGHT
+    Lower Digits              0123456789abcdef
+    Upper Digits              0123456789ABCDEF
+    Hash Value                6953591
+
+  Date/Time Formats
+  -----------------
+                      Date                  Time                  Date & Time
+    FULL              y年M月d日EEEE            H時mm分ss秒 zzzz         {1} {0}
+    LONG              y年M月d日                H:mm:ss z             {1} {0}
+    MEDIUM            y/MM/dd               H:mm:ss               {1} {0}
+    SHORT             y/MM/dd               H:mm                  {1} {0}
+
+  Day Periods
+  -----------
+    AM                        午前
+    WEE_HOURS                 
+    EARLY_MORNING             
+    MORNING                   
+    LATE_MORNING              
+    NOON                      正午
+    MIDDAY                    
+    AFTERNOON                 
+    EVENING                   
+    LATE_EVENING              
+    NIGHT                     
+    PM                        午後
+
+  Time to Day Periods
+  -------------------
+    00:00 => AM                  00:30 => AM
+    01:00 => AM                  01:30 => AM
+    02:00 => AM                  02:30 => AM
+    03:00 => AM                  03:30 => AM
+    04:00 => AM                  04:30 => AM
+    05:00 => AM                  05:30 => AM
+    06:00 => AM                  06:30 => AM
+    07:00 => AM                  07:30 => AM
+    08:00 => AM                  08:30 => AM
+    09:00 => AM                  09:30 => AM
+    10:00 => AM                  10:30 => AM
+    11:00 => AM                  11:30 => AM
+    12:00 => PM                  12:30 => PM
+    13:00 => PM                  13:30 => PM
+    14:00 => PM                  14:30 => PM
+    15:00 => PM                  15:30 => PM
+    16:00 => PM                  16:30 => PM
+    17:00 => PM                  17:30 => PM
+    18:00 => PM                  18:30 => PM
+    19:00 => PM                  19:30 => PM
+    20:00 => PM                  20:30 => PM
+    21:00 => PM                  21:30 => PM
+    22:00 => PM                  22:30 => PM
+    23:00 => PM                  23:30 => PM
+
+  Eras
+  ----
+    BCE                       紀元前
+    CE                        西暦
+
+  Day Names
+  -------------
+                        Short               Full
+    SUN                 日                   日曜日             
+    MON                 月                   月曜日             
+    TUE                 火                   火曜日             
+    WED                 水                   水曜日             
+    THU                 木                   木曜日             
+    FRI                 金                   金曜日             
+    SAT                 土                   土曜日             
+
+  Month Names
+  -----------
+                        Short               Full
+    JAN                 1月                  1月              
+    FEB                 2月                  2月              
+    MAR                 3月                  3月              
+    APR                 4月                  4月              
+    MAY                 5月                  5月              
+    JUN                 6月                  6月              
+    JUL                 7月                  7月              
+    AUG                 8月                  8月              
+    SEP                 9月                  9月              
+    OCT                 10月                 10月             
+    NOV                 11月                 11月             
+    DEC                 12月                 12月             
+
+  Numeric Formats
+  ---------------
+    DECIMAL                   #,##0.###
+    SCIENTIFIC                #E0
+    PERCENT                   #,##0%
+    CURRENCY                  ¤#,##0.00;(¤#,##0.00)
+
+  Numeric Items
+  -------------
+    DECIMAL_POINT_CHARACTER   .
+    GROUP_CHARACTER           ,
+    LIST_CHARACTER            ;
+    ZERO_CHARACTER            0
+    PLUS_CHARACTER            +
+    MINUS_CHARACTER           -
+    EXPONENT_CHARACTER        E
+    PERCENT_CHARACTER         %
+    PERMILLE_CHARACTER        ‰
+    INFINITY_CHARACTER        ∞
+    NAN_CHARACTER             NaN
+    DIGIT_PATTERN_CHARACTER   #
+    DECIMAL_DIGITS_STRING     0123456789

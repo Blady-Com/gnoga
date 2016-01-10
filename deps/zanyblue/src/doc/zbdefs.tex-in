@@ -1,0 +1,2 @@
+\newcommand{\Version}{ZB_VERSION ZB_STATUS, rSVN_VERSION}
+\newcommand{\CopyrightYear}{COPYRIGHT_YEAR}

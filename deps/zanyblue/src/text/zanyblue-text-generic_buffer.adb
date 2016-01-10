@@ -1,0 +1,118 @@
+--
+--  ZanyBlue, an Ada library and framework for finite element analysis.
+--
+--  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  All rights reserved.
+--
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions
+--  are met:
+--
+--    * Redistributions of source code must retain the above copyright
+--      notice, this list of conditions and the following disclaimer.
+--
+--    * Redistributions in binary form must reproduce the above copyright
+--      notice, this list of conditions and the following disclaimer in the
+--      documentation and/or other materials provided with the distribution.
+--
+--    * Neither the name of ZanyBlue nor the names of its contributors may
+--      be used to endorse or promote products derived from this software
+--      without specific prior written permission.
+--
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+--  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+--  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+--  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+--  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+--  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+--  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+--  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+--  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+--  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+--  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+
+package body ZanyBlue.Text.Generic_Buffer is
+
+   ----------------
+   -- Accumulate --
+   ----------------
+
+   procedure Accumulate (Buffer     : in out Buffer_Type;
+                         Value      : in Integer_Type;
+                         Locale     : in Locale_Type;
+                         Width      : in Natural := 1;
+                         Fill       : in Wide_String := "";
+                         Base       : in Positive := 10;
+                         Lowercase  : in Boolean := True) is
+
+      Digit_Map : constant Wide_String := Locale_Digits (Locale, Lowercase);
+      Base_Value  : constant Integer_Type'Base := Integer_Type'Base (Base);
+
+      function Number_Width return Positive;
+
+      function Fill_Ch return Wide_Character;
+
+      function Fill_Ch return Wide_Character is
+      begin
+         if Fill'Length > 0 then
+            return Fill (Fill'First);
+         else
+            return Digit_Map (Digit_Map'First);
+         end if;
+      end Fill_Ch;
+
+      function Number_Width return Positive is
+         Result : Natural := 0;
+         X      : Integer_Type'Base := Value;
+      begin
+         while X /= 0 loop
+            X := X / Base_Value;
+            Result := Result + 1;
+         end loop;
+         return Positive'Max (Result, 1);
+      end Number_Width;
+
+      Num_Size    : constant Positive := Number_Width;
+      Buffer_Size : constant Positive := Positive'Max (Num_Size, Width);
+      Formatted   : Wide_String (1 .. Buffer_Size) := (others => Fill_Ch);
+      X           : Integer_Type'Base := Value;
+
+   begin
+      for I in reverse Buffer_Size - Num_Size + 1 .. Buffer_Size loop
+         Formatted (I) := Digit_Map (Positive (abs (X rem Base_Value) + 1));
+         X := X / Base_Value;
+      end loop;
+      Add (Buffer, Formatted);
+   end Accumulate;
+
+   ---------
+   -- Add --
+   ---------
+
+   procedure Add (Buffer : in out Buffer_Type; Data : in Wide_Character) is
+   begin
+      Append (Buffer.Data, Data);
+   end Add;
+
+   ---------
+   -- Add --
+   ---------
+
+   procedure Add (Buffer : in out Buffer_Type; Data : in Wide_String) is
+   begin
+      for I in Data'Range loop
+         Add (Buffer, Data (I));
+      end loop;
+   end Add;
+
+   ---------------
+   -- To_String --
+   ---------------
+
+   function To_String (Buffer : in Buffer_Type) return Wide_String is
+   begin
+      return To_Wide_String (Buffer.Data);
+   end To_String;
+
+end ZanyBlue.Text.Generic_Buffer;

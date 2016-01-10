@@ -1,0 +1,39 @@
+<file include="defs.hti">
+<file include="header.hti" name="Download">
+
+<file include="title.hti">
+
+<div id="contents">
+
+<h1>Downloads</h1>
+
+The current release is v<use version> <use status>.  The package is available
+as a Unix gzipped tar file (Windows users can use 7-Zip to extract):
+<ul>
+  <li> <a href="$downloadurl$tarname">
+         Latest Unix gzipped tar ball
+       </a>
+  </li>
+</ul>
+You can also browse
+<ul>
+  <li>
+    The <a href="$downloadurl">download</a> area on
+    <a href="http://sourceforge.net">Source Forge</a>.
+  </li>
+  <li>
+    Or checkout the latest Subversion source
+<pre>
+    $ svn co <use svnurl> zanyblue
+</pre>
+  </li>
+</ul>
+</p>
+
+<p>
+The build instructions are included in the
+<a href="/docs.html">documentation</a>.
+</p>
+</div>
+
+<file include="trailer.hti">

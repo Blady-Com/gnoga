@@ -1,0 +1,567 @@
+Catalog dump
+------------
+Number_Of_Facilities    :  1
+    "ZBTest"
+Number_Of_Keys          :  149
+    "40009"
+    "40002"
+    "40004"
+    "40006"
+    "40024"
+    "40019"
+    "40003"
+    "40007"
+    "40005"
+    "40001"
+    "00007"
+    "00001"
+    "40011"
+    "30024"
+    "00030"
+    "10006"
+    "30006"
+    "40013"
+    "20014"
+    "30022"
+    "40010"
+    "00023"
+    "00010"
+    "30004"
+    "10027"
+    "10021"
+    "10012"
+    "00008"
+    "00002"
+    "20010"
+    "10018"
+    "20024"
+    "30003"
+    "30019"
+    "00003"
+    "10025"
+    "30012"
+    "10007"
+    "20006"
+    "10013"
+    "20011"
+    "10011"
+    "30009"
+    "10032"
+    "30001"
+    "30007"
+    "10033"
+    "00022"
+    "10028"
+    "10014"
+    "30015"
+    "30020"
+    "10029"
+    "10030"
+    "10003"
+    "10020"
+    "30010"
+    "00031"
+    "10002"
+    "40022"
+    "10036"
+    "10016"
+    "40008"
+    "10019"
+    "30005"
+    "30013"
+    "30002"
+    "30011"
+    "30014"
+    "10034"
+    "00019"
+    "10035"
+    "10001"
+    "30016"
+    "30008"
+    "30018"
+    "30023"
+    "20019"
+    "30017"
+    "10015"
+    "10022"
+    "40021"
+    "00018"
+    "00011"
+    "00016"
+    "20003"
+    "10010"
+    "10037"
+    "20000"
+    "10026"
+    "10009"
+    "30021"
+    "10005"
+    "00009"
+    "20012"
+    "00032"
+    "00015"
+    "00013"
+    "40020"
+    "10031"
+    "00012"
+    "20015"
+    "00036"
+    "20009"
+    "00024"
+    "20001"
+    "20022"
+    "40012"
+    "00021"
+    "00029"
+    "00020"
+    "30000"
+    "10004"
+    "40017"
+    "40018"
+    "40023"
+    "20007"
+    "00017"
+    "10023"
+    "20017"
+    "20018"
+    "20023"
+    "40000"
+    "20020"
+    "10024"
+    "20021"
+    "40014"
+    "20016"
+    "00034"
+    "00025"
+    "20013"
+    "00035"
+    "00027"
+    "00028"
+    "00037"
+    "00026"
+    "00014"
+    "40015"
+    "20002"
+    "40016"
+    "20005"
+    "20008"
+    "20004"
+    "00006"
+    "00005"
+    "10008"
+    "00004"
+    "00033"
+    "10017"
+Number_Of_Locales       :  1
+    ""
+Number_Of_Messages      :  149
+ 1: "ZBTest", "40009", "", "The prepend command adds a value to the beginning of a list parameter.
+If the parameter doesn't exist in the current scope, it is created as a list
+parameter.  The prepend append is normally used to force a path to the "front
+of a search path parameter, e.g., the "path" or "searchpath" parameters.
+
+Example of use, where the "begin" command is used start a new, empty, scope
+
+ZBTest> begin
+ZBTest> print -l l
+Emtpy list
+ZBTest> prepend l a
+ZBTest> print -l l
+1) "a"
+ZBTest> prepend l b
+ZBTest> print -l l
+1) "b"
+2) "a""
+ 2: "ZBTest", "40002", "", "Start a new scope level.  Variable assignments, e.g.,
+
+    set xyx abc
+
+retain their effect for the lifetime of the scope.  Ending the scope
+using the "end" command restores any previous values for the parameters
+adjusted during the scope.
+
+It is not normally necessary to explicitly begin a new scope, each test
+script run automatically starts a new scope which is automatically ended
+when the test script completes.
+
+The "begin" command does not have options."
+ 3: "ZBTest", "40004", "", "Exit a parameter scope.  Any assignments to made duing the scope
+are lost.  Previous definitions are restored, e.g.,
+
+    set xyz abc
+    begin
+    set xyz 123
+    echo $xyz
+    end
+    echo $xyz
+
+The first "echo" prints the value "123" which the second prints the value
+"abc".
+
+It not normally necessary to use the "begin" and "end" commands as running
+a test script automatically start a new scope which is ended when the script
+completes."
+ 4: "ZBTest", "40006", "", "Define an internal parameter (target) based on the value of an
+environment variable.
+
+The options are
+  -l  Define an internal list parameter by splitting on the pathsep
+  -s  Define a simple scalar (string) parameter (default)
+  -a  If defining a list parameter, append the values
+  -p  If defining a list parameter, prepend the values
+
+If the target is not given then import to name (lowercased)."
+ 5: "ZBTest", "40024", "", "Conditionally set the value of a parameter to the given value provided
+the parameter is not already defined.  This can be used to allow command line
+definitions of parameters to over-ride script definitions.  Or, put another
+way, allow scripts to provide defaults for parameters not defined on the
+command line."
+ 6: "ZBTest", "40019", "", "The compare command compares (with regular expression matching) a
+generated log file with a reference log file.  It the files match, a
+.ok file is created and the number of OK tests is incremented, otherwise
+a .fail file is created and the number of FAIL tests is incremented."
+ 7: "ZBTest", "40003", "", "Dump parameters values.  The default is to dump the parameters
+for the current scope.  This is primarily a debugging command.
+
+The options are
+  -a  Dump the parameters for all scopes
+  -o  Dump the output to a file in the test area"
+ 8: "ZBTest", "40007", "", "Get help information on a command.  Without a command argument the
+help command prints a summary of available commands.  With an argument
+the help command print help information on the argument command."
+ 9: "ZBTest", "40005", "", "Exit a test script.  This command is normally only used when entering
+commands interactively to exit the zbtest application.  Using it in a test
+script causes immediate exit of the zbtest application."
+ 10: "ZBTest", "40001", "", "The append command adds a value to the end of a list parameter within
+current scope."
+ 11: "ZBTest", "00007", "", "This is ZBTest, a simple application testing application.
+
+Available commands:
+"
+ 12: "ZBTest", "00001", "", "This is ZBTest, Version {0,*}.{1,*}.{2,*} {3} (r{4}) at {5,time} on {5,date}"
+ 13: "ZBTest", "40011", "", "Set the value of a parameter (option selects type: integer, boolean, ...)"
+ 14: "ZBTest", "30024", "", "{0:>3}) "setifundef", set the value of a parameter if it is not defined"
+ 15: "ZBTest", "00030", "", "The parameter "{0}" is already defined, ignoring conditional definition"
+ 16: "ZBTest", "10006", "", "Error, the value "{0}" is not supported (only supported value is "now")"
+ 17: "ZBTest", "30006", "", "{0:>3}) "getenv", define a parameter based on an environment variable"
+ 18: "ZBTest", "40013", "", "Copy a file to the test area to use as input to commands under test."
+ 19: "ZBTest", "20014", "", "Usage: execute [ -f | -s | -o output ] command [ command-arg ... ]"
+ 20: "ZBTest", "30022", "", "{0:>3}) "filestat", write status of a test area file to a log file"
+ 21: "ZBTest", "40010", "", "Print the value of a scalar (-s, default) or list (-l) parameters"
+ 22: "ZBTest", "00023", "", "Generated status report on the file "{0}" (non-existent) to "{1}""
+ 23: "ZBTest", "00010", "", "zbtest [ -h ] [ -t test-area ] [ -X xml-summary ] [ test-script ]"
+ 24: "ZBTest", "30004", "", "{0:>3}) "end", end a parameter scope returning to previous scope"
+ 25: "ZBTest", "10027", "", "Error, failure for test "{0}", unexpected exception "{1,name}""
+ 26: "ZBTest", "10021", "", "Error, the parameter "{0}" is not an integer, cannot increment"
+ 27: "ZBTest", "10012", "", "Error, test area "{0}", already exists and is not a directory"
+ 28: "ZBTest", "00008", "", "
+For additional information on a command, use "help command"
+"
+ 29: "ZBTest", "00002", "", "Copyright (c) 2009-{0,*}, Michael Rohan.  All rights reserved"
+ 30: "ZBTest", "20010", "", "Usage: print [ -l | -s ] parameter [ -l | -s | parameter ..."
+ 31: "ZBTest", "10018", "", "Warning, the source "{0}" could not be found, failed to copy"
+ 32: "ZBTest", "20024", "", "Usage: setifundef [ -s | -i | -b | -f | -t ] parameter value"
+ 33: "ZBTest", "30003", "", "{0:>3}) "dump", dump the contents of the parameter scope(s)"
+ 34: "ZBTest", "30019", "", "{0:>3}) "compare", compare a log file with a reference log"
+ 35: "ZBTest", "00003", "", "ZBTest completed at {0,time} on {0,date}, elapsed time {1}"
+ 36: "ZBTest", "10025", "", "Error, regular expression matching failed: {0} ({0,name})"
+ 37: "ZBTest", "30012", "", "{0:>3}) "which", print the location of a file or command"
+ 38: "ZBTest", "10007", "", "Warning: the environment variable "{0}" is not defined"
+ 39: "ZBTest", "20006", "", "Usage: getenv [ -l | -s | -p | -a ] name [ parameter ]"
+ 40: "ZBTest", "10013", "", "Error, failed to remove existing test area "{0}": {1}"
+ 41: "ZBTest", "20011", "", "Usage: set [ -s | -i | -b | -f | -t ] parameter value"
+ 42: "ZBTest", "10011", "", "Warning, test area "{0}", already exists, removing it"
+ 43: "ZBTest", "30009", "", "{0:>3}) "prepend", prepend a value to list parameter"
+ 44: "ZBTest", "10032", "", "Error, text function call to unknown function: "{0}""
+ 45: "ZBTest", "30001", "", "{0:>3}) "append", append values to a list parameter"
+ 46: "ZBTest", "30007", "", "{0:>3}) "help", print help information on commands"
+ 47: "ZBTest", "10033", "", "Error, unexpected exception ({0,name}) encountered"
+ 48: "ZBTest", "00022", "", "Generated status report on the file "{0}" to "{1}""
+ 49: "ZBTest", "10028", "", "Error, the reference log file "{0}" was not found"
+ 50: "ZBTest", "10014", "", "Error, failed to create the test area "{0}": {1}"
+ 51: "ZBTest", "30015", "", "{0:>3}) "rename", rename a file in the test area"
+ 52: "ZBTest", "30020", "", "{0:>3}) "delete", delete a file in the test area"
+ 53: "ZBTest", "10029", "", "Error, failed to create the directory "{0}": {1}"
+ 54: "ZBTest", "10030", "", "Warning, referenced to undefined parameter "{0}""
+ 55: "ZBTest", "10003", "", "Error, too many arguments for the command "{0}""
+ 56: "ZBTest", "10020", "", "Error, failed to locate the ZBTest script "{0}""
+ 57: "ZBTest", "30010", "", "{0:>3}) "print", print the value of parameters"
+ 58: "ZBTest", "00031", "", "Setting the parameter "{0}" to the value "{1}""
+ 59: "ZBTest", "10002", "", "Error, too few arguments for the command "{0}""
+ 60: "ZBTest", "40022", "", "Write status of a test area file to a log file"
+ 61: "ZBTest", "10036", "", "Error, could not locate the executeable "{0}""
+ 62: "ZBTest", "10016", "", "Error, unexpected command line argument "{0}""
+ 63: "ZBTest", "40008", "", "No operation.  The noop command does nothing."
+ 64: "ZBTest", "10019", "", "Warning, failed to rename "{0}" to "{1}": {2}"
+ 65: "ZBTest", "30005", "", "{0:>3}) "exit", exit the current test script"
+ 66: "ZBTest", "30013", "", "{0:>3}) "copy", copy a file to the test area"
+ 67: "ZBTest", "30002", "", "{0:>3}) "begin", begin a new parameter scope"
+ 68: "ZBTest", "30011", "", "{0:>3}) "set", set the value of a parameter"
+ 69: "ZBTest", "30014", "", "{0:>3}) "execute", execute a system command"
+ 70: "ZBTest", "10034", "", "Error, failed to rename "{0}" to "{1}": {2}"
+ 71: "ZBTest", "00019", "", "Copied the directory "{0}" to the test area"
+ 72: "ZBTest", "10035", "", "Error, missing arguments for option "{0}""
+ 73: "ZBTest", "10001", "", "Error, cannot "end", currently at level 0"
+ 74: "ZBTest", "30016", "", "{0:>3}) "run", run another ZBTest script"
+ 75: "ZBTest", "30008", "", "{0:>3}) "noop", the no operation command"
+ 76: "ZBTest", "30018", "", "{0:>3}) "desc", set the test description"
+ 77: "ZBTest", "30023", "", "{0:>3}) "echo", echo arguments to output"
+ 78: "ZBTest", "20019", "", "Usage: compare log-file [ ref-log-file ]"
+ 79: "ZBTest", "30017", "", "{0:>3}) "desc", set the test description"
+ 80: "ZBTest", "10015", "", "Error, missing argument for option "{0}""
+ 81: "ZBTest", "10022", "", "Error, the log file "{0}" was not found"
+ 82: "ZBTest", "40021", "", "Create a new directory in the test area"
+ 83: "ZBTest", "00018", "", "Status for "{0}": {1} failures, {2} OK"
+ 84: "ZBTest", "00011", "", "Copied the file "{0}" to the test area"
+ 85: "ZBTest", "00016", "", "Incremented the parmeter "{0}" to {1}"
+ 86: "ZBTest", "20003", "", "Usage: dump [ -o output-file ] [ -a ]"
+ 87: "ZBTest", "10010", "", "Warning, the file "{0}" was not found"
+ 88: "ZBTest", "10037", "", "Error, test script, "{0}", not found"
+ 89: "ZBTest", "20000", "", "Usage for unknown command, not used."
+ 90: "ZBTest", "10026", "", "Warning, failed to delete "{0}": {1}"
+ 91: "ZBTest", "10009", "", "Error, "{0}" is not a known command"
+ 92: "ZBTest", "30021", "", "{0:>3}) "mkdir", create a directory"
+ 93: "ZBTest", "10005", "", "The parameter "{0}" is not defined"
+ 94: "ZBTest", "00009", "", "Creating test area directory "{0}""
+ 95: "ZBTest", "20012", "", "Usage: which [ -e | -f ] file ..."
+ 96: "ZBTest", "00032", "", "Executing the 'undo' action "{0}""
+ 97: "ZBTest", "00015", "", "Set the test description to "{0}""
+ 98: "ZBTest", "00013", "", "Executing the ZBTest script "{0}""
+ 99: "ZBTest", "40020", "", "Delete a file from the test area"
+ 100: "ZBTest", "10031", "", "Error, empty text function call"
+ 101: "ZBTest", "00012", "", "Renamed the file "{0}" to "{1}""
+ 102: "ZBTest", "20015", "", "Usage: rename old-name new-name"
+ 103: "ZBTest", "00036", "", "Command completed successfully"
+ 104: "ZBTest", "20009", "", "Usage: prepend parameter value"
+ 105: "ZBTest", "00024", "", "The file "{0}" does not exist"
+ 106: "ZBTest", "20001", "", "Usage: append parameter value"
+ 107: "ZBTest", "20022", "", "Usage: filestat name log-file"
+ 108: "ZBTest", "40012", "", "Print the locations of files"
+ 109: "ZBTest", "00021", "", "Created the directory "{0}""
+ 110: "ZBTest", "00029", "", "Executing the command "{0}""
+ 111: "ZBTest", "00020", "", "Deleted the directory "{0}""
+ 112: "ZBTest", "30000", "", "Summary line for a command"
+ 113: "ZBTest", "10004", "", "Error, invalid value "{0}""
+ 114: "ZBTest", "40017", "", "Set the test description"
+ 115: "ZBTest", "40018", "", "Set the test description"
+ 116: "ZBTest", "40023", "", "Echo arguments to output"
+ 117: "ZBTest", "20007", "", "Usage: help [ command ]"
+ 118: "ZBTest", "00017", "", "Deleted the file "{0}""
+ 119: "ZBTest", "10023", "", "Test "{0}" successful"
+ 120: "ZBTest", "20017", "", "Usage: desc word ..."
+ 121: "ZBTest", "20018", "", "Usage: desc word ..."
+ 122: "ZBTest", "20023", "", "Usage: echo name ..."
+ 123: "ZBTest", "40000", "", "Not a known command."
+ 124: "ZBTest", "20020", "", "Usage: delete name"
+ 125: "ZBTest", "10024", "", "Test "{0}" failed"
+ 126: "ZBTest", "20021", "", "Usage: mkdir name"
+ 127: "ZBTest", "40014", "", "Execute a command"
+ 128: "ZBTest", "20016", "", "Usage: run script"
+ 129: "ZBTest", "00034", "", "Failure expected"
+ 130: "ZBTest", "00025", "", "File name: "{0}""
+ 131: "ZBTest", "20013", "", "Usage: copy file"
+ 132: "ZBTest", "00035", "", "Success expected"
+ 133: "ZBTest", "00027", "", "File size: {0}"
+ 134: "ZBTest", "00028", "", "File date: {0}"
+ 135: "ZBTest", "00037", "", "Command failed"
+ 136: "ZBTest", "00026", "", "File type: {0}"
+ 137: "ZBTest", "00014", "", "{0} ({1}) {2}"
+ 138: "ZBTest", "40015", "", "Rename a file"
+ 139: "ZBTest", "20002", "", "Usage: begin"
+ 140: "ZBTest", "40016", "", "Run a script"
+ 141: "ZBTest", "20005", "", "Usage: exit"
+ 142: "ZBTest", "20008", "", "Usage: noop"
+ 143: "ZBTest", "20004", "", "Usage: end"
+ 144: "ZBTest", "00006", "", "{0}) "{1}""
+ 145: "ZBTest", "00005", "", "Emtpy list"
+ 146: "ZBTest", "10008", "", "NOT-USED"
+ 147: "ZBTest", "00004", "", "{0}"
+ 148: "ZBTest", "00033", "", "{0}"
+ 149: "ZBTest", "10017", "", "{0}"
+Dynmaic Pool            :  8345         8472
+---START OF STRING POOL---
+The prepend command adds a value to the beginning of a list parameter.
+If th
+e parameter doesn't exist in the current scope, it is created as a list
+para
+meter.  The prepend append is normally used to force a path to the "front
+of
+ a search path parameter, e.g., the "path" or "searchpath" parameters.
+
+Exam
+ple of use, where the "begin" command is used start a new, empty, scope
+
+ZBT
+est> begin
+ZBTest> print -l l
+Emtpy list
+ZBTest> prepend l a
+ZBTest> print -
+l l
+1) "a"
+ZBTest> prepend l b
+ZBTest> print -l l
+1) "b"
+2) "a"Start a new s
+cope level.  Variable assignments, e.g.,
+
+    set xyx abc
+
+retain their effe
+ct for the lifetime of the scope.  Ending the scope
+using the "end" command 
+restores any previous values for the parameters
+adjusted during the scope.
+
+
+It is not normally necessary to explicitly begin a new scope, each test
+scri
+pt run automatically starts a new scope which is automatically ended
+when th
+e test script completes.
+
+The "begin" command does not have options.Exit a p
+arameter scope.  Any assignments to made duing the scope
+are lost.  Previous
+ definitions are restored, e.g.,
+
+    set xyz abc
+    begin
+    set xyz 123
+
+    echo $xyz
+    end
+    echo $xyz
+
+The first "echo" prints the value "123"
+ which the second prints the value
+"abc".
+
+It not normally necessary to use 
+the "begin" and "end" commands as running
+a test script automatically start 
+a new scope which is ended when the script
+completes.Define an internal para
+meter (target) based on the value of an
+environment variable.
+
+The options a
+re
+  -l  Define an internal list parameter by splitting on the pathsep
+  -s 
+ Define a simple scalar (string) parameter (default)
+  -a  If defining a lis
+t parameter, append the values
+  -p  If defining a list parameter, prepend t
+he values
+
+If the target is not given then import to name (lowercased).Condi
+tionally set the value of a parameter to the given value provided
+the parame
+ter is not already defined.  This can be used to allow command line
+definiti
+ons of parameters to over-ride script definitions.  Or, put another
+way, all
+ow scripts to provide defaults for parameters not defined on the
+command lin
+e.The compare command compares (with regular expression matching) a
+generate
+d log file with a reference log file.  It the files match, a
+.ok file is cre
+ated and the number of OK tests is incremented, otherwise
+a .fail file is cr
+eated and the number of FAIL tests is incremented.Dump parameters values.  T
+he default is to dump the parameters
+for the current scope.  This is primari
+ly a debugging command.
+
+The options are
+  -a  Dump the parameters for all s
+copes
+  -o  Dump the output to a file in the test areaGet help information o
+n a command.  Without a command argument the
+help command prints a summary o
+f available commands.  With an argument
+the help command print help informat
+ion on the argument command.Exit a test script.  This command is normally on
+ly used when entering
+commands interactively to exit the zbtest application.
+  Using it in a test
+script causes immediate exit of the zbtest application.
+The append command adds a value to the end of a list parameter within
+curren
+t scope.This is ZBTest, a simple application testing application.
+
+Available
+ commands:
+This is ZBTest, Version {0,*}.{1,*}.{2,*} {3} (r{4}) at {5,time} 
+on {5,date}Set the value of a parameter (option selects type: integer, boole
+an, ...){0:>3}) "setifundef", set the value of a parameter if it is not defi
+nedThe parameter "{0}" is already defined, ignoring conditional definitionEr
+ror, the value "{0}" is not supported (only supported value is "now"){0:>3})
+ "getenv", define a parameter based on an environment variableCopy a file to
+ the test area to use as input to commands under test.Usage: execute [ -f | 
+-s | -o output ] command [ command-arg ... ]{0:>3}) "filestat", write status
+ of a test area file to a log filePrint the value of a scalar (-s, default) 
+or list (-l) parametersGenerated status report on the file "{0}" (non-existe
+nt) to "{1}"zbtest [ -h ] [ -t test-area ] [ -X xml-summary ] [ test-script 
+]{0:>3}) "end", end a parameter scope returning to previous scopeError, fail
+ure for test "{0}", unexpected exception "{1,name}"Error, the parameter "{0}
+" is not an integer, cannot incrementError, test area "{0}", already exists 
+and is not a directory
+For additional information on a command, use "help co
+mmand"
+Copyright (c) 2009-{0,*}, Michael Rohan.  All rights reservedUsage: p
+rint [ -l | -s ] parameter [ -l | -s | parameter ...Warning, the source "{0}
+" could not be found, failed to copyUsage: setifundef [ -s | -i | -b | -f | 
+-t ] parameter value{0:>3}) "dump", dump the contents of the parameter scope
+(s){0:>3}) "compare", compare a log file with a reference logZBTest complete
+d at {0,time} on {0,date}, elapsed time {1}Error, regular expression matchin
+g failed: {0} ({0,name}){0:>3}) "which", print the location of a file or com
+mandWarning: the environment variable "{0}" is not definedUsage: getenv [ -l
+ | -s | -p | -a ] name [ parameter ]Error, failed to remove existing test ar
+ea "{0}": {1}Usage: set [ -s | -i | -b | -f | -t ] parameter valueWarning, t
+est area "{0}", already exists, removing it{0:>3}) "prepend", prepend a valu
+e to list parameterError, text function call to unknown function: "{0}"{0:>3
+}) "append", append values to a list parameter{0:>3}) "help", print help inf
+ormation on commandsError, unexpected exception ({0,name}) encounteredGenera
+ted status report on the file "{0}" to "{1}"Error, the reference log file "{
+0}" was not foundError, failed to create the test area "{0}": {1}{0:>3}) "re
+name", rename a file in the test area{0:>3}) "delete", delete a file in the 
+test areaError, failed to create the directory "{0}": {1}Warning, referenced
+ to undefined parameter "{0}"Error, too many arguments for the command "{0}"
+Error, failed to locate the ZBTest script "{0}"{0:>3}) "print", print the va
+lue of parametersSetting the parameter "{0}" to the value "{1}"Error, too fe
+w arguments for the command "{0}"Write status of a test area file to a log f
+ileError, could not locate the executeable "{0}"Error, unexpected command li
+ne argument "{0}"No operation.  The noop command does nothing.Warning, faile
+d to rename "{0}" to "{1}": {2}{0:>3}) "exit", exit the current test script{
+0:>3}) "copy", copy a file to the test area{0:>3}) "begin", begin a new para
+meter scope{0:>3}) "set", set the value of a parameter{0:>3}) "execute", exe
+cute a system commandError, failed to rename "{0}" to "{1}": {2}Copied the d
+irectory "{0}" to the test areaError, missing arguments for option "{0}"Erro
+r, cannot "end", currently at level 0{0:>3}) "run", run another ZBTest scrip
+t{0:>3}) "noop", the no operation command{0:>3}) "desc", set the test descri
+ption{0:>3}) "echo", echo arguments to outputUsage: compare log-file [ ref-l
+og-file ]Error, missing argument for option "{0}"Error, the log file "{0}" w
+as not foundCreate a new directory in the test areaStatus for "{0}": {1} fai
+lures, {2} OKCopied the file "{0}" to the test areaIncremented the parmeter 
+"{0}" to {1}Usage: dump [ -o output-file ] [ -a ]Warning, the file "{0}" was
+ not foundError, test script, "{0}", not foundUsage for unknown command, not
+ used.Warning, failed to delete "{0}": {1}Error, "{0}" is not a known comman
+d{0:>3}) "mkdir", create a directoryThe parameter "{0}" is not definedCreati
+ng test area directory "{0}"Usage: which [ -e | -f ] file ...Executing the '
+undo' action "{0}"Set the test description to "{0}"Executing the ZBTest scri
+pt "{0}"Delete a file from the test areaError, empty text function callRenam
+ed the file "{0}" to "{1}"Usage: rename old-name new-nameCommand completed s
+uccessfullyUsage: prepend parameter valueThe file "{0}" does not existUsage:
+ append parameter valueUsage: filestat name log-filePrint the locations of f
+ilesCreated the directory "{0}"Executing the command "{0}"Deleted the direct
+ory "{0}"Summary line for a commandError, invalid value "{0}"Echo arguments 
+to outputUsage: help [ command ]Deleted the file "{0}"Test "{0}" successfulU
+sage: desc word ...Usage: echo name ...Not a known command.Usage: delete nam
+eTest "{0}" failedUsage: mkdir nameExecute a commandUsage: run scriptFailure
+ expectedFile name: "{0}"Usage: copy fileSuccess expectedFile size: {0}File 
+date: {0}Command failedFile type: {0}{0} ({1}) {2}Rename a fileUsage: beginR
+un a scriptUsage: exitUsage: noopUsage: end{0}) "{1}"NOT-USED
+---END OF STRING POOL---

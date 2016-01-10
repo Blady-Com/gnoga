@@ -1,0 +1,11 @@
+desc Test end functionality
+
+print _level
+begin
+  print _level
+    begin
+    print _level
+    end
+  print _level
+end
+print _level

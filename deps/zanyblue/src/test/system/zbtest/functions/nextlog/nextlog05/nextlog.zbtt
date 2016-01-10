@@ -1,0 +1,8 @@
+desc Test the nextlog text function: counter name
+
+# This should not generate an undo compare action 
+echo nextlog file is $(nextlog -c build)
+# This should generate an undo compare action 
+echo nextlog file is $(nextlog -c build -n)
+# This should also generate an undo compare action 
+echo nextlog file is $(nextlog -n -c build)

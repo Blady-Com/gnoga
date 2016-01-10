@@ -1,0 +1,8 @@
+desc Test getenv functionality
+
+getenv MYVAR
+print MYVAR
+
+getenv MYVAR abc
+print abc
+

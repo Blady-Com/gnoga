@@ -1,0 +1,6 @@
+desc Test set functionality
+
+set -i i 10
+print i
+incr i
+print i

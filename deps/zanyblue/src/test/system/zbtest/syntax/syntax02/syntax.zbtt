@@ -1,0 +1,6 @@
+# This is a comment
+
+set TNR Antananarivo     # Madagascar
+echo TNR
+echo $TNR
+echo "Going to $TNR"

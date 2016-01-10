@@ -1,0 +1,9 @@
+  <parameter name="xmpl1" type="list">
+  </parameter>
+  <parameter name="xmpl2" type="list">
+    <value>a</value>
+  </parameter>
+  <parameter name="xmpl3" type="list">
+    <value>a</value>
+    <value>b</value>
+  </parameter>

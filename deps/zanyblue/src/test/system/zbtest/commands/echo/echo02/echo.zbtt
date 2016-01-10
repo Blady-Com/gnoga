@@ -1,0 +1,8 @@
+desc Test echo functionality
+
+echo a
+echo a is $a
+set -i a 10
+echo a is $a
+append a b
+echo a is $a

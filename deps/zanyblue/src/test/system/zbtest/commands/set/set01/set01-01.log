@@ -1,0 +1,54 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.help.zbt"
+zbtest.help (1) desc Test the help text for the zbtest set command
+Set the test description to "Test the help text for the zbtest set command"
+zbtest.help (2) 
+zbtest.help (3) help set
+Set the value of a parameter.  The options selects type: integer,
+boolean, etc. or, for "-u" conditionally set the parameter only if it is
+not already defined, i.e., provide fall-back values for parameters that
+can be set on the command line.
+
+Examples,
+
+* Set a parameter to a string value, the "-s" is optional,
+
+    ZBTest> set SFO "San Francisco"
+    ZBTest> print SFO
+    San Francisco
+    ZBTest> set -s LLW Lilongwe
+    ZBTest> print LLW
+    Lilongwe
+
+* Set a parameter to an integer value, the "-i" is required,
+
+    ZBTest> set -i ten 10
+    ZBTest> print ten
+    10
+
+* Set a parameter to a Boolean value, the "-b" is required,
+
+    ZBTest> set -b flag true
+    ZBTest> print flag
+    TRUE
+
+* Set a parameter to a floating point value, the "-f" is required,
+
+    ZBTest> set -f pi 3.141592
+    ZBTest> print pi
+    3.14159E+00
+
+* Set a parameter to a time value, the "-t" is required.  The only time value
+  supported is the special time "now",
+
+    ZBTest> set -t start now
+    ZBTest> print start
+    1:59 PM 11/21/11
+
+* Set a parameter if not already defined, e.g., via the command line,
+
+    ZBTest> set -u -s build_opt ""
+Status for "zbtest.help": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

@@ -1,0 +1,5 @@
+desc Test compare usage messages
+
+compare
+compare a b c
+compare a nosuchfile 

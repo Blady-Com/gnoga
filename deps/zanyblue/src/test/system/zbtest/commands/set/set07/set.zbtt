@@ -1,0 +1,6 @@
+desc Test set functionality
+
+set LLW Lilongwe
+print LLW 
+set -u LLW "Lilongwe, Malawi"
+print LLW

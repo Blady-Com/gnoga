@@ -1,0 +1,13 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Setting the parameter "a" to the value "b"
+Warning, test area ".*test-area.test-area", already exists, removing it
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.printa.zbt"
+zbtest.printa (1) desc Print the parameter named 'a'
+Set the test description to "Print the parameter named a"
+zbtest.printa (2) 
+zbtest.printa (3) print a
+b
+Status for "zbtest.printa": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

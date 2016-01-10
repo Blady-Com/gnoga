@@ -1,0 +1,20 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.append.zbt"
+zbtest.append (1) desc Test append functionality
+Set the test description to "Test append functionality"
+zbtest.append (2) 
+zbtest.append (3) print xyz
+The parameter "xyz" is not defined
+zbtest.append (4) append xyz a
+zbtest.append (5) print xyz
+[a]
+zbtest.append (6) append xyz b
+zbtest.append (7) print xyz
+[a, b]
+zbtest.append (8) print -l xyz
+1) "a"
+2) "b"
+Status for "zbtest.append": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

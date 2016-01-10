@@ -1,0 +1,7 @@
+desc Test the nextlog text function
+
+# The following should generate nextlog-01.log, nextlog-02.log, nextlog-03.log
+# The undo actions to compare are enabled, which will fail.
+echo nextlog file is $(nextlog)
+echo nextlog file is $(nextlog)
+echo nextlog file is $(nextlog)

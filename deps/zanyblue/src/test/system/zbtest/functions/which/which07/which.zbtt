@@ -1,0 +1,3 @@
+desc Test the which text function
+
+echo Invalid which usage $(which filename othername)

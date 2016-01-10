@@ -1,0 +1,3 @@
+desc Test delenv functionality: defined variable
+
+delenv MYVAR

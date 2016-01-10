@@ -1,0 +1,9 @@
+desc Test getenv functionality
+
+append l1 a
+append l1 b
+append l1 c
+print -l l1
+getenv -a MYLIST l1
+print -l l1
+

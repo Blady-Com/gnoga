@@ -1,0 +1,19 @@
+desc Test compare functionality
+
+prepend searchpath $mydir
+
+# Comparing with itself should be OK
+copy test.log test1.log
+compare test1.log test.log
+
+# Comparing with regex masking should be OK
+copy test.log test2.log
+compare test2.log regex.log
+
+# Comparing with different file should FAIL
+copy test.log test3.log
+compare test3.log other.log
+
+# Comparing with different file with regex should FAIL
+copy test.log test4.log
+compare test4.log otherregex.log

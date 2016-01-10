@@ -1,0 +1,13 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.dirname.zbt"
+zbtest.dirname (1) desc Test the dirname text function
+Set the test description to "Test the dirname text function"
+zbtest.dirname (2) 
+zbtest.dirname (3) echo $(dirname a b c)
+Usage: dirname path
+zbtest.dirname \(3> echo 
+
+Status for "zbtest.dirname": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

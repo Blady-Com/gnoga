@@ -1,0 +1,3 @@
+desc Print the parameter named 'a'
+
+print a

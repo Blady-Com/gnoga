@@ -1,0 +1,5 @@
+desc Test which functionality
+
+prepend path $mydir
+
+which -e which03-cmd

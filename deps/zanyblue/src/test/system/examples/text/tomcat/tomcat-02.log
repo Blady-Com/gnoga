@@ -1,0 +1,36 @@
+.*: ".*" up to date.*
+This is TOMCAT, Version .*
+Error pausing endpoint
+Erreur de configuration:  Doit être attaché à un contexte
+Le redémarrage du gestionnaire de protocole a échoué
+createSession: Too many active sessions
+Cant load data replication sender mapping list
+Cannot invoke host manager servlet through invoker
+Erreur à linitialisation du créateur de socket (socket factory)
+Taille négative donnée dans la méthode "write"
+IMPORTANT: Ne pas modifier les servlets générées
+Impossible d'auto-recharger sans que le conteneur ne soit un contexte
+Emplacement du répertoire ou fichier WAR de déploiement sur le serveur
+Aucun Contexte de nommage lié à ce thread
+Les ressources n'ont pas encore été démarrées
+Une exception s'est produite lors de l'exécution du bloc "PrivilegedExceptionAction".
+Impossible d'appeler le délégué (invoker) de servlet avec un aiguilleur (dispatcher) nommé
+La connexion à la base de données est nulle ou a été trouvée fermée. Tentative de réouverture.
+Erreur lors de la fermeture du fichier web.xml de l'application
+Unable to perform replication request.
+User database has been configured to be read only. Changes cannot be saved
+Mauvais digit hexadécimal
+Information Sans-Autorité
+Caught exception trying to close socket
+Web Application Manifest
+Semaphore valve has already been started
+Exemple de requête avec paramêtres
+Path ../example.dat does not start with a "/" character
+MBean xmpl déjà enregistré!
+Le nom alias xyz n'identifie pas une entrée de clef
+Le connecteur serveur JMX pour le serveur www.example.com n'a pas pu être créé n'a pas démarré
+MBean xmpl already registered!
+JAAS LoginContext created for username "mrohan"
+٤ n'est pas un caractère ISO 8859-1
+MBean xmpl déjà enregistré!
+Réception d'une exception (NullPointerException) en exécutant WorkerThread, arrêt du thread

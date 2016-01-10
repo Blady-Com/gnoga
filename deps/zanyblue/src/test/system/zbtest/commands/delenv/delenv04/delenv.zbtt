@@ -1,0 +1,4 @@
+desc Test delenv functionality: invalid usage
+
+delenv
+delenv a b

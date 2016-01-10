@@ -1,0 +1,20 @@
+This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Loaded 2 messages for the facility "App" (2 locales)
+Performing consistency checks for the facility "App"
+Performing consistency checks for the accessor package generation
+Loaded 1 facilities, 1 keys, 2 locales and 2 messages
+Loaded total 83 characters, stored 83 unique characters, 0% saving
+Retained the spec "My_Package" in the file "..my_package.ads"
+Wrote the body "My_Package" to the file "..my_package.adb"
+Retained accessor package spec "My_Package.App_Exceptions" in "..my_package-app_exceptions.ads"
+Retained accessor package body "My_Package.App_Exceptions" in "..my_package-app_exceptions.adb"
+Retained accessor package spec "My_Package.App_Strings" in "..my_package-app_strings.ads"
+Retained accessor package body "My_Package.App_Strings" in "..my_package-app_strings.adb"
+Retained accessor package spec "My_Package.App_Wide_Strings" in "..my_package-app_wide_strings.ads"
+Retained accessor package body "My_Package.App_Wide_Strings" in "..my_package-app_wide_strings.adb"
+Retained accessor package spec "My_Package.App_Prints" in "..my_package-app_prints.ads"
+Retained accessor package body "My_Package.App_Prints" in "..my_package-app_prints.adb"
+Retained accessor package spec "My_Package.App_Wide_Prints" in "..my_package-app_wide_prints.ads"
+Retained accessor package body "My_Package.App_Wide_Prints" in "..my_package-app_wide_prints.adb"
+ZBMCompile completed on .* at .*, elapsed time .*

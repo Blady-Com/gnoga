@@ -1,0 +1,9 @@
+This is ZBMCompile, Version .* \(.*\) on .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Loaded 1 messages for the facility "xmpl" (1 locales)
+Performing consistency checks for the facility "xmpl"
+Loaded 1 facilities, 1 keys, 1 locales and 1 messages
+Loaded total 23 characters, stored 23 unique characters, 0% saving
+Wrote the spec "Messages" to the file "..messages.ads"
+Wrote the body "Messages" to the file "..messages.adb"
+ZBMCompile completed on .*, elapsed time .*

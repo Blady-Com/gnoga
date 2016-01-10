@@ -1,0 +1,12 @@
+desc Test dump functionality
+
+begin
+dump
+set -i i 1
+set -b b true
+set s value
+dump
+begin
+dump
+end
+dump

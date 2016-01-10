@@ -1,0 +1,5 @@
+desc Test mkdir functionality
+
+filestat mydir dir1.log
+mkdir mydir
+filestat mydir dir2.log

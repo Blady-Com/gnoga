@@ -1,0 +1,4 @@
+desc Test incr functionality
+
+incr
+incr num abc

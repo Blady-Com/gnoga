@@ -1,0 +1,15 @@
+desc Test begin functionality
+
+set a 1
+print a
+print b
+begin
+print a
+print b
+set a 2
+set b x
+print a
+print b
+end
+print a
+print b

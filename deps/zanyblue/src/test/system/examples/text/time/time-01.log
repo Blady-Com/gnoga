@@ -1,0 +1,12 @@
+.*: ".*" up to date.*
+This is CURTIME, Version .*
+Current time \(short\):       .*
+Current time \(medium\):      .*
+Current time \(long\):        .*
+Current time \(full\):        .*
+Current date \(short\):       .*
+Current date \(medium\):      .*
+Current date \(long\):        .*
+Current date \(full\):        .*
+Current date/time \(locale\): .*
+Current date/time \(custom\): .*

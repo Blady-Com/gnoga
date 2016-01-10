@@ -1,0 +1,10 @@
+desc Test compare functionality
+
+prepend searchpath $mydir
+
+# Comparing with itself should be OK
+copy test.log test1.log
+compare test1.log test.log
+
+# Regenerating the same test name should do something reasonable?
+compare test1.log test.log

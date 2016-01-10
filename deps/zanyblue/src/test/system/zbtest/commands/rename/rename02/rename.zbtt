@@ -1,0 +1,10 @@
+desc Test rename functionality
+
+prepend searchpath $mydir
+
+copy file1.dat
+filestat file1.dat log-01.log
+filestat file2.dat log-02.log
+rename file1.dat file2.dat
+filestat file1.dat log-03.log
+filestat file2.dat log-04.log

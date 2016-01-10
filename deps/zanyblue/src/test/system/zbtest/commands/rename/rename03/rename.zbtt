@@ -1,0 +1,3 @@
+desc Test rename usage messages
+
+rename nosuchfile.dat someotherfile.dat

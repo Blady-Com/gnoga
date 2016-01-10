@@ -1,0 +1,23 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.echo.zbt"
+zbtest.echo (1) desc Test echo functionality
+Set the test description to "Test echo functionality"
+zbtest.echo (2) 
+zbtest.echo (3) echo a
+a
+zbtest.echo (4) echo a is $a
+Warning, referenced to undefined parameter "a"
+zbtest.echo (4> echo a is 
+a is
+zbtest.echo (5) set -i a 10
+zbtest.echo (6) echo a is $a
+zbtest.echo (6> echo a is 10
+a is 10
+zbtest.echo (7) append a b
+zbtest.echo (8) echo a is $a
+zbtest.echo (8> echo a is [10, b]
+a is [10, b]
+Status for "zbtest.echo": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

@@ -1,0 +1,119 @@
+--
+--  ZanyBlue, an Ada library and framework for finite element analysis.
+--
+--  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  All rights reserved.
+--
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions
+--  are met:
+--
+--    * Redistributions of source code must retain the above copyright
+--      notice, this list of conditions and the following disclaimer.
+--
+--    * Redistributions in binary form must reproduce the above copyright
+--      notice, this list of conditions and the following disclaimer in the
+--      documentation and/or other materials provided with the distribution.
+--
+--    * Neither the name of ZanyBlue nor the names of its contributors may
+--      be used to endorse or promote products derived from this software
+--      without specific prior written permission.
+--
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+--  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+--  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+--  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+--  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+--  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+--  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+--  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+--  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+--  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+--  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+
+with "aunit";
+with "zanyblue";
+with "zbcom";
+with "zbapp";
+
+project t_zanyblue is
+
+   for Object_Dir use "../../obj";
+   for Exec_Dir use "../../bin";
+   for Main use (external ("MAIN"));
+   for Source_Dirs use (".",
+                        "os",
+                        "parameters",
+                        "parameters/values",
+                        "parameters/sets",
+                        "parameters/scopes",
+                        "text",
+                        "text/arguments",
+                        "text/booleans",
+                        "text/buffer",
+                        "text/catalogs",
+                        "text/characters",
+                        "text/cldr",
+                        "text/durations",
+                        "text/exceptions",
+                        "text/floats",
+                        "text/long_floats",
+                        "text/format_errors",
+                        "text/format_message",
+                        "text/format_parser",
+                        "text/formatting",
+                        "text/generic_buffer",
+                        "text/generic_enumerations",
+                        "text/generic_fixed",
+                        "text/generic_floats",
+                        "text/generic_floats/format_e",
+                        "text/generic_floats/format_f",
+                        "text/generic_floats/format_g",
+                        "text/generic_floats/gdtoa",
+                        "text/generic_integers",
+                        "text/generic_modulars",
+                        "text/integers",
+                        "text/locales",
+                        "text/locales/currency_formats",
+                        "text/locales/date_formats",
+                        "text/locales/date_time_formats",
+                        "text/locales/day_periods",
+                        "text/locales/days",
+                        "text/locales/decimal_digits",
+                        "text/locales/decimal_formats",
+                        "text/locales/decimal_point_characters",
+                        "text/locales/digit_pattern_characters",
+                        "text/locales/eras",
+                        "text/locales/exponent_characters",
+                        "text/locales/group_characters",
+                        "text/locales/infinity_characters",
+                        "text/locales/layout",
+                        "text/locales/list_characters",
+                        "text/locales/minus_characters",
+                        "text/locales/months",
+                        "text/locales/nan_characters",
+                        "text/locales/localized_digits",
+                        "text/locales/percent_characters",
+                        "text/locales/percent_formats",
+                        "text/locales/permille_characters",
+                        "text/locales/plus_characters",
+                        "text/locales/scientific_formats",
+                        "text/locales/time_formats",
+                        "text/locales/zero_characters",
+                        "text/metrics",
+                        "text/null_object",
+                        "text/properties_parser",
+                        "text/pseudo",
+                        "text/strings",
+                        "text/times",
+                        "text/unbounded_strings",
+                        "text/unbounded_wide_strings",
+                        "text/utils",
+                        "text/wide_characters",
+                        "text/wide_strings",
+                        "utils");
+   package Compiler renames zbcom.Compiler;
+   package Linker renames zbapp.Linker;
+
+end t_zanyblue;

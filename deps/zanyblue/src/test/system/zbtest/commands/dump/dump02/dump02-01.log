@@ -1,0 +1,41 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.dump.zbt"
+zbtest.dump (1) desc Test dump functionality
+Set the test description to "Test dump functionality"
+zbtest.dump (2) 
+zbtest.dump (3) begin
+zbtest.dump (4) dump
+<parameter-set name="PARAMS-2">
+  <parameter name="_start_time" type="time" value=".*" />
+  <parameter name="_level" type="integer" value="2" />
+</parameter-set>
+zbtest.dump (5) set -i i 1
+zbtest.dump (6) set -b b true
+zbtest.dump (7) set s value
+zbtest.dump (8) dump
+<parameter-set name="PARAMS-2">
+  <parameter name="_start_time" type="time" value=".*" />
+  <parameter name="s" type="string" value="value" />
+  <parameter name="_level" type="integer" value="2" />
+  <parameter name="b" type="boolean" value="true" />
+  <parameter name="i" type="integer" value="1" />
+</parameter-set>
+zbtest.dump (9) begin
+zbtest.dump (10) dump
+<parameter-set name="PARAMS-3">
+  <parameter name="_start_time" type="time" value=".*" />
+  <parameter name="_level" type="integer" value="3" />
+</parameter-set>
+zbtest.dump (11) end
+zbtest.dump (12) dump
+<parameter-set name="PARAMS-2">
+  <parameter name="_start_time" type="time" value=".*" />
+  <parameter name="s" type="string" value="value" />
+  <parameter name="_level" type="integer" value="2" />
+  <parameter name="b" type="boolean" value="true" />
+  <parameter name="i" type="integer" value="1" />
+</parameter-set>
+Status for "zbtest.dump": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

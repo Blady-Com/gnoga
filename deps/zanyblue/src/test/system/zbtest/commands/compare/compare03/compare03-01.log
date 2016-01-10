@@ -1,0 +1,16 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.compare.zbt"
+zbtest.compare (1) desc Test compare usage messages
+Set the test description to "Test compare usage messages"
+zbtest.compare (2) 
+zbtest.compare (3) compare
+Usage: compare log-file [ ref-log-file ]
+zbtest.compare (4) compare a b c
+Usage: compare log-file [ ref-log-file ]
+zbtest.compare (5) compare a nosuchfile 
+Error, the reference log file "nosuchfile" was not found
+Test "zbtest.compare.a" failed
+Status for "zbtest.compare": 1 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

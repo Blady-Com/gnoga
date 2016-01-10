@@ -1,0 +1,20 @@
+This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Loaded 4 messages for the facility "App1" (4 locales)
+Skipping consistency checks for "App1", base locale ("") is not defined
+Performing consistency checks for the accessor package generation
+Loaded 1 facilities, 1 keys, 5 locales and 4 messages
+Loaded total 92 characters, stored 92 unique characters, 0% saving
+Wrote the spec "My_Package" to the file "..my_package.ads"
+Wrote the body "My_Package" to the file "..my_package.adb"
+Generated accessor package spec "My_Package.App1_Exceptions" to "..my_package-app1_exceptions.ads"
+Generated accessor package body "My_Package.App1_Exceptions" to "..my_package-app1_exceptions.adb"
+Generated accessor package spec "My_Package.App1_Strings" to "..my_package-app1_strings.ads"
+Generated accessor package body "My_Package.App1_Strings" to "..my_package-app1_strings.adb"
+Generated accessor package spec "My_Package.App1_Wide_Strings" to "..my_package-app1_wide_strings.ads"
+Generated accessor package body "My_Package.App1_Wide_Strings" to "..my_package-app1_wide_strings.adb"
+Generated accessor package spec "My_Package.App1_Prints" to "..my_package-app1_prints.ads"
+Generated accessor package body "My_Package.App1_Prints" to "..my_package-app1_prints.adb"
+Generated accessor package spec "My_Package.App1_Wide_Prints" to "..my_package-app1_wide_prints.ads"
+Generated accessor package body "My_Package.App1_Wide_Prints" to "..my_package-app1_wide_prints.adb"
+ZBMCompile completed on .* at .*, elapsed time .*

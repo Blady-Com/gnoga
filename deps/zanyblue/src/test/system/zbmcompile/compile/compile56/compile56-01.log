@@ -1,0 +1,29 @@
+This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Invalid command usage: Error, invalid accessor type name value, "nosuchitem", for the -G option
+
+Usage: zbmcompile [ options ] package facility
+where available options are
+  -q             Quiet mode
+  -v             Verbose mode
+  -m             Always include argument modes in generated code
+  -p             Number list entries (gnatcheck +RPositional_Components)
+  -D             Debug mode (dump the catalog definitions)
+  -d directory   Directory containing facility (defaults to ".")
+  -e extension   Properties extension (default "properties")
+  -i             Include initialization call in body
+  -O             Optimize string pool for locale based access
+  -g             Disable locale based access optimization (default)
+  -B             Compile only the base locale
+  -u             Disable consistency checked (unchecked mode)
+  -L locale      Compile only the named locale, e.g., "fr", "fr_FR"
+  -r locale      Define reference (base) locale for consistency checking
+  -s locale      Define source root locale
+  -S stamp-file  File to always create/update (contains a timestamp)
+  -x name        Define external name for Initialize procedure
+  -F             Force generation, ignoring errors.  Generated code might
+                 not compile
+  -a             Generate all accessors ([w]prints, [w]strings, exceptions)
+  -G name        Generate named accessor ([w]prints, [w]strings, exceptions)
+  -C             Disable comments on generated accessor routines
+  -T item size   Set the size of an Ada output limit: pool or comment

@@ -1,0 +1,11 @@
+This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Creating test area directory ".*test-area.test-area"
+Executing the ZBTest script ".*test-area.execute.zbt"
+zbtest.execute (1) desc Test usage message for execute
+Set the test description to "Test usage message for execute"
+zbtest.execute (2) 
+zbtest.execute (3) execute
+Usage: execute [ -f | -s | -o output ] command [ command-arg ... ]
+Status for "zbtest.execute": 0 failures, 0 OK
+ZBTest completed on .* at .*, elapsed time .*

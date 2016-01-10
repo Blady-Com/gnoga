@@ -1,0 +1,6 @@
+desc Test set functionality
+
+set -b f true
+print f
+set -b f false
+print f

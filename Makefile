@@ -111,7 +111,7 @@ gnoga_tools: gnoga
 release: setup
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
 
-install: release gnoga_tools
+install: release gnoga_tools xpm_parser zanyblue
 	touch deps/simple_components/strings_edit-text_edit.o
 	cd src && gprinstall -f --prefix=$(PREFIX) -p gnoga.gpr -XPRJ_BUILD=Release
 	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
@@ -121,8 +121,11 @@ install: release gnoga_tools
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
 	cd deps/simple_components/xpm && gprinstall -f --prefix=$(PREFIX) -p xpm_parser.gpr
+	cd deps/zanyblue && gprinstall --prefix=$(PREFIX) -p src/zblib.gpr
+	cd deps/zanyblue && gprinstall --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
+	cd deps/zanyblue && gprinstall --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbtest/zbtest.gpr
 
-install_debug: gnoga gnoga_tools
+install_debug: gnoga gnoga_tools xpm_parser zanyblue
 	touch deps/simple_components/strings_edit-text_edit.o
 	cd src && gprinstall -a -f --prefix=$(PREFIX) -p gnoga.gpr --install-name=gnoga
 	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
@@ -132,6 +135,9 @@ install_debug: gnoga gnoga_tools
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
 	cd deps/simple_components/xpm && gprinstall -f --prefix=$(PREFIX) -p xpm_parser.gpr
+	cd deps/zanyblue && gprinstall -a --prefix=$(PREFIX) -p src/zblib.gpr
+	cd deps/zanyblue && gprinstall --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
+	cd deps/zanyblue && gprinstall --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbtest/zbtest.gpr
 
 uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr
@@ -142,6 +148,9 @@ uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tables.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall xpm.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
+	- gprinstall -f --prefix=$(PREFIX) --uninstall zblib.gpr
+	- gprinstall -f --prefix=$(PREFIX) --uninstall zbmcompile.gpr
+	- gprinstall -f --prefix=$(PREFIX) --uninstall zbtest.gpr
 
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
@@ -165,6 +174,9 @@ electron:
 	@echo "The example is set to connect to any running gnoga app on localhost:8080"
 	@echo "Start your gnoga app and then run 'nmp start' in deps/electron-quick-start"
 	@echo "See docs/native_desktop_apps.md for instructions on full desktop development"
+
+zanyblue:
+	cd deps/zanyblue && make -C src
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog
 
@@ -263,6 +275,7 @@ bin/multimarkdown:
 	- cd deps/MultiMarkdown-4 && git submodule update
 	- cd deps/MultiMarkdown-4 && make
 	- $(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
+
 rm-docs: gnoga
 	gnatdoc -Psrc/gnoga.gpr --no-subprojects -XDevelopment=Debug -XLegacy=Ada2005 -XAtomic_Access=GCC-long-offsets -XTasking=Multiple -XTraced_objects=Off -XPRJ_TARGET=Unix -XPRJ_BUILD=Debug
 

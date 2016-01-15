@@ -9,6 +9,11 @@ with Gnoga.Application;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with ConnectFour; use ConnectFour;
+with connectfour_messages.connectfour_Strings;
+use connectfour_messages.connectfour_Strings;
+with ZanyBlue.Text.Locales;
+with Ada.Strings.UTF_Encoding.Strings; use Ada.Strings.UTF_Encoding.Strings;
+with Gnoga.Gui.Navigator;
 
 procedure Connect_Four is
 
@@ -26,13 +31,15 @@ procedure Connect_Four is
       Page.Create (Main_Window);
       Page.Main_Window :=
         Gnoga.Gui.Window.Window_Type (Main_Window)'Unchecked_Access;
+      ZanyBlue.Text.Locales.Set_Locale
+        (Gnoga.Gui.Navigator.Language (Main_Window));
       Init (Page'Access);
       Connection.Hold;
    end On_Connect;
 
 begin
    Gnoga.Application.Title (Name => "Connect Four");
-   Gnoga.Application.HTML_On_Close (HTML => "Application ended.");
+   Gnoga.Application.HTML_On_Close (HTML => Decode (Format_APPE));
    Gnoga.Application.Multi_Connect.Initialize;
    Gnoga.Application.Multi_Connect.On_Connect_Handler
      (Event => On_Connect'Unrestricted_Access);

@@ -64,6 +64,9 @@
 
 with Gnoga.Types.Colors;
 with Gnoga.Types; use Gnoga.Types;
+with connectfour_messages.connectfour_Strings;
+use connectfour_messages.connectfour_Strings;
+with Ada.Strings.UTF_Encoding.Strings; use Ada.Strings.UTF_Encoding.Strings;
 
 package body ConnectFour is
    ------------------------
@@ -837,11 +840,10 @@ package body ConnectFour is
       This.User_Turn    := True;
       Gnoga.Gui.Window.Browser_Status_Bar
         (This.Main_Window.all,
-         "Connect Four (TM) by Barry Fagin and Martin Carlisle");
+         Decode (Format_CPYR));
       Repaint (This);
-      This.Put_Line
-      ("Developed by Barry Fagin and Martin Carlisle, US Air Force Academy.");
-      This.Put_Line ("Adapted for GNOGA by Pascal Pignard (20150613).");
+      This.Put_Line (Decode (Format_DEVP));
+      This.Put_Line (Decode (Format_ADPT));
    end Init;
 
    -----------
@@ -1095,20 +1097,11 @@ package body ConnectFour is
 
          --  Print message if the game is over
          if This.Computer_Won then
-            Display_Text
-              (X    => 0,
-               Y    => 285,
-               Text => "I win! - Press left mouse button");
+            Display_Text (X => 0, Y => 285, Text => Decode (Format_IWIN));
          elsif This.User_Won then
-            Display_Text
-              (X    => 0,
-               Y    => 285,
-               Text => "You win! - Press left mouse button");
+            Display_Text (X => 0, Y => 285, Text => Decode (Format_YWIN));
          elsif This.Tie then
-            Display_Text
-              (X    => 0,
-               Y    => 285,
-               Text => "Tie Game! - Press Left Mouse Button");
+            Display_Text (X => 0, Y => 285, Text => Decode (Format_TIEG));
          end if;
       end Print_Board;
    begin
@@ -1164,8 +1157,7 @@ package body ConnectFour is
    function GetAppletInfo (This : access Typ) return String is
       pragma Unreferenced (This);
    begin
-      return "This Connect Four (TM) game was coded in Ada 2005, " &
-        "and compiled with the JVM-GNAT compiler";
+      return Decode (Format_INFO);
    end GetAppletInfo;
 
    -------------------
@@ -1201,7 +1193,7 @@ package body ConnectFour is
             Self.User_Turn := False;
             Gnoga.Gui.Window.Browser_Status_Bar
               (Self.Main_Window.all,
-               "I am thinking...");
+               Decode (Format_IAMT));
             --          Let computer take turn
             Computer_Turn (Board => Self.Board, Column => Column);
 
@@ -1217,13 +1209,13 @@ package body ConnectFour is
          Repaint (Self);
          Gnoga.Gui.Window.Browser_Status_Bar
            (Self.Main_Window.all,
-            "Connect Four (TM) by Barry Fagin and Martin Carlisle");
+            Decode (Format_CPYR));
          return;
       end if;
 
       Gnoga.Gui.Window.Browser_Status_Bar
         (Self.Main_Window.all,
-         "I am thinking...");
+         Decode (Format_IAMT));
       --          Let computer take turn
       Computer_Turn (Board => Self.Board, Column => Column);
 
@@ -1244,7 +1236,7 @@ package body ConnectFour is
       Repaint (Self);
       Gnoga.Gui.Window.Browser_Status_Bar
         (Self.Main_Window.all,
-         "Connect Four (TM) by Barry Fagin and Martin Carlisle");
+         Decode (Format_CPYR));
    end mouseReleased;
 
    ------------------
@@ -1301,7 +1293,7 @@ package body ConnectFour is
       else
          Gnoga.Gui.Window.Browser_Status_Bar
            (Self.Main_Window.all,
-            "I am thinking...");
+            Decode (Format_IAMT));
       end if;
       Repaint (Self);
    end mousePressed;

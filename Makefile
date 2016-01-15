@@ -195,7 +195,8 @@ adaedit:
 adablog:
 	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-connect_four:
+connect_four: zanyblue
+	cd demo/connect_four && ../../deps/zanyblue/bin/zbmcompile -i -v -G strings connectfour_messages connectfour
 	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests: gnoga

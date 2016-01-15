@@ -44,6 +44,7 @@ INCLUDE_SRC_DIRS=root os os/$(OS) parameters text utils
 INCLUDE_SRCS=$(foreach d,$(INCLUDE_SRC_DIRS),\
                  $(patsubst $(SRCDIR)/$d/%,%,\
                      $(wildcard $(SRCDIR)/$d/*.ads) \
+                     $(wildcard $(SRCDIR)/$d/*.adb) \
                      $(wildcard $(SRCDIR)/$d/*generic*.adb)))
 INCLUDE_FILES=$(patsubst %,$(INCDIR)/%,$(INCLUDE_SRCS))
 GENERATED=$(INCLUDE_FILES)

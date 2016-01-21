@@ -240,6 +240,7 @@ clean:
 	cd lib && $(UNSET_READONLY)
 	- cd lib && $(RM) *.a*
 	- cd include && $(RM) *.ad?
+	- cd deps/zanyblue && make -C src clean
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd ssl && $(CLEANER) -r -Pgnoga_secure.gpr
 	cd deps/simple_components/xpm && $(CLEANER) -r -Pxpm_parser.gpr

@@ -48,9 +48,11 @@ INCLUDE_SRCS=$(foreach d,$(INCLUDE_SRC_DIRS),\
                      $(wildcard $(SRCDIR)/$d/*generic*.adb)))
 INCLUDE_FILES=$(patsubst %,$(INCDIR)/%,$(INCLUDE_SRCS))
 GENERATED=$(INCLUDE_FILES)
-APPDIRS=zbmcompile zbtest
+APPDIRS=zbmcompile
 APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
-CLEAN_DEPS=$(patsubst %,%.clean,$(APPDIRS) root doc test)
+TESTDIRS=zbtest
+TESTTARGETS=$(patsubst %,%.app,$(TESTDIRS))
+CLEAN_DEPS=$(patsubst %,%.clean,$(APPDIRS) $(TESTDIRS) root doc test)
 CLEAN_FILES+=$(wildcard bin/pylib/*.pyc)
 CLEAN_FILES+=$(wildcard bin/pylib/zb/*.pyc)
 CLEAN_FILES+=$(wildcard gnatcheck.out)
@@ -74,6 +76,8 @@ library:
 	$(GNATMAKE) $(GNATFLAGS) -P zblib.gpr
 
 applications:	$(APPTARGETS)
+
+tests:	$(TESTTARGETS)
 
 docs:
 	$(MAKE) -C doc

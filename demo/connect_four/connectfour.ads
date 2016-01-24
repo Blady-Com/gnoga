@@ -32,6 +32,7 @@ with Gnoga.Gui.View;
 with Gnoga.Gui.Base; use Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Canvas.Context_2D;
 with Gnoga.Gui.Window;
+with ZanyBlue.Text.Locales;
 
 package ConnectFour is
 
@@ -69,6 +70,7 @@ package ConnectFour is
       --  if user clicks in full column, computer should not take a turn
       --  Also computer should not take turn if user wins or tie.
       Ignore_Turn : Boolean := False;
+      Locale      : ZanyBlue.Text.Locales.Locale_Type;
    end record;
    type Ref is access all Typ'Class;
 --     pragma Convention (Java, Typ);

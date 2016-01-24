@@ -32,30 +32,16 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with "zbcom";
+--
+-- gprbuild project definition file for the ZanyBlue library.
+--
 
-project zblib is
+library project zanyblue is
 
-   type Tasking_Type is ("tasking", "notasking");
-   Tasking : Tasking_Type := external ("ZB_TASKING", "notasking");
+   for Object_Dir       use "obj";
+   for Library_Dir      use "../zanyblue";
+   for Source_Dirs      use ("../../include/zanyblue");
+   for Library_Name     use "zanyblue";
+   for Externally_Built use "true";   
 
-   for Languages       use ("Ada");
-   for Source_Dirs     use ("root",
-                            "os",
-                            "os/" & zbcom.OS,
-                            "parameters",
-                            "text",
-                            "text/" & Tasking,
-                            "utils");
-
-   for Library_Kind    use zbcom.Library_Type;
-   for Object_Dir      use "./obj";
-   for Library_Dir     use "../lib/zanyblue";
-   for Library_Name    use zbcom.Name;
-   for Library_Version use "lib" & Project'Library_Name & ".so." & zbcom.Version;
-
-   package Compiler renames zbcom.Compiler;
-   package Linker   renames zbcom.Linker;
-   package Ide      renames zbcom.Ide;
-
-end zblib;
+end zanyblue;

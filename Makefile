@@ -179,13 +179,13 @@ zanyblue:
 	cd deps/zanyblue && make -C src
 
 deps/PragmARC:
-	cd deps && git clone https://github.com/jrcarter/PragmARC.git 
+	cd deps && git clone https://github.com/jrcarter/PragmARC.git
 
 pragmarc: deps/PragmARC
 	cd deps/PragmARC && git pull
 	cd deps/PragmARC && gnatmake compile_all.adb
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog
+demo: snake mine_detector connect_four chattanooga adaedit adablog linxtris
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -205,6 +205,10 @@ adablog:
 connect_four: zanyblue
 	cd demo/connect_four && ../../deps/zanyblue/bin/zbmcompile -i -v -G strings connectfour_messages connectfour
 	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
+# usage: bin/linxtris -data_dir demo/linxtris/
+linxtris:
+	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests: gnoga
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}

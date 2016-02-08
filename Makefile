@@ -178,6 +178,13 @@ electron:
 zanyblue:
 	cd deps/zanyblue && make -C src
 
+deps/PragmARC:
+	cd deps && git clone https://github.com/jrcarter/PragmARC.git 
+
+pragmarc: deps/PragmARC
+	cd deps/PragmARC && git pull
+	cd deps/PragmARC && gnatmake compile_all.adb
+
 demo: snake mine_detector connect_four chattanooga adaedit adablog
 
 snake:
@@ -232,6 +239,7 @@ cleanall: clean
 	- cd deps && $(RMS) MultiMarkdown-4
 	- cd deps && $(RM) dpm-debug.log
 	- cd deps && $(RMS) electron-quick-start
+	- cd deps && $(RMS) PragmARC
 	- $(RM) bin/multimarkdown
 	- cd docs && $(RM) html/*.html
 	- cd docs && $(RMS) html/gnoga_rm
@@ -241,6 +249,7 @@ clean:
 	- cd lib && $(RM) *.a*
 	- cd include && $(RM) *.ad?
 	- cd deps/zanyblue && make -C src clean
+	- cd deps/PragmARC && $(RM) *.ali *.o
 	cd src && $(CLEANER) -r -Pgnoga.gpr
 	cd ssl && $(CLEANER) -r -Pgnoga_secure.gpr
 	cd deps/simple_components/xpm && $(CLEANER) -r -Pxpm_parser.gpr
@@ -254,6 +263,7 @@ clean:
 	cd demo/chattanooga && $(CLEANER) -Pchattanooga.gpr
 	cd demo/adablog && $(CLEANER) -Padablog.gpr
 	cd demo/connect_four && $(CLEANER) -Pconnect_four.gpr
+	- cd demo/connect_four && $(RM) connectfour_messages*
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(CLEANER) -Ptutorial_02.gpr

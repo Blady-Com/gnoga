@@ -33,7 +33,7 @@ with Ada.Command_Line; use Ada.Command_Line;
 --  with Glib.Error;                use Glib.Error;
 with Gnoga.Application;
 with Gnoga.Application.Singleton;
-with Gnoga.Gui.Element.Canvas.Context_2D;
+with Gnoga.Types;
 
 package body Main_Window_Pkg is
 
@@ -342,6 +342,8 @@ package body Main_Window_Pkg is
 
    procedure Initialize_Pixmaps (Win : access Main_Window_Record'Class) is
       Xpm_Name : Unbounded_String;
+      Xpm_Data : Gnoga.Types.Pixel_Data_Access;
+      Cr       : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
 --        Err      : Glib.Error.GError;
       use Gnoga.Gui.Element.Canvas.Context_2D;
    begin
@@ -353,43 +355,161 @@ package body Main_Window_Pkg is
          end if;
       end if;
 
+      Cr.Get_Drawing_Context_2D (Win.Game_Screen);
+
       Xpm_Name := Data_Dir & "pixmaps/blue.xpm";
-      New_From_XPM (Win.Blue_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Blue_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Blue_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Blue_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/green.xpm";
-      New_From_XPM (Win.Green_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Green_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Green_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Green_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/red.xpm";
-      New_From_XPM (Win.Red_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Red_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Red_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Red_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/yellow.xpm";
-      New_From_XPM (Win.Yellow_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Yellow_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Yellow_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Yellow_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/grey.xpm";
-      New_From_XPM (Win.Grey_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Grey_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Grey_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Grey_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/blank.xpm";
-      New_From_XPM (Win.Blank_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Blank_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Blank_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Blank_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/cyan.xpm";
-      New_From_XPM (Win.Cyan_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Cyan_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Cyan_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Cyan_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/magenta.xpm";
-      New_From_XPM (Win.Magenta_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Magenta_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Magenta_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Magenta_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/ghost.xpm";
-      New_From_XPM (Win.Ghost_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Ghost_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Ghost_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Ghost_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/white.xpm";
-      New_From_XPM (Win.White_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.White_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.White_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.White_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/blue_prev.xpm";
-      New_From_XPM (Win.Blue_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Blue_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Blue_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Blue_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/green_prev.xpm";
-      New_From_XPM (Win.Green_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Green_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Green_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Green_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/red_prev.xpm";
-      New_From_XPM (Win.Red_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Red_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Red_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Red_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/yellow_prev.xpm";
-      New_From_XPM (Win.Yellow_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Yellow_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Yellow_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Yellow_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/grey_prev.xpm";
-      New_From_XPM (Win.Grey_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Grey_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Grey_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Grey_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/cyan_prev.xpm";
-      New_From_XPM (Win.Cyan_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Cyan_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Cyan_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Cyan_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/magenta_prev.xpm";
-      New_From_XPM (Win.Magenta_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Magenta_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Magenta_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Magenta_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
+
       Xpm_Name := Data_Dir & "pixmaps/blank_prev.xpm";
-      New_From_XPM (Win.Blank_Prev_Pix, To_String (Xpm_Name));
+      New_From_XPM (Xpm_Data, To_String (Xpm_Name));
+      Win.Blank_Prev_Pix :=
+        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Cr.Create_Image_Data (Win.Blank_Prev_Pix.all, Xpm_Data'Length (1),
+                            Xpm_Data'Length (2));
+      Win.Blank_Prev_Pix.Data (Xpm_Data.all);
+      Free (Xpm_Data);
    end Initialize_Pixmaps;
 
    procedure Pause (Win : access Main_Window_Record'Class; Value : Boolean) is

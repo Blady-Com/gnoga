@@ -292,9 +292,14 @@ package body Preferences_Window_Pkg is
          Close (File);
       end Create_File;
    begin
-      Open (File, In_File, Filename);
-      Read (File, Pref);
-      Close (File);
+      begin
+         Open (File, In_File, Filename);
+         Read (File, Pref);
+         Close (File);
+      exception
+         when Name_Error =>
+            Create_File;
+      end;
       Block_Engine.Set_Initial_Level
         (Main_Window.Engine.all,
          Pref.Initial_Level);
@@ -314,10 +319,6 @@ package body Preferences_Window_Pkg is
       Pref_Win.Animation_Check.Checked (Pref.Animation);
       Pref_Win.Preview_Check.Checked (Pref.Piece_Preview);
       Pref_Win.Ghost_Check.Checked (Pref.Ghost);
-   exception
-      when Name_Error =>
-         Create_File;
-
    end Get_Preferences;
 
    procedure Set_Preferences is

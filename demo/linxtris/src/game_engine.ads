@@ -26,7 +26,7 @@ with Main_Window_Pkg; use Main_Window_Pkg;
 --  with Glib;
 --  with Gdk.Event;
 with Gnoga.Gui.Base;
-with Gnoga.Types;
+with Gnoga.Gui.Element.Canvas.Context_2D;
 
 package Game_Engine is
    procedure Clear_Screen;
@@ -49,7 +49,11 @@ private
    function X_Drawing_Coordinate (X : Integer) return Integer;
    function Y_Drawing_Coordinate (Y : Integer) return Integer;
    function Color_To_Pix
-     (Color : Block_Engine.Color) return Gnoga.Types.Pixel_Data_Access;
+     (Color : Block_Engine.Color) return
+     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+   function Color_To_Prev_Pix
+     (Color : Block_Engine.Color) return
+     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
    procedure Process_And_Draw;
    procedure Do_Animation;
    procedure Do_Line_Completed_Animation;

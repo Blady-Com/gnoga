@@ -35,6 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Unchecked_Deallocation;
 with Gnoga.Types;
 
 package Gnoga.Gui.Element.Canvas.Context_2D is
@@ -437,6 +438,9 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    procedure New_From_XPM (Image : out Gnoga.Types.Pixel_Data_Access;
                            File_Name : String);
    --  Read XPM data from File_Name to Image which is allocated with XPM size
+   procedure Free is new Ada.Unchecked_Deallocation
+     (Gnoga.Types.Pixel_Data_Type, Gnoga.Types.Pixel_Data_Access);
+   --  Free image data allocated with New_From_XPM
 
    --  Other
 

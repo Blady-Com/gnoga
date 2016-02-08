@@ -34,7 +34,7 @@ package Preferences_Window_Pkg is
       Initial_Level       : Positive := 1;
       Initial_Lines       : Natural  := 0;
       Piece_Preview       : Boolean  := True;
-      Continuous_Movement : Boolean  := True;
+      Continuous_Movement : Boolean  := False;
       Animation           : Boolean  := True;
       Ghost               : Boolean  := False;
    end record;

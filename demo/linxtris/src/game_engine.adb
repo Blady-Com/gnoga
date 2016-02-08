@@ -32,7 +32,6 @@ with Scores_Window_pkg; use Scores_Window_pkg;
 --  with Gdk.Types;         use Gdk.Types;
 --  with Gdk.Event;         use Gdk.Event;
 --  with Glib.Main;
-with Gnoga.Gui.Element.Canvas.Context_2D;
 with New_Score_Dialog_Pkg;
 with Preferences_Window_Pkg;
 with Gnoga.Types.Key_Codes;
@@ -50,18 +49,13 @@ package body Game_Engine is
    end Clear_Screen;
 
    procedure Clear_Prev is
-      Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
-      Image  : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Pixels : Gnoga.Types.Pixel_Data_Access;
+      Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Prev_Screen));
       Cr.Get_Drawing_Context_2D (Main_Window.Prev_Screen);
---     Gdk.Cairo.Set_Source_Pixbuf (Cr, Main_Window.Blank_Prev_Pix, 0.0, 0.0);
-      Pixels := Main_Window.Blank_Prev_Pix;
-      Cr.Create_Image_Data (Image, Pixels'Length (1), Pixels'Length (2));
-      Image.Data (Pixels.all);
+--      Gdk.Cairo.Set_Source_Pixbuf (Cr, Main_Window.Blank_Prev_Pix, 0.0, 0.0);
 --        Cairo.Paint (Cr);
-      Cr.Put_Image_Data (Image, 0, 0);
+      Cr.Put_Image_Data (Main_Window.Blank_Prev_Pix.all, 0, 0);
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Drawable( Get_Pixmap( Main_Window.Prev_Screen ),
 --                                 Main_Window.GC, Main_Window.Blank_Prev_Pix,
@@ -82,8 +76,6 @@ package body Game_Engine is
       Color : Block_Engine.Color)
    is
       Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
-      Image  : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Pixels : Gnoga.Types.Pixel_Data_Access;
    begin
       if Y > 20 then
          return;
@@ -95,12 +87,9 @@ package body Game_Engine is
 --           Color_To_Pix (Color),
 --           Gdouble (X_Drawing_Coordinate (X)),
 --           Gdouble (Y_Drawing_Coordinate (Y) + Gint (Main_Window.Delta_Y)));
-      Pixels := Color_To_Pix (Color);
-      Cr.Create_Image_Data (Image, Pixels'Length (1), Pixels'Length (2));
-      Image.Data (Pixels.all);
 --        Cairo.Paint (Cr);
       Cr.Put_Image_Data
-      (Image, X_Drawing_Coordinate
+      (Color_To_Pix (Color).all, X_Drawing_Coordinate
          (X), Y_Drawing_Coordinate (Y) +
        Main_Window.Delta_Y);
 --        Cairo.Destroy (Cr);
@@ -148,10 +137,8 @@ package body Game_Engine is
    begin
       for i in 1 .. 10 loop
          for j in 1 .. 20 loop
-            Paint_Block
-              (i,
-               j,
-               Block_Engine.Get_Position_Color (Main_Window.Engine.all, i, j));
+            Paint_Block (i, j, Block_Engine.Get_Position_Color
+                         (Main_Window.Engine.all, i, j));
          end loop;
       end loop;
       if Block_Engine.Get_Has_Ghost (Main_Window.Engine.all) then
@@ -171,8 +158,6 @@ package body Game_Engine is
       Color : Block_Engine.Color)
    is
       Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
-      Image  : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Pixels : Gnoga.Types.Pixel_Data_Access;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Game_Screen));
       Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
@@ -181,12 +166,10 @@ package body Game_Engine is
 --           Color_To_Pix (Color),
 --           Gdouble (X_Drawing_Coordinate (X)),
 --           Gdouble (Y_Drawing_Coordinate (Y)));
-      Pixels := Color_To_Pix (Color);
-      Cr.Create_Image_Data (Image, Pixels'Length (1), Pixels'Length (2));
-      Image.Data (Pixels.all);
 --        Cairo.Paint (Cr);
       Cr.Put_Image_Data
-      (Image, X_Drawing_Coordinate (X), Y_Drawing_Coordinate (Y));
+        (Color_To_Pix (Color).all, X_Drawing_Coordinate (X),
+         Y_Drawing_Coordinate (Y));
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Pixmap( Get_Pixmap( Main_Window.Game_Screen ),
 --                                  Main_Window.GC, Color_To_Pix(Color),
@@ -200,8 +183,6 @@ package body Game_Engine is
    procedure Paint_White_Block (X : Integer; Y : Integer);
    procedure Paint_White_Block (X : Integer; Y : Integer) is
       Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
-      Image  : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Pixels : Gnoga.Types.Pixel_Data_Access;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Game_Screen));
       Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
@@ -210,12 +191,9 @@ package body Game_Engine is
 --           Main_Window.White_Pix,
 --           Gdouble (X_Drawing_Coordinate (X)),
 --           Gdouble (Y_Drawing_Coordinate (Y)));
-      Pixels := Main_Window.White_Pix;
-      Cr.Create_Image_Data (Image, Pixels'Length (1), Pixels'Length (2));
-      Image.Data (Pixels.all);
 --        Cairo.Paint (Cr);
       Cr.Put_Image_Data
-      (Image, X_Drawing_Coordinate
+      (Main_Window.White_Pix.all, X_Drawing_Coordinate
          (X), Y_Drawing_Coordinate (Y) +
        Main_Window.Delta_Y);
 --        Cairo.Destroy (Cr);
@@ -239,7 +217,8 @@ package body Game_Engine is
    end Y_Drawing_Coordinate;
 
    function Color_To_Pix
-     (Color : Block_Engine.Color) return Gnoga.Types.Pixel_Data_Access
+     (Color : Block_Engine.Color) return
+     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access
    is
    begin
       case Color is
@@ -265,9 +244,8 @@ package body Game_Engine is
    end Color_To_Pix;
 
    function Color_To_Prev_Pix
-     (Color : Block_Engine.Color) return Gnoga.Types.Pixel_Data_Access;
-   function Color_To_Prev_Pix
-     (Color : Block_Engine.Color) return Gnoga.Types.Pixel_Data_Access
+     (Color : Block_Engine.Color) return
+     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access
    is
    begin
       case Color is
@@ -293,9 +271,7 @@ package body Game_Engine is
    end Color_To_Prev_Pix;
 
    procedure Paint_Prev is
-      Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
-      Image  : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Pixels : Gnoga.Types.Pixel_Data_Access;
+      Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
       if not Main_Window.Piece_Preview then
          return;
@@ -308,13 +284,10 @@ package body Game_Engine is
 --             (Main_Window.Engine.all)),
 --           0.0,
 --           0.0);
-      Pixels :=
-        Color_To_Prev_Pix
-          (Block_Engine.Get_Next_Piece_Color (Main_Window.Engine.all));
-      Cr.Create_Image_Data (Image, Pixels'Length (1), Pixels'Length (2));
-      Image.Data (Pixels.all);
-      --        Cairo.Paint (Cr);
-      Cr.Put_Image_Data (Image, 0, 0);
+--        Cairo.Paint (Cr);
+      Cr.Put_Image_Data
+        (Color_To_Prev_Pix (Block_Engine.Get_Next_Piece_Color
+         (Main_Window.Engine.all)).all, 0, 0);
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Drawable( Get_Pixmap( Main_Window.Prev_Screen ),
 --                                    Main_Window.GC,
@@ -352,6 +325,7 @@ package body Game_Engine is
       then
          --           Show_All (New_Score_Dialog);
          New_Score_Dialog.Hidden (False);
+         --  TODO : wait for ok
       end if;
    end Terminate_Game;
 
@@ -567,7 +541,7 @@ package body Game_Engine is
            Integer (Float (Main_Window.Max_Down_Count) / 1.35);
          Initial_Level := Initial_Level - 1;
       end loop;
-      Main_Window.Down_Timeout_Interval := 0.1;--0.020; -- milliseconds
+      Main_Window.Down_Timeout_Interval := 0.020; -- milliseconds
 
       if Main_Window.Down_Timeout_ID /= 0 then
 --                    Glib.Main.Remove (Main_Window.Down_Timeout_ID);
@@ -600,7 +574,6 @@ package body Game_Engine is
          return;
       end if;
       Key := Event.Key_Code;
-      gnoga.log(key'img);
       if Key = Gnoga.Types.Key_Codes.Key_Down then
          Block_Engine.Set_Next_Move (Win.Engine.all, Block_Engine.Down);
       elsif Key = Gnoga.Types.Key_Codes.Key_Up then

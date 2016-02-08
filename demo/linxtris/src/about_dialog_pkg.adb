@@ -127,7 +127,8 @@ package body About_Dialog_Pkg is
 --
 --        Gtk_New (Alg, 0.5, 0.5, 0.0, 0.0);
 --        Gtk_New (Lbl, "Send comments to: dulio@users.sourceforge.net");
-      Win.Put_Line ("Send comments to: xxxxxx");
+      Win.Put_Line ("Send comments to: " &
+                      "http://sourceforge.net/p/gnoga/mailman/gnoga-list");
 --        Add (Alg, Lbl);
 --        Pack_Start (Box, Alg);
 --
@@ -142,7 +143,7 @@ package body About_Dialog_Pkg is
 --
 --        Gtk_New (Alg, 0.5, 0.5, 0.0, 0.0);
 --        Gtk_New (Lbl, "(20150406 - GTKAda 3 port by Pascal Pignard)");
-      Win.Put_Line ("(20150xxx - GNOGA port by Pascal Pignard)");
+      Win.Put_Line ("(20160207 - GNOGA port by Pascal Pignard)");
 --        Modify_Font (Lbl, From_String ("8"));
 --        Add (Alg, Lbl);
 --        Pack_Start (Box, Alg);

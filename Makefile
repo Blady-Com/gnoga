@@ -184,7 +184,7 @@ deps/PragmARC:
 pragmarc: deps/PragmARC
 	cd deps/PragmARC && git pull
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog linxtris
+demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -271,6 +271,7 @@ clean:
 	cd demo/connect_four && $(CLEANER) -Pconnect_four.gpr
 	- cd demo/connect_four && $(RM) connectfour_messages*
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
+	cd demo/password_gen && $(CLEANER) -Ppassword_gen.gpr
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(CLEANER) -Ptutorial_02.gpr
 	cd tutorial/tutorial-03 && $(CLEANER) -Ptutorial_03.gpr

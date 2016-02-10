@@ -1,0 +1,4 @@
+project PragmARC is
+   for Source_Dirs use ("PragmARC");
+   for Object_Dir use "../obj";
+end PragmARC;

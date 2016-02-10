@@ -183,7 +183,6 @@ deps/PragmARC:
 
 pragmarc: deps/PragmARC
 	cd deps/PragmARC && git pull
-	cd deps/PragmARC && gnatmake compile_all.adb
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog linxtris
 
@@ -206,9 +205,12 @@ connect_four: zanyblue
 	cd demo/connect_four && ../../deps/zanyblue/bin/zbmcompile -i -v -G strings connectfour_messages connectfour
 	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-# usage: bin/linxtris -data_dir demo/linxtris/
 linxtris:
 	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
+
+password_gen: pragmarc
+	cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests: gnoga
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}

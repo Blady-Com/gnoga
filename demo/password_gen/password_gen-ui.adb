@@ -151,14 +151,14 @@ package body Password_Gen.UI is
          end if;
       end loop Check_Letters;
 
-      --  Length >= 7, so if not Has_Lower, then Result (1 .. Length) has
-      --  at most 1 letter, which was capitalized by Lower_Some
-      --  if not Has_Upper, then Result (1 .. Length) has at most 1 letter,
-      --  which was not capitalized by Lower_Some
-      --  if both not Has_Lower and not Has_Upper,
-      --  then Result (1 .. Length) is all digits
-      --  In all of these cases, there are digits afer Digit_1_Index that can
-      --  be replaced by the desired kind of letter
+      -- Length >= 7, so if not Has_Lower, then Result (1 .. Length) has
+      -- at most 1 letter, which was not lowered by Lower_Some
+      -- if not Has_Upper, then Result (1 .. Length) has at most 1 letter,
+      -- which was lowered by Lower_Some
+      -- if both not Has_Lower and not Has_Upper, then Result (1 .. Length)
+      -- is all digits
+      -- In all of these cases, there are digits afer Digit_1_Index that
+      -- can be replaced by the desired kind of letter
 
       if not Has_Lower then -- Needs a lower-case letter
          Find_Digit_Lower : for I in Digit_1_Index + 1 .. Length loop

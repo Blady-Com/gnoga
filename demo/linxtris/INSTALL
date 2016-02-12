@@ -1,0 +1,17 @@
+LinXtris Version 0.1a2 port on Gnoga:
+
+This project is just begining so I haven't made an installation script yet.
+
+To compile this game you must have the Gnat compiler.
+
+Get Gnoga with:
+$ git clone git://git.code.sf.net/p/gnoga/code gnoga-code
+
+To compile type:
+$ make linxtris
+
+And to run:
+$ bin/linxtris -data_dir demo/linxtris/
+
+Hope you enjoy!
+

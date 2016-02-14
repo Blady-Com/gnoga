@@ -3,3 +3,6 @@
 # examples under this directory.
 
 set examples_dir $(joinpaths $(dirname $(dirname $(which -e zbmcompile))) examples)
+
+delenv MAKEFLAGS
+delenv MAKELEVEL

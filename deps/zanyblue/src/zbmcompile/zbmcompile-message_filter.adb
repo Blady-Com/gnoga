@@ -44,9 +44,10 @@ package body ZBMCompile.Message_Filter is
    --      V00000 - V99999   Verbose
    --      D00000 - D99999   Debug
 
-   function Is_Filtered (Filter    : in Verbose_Filter_Type;
-                         Facility  : in Wide_String;
-                         Key       : in Wide_String) return Boolean is
+   overriding
+   function Is_Filtered (Filter    : Verbose_Filter_Type;
+                         Facility  : Wide_String;
+                         Key       : Wide_String) return Boolean is
       Result        : Boolean := False;
       Key_Character : Wide_Character;
    begin

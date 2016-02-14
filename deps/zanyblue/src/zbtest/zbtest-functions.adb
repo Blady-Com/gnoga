@@ -51,17 +51,17 @@ package body ZBTest.Functions is
    use ZBTest_Messages.ZBTest_Wide_Prints;
 
    type Simple_Message_Printer is
-      access procedure (Destination : in File_Type    := Current_Output;
-                        With_NL     : in Boolean      := True;
-                        Locale      : in Locale_Type  := Current_Locale;
-                        Catalog     : in Catalog_Type := Standard_Catalog);
+      access procedure (Destination : File_Type    := Current_Output;
+                        With_NL     : Boolean      := True;
+                        Locale      : Locale_Type  := Current_Locale;
+                        Catalog     : Catalog_Type := Standard_Catalog);
 
    type Argument_Message_Printer is
-      access procedure (Argument0   : in Any_Category_Type'Class;
-                        Destination : in File_Type    := Current_Output;
-                        With_NL     : in Boolean      := True;
-                        Locale      : in Locale_Type  := Current_Locale;
-                        Catalog     : in Catalog_Type := Standard_Catalog);
+      access procedure (Argument0   : Any_Category_Type'Class;
+                        Destination : File_Type    := Current_Output;
+                        With_NL     : Boolean      := True;
+                        Locale      : Locale_Type  := Current_Locale;
+                        Catalog     : Catalog_Type := Standard_Catalog);
 
    type Function_Definition is
       record
@@ -76,18 +76,18 @@ package body ZBTest.Functions is
    type Function_List is array (Positive range <>) of Function_Definition;
    --  List of known functions.
 
-   function Find_Index (Name : in Wide_String) return Positive;
+   function Find_Index (Name : Wide_String) return Positive;
    --  Return the index in the function table for the named command.  If the
    --  function is not found, 0 is returned.
 
    function Dirname_Function (State   : access State_Type;
-                              Args    : in List_Type) return Wide_String;
+                              Args    : List_Type) return Wide_String;
    function Joinpaths_Function (State   : access State_Type;
-                                Args    : in List_Type) return Wide_String;
+                                Args    : List_Type) return Wide_String;
    function Nextlog_Function (State   : access State_Type;
-                              Args    : in List_Type) return Wide_String;
+                              Args    : List_Type) return Wide_String;
    function Which_Function (State   : access State_Type;
-                            Args    : in List_Type) return Wide_String;
+                            Args    : List_Type) return Wide_String;
 
    Function_Table : constant Function_List := (
                  (Name           => new Wide_String'("dirname"),
@@ -119,14 +119,14 @@ package body ZBTest.Functions is
    ----------------------
 
    function Dirname_Function (State   : access State_Type;
-                              Args    : in List_Type) return Wide_String is
+                              Args    : List_Type) return Wide_String is
       separate;
 
    ----------
    -- Find --
    ----------
 
-   function Find (Name : in Wide_String) return Function_Type is
+   function Find (Name : Wide_String) return Function_Type is
    begin
       return Function_Table (Find_Index (Name)).Implementation;
    end Find;
@@ -135,7 +135,7 @@ package body ZBTest.Functions is
    -- Find_Index --
    ----------------
 
-   function Find_Index (Name : in Wide_String) return Positive is
+   function Find_Index (Name : Wide_String) return Positive is
    begin
       for I in 1 .. Function_Table'Last loop
          if Name = Function_Table (I).Name.all then
@@ -159,7 +159,7 @@ package body ZBTest.Functions is
    ------------------------
 
    function Joinpaths_Function (State   : access State_Type;
-                                Args    : in List_Type) return Wide_String is
+                                Args    : List_Type) return Wide_String is
       separate;
 
    ----------------------
@@ -167,7 +167,7 @@ package body ZBTest.Functions is
    ----------------------
 
    function Nextlog_Function (State   : access State_Type;
-                              Args    : in List_Type) return Wide_String is
+                              Args    : List_Type) return Wide_String is
       separate;
 
    -------------------------
@@ -183,7 +183,7 @@ package body ZBTest.Functions is
    -- Print_Function_Help --
    -------------------------
 
-   procedure Print_Function_Help (Name : in Wide_String) is
+   procedure Print_Function_Help (Name : Wide_String) is
    begin
       Function_Table (Find_Index (Name)).Help.all;
    exception
@@ -195,8 +195,8 @@ package body ZBTest.Functions is
    -- Print_Function_Summary --
    ----------------------------
 
-   procedure Print_Function_Summary (Name  : in Wide_String;
-                                     Index : in Positive) is
+   procedure Print_Function_Summary (Name  : Wide_String;
+                                     Index : Positive) is
    begin
       Function_Table (Find_Index (Name)).Summary.all (+Index);
    end Print_Function_Summary;
@@ -215,7 +215,7 @@ package body ZBTest.Functions is
    --------------------
 
    function Which_Function (State   : access State_Type;
-                            Args    : in List_Type) return Wide_String is
+                            Args    : List_Type) return Wide_String is
       separate;
 
 end ZBTest.Functions;

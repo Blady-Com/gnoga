@@ -36,6 +36,6 @@
 # only have the values "Alpha", "Beta" or "Production" (see the Status
 # type in the root package).
 V_MAJOR=1
-V_MINOR=2
-V_PATCH=1
+V_MINOR=3
+V_PATCH=0
 V_STATUS=Beta

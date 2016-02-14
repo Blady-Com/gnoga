@@ -38,6 +38,7 @@ with ZanyBlue.Test.Text.Buffer.Suites;
 with ZanyBlue.Test.Text.Catalogs.Suites;
 with ZanyBlue.Test.Text.Characters.Suites;
 with ZanyBlue.Test.Text.CLDR.Suites;
+with ZanyBlue.Test.Text.Codecs.Suites;
 with ZanyBlue.Test.Text.Durations.Suites;
 with ZanyBlue.Test.Text.Exceptions.Suites;
 with ZanyBlue.Test.Text.Floats.Suites;
@@ -79,6 +80,7 @@ package body ZanyBlue.Test.Text.Suites is
       Add_Test (Result, Catalogs.Suites.Suite);
       Add_Test (Result, Characters.Suites.Suite);
       Add_Test (Result, CLDR.Suites.Suite);
+      Add_Test (Result, Codecs.Suites.Suite);
       Add_Test (Result, Durations.Suites.Suite);
       Add_Test (Result, Exceptions.Suites.Suite);
       Add_Test (Result, Floats.Suites.Suite);

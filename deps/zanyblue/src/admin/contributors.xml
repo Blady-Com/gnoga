@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<contributors>
+  <contributor>
+    <name>Pascal Pignard</name>
+    <url>emailto:blady-com@users.sf.net</url>
+    <description>
+      The initial implementation of the Encoding/Decoding support was
+      implemented and contributed by Pascal.
+    </description>
+  </contributor>
+</contributors>

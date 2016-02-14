@@ -56,7 +56,7 @@ package body ZanyBlue.Text.Properties_Parser is
    -- Get_N_Errors --
    ------------------
 
-   function Get_N_Errors (Handler : in Parser_Handler_Type) return Natural is
+   function Get_N_Errors (Handler : Parser_Handler_Type) return Natural is
    begin
       return Handler.N_Errors;
    end Get_N_Errors;
@@ -65,7 +65,7 @@ package body ZanyBlue.Text.Properties_Parser is
    -- Get_N_Messages --
    --------------------
 
-   function Get_N_Messages (Handler : in Parser_Handler_Type) return Natural is
+   function Get_N_Messages (Handler : Parser_Handler_Type) return Natural is
    begin
       return Handler.N_Messages;
    end Get_N_Messages;
@@ -75,7 +75,7 @@ package body ZanyBlue.Text.Properties_Parser is
    ----------------------
 
    procedure Increment_Errors (Handler   : in out Parser_Handler_Type;
-                               By_Amount : in Natural := 1) is
+                               By_Amount : Natural := 1) is
    begin
       Handler.N_Errors := Handler.N_Errors + By_Amount;
    end Increment_Errors;
@@ -94,9 +94,9 @@ package body ZanyBlue.Text.Properties_Parser is
    -----------
 
    procedure Parse (Handler          : in out Parser_Handler_Type'Class;
-                    File_Name        : in Wide_String;
-                    Facility         : in Wide_String;
-                    Locale           : in Locale_Type) is
+                    File_Name        : Wide_String;
+                    Facility         : Wide_String;
+                    Locale           : Locale_Type) is
    begin
       Parse (Handler, File_Name, Facility, Locale, Locale);
    end Parse;
@@ -106,10 +106,10 @@ package body ZanyBlue.Text.Properties_Parser is
    -----------
 
    procedure Parse (Handler       : in out Parser_Handler_Type'Class;
-                    File_Name     : in Wide_String;
-                    Facility      : in Wide_String;
-                    Locale        : in Locale_Type;
-                    Source_Locale : in Locale_Type) is
+                    File_Name     : Wide_String;
+                    Facility      : Wide_String;
+                    Locale        : Locale_Type;
+                    Source_Locale : Locale_Type) is
       Source_File   : File_Type;
       Opened        : Boolean := False;
    begin
@@ -131,9 +131,9 @@ package body ZanyBlue.Text.Properties_Parser is
 
    procedure Parse (Handler          : in out Parser_Handler_Type'Class;
                     Source_File      : in out File_Type;
-                    File_Name        : in Wide_String;
-                    Facility         : in Wide_String;
-                    Locale           : in Locale_Type) is
+                    File_Name        : Wide_String;
+                    Facility         : Wide_String;
+                    Locale           : Locale_Type) is
    begin
       Parse (Handler, Source_File, File_Name, Facility, Locale, Locale);
    end Parse;
@@ -144,10 +144,10 @@ package body ZanyBlue.Text.Properties_Parser is
 
    procedure Parse (Handler       : in out Parser_Handler_Type'Class;
                     Source_File   : in out File_Type;
-                    File_Name     : in Wide_String;
-                    Facility      : in Wide_String;
-                    Locale        : in Locale_Type;
-                    Source_Locale : in Locale_Type) is
+                    File_Name     : Wide_String;
+                    Facility      : Wide_String;
+                    Locale        : Locale_Type;
+                    Source_Locale : Locale_Type) is
 
       package Key_To_Line_Maps is
          new Ada.Containers.Indefinite_Hashed_Maps
@@ -155,7 +155,6 @@ package body ZanyBlue.Text.Properties_Parser is
              Element_Type    => Natural,
              Equivalent_Keys => "=",
              Hash            => Ada.Strings.Hash);
-
 
       Key_Definitions : Key_To_Line_Maps.Map;
       Source_Stream   : Stream_Access;
@@ -168,11 +167,11 @@ package body ZanyBlue.Text.Properties_Parser is
       procedure Kill_Line;
       --  Kill, ignore, a line when an error has been encountered.
 
-      procedure New_Message (Key   : in String;
-                             Value : in String);
+      procedure New_Message (Key   : String;
+                             Value : String);
       --  Perform the call back to define a new key/value pair.
 
-      function Next (Require_ISO_646 : in Boolean := True) return Character;
+      function Next (Require_ISO_646 : Boolean := True) return Character;
       --  Return the next character from the input stream.
 
       ---------------
@@ -195,8 +194,8 @@ package body ZanyBlue.Text.Properties_Parser is
       -- New_Message --
       -----------------
 
-      procedure New_Message (Key   : in String;
-                             Value : in String) is
+      procedure New_Message (Key   : String;
+                             Value : String) is
 
          use Key_To_Line_Maps;
 
@@ -218,7 +217,7 @@ package body ZanyBlue.Text.Properties_Parser is
       -- Next --
       ----------
 
-      function Next (Require_ISO_646 : in Boolean := True) return Character is
+      function Next (Require_ISO_646 : Boolean := True) return Character is
       begin
          if not End_Of_File (Source_File) then
             Character'Read (Source_Stream, Cur_Character);

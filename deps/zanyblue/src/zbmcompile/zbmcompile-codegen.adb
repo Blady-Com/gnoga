@@ -62,7 +62,7 @@ package body ZBMCompile.Codegen is
    -- Modes_String --
    ------------------
 
-   function Modes_String (Options : in Parameter_Set_Type) return Wide_String
+   function Modes_String (Options : Parameter_Set_Type) return Wide_String
    is
    begin
       if Options.Get_Boolean ("parameter_modes") then
@@ -76,8 +76,8 @@ package body ZBMCompile.Codegen is
    -- Optimize --
    --------------
 
-   function Optimize (Catalog : in Catalog_Type;
-                      Options : in Parameter_Set_Type) return Catalog_Type is
+   function Optimize (Catalog : Catalog_Type;
+                      Options : Parameter_Set_Type) return Catalog_Type is
 
       type Message_Record_Type is
          record
@@ -88,7 +88,7 @@ package body ZBMCompile.Codegen is
             Length        : Natural;
          end record;
 
-      function "<" (Left, Right : in Message_Record_Type) return Boolean;
+      function "<" (Left, Right : Message_Record_Type) return Boolean;
 
       package Message_Vectors is
          new Ada.Containers.Vectors (Index_Type   => Positive,
@@ -98,20 +98,20 @@ package body ZBMCompile.Codegen is
 
       package Message_Sorting is new Generic_Sorting;
 
-      procedure Add_Message (Message : in Message_Record_Type);
+      procedure Add_Message (Message : Message_Record_Type);
 
-      procedure Iteration_Handler (Facility      : in Facility_Index_Type;
-                                   Key           : in Key_Index_Type;
-                                   Locale        : in Locale_Index_Type;
-                                   Source_Locale : in Locale_Index_Type;
-                                   First         : in Positive;
-                                   Last          : in Natural;
-                                   Count         : in Natural);
+      procedure Iteration_Handler (Facility      : Facility_Index_Type;
+                                   Key           : Key_Index_Type;
+                                   Locale        : Locale_Index_Type;
+                                   Source_Locale : Locale_Index_Type;
+                                   First         : Positive;
+                                   Last          : Natural;
+                                   Count         : Natural);
 
-      procedure Summarize_Locale (Catalog         : in Catalog_Type;
+      procedure Summarize_Locale (Catalog         : Catalog_Type;
                                   Previous_Locale : in out Natural;
                                   Message_Count   : in out Natural;
-                                  New_Locale      : in Natural);
+                                  New_Locale      : Natural);
 
       Result            : constant Catalog_Type := Create;
       Messages          : Message_Vectors.Vector;
@@ -122,7 +122,7 @@ package body ZBMCompile.Codegen is
       -- "<" --
       ---------
 
-      function "<" (Left, Right : in Message_Record_Type) return Boolean is
+      function "<" (Left, Right : Message_Record_Type) return Boolean is
       begin
          if Left.Locale /= Right.Locale then
             return Left.Locale < Right.Locale;
@@ -135,7 +135,7 @@ package body ZBMCompile.Codegen is
       -- Add_Message --
       -----------------
 
-      procedure Add_Message (Message : in Message_Record_Type) is
+      procedure Add_Message (Message : Message_Record_Type) is
          Facility           : constant Wide_String :=
                                  Get_Facility (Catalog, Message.Facility);
          Key                : constant Wide_String :=
@@ -160,13 +160,13 @@ package body ZBMCompile.Codegen is
       -- Iteration_Handler --
       -----------------------
 
-      procedure Iteration_Handler (Facility      : in Facility_Index_Type;
-                                   Key           : in Key_Index_Type;
-                                   Locale        : in Locale_Index_Type;
-                                   Source_Locale : in Locale_Index_Type;
-                                   First         : in Positive;
-                                   Last          : in Natural;
-                                   Count         : in Natural) is
+      procedure Iteration_Handler (Facility      : Facility_Index_Type;
+                                   Key           : Key_Index_Type;
+                                   Locale        : Locale_Index_Type;
+                                   Source_Locale : Locale_Index_Type;
+                                   First         : Positive;
+                                   Last          : Natural;
+                                   Count         : Natural) is
 
          pragma Unreferenced (Count);
 
@@ -185,10 +185,10 @@ package body ZBMCompile.Codegen is
       -- Summarize_Locale --
       ----------------------
 
-      procedure Summarize_Locale (Catalog         : in Catalog_Type;
+      procedure Summarize_Locale (Catalog         : Catalog_Type;
                                   Previous_Locale : in out Natural;
                                   Message_Count   : in out Natural;
-                                  New_Locale      : in Natural) is
+                                  New_Locale      : Natural) is
       begin
          if Previous_Locale /= New_Locale then
             if Previous_Locale /= 0 then
@@ -225,7 +225,7 @@ package body ZBMCompile.Codegen is
    -- Sanitize --
    --------------
 
-   function Sanitize (Value : in Wide_String) return Wide_String is
+   function Sanitize (Value : Wide_String) return Wide_String is
       use Ada.Strings.Wide_Unbounded;
       use Ada.Wide_Characters.Unicode;
       Buffer : Unbounded_Wide_String;
@@ -259,9 +259,9 @@ package body ZBMCompile.Codegen is
    -- Write_Commented_Text --
    --------------------------
 
-   procedure Write_Commented_Text (File       : in File_Type;
-                                   Value      : in Wide_String;
-                                   Block_Size : in Positive) is
+   procedure Write_Commented_Text (File       : File_Type;
+                                   Value      : Wide_String;
+                                   Block_Size : Positive) is
       use Ada.Strings.Wide_Fixed;
       NL_String  : constant Wide_String (1 .. 1)
                               := (others => Wide_Character'Val (10));
@@ -292,9 +292,9 @@ package body ZBMCompile.Codegen is
    -- Write_Commented_Text_Line --
    -------------------------------
 
-   procedure Write_Commented_Text_Line (File       : in File_Type;
-                                        Value      : in Wide_String;
-                                        Block_Size : in Positive) is
+   procedure Write_Commented_Text_Line (File       : File_Type;
+                                        Value      : Wide_String;
+                                        Block_Size : Positive) is
       use Ada.Wide_Characters.Unicode;
       N_Blocks : constant Natural := Value'Length / Block_Size;
       From, To : Natural;

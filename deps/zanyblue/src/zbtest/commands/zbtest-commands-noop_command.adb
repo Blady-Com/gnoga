@@ -34,7 +34,7 @@
 
 separate (ZBTest.Commands)
 procedure Noop_Command (State : in out State_Type;
-                        Args  : in List_Type) is
+                        Args  : List_Type) is
 
    pragma Unreferenced (State);
 

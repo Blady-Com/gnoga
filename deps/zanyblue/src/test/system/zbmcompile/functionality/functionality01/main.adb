@@ -42,13 +42,13 @@ procedure Main is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
 
-   procedure Dump_Values (Facility : in Wide_String;
-                          Locale   : in Locale_Type;
-                          Extra    : in Boolean);
+   procedure Dump_Values (Facility : Wide_String;
+                          Locale   : Locale_Type;
+                          Extra    : Boolean);
 
-   procedure Dump_Values (Facility : in Wide_String;
-                          Locale   : in Locale_Type;
-                          Extra    : in Boolean) is
+   procedure Dump_Values (Facility : Wide_String;
+                          Locale   : Locale_Type;
+                          Extra    : Boolean) is
    begin
       Put_Line ("DUMPING LOCALE: """ & Locale_Name (Locale) & """");
       Print_Line (Facility, "hello", Locale => Locale);

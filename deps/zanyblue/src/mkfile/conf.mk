@@ -97,13 +97,7 @@ GPRDIR=$(TOP)/lib/gnat
 SRCDIR=$(TOP)/src
 STAGEDIR=$(TOP)/stage
 ADMINDIR=$(SRCDIR)/admin
-ifeq ($(DEV_BUILD),no)
-GANALYTICSHTI=$(ADMINDIR)/ganalytics.hti
-else
-GANALYTICSHTI=$(ADMINDIR)/ganalytics-stub.hti
-endif
 DISTRIBUTION=$(wildcard $(TOP)/zanyblue-*.tar.gz)
-DISTRIBDIR=$(wildcard $(STAGEDIR)/*)
 
 # The choices for BUILD are "Debug", for a debug build, "Production" for an
 # optimized production build, and  "Coverage" for a coverage enable build via

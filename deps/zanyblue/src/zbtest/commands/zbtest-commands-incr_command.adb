@@ -34,7 +34,7 @@
 
 separate (ZBTest.Commands)
 procedure Incr_Command (State : in out State_Type;
-                        Args  : in List_Type) is
+                        Args  : List_Type) is
 
       Param_Idx : Natural := 0;
       All_P     : Boolean := False;

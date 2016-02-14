@@ -5,10 +5,10 @@ GPS.
 
 = OVERVIEW =
 
-The patches here convert GPS 4.4.1, 5.0.1, 5.1.1 and 5.2.1 releases to an
-externalized strings version using the ZanyBlue Text library.  The conversion
-was driven by the existing internationalization mechanism in GPS where strings
-to be localized were identified by the "-" operator via the GPS.Intl package.
+The patches here convert GPS 4.4.1, 5.0.1 and 5.1.1 releases to an externalized
+strings version using the ZanyBlue Text library.  The conversion was driven by
+the existing internationalization mechanism in GPS where strings to be localized
+were identified by the "-" operator via the GPS.Intl package.
 
 Each top level component within GPS was independently externalized to ZanyBlue
 .properties files within a "mesg" directory of the component, e.g., the
@@ -90,25 +90,6 @@ The "5.1.1" version was built using GNAT 2011 rather than GNAT 2012.  The
 "gtkada" regardless of the results of the test for the installation of the
 package.
 
-The "5.2.1" version was built using GNAT 2012 rather than GNAT 2013.  The
-"gnatlib/configure" scripts was manually updated to enable "gtkada" regardless
-of the results of the test for the installation of the package.  For reference,
-the options configured were
-
-configure: --------- Summary for GNAT Components --------------
-configure:   Shared libraries:       yes (default: static)
-configure:   Gtk+:                   yes (requires pkg-config and gtkada.gpr)
-configure:   Python:                 yes /usr (see --with-python)
-configure:   PyGtk:                  no  (see --enable-pygtk)
-configure:   PyGObject:              no (see --enable-pygobject)
-configure:   Syslog:                 yes (see --enable-syslog)
-configure:   Readline (GPL license): no (see --with-readline --enable-gpl)
-configure:   gmp:                    no (see --with-gmp)
-configure:   PostgreSQL:             yes -L/usr/lib (see --with-postgresql)
-configure:   Sqlite:                 embedded  (see --with-sqlite)
-configure:   Projects:               yes
-configure: --------------------------------------------
-
 1) Download the release and extract the release bundle:
 
   << Download gps-4.4.1-gpl-src.tgz from http://libre.adacore.com >>
@@ -122,8 +103,6 @@ configure: --------------------------------------------
    patching file ada_module/src/ada_module.adb
    ...
    patching file widgets/src/collapsing_pane.adb
-
-   This patch is not needed for the 5.1.1 or 5.2.1 GPS releases.
 
 3) The ZBIZED-4.4.1.PATCH should then be applied to switch to ZanyBlue text
    formatting and add the .properties files:
@@ -212,7 +191,3 @@ configure: --------------------------------------------
    Enabling pseudo-translations
 
    See the image gps-screenshot-pseudoh.jpg
-
-   The message compilation includes the message text as a comment on the
-   generated accessor routines.  See the image gps-formatdesc.jpg for an
-   example of the display with GPS of the GPS source.

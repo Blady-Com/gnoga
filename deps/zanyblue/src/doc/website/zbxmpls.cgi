@@ -94,9 +94,12 @@ my %pseudo_options = (
     "Uppercase"             => "u",
 );
 
-my $template = sprintf ("%s/examples.html", $tmpldir);
 my $cgi = new CGI ();
 my $params = $cgi->Vars;
+if ($cgi->param ('dumpapps')) {
+    dumpapps (\%examples);
+}
+my $template = sprintf ("%s/examples.html", $tmpldir);
 my $application = get_param ($params, 'application', "", keys (%examples));
 my $locale = get_param ($params, 'locale', "en", values (%locales));
 my $pseudo = get_param ($params, 'pseudo', "n", values (%pseudo_options));
@@ -104,6 +107,18 @@ my $html = expand_template($application, $template, $locale, $pseudo,
                            \%examples, \%locales, \%pseudo_options);
 print $cgi->header(-charset => "UTF-8");
 printf ("%s\n", $html);
+
+############
+# dumpapps #
+############
+
+sub dumpapps {
+    my $examples = shift;
+    foreach my $application (sort (keys (%{$examples}))) {
+        printf ("%s\n", $application);
+    }
+    exit (0);
+}
 
 ###################
 # execute_command #

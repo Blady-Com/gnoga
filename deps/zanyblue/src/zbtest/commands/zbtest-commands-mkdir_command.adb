@@ -37,13 +37,13 @@ with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
 procedure Mkdir_Command (State : in out State_Type;
-                         Args  : in List_Type) is
+                         Args  : List_Type) is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
 
    procedure Make_Directory (State : in out State_Type;
-                             Name  : in Wide_String);
+                             Name  : Wide_String);
    --  The make directory helper function.
 
    --------------------
@@ -51,7 +51,7 @@ procedure Mkdir_Command (State : in out State_Type;
    --------------------
 
    procedure Make_Directory (State : in out State_Type;
-                             Name  : in Wide_String) is
+                             Name  : Wide_String) is
    begin
       Wide_Create_Directory (Name);
       State.Add_Undo_Action (Format ("delete -r {0}", +Name));

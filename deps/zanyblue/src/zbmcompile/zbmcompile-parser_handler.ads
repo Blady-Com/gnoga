@@ -106,60 +106,60 @@ package ZBMCompile.Parser_Handler is
 
    overriding
    procedure Add_Key_Value (Handler       : in out ZBMC_Handler_Type;
-                            Facility      : in Wide_String;
-                            Key           : in Wide_String;
-                            Value         : in Wide_String;
-                            Locale        : in Locale_Type;
-                            Source_Locale : in Locale_Type;
-                            File_Name     : in Wide_String;
-                            Line_Number   : in Natural);
+                            Facility      : Wide_String;
+                            Key           : Wide_String;
+                            Value         : Wide_String;
+                            Locale        : Locale_Type;
+                            Source_Locale : Locale_Type;
+                            File_Name     : Wide_String;
+                            Line_Number   : Natural);
    --  Call back used to add messages to a catalog.  Simply verify the message
    --  and then invoke our parent's method to do the actually addition.
 
    overriding
    procedure Duplicate_Key (Handler       : in out ZBMC_Handler_Type;
-                            Facility      : in Wide_String;
-                            Key           : in Wide_String;
-                            Locale        : in Locale_Type;
-                            File_Name     : in Wide_String;
-                            Current_Line  : in Natural;
-                            Previous_Line : in Natural);
+                            Facility      : Wide_String;
+                            Key           : Wide_String;
+                            Locale        : Locale_Type;
+                            File_Name     : Wide_String;
+                            Current_Line  : Natural;
+                            Previous_Line : Natural);
    --  Call back used to report a duplicate key error.
 
    overriding
    procedure Invalid_Character (Handler         : in out ZBMC_Handler_Type;
-                                Facility        : in Wide_String;
-                                File_Name       : in Wide_String;
-                                Current_Line    : in Natural;
-                                Ch              : in Character);
+                                Facility        : Wide_String;
+                                File_Name       : Wide_String;
+                                Current_Line    : Natural;
+                                Ch              : Character);
    --  Call back used to report an invalid character, non-ISO-646, in the
    --  source properties file.
 
    overriding
    procedure Invalid_Definition (Handler         : in out ZBMC_Handler_Type;
-                                 Facility        : in Wide_String;
-                                 Locale          : in Locale_Type;
-                                 File_Name       : in Wide_String;
-                                 Current_Line    : in Natural;
-                                 Additional_Info : in String);
+                                 Facility        : Wide_String;
+                                 Locale          : Locale_Type;
+                                 File_Name       : Wide_String;
+                                 Current_Line    : Natural;
+                                 Additional_Info : String);
    --  Call back used to report an invalid .properties file line error.
 
    procedure Message_Iterate (
-      Handler  : in ZBMC_Handler_Type;
-      Facility : in Wide_String;
+      Handler  : ZBMC_Handler_Type;
+      Facility : Wide_String;
       Callback : not null access procedure
-                                    (Catalog  : in Catalog_Type;
-                                     Facility : in Wide_String;
-                                     Key      : in Wide_String;
-                                     Locales  : in Locale_Definitions_Map));
+                                    (Catalog  : Catalog_Type;
+                                     Facility : Wide_String;
+                                     Key      : Wide_String;
+                                     Locales  : Locale_Definitions_Map));
    --  Iterate over the messages defined for a facility by message key.  The
    --  Locale_Info vector gives information on whether or not a key is defined
    --  for a particular locale index and, if defined, the number of arguments
    --  the message expects.
 
-   function Facility_Defines_Locale (Handler  : in ZBMC_Handler_Type;
-                                     Facility : in Wide_String;
-                                     Locale   : in Wide_String) return Boolean;
+   function Facility_Defines_Locale (Handler  : ZBMC_Handler_Type;
+                                     Facility : Wide_String;
+                                     Locale   : Wide_String) return Boolean;
    --  Was the given locale loaded for the given facility?
 
 end ZBMCompile.Parser_Handler;

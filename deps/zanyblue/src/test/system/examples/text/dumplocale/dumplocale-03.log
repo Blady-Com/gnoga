@@ -1,4 +1,4 @@
-.*: ".*" up to date.*
+.*: .* up to date.*
 This is DUMPLOCALE, Version .*
 
 Dump of the locale "ja"
@@ -6,6 +6,7 @@ Dump of the locale "ja"
     Language                  "ja"
     Script                    ""
     Territory                 ""
+    Encoding                  "" (implemented as "UTF-8")
     Name                      "ja"
     Traits Name               "ja"
     Traits Tag                "JA        "

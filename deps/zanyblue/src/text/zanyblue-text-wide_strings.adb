@@ -42,7 +42,7 @@ package body ZanyBlue.Text.Wide_Strings is
    -- Create --
    ------------
 
-   function Create (Wide_String_Value : in Wide_String)
+   function Create (Wide_String_Value : Wide_String)
       return Wide_String_Argument_Type is
    begin
       return Wide_String_Argument_Type'(Length => Wide_String_Value'Length,
@@ -53,10 +53,11 @@ package body ZanyBlue.Text.Wide_Strings is
    -- Format --
    ------------
 
-   function Format (Value     : in Wide_String_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String is
+   overriding
+   function Format (Value     : Wide_String_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String is
       pragma Unreferenced (Type_Name);
 
       Formatting : constant Format_Type := Parse (Template, Locale);

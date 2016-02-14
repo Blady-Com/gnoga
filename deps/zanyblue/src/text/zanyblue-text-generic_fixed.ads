@@ -44,18 +44,18 @@ package ZanyBlue.Text.Generic_Fixed is
 
    type Fixed_Argument_Type is new Fixed_Category_Type with private;
 
-   function Create (Fixed_Value : in Fixed_Type) return Fixed_Argument_Type;
+   function Create (Fixed_Value : Fixed_Type) return Fixed_Argument_Type;
    --  Create a "boxed" instance of fixed value.
 
-   function "+" (Fixed_Value : in Fixed_Type) return Fixed_Argument_Type
+   function "+" (Fixed_Value : Fixed_Type) return Fixed_Argument_Type
       renames Create;
    --  Utility renaming of the "Create" function.
 
    overriding
-   function Format (Value     : in Fixed_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String;
+   function Format (Value     : Fixed_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String;
    --  Format an enumeration value for printing.
 
 private

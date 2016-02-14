@@ -44,28 +44,28 @@ package ZanyBlue.Utils is
 
    type Source_Naming_Style_Type is (GNAT_Naming_Style);
 
-   function Banner (Facility_Name      : in Wide_String;
-                    Banner_Message     : in Wide_String := "00001";
-                    Copyright_Message  : in Wide_String := "00002";
-                    Catalog            : in Catalog_Type := Standard_Catalog)
+   function Banner (Facility_Name      : Wide_String;
+                    Banner_Message     : Wide_String := "00001";
+                    Copyright_Message  : Wide_String := "00002";
+                    Catalog            : Catalog_Type := Standard_Catalog)
       return Time;
    --  Print a stdandard application banner on startup returning the start
    --  time.
 
-   function Body_File_Name (Package_Name : in Wide_String;
-                            Style        : in Source_Naming_Style_Type)
+   function Body_File_Name (Package_Name : Wide_String;
+                            Style        : Source_Naming_Style_Type)
       return Wide_String;
    --  Return the file name the compiler expects for a body file.
 
-   function Spec_File_Name (Package_Name : in Wide_String;
-                            Style        : in Source_Naming_Style_Type)
+   function Spec_File_Name (Package_Name : Wide_String;
+                            Style        : Source_Naming_Style_Type)
       return Wide_String;
    --  Return the file name the compiler expects for a spec file.
 
-   procedure Trailer (Facility_Name     : in Wide_String;
-                      Start_Time        : in Time;
-                      Trailer_Message   : in Wide_String := "00003";
-                      Catalog           : in Catalog_Type := Standard_Catalog);
+   procedure Trailer (Facility_Name     : Wide_String;
+                      Start_Time        : Time;
+                      Trailer_Message   : Wide_String := "00003";
+                      Catalog           : Catalog_Type := Standard_Catalog);
    --  Print the standard "goodbye" message prior to exiting an application.
 
 end ZanyBlue.Utils;

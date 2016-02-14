@@ -42,10 +42,11 @@ package body ZanyBlue.Test.Reporter_XML is
                            Prefix  : String;
                            Value   : String;
                            Postfix : String);
-   procedure Dump_Result_List (L : Result_Lists.List);
+   procedure Dump_Result_List (Engine : XML_Reporter;
+                               L : Result_Lists.List);
    --  List failed assertions
 
-   procedure Report_Test (Test : Test_Result);
+   procedure Report_Test (Engine : XML_Reporter; Test : Test_Result);
    --  Report a single assertion failure or unexpected exception
 
    function Elapsed_Time (Test : Test_Result) return String;
@@ -54,7 +55,8 @@ package body ZanyBlue.Test.Reporter_XML is
    -- Dump_Result_List --
    ----------------------
 
-   procedure Dump_Result_List (L : Result_Lists.List) is
+   procedure Dump_Result_List (Engine : XML_Reporter;
+                               L : Result_Lists.List) is
 
       use Result_Lists;
 
@@ -66,7 +68,7 @@ package body ZanyBlue.Test.Reporter_XML is
       --  No_Implicit_Dynamic_Code
 
       while Has_Element (C) loop
-         Report_Test (Element (C));
+         Report_Test (Engine, Element (C));
          Next (C);
       end loop;
    end Dump_Result_List;
@@ -85,11 +87,11 @@ package body ZanyBlue.Test.Reporter_XML is
    -- Report --
    ------------
 
+   overriding
    procedure Report (Engine : XML_Reporter;
                      R      : in out Result'Class;
                      Options : AUnit_Options := Default_Options)
    is
-      pragma Unreferenced (Engine);
       pragma Unreferenced (Options);
    begin
       Put_Line ("<?xml version=""1.0"" encoding=""utf-8""?>");
@@ -99,21 +101,21 @@ package body ZanyBlue.Test.Reporter_XML is
          S : Result_Lists.List;
       begin
          Successes (R, S);
-         Dump_Result_List (S);
+         Dump_Result_List (Engine, S);
       end;
 
       declare
          F : Result_Lists.List;
       begin
          Failures (R, F);
-         Dump_Result_List (F);
+         Dump_Result_List (Engine, F);
       end;
 
       declare
          E : Result_Lists.List;
       begin
          Errors (R, E);
-         Dump_Result_List (E);
+         Dump_Result_List (Engine, E);
       end;
 
       Put_Line ("</testsuites>");
@@ -123,10 +125,17 @@ package body ZanyBlue.Test.Reporter_XML is
    -- Report_Error --
    ------------------
 
-   procedure Report_Test (Test : Test_Result) is
+   procedure Report_Test (Engine : XML_Reporter; Test : Test_Result) is
    begin
-      Write_String (1, "<testsuite name=""", Test.Test_Name.all, """");
-      Write_String (2, "package=""", Test.Test_Name.all, """>");
+      if Engine.Prefix /= null then
+         Write_String (1, "<testsuite name=""",
+                       Engine.Prefix.all & "." & Test.Test_Name.all, """");
+         Write_String (2, "package=""",
+                       Engine.Prefix.all & "." & Test.Test_Name.all, """>");
+      else
+         Write_String (1, "<testsuite name=""", Test.Test_Name.all, """");
+         Write_String (2, "package=""", Test.Test_Name.all, """>");
+      end if;
 
       if Test.Routine_Name /= null then
          Write_String (2, "<testcase name=""", Test.Routine_Name.all, """");

@@ -43,8 +43,8 @@ package ZBMCompile.Checks is
    --  to support accessor function generation.
 
    procedure Consistency_Check (Handler     : in out ZBMC_Handler_Type;
-                                Facility    : in Wide_String;
-                                Base_Locale : in Wide_String);
+                                Facility    : Wide_String;
+                                Base_Locale : Wide_String);
    --  Check cross locale consistency of messages, i.e., ensure localized
    --  messages do not have more argument references than the base locale.
    --  It's OK for a localized message to have less argument references.

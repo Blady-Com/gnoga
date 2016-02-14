@@ -57,19 +57,19 @@ package ZanyBlue.Parameters is
    --  Constant empty list.
 
    procedure Append (List  : in out List_Type;
-                     Value : in Wide_String);
+                     Value : Wide_String);
    --  Append a string to a list type.
 
    procedure Append (List  : in out List_Type;
-                     Value : in List_Type)
+                     Value : List_Type)
       renames Word_List_Package.Append;
    --  Append one list to another.
 
-   function Length (List : in List_Type) return Natural;
+   function Length (List : List_Type) return Natural;
    --  Return the length of a list.
 
-   function Value (List  : in List_Type;
-                   Index : in Positive) return Wide_String;
+   function Value (List  : List_Type;
+                   Index : Positive) return Wide_String;
    --  Return the value at the given index.  Raises Constraint_Error for
    --  out of bound index values.
 

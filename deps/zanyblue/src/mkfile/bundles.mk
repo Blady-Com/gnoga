@@ -48,6 +48,9 @@ dist-bundles bundles: tar-bundles
 ws-bundle:
 	$(MKWEBBUNDLE) $(MKWEBBUNDLE_OPTIONS) -t zip
 
+inventory:
+	$(MKBUNDLES) -I
+
 tar-bundles:
 	$(MKBUNDLES) -t tar.gz
 

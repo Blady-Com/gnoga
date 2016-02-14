@@ -79,6 +79,8 @@ package body ZanyBlue.Test.Text.Pseudo.Suites is
    begin
       return Format ("ZanyBlue.Text.Pseudo");
    end Name;
+
+   overriding
    procedure Register_Tests (T : in out Test_Case) is
    begin
       Add_Routine (T, T_0001'Access, "T_0001, Uppercase mappings");
@@ -86,7 +88,6 @@ package body ZanyBlue.Test.Text.Pseudo.Suites is
       Add_Routine (T, T_0003'Access, "T_0003, Halfwidth_Forms mappings");
       Add_Routine (T, T_0004'Access, "T_0004, Enclosed_Alphanumeric mappings");
    end Register_Tests;
-
 
    function Suite return Access_Test_Suite is
       Result : constant Access_Test_Suite := new Test_Suite;

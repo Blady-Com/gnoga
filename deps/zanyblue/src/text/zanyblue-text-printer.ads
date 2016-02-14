@@ -67,6 +67,7 @@ package ZanyBlue.Text.Printer is
 
    type Standard_Printer_Type is new Printer_Type with private;
 
+   overriding
    procedure Print (Printer     : Standard_Printer_Type;
                     Destination : Ada.Text_IO.File_Type;
                     Facility    : Wide_String;
@@ -76,6 +77,7 @@ package ZanyBlue.Text.Printer is
                     Message     : Wide_String;
                     With_NL     : Boolean);
 
+   overriding
    procedure Print (Printer     : Standard_Printer_Type;
                     Destination : Ada.Wide_Text_IO.File_Type;
                     Facility    : Wide_String;

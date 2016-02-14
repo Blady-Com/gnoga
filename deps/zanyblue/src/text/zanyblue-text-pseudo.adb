@@ -268,7 +268,7 @@ package body ZanyBlue.Text.Pseudo is
    -----------------
 
    procedure Add_Mapping (Pseudo_Map : in out Pseudo_Map_Type;
-                          Mapping    : in Pseudo_Map_Vector) is
+                          Mapping    : Pseudo_Map_Vector) is
       From : Wide_Character_Set := Null_Set;
       To   : Wide_Character_Set := Null_Set;
    begin
@@ -328,8 +328,8 @@ package body ZanyBlue.Text.Pseudo is
    -- Map --
    ---------
 
-   function Map (Pseudo_Map : in Pseudo_Map_Type;
-                 Ch         : in Wide_Character) return Wide_Character is
+   function Map (Pseudo_Map : Pseudo_Map_Type;
+                 Ch         : Wide_Character) return Wide_Character is
    begin
       return Value (Pseudo_Map.Mapping, Ch);
    end Map;

@@ -41,8 +41,8 @@ package body ZanyBlue.Text.Message_Maps is
    ---------
 
    procedure Add (Message_Map : in out Message_Map_Type;
-                  Triple      : in Message_Triple;
-                  Message     : in Message_Definition) is
+                  Triple      : Message_Triple;
+                  Message     : Message_Definition) is
       Position : constant Cursor := Find (Message_Map.Messages, Triple);
    begin
       if Position = No_Element then
@@ -57,9 +57,9 @@ package body ZanyBlue.Text.Message_Maps is
    ---------
 
    procedure Add (Message_Map   : in out Message_Map_Type;
-                  Triple        : in Message_Triple;
-                  Message       : in Wide_String;
-                  Source_Locale : in Locale_Index_Type) is
+                  Triple        : Message_Triple;
+                  Message       : Wide_String;
+                  Source_Locale : Locale_Index_Type) is
       New_Message : Message_Definition;
       First       : Natural := 0;
       Last        : Natural;
@@ -87,7 +87,7 @@ package body ZanyBlue.Text.Message_Maps is
    -----------------
 
    procedure Adjust_Size (Message_Map    : in out Message_Map_Type;
-                          Extra_Messages : in Natural) is
+                          Extra_Messages : Natural) is
       Capacity : constant Natural := Natural (Message_Map.Messages.Capacity);
       Size     : constant Natural := Natural (Message_Map.Messages.Length);
       New_Size : constant Natural := Size + Extra_Messages;
@@ -103,13 +103,13 @@ package body ZanyBlue.Text.Message_Maps is
    ---------
 
    procedure Get (Message_Map    : in out Message_Map_Type;
-                  Triple         : in Message_Triple;
+                  Triple         : Message_Triple;
                   Result         : out Message_Definition) is
 
-      procedure Increment_Count (Key     : in Message_Triple;
+      procedure Increment_Count (Key     : Message_Triple;
                                  Element : in out Message_Definition);
 
-      procedure Increment_Count (Key     : in Message_Triple;
+      procedure Increment_Count (Key     : Message_Triple;
                                  Element : in out Message_Definition) is
          pragma Unreferenced (Key);
       begin
@@ -132,7 +132,7 @@ package body ZanyBlue.Text.Message_Maps is
    -- Get_Pool --
    --------------
 
-   function Get_Pool (Message_Map : in Message_Map_Type) return Wide_String is
+   function Get_Pool (Message_Map : Message_Map_Type) return Wide_String is
    begin
       return To_Wide_String (Message_Map.Pool);
    end Get_Pool;
@@ -145,15 +145,15 @@ package body ZanyBlue.Text.Message_Maps is
       Message_Map : in out Message_Map_Type;
       Handler     : not null
                       access
-                         procedure (Facility      : in Facility_Index_Type;
-                                    Key           : in Key_Index_Type;
-                                    Locale        : in Locale_Index_Type;
-                                    Source_Locale : in Locale_Index_Type;
-                                    First         : in Positive;
-                                    Last          : in Natural;
-                                    Count         : in Natural)) is
+                         procedure (Facility      : Facility_Index_Type;
+                                    Key           : Key_Index_Type;
+                                    Locale        : Locale_Index_Type;
+                                    Source_Locale : Locale_Index_Type;
+                                    First         : Positive;
+                                    Last          : Natural;
+                                    Count         : Natural)) is
 
-         procedure Callback (Position : in Cursor);
+         procedure Callback (Position : Cursor);
          --  Ada.Containers callback used to reformat arguments to pass off to
          --  the supplied handler.
 
@@ -161,7 +161,7 @@ package body ZanyBlue.Text.Message_Maps is
          -- Callback --
          --------------
 
-         procedure Callback (Position : in Cursor) is
+         procedure Callback (Position : Cursor) is
             M : constant Message_Definition := Element (Position);
             T : constant Message_Triple := Key (Position);
          begin
@@ -181,15 +181,15 @@ package body ZanyBlue.Text.Message_Maps is
       Message_Map : in out Message_Map_Type;
       Handler     : not null
                        access
-                          procedure (Facility      : in Facility_Index_Type;
-                                     Key           : in Key_Index_Type;
-                                     Locale        : in Locale_Index_Type;
-                                     Source_Locale : in Locale_Index_Type;
-                                     Message       : in Wide_String;
-                                     Count         : in Natural))
+                          procedure (Facility      : Facility_Index_Type;
+                                     Key           : Key_Index_Type;
+                                     Locale        : Locale_Index_Type;
+                                     Source_Locale : Locale_Index_Type;
+                                     Message       : Wide_String;
+                                     Count         : Natural))
    is
 
-      procedure Callback (Position : in Cursor);
+      procedure Callback (Position : Cursor);
       --  Ada.Containers callback used to reformat arguments to pass off to
       --  the supplied handler.
 
@@ -197,7 +197,7 @@ package body ZanyBlue.Text.Message_Maps is
       -- Callback --
       --------------
 
-      procedure Callback (Position : in Cursor) is
+      procedure Callback (Position : Cursor) is
          M : constant Message_Definition := Element (Position);
          T : constant Message_Triple := Key (Position);
       begin
@@ -214,7 +214,7 @@ package body ZanyBlue.Text.Message_Maps is
    -- Length --
    ------------
 
-   function Length (Message_Map : in Message_Map_Type) return Natural is
+   function Length (Message_Map : Message_Map_Type) return Natural is
    begin
       return Natural (Message_Map.Messages.Length);
    end Length;
@@ -223,7 +223,7 @@ package body ZanyBlue.Text.Message_Maps is
    -- Message_Triple_Hash --
    -------------------------
 
-   function Message_Triple_Hash (Value : in Message_Triple) return Hash_Type is
+   function Message_Triple_Hash (Value : Message_Triple) return Hash_Type is
       type M is mod 2**31;
       Result : M := 0;
    begin
@@ -240,7 +240,7 @@ package body ZanyBlue.Text.Message_Maps is
    -- Pool_Size --
    ---------------
 
-   function Pool_Size (Message_Map : in Message_Map_Type) return Natural is
+   function Pool_Size (Message_Map : Message_Map_Type) return Natural is
    begin
       return Length (Message_Map.Pool);
    end Pool_Size;
@@ -249,8 +249,8 @@ package body ZanyBlue.Text.Message_Maps is
    -- Text --
    ----------
 
-   function Text (Message_Map : in Message_Map_Type;
-                  Message     : in Message_Definition) return Wide_String is
+   function Text (Message_Map : Message_Map_Type;
+                  Message     : Message_Definition) return Wide_String is
    begin
       if Message.Pool /= null then
          return Message.Pool (Message.First .. Message.Last);

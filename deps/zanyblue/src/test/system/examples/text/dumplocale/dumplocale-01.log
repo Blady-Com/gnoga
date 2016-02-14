@@ -1,4 +1,4 @@
-.*: ".*" up to date.*
+.*: .* up to date.*
 This is DUMPLOCALE, Version .*
 
 Dump of the locale "en_US"
@@ -6,6 +6,7 @@ Dump of the locale "en_US"
     Language                  "en"
     Script                    ""
     Territory                 "US"
+    Encoding                  "UTF-8" (implemented as "UTF-8")
     Name                      "en_US"
     Traits Name               "en"
     Traits Tag                "EN        "

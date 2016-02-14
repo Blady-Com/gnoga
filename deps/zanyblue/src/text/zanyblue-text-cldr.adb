@@ -45,10 +45,10 @@ package body ZanyBlue.Text.CLDR is
 
    CLDR_Catalog : Catalog_Type;
 
-   function Lookup (Facility : in Wide_String;
-                    Key      : in Wide_String;
-                    Unknown  : in Wide_String;
-                    Locale   : in Locale_Type) return Wide_String;
+   function Lookup (Facility : Wide_String;
+                    Key      : Wide_String;
+                    Unknown  : Wide_String;
+                    Locale   : Locale_Type) return Wide_String;
    --  Use the CLDR catalog to locate a key for a locale.  If the key is not
    --  present, simply return the Unknown value rather than raising an
    --  exception.
@@ -57,8 +57,8 @@ package body ZanyBlue.Text.CLDR is
    -- Full_Locale_Name --
    ----------------------
 
-   function Full_Locale_Name (Value  : in Locale_Type;
-                              Locale : in Locale_Type := Current_Locale)
+   function Full_Locale_Name (Value  : Locale_Type;
+                              Locale : Locale_Type := Current_Locale)
       return Wide_String is
    begin
       if Territory (Value) = "" then
@@ -84,9 +84,9 @@ package body ZanyBlue.Text.CLDR is
    -- Language_Name --
    -------------------
 
-   function Language_Name (Code    : in Wide_String;
-                           Unknown : in Wide_String := "";
-                           Locale  : in Locale_Type := Current_Locale)
+   function Language_Name (Code    : Wide_String;
+                           Unknown : Wide_String := "";
+                           Locale  : Locale_Type := Current_Locale)
       return Wide_String is
    begin
       if Code = "" then
@@ -100,10 +100,10 @@ package body ZanyBlue.Text.CLDR is
    -- Lookup --
    ------------
 
-   function Lookup (Facility : in Wide_String;
-                    Key      : in Wide_String;
-                    Unknown  : in Wide_String;
-                    Locale   : in Locale_Type) return Wide_String is
+   function Lookup (Facility : Wide_String;
+                    Key      : Wide_String;
+                    Unknown  : Wide_String;
+                    Locale   : Locale_Type) return Wide_String is
    begin
       if not Is_Valid (CLDR_Catalog) then
          Raise_Exception (
@@ -120,9 +120,9 @@ package body ZanyBlue.Text.CLDR is
    -- Script_Name --
    -----------------
 
-   function Script_Name (Code    : in Wide_String;
-                         Unknown : in Wide_String := "";
-                         Locale  : in Locale_Type := Current_Locale)
+   function Script_Name (Code    : Wide_String;
+                         Unknown : Wide_String := "";
+                         Locale  : Locale_Type := Current_Locale)
       return Wide_String is
    begin
       return Lookup ("s", Code, Unknown, Locale);
@@ -132,9 +132,9 @@ package body ZanyBlue.Text.CLDR is
    -- Territory_Name --
    --------------------
 
-   function Territory_Name (Code    : in Wide_String;
-                            Unknown : in Wide_String := "";
-                            Locale  : in Locale_Type := Current_Locale)
+   function Territory_Name (Code    : Wide_String;
+                            Unknown : Wide_String := "";
+                            Locale  : Locale_Type := Current_Locale)
       return Wide_String is
    begin
       return Lookup ("t", Code, Unknown, Locale);

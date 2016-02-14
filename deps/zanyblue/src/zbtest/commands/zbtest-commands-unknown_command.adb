@@ -34,7 +34,7 @@
 
 separate (ZBTest.Commands)
 procedure Unknown_Command (State : in out State_Type;
-                           Args  : in List_Type) is
+                           Args  : List_Type) is
 
       pragma Unreferenced (State);
       pragma Unreferenced (Args);

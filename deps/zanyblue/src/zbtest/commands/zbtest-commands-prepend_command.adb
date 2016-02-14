@@ -34,7 +34,7 @@
 
 separate (ZBTest.Commands)
 procedure Prepend_Command (State : in out State_Type;
-                           Args  : in List_Type) is
+                           Args  : List_Type) is
 
 begin
    if Length (Args) = 3 then

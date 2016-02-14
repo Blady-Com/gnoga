@@ -189,22 +189,22 @@ package ZanyBlue.Text.Format_Parser is
    Internal_Error       : exception;
    Field_Too_Wide_Error : exception;
 
-   function Align (Value     : in Wide_String;
-                   Fill      : in Wide_Character;
-                   Width     : in Natural;
-                   Alignment : in Align_Type;
-                   Prefix    : in Wide_String := "") return Wide_String;
+   function Align (Value     : Wide_String;
+                   Fill      : Wide_Character;
+                   Width     : Natural;
+                   Alignment : Align_Type;
+                   Prefix    : Wide_String := "") return Wide_String;
    --  Format a string value within a field width with the given
    --  alignment, e.g., center "XYZ" in 20 spaces padding with spaces.
    --  The Prefix argument is used for numeric formatting allowing the
    --  the padding to occur after the sign, e.g., "+*******20" to format
    --  20 in width of 10, numeric justified.
 
-   function Parse (Format            : in Wide_String;
-                   Locale            : in Locale_Type) return Format_Type;
+   function Parse (Format            : Wide_String;
+                   Locale            : Locale_Type) return Format_Type;
    --  Parse a format string to the individual field values.
 
-   function To_String (Format : in Format_Type) return Wide_String;
+   function To_String (Format : Format_Type) return Wide_String;
    --  Generate a string representation for formatting information.
    --  Used for debugging purposes.
 
@@ -212,7 +212,7 @@ package ZanyBlue.Text.Format_Parser is
    --  Return the current maximum allowed field value (limit imposed to
    --  to prevent possible overflows (malicious localizations).
 
-   procedure Maximum_Field_Width (Value : in Positive);
+   procedure Maximum_Field_Width (Value : Positive);
    --  Set the maximum allowed field value.
 
 end ZanyBlue.Text.Format_Parser;

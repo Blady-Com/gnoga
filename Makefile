@@ -110,8 +110,9 @@ gnoga_tools: gnoga
 
 release: setup
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	cd deps/zanyblue && make -C src
 
-install: release gnoga_tools xpm_parser zanyblue
+install: release gnoga_tools xpm_parser
 	touch deps/simple_components/strings_edit-text_edit.o
 	cd src && gprinstall -f --prefix=$(PREFIX) -p gnoga.gpr -XPRJ_BUILD=Release
 	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
@@ -176,7 +177,7 @@ electron:
 	@echo "See docs/native_desktop_apps.md for instructions on full desktop development"
 
 zanyblue:
-	cd deps/zanyblue && make -C src
+	cd deps/zanyblue && make -C src BUILD=Debug
 
 deps/PragmARC:
 	cd deps && git clone https://github.com/jrcarter/PragmARC.git

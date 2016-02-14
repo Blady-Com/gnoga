@@ -37,15 +37,15 @@ with Ada.Characters.Conversions;
 
 separate (ZBTest.Commands)
 procedure Getenv_Command (State : in out State_Type;
-                          Args  : in List_Type) is
+                          Args  : List_Type) is
 
    use Ada.Environment_Variables;
    use Ada.Characters.Conversions;
 
    procedure Get_List_Value (State         : in out State_Type;
-                             Source        : in Wide_String;
-                             Target        : in Wide_String;
-                             Append_Values : in Boolean);
+                             Source        : Wide_String;
+                             Target        : Wide_String;
+                             Append_Values : Boolean);
    --  Get an environment variable as a list value.
 
    --------------------
@@ -53,19 +53,19 @@ procedure Getenv_Command (State : in out State_Type;
    --------------------
 
    procedure Get_List_Value (State         : in out State_Type;
-                             Source        : in Wide_String;
-                             Target        : in Wide_String;
-                             Append_Values : in Boolean) is
+                             Source        : Wide_String;
+                             Target        : Wide_String;
+                             Append_Values : Boolean) is
 
       procedure Parse_Values (List_Values : in out List_Type;
-                              Definition  : in Wide_String);
+                              Definition  : Wide_String);
 
       ------------------
       -- Parse_Values --
       ------------------
 
       procedure Parse_Values (List_Values : in out List_Type;
-                              Definition  : in Wide_String) is
+                              Definition  : Wide_String) is
 
          PSep   : constant Wide_Character := State.Get_Character ("_pathsep");
          Start  : Positive := Definition'First;

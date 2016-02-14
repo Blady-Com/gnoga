@@ -1,4 +1,4 @@
-.*: ".*" up to date.*
+.*: .* up to date.*
 This is DUMPLOCALE, Version .*
 
 Dump of the locale "zh_Hans"
@@ -6,6 +6,7 @@ Dump of the locale "zh_Hans"
     Language                  "zh"
     Script                    "Hans"
     Territory                 ""
+    Encoding                  "" (implemented as "UTF-8")
     Name                      "zh_Hans"
     Traits Name               "zh"
     Traits Tag                "ZH        "

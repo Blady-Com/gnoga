@@ -43,86 +43,86 @@ package ZanyBlue.Text.Properties_Parser is
    type Parser_Handler_Type is abstract tagged private;
 
    procedure Add_Key_Value (Handler       : in out Parser_Handler_Type;
-                            Facility      : in Wide_String;
-                            Key           : in Wide_String;
-                            Value         : in Wide_String;
-                            Locale        : in Locale_Type;
-                            Source_Locale : in Locale_Type;
-                            File_Name     : in Wide_String;
-                            Line          : in Natural)
+                            Facility      : Wide_String;
+                            Key           : Wide_String;
+                            Value         : Wide_String;
+                            Locale        : Locale_Type;
+                            Source_Locale : Locale_Type;
+                            File_Name     : Wide_String;
+                            Line          : Natural)
       is abstract;
    --  Call back to handle the definition of a key/value pair.
 
    procedure Duplicate_Key (Handler       : in out Parser_Handler_Type;
-                            Facility      : in Wide_String;
-                            Key           : in Wide_String;
-                            Locale        : in Locale_Type;
-                            File_Name     : in Wide_String;
-                            Current_Line  : in Natural;
-                            Previous_Line : in Natural)
+                            Facility      : Wide_String;
+                            Key           : Wide_String;
+                            Locale        : Locale_Type;
+                            File_Name     : Wide_String;
+                            Current_Line  : Natural;
+                            Previous_Line : Natural)
       is abstract;
    --  Call back used to report a duplicate key error.
 
    procedure Invalid_Character (Handler         : in out Parser_Handler_Type;
-                                Facility        : in Wide_String;
-                                File_Name       : in Wide_String;
-                                Current_Line    : in Natural;
-                                Ch              : in Character)
+                                Facility        : Wide_String;
+                                File_Name       : Wide_String;
+                                Current_Line    : Natural;
+                                Ch              : Character)
       is abstract;
    --  Call back used to report an invalid character, non-ISO-646, in the
    --  source properties file.
 
    procedure Invalid_Definition (Handler         : in out Parser_Handler_Type;
-                                 Facility        : in Wide_String;
-                                 Locale          : in Locale_Type;
-                                 File_Name       : in Wide_String;
-                                 Current_Line    : in Natural;
-                                 Additional_Info : in String)
+                                 Facility        : Wide_String;
+                                 Locale          : Locale_Type;
+                                 File_Name       : Wide_String;
+                                 Current_Line    : Natural;
+                                 Additional_Info : String)
       is abstract;
    --  Call back used to report an invalid definition.
 
-   function Get_N_Messages (Handler : in Parser_Handler_Type) return Natural;
+   function Get_N_Messages (Handler : Parser_Handler_Type) return Natural;
    --  Return the number of messages parsed.
 
    procedure Reset_N_Messages (Handler : in out Parser_Handler_Type);
    --  Reset the number of messages parse (used when re-using a parser).
 
-   function Get_N_Errors (Handler : in Parser_Handler_Type) return Natural;
+   function Get_N_Errors (Handler : Parser_Handler_Type) return Natural;
    --  Get the number of error encountered during the parsing of a file.
 
    procedure Increment_Errors (Handler   : in out Parser_Handler_Type;
-                               By_Amount : in Natural := 1);
+                               By_Amount : Natural := 1);
    --  Increment the number of errors associated with the properies files
    --  parsed.
 
    procedure Parse (Handler          : in out Parser_Handler_Type'Class;
-                    File_Name        : in Wide_String;
-                    Facility         : in Wide_String;
-                    Locale           : in Locale_Type);
+                    File_Name        : Wide_String;
+                    Facility         : Wide_String;
+                    Locale           : Locale_Type);
    --  Parse a properties file using the calling back via the Handler.
 
    procedure Parse (Handler       : in out Parser_Handler_Type'Class;
-                    File_Name     : in Wide_String;
-                    Facility      : in Wide_String;
-                    Locale        : in Locale_Type;
-                    Source_Locale : in Locale_Type);
+                    File_Name     : Wide_String;
+                    Facility      : Wide_String;
+                    Locale        : Locale_Type;
+                    Source_Locale : Locale_Type);
    --  Parse a properties file using the calling back via the Handler to
    --  process message definitions and errors (see the abstract methods
    --  above).
 
    procedure Parse (Handler          : in out Parser_Handler_Type'Class;
                     Source_File      : in out File_Type;
-                    File_Name        : in Wide_String;
-                    Facility         : in Wide_String;
-                    Locale           : in Locale_Type);
+                    File_Name        : Wide_String;
+                    Facility         : Wide_String;
+                    Locale           : Locale_Type);
    --  Same as Parse but on an already open file handle.
 
    procedure Parse (Handler       : in out Parser_Handler_Type'Class;
                     Source_File   : in out File_Type;
-                    File_Name     : in Wide_String;
-                    Facility      : in Wide_String;
-                    Locale        : in Locale_Type;
-                    Source_Locale : in Locale_Type);
+                    File_Name     : Wide_String;
+                    Facility      : Wide_String;
+                    Locale        : Locale_Type;
+                    Source_Locale : Locale_Type);
    --  Same as Parse but on an already open file handle.
 
 private

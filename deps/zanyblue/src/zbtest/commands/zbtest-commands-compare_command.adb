@@ -38,31 +38,31 @@ with ZanyBlue.Wide_Regexp;
 
 separate (ZBTest.Commands)
 procedure Compare_Command (State : in out State_Type;
-                           Args  : in List_Type) is
+                           Args  : List_Type) is
 
    use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Wide_Directories;
 
    procedure Compare (State    : in out State_Type;
-                      Log_Name : in Wide_String;
-                      Ref_Name : in Wide_String);
+                      Log_Name : Wide_String;
+                      Ref_Name : Wide_String);
    --  Compare two files.  This should really try to do a context diff.
 
    procedure Match_Lines (Status_File : in out File_Type;
-                          Ref_Line    : in Wide_String;
-                          Gen_Line    : in Wide_String;
+                          Ref_Line    : Wide_String;
+                          Gen_Line    : Wide_String;
                           Matched     : out Boolean);
    --  Match two lines from two files being compared.  If the lines don't
    --  match exactly as strings, try using the reference line as a regex and
    --  try regex matching.
 
-   function Regex_Match (Gen_Line : in Wide_String;
-                         Ref_Line : in Wide_String) return Boolean;
+   function Regex_Match (Gen_Line : Wide_String;
+                         Ref_Line : Wide_String) return Boolean;
    --  Match two lines by considering the reference line to be a regular
    --  expression.
 
-   function Status_File_Name (State    : in State_Type;
-                              Log_Name : in Wide_String) return Wide_String;
+   function Status_File_Name (State    : State_Type;
+                              Log_Name : Wide_String) return Wide_String;
    --  Name of the comparsion log file.
 
    -------------
@@ -70,8 +70,8 @@ procedure Compare_Command (State : in out State_Type;
    -------------
 
    procedure Compare (State    : in out State_Type;
-                      Log_Name : in Wide_String;
-                      Ref_Name : in Wide_String) is
+                      Log_Name : Wide_String;
+                      Ref_Name : Wide_String) is
 
       type File_Names is (Status_File, Ref_File, Log_File);
       type File_List is array (File_Names) of File_Type;
@@ -80,13 +80,13 @@ procedure Compare_Command (State : in out State_Type;
 
       procedure Open_File (Status : in out File_Type;
                            File   : in out File_Type;
-                           Name   : in Wide_String);
+                           Name   : Wide_String);
       --  Open a file.  An error message is printed if the open fails and
       --  the exception Open_Failed is raised.
 
       procedure Wrap_Up (Files       : in out File_List;
-                         Status_Name : in Wide_String;
-                         Fail        : in Boolean);
+                         Status_Name : Wide_String;
+                         Fail        : Boolean);
       --  Wrap up the comparsion by closing any open files and registering
       --  the comparsion result: failure or success.
 
@@ -96,7 +96,7 @@ procedure Compare_Command (State : in out State_Type;
 
       procedure Open_File (Status : in out File_Type;
                            File   : in out File_Type;
-                           Name   : in Wide_String) is
+                           Name   : Wide_String) is
       begin
          Wide_Open (File, In_File, Name);
       exception
@@ -111,8 +111,8 @@ procedure Compare_Command (State : in out State_Type;
       -------------
 
       procedure Wrap_Up (Files       : in out File_List;
-                         Status_Name : in Wide_String;
-                         Fail        : in Boolean) is
+                         Status_Name : Wide_String;
+                         Fail        : Boolean) is
       begin
          for I in Files'Range loop
             if Is_Open (Files (I)) then
@@ -169,9 +169,9 @@ procedure Compare_Command (State : in out State_Type;
    -----------------
 
    procedure Match_Lines (Status_File : in out File_Type;
-                          Ref_Line    : in Wide_String;
-                          Gen_Line : in Wide_String;
-                          Matched  : out Boolean) is
+                          Ref_Line    : Wide_String;
+                          Gen_Line    : Wide_String;
+                          Matched     : out Boolean) is
    begin
       Matched := Ref_Line = Gen_Line or else Regex_Match (Gen_Line, Ref_Line);
       if not Matched then
@@ -186,8 +186,8 @@ procedure Compare_Command (State : in out State_Type;
    -- Regex_Match --
    -----------------
 
-   function Regex_Match (Gen_Line : in Wide_String;
-                         Ref_Line : in Wide_String) return Boolean is
+   function Regex_Match (Gen_Line : Wide_String;
+                         Ref_Line : Wide_String) return Boolean is
       use ZanyBlue.Wide_Regexp;
    begin
       return Match (Gen_Line, Compile (Ref_Line));
@@ -203,8 +203,8 @@ procedure Compare_Command (State : in out State_Type;
    -- Status_File_Name --
    ----------------------
 
-   function Status_File_Name (State    : in State_Type;
-                              Log_Name : in Wide_String) return Wide_String is
+   function Status_File_Name (State    : State_Type;
+                              Log_Name : Wide_String) return Wide_String is
       Test_Name : constant Wide_String := State.Full_Test_Name;
       Base_Name : constant Wide_String := Wide_Base_Name (Log_Name);
       Buffer    : Unbounded_Wide_String;

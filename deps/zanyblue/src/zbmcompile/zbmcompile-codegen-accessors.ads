@@ -39,8 +39,8 @@ package ZBMCompile.Codegen.Accessors is
    use ZBMCompile.Parser_Handler;
 
    procedure Create_Accessor_Packages
-      (Handler          : in ZBMC_Handler_Type;
-       Options          : in Parameter_Set_Type);
+      (Handler          : ZBMC_Handler_Type;
+       Options          : Parameter_Set_Type);
    --  Create the accessor packages for the facilities defined in the catalog.
 
 end ZBMCompile.Codegen.Accessors;

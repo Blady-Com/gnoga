@@ -47,7 +47,7 @@ package ZanyBlue.Parameters.Sets is
 
    type Parameter_Set_Type is tagged private;
 
-   function Number_Of_Parameters (Params : in Parameter_Set_Type)
+   function Number_Of_Parameters (Params : Parameter_Set_Type)
       return Natural;
    --  Return the number of parameters defined in a parameter set.
 
@@ -55,115 +55,115 @@ package ZanyBlue.Parameters.Sets is
    --  Clear any parameters defined in the parameter set.
 
    procedure Append (Params : in out Parameter_Set_Type;
-                     Name   : in Wide_String;
-                     Value  : in Wide_String);
+                     Name   : Wide_String;
+                     Value  : Wide_String);
    --  Append a string to a list value.  The list value is created if it
    --  doesn't already exist.
 
    procedure Prepend (Params : in out Parameter_Set_Type;
-                      Name   : in Wide_String;
-                      Value  : in Wide_String);
+                      Name   : Wide_String;
+                      Value  : Wide_String);
    --  Prepend a string to a list value.  The list value is created if it
    --  doesn't already exist.
 
-   function Get (Params : in Parameter_Set_Type;
-                 Name   : in Wide_String) return Value_Type'Class;
+   function Get (Params : Parameter_Set_Type;
+                 Name   : Wide_String) return Value_Type'Class;
    --  General parameter query routine.  This can be used to handle user
    --  defined parameter types.
 
-   function Get_Boolean (Params : in Parameter_Set_Type;
-                         Name   : in Wide_String) return Boolean;
+   function Get_Boolean (Params : Parameter_Set_Type;
+                         Name   : Wide_String) return Boolean;
    --  Get the value of boolean parameter.  Both Not_A_Boolean_Error and
    --  Not_Defined_Error can be raised.
 
-   function Get_Float (Params : in Parameter_Set_Type;
-                       Name   : in Wide_String) return Float;
+   function Get_Float (Params : Parameter_Set_Type;
+                       Name   : Wide_String) return Float;
    --  Get the value of floating point parameter.  Both Not_A_Real_Error and
    --  Not_Defined_Error can be raised.
 
-   function Get_Integer (Params : in Parameter_Set_Type;
-                         Name   : in Wide_String) return Integer;
+   function Get_Integer (Params : Parameter_Set_Type;
+                         Name   : Wide_String) return Integer;
    --  Return the value of an integer parameter.  Both Not_An_Integer and
    --  Not_Defined_Error can be raised.
 
-   function Get_List (Params : in Parameter_Set_Type;
-                      Name   : in Wide_String) return List_Type;
+   function Get_List (Params : Parameter_Set_Type;
+                      Name   : Wide_String) return List_Type;
    --  Return the value of a list parameter.  An Not_Defined_Error can be
    --  raised.
 
-   function Get_String (Params : in Parameter_Set_Type;
-                        Name   : in Wide_String) return Wide_String;
+   function Get_String (Params : Parameter_Set_Type;
+                        Name   : Wide_String) return Wide_String;
    --  Return the value of a string parameter.  Not_Defined_Error can be
    --  raised.
 
-   function Get_Time (Params : in Parameter_Set_Type;
-                      Name   : in Wide_String) return Time;
+   function Get_Time (Params : Parameter_Set_Type;
+                      Name   : Wide_String) return Time;
    --  Return the value of a time parameter.  Not_Defined_Error can be
    --  raised.
 
-   function Get_Name (Params : in Parameter_Set_Type) return Wide_String;
+   function Get_Name (Params : Parameter_Set_Type) return Wide_String;
    --  Return the name associated with the parameter set.  This the empty
    --  string, by default, but can be set using the Set_Name routine.
 
    procedure Increment (Params    : in out Parameter_Set_Type;
-                        Name      : in Wide_String;
-                        By_Amount : in Integer := 1);
+                        Name      : Wide_String;
+                        By_Amount : Integer := 1);
    --  Increment the value of an integer parameter.  Both Not_An_Integer and
    --  Not_Defined_Error can be raised.
 
-   function Is_Defined (Params : in Parameter_Set_Type;
-                        Name   : in Wide_String) return Boolean;
+   function Is_Defined (Params : Parameter_Set_Type;
+                        Name   : Wide_String) return Boolean;
    --  Determine if a parameter is defined in the parameter set.
 
    procedure Set_Name (Params : in out Parameter_Set_Type;
-                       Name   : in Wide_String);
+                       Name   : Wide_String);
    --  Set the name associated with a parameter set.
 
    procedure Set (Params : in out Parameter_Set_Type;
-                  Name   : in Wide_String;
-                  Value  : in Value_Type'Class);
+                  Name   : Wide_String;
+                  Value  : Value_Type'Class);
    --  General parameter set routine.  This can be used to support user
    --  defined parameter types.
 
    procedure Set_Boolean (Params : in out Parameter_Set_Type;
-                          Name   : in Wide_String;
-                          Value  : in Boolean);
+                          Name   : Wide_String;
+                          Value  : Boolean);
    --  Set a boolean parameter value.
 
    procedure Set_Float (Params : in out Parameter_Set_Type;
-                        Name   : in Wide_String;
-                        Value  : in Float);
+                        Name   : Wide_String;
+                        Value  : Float);
    --  Set a floating point parameter value.
 
    procedure Set_Integer (Params : in out Parameter_Set_Type;
-                          Name   : in Wide_String;
-                          Value  : in Integer);
+                          Name   : Wide_String;
+                          Value  : Integer);
    --  Set an integer parameter value.
 
    procedure Set_Time (Params : in out Parameter_Set_Type;
-                       Name   : in Wide_String;
-                       Value  : in Time);
+                       Name   : Wide_String;
+                       Value  : Time);
    --  Set a time parameter value.
 
    procedure Set_String (Params : in out Parameter_Set_Type;
-                         Name   : in Wide_String;
-                         Value  : in Wide_String);
+                         Name   : Wide_String;
+                         Value  : Wide_String);
    --  Set a string parameter value.
 
-   function Type_Name (Params : in Parameter_Set_Type;
-                       Name   : in Wide_String) return Wide_String;
+   function Type_Name (Params : Parameter_Set_Type;
+                       Name   : Wide_String) return Wide_String;
    --  Return the type name a parameter.  Not_Defined_Error can be
    --  raised.
 
-   procedure Dump (Params      : in Parameter_Set_Type;
-                   Destination : in File_Type;
-                   Level       : in Natural := 0);
+   procedure Dump (Params      : Parameter_Set_Type;
+                   Destination : File_Type;
+                   Level       : Natural := 0);
    --  Write the set of parameters defined in a parameter set to a file.  This
    --  is a debugging routine.
 
 private
 
-   function Equivalent_Keys (Left, Right : in Wide_String) return Boolean;
+   function Equivalent_Keys (Left, Right : Wide_String) return Boolean;
    --  Key matching function to support the Hashed_Map data structure.
 
    package Params_Hash_Map is

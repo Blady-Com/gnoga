@@ -37,34 +37,34 @@ with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
 procedure Run_Command (State : in out State_Type;
-                       Args  : in List_Type) is
+                       Args  : List_Type) is
 
    use Ada.Calendar;
    use ZanyBlue.Wide_Directories;
 
    procedure Execute_Script (State  : in out State_Type;
-                             Script : in Wide_String);
+                             Script : Wide_String);
    --  Execute the script: open the script file and execute each line.
 
    procedure Load_Init_Scripts (State          : in out State_Type;
-                                Script_Dir     : in Wide_String);
+                                Script_Dir     : Wide_String);
    --  Load any zbtest initialization scripts found in the directory
    --  tree, if not already loaded.
 
-   function Locate_Script (Path : in Wide_String;
-                           Name : in Wide_String) return Wide_String;
+   function Locate_Script (Path : Wide_String;
+                           Name : Wide_String) return Wide_String;
    --  Locate the script to execute.
 
    procedure Register_Run_Failure (State          : in out State_Type;
-                                   Script_Name    : in Wide_String);
+                                   Script_Name    : Wide_String);
    --  Register the failure to run a test script as a test failure.
 
    procedure Run (State : in out State_Type;
-                  Name  : in Wide_String);
+                  Name  : Wide_String);
    --  Run the script.
 
    procedure Wrap_Up (State     : in out State_Type;
-                      Test_Name : in Wide_String);
+                      Test_Name : Wide_String);
    --  Wrap-up the test, close any open scopes and print summary
 
    --------------------
@@ -72,7 +72,7 @@ procedure Run_Command (State : in out State_Type;
    --------------------
 
    procedure Execute_Script (State  : in out State_Type;
-                             Script : in Wide_String) is
+                             Script : Wide_String) is
       File       : File_Type;
    begin
       State.Set_String ("_source", Script);
@@ -95,7 +95,7 @@ procedure Run_Command (State : in out State_Type;
    -----------------------
 
    procedure Load_Init_Scripts (State          : in out State_Type;
-                                Script_Dir     : in Wide_String) is
+                                Script_Dir     : Wide_String) is
       Init_Script : constant Wide_String
                        := Wide_Compose (Script_Dir,
                                         ZBTest_Init_Name,
@@ -131,8 +131,8 @@ procedure Run_Command (State : in out State_Type;
    -- Locate_Script --
    -------------------
 
-   function Locate_Script (Path : in Wide_String;
-                           Name : in Wide_String) return Wide_String is
+   function Locate_Script (Path : Wide_String;
+                           Name : Wide_String) return Wide_String is
 
       Test_1 : constant Wide_String := Wide_Compose ("", Name,
                                                      ZBTest_Extension);
@@ -163,7 +163,7 @@ procedure Run_Command (State : in out State_Type;
    --------------------------
 
    procedure Register_Run_Failure (State          : in out State_Type;
-                                   Script_Name    : in Wide_String) is
+                                   Script_Name    : Wide_String) is
       Test_Name : constant Wide_String := Format ("{0}.{1}-run",
                                                   +State.Full_Test_Name,
                                                   +Script_Name);
@@ -180,7 +180,7 @@ procedure Run_Command (State : in out State_Type;
    ----------
 
    procedure Run (State : in out State_Type;
-                  Name  : in Wide_String) is
+                  Name  : Wide_String) is
       Cur_Path   : constant Wide_String := State.Get_String ("_curpath");
       Script     : constant Wide_String := Locate_Script (Cur_Path, Name);
       Script_Dir : constant Wide_String := Wide_Containing_Directory (Script);
@@ -199,7 +199,7 @@ procedure Run_Command (State : in out State_Type;
    -------------
 
    procedure Wrap_Up (State     : in out State_Type;
-                      Test_Name : in Wide_String) is
+                      Test_Name : Wide_String) is
       N_Fail   : Natural;
       N_OK     : Natural;
    begin

@@ -43,6 +43,7 @@ package body ZanyBlue.Text.Printer is
    -- Print --
    -----------
 
+   overriding
    procedure Print (Printer     : Standard_Printer_Type;
                     Destination : Ada.Text_IO.File_Type;
                     Facility    : Wide_String;
@@ -81,6 +82,7 @@ package body ZanyBlue.Text.Printer is
    -- Print --
    -----------
 
+   overriding
    procedure Print (Printer     : Standard_Printer_Type;
                     Destination : Ada.Wide_Text_IO.File_Type;
                     Facility    : Wide_String;

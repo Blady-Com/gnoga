@@ -33,9 +33,8 @@ procedure Connect_Four is
       Page.Main_Window :=
         Gnoga.Gui.Window.Window_Type (Main_Window)'Unchecked_Access;
       Page.Locale :=
-        ZanyBlue.Text.Locales.Make_Locale
-          (Ada.Characters.Conversions.To_Wide_String
-             (Gnoga.Gui.Navigator.Language (Main_Window)));
+        ZanyBlue.Text.Locales.Make_Locale_Narrow
+          (Gnoga.Gui.Navigator.Language (Main_Window) & ".ISO8859-1");
       Init (Page'Access);
       Connection.Hold;
    end On_Connect;

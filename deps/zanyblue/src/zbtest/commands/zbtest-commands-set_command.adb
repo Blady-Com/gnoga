@@ -37,17 +37,17 @@ with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)
 procedure Set_Command (State : in out State_Type;
-                       Args  : in List_Type) is
+                       Args  : List_Type) is
 
    use Ada.Strings.Wide_Fixed;
 
    type Type_Char_Type is ('s', 'i', 'b', 'f', 't');
 
    procedure Set_Value (State        : in out State_Type;
-                        Undef_Check  : in Boolean;
-                        Type_Char    : in Type_Char_Type;
-                        Name         : in Wide_String;
-                        Value        : in Wide_String);
+                        Undef_Check  : Boolean;
+                        Type_Char    : Type_Char_Type;
+                        Name         : Wide_String;
+                        Value        : Wide_String);
    --  Set a parameter value.
 
    ---------------
@@ -55,10 +55,10 @@ procedure Set_Command (State : in out State_Type;
    ---------------
 
    procedure Set_Value (State        : in out State_Type;
-                        Undef_Check  : in Boolean;
-                        Type_Char    : in Type_Char_Type;
-                        Name         : in Wide_String;
-                        Value        : in Wide_String) is
+                        Undef_Check  : Boolean;
+                        Type_Char    : Type_Char_Type;
+                        Name         : Wide_String;
+                        Value        : Wide_String) is
    begin
       if Name (Name'First) = '_' then
          Print_10041 (+Name);

@@ -42,14 +42,14 @@ package body ZanyBlue.Text.Durations is
 
    procedure Remainder_And_Scale (Value     : in out Natural;
                                   Remainder : out Natural;
-                                  Scale     : in Positive);
+                                  Scale     : Positive);
    --  Assign (Value rem Scale) to Remainder and then scale Value by Scale.
 
    ------------
    -- Create --
    ------------
 
-   function Create (Duration_Value : in Duration) return Duration_Argument_Type
+   function Create (Duration_Value : Duration) return Duration_Argument_Type
    is
    begin
       return Duration_Argument_Type'(Data => Duration_Value);
@@ -59,10 +59,11 @@ package body ZanyBlue.Text.Durations is
    -- Format --
    ------------
 
-   function Format (Value     : in Duration_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String is
+   overriding
+   function Format (Value     : Duration_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String is
       pragma Unreferenced (Type_Name);
 
       Formatting : constant Format_Type := Parse (Template, Locale);
@@ -98,7 +99,7 @@ package body ZanyBlue.Text.Durations is
 
    procedure Remainder_And_Scale (Value     : in out Natural;
                                   Remainder : out Natural;
-                                  Scale     : in Positive) is
+                                  Scale     : Positive) is
    begin
       Remainder := Value rem Scale;
       Value := Value / Scale;

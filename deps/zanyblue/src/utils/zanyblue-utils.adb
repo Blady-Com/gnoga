@@ -49,7 +49,7 @@ package body ZanyBlue.Utils is
                                            "abcdefghijklmnopqrstuvwxyz-");
    --  Lower case alpha characters, map '.' to '-' for GNAT style naming
 
-   function Gnat_Source_Name (Package_Name : in Wide_String)
+   function Gnat_Source_Name (Package_Name : Wide_String)
       return Wide_String;
    --  Return the GNAT externally formatted (file name) for a package.
 
@@ -57,10 +57,10 @@ package body ZanyBlue.Utils is
    -- Banner --
    ------------
 
-   function Banner (Facility_Name      : in Wide_String;
-                    Banner_Message     : in Wide_String := "00001";
-                    Copyright_Message  : in Wide_String := "00002";
-                    Catalog            : in Catalog_Type := Standard_Catalog)
+   function Banner (Facility_Name      : Wide_String;
+                    Banner_Message     : Wide_String := "00001";
+                    Copyright_Message  : Wide_String := "00002";
+                    Catalog            : Catalog_Type := Standard_Catalog)
       return Time
    is
 
@@ -87,8 +87,8 @@ package body ZanyBlue.Utils is
    -- Body_File_Name --
    --------------------
 
-   function Body_File_Name (Package_Name : in Wide_String;
-                            Style        : in Source_Naming_Style_Type)
+   function Body_File_Name (Package_Name : Wide_String;
+                            Style        : Source_Naming_Style_Type)
       return Wide_String
    is
    begin
@@ -102,7 +102,7 @@ package body ZanyBlue.Utils is
    -- Gnat_Source_Name --
    ----------------------
 
-   function Gnat_Source_Name (Package_Name : in Wide_String) return Wide_String
+   function Gnat_Source_Name (Package_Name : Wide_String) return Wide_String
    is
    begin
       --  Lowercase the package name and replace periods with dashes.
@@ -113,8 +113,8 @@ package body ZanyBlue.Utils is
    -- Spec_File_Name --
    --------------------
 
-   function Spec_File_Name (Package_Name : in Wide_String;
-                            Style        : in Source_Naming_Style_Type)
+   function Spec_File_Name (Package_Name : Wide_String;
+                            Style        : Source_Naming_Style_Type)
       return Wide_String
    is
    begin
@@ -128,10 +128,10 @@ package body ZanyBlue.Utils is
    -- Trailer --
    -------------
 
-   procedure Trailer (Facility_Name     : in Wide_String;
-                      Start_Time        : in Ada.Calendar.Time;
-                      Trailer_Message   : in Wide_String := "00003";
-                      Catalog           : in Catalog_Type := Standard_Catalog)
+   procedure Trailer (Facility_Name     : Wide_String;
+                      Start_Time        : Ada.Calendar.Time;
+                      Trailer_Message   : Wide_String := "00003";
+                      Catalog           : Catalog_Type := Standard_Catalog)
    is
 
       Now     : constant Time := Clock;

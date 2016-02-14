@@ -48,12 +48,12 @@ package ZanyBlue.Test is
    --  Following are useful during testing when we are not interested
    --  in a string value but need to generate it, e.g., when we expect
    --  an exception should be raise.
-   procedure Discard (Value      : in String);
-   procedure Discard (Wide_Value : in Wide_String);
-   procedure Discard (Value      : in Integer);
-   procedure Discard (Value      : in Float);
-   procedure Discard (Value      : in Ada.Calendar.Time);
-   procedure Discard (Value      : in Boolean);
+   procedure Discard (Value      : String);
+   procedure Discard (Wide_Value : Wide_String);
+   procedure Discard (Value      : Integer);
+   procedure Discard (Value      : Float);
+   procedure Discard (Value      : Ada.Calendar.Time);
+   procedure Discard (Value      : Boolean);
 
    procedure Check_Value (Test      : in out AUnit.Test_Cases.Test_Case'Class;
                           Generated : Wide_String;

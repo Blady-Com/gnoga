@@ -43,7 +43,7 @@ package body ZanyBlue.Text.Indexed_Strings is
    ---------
 
    procedure Add (Indexed_Strings : in out Indexed_Strings_Type;
-                  Name            : in Wide_String;
+                  Name            : Wide_String;
                   Index           : out Positive) is
       use type Name_To_Id_Maps.Cursor;
       Position : constant Name_To_Id_Maps.Cursor :=
@@ -62,8 +62,8 @@ package body ZanyBlue.Text.Indexed_Strings is
    -- Get --
    ---------
 
-   function Get (Indexed_Strings : in Indexed_Strings_Type;
-                 Index           : in Positive) return Wide_String is
+   function Get (Indexed_Strings : Indexed_Strings_Type;
+                 Index           : Positive) return Wide_String is
    begin
       if Index <= Indexed_Strings.Length then
          return Indexed_Strings.Id_To_Name.Element (Index);
@@ -76,9 +76,9 @@ package body ZanyBlue.Text.Indexed_Strings is
    -- Get --
    ---------
 
-   function Get (Indexed_Strings : in Indexed_Strings_Type;
-                 Name            : in Wide_String;
-                 Id              : in Exception_Id) return Positive is
+   function Get (Indexed_Strings : Indexed_Strings_Type;
+                 Name            : Wide_String;
+                 Id              : Exception_Id) return Positive is
 
       use type Name_To_Id_Maps.Cursor;
       Position : constant Name_To_Id_Maps.Cursor :=
@@ -96,7 +96,7 @@ package body ZanyBlue.Text.Indexed_Strings is
    -- Length --
    ------------
 
-   function Length (Indexed_Strings : in Indexed_Strings_Type)
+   function Length (Indexed_Strings : Indexed_Strings_Type)
       return Natural is
    begin
       --  ASSERT: Id_To_Name.Length = Name_To_Id.Length

@@ -677,7 +677,7 @@ package body ZanyBlue.OS is
    -- From_UTF8 --
    ---------------
 
-   function From_UTF8 (Value : in String) return Wide_String is
+   function From_UTF8 (Value : String) return Wide_String is
       use GNAT.Decode_UTF8_String;
    begin
       return Decode_Wide_String (Value);
@@ -756,7 +756,7 @@ package body ZanyBlue.OS is
    -- To_UTF8 --
    -------------
 
-   function To_UTF8 (Value : in Wide_String) return String is
+   function To_UTF8 (Value : Wide_String) return String is
       use GNAT.Encode_UTF8_String;
    begin
       return Encode_Wide_String (Value);
@@ -775,17 +775,17 @@ package body ZanyBlue.OS is
    -- Wide_Copy_Tree --
    --------------------
 
-   procedure Wide_Copy_Tree (Source_Name : in Wide_String;
-                             Target_Name : in Wide_String) is
+   procedure Wide_Copy_Tree (Source_Name : Wide_String;
+                             Target_Name : Wide_String) is
 
-      procedure Process_Entry (Path : in String;
-                               Elem : in String;
-                               Kind : in File_Kind);
+      procedure Process_Entry (Path : String;
+                               Elem : String;
+                               Kind : File_Kind);
 
 
-      procedure Process_Entry (Path : in String;
-                               Elem : in String;
-                               Kind : in File_Kind) is
+      procedure Process_Entry (Path : String;
+                               Elem : String;
+                               Kind : File_Kind) is
          Dest_Path : constant Wide_String := Wide_Compose (Target_Name,
                                                            From_UTF8 (Elem));
       begin
@@ -820,7 +820,7 @@ package body ZanyBlue.OS is
    -----------------
 
    procedure Wide_Create (File : in out Ada.Wide_Text_IO.File_Type;
-                          Name : in Wide_String) is
+                          Name : Wide_String) is
       use Ada.Wide_Text_IO;
    begin
       Create (File,
@@ -862,8 +862,8 @@ package body ZanyBlue.OS is
    ---------------
 
    procedure Wide_Open (File : in out Ada.Wide_Text_IO.File_Type;
-                        Mode : in Ada.Wide_Text_IO.File_Mode;
-                        Name : in Wide_String) is
+                        Mode : Ada.Wide_Text_IO.File_Mode;
+                        Name : Wide_String) is
       use Ada.Wide_Text_IO;
    begin
       Open (File,

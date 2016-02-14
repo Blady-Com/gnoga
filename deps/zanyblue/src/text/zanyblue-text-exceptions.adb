@@ -38,9 +38,9 @@ package body ZanyBlue.Text.Exceptions is
 
    use ZanyBlue.OS;
 
-   function Create (Name        : in Wide_String;
-                    Message     : in Wide_String;
-                    Information : in Wide_String)
+   function Create (Name        : Wide_String;
+                    Message     : Wide_String;
+                    Information : Wide_String)
       return Exception_Argument_Type;
    --  Create argument type based on the exception information converted
    --  from Strings assumed to UTF-8 strings to Wide_Strings.
@@ -49,7 +49,7 @@ package body ZanyBlue.Text.Exceptions is
    -- Create --
    ------------
 
-   function Create (Value : in Exception_Occurrence)
+   function Create (Value : Exception_Occurrence)
       return Exception_Argument_Type
    is
    begin
@@ -62,9 +62,9 @@ package body ZanyBlue.Text.Exceptions is
    -- Create --
    ------------
 
-   function Create (Name        : in Wide_String;
-                    Message     : in Wide_String;
-                    Information : in Wide_String)
+   function Create (Name        : Wide_String;
+                    Message     : Wide_String;
+                    Information : Wide_String)
       return Exception_Argument_Type
    is
    begin
@@ -81,10 +81,11 @@ package body ZanyBlue.Text.Exceptions is
    -- Format --
    ------------
 
-   function Format (Value     : in Exception_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String is
+   overriding
+   function Format (Value     : Exception_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String is
       pragma Unreferenced (Type_Name);
       pragma Unreferenced (Locale);
    begin

@@ -37,17 +37,17 @@ with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
 procedure Delete_Command (State : in out State_Type;
-                          Args  : in List_Type) is
+                          Args  : List_Type) is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
 
    procedure Delete_Directory (State : in out State_Type;
-                               Name : in Wide_String);
+                               Name  : Wide_String);
    --  Delete a directory (recursively).
 
    procedure Delete_File (State : in out State_Type;
-                          Name : in Wide_String);
+                          Name  : Wide_String);
    --  Delete a file.
 
    ----------------------
@@ -55,7 +55,7 @@ procedure Delete_Command (State : in out State_Type;
    ----------------------
 
    procedure Delete_Directory (State : in out State_Type;
-                               Name : in Wide_String) is
+                               Name  : Wide_String) is
       pragma Unreferenced (State);
    begin
       Wide_Delete_Tree (Name);
@@ -67,7 +67,7 @@ procedure Delete_Command (State : in out State_Type;
    -----------------
 
    procedure Delete_File (State : in out State_Type;
-                          Name : in Wide_String) is
+                          Name  : Wide_String) is
       pragma Unreferenced (State);
    begin
       Wide_Delete_File (Name);

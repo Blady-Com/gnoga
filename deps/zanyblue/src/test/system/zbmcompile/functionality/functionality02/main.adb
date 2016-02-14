@@ -44,11 +44,11 @@ procedure Main is
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Formatting;
 
-   procedure Dump_Message (Facility : in Wide_String;
-                           Key      : in Wide_String);
+   procedure Dump_Message (Facility : Wide_String;
+                           Key      : Wide_String);
 
-   procedure Dump_Message (Facility : in Wide_String;
-                           Key      : in Wide_String) is
+   procedure Dump_Message (Facility : Wide_String;
+                           Key      : Wide_String) is
 
       Text : constant Wide_String := Get_Text (Standard_Catalog,
                                                Facility,

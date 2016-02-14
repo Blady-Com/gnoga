@@ -2077,7 +2077,7 @@ package body ZBMCompile.Messages is
    --- Facility --
    ---------------
 
-   function Facility (Index : in Positive) return Wide_String is
+   function Facility (Index : Positive) return Wide_String is
    begin
       return Facilities (Index).all;
    end Facility;
@@ -2095,7 +2095,7 @@ package body ZBMCompile.Messages is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Catalog : in ZTC.Catalog_Type := Standard_Catalog) is
+   procedure Initialize (Catalog : ZTC.Catalog_Type := Standard_Catalog) is
    begin
       ZTC.Initialize (Catalog, Messages, Pool, Facilities, Keys, Locales,
                       "ZBMCompile.Messages",
@@ -2106,7 +2106,7 @@ package body ZBMCompile.Messages is
    --- Key --
    ----------
 
-   function Key (Index : in Positive) return Wide_String is
+   function Key (Index : Positive) return Wide_String is
    begin
       return Keys (Index).all;
    end Key;

@@ -52,18 +52,19 @@ project zbcom is
    type OS_Kind is ("Windows_NT", "unix");
    OS : OS_Kind := external ("OS", "unix");
 
-   C_Switches := ("-gnato",
-                  "-gnatf",
-                  "-gnat12",
-                  "-gnatW8",
-                  "-gnatwale",
-                  "-gnaty",
-                  "-gnatyo",
-                  "-fstack-check");
+   C_Switches := ("-gnat12",
+                  "-gnatW8");
+
    package Compiler is
       case Build is
          when "Debug" =>
-            for Default_Switches ("Ada") use C_Switches & ("-g");
+            for Default_Switches ("Ada") use C_Switches & ("-g",
+                                                           "-gnatf",
+                                                           "-gnato",
+                                                           "-gnatwale",
+                                                           "-gnatygO",
+                                                           "-gnatyo",
+                                                           "-fstack-check");
          when "Coverage" =>
             for Default_Switches ("Ada") use C_Switches & ("-g",
                                                            "-fprofile-arcs",

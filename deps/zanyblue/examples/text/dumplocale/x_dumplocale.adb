@@ -67,6 +67,9 @@ procedure X_DumpLocale is
    procedure Display (Attribute  : String;
                       Value      : Argument_Type'Class;
                       Quoted     : Boolean := False);
+   procedure Display2 (Attribute  : String;
+                       Value1     : Argument_Type'Class;
+                       Value2     : Argument_Type'Class);
    procedure Dump_Locale (Locale : Locale_Type);
    procedure Process_Command_Line (Mode : in out Mode_Type);
 
@@ -81,12 +84,21 @@ procedure X_DumpLocale is
       end if;
    end Display;
 
+   procedure Display2 (Attribute  : String;
+                       Value1     : Argument_Type'Class;
+                       Value2     : Argument_Type'Class) is
+   begin
+      Print_Line ("dl", "0020", +Attribute, Value1, Value2);
+   end Display2;
+
    procedure Dump_Locale (Locale : Locale_Type) is
    begin
       Print_Line ("dl", "0002", +Locale_Name (Locale));
       Display ("Language",       +Language (Locale), True);
       Display ("Script",         +Script (Locale), True);
       Display ("Territory",      +Territory (Locale), True);
+      Display2 ("Encoding",      +Encoding (Locale),
+                                 +Encoding_Implementation (Locale));
       Display ("Name",           +Locale_Name (Locale), True);
       Display ("Traits Name",    +Traits_Name (Locale), True);
       Display ("Traits Tag",     +Traits_Tag (Locale), True);

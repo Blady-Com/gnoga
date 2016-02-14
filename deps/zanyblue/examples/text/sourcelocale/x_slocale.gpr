@@ -47,7 +47,7 @@ project X_SLocale is
 
    package Compiler is
        for Default_Switches ("Ada") use
-              ("-g", "-O3", "-gnata", "-gnatVa", "-gnatQ", "-gnaty",
+              ("-O3", "-gnata", "-gnatVa", "-gnatQ", "-gnaty",
                "-gnatwae", "-gnat05", "-gnatW8");
    end Compiler;
 

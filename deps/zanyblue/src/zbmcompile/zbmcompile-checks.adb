@@ -43,7 +43,7 @@ package body ZBMCompile.Checks is
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Formatting;
 
-   function Is_Ada_Identifier_OK (Name : in Wide_String) return Boolean;
+   function Is_Ada_Identifier_OK (Name : Wide_String) return Boolean;
    --  Is the given name a valid Ada identifier name?  Leading digits are
    --  OK as the name will be prefixed with standard prefixes later.
 
@@ -82,22 +82,22 @@ package body ZBMCompile.Checks is
    -----------------------
 
    procedure Consistency_Check (Handler     : in out ZBMC_Handler_Type;
-                                Facility    : in Wide_String;
-                                Base_Locale : in Wide_String) is
+                                Facility    : Wide_String;
+                                Base_Locale : Wide_String) is
 
-      procedure Callback (Catalog  : in Catalog_Type;
-                          Facility : in Wide_String;
-                          Key_Name : in Wide_String;
-                          Locales  : in Locale_Definitions_Map);
+      procedure Callback (Catalog  : Catalog_Type;
+                          Facility : Wide_String;
+                          Key_Name : Wide_String;
+                          Locales  : Locale_Definitions_Map);
 
       --------------
       -- Callback --
       --------------
 
-      procedure Callback (Catalog  : in Catalog_Type;
-                          Facility : in Wide_String;
-                          Key_Name : in Wide_String;
-                          Locales  : in Locale_Definitions_Map) is
+      procedure Callback (Catalog  : Catalog_Type;
+                          Facility : Wide_String;
+                          Key_Name : Wide_String;
+                          Locales  : Locale_Definitions_Map) is
 
          pragma Unreferenced (Catalog);
 
@@ -105,11 +105,11 @@ package body ZBMCompile.Checks is
 
          Ref_Arg_Count : Natural;
 
-         procedure Check_Other_Locales (Position : in Cursor);
+         procedure Check_Other_Locales (Position : Cursor);
 
-         procedure Report_Extra_Locales (Position : in Cursor);
+         procedure Report_Extra_Locales (Position : Cursor);
 
-         procedure Check_Other_Locales (Position : in Cursor) is
+         procedure Check_Other_Locales (Position : Cursor) is
             L : constant Natural :=
                 Natural (String_Vectors.Length (Element (Position).Arg_Types));
          begin
@@ -122,7 +122,7 @@ package body ZBMCompile.Checks is
             end if;
          end Check_Other_Locales;
 
-         procedure Report_Extra_Locales (Position : in Cursor) is
+         procedure Report_Extra_Locales (Position : Cursor) is
          begin
             Print_Line (ZBMCompile_Facility, "E00014",
                         Argument0 => +Key_Name,
@@ -160,7 +160,7 @@ package body ZBMCompile.Checks is
    -- Is_Ada_Identifier_OK --
    --------------------------
 
-   function Is_Ada_Identifier_OK (Name : in Wide_String) return Boolean is
+   function Is_Ada_Identifier_OK (Name : Wide_String) return Boolean is
       use Ada.Strings.Wide_Fixed;
       use Ada.Strings.Wide_Maps;
       use Ada.Strings.Wide_Maps.Wide_Constants;

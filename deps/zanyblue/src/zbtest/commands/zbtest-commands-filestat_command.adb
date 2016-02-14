@@ -40,7 +40,7 @@ with ZBTest.Commands.File_Type_Arguments;
 
 separate (ZBTest.Commands)
 procedure Filestat_Command (State : in out State_Type;
-                            Args  : in List_Type) is
+                            Args  : List_Type) is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
@@ -48,8 +48,8 @@ procedure Filestat_Command (State : in out State_Type;
    use ZBTest.Commands.File_Type_Arguments;
 
    procedure File_Stat (State     : in out State_Type;
-                        File_Name : in Wide_String;
-                        Log_Name  : in Wide_String);
+                        File_Name : Wide_String;
+                        Log_Name  : Wide_String);
    --  Generate the status report on a file.
 
    ---------------
@@ -57,8 +57,8 @@ procedure Filestat_Command (State : in out State_Type;
    ---------------
 
    procedure File_Stat (State     : in out State_Type;
-                        File_Name : in Wide_String;
-                        Log_Name  : in Wide_String) is
+                        File_Name : Wide_String;
+                        Log_Name  : Wide_String) is
       pragma Unreferenced (State);
       use type Ada.Directories.File_Kind;
       Log_File : File_Type;

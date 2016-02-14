@@ -45,12 +45,12 @@ package ZanyBlue.Wide_Regexp is
 
    subtype Regexp is GNAT.Regexp.Regexp;
 
-   function Compile (Pattern        : in Wide_String;
-                     Glob           : in Boolean := False;
-                     Case_Sensitive : in Boolean := True) return Regexp;
+   function Compile (Pattern        : Wide_String;
+                     Glob           : Boolean := False;
+                     Case_Sensitive : Boolean := True) return Regexp;
    --  Compiles a regular expression S.
 
-   function Match (S : in Wide_String; R : in Regexp) return Boolean;
+   function Match (S : Wide_String; R : Regexp) return Boolean;
    --  True if S matches R, otherwise False.
 
    Error_In_Regexp : exception renames GNAT.Regexp.Error_In_Regexp;

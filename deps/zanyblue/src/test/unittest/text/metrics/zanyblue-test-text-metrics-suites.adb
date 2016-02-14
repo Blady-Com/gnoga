@@ -61,6 +61,8 @@ package body ZanyBlue.Test.Text.Metrics.Suites is
    begin
       return Format ("ZanyBlue.Text.Metrics");
    end Name;
+
+   overriding
    procedure Register_Tests (T : in out Test_Case) is
    begin
       Add_Routine (T, T_0001'Access, "T_0001, empty catalog");

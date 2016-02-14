@@ -42,20 +42,20 @@ package body ZanyBlue.Text.Times is
    use ZanyBlue.Text.Buffer;
    use ZanyBlue.Text.Utils;
 
-   function Format_Value (Format_String : in Wide_String;
-                          Data          : in Time;
-                          TZ_Offset     : in Time_Offset;
-                          Locale        : in Locale_Type) return Wide_String;
+   function Format_Value (Format_String : Wide_String;
+                          Data          : Time;
+                          TZ_Offset     : Time_Offset;
+                          Locale        : Locale_Type) return Wide_String;
    --  Apply the date/time format string which includes the Unicode.org
    --  value strings, e.g., EEEE for the full day name.
 
-   function Compose_Values (Format_String : in Wide_String;
-                            Date_String   : in Wide_String;
-                            Time_String   : in Wide_String) return Wide_String;
+   function Compose_Values (Format_String : Wide_String;
+                            Date_String   : Wide_String;
+                            Time_String   : Wide_String) return Wide_String;
    --  Compose the date and time values into a single date-time string
    --  based on the formatting information from Unicode.org.
 
-   function To_Month (Number : in Month_Number) return Month_Type;
+   function To_Month (Number : Month_Number) return Month_Type;
    --  Convert a Month_Number to the Month_Type enumeration.
 
    --------------------
@@ -66,9 +66,9 @@ package body ZanyBlue.Text.Times is
    --  in the format string can simply be ignored.
    --
 
-   function Compose_Values (Format_String : in Wide_String;
-                            Date_String   : in Wide_String;
-                            Time_String   : in Wide_String) return Wide_String
+   function Compose_Values (Format_String : Wide_String;
+                            Date_String   : Wide_String;
+                            Time_String   : Wide_String) return Wide_String
    is
 
       Last   : constant Positive := Format_String'Last;
@@ -100,7 +100,7 @@ package body ZanyBlue.Text.Times is
    -- Create --
    ------------
 
-   function Create (Time_Value : in Time) return Time_Argument_Type is
+   function Create (Time_Value : Time) return Time_Argument_Type is
    begin
       return Create (Time_Value, UTC_Time_Offset (Date => Time_Value));
    exception
@@ -112,8 +112,8 @@ package body ZanyBlue.Text.Times is
    -- Create --
    ------------
 
-   function Create (Time_Value : in Time;
-                    TZ_Offset  : in Time_Offset) return Time_Argument_Type is
+   function Create (Time_Value : Time;
+                    TZ_Offset  : Time_Offset) return Time_Argument_Type is
    begin
       return Time_Argument_Type'(Data => Time_Value,
                                  TZ_Offset => TZ_Offset);
@@ -129,9 +129,9 @@ package body ZanyBlue.Text.Times is
    --      http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week
    --
 
-   function Day_In_Week (Day   : in Day_Number;
-                         Month : in Month_Number;
-                         Year  : in Year_Number) return Day_Type is
+   function Day_In_Week (Day   : Day_Number;
+                         Month : Month_Number;
+                         Year  : Year_Number) return Day_Type is
 
       subtype Leap_Year_P is Boolean;
       subtype Day_Number_Type is Natural range 0 .. 6;
@@ -176,10 +176,11 @@ package body ZanyBlue.Text.Times is
    -- Format --
    ------------
 
-   function Format (Value     : in Time_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String is
+   overriding
+   function Format (Value     : Time_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String is
 
       T : constant Time := Value.Data;
       Z : constant Time_Offset := Value.TZ_Offset;
@@ -239,10 +240,10 @@ package body ZanyBlue.Text.Times is
    -- Format_Value --
    ------------------
 
-   function Format_Value (Format_String : in Wide_String;
-                          Data          : in Time;
-                          TZ_Offset     : in Time_Offset;
-                          Locale        : in Locale_Type) return Wide_String is
+   function Format_Value (Format_String : Wide_String;
+                          Data          : Time;
+                          TZ_Offset     : Time_Offset;
+                          Locale        : Locale_Type) return Wide_String is
 
       Quote_Ch : constant Wide_Character := ''';
       Year     : Year_Number;
@@ -388,7 +389,7 @@ package body ZanyBlue.Text.Times is
    -- To_Month --
    --------------
 
-   function To_Month (Number : in Month_Number) return Month_Type is
+   function To_Month (Number : Month_Number) return Month_Type is
    begin
       return Month_Type'Val (Month_Type'Pos (Jan) + Number - 1);
    end To_Month;

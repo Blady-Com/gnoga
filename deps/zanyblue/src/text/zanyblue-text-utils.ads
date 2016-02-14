@@ -43,29 +43,29 @@ package ZanyBlue.Text.Utils is
    procedure ASCII_Uppercase (S : in out Wide_String);
    --  Convert a wide string to uppercase (in place).
 
-   function ASCII_Uppercase (C : in Wide_Character) return Wide_Character;
+   function ASCII_Uppercase (C : Wide_Character) return Wide_Character;
    --  Convert a wide character to uppercase.
 
-   function ASCII_Lowercase (C : in Wide_Character) return Wide_Character;
+   function ASCII_Lowercase (C : Wide_Character) return Wide_Character;
    --  Convert a wide character to lowercase.
 
-   function Escape_String (Source : in Wide_String) return String;
+   function Escape_String (Source : Wide_String) return String;
    --  Return the String value associated with a Wide_String containing
    --  Java style \u escape sequences, e.g.,
    --
    --  "This is π" => "This is \u03c0"
 
-   function Non_Blank_Prefix (S : in Wide_String) return Wide_String;
+   function Non_Blank_Prefix (S : Wide_String) return Wide_String;
    --  Return a non-blank prefix of a string.  E.g., "ar " returns "ar".
    --  This is a helper function for the codes for languages, scripts and
    --  territories.
 
-   function Starts_With (S      : in Wide_String;
-                         Start  : in Positive;
-                         Prefix : in Wide_String) return Boolean;
+   function Starts_With (S      : Wide_String;
+                         Start  : Positive;
+                         Prefix : Wide_String) return Boolean;
    --  Determine if a string begins with the Prefix starting at Start.
 
-   function Unescape_String (Source : in String) return Wide_String;
+   function Unescape_String (Source : String) return Wide_String;
    --  Return the Wide_String value associated with a simple String containing
    --  Java style \u escape sequences, e.g.,
    --

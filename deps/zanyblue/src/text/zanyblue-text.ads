@@ -134,20 +134,20 @@ package ZanyBlue.Text is
 
    type Static_Message_Pool_Type is access constant Wide_String;
 
-   function Files_Differ (Left_File_Name  : in Wide_String;
-                          Right_File_Name : in Wide_String) return Boolean;
+   function Files_Differ (Left_File_Name  : Wide_String;
+                          Right_File_Name : Wide_String) return Boolean;
    --  Determine if the contents of two files differ.
 
-   function Wide_Hash (Key : in Wide_String) return Ada.Containers.Hash_Type;
+   function Wide_Hash (Key : Wide_String) return Ada.Containers.Hash_Type;
    --  Return the container hash value for a wide string.  Simply use the
    --  standard String hash function on the UTF8 encoded value.
 
-   function To_Wide_String (S : in String) return Wide_String
+   function To_Wide_String (S : String) return Wide_String
       renames Ada.Characters.Conversions.To_Wide_String;
    --  Utility name to convert a String to Wide_String
 
    procedure Wide_Create_For_Update (File : in out Ada.Wide_Text_IO.File_Type;
-                                     Name : in Wide_String);
+                                     Name : Wide_String);
    --  Create a file.  The file created is a temporary file that is renamed
    --  to the target file on close using Close_And_Update.  The renaming
    --  only occurs if the file contents have changed.  These routines are

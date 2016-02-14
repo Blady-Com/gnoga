@@ -36,4 +36,4 @@ TOP=../../..
 include $(TOP)/src/test/unittest/t_zanyblue.mk
 
 xcheck:	all
-	$(realpath $(TOP)/src/bin/$(TEST_NAME)) -T $(TOP) -X > $(TOP)/src/test/unittest.xml
+	$(realpath $(TOP)/src/bin/$(TEST_NAME)) $(TEST_ARGS) -X > $(TOP)/src/test/unittest.xml

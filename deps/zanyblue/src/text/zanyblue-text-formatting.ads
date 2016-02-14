@@ -92,55 +92,55 @@ package ZanyBlue.Text.Formatting is
    --  The following "+" definitons simply make the "+" method visible
    --  to client using this package, simplifying the overal usage of the
    --  ZanyBlue.Text library.
-   function "+" (String_Value : in String)
+   function "+" (String_Value : String)
       return ZanyBlue.Text.Strings.String_Argument_Type
       renames ZanyBlue.Text.Strings.Create;
 
-   function "+" (Unbounded_String_Value : in Unbounded_String)
+   function "+" (Unbounded_String_Value : Unbounded_String)
       return ZanyBlue.Text.Strings.String_Argument_Type
       renames ZanyBlue.Text.Unbounded_Strings.Create;
 
-   function "+" (Unbounded_Wide_String_Value : in Unbounded_Wide_String)
+   function "+" (Unbounded_Wide_String_Value : Unbounded_Wide_String)
       return ZanyBlue.Text.Wide_Strings.Wide_String_Argument_Type
       renames ZanyBlue.Text.Unbounded_Wide_Strings.Create;
 
-   function "+" (Wide_String_Value : in Wide_String)
+   function "+" (Wide_String_Value : Wide_String)
       return ZanyBlue.Text.Wide_Strings.Wide_String_Argument_Type
       renames ZanyBlue.Text.Wide_Strings.Create;
 
-   function "+" (Float_Value : in Float)
+   function "+" (Float_Value : Float)
       return ZanyBlue.Text.Floats.Float_Argument_Type
       renames ZanyBlue.Text.Floats.Create;
 
-   function "+" (Float_Value : in Long_Float)
+   function "+" (Float_Value : Long_Float)
       return ZanyBlue.Text.Long_Floats.Float_Argument_Type
       renames ZanyBlue.Text.Long_Floats.Create;
 
-   function "+" (Integer_Value : in Integer)
+   function "+" (Integer_Value : Integer)
       return ZanyBlue.Text.Integers.Integer_Argument_Type
       renames ZanyBlue.Text.Integers.Create;
 
-   function "+" (Time_Value : in Ada.Calendar.Time)
+   function "+" (Time_Value : Ada.Calendar.Time)
       return ZanyBlue.Text.Times.Time_Argument_Type
       renames ZanyBlue.Text.Times.Create;
 
-   function "+" (Duration_Value : in Duration)
+   function "+" (Duration_Value : Duration)
       return ZanyBlue.Text.Durations.Duration_Argument_Type
       renames ZanyBlue.Text.Durations.Create;
 
-   function "+" (Character_Value : in Character)
+   function "+" (Character_Value : Character)
       return ZanyBlue.Text.Characters.Character_Argument_Type
       renames ZanyBlue.Text.Characters.Create;
 
-   function "+" (Value : in Exception_Occurrence)
+   function "+" (Value : Exception_Occurrence)
       return ZanyBlue.Text.Exceptions.Exception_Argument_Type
       renames ZanyBlue.Text.Exceptions.Create;
 
-   function "+" (Wide_Character_Value : in Wide_Character)
+   function "+" (Wide_Character_Value : Wide_Character)
       return ZanyBlue.Text.Wide_Characters.Wide_Character_Argument_Type
       renames ZanyBlue.Text.Wide_Characters.Create;
 
-   function "+" (Boolean_Value : in Boolean)
+   function "+" (Boolean_Value : Boolean)
       return ZanyBlue.Text.Booleans.Boolean_Argument_Type
       renames ZanyBlue.Text.Booleans.Create;
 
@@ -167,293 +167,293 @@ package ZanyBlue.Text.Formatting is
    function Source_Locales_Enabled return Boolean;
    --  Are source locales for message argument formatting enabled.
 
-   procedure Set_Filter (Filter   : in Message_Filter_Access;
-                         Catalog  : in Catalog_Type := Standard_Catalog);
+   procedure Set_Filter (Filter   : Message_Filter_Access;
+                         Catalog  : Catalog_Type := Standard_Catalog);
    --  Set the filter associated with the standard catalog, can be null.
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return String;
    --  Format a message with arguments to a Wide_String for display or
    --  printing.
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return String;
    --  Format a message with 5 possible arguments to a Wide_String for
    --  display or printing.
 
-   function Format (Text      : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale)
       return String;
    --  Format a message with arguments to a Wide_String for display or
    --  printing.
 
-   function Format (Text      : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale)
       return String;
    --  Format a message with 5 possible arguments to a Wide_String for
    --  display or printing.
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return Wide_String;
    --  Format a message with arguments to a Wide_String for display or
    --  printing.
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return Wide_String;
    --  Format a message with 5 possible arguments to a Wide_String for
    --  display or printing.
 
-   function Format (Text      : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale)
       return Wide_String;
    --  Format a message with arguments to a Wide_String for display or
    --  printing.
 
-   function Format (Text      : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale)
       return Wide_String;
    --  Format a message with 5 possible arguments to a Wide_String for
    --  display or printing.
 
-   procedure Print (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog);
+   procedure Print (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
-   procedure Print_Line (Facility  : in Wide_String;
-                         Key       : in Wide_String;
-                         Arguments : in Argument_List;
-                         Locale    : in Locale_Type := Current_Locale;
-                         Catalog   : in Catalog_Type := Standard_Catalog);
+   procedure Print_Line (Facility  : Wide_String;
+                         Key       : Wide_String;
+                         Arguments : Argument_List;
+                         Locale    : Locale_Type := Current_Locale;
+                         Catalog   : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
-   procedure Print (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog);
+   procedure Print (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog);
    --  Print a message with upto 5 arguments.
 
    procedure Print_Line
-      (Facility  : in Wide_String;
-       Key       : in Wide_String;
-       Argument0 : in Argument_Type'Class := Null_Argument;
-       Argument1 : in Argument_Type'Class := Null_Argument;
-       Argument2 : in Argument_Type'Class := Null_Argument;
-       Argument3 : in Argument_Type'Class := Null_Argument;
-       Argument4 : in Argument_Type'Class := Null_Argument;
-       Locale    : in Locale_Type := Current_Locale;
-       Catalog   : in Catalog_Type := Standard_Catalog);
+      (Facility  : Wide_String;
+       Key       : Wide_String;
+       Argument0 : Argument_Type'Class := Null_Argument;
+       Argument1 : Argument_Type'Class := Null_Argument;
+       Argument2 : Argument_Type'Class := Null_Argument;
+       Argument3 : Argument_Type'Class := Null_Argument;
+       Argument4 : Argument_Type'Class := Null_Argument;
+       Locale    : Locale_Type := Current_Locale;
+       Catalog   : Catalog_Type := Standard_Catalog);
    --  Print a message with upto 5 arguments.
 
    procedure Print
-      (Destination : in Ada.Wide_Text_IO.File_Type;
-       Facility    : in Wide_String;
-       Key         : in Wide_String;
-       Arguments   : in Argument_List;
-       Locale      : in Locale_Type := Current_Locale;
-       Catalog     : in Catalog_Type := Standard_Catalog);
+      (Destination : Ada.Wide_Text_IO.File_Type;
+       Facility    : Wide_String;
+       Key         : Wide_String;
+       Arguments   : Argument_List;
+       Locale      : Locale_Type := Current_Locale;
+       Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
-   procedure Print_Line (Destination : in Ada.Wide_Text_IO.File_Type;
-                         Facility    : in Wide_String;
-                         Key         : in Wide_String;
-                         Arguments   : in Argument_List;
-                         Locale      : in Locale_Type := Current_Locale;
-                         Catalog     : in Catalog_Type := Standard_Catalog);
+   procedure Print_Line (Destination : Ada.Wide_Text_IO.File_Type;
+                         Facility    : Wide_String;
+                         Key         : Wide_String;
+                         Arguments   : Argument_List;
+                         Locale      : Locale_Type := Current_Locale;
+                         Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
-   procedure Print (Destination : in Ada.Wide_Text_IO.File_Type;
-                    Facility    : in Wide_String;
-                    Key         : in Wide_String;
-                    Argument0   : in Argument_Type'Class := Null_Argument;
-                    Argument1   : in Argument_Type'Class := Null_Argument;
-                    Argument2   : in Argument_Type'Class := Null_Argument;
-                    Argument3   : in Argument_Type'Class := Null_Argument;
-                    Argument4   : in Argument_Type'Class := Null_Argument;
-                    Locale      : in Locale_Type := Current_Locale;
-                    Catalog     : in Catalog_Type := Standard_Catalog);
+   procedure Print (Destination : Ada.Wide_Text_IO.File_Type;
+                    Facility    : Wide_String;
+                    Key         : Wide_String;
+                    Argument0   : Argument_Type'Class := Null_Argument;
+                    Argument1   : Argument_Type'Class := Null_Argument;
+                    Argument2   : Argument_Type'Class := Null_Argument;
+                    Argument3   : Argument_Type'Class := Null_Argument;
+                    Argument4   : Argument_Type'Class := Null_Argument;
+                    Locale      : Locale_Type := Current_Locale;
+                    Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with upto 5 arguments.
 
    procedure Print_Line
-      (Destination : in Ada.Wide_Text_IO.File_Type;
-       Facility    : in Wide_String;
-       Key         : in Wide_String;
-       Argument0   : in Argument_Type'Class := Null_Argument;
-       Argument1   : in Argument_Type'Class := Null_Argument;
-       Argument2   : in Argument_Type'Class := Null_Argument;
-       Argument3   : in Argument_Type'Class := Null_Argument;
-       Argument4   : in Argument_Type'Class := Null_Argument;
-       Locale      : in Locale_Type := Current_Locale;
-       Catalog     : in Catalog_Type := Standard_Catalog);
+      (Destination : Ada.Wide_Text_IO.File_Type;
+       Facility    : Wide_String;
+       Key         : Wide_String;
+       Argument0   : Argument_Type'Class := Null_Argument;
+       Argument1   : Argument_Type'Class := Null_Argument;
+       Argument2   : Argument_Type'Class := Null_Argument;
+       Argument3   : Argument_Type'Class := Null_Argument;
+       Argument4   : Argument_Type'Class := Null_Argument;
+       Locale      : Locale_Type := Current_Locale;
+       Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with upto 5 arguments.
 
-   procedure Print (Text      : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale);
+   procedure Print (Text      : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
-   procedure Print_Line (Text      : in Wide_String;
-                         Arguments : in Argument_List;
-                         Locale    : in Locale_Type := Current_Locale);
+   procedure Print_Line (Text      : Wide_String;
+                         Arguments : Argument_List;
+                         Locale    : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
-   procedure Print (Text      : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale);
+   procedure Print (Text      : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale);
    --  Print a message with upto 5 arguments.
 
    procedure Print_Line
-      (Text      : in Wide_String;
-       Argument0 : in Argument_Type'Class := Null_Argument;
-       Argument1 : in Argument_Type'Class := Null_Argument;
-       Argument2 : in Argument_Type'Class := Null_Argument;
-       Argument3 : in Argument_Type'Class := Null_Argument;
-       Argument4 : in Argument_Type'Class := Null_Argument;
-       Locale    : in Locale_Type := Current_Locale);
+      (Text      : Wide_String;
+       Argument0 : Argument_Type'Class := Null_Argument;
+       Argument1 : Argument_Type'Class := Null_Argument;
+       Argument2 : Argument_Type'Class := Null_Argument;
+       Argument3 : Argument_Type'Class := Null_Argument;
+       Argument4 : Argument_Type'Class := Null_Argument;
+       Locale    : Locale_Type := Current_Locale);
    --  Print a message with upto 5 arguments.
 
-   procedure Print (Destination  : in Ada.Wide_Text_IO.File_Type;
-                    Text         : in Wide_String;
-                    Arguments    : in Argument_List;
-                    Locale       : in Locale_Type := Current_Locale);
+   procedure Print (Destination  : Ada.Wide_Text_IO.File_Type;
+                    Text         : Wide_String;
+                    Arguments    : Argument_List;
+                    Locale       : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
-   procedure Print_Line (Destination  : in Ada.Wide_Text_IO.File_Type;
-                         Text         : in Wide_String;
-                         Arguments    : in Argument_List;
-                         Locale       : in Locale_Type := Current_Locale);
+   procedure Print_Line (Destination  : Ada.Wide_Text_IO.File_Type;
+                         Text         : Wide_String;
+                         Arguments    : Argument_List;
+                         Locale       : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
-   procedure Print (Destination  : in Ada.Wide_Text_IO.File_Type;
-                    Text         : in Wide_String;
-                    Argument0    : in Argument_Type'Class := Null_Argument;
-                    Argument1    : in Argument_Type'Class := Null_Argument;
-                    Argument2    : in Argument_Type'Class := Null_Argument;
-                    Argument3    : in Argument_Type'Class := Null_Argument;
-                    Argument4    : in Argument_Type'Class := Null_Argument;
-                    Locale       : in Locale_Type := Current_Locale);
+   procedure Print (Destination  : Ada.Wide_Text_IO.File_Type;
+                    Text         : Wide_String;
+                    Argument0    : Argument_Type'Class := Null_Argument;
+                    Argument1    : Argument_Type'Class := Null_Argument;
+                    Argument2    : Argument_Type'Class := Null_Argument;
+                    Argument3    : Argument_Type'Class := Null_Argument;
+                    Argument4    : Argument_Type'Class := Null_Argument;
+                    Locale       : Locale_Type := Current_Locale);
    --  Print a message with upto 5 arguments.
 
    procedure Print_Line
-      (Destination  : in Ada.Wide_Text_IO.File_Type;
-       Text         : in Wide_String;
-       Argument0    : in Argument_Type'Class := Null_Argument;
-       Argument1    : in Argument_Type'Class := Null_Argument;
-       Argument2    : in Argument_Type'Class := Null_Argument;
-       Argument3    : in Argument_Type'Class := Null_Argument;
-       Argument4    : in Argument_Type'Class := Null_Argument;
-       Locale       : in Locale_Type := Current_Locale);
+      (Destination  : Ada.Wide_Text_IO.File_Type;
+       Text         : Wide_String;
+       Argument0    : Argument_Type'Class := Null_Argument;
+       Argument1    : Argument_Type'Class := Null_Argument;
+       Argument2    : Argument_Type'Class := Null_Argument;
+       Argument3    : Argument_Type'Class := Null_Argument;
+       Argument4    : Argument_Type'Class := Null_Argument;
+       Locale       : Locale_Type := Current_Locale);
    --  Print a message with upto 5 arguments.
 
-   procedure Raise_Exception (E       : in Ada.Exceptions.Exception_Id;
-                              Message : in Wide_String);
+   procedure Raise_Exception (E       : Ada.Exceptions.Exception_Id;
+                              Message : Wide_String);
    pragma No_Return (Raise_Exception);
    --  Raise an exception with a wide message, encoded as UTF-8
 
    procedure Raise_Exception
-      (E            : in Ada.Exceptions.Exception_Id;
-       Facility     : in Wide_String;
-       Key          : in Wide_String;
-       Argument0    : in Argument_Type'Class := Null_Argument;
-       Argument1    : in Argument_Type'Class := Null_Argument;
-       Argument2    : in Argument_Type'Class := Null_Argument;
-       Argument3    : in Argument_Type'Class := Null_Argument;
-       Argument4    : in Argument_Type'Class := Null_Argument;
-       Locale       : in Locale_Type := Current_Locale;
-       Catalog      : in Catalog_Type := Standard_Catalog);
+      (E            : Ada.Exceptions.Exception_Id;
+       Facility     : Wide_String;
+       Key          : Wide_String;
+       Argument0    : Argument_Type'Class := Null_Argument;
+       Argument1    : Argument_Type'Class := Null_Argument;
+       Argument2    : Argument_Type'Class := Null_Argument;
+       Argument3    : Argument_Type'Class := Null_Argument;
+       Argument4    : Argument_Type'Class := Null_Argument;
+       Locale       : Locale_Type := Current_Locale;
+       Catalog      : Catalog_Type := Standard_Catalog);
    pragma No_Return (Raise_Exception);
    --  Raise an exception with a wide message, encoded as UTF-8
 
    procedure Raise_Exception
-      (E            : in Ada.Exceptions.Exception_Id;
-       Facility     : in Wide_String;
-       Key          : in Wide_String;
-       Arguments    : in Argument_List;
-       Locale       : in Locale_Type := Current_Locale;
-       Catalog      : in Catalog_Type := Standard_Catalog);
+      (E            : Ada.Exceptions.Exception_Id;
+       Facility     : Wide_String;
+       Key          : Wide_String;
+       Arguments    : Argument_List;
+       Locale       : Locale_Type := Current_Locale;
+       Catalog      : Catalog_Type := Standard_Catalog);
    pragma No_Return (Raise_Exception);
    --  Raise an exception with a wide message, encoded as UTF-8
 
    procedure Raise_Exception
-      (E            : in Ada.Exceptions.Exception_Id;
-       Text         : in Wide_String;
-       Argument0    : in Argument_Type'Class;
-       Argument1    : in Argument_Type'Class := Null_Argument;
-       Argument2    : in Argument_Type'Class := Null_Argument;
-       Argument3    : in Argument_Type'Class := Null_Argument;
-       Argument4    : in Argument_Type'Class := Null_Argument;
-       Locale       : in Locale_Type := Current_Locale);
+      (E            : Ada.Exceptions.Exception_Id;
+       Text         : Wide_String;
+       Argument0    : Argument_Type'Class;
+       Argument1    : Argument_Type'Class := Null_Argument;
+       Argument2    : Argument_Type'Class := Null_Argument;
+       Argument3    : Argument_Type'Class := Null_Argument;
+       Argument4    : Argument_Type'Class := Null_Argument;
+       Locale       : Locale_Type := Current_Locale);
    pragma No_Return (Raise_Exception);
    --  Raise an exception with a wide message, encoded as UTF-8
 
-   procedure Pseudo_Translate (Mapping : in Pseudo_Map_Vector;
-                               Catalog : in Catalog_Type := Standard_Catalog);
+   procedure Pseudo_Translate (Mapping : Pseudo_Map_Vector;
+                               Catalog : Catalog_Type := Standard_Catalog);
    --  Enable pseudo translations for a catalog.
 
-   procedure Write_Message (Destination  : in Ada.Wide_Text_IO.File_Type;
-                            Facility     : in Wide_String;
-                            Key          : in Wide_String;
-                            Arguments    : in Argument_List;
-                            With_NL      : in Boolean;
-                            Locale       : in Locale_Type;
-                            Catalog      : in Catalog_Type);
+   procedure Write_Message (Destination  : Ada.Wide_Text_IO.File_Type;
+                            Facility     : Wide_String;
+                            Key          : Wide_String;
+                            Arguments    : Argument_List;
+                            With_NL      : Boolean;
+                            Locale       : Locale_Type;
+                            Catalog      : Catalog_Type);
    --  If not filtered, format the message and write to the underlying
    --  file.
 
-   procedure Write_Message (Destination  : in Ada.Text_IO.File_Type;
-                            Facility     : in Wide_String;
-                            Key          : in Wide_String;
-                            Arguments    : in Argument_List;
-                            With_NL      : in Boolean;
-                            Locale       : in Locale_Type;
-                            Catalog      : in Catalog_Type);
+   procedure Write_Message (Destination  : Ada.Text_IO.File_Type;
+                            Facility     : Wide_String;
+                            Key          : Wide_String;
+                            Arguments    : Argument_List;
+                            With_NL      : Boolean;
+                            Locale       : Locale_Type;
+                            Catalog      : Catalog_Type);
    --  If not filtered, format the message and write to the underlying
    --  file.
 

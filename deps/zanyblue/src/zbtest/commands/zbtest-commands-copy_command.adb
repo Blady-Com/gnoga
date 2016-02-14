@@ -37,19 +37,19 @@ with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
 procedure Copy_Command (State : in out State_Type;
-                        Args  : in List_Type) is
+                        Args  : List_Type) is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
 
    procedure Copy_Directory (State            : in out State_Type;
-                             Source_Name      : in Wide_String;
-                             Destination_Name : in Wide_String);
+                             Source_Name      : Wide_String;
+                             Destination_Name : Wide_String);
    --  Recursively copy a directory.
 
    procedure Copy_File (State            : in out State_Type;
-                        Source_Name      : in Wide_String;
-                        Destination_Name : in Wide_String);
+                        Source_Name      : Wide_String;
+                        Destination_Name : Wide_String);
    --  Copy a simple file.
 
    --------------------
@@ -57,8 +57,8 @@ procedure Copy_Command (State : in out State_Type;
    --------------------
 
    procedure Copy_Directory (State            : in out State_Type;
-                             Source_Name      : in Wide_String;
-                             Destination_Name : in Wide_String) is
+                             Source_Name      : Wide_String;
+                             Destination_Name : Wide_String) is
       Source_Path : constant Wide_String :=
                        State.Locate_Directory (Source_Name);
    begin
@@ -72,8 +72,8 @@ procedure Copy_Command (State : in out State_Type;
    ---------------
 
    procedure Copy_File (State            : in out State_Type;
-                        Source_Name      : in Wide_String;
-                        Destination_Name : in Wide_String) is
+                        Source_Name      : Wide_String;
+                        Destination_Name : Wide_String) is
       Source_Path : constant Wide_String := State.Locate_File (Source_Name);
    begin
       Wide_Copy_File (Source_Path, Destination_Name);

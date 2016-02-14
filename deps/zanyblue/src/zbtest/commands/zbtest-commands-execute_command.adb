@@ -38,23 +38,23 @@ with Ada.Strings.Wide_Unbounded;
 
 separate (ZBTest.Commands)
 procedure Execute_Command (State : in out State_Type;
-                           Args  : in List_Type) is
+                           Args  : List_Type) is
 
    use Ada.Strings.Wide_Fixed;
 
    procedure Execute_Command (State          : in out State_Type;
-                              Command        : in Wide_String;
-                              Expect_Failure : in Boolean;
-                              Args           : in List_Type;
-                              Args_Index     : in Positive;
-                              N_Args         : in Natural;
-                              Output_Name    : in Wide_String);
+                              Command        : Wide_String;
+                              Expect_Failure : Boolean;
+                              Args           : List_Type;
+                              Args_Index     : Positive;
+                              N_Args         : Natural;
+                              Output_Name    : Wide_String);
    --  Execute the command, given the full path to the command.
 
    procedure Register_Execute_Failure (State          : in out State_Type;
-                                       Command_Line   : in Wide_String;
-                                       Expect_Failure : in Boolean;
-                                       Success        : in Boolean);
+                                       Command_Line   : Wide_String;
+                                       Expect_Failure : Boolean;
+                                       Success        : Boolean);
    --  Register a command failure.
 
    ---------------------
@@ -62,12 +62,12 @@ procedure Execute_Command (State : in out State_Type;
    ---------------------
 
    procedure Execute_Command (State          : in out State_Type;
-                              Command        : in Wide_String;
-                              Expect_Failure : in Boolean;
-                              Args           : in List_Type;
-                              Args_Index     : in Positive;
-                              N_Args         : in Natural;
-                              Output_Name    : in Wide_String) is
+                              Command        : Wide_String;
+                              Expect_Failure : Boolean;
+                              Args           : List_Type;
+                              Args_Index     : Positive;
+                              N_Args         : Natural;
+                              Output_Name    : Wide_String) is
       use Ada.Strings.Wide_Unbounded;
       Command_Line : Unbounded_Wide_String;
       Arguments    : GNAT.OS_Lib.Argument_List (1 .. N_Args);
@@ -102,9 +102,9 @@ procedure Execute_Command (State : in out State_Type;
    ------------------------------
 
    procedure Register_Execute_Failure (State          : in out State_Type;
-                                       Command_Line   : in Wide_String;
-                                       Expect_Failure : in Boolean;
-                                       Success        : in Boolean) is
+                                       Command_Line   : Wide_String;
+                                       Expect_Failure : Boolean;
+                                       Success        : Boolean) is
       Test_Name : constant Wide_String := Format ("{0}-exec{1}",
                                              +State.Full_Test_Name,
                                              +State.Get_Integer ("_execfail"));

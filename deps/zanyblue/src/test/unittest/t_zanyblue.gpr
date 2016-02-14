@@ -55,6 +55,7 @@ project t_zanyblue is
                         "text/catalogs",
                         "text/characters",
                         "text/cldr",
+                        "text/codecs",
                         "text/durations",
                         "text/exceptions",
                         "text/floats",

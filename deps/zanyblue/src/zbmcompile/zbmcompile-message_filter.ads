@@ -57,9 +57,10 @@ package ZBMCompile.Message_Filter is
          Output_Level : Output_Level_Type := Normal;
       end record;
 
-   function Is_Filtered (Filter    : in Verbose_Filter_Type;
-                         Facility  : in Wide_String;
-                         Key       : in Wide_String) return Boolean;
+   overriding
+   function Is_Filtered (Filter    : Verbose_Filter_Type;
+                         Facility  : Wide_String;
+                         Key       : Wide_String) return Boolean;
 
    Filters : aliased Verbose_Filter_Type;
 

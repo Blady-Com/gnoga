@@ -32,7 +32,7 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-TEST_ARGS=-T $(TOP)
+TEST_ARGS+=-T $(TOP)
 GPR_FILE=$(TOP)/src/test/unittest/t_zanyblue.gpr
 TEST_NAME=$(basename $(firstword $(wildcard t*.adb)))
 CLEAN_TARGS+=$(patsubst %,%.clean,$(TEST_DIRS))
@@ -49,6 +49,10 @@ GNATFLAGS+=-XMAIN=$(TEST_NAME).adb
 TEST_DIRS=$(foreach i,$(wildcard *),$(if $(realpath $(wildcard $i/Makefile)),$i))
 
 include $(TOP)/src/mkfile/conf.mk
+
+ifneq ($(UNITTESTNAME),)
+TEST_ARGS+=-P $(UNITTESTNAME)
+endif
 
 all::
 	$(GNATMAKE) -p $(GNATFLAGS) -P $(GPR_FILE)

@@ -48,11 +48,9 @@ INCLUDE_SRCS=$(foreach d,$(INCLUDE_SRC_DIRS),\
                      $(wildcard $(SRCDIR)/$d/*generic*.adb)))
 INCLUDE_FILES=$(patsubst %,$(INCDIR)/%,$(INCLUDE_SRCS))
 GENERATED=$(INCLUDE_FILES)
-APPDIRS=zbmcompile
+APPDIRS=zbmcompile zbtest
 APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
-TESTDIRS=zbtest
-TESTTARGETS=$(patsubst %,%.app,$(TESTDIRS))
-CLEAN_DEPS=$(patsubst %,%.clean,$(APPDIRS) $(TESTDIRS) root doc test)
+CLEAN_DEPS=$(patsubst %,%.clean,$(APPDIRS) root doc test)
 CLEAN_FILES+=$(wildcard bin/pylib/*.pyc)
 CLEAN_FILES+=$(wildcard bin/pylib/zb/*.pyc)
 CLEAN_FILES+=$(wildcard gnatcheck.out)
@@ -62,6 +60,7 @@ CLEAN_FILES+=$(wildcard ../zanyblue-*)
 CLEAN_FILES+=$(wildcard ../doc/*.*)
 CLEAN_FILES+=$(wildcard ../doc/.htaccess)
 CLEAN_DIRS+=$(wildcard ../doc/zanyblue)
+CLEAN_FILES+=$(wildcard $(TOP)/src/admin/inventory.lis)
 CLEAN_DIRS+=$(STAGEDIR)
 CLEAN_DEPS+=../examples.clean
 
@@ -77,8 +76,6 @@ library:
 
 applications:	$(APPTARGETS)
 
-tests:	$(TESTTARGETS)
-
 docs:
 	$(MAKE) -C doc
 
@@ -88,14 +85,14 @@ website:
 changelog:
 	$(SRCDIR)/bin/mkchangelog
 
-distribution: clean all xcheck docs test.clean bundles website ws-bundle
+distribution: clean inventory all xcheck docs test.clean bundles website ws-bundle
 
 verify-distribution:
 	rm -rf $(STAGEDIR)
 	mkdir -p $(STAGEDIR)
 	tar -C $(STAGEDIR) -xvf $(DISTRIBUTION)
 	cd $(STAGEDIR); md5sum --check --quiet */MANIFEST.txt
-	cd $(DISTRIBDIR)/src; make distribution
+	cd $(STAGEDIR)/*/src; make clean all xcheck
 
 %.app:
 	$(MAKE) -C $*

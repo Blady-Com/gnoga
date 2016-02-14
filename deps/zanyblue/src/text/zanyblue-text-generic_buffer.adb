@@ -39,12 +39,12 @@ package body ZanyBlue.Text.Generic_Buffer is
    ----------------
 
    procedure Accumulate (Buffer     : in out Buffer_Type;
-                         Value      : in Integer_Type;
-                         Locale     : in Locale_Type;
-                         Width      : in Natural := 1;
-                         Fill       : in Wide_String := "";
-                         Base       : in Positive := 10;
-                         Lowercase  : in Boolean := True) is
+                         Value      : Integer_Type;
+                         Locale     : Locale_Type;
+                         Width      : Natural := 1;
+                         Fill       : Wide_String := "";
+                         Base       : Positive := 10;
+                         Lowercase  : Boolean := True) is
 
       Digit_Map : constant Wide_String := Locale_Digits (Locale, Lowercase);
       Base_Value  : constant Integer_Type'Base := Integer_Type'Base (Base);
@@ -90,7 +90,7 @@ package body ZanyBlue.Text.Generic_Buffer is
    -- Add --
    ---------
 
-   procedure Add (Buffer : in out Buffer_Type; Data : in Wide_Character) is
+   procedure Add (Buffer : in out Buffer_Type; Data : Wide_Character) is
    begin
       Append (Buffer.Data, Data);
    end Add;
@@ -99,7 +99,7 @@ package body ZanyBlue.Text.Generic_Buffer is
    -- Add --
    ---------
 
-   procedure Add (Buffer : in out Buffer_Type; Data : in Wide_String) is
+   procedure Add (Buffer : in out Buffer_Type; Data : Wide_String) is
    begin
       for I in Data'Range loop
          Add (Buffer, Data (I));
@@ -110,7 +110,7 @@ package body ZanyBlue.Text.Generic_Buffer is
    -- To_String --
    ---------------
 
-   function To_String (Buffer : in Buffer_Type) return Wide_String is
+   function To_String (Buffer : Buffer_Type) return Wide_String is
    begin
       return To_Wide_String (Buffer.Data);
    end To_String;

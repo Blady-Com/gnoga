@@ -53,9 +53,9 @@ package body ZBTest.XML_Data is
    -----------------------------
 
    function Add_Text_Node_From_File
-      (Document  : in Value_Type'Class;
-       Parent    : in Value_Type'Class;
-       File_Name : in Wide_String) return Value_Type'Class is
+      (Document  : Value_Type'Class;
+       Parent    : Value_Type'Class;
+       File_Name : Wide_String) return Value_Type'Class is
       use Ada.Wide_Text_IO;
       use Ada.Strings.Wide_Unbounded;
       Document_Node : constant Node := XML_Node_Type (Document).Data;
@@ -79,9 +79,9 @@ package body ZBTest.XML_Data is
    ---------------------
 
    function Create_XML_Node
-      (Document   : in Value_Type'Class;
-       Parent     : in Value_Type'Class;
-       Child_Name : in Wide_String) return Value_Type'Class
+      (Document   : Value_Type'Class;
+       Parent     : Value_Type'Class;
+       Child_Name : Wide_String) return Value_Type'Class
    is
       use Ada.Wide_Text_IO;
       Document_Node : constant Node := XML_Node_Type (Document).Data;
@@ -106,9 +106,9 @@ package body ZBTest.XML_Data is
    -- Set_Attribute --
    -------------------
 
-   procedure Set_Attribute (Parent     : in Value_Type'Class;
-                            Name       : in Wide_String;
-                            Value      : in Wide_String) is
+   procedure Set_Attribute (Parent     : Value_Type'Class;
+                            Name       : Wide_String;
+                            Value      : Wide_String) is
       Parent_Node : constant Node := XML_Node_Type (Parent).Data;
    begin
       Set_Attribute (Parent_Node, To_UTF8 (Name), To_UTF8 (Value));
@@ -118,8 +118,9 @@ package body ZBTest.XML_Data is
    -- To_List --
    -------------
 
-   function To_List (Value : in XML_Node_Type;
-                     Name  : in Wide_String) return List_Type is
+   overriding
+   function To_List (Value : XML_Node_Type;
+                     Name  : Wide_String) return List_Type is
       Result : List_Type;
    begin
       Append (Result, Value.To_String (Name));
@@ -130,8 +131,8 @@ package body ZBTest.XML_Data is
    -- To_Node --
    -------------
 
-   function To_Node (Value : in XML_Node_Type;
-                     Name  : in Wide_String) return Node is
+   function To_Node (Value : XML_Node_Type;
+                     Name  : Wide_String) return Node is
       pragma Unreferenced (Name);
    begin
       return Value.Data;
@@ -141,8 +142,9 @@ package body ZBTest.XML_Data is
    -- To_String --
    ---------------
 
-   function To_String (Value : in XML_Node_Type;
-                       Name  : in Wide_String) return Wide_String is
+   overriding
+   function To_String (Value : XML_Node_Type;
+                       Name  : Wide_String) return Wide_String is
       pragma Unreferenced (Value);
    begin
       return Format ("<XMLDATA: {0}>", Argument0 => +Name);
@@ -152,7 +154,7 @@ package body ZBTest.XML_Data is
    -- To_XML_Node_Value --
    -----------------------
 
-   function To_XML_Node_Value (Data : in Node) return Value_Type'Class is
+   function To_XML_Node_Value (Data : Node) return Value_Type'Class is
    begin
       return XML_Node_Type'(Value_Type with Data => Data);
    end To_XML_Node_Value;
@@ -161,8 +163,9 @@ package body ZBTest.XML_Data is
    -- Type_Name --
    ---------------
 
-   function Type_Name (Value : in XML_Node_Type;
-                       Name  : in Wide_String) return Wide_String is
+   overriding
+   function Type_Name (Value : XML_Node_Type;
+                       Name  : Wide_String) return Wide_String is
       pragma Unreferenced (Value);
       pragma Unreferenced (Name);
    begin
@@ -173,8 +176,8 @@ package body ZBTest.XML_Data is
    -- Write --
    -----------
 
-   procedure Write (File_Name : in Wide_String;
-                    Value     : in XML_Node_Type) is
+   procedure Write (File_Name : Wide_String;
+                    Value     : XML_Node_Type) is
       use Ada.Wide_Text_IO;
       use Ada.Wide_Text_IO.Text_Streams;
       File : File_Type;

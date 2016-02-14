@@ -50,11 +50,11 @@ package ZanyBlue.Text.Pseudo is
    type Pseudo_Map_Vector is array (Positive range <>) of Pseudo_Character_Map;
 
    procedure Add_Mapping (Pseudo_Map : in out Pseudo_Map_Type;
-                          Mapping    : in Pseudo_Map_Vector);
+                          Mapping    : Pseudo_Map_Vector);
    --  Add vector of character mappings to the pseudo map.
 
-   function Map (Pseudo_Map : in Pseudo_Map_Type;
-                 Ch         : in Wide_Character) return Wide_Character;
+   function Map (Pseudo_Map : Pseudo_Map_Type;
+                 Ch         : Wide_Character) return Wide_Character;
    --  Return the mapping for a character wrt a pseudo map.
 
    function Pseudo_Start return Wide_Character;

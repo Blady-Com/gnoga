@@ -70,7 +70,7 @@ $(STAMPFILE):	$(wildcard $(MESGDIR)/*)
 	$(warning "****                                              ****")
 	$(warning "******************************************************")
 	$(GNATMAKE) $(GNATFLAGS) -P $(APPNAME)
-	$(ZBMCOMPILE) -p -m -S $(STAMPFILE) $(RUNARGS)
+	$(ZBMCOMPILE) -p -S $(STAMPFILE) $(RUNARGS)
 	$(MAKE) clean
 
 gcheck:

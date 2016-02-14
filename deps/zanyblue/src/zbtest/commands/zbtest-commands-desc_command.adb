@@ -36,7 +36,7 @@ with Ada.Strings.Wide_Unbounded;
 
 separate (ZBTest.Commands)
 procedure Desc_Command (State : in out State_Type;
-                        Args  : in List_Type) is
+                        Args  : List_Type) is
 
    use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Text;

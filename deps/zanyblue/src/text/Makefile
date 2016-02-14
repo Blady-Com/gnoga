@@ -123,7 +123,7 @@ all:
 regenerate:	zbmcompile cldr
 
 cldr:	properties
-	$(ZBMCOMPILE) -O -m -v $(CLDR_PACKAGE) -d $(MESGDIR) $(FACILTIES)
+	$(ZBMCOMPILE) -O -v $(CLDR_PACKAGE) -d $(MESGDIR) $(FACILTIES)
 
 properties:
 	$(PYTHON) $(CLDR2LOCALES) -v -d $(CLDR_DIR) -B $(BASE_LOCALE) -p $(MESGDIR) -e $(LOCALES_SOURCE) $(LOCALES)

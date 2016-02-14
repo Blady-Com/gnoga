@@ -36,22 +36,22 @@ with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
 procedure Rename_Command (State : in out State_Type;
-                          Args  : in List_Type) is
+                          Args  : List_Type) is
 
    pragma Unreferenced (State);
 
    use ZanyBlue.Wide_Directories;
 
-   procedure Rename_File (Old_Name : in Wide_String;
-                          New_Name : in Wide_String);
+   procedure Rename_File (Old_Name : Wide_String;
+                          New_Name : Wide_String);
    --  Rename the file.
 
    -----------------
    -- Rename_File --
    -----------------
 
-   procedure Rename_File (Old_Name : in Wide_String;
-                          New_Name : in Wide_String) is
+   procedure Rename_File (Old_Name : Wide_String;
+                          New_Name : Wide_String) is
    begin
       Wide_Rename (Old_Name, New_Name);
       Print_00012 (+Old_Name, +New_Name);

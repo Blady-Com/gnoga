@@ -54,26 +54,26 @@ package ZanyBlue.OS is
    function OS_Name return OS_Name_Type;
    --  Return the name of the build operating system.
 
-   function To_UTF8 (Value : in Wide_String) return String;
+   function To_UTF8 (Value : Wide_String) return String;
    --  Convert a Wide_String to a UTF-8 encoded String.
 
-   function From_UTF8 (Value : in String) return Wide_String;
+   function From_UTF8 (Value : String) return Wide_String;
    --  Convert a UTF-8 encoded String to a Wide_String;
 
    function UTF8_File_Form return String;
    --  Return the form string used by the compiler to identify an UTF-8 file.
 
-   procedure Wide_Copy_Tree (Source_Name : in Wide_String;
-                             Target_Name : in Wide_String);
+   procedure Wide_Copy_Tree (Source_Name : Wide_String;
+                             Target_Name : Wide_String);
    --  Copy a directory tree.
 
    procedure Wide_Create (File : in out Ada.Wide_Text_IO.File_Type;
-                          Name : in Wide_String);
+                          Name : Wide_String);
    --  Create a text with UTF8 encoding files.
 
    procedure Wide_Open (File : in out Ada.Wide_Text_IO.File_Type;
-                        Mode : in Ada.Wide_Text_IO.File_Mode;
-                        Name : in Wide_String);
+                        Mode : Ada.Wide_Text_IO.File_Mode;
+                        Name : Wide_String);
    --  Create a text with UTF8 encoding files.
 
    function Wide_Is_Directory (Name : Wide_String) return Boolean;

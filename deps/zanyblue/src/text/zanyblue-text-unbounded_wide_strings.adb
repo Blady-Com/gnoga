@@ -38,7 +38,7 @@ package body ZanyBlue.Text.Unbounded_Wide_Strings is
    -- Create --
    ------------
 
-   function Create (Value : in Unbounded_Wide_String)
+   function Create (Value : Unbounded_Wide_String)
       return Wide_String_Argument_Type is
    begin
       return Create (To_Wide_String (Value));

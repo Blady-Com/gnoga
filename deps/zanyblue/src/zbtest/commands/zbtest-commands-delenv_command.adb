@@ -36,12 +36,12 @@ with Ada.Environment_Variables;
 
 separate (ZBTest.Commands)
 procedure Delenv_Command (State : in out State_Type;
-                          Args  : in List_Type) is
+                          Args  : List_Type) is
 
    use Ada.Environment_Variables;
 
    procedure Delenv (State : in out State_Type;
-                     Name  : in Wide_String);
+                     Name  : Wide_String);
    --  Perform the actual environment variable deletion
 
    ------------
@@ -49,7 +49,7 @@ procedure Delenv_Command (State : in out State_Type;
    ------------
 
    procedure Delenv (State : in out State_Type;
-                     Name  : in Wide_String) is
+                     Name  : Wide_String) is
    begin
       if Exists (To_UTF8 (Name)) then
          State.Add_Undo_Action (Format ("setenv {0} ""{1}""",

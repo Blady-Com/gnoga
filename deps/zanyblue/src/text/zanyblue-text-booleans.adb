@@ -42,7 +42,7 @@ package body ZanyBlue.Text.Booleans is
    -- Create --
    ------------
 
-   function Create (Boolean_Value : in Boolean) return Boolean_Argument_Type is
+   function Create (Boolean_Value : Boolean) return Boolean_Argument_Type is
    begin
       return Boolean_Argument_Type'(Data => Boolean_Value);
    end Create;
@@ -51,10 +51,11 @@ package body ZanyBlue.Text.Booleans is
    -- Format --
    ------------
 
-   function Format (Value     : in Boolean_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String is
+   overriding
+   function Format (Value     : Boolean_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String is
       pragma Unreferenced (Type_Name);
       Formatting : constant Format_Type := Parse (Template, Locale);
    begin

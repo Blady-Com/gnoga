@@ -36,24 +36,24 @@ with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)
 procedure Print_Command (State : in out State_Type;
-                         Args  : in List_Type) is
+                         Args  : List_Type) is
 
    use Ada.Strings.Wide_Fixed;
 
    procedure Handle_Argument (State    : in out State_Type;
-                              Argument : in Wide_String;
+                              Argument : Wide_String;
                               Scalar   : in out Boolean);
    --  Handle the printing of a value (scalar or list).
 
    procedure Print_List (State : in out State_Type;
-                         Name  : in Wide_String);
+                         Name  : Wide_String);
 
    ---------------------
    -- Handle_Argument --
    ---------------------
 
    procedure Handle_Argument (State    : in out State_Type;
-                              Argument : in Wide_String;
+                              Argument : Wide_String;
                               Scalar   : in out Boolean) is
    begin
       if Argument = "-l" then
@@ -77,7 +77,7 @@ procedure Print_Command (State : in out State_Type;
    ----------------
 
    procedure Print_List (State : in out State_Type;
-                         Name  : in Wide_String) is
+                         Name  : Wide_String) is
       List : constant List_Type := State.Get_List (Name);
       N_Elem : constant Natural := Length (List);
    begin

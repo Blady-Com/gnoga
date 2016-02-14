@@ -34,10 +34,10 @@
 
 separate (ZBTest.Functions)
 function Which_Function (State : access State_Type;
-                         Args  : in List_Type) return Wide_String is
+                         Args  : List_Type) return Wide_String is
 
-      Executable : Boolean := False;
-      Name_Index : Natural := 0;
+   Executable : Boolean := False;
+   Name_Index : Natural := 0;
 
 begin
    for I in 2 .. Length (Args) loop

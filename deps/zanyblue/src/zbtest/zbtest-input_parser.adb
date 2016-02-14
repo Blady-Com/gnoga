@@ -42,7 +42,7 @@ package body ZBTest.Input_Parser is
    -- Parse_Words --
    -----------------
 
-   function Parse_Words (Line : in Wide_String) return List_Type is
+   function Parse_Words (Line : Wide_String) return List_Type is
       type State_Type is (Space, Word, String, Comment);
       Result    : List_Type;
       State     : State_Type := Space;

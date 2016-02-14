@@ -38,13 +38,13 @@ with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Format_Errors;   use ZanyBlue.Text.Format_Errors;
 
 function ZanyBlue.Text.Format_Message
-            (Message        : in Wide_String;
-             Arguments      : in ZanyBlue.Text.Arguments.Argument_List;
-             Mapping        : in ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
-             Locale         : in ZanyBlue.Text.Locales.Locale_Type;
-             Raise_Errors   : in Boolean := True;
-             Mark_Messages  : in Boolean := True;
-             Mark_Arguments : in Boolean := True;
+            (Message        : Wide_String;
+             Arguments      : ZanyBlue.Text.Arguments.Argument_List;
+             Mapping        : ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
+             Locale         : ZanyBlue.Text.Locales.Locale_Type;
+             Raise_Errors   : Boolean := True;
+             Mark_Messages  : Boolean := True;
+             Mark_Arguments : Boolean := True;
              Error_Handler  : access Error_Handler_Type'Class
                                  := Standard_Error_Handler'Access)
    return Wide_String;

@@ -42,17 +42,16 @@ package body ZanyBlue.Text.Formatting is
    use ZanyBlue.Text.Format_Errors;
 
    procedure Make_Arguments (Arguments : in out Argument_List;
-                             Argument0 : in Argument_Type'Class;
-                             Argument1 : in Argument_Type'Class;
-                             Argument2 : in Argument_Type'Class;
-                             Argument3 : in Argument_Type'Class;
-                             Argument4 : in Argument_Type'Class);
+                             Argument0 : Argument_Type'Class;
+                             Argument1 : Argument_Type'Class;
+                             Argument2 : Argument_Type'Class;
+                             Argument3 : Argument_Type'Class;
+                             Argument4 : Argument_Type'Class);
    --  Construct an Argument_List given a set of Argument_Type
    --  values.  To catch No_Such_Argument references, the list generated
    --  includes those arguments upto the first argument that is a
    --  Null_Argument.  It's assumed this null argument starts the argument
    --  defaulting in the original call.
-
 
    My_Catalog : constant Catalog_Type := Create;
    --  Catalog used by applications that don't manage their own catalogs.
@@ -61,13 +60,13 @@ package body ZanyBlue.Text.Formatting is
    -- Format_Message --
    --------------------
 
-   function Format_Message (Message        : in Wide_String;
-                            Arguments      : in Argument_List;
-                            Mapping        : in Pseudo_Map_Access;
-                            Locale         : in Locale_Type;
-                            Raise_Errors   : in Boolean;
-                            Mark_Messages  : in Boolean := True;
-                            Mark_Arguments : in Boolean := True;
+   function Format_Message (Message        : Wide_String;
+                            Arguments      : Argument_List;
+                            Mapping        : Pseudo_Map_Access;
+                            Locale         : Locale_Type;
+                            Raise_Errors   : Boolean;
+                            Mark_Messages  : Boolean := True;
+                            Mark_Arguments : Boolean := True;
                             Error_Handler  : access Error_Handler_Type'Class
                                               := Standard_Error_Handler'Access)
       return Wide_String
@@ -123,86 +122,90 @@ package body ZanyBlue.Text.Formatting is
    -- Format --
    ------------
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return String is
    begin
-      return To_UTF8 (Format (Facility, Key, Arguments,
-                              Locale => Locale,
-                              Catalog => Catalog));
+      return Locale.Encode_To_String (
+          Format (Facility, Key, Arguments,
+                  Locale => Locale,
+                  Catalog => Catalog));
    end Format;
 
    ------------
    -- Format --
    ------------
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return String is
    begin
-      return To_UTF8 (Format (Facility, Key,
-                              Argument0 => Argument0,
-                              Argument1 => Argument1,
-                              Argument2 => Argument2,
-                              Argument3 => Argument3,
-                              Argument4 => Argument4,
-                              Locale => Locale,
-                              Catalog => Catalog));
+      return Locale.Encode_To_String (
+          Format (Facility, Key,
+                  Argument0 => Argument0,
+                  Argument1 => Argument1,
+                  Argument2 => Argument2,
+                  Argument3 => Argument3,
+                  Argument4 => Argument4,
+                  Locale => Locale,
+                  Catalog => Catalog));
    end Format;
 
    ------------
    -- Format --
    ------------
 
-   function Format (Text      : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale)
       return String is
    begin
-      return To_UTF8 (Format (Text, Arguments, Locale => Locale));
+      return Locale.Encode_To_String (
+          Format (Text, Arguments, Locale => Locale));
    end Format;
 
    ------------
    -- Format --
    ------------
 
-   function Format (Text      : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale)
       return String is
    begin
-      return To_UTF8 (Format (Text,
-                              Argument0 => Argument0,
-                              Argument1 => Argument1,
-                              Argument2 => Argument2,
-                              Argument3 => Argument3,
-                              Argument4 => Argument4,
-                              Locale => Locale));
+      return Locale.Encode_To_String (
+          Format (Text,
+                  Argument0 => Argument0,
+                  Argument1 => Argument1,
+                  Argument2 => Argument2,
+                  Argument3 => Argument3,
+                  Argument4 => Argument4,
+                  Locale => Locale));
    end Format;
 
    ------------
    -- Format --
    ------------
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return Wide_String
    is
       Effective_Locale : aliased Locale_Type;
@@ -226,7 +229,7 @@ package body ZanyBlue.Text.Formatting is
       --  Re-raise the No_Such_Argument_Error but include the facility and
       --  key that caused the error.
       raise No_Such_Argument_Error with
-            To_UTF8 (Facility
+            Locale.Encode_To_String (Facility
                    & ":"
                    & Key
                    & ":"
@@ -237,15 +240,15 @@ package body ZanyBlue.Text.Formatting is
    -- Format --
    ------------
 
-   function Format (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog)
+   function Format (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog)
       return Wide_String
    is
       Arguments : Argument_List;
@@ -261,9 +264,9 @@ package body ZanyBlue.Text.Formatting is
    -- Format --
    ------------
 
-   function Format (Text      : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale)
       return Wide_String is
    begin
       return Format_Message (Text, Arguments, null, Locale, True);
@@ -273,13 +276,13 @@ package body ZanyBlue.Text.Formatting is
    -- Format --
    ------------
 
-   function Format (Text      : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale)
+   function Format (Text      : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale)
       return Wide_String is
       Arguments : Argument_List;
    begin
@@ -293,11 +296,11 @@ package body ZanyBlue.Text.Formatting is
    --------------------
 
    procedure Make_Arguments (Arguments : in out Argument_List;
-                             Argument0 : in Argument_Type'Class;
-                             Argument1 : in Argument_Type'Class;
-                             Argument2 : in Argument_Type'Class;
-                             Argument3 : in Argument_Type'Class;
-                             Argument4 : in Argument_Type'Class) is
+                             Argument0 : Argument_Type'Class;
+                             Argument1 : Argument_Type'Class;
+                             Argument2 : Argument_Type'Class;
+                             Argument3 : Argument_Type'Class;
+                             Argument4 : Argument_Type'Class) is
    begin
       if Argument0 in Null_Argument_Type then
          return;
@@ -325,11 +328,11 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog) is
+   procedure Print (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog) is
    begin
       Print (Ada.Wide_Text_IO.Current_Output, Facility, Key, Arguments,
              Locale, Catalog);
@@ -339,15 +342,15 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Facility  : in Wide_String;
-                    Key       : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale;
-                    Catalog   : in Catalog_Type := Standard_Catalog) is
+   procedure Print (Facility  : Wide_String;
+                    Key       : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale;
+                    Catalog   : Catalog_Type := Standard_Catalog) is
    begin
       Print (Ada.Wide_Text_IO.Current_Output, Facility, Key,
              Argument0, Argument1, Argument2, Argument3, Argument4,
@@ -358,12 +361,12 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Destination : in Ada.Wide_Text_IO.File_Type;
-                    Facility    : in Wide_String;
-                    Key         : in Wide_String;
-                    Arguments   : in Argument_List;
-                    Locale      : in Locale_Type := Current_Locale;
-                    Catalog     : in Catalog_Type := Standard_Catalog) is
+   procedure Print (Destination : Ada.Wide_Text_IO.File_Type;
+                    Facility    : Wide_String;
+                    Key         : Wide_String;
+                    Arguments   : Argument_List;
+                    Locale      : Locale_Type := Current_Locale;
+                    Catalog     : Catalog_Type := Standard_Catalog) is
    begin
       Write_Message (Destination, Facility, Key, Arguments,
                      False, Locale, Catalog);
@@ -373,16 +376,16 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Destination : in Ada.Wide_Text_IO.File_Type;
-                    Facility    : in Wide_String;
-                    Key         : in Wide_String;
-                    Argument0   : in Argument_Type'Class := Null_Argument;
-                    Argument1   : in Argument_Type'Class := Null_Argument;
-                    Argument2   : in Argument_Type'Class := Null_Argument;
-                    Argument3   : in Argument_Type'Class := Null_Argument;
-                    Argument4   : in Argument_Type'Class := Null_Argument;
-                    Locale      : in Locale_Type := Current_Locale;
-                    Catalog     : in Catalog_Type := Standard_Catalog) is
+   procedure Print (Destination : Ada.Wide_Text_IO.File_Type;
+                    Facility    : Wide_String;
+                    Key         : Wide_String;
+                    Argument0   : Argument_Type'Class := Null_Argument;
+                    Argument1   : Argument_Type'Class := Null_Argument;
+                    Argument2   : Argument_Type'Class := Null_Argument;
+                    Argument3   : Argument_Type'Class := Null_Argument;
+                    Argument4   : Argument_Type'Class := Null_Argument;
+                    Locale      : Locale_Type := Current_Locale;
+                    Catalog     : Catalog_Type := Standard_Catalog) is
       Arguments : Argument_List;
    begin
       Make_Arguments (Arguments, Argument0, Argument1, Argument2, Argument3,
@@ -396,9 +399,9 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Text      : in Wide_String;
-                    Arguments : in Argument_List;
-                    Locale    : in Locale_Type := Current_Locale) is
+   procedure Print (Text      : Wide_String;
+                    Arguments : Argument_List;
+                    Locale    : Locale_Type := Current_Locale) is
    begin
       Print (Ada.Wide_Text_IO.Current_Output, Text, Arguments, Locale);
    end Print;
@@ -407,13 +410,13 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Text      : in Wide_String;
-                    Argument0 : in Argument_Type'Class := Null_Argument;
-                    Argument1 : in Argument_Type'Class := Null_Argument;
-                    Argument2 : in Argument_Type'Class := Null_Argument;
-                    Argument3 : in Argument_Type'Class := Null_Argument;
-                    Argument4 : in Argument_Type'Class := Null_Argument;
-                    Locale    : in Locale_Type := Current_Locale) is
+   procedure Print (Text      : Wide_String;
+                    Argument0 : Argument_Type'Class := Null_Argument;
+                    Argument1 : Argument_Type'Class := Null_Argument;
+                    Argument2 : Argument_Type'Class := Null_Argument;
+                    Argument3 : Argument_Type'Class := Null_Argument;
+                    Argument4 : Argument_Type'Class := Null_Argument;
+                    Locale    : Locale_Type := Current_Locale) is
    begin
       Print (Ada.Wide_Text_IO.Current_Output, Text,
              Argument0, Argument1, Argument2, Argument3, Argument4,
@@ -424,10 +427,10 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Destination  : in Ada.Wide_Text_IO.File_Type;
-                    Text         : in Wide_String;
-                    Arguments    : in Argument_List;
-                    Locale       : in Locale_Type := Current_Locale) is
+   procedure Print (Destination  : Ada.Wide_Text_IO.File_Type;
+                    Text         : Wide_String;
+                    Arguments    : Argument_List;
+                    Locale       : Locale_Type := Current_Locale) is
    begin
       Print (Standard_Catalog, Destination, "", "", Locale, Arguments,
                      Format_Message (Text, Arguments, null, Locale, True),
@@ -438,14 +441,14 @@ package body ZanyBlue.Text.Formatting is
    -- Print --
    -----------
 
-   procedure Print (Destination  : in Ada.Wide_Text_IO.File_Type;
-                    Text         : in Wide_String;
-                    Argument0    : in Argument_Type'Class := Null_Argument;
-                    Argument1    : in Argument_Type'Class := Null_Argument;
-                    Argument2    : in Argument_Type'Class := Null_Argument;
-                    Argument3    : in Argument_Type'Class := Null_Argument;
-                    Argument4    : in Argument_Type'Class := Null_Argument;
-                    Locale       : in Locale_Type := Current_Locale) is
+   procedure Print (Destination  : Ada.Wide_Text_IO.File_Type;
+                    Text         : Wide_String;
+                    Argument0    : Argument_Type'Class := Null_Argument;
+                    Argument1    : Argument_Type'Class := Null_Argument;
+                    Argument2    : Argument_Type'Class := Null_Argument;
+                    Argument3    : Argument_Type'Class := Null_Argument;
+                    Argument4    : Argument_Type'Class := Null_Argument;
+                    Locale       : Locale_Type := Current_Locale) is
       Arguments : Argument_List;
    begin
       Make_Arguments (Arguments, Argument0, Argument1, Argument2, Argument3,
@@ -457,11 +460,11 @@ package body ZanyBlue.Text.Formatting is
    -- Print_Line --
    ----------------
 
-   procedure Print_Line (Facility  : in Wide_String;
-                         Key       : in Wide_String;
-                         Arguments : in Argument_List;
-                         Locale    : in Locale_Type := Current_Locale;
-                         Catalog   : in Catalog_Type := Standard_Catalog) is
+   procedure Print_Line (Facility  : Wide_String;
+                         Key       : Wide_String;
+                         Arguments : Argument_List;
+                         Locale    : Locale_Type := Current_Locale;
+                         Catalog   : Catalog_Type := Standard_Catalog) is
    begin
       Print_Line (Ada.Wide_Text_IO.Current_Output, Facility, Key, Arguments,
                   Locale, Catalog);
@@ -472,15 +475,15 @@ package body ZanyBlue.Text.Formatting is
    ----------------
 
    procedure Print_Line
-      (Facility  : in Wide_String;
-       Key       : in Wide_String;
-       Argument0 : in Argument_Type'Class := Null_Argument;
-       Argument1 : in Argument_Type'Class := Null_Argument;
-       Argument2 : in Argument_Type'Class := Null_Argument;
-       Argument3 : in Argument_Type'Class := Null_Argument;
-       Argument4 : in Argument_Type'Class := Null_Argument;
-       Locale    : in Locale_Type := Current_Locale;
-       Catalog   : in Catalog_Type := Standard_Catalog)
+      (Facility  : Wide_String;
+       Key       : Wide_String;
+       Argument0 : Argument_Type'Class := Null_Argument;
+       Argument1 : Argument_Type'Class := Null_Argument;
+       Argument2 : Argument_Type'Class := Null_Argument;
+       Argument3 : Argument_Type'Class := Null_Argument;
+       Argument4 : Argument_Type'Class := Null_Argument;
+       Locale    : Locale_Type := Current_Locale;
+       Catalog   : Catalog_Type := Standard_Catalog)
    is
    begin
       Print_Line (Ada.Wide_Text_IO.Current_Output, Facility, Key,
@@ -492,12 +495,12 @@ package body ZanyBlue.Text.Formatting is
    -- Print_Line --
    ----------------
 
-   procedure Print_Line (Destination : in Ada.Wide_Text_IO.File_Type;
-                         Facility    : in Wide_String;
-                         Key         : in Wide_String;
-                         Arguments   : in Argument_List;
-                         Locale      : in Locale_Type := Current_Locale;
-                         Catalog     : in Catalog_Type := Standard_Catalog) is
+   procedure Print_Line (Destination : Ada.Wide_Text_IO.File_Type;
+                         Facility    : Wide_String;
+                         Key         : Wide_String;
+                         Arguments   : Argument_List;
+                         Locale      : Locale_Type := Current_Locale;
+                         Catalog     : Catalog_Type := Standard_Catalog) is
    begin
       Write_Message (Destination, Facility, Key, Arguments,
                      True, Locale, Catalog);
@@ -508,16 +511,16 @@ package body ZanyBlue.Text.Formatting is
    ----------------
 
    procedure Print_Line
-      (Destination : in Ada.Wide_Text_IO.File_Type;
-       Facility    : in Wide_String;
-       Key         : in Wide_String;
-       Argument0   : in Argument_Type'Class := Null_Argument;
-       Argument1   : in Argument_Type'Class := Null_Argument;
-       Argument2   : in Argument_Type'Class := Null_Argument;
-       Argument3   : in Argument_Type'Class := Null_Argument;
-       Argument4   : in Argument_Type'Class := Null_Argument;
-       Locale      : in Locale_Type := Current_Locale;
-       Catalog     : in Catalog_Type := Standard_Catalog)
+      (Destination : Ada.Wide_Text_IO.File_Type;
+       Facility    : Wide_String;
+       Key         : Wide_String;
+       Argument0   : Argument_Type'Class := Null_Argument;
+       Argument1   : Argument_Type'Class := Null_Argument;
+       Argument2   : Argument_Type'Class := Null_Argument;
+       Argument3   : Argument_Type'Class := Null_Argument;
+       Argument4   : Argument_Type'Class := Null_Argument;
+       Locale      : Locale_Type := Current_Locale;
+       Catalog     : Catalog_Type := Standard_Catalog)
    is
       Arguments : Argument_List;
    begin
@@ -531,9 +534,9 @@ package body ZanyBlue.Text.Formatting is
    -- Print_Line --
    ----------------
 
-   procedure Print_Line (Text      : in Wide_String;
-                         Arguments : in Argument_List;
-                         Locale    : in Locale_Type := Current_Locale) is
+   procedure Print_Line (Text      : Wide_String;
+                         Arguments : Argument_List;
+                         Locale    : Locale_Type := Current_Locale) is
    begin
       Print_Line (Ada.Wide_Text_IO.Current_Output, Text, Arguments, Locale);
    end Print_Line;
@@ -543,13 +546,13 @@ package body ZanyBlue.Text.Formatting is
    ----------------
 
    procedure Print_Line
-      (Text      : in Wide_String;
-       Argument0 : in Argument_Type'Class := Null_Argument;
-       Argument1 : in Argument_Type'Class := Null_Argument;
-       Argument2 : in Argument_Type'Class := Null_Argument;
-       Argument3 : in Argument_Type'Class := Null_Argument;
-       Argument4 : in Argument_Type'Class := Null_Argument;
-       Locale    : in Locale_Type := Current_Locale)
+      (Text      : Wide_String;
+       Argument0 : Argument_Type'Class := Null_Argument;
+       Argument1 : Argument_Type'Class := Null_Argument;
+       Argument2 : Argument_Type'Class := Null_Argument;
+       Argument3 : Argument_Type'Class := Null_Argument;
+       Argument4 : Argument_Type'Class := Null_Argument;
+       Locale    : Locale_Type := Current_Locale)
    is
       Arguments : Argument_List;
    begin
@@ -562,10 +565,10 @@ package body ZanyBlue.Text.Formatting is
    -- Print_Line --
    ----------------
 
-   procedure Print_Line (Destination  : in Ada.Wide_Text_IO.File_Type;
-                         Text         : in Wide_String;
-                         Arguments    : in Argument_List;
-                         Locale       : in Locale_Type := Current_Locale) is
+   procedure Print_Line (Destination  : Ada.Wide_Text_IO.File_Type;
+                         Text         : Wide_String;
+                         Arguments    : Argument_List;
+                         Locale       : Locale_Type := Current_Locale) is
    begin
       Print (Standard_Catalog, Destination, "", "", Locale, Arguments,
              Format_Message (Text, Arguments, null, Locale, True),
@@ -577,14 +580,14 @@ package body ZanyBlue.Text.Formatting is
    ----------------
 
    procedure Print_Line
-      (Destination  : in Ada.Wide_Text_IO.File_Type;
-       Text         : in Wide_String;
-       Argument0    : in Argument_Type'Class := Null_Argument;
-       Argument1    : in Argument_Type'Class := Null_Argument;
-       Argument2    : in Argument_Type'Class := Null_Argument;
-       Argument3    : in Argument_Type'Class := Null_Argument;
-       Argument4    : in Argument_Type'Class := Null_Argument;
-       Locale       : in Locale_Type := Current_Locale)
+      (Destination  : Ada.Wide_Text_IO.File_Type;
+       Text         : Wide_String;
+       Argument0    : Argument_Type'Class := Null_Argument;
+       Argument1    : Argument_Type'Class := Null_Argument;
+       Argument2    : Argument_Type'Class := Null_Argument;
+       Argument3    : Argument_Type'Class := Null_Argument;
+       Argument4    : Argument_Type'Class := Null_Argument;
+       Locale       : Locale_Type := Current_Locale)
    is
       Arguments : Argument_List;
    begin
@@ -597,8 +600,8 @@ package body ZanyBlue.Text.Formatting is
    -- Pseudo_Translate --
    ----------------------
 
-   procedure Pseudo_Translate (Mapping : in Pseudo_Map_Vector;
-                               Catalog : in Catalog_Type := Standard_Catalog)
+   procedure Pseudo_Translate (Mapping : Pseudo_Map_Vector;
+                               Catalog : Catalog_Type := Standard_Catalog)
    is
    begin
       Enable_Pseudo_Translations (Catalog, Mapping);
@@ -608,10 +611,11 @@ package body ZanyBlue.Text.Formatting is
    -- Raise_Exception --
    ---------------------
 
-   procedure Raise_Exception (E       : in Ada.Exceptions.Exception_Id;
-                              Message : in Wide_String) is
+   procedure Raise_Exception (E       : Ada.Exceptions.Exception_Id;
+                              Message : Wide_String) is
    begin
-      Raise_Exception (E, Message => To_UTF8 (Message));
+      Raise_Exception (E,
+                       Message => Current_Locale.Encode_To_String (Message));
    end Raise_Exception;
 
    ---------------------
@@ -619,16 +623,16 @@ package body ZanyBlue.Text.Formatting is
    ---------------------
 
    procedure Raise_Exception
-      (E            : in Ada.Exceptions.Exception_Id;
-       Facility     : in Wide_String;
-       Key          : in Wide_String;
-       Argument0    : in Argument_Type'Class := Null_Argument;
-       Argument1    : in Argument_Type'Class := Null_Argument;
-       Argument2    : in Argument_Type'Class := Null_Argument;
-       Argument3    : in Argument_Type'Class := Null_Argument;
-       Argument4    : in Argument_Type'Class := Null_Argument;
-       Locale       : in Locale_Type := Current_Locale;
-       Catalog      : in Catalog_Type := Standard_Catalog)
+      (E            : Ada.Exceptions.Exception_Id;
+       Facility     : Wide_String;
+       Key          : Wide_String;
+       Argument0    : Argument_Type'Class := Null_Argument;
+       Argument1    : Argument_Type'Class := Null_Argument;
+       Argument2    : Argument_Type'Class := Null_Argument;
+       Argument3    : Argument_Type'Class := Null_Argument;
+       Argument4    : Argument_Type'Class := Null_Argument;
+       Locale       : Locale_Type := Current_Locale;
+       Catalog      : Catalog_Type := Standard_Catalog)
    is
       Message : constant String := Format (Facility, Key,
                                            Argument0 => Argument0,
@@ -647,12 +651,12 @@ package body ZanyBlue.Text.Formatting is
    ---------------------
 
    procedure Raise_Exception
-      (E            : in Ada.Exceptions.Exception_Id;
-       Facility     : in Wide_String;
-       Key          : in Wide_String;
-       Arguments    : in Argument_List;
-       Locale       : in Locale_Type := Current_Locale;
-       Catalog      : in Catalog_Type := Standard_Catalog)
+      (E            : Ada.Exceptions.Exception_Id;
+       Facility     : Wide_String;
+       Key          : Wide_String;
+       Arguments    : Argument_List;
+       Locale       : Locale_Type := Current_Locale;
+       Catalog      : Catalog_Type := Standard_Catalog)
    is
       Message : constant String := Format (Facility, Key,
                                            Arguments,
@@ -667,14 +671,14 @@ package body ZanyBlue.Text.Formatting is
    ---------------------
 
    procedure Raise_Exception
-      (E            : in Ada.Exceptions.Exception_Id;
-       Text         : in Wide_String;
-       Argument0    : in Argument_Type'Class;
-       Argument1    : in Argument_Type'Class := Null_Argument;
-       Argument2    : in Argument_Type'Class := Null_Argument;
-       Argument3    : in Argument_Type'Class := Null_Argument;
-       Argument4    : in Argument_Type'Class := Null_Argument;
-       Locale       : in Locale_Type := Current_Locale)
+      (E            : Ada.Exceptions.Exception_Id;
+       Text         : Wide_String;
+       Argument0    : Argument_Type'Class;
+       Argument1    : Argument_Type'Class := Null_Argument;
+       Argument2    : Argument_Type'Class := Null_Argument;
+       Argument3    : Argument_Type'Class := Null_Argument;
+       Argument4    : Argument_Type'Class := Null_Argument;
+       Locale       : Locale_Type := Current_Locale)
    is
       Arguments : Argument_List;
    begin
@@ -688,8 +692,8 @@ package body ZanyBlue.Text.Formatting is
    -- Set_Filter --
    ----------------
 
-   procedure Set_Filter (Filter   : in Message_Filter_Access;
-                         Catalog  : in Catalog_Type := Standard_Catalog) is
+   procedure Set_Filter (Filter   : Message_Filter_Access;
+                         Catalog  : Catalog_Type := Standard_Catalog) is
    begin
       Set_Filter (Catalog, Filter);
    end Set_Filter;
@@ -716,13 +720,13 @@ package body ZanyBlue.Text.Formatting is
    -- Write_Message --
    -------------------
 
-   procedure Write_Message (Destination  : in Ada.Wide_Text_IO.File_Type;
-                            Facility     : in Wide_String;
-                            Key          : in Wide_String;
-                            Arguments    : in Argument_List;
-                            With_NL      : in Boolean;
-                            Locale       : in Locale_Type;
-                            Catalog      : in Catalog_Type) is
+   procedure Write_Message (Destination  : Ada.Wide_Text_IO.File_Type;
+                            Facility     : Wide_String;
+                            Key          : Wide_String;
+                            Arguments    : Argument_List;
+                            With_NL      : Boolean;
+                            Locale       : Locale_Type;
+                            Catalog      : Catalog_Type) is
    begin
       if not Is_Filtered (Catalog, Facility, Key) then
          Print (Catalog, Destination, Facility, Key, Locale, Arguments,
@@ -734,13 +738,13 @@ package body ZanyBlue.Text.Formatting is
    -- Write_Message --
    -------------------
 
-   procedure Write_Message (Destination  : in Ada.Text_IO.File_Type;
-                            Facility     : in Wide_String;
-                            Key          : in Wide_String;
-                            Arguments    : in Argument_List;
-                            With_NL      : in Boolean;
-                            Locale       : in Locale_Type;
-                            Catalog      : in Catalog_Type) is
+   procedure Write_Message (Destination  : Ada.Text_IO.File_Type;
+                            Facility     : Wide_String;
+                            Key          : Wide_String;
+                            Arguments    : Argument_List;
+                            With_NL      : Boolean;
+                            Locale       : Locale_Type;
+                            Catalog      : Catalog_Type) is
    begin
       if not Is_Filtered (Catalog, Facility, Key) then
          Print (Catalog, Destination, Facility, Key, Locale, Arguments,

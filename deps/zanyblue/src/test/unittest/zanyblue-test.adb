@@ -54,8 +54,10 @@ package body ZanyBlue.Test is
    CL_Initialized : Boolean := False;
    CL_Use_XML : Boolean := False;
    CL_Top_Directory : String_Access := null;
-   Text_Reporter : AUnit.Reporter.Text.Text_Reporter;
-   XML_Reporter : ZanyBlue.Test.Reporter_XML.XML_Reporter;
+   Prefix : String_Access := null;
+   Reporter : access AUnit.Reporter.Reporter'Class;
+   --  Text_Reporter : access AUnit.Reporter.Text.Text_Reporter;
+   --  XML_Reporter : access ZanyBlue.Test.Reporter_XML.XML_Reporter;
 
    function Base_Log_Name (Test_Area : Wide_String;
                            Test_Name : Wide_String) return Wide_String;
@@ -204,7 +206,7 @@ package body ZanyBlue.Test is
    -- Discard --
    -------------
 
-   procedure Discard (Value : in Float) is
+   procedure Discard (Value : Float) is
       pragma Unreferenced (Value);
    begin
       null;
@@ -214,7 +216,7 @@ package body ZanyBlue.Test is
    -- Discard --
    -------------
 
-   procedure Discard (Value : in Ada.Calendar.Time) is
+   procedure Discard (Value : Ada.Calendar.Time) is
       pragma Unreferenced (Value);
    begin
       null;
@@ -224,7 +226,7 @@ package body ZanyBlue.Test is
    -- Discard --
    -------------
 
-   procedure Discard (Value : in Boolean) is
+   procedure Discard (Value : Boolean) is
       pragma Unreferenced (Value);
    begin
       null;
@@ -248,6 +250,12 @@ package body ZanyBlue.Test is
                   raise Usage_Error with "missing -T argument";
                end if;
                CL_Top_Directory := new String'(Argument (Index));
+            elsif Argument (Index) = "-P" then
+               Index := Index + 1;
+               if Index > Argument_Count then
+                  raise Usage_Error with "missing -P argument";
+               end if;
+               Prefix := new String'(Argument (Index));
             else
                raise Usage_Error with "unknown argument: " & Argument (Index);
             end if;
@@ -276,10 +284,15 @@ package body ZanyBlue.Test is
    function Reporter_Implementation return AUnit.Reporter.Reporter'Class is
    begin
       if Use_XML then
-         return XML_Reporter;
+         if Reporter = null then
+            Reporter := new ZanyBlue.Test.Reporter_XML.XML_Reporter (Prefix);
+         end if;
       else
-         return Text_Reporter;
+         if Reporter = null then
+            Reporter := new AUnit.Reporter.Text.Text_Reporter;
+         end if;
       end if;
+      return Reporter.all;
    end Reporter_Implementation;
 
    --------------------

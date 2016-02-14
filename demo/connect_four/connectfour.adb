@@ -840,10 +840,10 @@ package body ConnectFour is
       This.User_Turn    := True;
       Gnoga.Gui.Window.Browser_Status_Bar
         (This.Main_Window.all,
-         Decode (Format_CPYR (This.Locale)));
+         Format_CPYR (This.Locale));
       Repaint (This);
-      This.Put_Line (Decode (Format_DEVP (This.Locale)));
-      This.Put_Line (Decode (Format_ADPT (This.Locale)));
+      This.Put_Line (Format_DEVP (This.Locale));
+      This.Put_Line (Format_ADPT (This.Locale));
    end Init;
 
    -----------
@@ -1097,20 +1097,11 @@ package body ConnectFour is
 
          --  Print message if the game is over
          if This.Computer_Won then
-            Display_Text
-              (X    => 0,
-               Y    => 285,
-               Text => Decode (Format_IWIN (This.Locale)));
+            Display_Text (X => 0, Y => 285, Text => Format_IWIN (This.Locale));
          elsif This.User_Won then
-            Display_Text
-              (X    => 0,
-               Y    => 285,
-               Text => Decode (Format_YWIN (This.Locale)));
+            Display_Text (X => 0, Y => 285, Text => Format_YWIN (This.Locale));
          elsif This.Tie then
-            Display_Text
-              (X    => 0,
-               Y    => 285,
-               Text => Decode (Format_TIEG (This.Locale)));
+            Display_Text (X => 0, Y => 285, Text => Format_TIEG (This.Locale));
          end if;
       end Print_Board;
    begin
@@ -1165,7 +1156,7 @@ package body ConnectFour is
 
    function GetAppletInfo (This : access Typ) return String is
    begin
-      return Decode (Format_INFO (This.Locale));
+      return Format_INFO (This.Locale);
    end GetAppletInfo;
 
    -------------------
@@ -1201,7 +1192,7 @@ package body ConnectFour is
             Self.User_Turn := False;
             Gnoga.Gui.Window.Browser_Status_Bar
               (Self.Main_Window.all,
-               Decode (Format_IAMT (Self.Locale)));
+               Format_IAMT (Self.Locale));
             --          Let computer take turn
             Computer_Turn (Board => Self.Board, Column => Column);
 
@@ -1217,13 +1208,13 @@ package body ConnectFour is
          Repaint (Self);
          Gnoga.Gui.Window.Browser_Status_Bar
            (Self.Main_Window.all,
-            Decode (Format_CPYR (Self.Locale)));
+            Format_CPYR (Self.Locale));
          return;
       end if;
 
       Gnoga.Gui.Window.Browser_Status_Bar
         (Self.Main_Window.all,
-         Decode (Format_IAMT (Self.Locale)));
+         Format_IAMT (Self.Locale));
       --          Let computer take turn
       Computer_Turn (Board => Self.Board, Column => Column);
 
@@ -1244,7 +1235,7 @@ package body ConnectFour is
       Repaint (Self);
       Gnoga.Gui.Window.Browser_Status_Bar
         (Self.Main_Window.all,
-         Decode (Format_CPYR (Self.Locale)));
+         Format_CPYR (Self.Locale));
    end mouseReleased;
 
    ------------------
@@ -1301,7 +1292,7 @@ package body ConnectFour is
       else
          Gnoga.Gui.Window.Browser_Status_Bar
            (Self.Main_Window.all,
-            Decode (Format_IAMT (Self.Locale)));
+            Format_IAMT (Self.Locale));
       end if;
       Repaint (Self);
    end mousePressed;

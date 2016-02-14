@@ -43,8 +43,10 @@ with AUnit.Test_Results; use AUnit.Test_Results;
 
 package ZanyBlue.Test.Reporter_XML is
 
-   type XML_Reporter is new Reporter with null record;
+   type XML_Reporter (Prefix : access String) is
+      new Reporter with null record;
 
+   overriding
    procedure Report (Engine  : XML_Reporter;
                      R       : in out Result'Class;
                      Options : AUnit_Options := Default_Options);

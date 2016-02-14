@@ -41,13 +41,13 @@ with Ada.Containers.Indefinite_Vectors;
 ----------------------------------
 
 function ZanyBlue.Text.Format_Message
-            (Message        : in Wide_String;
-             Arguments      : in ZanyBlue.Text.Arguments.Argument_List;
-             Mapping        : in ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
-             Locale         : in ZanyBlue.Text.Locales.Locale_Type;
-             Raise_Errors   : in Boolean := True;
-             Mark_Messages  : in Boolean := True;
-             Mark_Arguments : in Boolean := True;
+            (Message        : Wide_String;
+             Arguments      : ZanyBlue.Text.Arguments.Argument_List;
+             Mapping        : ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
+             Locale         : ZanyBlue.Text.Locales.Locale_Type;
+             Raise_Errors   : Boolean := True;
+             Mark_Messages  : Boolean := True;
+             Mark_Arguments : Boolean := True;
              Error_Handler  : access Error_Handler_Type'Class
                                  := Standard_Error_Handler'Access)
    return Wide_String
@@ -88,15 +88,15 @@ is
    --  Offset value when converting a string of decimal digits to an integer.
 
    procedure Add_Argument (Buffer : in out Unbounded_Wide_String;
-                           Value  : in Wide_String);
+                           Value  : Wide_String);
    --  Add a formatted argument value to the output buffer.
 
-   function Buffered_Next (Last_Buffer : in Natural) return Wide_Character;
+   function Buffered_Next (Last_Buffer : Natural) return Wide_Character;
    --  Get the next character.  There are recursive references to
    --  formatted values so a stack is in use to manage them.  This routine
    --  accesses the stack to get the character.
 
-   function Character_Mapping (Ch : in Wide_Character) return Wide_Character;
+   function Character_Mapping (Ch : Wide_Character) return Wide_Character;
    --  Return the pseudo translation mapping for a given character.  The
    --  same character is returned if pseudo translation is not enabled.
 
@@ -105,17 +105,17 @@ is
    --  Buffered_Next procedure if the stack of sources is in use, i.e.,
    --  recursive references to arguments, e.g., "{0:{1}}"
 
-   function Parse_Argument (Level : in Natural := 0) return Wide_String;
+   function Parse_Argument (Level : Natural := 0) return Wide_String;
    --  Parse the an argument reference: argument number and format
    --  template.
 
    procedure Pseudo_Append (Buffer  : in out Unbounded_Wide_String;
-                            Ch      : in Wide_Character;
-                            Enabled : in Boolean);
+                            Ch      : Wide_Character;
+                            Enabled : Boolean);
    --  Append a character to the output buffer if pseudo translation
    --  is enabled, otherwise do nothing.
 
-   procedure Push_Source (Data : in Wide_String);
+   procedure Push_Source (Data : Wide_String);
    --  Add a new format character source used to handle recursive format
    --  references, e.g., "{0:{1}}"
 
@@ -129,7 +129,7 @@ is
    ------------------
 
    procedure Add_Argument (Buffer : in out Unbounded_Wide_String;
-                           Value  : in Wide_String)
+                           Value  : Wide_String)
    is
    begin
       Pseudo_Append (Buffer, Format_Start, Mark_Arguments);
@@ -141,7 +141,7 @@ is
    -- Buffered_Next --
    -------------------
 
-   function Buffered_Next (Last_Buffer : in Natural) return Wide_Character
+   function Buffered_Next (Last_Buffer : Natural) return Wide_Character
    is
 
       Found  : Boolean := False;
@@ -177,7 +177,7 @@ is
    -- Character_Mapping --
    -----------------------
 
-   function Character_Mapping (Ch : in Wide_Character) return Wide_Character
+   function Character_Mapping (Ch : Wide_Character) return Wide_Character
    is
    begin
       if Mapping /= null then
@@ -212,7 +212,7 @@ is
    -- Parse_Argument --
    --------------------
 
-   function Parse_Argument (Level : in Natural := 0) return Wide_String
+   function Parse_Argument (Level : Natural := 0) return Wide_String
    is
 
       function Next_Character return Wide_Character;
@@ -286,8 +286,8 @@ is
    -------------------
 
    procedure Pseudo_Append (Buffer  : in out Unbounded_Wide_String;
-                            Ch      : in Wide_Character;
-                            Enabled : in Boolean)
+                            Ch      : Wide_Character;
+                            Enabled : Boolean)
    is
    begin
       if Enabled and then Mapping /= null then
@@ -299,7 +299,7 @@ is
    -- Push_Source --
    -----------------
 
-   procedure Push_Source (Data : in Wide_String)
+   procedure Push_Source (Data : Wide_String)
    is
       New_Buffer : Source_Buffer (Data'Length);
    begin

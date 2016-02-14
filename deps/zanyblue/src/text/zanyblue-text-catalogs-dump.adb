@@ -38,52 +38,52 @@ with Ada.Wide_Text_IO;
 -- Dump --
 ----------
 separate (ZanyBlue.Text.Catalogs)
-procedure Dump (Catalog   : in Catalog_Type;
-                File_Name : in Wide_String := "") is
+procedure Dump (Catalog   : Catalog_Type;
+                File_Name : Wide_String := "") is
 
    use Ada.Wide_Text_IO;
 
-   procedure Dump_Pool (File    : in File_Type;
-                        Catalog : in Catalog_Type);
+   procedure Dump_Pool (File    : File_Type;
+                        Catalog : Catalog_Type);
    --  Dump the contents of the dynamic pool.
-   procedure Dump_To_File (Catalog : in Catalog_Type;
-                           File    : in File_Type);
+   procedure Dump_To_File (Catalog : Catalog_Type;
+                           File    : File_Type);
    --  Dump the catalog to an opened file handle.
 
-   procedure Hdr (File  : in File_Type;
-                  Title : in Wide_String;
-                  N     : in Natural);
-   procedure Hdr (File  : in File_Type;
-                  Title : in Wide_String;
-                  N     : in Natural;
-                  M     : in Natural);
+   procedure Hdr (File  : File_Type;
+                  Title : Wide_String;
+                  N     : Natural);
+   procedure Hdr (File  : File_Type;
+                  Title : Wide_String;
+                  N     : Natural;
+                  M     : Natural);
    --  Write the header data about the catalog.
 
-   procedure Dump_Message (File : in File_Type;
+   procedure Dump_Message (File : File_Type;
                            N    : in out Positive;
-                           F    : in Facility_Index_Type;
-                           K    : in Key_Index_Type;
-                           L    : in Locale_Index_Type);
+                           F    : Facility_Index_Type;
+                           K    : Key_Index_Type;
+                           L    : Locale_Index_Type);
    --  Dump a message given the message indexes.
 
-   procedure Dump_Message (File     : in File_Type;
+   procedure Dump_Message (File     : File_Type;
                            N        : in out Positive;
-                           Facility : in Wide_String;
-                           Key      : in Wide_String;
-                           Locale   : in Locale_Type;
-                           Message  : in Wide_String);
+                           Facility : Wide_String;
+                           Key      : Wide_String;
+                           Locale   : Locale_Type;
+                           Message  : Wide_String);
    --  Dump a message given the text.
 
    ------------------
    -- Dump_Message --
    ------------------
 
-   procedure Dump_Message (File     : in File_Type;
+   procedure Dump_Message (File     : File_Type;
                            N        : in out Positive;
-                           Facility : in Wide_String;
-                           Key      : in Wide_String;
-                           Locale   : in Locale_Type;
-                           Message  : in Wide_String) is
+                           Facility : Wide_String;
+                           Key      : Wide_String;
+                           Locale   : Locale_Type;
+                           Message  : Wide_String) is
    begin
       Put (File, Positive'Wide_Image (N));
       Put (File, ": """);
@@ -103,11 +103,11 @@ procedure Dump (Catalog   : in Catalog_Type;
    -- Dump_Message --
    ------------------
 
-   procedure Dump_Message (File : in File_Type;
+   procedure Dump_Message (File : File_Type;
                            N    : in out Positive;
-                           F    : in Facility_Index_Type;
-                           K    : in Key_Index_Type;
-                           L    : in Locale_Index_Type) is
+                           F    : Facility_Index_Type;
+                           K    : Key_Index_Type;
+                           L    : Locale_Index_Type) is
    begin
       Dump_Message (File, N,
                     Get_Facility (Catalog, F),
@@ -122,8 +122,8 @@ procedure Dump (Catalog   : in Catalog_Type;
       null;
    end Dump_Message;
 
-   procedure Dump_Pool (File    : in File_Type;
-                        Catalog : in Catalog_Type) is
+   procedure Dump_Pool (File    : File_Type;
+                        Catalog : Catalog_Type) is
       Pool  : constant Wide_String := Catalog.C.Messages.Get_Pool;
       Limit : constant Natural := Pool_Size (Catalog);
       Span  : constant Positive := 75;
@@ -143,8 +143,8 @@ procedure Dump (Catalog   : in Catalog_Type;
    -- Dump_To_File --
    ------------------
 
-   procedure Dump_To_File (Catalog : in Catalog_Type;
-                           File    : in File_Type) is
+   procedure Dump_To_File (Catalog : Catalog_Type;
+                           File    : File_Type) is
       N : Positive := 1;
 
    begin
@@ -180,9 +180,9 @@ procedure Dump (Catalog   : in Catalog_Type;
    -- Hdr --
    ---------
 
-   procedure Hdr (File  : in File_Type;
-                  Title : in Wide_String;
-                  N     : in Natural) is
+   procedure Hdr (File  : File_Type;
+                  Title : Wide_String;
+                  N     : Natural) is
    begin
       Put (File, Title);
       Set_Col (File, 25);
@@ -195,10 +195,10 @@ procedure Dump (Catalog   : in Catalog_Type;
    -- Hdr --
    ---------
 
-   procedure Hdr (File  : in File_Type;
-                  Title : in Wide_String;
-                  N     : in Natural;
-                  M     : in Natural) is
+   procedure Hdr (File  : File_Type;
+                  Title : Wide_String;
+                  N     : Natural;
+                  M     : Natural) is
    begin
       Put (File, Title);
       Set_Col (File, 25);

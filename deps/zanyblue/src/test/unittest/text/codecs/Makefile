@@ -1,10 +1,7 @@
 #
-#  Note, this file was generated to capture the copyright year and SVN version
-#  number at the time of tar ball packaging.
-#
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright © 2015, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -35,12 +32,5 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-#
-#  Makefile definitions for the ZanyBlue version macros
-#
-
-BUILD=Production
-VERSION=1.2.1
-STATUS=Beta
-SVN_VERSION=2896X
-COPYRIGHT_YEAR=2015
+TOP=../../../../..
+include $(TOP)/src/test/unittest/t_zanyblue.mk

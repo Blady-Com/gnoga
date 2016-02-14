@@ -49,7 +49,7 @@ package body ZanyBlue.Text.Generic_Integers is
    -- Create --
    ------------
 
-   function Create (Value : in Integer_Type) return Integer_Argument_Type is
+   function Create (Value : Integer_Type) return Integer_Argument_Type is
    begin
       return Integer_Argument_Type'(Data => Value);
    end Create;
@@ -58,10 +58,11 @@ package body ZanyBlue.Text.Generic_Integers is
    -- Format --
    ------------
 
-   function Format (Value     : in Integer_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String is
+   overriding
+   function Format (Value     : Integer_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String is
       pragma Unreferenced (Type_Name);
 
       Formatting : constant Format_Type := Parse (Template, Locale);

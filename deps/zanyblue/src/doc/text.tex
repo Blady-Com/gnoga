@@ -1643,6 +1643,17 @@ is the root locale.  This should normally be explicitly set using the
 
 %--------------------------------------------------------------------------
 %--------------------------------------------------------------------------
+\section{Codecs Type}
+
+The codecs type captures the information related to encoding and decoding
+internal wide Unicode strings to externally useable character sequences,
+i.e., narrow strings.  The current implementation initializes the locale
+based on the encoding defined by the ''\texttt{LANG}'' environment varaible
+encoding definition.  This is normally appended to the locale name separated
+by a period, e.g., ``\texttt{en\_US.UTF-8}'' defines an encoding of ``UTF-8''.
+
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 \section{Built-in Localizations}
 
 Localization for dates, times, language names, script names and territory

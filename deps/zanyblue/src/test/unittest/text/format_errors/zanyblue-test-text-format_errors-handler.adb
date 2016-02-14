@@ -34,6 +34,7 @@
 
 package body ZanyBlue.Test.Text.Format_Errors.Handler is
 
+   overriding
    procedure Format_Not_Closed (Error_Handler  : in out Test_Handler_Type;
                                 Message        : Wide_String;
                                 Position       : Positive;
@@ -48,6 +49,7 @@ package body ZanyBlue.Test.Text.Format_Errors.Handler is
                                             + 1;
    end Format_Not_Closed;
 
+   overriding
    procedure Illegal_Character (Error_Handler  : in out Test_Handler_Type;
                                 Message        : Wide_String;
                                 Position       : Positive;
@@ -64,6 +66,7 @@ package body ZanyBlue.Test.Text.Format_Errors.Handler is
                                            + 1;
    end Illegal_Character;
 
+   overriding
    procedure Missing_Argument (Error_Handler  : in out Test_Handler_Type;
                                Message        : Wide_String;
                                Position       : Natural;

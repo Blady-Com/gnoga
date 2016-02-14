@@ -43,26 +43,26 @@ package ZBTest.XML_Data is
 
    type XML_Node_Type is new Value_Type with private;
 
-   function To_Node (Value : in XML_Node_Type;
-                     Name  : in Wide_String) return Node;
+   function To_Node (Value : XML_Node_Type;
+                     Name  : Wide_String) return Node;
    --  Return the value of an XML Node parameter.  The exception
    --  Not_An_XML_Node_Error can be raised.
 
    overriding
-   function To_List (Value : in XML_Node_Type;
-                     Name  : in Wide_String) return List_Type;
+   function To_List (Value : XML_Node_Type;
+                     Name  : Wide_String) return List_Type;
    --  Return the value of a list parameter.  This will return the value
    --  converted to a list for if necessary.
 
    overriding
-   function To_String (Value : in XML_Node_Type;
-                       Name  : in Wide_String) return Wide_String;
+   function To_String (Value : XML_Node_Type;
+                       Name  : Wide_String) return Wide_String;
    --  Return the value of a parameter as a string.  This can be used
    --  for any parameter type.
 
    overriding
-   function Type_Name (Value : in XML_Node_Type;
-                       Name  : in Wide_String) return Wide_String;
+   function Type_Name (Value : XML_Node_Type;
+                       Name  : Wide_String) return Wide_String;
    --  Return the type name for a parameter ("float", "integer", "string" or
    --  "time").
 
@@ -71,29 +71,29 @@ package ZBTest.XML_Data is
    --  document.
 
    function Create_XML_Node
-      (Document   : in Value_Type'Class;
-       Parent     : in Value_Type'Class;
-       Child_Name : in Wide_String) return Value_Type'Class;
+      (Document   : Value_Type'Class;
+       Parent     : Value_Type'Class;
+       Child_Name : Wide_String) return Value_Type'Class;
    --  Create an XML node in the given XML document and append to the parent
    --  node.  The node created is returned as a boxed Value_Type;
 
-   procedure Set_Attribute (Parent     : in Value_Type'Class;
-                            Name       : in Wide_String;
-                            Value      : in Wide_String);
+   procedure Set_Attribute (Parent     : Value_Type'Class;
+                            Name       : Wide_String;
+                            Value      : Wide_String);
    --  Set an XML attribute on a given node.
 
    function Add_Text_Node_From_File
-      (Document  : in Value_Type'Class;
-       Parent    : in Value_Type'Class;
-       File_Name : in Wide_String) return Value_Type'Class;
+      (Document  : Value_Type'Class;
+       Parent    : Value_Type'Class;
+       File_Name : Wide_String) return Value_Type'Class;
    --  Load the contents of the named file and add to the XML document as
    --  a text node.
 
-   function To_XML_Node_Value (Data : in Node) return Value_Type'Class;
+   function To_XML_Node_Value (Data : Node) return Value_Type'Class;
    --  Return an XML node as a boxed Value_Type.
 
-   procedure Write (File_Name : in Wide_String;
-                    Value     : in XML_Node_Type);
+   procedure Write (File_Name : Wide_String;
+                    Value     : XML_Node_Type);
    --  Write the XML document contained in the XML_Node_Type to the named file.
 
 private

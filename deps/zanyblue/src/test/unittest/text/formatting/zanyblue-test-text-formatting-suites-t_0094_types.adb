@@ -39,6 +39,7 @@ package body ZanyBlue.Test.Text.Formatting.Suites.T_0094_Types is
       return T_0094_Argument'(Data => Value);
    end Create;
 
+   overriding
    function Format (Value     : T_0094_Argument;
                     Type_Name : Wide_String;
                     Template  : Wide_String;

@@ -34,7 +34,7 @@
 
 separate (ZBTest.Commands)
 procedure Dump_Command (State : in out State_Type;
-                        Args  : in List_Type) is
+                        Args  : List_Type) is
 
    Output_Index : Natural := 0;
    All_Scopes   : Boolean := False;

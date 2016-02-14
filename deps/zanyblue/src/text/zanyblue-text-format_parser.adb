@@ -53,54 +53,54 @@ package body ZanyBlue.Text.Format_Parser is
 
    Current_Maximum_Field_Width : Positive := 100;
 
-   function Make_Filler (Fill   : in Wide_Character;
-                         Length : in Positive) return Wide_String;
+   function Make_Filler (Fill   : Wide_Character;
+                         Length : Positive) return Wide_String;
    --  Construct a string of the given length composed of the given character.
 
-   function In_Set (Format   : in Wide_String;
-                    Position : in Positive;
-                    Set      : in Wide_Character_Set) return Boolean;
+   function In_Set (Format   : Wide_String;
+                    Position : Positive;
+                    Set      : Wide_Character_Set) return Boolean;
    --  Check if the Format character at the given position is with in
    --  the given set.  The Position might be beyond the end of the string
    --  in which case False is returned.
 
-   procedure Parse_Base (Format   : in Wide_String;
+   procedure Parse_Base (Format   : Wide_String;
                          Position : in out Positive;
                          Result   : in out Format_Type);
    --  Parse the optional numeric base specifier, the '#' character.
 
-   procedure Parse_Data_Type (Format   : in Wide_String;
+   procedure Parse_Data_Type (Format   : Wide_String;
                               Position : in out Positive;
                               Result   : in out Format_Type);
    --  Parse the optional data type specifier, one of 'b', 'c', 'd', ...
 
-   procedure Parse_Fill_Align (Format   : in Wide_String;
+   procedure Parse_Fill_Align (Format   : Wide_String;
                                Position : in out Positive;
                                Result   : in out Format_Type);
    --  Parse the optional alignment character ('<', '>', ...) and optional
    --  fill character.
 
-   procedure Parse_Sign (Format   : in Wide_String;
+   procedure Parse_Sign (Format   : Wide_String;
                          Position : in out Positive;
                          Result   : in out Format_Type);
    --  Parse the optional sign specifier, '+', '-', ' '
 
-   procedure Parse_Zero_Fill (Format   : in Wide_String;
+   procedure Parse_Zero_Fill (Format   : Wide_String;
                               Position : in out Positive;
                               Result   : in out Format_Type);
    --  Parse the optional numeric "fill with zero" character '0'
 
-   procedure Parse_Width (Format   : in Wide_String;
+   procedure Parse_Width (Format   : Wide_String;
                           Position : in out Positive;
                           Result   : in out Format_Type);
    --  Parse the optional field width value (number).
 
-   procedure Parse_Precision (Format            : in Wide_String;
+   procedure Parse_Precision (Format            : Wide_String;
                               Position          : in out Positive;
                               Result            : in out Format_Type);
    --  Parse the optional precision value (number).
 
-   procedure Parse_Number (Format   : in Wide_String;
+   procedure Parse_Number (Format   : Wide_String;
                            Position : in out Positive;
                            Result   : in out Natural);
    --  General numeric parsing routine.
@@ -109,11 +109,11 @@ package body ZanyBlue.Text.Format_Parser is
    -- Align --
    -----------
 
-   function Align (Value     : in Wide_String;
-                   Fill      : in Wide_Character;
-                   Width     : in Natural;
-                   Alignment : in Align_Type;
-                   Prefix    : in Wide_String := "") return Wide_String is
+   function Align (Value     : Wide_String;
+                   Fill      : Wide_Character;
+                   Width     : Natural;
+                   Alignment : Align_Type;
+                   Prefix    : Wide_String := "") return Wide_String is
 
       Extra : constant Integer := Width - (Prefix'Length + Value'Length);
 
@@ -140,9 +140,9 @@ package body ZanyBlue.Text.Format_Parser is
    -- In_Set --
    ------------
 
-   function In_Set (Format   : in Wide_String;
-                    Position : in Positive;
-                    Set      : in Wide_Character_Set) return Boolean is
+   function In_Set (Format   : Wide_String;
+                    Position : Positive;
+                    Set      : Wide_Character_Set) return Boolean is
    begin
       return Position <= Format'Last and then Is_In (Format (Position), Set);
    end In_Set;
@@ -151,8 +151,8 @@ package body ZanyBlue.Text.Format_Parser is
    -- Make_Filler --
    -----------------
 
-   function Make_Filler (Fill   : in Wide_Character;
-                         Length : in Positive) return Wide_String is
+   function Make_Filler (Fill   : Wide_Character;
+                         Length : Positive) return Wide_String is
       Result : constant Wide_String (1 .. Length) := (1 .. Length => Fill);
    begin
       return Result;
@@ -171,7 +171,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Maximum_Field_Width --
    -------------------------
 
-   procedure Maximum_Field_Width (Value : in Positive) is
+   procedure Maximum_Field_Width (Value : Positive) is
    begin
       Current_Maximum_Field_Width := Value;
    end Maximum_Field_Width;
@@ -180,8 +180,8 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse --
    -----------
 
-   function Parse (Format            : in Wide_String;
-                   Locale            : in Locale_Type) return Format_Type is
+   function Parse (Format            : Wide_String;
+                   Locale            : Locale_Type) return Format_Type is
       pragma Unreferenced (Locale);
       use Ada.Characters.Conversions;
       Result : Format_Type;
@@ -211,7 +211,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Base --
    ----------------
 
-   procedure Parse_Base (Format   : in Wide_String;
+   procedure Parse_Base (Format   : Wide_String;
                          Position : in out Positive;
                          Result   : in out Format_Type) is
    begin
@@ -225,7 +225,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Data_Type --
    ---------------------
 
-   procedure Parse_Data_Type (Format   : in Wide_String;
+   procedure Parse_Data_Type (Format   : Wide_String;
                               Position : in out Positive;
                               Result   : in out Format_Type) is
    begin
@@ -255,7 +255,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Fill_Align --
    ----------------------
 
-   procedure Parse_Fill_Align (Format   : in Wide_String;
+   procedure Parse_Fill_Align (Format   : Wide_String;
                                Position : in out Positive;
                                Result   : in out Format_Type) is
       Have_Align_Character : Boolean := False;
@@ -287,7 +287,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Number --
    ------------------
 
-   procedure Parse_Number (Format   : in Wide_String;
+   procedure Parse_Number (Format   : Wide_String;
                            Position : in out Positive;
                            Result   : in out Natural) is
       Digit : Natural;
@@ -303,7 +303,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Precision --
    ---------------------
 
-   procedure Parse_Precision (Format            : in Wide_String;
+   procedure Parse_Precision (Format            : Wide_String;
                               Position          : in out Positive;
                               Result            : in out Format_Type) is
    begin
@@ -319,7 +319,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Sign --
    ----------------
 
-   procedure Parse_Sign (Format   : in Wide_String;
+   procedure Parse_Sign (Format   : Wide_String;
                          Position : in out Positive;
                          Result   : in out Format_Type) is
    begin
@@ -338,7 +338,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Width --
    -----------------
 
-   procedure Parse_Width (Format   : in Wide_String;
+   procedure Parse_Width (Format   : Wide_String;
                           Position : in out Positive;
                           Result   : in out Format_Type) is
    begin
@@ -349,7 +349,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- Parse_Zero_Fill --
    ---------------------
 
-   procedure Parse_Zero_Fill (Format   : in Wide_String;
+   procedure Parse_Zero_Fill (Format   : Wide_String;
                               Position : in out Positive;
                               Result   : in out Format_Type) is
    begin
@@ -366,7 +366,7 @@ package body ZanyBlue.Text.Format_Parser is
    -- To_String --
    ---------------
 
-   function To_String (Format : in Format_Type) return Wide_String is
+   function To_String (Format : Format_Type) return Wide_String is
    begin
       return "['"
            & Format.Fill

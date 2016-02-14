@@ -37,7 +37,7 @@ with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Functions)
 function Joinpaths_Function (State : access State_Type;
-                             Args  : in List_Type) return Wide_String is
+                             Args  : List_Type) return Wide_String is
    pragma Unreferenced (State);
 
    use Ada.Strings.Wide_Unbounded;

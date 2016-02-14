@@ -38,7 +38,7 @@ package body ZanyBlue.Text.Unbounded_Strings is
    -- Create --
    ------------
 
-   function Create (Value : in Unbounded_String) return String_Argument_Type is
+   function Create (Value : Unbounded_String) return String_Argument_Type is
    begin
       return Create (To_String (Value));
    end Create;

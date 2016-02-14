@@ -67,18 +67,18 @@ procedure ZBMCompile.Main is
       Seen_a_Option : Boolean := False;
       Seen_G_Option : Boolean := False;
 
-      function Get_Option_Value (Ch : in Character) return Natural;
+      function Get_Option_Value (Ch : Character) return Natural;
 
-      function Get_Option_Value (Ch : in Character) return Wide_String;
+      function Get_Option_Value (Ch : Character) return Wide_String;
 
-      procedure Set_Accessor_Type (Type_Name : in Wide_String;
-                                   On_Off    : in Boolean);
+      procedure Set_Accessor_Type (Type_Name : Wide_String;
+                                   On_Off    : Boolean);
 
       ----------------------
       -- Get_Option_Value --
       ----------------------
 
-      function Get_Option_Value (Ch : in Character) return Wide_String is
+      function Get_Option_Value (Ch : Character) return Wide_String is
       begin
          Index := Index + 1;
          if Index > Argument_Count then
@@ -92,7 +92,7 @@ procedure ZBMCompile.Main is
       -- Get_Option_Value --
       ----------------------
 
-      function Get_Option_Value (Ch : in Character) return Natural is
+      function Get_Option_Value (Ch : Character) return Natural is
          Buffer : constant Wide_String := Get_Option_Value (Ch);
       begin
          return Natural'Wide_Value (Buffer);
@@ -102,8 +102,8 @@ procedure ZBMCompile.Main is
                           Argument0 => +Buffer);
       end Get_Option_Value;
 
-      procedure Set_Accessor_Type (Type_Name : in Wide_String;
-                                   On_Off    : in Boolean) is
+      procedure Set_Accessor_Type (Type_Name : Wide_String;
+                                   On_Off    : Boolean) is
       begin
          for I in Accessor_Types'Range loop
             if Type_Name = Accessor_Types (I).all then

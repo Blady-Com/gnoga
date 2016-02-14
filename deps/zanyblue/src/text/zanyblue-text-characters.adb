@@ -44,7 +44,7 @@ package body ZanyBlue.Text.Characters is
    -- Create --
    ------------
 
-   function Create (Character_Value : in Character)
+   function Create (Character_Value : Character)
       return Character_Argument_Type
    is
    begin
@@ -56,10 +56,11 @@ package body ZanyBlue.Text.Characters is
    -- Format --
    ------------
 
-   function Format (Value     : in Character_Argument_Type;
-                    Type_Name : in Wide_String;
-                    Template  : in Wide_String;
-                    Locale    : in Locale_Type) return Wide_String is
+   overriding
+   function Format (Value     : Character_Argument_Type;
+                    Type_Name : Wide_String;
+                    Template  : Wide_String;
+                    Locale    : Locale_Type) return Wide_String is
       pragma Unreferenced (Type_Name);
 
       Formatting : constant Format_Type := Parse (Template, Locale);

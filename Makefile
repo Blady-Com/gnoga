@@ -183,7 +183,7 @@ deps/PragmARC:
 	cd deps && git clone https://github.com/jrcarter/PragmARC.git
 
 pragmarc: deps/PragmARC
-	cd deps/PragmARC && git pull
+	- cd deps/PragmARC && git pull
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris
 

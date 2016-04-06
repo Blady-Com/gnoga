@@ -276,6 +276,7 @@ package body Gnoga.Gui.Base is
                end;
             end if;
             Object.Connection_ID := Gnoga.Types.No_Connection;
+            Object.Parent_Object := null;
          end if;
       end if;
    exception

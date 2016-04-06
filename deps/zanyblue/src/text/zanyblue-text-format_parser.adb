@@ -54,7 +54,7 @@ package body ZanyBlue.Text.Format_Parser is
    Current_Maximum_Field_Width : Positive := 100;
 
    function Make_Filler (Fill   : Wide_Character;
-                         Length : Positive) return Wide_String;
+                         Length : Natural) return Wide_String;
    --  Construct a string of the given length composed of the given character.
 
    function In_Set (Format   : Wide_String;
@@ -152,7 +152,7 @@ package body ZanyBlue.Text.Format_Parser is
    -----------------
 
    function Make_Filler (Fill   : Wide_Character;
-                         Length : Positive) return Wide_String is
+                         Length : Natural) return Wide_String is
       Result : constant Wide_String (1 .. Length) := (1 .. Length => Fill);
    begin
       return Result;

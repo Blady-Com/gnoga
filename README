@@ -7,6 +7,9 @@ To get started:
 
 Install GNAT (see http://GetAdaNow.com)
 
+On Windows 32 bit or Linux 32 bit if using GNAT GPL prior to 2014 you need to
+modify the Makfile ATOM_ACCESS=GCC-built-ins
+
 On Windows - if using TDM-GCC replace make below with mingw32-make
 
 Either download and unarchive the stable version of Gnoga from

@@ -74,7 +74,7 @@ else
 	BUILD_SQLITE3=
 endif
 
-all: basic_components xpm_parser gnoga gnoga_tools $(BUILD_SQLITE3) demo tutorials
+all: gnoga gnoga_tools $(BUILD_SQLITE3) demo tutorials
 
 setup:
 	$(MAKE) -C src
@@ -85,7 +85,7 @@ basic_components:
 xpm_parser:
 	cd deps/simple_components/xpm && $(BUILDER) -p -Pxpm_parser.gpr
 
-gnoga: setup
+gnoga: setup basic_components xpm_parser
 	- cd lib && $(UNSET_READONLY)
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
@@ -180,7 +180,7 @@ zanyblue:
 	cd deps/zanyblue && make -C src BUILD=Debug
 
 deps/PragmARC:
-	cd deps && git clone https://github.com/jrcarter/PragmARC.git
+	- cd deps && git clone https://github.com/jrcarter/PragmARC.git
 
 pragmarc: deps/PragmARC
 	- cd deps/PragmARC && git pull
@@ -211,7 +211,7 @@ linxtris:
 	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
 
 password_gen: pragmarc
-	cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests: gnoga
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}

@@ -55,7 +55,7 @@ procedure Test_Strings_Edit is
    use Integer_Edit;
 
    function Image (Set : Unicode_Set) return String is
-      Ranges : Code_Points_Ranges := To_Ranges (Set);
+      Ranges : constant Code_Points_Ranges := To_Ranges (Set);
       Result : Unbounded_String;
    begin
       if Ranges'Length = 0 then
@@ -456,11 +456,10 @@ begin
 
    for I in Strings_Edit.UTF8.UTF8_Code_Point'Range loop
       declare
-         use Strings_Edit.UTF8;
-         Is_Lower : Boolean := Is_Lowercase (I);
-         Is_Upper : Boolean := Is_Uppercase (I);
-         Upper    : UTF8_Code_Point := To_Uppercase (I);
-         Lower    : UTF8_Code_Point := To_Lowercase (I);
+         Is_Lower : constant Boolean := Is_Lowercase (I);
+         Is_Upper : constant Boolean := Is_Uppercase (I);
+         Upper    : constant UTF8_Code_Point := To_Uppercase (I);
+         Lower    : constant UTF8_Code_Point := To_Lowercase (I);
       begin
          if (  (Upper /= I and then Is_Upper)
             or else
@@ -513,7 +512,6 @@ begin
    end loop;
 
    declare
-      use Strings_Edit.UTF8;
       Buffer     : String (1..4);
       That, This : UTF8_Code_Point;
       I1, I2     : Integer;
@@ -540,10 +538,8 @@ begin
    end;
 
    declare
-      use Strings_Edit.UTF8;
-      use Strings_Edit.UTF8.Handling;
       procedure Show (Text : String; Code : UTF8_Code_Point) is
-         UTF : String := Image (Code);
+         UTF : constant String := Image (Code);
       begin
          Put (Text & ":" & UTF8_Code_Point'Image (Code) & " =");
          for I in UTF'Range loop
@@ -579,9 +575,9 @@ begin
       Show ("SUBSCRIPT PLUS",    16#208A#);
       Show ("SUBSCRIPT MINUS",   16#208B#);
       declare
-         Test  : String      := "kg·m²/A²·s³";
-         UTF   : String      := To_UTF8 (Test);
-         Wide  : Wide_String := To_Wide_String (UTF);
+         Test  : constant String      := "kg·m²/A²·s³";
+         UTF   : constant String      := To_UTF8 (Test);
+         Wide  : constant Wide_String := To_Wide_String (UTF);
       begin
          if To_UTF8 (Wide) /= UTF then
             Raise_Exception
@@ -777,13 +773,14 @@ begin
    end;
 
    declare
-      Latin : Unicode_Set := To_Set (Basic_Latin);
-      Hex   : Unicode_Set := To_Set ("0123456789ABCDEF");
-      Latin_Letters : Unicode_Set := Choose (Latin, Is_Letter'Access);
-      All_Letters   : Unicode_Set :=
+      Latin : constant Unicode_Set := To_Set (Basic_Latin);
+      Hex   : constant Unicode_Set := To_Set ("0123456789ABCDEF");
+      Latin_Letters    : constant Unicode_Set :=
+                         Choose (Latin, Is_Letter'Access);
+      All_Letters      : constant Unicode_Set :=
                          Choose (Universal_Set, Is_Letter'Access);
-      Cyrillic_Letters : Unicode_Set :=
-                            To_Set (Is_Letter'Access) and Cyrillic;
+      Cyrillic_Letters : constant Unicode_Set :=
+                         To_Set (Is_Letter'Access) and Cyrillic;
    begin
       if Is_In
          (  Value ("T"),

@@ -3,7 +3,7 @@
 --     Test_Persistent_Object                      Luebeck            --
 --  Implementation                                 Spring, 2009       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -38,7 +38,7 @@ package body Test_Persistent_Object is
       if not Is_In (List.Set, Element) then
          Add (List.Set, Element);
          declare
-            Link : Backward_Link_Ptr :=
+            Link : constant Backward_Link_Ptr :=
                       new List_Link (List'Unchecked_Access);
          begin
             Add (List.Links, Link);
@@ -60,14 +60,15 @@ package body Test_Persistent_Object is
    function Create_List_Of_Terms
             (  Name : String
             )  return Deposit_Handles.Handle is
-      List_Ptr : Deposit_Ptr := new List_Of_Terms (Name'Length);
+      List_Ptr : constant Deposit_Ptr :=
+                 new List_Of_Terms (Name'Length);
    begin
       List_Of_Terms (List_Ptr.all).Name := Name;
       return Ref (List_Ptr);
    end Create_List_Of_Terms;
 
    function Create_Term (Name : String) return Deposit_Handles.Handle is
-      Term_Ptr : Deposit_Ptr := new Term (Name'Length);
+      Term_Ptr : constant Deposit_Ptr := new Term (Name'Length);
    begin
       Term (Term_Ptr.all).Name := Name;
       return Ref (Term_Ptr);
@@ -116,7 +117,7 @@ package body Test_Persistent_Object is
    end Get_Referents;
 
    function Image (Item : Deposit_Handles.Handle) return String is
-      This : Deposit'Class renames Deposit'Class (Ptr (Item).all);
+      This : Deposit'Class renames Ptr (Item).all;
    begin
       if This in Term'Class then
          return Term'Class (This).Name;

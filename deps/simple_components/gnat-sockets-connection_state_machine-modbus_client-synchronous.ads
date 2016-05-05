@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client.Synchronous                   Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Streams;              use Ada.Streams;
 with Ada.Task_Identification;  use Ada.Task_Identification;
 
 package GNAT.Sockets.Connection_State_Machine.

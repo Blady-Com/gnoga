@@ -3,7 +3,7 @@
 --     Generic_Indefinite_FIFO                     Luebeck            --
 --        Generic_Signaled                         Summer, 2008       --
 --  Implementation                                                    --
---                                Last revision :  15:51 13 Dec 2008  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -101,7 +101,7 @@ package body Generic_Indefinite_FIFO.Generic_Signaled is
          Queue.Event.Queue.Get_Blocked := False; -- No blocking
       end if;
       declare
-         Result : Element_Type := Get (FIFO (Queue));
+         Result : constant Element_Type := Get (FIFO (Queue));
       begin
          if Queue.Put_Blocked then
             Queue.Event.Queue.Event.Release_Put;
@@ -126,7 +126,7 @@ package body Generic_Indefinite_FIFO.Generic_Signaled is
          Queue.Event.Queue.Get_Blocked := False; -- No blocking
       end if;
       declare
-         Result : Element_Type := Get (FIFO (Queue));
+         Result : constant Element_Type := Get (FIFO (Queue));
       begin
          if Queue.Put_Blocked then
             Queue.Event.Queue.Event.Release_Put;
@@ -156,7 +156,7 @@ package body Generic_Indefinite_FIFO.Generic_Signaled is
          Queue.Event.Queue.Get_Blocked := False;
       end if;
       declare
-         Result : Element_Type := Peek (FIFO (Queue));
+         Result : constant Element_Type := Peek (FIFO (Queue));
       begin
          if Queue.Put_Blocked then
             Queue.Event.Queue.Event.Release_Put;
@@ -181,7 +181,7 @@ package body Generic_Indefinite_FIFO.Generic_Signaled is
          Queue.Event.Queue.Get_Blocked := False;
       end if;
       declare
-         Result : Element_Type := Peek (FIFO (Queue));
+         Result : constant Element_Type := Peek (FIFO (Queue));
       begin
          if Queue.Put_Blocked then
             Queue.Event.Queue.Event.Release_Put;

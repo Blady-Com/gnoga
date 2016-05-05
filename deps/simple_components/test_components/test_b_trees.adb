@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -66,7 +66,6 @@ procedure Test_B_Trees is
    end Dump;
 
    procedure Dump (Tree : Test_Integer_B_Trees.External.B_Tree) is
-      use Persistent.Memory_Pools.Dump;
       use Test_Integer_B_Trees.External;
       This : Item_Ptr := Get_First (Tree);
    begin
@@ -87,7 +86,6 @@ procedure Test_B_Trees is
    end Dump;
 
    procedure Dump (Tree : Test_Integer_B_Trees.External_Ptr.B_Tree) is
-      use Persistent.Memory_Pools.Dump;
       use Test_Integer_B_Trees.External_Ptr;
       This : Item_Ptr := Get_First (Tree);
    begin
@@ -197,7 +195,7 @@ procedure Test_B_Trees is
    begin
       for Index in List'Range loop
          declare
-            Node : Integer := List (Index);
+            Node : constant Integer := List (Index);
          begin
             if This = No_Item then
                Raise_Exception
@@ -234,7 +232,7 @@ procedure Test_B_Trees is
    begin
       for Index in List'Range loop
          declare
-            Node : Integer := List (Index);
+            Node : constant Integer := List (Index);
          begin
             if This = No_Item then
                Raise_Exception
@@ -271,7 +269,7 @@ procedure Test_B_Trees is
    begin
       for Index in List'Range loop
          declare
-            Node : Integer := List (Index);
+            Node : constant Integer := List (Index);
          begin
             if This = No_Item then
                Raise_Exception
@@ -320,7 +318,7 @@ procedure Test_B_Trees is
    begin
       for Index in List'Range loop
          declare
-            Node : Integer := List (Index);
+            Node : constant Integer := List (Index);
          begin
             if This = No_Item then
                Raise_Exception
@@ -371,7 +369,7 @@ procedure Test_B_Trees is
    begin
       for Index in List'Range loop
          declare
-            Node : Integer := List (Index);
+            Node : constant Integer := List (Index);
          begin
             if This = No_Row then
                Raise_Exception
@@ -880,7 +878,8 @@ begin
             Check;
             Index := Integer (Get (List, Get_Size (List) / 2));
             declare
-               Item : Row_Ptr := Find (T, Primary, Byte_Index (Index));
+               Item : constant Row_Ptr :=
+                      Find (T, Primary, Byte_Index (Index));
             begin
                if Get_Key (Item, Primary) /= Byte_Index (Index) then
                   Raise_Exception
@@ -1122,7 +1121,7 @@ begin
             Check;
             Index := Integer (Get (List, Get_Size (List) / 2));
             declare
-               Item : Item_Ptr := Find (T, Byte_Index (Index));
+               Item : constant Item_Ptr := Find (T, Byte_Index (Index));
             begin
                if Get_Key (Item) /= Byte_Index (Index) then
                   Raise_Exception
@@ -1349,7 +1348,7 @@ begin
             Check;
             Index := Integer (Get (List, Get_Size (List) / 2));
             declare
-               Item : Item_Ptr := Find (T, Index);
+               Item : constant Item_Ptr := Find (T, Index);
             begin
                if Get_Key (Item) /= Index then
                   Raise_Exception
@@ -1573,7 +1572,7 @@ begin
             Check;
             Index := Integer (Get (List, Get_Size (List) / 2));
             declare
-               Item : Item_Ptr := Find (T, Index);
+               Item : constant Item_Ptr := Find (T, Index);
             begin
                if Get_Key (Item) /= Index then
                   Raise_Exception

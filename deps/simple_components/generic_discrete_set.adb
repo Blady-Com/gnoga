@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -181,7 +181,7 @@ package body Generic_Discrete_Set is
    end Finalize;
 
    function Find (Container : Set; Item : Object_Type) return Integer is
-      Index : Integer := abs Find (Container, (Item, Item));
+      Index : constant Integer := abs Find (Container, (Item, Item));
    begin
       if (  Index <= Get_Size (Container)
          and then
@@ -201,7 +201,7 @@ package body Generic_Discrete_Set is
          raise Constraint_Error;
       end if;
       declare
-         Index : Integer := abs Find (Container, (From, From));
+         Index : constant Integer := abs Find (Container, (From, From));
          This  : Range_Type;
       begin
          if Index <= Get_Size (Container) then
@@ -226,7 +226,7 @@ package body Generic_Discrete_Set is
                 From      : out Object_Type;
                 To        : out Object_Type
              )  is
-      This : Range_Type := Get (Container, Index);
+      This : constant Range_Type := Get (Container, Index);
    begin
       From := This.From;
       To   := This.To;
@@ -304,7 +304,7 @@ package body Generic_Discrete_Set is
    begin
       if Index > 0 then
          declare
-            This : Range_Type := Get (Set, Index);
+            This : constant Range_Type := Get (Set, Index);
          begin
             Remove (Set, Index);
             if This.From /= This.To then

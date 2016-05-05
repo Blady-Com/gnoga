@@ -173,8 +173,8 @@ begin
       return;
    end if;
    declare
-      Output : String := Argument (1);
-      Input  : String := Argument (2);
+      Output : constant String := Argument (1);
+      Input  : constant String := Argument (2);
    begin
       begin
          Open (File, In_File, Output);

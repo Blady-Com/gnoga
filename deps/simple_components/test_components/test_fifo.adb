@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Autumn, 2006       --
 --                                                                    --
---                                Last revision :  09:08 27 Jun 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,7 +43,7 @@ begin
       Put (Queue, "1234");
       Put (Queue, "5678");
       declare
-         Item : String := Get (Queue);
+         Item : constant String := Get (Queue);
       begin
          if "1234" /= Item then
             Raise_Exception
@@ -59,7 +59,7 @@ begin
          );
       end if;
       declare
-         Item : String := Get (Queue);
+         Item : constant String := Get (Queue);
       begin
          if "5678" /= Item then
             Raise_Exception

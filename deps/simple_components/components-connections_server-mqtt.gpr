@@ -1,0 +1,20 @@
+with "components.gpr";
+with "components-connections_server.gpr";
+
+project Components.Connections_Server.MQTT is
+
+   for Source_Files use
+       (  "gnat-sockets-mqtt.adb",
+          "gnat-sockets-mqtt.ads",
+          "gnat-sockets-mqtt-server.adb",
+          "gnat-sockets-mqtt-server.ads",
+          "gnat-sockets-mqtt-streams.adb",
+          "gnat-sockets-mqtt-streams.ads"
+       );
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Connections_Server.MQTT;

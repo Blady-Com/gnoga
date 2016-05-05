@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2002       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -60,7 +60,7 @@ package body Generic_Set is
          return;
       end if;
       Location := Find (Container, Item);
-      if Location >= 0 then
+      if Location > 0 then
          if Replace then
             if Container.Object.Use_Count > 0 then
                Clone (Container);
@@ -407,6 +407,79 @@ package body Generic_Set is
       Replace  : Boolean := True;
    begin
       Insert (Container, Item, Replace, Location);
+   end Replace;
+
+   procedure Replace
+             (  Container : in out Set;
+                Item      : Object_Type;
+                Condition : Exchange_Condition;
+                Updated   : out Boolean
+             )  is
+      Location : Integer;
+   begin
+      if Item = Null_Element then
+         Updated := False;
+         return;
+      end if;
+      Location := Find (Container, Item);
+      if Location > 0 then
+         if Condition (Item, Container.Object.Vector (Location)) then
+            if Container.Object.Use_Count > 0 then
+               Clone (Container);
+            end if;
+            Container.Object.Vector (Location) := Item;
+            Updated := True;
+         else
+            Updated := False;
+         end if;
+      else
+         if not Condition (Item, Null_Element) then
+            return;
+         end if;
+         if Container.Object = null then
+            Container.Object := new Data;
+         elsif Container.Object.Use_Count > 0 then
+            Clone (Container);
+         end if;
+         declare
+            Index  : constant Positive := -Location;
+            Object : Data renames Container.Object.all;
+         begin
+            if Object.Vector = null then
+               Object.Vector :=
+                  new Object_Array'(1..Minimal_Size => Null_Element);
+               Object.Vector (1) := Item;
+            elsif Object.Size = Object.Vector'Last then
+               declare
+                  Ptr : constant Object_Array_Ptr :=
+                     new Object_Array'
+                         (  1
+                         .. (  Object.Size
+                            +  Natural'Max
+                               (  Minimal_Size,
+                                  (  (  Object.Size
+                                     *  (100 + Increment)
+                                     )
+                                  /  100
+                            )  )  ) => Null_Element
+                         );
+               begin
+                  Ptr (1..Index - 1) := Object.Vector (1..Index - 1);
+                  Ptr (Index) := Item;
+                  Ptr (Index + 1..Object.Size + 1) :=
+                     Object.Vector (Index..Object.Size);
+                  Delete (Object.Vector);
+                  Object.Vector := Ptr;
+               end;
+            else
+               Object.Vector (Index + 1..Object.Size + 1) :=
+                  Object.Vector (Index..Object.Size);
+               Object.Vector (Index) := Item;
+            end if;
+            Object.Size := Object.Size + 1;
+         end;
+         Updated := True;
+      end if;
    end Replace;
 
    function "and" (Left, Right : Set) return Set is

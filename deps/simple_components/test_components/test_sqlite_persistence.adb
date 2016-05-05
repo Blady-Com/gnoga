@@ -3,7 +3,7 @@
 --     Test_SQLite_Persistence                     Luebeck            --
 --  Implementation                                 Winter, 2010       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -59,7 +59,7 @@ begin
    end;
    Put_Line ("Session 2");
    declare
-      DB   : Storage_Handle := Create ("sqlite.db");
+      DB   : constant Storage_Handle := Create ("sqlite.db");
       Root : Handle;
    begin
       Root := Get (DB, Object_Name);
@@ -77,7 +77,7 @@ begin
    end;
    Put_Line ("Session 4");
    declare
-      DB   : Storage_Handle := Create ("sqlite.db");
+      DB   : constant Storage_Handle := Create ("sqlite.db");
       Dir  : Handle;
       Root : Handle;
    begin

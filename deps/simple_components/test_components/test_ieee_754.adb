@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Summer, 2008       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -60,7 +60,7 @@ begin
       Put_Line ("Float'Small " & Image (To_IEEE (Float'Small)));
       for Power in -10..10 loop
          declare
-            N : Float := Float'Scaling (1.0, Power);
+            N : constant Float := Float'Scaling (1.0, Power);
          begin
             if From_IEEE (To_IEEE (N)) /= N then
                Raise_Exception
@@ -201,7 +201,7 @@ begin
       end if;
       for Power in -20..20 loop
          declare
-            N : Long_Float := Long_Float'Scaling (1.0, Power);
+            N : constant Long_Float := Long_Float'Scaling (1.0, Power);
          begin
             if From_IEEE (To_IEEE (N)) /= N then
                Raise_Exception

@@ -3,7 +3,7 @@
 --     Object.Handle.Bounded_Array                 Luebeck            --
 --  Implementation                                 Spring, 2003       --
 --                                                                    --
---                                Last revision :  22:28 15 Feb 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -484,7 +484,7 @@ package body Object.Handle.Generic_Bounded_Array is
             (  Container : Bounded_Array;
                Index     : Index_Type
             )  return Handle_Type is
-      Ptr : Object_Type_Ptr := Get (Container, Index);
+      Ptr : constant Object_Type_Ptr := Get (Container, Index);
    begin
       if Ptr = null then
          raise Constraint_Error;

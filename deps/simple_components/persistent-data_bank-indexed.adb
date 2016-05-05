@@ -3,7 +3,7 @@
 --     Persistent.Data_Bank.Indexed                Luebeck            --
 --  Implementation                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  09:07 27 Jun 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,7 +26,6 @@
 --____________________________________________________________________--
 
 with Ada.Characters.Handling;        use Ada.Characters.Handling;
-with Ada.Exceptions;                 use Ada.Exceptions;
 with Ada.IO_Exceptions;              use Ada.IO_Exceptions;
 with Persistent.Data_Bank.Reference; use Persistent.Data_Bank.Reference;
 with Persistent.Handle;              use Persistent.Handle;
@@ -236,7 +235,7 @@ package body Persistent.Data_Bank.Indexed is
                --
                declare
                   Parent_Key : aliased Persistent.Data_Bank.Indexed.Key;
-                  Name : String :=
+                  Name : constant String :=
                             Get_Name
                             (  Storage.Index.Storage,
                                Key,
@@ -298,7 +297,7 @@ package body Persistent.Data_Bank.Indexed is
          );
       end if;
       declare
-         Result : String := Restore_Class (Storage, Object_Key);
+         Result : constant String := Restore_Class (Storage, Object_Key);
       begin
          Commit (Mutex);
          return Result;
@@ -585,7 +584,7 @@ package body Persistent.Data_Bank.Indexed is
              (  Storage : in out Indexed_Storage_Object;
                 Object  : in out Deposit_Handle
              )  is
-      This : Deposit_Ptr := Ptr (Object);
+      This : constant Deposit_Ptr := Ptr (Object);
       Lock : Holder (Storage.Lock'Access);
    begin
       if This = null then

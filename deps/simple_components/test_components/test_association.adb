@@ -61,7 +61,8 @@ begin
             begin
                if Line (Pointer) = '"' then
                   declare
-                     Text : String := Get_Quoted (Line, Pointer'Access);
+                     Text : constant String :=
+                            Get_Quoted (Line, Pointer'Access);
                   begin
                      if Text /= To_String (Result.Value) then
                         Put_Line ("Expected:'" & Text & "'");

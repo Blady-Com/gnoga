@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -100,17 +100,17 @@ package body Generic_Indefinite_Map is
             Object.Vector (1) := This;
          elsif Object.Size = Object.Vector'Last then
             declare
-               Ptr : Token_Array_Ptr :=
-                  new Token_Array
-                      (  1
-                      .. (  Object.Size
-                         +  Natural'Max
-                            (  Minimal_Size,
-                               (  (  Object.Size
-                                  *  (100 + Increment)
-                                  )
-                               /  100
-                      )  )  )  );
+               Ptr : constant Token_Array_Ptr :=
+                     new Token_Array
+                         (  1
+                         .. (  Object.Size
+                            +  Natural'Max
+                               (  Minimal_Size,
+                                  (  (  Object.Size
+                                     *  (100 + Increment)
+                                     )
+                                  /  100
+                         )  )  )  );
             begin
                Ptr (1..Index - 1) := Object.Vector (1..Index - 1);
                Ptr (Index) := This;
@@ -200,7 +200,7 @@ package body Generic_Indefinite_Map is
       then
          declare
             Source : Data renames Container.Object.all;
-            Copy   : Data_Ptr := new Data;
+            Copy   : constant Data_Ptr := new Data;
          begin
             Copy.Size := Source.Size;
             if 0 /= Source.Size then
@@ -377,7 +377,7 @@ package body Generic_Indefinite_Map is
              (  Container : in out Map;
                 Key       : Key_Type
              )  is
-      Index : Integer := Find (Container, Key);
+      Index : constant Integer := Find (Container, Key);
    begin
       if Index > 0 then
          Remove (Container, Index);

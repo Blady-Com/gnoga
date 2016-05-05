@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2012       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  10:00 09 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -92,9 +92,9 @@ package body ODBC.SQLTypes is
       Result.Month := SQLUSMALLINT (Month);
       Result.Day   := SQLUSMALLINT (Day);
       declare
-         D : Long_Float  := Long_Float (Seconds);
-         S : Long_Float  := Long_Float'Truncation (D);
-         I : SQLUINTEGER := SQLUINTEGER (S);
+         D : constant Long_Float  := Long_Float (Seconds);
+         S : constant Long_Float  := Long_Float'Truncation (D);
+         I : constant SQLUINTEGER := SQLUINTEGER (S);
       begin
          Result.Fraction := SQL_TIME_FRACTION ((D - S) * FRACTION_Span);
          Result.Hour     := SQLUSMALLINT (I / 3600);

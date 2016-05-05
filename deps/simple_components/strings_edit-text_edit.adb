@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --  Strings_Edit.Text_Edit                         Spring, 2000       --
 --                                                                    --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -178,7 +178,7 @@ package body Text_Edit is
                 Justify     : in Alignment := Left;
                 Fill        : in Character := ' '
              )  is
-      Text : String (1..1) := (1 => Value);
+      Text : constant String (1..1) := (1 => Value);
    begin
       Put (Destination, Pointer, Text, Field, Justify, Fill);
    end PutCharacter;

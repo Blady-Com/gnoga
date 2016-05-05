@@ -3,7 +3,7 @@
 --     Parsers.Multiline_Source.Latin1_Text_IO     Luebeck            --
 --  Implementation                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  22:28 15 Feb 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,7 +43,7 @@ package body Parsers.Multiline_Source.Latin1_Text_IO is
          Get_Line (Code.File.all, Buffer, Last);
          for Index in Buffer'First..Last loop
             declare
-               Sequence : String := To_UTF8 (Buffer (Index));
+               Sequence : constant String := To_UTF8 (Buffer (Index));
             begin
                if Code.Length + Sequence'Length - 1 > Code.Buffer'Last then
                   declare

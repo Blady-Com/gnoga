@@ -3,7 +3,7 @@
 --     Test_ELV_MAX_Cube_Client                    Luebeck            --
 --  ELV MAX! Cube client test                      Summer, 2015       --
 --                                                                    --
---                                Last revision :  17:21 09 Oct 2015  --
+--                                Last revision :  16:49 28 Feb 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -290,9 +290,89 @@ procedure Test_ELV_MAX_Cube_Client is
             end loop;
          end;
          delay Timeout;
+--         Put_Line ("Reset error");
+--         Reset_Error (Client);
          Put_Line ("Query devices status");
          Query_Devices (Client);
          delay Timeout;
+if false then
+         declare
+            Address : RF_Address := 16#0B76DA#;
+            Data    : Device_Data := Get_Device_Data (Client, Address);
+            procedure To_Automatic is
+            begin
+               Put_Line
+               (   "Set automatic "
+               &  Image (Address)
+               );
+               Set_Thermostat_Automatic (Client, Address);
+               delay Timeout;
+               if Get_Error (Client) then
+                  raise Status_Error;
+               end if;
+               loop
+                  Query_Devices (Client);
+                  delay Timeout;
+                  exit when Get_Device_Data (Client, Address).Mode
+                          = Automatic;
+                  Put_Line ("Themostat not ready, waiting");
+               end loop;
+            end To_Automatic;
+            procedure To_Manual is
+            begin
+               Put_Line
+               (   "Set manual temperature "
+               &  Image (Address)
+               &  " -> "
+               &  Image (Data.Set_Temperature)
+               );
+               Set_Thermostat_Temperature
+               (  Client,
+                  Address,
+                  Data.Set_Temperature
+               );
+               delay Timeout;
+               if Get_Error (Client) then
+                  raise Status_Error;
+               end if;
+               loop
+                  Query_Devices (Client);
+                  delay Timeout;
+                  exit when Get_Device_Data (Client, Address).Mode
+                          = Manual;
+                  Put_Line ("Themostat not ready, waiting");
+               end loop;
+            end To_Manual;
+         begin
+            if Data.Mode = Automatic then
+               To_Manual;
+               Query_Devices (Client);
+               delay 60.0;
+               Query_Devices (Client);
+               delay 60.0;
+               Query_Devices (Client);
+               delay 60.0;
+               Query_Devices (Client);
+               delay 60.0;
+               To_Automatic;
+            elsif Data.Mode = Manual then
+               To_Automatic;
+               Query_Devices (Client);
+               delay 60.0;
+               Query_Devices (Client);
+               delay 60.0;
+               Query_Devices (Client);
+               delay 60.0;
+               Query_Devices (Client);
+               delay 60.0;
+               To_Manual;
+            end if;
+         exception
+            when Status_Error =>
+               Put_Line ("***** Failed to change mode");
+         end;
+         delay Timeout;
+end if;
 --           Put_Line ("Set device mode automatic");
 --           Set_Thermostat_Automatic (Client, RF_Address'(16#0C8EA2#));
 --           Put_Line ("Set device mode boost");
@@ -313,7 +393,27 @@ procedure Test_ELV_MAX_Cube_Client is
 --               Su,
 --               ((2.0 * 3600.0, 17.5), (5.0 * 3600.0,18.5))
 --           );
+if false then
+         Put_Line ("Query NTP servers");
+         Query_NTP_Servers (Client);
          delay Timeout;
+         Put_Line ("Set NTP servers");
+         Set_NTP_Servers (Client, "de.pool.ntp.org,ntp.homematic.com");
+         delay Timeout;
+end if;
+if false then
+         Put_Line ("Device pairing ----------------------------------");
+         Pair (Client, 50.0);
+         delay 60.0;
+end if;
+--           Put_Line ("Add device 050F6D");
+--           Add_New_Device
+--           (  Client  => Client,
+--              Index   => 4,
+--              Device  => Shutter_Contact,
+--              Address => 16#050F6D#
+--           );
+--           delay Timeout;
       end;
    end Test_Asynchronous;
 

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  11:56 13 Oct 2012  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -71,7 +71,7 @@ package body Object.Archived.Lists is
       end if;
       declare
          List  : Dependency_List'Class renames This.all;
-         Index : Integer := List.Size + 1;
+         Index : constant Integer := List.Size + 1;
          Key   : Integer := Index;
       begin
          Put (List.Links, Index, Object);
@@ -94,7 +94,7 @@ package body Object.Archived.Lists is
    end Add;
 
    procedure Erase (Container : in out Deposit_List) is
-      This : Dependency_List_Ptr := Ptr (Container.Handle);
+      This : constant Dependency_List_Ptr := Ptr (Container.Handle);
    begin
       if This = null then
          return;
@@ -116,7 +116,7 @@ package body Object.Archived.Lists is
 
    function Get (Container : Deposit_List; Index : Positive)
       return Deposit_Ptr is
-      This : Dependency_List_Ptr := Ptr (Container.Handle);
+      This : constant Dependency_List_Ptr := Ptr (Container.Handle);
    begin
       if This = null or else Index > This.Size then
          raise Constraint_Error;
@@ -125,7 +125,7 @@ package body Object.Archived.Lists is
    end Get;
 
    function Get_Size (Container : Deposit_List) return Natural is
-      This : Dependency_List_Ptr := Ptr (Container.Handle);
+      This : constant Dependency_List_Ptr := Ptr (Container.Handle);
    begin
       if This = null then
          return 0;
@@ -135,7 +135,7 @@ package body Object.Archived.Lists is
    end Get_Size;
 
    function Get_Total (Container : Deposit_List) return Natural is
-      This : Dependency_List_Ptr := Ptr (Container.Handle);
+      This : constant Dependency_List_Ptr := Ptr (Container.Handle);
    begin
       if This = null then
          return 0;
@@ -165,7 +165,7 @@ package body Object.Archived.Lists is
             (  Container : Deposit_List;
                Object    : Deposit_Ptr
             )  return Boolean is
-      This : Dependency_List_Ptr := Ptr (Container.Handle);
+      This : constant Dependency_List_Ptr := Ptr (Container.Handle);
    begin
       if This = null then
          return False;

@@ -3,7 +3,7 @@
 --     Test_Persistent_Tree                        Luebeck            --
 --  Implementation                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,7 +43,7 @@ package body Test_Persistent_Tree is
                Left  : Handle := Nothing;
                Right : Handle := Nothing
             )  return Handle is
-      Node_Ptr : Deposit_Ptr := new Node;
+      Node_Ptr : constant Deposit_Ptr := new Node;
       Object   : Node renames Node (Node_Ptr.all);
    begin
       Object.Field := Field;

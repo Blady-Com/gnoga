@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  15:51 13 Dec 2008  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -124,6 +124,39 @@ package body Generic_FIFO is
             From := From - 1;
          end if;
          if Is_Preserved (Container, Queue.Buffer (From)) then
+            -- Preserve this element
+            if To = 1 then
+               To := Queue.Size;
+            else
+               To := To - 1;
+            end if;
+            if To /= From then
+               Queue.Buffer (To) := Queue.Buffer (From);
+            end if;
+         else
+            -- Remove this one
+            Purged := Purged + 1;
+         end if;
+      end loop;
+      Queue.First := To;
+   end Purge;
+
+   procedure Purge
+             (  Queue        : in out FIFO;
+                Is_Preserved : Is_Preserved_Ptr;
+                Purged       : out Natural
+             )  is
+      From : Positive := Queue.Free;
+      To   : Positive := From;
+   begin
+      Purged := 0;
+      while From /= Queue.First loop
+         if From = 1 then
+            From := Queue.Size;
+         else
+            From := From - 1;
+         end if;
+         if Is_Preserved (Queue.Buffer (From)) then
             -- Preserve this element
             if To = 1 then
                To := Queue.Size;

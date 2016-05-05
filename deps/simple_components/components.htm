@@ -5,14 +5,14 @@
 <TITLE>Simple components for Ada</TITLE>
 <meta http-equiv="Content-Style-Type" content="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
-<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client">
+<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client, MQTT, MQTT broker, ELV, eQ-3, MAX!, MAX! cube">
 <META name="Author" content="Dmitry Kazakov">
 <META name="Description" content="Simple components for Ada">
 </HEAD>
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.10</EM><BR>
+<EM>version 4.12</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -66,6 +66,7 @@ MAX! client implementation</a><br>
 <a href="#Generic_FIFO">FIFO</a> (lock-free)<br>
 <a href="#IEEE_754">IEEE 754</a><br>
 <a href="#GNAT.Sockets.Connection_State_Machine.MODBUS_Client">MODBUS client implementation</a><br>
+<a href="#MQTT">MQTT client and server/broker implementation</a><br>
 <a href="#multiple_GNAT.Sockets.Servers">Multiple connection TCP servers</a><br>
 <a href="#Mutexes">Mutexes</a><br>
 <a href="#Objects_etc">Objects and handles to</a><br>
@@ -128,13 +129,13 @@ MAX! client implementation</a><br>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_10.tgz">components_4_10.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_12.tgz">components_4_12.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_10.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_12.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -7668,10 +7669,29 @@ index. Constraint_Error is propagated when item index is wrong.</p>
 </font> Set; <b> Item</b> : Object_Type);<font color="#0000FF"><br>
 procedure</font> Replace (<b>Container</b> :<font color="#0000FF"> in out </font> Set;
 <b> Items</b> : Set);</tt></blockquote>
-These procedures are used to add to / replace in an item or all items of a set. Nothing  an  is a
-Null_Element. 
+These procedures are used to add to / replace in an item or all items of a set. 
+Nothing  is done when <b>Item</b> is Null_Element. 
 Any duplicated items are replaced by new ones. This operation has sense only if 
 the equality operation defined on Object_Type does not distinguish some objects.<blockquote>
+<tt><font color="#0000FF">type </font> Exchange_Condition<font color="#0000FF"> 
+is<br>
+&nbsp;&nbsp; access function </font> (<b>New_Element</b>, <b>Old_Element</b> : 
+Object_Type)<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return </font> Boolean;<font color="#0000FF"><br>
+procedure</font> Replace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> 
+: <font color="#0000FF">in out</font> Set;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Item</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Object_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Condition</b> : Exchange_Condition;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Updated</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></blockquote>
+This procedure replaces element is the function <b>Condition</b> returns
+<font color="#800000"><i>true</i></font>. For a new element to insert the second parameter 
+passed is Null_Element. The parameter <b>Updated</b> is returned true if the set 
+was modified, e.g. element inserted or replaced.<blockquote>
   <p><tt><font color="#0000FF">function</font>
   &quot;<font color="#FF0000">and</font>&quot; (<b>Left</b>, <b> Right</b> : Set)
   <font color="#0000FF"> return</font> Set;<br>
@@ -7716,8 +7736,33 @@ Object_Type) <font color="#0000FF">return</font> Boolean <font color="#0000FF">i
 Ada.Finalization.Controlled <font color="#0000FF">with private</font>;<br>
 &nbsp;&nbsp; ...</tt></p>
 </blockquote>
-<p>Note that there is no formal parameter Null_Element.</p>
-<h4><a name="3.1.2"></a>3.1.2 Sets of discrete elements</h4>
+<p>Note that there is no formal parameter Null_Element. The Replace procedure is 
+different:</p>
+<blockquote>
+<tt><font color="#0000FF">type</font> Exchange_Condition <font color="#0000FF">
+is<br>
+&nbsp;&nbsp; access function </font>(<b>New_Element</b>, <b>Old_Element</b> : 
+Object_Type)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">type</font> Insert_Condition <font color="#0000FF">is<br>
+&nbsp;&nbsp; access function</font> (<b>New_Element</b> : Object_Type)
+<font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">procedure</font> Replace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> 
+: <font color="#0000FF">in out</font> Set;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Item</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Object_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Exchange</b>&nbsp; : Exchange_Condition;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Insert</b>&nbsp;&nbsp;&nbsp; : Insert_Condition;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Updated</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></blockquote>
+This procedure replaces element is the function <b>Exchange</b> returns
+<font color="#800000"><i>true</i></font>. A new element is inserted if <b>Insert</b> 
+returns <i><font color="#800000">true</font></i>. The parameter <b>Updated</b> 
+is returned true if the set was modified, e.g. element inserted or replaced.<h4><a name="3.1.2"></a>3.1.2 Sets of discrete elements</h4>
 <p><a name="Generic_Discrete_Set"></a>The package 
 <a href="#Generic_Indefinite_Set">Generic_Discrete_Set</a> is similar to the 
 package <a href="#Generic_Set">Generic_Set</a> provided specifically for discrete types allowing large sets 
@@ -13585,6 +13630,15 @@ Queue</b> is empty.</p>
 	: <font color="#0000FF">in out</font> FIFO;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Purged</b> : <font color="#0000FF">out</font> Natural<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+	<font color="#0000FF">procedure</font> Purge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Queue</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: <font color="#0000FF">in out</font> FIFO;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Is_Preserved</b> : Is_Preserved_Ptr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Purged</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">out</font> 
+	Natural<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure removes all elements for which
@@ -24775,7 +24829,10 @@ Connections_Factory'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Port&nbsp;&nbsp;&nbsp; : Port_Type<br>
 &nbsp;
 &nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new </font>Ada.Finalization.Limited_Controlled
-<font color="#0000FF">with private</font>;</tt></p>
+<font color="#0000FF">with private</font>;<br>
+<font color="#0000FF">type</font> Connections_Server_Ptr <font color="#0000FF">
+is access all </font>Connections_Server'Class;<br>
+&nbsp;</tt></p>
 </blockquote>
 <p>The type <a href="#GNAT.Sockets.Server.Connections_Server">Connections_Server</a> is the type 
 a connections server. The discriminants are:</p>
@@ -24904,6 +24961,15 @@ Connections_Server);</tt></p>
 <p>This procedure is called upon object construction. It closes all active 
 connections and frees all other resources. When the derived type overrides this 
 procedure it shall call it from its implementation.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Unblock_Send_Queued (<b>Listener</b> 
+: Connections_Server)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if a request 
+to unblock send is queued (see <a href="#GNAT.Sockets.Server.Unblock_Send">Unblock_Send</a>).</p>
+
 <p><u><b>Connection objects factory</b></u>.</p>
 
 <blockquote>
@@ -25270,7 +25336,7 @@ the type of connection can be determined using
 <h4><a name="16.1.2"></a>16.1.2. Connection objects</h4>
 <p>The package
 <a href="#GNAT.Sockets.Server">GNAT.Sockets.Server</a> declares the abstract base 
-type for objects corresponding to client connections to the server:</p>
+type for objects corresponding a connection:</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connection"></a>type</font> 
@@ -25311,17 +25377,29 @@ Connect</a>. The discriminants are:</p>
 <p><u><i><a name="memory-management-of-connection-objects"></a></i></u>
 Connection objects are reference-counted. When
 <a href="#GNAT.Sockets.Server.Create">Create</a> or
-<a href="#GNAT.Sockets.Server.Connect">Connect</a> pass an object to the server 
+<a href="#GNAT.Sockets.Server.Connect">Connect</a> passes an object to the server 
 this increases its reference count. When the server drops the object the 
 reference count is decreased. Once the count reaches zero the object is 
 finalized and deallocated. When a newly created object simply returned from
 <a href="#GNAT.Sockets.Server.Create">Create</a> or passed to
 <a href="#GNAT.Sockets.Server.Connect">Connect</a> there is nothing to worry 
-about. The object will be collected when no more in use. If the object creator 
-want to keep the object it should create a handle to it (see
+about. The object will be collected when no more in use. If the object's creator 
+wants to keep the object it should create a handle to it (see
 <a href="#Object.Handle">Object.Handle</a>) and store the handle somewhere. This 
 will increase the reference count and will hold the object so long the handle 
-object exist. The handles to connection objects can be created this way:</p>
+object exist.</p>
+<p>Note that objects used to connect to a remote host, i.e. ones used in
+<a href="#GNAT.Sockets.Server.Connect">Connect</a> continue to exist when the 
+caller of
+<a href="#GNAT.Sockets.Server.Connect">Connect</a> holds no handle to it because 
+one last handle is still maintained by the connections server. Therefore if the 
+caller wants to destroy the object it must call
+<a href="#GNAT.Sockets.Server.Shutdown">Shutdown</a> before it drops its handle.
+<a href="#GNAT.Sockets.Server.Shutdown">Shutdown</a> will drop the connection 
+and since the connection server will not attempt to reconnect after
+<a href="#GNAT.Sockets.Server.Shutdown">Shutdown</a> was called it will drop its 
+handle as well, and that will destroy the object.</p>
+<p>The handles to connection objects can be created this way:</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">package </font>Connection_Handles
@@ -25414,6 +25492,14 @@ procedure it shall call it from its implementation.</p>
 : Connection) <font color="#0000FF">return</font> Sock_Addr_Type;</tt></p>
 </blockquote>
 <p>This function returns the client's address.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Connections_Server (<b>Client</b>  
+: Connection)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Connections_Server_Ptr;</tt></p>
+</blockquote>
+<p>This function returns the connections server handling the <b>Client</b> or
+<font color="#0000FF">null</font>.</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Get_Occurrence"></a>procedure</font> 
 Get_Occurrence<br>
@@ -25804,7 +25890,8 @@ object shall not be used afterwards because the server may finalize and
 deallocate it at any time. </p>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Unblock_Send (<b>Client</b> :
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Unblock_Send">
+</a>procedure</font> Unblock_Send (<b>Client</b> :
 <font color="#0000FF">in out</font> Connection);</tt></p>
 </blockquote>
 <p>This procedure explicitly unblocks socket polling for send. Normally it 
@@ -26764,7 +26851,7 @@ Negative_Overflow_Error.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -26772,7 +26859,7 @@ Value</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Float_64<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
 procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -26856,7 +26943,7 @@ Negative_Overflow_Error.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -26864,7 +26951,7 @@ Value</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Float_32<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
 procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -26930,7 +27017,7 @@ RM B.2</a>). For each type the following primitive operations are provided:</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -26977,7 +27064,7 @@ RM B.2</a>).</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27054,7 +27141,7 @@ Negative_Overflow_Error.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27062,7 +27149,7 @@ Value</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Float_64<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
 procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27146,7 +27233,7 @@ Negative_Overflow_Error.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27154,7 +27241,7 @@ Value</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Float_32<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
 procedure </font>Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27220,7 +27307,7 @@ RM B.2</a>). For each type the following primitive operations are provided:</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27267,7 +27354,7 @@ RM B.2</a>).</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27347,7 +27434,7 @@ Number</i> cannot contain the value encoded. </p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -27417,7 +27504,7 @@ Number</i> cannot contain the value encoded.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> Stream_Element_Array;<br>
+: Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -32234,7 +32321,7 @@ query.</p>
 <p align="right">
   <A name="16.14"></A><a href="#16.13"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#20"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.15"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>16.14. ELV/e-Q3 MAX! Cube protocol implementation</H3>
 
 <p>
@@ -32437,6 +32524,8 @@ Radiator_Thermostat..Wall_Thermostat =&gt;<br>
 <font color="#008000">-- As kept by the thermostat<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>New_Temperature : 
 Centigrade := <font color="#800000">18.0</font>; <font color="#008000">-- Last requested temperature</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Temperature&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade := Centigrade'First; <font color="#008000">-- Measured temperature</font><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">case</font> 
 Kind_Of <font color="#0000FF">is<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>
@@ -32444,11 +32533,11 @@ Radiator_Thermostat |<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 Radiator_Thermostat_Plus =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-Valve_Position&nbsp;: Ratio := <font color="#800000">0.0</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<font color="#0000FF">when</font> Wall_Thermostat =&gt;<br>
+Valve_Position&nbsp;&nbsp;&nbsp;&nbsp; : Ratio := <font color="#800000">0.0</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-Temperature : Centigrade; <font color="#008000">-- Measured temperature</font><br>
+Latest_Temperature : Centigrade := Centigrade'First;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Received_At&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Time;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <font color="#0000FF">when others</font> =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -32471,9 +32560,17 @@ Meaning of the fields:</p>
 	This field can be used to increment/decrement set temperature under the 
 	condition that the thermostat response may be very too slow to use <i>
 	Set_Temperature</i> value as the increment/decrement base;</li>
-	<li><i>Temperature</i> is the measured temperature;</li>
+	<li><i>Temperature</i> is the measured temperature. For a radiator 
+	thermostat the temperature is measured only under certain conditions, e.g. 
+	when the mode is changed between <i>Automatic</i> and <i>Manual</i> or when 
+	the valve position is changed. When no temperature is measured the value of <i>Temperature</i> 
+	is Centigrade'First;</li>
 	<li><i>Valve</i> is the radiator thermostat position. 0 is closed. 1 is 
-	open.</li>
+	open;</li>
+	<li><i>Latest_Temperature</i> is the latest measured radiator thermostat 
+	temperature. It is Centigrade'First when no temperature was measured;</li>
+	<li><i>Received_At</i> is the timestamp of <i>Latest_Temperature</i> when 
+	the later is not Centigrade'First.</li>
 </ul>
 <blockquote>
 <p><tt><font color="#0000FF">function</font> Image (<b>Data</b> : Device_Data) <font color="#0000FF">return</font> String;</tt></p>
@@ -32570,7 +32667,8 @@ State_Machine <font color="#0000FF">with private</font>;</tt></p>
 <p>The following operations are defined of the client:</p>
 <blockquote>
 <p><tt><font color="#0000FF">
-procedure</font> Configuration_Updated<br>
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Configuration_Updated">
+</a>procedure</font> Configuration_Updated<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
 <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -32580,27 +32678,69 @@ Update</b> : Update_Data<br>
 <p>This procedure is called upon connection handshake when a portion data is 
 received. The parameter <b>Update</b> indicates what was updated:</p>
 <blockquote>
-	<p><tt><font color="#0000FF">type</font> Update_Type <font color="#0000FF">
+	<p><tt><font color="#0000FF">package </font> Servers_List<font color="#0000FF"> 
+	is new </font> Generic_Indefinite_Set (String);<font color="#0000FF"><br>
+	type</font> Update_Type <font color="#0000FF">
 	is</font><br>
 &nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Cube_Update,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Topology_Update,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Device_Parameters_Update<br>
-&nbsp;&nbsp;&nbsp;&nbsp; ); <br>
-	<font color="#0000FF">type</font> Update_Data (Kind_Of : Update_Type)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Device_Parameters_Update,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Device_Discovery_Update,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End_Discovery_Update,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NTP_Servers_List_Update<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The value of <i>Update_Type</i> specifies the information type:</p>
+<ul>
+	<li><i>Cube_Update</i> is used when a handshake message from the cube is 
+	received. The cube parameters (e.g. the serial number) and state become 
+	known at this point;</li>
+	<li><i>Topology_Update</i> is used when the list of rooms and paired devices 
+	is changed or updated. E.g. when information about a room or a device is 
+	received after the connection handshake;</li>
+	<li><i>Device_Parameters_Update</i> is used when a device parameters are 
+	received from the cube;</li>
+	<li><i>Device_Discovery_Update</i> is used when a new unpaired device is 
+	discovered;</li>
+	<li><i>End_Discovery_Update</i> is used when the cube ends searching for 
+	unpaired devices;</li>
+	<li><i>NTP_Servers_List_Updated</i> is used when information about cube's NTP 
+	servers is received.</li>
+</ul>
+<p>The fields of the parameter <b>Update</b> are as follows:</p>
+<blockquote>
+	<p><tt><font color="#0000FF">type</font> Update_Data (Kind_Of : Update_Type)
 	<font color="#0000FF">is record<br>
 &nbsp;&nbsp; case</font> Kind_Of<font color="#0000FF"> is<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> Cube_Update | Topology_Update =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> Cube_Update | Topology_Update | 
+	End_Discovery_Update =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> 
-	Device_Parameters_Update =&gt;<br>
+	Device_Parameters_Update | Device_Discovery_Update =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Device&nbsp; : Device_Type;
 	<font color="#008000">-- The device type</font><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Address : RF_Address;&nbsp;
 	<font color="#008000">-- Of the device updated</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">case</font> 
+	Kind_Of <font color="#0000FF">is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>
+	Device_Discovery_Update =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	Serial_No : String (<font color="#800000">1</font>..<font color="#800000">10</font>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font color="#0000FF">when others</font> =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> 
+	NTP_Servers_List_Update =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NTP_Servers_List : 
+	Servers_List.Set;<font color="#008000"> -- NTP servers</font><br>
 &nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
 	<font color="#0000FF">end record</font>;</tt></p>
 </blockquote>
-<p>The default implementation does nothing.</p>
+<p>The default implementation prints data when the type of update is <i>
+Device_Discovery_Update</i>, <i>End_Discovery_Update</i> or <i>NTP_Servers_List_Update</i>.</p>
 <blockquote>
 <p><tt><font color="#0000FF">
 <a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Data_Received">
@@ -32844,15 +32984,6 @@ device type</a>. The device can be specified by its number in the range 1..<a hr
 propagated when the device number is out of range. End_Error is propagated when 
 there is no device with the specified address.</p>
 <blockquote>
-<p><tt><font color="#0000FF">function</font> Get_RF_Address<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
-ELV_MAX_Cube_Client<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-return</font> RF_Address;</tt></p>
-</blockquote>
-<p>This function returns the radio frequency address of the cube. Status_Error 
-is propagated when there is no connection yet.</p>
-<blockquote>
 <p><tt><font color="#0000FF">
 <a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">
 </a>function</font> Get_Number_Of_Devices<br>
@@ -32864,6 +32995,33 @@ return</font> Natural;</tt></p>
 <p>This function returns the number of devices. It becomes known shortly after 
 successful connection to the cube, when the cube sends its configuration to the 
 client. Between connections the number of devices is 0.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if the last 
+'s' command was rejected by the cube. The command is issued for configuring and 
+changing operating mode of the device:</p>
+<ul>
+	<li>
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Automatic">
+	Set_Thermostat_Automatic</a>;</li>
+	<li>
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Boost">
+	Set_Thermostat_Boost</a>;</li>
+	<li>
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Parameters">
+	Set_Thermostat_Parameters</a>;</li>
+	<li>
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Schedule">
+	Set_Thermostat_Schedule</a>;</li>
+	<li>
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Temperature">
+	Set_Thermostat_Temperature</a>.</li>
+</ul>
 <blockquote>
 <p><tt><font color="#0000FF">
 <a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices_room">
@@ -32900,6 +33058,15 @@ return</font> Natural;</tt></p>
 <p>This function returns the number of rooms. The number becomes known shortly 
 after successful connection to the cube, when the cube sends its configuration 
 to the client. Between connections the number of rooms is 0.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> RF_Address;</tt></p>
+</blockquote>
+<p>This function returns the radio frequency address of the cube. Status_Error 
+is propagated when there is no connection yet.</p>
 <blockquote>
 <p><tt><font color="#0000FF">function</font> Get_Room_ID<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
@@ -32974,6 +33141,30 @@ return</font> String;</tt></p>
 <p>This function returns the firmware version of the cube, e.g. <i>1.1.3</i>. 
 Status_Error is propagated when there is no connection yet.</p>
 <blockquote>
+<p><tt><font color="#0000FF">function</font> Has_Device_Data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;<font color="#0000FF"><br>
+function</font> Has_Device_Data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; : 
+ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: RF_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p align="left">These functions return <i><font color="#800000">true</font></i> 
+if the
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Device_Data">device 
+data</a> are avialable. The device can be specified by its number in the range 
+1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. Constraint_Error is 
+propagated when the device number is out of range. End_Error is propagated when 
+there is no device with the specified address.</p>
+<blockquote>
 <p><tt><font color="#0000FF">function</font> Is_In<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
 ELV_MAX_Cube_Client;<br>
@@ -33001,6 +33192,42 @@ identifier. When either of the numbers is out of range the
 result is <font color="#800000"><i>false</i></font>.</p>
 <blockquote>
 <p><tt><font color="#0000FF">
+procedure</font> Pair<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Timeout</b> : Duration := <font color="#800000">60.0</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure sets the cube into the pairing mode used to discover new 
+devices. A device in order to be discovered must be set into the pairing mode 
+too. The parameter <b>Timeout</b> specifies the operation duration. When 
+a new device is found
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Configuration_Updated">Configuration_Updated</a> is called 
+with the parameters of the device and the discriminant <i>
+Device_Discovery_Update</i>. When the cube leaves discovery mode
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Configuration_Updated">Configuration_Updated</a> 
+is called with the discriminant <i>End_Discovery_Update</i>.</p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>Invalid timeout</TD>
+  </TR>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>The output buffer is full (connection is preserved)</TD>
+  </TR>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">
 <a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Query_Devices">
 </a>procedure</font> Query_Devices<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
@@ -33016,7 +33243,56 @@ response. Socket_Error is propagated on I/O errors. Use_Error is propagated when
 the output buffer is full. In the latter case the connection is not dropped and 
 the application may try to call this procedure later (from another callback).</p>
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Automatic<br>
+<p><tt><font color="#0000FF">
+procedure</font> Query_NTP_Servers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The cube sends back the list of NTP servers it uses. When 
+a response is obtained
+<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Configuration_Updated">Configuration_Updated</a> is called. Socket_Error is propagated on I/O errors. Use_Error is propagated when 
+the output buffer is full. In the latter case the connection is not dropped and 
+the application may try to call this procedure later (from another callback).</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+procedure</font> Reset_Devices (<b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client);</tt></p>
+</blockquote>
+<p>The cube will drop all connected devices. Upon cube response the cached list 
+of devices is erased. Socket_Error is propagated on I/O errors. Use_Error is propagated when 
+the output buffer is full. In the latter case the connection is not dropped and 
+the application may try to call this procedure later (from another callback).</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+procedure</font> Reset_Error (<b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client);</tt></p>
+</blockquote>
+<p>This procedure resets error. Socket_Error is propagated on I/O errors. Use_Error is propagated when 
+the output buffer is full. In the latter case the connection is not dropped and 
+the application may try to call this procedure later (from another callback).</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_NTP_Servers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>List
+</b>&nbsp; : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_NTP_Servers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>List&nbsp;
+</b>&nbsp;: Servers_List.Set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set a new list of NTP servers for the cube to use. <b>List</b> 
+is either a comma separated list of server names, e.g.&nbsp; <tt>&quot;de.pool.ntp.org,ntp.homematic.com&quot;</tt> 
+or else it is a set of strings with the server name.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Automatic">
+</a>procedure</font> Set_Thermostat_Automatic<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
 <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -33060,7 +33336,9 @@ can be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection
   </TABLE>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Boost<br>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Boost">
+</a>procedure</font> Set_Thermostat_Boost<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
 <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -33105,7 +33383,9 @@ specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_
   </TABLE>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Parameters<br>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Parameters">
+</a>procedure</font> Set_Thermostat_Parameters<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 : <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -33178,7 +33458,9 @@ specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_
   </TABLE>
 
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> Set_Thermostat_Schedule<br>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Schedule">
+</a>procedure</font> Set_Thermostat_Schedule<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
 : <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -33360,13 +33642,1450 @@ stream I/O operations for basic types declared in the parent package. The
 operations can be used for storing schedules and device parameters into files or 
 databases.</p>
 
+<p align="right">
+  <A name="16.15"></A><a href="#16.14"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#20"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.15. MQTT protocol implementation</H3>
+<p><b><a name="MQTT"></a>M</b>essage <b>Q</b>ueueing <b>T</b>elemetry <b>T</b>ransport (<b>MQTT</b>) 
+is an ISO standard (<a href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=69466">ISO/IEC 
+PRF 20922</a>) messaging protocol. The protocol is a TCP/IP based and supports 
+publishing and subscribing to messages identified by UTF-8 encoded names, 
+so-called topics. There is no topic any registration procedure. Topics are 
+introduced ad-hoc. A message is an untyped bucket of octets, represented in the 
+implementation by a stream-element array. It is up to the message publisher or 
+subscriber to interpret the message content. Multiple clients may subscribe to 
+the same topic. Additionally to this messages can be retained on the server to 
+ensure late delivery to the clients staying off-line while publishing. A 
+subscriber may require three levels of delivery acknowledgement (at most once, 
+at least once, exactly once). For further information
+<a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">see</a>.</p>
+<p>The MQTT protocol architecture is relatively heavy-weight, especially because 
+topics are introduced ad-hoc. Possibly, it is also the reason why the protocol 
+supports no naming and browsing services. Server discovery services are not 
+provided. The protocol lacks time stamping, message instance identification, live 
+lock detection. Published messages are not filtered, nor there is publishing 
+confirmation, rejection or other form of data returned to the message's issuer.</p>
+<p>The provided implementation provides:</p>
+<ul>
+	<li>A minimal implementation of a MQTT pier. It implements the MQTT stack 
+	with procedures to encode/decode all MQTT packets;</li>
+	<li>A full MQTT broker supporting messages subscriptions and 
+	publishing.</li>
+</ul>
+
+<h4><a name="16.15.1"></a>16.15.1. MQTT pier</h4>
+
+<p>
+<a name="GNAT.Sockets.MQTT"></a>The package
+<a href="#GNAT.Sockets.MQTT">GNAT.Sockets.MQTT</a> provides 
+a minimal implementation of a MQTT pier. It can be used to implement end MQTT 
+devices that need no messages brokering. The implementation is not task-safe. 
+All calls must be performed on the context of the connection server, e.g. in 
+response to incoming requests. The package defines the type of a MQTT pier:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.MQTT_Pier"></a>type</font> 
+MQTT_Pier<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">access</font> Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Max_Subscribe_Topics : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Buffer_Length<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> Connection
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The type is derived from <a href="#GNAT.Sockets.Server.Connection">Connection</a> 
+object and can act both as a server and client. The dicriminants of the type 
+are:</p>
+
+<ul>
+	<li><i>Listener</i> is an instance of
+	<a href="#GNAT.Sockets.Server.Connections_Server">Connections_Server</a> 
+	object handling the pier;</li>
+	<li><i>Max_Subscribe_Topics</i> specifies the maximum number of topics 
+	allowed in a single subscribe request;</li>
+	<li><i>Input_Size</i> is the size of the input buffer used to read the 
+	socket into. See for <a href="#GNAT.Sockets.Server.Connection">Connection</a> 
+	further explanation;</li>
+	<li><i>Output_Size</i> is the size of the output buffer used to keep sent 
+	data before the socket becomes available to write. The object dynamically 
+	allocates a secondary output buffer when <i>Output_Buffer</i> overflows. 
+	Thus Send operation never fails.</li>
+</ul>
+<p><u><b>General-purpose operations</b></u>. The following general-purpose primitive operations are defined on
+<a href="#GNAT.Sockets.MQTT.MQTT_Pier">MQTT_Pier</a>:</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Finalize (<b>Pier</b> :
+<font color="#0000FF">in out</font> MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure is called when the object is destroyed. If overridden it must 
+be called from the new implementation.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Get_Max_Message_Size">
+</a>function</font> Get_Max_Message_Size (<b>Pier</b> : MQTT_Pier)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>The function returns the current limit set on the message size. The limit can 
+be set using the procedure <a href="#GNAT.Sockets.MQTT.Set_Max_Message_Size">
+Set_Max_Message_Size</a>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Get_Max_Secondary_Buffer_Size"></a>function</font> 
+Get_Max_Secondary_Buffer_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b> : MQTT_Pier<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>The function returns upper limit of the secondary buffer. The secondary 
+buffer is allocated on demand when the output buffer becomes full. The size of 
+the buffer is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>. Zero limit means unlimited buffer.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Get_QoS"></a>function</font> 
+Get_QoS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp; : 
+MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> QoS_Level;</tt></p>
+</blockquote>
+<p>The function returns the quality of service requested for the topic with the 
+number <b>Index</b>. This function can be used only in the callback of a <i>
+SUBSCRIBE</i> request (<a href="#GNAT.Sockets.MQTT.On_Subscribe">On_Subscribe</a>), 
+otherwise Use_Error is propagated. Constraint_Error is propagated when Index is 
+greater than the number of subscribed topics.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Get_Secondary_Buffer_Size"></a>function</font> 
+Get_Secondary_Buffer_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b> : MQTT_Pier<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>The function returns actual size of the secondary buffer. The secondary 
+buffer is allocated on demand when the output buffer becomes full. The size of 
+the buffer can be limited (see
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>). If limited overflow will cause data overrun 
+exception.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Get_Topic"></a>function</font> 
+Get_Topic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp; : 
+MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>The function returns the topic with the number <b>Index</b>. This function 
+can be used only in the callback of a <i>SUBSCRIBE</i> (see
+<a href="#GNAT.Sockets.MQTT.On_Subscribe">On_Subscribe</a>) or an <i>UNSUBSCRIBE</i> 
+(see <a href="#GNAT.Sockets.MQTT.On_Unsubscribe">On_Unsubscribe</a>) request, 
+otherwise Use_Error is propagated. Constraint_Error is propagated when Index is 
+greater than the number of subscribed topics.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Received"></a>procedure</font> 
+Received<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
+: Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b> : <font color="#0000FF">in out</font> Stream_Element_Offset);</tt></p>
+</blockquote>
+<p>The procedure is called when a portion of data is received. The 
+implementation parses input and fires the state machine implementing the MQTT 
+stack.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Sent"></a>procedure</font> 
+Sent (<b>Pier</b> : <font color="#0000FF">in out</font> MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure is called when a portion of data is sent. The implementation 
+moves data from the secondary buffer to the output buffer. If overridden it must 
+be called from the new implementation.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Set_Max_Message_Size">
+</a>procedure</font> Set_Max_Message_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b> :
+<font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Size</b> 
+: Stream_Element_Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sets the limit on the message size. This is the maximum size of 
+a message that does not include packet header, topic name etc. For the message 
+the pier object keeps a buffer allocated. The current limit can be queried by
+<a href="#GNAT.Sockets.MQTT.Get_Max_Message_Size">Get_Max_Message_Size</a>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size"></a>procedure</font> 
+Set_Max_Secondary_Buffer_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b> :
+<font color="#0000FF">in out </font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Size</b> 
+: Stream_Element_Count := <font color="#800000">0</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sets the limit to the secondary buffer size. The buffer is 
+allocated on demand. When <b>Size</b> set to zero the buffer is not limited. 
+Otherwise buffer overflow causes exception. See
+<a href="#GNAT.Sockets.MQTT.Get_Max_Secondary_Buffer_Size">
+Get_Max_Secondary_Buffer_Size</a>.</p>
+
+<p><u><b>Incoming requests notifications</b></u>. The following primitive operations are 
+called upon an incoming packet:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Acknowledge"></a>
+procedure</font> On_Acknowledge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Request</b> : Acknowledge_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp; : Packet_Identifier<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when an <a href="#GNAT.Sockets.MQTT.Acknowledge_Type">
+acknowledge response</a> is received. The parameter <b>Request</b> identifies 
+the response. <b>Packet</b> is the packet identifier. The default implementation 
+calls <a href="#GNAT.Sockets.MQTT.Send_Acknowledge">Send_Acknowledge</a> when an 
+acknowledge is expected, i.e. for:</p>
+<ul>
+	<li><i>Publish_Level_2_Received </i>is acknowledged with<i> 
+	Publish_Level_2_Release</i>;</li>
+	<li><i>Publish_Level_2_Release</i> is acknowledged with <i>
+	Publish_Level_2_Complete</i>.</li>
+</ul>
+<p>In other cases the implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Connect"></a>
+procedure</font> On_Connect<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Clean</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_Topic</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_Message</b> : Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_QoS</b>&nbsp;&nbsp;&nbsp;&nbsp; : QoS_Level;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_Retain</b>&nbsp; : Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+User_Name</b>&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Password</b>&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Keep_Alive</b>&nbsp;&nbsp; : Duration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>CONNECT</i> request is received. <b>Client</b> 
+is the client identifier. When empty an anonymous session is created. Otherwise 
+the server must take the saved session with this identifier if exists. When <b>
+Clean</b> is <font color="#800000"><i>false</i></font> and the saved session is 
+found, the session is continued, e.g. its subscriptions are reactivated etc. 
+When <b>Clean</b> is <i><font color="#800000">true</font></i>, the existing 
+session is erased. <b>Will_Topic</b>, <b>Will_Message</b>, <b>Will_QoS</b> and
+<b>Will_Retain</b> determine the behavior when the client gets prematurely 
+disconnected. In this case, when <b>Will_Topic</b> is not empty, the topic is 
+published by the server. The parameter <b>Will_QoS</b> is the quality of service 
+of the<i> </i>topic. The parameter <b>Will_Retain</b> when <font color="#800000">
+<i>true</i></font> specifies that the will topic is retained by the server. I.e. 
+it can be subscribed and received after being published. When <b>Will_Retain</b> 
+is <font color="#800000"><i>false</i></font> the topic is delivered only to 
+connected clients. <b>User_Name</b> and <b>Password</b> can be used for the 
+client authentication. <b>Keep_Alive</b> when greater than zero specifies how 
+frequently the client must send its requests. When there is nothing to request 
+the client must send a <i>PINGREQ</i> request instead. If the client fails to 
+send a request within this period of time, the server drops the connection. The 
+default implementation of this procedure rejects all connections.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Connect_Accepted">
+</a>procedure</font> On_Connect_Accepted<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Session_Present</b> : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when a successful connection acknowledge <i>CONNACK</i> 
+is received. <b>Session_Present</b> is <i><font color="#800000">true</font></i> 
+when the server has found and resumed the previous session identified by the 
+client (see the <b>Client</b> parameter of
+<a href="#GNAT.Sockets.MQTT.On_Connect">On_Connect</a>). The default 
+implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Connect_Rejected">
+</a>procedure</font> On_Connect_Rejected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Response</b> : Connect_Response<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when a failed connection acknowledge <i>CONNACK</i> 
+is received. <b>Response</b> is the server's
+<a href="#GNAT.Sockets.MQTT.Connect_Response">response code</a>. The default 
+implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Disconnect"></a>
+procedure</font> On_Disconnect (<b>Pier</b> : <font color="#0000FF">in out</font> 
+MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>DISCONNECT</i> request is received. This is 
+the last request a client sends to the server. When the client does not send 
+this request before dropping connection, the server will publish its last will 
+(see <a href="#GNAT.Sockets.MQTT.On_Connect">On_Connect</a>). The default 
+implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Ping"></a>procedure</font> 
+On_Ping (<b>Pier</b> : <font color="#0000FF">in out</font> MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>PINGREQ</i> request is received. The 
+default implementation responds with a ping response.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Ping_Response"></a>
+procedure</font> On_Ping_Response (<b>Pier</b> : <font color="#0000FF">in out</font> 
+MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>PINGRESP</i> response is received. The 
+default implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Publish"></a>
+procedure</font> On_Publish<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b>&nbsp;&nbsp; : Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp;&nbsp;&nbsp; : Packet_Identification;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Duplicate</b> : Boolean;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Retain</b>&nbsp;&nbsp;&nbsp; : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>PUBLISH</i> request is received. The 
+parameter <b>Topic</b> is the published topic. Published topics may not contain 
+wildcards. See <a href="#GNAT.Sockets.MQTT.Check_Topic">Check_Topic</a> for 
+further information. The parameter <b>Message</b> is the published message. The 
+parameter <b>Packet</b> identifies the packet. The response if any must contain 
+this number. <b>Duplicate</b> is <i><font color="#800000">true</font></i> if the 
+server suspects that the recipient might already have received this message. <b>
+Retain</b> is <i><font color="#800000">true</font></i> if the message is sent 
+after the client has subscribed to the topic and the server discovered this 
+message retained on the server. The default implementation acknowledges the 
+request according to the <a href="#GNAT.Sockets.MQTT.QoS_Level">QoS_Level</a> 
+specified in <b>Packet</b>:</p>
+<ul>
+	<li><i>At_Most_Once</i> is not acknowledged;</li>
+	<li><i>At_Least_Once</i> is acknowledged with <i>Publish_Level_1</i>;</li>
+	<li><i>Exactly_Once</i> is acknowledged with <i>Publish_Level_2_Received</i>.</li>
+</ul>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Subscribe"></a>
+procedure</font> On_Subscribe<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Packet_Identifier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topics_Number</b> : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>SUBSCRIBE</i> request is received. The 
+parameter <b>Packet</b> identifies the packet. The parameter <b>Topics_Number</b> 
+specifies the number of subscribed tokens. The maximum number of topics is 
+limited by the object discriminant <i>Max_Subscribe_Topics</i>. The requested 
+topic and quality of service is obtained by the functions
+<a href="#GNAT.Sockets.MQTT.Get_Topic">Get_Topic</a> and
+<a href="#GNAT.Sockets.MQTT.Get_QoS">Get_QoS</a> correspondingly. Subscribed 
+topics may contain wildcards. See <a href="#GNAT.Sockets.MQTT.Check_Topic">
+Check_Topic</a> and <a href="#GNAT.Sockets.MQTT.Match_Topic">Match_Topic</a> for 
+details. The default implementation rejects all requested topics in the returned
+<i>SUBACK</i>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.On_Subscribe_Acknowledgement"></a>procedure</font> 
+On_Subscribe_Acknowledgement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b> : Packet_Identifier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Codes</b>&nbsp; : Return_Code_List<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>SUBACK</i> response is received. The 
+parameter <b>Packet</b> identifies the packet. The array <b>Codes</b> contains a
+<a href="#GNAT.Sockets.MQTT.Return_Code">Return_Code</a> for each subscribed 
+topic. The default implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.On_Unsubscribe"></a>
+procedure</font> On_Unsubscribe<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Packet_Identifier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topics_Number</b> : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure is called when a <i>UNSUBSCRIBE</i> request is received. The 
+parameter <b>Packet</b> identifies the packet. The parameter <b>Topics_Number</b> 
+specifies the number of tokens to unsubscribe. The maximum number of topics is 
+limited by the object discriminant <i>Max_Subscribe_Topics</i>. The requested 
+topic is obtained by the function <a href="#GNAT.Sockets.MQTT.Get_Topic">
+Get_Topic</a>. The default implementation acknowledges the receipt by sending <i>
+UNSUBACK</i> back.</p>
+<p><u><b>Sending outgoing requests</b></u>. The following primitive operations are 
+used to send requests:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Acknowledge"></a>
+procedure</font> Send_Acknowledge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Request</b> : Acknowledge_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp; : Packet_Identifier<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sends an <a href="#GNAT.Sockets.MQTT.Acknowledge_Type">
+acknowledge response</a> specified by the parameter <b>Request</b> to <i>PUBLISH</i> 
+(and following responses) or <i>UNSUBSCRIBE</i>. The parameter <b>Packet</b> 
+identifies the request's packet. Use_Error is propagated when <b>Pier</b> is not 
+connected. Data_Error is propagated on secondary buffer overflow if its size is 
+limited by <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Connect"></a>
+procedure</font> Send_Connect<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Clean</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Boolean&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= True;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_Topic</b>&nbsp;&nbsp; : String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_Message</b> : Stream_Element_Array := (<font color="#800000">1</font>..<font color="#800000">0</font> 
+=&gt; <font color="#800000">0</font>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_QoS</b>&nbsp;&nbsp;&nbsp;&nbsp; : QoS_Level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= At_Most_Once;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Will_Retain</b>&nbsp; : Boolean&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+User_Name</b>&nbsp;&nbsp;&nbsp; : String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Password</b>&nbsp;&nbsp;&nbsp;&nbsp; : String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Keep_Alive</b>&nbsp;&nbsp; : Duration&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= <font color="#800000">0.0</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sends a <i>CONNECT</i> request. The parameters are same as in
+<a href="#GNAT.Sockets.MQTT.On_Connect">On_Connect</a>. This must be the first 
+request sent by a client to the server after connection is established. 
+Constraint_Error is propagated if a parameter is invalid. Use_Error is 
+propagated when <b>Pier</b> is not connected. Data_Error is propagated on 
+secondary buffer overflow if its size is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Connect_Accepted">
+</a>procedure</font> Send_Connect_Accepted<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Session_Present</b> : Boolean := False<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sends a <i>CONNACK </i>response. The parameters are same as in
+<a href="#GNAT.Sockets.MQTT.On_Connect_Accepted">On_Connect_Accepted</a>. 
+Use_Error is propagated when <b>Pier</b> is not connected. Data_Error is 
+propagated on secondary buffer overflow if its size is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Connect_Rejected">
+</a>procedure</font> Send_Connect_Rejected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Response</b> : Connect_Response<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sends a <i>CONNACK </i>response. The parameters are same as in
+<a href="#GNAT.Sockets.MQTT.On_Connect_Rejected">On_Connect_Rejected</a>. 
+Use_Error is propagated when <b>Pier</b> is not connected. Data_Error is 
+propagated on secondary buffer overflow if its size is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Disconnect"></a>procedure</font> 
+Send_Disconnect (<b>Pier</b> 
+: <font color="#0000FF">in out</font> MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure sends a <i>DISCONNECT </i>request. This must be the last 
+request from a client before it drops the connection. Use_Error is propagated 
+when <b>Pier</b> is not connected. Data_Error is propagated on secondary buffer 
+overflow if its size is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Ping"></a>procedure</font> 
+Send_Ping (<b>Pier</b> : <font color="#0000FF">in out </font>MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure sends a <i>PINKREQ</i> request. Use_Error is propagated when <b>
+Pier</b> is not connected. Data_Error is propagated on secondary buffer overflow 
+if its size is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Ping_Response"></a>procedure</font> 
+Send_Ping_Response (<b>Pier</b> : <font color="#0000FF">in out </font>MQTT_Pier);</tt></p>
+</blockquote>
+<p>The procedure sends a <i>PINKRES</i> response. Use_Error is propagated when
+<b>Pier</b> is not connected. Data_Error is propagated on secondary buffer 
+overflow if its size is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Publish"></a>procedure</font> 
+Send_Publish<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out </font>MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b>&nbsp;&nbsp; : Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp;&nbsp;&nbsp; : Packet_Identification;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Duplicate</b> : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Retain</b>&nbsp;&nbsp;&nbsp; : Boolean := False<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> 
+Send_Publish<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out </font>MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp;&nbsp;&nbsp; : Packet_Identification;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Duplicate</b> : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Retain</b>&nbsp;&nbsp;&nbsp; : Boolean := False<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures send a <i>PUBLISH</i> request. The parameters are similar to 
+ones in <a href="#GNAT.Sockets.MQTT.On_Publish">On_Publish</a>. The parameter <b>
+Message</b> can be Stream_Element_Array or String. Constraint_Error is 
+propagated if a parameter is invalid. Use_Error is propagated when <b>Pier</b> 
+is not connected. Data_Error is propagated on secondary buffer overflow if its 
+size is limited by <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> 
+Send_Publish<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out </font>MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b>&nbsp;&nbsp; : MQTT_Message'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b>&nbsp;&nbsp;&nbsp; : Packet_Identification;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Duplicate</b> : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Retain</b>&nbsp;&nbsp;&nbsp; : Boolean := False<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This variant sends a message stored in
+<a href="#GNAT.Sockets.MQTT.MQTT_Message">MQTT_Message</a> object. Use_Error is propagated when <b>Pier</b> 
+is not connected. Data_Error is propagated on secondary buffer overflow if its 
+size is limited by <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Subscribe"></a>procedure</font> 
+Send_Subscribe<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b> : Packet_Identifier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topics</b> : Topics_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>QoS</b>&nbsp;&nbsp;&nbsp; 
+: QoS_Level_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Send_Subscribe<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b> : Packet_Identifier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>QoS</b>&nbsp;&nbsp;&nbsp; 
+: QoS_Level<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures send a <i>SUBSCRIBE</i> request. The parameter <b>Packet</b> 
+is the packet number with is used by the pier to acknowledge subscription. The parameter
+<b>Topics</b> is <a href="#GNAT.Sockets.MQTT.Topics_List">the list of topics</a> 
+to subscribe. The parameter <b>QoS</b> the array of
+<a href="#GNAT.Sockets.MQTT.QoS_Level">QoS_Level</a>. Both parameters must have 
+the same length otherwise Constraint_Error is propagated. An alternative variant 
+is used to subscribe to single topic with <b>Topic</b> and <b>QoS</b> 
+parameters. Use_Error is propagated when <b>Pier</b> is not connected. 
+Data_Error is propagated on secondary buffer overflow if its size is limited by
+<a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Send_Subscribe_Acknowledgement"></a>procedure</font> 
+Send_Subscribe_Acknowledgement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b> : Packet_Identifier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Codes</b>&nbsp; : Return_Code_List<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sends a <i>SUBACK</i> response. The parameter <b>Packet</b> is 
+the packet number, same as in <i>SUBSCRIBE</i> request. The parameters are same 
+as in <a href="#GNAT.Sockets.MQTT.On_Subscribe_Acknowledgement">
+On_Subscribe_Acknowledgement</a>. Use_Error is propagated when <b>Pier</b> is 
+not connected. Data_Error is propagated on secondary buffer overflow if its size 
+is limited by <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Unsubscribe"></a>
+procedure</font> Send_Unsubscribe<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Pier</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> MQTT_Pier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Packet</b> : Packet_Identifier;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topics</b> : Topics_List<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The procedure sends a <i>UNSUBSCRIBE</i> request. The parameter <b>Packet</b> 
+is the packet number which will identify the response. The parameter <b>Topics</b> 
+is <a href="#GNAT.Sockets.MQTT.Topics_List">the list of topics</a> to 
+unsubscribe. The procedure is void when <b>Topics</b> is empty. Constraint_Error 
+is propagated if a parameter is invalid. Use_Error is propagated when <b>Pier</b> 
+is not connected. Data_Error is propagated on secondary buffer overflow if its 
+size is limited by <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
+Set_Max_Secondary_Buffer_Size</a>.</p>
+<p><u><b>Handling topics</b></u>. Topics are UTF-8 encoded and consist of levels 
+separated by the forward slash /. The topics are case-sensitive, e.g. <i>Abc/deF</i> 
+is different from <i>abc/def</i>. The following functions are used for handling 
+topics:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Check_Topic"></a>
+function</font> Check_Topic (<b>Topic</b> : String) <font color="#0000FF">return</font> 
+Boolean;</tt></p>
+</blockquote>
+<p>This function checks its argument for validity. The result is <i>
+<font color="#800000">true</font></i> if the topic contains wildcards + and #. 
+The wildcard + matches any level. The wildcard # matches any number of level, it 
+must be the last character of the topic if present. Constraint_Error is 
+propagated when the topic is invalid.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Match_Topic"></a>
+function</font> Match_Topic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Topic</b>&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pattern</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function matches <b>Topic</b> against <b>Pattern</b>. The result is true 
+is <b>Pattern</b> matches <b>Topic</b>. Note that topics starting with $ are not 
+matched by patterns starting with a wildcard. Constraint_Error is propagated 
+when <b>Topic</b> or <b>Pattern</b> is invalid.</p>
+<p><u><b>Other types and subprograms</b></u>. The following types and 
+subprograms are declared in the package:</p>
+<blockquote>
+<p><tt><a name="GNAT.Sockets.MQTT.MQTT_Port"></a>MQTT_Port :
+<font color="#0000FF">constant</font> := 1883;</tt></p>
+</blockquote>
+<p><a href="#GNAT.Sockets.MQTT.MQTT_Port">MQTT_Port</a> is the default MQTT 
+port.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.QoS_Level"></a>type</font> 
+QoS_Level <font color="#0000FF">is</font> (At_Most_Once, At_Least_Once, 
+Exactly_Once);</tt></p>
+</blockquote>
+<p>This is quality of service requested for message publishing:</p>
+<ul>
+	<li><i>At_Most_Once</i> does not use acknowledgement;</li>
+	<li><i>At_Least_Once</i> uses single acknowledgement sent by the recipient. 
+	When the sender does not receive the acknowledge it resends the message if 
+	the connection gets lost;</li>
+	<li><i>Exactly_Once</i> uses triple acknowledgement. The recipient sends its 
+	acknowledgement and await the sender to respond with its acknowledgement. 
+	Then it sends its final acknowledgement.</li>
+</ul>
+<blockquote>
+<p><tt><font color="#0000FF">type</font> QoS_Level_Array <font color="#0000FF">
+is array </font>(Positive <font color="#0000FF">range</font> &lt;&gt;)
+<font color="#0000FF">of</font> QoS_Level;</tt></p>
+</blockquote>
+<p>This is an array of <a href="#GNAT.Sockets.MQTT.QoS_Level">QoS_Level</a> 
+elements.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>QoS</b> : QoS_Level)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of a
+<a href="#GNAT.Sockets.MQTT.QoS_Level">QoS_Level</a> value.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">+</font>&quot; (<b>Left</b>, <b>Right</b> : 
+QoS_Level) <font color="#0000FF">return</font> QoS_Level;</tt></p>
+</blockquote>
+<p>This function merges two values of <a href="#GNAT.Sockets.MQTT.QoS_Level">
+QoS_Level</a> choosing the maximum level of quality.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Acknowledge_Type"></a>
+type</font> Acknowledge_Type <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Publish_Level_1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Publish_Level_2_Received,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Publish_Level_2_Release,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Publish_Level_2_Complete,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unsubscribed<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This is the type of acknowledge:</p>
+<ul>
+	<li><i>Publish_Level_1</i> is an acknowledge to the <i>PUBLISH</i> request 
+	with the QoS <i>at least once</i>;</li>
+	<li><i>Publish_Level_2_Received</i> is an acknowledge to the <i>PUBLISH</i> 
+	request with the QoS <i>exactly once</i>;</li>
+	<li><i>Publish_Level_2_Release</i> is an acknowledge to the above 
+	acknowledge response. It is sent by the recipient back to the sender of the
+	<i>PUBLISH</i> request;</li>
+	<li><i>Publish_Level_2_Received</i> is the final acknowledge to the <i>
+	PUBLISH</i> request with the QoS e<i>exactly once</i>;</li>
+	<li><i>Unsubscribed</i> is an acknowledge to the <i>UNSUBSCRIBE</i> request.</li>
+</ul>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Value</b> : 
+Acknowledge_Type) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of the argument.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Connect_Response"></a>
+type</font> Connect_Response <font color="#0000FF">is range</font>
+<font color="#800000">1</font>..<font color="#800000">255</font>;</tt></p>
+</blockquote>
+<p>This type represents reasons of a <i>CONNECT</i> request failure. The 
+following values are predefined:</p>
+<blockquote>
+<p><tt>Unacceptable_Protocol_Version : <font color="#0000FF">constant</font> 
+Connect_Response := <font color="#800000">1</font>;<br>
+Identifier_Rejected&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">constant</font> Connect_Response :=
+<font color="#800000">2</font>;<br>
+Server_Unavailable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">constant</font> Connect_Response :=
+<font color="#800000">3</font>;<br>
+Bad_User_Name_Or_Password&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">
+constant</font> Connect_Response := <font color="#800000">4</font>;<br>
+Not_Authorized&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">constant</font> Connect_Response :=
+<font color="#800000">5</font>;</tt></p>
+</blockquote>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Code</b> : 
+Connect_Response) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns a textual representation of a
+<a href="#GNAT.Sockets.MQTT.Connect_Response">Connect_Response</a> value.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Packet_Identifier"></a>
+type</font> Packet_Identifier <font color="#0000FF">is new</font> Unsigned_16;</tt></p>
+</blockquote>
+<p>Values of this type identify packets. Responses to a request use the 
+request's packet number.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Packet_Identification">
+</a>type</font> Packet_Identification<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; QoS : QoS_Level := At_Most_Once<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
+record<br>
+&nbsp;&nbsp; case</font> QoS <font color="#0000FF">is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> At_Most_Once =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> At_Least_Once | 
+Exactly_Once =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ID : Packet_Identifier;<br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>Values of this type identify packets dealing with different quality of 
+service. The level <i>At_Most_Once</i> does not identify packets because it does 
+not deploy acknowledgement.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Return_Code"></a>type</font> 
+Return_Code (Success : Boolean := False) <font color="#0000FF">is record<br>
+&nbsp;&nbsp; case</font> Success <font color="#0000FF">is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> True =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; QoS : QoS_Level;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> False =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>Values of this are used in a response to a <i>SUBSCRIBE</i> request. 
+Successful requests contain the quality of service.</p>
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Return_Code_List <font color="#0000FF">
+is array </font>(Positive <font color="#0000FF">range</font> &lt;&gt;)
+<font color="#0000FF">of</font> Return_Code;</tt></p>
+</blockquote>
+<p>This is an array of <a href="#GNAT.Sockets.MQTT.Return_Code">Return_Code</a> 
+elements.</p>
+<p><u><b>Lists of topics</b></u>. </p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Topics_List"></a>type</font> 
+Topics_List (&lt;&gt;) <font color="#0000FF">is private</font>;<br>
+<font color="#0000FF">function</font> Get_Length (<b>List</b> : Topics_List)
+<font color="#0000FF">return</font> Natural;<br>
+<font color="#0000FF">function</font> Get_Topic (<b>List</b> : Topics_List; <b>
+Index</b> : Positive) <font color="#0000FF">return</font> String;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">+</font>&quot; (<b>Left</b> 
+: String) <font color="#0000FF">return</font> Topics_List;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">/</font>&quot; (<b>Left</b> 
+: String; <b>&nbsp;&nbsp;&nbsp;&nbsp; Right</b> : String) <font color="#0000FF">
+return</font> Topics_List;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">/</font>&quot; (<b>Left</b> 
+: Topics_List; <b>Right</b> : String) <font color="#0000FF">return</font> 
+Topics_List;</tt></p>
+</blockquote>
+<p>Ordered lists of topics are provided by the type
+<a href="#GNAT.Sockets.MQTT.Topics_List">Topic_List</a>. The list can be 
+composed from individual topics using operations /. E.g.</p>
+<blockquote>
+<p><tt>&quot;<font color="#FF0000">$SYS/broker/uptime</font>&quot; / &quot;<font color="#FF0000">$SYS/broker/load/#</font>&quot;</tt></p>
+</blockquote>
+
+<p><u><b>Composite message object</b></u>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.MQTT_Message"></a>type</font> 
+MQTT_Message <font color="#0000FF">is tagged private</font>;</tt></p>
+</blockquote>
+<p>Objects of this type represent a composite message object.</p>
+<blockquote>
+<p><tt>
+<font color="#0000FF"><a name="GNAT.Sockets.MQTT.Compose"></a>function</font> 
+Compose<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Topic</b>&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Message</b> 
+: Stream_Element_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> MQTT_Message;<br>
+<font color="#0000FF">function</font> Compose<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Topic</b>&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Message</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> MQTT_Message;</tt></p>
+</blockquote>
+<p>These functions create a new message object from the topic and the message 
+content. Constraint_Error is propagated when <b>Topic</b> is invalid.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Topic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> : 
+MQTT_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This function gets the message topic. Constraint_Error is propagated when the 
+message object was not initialized.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> : 
+MQTT_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Stream_Element_Array;<font color="#0000FF"><br>
+function</font> Get_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> : 
+MQTT_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This function gets the message contents. Constraint_Error is propagated when 
+the message object was not initialized.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> :
+<font color="#0000FF">in out</font> MQTT_Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content</b> : Stream_Element_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> :
+<font color="#0000FF">in out</font> MQTT_Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure replaces the message's content. Constraint_Error is propagated when 
+the message object was not initialized.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> :
+<font color="#0000FF">in out</font> MQTT_Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Size&nbsp;&nbsp;
+</b>&nbsp;: Stream_Element_Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure ensures that the message can accommodate at least <b>Size</b> 
+elements of content. Constraint_Error is propagated when 
+the message object was not initialized.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set_Topic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> :
+<font color="#0000FF">in out</font> MQTT_Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic&nbsp; </b>&nbsp;: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure replaces the message's topic. Constraint_Error is propagated when 
+the topic is invalid. An uninitialized message can be initialized using this 
+procedure.</p>
+
+<h4><a name="16.15.2"></a>16.15.2. MQTT message stream I/O</h4>
+<p><a name="GNAT.Sockets.MQTT.Streams"></a>The package
+<a href="#GNAT.Sockets.MQTT.Streams">GNAT.Sockets.MQTT.Streams</a> provides 
+stream interface to the MQTT message contents. The package declares the 
+following type:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Streams.MQTT_Stream">
+</a>type</font> 
+MQTT_Stream (Message : <font color="#0000FF">access</font> MQTT_Message'Class) <font color="#0000FF">is<br>
+&nbsp;&nbsp; new</font> Root_Stream_Type
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The primitive operations defined on
+<a href="#GNAT.Sockets.MQTT.Streams.MQTT_Stream">MQTT_Stream</a>:</p>
+<blockquote>
+<p><tt>
+<font color="#0000FF">procedure</font> Erase (<b>Stream</b> :
+<font color="#0000FF">in out</font> MQTT_Stream);</tt></p>
+</blockquote>
+<p>This procedure prepares the stream for writing the message's contents. The 
+contents are erased. Writing the stream starts from the first element of the 
+message contents. The message's contents are expanded as necessary upon stream 
+writing.</p>
+<blockquote>
+<p><tt>
+<font color="#0000FF">procedure</font> Rewind (<b>Stream</b> :
+<font color="#0000FF">in out</font> MQTT_Stream);</tt></p>
+</blockquote>
+<p>This procedure prepares the stream for reading the message's contents. 
+Reading the stream starts from the first element of the message contents.</p>
+<h4><a name="16.15.3"></a>16.15.3. MQTT server (broker)</h4>
+
+<p>
+<a name="GNAT.Sockets.MQTT.Server"></a>The package
+<a href="#GNAT.Sockets.MQTT.Server">GNAT.Sockets.MQTT.Server</a> 
+provides a full implementation of a MQTT broker that supports subscriptions and 
+	publishing. The implementation is task-safe allowing publishing from 
+asynchronous tasks. The broker is represented by the type
+<a href="#GNAT.Sockets.MQTT.Server.MQTT_Server">MQTT_Server</a>:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.MQTT_Server"></a>
+type</font> MQTT_Server <font color="#0000FF">is<br>
+&nbsp;&nbsp; new</font> Ada.Finalization.Limited_Controlled
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>
+The server maintains the state shared between several MQTT connections. It keeps 
+so-called retained messages and persistent MQTT sessions of named clients. When 
+a message is published on the server it is delivered to all subscribers managed 
+by the server. The server provides means to manage retained messages and 
+sessions.</p>
+<p>
+The following primitive operations are 
+defined on the type:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Drop"></a>procedure</font> 
+Drop<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b> : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name
+</b>&nbsp; : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> 
+Drop<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b> : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp; : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure removes a persistent session by its name or index. Nothing 
+happens when there no session with <b>Name</b>. When Index not in 1..<a href="#GNAT.Sockets.MQTT.Server.Get_Sessions_Number">Get_Sessions_Number</a> Constraint_Error 
+is propagated. Note that if the session is active, i.e. a connect client uses 
+it, the session will be removed after the client disconnects.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Get_Tracing_Flags"></a>function</font> 
+Get_Tracing_Flags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> MQTT_Trace_Flags;</tt></p>
+</blockquote>
+<p>
+This function returns the current tracing flags in effect. The
+<a href="#GNAT.Sockets.MQTT.Server.MQTT_Trace_Flags">trace flags</a> are:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.MQTT_Trace_Flags"></a>type</font> 
+MQTT_Trace_Flags <font color="#0000FF">is mod</font> ...;<br>
+Trace_Acknowledgement : <font color="#0000FF">constant</font> MQTT_Trace_Flags 
+:= ...;<br>
+Trace_Sessions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">
+constant</font> MQTT_Trace_Flags := ...;<br>
+Trace_Subscriptions&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
+MQTT_Trace_Flags := ...;<br>
+Trace_Ping&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">constant</font> MQTT_Trace_Flags := ...;<br>
+Trace_Pubishing&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">
+constant</font> MQTT_Trace_Flags := ...;<br>
+Trace_All&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">constant</font> MQTT_Trace_Flags := ...;</tt></p>
+</blockquote>
+<p>Tracing flags are set using the procedure
+<a href="#GNAT.Sockets.MQTT.Server.Set_Tracing_Flags">Set_Tracing_Flags</a>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Get_Message"></a>function</font> 
+Get_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( <b>&nbsp;Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
+MQTT_Message;</tt></p>
+</blockquote>
+<p>
+This function returns a retained message by its index 1..<a href="#GNAT.Sockets.MQTT.Server.Get_Messages_Number">Get_Messages_Number</a>. 
+Constraint_Error is propagated when <b>Index</b> is invalid.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+function</font> 
+Get_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( <b>&nbsp;Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Topic</b>&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
+MQTT_Message;<font color="#0000FF"><br>
+function</font> 
+Get_Message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( <b>&nbsp;Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Topic</b>&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
+Integer;</tt></p>
+</blockquote>
+<p>
+This function returns a retained message by its topic. Constraint_Error is 
+propagated when <b>Topic </b>is invalid or contains wild-cards. The variant 
+returning message propagates End_Error when there is no such message. The 
+variant returning Integer does either the message index or else 0 if there is no 
+such message.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Get_Messages_Number"></a>function</font> 
+Get_Messages_Number<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( <b>&nbsp;Server</b> : 
+MQTT_Server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
+Natural;</tt></p>
+</blockquote>
+<p>
+This function returns the total number of messages retained by the server:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Message_Type"></a>type</font> 
+Message_Type <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Transient,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Retained,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Updated,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initial,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ignored<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The type <a href="#GNAT.Sockets.MQTT.Server.Message_Type">Message_Type</a> 
+specifies how a message is handled when published on the server:</p>
+<ul>
+	<li><i>Transient</i> message is delivered to its subscribers and not 
+	retained by the server. That means only presently connected clients have a chance to 
+	get the message;</li>
+	<li><i>Retained</i> message is delivered to the subscribers and then 
+	retained by the server. The message replaces any retained prior to it 
+	message with the same topic. Retained messages are delivered to the clients 
+	even if they connect later and subscribe to the message topic;</li>
+	<li><i>Updated</i> message is delivered to the subscribers if either there 
+	is no retained message with the same topic or else its contents differs from 
+	the one of the retained message. In the latter case the message replaces the 
+	retained one. The message is retained if delivered;</li>
+	<li><i>Initial</i> message is delivered to the subscribers only if there is 
+	no retained message with the same topic. If delivered, the message is 
+	retained by the server;</li>
+	<li><i>Ignored</i> message is neither delivered nor retained.</li>
+</ul>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Get_Queue_Size">
+</a>function</font> Get_Queue_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>
+This function returns the maximum number queued messages per a connection. Published messages are 
+queued to be sent to a client. When the queue becomes full the connection to the 
+client is 
+dropped. The procedure <a href="#GNAT.Sockets.MQTT.Server.Set_Queue_Size">
+Set_Queue_Size</a> is used to set the limit.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Get_Session"></a>function</font> 
+Get_Session<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( <b>&nbsp;Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name </b>&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
+Integer;</tt></p>
+</blockquote>
+<p>
+This function returns the index of session by it name. The result is 0 if there 
+is no such session.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Get_Session_Name"></a>function</font> 
+Get_Session_Name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns the name of the session with the number 1..<a href="#GNAT.Sockets.MQTT.Server.Get_Sessions_Number">Get_Sessions_Number</a>. 
+Anonymous clients have sessions with empty names. End_Error is propagated when
+<b>Index</b> is illegal.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Get_Session_Time"></a>function</font> 
+Get_Session_Time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Time;<br>
+<font color="#0000FF">function</font> Get_Session_Time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Time;</tt></p>
+</blockquote>
+<p>
+This function returns the last time the session identified by its name or the 
+number 1..<a href="#GNAT.Sockets.MQTT.Server.Get_Sessions_Number">Get_Sessions_Number</a> 
+has an exchange with a client. End_Error is propagated when <b>Index</b> is 
+illegal or no session with this name exists.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Get_Sessions_Number"></a>function</font> 
+Get_Sessions_Number<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Natural;</tt></p>
+</blockquote>
+<p>
+This function returns the number of sessions active or not.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Is_Session_Active"></a>function</font> 
+Is_Session_Active<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;<br>
+<font color="#0000FF">function</font> Is_Session_Active<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b>&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+This function returns <i><font color="#800000">true</font></i> if the session 
+identified by its name or the number 1..<a href="#GNAT.Sockets.MQTT.Server.Get_Sessions_Number">Get_Sessions_Number</a> 
+is active, i.e. has a connected client. End_Error is propagated when <b>Index</b> 
+is illegal or no session with this name exists.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Is_Tracing_On">
+</a>function</font> Is_Tracing_On<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> : 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Flags</b>&nbsp; 
+: MQTT_Trace_Flags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+This function returns <i><font color="#800000">true</font></i> if one the flags in <b>Flags</b> is in effect.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Publish"></a>
+procedure</font> Publish<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b>&nbsp; : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : Stream_Element_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>QoS</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: QoS_Level&nbsp;&nbsp;&nbsp; := At_Most_Once;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Policy</b>&nbsp; : Message_Type := Transient<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> Publish<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b>&nbsp; : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>QoS</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: QoS_Level&nbsp;&nbsp;&nbsp; := At_Most_Once;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Policy</b>&nbsp; : Message_Type := Transient<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+These procedures are used to publish a message. The message is propagated to all 
+clients subscribed to the topic specified by the parameter <b>Topic</b>. <b>
+Message</b> is the published message which can be either a Stream_Element_Array 
+or String. <b>QoS</b> specifies the quality of service. <b>Policy</b> specifies 
+how to <a href="#GNAT.Sockets.MQTT.Server.Message_Type">handle the message</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.MQTT_Messages_Array"></a>type </font> MQTT_Messages_Array<font color="#0000FF"> 
+is<br>
+&nbsp;&nbsp; array </font> (Positive <font color="#0000FF">range</font> &lt;&gt;)<font color="#0000FF"> 
+of </font> MQTT_Message;<font color="#0000FF"><br>
+<br>
+procedure</font> Publish<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b>&nbsp; : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : MQTT_Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>QoS</b>&nbsp;&nbsp;&nbsp;&nbsp; : QoS_Level&nbsp;&nbsp;&nbsp; := At_Most_Once;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Policy</b>&nbsp; : Message_Type := Transient<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<font color="#0000FF">;<br>
+procedure</font> Publish<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b>&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Messages</b> : MQTT_Messages_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>QoS</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : QoS_Level&nbsp;&nbsp;&nbsp; := At_Most_Once;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Policy</b>&nbsp;&nbsp; : Message_Type := Transient<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+These variants publish single message <b>Message</b> or a couple of messages stored in the array <b>Messages</b>. 
+Invalid <b>Message</b> or elements of <b>Messages</b> are ignored.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Received"></a>
+procedure</font> Received<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b>&nbsp; : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp; : <font color="#0000FF">in out</font> MQTT_Connection'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : Stream_Element_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>QoS</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: QoS_Level;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Policy</b>&nbsp; : <font color="#0000FF">in out</font> Message_Type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure is called for each incoming message. The parameter <b>Client</b> 
+is the client publishing the message. The parameters <b>Topic</b>,
+<b>Message</b>, <b>QoS</b> are the message parameters. <b>Policy</b> is either
+<i>Transient</i> or <i>Retained</i> according to the client's request. The 
+implementation may change Policy to instruct the server how to handle the 
+message. For instance, it can set it <i>Ignored</i> in order to drop the 
+message. The default 
+implementation does not change <b>Policy</b>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Remove"></a>procedure</font> 
+Remove<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b> : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Topic</b>&nbsp; : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> 
+Remove<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>(&nbsp; <b>Server</b> : <font color="#0000FF">in out</font> 
+MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp; : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure removes retained messages matched by the pattern <b>Topic</b>. 
+E.g. if <b>Topic</b> is &quot;<font color="#FF0000">#</font>&quot; all messages are 
+removed. Note that this action does not influence messages already queued to the 
+subscribers. They will be delivered even after being removed. The variant with 
+the parameter Index removes the message by its number 1..<a href="#GNAT.Sockets.MQTT.Server.Get_Messages_Number">Get_Messages_Number</a>. 
+Constraint_Error is propagated when <b>Index</b> is invalid.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.Set_Queue_Size">
+</a>procedure</font> Set_Queue_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> :
+<font color="#0000FF">in out</font> MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Size</b>&nbsp;&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure sets the limit to the number of queued messages. Published 
+messages are queued to be sent to a client. When the queue becomes full the 
+connection is dropped. Setting the limit influences only future connections.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.MQTT.Server.Set_Tracing_Flags"></a>procedure</font> 
+Set_Tracing_Flags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b> :
+<font color="#0000FF">in out</font> MQTT_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Flags</b>&nbsp; : MQTT_Trace_Flags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure sets the server tracing flags.</p>
+<p>
+<u><b>Connection object</b></u>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Server.MQTT_Connection">
+</a>type</font> MQTT_Connection<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Server&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">access</font> MQTT_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Listener&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">access</font> Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Max_Subscribe_Topics : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> MQTT_Pier
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>
+The type <a href="#GNAT.Sockets.MQTT.Server.MQTT_Connection">MQTT_Connection</a> 
+is a connection object that can be used as a server or client with
+<a href="#GNAT.Sockets.Server.Connections_Server">Connections_Server</a>. The 
+discriminant <i>Server</i> refers to an instance of
+<a href="#GNAT.Sockets.MQTT.Server.MQTT_Server">MQTT_Server</a> that to handle 
+messages, subscriptions and sessions.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Name (<b>Client</b> : 
+MQTT_Connection) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns the name of the session used by <b>Client</b>. The name is 
+specified in the <a href="#GNAT.Sockets.MQTT.On_Connect">connect request</a>. 
+For an anonymous session the result is empty string.</p>
+
 <hr>
 <p align="right">
-<a name="17"></a><a href="#16.12"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#20"><IMG src="index.gif"
+<a name="17"></a><a href="#16.15"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#20"><IMG src="index.gif"
  alt="[TOC]" width="29" height="29"></A><a href="#17.1"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H2>17. Packages<p align="right">
   <A name="17.1"></A><a href="#17"><IMG src="prev.gif" alt="[Back]" width="29"
-      height="29"></a><A href="Set_Request_If_Modified_Sincerc="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17.2"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+      height="29"></a><a href="#17.2"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>17.1. Source packages</H3>
 <p>The following table describes the packages and other compilation units provided by the software.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0" style="border-left-width: 0px">
@@ -33898,14 +35617,37 @@ Block_Streams</a></TD>
   </tr>
 	<tr>
     <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px">&nbsp;</TD>
-    <TD colspan="8" style="border-left-style:none; border-left-width:medium; border-right-style:none; border-right-width:medium; border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px" bgcolor="#C0C0C0">
+    <TD colspan="8" style="border-left-style:none; border-left-width:medium; border-right-style:none; border-right-width:medium; border-top-style:none; border-top-width:medium; " bgcolor="#C0C0C0">
 	&nbsp;</TD>
-    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-bottom-style:solid; border-bottom-width:1px; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">
+    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">
 	&nbsp;</TD>
     <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.Variable_Length_Strings">
 	Variable_Length_Strings</a></TD>
     <TD>Variable-length strings</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px">&nbsp;</TD>
+    <TD colspan="13" style="border-style:solid; border-width:1px; ">
+	<a href="#GNAT.Sockets.MQTT">MQTT</a></TD>
+    <TD style="border-left-style: solid; border-left-width: 1px">Basic 
+	implementation of a MQTT pier</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px">&nbsp;</TD>
+    <TD colspan="8" style="border-left-style:none; border-left-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px; border-bottom-style:solid; border-bottom-width:1px; border-top-style:solid; border-top-width:1px">
+	<a href="#GNAT.Sockets.MQTT.Server">Server</a></TD>
+    <TD>A full implementation of a MQTT server (broker)</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px">&nbsp;</TD>
+    <TD colspan="8" style="border-left-style:none; border-left-width:medium; border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px; border-bottom-style:solid; border-bottom-width:1px; border-top-style:solid; border-top-width:1px">
+	<a href="#GNAT.Sockets.MQTT.Streams">Streams</a></TD>
+    <TD>Stream interface to MQTT messages</TD>
   </tr>
   <tr>
     <TD colspan="16">GNU.DB.CLI.API</TD>
@@ -34964,6 +36706,30 @@ Block_Streams</a></TD>
     <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
   </tr>
   <tr>
+    <TD bgcolor="#FFFF99">test_mqtt_client</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Test for MQTT client</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
+  <tr>
+    <TD>test_mqtt_clients</TD>
+    <TD align="center">no</TD>
+    <TD>Test package for MQTT client, used in <i>test_mqtt_client</i></TD>
+    <TD align="center">&nbsp;</TD>
+  </tr>
+  <tr>
+    <TD bgcolor="#FFFF99">test_mqtt_server</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Test for MQTT server</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
+  <tr>
+    <TD>test_mqtt_servers</TD>
+    <TD align="center">no</TD>
+    <TD>Test package for MQTT server, used in <i>test_mqtt_server</i></TD>
+    <TD align="center">&nbsp;</TD>
+  </tr>
+  <tr>
     <TD>test_my_string</TD>
     <TD align="center">no</TD>
     <TD>An implementation of varying strings using objects, illustrative <a href="#test_my_string.ads">example</a>.
@@ -35329,28 +37095,28 @@ parts of the Simple Components will fail. These faults can be safely ignored
 during the installation.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <TR>
-    <TD valign="bottom" bgcolor="#008080" rowspan="12"><FONT color="#FFFFFF"><B>Project files </B>
+    <TD valign="bottom" bgcolor="#008080" rowspan="13"><FONT color="#FFFFFF"><B>Project files </B>
 	*.gpr</FONT></TD>
-    <TD valign="top" bgcolor="#008080" colspan="13" style="border-right-style: none; border-right-width: medium; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Simple Components,
+    <TD valign="top" bgcolor="#008080" colspan="14" style="border-right-style: none; border-right-width: medium; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Simple Components,
 	Strings Edit,
 	Tables</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="12" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Multiple 
+    <TD valign="top" bgcolor="#008080" colspan="13" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Multiple 
 	TCP/IP connections server</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="11" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">HTTP server 
+    <TD valign="top" bgcolor="#008080" colspan="12" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">HTTP server 
 	and client</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="10">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="11">
 	<b><font color="#FFFFFF">ELV/e-Q3 MAX! cube client</font></b></TD>
   </TR>
   <TR>
@@ -35358,7 +37124,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="9">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="10">
 	<b><font color="#FFFFFF">MODBUS client</font></b></TD>
   </TR>
   <TR>
@@ -35367,7 +37133,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="8" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Secure 
+    <TD valign="top" bgcolor="#008080" colspan="9" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Secure 
 	SSL/TSL connections server</font></b></TD>
   </TR>
   <TR>
@@ -35377,7 +37143,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="7" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3</font></b></TD>
+    <TD valign="top" bgcolor="#008080" colspan="8" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
@@ -35387,7 +37153,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="6" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">ODBC 
+    <TD valign="top" bgcolor="#008080" colspan="7" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">ODBC 
 	32/64</font></b></TD>
   </TR>
   <TR>
@@ -35399,7 +37165,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="5" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3 HTTP 
+    <TD valign="top" bgcolor="#008080" colspan="6" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3 HTTP 
 	browser</font></b></TD>
   </TR>
   <TR>
@@ -35412,11 +37178,26 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="4" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">GNUTLS</font></b></TD>
+    <TD valign="top" bgcolor="#008080" colspan="5" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">GNUTLS</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="4" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">
+	<font color="#FFFFFF"><b>MQTT</b></font></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
@@ -35431,6 +37212,7 @@ during the installation.</p>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
@@ -35459,6 +37241,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components.gpr&quot;;</tt></TD>
@@ -35466,6 +37249,7 @@ during the installation.</p>
   <TR>
     <TD valign="top">components-apq</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -35495,6 +37279,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server.gpr&quot;;</tt></TD>
@@ -35504,6 +37289,7 @@ during the installation.</p>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -35531,6 +37317,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server-http_server-sqlite_browser.gpr&quot;;</tt></TD>
@@ -35541,6 +37328,7 @@ during the installation.</p>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#FFFFFF">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -35567,9 +37355,29 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server-modbus_client.gpr&quot;;</tt></TD>
+  </tr>
+  <tr>
+    <TD valign="top">components-connections_server-mqtt</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-connections_server-mqtt.gpr&quot;;</tt></TD>
   </tr>
   <tr>
     <TD valign="top">components-connections_server-secure</TD>
@@ -35585,6 +37393,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server-secure.gpr&quot;;</tt></TD>
@@ -35592,6 +37401,7 @@ during the installation.</p>
   <tr>
     <TD valign="top">components-gnade</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -35621,6 +37431,7 @@ during the installation.</p>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-gnutls.gpr&quot;;</tt></TD>
@@ -35639,6 +37450,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-odbc.gpr&quot;;</tt></TD>
@@ -35652,6 +37464,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -35691,8 +37504,25 @@ The following versions were tested with the compilers:</i>
 <ul>
   <li>
 <i>GNAT GPL 2015 (20150428-49)</i></li>
-	<li><i>GNAT 5.2</i></li>
+	<li><i>GNAT 5.3</i></li>
   </ul>
+<P>
+Changes (10 April 2016) to the version 4.11:<ul>
+	<li>MQTT protocol implementation added;</li>
+	<li>A variant of Purge with selector parameter were added to Generic_FIFO 
+	and Generic_FIFO.Generic_Signaled;</li>
+	<li>Conditional procedures Replace with user-defined function were added to 
+	Generic_Set and Generic_Indefinite_Set.</li>
+	</ul>
+<P>
+Changes (1 March 2016) to the version 4.10:<ul>
+	<li>ELV/e-Q3 MAX! client protocol implementation corrected;</li>
+	<li>ELV/e-Q3 MAX! client supports reading measured temperature from a 
+	radiator thermostats;</li>
+	<li>ELV/e-Q3 MAX! client subprograms Get_Error, Has_Device_Data, Query_NTP_Servers, Reset_Devices, Reset_Error, Set_NTP_Servers added;</li>
+	<li>ELV/e-Q3 MAX! client messages and commands A, F, N support added;</li>
+	<li>GNUTLS bindings updated to the latest version.</li>
+	</ul>
 <P>
 Changes (18 October 2015) to the version 4.9:<ul>
 	<li>ELV/e-Q3 MAX! client wall thermostat support added;</li>
@@ -36352,12 +38182,12 @@ Sample</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.2.2">12.2.2. Priorities and association</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.2.3">12.2.3. Association checks</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.2.4">12.2.4. Commutative operatiors</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#12.3">12.3. The base package</a>
-</td>
-<td valign="top">
+&nbsp;&nbsp;&nbsp; <a href="#12.3">12.3. The base package</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#12.4">12.4. Sources</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.1">12.4.1. Source cursors I/O</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.2">12.4.2. Procedures to skip blanks</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.2">12.4.2. Procedures to skip blanks</a>
+</td>
+<td valign="top">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.3">12.4.3. Procedure to skip text</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.4">12.4.4. Matching keywords</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.5">12.4.5. Parsing XPM files</a><br>
@@ -36460,7 +38290,12 @@ selector</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.13">16.13. MODBUS client protocol implementation</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.13.1">16.13.1. Synchronous client</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.14">16.14. ELV/e-Q3 MAX! Cube protocol implementation</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.14.1">16.14.1. Stream I/O</a><hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.14.1">16.14.1. Stream I/O</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.15">16.15. MQTT protocol implementation</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.1">16.15.1. MQTT pier</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.2">16.15.2. MQTT message 
+stream I/O</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.3">16.15.3. MQTT server (broker)</a><hr>
 <b><big><big>17</big></big></b>&nbsp;<a href="#17"><big>Packages</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.1">17.1. Source packages</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.2">17.2. Tests and examples</a><br>

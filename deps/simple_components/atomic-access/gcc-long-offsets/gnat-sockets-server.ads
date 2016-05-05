@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  19:33 15 Oct 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -112,6 +112,7 @@ package GNAT.Sockets.Server is
         (  Factory : access Connections_Factory'Class;
            Port    : Port_Type
         )  is new Ada.Finalization.Limited_Controlled with private;
+   type Connections_Server_Ptr is access all Connections_Server'Class;
 --
 -- Available_To_Process -- Stream elements available to process
 --
@@ -384,6 +385,17 @@ package GNAT.Sockets.Server is
    function Get_Client_Address (Client : Connection)
       return Sock_Addr_Type;
 --
+-- Get_Connections_Server -- Get client's connections server
+--
+--    Client - The client connection object
+--
+-- Returns :
+--
+--    A pointer to the connections server or null
+--
+   function Get_Connections_Server (Client : Connection)
+      return Connections_Server_Ptr;
+--
 -- Get_IO_Timeout -- The I/O timeout used by connections server
 --
 --    Factory - The factory object
@@ -399,17 +411,6 @@ package GNAT.Sockets.Server is
 --
    function Get_IO_Timeout (Factory : Connections_Factory)
       return Duration;
---
--- Get_Session_State -- Session state
---
---    Client - The client connection object
---
--- Returns :
---
---    Current state
---
-   function Get_Session_State (Client : Connection)
-      return Session_State;
 --
 -- Get_Occurrence -- Get saved client error
 --
@@ -465,6 +466,17 @@ package GNAT.Sockets.Server is
    function Get_Server_Address
             (  Listener : Connections_Server
             )  return Sock_Addr_Type;
+--
+-- Get_Session_State -- Session state
+--
+--    Client - The client connection object
+--
+-- Returns :
+--
+--    Current state
+--
+   function Get_Session_State (Client : Connection)
+      return Session_State;
 --
 -- Get_Socket -- Get the socket
 --
@@ -576,6 +588,18 @@ package GNAT.Sockets.Server is
    function Is_Trace_Sent_On
             (  Factory : Connections_Factory;
                Encoded : IO_Tracing_Mode
+            )  return Boolean;
+--
+-- Is_Unblock_Send_Queued -- Tracing state
+--
+--    Listener - The connections server
+--
+-- Returns :
+--
+--    True if unblock send is queued
+--
+   function Is_Unblock_Send_Queued
+            (  Listener : Connections_Server
             )  return Boolean;
 --
 -- Keep_On_Sending -- Delay stopping sending
@@ -1168,8 +1192,8 @@ private
 --
    procedure Fill_From_Stream
              (  Buffer        : in out Output_Buffer;
-                First_Written : in out Stream_Element_Offset;
-                Free_To_Write : in out Stream_Element_Offset;
+                First_Written : Stream_Element_Offset;
+                Free_To_Write : Stream_Element_Offset;
                 Stream        : in out Root_Stream_Type'Class;
                 Count         : Stream_Element_Count;
                 Reserve       : Stream_Element_Count;
@@ -1188,24 +1212,6 @@ private
 --
    function Free (Buffer : Output_Buffer) return Stream_Element_Count;
 --
--- Store -- Elements into the buffer
---
---    Buffer  - The buffer
---    Data    - The data to store
---    Pointer - The first item to store, advanced
---    Unblock - Is set to True if some elements were stored
---
--- Returns :
---
---    Number of elements
---
-   procedure Store
-             (  Buffer  : in out Output_Buffer;
-                Data    : Stream_Element_Array;
-                Pointer : in out Stream_Element_Offset;
-                Unblock : out Boolean
-             );
---
 -- Used -- Number of elements stored in the buffer
 --
 --    Buffer - The buffer
@@ -1216,7 +1222,6 @@ private
 --
    function Used (Buffer : Output_Buffer) return Stream_Element_Count;
 ------------------------------------------------------------------------
-   type Connections_Server_Ptr is access all Connections_Server'Class;
    type Connection
         (  Input_Size  : Buffer_Length;
            Output_Size : Buffer_Length

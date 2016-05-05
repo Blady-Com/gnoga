@@ -3,7 +3,7 @@
 --     Persistent.Single_File.Text_IO              Luebeck            --
 --  Implementation                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,8 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;                   use Ada.Calendar;
-with Ada.Exceptions;                 use Ada.Exceptions;
 with Persistent.Single_File_Keys;    use Persistent.Single_File_Keys;
 with Strings_Edit;                   use Strings_Edit;
 with Strings_Edit.Integers;          use Strings_Edit.Integers;
@@ -138,13 +136,13 @@ package body Persistent.Single_File.Text_IO is
                 Prefix  : String := ""
              )  is
       Stream : aliased Input_Stream (Storage.Pool);
-      Object : Object_Record := Get_Record (Storage, Index);
+      Object : constant Object_Record := Get_Record (Storage, Index);
    begin
       Put_Line (File, Prefix & "ID         :" & Image (Object.ID));
       if Object.Token > 0 then
          Open (Stream, Object.Token);
          declare
-            Token : Name_Token := Input (Stream'Access);
+            Token : constant Name_Token := Input (Stream'Access);
          begin
             Put_Line
             (  File,
@@ -171,7 +169,7 @@ package body Persistent.Single_File.Text_IO is
          Put (File, Prefix & "References :");
          for Index in 1..Natural'(Input (Stream'Access)) loop
             declare
-               ID : Object_ID := Input (Stream'Access);
+               ID : constant Object_ID := Input (Stream'Access);
             begin
                Put (File, Image (ID) & ' ');
             end;
@@ -230,7 +228,7 @@ package body Persistent.Single_File.Text_IO is
                begin
                   while Item /= No_Name loop
                      declare
-                        Key : Name_Token :=
+                        Key : constant Name_Token :=
                               Get_Key (DB, Get_Key_Address (Item));
                      begin
                         Put_Line
@@ -255,7 +253,7 @@ package body Persistent.Single_File.Text_IO is
                begin
                   while Item /= No_Object loop
                      declare
-                        Key : Byte_Index := Get_Key (Item);
+                        Key : constant Byte_Index := Get_Key (Item);
                      begin
                         if Get_Value (Item) = 0 then
                            Put_Line

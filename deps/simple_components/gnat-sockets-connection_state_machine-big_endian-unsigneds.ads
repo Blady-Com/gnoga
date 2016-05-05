@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Big_Endian.Unsigneds                        Winter, 2012       --
 --  Interface                                                         --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,9 +25,8 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Interfaces;  use Interfaces;
-
 package GNAT.Sockets.Connection_State_Machine.Big_Endian.Unsigneds is
+   use Interfaces;
 --
 -- Unsigned_{8|16|32|64}_Data_Item -- Big endian-encoded unsigned number
 --
@@ -92,22 +91,22 @@ package GNAT.Sockets.Connection_State_Machine.Big_Endian.Unsigneds is
 --    Layout_Error - Pointer is outside bounds
 --
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Unsigned_8
              );
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Unsigned_16
              );
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Unsigned_32
              );
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Unsigned_64
              );

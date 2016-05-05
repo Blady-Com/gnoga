@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2002       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -42,7 +42,7 @@ procedure Test_Handles is
 begin
    Put_Line ("Testing handles and sets ...");
    declare
-      A : My_Safe_String := Create ("Some text");
+      A : constant My_Safe_String := Create ("Some text");
    begin
       if Value (A) /= "Some text" then
          Raise_Exception
@@ -52,7 +52,7 @@ begin
       end if;
    end;
    declare
-      A  : My_Safe_String := Create ("A");
+      A  : constant My_Safe_String := Create ("A");
       B  : My_Safe_String;
       S1 : Test_Set.Set;
       S2 : Test_Set.Set;
@@ -102,8 +102,8 @@ begin
    end;
    declare
       X     : Unbounded_Array;
-      Y_Ptr : My_Object_Ptr := new My_Object;
-      Y     : Test_Object.Handle.Handle := Ref (Y_Ptr);
+      Y_Ptr : constant My_Object_Ptr := new My_Object;
+      Y     : constant Test_Object.Handle.Handle := Ref (Y_Ptr);
    --
    -- The following does not work with GNAT
    --
@@ -169,7 +169,7 @@ begin
          Result := Ref (new My_Object);
          return Result;
       end Create;
-      X : My_Object_Record := (2, Create);
+      X : constant My_Object_Record := (2, Create);
    begin
       if Ptr (X.Member).Use_Count /= 1 then
          Put_Line ("!!!A compiler bug in controlled types!!!");
@@ -184,8 +184,8 @@ begin
          Result := Ref (new My_Object);
          return Result;
       end Create;
-      A : My_Object_Array := (Create, Create, Create);
-      P : My_Object_Ptr := Ptr (A (1));
+      A : constant My_Object_Array := (Create, Create, Create);
+      P : constant My_Object_Ptr := Ptr (A (1));
    begin
       if P.Use_Count /= 1 then
          Put ("!!!A compiler bug detected in arrays of ");

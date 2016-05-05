@@ -3,7 +3,7 @@
 --     Test_Blackboard_Performance                 Luebeck            --
 --  Test blackboard operations performance         Autumn, 2009       --
 --                                                                    --
---                                Last revision :  17:56 18 Jan 2012  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -59,8 +59,8 @@ procedure Test_Blackboard_Performance is
 begin
    delay 0.001; -- GNAT bug workaround
    declare
-      Data_Ptr : Blackboard_Ptr := -- Don't allocate it on the stack
-                    new Blackboard
+      Data_Ptr : constant Blackboard_Ptr := -- Don't allocate it on the
+                    new Blackboard          -- stack
                         (  (2 * Rounds + 1)
                         *  (  (  Element'Size
                               +  Storage_Element'Size

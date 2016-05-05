@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.Streams.            Luebeck            --
 --        External_B_Tree                          Autumn, 2014       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,8 +29,7 @@
 --  implementation  is raw and untyped.  Both  key and value  are of the
 --  type Byte_Index.
 --
-with Ada.Streams;  use Ada.Streams;
-with System;       use System;
+with System;  use System;
 
 with Ada.Finalization;
 

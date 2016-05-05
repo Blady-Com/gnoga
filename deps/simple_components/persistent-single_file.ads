@@ -3,7 +3,7 @@
 --     Persistent.Single_File                      Luebeck            --
 --  Interface                                      Autumn, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,8 +28,6 @@
 --  This package provides an implementation of persistent storage  based
 --  on transactional blocking files.
 --
-with Ada.Calendar;                 use Ada.Calendar;
-with Ada.Exceptions;               use Ada.Exceptions;
 with Ada.Streams;                  use Ada.Streams;
 with Ada.Strings.Unbounded;        use Ada.Strings.Unbounded;
 with Ada.Task_Identification;      use Ada.Task_Identification;

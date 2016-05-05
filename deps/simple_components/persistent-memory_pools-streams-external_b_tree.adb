@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.Streams.            Luebeck            --
 --        External_B_Tree                          Autumn, 2014       --
 --  Implementation                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;     use Ada.Exceptions;
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 with Ada.Tags;           use Ada.Tags;
 
@@ -249,7 +248,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                 From_First : Positive;
                 Tail       : Natural := 1
              )  is
-      From_Last : Integer := From_First + To_Last - To_First;
+      From_Last : constant Integer := From_First + To_Last - To_First;
       Children  : Byte_Index_Array (To_First..To_Last + Tail);
       Keys   : Byte_Array (To_Key (To_First)..To_Key (To_Last) + 7);
       Values : Byte_Array (To_Value (To_First)..To_Value (To_Last) + 7);
@@ -327,7 +326,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                 Tail       : Natural := 1
              )  is
       pragma Inline (Move);
-      From_Last : Integer := From_First + To_Last - To_First;
+      From_Last : constant Integer := From_First + To_Last - To_First;
       Children  : Byte_Index_Array (To_First..To_Last + Tail);
    begin
       declare
@@ -486,7 +485,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
             )  return Integer is
       pragma Inline (Find);
       Derived : B_Tree'Class renames B_Tree'Class (Container);
-      Size : Natural := Get_Length (Block);
+      Size : constant Natural := Get_Length (Block);
       From : Natural := 0;
       To   : Natural := Size + 1;
       This : Natural;
@@ -495,7 +494,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          return -1;
       end if;
       declare
-         Keys : Byte_Array :=
+         Keys : constant Byte_Array :=
                    Block
                    (  Key_Offset
                    .. Key_Offset + Block_Offset (Size) * 8 - 1
@@ -741,7 +740,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       declare
          Pool   : Persistent_Pool'Class renames Container.Pool.all;
          Block  : Block_Type_Ref := Load (Pool.File, Node);
-         Length : Integer := Get_Length (Block.all);
+         Length : constant Integer := Get_Length (Block.all);
       begin
          if Index > Length then
             Raise_Exception
@@ -797,8 +796,8 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       end if;
       declare
          Pool   : Persistent_Pool'Class renames Container.Pool.all;
-         Block  : Block_Type_Ref := Load (Pool.File, Node);
-         Length : Integer        := Get_Length (Block.all);
+         Block  : Block_Type_Ref   := Load (Pool.File, Node);
+         Length : constant Integer := Get_Length (Block.all);
       begin
          if Index > Length then
             Raise_Exception
@@ -908,7 +907,8 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          return (Container.Self, Node, Index);
       else
          declare
-            Block : Block_Type_Ref := Load (Container.Pool.File, Node);
+            Block : constant Block_Type_Ref :=
+                    Load (Container.Pool.File, Node);
          begin
             if -Index > Get_Length (Block.all) then
                if Index < -1 then
@@ -941,7 +941,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          Insert ((Container.Self, 0, 1), Key, Value, Child);
       else
          declare
-            Index : Integer :=
+            Index : constant Integer :=
                     Find
                     (  Container,
                        Load (Container.Pool.File, Parent).all,
@@ -1157,7 +1157,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          end;
       end if;
       declare
-         New_Node : Byte_Index :=
+         New_Node : constant Byte_Index :=
                     Unchecked_Allocate (Container.Pool.all, Node_Size);
       begin
          Set_Length
@@ -1364,7 +1364,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                 Left      : Byte_Index;
                 Right     : Byte_Index
              )  is
-      Node  : Byte_Index :=
+      Node  : constant Byte_Index :=
               Unchecked_Allocate (Container.Pool.all, Node_Size);
       Block : Block_Type renames Update (Container.Pool.File, Node).all;
    begin
@@ -1424,8 +1424,10 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                   );
                else
                   declare
-                     Parent : Byte_Index := Get_Parent_Address (Block);
-                     Index  : Positive   := Get_Parent_Index   (Block);
+                     Parent : constant Byte_Index :=
+                              Get_Parent_Address (Block);
+                     Index  : constant Positive  :=
+                              Get_Parent_Index (Block);
                   begin
                      if Parent = 0 then -- No parent
                         Set_Length (Block, 0);
@@ -1451,8 +1453,10 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                   );
                else
                   declare
-                     Parent : Byte_Index := Get_Parent_Address (Block);
-                     Right  : Byte_Index := Get_Child (Block, 2);
+                     Parent : constant Byte_Index :=
+                              Get_Parent_Address (Block);
+                     Right  : constant Byte_Index :=
+                              Get_Child (Block, 2);
                   begin
                      if Parent = 0 then -- No parent
                         Length :=
@@ -1477,8 +1481,10 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
             end if;
          elsif Get_Child (Block, Index + 1) = 0 then
             declare
-               Parent : Byte_Index := Get_Parent_Address (Block);
-               Left   : Byte_Index := Get_Child (Block, 1);
+               Parent : constant Byte_Index :=
+                        Get_Parent_Address (Block);
+               Left   : constant Byte_Index :=
+                        Get_Child (Block, 1);
             begin
                if Length > 1 then
                   Set_Length (Block, Length - 1);
@@ -1782,7 +1788,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                );
             exit when Index > 0;
             declare
-               Next : Byte_Index :=
+               Next : constant Byte_Index :=
                       Get_Child
                       (  Load (Container.Pool.File, Node).all,
                         -Index
@@ -1819,7 +1825,8 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          return (Container.Self, Node, Index);
       else
          declare
-            Block : Block_Type_Ref := Load (Container.Pool.File, Node);
+            Block : constant Block_Type_Ref :=
+                    Load (Container.Pool.File, Node);
          begin
             if -Index > Get_Length (Block.all) then
                if Index < -1 then

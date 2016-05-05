@@ -3,7 +3,7 @@
 --  Test program                                   Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:32 02 Apr 2012  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of  the  GNU  Library  General  Public  --
@@ -38,7 +38,7 @@ procedure Test_Cubic_Spline is
    Spline : Cubic_Spline;
 
    procedure Check (X, Y : Long_Float; Text : String) is
-      V : Long_Float := Value (Spline, X);
+      V : constant Long_Float := Value (Spline, X);
    begin
       if abs (Y - V) > abs (Y + V) * 0.01 then
          Raise_Exception
@@ -56,7 +56,7 @@ procedure Test_Cubic_Spline is
    end Check;
 
    procedure Check_Acceleration (X, Y : Long_Float; Text : String) is
-      A : Long_Float := Acceleration (Spline, X);
+      A : constant Long_Float := Acceleration (Spline, X);
    begin
       if abs (Y - A) > abs (A + Y) * 0.01 then
          Raise_Exception
@@ -74,7 +74,7 @@ procedure Test_Cubic_Spline is
    end Check_Acceleration;
 
    procedure Check_Velocity (X, Y : Long_Float; Text : String) is
-      V : Long_Float := Velocity (Spline, X);
+      V : constant Long_Float := Velocity (Spline, X);
    begin
       if abs (Y - V) > abs (Y + V) * 0.01 then
          Raise_Exception

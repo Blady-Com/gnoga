@@ -39,26 +39,26 @@ project Tables is
          when "Debug" =>
             case Legacy is
                when "Ada2012" =>
-                  for Default_Switches ("ada") use
-                     ("-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat12");
+                  for Default_Switches ("ada") use -- -gnatwchijkmopruvz.c.n.p.t.w.x
+                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat12");
                when "Ada2005" =>
                   for Default_Switches ("ada") use
-                     ("-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat05");
+                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat05");
                when "Ada95" =>
                   for Default_Switches ("ada") use
-                     ("-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check");
+                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check");
             end case;
          when "Release" =>
             case Legacy is
                when "Ada2012" =>
                   for Default_Switches ("ada") use
-                     ("-gnato", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat12");
+                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnatp", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat12");
                when "Ada2005" =>
                   for Default_Switches ("ada") use
-                     ("-gnato", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat05");
+                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnatp", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat05");
                when "Ada95" =>
                   for Default_Switches ("ada") use
-                     ("-gnato", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat95");
+                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnatp", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat95");
             end case;
       end case;
    end Compiler;

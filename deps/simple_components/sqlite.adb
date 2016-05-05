@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  09:07 27 Jun 2015  --
+--                                Last revision :  10:00 09 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,9 +27,7 @@
 
 with Ada.Exceptions;         use Ada.Exceptions;
 with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
-with Interfaces.C.Strings;   use Interfaces.C.Strings;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
-with System;                 use System;
 
 with Ada.Unchecked_Conversion;
 
@@ -103,15 +101,15 @@ package body SQLite is
             return Message (Result) & ' ' & Code;
          else
             declare
-               function Internal (Connection : SQLite_Handle)
+               function Internal (Error : int)
                   return chars_ptr;
-               pragma Import (C, Internal, "sqlite3_errmsg");
-               Text : chars_ptr := Internal (Connection);
+               pragma Import (C, Internal, "sqlite3_errstr");
+               Text : constant chars_ptr := Internal (Result);
             begin
                if Text = Null_Ptr then
                   return Message (Result) & ' ' & Code;
                else
-                  return Value (Internal (Connection)) & ' ' & Code;
+                  return Value (Text) & ' ' & Code;
                end if;
             end;
          end if;
@@ -555,11 +553,11 @@ package body SQLite is
                )  return int;
       pragma Import (C, Internal, "sqlite3_column_type");
    begin
-      return Internal (Ptr (Command.Handle).Handle, int (Position) - 1) = 5;
+      return
+         Internal (Ptr (Command.Handle).Handle, int (Position) - 1) = 5;
    end Is_Null;
 
    function Is_Valid (Command : Statement) return Boolean is
-      use Statement_Handles;
    begin
       return Is_Valid (Command.Handle);
    end Is_Valid;

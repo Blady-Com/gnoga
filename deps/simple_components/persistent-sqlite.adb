@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;           use Ada.Exceptions;
 with Ada.Characters.Handling;  use Ada.Characters.Handling;
 with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
 with Persistent.SQLite_Links;  use Persistent.SQLite_Links;
@@ -152,7 +151,7 @@ package body Persistent.SQLite is
             (  File_Name : String;
                Erase     : Boolean := False
             )  return Storage_Handle is
-      Result  : Storage_Handle :=
+      Result  : constant Storage_Handle :=
                 Ref (new Data_Base_Object (File_Name'Length));
       Storage : Data_Base_Object renames
                 Data_Base_Object (Ptr (Result).all);
@@ -929,8 +928,8 @@ package body Persistent.SQLite is
                 Parent  : Persistent_Key'Class
              )  is
       Parent_Key : Object_Key renames Object_Key (Parent);
-      ID         : Object_ID := Object_Key'Class (Key).ID;
-      New_Parent : Object_ID := Parent_Key.ID;
+      ID         : constant Object_ID := Object_Key'Class (Key).ID;
+      New_Parent : constant Object_ID := Parent_Key.ID;
       Old_Parent : Object_ID := No_ID;
    begin
       if Name'Length = 0 then

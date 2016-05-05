@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Maps                      Luebeck            --
 --  Implementation                                 Spring, 2008       --
 --                                                                    --
---                                Last revision :  22:14 08 May 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -84,7 +84,7 @@ package body Strings_Edit.UTF8.Maps is
    procedure Clone
              (  List      : in out Code_Points_List_Ptr;
                 Use_Count : Natural;
-                Increment : Positive
+                Increment : Natural
              )  is
    begin
       if List = null then
@@ -96,7 +96,7 @@ package body Strings_Edit.UTF8.Maps is
             declare
                Ranges : Code_Points_Ranges renames List.Ranges;
                Length : constant Natural := List.Length;
-               Old    : Code_Points_List_Ptr := List;
+               Old    : constant Code_Points_List_Ptr := List;
             begin
                List := new Code_Points_List (Length + Increment);
                List.Length := Length;
@@ -178,7 +178,7 @@ package body Strings_Edit.UTF8.Maps is
          return Null_Set;
       end if;
       declare
-         Result : Unicode_Set :=
+         Result : constant Unicode_Set :=
                      (  Ada.Finalization.Controlled
                      with
                         new Code_Points_List (Length)
@@ -1037,7 +1037,7 @@ package body Strings_Edit.UTF8.Maps is
          end if;
       end if;
       declare
-         Result : Unicode_Mapping :=
+         Result : constant Unicode_Mapping :=
                   (  Ada.Finalization.Controlled
                   with
                      new Code_Points_Map (Length (From))
@@ -1517,7 +1517,7 @@ package body Strings_Edit.UTF8.Maps is
             (  Map     : Code_Points_Map;
                Element : UTF8_Code_Point
             )  return UTF8_Code_Point is
-      Index : Integer := Find (Map.Map, Element);
+      Index : constant Integer := Find (Map.Map, Element);
    begin
       if Index > 0 then
          return Map.Map (Index).To;
@@ -1914,7 +1914,7 @@ package body Strings_Edit.UTF8.Maps is
          return True;
       else
          declare
-            Low : Integer := Find (Right.Ptr.all, Left.Low);
+            Low : constant Integer := Find (Right.Ptr.all, Left.Low);
          begin
             return
             (  Low > 0
@@ -2040,7 +2040,7 @@ package body Strings_Edit.UTF8.Maps is
          return Left <= Flatten (Right);
       else
          declare
-            Low : Integer := Find (Right.Ptr.all, Left.Low);
+            Low : constant Integer := Find (Right.Ptr.all, Left.Low);
          begin
             return
             (  Low > 0

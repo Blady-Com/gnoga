@@ -3,7 +3,7 @@
 --     Strings_Edit.Symmetric_Serialization        Luebeck            --
 --  Implementation                                 Winter, 2008       --
 --                                                                    --
---                                Last revision :  21:31 21 Dec 2011  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -105,7 +105,7 @@ package body Strings_Edit.Symmetric_Serialization is
    begin
       for Pointer in Data'Range loop
          declare
-            Code : Octet := Decoding (Data (Pointer));
+            Code : constant Octet := Decoding (Data (Pointer));
          begin
             if Code > 63 then
                raise Data_Error;

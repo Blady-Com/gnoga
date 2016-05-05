@@ -3,7 +3,7 @@
 --      Persistent.Blocking_Files.                 Luebeck            --
 --         Text_IO                                Spring, 2014       --
 --  Implementation                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Strings_Edit;           use Strings_Edit;
 with Strings_Edit.Fields;    use Strings_Edit.Fields;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
 

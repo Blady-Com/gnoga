@@ -3,7 +3,7 @@
 --  MODBUS client test                             Luebeck            --
 --                                                 Spring, 2015       --
 --                                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -37,7 +37,7 @@ with Strings_Edit.Streams;         use Strings_Edit.Streams;
 with GNAT.Sockets.Connection_State_Machine.MODBUS_Client.Synchronous;
 
 procedure Test_MODBUS_Client is
-   Timeout : Duration := 1.0;
+   Timeout : constant Duration := 1.0;
 
    function Image
             (  Values : GNAT.Sockets.Connection_State_Machine.

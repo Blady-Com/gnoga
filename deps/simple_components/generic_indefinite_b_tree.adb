@@ -3,7 +3,7 @@
 --     Generic_Indefinite_B_Tree                   Luebeck            --
 --  Implementation                                 Spring, 2014       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -103,7 +103,7 @@ package body Generic_Indefinite_B_Tree is
                 Tail       : Natural := 1
              )  is
       pragma Inline (Copy);
-      From_Last : Integer := From_First + To_Last - To_First;
+      From_Last : constant Integer := From_First + To_Last - To_First;
    begin
       To_Node.Pairs (To_First..To_Last) :=
          From_Node.Pairs (From_First..From_Last);
@@ -124,7 +124,7 @@ package body Generic_Indefinite_B_Tree is
                 Tail       : Natural := 1
              )  is
       pragma Inline (Move);
-      From_Last : Integer := From_First + To_Last - To_First;
+      From_Last : constant Integer := From_First + To_Last - To_First;
    begin
       Node.Pairs (To_First..To_Last) :=
          Node.Pairs (From_First..From_Last);
@@ -291,7 +291,7 @@ package body Generic_Indefinite_B_Tree is
             (  Container : B_Tree;
                Key       : Key_Type
             )  return Object_Type is
-      Item : Item_Ptr := Find (Container, Key);
+      Item : constant Item_Ptr := Find (Container, Key);
    begin
       if Item.Node = null then
          Raise_Exception
@@ -537,7 +537,7 @@ package body Generic_Indefinite_B_Tree is
          Insert (Container, No_Item, Pair, Child);
       else
          declare
-            Index : Integer :=
+            Index : constant Integer :=
                     Find (Parent.Pairs, Parent.Length, Pair.Key.all);
          begin
             if Index > 0 then
@@ -562,7 +562,7 @@ package body Generic_Indefinite_B_Tree is
                    Left  : Node_Ptr;
                    Right : Node_Ptr
                 )  is
-         New_Node : Node_Ptr := new Node_Type;
+         New_Node : constant Node_Ptr := new Node_Type;
          Root     : Node_Type renames New_Node.all;
       begin
          Root.Length       := 1;
@@ -592,7 +592,7 @@ package body Generic_Indefinite_B_Tree is
             end if;
          elsif Index = Width + 1 and then Underfilled_Left (Right) then
             declare
-               Split : Integer := Right.Parent.Index - 1;
+               Split : constant Integer := Right.Parent.Index - 1;
                This  : Node_Type renames Right.Parent.Node.all;
                Left  : Node_Type renames This.Children (Split).all;
             begin
@@ -615,8 +615,8 @@ package body Generic_Indefinite_B_Tree is
             end;
          elsif Index = 1 and then Underfilled_Right (Right) then
             declare
-               Split : Integer := Right.Parent.Index;
-               Other : Node_Ptr :=
+               Split : constant Integer := Right.Parent.Index;
+               Other : constant Node_Ptr :=
                        Right.Parent.Node.Children (Split + 1);
             begin
                Move (Other, 2, Other.Length + 1, 1);
@@ -634,7 +634,7 @@ package body Generic_Indefinite_B_Tree is
             end;
          else
             declare
-               New_Node : Node_Ptr := new Node_Type;
+               New_Node : constant Node_Ptr := new Node_Type;
                Left     : Node_Type renames New_Node.all;
             begin
                Left.Length  := Left_Half;
@@ -750,7 +750,7 @@ package body Generic_Indefinite_B_Tree is
       end if;
       declare
          Node  : Node_Type renames Item.Node.all;
-         Index : Integer := Item.Index;
+         Index : constant Integer := Item.Index;
       begin
          if Node.Children (Index) = null then
             if Node.Children (Index + 1) = null then
@@ -787,7 +787,7 @@ package body Generic_Indefinite_B_Tree is
          elsif Node.Children (Index + 1) = null then
             if Node.Length > 1 then
                declare
-                  Left : Node_Ptr := Node.Children (Index);
+                  Left : constant Node_Ptr := Node.Children (Index);
                begin
                   Move (Item.Node, Index, Node.Length - 1, Index + 1);
                   Node.Children (Index) := Left;
@@ -953,7 +953,7 @@ package body Generic_Indefinite_B_Tree is
             Index := Find (Node.Pairs, Node.Length, Key);
             exit when Index > 0;
             declare
-               Next : Node_Ptr := Node.Children (-Index);
+               Next : constant Node_Ptr := Node.Children (-Index);
             begin
                exit when Next = null;
                Node := Next;

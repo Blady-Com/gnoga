@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2003       --
 --                                                                    --
---                                Last revision :  19:03 27 May 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -148,7 +148,7 @@ package body Tables.Names is
    begin
       Check_Spelling (Name);
       declare
-         Index : Integer := Search (Folder, Name);
+         Index : constant Integer := Search (Folder, Name);
       begin
          if Index > 0 then
             raise Name_Error;
@@ -180,7 +180,7 @@ package body Tables.Names is
    end Add;
 
    procedure Delete (Folder : in out Dictionary; Name : String) is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          Delete (Folder, Index);
@@ -188,7 +188,7 @@ package body Tables.Names is
    end Delete;
 
    function Find (Folder : Dictionary; Name : String) return Tag is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          return Folder.List (Index).Data;
@@ -220,7 +220,7 @@ package body Tables.Names is
 
    function Locate (Folder : Dictionary; Name : String)
       return Natural is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          return Index;
@@ -310,7 +310,7 @@ package body Tables.Names is
    begin
       Check_Spelling (Name);
       declare
-         Index : Integer := Search (Folder, Name);
+         Index : constant Integer := Search (Folder, Name);
       begin
          if Index > 0 then
             Folder.List (Index).Data := Data;

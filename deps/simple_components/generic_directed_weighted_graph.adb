@@ -3,7 +3,7 @@
 --     Generic_Directed_Weighted_Graph             Luebeck            --
 --  Implementation                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  10:10 27 Dec 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -311,7 +311,8 @@ package body Generic_Directed_Weighted_Graph is
       begin
          if Set /= null and then Set.Last > 0 then
             declare
-               Location : Integer := Find (Set.List, Set.Last, Item);
+               Location : constant Integer :=
+                          Find (Set.List, Set.Last, Item);
             begin
                if Location > 0 then
                   return Location;
@@ -358,7 +359,8 @@ package body Generic_Directed_Weighted_Graph is
       begin
          if Set.Last > 0 then
             declare
-               Location : Integer := Find (Set.List, Set.Last, Item);
+               Location : constant Integer :=
+                          Find (Set.List, Set.Last, Item);
             begin
                if Location > 0 then
                   Remove (Set, Location);
@@ -522,7 +524,7 @@ package body Generic_Directed_Weighted_Graph is
             and then
                (  Child = Parent
                or else
-                  Is_Ancestor (Child, Parent)
+                  Is_Ancestor (Parent => Child, Child => Parent)
          )  )  )
       then
          raise Constraint_Error;
@@ -694,7 +696,7 @@ package body Generic_Directed_Weighted_Graph is
                            use Maps_Of_Nodes;
                            That     : Node_Header renames
                                       Header (Deref (Parent)).all;
-                           Children : Nodes_Set_Ptr :=
+                           Children : constant Nodes_Set_Ptr :=
                                       Nodes (That.Children);
                            Index    : constant Natural :=
                                       Find (Children, Current);
@@ -814,7 +816,7 @@ package body Generic_Directed_Weighted_Graph is
       else
          declare
             use Maps_Of_Nodes;
-            Children : Nodes_Set_Ptr    := Nodes (This.Children);
+            Children : constant Nodes_Set_Ptr := Nodes (This.Children);
             Index    : constant Natural := Find (Children, Child);
          begin
             if Index > 0 then
@@ -996,8 +998,8 @@ package body Generic_Directed_Weighted_Graph is
          raise Constraint_Error;
       else
          declare
-            Children : Nodes_Set_Ptr := Nodes (This.Children);
-            Index    : Natural := Find (Children, Child);
+            Children : constant Nodes_Set_Ptr := Nodes (This.Children);
+            Index    : constant Natural := Find (Children, Child);
          begin
             if Index > 0 then
                return Children.List (Index).Weight.all;

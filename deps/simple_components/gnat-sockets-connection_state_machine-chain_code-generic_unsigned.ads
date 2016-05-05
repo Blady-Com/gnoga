@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Chain_Code.Generic_Unsigned                 Winter, 2012       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -61,7 +61,7 @@ package GNAT.Sockets.Connection_State_Machine.Chain_Code.
 --    Layout_Error - Pointer is outside bounds
 --
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Number
              );

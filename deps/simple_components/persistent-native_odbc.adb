@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2012       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  10:00 09 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,10 +25,8 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;           use Ada.Exceptions;
 with Ada.Characters.Handling;  use Ada.Characters.Handling;
 with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
-with ODBC.API.Keys.Arrays;     use ODBC.API.Keys.Arrays;
 with ODBC.API.Keys.Edit;       use ODBC.API.Keys.Edit;
 with ODBC.API.Links;           use ODBC.API.Links;
 with ODBC.Bound_Parameters;    use ODBC.Bound_Parameters;
@@ -214,7 +212,7 @@ package body Persistent.Native_ODBC is
          for Index in List'Range loop
             begin
                declare
-                  Info : Type_Info :=
+                  Info : constant Type_Info :=
                          Get_Type_Info (Storage.Command, List (Index));
                begin
                   Data.Data_Type := Info.Data_Type;
@@ -1113,7 +1111,7 @@ package body Persistent.Native_ODBC is
 
    function New_ID (Storage : access Data_Base_Object)
       return Object_ID is
-      Result : Object_ID := Storage.Next_ID;
+      Result : constant Object_ID := Storage.Next_ID;
    begin
       Storage.Next_ID := Object_ID'Succ (Result);
       return Result;
@@ -1135,8 +1133,8 @@ package body Persistent.Native_ODBC is
                 Parent  : Persistent_Key'Class
              )  is
       Parent_Key : Object_Key renames Object_Key (Parent);
-      ID         : Object_ID := Object_Key'Class (Key).ID;
-      New_Parent : Object_ID := Parent_Key.ID;
+      ID         : constant Object_ID := Object_Key'Class (Key).ID;
+      New_Parent : constant Object_ID := Parent_Key.ID;
       Old_Parent : Object_ID;
    begin
       if Name'Length = 0 then
@@ -1385,7 +1383,7 @@ package body Persistent.Native_ODBC is
       ODBC.Bound_Parameters.Set (Param_Copy, Parameters);
       declare
          Parent_Key : Object_Key renames Object_Key (Parent);
-         Parent_ID  : Object_ID := Parent_Key.ID;
+         Parent_ID  : constant Object_ID := Parent_Key.ID;
       begin
          Check_Existent (Storage.all, Name, Parent_Key);
          ID := New_ID (Storage);
@@ -1565,7 +1563,7 @@ package body Persistent.Native_ODBC is
       end if;
       declare
          Command : ODBC_Command'Class renames Storage.Command.all;
-         ID      : Object_ID := Object_Key'Class (Key).ID;
+         ID      : constant Object_ID := Object_Key'Class (Key).ID;
       begin
          begin
             Execute
@@ -1633,7 +1631,7 @@ package body Persistent.Native_ODBC is
       end if;
       declare
          Command    : ODBC_Command'Class renames Storage.Command.all;
-         ID         : Object_ID := Object_Key'Class (Key).ID;
+         ID         : constant Object_ID := Object_Key'Class (Key).ID;
          Class_Copy : aliased String_Parameter (Class'Length);
          Data_Copy  : aliased String_Parameter (Data'Length);
          Param_Copy : aliased String_Parameter (Parameters'Length);

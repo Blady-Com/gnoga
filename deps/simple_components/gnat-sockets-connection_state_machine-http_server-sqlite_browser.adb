@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --        HTTP server.SQLite_Browser               Winter, 2014       --
 --  Implementation                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -336,8 +336,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
 
    function Get (Content : access Table_Content) return String is
       function Item return String is
-         Column : Positive := Content.Column - 1;
-         Last   : Positive := Content.Number_Of_Columns;
+         Column : constant Positive := Content.Column - 1;
+         Last   : constant Positive := Content.Number_Of_Columns;
       begin
          if Is_Null (Content.List, Column) then
             return
@@ -411,7 +411,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
                   Content.Number_Of_Columns + 1;
                declare
                   Descriptor : Column_Descriptor;
-                  Datatype   : String := Column (Content.List, 3);
+                  Datatype   : constant String :=
+                               Column (Content.List, 3);
                begin
                   if Datatype = "INTEGER" then
                      Descriptor.Datatype := SQLITE_INTEGER;
@@ -569,7 +570,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
                Column : Positive
             )  return String is
       use Integer_64_Edit;
-      Value : Integer_64 := SQLite.Column (Result, Column);
+      Value : constant Integer_64 := SQLite.Column (Result, Column);
    begin
       return Image (Value);
    end Integer_Image;
@@ -579,7 +580,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
                Column : Positive
             )  return String is
       use Double_Edit;
-      Value : Interfaces.C.double := SQLite.Column (Result, Column);
+      Value : constant Interfaces.C.double :=
+              SQLite.Column (Result, Column);
    begin
       return Image (Value);
    end Real_Image;
@@ -656,7 +658,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
                Column    : Positive;
                Max_Width : Positive
             )  return String is
-      Value : String := SQLite.Column (Result, Column);
+      Value : constant String := SQLite.Column (Result, Column);
    begin
       if Value'Length > Max_Width then
          return

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  19:56 08 Aug 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -449,7 +449,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       if Client.Source /= null then
          declare
-            Chunk : String := Get (Client.Source);
+            Chunk : constant String := Get (Client.Source);
          begin
             if Client.Chunked then -- Chunked transfer
                Send (Client, Integers.Image (Chunk'Length, 16) & CRLF);
@@ -558,7 +558,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    end Do_Get;
 
    procedure Do_Options (Client : in out HTTP_Client) is
-      Response : String := "";
+      Response : constant String := "";
    begin
       Send_Status_Line (Client, 200, "OK");
       Send_Date   (Client, Clock);
@@ -596,7 +596,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          return;
       end if;
       declare
-         Result : WebSocket_Accept :=
+         Result : constant WebSocket_Accept :=
                   WebSocket_Open (HTTP_Client'Class (Client)'Access);
          Socket : WebSocket_Data renames Client.WebSocket;
       begin
@@ -604,7 +604,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             declare
                type Message_Ptr is access WebSocket_Message;
                for Message_Ptr'Storage_Pool use Client.Pool;
-               Ptr : Message_Ptr := new WebSocket_Message (Result.Size);
+               Ptr : constant Message_Ptr :=
+                     new WebSocket_Message (Result.Size);
             begin
                Socket.Data := Ptr.all'Unchecked_Access;
             end;
@@ -782,7 +783,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          )
       then
          declare
-            Value : String_Ptr := GetTag (Client.CGI.Keys.all, Index);
+            Value : constant String_Ptr :=
+                    GetTag (Client.CGI.Keys.all, Index);
          begin
             if Value = null then
                return "";
@@ -799,7 +801,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       if Client.CGI.Keys /= null then
          declare
-            Offset : Natural := Locate (Client.CGI.Keys.all, Key);
+            Offset : constant Natural :=
+                     Locate (Client.CGI.Keys.all, Key);
             Value  : String_Ptr;
          begin
             if Offset > 0 then
@@ -953,7 +956,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          end if;
          if Header = Sec_WebSocket_Key_Header then
             declare
-               Key : String := From_Base64 (Value);
+               Key : constant String := From_Base64 (Value);
             begin
                Ptr := new String'(Key);
                Client.Headers (Header) := Ptr.all'Unchecked_Access;
@@ -1244,7 +1247,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 
    procedure Process_Body_Tail (Client : in out HTTP_Client'Class) is
       Request : String renames Client.Line.Value (1..Client.Line.Last);
-      Pointer : Integer := Request'First;
+      Pointer : constant Integer := Request'First;
    begin
       if Request = "--" then
          Client.Expecting := Multipart_Epilogue;
@@ -1335,11 +1338,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          while Pointer <= Request'Last loop
             if Request (Pointer) = ':' then
                declare
-                  Index : Integer :=
-                             Locate
-                             (  Request_Headers,
-                                Request (Request'First..Pointer - 1)
-                             );
+                  Index : constant Integer :=
+                          Locate
+                          (  Request_Headers,
+                             Request (Request'First..Pointer - 1)
+                          );
                begin
                   if Index > 0 then
                      Pointer := Pointer + 1;
@@ -1396,11 +1399,11 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          while Pointer <= Request'Last loop
             if Request (Pointer) = ':' then
                declare
-                  Index : Integer :=
-                             Locate
-                             (  Request_Headers,
-                                Request (Request'First..Pointer - 1)
-                             );
+                  Index : constant Integer :=
+                          Locate
+                          (  Request_Headers,
+                             Request (Request'First..Pointer - 1)
+                          );
                begin
                   if Index > 0 then
                      Pointer := Pointer + 1;
@@ -1801,10 +1804,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       procedure Add
                 (  Data  : Stream_Element_Array;
                    First : in out Stream_Element_Offset;
-                   Next  : in out Content_Item_Ptr
+                   Next  : Content_Item_Ptr
                 )  is
          pragma Inline (Add);
-         Size : Stream_Element_Count := Data'Last + 1 - First;
+         Size : constant Stream_Element_Count := Data'Last + 1 - First;
       begin
          if Size > Count then
             Last := Last + Count;
@@ -1825,10 +1828,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       procedure Add
                 (  Data  : String;
                    First : in out Stream_Element_Offset;
-                   Next  : in out Content_Item_Ptr
+                   Next  : Content_Item_Ptr
                 )  is
          pragma Inline (Add);
-         Size : Stream_Element_Count :=
+         Size : constant Stream_Element_Count :=
                 Stream_Element_Offset (Data'Last) + 1 - First;
       begin
          if Size > Count then
@@ -2160,7 +2163,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             elsif Client.Position > Boundary'First then -- Some out of
                declare                                  -- buffer data
                   From : Integer := Boundary'First + 1;
-                  To   : Integer := Client.Position;
+                  To   : constant Integer := Client.Position;
                begin
                   while From < To loop
                      exit when
@@ -2467,7 +2470,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                );
             when WebSocket_Header =>
                declare
-                  Octet  : Stream_Element := Data (Pointer);
+                  Octet  : constant Stream_Element := Data (Pointer);
                   Socket : WebSocket_Data renames Client.WebSocket;
                begin
                   Socket.Final := 0 /= (Octet and 2#1000_0000#);
@@ -2483,7 +2486,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                end;
             when WebSocket_Length =>
                declare
-                  Octet  : Stream_Element := Data (Pointer);
+                  Octet  : constant Stream_Element := Data (Pointer);
                   Socket : WebSocket_Data renames Client.WebSocket;
                begin
                   if 0 = (Octet and 2#1000_0000#) then
@@ -2769,7 +2772,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Get_Header_Line : while Client.Data_Length > 0 loop
          if Client.Data_Length > Data'Last - Pointer + 1 then
             declare
-               Start : Stream_Element_Offset := Pointer;
+               Start : constant Stream_Element_Offset := Pointer;
                Slice : Stream_Element_Array renames
                        Data (Pointer..Data'Last);
             begin
@@ -2786,7 +2789,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             end;
          else
             declare
-               Start : Stream_Element_Offset := Pointer;
+               Start : constant Stream_Element_Offset := Pointer;
                Slice : Stream_Element_Array renames
                        Data (Pointer..Pointer + Client.Data_Length - 1);
             begin
@@ -3233,7 +3236,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              (  Client : in out HTTP_Client;
                 Data   : Stream_Element_Array
              )  is
-      Length : Stream_Element_Count := Available_To_Send (Client);
+      Length : constant Stream_Element_Count :=
+               Available_To_Send (Client);
    begin
       if Data'Length = 0 then
          return;
@@ -3250,7 +3254,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              (  Client : in out HTTP_Client;
                 Data   : String
              )  is
-      Length : Stream_Element_Count := Available_To_Send (Client);
+      Length : constant Stream_Element_Count :=
+               Available_To_Send (Client);
    begin
       if Data'Length = 0 then
          return;
@@ -3315,7 +3320,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              )  is
       type Status_Ptr is access Status_Line;
       for Status_Ptr'Storage_Pool use Client.Pool;
-      Ptr : Status_Ptr :=
+      Ptr : constant Status_Ptr :=
                new Status_Line'
                    (  Kind         => File,
                       Path_Length  => Path'Length,
@@ -3341,7 +3346,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              )  is
       type Status_Ptr is access Status_Line;
       for Status_Ptr'Storage_Pool use Client.Pool;
-      Ptr : Status_Ptr :=
+      Ptr : constant Status_Ptr :=
                new Status_Line'
                    (  Kind         => URI,
                       Scheme       => Scheme,
@@ -3454,7 +3459,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Start  : Integer := Value'First;
 
       procedure Add (Field : String) is
-         Index : Integer := Locate (Connections, Trim (Field));
+         Index : constant Integer := Locate (Connections, Trim (Field));
       begin
          if Index > 0 then
             Result := Result or GetTag (Connections, Index);
@@ -3843,7 +3848,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    end Validate_Key;
 
    function Value (Text : String) return Header_Value is
-      Index : Integer := Locate (Request_Headers, Text);
+      Index : constant Integer := Locate (Request_Headers, Text);
    begin
       if Index > 0 then
          return

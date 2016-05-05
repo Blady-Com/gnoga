@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.                          Luebeck            --
 --        Integer_Edit.Superscript_Edit            Spring, 2005       --
 --  Interface                                                         --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -47,6 +47,36 @@ package body Strings_Edit.UTF8.Integer_Edit is
       Sign_Of : Sign;
       Start   : Integer;
       Index   : Integer := Pointer;
+
+      procedure Skip is
+         pragma Inline (Skip);
+      begin
+         loop
+            Get_Digit (Source, Index, Natural (Digit));
+            exit when Digit > Radix;
+         end loop;
+         Pointer := Index;
+      end Skip;
+
+      procedure Neg_Overflow is
+         pragma Inline (Neg_Overflow);
+      begin
+         if not ToFirst then
+            raise Constraint_Error;
+         end if;
+         Value := First;
+         Skip;
+      end Neg_Overflow;
+
+      procedure Pos_Overflow is
+         pragma Inline (Pos_Overflow);
+      begin
+         if not ToLast then
+            raise Constraint_Error;
+         end if;
+         Value := Last;
+         Skip;
+      end Pos_Overflow;
    begin
       if Index < Source'First then
          raise Layout_Error;
@@ -68,26 +98,30 @@ package body Strings_Edit.UTF8.Integer_Edit is
             Get_Digit (Source, Index, Natural (Digit));
             exit when Digit >= Radix;
             if Result < Min then
-               goto NegOverflow;
+               Neg_Overflow;
+               return;
             end if;
             Result := Result * Radix;
-            if Result < Number'Base'First + Number'Base (Digit) then
-               goto NegOverflow;
+            if Result < Number'Base'First + Digit then
+               Neg_Overflow;
+               return;
             end if;
-            Result := Result - Number'Base (Digit);
+            Result := Result - Digit;
          end loop;
       else
          while Index <= Source'Last loop
             Get_Digit (Source, Index, Natural (Digit));
             exit when Digit >= Radix;
             if Result > Max then
-               goto PosOverflow;
+               Pos_Overflow;
+               return;
             end if;
             Result := Result * Radix;
-            if Result > Number'Base'Last - Number'Base (Digit) then
-               goto PosOverflow;
+            if Result > Number'Base'Last - Digit then
+               Pos_Overflow;
+               return;
             end if;
-            Result := Result + Number'Base (Digit);
+            Result := Result + Digit;
          end loop;
       end if;
       if Start = Index then
@@ -111,27 +145,6 @@ package body Strings_Edit.UTF8.Integer_Edit is
          end if;
       end if;
       Value := Result;
-      Pointer := Index;
-      return;
-
-   <<NegOverflow>>
-      if not ToFirst then
-         raise Constraint_Error;
-      end if;
-      Value := First;
-      goto Skip;
-
-   <<PosOverflow>>
-      if not ToLast then
-         raise Constraint_Error;
-      end if;
-      Value := Last;
-
-   <<Skip>>
-      loop
-         Get_Digit (Source, Index, Natural (Digit));
-         exit when Digit > Radix;
-      end loop;
       Pointer := Index;
    end Get;
 

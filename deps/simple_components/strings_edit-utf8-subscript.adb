@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Subscript                 Luebeck            --
 --  Implementation                                 Spring, 2005       --
 --                                                                    --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -66,7 +66,7 @@ package body Strings_Edit.UTF8.Subscript is
                 Pointer : in out Integer;
                 Digit   : out Natural
              )  is
-      Index : Integer := Pointer;
+      Index : constant Integer := Pointer;
    begin
       if (  Index >= Source'Last
          or else

@@ -3,7 +3,7 @@
 --  Test program                                   Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of  the  GNU  Library  General  Public  --
@@ -83,9 +83,9 @@ begin
       end;
       declare
          A : Node := new String'("A");
-         B : Node := new String'("B");
+         B : constant Node := new String'("B");
          C : Node := new String'("C");
-         D : Node := new String'("D");
+         D : constant Node := new String'("D");
          E : Node := new String'("E");
       begin
          Connect (A, C);  -- A --> C --> D

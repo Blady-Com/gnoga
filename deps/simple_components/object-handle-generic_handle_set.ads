@@ -3,7 +3,7 @@
 --     Object.Handle.                              Luebeck            --
 --        Generic_Handle_Set                       Spring, 2006       --
 --  Interface                                                         --
---                                Last revision :  09:25 07 Aug 2009  --
+--                                Last revision :  18:58 21 Mar 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,7 +36,7 @@
 --  parameters:
 --
 --     Handle_Type        - The type of handles
---     Object_Ptr_Type    = Referential type used in the container
+--     Object_Ptr_Type    - Referential type used in the container
 --     Null_Object_Ptr    - A value corresponding to no object
 --     Ptr                - Handle to Object_Ptr_Type conversion
 --     Ref                - Object_Ptr_Type to handle conversion

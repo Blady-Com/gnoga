@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Summer, 2003       --
 --                                                                    --
---                                Last revision :  12:40 06 Nov 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -244,13 +244,8 @@ package body Object.Archived is
    end Is_Empty;
 
    function Is_Registered (Class : String) return Boolean is
-      Ptr : Restore;
    begin
-      Ptr := Find (Dispatch_Table, Class);
-      return True;
-   exception
-      when End_Error =>
-         return False;
+      return IsIn (Dispatch_Table, Class);
    end Is_Registered;
 
    procedure Register_Class

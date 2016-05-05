@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  23:16 14 Oct 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,9 +35,7 @@ package body GNAT.Sockets.Connection_State_Machine.
              ELV_MAX_Cube_Client is
    use Stream_Element_Offset_Edit;
    use Device_Handles;
-   use Device_Maps;
    use Room_Handles;
-   use Rooms_Maps;
 
    CRLF : constant String := Character'Val (13) & Character'Val (10);
 --
@@ -64,6 +62,106 @@ package body GNAT.Sockets.Connection_State_Machine.
                                &  Character'Val (16#00#)
                                &  Character'Val (16#00#)
                                );
+   S_Add  : constant String := (  Character'Val (16#00#)
+                               &  Character'Val (16#00#) -- Room mode
+                               &  Character'Val (16#20#) -- Command mode
+                               &  Character'Val (16#00#)
+                               &  Character'Val (16#00#)
+                               &  Character'Val (16#00#)
+                               );
+   S_Rem  : constant String := (  Character'Val (16#00#)
+                               &  Character'Val (16#00#) -- Room mode
+                               &  Character'Val (16#21#) -- Command mode
+                               &  Character'Val (16#00#)
+                               &  Character'Val (16#00#)
+                               &  Character'Val (16#00#)
+                               );
+   function Encode (Temperature : Centigrade) return Unsigned_8;
+   function Encode (Day : Week_Day) return Integer;
+   function Encode (Address : RF_Address) return String;
+   function Encode (Date : Time) return String;
+   function Encode (Mode : Operating_Mode) return Character;
+
+--     procedure Add_New_Device
+--               (  Client  : in out ELV_MAX_Cube_Client;
+--                  Index   : Positive;
+--                  Device  : Partner_Device_Type;
+--                  Address : RF_Address
+--               )  is
+--        Lock : Holder (Client.Topology.Lock'Access);
+--        Room : Room_Descriptor'Class renames
+--                  Ptr (Get (Client.Topology.Rooms, Index)).all;
+--     begin
+--        Add_New_Device_Unchecked
+--        (  Client  => Client,
+--           Room    => Room,
+--           Device  => Device,
+--           Address => Address
+--        );
+--     end Add_New_Device;
+--
+--     procedure Add_New_Device
+--               (  Client  : in out ELV_MAX_Cube_Client;
+--                  ID      : Room_ID;
+--                  Device  : Partner_Device_Type;
+--                  Address : RF_Address
+--               )  is
+--        Lock : Holder (Client.Topology.Lock'Access);
+--        Room : Room_Descriptor'Class renames
+--                  Ptr
+--                  (  Get
+--                     (  Client.Topology.Rooms,
+--                        Find_Room_Unchecked (Client, ID)
+--                  )  ) .all;
+--     begin
+--        Add_New_Device_Unchecked
+--        (  Client  => Client,
+--           Room    => Room,
+--           Device  => Device,
+--           Address => Address
+--        );
+--     end Add_New_Device;
+--
+--     procedure Add_New_Device_Unchecked
+--               (  Client  : in out ELV_MAX_Cube_Client;
+--                  Room    : Room_Descriptor'Class;
+--                  Device  : Partner_Device_Type;
+--                  Address : RF_Address
+--               )  is
+--        function From_Type (Device : Partner_Device_Type)
+--           return Character is
+--        begin
+--           case Device is
+--              when Radiator_Thermostat =>
+--                 return Character'Val (1);
+--              when Radiator_Thermostat_Plus =>
+--                 return Character'Val (2);
+--              when Wall_Thermostat =>
+--                 return Character'Val (3);
+--              when Shutter_Contact =>
+--                 return Character'Val (4);
+--           end case;
+--        end From_Type;
+--     begin
+--        if Is_In (Client.Topology.RF, Address) then
+--           Raise_Exception
+--           (  Constraint_Error'Identity,
+--              "A device " & Image (Address) & " already exists"
+--           );
+--        end if;
+--        Send
+--        (  Client,
+--           (  "s:"
+--           &  To_Base64
+--              (  S_Add
+--              &  Encode (Room.Master)
+--              &  Character'Val (Room.ID)
+--              &  Encode (Address)
+--              &  From_Type (Device)
+--              )
+--           &  CRLF
+--        )  );
+--     end Add_New_Device_Unchecked;
 
    procedure Get_Duration
              (  Line    : String;
@@ -81,10 +179,15 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Kind_Of : out Device_Type
              );
 
-   procedure Clean_Up (Client : in out ELV_MAX_Cube_Client) is
+   procedure Clean_Up
+             (  Client : in out ELV_MAX_Cube_Client'Class;
+                Full   : Boolean := True
+             )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
-      Client.Ready    := 0;
+      if Full then
+         Client.Ready    := 0;
+      end if;
       Client.Roomless := 0;
       Erase (Client.Topology.RF);
       Erase (Client.Topology.Devices);
@@ -95,9 +198,60 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Client : in out ELV_MAX_Cube_Client;
                 Update : Update_Data
              )  is
+     use Servers_List;
    begin
-      null;
+      case Update.Kind_Of is
+         when Cube_Update | Topology_Update |
+              Device_Parameters_Update =>
+            null;
+         when NTP_Servers_List_Update =>
+            for Index in 1..Get_Size (Update.NTP_Servers_List) loop
+               Trace
+               (  Client,
+                  (  "> NTP server "
+                  &  Image (Index)
+                  &  "/"
+                  &  Image (Get_Size (Update.NTP_Servers_List))
+                  &  ": "
+                  &  Get (Update.NTP_Servers_List, Index)
+               )  );
+            end loop;
+         when Device_Discovery_Update =>
+            Trace
+            (  Client,
+               (  "> Device found: "
+               &  Image (Update.Device)
+               &  " "
+               &  Image (Update.Address)
+               &  " S/N "
+               &  Update.Serial_No
+            )  );
+         when End_Discovery_Update =>
+            Trace (Client, "> Device discovery finished");
+      end case;
    end Configuration_Updated;
+
+   function Create_List (Text : String) return Servers_List.Set is
+      use Servers_List;
+      Start : Integer := Text'First;
+      List  : Servers_List.Set;
+      procedure Add (Pointer : Integer) is
+         Name : constant String := Trim (Text (Start..Pointer - 1));
+      begin
+         if Name'Length > 0 then
+            Add (List, Name);
+         end if;
+      end Add;
+   begin
+      for Pointer in Text'Range loop
+         if Text (Pointer) = ',' then
+            Add (Pointer);
+            Start := Pointer + 1;
+         end if;
+      end loop;
+      Add (Text'Last + 1);
+      return List;
+   end Create_List;
 
    procedure Data_Received
              (  Client : in out ELV_MAX_Cube_Client;
@@ -131,7 +285,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                Host     : String    := "";
                Port     : Port_Type := 23272
             )  return Cube_Descriptor_Array is
-      Announce : Stream_Element_Array (1..19) :=
+      Announce : constant Stream_Element_Array (1..19) :=
                   (  16#65#, 16#51#, 16#33#, 16#4D#, 16#61#, 16#78#,
                      16#2A#, 16#00#, 16#2A#, 16#2A#, 16#2A#, 16#2A#,
                      16#2A#, 16#2A#, 16#2A#, 16#2A#, 16#2A#, 16#2A#,
@@ -143,12 +297,16 @@ package body GNAT.Sockets.Connection_State_Machine.
               Setting_Broadcast,
               Setting_Timeout,
               Getting_Host_By_Name,
+              Getting_Address_From_Name,
               Binding_Socket,
               Sending_Socket,
               Receiving_From_Socket,
               Closing_Socket
            );
-      function Image (Action : Disposition) return String is
+      Action  : Disposition := Creating_Socket;
+      Address : aliased Sock_Addr_Type;
+
+      function Image return String is
       begin
          case Action is
             when Creating_Socket =>
@@ -160,9 +318,11 @@ package body GNAT.Sockets.Connection_State_Machine.
             when Setting_Timeout =>
                return "setting socket timeout";
             when Getting_Host_By_Name =>
-               return "getting the host name";
+               return "getting the host name from " & Host_Name;
+            when Getting_Address_From_Name =>
+               return "getting address from host name " & Host;
             when Binding_Socket =>
-               return "binding the socket";
+               return "binding the socket to " & Image (Address);
             when Sending_Socket =>
                return "sending data into the socket";
             when Receiving_From_Socket =>
@@ -171,14 +331,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                return "closing the socket";
          end case;
       end Image;
-      Action    : Disposition := Creating_Socket;
       Data      : Stream_Element_Array  (1..100);
       Result    : Cube_Descriptor_Array (1..255);
       Count     : Natural  := 0;
-      Step      : Duration := Timeout / Attempts;
-      Start     : Time     := Clock;
+      Step      : constant Duration := Timeout / Attempts;
+      Start     : constant Time     := Clock;
       Last      : Stream_Element_Offset;
-      Address   : aliased Sock_Addr_Type;
       Cube      : Sock_Addr_Type;
       Socket    : Socket_Type := No_Socket;
    begin
@@ -201,10 +359,11 @@ package body GNAT.Sockets.Connection_State_Machine.
          Socket_Level,
          (Receive_Timeout, Step)
       );
-      Action := Getting_Host_By_Name;
       if Host = "" then
+         Action := Getting_Host_By_Name;
          Address.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
       else
+         Action := Getting_Address_From_Name;
          Address.Addr := To_Addr (Host);
       end if;
       Address.Port := Port;
@@ -264,7 +423,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          end if;
          Raise_Exception
          (  Exception_Identity (Error),
-            Exception_Message (Error) & ", when " & Image (Action)
+            Exception_Message (Error) & ", when " & Image
          );
    end Discover;
 
@@ -291,7 +450,7 @@ package body GNAT.Sockets.Connection_State_Machine.
    end Dump;
 
    function Encode (Temperature : Centigrade) return Unsigned_8 is
-      Value : Integer := Integer (Float (Temperature) * 2.0);
+      Value : constant Integer := Integer (Float (Temperature) * 2.0);
    begin
       if Value <= 0 then
          return 0;
@@ -361,7 +520,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                ID     : Room_ID
             )  return Positive is
-      Result : Integer := Find (Client.Topology.Rooms, ID);
+      Result : constant Integer := Find (Client.Topology.Rooms, ID);
    begin
       if Result <= 0 then
          Raise_Exception
@@ -372,6 +531,20 @@ package body GNAT.Sockets.Connection_State_Machine.
          return Result;
       end if;
    end Find_Room_Unchecked;
+
+   procedure Get_A
+             (  Client : in out ELV_MAX_Cube_Client'Class;
+                Line   : String
+             )  is
+   begin
+      Clean_Up (Client, False);
+      begin
+         Configuration_Updated (Client, (Kind_Of => Topology_Update));
+      exception
+         when others =>
+            null;
+      end;
+   end Get_A;
 
    procedure Get_Address
              (  Line    : String;
@@ -391,41 +564,6 @@ package body GNAT.Sockets.Connection_State_Machine.
       Pointer := Pointer + 3;
    end Get_Address;
 
-   procedure Get_Comma
-             (  Line    : String;
-                Pointer : in out Integer
-             )  is
-   begin
-      if Pointer <= Line'Last and then Line (Pointer) = ',' then
-         Pointer := Pointer + 1;
-      else
-         Raise_Exception
-         (  Data_Error'Identity,
-            "Invalid response, missing comma (,)"
-         );
-      end if;
-   end Get_Comma;
-
-   procedure Get_Field
-             (  Line    : String;
-                Pointer : in out Integer;
-                From    : out Integer;
-                To      : out Integer
-             )  is
-   begin
-      for Index in Pointer..Line'Last loop
-         if Line (Index) = ',' then
-            From    := Pointer;
-            To      := Index - 1;
-            Pointer := Index + 1;
-            return;
-         end if;
-      end loop;
-      From    := Pointer;
-      To      := Line'Last;
-      Pointer := Line'Last + 1;
-   end Get_Field;
-
    procedure Get_C
              (  Client : in out ELV_MAX_Cube_Client'Class;
                 Line   : String
@@ -442,7 +580,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             declare
                This  : Set_Point renames List (Point);
                Value : Duration;
-               Point : Integer :=
+               Point : constant Integer :=
                        (  Character'Pos (Data (Pointer    )) * 256
                        +  Character'Pos (Data (Pointer + 1))
                        );
@@ -458,7 +596,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             end;
          end loop;
          declare -- Truncate list
-            Last  : Day_Duration := List (List'Last).Last;
+            Last  : constant Day_Duration := List (List'Last).Last;
             Count : Point_Count  := List'Last;
          begin
             while Count > 1 and then List (Count - 1).Last = Last loop
@@ -551,7 +689,8 @@ package body GNAT.Sockets.Connection_State_Machine.
       end;
       Get_Comma (Line, Pointer);
       declare
-         Data    : String  := From_Base64 (Line (Pointer..Line'Last));
+         Data    : constant String :=
+                   From_Base64 (Line (Pointer..Line'Last));
          Pointer : Integer := Data'First;
          Kind_Of : Device_Type;
          Address : RF_Address;
@@ -588,7 +727,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          Pointer := Pointer + 1 + 1 + 1 + 10;
          declare
             Lock  : Holder (Client.Topology.Lock'Access);
-            Index : Integer := Find (Client.Topology.RF, Address);
+            Index : constant Integer :=
+                    Find (Client.Topology.RF, Address);
          begin
             if Index <= 0 then
                return;
@@ -648,6 +788,21 @@ package body GNAT.Sockets.Connection_State_Machine.
          );
       end if;
    end Get_Clock_Difference;
+
+   procedure Get_Comma
+             (  Line    : String;
+                Pointer : in out Integer
+             )  is
+   begin
+      if Pointer <= Line'Last and then Line (Pointer) = ',' then
+         Pointer := Pointer + 1;
+      else
+         Raise_Exception
+         (  Data_Error'Identity,
+            "Invalid response, missing comma (,)"
+         );
+      end if;
+   end Get_Comma;
 
    function Get_Device
             (  Client  : ELV_MAX_Cube_Client;
@@ -876,6 +1031,46 @@ package body GNAT.Sockets.Connection_State_Machine.
       Pointer := Pointer + 1;
    end Get_Duration;
 
+   function Get_Error (Client : ELV_MAX_Cube_Client) return Boolean is
+   begin
+      return Client.Error;
+   end Get_Error;
+
+   procedure Get_F
+             (  Client : in out ELV_MAX_Cube_Client'Class;
+                Line   : String
+             )  is
+   begin
+      Configuration_Updated
+      (  Client,
+         (  Kind_Of          => NTP_Servers_List_Update,
+            NTP_Servers_List => Create_List (Line)
+      )  );
+   exception
+      when others =>
+         null;
+   end Get_F;
+
+   procedure Get_Field
+             (  Line    : String;
+                Pointer : in out Integer;
+                From    : out Integer;
+                To      : out Integer
+             )  is
+   begin
+      for Index in Pointer..Line'Last loop
+         if Line (Index) = ',' then
+            From    := Pointer;
+            To      := Index - 1;
+            Pointer := Index + 1;
+            return;
+         end if;
+      end loop;
+      From    := Pointer;
+      To      := Line'Last;
+      Pointer := Line'Last + 1;
+   end Get_Field;
+
    procedure Get_H
              (  Client : in out ELV_MAX_Cube_Client'Class;
                 Line   : String
@@ -994,7 +1189,7 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Client : in out ELV_MAX_Cube_Client'Class;
                 Line   : String
              )  is
-      Data        : String  := From_Base64 (Line);
+      Data        : constant String := From_Base64 (Line);
       Pointer     : Integer := Data'First;
       Length      : Integer;
       Next        : Integer;
@@ -1005,7 +1200,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       Initialized : Boolean;
 
       procedure Get_Eco_Button_Status (Last : in out Device_Data) is
-         Byte : Unsigned_8 := Character'Pos (Data (Pointer));
+         Byte : constant Unsigned_8 := Character'Pos (Data (Pointer));
       begin
          Pointer := Pointer + 1;
          Last.Battery_Low   := 0 /= (Byte and 2**7);
@@ -1024,7 +1219,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       procedure Get_Shutter_Contact_Status
                 (  Last : in out Device_Data
                 )  is
-         Byte : Unsigned_8 := Character'Pos (Data (Pointer));
+         Byte : constant Unsigned_8 := Character'Pos (Data (Pointer));
       begin
          Pointer := Pointer + 1;
          Last.Battery_Low   := 0 /= (Byte and 2**7);
@@ -1066,6 +1261,26 @@ package body GNAT.Sockets.Connection_State_Machine.
             Centigrade (Float (Character'Pos (Data (Pointer))) / 2.0);
          Last.New_Temperature := Last.Set_Temperature;
          Pointer := Pointer + 1;
+         Last.Temperature := Centigrade'First;
+         if (  Length >= 11
+            and then
+               Last.Mode in Automatic..Manual
+            and then
+               Character'Pos (Data (Pointer + 1)) /= 0
+            )
+         then
+            Last.Temperature :=
+               Centigrade
+               (  Float
+                  (  (Character'Pos (Data (Pointer)) mod 2) * 256
+                  +  Character'Pos (Data (Pointer + 1))
+                  )
+               /  10.0
+               );
+            Last.Latest_Temperature := Last.Temperature;
+            Last.Received_At        := Clock;
+            Pointer := Pointer + 2;
+         end if;
 --           declare
 --              Month     : Month_Number;
 --              Day       : Day_Number;
@@ -1110,7 +1325,8 @@ package body GNAT.Sockets.Connection_State_Machine.
       procedure Get_Wall_Thermostat_Status
                 (  Last : in out Device_Data
                 )  is
-         Byte : Unsigned_8;
+         Byte  : Unsigned_8;
+         Eight : Integer;
       begin
          Byte    := Character'Pos (Data (Pointer));
          Pointer := Pointer + 1;
@@ -1126,12 +1342,19 @@ package body GNAT.Sockets.Connection_State_Machine.
             when others => Last.Mode := Boost;
          end case;
          Pointer := Pointer + 1;
+         Eight   := Character'Pos (Data (Pointer));
          Last.Set_Temperature :=
-            Centigrade (Float (Character'Pos (Data (Pointer))) / 2.0);
+            Centigrade (Float (Eight mod 2**6) / 2.0);
          Last.New_Temperature := Last.Set_Temperature;
          Pointer := Pointer + 4;
          Last.Temperature :=
-            Centigrade (Float (Character'Pos (Data (Pointer))) / 10.0);
+            Centigrade
+            (  Float
+               (  (Eight / 2**7) * 256
+               +  Character'Pos (Data (Pointer))
+               )
+            /  10.0
+            );
          Pointer := Pointer + 1;
       end Get_Wall_Thermostat_Status;
 
@@ -1215,7 +1438,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Get_Address (Data, Pointer, Address);
          Pointer := Pointer + 1;
          declare
-            Byte : Unsigned_8 := Character'Pos (Data (Pointer));
+            Byte : constant Unsigned_8 := Character'Pos (Data (Pointer));
          begin
             Valid       := 0 /= (Byte and 2**4);
             Error       := 0 /= (Byte and 2**3);
@@ -1224,7 +1447,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          end;
          Pointer := Pointer + 1;
          declare
-            Data : Device_Data := Get_Data;
+            Data : constant Device_Data := Get_Data;
          begin
             if Data.Kind_Of in Radiator_Thermostat..Eco_Button then
                Data_Received (Client, Data);
@@ -1292,7 +1515,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Pointer := Pointer + 1;
          Index := Find (Client.Topology.Rooms, ID);
          declare
-            Object : Device_Descriptor_Ptr :=
+            Object : constant Device_Descriptor_Ptr :=
                      new Device_Descriptor (Kind_Of, Length);
             Device : Device_Handles.Handle;
          begin
@@ -1371,7 +1594,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          end if;
          Get_Address (Data, Pointer, Address);
          declare
-            Object : Room_Descriptor_Ptr :=
+            Object : constant Room_Descriptor_Ptr :=
                      new Room_Descriptor (Length);
             Room   : Room_Handles.Handle;
          begin
@@ -1411,7 +1634,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          Lock : Holder (Client.Topology.Lock'Access);
       begin
          declare
-            Data    : String := From_Base64 (Line (Pointer..Line'Last));
+            Data    : constant String :=
+                      From_Base64 (Line (Pointer..Line'Last));
             Pointer : Integer := Data'First;
             Count   : Integer;
          begin
@@ -1462,6 +1686,50 @@ package body GNAT.Sockets.Connection_State_Machine.
             null;
       end;
    end Get_M;
+
+   procedure Get_N
+             (  Client : in out ELV_MAX_Cube_Client'Class;
+                Line   : String
+             )  is
+      Data    : constant String := From_Base64 (Line);
+      Pointer : Integer := Data'First;
+      Kind_Of : Device_Type;
+      Address : RF_Address;
+   begin
+      if Data'Length = 0 then
+         begin
+            Configuration_Updated
+            (  Client,
+               (Kind_Of => End_Discovery_Update)
+            );
+         exception
+            when others =>
+               null;
+         end;
+      elsif Data'Length < 14 then
+         Raise_Exception
+         (  Data_Error'Identity,
+            (  "Invalid N-response length "
+            &  Image (Integer (Data'Length))
+            &  ", expected at least 14"
+         )  );
+      else
+         Get_Type    (Data, Pointer, Kind_Of);
+         Get_Address (Data, Pointer, Address);
+         begin
+            Configuration_Updated
+            (  Client,
+               (  Kind_Of   => Device_Discovery_Update,
+                  Device    => Kind_Of,
+                  Address   => Address,
+                  Serial_No => Data (Pointer..Pointer + 9)
+            )  );
+         exception
+            when others =>
+               null;
+         end;
+      end if;
+   end Get_N;
 
    function Get_Number_Of_Devices (Client : ELV_MAX_Cube_Client)
       return Natural is
@@ -1562,7 +1830,7 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Get
                 (  Client.Topology.Rooms,
                    Find_Room_Unchecked (Client, ID)
-             ) ) .Master;
+             )  ) .Master;
    end Get_Room_RF_Address;
 
    function Get_Serial_No (Client : ELV_MAX_Cube_Client)
@@ -1625,6 +1893,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                "Invalid S-response, missing third field"
             );
       end;
+      Client.Error := Error /= 0;
+      Client.Duty  := Duty;
+      Client.Slots := Slots;
       Status_Received (Client, Error /= 0, Duty, Slots);
    end Get_S;
 
@@ -1683,6 +1954,32 @@ package body GNAT.Sockets.Connection_State_Machine.
       end if;
    end Get_Version;
 
+   function Has_Device_Data
+            (  Client : ELV_MAX_Cube_Client;
+               Index  : Positive
+            )  return Boolean is
+      Lock   : Holder (Client.Topology.Self.Lock'Access);
+      Device : Device_Descriptor'Class renames
+               Ptr (Get (Client.Topology.Devices, Index)).all;
+   begin
+      return Device.Init;
+   end Has_Device_Data;
+
+   function Has_Device_Data
+            (  Client  : ELV_MAX_Cube_Client;
+               Address : RF_Address
+            )  return Boolean is
+      Lock   : Holder (Client.Topology.Self.Lock'Access);
+      Device : Device_Descriptor'Class renames
+               Ptr
+               (  Get
+                  (  Client.Topology.Devices,
+                     Get_Device_Unchecked (Client, Address)
+               )  ) .all;
+   begin
+      return Device.Init;
+   end Has_Device_Data;
+
    function Image (Data : Device_Data) return String is
       Result  : String (1..200);
       Pointer : Integer := 1;
@@ -1727,6 +2024,17 @@ package body GNAT.Sockets.Connection_State_Machine.
                Integer (Float (Data.Valve_Position) * 100.0)
             );
             Put (Result, Pointer, "%, ");
+            if Data.Temperature /= Centigrade'First then
+               Put
+               (  Destination => Result,
+                  Pointer     => Pointer,
+                  Value       => Float (Data.Temperature),
+                  AbsSmall    => -1
+               );
+               Put (Result, Pointer, ", ");
+            else
+               Put (Result, Pointer, "no temperature, ");
+            end if;
             Put
             (  Destination => Result,
                Pointer     => Pointer,
@@ -1897,7 +2205,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                Device : Positive
             )  return Boolean is
       Lock  : Holder (Client.Topology.Self.Lock'Access);
-      Index : Integer := Find (Client.Topology.Rooms, ID);
+      Index : constant Integer := Find (Client.Topology.Rooms, ID);
    begin
       if Index <= 0 then
          return False;
@@ -1912,7 +2220,7 @@ package body GNAT.Sockets.Connection_State_Machine.
    end Is_In;
 
    function Minutes (Time : Day_Duration) return String is
-      Minutes : Integer := Integer (Time) / 60;
+      Minutes : constant Integer := Integer (Time) / 60;
       Result  : String (1..5);
       Pointer : Integer := 1;
    begin
@@ -1937,6 +2245,33 @@ package body GNAT.Sockets.Connection_State_Machine.
       return Result;
    end Minutes;
 
+   procedure Pair
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Timeout : Duration := 60.0
+             )  is
+      Command : String  := "n:0000" & CRLF;
+      Pointer : Integer := Command'First + 2;
+   begin
+      begin
+         Put
+         (  Destination => Command,
+            Pointer     => Pointer,
+            Value       => Positive (Timeout),
+            Base        => 16,
+            Field       => 4,
+            Fill        => '0',
+            Justify     => Right
+         );
+      exception
+         when others =>
+            Raise_Exception
+            (  Constraint_Error'Identity,
+               "Invalid timeout value"
+            );
+      end;
+      Send (Client, Command);
+   end Pair;
+
    procedure Process_Packet (Client : in out ELV_MAX_Cube_Client) is
       Line : String  renames Client.Line.Value;
       Last : Natural renames Client.Line.Last;
@@ -1953,14 +2288,20 @@ package body GNAT.Sockets.Connection_State_Machine.
          );
       end if;
       case Line (Line'First) is
+         when 'A' =>
+            Get_A (Client, Line (Line'First + 2..Last));
          when 'C' =>
             Get_C (Client, Line (Line'First + 2..Last));
+         when 'F' =>
+            Get_F (Client, Line (Line'First + 2..Last));
          when 'H' =>
             Get_H (Client, Line (Line'First + 2..Last));
          when 'L' =>
             Get_L (Client, Line (Line'First + 2..Last));
          when 'M' =>
             Get_M (Client, Line (Line'First + 2..Last));
+         when 'N' =>
+            Get_N (Client, Line (Line'First + 2..Last));
          when 'S' =>
             Get_S (Client, Line (Line'First + 2..Last));
          when others =>
@@ -1971,12 +2312,25 @@ package body GNAT.Sockets.Connection_State_Machine.
       end case;
    end Process_Packet;
 
-   procedure Query_Devices
-             (  Client : in out ELV_MAX_Cube_Client
-             )  is
+   procedure Query_Devices (Client : in out ELV_MAX_Cube_Client) is
    begin
       Send (Client, "l:" & CRLF);
    end Query_Devices;
+
+   procedure Query_NTP_Servers (Client : in out ELV_MAX_Cube_Client) is
+   begin
+      Send (Client, "f:" & CRLF);
+   end Query_NTP_Servers;
+
+   procedure Reset_Devices (Client : in out ELV_MAX_Cube_Client) is
+   begin
+      Send (Client, "a:" & CRLF);
+   end Reset_Devices;
+
+   procedure Reset_Error (Client : in out ELV_MAX_Cube_Client) is
+   begin
+      Send (Client, "r:" & CRLF);
+   end Reset_Error;
 
    procedure Send
              (  Client : in out ELV_MAX_Cube_Client;
@@ -1993,6 +2347,56 @@ package body GNAT.Sockets.Connection_State_Machine.
          Send (Client, Data, Pointer);
       end if;
    end Send;
+
+   procedure Set_NTP_Servers
+             (  Client : in out ELV_MAX_Cube_Client;
+                List   : String
+             )  is
+   begin
+      Set_NTP_Servers (Client, Create_List (List));
+   end Set_NTP_Servers;
+
+   procedure Set_NTP_Servers
+             (  Client : in out ELV_MAX_Cube_Client;
+                List   : Servers_List.Set
+             )  is
+      use Servers_List;
+      Length : Integer := Get_Size (List) - 1;
+   begin
+      if Length < 0 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "Empty list of NTP servers"
+         );
+      end if;
+      for Index in 1..Get_Size (List) loop
+         declare
+            Server : constant String := Get (List, Index);
+         begin
+            Length := Length + Server'Length;
+         end;
+      end loop;
+      declare
+         Text    : String (1..Length + 4);
+         Pointer : Integer := 3;
+      begin
+         Text (1..2) := "f:";
+         for Index in 1..Get_Size (List) loop
+            if Index > 1 then
+               Text (Pointer) := ',';
+               Pointer := Pointer + 1;
+            end if;
+            declare
+               Server : constant String := Get (List, Index);
+            begin
+               Text (Pointer..Pointer + Server'Length - 1) := Server;
+               Pointer := Pointer + Server'Length;
+            end;
+         end loop;
+         Text (Pointer..Pointer + 1) := CRLF;
+         Send (Client, Text);
+      end;
+   end Set_NTP_Servers;
 
    procedure Set_Thermostat_Automatic
              (  Client : in out ELV_MAX_Cube_Client;
@@ -2113,7 +2517,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Window_Open : Centigrade;
                 Window_Time : Day_Duration
              )  is
-      Minutes : Integer := Integer (Window_Time / 60.0);
+      Minutes : constant Integer := Integer (Window_Time / 60.0);
    begin
       if Device.Kind_Of not in Radiator_Thermostat
                             .. Radiator_Thermostat_Plus then
@@ -2340,7 +2744,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             Last := Schedule (Index).Last;
          end if;
          declare
-            Word : Integer :=
+            Word : constant Integer :=
                    (  Integer (Last / 300.0)
                    +  Integer (Encode (Schedule (Index).Point)) * 2**9
                    );

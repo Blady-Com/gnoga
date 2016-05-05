@@ -3,7 +3,7 @@
 --     Generic_Discrete_Indefinite_Map             Luebeck            --
 --  Implementation                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -63,7 +63,7 @@ package body Generic_Discrete_Indefinite_Map is
          First := -First;
          if First > 1 then
             declare
-               This : Range_Type := Get_Key (Map, First - 1);
+               This : constant Range_Type := Get_Key (Map, First - 1);
             begin
                if (  Key_Type'Succ (This.To) = Keys.From
                   and then
@@ -83,7 +83,7 @@ package body Generic_Discrete_Indefinite_Map is
       if Last <= Size then
          loop
             declare
-               This : Range_Type := Get_Key (Map, Last);
+               This : constant Range_Type := Get_Key (Map, Last);
             begin
                if Keys.To <= This.To then -- Ends here
                   if Keys.To >= This.From then
@@ -197,7 +197,7 @@ package body Generic_Discrete_Indefinite_Map is
    end Finalize;
 
    function Find (Container : Map; Key : Key_Type) return Integer is
-      Index : Integer := abs Find (Container, (Key, Key));
+      Index : constant Integer := abs Find (Container, (Key, Key));
    begin
       if (  Index <= Get_Size (Container)
          and then
@@ -217,7 +217,7 @@ package body Generic_Discrete_Indefinite_Map is
          raise Constraint_Error;
       end if;
       declare
-         Index : Integer := abs Find (Container, (From, From));
+         Index : constant Integer := abs Find (Container, (From, From));
          This  : Range_Type;
       begin
          if Index <= Get_Size (Container) then
@@ -251,7 +251,7 @@ package body Generic_Discrete_Indefinite_Map is
                 From      : out Key_Type;
                 To        : out Key_Type
              )  is
-      This : Range_Type := Get_Key (Container, Index);
+      This : constant Range_Type := Get_Key (Container, Index);
    begin
       From := This.From;
       To   := This.To;
@@ -350,8 +350,8 @@ package body Generic_Discrete_Indefinite_Map is
    begin
       if Index > 0 then
          declare
-            This : Range_Type := Get_Key (Map, Index);
-            Item : Handle     := Get (Map, Index);
+            This : constant Range_Type := Get_Key (Map, Index);
+            Item : constant Handle     := Get (Map, Index);
          begin
             Remove (Map, Index);
             if This.From /= This.To then
@@ -376,8 +376,8 @@ package body Generic_Discrete_Indefinite_Map is
          Index := abs Find (Map, (From, From));
          while Index <= Get_Size (Map) loop
             declare
-               This : Range_Type := Get_Key (Map, Index);
-               Item : Handle     := Get (Map, Index);
+               This : constant Range_Type := Get_Key (Map, Index);
+               Item : constant Handle     := Get (Map, Index);
             begin
                exit when This.From > To;
                Remove (Map, Index);

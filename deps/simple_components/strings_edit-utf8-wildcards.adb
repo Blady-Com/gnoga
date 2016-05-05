@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Wildcards                 Luebeck            --
 --  Implementation                                 Winter, 2007       --
 --                                                                    --
---                                Last revision :  11:55 13 Oct 2012  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,8 +24,6 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
-
-with Strings_Edit.UTF8.Maps;  use Strings_Edit.UTF8.Maps;
 
 package body Strings_Edit.UTF8.Wildcards is
 

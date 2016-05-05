@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -430,6 +430,85 @@ package body Generic_Indefinite_Set is
                );
             end loop;
          end;
+      end if;
+   end Replace;
+
+   procedure Replace
+             (  Container : in out Set;
+                Item      : Object_Type;
+                Exchange  : Exchange_Condition;
+                Insert    : Insert_Condition;
+                Updated   : out Boolean
+             )  is
+      Location : Integer;
+   begin
+      Location := Find (Container, Item);
+      if Location >= 0 then
+         if Exchange (Item, Container.Object.Vector (Location).all)
+         then
+            if Container.Object.Use_Count > 0 then
+               Clone (Container);
+            end if;
+            Assign (Container.Object.Vector (Location), Item);
+            Updated := True;
+         else
+            Updated := False;
+         end if;
+      else
+         if not Insert (Item) then
+            Updated := False;
+            return;
+         end if;
+         if Container.Object = null then
+            Container.Object := new Data;
+         elsif Container.Object.Use_Count > 0 then
+            Clone (Container);
+         end if;
+         declare
+            Index  : constant Positive := -Location;
+            Object : Data renames Container.Object.all;
+         begin
+            if Object.Vector = null then
+               Object.Vector :=
+                  new Object_Array'(1..Minimal_Size => null);
+               Object.Vector (1) := new Object_Type'(Item);
+            elsif Object.Size = Object.Vector'Last then
+               declare
+                  Ptr : Object_Array_Ptr :=
+                     new Object_Array'
+                         (  1
+                         .. (  Object.Size
+                            +  Natural'Max
+                               (  Minimal_Size,
+                                  (  (  Object.Size
+                                     *  (100 + Increment)
+                                     )
+                                  /  100
+                            )  )  )  => null
+                         );
+               begin
+                  Ptr (1..Index - 1) := Object.Vector (1..Index - 1);
+                  Ptr (Index) := new Object_Type'(Item);
+                  Ptr (Index + 1..Object.Size + 1) :=
+                     Object.Vector (Index..Object.Size);
+                  Delete (Object.Vector);
+                  Object.Vector := Ptr;
+               exception
+                  when others =>
+                     for Index in Ptr'Range loop
+                        Delete (Ptr (Index));
+                     end loop;
+                     Delete (Ptr);
+                     raise;
+               end;
+            else
+               Object.Vector (Index + 1..Object.Size + 1) :=
+                  Object.Vector (Index..Object.Size);
+               Object.Vector (Index) := new Object_Type'(Item);
+            end if;
+            Object.Size := Object.Size + 1;
+         end;
+         Updated := True;
       end if;
    end Replace;
 

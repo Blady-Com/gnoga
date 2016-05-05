@@ -3,7 +3,7 @@
 --     Test_My_String.Handle                       Luebeck            --
 --  Implementation                                 Summer, 2002       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,7 +28,7 @@
 package body Test_My_String.Handle is
 
    function Create (Value : String) return My_Safe_String is
-      Ptr : My_String_Ptr := new My_String (Value'Length);
+      Ptr : constant My_String_Ptr := new My_String (Value'Length);
    begin
       Ptr.Value := Value; 
       return Ref (Ptr);

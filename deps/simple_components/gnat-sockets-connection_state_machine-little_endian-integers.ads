@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Little_Endian.Integers                      Winter, 2012       --
 --  Interface                                                         --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,11 +25,10 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Interfaces;  use Interfaces;
-
 with GNAT.Sockets.Connection_State_Machine.Little_Endian.Unsigneds;
 
 package GNAT.Sockets.Connection_State_Machine.Little_Endian.Integers is
+   use Interfaces;
 --
 -- Integer_{8|16|32|64}_Data_Item -- Little endian-encoded Integer
 --                                    number
@@ -84,22 +83,22 @@ package GNAT.Sockets.Connection_State_Machine.Little_Endian.Integers is
 --    Layout_Error - Pointer is outside bounds
 --
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Integer_8
              );
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Integer_16
              );
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Integer_32
              );
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Integer_64
              );

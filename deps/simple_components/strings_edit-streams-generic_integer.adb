@@ -3,7 +3,7 @@
 --     Strings_Edit.Streams.                       Luebeck            --
 --        Generic_Integer                          Autumn, 2014       --
 --  Implementation                                                    --
---                                Last revision :  10:03 22 Nov 2014  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,7 +31,7 @@ with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 package body Strings_Edit.Streams.Generic_Integer is
 
    procedure Get
-             (  Data    : in out Stream_Element_Array;
+             (  Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Number
              )  is

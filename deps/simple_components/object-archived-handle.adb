@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Summer, 2003       --
 --                                                                    --
---                                Last revision :  17:44 09 May 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -76,7 +76,7 @@ package body Object.Archived.Handle is
              (  Object    : Handle;
                 Container : in out Deposit_Container'Class
              )  is
-      This     : Deposit_Ptr := To_Deposit_Ptr (Ptr (Object));
+      This     : constant Deposit_Ptr := To_Deposit_Ptr (Ptr (Object));
       Iterator : References_Iterator (Container'Unchecked_Access);
    begin
       if This /= null then
@@ -182,7 +182,7 @@ package body Object.Archived.Handle is
    function References (Object : Handle) return Deposit_Set is
       Result   : aliased Deposit_Set;
       Iterator : References_Iterator (Result'Access);
-      This     : Deposit_Ptr := To_Deposit_Ptr (Ptr (Object));
+      This     : constant Deposit_Ptr := To_Deposit_Ptr (Ptr (Object));
    begin
       if This /= null then
          Enumerate (Iterator, This.all);

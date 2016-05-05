@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Stream_IO               Summer, 2015       --
 --  Interface                                                         --
---                                Last revision :  19:56 08 Aug 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,11 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Streams;  use Ada.Streams;
-with Interfaces;   use Interfaces;
-
 package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
         Stream_IO is
+   use Interfaces;
 
    subtype Device_Duration is Duration range 0.0..300.0;
    type Set_Point_Packed is new Unsigned_16;

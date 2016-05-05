@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  11:56 13 Oct 2012  --
+--                                Last revision :  10:00 09 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with ODBC.Bound_Parameters;  use ODBC.Bound_Parameters;
 with Persistent.Data_Bank;   use Persistent.Data_Bank;
 
 package ODBC.API.Keys is

@@ -3,7 +3,7 @@
 --     Persistent.Data_Bank.Index                  Luebeck            --
 --  Implementation                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;       use Ada.Exceptions;
 with Ada.IO_Exceptions;    use Ada.IO_Exceptions;
 with Ada.Tags;             use Ada.Tags;
 with Strings_Edit.Quoted;  use Strings_Edit.Quoted;
@@ -210,7 +209,7 @@ package body Persistent.Data_Bank.Index is
          Create (List, Object, External, Name, null);
       else
          declare
-            Index : Integer := Find (List, Parent);
+            Index : constant Integer := Find (List, Parent);
          begin
             if Index < 0 then
                Raise_Exception
@@ -223,7 +222,7 @@ package body Persistent.Data_Bank.Index is
                )  );
             end if;
             declare
-               Parent_Ptr : Catalogue_Record_Ptr :=
+               Parent_Ptr : constant Catalogue_Record_Ptr :=
                    Catalogue_Record_Ptr (Get (List.By_Key, Index));
             begin
                if Parent_Ptr.Name_Length = 0 then
@@ -303,7 +302,7 @@ package body Persistent.Data_Bank.Index is
          -- The object is not bound, so we create a record for it
          --
          declare
-            Link : Backward_Link_Ptr :=
+            Link : constant Backward_Link_Ptr :=
                       new Catalogue_Record (Name'Length);
             Item : Catalogue_Record renames Catalogue_Record (Link.all);
          begin
@@ -602,7 +601,7 @@ package body Persistent.Data_Bank.Index is
    end Get;
 
    function Get (List : Catalogue; ID : Deposit_Ptr) return Key is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if Index > 0 then
          return
@@ -614,7 +613,7 @@ package body Persistent.Data_Bank.Index is
    end Get;
 
    function Get (List : Catalogue; ID : Deposit_Ptr) return String is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if Index > 0 then
          declare
@@ -630,7 +629,7 @@ package body Persistent.Data_Bank.Index is
    end Get;
 
    function Get (List : Catalogue; ID : Key) return String is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if (  Index > 0
          and then
@@ -643,7 +642,7 @@ package body Persistent.Data_Bank.Index is
    end Get;
 
    function Get (List : Catalogue; ID : Key) return Deposit_Ptr is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if Index > 0 then
          return This (Get (List.By_Key, Index).all);
@@ -661,7 +660,7 @@ package body Persistent.Data_Bank.Index is
          return null;
       end if;
       declare
-         Index : Integer := Find (List, ID);
+         Index : constant Integer := Find (List, ID);
       begin
          if Index < 0 then
             case As is
@@ -678,8 +677,8 @@ package body Persistent.Data_Bank.Index is
             end case;
          end if;
          declare
-            Result : Catalogue_Record_Ptr :=
-               Catalogue_Record_Ptr (Get (List.By_Ptr, Index));
+            Result : constant Catalogue_Record_Ptr :=
+                     Catalogue_Record_Ptr (Get (List.By_Ptr, Index));
          begin
             if Result.Name_Length = 0 then
                case As is
@@ -710,7 +709,7 @@ package body Persistent.Data_Bank.Index is
          return null;
       end if;
       declare
-         Index : Integer := Find (List, ID);
+         Index : constant Integer := Find (List, ID);
       begin
          if Index < 0 then
             case As is
@@ -727,8 +726,8 @@ package body Persistent.Data_Bank.Index is
             end case;
          end if;
          declare
-            Result : Catalogue_Record_Ptr :=
-               Catalogue_Record_Ptr (Get (List.By_Key, Index));
+            Result : constant Catalogue_Record_Ptr :=
+                     Catalogue_Record_Ptr (Get (List.By_Key, Index));
          begin
             if Result.Name_Length = 0 then
                case As is
@@ -791,7 +790,7 @@ package body Persistent.Data_Bank.Index is
 
    function Get_Parent (List : Catalogue; ID : Deposit_Ptr)
       return Deposit_Ptr is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if Index > 0 then
          declare
@@ -810,7 +809,7 @@ package body Persistent.Data_Bank.Index is
 
    function Get_Parent (List : Catalogue; ID : Deposit_Ptr)
       return Key is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if Index > 0 then
          declare
@@ -829,12 +828,14 @@ package body Persistent.Data_Bank.Index is
 
    function Get_Parent (List : Catalogue; ID : Key)
       return Deposit_Ptr is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if Index > 0 then
          declare
-            Item : Catalogue_Record renames
-                   Catalogue_Record (Get (List.By_Key, Index).all);
+            Item : Catalogue_Record'Class renames
+                   Catalogue_Record'Class
+                   (  Get (List.By_Key, Index).all
+                   );
          begin
             if Item.Parent = null then
                return null;
@@ -847,12 +848,14 @@ package body Persistent.Data_Bank.Index is
    end Get_Parent;
 
    function Get_Parent (List : Catalogue; ID : Key) return Key is
-      Index : Integer := Find (List, ID);
+      Index : constant Integer := Find (List, ID);
    begin
       if Index > 0 then
          declare
-            Item : Catalogue_Record renames
-                   Catalogue_Record (Get (List.By_Key, Index).all);
+            Item : Catalogue_Record'Class renames
+                   Catalogue_Record'Class
+                   (  Get (List.By_Key, Index).all
+                   );
          begin
             if Item.Parent = null then
                return Null_Key;
@@ -968,8 +971,8 @@ package body Persistent.Data_Bank.Index is
       for Index in 1..Positive'Last loop
          -- For each backward link to the object
          declare
-            Link_Key : Persistent_Key'Class :=
-               Get_Dependant (List.Storage, Object, Index);
+            Link_Key : constant Persistent_Key'Class :=
+                       Get_Dependant (List.Storage, Object, Index);
          begin
             if not Is_Valid (This) then
                -- The object is not resident
@@ -1009,7 +1012,8 @@ package body Persistent.Data_Bank.Index is
                    Name   : String;
                    Parent : Catalogue_Record_Ptr
                 )  is
-         Link : Backward_Link_Ptr := new Catalogue_Record (Name'Length);
+         Link : constant Backward_Link_Ptr :=
+                new Catalogue_Record (Name'Length);
          Item : Catalogue_Record renames Catalogue_Record (Link.all);
       begin
          Increment_Count (Item);
@@ -1107,7 +1111,8 @@ package body Persistent.Data_Bank.Index is
                 New_Name   : String;
                 New_Parent : Deposit_Ptr
              )  is
-      Where : Catalogue_Record_Ptr := Get_As (List, Old_Parent, As_Old);
+      Where : constant Catalogue_Record_Ptr :=
+              Get_As (List, Old_Parent, As_Old);
       Index : constant Integer := Find (List, Old_Name, Where);
    begin
       if Index > 0 then
@@ -1179,7 +1184,7 @@ package body Persistent.Data_Bank.Index is
                 New_Name   : String;
                 New_Parent : Deposit_Ptr
              )  is
-      Index : Integer := Find (List, Object);
+      Index : constant Integer := Find (List, Object);
    begin
       if Index <= 0 then
          raise Constraint_Error;
@@ -1199,13 +1204,14 @@ package body Persistent.Data_Bank.Index is
                 Name   : String;
                 Parent : Deposit_Ptr
              )  is
-      Where : Catalogue_Record_Ptr := Get_As (List, Parent, As_Old);
+      Where : constant Catalogue_Record_Ptr :=
+              Get_As (List, Parent, As_Old);
       Index : constant Integer := Find (List, Name, Where);
    begin
       if Index > 0 then
          -- The object is in the index
          declare
-            Item : Catalogue_Record_Ptr :=
+            Item : constant Catalogue_Record_Ptr :=
                       Catalogue_Record_Ptr (Get (List.By_Name, Index));
             Object : Deposit_Handle := Ref (This (Item.all));
          begin

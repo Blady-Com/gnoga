@@ -3,7 +3,7 @@
 --  Test program                                   Luebeck            --
 --                                                 Autumn, 2009       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of  the  GNU  Library  General  Public  --
@@ -256,7 +256,7 @@ begin
          end if;
       end;
       declare
-         S : Set := Create (33);
+         S : constant Set := Create (33);
       begin
          if (not (not S)) /= S then
             Raise_Exception

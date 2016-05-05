@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --  Strings_Edit.Float_Edit                        Spring, 2000       --
 --                                                                    --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -398,7 +398,7 @@ package body Strings_Edit.Float_Edit is
       Mantissa  : Number'Base := abs Value;
       Exponent  : Integer := 0;
       Increment : Integer := 0;
-      Radix     : Number'Base := Number'Base (Base);
+      Radix     : constant Number'Base := Number'Base (Base);
    begin
       if Mantissa <= 0.0 then
          Put (Destination, Pointer, "0", Field, Justify, Fill);
@@ -434,7 +434,8 @@ package body Strings_Edit.Float_Edit is
       end if;
       if Precision > 0 then
          declare
-            ExponentPart : String := PutExponent (Exponent - 1, Base);
+            ExponentPart : constant String :=
+                           PutExponent (Exponent - 1, Base);
             MantissaPart : String (1..Precision);
             Digit        : Natural;
          begin

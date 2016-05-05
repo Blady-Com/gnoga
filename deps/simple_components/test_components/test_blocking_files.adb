@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Spring, 2014       --
 --                                                                    --
---                                Last revision :  21:09 15 Sep 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -74,7 +74,7 @@ begin
          Last := Clock;
       end if;
       declare
-         Block : Block_Type_Ref := Load (File'Access, Index);
+         Block : constant Block_Type_Ref := Load (File'Access, Index);
       begin
          if Block = null then
             Raise_Exception

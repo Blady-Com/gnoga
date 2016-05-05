@@ -3,7 +3,7 @@
 --     Test_Single_File_Persistence                Luebeck            --
 --  Implementation                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  09:08 27 Jun 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -70,7 +70,7 @@ begin
    end;
    Put_Line ("Session 2");
    declare
-      DB   : Storage_Handle := Create (File_Name);
+      DB   : constant Storage_Handle := Create (File_Name);
       Root : Handle;
    begin
       Root := Get (DB, Object_Name);
@@ -96,7 +96,7 @@ begin
    end;
    Put_Line ("Session 4");
    declare
-      DB   : Storage_Handle := Create (File_Name);
+      DB   : constant Storage_Handle := Create (File_Name);
       Dir  : Handle;
       Root : Handle;
    begin
@@ -171,12 +171,8 @@ begin
       DB : Storage_Handle := Create (File_Name);
       L1 : Handle;
    begin
-Put_Line ("before Session 9--------------------------");
-Put (DB);
       L1 := Get (DB, String'("L1"));
-put_line("unname D +");
       Unname (DB, String'("D"));
-put_line("unname D -");
    exception
       when Error : others =>
          Put_Line ("Session 9 fault: " & Exception_Information (Error));

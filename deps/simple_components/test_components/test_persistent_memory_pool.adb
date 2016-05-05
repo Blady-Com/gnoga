@@ -3,7 +3,7 @@
 --     Test_Persistent_Memory_Pool                 Luebeck            --
 --  Test                                           Spring, 2014       --
 --                                                                    --
---                                Last revision :  21:09 15 Sep 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -58,11 +58,14 @@ begin
       declare
          Pool : aliased Persistent_Pool (File'Access);
          procedure Check (Size, Used, Free, Allocated : Natural) is
-            Blocks_Free : Integer := Integer (Get_Blocks_Free (Pool));
-            Blocks_Used : Integer := Integer (Get_Blocks_Used (Pool));
+            Blocks_Free : constant Integer :=
+                          Integer (Get_Blocks_Free (Pool));
+            Blocks_Used : constant Integer :=
+                          Integer (Get_Blocks_Used (Pool));
             Bytes_Free  : Integer := Integer (Get_Bytes_Free (Pool));
             Bytes_Used  : Integer := Integer (Get_Bytes_Used (Pool));
-            Free_Space  : Integer := Integer (Get_Space (Pool));
+            Free_Space  : constant Integer :=
+                          Integer (Get_Space (Pool));
          begin
             Bytes_Free := Bytes_Free + Blocks_Free * 4;
             Bytes_Used := Bytes_Used + Blocks_Used * 4;
@@ -311,7 +314,7 @@ begin
          end;
          declare
             First : Byte_Index;
-            Text  : String := "12345678901234567890";
+            Text  : constant String := "12345678901234567890";
          begin
             --
             -- Writing string into the stream
@@ -373,7 +376,7 @@ begin
                   )  );
                end if;
                declare
-                  Data : String := String'Input (Input'Access);
+                  Data : constant String := String'Input (Input'Access);
                begin
                   if Data /= Text then
                      Raise_Exception
@@ -457,7 +460,7 @@ begin
                   )  );
                end if;
                declare
-                  Data : String := String'Input (Input'Access);
+                  Data : constant String := String'Input (Input'Access);
                begin
                   if Data /= Text then
                      Raise_Exception
@@ -476,7 +479,7 @@ begin
                   begin
                      Get_Line (File, File_Line, Last);
                      declare
-                        Pool_Line : String :=
+                        Pool_Line : constant String :=
                                     String'Input (Input'Access);
                      begin
                         if File_Line (1..Last) /= Pool_Line then
@@ -535,7 +538,7 @@ begin
                Open (File, In_File, "test_persistent_memory_pool.adb");
                Open (Input, First);
                declare
-                  Data : String := String'Input (Input'Access);
+                  Data : constant String := String'Input (Input'Access);
                begin
                   if Data /= Text then
                      Raise_Exception
@@ -554,7 +557,7 @@ begin
                   begin
                      Get_Line (File, File_Line, Last);
                      declare
-                        Pool_Line : String :=
+                        Pool_Line : constant String :=
                                     String'Input (Input'Access);
                      begin
                         if File_Line (1..Last) /= Pool_Line then
@@ -573,7 +576,8 @@ begin
                when End_Error =>
                   Close (File);
                   declare
-                     Data : String := String'Input (Input'Access);
+                     Data : constant String :=
+                            String'Input (Input'Access);
                   begin
                      if Data /= Text then
                         Raise_Exception

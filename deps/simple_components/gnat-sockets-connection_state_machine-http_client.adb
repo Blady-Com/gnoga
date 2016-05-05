@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  19:56 08 Aug 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -437,7 +437,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
 
    function Get_Session_State (Session : HTTP_Session)
       return Session_State is
-      Result : Session_State :=
+      Result : constant Session_State :=
                Get_Session_State (State_Machine (Session));
    begin
       if Result = Session_Connected then
@@ -1414,7 +1414,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
          while Pointer <= Response'Last loop
             if Response (Pointer) = ':' then
                declare
-                  Input : Header_Value :=
+                  Input : constant Header_Value :=
                           Value
                           (  Response
                              (  Response'First
@@ -2218,7 +2218,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
              )  is
       type Text_Ptr is access String;
       for Text_Ptr'Storage_Pool use Session.Pool;
-      Ptr : Text_Ptr := new String'(Text);
+      Ptr : constant Text_Ptr := new String'(Text);
    begin
       Put
       (  Session.Send_List,
@@ -2234,7 +2234,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
              )  is
       type Text_Ptr is access Stream_Element_Array;
       for Text_Ptr'Storage_Pool use Session.Pool;
-      Ptr : Text_Ptr := new Stream_Element_Array'(Text);
+      Ptr : constant Text_Ptr := new Stream_Element_Array'(Text);
    begin
       Put
       (  Session.Send_List,
@@ -2580,12 +2580,14 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
       begin
          while Header < Request_Header_Array'Length loop
             declare
-               Current : Request_Header := Request_Header'Val (Header);
+               Current : constant Request_Header :=
+                         Request_Header'Val (Header);
             begin
                if Session.Request_Headers (Current) /= null then
                   if Position < 0 then
                      declare
-                        Prefix  : String := Image (Current) & ": ";
+                        Prefix  : constant String :=
+                                  Image (Current) & ": ";
                         Pointer : Integer := -Position;
                      begin
                         if Pointer <= Prefix'Length then
@@ -2686,7 +2688,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
                declare
                   type Slice_Ptr is access Slice;
                   for Slice_Ptr'Storage_Pool use Session.Pool;
-                  Data : Slice_Ptr :=
+                  Data : constant Slice_Ptr :=
                          new Slice'(Count, Chunk.all'Unchecked_Access);
                begin
                   Put -- Data (1..Count)
@@ -2832,7 +2834,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
                   then
                      declare
                         This   : String renames Data.Slice.Text.all;
-                        Length : Integer := Integer (Data.Slice.Length);
+                        Length : constant Integer :=
+                                 Integer (Data.Slice.Length);
                         Count  : Integer := Integer (Data.Count);
                      begin
                         if Count < Length then
@@ -3016,7 +3019,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
    end Trace;
 
    function Value (Text : String) return Header_Value is
-      Index : Integer := Locate (Response_Headers, Text);
+      Index : constant Integer := Locate (Response_Headers, Text);
    begin
       if Index > 0 then
          return

@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  11:25 17 Jan 2015  --
+--                                Last revision :  19:57 29 Feb 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -3376,10 +3376,12 @@ package GNUTLS is
 -- of empty fragments in a row, you can use this  function  to  set  the
 -- desired value.
 --
-   procedure Record_Set_Max_Empty_Records
-             (  Session : in out Session_Type;
-                Count   : Positive
-             );
+-- *** Removed ***
+--
+--     procedure Record_Set_Max_Empty_Records
+--               (  Session : in out Session_Type;
+--                  Count   : Positive
+--               );
 --
 -- Record_Set_Max_Size -- Set client's record size
 --

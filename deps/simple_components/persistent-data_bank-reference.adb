@@ -3,7 +3,7 @@
 --     Persistent.Data_Bank.Reference              Luebeck            --
 --  Implementation                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -105,13 +105,14 @@ package body Persistent.Data_Bank.Reference is
                Storage : Storage_Handle;
                Key     : Persistent_Key'Class
             )  return Deposit_Handle is
-      Index : Integer := Locate (Map, Class);
+      Index : constant Integer := Locate (Map, Class);
    begin
       if Index > 0 then
          return GetTag (Map, Index) (Source, Storage, Key);
       else
          declare
-            Result : Deposit_Handle := Ref (new Self_Reference);
+            Result : constant Deposit_Handle :=
+                     Ref (new Self_Reference);
             This   : Self_Reference renames
                      Self_Reference (Ptr (Result).all);
          begin

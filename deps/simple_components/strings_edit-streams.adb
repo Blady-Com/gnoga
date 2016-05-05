@@ -3,7 +3,7 @@
 --     Strings_Edit.Streams                        Luebeck            --
 --  Implementation                                 Spring, 2009       --
 --                                                                    --
---                                Last revision :  10:03 22 Nov 2014  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,7 +26,6 @@
 --____________________________________________________________________--
 --
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
-with Ada.Streams;        use Ada.Streams;
 
 package body Strings_Edit.Streams is
 

@@ -3,7 +3,7 @@
 --     Generic_FIFO.Generic_Signaled               Luebeck            --
 --  Interface                                      Autumn, 2007       --
 --                                                                    --
---                                Last revision :  22:35 02 Dec 2011  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -99,6 +99,11 @@ package Generic_FIFO.Generic_Signaled is
 -- Purge -- Overrides Generic_FIFO...
 --
    procedure Purge (Queue : in out Signaled_FIFO; Purged : out Natural);
+   procedure Purge
+             (  Queue        : in out Signaled_FIFO;
+                Is_Preserved : Is_Preserved_Ptr;
+                Purged       : out Natural
+             );
 --
 -- Put -- Overrides Generic_FIFO...
 --

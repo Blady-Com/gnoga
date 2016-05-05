@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files.                  Luebeck            --
 --        Transactional.Dump                       Summer, 2014       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -155,7 +155,7 @@ package body Persistent.Blocking_Files.Transactional.Dump is
                From : Block_Count := Segment.List (1);
                To   : Block_Count := From;
                procedure Flush is
-                  Start : Integer := Pointer;
+                  Start : constant Integer := Pointer;
                begin
                   if Start > Prefix then
                      Put (Text, Pointer, ", ");

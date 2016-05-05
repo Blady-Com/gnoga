@@ -3,7 +3,7 @@
 --     Test_HTTP_SQLite_Servers                    Luebeck            --
 --  Test server to browse SQLite3 Database         Winter, 2014       --
 --  Implementation                                                    --
---                                Last revision :  09:08 27 Jun 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Streams.Stream_IO;  use Ada.Streams.Stream_IO;
 with Strings_Edit;           use Strings_Edit;
 with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
 
@@ -143,7 +142,8 @@ package body Test_HTTP_SQLite_Servers is
                Set_Query (Client);
             else
                declare
-                  DB_Path : String  := Get_Database_Path (Client.Root);
+                  DB_Path : constant String :=
+                            Get_Database_Path (Client.Root);
                   Pointer : Integer := Status.File'First;
                   Start   : Integer;
                begin

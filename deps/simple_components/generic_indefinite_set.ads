@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -231,10 +231,34 @@ package Generic_Indefinite_Set is
 --    Container - The set to be modified
 --    Item      - To be added / replaced
 --
--- This procedure adds the element Item to the set. The element is replaced
--- if it is already in the set.
+-- This procedure  adds the  element Item  to the  set.  The element  is
+-- replaced if it is already in the set.
 --
    procedure Replace (Container : in out Set; Item : Object_Type);
+--
+-- Replace -- Replace an item in the set
+--
+--    Container - The set to be modified
+--    Item      - To be added / replaced
+--    Exchange  - Predicate checking exchange
+--    Insert    - Predicate checking new element insert
+--    Updated   - True if the container was changed
+--
+-- This  procedure  adds the  element Item to the set.  The  element  is
+-- replaced if Condition returns True.
+--
+   type Exchange_Condition is
+      access function (New_Element, Old_Element : Object_Type)
+         return Boolean;
+   type Insert_Condition is
+      access function (New_Element : Object_Type) return Boolean;
+   procedure Replace
+             (  Container : in out Set;
+                Item      : Object_Type;
+                Exchange  : Exchange_Condition;
+                Insert    : Insert_Condition;
+                Updated   : out Boolean
+             );
 --
 -- Replace -- Replace items from one set in another
 --

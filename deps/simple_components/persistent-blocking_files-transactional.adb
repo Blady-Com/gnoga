@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files.                  Luebeck            --
 --        Transactional                            Spring, 2014       --
 --  Implementation                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,8 +24,6 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
-
-with Ada.Exceptions;  use Ada.Exceptions;
 
 package body Persistent.Blocking_Files.Transactional is
 
@@ -262,7 +260,7 @@ package body Persistent.Blocking_Files.Transactional is
             end;
          else -- There is place in the last segment at this height
             declare
-               Segment : Map_Segment_Ptr :=
+               Segment : constant Map_Segment_Ptr :=
                          Find (Container, Last, Height);
             begin
                if Segment = null then
@@ -304,7 +302,7 @@ package body Persistent.Blocking_Files.Transactional is
          return Container.List (Container.List'Last)'Unchecked_Access;
       end if;
       declare
-         Lower : Block_Index := Get_Lower (Virtual);
+         Lower : constant Block_Index := Get_Lower (Virtual);
          This  : Map_Segment renames
                  Container.Self.List
                  (  Get_Segment_No (Container, Virtual)
@@ -371,7 +369,7 @@ package body Persistent.Blocking_Files.Transactional is
             (  Container : access Persistent_Transactional_Array;
                Index     : Byte_Index
             )  return Block_Type_Ptr is
-      Virtual  : Block_Index := Get_Index (Index);
+      Virtual  : constant Block_Index := Get_Index (Index);
       Physical : Block_Count;
    begin
       if not Container.Is_Open then
@@ -427,7 +425,7 @@ package body Persistent.Blocking_Files.Transactional is
             (  Block  : Byte_Array;
                Offset : Block_Offset
             )  return Block_Count is
-      Value : Unsigned_64 := Get (Block, Offset);
+      Value : constant Unsigned_64 := Get (Block, Offset);
    begin
       return Block_Count (Value);
    exception
@@ -442,7 +440,7 @@ package body Persistent.Blocking_Files.Transactional is
             (  Block  : Byte_Array;
                Offset : Block_Offset
             )  return Free_Count is
-      Value : Unsigned_16 := Get (Block, Offset);
+      Value : constant Unsigned_16 := Get (Block, Offset);
    begin
       return Free_Count (Value);
    exception
@@ -549,7 +547,7 @@ package body Persistent.Blocking_Files.Transactional is
             (  Container : Persistent_Transactional_Array;
                Virtual   : Block_Index
             )  return Block_Count is
-      Segment : Map_Segment_Ptr := Find (Container, Virtual, 0);
+      Segment : constant Map_Segment_Ptr := Find (Container, Virtual, 0);
    begin
       if Segment = null then
          return 0;
@@ -609,7 +607,7 @@ package body Persistent.Blocking_Files.Transactional is
    begin
       if Container.Is_Open then
          declare
-            Physical : Block_Count := Map (Container, Index);
+            Physical : constant Block_Count := Map (Container, Index);
          begin
             if Physical /= 0 then
                return Is_Resident
@@ -634,7 +632,8 @@ package body Persistent.Blocking_Files.Transactional is
             (  Container : Persistent_Transactional_Array;
                Virtual   : Block_Index
             )  return Boolean is
-      Segment : Map_Segment_Ptr := Find (Container, Virtual, 0);
+      Segment : constant Map_Segment_Ptr :=
+                Find (Container, Virtual, 0);
    begin
       if Segment = null then
          return False;
@@ -648,7 +647,7 @@ package body Persistent.Blocking_Files.Transactional is
                 Physical  : Block_Index;
                 Segment   : out Free_Segment
              )  is
-      Ptr : Block_Type_Ref :=
+      Ptr : constant Block_Type_Ref :=
                Load
                (  Persistent_Array (Container)'Access,
                   Compose (Physical, 0)
@@ -684,7 +683,7 @@ package body Persistent.Blocking_Files.Transactional is
                 Height    : Map_Level;
                 Segment   : out Map_Segment
              )  is
-      Ptr : Block_Type_Ref :=
+      Ptr : constant Block_Type_Ref :=
                Load
                (  Persistent_Array (Container)'Access,
                   Compose (Physical, 0)
@@ -735,7 +734,7 @@ package body Persistent.Blocking_Files.Transactional is
                 Physical  : Block_Index;
                 Data      : out Master_Block_Data
              )  is
-      Ptr : Block_Type_Ref :=
+      Ptr : constant Block_Type_Ref :=
                Load
                (  Persistent_Array (Container)'Access,
                   Compose (Physical, 0)
@@ -795,7 +794,7 @@ package body Persistent.Blocking_Files.Transactional is
             (  Container : access Persistent_Transactional_Array;
                Index     : Byte_Index
             )  return Block_Type_Ref is
-      Virtual  : Block_Index := Get_Index (Index);
+      Virtual  : constant Block_Index := Get_Index (Index);
       Physical : Block_Count;
    begin
       if not Container.Is_Open then
@@ -821,7 +820,8 @@ package body Persistent.Blocking_Files.Transactional is
             (  Container : Persistent_Transactional_Array;
                Virtual   : Block_Index
             )  return Block_Count is
-      Segment : Map_Segment_Ptr := Find (Container, Virtual, 0);
+      Segment : constant Map_Segment_Ptr :=
+                Find (Container, Virtual, 0);
    begin
       if Segment = null then
          return 0;
@@ -936,7 +936,7 @@ package body Persistent.Blocking_Files.Transactional is
                 Index     : Byte_Index;
                 Block     : out Block_Type
              )  is
-      Virtual  : Block_Index := Get_Index (Index);
+      Virtual  : constant Block_Index := Get_Index (Index);
       Physical : Block_Count;
    begin
       if not Container.Is_Open then
@@ -1051,7 +1051,7 @@ package body Persistent.Blocking_Files.Transactional is
       end if;
       if not Segment.Relocated then
          declare
-            Physical : Block_Index := Segment.Location;
+            Physical : constant Block_Index := Segment.Location;
          begin
             Relocate          := True;
             Segment.Location  := Allocate (Container);
@@ -1102,8 +1102,8 @@ package body Persistent.Blocking_Files.Transactional is
       if Relocate then
          declare
             Parent   : Map_Segment_Ptr;
-            Physical : Block_Index := Segment.Location;
-            Offset   : Map_Index :=
+            Physical : constant Block_Index := Segment.Location;
+            Offset   : constant Map_Index :=
                        Get_Offset (Segment.Lower, Segment.Height + 1);
          begin
             Parent :=
@@ -1133,7 +1133,7 @@ package body Persistent.Blocking_Files.Transactional is
                 Segment   : Map_Segment;
                 Free      : Block_Count
              )  is
-      Ptr : Block_Type_Ptr :=
+      Ptr : constant Block_Type_Ptr :=
                Update
                (  Persistent_Array (Container)'Unchecked_Access,
                   Compose (Segment.Location, 0)
@@ -1190,7 +1190,7 @@ package body Persistent.Blocking_Files.Transactional is
              (  Container : in out Persistent_Transactional_Array;
                 Segment   : Free_Segment
              )  is
-      Ptr : Block_Type_Ptr :=
+      Ptr : constant Block_Type_Ptr :=
                Update
                (  Persistent_Array (Container)'Access,
                   Compose (Segment.Location, 0)
@@ -1224,7 +1224,7 @@ package body Persistent.Blocking_Files.Transactional is
             (  Container : access Persistent_Transactional_Array;
                Index     : Byte_Index
             )  return Block_Type_Ptr is
-      Virtual : Block_Index := Get_Index (Index);
+      Virtual : constant Block_Index := Get_Index (Index);
    begin
       if not Container.Is_Open then
          Raise_Exception (Use_Error'Identity, "No file open");
@@ -1245,8 +1245,9 @@ package body Persistent.Blocking_Files.Transactional is
                Virtual   : Block_Index;
                Replace   : Boolean
             )  return Block_Index is
-      Segment  : Map_Segment_Ptr := Find (Container, Virtual, 0);
-      Index    : Map_Index   := Get_Offset (Virtual);
+      Segment  : constant Map_Segment_Ptr :=
+                 Find (Container, Virtual, 0);
+      Index    : constant Map_Index := Get_Offset (Virtual);
       Physical : Block_Count := Segment.Map (Index);
    begin
       if Segment = null then
@@ -1290,7 +1291,7 @@ package body Persistent.Blocking_Files.Transactional is
                 Index     : Byte_Index;
                 Block     : Block_Type
              )  is
-      Virtual  : Block_Index := Get_Index (Index);
+      Virtual  : constant Block_Index := Get_Index (Index);
       Physical : Block_Count;
    begin
       if not Container.Is_Open then

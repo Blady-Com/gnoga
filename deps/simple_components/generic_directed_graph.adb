@@ -3,7 +3,7 @@
 --     Generic_Directed_Graph                      Luebeck            --
 --  Implementation                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  10:10 27 Dec 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -237,7 +237,7 @@ package body Generic_Directed_Graph is
             and then
                (  Child = Parent
                or else
-                  Is_Ancestor (Child, Parent)
+                  Is_Ancestor (Parent => Child, Child => Parent)
          )  )  )
       then
          raise Constraint_Error;
@@ -480,7 +480,8 @@ package body Generic_Directed_Graph is
    begin
       if Set /= null and then Set.Last > 0 then
          declare
-            Location : Integer := Find (Set.List, Set.Last, Item);
+            Location : constant Integer :=
+                       Find (Set.List, Set.Last, Item);
          begin
             if Location > 0 then
                return Location;
@@ -797,7 +798,8 @@ package body Generic_Directed_Graph is
    begin
       if Set.Last > 0 then
          declare
-            Location : Integer := Find (Set.List, Set.Last, Item);
+            Location : constant Integer :=
+                       Find (Set.List, Set.Last, Item);
          begin
             if Location > 0 then
                Set.List (Location..Set.Last - 1) :=

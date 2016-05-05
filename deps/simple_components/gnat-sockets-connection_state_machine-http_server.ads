@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  12:24 15 May 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,11 +29,9 @@ with Ada.Calendar.Formatting;  use Ada.Calendar.Formatting;
 with Ada.Calendar.Time_Zones;  use Ada.Calendar.Time_Zones;
 with Ada.Calendar;             use Ada.Calendar;
 with Ada.Exceptions;           use Ada.Exceptions;
-with Ada.Streams;              use Ada.Streams;
 with Ada.Strings.Maps;         use Ada.Strings.Maps;
 with Ada.Task_Identification;  use Ada.Task_Identification;
 with Ada.Text_IO;              use Ada.Text_IO;
-with GNAT.Sockets.Server;      use GNAT.Sockets.Server;
 
 with Ada.Finalization;
 with Generic_Discrete_Set;

@@ -3,7 +3,7 @@
 --     Generic_Indefinite_FIFO                     Luebeck            --
 --                                                 Summer, 2008       --
 --  Implementation                                                    --
---                                Last revision :  09:07 27 Jun 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -112,7 +112,7 @@ package body Generic_Indefinite_FIFO is
    end Deallocate;
 
    function Free_Space (Queue : FIFO) return Storage_Count is
-      Count : Storage_Offset := Queue.First - Queue.Free;
+      Count : constant Storage_Offset := Queue.First - Queue.Free;
    begin
       if Count <= 0 then
          return Queue.Size + Count - 1;
@@ -139,7 +139,7 @@ package body Generic_Indefinite_FIFO is
             (  Queue.Storage (Queue.First + Address_Offset)'Address
             );
          declare
-            Result : Element_Type := This.all;
+            Result : constant Element_Type := This.all;
          begin
             Free (This);
             return Result;

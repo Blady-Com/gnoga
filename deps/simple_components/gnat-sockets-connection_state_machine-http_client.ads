@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,9 +25,8 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;         use Ada.Calendar;
-with Ada.Exceptions;       use Ada.Exceptions;
-with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
+with Ada.Calendar;    use Ada.Calendar;
+with Ada.Exceptions;  use Ada.Exceptions;
 
 with Ada.Finalization;
 with GNAT.Sockets.Connection_State_Machine.Expected_Sequence;

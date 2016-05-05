@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.Streams.            Luebeck            --
 --        External_B_Tree.Generic_Table            Autumn, 2014       --
 --  Implementation                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;     use Ada.Exceptions;
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 with Ada.Tags;           use Ada.Tags;
 
@@ -91,7 +90,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                Index     : Key_Index;
                Key       : Byte_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Find (Container.Roots (Index).all, Key);
    begin
       if Item = No_Item then
@@ -165,7 +164,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
             (  Container : Table;
                Index     : Key_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Get_First (Container.Roots (Index).all);
    begin
       if Item = No_Item then
@@ -211,7 +210,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
 
    function Get_Keys (Row : Row_Ptr) return Keys_Tuple is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -230,7 +229,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
             (  Container : Table;
                Index     : Key_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Get_Last (Container.Roots (Index).all);
    begin
       if Item = No_Item then
@@ -250,7 +249,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
             (  Row   : Row_Ptr;
                Index : Key_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Get_Next
              (  Item_Ptr'
                 (  Tree  => Row.Table.Roots (Index),
@@ -269,7 +268,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
             (  Row   : Row_Ptr;
                Index : Key_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Get_Previous
              (  Item_Ptr'
                 (  Tree  => Row.Table.Roots (Index),
@@ -288,7 +287,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
             (  Row   : Row_Ptr;
                Index : Key_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Get_Root
              (  Item_Ptr'
                 (  Tree  => Row.Table.Roots (Index),
@@ -336,7 +335,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                Column : Value_Index
             )  return Byte_Index is
       Lock : Holder (Row.Table.Pool);
-      This : Byte_Index :=
+      This : constant Byte_Index :=
              Unchecked_Get_Value
              (  Item_Ptr'
                 (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -366,7 +365,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
 
    function Get_Values (Row : Row_Ptr) return Values_Tuple is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -386,7 +385,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                Index     : Key_Index;
                Key       : Byte_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Inf (Container.Roots (Index).all, Key);
    begin
       if Item = No_Item then
@@ -422,7 +421,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
 
    procedure Remove (Row : in out Row_Ptr) is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -446,7 +445,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Values : out Values_Tuple
              )  is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -472,14 +471,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Key       : Byte_Index
              )  is
       Lock : Holder (Container.Pool);
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Unchecked_Find (Container.Roots (Index).all, Key);
    begin
       if Item = External_B_Tree.No_Item then
          return;
       end if;
       declare
-         This   : Byte_Index := Unchecked_Get_Value (Item);
+         This   : constant Byte_Index := Unchecked_Get_Value (Item);
          Block  : Block_Type renames
                   Load (Container.Pool.File, This).all;
          Offset : Block_Offset := Get_Offset (This) + Values_Offs;
@@ -503,7 +502,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Values    : out Values_Tuple
              )  is
       Lock : Holder (Container.Pool);
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Unchecked_Find (Container.Roots (Index).all, Key);
    begin
       if Item = External_B_Tree.No_Item then
@@ -511,7 +510,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
          return;
       end if;
       declare
-         This   : Byte_Index := Unchecked_Get_Value (Item);
+         This   : constant Byte_Index := Unchecked_Get_Value (Item);
          Block  : Block_Type renames
                   Load (Container.Pool.File, This).all;
          Offset : Block_Offset := Get_Offset (This) + Values_Offs;
@@ -537,7 +536,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Values    : out Values_Tuple
              )  is
       Lock : Holder (Container.Pool);
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Unchecked_Find (Container.Roots (Index).all, Key);
    begin
       if Item = External_B_Tree.No_Item then
@@ -546,7 +545,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
          return;
       end if;
       declare
-         This   : Byte_Index := Unchecked_Get_Value (Item);
+         This   : constant Byte_Index := Unchecked_Get_Value (Item);
          Block  : Block_Type renames
                   Load (Container.Pool.File, This).all;
          Offset : Block_Offset := Get_Offset (This) + Values_Offs;
@@ -569,7 +568,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Value  : Byte_Index
              )  is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -578,10 +577,11 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                )  );
       Block  : Block_Type renames
                Update (Row.Table.Pool.File, This).all;
-      Offset : Block_Offset := (  Get_Offset (This)
-                               +  Values_Offs
-                               +  Value_Index'Pos (Column) * 8
-                               );
+      Offset : constant Block_Offset :=
+                        (  Get_Offset (This)
+                        +  Values_Offs
+                        +  Value_Index'Pos (Column) * 8
+                        );
    begin
       Put (Block, Offset, Value);
    end Replace;
@@ -593,7 +593,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Replaced : out Byte_Index
              )  is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -602,10 +602,11 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                )  );
       Block  : Block_Type renames
                Update (Row.Table.Pool.File, This).all;
-      Offset : Block_Offset := (  Get_Offset (This)
-                               +  Values_Offs
-                               +  Value_Index'Pos (Column) * 8
-                               );
+      Offset : constant Block_Offset :=
+                        (  Get_Offset (This)
+                        +  Values_Offs
+                        +  Value_Index'Pos (Column) * 8
+                        );
    begin
       Replaced := Get (Block, Offset);
       Put (Block, Offset, Value);
@@ -613,7 +614,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
 
    procedure Replace (Row : Row_Ptr; Values : Values_Tuple) is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -633,7 +634,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Replaced : out Values_Tuple
              )  is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -655,7 +656,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Values    : Values_Tuple
              )  is
       Lock  : Holder (Container.Pool);
-      Item  : Item_Ptr :=
+      Item  : constant Item_Ptr :=
               Unchecked_Find
               (  Container.Roots (Key_Index'First).all,
                  Keys (Key_Index'First)
@@ -683,7 +684,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Replaced  : out Values_Tuple
              )  is
       Lock  : Holder (Container.Pool);
-      Item  : Item_Ptr :=
+      Item  : constant Item_Ptr :=
               Unchecked_Find
               (  Container.Roots (Key_Index'First).all,
                  Keys (Key_Index'First)
@@ -715,17 +716,18 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Value     : Byte_Index
              )  is
       Lock   : Holder (Container.Pool);
-      Item   : Byte_Index :=
+      Item   : constant Byte_Index :=
                Unchecked_Get
                (  Container.Roots (Index).all,
                   Key
                );
       Block  : Block_Type renames
                Update (Container.Pool.File, Item).all;
-      Offset : Block_Offset := (  Get_Offset (Item)
-                               +  Values_Offs
-                               +  Value_Index'Pos (Column) * 8
-                               );
+      Offset : constant Block_Offset :=
+                        (  Get_Offset (Item)
+                        +  Values_Offs
+                        +  Value_Index'Pos (Column) * 8
+                        );
    begin
       Put (Block, Offset, Value);
    end Replace;
@@ -739,17 +741,18 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Replaced  : out Byte_Index
              )  is
       Lock   : Holder (Container.Pool);
-      Item   : Byte_Index :=
+      Item   : constant Byte_Index :=
                Unchecked_Get
                (  Container.Roots (Index).all,
                   Key
                );
       Block  : Block_Type renames
                Update (Container.Pool.File, Item).all;
-      Offset : Block_Offset := (  Get_Offset (Item)
-                               +  Values_Offs
-                               +  Value_Index'Pos (Column) * 8
-                               );
+      Offset : constant Block_Offset :=
+                        (  Get_Offset (Item)
+                        +  Values_Offs
+                        +  Value_Index'Pos (Column) * 8
+                        );
    begin
       Replaced := Get (Block, Offset);
       Put (Block, Offset, Value);
@@ -800,7 +803,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                Index     : Key_Index;
                Key       : Byte_Index
             )  return Row_Ptr is
-      Item : Item_Ptr :=
+      Item : constant Item_Ptr :=
              Sup (Container.Roots (Index).all, Key);
    begin
       if Item = No_Item then
@@ -855,7 +858,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Handler : in out Update_Handler'Class
              )  is
       Lock   : Holder (Row.Table.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get_Value
                (  Item_Ptr'
                   (  Tree  => Row.Table.Roots (Key_Index'First),
@@ -882,7 +885,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                 Handler   : in out Update_Handler'Class
              )  is
       Lock   : Holder (Container.Pool);
-      This   : Byte_Index :=
+      This   : constant Byte_Index :=
                Unchecked_Get
                (  Container.Roots (Index).all,
                   Key

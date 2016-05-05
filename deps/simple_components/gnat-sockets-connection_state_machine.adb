@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine       Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  19:56 08 Aug 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,10 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;       use Ada.Exceptions;
-with Ada.IO_Exceptions;    use Ada.IO_Exceptions;
-with Ada.Tags;             use Ada.Tags;
-with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
+with Ada.Exceptions;     use Ada.Exceptions;
+with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
+with Ada.Tags;           use Ada.Tags;
 
 with Ada.Unchecked_Deallocation;
 with System.Address_To_Access_Conversions;

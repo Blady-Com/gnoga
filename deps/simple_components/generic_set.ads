@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2002       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -247,13 +247,33 @@ package Generic_Set is
 --
 -- Replace -- Replace an item in the set
 --
---    Container - The set to be modified
---    Item      - To be added / replaced
+--    Container   - The set to be modified
+--    Item        - To be added / replaced
 --
--- This procedure adds the element Item to the set. The element is replaced
--- if it is already in the set.
+-- This procedure  adds the  element  Item to the set.  The  element  is
+-- replaced if it is already in the set.
 --
    procedure Replace (Container : in out Set; Item : Object_Type);
+--
+-- Replace -- Replace an item in the set
+--
+--    Container - The set to be modified
+--    Item      - To be added / replaced
+--    Condition - Predicate checking exchange
+--    Updated   - True if the container was changed
+--
+-- This  procedure  adds the  element Item to the set.  The  element  is
+-- replaced if Condition returns True.
+--
+   type Exchange_Condition is
+      access function (New_Element, Old_Element : Object_Type)
+         return Boolean;
+   procedure Replace
+             (  Container : in out Set;
+                Item      : Object_Type;
+                Condition : Exchange_Condition;
+                Updated   : out Boolean
+             );
 --
 -- Replace -- Replace items from one set in another
 --

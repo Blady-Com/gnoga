@@ -3,7 +3,7 @@
 --     Object.Handle.                              Luebeck            --
 --        Generic_Handle_Set                       Spring, 2006       --
 --  Implementation                                                    --
---                                Last revision :  15:03 28 Mar 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -62,7 +62,7 @@ package body Object.Handle.Generic_Handle_Set is
          return;
       end if;
       declare
-         Location : Integer := Find (Container, Item);
+         Location : constant Integer := Find (Container, Item);
       begin
          if Location < 0 then
             if Container.Object = null then
@@ -82,7 +82,7 @@ package body Object.Handle.Generic_Handle_Set is
                   Object.Vector (1) := Item;
                elsif Object.Size = Object.Vector'Last then
                   declare
-                     Ptr : Object_Array_Ptr :=
+                     Ptr : constant Object_Array_Ptr :=
                         new Object_Array'
                             (  1
                             .. (  Object.Size
@@ -163,7 +163,7 @@ package body Object.Handle.Generic_Handle_Set is
       then
          declare
             Source : Data renames Container.Object.all;
-            Copy   : Data_Ptr := new Data;
+            Copy   : constant Data_Ptr := new Data;
          begin
             Copy.Size := Source.Size;
             if 0 /= Source.Size then
@@ -352,7 +352,7 @@ package body Object.Handle.Generic_Handle_Set is
              (  Container : in out Set;
                 Item      : Object_Ptr_Type
              )  is
-      Index : Integer := Find (Container, Item);
+      Index : constant Integer := Find (Container, Item);
    begin
       if Index > 0 then
          Remove (Container, Index);
@@ -363,7 +363,7 @@ package body Object.Handle.Generic_Handle_Set is
              (  Container : in out Set;
                 Item      : Handle_Type
              )  is
-      Index : Integer := Find (Container, Item);
+      Index : constant Integer := Find (Container, Item);
    begin
       if Index > 0 then
          Remove (Container, Index);

@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  15:51 13 Dec 2008  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -116,6 +116,8 @@ package Generic_FIFO is
 --
    function Is_Preserved (Queue : FIFO; Element : Element_Type)
       return Boolean;
+   type Is_Preserved_Ptr is access
+      function (Element : Element_Type) return Boolean;
 --
 -- Peek -- An element from the queue leaving it there
 --
@@ -145,13 +147,19 @@ package Generic_FIFO is
 --
 -- Purge -- Delete certain elements from the queue
 --
---    Queue  - The queue
---    Purged - The number of elements removed
+--    Queue          - The queue
+--    Purged         - The number of elements removed
+--  [ Is_Preserved ] - Function to use
 --
 -- This procedure removes the elements for  which function  Is_Preserved
 -- returned False.
 --
    procedure Purge (Queue : in out FIFO; Purged : out Natural);
+   procedure Purge
+             (  Queue        : in out FIFO;
+                Is_Preserved : Is_Preserved_Ptr;
+                Purged       : out Natural
+             );
 --
 -- Put -- An element into the queue
 --

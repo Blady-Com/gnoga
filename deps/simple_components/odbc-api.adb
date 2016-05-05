@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  10:00 09 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,7 +27,6 @@
 
 with Ada.Exceptions;              use Ada.Exceptions;
 with Ada.IO_Exceptions;           use Ada.IO_Exceptions;
-with Interfaces.C;                use Interfaces.C;
 with ODBC.Thin;                   use ODBC.Thin;
 with Strings_Edit;                use Strings_Edit;
 with Strings_Edit.Integers;       use Strings_Edit.Integers;
@@ -37,7 +36,6 @@ with Ada.Unchecked_Deallocation;
 with System;
 
 package body ODBC.API is
-
    Bytes_In_Wide_Char   : constant := 2;
    SQLGUID_Length       : constant := 16;
    SQLTINYINT_Length    : constant := SQLTINYINT'Size   / SQLCHAR'Size;
@@ -715,7 +713,7 @@ package body ODBC.API is
       end Get_Message;
 
       function Get_Server return String is
-         Result : String :=
+         Result : constant String :=
                   Get_Field
                   (  Handle_Type   => Handle_Type,
                      Handle        => Handle,
@@ -897,7 +895,7 @@ package body ODBC.API is
            Filter_07009'Access
         );
         declare
-           Name : String := To_Ada (Buffer);
+           Name : constant String := To_Ada (Buffer);
         begin
            return
            (  Name_Length    => Name'Length,
@@ -1201,7 +1199,7 @@ package body ODBC.API is
                SQLHANDLE (Connection.Handle),
                SQL_ROLLBACK
             );
-         Result := SQLDisconnect (SQLHDBC (Connection.Handle));
+         Result := SQLDisconnect (Connection.Handle);
          Result :=
             SQLFreeHandle
             (  SQL_HANDLE_DBC,
@@ -3586,8 +3584,9 @@ package body ODBC.API is
       case Result is
          when SQL_SUCCESS =>
             declare
-               DSN_Name        : String := To_Ada (Name);
-               DSN_Description : String := To_Ada (Description);
+               DSN_Name        : constant String := To_Ada (Name);
+               DSN_Description : constant String :=
+                                    To_Ada (Description);
             begin
                return
                (  DSN_Name'Length,
@@ -3994,8 +3993,9 @@ package body ODBC.API is
       case Result is
          when SQL_SUCCESS =>
             declare
-               DSN_Name        : String := To_Ada (Name);
-               DSN_Description : String := To_Ada (Description);
+               DSN_Name        : constant String := To_Ada (Name);
+               DSN_Description : constant String :=
+                                    To_Ada (Description);
             begin
                return
                (  DSN_Name'Length,
@@ -5689,7 +5689,7 @@ package body ODBC.API is
       Fetch (Command.all);
    -- Column 1
       declare
-         Type_Name : String := Get_Data (Command, 1, On_Error);
+         Type_Name : constant String := Get_Data (Command, 1, On_Error);
       begin
    -- Column 2
          begin
@@ -5713,16 +5713,17 @@ package body ODBC.API is
          end;
    -- Column 4
          declare
-            Literal_Prefix : String := Get_Data (Command, 4, On_Error);
+            Literal_Prefix : constant String :=
+                             Get_Data (Command, 4, On_Error);
          begin
    -- Column 5
             declare
-               Literal_Suffix : String :=
+               Literal_Suffix : constant String :=
                                 Get_Data (Command, 5, On_Error);
             begin
    -- Column 6
                declare
-                  Create_Parameters : String :=
+                  Create_Parameters : constant String :=
                                       Get_Data (Command, 6, On_Error);
                begin
    -- Column 7
@@ -5784,7 +5785,7 @@ package body ODBC.API is
                   end;
    -- Column 13
                   declare
-                     Local_Name : String :=
+                     Local_Name : constant String :=
                                   Get_Data (Command, 13, On_Error);
                   begin
                      Close_Cursor (Command.all);
@@ -5953,7 +5954,7 @@ package body ODBC.API is
              (  Command : in out ODBC_Command;
                 Request : Wide_String
              )  is
-      Data : SQLWCHAR_Array := To_C (Request);
+      Data : constant SQLWCHAR_Array := To_C (Request);
    begin
       Check (Command, SQLFreeStmt (Command.Handle, SQL_UNBIND));
       Check (Command, SQLFreeStmt (Command.Handle, SQL_RESET_PARAMS));
@@ -6157,7 +6158,7 @@ package body ODBC.API is
              (  Command : in out ODBC_Command;
                 Value   : SQL_CONCUR
              )  is
-      Data : aliased SQLULEN := SQLULEN (Value);
+      Data : constant SQLULEN := SQLULEN (Value);
    begin
       Check
       (  Command,
@@ -6271,7 +6272,7 @@ package body ODBC.API is
              (  Command : in out ODBC_Command;
                 Value   : SQL_SENSITIVITY
              )  is
-      Data : aliased SQLULEN := SQLULEN (Value);
+      Data : constant SQLULEN := SQLULEN (Value);
    begin
       Check
       (  Command,
@@ -6289,7 +6290,7 @@ package body ODBC.API is
              (  Command : in out ODBC_Command;
                 Value   : SQL_CURSOR
              )  is
-      Data : aliased SQLULEN := SQLULEN (Value);
+      Data : constant SQLULEN := SQLULEN (Value);
    begin
       Check
       (  Command,
@@ -6529,7 +6530,7 @@ package body ODBC.API is
              (  Command : in out ODBC_Command;
                 Value   : Duration
              )  is
-      Data : aliased SQLULEN := SQLULEN (Value);
+      Data : constant SQLULEN := SQLULEN (Value);
    begin
       Check
       (  Command,

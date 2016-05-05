@@ -3,7 +3,7 @@
 --      Persistent.Memory_Pools                    Luebeck            --
 --  Implementation                                 Winter, 2014       --
 --                                                                    --
---                                Last revision :  21:09 15 Sep 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -111,7 +111,7 @@ package body Persistent.Memory_Pools.Dump is
                 Flags : Dump_Flags := Dump_All
              )  is
       procedure Dump_Block (Index : in out Byte_Index) is
-         Ref : Block_Type_Ref := Load (Pool.File, Index);
+         Ref : constant Block_Type_Ref := Load (Pool.File, Index);
       begin
          if Ref = null then
             Put_Line
@@ -122,8 +122,9 @@ package body Persistent.Memory_Pools.Dump is
          else
             declare
                Block  : Block_Type renames Ref.all;
-               Offset : Block_Offset := Get_Offset (Index);
-               Size   : Unsigned_16  := Get_Size (Block, Offset);
+               Offset : constant Block_Offset := Get_Offset (Index);
+               Size   : constant Unsigned_16  :=
+                        Get_Size (Block, Offset);
                function Status return String is
                begin
                   if Is_Free (Block, Offset) then
@@ -136,7 +137,8 @@ package body Persistent.Memory_Pools.Dump is
                begin
                   if Is_Chained (Block, Offset) then
                      declare
-                        Next : Byte_Index := Get (Block, Offset);
+                        Next : constant Byte_Index :=
+                               Get (Block, Offset);
                      begin
                         return " ---> " & Image (Next);
                      end;
@@ -180,7 +182,7 @@ package body Persistent.Memory_Pools.Dump is
       end Dump_Block;
 
       function Dump_Free (Index : Byte_Index) return Byte_Index is
-         Ref : Block_Type_Ref := Load (Pool.File, Index);
+         Ref : constant Block_Type_Ref := Load (Pool.File, Index);
       begin
          if Ref = null then
             Put_Line
@@ -192,10 +194,12 @@ package body Persistent.Memory_Pools.Dump is
          else
             declare
                Block    : Block_Type renames Ref.all;
-               Offset   : Block_Offset := Get_Offset (Index);
-               Size     : Unsigned_16  := Get_Size (Block, Offset);
-               Previous : Byte_Index   := Get (Block, Offset);
-               Next     : Byte_Index   := Get (Block, Offset + 8);
+               Offset   : constant Block_Offset := Get_Offset (Index);
+               Size     : constant Unsigned_16 :=
+                          Get_Size (Block, Offset);
+               Previous : constant Byte_Index := Get (Block, Offset);
+               Next     : constant Byte_Index :=
+                          Get (Block, Offset + 8);
             begin
                Put_Line
                (  "      "
@@ -395,7 +399,7 @@ package body Persistent.Memory_Pools.Dump is
       if 0 /= (Flags and Dump_Block_Margins) then
          Put_Line (File, "Memory blocks:");
          declare
-            Last  : Byte_Index := Get_Size (Pool.File.all);
+            Last  : constant Byte_Index := Get_Size (Pool.File.all);
             Old   : Byte_Index;
             Index : Byte_Index := Head_Size + 2;
          begin
@@ -413,7 +417,7 @@ package body Persistent.Memory_Pools.Dump is
       if 0 /= (Flags and Dump_Block_Contents) then
          Put_Line (File, "File blocks:");
          declare
-            Last  : Byte_Index := Get_Size (Pool.File.all);
+            Last  : constant Byte_Index := Get_Size (Pool.File.all);
             Index : Byte_Index := 0;
          begin
             while Index < Last loop

@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Maps                      Luebeck            --
 --  Interface                                      Spring, 2008       --
 --                                                                    --
---                                Last revision :  11:55 13 Oct 2012  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -523,7 +523,7 @@ private
    procedure Clone
              (  List      : in out Code_Points_List_Ptr;
                 Use_Count : Natural;
-                Increment : Positive
+                Increment : Natural
              );
 --
 -- Insert -- A new range

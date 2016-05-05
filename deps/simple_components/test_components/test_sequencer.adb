@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Winter, 2008       --
 --                                                                    --
---                                Last revision :  21:31 21 Dec 2011  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -70,8 +70,8 @@ begin
                  &  "ffff000000000!!!!!!!!!!!!!!!!$$%&/()=?\ "
                  &  "qwertzuiop123456"
                  );
-      Stored   : Encoded_String  := Encode (Text, Key);
-      Restored : String          := Decode (Stored, Key);
+      Stored   : constant Encoded_String := Encode (Text, Key);
+      Restored : constant String         := Decode (Stored, Key);
    begin
       if Restored (1..Text'Length) /= Text then
          for Index in Text'Range loop
@@ -93,8 +93,8 @@ begin
    declare
       Key      : constant String := "ABCDEF";
       Text     : constant String := "Test text";
-      Stored   : Encoded_String  := Encode (Text, Key);
-      Restored : String          := Decode (Stored, Key);
+      Stored   : constant Encoded_String := Encode (Text, Key);
+      Restored : constant String         := Decode (Stored, Key);
    begin
       if Restored (1..Text'Length) /= Text then
          for Index in Text'Range loop

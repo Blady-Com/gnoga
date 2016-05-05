@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Stream_IO               Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  19:56 08 Aug 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,7 +39,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    end Encode;
 
    function Encode (Temperature : Centigrade) return Unsigned_16 is
-      Value : Float := Float (Temperature) * 2.0;
+      Value : constant Float := Float (Temperature) * 2.0;
    begin
       if Value <= 0.0 then
          return 0;
@@ -86,7 +86,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    function Read
             (  Stream : access Root_Stream_Type'Class
             )  return Device_Duration is
-      Value : Duration :=
+      Value : constant Duration :=
               Duration (Stream_Element'Input (Stream)) * 300.0;
    begin
       if Value >= Device_Duration'Last then
@@ -99,7 +99,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    function Read
             (  Stream : access Root_Stream_Type'Class
             )  return Device_Type is
-      Byte : Stream_Element := Stream_Element'Input (Stream);
+      Byte : constant Stream_Element := Stream_Element'Input (Stream);
    begin
       if Byte > Device_Type'Pos (Device_Type'Last) then
          Raise_Exception (Data_Error'Identity, "Invalid device type");
@@ -110,7 +110,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    function Read
             (  Stream : access Root_Stream_Type'Class
             )  return Day_Schedule is
-      Byte : Stream_Element := Stream_Element'Input (Stream);
+      Byte : constant Stream_Element := Stream_Element'Input (Stream);
    begin
       if Byte > Stream_Element (Point_Count'Last) then
          Raise_Exception
@@ -158,7 +158,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    function Read
             (  Stream : access Root_Stream_Type'Class
             )  return Device_Parameters is
-      Kind_Of : Device_Type := Read (Stream);
+      Kind_Of : constant Device_Type := Read (Stream);
    begin
       declare
          Result : Device_Parameters
@@ -196,7 +196,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    function Read
             (  Stream : access Root_Stream_Type'Class
             )  return Ratio is
-      Value : Float :=
+      Value : constant Float :=
               Float (Stream_Element'Input (Stream)) / 255.0;
    begin
       if Value >= Float (Ratio'Last) then
@@ -279,7 +279,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
              (  Stream      : access Root_Stream_Type'Class;
                 Temperature : Centigrade
              )  is
-      Value : Float := Float (Temperature) * 2.0;
+      Value : constant Float := Float (Temperature) * 2.0;
    begin
       if Value >= 255.5 then
          Stream_Element'Write (Stream, Stream_Element'Val (255));
@@ -365,7 +365,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
              (  Stream : access Root_Stream_Type'Class;
                 Value  : Ratio
              )  is
-      Data : Float := Float (Value) * 255.0;
+      Data : constant Float := Float (Value) * 255.0;
    begin
       if Data >= 255.5 then
          Stream_Element'Write (Stream, Stream_Element'Val (255));

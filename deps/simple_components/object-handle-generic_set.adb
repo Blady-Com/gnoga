@@ -3,7 +3,7 @@
 --     Object.Handle.Generic_Set                   Luebeck            --
 --  Implementation                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  11:14 17 Oct 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -68,7 +68,7 @@ package body Object.Handle.Generic_Set is
          return;
       end if;
       declare
-         Location : Integer := Find (Container, Item);
+         Location : constant Integer := Find (Container, Item);
       begin
          if Location < 0 then
             if Container.Object = null then
@@ -86,18 +86,18 @@ package body Object.Handle.Generic_Set is
                   Object.Vector (1) := Item;
                elsif Object.Size = Object.Vector'Last then
                   declare
-                     Ptr : Object_Array_Ptr :=
-                        new Object_Array'
-                            (  1
-                            .. (  Object.Size
-                               +  Natural'Max
-                                  (  Minimal_Size,
-                                     (  (  Object.Size
-                                        *  (100 + Increment)
-                                        )
-                                     /  100
-                               )  )  ) => null
-                            );
+                     Ptr : constant Object_Array_Ptr :=
+                           new Object_Array'
+                               (  1
+                               .. (  Object.Size
+                                  +  Natural'Max
+                                     (  Minimal_Size,
+                                        (  (  Object.Size
+                                           *  (100 + Increment)
+                                           )
+                                        /  100
+                                  )  )  ) => null
+                               );
                   begin
                      Ptr (1..Index - 1) := Object.Vector (1..Index - 1);
                      Ptr (Index) := Item;
@@ -166,7 +166,7 @@ package body Object.Handle.Generic_Set is
       then
          declare
             Source : Data renames Container.Object.all;
-            Copy   : Data_Ptr := new Data;
+            Copy   : constant Data_Ptr := new Data;
          begin
             Copy.Size := Source.Size;
             if 0 /= Source.Size then
@@ -362,7 +362,7 @@ package body Object.Handle.Generic_Set is
              (  Container : in out Set;
                 Item      : Object_Type'Class
              )  is
-      Index : Integer := Find (Container, Item);
+      Index : constant Integer := Find (Container, Item);
    begin
       if Index > 0 then
          Remove (Container, Index);
@@ -373,7 +373,7 @@ package body Object.Handle.Generic_Set is
              (  Container : in out Set;
                 Item      : Object_Type_Ptr
              )  is
-      Index : Integer := Find (Container, Item);
+      Index : constant Integer := Find (Container, Item);
    begin
       if Index > 0 then
          Remove (Container, Index);
@@ -384,7 +384,7 @@ package body Object.Handle.Generic_Set is
              (  Container : in out Set;
                 Item      : Handle
              )  is
-      Index : Integer := Find (Container, Item);
+      Index : constant Integer := Find (Container, Item);
    begin
       if Index > 0 then
          Remove (Container, Index);

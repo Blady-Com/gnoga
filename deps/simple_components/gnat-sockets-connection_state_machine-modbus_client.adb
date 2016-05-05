@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client                               Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -193,7 +193,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                 State   : in out Stream_Element_Offset
              )  is
       Client : MODBUS_Client'Class renames Item.Client.all;
-      Length : Stream_Element_Offset :=
+      Length : constant Stream_Element_Offset :=
                Stream_Element_Offset (Client.Length_Field.Value) - 2;
    begin
       if Length > Client.Payload_Data.Size then
@@ -282,7 +282,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
             begin
                for Index in 2..Last loop
                   declare
-                     Byte : Stream_Element := Data (Index);
+                     Byte : constant Stream_Element := Data (Index);
                   begin
                      Values (Bit_No    ) := (Byte and   1) /= 0;
                      Values (Bit_No + 1) := (Byte and   2) /= 0;
@@ -771,7 +771,8 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
          );
       end if;
       declare
-         Bytes   : Stream_Element_Offset := (Values'Length + 7) / 8;
+         Bytes   : constant Stream_Element_Offset :=
+                      (Values'Length + 7) / 8;
          Data    : Stream_Element_Array (1..3 + Bytes) := (others => 0);
          Pointer : Stream_Element_Offset := Data'First;
          Power   : Stream_Element := 1;
@@ -815,7 +816,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
          );
       end if;
       declare
-         Bytes   : Stream_Element_Offset := Values'Length * 2;
+         Bytes   : constant Stream_Element_Offset := Values'Length * 2;
          Data    : Stream_Element_Array (1..3 + Bytes);
          Pointer : Stream_Element_Offset := Data'First;
       begin
@@ -878,7 +879,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
          );
       end if;
       declare
-         Bytes   : Stream_Element_Offset := Values'Length * 2;
+         Bytes   : constant Stream_Element_Offset := Values'Length * 2;
          Data    : Stream_Element_Array (1..7 + Bytes);
          Pointer : Stream_Element_Offset := Data'First;
       begin

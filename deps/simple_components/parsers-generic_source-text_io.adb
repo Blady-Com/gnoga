@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.Text_IO              Luebeck            --
 --  Implementation                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  15:03 28 Mar 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,7 +35,7 @@ package body Parsers.Generic_Source.Text_IO is
                 Expand_Tabs : Boolean := False
              )  is
       Line    : String  := Get_Line (Code);
-      Pointer : Integer := Get_Pointer (Code);
+      Pointer : constant Integer := Get_Pointer (Code);
       Length  : Natural := 0;
       procedure Fill (Expand : Boolean; Replacement : Character) is
          pragma Inline (Fill);

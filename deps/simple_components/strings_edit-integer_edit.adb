@@ -3,7 +3,7 @@
 --     Strings_Edit.Integer_Edit                   Luebeck            --
 --  Implementation                                 Spring, 2000       --
 --                                                                    --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -47,6 +47,39 @@ package body Strings_Edit.Integer_Edit is
       Start    : Integer;
       Index    : Integer := Pointer;
       Digit    : Integer;
+
+      procedure Skip is
+         pragma Inline (Skip);
+      begin
+         while (  Index <= Source'Last
+               and then
+                  Base > GetDigit (Source (Index))
+               )
+         loop
+            Index := Index + 1;
+         end loop;
+         Pointer := Index;
+      end Skip;
+
+      procedure Neg_Overflow is
+         pragma Inline (Neg_Overflow);
+      begin
+         if not ToFirst then
+            raise Constraint_Error;
+         end if;
+         Value := First;
+         Skip;
+      end Neg_Overflow;
+
+      procedure Pos_Overflow is
+         pragma Inline (Pos_Overflow);
+      begin
+         if not ToLast then
+            raise Constraint_Error;
+         end if;
+         Value := Last;
+         Skip;
+      end Pos_Overflow;
    begin
       if Index < Source'First then
          raise Layout_Error;
@@ -80,11 +113,13 @@ package body Strings_Edit.Integer_Edit is
             Digit := GetDigit (Source (Index));
             exit when Digit >= Base;
             if Result < Min then
-               goto NegOverflow;
+               Neg_Overflow;
+               return;
             end if;
             Result := Result * Radix;
             if Result < Number'Base'First + Number'Base (Digit) then
-               goto NegOverflow;
+               Neg_Overflow;
+               return;
             end if;
             Result := Result - Number'Base (Digit);
             Index  := Index + 1;
@@ -94,11 +129,13 @@ package body Strings_Edit.Integer_Edit is
             Digit := GetDigit (Source (Index));
             exit when Digit >= Base;
             if Result > Max then
-               goto PosOverflow;
+               Pos_Overflow;
+               return;
             end if;
             Result := Result * Radix;
             if Result > Number'Base'Last - Number'Base (Digit) then
-               goto PosOverflow;
+               Pos_Overflow;
+               return;
             end if;
             Result := Result + Number'Base (Digit);
             Index  := Index + 1;
@@ -124,31 +161,7 @@ package body Strings_Edit.Integer_Edit is
             raise Constraint_Error;
          end if;
       end if;
-      Value := Result;
-      Pointer := Index;
-      return;
-
-   <<NegOverflow>>
-      if not ToFirst then
-         raise Constraint_Error;
-      end if;
-      Value := First;
-      goto Skip;
-
-   <<PosOverflow>>
-      if not ToLast then
-         raise Constraint_Error;
-      end if;
-      Value := Last;
-
-   <<Skip>>
-      while (  Index <= Source'Last
-            and then
-               Base > GetDigit (Source (Index))
-            )
-      loop
-         Index := Index + 1;
-      end loop;
+      Value   := Result;
       Pointer := Index;
    end Get;
 

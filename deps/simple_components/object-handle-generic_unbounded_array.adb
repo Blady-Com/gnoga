@@ -3,7 +3,7 @@
 --     Object.Handle.Unbounded_Array               Luebeck            --
 --  Implementation                                 Spring, 2003       --
 --                                                                    --
---                                Last revision :  17:44 09 May 2009  --
+--                                Last revision :  16:49 28 Feb 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -128,7 +128,7 @@ package body Object.Handle.Generic_Unbounded_Array is
       else
          if Container.Ptr.Use_Count /= 1 then
             Container.Ptr.Use_Count :=
-                Container.Ptr.Use_Count - 1;
+               Container.Ptr.Use_Count - 1;
             if Container.Ptr.Data.Vector /= null then
                --
                -- It is not an empty body and it is used somewhere else.

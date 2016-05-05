@@ -3,7 +3,7 @@
 --     Persistent.Single_File                      Luebeck            --
 --  Implementation                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  09:07 27 Jun 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;           use Ada.Exceptions;
 with Ada.Characters.Handling;  use Ada.Characters.Handling;
 with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
 with Strings_Edit.Quoted;      use Strings_Edit.Quoted;
@@ -178,7 +177,7 @@ package body Persistent.Single_File is
       if This /= No_Object then
          Open (Stream, Get_Value (This));
          declare
-            Object : Object_Record := Input (Stream'Access);
+            Object : constant Object_Record := Input (Stream'Access);
          begin
             Delete_Links (Storage, Object.ID, Object.References);
             Deallocate (Storage.Pool.all, Object.Data);
@@ -193,7 +192,7 @@ package body Persistent.Single_File is
             This := Sup (Storage.Links.all, Get_Byte_Index (ID, 0));
             exit when This = No_Object;
             declare
-               Key : Byte_Index := Get_Key (This);
+               Key : constant Byte_Index := Get_Key (This);
             begin
                exit when Get_To (Key) > ID;
             end;
@@ -244,7 +243,7 @@ package body Persistent.Single_File is
       end if;
       declare
          Child : Name_Ptr;
-         ID    : Object_ID := Object_Key'Class (Parent).ID;
+         ID    : constant Object_ID := Object_Key'Class (Parent).ID;
       begin
          Child := Find (Storage.Directory.all, (Name'Length, ID, Name));
          if Child = No_Name then
@@ -310,7 +309,8 @@ package body Persistent.Single_File is
             (  Storage : Data_Base_Object;
                ID      : Object_ID
             )  return Byte_Index is
-      Item : Object_Ptr := Find (Storage.Map.all, Byte_Index (ID));
+      Item : constant Object_Ptr :=
+             Find (Storage.Map.all, Byte_Index (ID));
    begin
       if Item = No_Object then
          Raise_Exception
@@ -363,7 +363,7 @@ package body Persistent.Single_File is
       Child := Sup (Storage.Directory.all, (0, Parent, ""));
       while Child /= No_Name loop
          declare
-            Token : Name_Token := Get_Key (Child);
+            Token : constant Name_Token := Get_Key (Child);
          begin
             if Token.Parent = Parent then
                Put (Children, Pointer, Object_ID (Get_Pointer (Child)));
@@ -417,7 +417,7 @@ package body Persistent.Single_File is
                 Data       : out Unbounded_String;
                 Parameters : out Unbounded_String
              )  is
-      Object : Object_Record := Get_Record (Storage, Key);
+      Object : constant Object_Record := Get_Record (Storage, Key);
       Stream : aliased Input_Stream (Storage.Pool);
    begin
       Class := To_Unbounded_String (Object.Class);
@@ -445,7 +445,7 @@ package body Persistent.Single_File is
       loop
          exit when This = No_Object;
          declare
-            Key : Byte_Index := Get_Key (This);
+            Key : constant Byte_Index := Get_Key (This);
          begin
             exit when Get_To (Key) > ID;
             if Get_Value (This) = 1 then -- A backward link
@@ -569,13 +569,14 @@ package body Persistent.Single_File is
 
       Result : Catalogue.Set;
       Child  : Name_Ptr;
-      ID     : Object_ID := Get_New_Parent_Key (Storage, Parent).ID;
+      ID     : constant Object_ID :=
+               Get_New_Parent_Key (Storage, Parent).ID;
       Mutex  : Read_Mutex (Storage);
    begin
       Child := Sup (Storage.Directory.all, (0, ID, ""));
       while Child /= No_Name loop
          declare
-            Token : Name_Token := Get_Key (Child);
+            Token : constant Name_Token := Get_Key (Child);
          begin
             if Token.Parent = ID then
                if Match (Token.Name) then
@@ -601,7 +602,7 @@ package body Persistent.Single_File is
          Raise_Exception (End_Error'Identity, "Invalid key");
       end if;
       declare
-         Token : Name_Token :=
+         Token : constant Name_Token :=
                  Get_Key
                  (  Storage.all,
                     Get_Record (Storage.all, Key).Token
@@ -657,7 +658,7 @@ package body Persistent.Single_File is
                 References : in out Persistent_Key_Array'Class;
                 Pointer    : in out Integer
              )  is
-      Object : Object_Record := Get_Record (Storage, Key);
+      Object : constant Object_Record := Get_Record (Storage, Key);
    begin
       if Object.References > 0 then
          declare
@@ -697,7 +698,7 @@ package body Persistent.Single_File is
       loop
          exit when This = No_Object;
          declare
-            Key : Byte_Index := Get_Key (This);
+            Key : constant Byte_Index := Get_Key (This);
          begin
             exit when Get_To (Key) > ID;
             if All_Links or else Get_Value (This) = 0 then
@@ -712,7 +713,7 @@ package body Persistent.Single_File is
    function Input
             (  Stream : access Root_Stream_Type'Class
             )  return Byte_Index is
-      Index : Unsigned_64 := Input (Stream);
+      Index : constant Unsigned_64 := Input (Stream);
    begin
       return Byte_Index (Index);
    end Input;
@@ -735,7 +736,7 @@ package body Persistent.Single_File is
    function Input
             (  Stream : access Root_Stream_Type'Class
             )  return String is
-      Length : Natural := Input (Stream);
+      Length : constant Natural := Input (Stream);
       Result : String (1..Length);
    begin
       if Length > 0 then
@@ -792,7 +793,7 @@ package body Persistent.Single_File is
    function New_ID (Storage : access Data_Base_Object)
       return Object_ID is
       Pool : Persistent_Pool'Class renames Storage.Pool.all;
-      ID   : Object_ID :=
+      ID   : constant Object_ID :=
              Object_ID (Get_Root_Index (Pool, Last_Index)) + 1;
    begin
       Set_Root_Index (Pool, Last_Index, Byte_Index (ID));
@@ -846,7 +847,6 @@ package body Persistent.Single_File is
              (  Stream : access Root_Stream_Type'Class;
                 Value  : Time
              )  is
-      use Strings_Edit.Streams.Naturals;
       Year    : Year_Number;
       Month   : Month_Number;
       Day     : Day_Number;
@@ -874,13 +874,14 @@ package body Persistent.Single_File is
                 Name    : String;
                 Parent  : Object_ID
              )  is
-      Index   : Byte_Index := Get_By_ID (Storage, Child);
+      Index   : constant Byte_Index := Get_By_ID (Storage, Child);
       Object  : Object_Record := Get_Record (Storage, Index);
-      New_Key : Name_Token := (Name'Length, Parent, Name);
+      New_Key : constant Name_Token := (Name'Length, Parent, Name);
    begin
       if Object.Token /= 0 then -- Named object
          declare
-            Old_Key : Name_Token := Get_Key (Storage, Object.Token);
+            Old_Key : constant Name_Token :=
+                      Get_Key (Storage, Object.Token);
          begin
             if Old_Key.Parent = Parent and then Name = Old_Key.Name then
                return; -- Same parent, same name
@@ -1090,7 +1091,7 @@ package body Persistent.Single_File is
          Output (Stream'Access, Get_Size (Direct_Links));
          for Index in 1..Get_Size (Direct_Links) loop
             declare
-               ID : Object_ID :=
+               ID : constant Object_ID :=
                     Get_Key (Storage, Ref (Direct_Links, Index)).ID;
             begin
                Output (Stream'Access, ID);
@@ -1141,8 +1142,8 @@ package body Persistent.Single_File is
          Raise_Exception (End_Error'Identity, "Invalid parent key");
       end if;
       declare
-         ID  : Object_ID := New_ID (Storage);
-         Key : Name_Token :=
+         ID  : constant Object_ID := New_ID (Storage);
+         Key : constant Name_Token :=
                  (Name'Length, Object_Key'Class (Parent).ID, Name);
       begin
          begin
@@ -1176,7 +1177,7 @@ package body Persistent.Single_File is
                Direct_Links   : Deposit_Set;
                Backward_Links : Deposit_Set
             )  return Persistent_Key'Class is
-      ID : Object_ID := New_ID (Storage);
+      ID : constant Object_ID := New_ID (Storage);
    begin
       Store
       (  Storage        => Storage,
@@ -1199,9 +1200,9 @@ package body Persistent.Single_File is
              (  Storage : in out Data_Base_Object;
                 Key     : Persistent_Key'Class
              )  is
-      Index  : Byte_Index    := Get_By_ID (Storage, Key);
+      Index  : constant Byte_Index := Get_By_ID (Storage, Key);
       Object : Object_Record := Get_Record (Storage, Index);
-      Token  : Name_Token    := Get_Key (Storage, Object.Token);
+      Token  : constant Name_Token := Get_Key (Storage, Object.Token);
    begin
       if Token.Length /= 0 then -- Named object
          Remove (Storage.Directory.all, Token);
@@ -1223,7 +1224,7 @@ package body Persistent.Single_File is
                 Direct_Links   : Deposit_Set;
                 Backward_Links : Deposit_Set
              )  is
-      Index : Byte_Index := Get_By_ID (Storage, Key);
+      Index : constant Byte_Index := Get_By_ID (Storage, Key);
 
       procedure Update (Object : in out Object_Record) is
          Stream : aliased Output_Stream (Storage.Pool);
@@ -1247,7 +1248,7 @@ package body Persistent.Single_File is
             Output (Stream'Access, Get_Size (Direct_Links));
             for Index in 1..Get_Size (Direct_Links) loop
                declare
-                  ID : Object_ID :=
+                  ID : constant Object_ID :=
                           Get_Key
                           (  Storage'Access,
                              Ref (Direct_Links, Index)

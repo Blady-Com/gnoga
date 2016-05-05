@@ -3,7 +3,7 @@
 --     Persistent.Single_File_Keys                 Luebeck            --
 --  Implementation                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;                 use Ada.Exceptions;
 with Ada.IO_Exceptions;              use Ada.IO_Exceptions;
 with Strings_Edit.Streams.Naturals;  use Strings_Edit.Streams.Naturals;
 
@@ -49,7 +48,7 @@ package body Persistent.Single_File_Keys is
    function Input
             (  Stream : access Root_Stream_Type'Class
             )  return Object_ID is
-      ID : Natural := Input (Stream);
+      ID : constant Natural := Input (Stream);
    begin
       return Object_ID (ID);
    end Input;
@@ -90,7 +89,7 @@ package body Persistent.Single_File_Keys is
                 Value  : Name_Token
              )  is
    begin
-      Output (Stream, Natural (Value.Length));
+      Output (Stream, Value.Length);
       Output (Stream, Natural (Value.Parent));
       if Value.Length > 0 then
          String'Write (Stream, Value.Name);

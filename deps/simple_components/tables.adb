@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2000       --
 --                                                                    --
---                                Last revision :  19:03 27 May 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -108,7 +108,7 @@ package body Tables is
                 Data   : Tag
              )  is
       List : TokenListPtr;
-      Item : TokenPtr := new Token'(Name'Length, Data, Name);
+      Item : constant TokenPtr := new Token'(Name'Length, Data, Name);
    begin
       if Folder.List = null then
          Folder.List := new TokenList (1..Increment);
@@ -137,7 +137,7 @@ package body Tables is
    end Insert;
 
    procedure Add (Folder : in out Table; Name : String; Data : Tag) is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          raise Name_Error;
@@ -192,7 +192,7 @@ package body Tables is
    end Delete;
 
    procedure Delete (Folder : in out Table; Name : String) is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          Delete (Folder, Index);
@@ -218,7 +218,7 @@ package body Tables is
    end Finalize;
 
    function Find (Folder : Table; Name : String) return Tag is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          return Folder.List (Index).Data;
@@ -275,7 +275,7 @@ package body Tables is
    end IsIn;
 
    function Locate (Folder : Table; Name : String) return Natural is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          return Index;
@@ -369,7 +369,7 @@ package body Tables is
                 Name   : String;
                 Data   : Tag
              )  is
-      Index : Integer := Search (Folder, Name);
+      Index : constant Integer := Search (Folder, Name);
    begin
       if Index > 0 then
          Folder.List (Index).Data := Data;

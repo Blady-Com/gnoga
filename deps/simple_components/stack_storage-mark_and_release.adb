@@ -3,7 +3,7 @@
 --     Stack_Storage.Mark_And_Release              Luebeck            --
 --  Implementation                                 Winter, 2003       --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -54,7 +54,8 @@ package body Stack_Storage.Mark_And_Release is
    end Initialize;
 
    procedure Finalize (Object : in out Pool_Object) is
-      This : Pool_Object_Ptr := To_Specific (Object'Unchecked_Access);
+      This : constant Pool_Object_Ptr :=
+             To_Specific (Object'Unchecked_Access);
    begin
       if This /= Last_Allocated then
          raise Storage_Error;

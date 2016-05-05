@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files                   Luebeck            --
 --  Implementation                                 Winter, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,8 +24,6 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
-
-with Ada.Exceptions;  use Ada.Exceptions;
 
 with Ada.Unchecked_Deallocation;
 
@@ -202,11 +200,11 @@ package body Persistent.Blocking_Files is
                Index     : Block_Index
             )  return Boolean is
    begin
-      if not Container.Is_Open or else Index = 0 then
+      if not Container.Is_Open then
          return False;
       end if;
       declare
-         Item : Count := Count (Index);
+         Item : constant Count := Count (Index);
          This : Cashed_Block renames
                    Container.Buffer
                    (  Count ((Index - 1) mod Container.Buffer'Length)
@@ -246,7 +244,7 @@ package body Persistent.Blocking_Files is
                   ) 'Unchecked_Access;
          declare
             This : Cashed_Block renames Block.all;
-            Item : Count := No + 1;
+            Item : constant Count := No + 1;
          begin
             if This.Used then
                if This.Index = Item then

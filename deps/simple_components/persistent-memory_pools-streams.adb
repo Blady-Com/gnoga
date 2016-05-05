@@ -3,7 +3,7 @@
 --      Persistent.Memory_Pools.                   Luebeck            --
 --         Streams                                 Winter, 2014       --
 --  Implementation                                                    --
---                                Last revision :  21:09 15 Sep 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;     use Ada.Exceptions;
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 
 package body Persistent.Memory_Pools.Streams is
@@ -137,8 +136,10 @@ package body Persistent.Memory_Pools.Streams is
          declare
             Block  : Block_Type renames
                         Load (Stream.Pool.File, Stream.Current).all;
-            Offset : Block_Offset := Get_Offset (Stream.Current);
-            Size   : Unsigned_16  := Get_Size (Block, Offset);
+            Offset : constant Block_Offset :=
+                     Get_Offset (Stream.Current);
+            Size   : constant Unsigned_16 :=
+                     Get_Size (Block, Offset);
          begin
             if Size <= 4 + 8 then
                Raise_Exception
@@ -148,7 +149,7 @@ package body Persistent.Memory_Pools.Streams is
             end if;
             if not Is_Chained (Block, Offset) then
                declare
-                  Length : Byte_Index := Get (Block, Offset);
+                  Length : constant Byte_Index := Get (Block, Offset);
                begin
                   if Length > Byte_Index (Size - (8 + 4)) then
                      Raise_Exception
@@ -213,8 +214,9 @@ package body Persistent.Memory_Pools.Streams is
                return;
             end if;
             declare
-               L : Unsigned_8 := Contents (Index);
-               R : Unsigned_8 := Stream_Element'Pos (Right (This));
+               L : constant Unsigned_8 := Contents (Index);
+               R : constant Unsigned_8 :=
+                   Stream_Element'Pos (Right (This));
             begin
                if L /= R then
                   if L < R then
@@ -270,8 +272,9 @@ package body Persistent.Memory_Pools.Streams is
                return;
             end if;
             declare
-               L : Unsigned_8 := Contents (Index);
-               R : Unsigned_8 := Character'Pos (Right (Pointer));
+               L : constant Unsigned_8 := Contents (Index);
+               R : constant Unsigned_8 :=
+                   Character'Pos (Right (Pointer));
             begin
                if L /= R then
                   if L < R then
@@ -316,8 +319,9 @@ package body Persistent.Memory_Pools.Streams is
          declare
             Block  : Block_Type renames
                      Load (Stream.Pool.File, Current).all;
-            Offset : Block_Offset := Get_Offset (Current);
-            Size   : Unsigned_16  := Get_Size (Block, Offset);
+            Offset : constant Block_Offset := Get_Offset (Current);
+            Size   : constant Unsigned_16  :=
+                     Get_Size (Block, Offset);
          begin
             Current := Get (Block, Offset);
             exit when not Is_Chained (Block, Offset);
@@ -339,8 +343,8 @@ package body Persistent.Memory_Pools.Streams is
          declare
             Block  : Block_Type renames
                      Load (Stream.Pool.File, Current).all;
-            Offset : Block_Offset := Get_Offset (Current);
-            Size   : Unsigned_16  := Get_Size (Block, Offset);
+            Offset : constant Block_Offset := Get_Offset (Current);
+            Size   : constant Unsigned_16  := Get_Size (Block, Offset);
          begin
             Current := Get (Block, Offset);
             if not Is_Chained (Block, Offset) then
@@ -353,7 +357,7 @@ package body Persistent.Memory_Pools.Streams is
          end;
       end loop;
       declare
-         Offset : Block_Offset := Get_Offset (Current) + 8;
+         Offset : constant Block_Offset := Get_Offset (Current) + 8;
       begin
          if Offset > Next then
             Raise_Exception
@@ -381,7 +385,8 @@ package body Persistent.Memory_Pools.Streams is
          declare
             Block  : Block_Type renames
                      Load (Stream.Pool.File, Stream.Current).all;
-            Offset : Block_Offset := Get_Offset (Stream.Current);
+            Offset : constant Block_Offset :=
+                     Get_Offset (Stream.Current);
          begin
             return not Is_Chained (Block, Offset);
          end;
@@ -481,7 +486,8 @@ package body Persistent.Memory_Pools.Streams is
          declare
             Block  : Block_Type renames
                      Load (Stream.Pool.File, Stream.Current).all;
-            Offset : Block_Offset := Get_Offset (Stream.Current);
+            Offset : constant Block_Offset :=
+                     Get_Offset (Stream.Current);
          begin
             return Count
                    (  Stream,
@@ -547,8 +553,8 @@ package body Persistent.Memory_Pools.Streams is
       end if;
       declare
          Block  : Block_Type renames Load (Stream.Pool.File, Index).all;
-         Offset : Block_Offset := Get_Offset (Index);
-         Size   : Unsigned_16  := Get_Size (Block, Offset);
+         Offset : constant Block_Offset := Get_Offset (Index);
+         Size   : constant Unsigned_16  := Get_Size (Block, Offset);
       begin
          if Size <= 4 + 8 then
             Raise_Exception
@@ -561,7 +567,7 @@ package body Persistent.Memory_Pools.Streams is
             Stream.Next := Offset + Byte_Count (Size - 4);
          else
             declare
-               Length : Byte_Index := Get (Block, Offset);
+               Length : constant Byte_Index := Get (Block, Offset);
             begin
                if Length > Byte_Index (Size - (8 + 4)) then
                   Raise_Exception
@@ -598,8 +604,8 @@ package body Persistent.Memory_Pools.Streams is
       end if;
       declare
          Block  : Block_Type renames Load (Stream.Pool.File, Index).all;
-         Offset : Block_Offset := Get_Offset (Index);
-         Size   : Unsigned_16  := Get_Size (Block, Offset);
+         Offset : constant Block_Offset := Get_Offset (Index);
+         Size   : constant Unsigned_16  := Get_Size (Block, Offset);
       begin
          if Size <= 4 + 8 then
             Raise_Exception
@@ -643,8 +649,10 @@ package body Persistent.Memory_Pools.Streams is
       if Stream.Start > 0 and then Item'Length > 0 then
          loop
             declare
-               Space : Stream_Element_Offset := Item'Last - Last;
-               Count : Byte_Count := Stream.Next - Stream.Offset;
+               Space : constant Stream_Element_Offset :=
+                       Item'Last - Last;
+               Count : constant Byte_Count :=
+                       Stream.Next - Stream.Offset;
                Block : Block_Type renames
                        Load (Stream.Pool.File, Stream.Current).all;
             begin
@@ -663,8 +671,10 @@ package body Persistent.Memory_Pools.Streams is
             declare
                Block  : Block_Type renames
                         Load (Stream.Pool.File, Stream.Current).all;
-               Offset : Block_Offset := Get_Offset (Stream.Current);
-               Size   : Unsigned_16  := Get_Size (Block, Offset);
+               Offset : constant Block_Offset :=
+                        Get_Offset (Stream.Current);
+               Size   : constant Unsigned_16 :=
+                        Get_Size (Block, Offset);
             begin
                Stream.Offset := Offset + 8;
                if Is_Chained (Block, Offset) then
@@ -679,7 +689,8 @@ package body Persistent.Memory_Pools.Streams is
 --                    );
                else
                   declare
-                     Length : Byte_Index := Get (Block, Offset);
+                     Length : constant Byte_Index :=
+                              Get (Block, Offset);
                   begin
                      if Length > Byte_Index (Size - (8 + 4)) then
                         Raise_Exception
@@ -780,7 +791,7 @@ package body Persistent.Memory_Pools.Streams is
                 Item   : Stream_Element_Array
              )  is
       Pointer : Stream_Element_Offset := Item'First;
-      Start   : Block_Offset;
+--        Start   : Block_Offset;
    begin
       if Item'Length = 0 then
          return;
@@ -798,14 +809,15 @@ package body Persistent.Memory_Pools.Streams is
          declare
             Block : Block_Type renames
                     Load (Stream.Pool.File, Stream.Current).all;
-            Size  : Unsigned_16 := Get_Size (Block, Stream.Offset);
+            Size  : constant Unsigned_16 :=
+                    Get_Size (Block, Stream.Offset);
          begin
             Stream.Next := Stream.Offset + Byte_Count (Size - (4 + 8));
          end;
          Stream.Offset := Stream.Offset + 8;
          Stream.Start  := Stream.Current;
       end if;
-      Start := Stream.Offset;
+--        Start := Stream.Offset;
       loop
          declare
             Block : Block_Type renames
@@ -822,9 +834,10 @@ package body Persistent.Memory_Pools.Streams is
                Stream.Offset := Stream.Offset + 1;
                if Pointer = Item'Last then
                   declare -- Set last block length
-                     Offset : Block_Offset :=
+                     Offset : constant Block_Offset :=
                               Get_Offset (Stream.Current);
-                     Size   : Block_Offset := Stream.Offset - Offset;
+                     Size   : constant Block_Offset :=
+                              Stream.Offset - Offset;
                   begin
 --                       Ada.Text_IO.Put_Line
 --                       (  "Written:'"
@@ -863,9 +876,10 @@ package body Persistent.Memory_Pools.Streams is
                               (  Stream.Pool.File,
                                  Stream.Current
                               ) .all;
-                     Offset : Block_Offset :=
+                     Offset : constant Block_Offset :=
                               Get_Offset (Stream.Current);
-                     Size   : Unsigned_16 := Get_Size (Block, Offset);
+                     Size   : constant Unsigned_16 :=
+                              Get_Size (Block, Offset);
                   begin
                      Stream.Next := Offset + Byte_Count (Size - 4);
                   end;
@@ -883,8 +897,10 @@ package body Persistent.Memory_Pools.Streams is
             -- No more data in the block
             --
             declare
-               Offset : Block_Offset := Get_Offset (Stream.Current);
-               Size   : Unsigned_16  := Get_Size (Block, Offset);
+               Offset : constant Block_Offset :=
+                        Get_Offset (Stream.Current);
+               Size   : constant Unsigned_16 :=
+                        Get_Size (Block, Offset);
             begin
                if Is_Chained (Block, Offset) then
 --                    Ada.Text_IO.Put_Line
@@ -899,12 +915,14 @@ package body Persistent.Memory_Pools.Streams is
                   declare -- Set the cursor to the block's beginning
                      Block  : Block_Type renames
                               Load (Stream.Pool.File, Stream.Current).all;
-                    Offset : Block_Offset := Get_Offset (Stream.Current);
-                    Size   : Unsigned_16  := Get_Size (Block, Offset);
+                    Offset  : constant Block_Offset :=
+                              Get_Offset (Stream.Current);
+                    Size    : constant Unsigned_16 :=
+                              Get_Size (Block, Offset);
                   begin
                     Stream.Offset := Offset + 8;
                     Stream.Next   := Offset + Byte_Count (Size - 4);
-                    Start       := Stream.Offset;
+--                  Start         := Stream.Offset;
                   end;
                elsif 0 < Unchecked_Expand
                          (  Stream.Pool.all,
@@ -913,15 +931,17 @@ package body Persistent.Memory_Pools.Streams is
                   declare -- Expanded the current block
                      Block  : Block_Type renames
                               Load (Stream.Pool.File, Stream.Current).all;
-                     Offset : Block_Offset := Get_Offset (Stream.Current);
-                     Size   : Unsigned_16  := Get_Size (Block, Offset);
+                     Offset : constant Block_Offset :=
+                              Get_Offset (Stream.Current);
+                     Size   : constant Unsigned_16 :=
+                              Get_Size (Block, Offset);
                   begin
                      Stream.Next := Offset + Byte_Count (Size - 4);
-                     Start     := Stream.Offset;
+--                   Start       := Stream.Offset;
                   end;
                else -- Allocating next block and chaining to it
                   declare
-                     Next  : Byte_Index :=
+                     Next  : constant Byte_Index :=
                              Unchecked_Fetch
                              (  Stream.Pool.all,
                                 Byte_Count
@@ -950,13 +970,15 @@ package body Persistent.Memory_Pools.Streams is
                   end;
                   declare -- Set the cursor to the block's beginning
                      Block  : Block_Type renames
-                              Load (Stream.Pool.File, Stream.Current).all;
-                    Offset : Block_Offset := Get_Offset (Stream.Current);
-                    Size   : Unsigned_16  := Get_Size (Block, Offset);
+                        Load (Stream.Pool.File, Stream.Current).all;
+                     Offset : constant Block_Offset :=
+                              Get_Offset (Stream.Current);
+                     Size   : constant Unsigned_16 :=
+                              Get_Size (Block, Offset);
                   begin
                     Stream.Offset := Offset + 8;
                     Stream.Next   := Offset + Byte_Count (Size - 4);
-                    Start       := Stream.Offset;
+--                  Start         := Stream.Offset;
                   end;
                end if;
             end;

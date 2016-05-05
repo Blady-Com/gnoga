@@ -3,7 +3,7 @@
 --     Strings_Edit.Lexicographical_Order          Luebeck            --
 --  Implementation                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:32 02 Apr 2012  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -130,8 +130,8 @@ package body Strings_Edit.Lexicographical_Order is
                return Greater;
             end if;
             declare
-               I0 : Integer := I;
-               J0 : Integer := J;
+               I0 : constant Integer := I;
+               J0 : constant Integer := J;
             begin
                Get_Numeral (Left, I);
                Get_Numeral (Right, J);

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  19:57 29 Feb 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -3702,27 +3702,11 @@ package body GNUTLS is
    function PEM_Base64_Encode
             (  Data : Stream_Element_Array
             )  return Stream_Element_Array is
-      type Stream_Element_Ptr is access constant Stream_Element;
-      function From_Stream_Element_Ptr is
-         new Ada.Unchecked_Conversion
-             (  Stream_Element_Ptr,
-                const_unsigned_chars_ptr
-             );
-      function Internal
-               (  Header : chars_ptr;
-                  Data   : Datum;
-                  Result : access Datum
-               )  return int;
-      pragma Import (C, Internal, "gnutls_pem_base64_encode_alloc");
-      Output : Datum_Holder;
+      Result  : Stream_Element_Array (1..Data'Length * 4 / 3 + 4);
+      Pointer : Stream_Element_Offset := Result'First;
    begin
-      Check
-      (  Internal
-         (  Null_Ptr,
-            To_Datum (Data),
-            Output.Data'Access
-      )  );
-      return To_Stream_Element_Array (Output.Data);
+      PEM_Base64_Encode (Data, Result, Pointer);
+      return Result (Result'First..Pointer - 1);
    end PEM_Base64_Encode;
 
    function PK_Algorithm_Get_Name
@@ -4030,20 +4014,22 @@ package body GNUTLS is
          Last := Buffer'First - 1;
       end if;
    end Record_Send;
-
-   procedure Record_Set_Max_Empty_Records
-             (  Session : in out Session_Type;
-                Count   : Positive
-             )  is
-      procedure Internal (Session : Address; Count : int);
-      pragma Import
-             (  C,
-                Internal,
-                "gnutls_record_set_max_empty_records"
-             );
-   begin
-      Internal (Session.Holder.Handle, int (Count));
-   end Record_Set_Max_Empty_Records;
+--
+-- *** Removed ***
+--
+--     procedure Record_Set_Max_Empty_Records
+--               (  Session : in out Session_Type;
+--                  Count   : Positive
+--               )  is
+--        procedure Internal (Session : Address; Count : int);
+--        pragma Import
+--               (  C,
+--                  Internal,
+--                  "gnutls_record_set_max_empty_records"
+--               );
+--     begin
+--        Internal (Session.Holder.Handle, int (Count));
+--     end Record_Set_Max_Empty_Records;
 
    procedure Record_Set_Max_Size
              (  Session : in out Session_Type;

@@ -3,7 +3,7 @@
 --     Persistent.SQLite_Links                     Luebeck            --
 --  Implementation                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  09:24 09 Apr 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;     use Ada.Exceptions;
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 with Interfaces;         use Interfaces;
 
@@ -185,7 +184,7 @@ package body Persistent.SQLite_Links is
       Bind (Command, 1, Dependant);
       while Step (Command) loop
          declare
-            Data_ID : Object_ID := Column (Command, 1);
+            Data_ID : constant Object_ID := Column (Command, 1);
          begin
             if Data_ID /= Dependant then
                Put (Referents, Pointer, Data_ID);

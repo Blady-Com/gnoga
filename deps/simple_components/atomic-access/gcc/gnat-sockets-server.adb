@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  19:33 15 Oct 2015  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,7 +27,6 @@
 
 with Ada.Calendar;             use Ada.Calendar;
 with Ada.Characters.Handling;  use Ada.Characters.Handling;
-with Ada.Exceptions;           use Ada.Exceptions;
 with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
 with Strings_Edit;             use Strings_Edit;
 with Strings_Edit.Integers;    use Strings_Edit.Integers;
@@ -435,6 +434,12 @@ package body GNAT.Sockets.Server is
       return Listener.Clients;
    end Get_Clients_Count;
 
+   function Get_Connections_Server (Client : Connection)
+      return Connections_Server_Ptr is
+   begin
+      return Client.Listener;
+   end Get_Connections_Server;
+
    function Get_IO_Timeout (Factory : Connections_Factory)
       return Duration is
    begin
@@ -473,7 +478,7 @@ package body GNAT.Sockets.Server is
 
    function Get_Session_State (Client : Connection)
       return Session_State is
-      Result : Session_State := Client.Session;
+      Result : constant Session_State := Client.Session;
    begin
       if Result = Session_Down then
          if Client.Socket = No_Socket then
@@ -607,6 +612,13 @@ package body GNAT.Sockets.Server is
    begin
       return 0 /= (Factory.Trace_Flags and Sent_Masks (Encoded));
    end Is_Trace_Sent_On;
+
+   function Is_Unblock_Send_Queued
+            (  Listener : Connections_Server
+            )  return Boolean is
+   begin
+      return Listener.Unblock_Send;
+   end Is_Unblock_Send_Queued;
 
    procedure Keep_On_Sending (Client : in out Connection) is
    begin
@@ -822,13 +834,117 @@ package body GNAT.Sockets.Server is
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset
              )  is
+      Buffer : Output_Buffer renames Client.Written;
+      Free   : Stream_Element_Offset;
+      Count  : Stream_Element_Offset := Data'Last - Pointer + 1;
    begin
-      Store
-      (  Client.Written,
-         Data,
-         Pointer,
-         Client.Listener.Unblock_Send
-      );
+      if Buffer.First_Written = Buffer.Free_To_Write then
+         --
+         -- Moving  First_Written  as far back  as possible  to diminish
+         -- buffer  fragmenting.  We cannot  move  it further  than  the
+         -- number of elements we put there,  because of race condition,
+         -- when Free_To_Write is not yet set.  But  when  Free_To_Write
+         -- points into the elements written everything is OK
+         --
+         -- [   ............        ]
+         --     |<--Count-->|
+         --     |           Free_To_Write = First_Written
+         --     new First_Written
+         --
+         Count :=
+            Stream_Element_Offset'Min
+            (  Buffer.Written'Length - 1,
+               Count
+            );
+         Free := Stream_Element_Offset'Max
+                 (  Buffer.Written'First,
+                    Buffer.Free_To_Write - Count
+                 );
+         Buffer.Written (Free..Free + Count - 1) :=
+            Data (Pointer..Pointer + Count - 1);
+         Pointer := Pointer + Count;
+         Buffer.First_Written := Free;
+         Buffer.Free_To_Write := Free + Count;
+         if Buffer.Send_Blocked then
+            Buffer.Send_Blocked := False;
+            Client.Listener.Unblock_Send := True;
+         end if;
+         return;
+      elsif Buffer.First_Written < Buffer.Free_To_Write then
+         --
+         -- [     XXXXXXXXXXXXXXX        ]
+         --       |              |
+         --       First_Written  Free_To_Write
+         --
+         Free :=
+            (  Buffer.Written'Length
+            -  Buffer.Free_To_Write
+            +  Buffer.First_Written
+            -  1  -- Last element is never written
+            );
+         if Free <= 0 then
+            return;
+         end if;
+         declare
+            Tail : constant Stream_Element_Offset :=
+                   Stream_Element_Offset'Min
+                   (  Buffer.Written'Last - Buffer.Free_To_Write + 1,
+                      Free
+                   );
+         begin
+            if Count <= Tail then -- Can queue all Count elements
+               Buffer.Written
+               (  Buffer.Free_To_Write
+               .. Buffer.Free_To_Write + Count - 1
+               )  := Data (Pointer..Data'Last);
+               Pointer := Data'Last + 1;
+               Free := Buffer.Free_To_Write + Count;
+               if Free > Buffer.Written'Last then
+                  Buffer.Free_To_Write := Buffer.Written'First;
+               else
+                  Buffer.Free_To_Write := Free;
+               end if;
+               return;
+            end if; -- Can queue only Tail elements
+            Buffer.Written
+            (  Buffer.Free_To_Write
+            .. Buffer.Free_To_Write + Tail - 1
+            )  := Data (Pointer..Pointer + Tail - 1);
+            Pointer := Pointer + Tail;
+            Count   := Count   - Tail;
+            Free    := Free    - Tail;
+            if Buffer.Free_To_Write + Tail > Buffer.Written'Last then
+               Buffer.Free_To_Write := Buffer.Written'First;
+            else
+               Buffer.Free_To_Write := Buffer.Free_To_Write + Tail;
+            end if;
+         end;
+      else
+         --
+         -- [XXXXX               XXXXXXXX]
+         --       |              |
+         --       Free_To_Write  First_Written
+         --
+         Free :=
+            (  Buffer.First_Written
+            +  Buffer.Free_To_Write
+            -  1  -- Last element is never written
+            );
+      end if;
+      if Free <= 0 then
+         return;
+      end if;
+      Count := Stream_Element_Offset'Min (Count, Free);
+      Buffer.Written
+      (  Buffer.Free_To_Write
+      .. Buffer.Free_To_Write + Count - 1
+      ) := Data (Pointer..Pointer + Count - 1);
+      Pointer := Pointer + Count;
+      Buffer.Free_To_Write := Buffer.Free_To_Write + Count;
+      if Buffer.Send_Blocked then
+         Buffer.Send_Blocked := False;
+         Client.Listener.Unblock_Send := True;
+      end if;
    end Queue;
 
    function Queued_To_Send (Client : Connection)
@@ -993,7 +1109,7 @@ package body GNAT.Sockets.Server is
       then
          Raise_Exception (Layout_Error'Identity, "Subscript error");
       end if;
-      Store (Buffer, Data, Pointer, Client.Listener.Unblock_Send);
+      Queue (Client, Data, Pointer);
       if (  Buffer.Send_Blocked
          and then
             Buffer.Free_To_Write /= Buffer.First_Written
@@ -1151,13 +1267,13 @@ package body GNAT.Sockets.Server is
          );
          Count := Count - (Last + 1 - Buffer.Free_To_Write);
          declare
-            Header : Stream_Element_Array :=
+            Header : constant Stream_Element_Array :=
                      Get_Prefix.all
                      (  Client'Unchecked_Access,
                         Buffer.Written (Buffer.Free_To_Write..Last),
                         End_Of_Stream
                      );
-            Tail   : Stream_Element_Array :=
+            Tail   : constant Stream_Element_Array :=
                      Get_Suffix.all
                      (  Client'Unchecked_Access,
                         Buffer.Written (Buffer.Free_To_Write..Last),
@@ -1186,7 +1302,7 @@ package body GNAT.Sockets.Server is
             Buffer.Free_To_Write := Next;
             if Tail'Length > 0 then
                Last := Tail'First;
-               Store (Buffer, Tail, Last, Client.Listener.Unblock_Send);
+               Queue (Client, Tail, Last);
             end if;
          end;
       else
@@ -1237,13 +1353,13 @@ package body GNAT.Sockets.Server is
          );
          Count := Count - (Last + 1 - Buffer.Free_To_Write);
          declare
-            Header : String :=
+            Header : constant String :=
                      Get_Prefix.all
                      (  Client'Unchecked_Access,
                         Buffer.Written (Buffer.Free_To_Write..Last),
                         End_Of_Stream
                      );
-            Tail   : String :=
+            Tail   : constant String :=
                      Get_Suffix.all
                      (  Client'Unchecked_Access,
                         Buffer.Written (Buffer.Free_To_Write..Last),
@@ -1415,7 +1531,10 @@ package body GNAT.Sockets.Server is
              (  Listener : in out Connections_Server'Class;
                 Client   : in out Connection_Ptr
              )  is
-      Reconnect : Boolean := True;
+      Old_Socket : constant Socket_Type := Client.Socket;
+      Reconnect  : Boolean := not Listener.Finalizing
+                         and then Client.Session /= Session_Down
+                         and then not Client.Shutdown_Request;
    begin
       Trace_Sending
       (  Listener.Factory.all,
@@ -1459,9 +1578,7 @@ package body GNAT.Sockets.Server is
          end;
       end if;
       if Client.Client then -- Try to reconnect
-         if Reconnect and then Client.Session /= Session_Down then
-            declare
-               Old_Socket : Socket_Type := Client.Socket;
+         if Reconnect then
             begin
                Close (Client.Socket);
                declare
@@ -1494,9 +1611,7 @@ package body GNAT.Sockets.Server is
       else
          Listener.Clients := Listener.Clients - 1;
       end if;
-      if Client.Socket /= No_Socket then
-         Close (Client.Socket);
-      end if;
+      Close (Client.Socket);
       Client.Session := Session_Down;
       Client.Failed  := False;
       begin
@@ -1505,131 +1620,15 @@ package body GNAT.Sockets.Server is
          when others =>
             null;
       end;
-      Put (Listener.Connections, Client.Socket, null);
+      if Get (Listener.Connections, Old_Socket) = Client then
+         Put (Listener.Connections, Old_Socket, null);
+      end if;
       Client := null;
    exception
       when Error : others =>
          Trace_Error (Listener.Factory.all, "Stopping", Error);
          raise;
    end Stop;
-
-   procedure Store
-             (  Buffer  : in out Output_Buffer;
-                Data    : Stream_Element_Array;
-                Pointer : in out Stream_Element_Offset;
-                Unblock : out Boolean
-             )  is
-      Free  : Stream_Element_Offset;
-      Count : Stream_Element_Offset := Data'Last - Pointer + 1;
-   begin
-      if Buffer.First_Written = Buffer.Free_To_Write then
-         --
-         -- Moving  First_Written  as far back  as possible  to diminish
-         -- buffer  fragmenting.  We cannot  move  it further  than  the
-         -- number of elements we put there,  because of race condition,
-         -- when Free_To_Write is not yet set.  But  when  Free_To_Write
-         -- points into the elements written everything is OK
-         --
-         -- [   ............        ]
-         --     |<--Count-->|
-         --     |           Free_To_Write = First_Written
-         --     new First_Written
-         --
-         Count :=
-            Stream_Element_Offset'Min
-            (  Buffer.Written'Length - 1,
-               Count
-            );
-         Free := Stream_Element_Offset'Max
-                 (  Buffer.Written'First,
-                    Buffer.Free_To_Write - Count
-                 );
-         Buffer.Written (Free..Free + Count - 1) :=
-            Data (Pointer..Pointer + Count - 1);
-         Pointer := Pointer + Count;
-         Buffer.First_Written := Free;
-         Buffer.Free_To_Write := Free + Count;
-         if Buffer.Send_Blocked then
-            Buffer.Send_Blocked := False;
-            Unblock := True;
-         end if;
-         return;
-      elsif Buffer.First_Written < Buffer.Free_To_Write then
-         --
-         -- [     XXXXXXXXXXXXXXX        ]
-         --       |              |
-         --       First_Written  Free_To_Write
-         --
-         Free :=
-            (  Buffer.Written'Length
-            -  Buffer.Free_To_Write
-            +  Buffer.First_Written
-            -  1  -- Last element is never written
-            );
-         if Free <= 0 then
-            return;
-         end if;
-         declare
-            Tail : Stream_Element_Offset :=
-                   Stream_Element_Offset'Min
-                   (  Buffer.Written'Last - Buffer.Free_To_Write + 1,
-                      Free
-                   );
-         begin
-            if Count <= Tail then -- Can queue all Count elements
-               Buffer.Written
-               (  Buffer.Free_To_Write
-               .. Buffer.Free_To_Write + Count - 1
-               )  := Data (Pointer..Data'Last);
-               Pointer := Data'Last + 1;
-               Free := Buffer.Free_To_Write + Count;
-               if Free > Buffer.Written'Last then
-                  Buffer.Free_To_Write := Buffer.Written'First;
-               else
-                  Buffer.Free_To_Write := Free;
-               end if;
-               return;
-            end if; -- Can queue only Tail elements
-            Buffer.Written
-            (  Buffer.Free_To_Write
-            .. Buffer.Free_To_Write + Tail - 1
-            )  := Data (Pointer..Pointer + Tail - 1);
-            Pointer := Pointer + Tail;
-            Count   := Count   - Tail;
-            Free    := Free    - Tail;
-            if Buffer.Free_To_Write + Tail > Buffer.Written'Last then
-               Buffer.Free_To_Write := Buffer.Written'First;
-            else
-               Buffer.Free_To_Write := Buffer.Free_To_Write + Tail;
-            end if;
-         end;
-      else
-         --
-         -- [XXXXX               XXXXXXXX]
-         --       |              |
-         --       Free_To_Write  First_Written
-         --
-         Free :=
-            (  Buffer.First_Written
-            +  Buffer.Free_To_Write
-            -  1  -- Last element is never written
-            );
-      end if;
-      if Free <= 0 then
-         return;
-      end if;
-      Count := Stream_Element_Offset'Min (Count, Free);
-      Buffer.Written
-      (  Buffer.Free_To_Write
-      .. Buffer.Free_To_Write + Count - 1
-      ) := Data (Pointer..Pointer + Count - 1);
-      Pointer := Pointer + Count;
-      Buffer.Free_To_Write := Buffer.Free_To_Write + Count;
-      if Buffer.Send_Blocked then
-         Buffer.Send_Blocked := False;
-         Unblock := True;
-      end if;
-   end Store;
 
    function To_Addr (Host : String) return Inet_Addr_Type is
    begin
@@ -1864,7 +1863,7 @@ package body GNAT.Sockets.Server is
    end Unblock_Send;
 
    function Used (Buffer : Input_Buffer) return Stream_Element_Count is
-      Diff : Stream_Element_Offset :=
+      Diff : constant Stream_Element_Offset :=
              Buffer.Free_To_Read - Buffer.First_Read;
    begin
       if Diff < 0 then
@@ -2088,7 +2087,7 @@ package body GNAT.Sockets.Server is
       procedure Unblock (Requested_Only : Boolean) is
          Socket : Socket_Type;
       begin
-         loop
+         while not Listener.Finalizing loop
             Get (Listener.Blocked_Sockets, Socket);
             exit when Socket = No_Socket;
             if Socket /= Server_Socket then
@@ -2414,7 +2413,7 @@ package body GNAT.Sockets.Server is
                      elsif Client.Session = Session_Connecting then
                         declare
                             This : Connection'Class renames Client.all;
-                            Code : Error_Type :=
+                            Code : constant Error_Type :=
                                       Get_Socket_Option
                                       (  Client.Socket,
                                          Socket_Level,
@@ -2531,6 +2530,7 @@ package body GNAT.Sockets.Server is
          else
             Empty (Listener.Ready_To_Write); -- Clear the set
          end if;
+         exit when Listener.Finalizing;
          Service_Postponed (Listener.all);
       end loop;
       declare
@@ -2547,9 +2547,7 @@ package body GNAT.Sockets.Server is
             end;
          end loop;
       end;
-      if Server_Socket /= No_Socket then
-         Close (Server_Socket);
-      end if;
+      Close (Server_Socket);
       Trace (Listener.Factory.all, "Worker task exiting");
    exception
       when Error : others =>

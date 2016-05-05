@@ -3,7 +3,7 @@
 --     String_Elements                             Luebeck            --
 --  Separate body                                  Autumn, 2006       --
 --                                                                    --
---                                Last revision :  10:35 22 Oct 2011  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -88,8 +88,8 @@ begin
       -- 1 = A-B-C
    Put_Line ("Controlled dope size:" & Integer'Image (Integer (Dope_Size)));
    declare
-      B_N : B.Item := B.Next (List_2);
-      N   : Node := Next (List_B, Node (List_2));
+      B_N : constant B.Item := B.Next (List_2);
+      N   : constant Node := Next (List_B, Node (List_2));
    begin
       if B_N /= B.Item (List_2) then
          Raise_Exception

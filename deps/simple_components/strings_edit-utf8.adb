@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2005       --
 --                                                                    --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  22:44 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -37,6 +37,7 @@ package body Strings_Edit.UTF8 is
       Accum : UTF8_Code_Point'Base;
       Code  : UTF8_Code_Point'Base;
       Index : Integer := Pointer;
+      Last  : Boolean := False;
    begin
       if Index < Source'First then
          raise Layout_Error;
@@ -56,7 +57,7 @@ package body Strings_Edit.UTF8 is
             return;
          when 16#C2#..16#DF# => -- 2 bytes
             Accum := (Code and 16#1F#) * 2**6;
-            goto Last;
+            Last  := True;
          when 16#E0# => -- 3 bytes
             Index := Index + 1;
             if Index >= Source'Last then
@@ -67,7 +68,7 @@ package body Strings_Edit.UTF8 is
                raise Data_Error;
             end if;
             Accum := (Code and 16#3F#) * 2**6;
-            goto Last;
+            Last  := True;
          when 16#E1#..16#EF# => -- 3 bytes
             Accum := (Code and 16#0F#) * 2**12;
          when 16#F0# => -- 4 bytes
@@ -82,7 +83,7 @@ package body Strings_Edit.UTF8 is
             Accum := (Code and 16#3F#) * 2**12;
          when 16#F1#..16#F3# => -- 4 bytes
             Accum := (Code and 16#07#) * 2**18;
-            Index  := Index + 1;
+            Index := Index + 1;
             if Index >= Source'Last then
                raise Data_Error;
             end if;
@@ -106,17 +107,18 @@ package body Strings_Edit.UTF8 is
             raise Data_Error;
       end case;
 
-      Index := Index + 1;
-      if Index >= Source'Last then
-         raise Data_Error;
+      if not Last then
+         Index := Index + 1;
+         if Index >= Source'Last then
+            raise Data_Error;
+         end if;
+         Code := UTF8_Code_Point (Character'Pos (Source (Index)));
+         if Code not in 16#80#..16#BF# then
+            raise Data_Error;
+         end if;
+         Accum := Accum or (Code and 16#3F#) * 2**6;
       end if;
-      Code := UTF8_Code_Point (Character'Pos (Source (Index)));
-      if Code not in 16#80#..16#BF# then
-         raise Data_Error;
-      end if;
-      Accum := Accum or (Code and 16#3F#) * 2**6;
 
-<<Last>>
       Index := Index + 1;
       if Index > Source'Last then
          raise Data_Error;

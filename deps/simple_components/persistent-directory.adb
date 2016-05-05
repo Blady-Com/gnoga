@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2007       --
 --                                                                    --
---                                Last revision :  09:24 09 Apr 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,7 +33,7 @@ package body Persistent.Directory is
                 Name      : String;
                 Parent    : Deposit_Handle := Root_Directory
              )  is
-      Ptr : Deposit_Ptr := new Directory_Object;
+      Ptr : constant Deposit_Ptr := new Directory_Object;
    begin
       Set (Directory, Ptr);
       Put (Storage, Directory, Name, Parent);
@@ -45,7 +45,7 @@ package body Persistent.Directory is
    end Get_Class;
 
    function Is_Directory (Object : Deposit_Handle) return Boolean is
-      This : Deposit_Ptr := Ptr (Object);
+      This : constant Deposit_Ptr := Ptr (Object);
    begin
       return This /= null and then This.all in Directory_Object'Class;
    end Is_Directory;

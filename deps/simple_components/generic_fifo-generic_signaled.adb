@@ -3,7 +3,7 @@
 --     Generic_FIFO.Generic_Signaled               Luebeck            --
 --  Implementation                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  22:35 02 Dec 2011  --
+--                                Last revision :  20:01 04 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -164,6 +164,18 @@ package body Generic_FIFO.Generic_Signaled is
              )  is
    begin
       Purge (FIFO (Queue), Purged);
+      if Purged > 0 and then Queue.Put_Blocked then
+         Queue.Event.Release_Put;
+      end if;
+   end Purge;
+
+   procedure Purge
+             (  Queue        : in out Signaled_FIFO;
+                Is_Preserved : Is_Preserved_Ptr;
+                Purged       : out Natural
+             )  is
+   begin
+      Purge (FIFO (Queue), Is_Preserved, Purged);
       if Purged > 0 and then Queue.Put_Blocked then
          Queue.Event.Release_Put;
       end if;

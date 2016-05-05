@@ -3,7 +3,7 @@
 --     Parsers.Multiline_Source.Wide_Text_IO       Luebeck            --
 --  Implementation                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  22:28 15 Feb 2009  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -67,7 +67,8 @@ package body Parsers.Multiline_Source.Wide_Text_IO is
          Code.Length := Size;
       end loop;
       declare
-         Line : String := To_UTF8 (Code.Wide_Buffer (1..Code.Length));
+         Line : constant String :=
+                To_UTF8 (Code.Wide_Buffer (1..Code.Length));
       begin
          if Line'Length > Code.Length then
             Free (Code.Buffer);

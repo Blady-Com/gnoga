@@ -3,7 +3,7 @@
 --     Test_Suffix_Tree                            Luebeck            --
 --  Sample implementation                          Winter, 2009       --
 --                                                                    --
---                                Last revision :  20:47 23 Jun 2010  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -41,7 +41,7 @@ package body Test_Suffix_Tree is
    end Less;
 
    function Build (Text : String) return Suffix_Tree is
-      Root  : Node := new Node_Type;
+      Root  : constant Node := new Node_Type;
       Focus : Node;
       Lower : Natural;
       Upper : Natural;
@@ -54,7 +54,7 @@ package body Test_Suffix_Tree is
                Focus := Get_Child (Focus, Lower);
             else
                declare
-                  Branch : Node := new Node_Type;
+                  Branch : constant Node := new Node_Type;
                begin
                   Connect (Focus, Branch, Text (Current));
                   Focus := Branch;

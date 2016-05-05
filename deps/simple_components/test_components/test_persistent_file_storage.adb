@@ -3,7 +3,7 @@
 --     Test_Persistent_File_Storage                Luebeck            --
 --  Test                                           Spring, 2014       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -96,8 +96,8 @@ package body Test_Persistent_File_Storage is
                 Object  : Deposit_Handle;
                 ID      : Key
              )  is
-      Link_Ptr   : Backward_Link_Ptr := -- No accessibility checks here
-                      new Index_Record (Storage.all'Unchecked_Access);
+      Link_Ptr : constant Backward_Link_Ptr :=-- No accessibility checks
+                 new Index_Record (Storage.all'Unchecked_Access);
       Index_Item : Index_Record renames Index_Record (Link_Ptr.all);
    begin
       Index_Item.ID := ID;
@@ -118,7 +118,7 @@ package body Test_Persistent_File_Storage is
             (  Storage : access File_Storage;
                Object  : Deposit_Handle
             )  return Key is
-      This : Deposit_Ptr := Ptr (Object);
+      This : constant Deposit_Ptr := Ptr (Object);
    begin
       if This = null or else not Is_In (Storage.Object_To_Record, This)
       then

@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.                    Luebeck            --
 --        Streams                                  Winter, 2014       --
 --  Interface                                                         --
---                                Last revision :  21:09 15 Sep 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,7 +30,6 @@
 --  on Persistent_Array.
 --
 with Ada.Streams;  use Ada.Streams;
-with Interfaces;   use Interfaces;
 
 with Strings_Edit.Lexicographical_Order;
 use  Strings_Edit.Lexicographical_Order;

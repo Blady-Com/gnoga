@@ -3,7 +3,7 @@
 --      Persistent.Memory_Pools                    Luebeck            --
 --  Implementation                                 Winter, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  22:45 07 Apr 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;     use Ada.Exceptions;
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 
 with Ada.Unchecked_Deallocation;
@@ -229,7 +228,7 @@ package body Persistent.Memory_Pools is
                 Offset : Block_Offset;
                 Size   : Unsigned_16
              )  is
-      Byte : Unsigned_8 := Block (Offset - 1) or 16#40#;
+      Byte : constant Unsigned_8 := Block (Offset - 1) or 16#40#;
    begin
       Block (Offset - 1) := Byte;
       Block (Offset + Block_Offset (Size - 3)) := Byte;
@@ -240,7 +239,7 @@ package body Persistent.Memory_Pools is
                 Offset : Block_Offset;
                 Size   : Unsigned_16
              )  is
-      Byte : Unsigned_8 := Block (Offset - 1) and not 16#40#;
+      Byte : constant Unsigned_8 := Block (Offset - 1) and not 16#40#;
    begin
       Block (Offset - 1) := Byte;
       Block (Offset + Block_Offset (Size - 3)) := Byte;
@@ -258,7 +257,7 @@ package body Persistent.Memory_Pools is
                 Size   : Unsigned_16
              )  is
       pragma Inline (Mark_Used);
-      Byte : Unsigned_8 := Block (Offset - 1) or 16#80#;
+      Byte : constant Unsigned_8 := Block (Offset - 1) or 16#80#;
    begin
       Block (Offset - 1) := Byte;
       Block (Offset + Block_Offset (Size - 3)) := Byte;
@@ -277,7 +276,8 @@ package body Persistent.Memory_Pools is
          -- Checking the block before this one
          if Is_Free (Block.all, Offset - 2) then -- Merge these two
             declare
-               Free : Unsigned_16 := Get_Size (Block.all, Offset - 2);
+               Free : constant Unsigned_16 :=
+                      Get_Size (Block.all, Offset - 2);
             begin
                Offset := Offset - Block_Offset (Free);
                Space  := Space  + Free;
@@ -290,11 +290,13 @@ package body Persistent.Memory_Pools is
       if Unsigned_16 (Offset) + Space < Block_Byte_Size then
          -- Checking the block after this one
          declare
-            Next : Block_Offset := Offset + Block_Offset (Space);
+            Next : constant Block_Offset :=
+                   Offset + Block_Offset (Space);
          begin
             if Is_Free (Block.all, Next) then
                declare
-                  Free : Unsigned_16 := Get_Size (Block.all, Next);
+                  Free : constant Unsigned_16 :=
+                         Get_Size (Block.all, Next);
                begin
                   Fetch (Pool, Block.all, Free, Next);
                   Block := Get (Pool.File, Index);
@@ -460,7 +462,7 @@ package body Persistent.Memory_Pools is
             (  Block  : Block_Type;
                Offset : Block_Offset
             )  return Unsigned_16 is
-      Margin : Unsigned_16 := Get (Block, Offset - 2);
+      Margin : constant Unsigned_16 := Get (Block, Offset - 2);
    begin
       return (Margin and 16#3FFF#) * Min_Size;
    exception
@@ -477,7 +479,8 @@ package body Persistent.Memory_Pools is
             )  return Byte_Count is
       Lock   : Holder (Pool.Mutex.Pool);
       Block  : Block_Type renames Load (Pool.File, Index).all;
-      Margin : Unsigned_16 := Get (Block, Get_Offset (Index) - 2);
+      Margin : constant Unsigned_16 :=
+               Get (Block, Get_Offset (Index) - 2);
    begin
       if 0 = (Margin and 16#4000#) then
          return Byte_Count ((Margin and 16#3FFF#) * Min_Size - 4);
@@ -552,7 +555,7 @@ package body Persistent.Memory_Pools is
       if List = 0 then
          declare
             Block  : Block_Type renames Update (Pool.File, Index).all;
-            Offset : Block_Offset := Get_Offset (Index);
+            Offset : constant Block_Offset := Get_Offset (Index);
          begin
             List := Index;
             Put (Block, Offset,     Index);
@@ -566,7 +569,7 @@ package body Persistent.Memory_Pools is
             declare
                First_Block : Block_Type renames
                              Update (Pool.File, List).all;
-               Offset : Block_Offset := Get_Offset (List);
+               Offset : constant Block_Offset := Get_Offset (List);
             begin
                Previous := Get (First_Block, Offset);
                Put (First_Block, Offset, Index);
@@ -574,7 +577,8 @@ package body Persistent.Memory_Pools is
             declare
                Last_Block : Block_Type renames
                             Update (Pool.File, Previous).all;
-               Offset : Block_Offset := Get_Offset (Previous) + 8;
+               Offset : constant Block_Offset :=
+                        Get_Offset (Previous) + 8;
             begin
                Next := Get (Last_Block, Offset);
                Put (Last_Block, Offset, Index);
@@ -582,7 +586,8 @@ package body Persistent.Memory_Pools is
             declare
                Block  : Block_Type renames
                         Update (Pool.File, Index).all;
-               Offset : Block_Offset := Get_Offset (Index);
+               Offset : constant Block_Offset :=
+                        Get_Offset (Index);
             begin
                Put (Block, Offset,     Previous);
                Put (Block, Offset + 8, Next);
@@ -628,8 +633,8 @@ package body Persistent.Memory_Pools is
                 List   : in out Byte_Index;
                 Offset : Block_Offset
              )  is
-      Previous : Byte_Index := Get (Block, Offset);
-      Next     : Byte_Index := Get (Block, Offset + 8);
+      Previous : constant Byte_Index := Get (Block, Offset);
+      Next     : constant Byte_Index := Get (Block, Offset + 8);
    begin
       if List = 0 then
          Raise_Exception
@@ -639,7 +644,7 @@ package body Persistent.Memory_Pools is
       end if;
       declare
          Right  : Block_Type renames Update (Pool.File, Next).all;
-         Offset : Block_Offset := Get_Offset (Next);
+         Offset : constant Block_Offset := Get_Offset (Next);
       begin
          if List = Get (Right, Offset) then -- Removed is the head
             if List = Next then
@@ -747,7 +752,7 @@ package body Persistent.Memory_Pools is
             declare
                Block  : Block_Type renames
                         Update (This.File, Result).all;
-               Offset : Block_Offset := Get_Offset (Result);
+               Offset : constant Block_Offset := Get_Offset (Result);
             begin
                Take (Block, Get_Size (Block, Offset), Offset);
                return Result;
@@ -788,9 +793,10 @@ package body Persistent.Memory_Pools is
       loop
          declare
             Block  : Block_Type renames Update (Pool.File, This).all;
-            Offset : Block_Offset := Get_Offset (This);
-            Margin : Unsigned_16  := Get (Block, Offset - 2);
-            Size   : Unsigned_16  := (Margin and 16#3FFF#) * Min_Size;
+            Offset : constant Block_Offset := Get_Offset (This);
+            Margin : constant Unsigned_16  := Get (Block, Offset - 2);
+            Size   : constant Unsigned_16  :=
+                        (Margin and 16#3FFF#) * Min_Size;
          begin
             if 0 = (Margin and 16#4000#) then
                Add (Pool, This, Size);
@@ -800,7 +806,7 @@ package body Persistent.Memory_Pools is
                return;
             else
                declare -- Next block in the chain
-                  Next : Byte_Index := Get (Block, Offset);
+                  Next : constant Byte_Index := Get (Block, Offset);
                begin
                   Add (Pool, This, Size);
                   Pool.Blocks_Used := Pool.Blocks_Used - 1;
@@ -825,16 +831,17 @@ package body Persistent.Memory_Pools is
             )  return Byte_Count is
       This   : Persistent_Pool'Class renames Pool.Mutex.Pool.all;
       Block  : Block_Type renames Update (This.File, Index).all;
-      Offset : Block_Offset := Get_Offset (Index);
-      Size   : Unsigned_16  := Get_Size (Block, Offset);
+      Offset : constant Block_Offset := Get_Offset (Index);
+      Size   : constant Unsigned_16  := Get_Size (Block, Offset);
    begin
       if Unsigned_16 (Offset) + Size < Block_Byte_Size then
          declare
-            Next : Block_Offset := Offset + Block_Offset (Size);
+            Next : constant Block_Offset :=
+                   Offset + Block_Offset (Size);
          begin
             if Is_Free (Block, Next) then
                declare
-                  Free : Unsigned_16 := Get_Size (Block, Next);
+                  Free : constant Unsigned_16 := Get_Size (Block, Next);
                begin
                   Remove
                   (  This,
@@ -879,7 +886,7 @@ package body Persistent.Memory_Pools is
                    Offset : Block_Offset
                 )  is
          pragma Inline (Take);
-         Size : Unsigned_16 := Get_Size (Block, Offset);
+         Size : constant Unsigned_16 := Get_Size (Block, Offset);
       begin
          Mark_Used (Block, Offset, Size);
          Remove (This, Block, List, Offset);
@@ -955,8 +962,8 @@ package body Persistent.Memory_Pools is
                 Size  : Byte_Count
              )  is
       Block  : Block_Type renames Update (Pool.File, Index).all;
-      Offset : Block_Offset := Get_Offset (Index);
-      Space  : Unsigned_16  := Get_Size (Block, Offset) - 4;
+      Offset : constant Block_Offset := Get_Offset (Index);
+      Space  : constant Unsigned_16  := Get_Size (Block, Offset) - 4;
       Next   : Byte_Index   := 0;
       Free   : Unsigned_16;
       Used   : Unsigned_16;

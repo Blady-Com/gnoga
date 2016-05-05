@@ -108,9 +108,9 @@ gnoga_secure: gnoga
 gnoga_tools: gnoga
 	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
-release: setup
+release: setup basic_components xpm_parser
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
-	cd deps/zanyblue && make -C src
+	cd deps/zanyblue && make -C src setup library zbmcompile.app
 
 install: release gnoga_tools xpm_parser
 	touch deps/simple_components/strings_edit-text_edit.o
@@ -124,21 +124,19 @@ install: release gnoga_tools xpm_parser
 	cd deps/simple_components/xpm && gprinstall -f --prefix=$(PREFIX) -p xpm_parser.gpr
 	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p src/zblib.gpr
 	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
-	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbtest/zbtest.gpr
 
 install_debug: gnoga gnoga_tools xpm_parser zanyblue
 	touch deps/simple_components/strings_edit-text_edit.o
 	cd src && gprinstall -a -f --prefix=$(PREFIX) -p gnoga.gpr --install-name=gnoga
 	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
-	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components.gpr
-	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server.gpr --install-name=components-connections_server
-	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p components-connections_server-http_server.gpr --install-name=components-connections_server-http_server
-	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
-	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
-	cd deps/simple_components/xpm && gprinstall -f --prefix=$(PREFIX) -p xpm_parser.gpr
+	cd deps/simple_components && gprinstall -a -f --prefix=$(PREFIX) -p components.gpr
+	cd deps/simple_components && gprinstall -a -f --prefix=$(PREFIX) -p components-connections_server.gpr --install-name=components-connections_server
+	cd deps/simple_components && gprinstall -a -f --prefix=$(PREFIX) -p components-connections_server-http_server.gpr --install-name=components-connections_server-http_server
+	cd deps/simple_components && gprinstall -a -f --prefix=$(PREFIX) -p --install-name=strings_edit strings_edit.gpr
+	cd deps/simple_components && gprinstall -a -f --prefix=$(PREFIX) -p --install-name=tables tables.gpr
+	cd deps/simple_components/xpm && gprinstall -a -f --prefix=$(PREFIX) -p xpm_parser.gpr
 	cd deps/zanyblue && gprinstall -a -f --prefix=$(PREFIX) -p src/zblib.gpr
 	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
-	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbtest/zbtest.gpr
 
 uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr
@@ -147,11 +145,10 @@ uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall components-connections_server-http_server.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall strings_edit.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tables.gpr
-	- gprinstall -f --prefix=$(PREFIX) --uninstall xpm.gpr
+	- gprinstall -f --prefix=$(PREFIX) --uninstall xpm_parser.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall zblib.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall zbmcompile.gpr
-	- gprinstall -f --prefix=$(PREFIX) --uninstall zbtest.gpr
 
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
@@ -177,7 +174,7 @@ electron:
 	@echo "See docs/native_desktop_apps.md for instructions on full desktop development"
 
 zanyblue:
-	cd deps/zanyblue && make -C src BUILD=Debug
+	cd deps/zanyblue && make -C src BUILD=Debug setup library zbmcompile.app
 
 deps/PragmARC:
 	- cd deps && git clone https://github.com/jrcarter/PragmARC.git
@@ -273,6 +270,7 @@ clean:
 	- cd demo/connect_four && $(RM) connectfour_messages*
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
 	cd demo/password_gen && $(CLEANER) -Ppassword_gen.gpr
+	- cd deps/zanyblue && make -C src clean
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(CLEANER) -Ptutorial_02.gpr
 	cd tutorial/tutorial-03 && $(CLEANER) -Ptutorial_03.gpr

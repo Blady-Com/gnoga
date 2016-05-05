@@ -62,7 +62,7 @@ project zbcom is
                                                            "-gnatf",
                                                            "-gnato",
                                                            "-gnatwale",
-                                                           "-gnatygO",
+                                                           "-gnatyO",
                                                            "-gnatyo",
                                                            "-fstack-check");
          when "Coverage" =>

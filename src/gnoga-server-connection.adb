@@ -741,6 +741,7 @@ package body Gnoga.Server.Connection is
       Server_Host := Ada.Strings.Unbounded.To_Unbounded_String (Host);
 
       if Verbose then
+         Write_To_Console ("Gnoga            :" & Gnoga.version);
          Write_To_Console ("Application root :" & Application_Directory);
          Write_To_Console ("Executable at    :" & Executable_Directory);
          Write_To_Console ("HTML root        :" & HTML_Directory);

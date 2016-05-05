@@ -60,7 +60,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    procedure Get_Drawing_Context_2D (Context : in out Context_2D_Type;
                                      Canvas  : in out Canvas_Type'Class)
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
+      GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Context.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
       Context.Connection_ID := Canvas.Connection_ID;
@@ -315,7 +315,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                    Weight  : in     Font_Weight_Type  := Weight_Normal;
                    Variant : in     Font_Variant_Type := Normal)
    is
-      W : String := Weight'Img;
+      W : constant String := Weight'Img;
    begin
       Context.Property ("font", Style'Img & " " & Variant'Img & " " &
                           W (W'First + 7 .. W'Last) & " " &
@@ -345,7 +345,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    procedure Text_Alignment (Context : in out Context_2D_Type;
                              Value   : in     Alignment_Type)
    is
-      V : String := Value'Img;
+      V : constant String := Value'Img;
    begin
       case Value is
          when Left | Right | Center =>
@@ -385,7 +385,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
      (Context : in out Context_2D_Type;
       Value   : in     Composite_Method_Type)
    is
-      V : String := Value'Img;
+      V : constant String := Value'Img;
    begin
       case Value is
          when Lighter | Copy =>
@@ -413,7 +413,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                                      X_2      : in     Integer;
                                      Y_2      : in     Integer)
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
+      GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Gradient.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
       Gradient.Connection_ID := Context.Connection_ID;
@@ -443,7 +443,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                                      Y_2      : in     Integer;
                                      R_2      : in     Integer)
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
+      GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Gradient.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
       Gradient.Connection_ID := Context.Connection_ID;
@@ -503,7 +503,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                              Image          : in out Element_Type'Class;
                              Repeat_Pattern : in     Repeat_Type := Repeat)
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
+      GID : constant String := Gnoga.Server.Connection.New_GID;
 
       function Repeat_to_String return String;
 
@@ -905,7 +905,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                                 Image_Data    : in out Image_Data_Type'Class;
                                 Width, Height : in     Integer)
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
+      GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Image_Data.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
       Image_Data.Connection_ID := Context.Connection_ID;
@@ -965,12 +965,13 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    function Pixel (Context : Context_2D_Type; X, Y : Integer)
                    return Gnoga.Types.Pixel_Type
    is
-      D : String := Gnoga.Server.Connection.Execute_Script
+      D : constant String := Gnoga.Server.Connection.Execute_Script
         (Context.Connection_ID, "Array.prototype.join.call" &
            "(gnoga['" & Context.ID & "'].getImageData(" & X'Img & "," &
            Y'Img & ",1,1).data);");
 
-      P : Gnoga.Types.Pixel_Data_Type := String_To_Pixel_Data (D, 1, 1);
+      P : constant Gnoga.Types.Pixel_Data_Type :=
+        String_To_Pixel_Data (D, 1, 1);
    begin
       return P (1, 1);
    end Pixel;
@@ -997,7 +998,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                     X, Y    : in     Integer;
                     Color   : in     Gnoga.Types.Colors.Color_Enumeration)
    is
-      C : Gnoga.Types.Pixel_Type :=
+      C : constant Gnoga.Types.Pixel_Type :=
         Gnoga.Types.To_Pixel (Gnoga.Types.Colors.To_RGBA (Color));
    begin
       Pixel (Context, X, Y, C);
@@ -1012,7 +1013,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                              Left, Top     : in     Integer;
                              Width, Height : in     Integer)
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
+      GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Image_Data.Context_ID := Ada.Strings.Unbounded.To_Unbounded_String (GID);
       Image_Data.Connection_ID := Context.Connection_ID;
@@ -1088,7 +1089,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       for X in 1 .. Value'Length (1) loop
          for Y in 1 .. Value'Length (2) loop
             declare
-               T : String := Gnoga.Left_Trim (Value (X, Y).Red'Img) & C &
+               T : constant String :=
+                 Gnoga.Left_Trim (Value (X, Y).Red'Img) & C &
                  Gnoga.Left_Trim (Value (X, Y).Green'Img) & C &
                  Gnoga.Left_Trim (Value (X, Y).Blue'Img) & C &
                  Gnoga.Left_Trim (Value (X, Y).Alpha'Img) & C;

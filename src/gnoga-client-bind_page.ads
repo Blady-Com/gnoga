@@ -38,7 +38,6 @@
 --  Given a page with existing HTML, this will create an Element_Type_Map of
 --  every element on the page that has an ID.
 
-with Gnoga.Gui.Element;
 with Gnoga.Gui.View;
 
 package Gnoga.Client.Bind_Page is

@@ -240,6 +240,7 @@ package body Gnoga.Gui.Element.Common is
                      Optimum : in     Integer := 50;
                      ID      : in     String := "")
    is
+      pragma Unreferenced (ID);
    begin
       Meter.Create_From_HTML (Parent,
                               "<meter high=" & High'Img &
@@ -321,6 +322,7 @@ package body Gnoga.Gui.Element.Common is
                      Maximum      : in     Integer := 100;
                      ID           : in     String := "")
    is
+      pragma Unreferenced (ID);
    begin
       Progress_Bar.Create_From_HTML (Parent,
                               "<progress" &

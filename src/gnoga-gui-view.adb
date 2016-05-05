@@ -38,7 +38,6 @@
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps.Constants;
 
-with Gnoga.Gui.Window;
 with Gnoga.Gui.Document;
 with Gnoga.Gui.Element.Common;
 
@@ -194,7 +193,8 @@ package body Gnoga.Gui.View is
                         Class     : in     String := "";
                         ID        : in     String := "")
    is
-      S : String := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+      S : constant String :=
+        Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
    begin
       View.Put_Line (S, Class, ID);
    end Load_File;
@@ -211,14 +211,15 @@ package body Gnoga.Gui.View is
       use Ada.Strings.Fixed;
       use Ada.Strings.Maps.Constants;
 
-      S : String  := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
-      B : Natural := Index (Source  => S,
+      S : constant String  :=
+        Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+      B : constant Natural := Index (Source  => S,
                             Pattern => "<body",
                             Mapping => Lower_Case_Map);
-      T : Natural := Index (Source  => S,
+      T : constant Natural := Index (Source  => S,
                             Pattern => ">",
                             From    => B);
-      E : Natural := Index (Source  => S,
+      E : constant Natural := Index (Source  => S,
                             Pattern => "</body",
                             Mapping => Lower_Case_Map);
    begin
@@ -248,7 +249,8 @@ package body Gnoga.Gui.View is
    procedure Load_CSS_File (View      : in out View_Base_Type;
                             File_Name : in     String)
    is
-      S : String := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+      S : constant String :=
+        Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
 
       Document : Gnoga.Gui.Document.Document_Type;
    begin
@@ -296,6 +298,7 @@ package body Gnoga.Gui.View is
       Element : access Gnoga.Gui.Element.Element_Type'Class)
       return Gnoga.Gui.Element.Pointer_To_Element_Class
    is
+      pragma Unreferenced (View);
    begin
       Element.Dynamic;
       return Element.all'Unrestricted_Access;

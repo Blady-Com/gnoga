@@ -38,7 +38,6 @@
 --  This package allows for the creation of GUI applications with multiple
 --  connections to the same app.
 
-with Gnoga.Types;
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Window;
 

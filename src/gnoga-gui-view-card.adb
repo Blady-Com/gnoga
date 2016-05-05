@@ -35,7 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Gui.Window;
 with Gnoga.Gui.Element.Style_Block;
 
 package body Gnoga.Gui.View.Card is
@@ -227,7 +226,7 @@ package body Gnoga.Gui.View.Card is
                       Label    : in     String;
                       Selected : in     Boolean := False)
    is
-      T : Tab_Item_Access := new Tab_Item_Type;
+      T : constant Tab_Item_Access := new Tab_Item_Type;
    begin
       T.Dynamic;
       T.Create (Parent => Tab,
@@ -248,7 +247,8 @@ package body Gnoga.Gui.View.Card is
    is
       use type Gnoga.Gui.Element.Pointer_To_Element_Class;
 
-      P : Gnoga.Gui.Element.Pointer_To_Element_Class := Tab.Element (Card);
+      P : constant Gnoga.Gui.Element.Pointer_To_Element_Class :=
+        Tab.Element (Card);
    begin
       if P /= null then
          Tab_Item_Access (P).Tab_Select;

@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Containers.Indefinite_Ordered_Maps;
-with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
 
 with Ada.Exceptions;
@@ -75,9 +74,9 @@ package body Gnoga.Application.Multi_Connect is
       function Get_Path return String is
          use Ada.Strings.Fixed;
 
-         P : String  := Server.Connection.Connection_Path (ID);
+         P : constant String  := Server.Connection.Connection_Path (ID);
          Q : Integer := Index (P, "?");
-         H : Integer := Index (P, "#", Ada.Strings.Backward);
+         H : constant Integer := Index (P, "#", Ada.Strings.Backward);
       begin
          if Q = 0 then
             if H = 0 then
@@ -95,7 +94,7 @@ package body Gnoga.Application.Multi_Connect is
       Server.Connection.HTML_On_Close (ID, HTML_On_Close);
 
       declare
-         Path : String := Right_Trim_Slashes (Get_Path);
+         Path : constant String := Right_Trim_Slashes (Get_Path);
       begin
          if Path_Map.Contains (Path) then
             Path_Map.Element (Path) (Main_Window, Connection);
@@ -116,13 +115,15 @@ package body Gnoga.Application.Multi_Connect is
          end if;
       end;
    exception
-      when Gnoga.Server.Connection.Connection_Error =>
-         null; -- Browser window was closed
+      when E : Gnoga.Server.Connection.Connection_Error =>
+         --  Browser window was closed
+         Log ("Error connection" & ID'Img & " browser window was closed.");
+         Log (Ada.Exceptions.Exception_Information (E));
 
       when E : others =>
          Connection.Release;
 
-         Log ("Connection" & ID'Img & " closed by exception.");
+         Log ("Error connection" & ID'Img & " closed by exception.");
          Log (Ada.Exceptions.Exception_Information (E));
    end On_Connect;
 

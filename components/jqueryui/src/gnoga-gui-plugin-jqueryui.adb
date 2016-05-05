@@ -35,7 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
 
 with Gnoga.Server.Connection;

@@ -35,7 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Types;
 with Gnoga.Gui.Window;
 
 package Gnoga.Gui.Screen is

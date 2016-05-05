@@ -65,7 +65,7 @@ package body Gnoga.Server.Database.SQLite is
    function Connect (Database : String)
                      return Gnoga.Server.Database.Connection_Access
    is
-      C : Connection_Access := new Connection;
+      C : constant Connection_Access := new Connection;
    begin
       C.Connect (Database);
       return Gnoga.Server.Database.Connection_Access (C);
@@ -126,7 +126,7 @@ package body Gnoga.Server.Database.SQLite is
 
    overriding
    procedure Execute_Query (C : in out Connection; SQL : String) is
-      LSQL : String := (if C.UTF8_STring then SQL else
+      LSQL : constant String := (if C.UTF8_STring then SQL else
                            Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
       Q  : aliased SQLite_ID;
       P  : aliased SQLite_ID;
@@ -156,7 +156,7 @@ package body Gnoga.Server.Database.SQLite is
       end if;
 
       declare
-         result : Integer := sqlite3_step;
+         result : constant Integer := sqlite3_step;
       begin
          if result /= SQLITE_OK and
            result /= SQLITE_ROW and
@@ -198,7 +198,7 @@ package body Gnoga.Server.Database.SQLite is
          raise Connection_Error;
       end if;
 
-      return Natural (Natural (sqlite3_last_insert_rowid));
+      return Natural (sqlite3_last_insert_rowid);
    end Insert_ID;
 
    -------------------
@@ -215,7 +215,7 @@ package body Gnoga.Server.Database.SQLite is
          raise Connection_Error;
       end if;
 
-      return Natural (sqlite3_changes);
+      return sqlite3_changes;
    end Affected_Rows;
 
    -------------------
@@ -331,7 +331,7 @@ package body Gnoga.Server.Database.SQLite is
    function Query (C : Connection; SQL : String)
                    return Gnoga.Server.Database.Recordset'Class
    is
-      LSQL : String := (if C.UTF8_STring then SQL else
+      LSQL : constant String := (if C.UTF8_STring then SQL else
                            Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
       RS : Recordset (C.Server_ID);
       Q  : aliased SQLite_ID;
@@ -393,6 +393,7 @@ package body Gnoga.Server.Database.SQLite is
 
    overriding
    function ID_Field_String (C : Connection) return String is
+      pragma Unreferenced (C);
    begin
       return "id INTEGER PRIMARY KEY AUTOINCREMENT";
    end ID_Field_String;
@@ -427,7 +428,7 @@ package body Gnoga.Server.Database.SQLite is
 
    overriding
    function Next (RS : in out Recordset) return Boolean is
-      R : access Recordset := RS'Unrestricted_Access;
+      R : constant access Recordset := RS'Unrestricted_Access;
 
       function sqlite3_step (sqlite : SQLite_ID := RS.Query_ID)
                              return Integer;
@@ -462,7 +463,7 @@ package body Gnoga.Server.Database.SQLite is
       Process : not null access
         procedure (RS : Gnoga.Server.Database.Recordset'Class))
    is
-      LSQL : String := (if C.UTF8_STring then SQL else
+      LSQL : constant String := (if C.UTF8_STring then SQL else
                            Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (LSQL);
    begin
@@ -487,7 +488,7 @@ package body Gnoga.Server.Database.SQLite is
       SQL   : in     String;
       Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
    is
-      LSQL : String := (if C.UTF8_STring then SQL else
+      LSQL : constant String := (if C.UTF8_STring then SQL else
                            Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (LSQL);
    begin
@@ -552,6 +553,8 @@ package body Gnoga.Server.Database.SQLite is
                 (Interfaces.C.To_Ada (sqlite3_column_name.all)));
    exception
       when E : Ada.Strings.UTF_Encoding.Encoding_Error =>
+         Log ("Error converting to String from " &
+                Interfaces.C.To_Ada (sqlite3_column_name.all));
          Log (Ada.Exceptions.Exception_Information (E));
          return Interfaces.C.To_Ada (sqlite3_column_name.all);
    end Field_Name;
@@ -592,19 +595,17 @@ package body Gnoga.Server.Database.SQLite is
             raise Null_Field;
          end if;
       else
+         declare
+            Value : constant String := To_Ada (sqlite3_column_text.all
+                           (0 .. size_t (sqlite3_column_bytes)));
          begin
-            return (if RS.UTF8_STring then To_Ada
-                    (sqlite3_column_text.all
-                         (0 .. size_t (sqlite3_column_bytes))) else
-                         Ada.Strings.UTF_Encoding.Strings.Decode
-                      (To_Ada (sqlite3_column_text.all
-                           (0 .. size_t (sqlite3_column_bytes)))));
+            return (if RS.UTF8_STring then Value else
+                         Ada.Strings.UTF_Encoding.Strings.Decode (Value));
          exception
             when E : Ada.Strings.UTF_Encoding.Encoding_Error =>
+               Log ("Error converting to String from " & Value);
                Log (Ada.Exceptions.Exception_Information (E));
-               return Interfaces.C.To_Ada
-                 (sqlite3_column_text.all
-                    (0 .. size_t (sqlite3_column_bytes)));
+               return Value;
          end;
       end if;
    end Field_Value;
@@ -676,6 +677,7 @@ package body Gnoga.Server.Database.SQLite is
 
    overriding
    function Escape_String (C : Connection; S : String) return String is
+      pragma Unreferenced (C);
       use Ada.Strings.Unbounded;
 
       New_String : Ada.Strings.Unbounded.Unbounded_String;
@@ -705,11 +707,11 @@ package body Gnoga.Server.Database.SQLite is
    function Full_Column_Names (C : in out Connection) return Boolean is
       RS : Gnoga.Server.Database.Recordset'Class :=
         C.Query ("PRAGMA full_column_names");
-      Result : Boolean := False;
    begin
       if RS.Next then
          return
-           Result : Boolean := Boolean'Val (Integer'Value (RS.Field_Value (1)))
+           Result : constant Boolean :=
+             Boolean'Val (Integer'Value (RS.Field_Value (1)))
          do
             RS.Close;
          end return;
@@ -736,7 +738,8 @@ package body Gnoga.Server.Database.SQLite is
    begin
       if RS.Next then
          return
-           Result : Boolean := Boolean'Val (Integer'Value (RS.Field_Value (1)))
+           Result : constant Boolean :=
+             Boolean'Val (Integer'Value (RS.Field_Value (1)))
          do
             RS.Close;
          end return;
@@ -759,7 +762,7 @@ package body Gnoga.Server.Database.SQLite is
         C.Query ("PRAGMA encoding");
    begin
       if RS.Next then
-         return Result : String := RS.Field_Value (1) do
+         return Result : constant String := RS.Field_Value (1) do
             RS.Close;
          end return;
       else

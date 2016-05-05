@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Fixed;
-with Ada.Strings.Unbounded;
 
 package body Gnoga.Server.Database is
 
@@ -45,8 +44,9 @@ package body Gnoga.Server.Database is
    ----------------
 
    function Field_Type (Field : Field_Description) return String is
-      Data  : String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);
-      Right : Natural := Ada.Strings.Fixed.Index (Data, "(");
+      Data  : constant String  :=
+        Ada.Strings.Unbounded.To_String (Field.Data_Type);
+      Right : constant Natural := Ada.Strings.Fixed.Index (Data, "(");
    begin
       if Right = 0 then
          return Data;
@@ -56,13 +56,13 @@ package body Gnoga.Server.Database is
    end Field_Type;
 
    function Field_Size (Field : Field_Description) return Natural is
-      Option : String := Field_Options (Field);
+      Option : constant String := Field_Options (Field);
    begin
       if Option = "" then
          return 0;
       else
          declare
-            Comma : Natural := Ada.Strings.Fixed.Index (Option, ",");
+            Comma : constant Natural := Ada.Strings.Fixed.Index (Option, ",");
          begin
             if Comma = 0 then
                return Natural'Value (Option);
@@ -78,8 +78,8 @@ package body Gnoga.Server.Database is
    --------------------
 
    function Field_Decimals (Field : Field_Description) return Natural is
-      Option : String  := Field_Options (Field);
-      Comma  : Natural := Ada.Strings.Fixed.Index (Option, ",");
+      Option : constant String  := Field_Options (Field);
+      Comma  : constant Natural := Ada.Strings.Fixed.Index (Option, ",");
    begin
       if Comma = 0 then
          return 0;
@@ -93,9 +93,10 @@ package body Gnoga.Server.Database is
    -------------------
 
    function Field_Options (Field : Field_Description) return String is
-      Data  : String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);
-      Right : Natural := Ada.Strings.Fixed.Index (Data, "(");
-      Left  : Natural := Ada.Strings.Fixed.Index (Data, ")");
+      Data  : constant String  :=
+        Ada.Strings.Unbounded.To_String (Field.Data_Type);
+      Right : constant Natural := Ada.Strings.Fixed.Index (Data, "(");
+      Left  : constant Natural := Ada.Strings.Fixed.Index (Data, ")");
    begin
       if Right = 0 or Left = 0 then
          return "";

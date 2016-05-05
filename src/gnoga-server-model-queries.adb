@@ -104,8 +104,9 @@ package body Gnoga.Server.Model.Queries is
                         Order_By    : in     String := "")
                         return Active_Record_Array.Vector
    is
-      Remove_s : String := Parent.Table_Name.all;
-      Where_Clause : String := Remove_s (Remove_s'First .. Remove_s'Last - 1)
+      Remove_s : constant String := Parent.Table_Name.all;
+      Where_Clause : constant String :=
+        Remove_s (Remove_s'First .. Remove_s'Last - 1)
         & "_id = " & Parent.Value ("id");
    begin
       if Like /= "" then
@@ -123,8 +124,9 @@ package body Gnoga.Server.Model.Queries is
                         Order_By       : String := "")
                         return Active_Record_Array.Vector
    is
-      Remove_s : String := Parent.Table_Name.all;
-      Where_Clause : String := Remove_s (Remove_s'First .. Remove_s'Last - 1)
+      Remove_s : constant String := Parent.Table_Name.all;
+      Where_Clause : constant String :=
+        Remove_s (Remove_s'First .. Remove_s'Last - 1)
         & "_id = " & Parent.Value ("id");
    begin
       if Like /= "" then

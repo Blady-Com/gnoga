@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with Ada.Exceptions;
 
 with Gnoga.Server.Connection;
 
@@ -54,8 +55,11 @@ package body Gnoga.Gui.Element.Canvas is
            Ada.Strings.Unbounded.To_String (Object.Context_ID) &
            "'];");
    exception
-      when Gnoga.Server.Connection.Connection_Error =>
-         null;
+      when E : Gnoga.Server.Connection.Connection_Error =>
+         Log ("Connection" & Object.Connection_ID'Img &
+                " error during delete object " &
+                Ada.Strings.Unbounded.To_String (Object.Context_ID));
+         Log (Ada.Exceptions.Exception_Information (E));
    end Finalize;
 
    ------------
@@ -125,7 +129,9 @@ package body Gnoga.Gui.Element.Canvas is
    begin
       return Integer'Value (Context.Property (Name));
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Property converting to Integer (forced to 0).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return 0;
    end Property;
 

@@ -41,7 +41,6 @@
 --  of gpr files, command line or even something like:
 --   pragma Linker_Options ("-lmysqlclient");
 
-with Ada.Finalization;
 with Interfaces.C;
 
 package Gnoga.Server.Database.MySQL is

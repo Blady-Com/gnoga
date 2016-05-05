@@ -42,7 +42,6 @@
 --     - manipulate SVG elements already using Gnoga.Element.Create_With_HTML
 --     - and using one of the place methods in to the SVG element.
 
-with Gnoga.Types;
 with Gnoga.Gui.View;
 
 package Gnoga.Gui.Element.SVG is

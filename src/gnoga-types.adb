@@ -37,6 +37,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Fixed;
+with Ada.Exceptions;
 
 package body Gnoga.Types is
    function To_RGBA_From_Hex (Value : String) return RGBA_Type;
@@ -74,7 +75,7 @@ package body Gnoga.Types is
 
    function To_RGBA_From_Hex (Value : String) return RGBA_Type is
       RGBA : RGBA_Type;
-      P    : Integer := Value'First;
+      P    : constant Integer := Value'First;
    begin
       if Value'Length = 7 then
          RGBA.Red   := Color_Type'Value
@@ -98,8 +99,9 @@ package body Gnoga.Types is
 
       return RGBA;
    exception
-      when others =>
+      when E : others =>
          Log ("Error converting to rbga value from " & Value);
+         Log (Ada.Exceptions.Exception_Information (E));
          return RGBA;
    end To_RGBA_From_Hex;
 
@@ -138,7 +140,7 @@ package body Gnoga.Types is
          return Alpha_Type'Value (Split (P));
       end Split;
 
-      rtype : String := Split ("(");
+      rtype : constant String := Split ("(");
    begin
       RGBA.Red := Split (",");
       RGBA.Green := Split (",");

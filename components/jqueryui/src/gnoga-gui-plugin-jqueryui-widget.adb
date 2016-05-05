@@ -198,7 +198,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
            "height:" & Is_Auto (Height) & "," &
            "width:" & Is_Auto (Width) & "," &
            "maxHeight:" & Is_False (Maximum_Height) & "," &
-           "maxWidth:" & Is_False (Maximum_Height) & "," &
+           "maxWidth:" & Is_False (Maximum_Width) & "," &
            "modal: " & Modal'Img & "," &
            "closeOnEscape: " & Close_On_Escape'Img & "," &
            "draggable: " & Draggable'Img & "})");
@@ -329,6 +329,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
                      Maximum      : in     Integer := 100;
                      ID           : in     String := "")
    is
+      pragma Unreferenced (ID);
    begin
       Progress_Bar.Create_From_HTML (Parent, "<div/>");
       Progress_Bar.jQuery_Execute

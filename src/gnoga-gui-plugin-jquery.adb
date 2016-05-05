@@ -84,8 +84,11 @@ package body Gnoga.Gui.Plugin.jQuery is
 
       Object.Connection_ID := Gnoga.Types.No_Connection;
    exception
-      when Gnoga.Server.Connection.Connection_Error =>
-         null; --  Socket error to browser
+      when E : Gnoga.Server.Connection.Connection_Error =>
+         --  Socket error to browser
+         Log ("Connection" & Object.Connection_ID'Img &
+                " socket error to browser.");
+         Log (Ada.Exceptions.Exception_Information (E));
       when E : others =>
          Log ("Error finalizing jQuery Object - " & Gnoga_Var (Object));
          Log (Ada.Exceptions.Exception_Information (E));

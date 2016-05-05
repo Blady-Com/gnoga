@@ -36,6 +36,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Exceptions;
+
 package body Gnoga.Types.Colors is
 
    --  Based on CSS extended color keywords
@@ -385,7 +387,9 @@ package body Gnoga.Types.Colors is
       return Color_Enumeration'Val (CSS_Color_Enumeration'Pos
                                     (CSS_Color_Enumeration'Value (Value)));
    exception
-      when Constraint_Error =>
+      when E : Constraint_Error =>
+         Log ("Error converting to Color_Enumeration from " & Value);
+         Log (Ada.Exceptions.Exception_Information (E));
          raise Color_Error;
    end To_Color_Enumeration;
 

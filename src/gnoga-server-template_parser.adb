@@ -37,12 +37,8 @@
 
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
-with Ada.Strings.Maps;
-with Ada.Strings.Unbounded;
-with Ada.Directories;
 
 with GNAT.OS_Lib;
-with GNAT.Expect; use GNAT;
 
 package body Gnoga.Server.Template_Parser is
 
@@ -86,7 +82,7 @@ package body Gnoga.Server.Template_Parser is
                      Key   : String;
                      Value : Integer)
    is
-      String_Value : String := Integer'Image (Value);
+      String_Value : constant String := Integer'Image (Value);
    begin
       Insert (Data, Key,
               String_Value (String_Value'First + 1 .. String_Value'Last));
@@ -102,7 +98,7 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in Vector.First_Index .. Vector.Last_Index loop
          declare
-            K : String := I'Img;
+            K : constant String := I'Img;
          begin
             Data.Insert (K (K'First + 1 .. K'Last), Vector.Element (I));
          end;
@@ -121,7 +117,7 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in Vector.First_Index .. Vector.Last_Index loop
          declare
-            K : String := I'Img;
+            K : constant String := I'Img;
          begin
             Map.Insert (K (K'First + 1 .. K'Last), Vector.Element (I));
          end;
@@ -173,7 +169,7 @@ package body Gnoga.Server.Template_Parser is
    begin
       while RS.Next loop
          declare
-            Key : String := I'Img;
+            Key : constant String := I'Img;
          begin
             I := I + 1;
             Data.Insert_Map_Item
@@ -205,7 +201,7 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in 1 .. Natural (Row.Length) loop
          declare
-            Key : String := I'Img;
+            Key : constant String := I'Img;
          begin
             Data.Insert_Record_Item (Key => Key (Key'First + 1 .. Key'Last),
                                      Row => Row.Element (I));

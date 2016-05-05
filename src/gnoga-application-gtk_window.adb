@@ -63,7 +63,7 @@ package body Gnoga.Application.Gtk_Window is
    end Gtk_Win_Launcher;
 
    task body Gtk_Win_Launcher is
-      nul : Character := Character'Val (0);
+      nul : constant Character := Character'Val (0);
 
       procedure Launch_Gtk_Window (URL : String; Width, Height : Integer);
       pragma Import (C, Launch_Gtk_Window, "Launch_Gtk_Window");

@@ -35,6 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Finalization;
+
 with Gnoga.Types;
 
 package Gnoga.Gui.Element.Canvas is

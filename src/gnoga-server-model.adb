@@ -35,8 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Calendar.Formatting;
+with Ada.Exceptions;
 
 package body Gnoga.Server.Model is
 
@@ -95,7 +95,6 @@ package body Gnoga.Server.Model is
                     Field_Name    : in     String;
                     Integer_Value : in     Integer)
    is
-      V : String := Integer'Image (Integer_Value);
    begin
       Value (A, Field_Name, Gnoga.Left_Trim (Integer_Value'Img));
    end Value;
@@ -104,7 +103,7 @@ package body Gnoga.Server.Model is
                     Field_Name : in     String;
                     Date_Value : in     Ada.Calendar.Time)
    is
-      V : String := Ada.Calendar.Formatting.Image (Date_Value);
+      V : constant String := Ada.Calendar.Formatting.Image (Date_Value);
    begin
       Value (A, Field_Name, V);
    end Value;
@@ -185,17 +184,17 @@ package body Gnoga.Server.Model is
 
       if A.Is_New then
          declare
-            f : String := To_String (fields);
-            v : String := To_String (values);
+            f : constant String := To_String (fields);
+            v : constant String := To_String (values);
 
-            Insert_String : String := "insert into " &
+            Insert_String : constant String := "insert into " &
             A.Table_Name.all &
             " (" & f (f'First .. f'Last - 1) & ") VALUES (" &
             v (v'First .. v'Last - 1) & ")";
          begin
             A.Connection.Execute_Query (Insert_String);
             declare
-               New_ID : String := A.Connection.Insert_ID'Img;
+               New_ID : constant String := A.Connection.Insert_ID'Img;
             begin
                A.Value ("id", New_ID (New_ID'First + 1 .. New_ID'Last));
                A.Is_New := False;
@@ -203,9 +202,9 @@ package body Gnoga.Server.Model is
          end;
       else
          declare
-            f : String := To_String (fields);
+            f : constant String := To_String (fields);
 
-            Update_String : String := "update " & A.Table_Name.all &
+            Update_String : constant String := "update " & A.Table_Name.all &
             " set " & f (f'First .. f'Last - 1) &
             " where id=" & A.Values.Element ("id");
          begin
@@ -221,7 +220,7 @@ package body Gnoga.Server.Model is
    procedure Delete (A : in out Active_Record) is
       use Ada.Strings.Unbounded;
 
-      SQL : String := "delete from " & A.Table_Name.all &
+      SQL : constant String := "delete from " & A.Table_Name.all &
          " where id=" & A.Value ("id");
    begin
       A.Connection.Execute_Query (SQL);
@@ -246,7 +245,7 @@ package body Gnoga.Server.Model is
       use Ada.Strings.Unbounded;
       use Ada.Strings;
 
-      Key : String := ID'Img;
+      Key : constant String := ID'Img;
       RS  : Gnoga.Server.Database.Recordset'Class :=
         A.Connection.Query ("select * from " & A.Table_Name.all &
                             " where id=" & Key (Key'First + 1 .. Key'Last));
@@ -282,7 +281,9 @@ package body Gnoga.Server.Model is
       A.Values := RS.Field_Values;
       RS.Close;
    exception
-      when Gnoga.Server.Database.End_Of_Recordset =>
+      when E : Gnoga.Server.Database.End_Of_Recordset =>
+         Log ("Error End_Of_Recordset.");
+         Log (Ada.Exceptions.Exception_Information (E));
          if Create_New then
             A.Value ("id", "");
             RS.Close;
@@ -299,9 +300,10 @@ package body Gnoga.Server.Model is
                         Parent     : in     Active_Record'Class;
                         Create_New : in     Boolean := True)
    is
-      Remove_s : String := Parent.Table_Name.all;
+      Remove_s : constant String := Parent.Table_Name.all;
 
-      Where_Clause : String := Remove_s (Remove_s'First .. Remove_s'Last - 1)
+      Where_Clause : constant String :=
+        Remove_s (Remove_s'First .. Remove_s'Last - 1)
         & "_id = " & Parent.Value ("id");
    begin
       A.Find_Where (Where_Clause, Create_New);

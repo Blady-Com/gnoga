@@ -35,8 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
+with Ada.Exceptions;
 
 with Gnoga.Server.Connection;
 
@@ -68,7 +68,7 @@ package body Gnoga.Gui.Element is
          end if;
       end Adjusted_ID;
 
-      GID : String := Adjusted_ID;
+      GID : constant String := Adjusted_ID;
    begin
       if Gnoga.Server.Connection.Connection_Type (Parent.Connection_ID) =
         Long_Polling
@@ -88,7 +88,7 @@ package body Gnoga.Gui.Element is
             end if;
 
             declare
-               S : String := HTML (HTML'First .. P - 1) &
+               S : constant String := HTML (HTML'First .. P - 1) &
                  " id='" & GID & "'" &
                  HTML (P .. HTML'Last);
             begin
@@ -135,7 +135,7 @@ package body Gnoga.Gui.Element is
          end if;
       end Adjusted_ID;
 
-      GID : String := Adjusted_ID;
+      GID : constant String := Adjusted_ID;
    begin
       Element.Create_With_Script
         (Connection_ID => Parent.Connection_ID,
@@ -197,7 +197,9 @@ package body Gnoga.Gui.Element is
    begin
       return Integer'Value (Element.Style (Name));
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Style converting to Integer (forced to 0).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return 0;
    end Style;
 
@@ -359,7 +361,10 @@ package body Gnoga.Gui.Element is
    begin
       return Overflow_Type'Value (Element.Style ("overflow"));
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Overflow converting to Overflow_Type" &
+              " (forced to Visible).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return Visible;
    end Overflow;
 
@@ -411,7 +416,10 @@ package body Gnoga.Gui.Element is
    begin
       return Resizable_Type'Value (Element.Style ("resize"));
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Resizable converting to Resizable_Type" &
+              " (forced to None).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return None;
    end Resizable;
 
@@ -430,7 +438,10 @@ package body Gnoga.Gui.Element is
    begin
       return Position_Type'Value (Element.Style ("position"));
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Position converting to Position_Type" &
+              " (forced to Static).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return Static;
    end Position;
 
@@ -1136,8 +1147,9 @@ package body Gnoga.Gui.Element is
    begin
       return Gnoga.Types.Alpha_Type'Value (Element.Style ("opacity"));
    exception
-      when others =>
-         Log ("Error converting opacity to Alpha_Type");
+      when E : others =>
+         Log ("Error Opacity converting to Alpha_Type (forced to 1.0).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return 1.0;
    end Opacity;
 
@@ -1156,7 +1168,7 @@ package body Gnoga.Gui.Element is
    function Background_Attachment (Element : Element_Type)
                                    return Background_Attachment_type
    is
-      Value : String := Element.Style ("background-color");
+      Value : constant String := Element.Style ("background-color");
    begin
       if Value = "" then
          return Scroll;
@@ -1430,7 +1442,7 @@ package body Gnoga.Gui.Element is
                    Weight  : in     Font_Weight_Type  := Weight_Normal;
                    Variant : in     Font_Variant_Type := Normal)
    is
-      W : String := Weight'Img;
+      W : constant String := Weight'Img;
    begin
       Element.Style ("font", Style'Img & " " & Variant'Img & " " &
                        W (W'First + 7 .. W'Last) & " " & Height &
@@ -1460,7 +1472,7 @@ package body Gnoga.Gui.Element is
    procedure Text_Alignment (Element : in out Element_Type;
                              Value   : in     Alignment_Type)
    is
-      V : String := Value'Img;
+      V : constant String := Value'Img;
    begin
       case Value is
          when Left | Right | Center =>

@@ -38,7 +38,6 @@
 --  An Active Record implementation for Ada similar to that used in Rails
 
 with Ada.Finalization;
-with Ada.Strings.Unbounded;
 with Ada.Calendar;
 
 with Gnoga.Types;

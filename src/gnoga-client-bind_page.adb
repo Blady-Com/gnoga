@@ -38,6 +38,7 @@
 with Ada.Strings.Fixed;
 
 with Gnoga.Server.Connection;
+with Gnoga.Gui.Element;
 
 package body Gnoga.Client.Bind_Page is
 
@@ -55,7 +56,7 @@ package body Gnoga.Client.Bind_Page is
            " $(this).attr(""id"") + ""|""; } );");
 
       declare
-         Buf : String  := Gnoga.Server.Connection.Execute_Script
+         Buf : constant String  := Gnoga.Server.Connection.Execute_Script
            (View.Connection_ID, "gnoga['idbuf']");
          S   : Integer := Buf'First;
          F   : Integer := Buf'First - 1;
@@ -70,8 +71,8 @@ package body Gnoga.Client.Bind_Page is
                            Pattern => "|",
                            From    => S);
                declare
-                  ID : String := Buf (S .. (F - 1));
-                  E  : Gnoga.Gui.Element.Element_Access :=
+                  ID : constant String := Buf (S .. (F - 1));
+                  E  : constant Gnoga.Gui.Element.Element_Access :=
                          new Gnoga.Gui.Element.Element_Type;
                begin
                   E.Attach_Using_Parent (Parent  => View,

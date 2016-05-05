@@ -57,16 +57,16 @@ package body Gnoga.Gui.View.Grid is
       use Ada.Strings.Unbounded;
 
       C   : Unbounded_String;
-      CID : String           := Gnoga.Server.Connection.New_GID;
+      CID : constant String           := Gnoga.Server.Connection.New_GID;
 
       N         : Natural;
       Span_Size : Natural;
       Column    : Positive;
 
-      P_Height : String := Left_Trim (Integer (100 / Layout'Length (1))'Img) &
-        "%";
-      P_Width  : String := Left_Trim (Integer (100 / Layout'Length (2))'Img) &
-        "%";
+      P_Height : constant String :=
+        Left_Trim (Integer (100 / Layout'Length (1))'Img) & "%";
+      P_Width  : constant String :=
+        Left_Trim (Integer (100 / Layout'Length (2))'Img) & "%";
 
       Column_Object : View_Base_Access := null;
 
@@ -175,7 +175,7 @@ package body Gnoga.Gui.View.Grid is
             end if;
 
             declare
-               Address : String := Left_Trim (Row'Img) & "_" &
+               Address : constant String := Left_Trim (Row'Img) & "_" &
                  Left_Trim (Column'Img);
             begin
                Grid.Add_Element (Address, Column_Object);
@@ -194,7 +194,8 @@ package body Gnoga.Gui.View.Grid is
    function Panel (Grid : Grid_View_Type; Row, Column : Positive)
                    return Pointer_To_View_Base_Class
    is
-      Address : String := Left_Trim (Row'Img) & "_" & Left_Trim (Column'Img);
+      Address : constant String :=
+        Left_Trim (Row'Img) & "_" & Left_Trim (Column'Img);
    begin
       return Pointer_To_View_Base_Class (Grid.Element (Address));
    end Panel;

@@ -35,7 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps;
 with Ada.Calendar.Formatting;
@@ -172,7 +171,7 @@ package body Gnoga.Gui.Window is
    is
       use type Gnoga.Types.ID_Enumeration;
 
-      CID : String := Gnoga.Server.Connection.Execute_Script
+      CID : constant String := Gnoga.Server.Connection.Execute_Script
         (Parent.Connection_ID,
          Base.Script_Accessor (ID, ID_Type) & ".gnoga['Connection_ID']");
    begin
@@ -182,9 +181,10 @@ package body Gnoga.Gui.Window is
 
       Attach (Window, Gnoga.Types.Connection_ID'Value (CID));
    exception
-      when others =>
+      when E : others =>
          Log ("Unable to find gnoga['Connection_ID'] on " & ID &
                 " eval returned : " & CID);
+         Log (Ada.Exceptions.Exception_Information (E));
          raise Not_A_Gnoga_Window;
    end Attach;
 
@@ -195,7 +195,7 @@ package body Gnoga.Gui.Window is
    procedure Reattach (Window : in out Window_Type;
                        Parent : in out Window_Type'Class)
    is
-      CID : String := Gnoga.Server.Connection.Execute_Script
+      CID : constant String := Gnoga.Server.Connection.Execute_Script
         (Parent.Connection_ID,
          Base.Script_Accessor (Window.ID, Window.ID_Type) &
                  ".gnoga['Connection_ID']");
@@ -459,7 +459,7 @@ package body Gnoga.Gui.Window is
          use Ada.Strings;
          use Ada.Calendar.Formatting;
 
-         Now : Ada.Calendar.Time := Ada.Calendar.Clock;
+         Now : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       begin
          return Trim (Year (Now)'Img, Side => Both)
            & Trim (Month (Now)'Img, Side => Both)
@@ -472,11 +472,11 @@ package body Gnoga.Gui.Window is
       end Generate_Session_ID;
 
       S   : Session_Storage_Type := Session_Storage (Window);
-      Gid : String               := S.Get (Name);
+      Gid : constant String               := S.Get (Name);
    begin
       if Gid = "null" then
          declare
-            New_Session : String := Generate_Session_ID;
+            New_Session : constant String := Generate_Session_ID;
          begin
             S.Set (Name, New_Session);
 
@@ -956,7 +956,7 @@ package body Gnoga.Gui.Window is
          Object.Fire_On_Orientation_Change;
       elsif Event = "storage" then
          declare
-            E : Storage_Event_Record := Parse_Storage_Event (Message);
+            E : constant Storage_Event_Record := Parse_Storage_Event (Message);
          begin
             Object.Fire_On_Storage (E);
          end;

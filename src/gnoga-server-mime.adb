@@ -44,7 +44,7 @@ package body Gnoga.Server.Mime is
    ---------------
 
    function Mime_Type (File_Name : String) return String is
-      Ext : String := Ada.Directories.Extension (File_Name);
+      Ext : constant String := Ada.Directories.Extension (File_Name);
    begin
       if Ext = "js" then
          return "text/javascript";

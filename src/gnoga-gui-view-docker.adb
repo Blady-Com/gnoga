@@ -35,6 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Exceptions;
+
 package body Gnoga.Gui.View.Docker is
 
    ------------
@@ -99,8 +101,9 @@ package body Gnoga.Gui.View.Docker is
            (View.Outer_Width_To_Margin - Left_Width - Right_Width);
       end if;
    exception
-      when others =>
-         null;
+      when E : others =>
+         Log ("Error Update_Dock.");
+         Log (Ada.Exceptions.Exception_Information (E));
    end Update_Dock;
 
    --------------

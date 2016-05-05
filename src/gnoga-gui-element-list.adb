@@ -63,7 +63,7 @@ package body Gnoga.Gui.Element.List is
       function Adjusted_Image (S : String) return String;
 
       function Adjusted_Image (S : String) return String is
-         P : Integer := Ada.Strings.Fixed.Index (S, "_");
+         P : constant Integer := Ada.Strings.Fixed.Index (S, "_");
       begin
          if P = 0 then
             return S;

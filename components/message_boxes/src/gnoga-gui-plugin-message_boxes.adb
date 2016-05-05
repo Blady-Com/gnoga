@@ -1,5 +1,7 @@
 --  Inspired by GWindows and jdemo
 
+with Ada.Exceptions;
+
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
 
@@ -156,7 +158,9 @@ package body Gnoga.Gui.Plugin.Message_Boxes is
       Gnoga.Log ("sortie de la boucle");
       return Result;
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Message_Box.");
+         Log (Ada.Exceptions.Exception_Information (E));
          return Cancel;
    end Message_Box;
 

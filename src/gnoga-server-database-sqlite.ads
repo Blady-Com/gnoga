@@ -41,8 +41,6 @@
 --  of gpr files, command line or even something like:
 --    pragma Linker_Options ("-lsqlite3");
 
-with Ada.Finalization;
-
 package Gnoga.Server.Database.SQLite is
    type SQLite_ID is access all Integer;
 

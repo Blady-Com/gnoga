@@ -38,9 +38,9 @@
 with Ada.Strings.Unbounded;
 
 package Gnoga is
-   version      : constant String := "1.1";
+   version      : constant String := "1.2-alpha";
    version_high : constant        := 1;
-   version_low  : constant        := 1;
+   version_low  : constant        := 2;
 
    HTTP_Server_Name : constant String := "gnoga/" & version;
 

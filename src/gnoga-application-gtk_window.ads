@@ -35,8 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Types;
-
 package Gnoga.Application.Gtk_Window is
 
    procedure Initialize (Port   : Integer := 8080;

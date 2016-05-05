@@ -35,8 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Interfaces.C;
-
 package body Gnoga.Server.Database.MySQL is
 
    --  Binding related specs
@@ -61,7 +59,7 @@ package body Gnoga.Server.Database.MySQL is
                      Port     : Integer := 3306)
                      return Connection_Access
    is
-      C : Connection_Access := new Connection;
+      C : constant Connection_Access := new Connection;
    begin
       C.Connect (Database, Host, User, Password, Port);
       return C;
@@ -74,6 +72,7 @@ package body Gnoga.Server.Database.MySQL is
                       Password : String  := "";
                       Port     : Integer := 3306)
    is
+      pragma Unreferenced (Port);
       function MYSQL_Init (mysql : MySQL_ID := null) return MySQL_ID;
       pragma Import (C, MYSQL_Init, "mysql_init");
 
@@ -348,6 +347,7 @@ package body Gnoga.Server.Database.MySQL is
 
    overriding
    function ID_Field_String (C : Connection) return String is
+      pragma Unreferenced (C);
    begin
       return "id INTEGER PRIMARY KEY AUTO_INCREMENT";
    end ID_Field_String;
@@ -382,7 +382,7 @@ package body Gnoga.Server.Database.MySQL is
 
    overriding
    function Next (RS : in out Recordset) return Boolean is
-      R : access Recordset := RS'Unrestricted_Access;
+      R : constant access Recordset := RS'Unrestricted_Access;
 
       function MYSQL_Fetch_Row (Result : MySQL_ID := RS.Query_ID)
                                 return Row_Access;
@@ -628,7 +628,7 @@ package body Gnoga.Server.Database.MySQL is
    function Escape_String (C : Connection; S : String) return String is
       subtype  Buffer_Type is String (1 .. S'Length * 2 + 1); -- Min Buf Size
 
-      Buf : Buffer_Type := (others => Character'First);
+      Buf : constant Buffer_Type := (others => Character'First);
 
       function MYSQL_Real_Escape_String (mysql  : MySQL_ID    := C.Server_ID;
                                          Buffer : Buffer_Type := Buf;
@@ -637,7 +637,7 @@ package body Gnoga.Server.Database.MySQL is
                                          return Natural;
       pragma Import (C, MYSQL_Real_Escape_String, "mysql_real_escape_string");
 
-      Length : Natural := MYSQL_Real_Escape_String;
+      Length : constant Natural := MYSQL_Real_Escape_String;
    begin
       return Buf (1 .. Length);
    end Escape_String;

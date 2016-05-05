@@ -6,7 +6,6 @@ project Gnoga is
 
    for Object_Dir use "../obj";
    for Source_Dirs use (".");
-
    for Library_Name use "gnoga";
    for Library_Dir use "../lib";
    for Library_Kind use "static";
@@ -15,12 +14,13 @@ project Gnoga is
 
    package Binder renames Settings.Binder;
 
-   package IDE is
+   package Ide is
       for Documentation_Dir use "../docs/html/gnoga_rm";
-   end IDE;
+   end Ide;
 
    package Install is
       for Artifacts ("share/gnoga") use ("../docs/html", "../docs/user_guide");
    end Install;
 
 end Gnoga;
+

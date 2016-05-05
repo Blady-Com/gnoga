@@ -160,6 +160,7 @@ package body Gnoga.Client.Storage is
 
    overriding
    function Script_Accessor (Storage : Local_Storage_Type) return String is
+      pragma Unreferenced (Storage);
    begin
       return "localStorage";
    end Script_Accessor;
@@ -193,6 +194,7 @@ package body Gnoga.Client.Storage is
 
    overriding
    function Script_Accessor (Storage : Session_Storage_Type) return String is
+      pragma Unreferenced (Storage);
    begin
       return "sessionStorage";
    end Script_Accessor;

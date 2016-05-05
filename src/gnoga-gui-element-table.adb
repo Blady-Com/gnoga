@@ -36,8 +36,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Gui.Window;
-
 package body Gnoga.Gui.Element.Table is
 
    ------------
@@ -67,7 +65,7 @@ package body Gnoga.Gui.Element.Table is
    -----------------
 
    procedure Add_Caption (Table : in out Table_Type; Value : in String) is
-      E : Element_Access := new Element_Type;
+      E : constant Element_Access := new Element_Type;
    begin
       E.Dynamic;
       E.Create_From_HTML
@@ -195,6 +193,7 @@ package body Gnoga.Gui.Element.Table is
       Column_Span : in     Positive := 1;
       ID          : in     String  := "")
    is
+      pragma Unreferenced (Content);
    begin
       Column.Create_From_HTML
         (Group, "<col span=" & Column_Span'Img & ">", ID);

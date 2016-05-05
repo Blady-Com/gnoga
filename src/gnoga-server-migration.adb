@@ -38,6 +38,7 @@
 with Ada.Command_Line;
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps.Constants;
+with Ada.Exceptions;
 
 with Gnoga.Server.Model.Table;
 
@@ -147,8 +148,10 @@ package body Gnoga.Server.Migration is
             "  value VARCHAR(80))");
          Gnoga.Write_To_Console ("gnogaparams table created");
       exception
-         when Gnoga.Server.Database.Query_Error =>
-            null; -- table already exists
+         when E : Gnoga.Server.Database.Query_Error =>
+            --  table already exists
+            Log ("Error Create_Param_Table table already exists.");
+            Log (Ada.Exceptions.Exception_Information (E));
       end Create_Param_Table;
 
       Collection.Migrate_To (Connection, Collection.Migrations_Up.Last_Index);
@@ -172,7 +175,8 @@ package body Gnoga.Server.Migration is
    begin
       if Argument_Count > 0 then
          declare
-            Command : String := Translate (Argument (1), Lower_Case_Map);
+            Command : constant String :=
+              Translate (Argument (1), Lower_Case_Map);
          begin
             if Command = "setup" then
                Migration_Procedure (M);

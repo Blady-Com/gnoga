@@ -125,7 +125,7 @@ package body Gnoga.Server.Template_Parser.Simple is
          use Gnoga.Types.Data_Maps;
          use Gnoga.Types.Maps_of_Data_Maps;
 
-         Var_Name : String := To_String (D.Name);
+         Var_Name : constant String := To_String (D.Name);
       begin
          for C in D.String_Values.Iterate loop
             Replace_In_String ("@@" & Var_Name & "." & Key (C) & "@@",

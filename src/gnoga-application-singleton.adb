@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Gnoga.Server.Connection;
+with Gnoga.Types;
 
 package body Gnoga.Application.Singleton is
    Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;

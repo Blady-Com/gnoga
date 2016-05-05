@@ -35,8 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Types;
-
 package Gnoga.Application is
    --  Application packages simplify the management of single or multipage
    --  Gnoga GUIs.

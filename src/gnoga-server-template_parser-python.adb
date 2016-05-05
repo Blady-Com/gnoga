@@ -72,7 +72,7 @@ package body Gnoga.Server.Template_Parser.Python is
          return "";
       else
          declare
-            New_Char : Character := Code (Code'First);
+            New_Char : constant Character := Code (Code'First);
          begin
             if New_Char = ''' then
                return "\'"
@@ -95,7 +95,7 @@ package body Gnoga.Server.Template_Parser.Python is
          return "";
       else
          declare
-            New_Char : Character := Code (Code'First);
+            New_Char : constant Character := Code (Code'First);
          begin
             if New_Char = '"' then
                return "\"""
@@ -156,7 +156,7 @@ package body Gnoga.Server.Template_Parser.Python is
          pragma Import (C, PyString_AsStringAndSize,
                         "PyString_AsStringAndSize");
 
-         Redirect : String :=
+         Redirect : constant String :=
                       "import sys" & nl &
                       "class CatchOutErr:" & nl &
                       "    def __init__(self):" & nl &
@@ -221,8 +221,8 @@ package body Gnoga.Server.Template_Parser.Python is
       begin
          if Gnoga.Types.Data_Maps.Has_Element (C) then
             declare
-               Key   : String := Gnoga.Types.Data_Maps.Key (C);
-               Value : String := Gnoga.Types.Data_Maps.Element (C);
+               Key   : constant String := Gnoga.Types.Data_Maps.Key (C);
+               Value : constant String := Gnoga.Types.Data_Maps.Element (C);
             begin
                Gnoga.Types.Data_Maps.Next (C);
                if As_Array then
@@ -266,8 +266,9 @@ package body Gnoga.Server.Template_Parser.Python is
       begin
          if Gnoga.Types.Maps_of_Data_Maps.Has_Element (C) then
             declare
-               Key   : String := Gnoga.Types.Maps_of_Data_Maps.Key (C);
-               Value : String := String_Data_List
+               Key   : constant String :=
+                 Gnoga.Types.Maps_of_Data_Maps.Key (C);
+               Value : constant String := String_Data_List
                  (Gnoga.Types.Maps_of_Data_Maps.Element (C),
                   Var_Name,
                   As_Array => True);
@@ -324,7 +325,7 @@ package body Gnoga.Server.Template_Parser.Python is
       Error_Queue_Data : View_Data;
       Info_Queue_Data  : View_Data;
 
-      Python_Code : String :=
+      Python_Code : constant String :=
                    "execfile ('" & Parse_Name (Name) & "', globals());";
 
       I : Positive := Data_List'First;

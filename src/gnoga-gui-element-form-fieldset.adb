@@ -35,8 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Gui.Window;
-
 package body Gnoga.Gui.Element.Form.Fieldset is
    ------------
    -- Create --

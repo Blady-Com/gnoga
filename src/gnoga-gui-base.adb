@@ -105,12 +105,19 @@ package body Gnoga.Gui.Base is
       end Split;
 
       function Split return Integer is
-         S : String := Split;
+         S : constant String := Split;
       begin
-         return Integer'Value (S);
-      exception
-         when Constraint_Error =>
+         if Index (S, ".") > 0 then
             return Integer (Float'Value (S));
+         else
+            return Integer'Value (S);
+         end if;
+      exception
+         when E : others =>
+            Log ("Error Parse_Mouse_Event converting to Integer" &
+                   " (forced to 0).");
+            Log (Ada.Exceptions.Exception_Information (E));
+            return 0;
       end Split;
 
       function Split return Boolean is
@@ -171,12 +178,19 @@ package body Gnoga.Gui.Base is
       end Split;
 
       function Split return Integer is
-         S : String := Split;
+         S : constant String := Split;
       begin
-         return Integer'Value (S);
-      exception
-         when Constraint_Error =>
+         if Index (S, ".") > 0 then
             return Integer (Float'Value (S));
+         else
+            return Integer'Value (S);
+         end if;
+      exception
+         when E : others =>
+            Log ("Error Parse_Keyboard_Event converting to Integer" &
+                   " (forced to 0).");
+            Log (Ada.Exceptions.Exception_Information (E));
+            return 0;
       end Split;
 
       function Split return Boolean is
@@ -225,12 +239,19 @@ package body Gnoga.Gui.Base is
       end Split;
 
       function Split return Integer is
-         S : String := Split;
+         S : constant String := Split;
       begin
-         return Integer'Value (S);
-      exception
-         when Constraint_Error =>
+         if Index (S, ".") > 0 then
             return Integer (Float'Value (S));
+         else
+            return Integer'Value (S);
+         end if;
+      exception
+         when E : others =>
+            Log ("Error Parse_Drop_Event converting to Integer" &
+                   " (forced to 0).");
+            Log (Ada.Exceptions.Exception_Information (E));
+            return 0;
       end Split;
    begin
       X := Split;
@@ -271,8 +292,11 @@ package body Gnoga.Gui.Base is
                     (Object.Connection_ID,
                      "delete gnoga['" & Object.ID & "'];");
                exception
-                  when Gnoga.Server.Connection.Connection_Error =>
-                     null; --  Socket error to browser
+                  when E : Gnoga.Server.Connection.Connection_Error =>
+                     --  Socket error to browser
+                     Log ("Error connection " & Object.ID &
+                            " socket error to browser.");
+                     Log (Ada.Exceptions.Exception_Information (E));
                end;
             end if;
             Object.Connection_ID := Gnoga.Types.No_Connection;
@@ -2002,7 +2026,7 @@ package body Gnoga.Gui.Base is
       elsif Event = "drop" then
          declare
             D_X, D_Y : Integer;
-            D_S      : String := Parse_Drop_Event (D_X, D_Y, Message);
+            D_S      : constant String := Parse_Drop_Event (D_X, D_Y, Message);
          begin
             Object.Fire_On_Drop (D_X, D_Y, D_S);
          end;
@@ -2015,9 +2039,9 @@ package body Gnoga.Gui.Base is
          Object.Fire_On_Key_Up (Parse_Keyboard_Event (Message, Key_Up));
       elsif Event = "keypress" then
          declare
-            E : Keyboard_Event_Record :=
+            E : constant Keyboard_Event_Record :=
               Parse_Keyboard_Event (Message, Key_Press);
-            C : Character :=
+            C : constant Character :=
               Ada.Characters.Conversions.To_Character (E.Key_Char);
          begin
             Object.Fire_On_Key_Press (E);
@@ -2224,7 +2248,7 @@ package body Gnoga.Gui.Base is
    is
       use Ada.Strings.Fixed;
 
-      R : String := Object.jQuery_Execute (Method);
+      R : constant String := Object.jQuery_Execute (Method);
    begin
       if Index (R, ".") > 0 then
          return Integer (Float'Value (R));
@@ -2232,18 +2256,22 @@ package body Gnoga.Gui.Base is
          return Integer'Value (R);
       end if;
    exception
-      when others =>
+      when E : others =>
+         Log ("Error jQuery_Execute converting to Integer (forced to 0).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return 0;
    end jQuery_Execute;
 
    function jQuery_Execute (Object : Base_Type; Method : String)
                             return Float
    is
-      R : String := Object.jQuery_Execute (Method);
+      R : constant String := Object.jQuery_Execute (Method);
    begin
       return Float'Value (R);
    exception
-      when others =>
+      when E : others =>
+         Log ("Error jQuery_Execute converting to Float (forced to 0.0).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return 0.0;
    end jQuery_Execute;
 end Gnoga.Gui.Base;

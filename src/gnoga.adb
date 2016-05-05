@@ -36,12 +36,12 @@
 ------------------------------------------------------------------------------
 
 with Ada.Text_IO;
-with Ada.Strings.Fixed;
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Calendar.Time_Zones;
 with Ada.Integer_Text_IO;
 with Ada.Strings.UTF_Encoding.Strings;
+with Ada.Exceptions;
 
 package body Gnoga is
 
@@ -100,7 +100,7 @@ package body Gnoga is
                return "\";
             elsif S (C .. C + 1) = "\x" then
                declare
-                  H : Integer := Integer'Value
+                  H : constant Integer := Integer'Value
                     ("16#" & S (C + 2 .. C + 3) & "#");
                begin
                   C := C + 4;
@@ -111,7 +111,7 @@ package body Gnoga is
          end if;
 
          declare
-            R : String := S (C) & "";
+            R : constant String := S (C) & "";
          begin
             C := C + 1;
             return R;
@@ -331,8 +331,9 @@ package body Gnoga is
 
       Use_File := True;
    exception
-      when others =>
-         Gnoga.Write_To_Console ("Failed to open log file " & File_Name);
+      when E : others =>
+         Log ("Error failed to open log file " & File_Name);
+         Log (Ada.Exceptions.Exception_Information (E));
    end Log_To_File;
 
    ---------
@@ -340,7 +341,7 @@ package body Gnoga is
    ---------
 
    procedure Log (Message : in String) is
-      T : Ada.Calendar.Time := Ada.Calendar.Clock;
+      T : constant Ada.Calendar.Time := Ada.Calendar.Clock;
    begin
       if Use_File then
          Ada.Text_IO.Put_Line (Log_File, Message);

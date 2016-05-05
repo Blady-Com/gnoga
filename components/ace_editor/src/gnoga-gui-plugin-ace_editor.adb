@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with Ada.Exceptions;
 
 with Gnoga.Server.Connection;
 
@@ -59,7 +60,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       ID     : in     String := "")
    is
-      GID : String := Gnoga.Server.Connection.New_GID;
+      GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
       View.Script_ID :=
@@ -128,7 +129,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    begin
       return Natural'Value (View.Editor_Execute ("getSession().getLength()"));
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Length converting to Natural (forced to 0).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return 0;
    end Length;
 
@@ -553,7 +556,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    begin
       return Integer'Value (Editor.Editor_Execute (Method));
    exception
-      when others =>
+      when E : others =>
+         Log ("Error Editor_Execute converting to Integer (forced to 0).");
+         Log (Ada.Exceptions.Exception_Information (E));
          return 0;
    end Editor_Execute;
 

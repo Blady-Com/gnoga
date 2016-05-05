@@ -35,8 +35,6 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Gui.Window;
-
 package body Gnoga.Gui.Element.Form is
 
    -------------------------------------------------------------------------
@@ -95,7 +93,7 @@ package body Gnoga.Gui.Element.Form is
    ------------
 
    function Method (Form : Form_Type) return Form_Method_Type is
-      Value : String := Form.Property ("method");
+      Value : constant String := Form.Property ("method");
    begin
       if Value = "post" then
          return Post;
@@ -124,7 +122,7 @@ package body Gnoga.Gui.Element.Form is
    --------------
 
    function Encoding (Form : Form_Type) return Encoding_Type is
-      Value : String := Form.Property ("enctype");
+      Value : constant String := Form.Property ("enctype");
    begin
       if Value = "text/plain" then
          return Text;

@@ -38,7 +38,6 @@
 --  Abstract class for database access. Use one of the specific implementations
 --  for MySQL, SQLLite, etc.
 
-with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Vectors;
 

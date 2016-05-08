@@ -844,8 +844,6 @@ package body Gnoga.Server.Connection is
    --  Socket Maps are used for the Connection Manager to map connection IDs
    --  to web sockets.
 
-   Socket_Map  : Socket_Maps.Map;
-
    protected Connection_Manager is
       procedure Add_Connection (Socket : in  Socket_Type;
                                 New_ID : out Gnoga.Types.Connection_ID);
@@ -886,6 +884,12 @@ package body Gnoga.Server.Connection is
       function Valid (ID : in Gnoga.Types.Connection_ID) return Boolean;
       --  Return True if ID is in connection map.
 
+      procedure First (ID : out Gnoga.Types.Connection_ID);
+      --  Return first ID if ID is in connection map else 0.
+
+      procedure Next (ID : out Gnoga.Types.Connection_ID);
+      --  Return next ID if ID is in connection map else 0.
+
       function Connection_Socket (ID : in Gnoga.Types.Connection_ID)
                                   return Socket_Type;
       --  Return the Socket_Type associated with ID
@@ -902,6 +906,8 @@ package body Gnoga.Server.Connection is
       Connection_Holder_Map : Connection_Holder_Maps.Map;
       Connection_Data_Map   : Connection_Data_Maps.Map;
       Event_Task_Map        : Event_Task_Maps.Map;
+      Socket_Map            : Socket_Maps.Map;
+      Current_Socket        : Socket_Maps.Cursor := Socket_Maps.No_Element;
    end Connection_Manager;
 
    protected body Connection_Manager is
@@ -1027,6 +1033,28 @@ package body Gnoga.Server.Connection is
          return Socket_Map.Contains (ID);
       end Valid;
 
+      procedure First (ID : out Gnoga.Types.Connection_ID) is
+         use type Socket_Maps.Cursor;
+      begin
+         Current_Socket := Socket_Map.First;
+         if Current_Socket /= Socket_Maps.No_Element then
+            ID := Socket_Maps.Key (Current_Socket);
+         else
+            ID := 0;
+         end if;
+      end First;
+
+      procedure Next (ID : out Gnoga.Types.Connection_ID) is
+         use type Socket_Maps.Cursor;
+      begin
+         Current_Socket := Socket_Maps.Next (Current_Socket);
+         if Current_Socket /= Socket_Maps.No_Element then
+            ID := Socket_Maps.Key (Current_Socket);
+         else
+            ID := 0;
+         end if;
+      end Next;
+
       function Connection_Socket (ID : in Gnoga.Types.Connection_ID)
                                   return Socket_Type
       is
@@ -1067,7 +1095,13 @@ package body Gnoga.Server.Connection is
             Delete_Connection (Socket_Maps.Key (C));
          end Do_Delete;
       begin
-         Socket_Map.Iterate (Do_Delete'Access);
+         --  Socket_Map.Iterate (Do_Delete'Access); --  provoque PROGRAM_ERROR
+         --  Message: Gnoga.Server.Connection.Socket_Maps.Tree_Operations.
+         --    Delete_Node_Sans_Free: attempt to tamper with cursors
+         --    (container is busy)
+         while not Socket_Map.Is_Empty loop
+            Do_Delete (Socket_Map.First);
+         end loop;
       end Delete_All_Connections;
    end Connection_Manager;
 
@@ -1122,11 +1156,10 @@ package body Gnoga.Server.Connection is
    --------------
 
    task body Watchdog_Type is
-      procedure Ping (C : in out Socket_Maps.Cursor);
+      procedure Ping (ID : in Gnoga.Types.Connection_ID);
 
-      procedure Ping (C : in out Socket_Maps.Cursor) is
-         ID     : constant Gnoga.Types.Connection_ID := Socket_Maps.Key (C);
-         Socket : Socket_Type               := Socket_Maps.Element (C);
+      procedure Ping (ID : in Gnoga.Types.Connection_ID) is
+         Socket : Socket_Type := Connection_Manager.Connection_Socket (ID);
       begin
          if Socket.Content.Finalized then
             if Verbose_Output then
@@ -1166,7 +1199,7 @@ package body Gnoga.Server.Connection is
             else
                begin
                   delay 3.0;
-                  Socket := Socket_Maps.Element (C);
+                  Socket := Connection_Manager.Connection_Socket (ID);
                   Socket.WebSocket_Send ("0");
                exception
                   when E : others =>
@@ -1188,18 +1221,12 @@ package body Gnoga.Server.Connection is
 
       loop
          declare
-            use Socket_Maps;
-
-            C : Socket_Maps.Cursor;
-            T : Socket_Maps.Cursor;
+            ID : Gnoga.Types.Connection_ID;
          begin
-            C := Socket_Map.First;
-
-            while Has_Element (C) loop
-               T := C;
-               C := Socket_Maps.Next (C);
-
-               Ping (T);
+            Connection_Manager.First (ID);
+            while ID /= 0 loop
+               Ping (ID);
+               Connection_Manager.Next (ID);
             end loop;
          exception
             when E : others =>
@@ -1847,18 +1874,21 @@ package body Gnoga.Server.Connection is
 
    procedure Flush_Buffer (ID : in Gnoga.Types.Connection_ID)
    is
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket : Socket_Type;
    begin
-      if Socket.Content.Buffer.Buffering and
-        Socket.Content.Connection_Type = WebSocket
-      then
-         Socket.Content.Buffer.Buffering (False);
-         Execute_Script (ID, Socket.Content.Buffer.Get);
-         Socket.Content.Buffer.Clear;
-         Socket.Content.Buffer.Buffering (True);
-      elsif Socket.Content.Connection_Type = Long_Polling then
-         Socket.Unblock_Send;
+      if Connection_Manager.Valid (ID) then
+         Socket :=
+           Connection_Manager.Connection_Socket (ID);
+         if Socket.Content.Buffer.Buffering and
+           Socket.Content.Connection_Type = WebSocket
+         then
+            Socket.Content.Buffer.Buffering (False);
+            Execute_Script (ID, Socket.Content.Buffer.Get);
+            Socket.Content.Buffer.Clear;
+            Socket.Content.Buffer.Buffering (True);
+         elsif Socket.Content.Connection_Type = Long_Polling then
+            Socket.Unblock_Send;
+         end if;
       end if;
    exception
       when E : Connection_Error =>
@@ -2268,12 +2298,7 @@ package body Gnoga.Server.Connection is
    ----------
 
    procedure Stop is
-      procedure Do_Close (C : in Socket_Maps.Cursor);
-
-      procedure Do_Close (C : in Socket_Maps.Cursor) is
-      begin
-         Close (Socket_Maps.Key (C));
-      end Do_Close;
+      ID : Gnoga.Types.Connection_ID;
    begin
       if not Exit_Application_Requested and
         Watchdog /= null and
@@ -2283,7 +2308,11 @@ package body Gnoga.Server.Connection is
          Watchdog.Stop;
          Watchdog := null;
 
-         Socket_Map.Iterate (Do_Close'Access);
+         Connection_Manager.First (ID);
+         while ID /= 0 loop
+            Close (ID);
+            Connection_Manager.Next (ID);
+         end loop;
 
          Connection_Manager.Delete_All_Connections;
 

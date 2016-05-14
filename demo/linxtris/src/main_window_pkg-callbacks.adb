@@ -26,7 +26,6 @@ with Game_Engine;
 with Preferences_Window_Pkg; use Preferences_Window_Pkg;
 with Scores_Window_pkg;      use Scores_Window_pkg;
 with About_Dialog_Pkg;       use About_Dialog_Pkg;
-with Gnoga.Application.Singleton;
 with Main_Window_Pkg;        use Main_Window_Pkg;
 
 package body Main_Window_Pkg.Callbacks is
@@ -53,8 +52,10 @@ package body Main_Window_Pkg.Callbacks is
       pragma Unreferenced (Object);
    begin
       --        Gtk.Main.Main_Quit;
-      Game_Engine.Terminate_Game;
-      Gnoga.Application.Singleton.End_Application;
+      if not Main_Window.Game_Quit then
+         Game_Engine.Terminate_Game;
+         Main_Window.Game_Quit := True;
+      end if;
    end On_Item_Game_Quit_Pressed;
 
 --     function On_Main_Window_Key_Pressed

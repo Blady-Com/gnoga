@@ -120,7 +120,7 @@ package body About_Dialog_Pkg is
 --
 --        Gtk_New (Alg, 0.5, 0.5, 0.0, 0.0);
 --        Gtk_New (Lbl, "LinXtris 0.1a2");
-      Win.Put_Line ("LinXtris 10.0a");
+      Win.Put_Line ("LinXtris 10.1a");
 --        Modify_Font (Lbl, From_String ("Bold 18"));
 --        Add (Alg, Lbl);
 --        Pack_Start (Box, Alg);
@@ -143,7 +143,7 @@ package body About_Dialog_Pkg is
 --
 --        Gtk_New (Alg, 0.5, 0.5, 0.0, 0.0);
 --        Gtk_New (Lbl, "(20150406 - GTKAda 3 port by Pascal Pignard)");
-      Win.Put_Line ("(20160207 - GNOGA port by Pascal Pignard)");
+      Win.Put_Line ("(20160508 - GNOGA port by Pascal Pignard)");
 --        Modify_Font (Lbl, From_String ("8"));
 --        Add (Alg, Lbl);
 --        Pack_Start (Box, Alg);

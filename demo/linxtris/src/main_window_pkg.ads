@@ -108,6 +108,7 @@ package Main_Window_Pkg is
       Engine                : Engine_Access;
       Game_Paused           : Boolean  := False;
       Exists_Game           : Boolean  := False;
+      Game_Quit             : Boolean  := False;
       Continuous_Movement   : Boolean  := True;
       On_Animation          : Boolean  := False;
       Animation             : Boolean  := True;

@@ -33,6 +33,7 @@ with Main_Window_Pkg; use Main_Window_Pkg;
 with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Document;
+with Gnoga.Application.Singleton;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body Scores_Window_pkg is
@@ -78,6 +79,9 @@ package body Scores_Window_pkg is
       begin
          --           Hide (Scores_Win);
          Scores_Win.Hidden;
+         if Main_Window.Game_Quit then
+            Gnoga.Application.Singleton.End_Application;
+         end if;
       end On_OK_Button_Clicked;
 
       procedure On_Scores_Window_Show
@@ -208,6 +212,7 @@ package body Scores_Window_pkg is
 --           Gtk.Widget.Signal_Delete_Event,
 --           Scores_Window_Return_Callback.To_Marshaller
 --             (On_Scores_Window_Delete'Access));
+      Win.Pause_Status := False;
       Win.Hidden;
    end Initialize;
 

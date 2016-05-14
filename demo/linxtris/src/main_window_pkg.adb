@@ -34,6 +34,7 @@ with Ada.Command_Line; use Ada.Command_Line;
 with Gnoga.Application;
 with Gnoga.Application.Singleton;
 with Gnoga.Types;
+with GNAT.Directory_Operations;
 
 package body Main_Window_Pkg is
 
@@ -351,7 +352,8 @@ package body Main_Window_Pkg is
 
       if Argument_Count = 2 then
          if Argument (1) = "-data_dir" then
-            Data_Dir := To_Unbounded_String (Argument (2));
+            Data_Dir := To_Unbounded_String (Argument (2)) &
+              GNAT.Directory_Operations.Dir_Separator;
          end if;
       end if;
 

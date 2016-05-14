@@ -21,6 +21,9 @@
 -----------------------------------------------------------------------
 
 --  with Gtk.Main;
+with Gnoga;
+with Ada.Exceptions;
+
 with Main_Window_Pkg;        use Main_Window_Pkg;
 with Preferences_Window_Pkg; use Preferences_Window_Pkg;
 with Scores_Window_pkg;      use Scores_Window_pkg;
@@ -40,4 +43,8 @@ begin
    Clear_Screen;
    Clear_Prev;
 --     Gtk.Main.Main;
+   exception
+      when E : others =>
+         Gnoga.Log ("LinXtris Error:");
+         Gnoga.Log (Ada.Exceptions.Exception_Information (E));
 end LinXtris;

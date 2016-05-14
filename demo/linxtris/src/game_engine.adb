@@ -35,6 +35,7 @@ with Scores_Window_pkg; use Scores_Window_pkg;
 with New_Score_Dialog_Pkg;
 with Preferences_Window_Pkg;
 with Gnoga.Types.Key_Codes;
+with Gnoga.Application.Singleton;
 
 package body Game_Engine is
 
@@ -325,7 +326,8 @@ package body Game_Engine is
       then
          --           Show_All (New_Score_Dialog);
          New_Score_Dialog.Hidden (False);
-         --  TODO : wait for ok
+      else
+         Gnoga.Application.Singleton.End_Application;
       end if;
    end Terminate_Game;
 
@@ -485,7 +487,6 @@ package body Game_Engine is
          AT_Interval := Interval;
          AT_Action   := Action;
       end Start;
-      Gnoga.Log ("start");
       loop
          delay AT_Interval;
          if Time_out.ID = 0 then
@@ -493,7 +494,6 @@ package body Game_Engine is
          end if;
          AT_Action.all;
       end loop;
-      Gnoga.Log ("stop");
    end Action_Task;
 
    protected body Time_out is
@@ -507,13 +507,11 @@ package body Game_Engine is
          TO_ID := 1;
          ID    := TO_ID;
          Action_Task_Access'(new Action_Task).Start (Interval, Action);
-         Gnoga.Log ("add");
       end Add;
       procedure Remove (ID : out Natural) is
       begin
          TO_ID := 0;
          ID    := TO_ID;
-         Gnoga.Log ("remove");
       end Remove;
       function ID return Natural is (TO_ID);
    end Time_out;
@@ -527,6 +525,7 @@ package body Game_Engine is
 --        Gtk.Menu_Item.Set_Sensitive (Main_Window.Item_Game_Pause);
       Main_Window.Item_Game_Pause.Disabled (False);
       Main_Window.Exists_Game := True;
+      Main_Window.Game_Quit := False;
       Main_Window.Pause (False);
       Game_Engine.Clear_Screen;
 --        Main_Window.Game_Screen.Queue_Draw;
@@ -546,6 +545,8 @@ package body Game_Engine is
       if Main_Window.Down_Timeout_ID /= 0 then
 --                    Glib.Main.Remove (Main_Window.Down_Timeout_ID);
          Time_out.Remove (Main_Window.Down_Timeout_ID);
+         --  Let some time for removing Time_out
+         delay Main_Window.Down_Timeout_Interval;
       end if;
 --        Main_Window.Down_Timeout_ID :=
 --          Glib.Main.Timeout_Add (Main_Window.Down_Timeout_Interval,

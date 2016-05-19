@@ -8,10 +8,19 @@ http://www.gnoga.com
   Montmollin
 
 * Gnoga uses Simple Components written by Dmitry A. Kazakov for its http and
-  WebSockets communication layer. deps/simple_components
+  WebSockets communication layer.
 
-* The Mine Detector demo application was written by Jeffrey Carter.
-  demo/mine_detector
-  
+* The PragmArc library, Chattanooga, Password Gen and Mine Detector demo
+  applications were written by Jeffrey Carter.
+
 * The Connect Four demo was written originally for GNAT-JVM by Barry Fagin and
-  Martin Carlisle and adopted to Gnoga by Pascal Pignard 
+  Martin Carlisle and adapted to Gnoga by Pascal Pignard
+
+* LinXtris is a multi-platform Tetris clone was written originally in Ada 95 and GtkAda
+  by Dulio Matos Leite de C. e Silva and adapted to Gnoga by Pascal Pignard.
+
+* ZanyBlue is an Ada 2005 package supporting localization support in Ada
+  by allowing the externalization of application messages written by Michael Rohan.
+
+* JLokalize is a tool for the internationalization (i18n) of applications written by Trilarion.
+

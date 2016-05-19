@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 --
 
 separate (ZanyBlue.Test.Text.Format_Message.Suites)
-procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0011 (T : in out Test_Case'Class) is
 
    Locale    : constant Locale_Type := Make_Locale ("en_US");
    Arguments : Argument_List;
 
 begin
-   Check_Value (R, Format_Message ("'{1}'", Arguments, null, Locale, False),
+   Check_Value (T, Format_Message ("'{1}'", Arguments, null, Locale, False),
                 "{1}", "Expected quoted format");
 end T_0011;

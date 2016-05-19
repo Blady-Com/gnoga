@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,10 @@
 with ZanyBlue.Text.Catalogs;
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0013 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Catalogs;
 
 begin
-   WAssert (R, Is_Valid (Standard_Catalog), "Standard catalog is not valid!");
+   WAssert (T, Is_Valid (Standard_Catalog), "Standard catalog is not valid!");
 end T_0013;

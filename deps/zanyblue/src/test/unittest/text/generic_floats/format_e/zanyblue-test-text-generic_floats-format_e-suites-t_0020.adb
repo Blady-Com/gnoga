@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Locales;
 
 separate (ZanyBlue.Test.Text.Generic_Floats.Format_E.Suites)
-procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0020 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
 
@@ -43,14 +43,14 @@ procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    Arg     : constant Float_Argument_Type := Create (1.23456789e10);
 
 begin
-   Check_Value (R, Arg.Format ("float", "e",   Locale), "١.٢٣٤٥٧E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".0e", Locale), "١E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".1e", Locale), "١.٢E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".2e", Locale), "١.٢٣E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".3e", Locale), "١.٢٣٥E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".4e", Locale), "١.٢٣٤٦E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".5e", Locale), "١.٢٣٤٥٧E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".6e", Locale), "١.٢٣٤٥٧٠E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".7e", Locale), "١.٢٣٤٥٧٠٠E‎+١٠");
-   Check_Value (R, Arg.Format ("float", ".8e", Locale), "١.٢٣٤٥٧٠٠٠E‎+١٠");
+   Check_Value (T, Arg.Format ("float", "e",   Locale), "١.٢٣٤٥٧E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".0e", Locale), "١E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".1e", Locale), "١.٢E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".2e", Locale), "١.٢٣E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".3e", Locale), "١.٢٣٥E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".4e", Locale), "١.٢٣٤٦E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".5e", Locale), "١.٢٣٤٥٧E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".6e", Locale), "١.٢٣٤٥٧٠E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".7e", Locale), "١.٢٣٤٥٧٠٠E‎+١٠");
+   Check_Value (T, Arg.Format ("float", ".8e", Locale), "١.٢٣٤٥٧٠٠٠E‎+١٠");
 end T_0020;

@@ -1,7 +1,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,6 @@ desc Test the simple_format text example application
 
 set simple_format_dir $(joinpaths $text_examples_dir simple_format)
 
-execute -o $(nextlog -c build) make -C $simple_format_dir clean
-execute -o $(nextlog -c build) make -C $simple_format_dir
-execute -o $(nextlog) -f make -s -C $simple_format_dir run
+execute -o $(nextlog -c build) $make -C $simple_format_dir clean
+execute -o $(nextlog -c build) $make -C $simple_format_dir
+execute -o $(nextlog) -f $make -s -C $simple_format_dir run

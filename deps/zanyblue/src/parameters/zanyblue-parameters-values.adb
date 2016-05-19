@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -194,7 +195,37 @@ package body ZanyBlue.Parameters.Values is
 
    procedure Dump (Value       : Value_Type'Class;
                    Name        : Wide_String;
-                   Destination : File_Type;
+                   Destination : Ada.Text_IO.File_Type;
+                   Level       : Natural := 0) is
+
+      Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');
+      List        : List_Type;
+
+   begin
+      Print (Destination, "{0}  <parameter name=""{1}"" type=""{2}""",
+                          +Indentation, +Name, +Value.Type_Name (Name));
+      if Value in List_Value_Type then
+         List := List_Value_Type (Value).Data;
+         Print_Line (Destination, ">");
+         for I in 1 .. Length (List) loop
+            Print_Line (Destination, "{0}    <value>{1}</value>",
+                                     +Indentation, +List.Element (I));
+         end loop;
+         Print_Line (Destination, "{0}  </parameter>",
+                                  +Indentation);
+      else
+         Print_Line (Destination, " value=""{0}"" />",
+                                  +Value.To_String (Name));
+      end if;
+   end Dump;
+
+   ----------
+   -- Dump --
+   ----------
+
+   procedure Dump (Value       : Value_Type'Class;
+                   Name        : Wide_String;
+                   Destination : Ada.Wide_Text_IO.File_Type;
                    Level       : Natural := 0) is
 
       Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');

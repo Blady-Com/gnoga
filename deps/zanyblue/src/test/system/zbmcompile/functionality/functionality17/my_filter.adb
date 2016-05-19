@@ -1,4 +1,4 @@
---  -*- encoding: utf-8 -*-
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --

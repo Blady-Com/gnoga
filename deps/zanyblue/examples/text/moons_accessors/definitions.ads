@@ -1,8 +1,8 @@
---  -*- encoding: utf-8 -*-
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Text_IO;
+with Ada.Text_IO;
 with ZanyBlue.Text.Generic_Enumerations;
 
 package Definitions is
@@ -44,7 +44,7 @@ package Definitions is
    package Planet_Name_Formatting is
       new ZanyBlue.Text.Generic_Enumerations (Planet_Names);
    package Planet_Name_IO is
-      new Ada.Wide_Text_IO.Enumeration_IO (Planet_Names);
+      new Ada.Text_IO.Enumeration_IO (Planet_Names);
 
    Number_Of_Moons : constant array (Planet_Names) of Natural := (
                   Earth => 1,

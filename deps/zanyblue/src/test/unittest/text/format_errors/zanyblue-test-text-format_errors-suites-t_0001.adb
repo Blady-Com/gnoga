@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,14 @@
 --
 
 separate (ZanyBlue.Test.Text.Format_Errors.Suites)
-procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0001 (T : in out Test_Case'Class) is
 
    Message   : constant Wide_String := "This is a simple message";
    Handler   : aliased Test_Handler_Type;
    Arguments : Argument_List;
 
 begin
-   Check_Value (R,
+   Check_Value (T,
                 Format_Message (Message,
                                 Arguments,
                                 null,
@@ -50,12 +50,12 @@ begin
                                 False,
                                 Handler'Access),
                  Message, "Simple message format");
-   WAssert (R, Handler. N_Format_Not_Closed = 0,
+   WAssert (T, Handler. N_Format_Not_Closed = 0,
             "Expected no open formats");
-   WAssert (R, Handler.N_Illegal_Character = 0,
+   WAssert (T, Handler.N_Illegal_Character = 0,
             "Expected no illegal characters");
-   WAssert (R, Handler.N_Missing_Argument = 0,
+   WAssert (T, Handler.N_Missing_Argument = 0,
             "Expected no missing arguments");
-   WAssert (R, Handler.Argument_Count = 0,
+   WAssert (T, Handler.Argument_Count = 0,
             "Expected zero argument count");
 end T_0001;

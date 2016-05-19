@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,17 +32,17 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit.Run;
-with ZanyBlue.Test;
+with Ahven.Framework;
+with Ahven.Text_Runner;
 with ZanyBlue.Test.Text.Locales.Decimal_Formats.Suites;
 
 procedure TZBTL_Decimalformats is
 
-   use ZanyBlue.Test.Text.Locales;
+   use Ahven.Framework;
+   use Ahven.Text_Runner;
 
-   procedure Run is
-      new AUnit.Run.Test_Runner (Decimal_Formats.Suites.Suite);
+   S : Test_Suite := ZanyBlue.Test.Text.Locales.Decimal_Formats.Suites.Suite;
 
 begin
-   Run (ZanyBlue.Test.Reporter_Implementation);
+   Run (S);
 end TZBTL_Decimalformats;

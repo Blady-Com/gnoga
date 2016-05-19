@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Locales;
 
 separate (ZanyBlue.Test.Text.Generic_Enumerations.Suites)
-procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0010 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
 
@@ -49,7 +49,7 @@ procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    Arg_γαβ : constant Enumeration_Argument_Type := Create (γαβ);
 
 begin
-   Check_Value (R, Arg_αβγ.Format ("enum", "", Root_Locale), "ΑΒΓ");
-   Check_Value (R, Arg_βγα.Format ("enum", "", Root_Locale), "ΒΓΑ");
-   Check_Value (R, Arg_γαβ.Format ("enum", "", Root_Locale), "ΓΑΒ");
+   Check_Value (T, Arg_αβγ.Format ("enum", "", Root_Locale), "ΑΒΓ");
+   Check_Value (T, Arg_βγα.Format ("enum", "", Root_Locale), "ΒΓΑ");
+   Check_Value (T, Arg_γαβ.Format ("enum", "", Root_Locale), "ΓΑΒ");
 end T_0010;

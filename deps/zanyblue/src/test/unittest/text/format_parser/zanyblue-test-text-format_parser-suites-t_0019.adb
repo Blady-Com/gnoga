@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 --
 
 separate (ZanyBlue.Test.Text.Format_Parser.Suites)
-procedure T_0019 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0019 (T : in out Test_Case'Class) is
 
    Locale      : constant Locale_Type := Make_Locale ("en_US");
 
 begin
-   Check_Value (R, To_String (Parse ("^11.8", Locale)),
+   Check_Value (T, To_String (Parse ("^11.8", Locale)),
                 "[' ', CENTER, NONE, FALSE,  11, TRUE,  8, NONE]",
                 "Center, width and precision, failed");
 end T_0019;

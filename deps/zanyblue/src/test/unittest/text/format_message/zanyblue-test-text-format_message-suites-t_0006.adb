@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Integers;
 
 separate (ZanyBlue.Test.Text.Format_Message.Suites)
-procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0006 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text;
    use ZanyBlue.Text.Integers;
@@ -47,8 +47,8 @@ begin
    Arguments.Append (+6);
    Arguments.Append (+55);
    Discard (Format_Message ("{1", Arguments, null, Locale, False));
-   WAssert (R, True, "Invalid_Format_Error not raised");
+   WAssert (T, True, "Invalid_Format_Error not raised");
 exception
 when Invalid_Format_Error =>
-   WAssert (R, False, "Invalid_Format_Error unexpected raised");
+   WAssert (T, False, "Invalid_Format_Error unexpected raised");
 end T_0006;

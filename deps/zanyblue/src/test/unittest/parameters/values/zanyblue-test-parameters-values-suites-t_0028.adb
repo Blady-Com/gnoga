@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Values.Suites)
-procedure T_0028 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0028 (T : in out Test_Case'Class) is
 
 begin
-   Check_Value (R, To_String (To_Boolean_Value (False), "xmpl"), "false",
+   Check_Value (T, To_String (To_Boolean_Value (False), "xmpl"), "false",
                 "To_String from Boolean");
 end T_0028;

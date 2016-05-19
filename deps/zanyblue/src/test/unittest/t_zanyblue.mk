@@ -1,7 +1,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ TEST_ARGS+=-P $(UNITTESTNAME)
 endif
 
 all::
-	$(GNATMAKE) -p $(GNATFLAGS) -P $(GPR_FILE)
+	$(GPRBUILD) -p $(GNATFLAGS) -P $(GPR_FILE)
 
 gcov:
 	$(MAKE) BUILD=Coverage all
@@ -64,12 +64,15 @@ gprof:
 	$(MAKE) BUILD=Profile all
 
 check::	all
-	$(realpath $(TOP)/src/bin/$(TEST_NAME)) $(TEST_ARGS)
+	$(realpath $(TOP)/src/bin/$(TEST_NAME)) $(AHVEN_ARGS) -i $(TEST_ARGS)
+
+xcheck::	all
+	$(realpath $(TOP)/src/bin/$(TEST_NAME)) -x -d $(realpath $(TOP)/src/test) $(AHVEN_ARGS) -i $(TEST_ARGS)
 
 sall::	all $(SALL_TARGS)
 
 clean::
-	$(GNATCLEAN) $(GNATFLAGS) $(TEST_NAME).gpr
+	$(GNATCLEAN) $(GNATXDEFS) $(TEST_NAME).gpr
 
 %.sall:
 	$(MAKE) -C $* sall

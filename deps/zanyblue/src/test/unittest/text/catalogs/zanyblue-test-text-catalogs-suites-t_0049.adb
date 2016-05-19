@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0049 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0049 (T : in out Test_Case'Class) is
 
    L_Root         : constant Locale_Type := Make_Locale ("");
    Catalog        : Catalog_Type;
@@ -42,11 +42,11 @@ begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
    Add (Catalog, "myfac1", "mykey1", "msg1", L_Root);
-   WAssert (R, Pool_Size (Catalog) = 4, "Expected Pool Size of 4");
+   WAssert (T, Pool_Size (Catalog) = 4, "Expected Pool Size of 4");
    Add (Catalog, "myfac1", "mykey2", "msg2", L_Root);
-   WAssert (R, Pool_Size (Catalog) = 8, "Expected Pool Size of 8");
+   WAssert (T, Pool_Size (Catalog) = 8, "Expected Pool Size of 8");
    Add (Catalog, "myfac1", "mykey3", "msg3", L_Root);
-   WAssert (R, Pool_Size (Catalog) = 12, "Expected Pool Size of 12");
+   WAssert (T, Pool_Size (Catalog) = 12, "Expected Pool Size of 12");
    Add (Catalog, "myfac1", "mykey4", "msg4", L_Root);
-   WAssert (R, Pool_Size (Catalog) = 16, "Expected Pool Size of 16");
+   WAssert (T, Pool_Size (Catalog) = 16, "Expected Pool Size of 16");
 end T_0049;

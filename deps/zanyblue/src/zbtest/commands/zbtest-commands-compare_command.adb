@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -34,7 +35,7 @@
 
 with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Wide_Directories;
-with ZanyBlue.Wide_Regexp;
+with GNAT.Regexp;
 
 separate (ZBTest.Commands)
 procedure Compare_Command (State : in out State_Type;
@@ -49,15 +50,15 @@ procedure Compare_Command (State : in out State_Type;
    --  Compare two files.  This should really try to do a context diff.
 
    procedure Match_Lines (Status_File : in out File_Type;
-                          Ref_Line    : Wide_String;
-                          Gen_Line    : Wide_String;
+                          Ref_Line    : String;
+                          Gen_Line    : String;
                           Matched     : out Boolean);
    --  Match two lines from two files being compared.  If the lines don't
    --  match exactly as strings, try using the reference line as a regex and
    --  try regex matching.
 
-   function Regex_Match (Gen_Line : Wide_String;
-                         Ref_Line : Wide_String) return Boolean;
+   function Regex_Match (Gen_Line : String;
+                         Ref_Line : String) return Boolean;
    --  Match two lines by considering the reference line to be a regular
    --  expression.
 
@@ -169,8 +170,8 @@ procedure Compare_Command (State : in out State_Type;
    -----------------
 
    procedure Match_Lines (Status_File : in out File_Type;
-                          Ref_Line    : Wide_String;
-                          Gen_Line    : Wide_String;
+                          Ref_Line    : String;
+                          Gen_Line    : String;
                           Matched     : out Boolean) is
    begin
       Matched := Ref_Line = Gen_Line or else Regex_Match (Gen_Line, Ref_Line);
@@ -186,9 +187,9 @@ procedure Compare_Command (State : in out State_Type;
    -- Regex_Match --
    -----------------
 
-   function Regex_Match (Gen_Line : Wide_String;
-                         Ref_Line : Wide_String) return Boolean is
-      use ZanyBlue.Wide_Regexp;
+   function Regex_Match (Gen_Line : String;
+                         Ref_Line : String) return Boolean is
+      use GNAT.Regexp;
    begin
       return Match (Gen_Line, Compile (Ref_Line));
    exception

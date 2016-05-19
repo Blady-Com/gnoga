@@ -2,7 +2,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ my $tmpldir = dirname ($0);
 my $instdir = "$tmpldir/.bin";
 my %examples = (
     "curtime"    => 1,
-    "dumplocale" => 1,
+    "encodings"  => 1,
     "formatting" => 1,
     "jenkins"    => 1,
     "tomcat"     => 1,

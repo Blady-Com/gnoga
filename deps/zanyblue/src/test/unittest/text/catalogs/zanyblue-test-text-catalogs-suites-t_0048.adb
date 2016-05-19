@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Formatting;
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0048 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0048 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Pseudo;
    use ZanyBlue.Text.Formatting;
@@ -48,16 +48,16 @@ begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
    Add (Catalog, "myfac1", "mykey1", "Sunday", L);
-   WAssert (R, Pool_Size (Catalog) = 6,
+   WAssert (T, Pool_Size (Catalog) = 6,
              "Expected a pool size of 6");
-   WAssert (R, Logical_Pool_Size (Catalog) = 6,
+   WAssert (T, Logical_Pool_Size (Catalog) = 6,
              "Expected a logical pool size of 6");
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey1", L), "Sunday");
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey1", L), "Sunday");
    Add (Catalog, "myfac1", "mykey2", "Sun", L);
-   WAssert (R, Pool_Size (Catalog) = 6,
+   WAssert (T, Pool_Size (Catalog) = 6,
              "Expected a pool size of 6");
-   WAssert (R, Logical_Pool_Size (Catalog) = 9,
+   WAssert (T, Logical_Pool_Size (Catalog) = 9,
              "Expected a logical pool size of 9");
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey1", L), "Sunday");
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey2", L), "Sun");
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey1", L), "Sunday");
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey2", L), "Sun");
 end T_0048;

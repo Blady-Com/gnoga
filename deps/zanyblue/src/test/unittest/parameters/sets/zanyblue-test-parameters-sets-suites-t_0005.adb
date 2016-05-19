@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Sets.Suites)
-procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0005 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Parameters;
 
@@ -41,11 +41,11 @@ procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
 begin
    S.Set_Name ("XMPL");
-   WAssert (R, S.Number_Of_Parameters = 0, "No parameters in the empty set");
+   WAssert (T, S.Number_Of_Parameters = 0, "No parameters in the empty set");
    S.Set_String ("a", "1");
    S.Prepend ("a", "2");
    S.Prepend ("a", "3");
-   WAssert (R, S.Number_Of_Parameters = 1, "Expected 1 parameter");
-   WAssert (R, Length (S.Get_List ("a")) = 3, "Expected list of length 3");
-   Check_Value (R, S.Get_String ("a"), "[3, 2, 1]", "Unexpected list value");
+   WAssert (T, S.Number_Of_Parameters = 1, "Expected 1 parameter");
+   WAssert (T, Length (S.Get_List ("a")) = 3, "Expected list of length 3");
+   Check_Value (T, S.Get_String ("a"), "[3, 2, 1]", "Unexpected list value");
 end T_0005;

@@ -1,0 +1,9 @@
+This is ZBMCompile, Version .* on .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Loaded 2 messages for the facility "xmpl2" (1 locales)
+Performing consistency checks for the facility "xmpl2"
+Performing consistency checks for the accessor package generation
+Error, the key "msg.a" is not a valid Ada identifier
+Error, the key "msg.b" is not a valid Ada identifier
+2 errors detected, no sources generated
+ZBMCompile completed on .*, elapsed time .*

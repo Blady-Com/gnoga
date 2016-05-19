@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -170,10 +171,12 @@ package body ZBMCompile.Codegen.Accessors is
 
    begin
       for I in 1 .. Number_Of_Facilities (Catalog) loop
-         Create_Facility_Packages (
-            Handler,
-            Get_Facility (Catalog, I),
-            Options);
+         if Is_Ada_Identifier_OK (Get_Facility (Catalog, I)) then
+            Create_Facility_Packages (
+               Handler,
+               Get_Facility (Catalog, I),
+               Options);
+         end if;
       end loop;
    end Create_Accessor_Packages;
 
@@ -361,13 +364,18 @@ package body ZBMCompile.Codegen.Accessors is
       end if;
       Create_Key_Descriptors (Handler, Facility, Base_Locale,
                               Max_Args, Key_Descriptors);
+      if Key_Descriptors.Is_Empty then
+         --  No valid keys for facility, skipping generating of accessors
+         Print_Line (ZBMCompile_Facility, "E00030", +Facility);
+         return;
+      end if;
       --  Create an instance for each selected accessor type.
       for I in Accessor_Types'Range loop
          if Options.Get_Boolean ("accessor:" & Accessor_Types (I).all) then
             Create_Facility_Accessors (Catalog, Facility, Options,
-                                    Modes, Max_Args, Key_Descriptors,
-                                    Base_Locale,
-                                    "zbm" & Accessor_Types (I).all);
+                                 Modes, Max_Args, Key_Descriptors,
+                                 Base_Locale,
+                                 "zbm" & Accessor_Types (I).all);
          end if;
       end loop;
    exception
@@ -441,11 +449,13 @@ package body ZBMCompile.Codegen.Accessors is
                                    N_Args => N_Args,
                                    others => <>);
       begin
-         Copy_Argument_Types (Base_Locale, Locales, N_Args,
-                              New_Descriptor.Arg_Types);
-         Key_Descriptors.Append (New_Descriptor);
-         if N_Args > Max_Args then
-            Max_Args := N_Args;
+         if Is_Ada_Identifier_OK (Key) then
+            Copy_Argument_Types (Base_Locale, Locales, N_Args,
+                                 New_Descriptor.Arg_Types);
+            Key_Descriptors.Append (New_Descriptor);
+            if N_Args > Max_Args then
+               Max_Args := N_Args;
+            end if;
          end if;
       end Scan_Key;
 

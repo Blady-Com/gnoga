@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 
 separate (ZanyBlue.Test.Text.Integers.Suites)
-procedure T_0032 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0032 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Integers;
@@ -56,24 +56,24 @@ begin
    Args.Append (Arg2);
    Args.Append (Arg3);
    Args.Append (Arg4);
-   Check_Value (R, Args.Format (0, "", "integer,X", Locale, False),
+   Check_Value (T, Args.Format (0, "", "integer,X", Locale, False),
                    "٠");
-   Check_Value (R, Args.Format (1, "", "integer,X", Locale, False),
+   Check_Value (T, Args.Format (1, "", "integer,X", Locale, False),
                    "٧D٩");
-   Check_Value (R, Args.Format (2, "", "integer,X", Locale, False),
+   Check_Value (T, Args.Format (2, "", "integer,X", Locale, False),
                    "‎-٧D٩");
-   Check_Value (R, Args.Format (3, "", "integer,X", Locale, False),
+   Check_Value (T, Args.Format (3, "", "integer,X", Locale, False),
                    "٧FFFFFFF");
-   Check_Value (R, Args.Format (4, "", "integer,X", Locale, False),
+   Check_Value (T, Args.Format (4, "", "integer,X", Locale, False),
                    "‎-٧FFFFFFF");
-   Check_Value (R, Args.Format (0, "", "integer,X*", Locale, False),
+   Check_Value (T, Args.Format (0, "", "integer,X*", Locale, False),
                    "0");
-   Check_Value (R, Args.Format (1, "", "integer,X*", Locale, False),
+   Check_Value (T, Args.Format (1, "", "integer,X*", Locale, False),
                    "7D9");
-   Check_Value (R, Args.Format (2, "", "integer,X*", Locale, False),
+   Check_Value (T, Args.Format (2, "", "integer,X*", Locale, False),
                    "-7D9");
-   Check_Value (R, Args.Format (3, "", "integer,X*", Locale, False),
+   Check_Value (T, Args.Format (3, "", "integer,X*", Locale, False),
                    "7FFFFFFF");
-   Check_Value (R, Args.Format (4, "", "integer,X*", Locale, False),
+   Check_Value (T, Args.Format (4, "", "integer,X*", Locale, False),
                    "-7FFFFFFF");
 end T_0032;

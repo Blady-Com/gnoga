@@ -32,15 +32,17 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit.Run;
-with ZanyBlue.Test;
+with Ahven.Framework;
+with Ahven.Text_Runner;
 with ZanyBlue.Test.Text.Codecs.Suites;
 
 procedure TZBT_Codecs is
 
-   procedure Run is
-      new AUnit.Run.Test_Runner (ZanyBlue.Test.Text.Codecs.Suites.Suite);
+   use Ahven.Framework;
+   use Ahven.Text_Runner;
+
+   S : Test_Suite := ZanyBlue.Test.Text.Codecs.Suites.Suite;
 
 begin
-   Run (ZanyBlue.Test.Reporter_Implementation);
+   Run (S);
 end TZBT_Codecs;

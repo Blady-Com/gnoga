@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,6 +34,7 @@
 --
 
 with System;
+with Ada.Wide_Text_IO;
 with Ada.Characters.Handling;
 with ZBTest.Input_Parser;
 with ZBTest.Commands;
@@ -41,7 +43,7 @@ with ZBTest.XML_Data;
 with ZanyBlue.OS;
 with ZanyBlue.Wide_Directories;
 with ZanyBlue.Text.Formatting;
-with ZBTest_Messages.ZBTest_Wide_Prints;
+with ZBTest_Messages.ZBTest_Prints;
 
 pragma Unreferenced (ZBTest.Functions);
 
@@ -53,9 +55,10 @@ package body ZBTest.States is
    use ZBTest.Input_Parser;
    use ZBTest.XML_Data;
    use ZanyBlue.OS;
+   use ZanyBlue.Text;
    use ZanyBlue.Wide_Directories;
    use ZanyBlue.Text.Formatting;
-   use ZBTest_Messages.ZBTest_Wide_Prints;
+   use ZBTest_Messages.ZBTest_Prints;
 
    type Search_Type is (Search_File, Search_Executable, Search_Directory);
 
@@ -118,7 +121,7 @@ package body ZBTest.States is
       State.Append ("searchpath", Here);
       Add_Tree_To_Path (State, Wide_Containing_Directory (Here));
    exception
-   when Ada.Wide_Text_IO.Use_Error =>
+   when Ada.Text_IO.Use_Error =>
       null;
    end Add_Tree_To_Path;
 
@@ -219,7 +222,7 @@ package body ZBTest.States is
                    All_Scopes  : Boolean) is
       File : File_Type;
    begin
-      Wide_Create (File, File_Name);
+      Create (File, Mode => Out_File, Name => To_UTF8 (File_Name));
       State.Dump (File, All_Scopes);
       Close (File);
    end Dump;
@@ -652,10 +655,10 @@ package body ZBTest.States is
    begin
       while not State.Get_Boolean ("_terminate") loop
          if Interactive then
-            Put (State.Get_String ("prompt"));
+            Print_00033 (+State.Get_String ("prompt"), With_NL => False);
          end if;
          State.Increment ("_lineno", Deep => False);
-         State.Execute_Line (Get_Line (Input), Interactive);
+         State.Execute_Line (From_UTF8 (Get_Line (Input)), Interactive);
       end loop;
    exception
    when End_Error =>

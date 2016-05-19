@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,14 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Values.Suites)
-procedure T_0016 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0016 (T : in out Test_Case'Class) is
 
    Value : Value_Type'Class := To_List_Value (Empty_List);
 
 begin
    Increment (Value, "xmpl", 1);
-   WAssert (R, False, "Expected Not_An_Integer_Error exception not raised");
+   WAssert (T, False, "Expected Not_An_Integer_Error exception not raised");
 exception
 when Not_An_Integer_Error =>
-   WAssert (R, True, "Expected Not_An_Integer exception raised");
+   WAssert (T, True, "Expected Not_An_Integer exception raised");
 end T_0016;

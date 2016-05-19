@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,45 +36,39 @@ with ZanyBlue.Text.Booleans;
 
 package body ZanyBlue.Test.Text.Booleans.Suites is
 
-   use AUnit;
+   use Ahven.Framework;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class);
-
-   overriding
-   function Name (T : Test_Case) return Test_String is
-      pragma Unreferenced (T);
-   begin
-      return Format ("ZanyBlue.Text.Booleans");
-   end Name;
+   procedure T_0001 (T : in out Test_Case'Class);
+   procedure T_0002 (T : in out Test_Case'Class);
+   procedure T_0003 (T : in out Test_Case'Class);
+   procedure T_0004 (T : in out Test_Case'Class);
+   procedure T_0005 (T : in out Test_Case'Class);
+   procedure T_0006 (T : in out Test_Case'Class);
 
    overriding
-   procedure Register_Tests (T : in out Test_Case) is
+   procedure Initialize (T : in out Test) is
    begin
-      Add_Routine (T, T_0001'Access, "T_0001, Create/Format");
-      Add_Routine (T, T_0002'Access, "T_0002, +/Format");
-      Add_Routine (T, T_0003'Access, "T_0003, Format centered");
-      Add_Routine (T, T_0004'Access, "T_0004, Format right justified");
-      Add_Routine (T, T_0005'Access, "T_0005, Format left justified");
-      Add_Routine (T, T_0006'Access, "T_0006, Argument_List/Format");
-   end Register_Tests;
+      Set_Name (T, "ZanyBlue.Text.Booleans");
+      Add_Test_Routine (T, T_0001'Access, "T_0001, Create/Format");
+      Add_Test_Routine (T, T_0002'Access, "T_0002, +/Format");
+      Add_Test_Routine (T, T_0003'Access, "T_0003, Format centered");
+      Add_Test_Routine (T, T_0004'Access, "T_0004, Format right justified");
+      Add_Test_Routine (T, T_0005'Access, "T_0005, Format left justified");
+      Add_Test_Routine (T, T_0006'Access, "T_0006, Argument_List/Format");
+   end Initialize;
 
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
+   function Suite return Test_Suite is
    begin
-      Add_Test (Result, new Test_Case);
-      return Result;
+      return S : Test_Suite do
+         Add_Test (S, new Test);
+      end return;
    end Suite;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
+   procedure T_0001 (T : in out Test_Case'Class) is separate;
+   procedure T_0002 (T : in out Test_Case'Class) is separate;
+   procedure T_0003 (T : in out Test_Case'Class) is separate;
+   procedure T_0004 (T : in out Test_Case'Class) is separate;
+   procedure T_0005 (T : in out Test_Case'Class) is separate;
+   procedure T_0006 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Text.Booleans.Suites;

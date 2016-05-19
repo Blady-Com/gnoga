@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -81,6 +82,7 @@ package body ZBMCompile.Codegen.Base is
    procedure Write_String (File       : in out File_Type;
                            Name       : Wide_String;
                            Value      : Wide_String;
+                           ASCII      : Boolean;
                            Width      : Positive;
                            Decl_Index : Positive := 1);
    --  Write a string (facility names, keys names, locale names and string
@@ -144,8 +146,10 @@ package body ZBMCompile.Codegen.Base is
                                                            Last_Message),
                      Argument0 => +Positive (L),
                      Argument1 => +Positive (EL));
-         Write_Commented_Text (File, Pool (First .. Last),
-                               Options.Get_Integer ("comment_size"));
+         if not Options.Get_Boolean ("ascii_only") then
+            Write_Commented_Text (File, Pool (First .. Last),
+                                  Options.Get_Integer ("comment_size"));
+         end if;
          Current := Current + 1;
       end Add_Message;
 
@@ -203,6 +207,7 @@ package body ZBMCompile.Codegen.Base is
                           Get_Locale_Name'Access);
          --  Write the string pool
          Write_String (File, "Pool_Data", Pool,
+                       Options.Get_Boolean ("ascii_only"),
                        Options.Get_Integer ("pool_size"));
          Print_Line (File, ZBMBase_Facility, "10014");
          Create_Message_List (File, Catalog, Options);
@@ -263,7 +268,8 @@ package body ZBMCompile.Codegen.Base is
       Print_Line (File, ZBMBase_Facility, "00006");
       Write_Query_Decl (File, "Facility", Options);
       Write_Query_Decl (File, "Key", Options);
-      Print_Line (File, ZBMBase_Facility, "00009", +Modes_String (Options));
+      Print_Line (File, ZBMBase_Facility, "00009",
+                  +Modes_String (Options));
       if Options.Get_Boolean ("use_export_name") then
          Print_Line (File, ZBMBase_Facility, "00010",
                      Argument0 => +Options.Get_String ("export_name"));
@@ -295,6 +301,7 @@ package body ZBMCompile.Codegen.Base is
    begin
       for I in 1 .. N loop
          Write_String (File, Name, Namer (Catalog, I),
+                       Options.Get_Boolean ("ascii_only"),
                        Options.Get_Integer ("pool_size"),
                        Decl_Index => I);
       end loop;
@@ -362,6 +369,7 @@ package body ZBMCompile.Codegen.Base is
    procedure Write_String (File       : in out File_Type;
                            Name       : Wide_String;
                            Value      : Wide_String;
+                           ASCII      : Boolean;
                            Width      : Positive;
                            Decl_Index : Positive := 1) is
 
@@ -419,16 +427,23 @@ package body ZBMCompile.Codegen.Base is
 
    begin
       Print_Line (File, ZBMBase_Facility, "10004", +Name, +Decl_Index);
-      while not Finished loop
-         if Is_Non_Graphic (Current_Character) then
+      if ASCII then
+         for I in Value'Range loop
             Print_Line (File, ZBMBase_Facility, "10005",
-                        +Current_Character_Pos);
-            Advance;
-         else
-            Print_Line (File, ZBMBase_Facility, "10006",
-                        +Buffered_Data);
-         end if;
-      end loop;
+                        +Wide_Character'Pos (Value (I)));
+         end loop;
+      else
+         while not Finished loop
+            if Is_Non_Graphic (Current_Character) then
+               Print_Line (File, ZBMBase_Facility, "10005",
+                           +Current_Character_Pos);
+               Advance;
+            else
+               Print_Line (File, ZBMBase_Facility, "10006",
+                           +Buffered_Data);
+            end if;
+         end loop;
+      end if;
       Print_Line (File, ZBMBase_Facility, "10007");
    end Write_String;
 

@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,12 +33,15 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit.Test_Suites;
+with Ahven.Framework;
 
 package ZanyBlue.Test.Text.Suites is
 
-   use AUnit.Test_Suites;
+   type Test is new Ahven.Framework.Test_Case with null record;
 
-   function Suite return Access_Test_Suite;
+   overriding
+   procedure Initialize (T : in out Test);
+
+   function Suite return Ahven.Framework.Test_Suite;
 
 end ZanyBlue.Test.Text.Suites;

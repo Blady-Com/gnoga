@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,14 @@
 --
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0095 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0095 (T : in out Test_Case'Class) is
 
    Locale : constant Locale_Type := Make_Locale ("");
 
 begin
    Discard (Wide_Value => Format ("Arg: {0//////}", +10, Locale => Locale));
-   WAssert (R, False, "Expected Invalid_Format exception not raised");
+   WAssert (T, False, "Expected Invalid_Format exception not raised");
 exception
 when Invalid_Format_Error =>
-   WAssert (R, True, "Expected Invalid_Format exception raised");
+   WAssert (T, True, "Expected Invalid_Format exception raised");
 end T_0095;

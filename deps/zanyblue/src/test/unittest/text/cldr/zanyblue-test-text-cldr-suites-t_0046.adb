@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.CLDR.Suites)
-procedure T_0046 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0046 (T : in out Test_Case'Class) is
 
    no : constant Locale_Type := Make_Locale ("no");
    nb : constant Locale_Type := Make_Locale ("nb");
@@ -42,18 +42,18 @@ procedure T_0046 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
    procedure Check_Territory (Abbreviation : Wide_String) is
    begin
-      Check_Value (R, Territory_Name (Abbreviation, Locale => no),
+      Check_Value (T, Territory_Name (Abbreviation, Locale => no),
                       Territory_Name (Abbreviation, Locale => nb),
                       "no/nb territory names");
    end Check_Territory;
 
 begin
    if not Is_Locale_Defined ("no", "", "") then
-      WAssert (R, True, "NO localization not included");
+      WAssert (T, True, "NO localization not included");
       return;
    end if;
    if not Is_Locale_Defined ("nb", "", "") then
-      WAssert (R, True, "NB localization not included");
+      WAssert (T, True, "NB localization not included");
       return;
    end if;
    Check_Territory ("001");

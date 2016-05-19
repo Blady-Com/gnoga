@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Catalogs;
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0064 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0064 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Catalogs;
 
@@ -55,6 +55,6 @@ begin
    Print (Facility, Key, +10, +20, +30, Locale => Locale, Catalog => Catalog);
    New_Line;
    Restore_Output (Output);
-   Check_Log_File (R, Test_Area, Test_Name,
+   Check_Log_File (T, Test_Area, Test_Name,
            "Print with 3 argument failed");
 end T_0064;

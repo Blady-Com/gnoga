@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with Ada.Characters.Conversions;
 
 separate (ZanyBlue.Test.Text.Utils.Suites)
-procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0003 (T : in out Test_Case'Class) is
 
    use Ada.Characters.Conversions;
 
@@ -43,7 +43,7 @@ procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
    procedure OK (Source : Wide_String; Expected : String) is
    begin
-      WAssert (R, Escape_String (Source) = Expected,
+      WAssert (T, Escape_String (Source) = Expected,
                "Escaped to " & To_Wide_String (Expected) & " failed");
    end OK;
 

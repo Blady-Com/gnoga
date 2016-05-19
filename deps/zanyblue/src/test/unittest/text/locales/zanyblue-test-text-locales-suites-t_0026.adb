@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,15 +33,15 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Suites)
-procedure T_0026 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0026 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("xx");
 
 begin
-   Check_Value (R, Day_Period_Name (L, AM), "AM",
+   Check_Value (T, Day_Period_Name (L, AM), "AM",
                 "Fallback day period am");
-   Check_Value (R, Day_Period_Name (L, Noon), "noon",
+   Check_Value (T, Day_Period_Name (L, Noon), "noon",
                 "Fallback day period noon");
-   Check_Value (R, Day_Period_Name (L, PM), "PM",
+   Check_Value (T, Day_Period_Name (L, PM), "PM",
                 "Fallback day period pm");
 end T_0026;

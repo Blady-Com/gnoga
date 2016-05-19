@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 with ZanyBlue.Test.Text.Catalogs.Xmpl_Data2;
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0023 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0023 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data2;
@@ -48,6 +48,6 @@ begin
    Catalog := Create;
    Add (Catalog, "myfac1", "mykey1", Pool1, 1, 5, L_en_US);
    Add (Catalog, "myfac1", "mykey2", Pool2, 1, 5, L_en_US);
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey1", L_en_US), "abcde");
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey2", L_en_US), "ABCDE");
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey1", L_en_US), "abcde");
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey2", L_en_US), "ABCDE");
 end T_0023;

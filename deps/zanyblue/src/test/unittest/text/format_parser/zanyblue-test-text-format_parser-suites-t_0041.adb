@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@
 --
 
 separate (ZanyBlue.Test.Text.Format_Parser.Suites)
-procedure T_0041 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0041 (T : in out Test_Case'Class) is
 
 begin
-   WAssert (R, Maximum_Field_Width = 100,
+   WAssert (T, Maximum_Field_Width = 100,
             "Expected default maximum field to be 100");
 end T_0041;

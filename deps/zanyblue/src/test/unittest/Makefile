@@ -1,7 +1,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,3 @@
 
 TOP=../../..
 include $(TOP)/src/test/unittest/t_zanyblue.mk
-
-xcheck:	all
-	$(realpath $(TOP)/src/bin/$(TEST_NAME)) $(TEST_ARGS) -X > $(TOP)/src/test/unittest.xml

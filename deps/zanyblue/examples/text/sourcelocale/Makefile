@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -44,16 +45,16 @@ APPLICATION=$(TOP)/bin/$(APPNAME)
 FACILITY=Day
 PACKAGE=SLocale_Messages
 GENERATED=slocale_messages.ads slocale_messages.adb\
-	slocale_messages-day_wide_prints.ads \
-	slocale_messages-day_wide_prints.adb
+	slocale_messages-day_prints.ads \
+	slocale_messages-day_prints.adb
 
 include $(TOP)/src/mkfile/conf.mk
 
 all:	$(GENERATED)
-	$(GNATMAKE) -p $(GNATFLAGS) -P $(APPNAME).gpr
+	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
 
 $(GENERATED):	$(wildcard $(FACILITY)*.properties)
-	$(ZBMCOMPILE) -i -G wprints -s en -v $(PACKAGE) $(FACILITY)
+	$(ZBMCOMPILE) -i -G prints -s en -v $(PACKAGE) $(FACILITY)
 
 run:	all
 	$(APPLICATION)

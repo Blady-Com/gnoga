@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Percent_Formats.Suites)
-procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0002 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("de");
 
 begin
-   Check_Value (R, Numeric_Format (L, Percent), "#,##0 %",
+   Check_Value (T, Numeric_Format (L, Percent), "#,##0 %",
                 "de Percent format");
 end T_0002;

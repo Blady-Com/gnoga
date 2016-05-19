@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,20 +33,20 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Day_Periods.Suites)
-procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0012 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("ar");
 
 begin
-   Check_Day_Period (R, AM,            "ص",    L);
-   Check_Day_Period (R, Wee_Hours,     "",     L);
-   Check_Day_Period (R, Early_Morning, "",     L);
-   Check_Day_Period (R, Morning,       "",     L);
-   Check_Day_Period (R, Late_Morning,  "",     L);
-   Check_Day_Period (R, Noon,          "ظ",    L);
-   Check_Day_Period (R, Midday,        "",     L);
-   Check_Day_Period (R, Afternoon,     "",     L);
-   Check_Day_Period (R, Evening,       "",     L);
-   Check_Day_Period (R, Night,         "",     L);
-   Check_Day_Period (R, PM,            "م",    L);
+   Check_Day_Period (T, AM,            "ص",    L);
+   Check_Day_Period (T, Wee_Hours,     "",     L);
+   Check_Day_Period (T, Early_Morning, "",     L);
+   Check_Day_Period (T, Morning,       "",     L);
+   Check_Day_Period (T, Late_Morning,  "",     L);
+   Check_Day_Period (T, Noon,          "ظ",    L);
+   Check_Day_Period (T, Midday,        "",     L);
+   Check_Day_Period (T, Afternoon,     "",     L);
+   Check_Day_Period (T, Evening,       "",     L);
+   Check_Day_Period (T, Night,         "",     L);
+   Check_Day_Period (T, PM,            "م",    L);
 end T_0012;

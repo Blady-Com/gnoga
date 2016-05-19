@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,6 +34,7 @@
 --
 
 with Ada.Containers;
+with Ada.Strings.UTF_Encoding.Wide_Strings;
 with Ada.Wide_Text_IO;
 with Ada.Characters.Conversions;
 
@@ -133,6 +135,15 @@ package ZanyBlue.Text is
       array (Positive range <>) of Constant_String_Access;
 
    type Static_Message_Pool_Type is access constant Wide_String;
+
+   function To_UTF8 (Value : Wide_String) return String is
+      (String'(Ada.Strings.UTF_Encoding.Wide_Strings.Encode (Value)));
+   --  Convert a Wide_String to a UTF-8 encoded String.
+
+   function From_UTF8 (Value : String) return Wide_String is
+      (Ada.Strings.UTF_Encoding.Wide_Strings.Decode (
+           Ada.Strings.UTF_Encoding.UTF_8_String'(Value)));
+   --  Convert a UTF-8 encoded String to a Wide_String;
 
    function Files_Differ (Left_File_Name  : Wide_String;
                           Right_File_Name : Wide_String) return Boolean;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0001 (T : in out Test_Case'Class) is
 
    Catalog     : Catalog_Type;
 
 begin
-   WAssert (R, not Is_Valid (Catalog), "Catalog is not null");
+   WAssert (T, not Is_Valid (Catalog), "Catalog is not null");
    Catalog := Create;
-   WAssert (R, Is_Valid (Catalog), "Catalog Create return a null catalog");
+   WAssert (T, Is_Valid (Catalog), "Catalog Create return a null catalog");
 end T_0001;

@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -56,7 +57,7 @@ procedure Rename_Command (State : in out State_Type;
       Wide_Rename (Old_Name, New_Name);
       Print_00012 (+Old_Name, +New_Name);
    exception
-   when E : Ada.Wide_Text_IO.Name_Error | Ada.Wide_Text_IO.Use_Error =>
+   when E : Ada.Text_IO.Name_Error | Ada.Text_IO.Use_Error =>
       Print_10034 (+Old_Name, +New_Name, +E);
    end Rename_File;
 

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Catalogs;
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0090 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0090 (T : in out Test_Case'Class) is
 
    Test_Name : constant Wide_String := "t_0090";
    Locale    : constant Locale_Type := Make_Locale ("");
@@ -48,16 +48,16 @@ procedure T_0090 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    begin
       Print (Message, +10, +20, Locale => Locale);
       Print (Message, +10, Locale => Locale);
-      WAssert (R, False, "Exception not raised");
+      WAssert (T, False, "Exception not raised");
    exception
    when No_Such_Argument_Error =>
-      WAssert (R, True, "Expected exception raised");
+      WAssert (T, True, "Expected exception raised");
    end With_Exceptions;
 
 begin
    Set_Output (Output, Test_Area, Test_Name);
    With_Exceptions;
    Restore_Output (Output);
-   Check_Log_File (R, Test_Area, Test_Name,
+   Check_Log_File (T, Test_Area, Test_Name,
            "Should be empty from exception");
 end T_0090;

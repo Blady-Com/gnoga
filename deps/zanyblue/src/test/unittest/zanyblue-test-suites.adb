@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -39,14 +39,23 @@ with ZanyBlue.Test.Utils.Suites;
 
 package body ZanyBlue.Test.Suites is
 
-   function Suites return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
+   use Ahven.Framework;
+
+   overriding
+   procedure Initialize (T : in out Test) is
    begin
-      Add_Test (Result, ZanyBlue.Test.OS.Suites.Suite);
-      Add_Test (Result, ZanyBlue.Test.Parameters.Suites.Suite);
-      Add_Test (Result, ZanyBlue.Test.Text.Suites.Suite);
-      Add_Test (Result, ZanyBlue.Test.Utils.Suites.Suite);
-      return Result;
-   end Suites;
+      Set_Name (T, "ZanyBlue");
+   end Initialize;
+
+   function Suite return Test_Suite is
+      S : Test_Suite := Create_Suite ("ZanyBlue.Root");
+   begin
+      Add_Static_Test (S, ZanyBlue.Test.OS.Suites.Suite);
+      Add_Static_Test (S, ZanyBlue.Test.Parameters.Suites.Suite);
+      Add_Static_Test (S, ZanyBlue.Test.Text.Suites.Suite);
+      Add_Static_Test (S, ZanyBlue.Test.Utils.Suites.Suite);
+      Add_Test (S, new Test);
+      return S;
+   end Suite;
 
 end ZanyBlue.Test.Suites;

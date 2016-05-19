@@ -18,9 +18,8 @@ There are two main documentation categories available at this time:
   </li>
   <li>
     Documentation generated from the <a href="/zanyblue/ref/index.html">Ada
-    spec</a> files via GNAT's gnathtml (select 'Z' under Files).  This is
-    currently the only documentation available for the non-Text packages,
-    e.g., the parameters handling, etc.
+    spec</a> files via GNATDOC This is currently the only documentation
+    available for the non-Text packages, e.g., the parameters handling, etc.
   </li>
 </ol>
 </p>

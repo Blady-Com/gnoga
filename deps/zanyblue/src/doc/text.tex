@@ -1,7 +1,8 @@
+%  -*- coding: utf-8 -*-
 %
 %  ZanyBlue, an Ada library and framework for finite element analysis.
 %
-%  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+%  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 %  All rights reserved.
 %
 %  Redistribution and use in source and binary forms, with or without
@@ -69,9 +70,8 @@ is implemented by trying to locate the message in the files, in order,
     myapp_fr.properties
     myapp.properties
 \end{verbatim}
-If no French localized message is available, the source development language
-message text is used, i.e., the properties file which does not include a
-language code.  Frequently this is English.
+If no French localized message is available, i.e., the properties file which
+does not include a language code is used.  Frequently this is English.
 
 \section{Messages and Arguments}
 
@@ -194,10 +194,10 @@ be instanciated at the library level.
 
 Here the messages for the application are referred to by message id or
 key, i.e., numeric strings, e.g., ``\texttt{0001}'' for the facility
-``\texttt{moons}''.\footnote{As a side note, the key is a general string,
-however, the assignment of more meaningful names becomes more difficult
-as an application grows and it is simpler to abandon such names initially
-and use numeric string codes.}
+``\texttt{moons}''.\footnote{As a side note, the key is a general case
+sensitive string, however, the assignment of more meaningful names becomes
+more difficult as an application grows and it is simpler to abandon such
+names initially and use numeric string codes.}
 The text associated with these message keys are externalized to a
 \texttt{.properties} file.  For this example, the root properties file,
 ``\texttt{moons.properties},'' containing English, is
@@ -306,7 +306,7 @@ mis-spelling a facility or key value (again possibly causing the exceptions
 \texttt{No\_Such\_Facility\_Error} \texttt{No\_Such\_Key\_Error} to raised).
 
 For an Ada application, where the compile time detection of errors is an
-expection, this is not ideal.  To overcome this, the ZanyBlue message
+expectation, this is not ideal.  To overcome this, the ZanyBlue message
 compiler utility can generate accessor packages for the compiled facilities.
 These packages define functions and procedures for each key in the facility
 with a list of arguments matching the expected number of arguments.  This
@@ -322,11 +322,12 @@ packages (when the \texttt{-a} option is given):
 	\item	A package for functions with return typed of
 	 	\texttt{Wide\_String}.
 	\item	A package for functions with return typed of \texttt{String}
-		(the standard Wide Strings are UTF-8 encoded in this case).
+		(the standard Wide Strings are encoding using the encoding
+                schema defined by the locale, the default being UTF-8 encoding).
 	\end{itemize}
 	In both cases, the functions generated are named by using message key
 	prefixed with the string ``\texttt{Format\_}''.  This requires message
-	keys be valid Ada identifier characters.
+	keys, when prefixed with ``\texttt{Format\_}''  be valid Ada identifier.
 \item   Accessor that print the localized formatted message similar to the
         standard \texttt{Put\_Line} routines.  There are two styles of routines
         generated:
@@ -334,8 +335,8 @@ packages (when the \texttt{-a} option is given):
         \item Routines that use the standard \texttt{Ada.Wide\_Text\_IO}
               routines to print the formatted messages.
         \item Routines that use the standard \texttt{Ada.Text\_IO}
-              routines to print the formatted messages as UTF-8 encoded
-              strings.
+              routines to print the formatted messages as encoded strings
+              using the encoding for the select locale.
         \end{itemize}
 \item	Accessor procedures which raise an exception with a localized formatted
 	message (similar to the standard \texttt{Raise\_Exception} procedure
@@ -505,9 +506,10 @@ time).
 
 \subsubsection{Specifying Argument Types}
 
-The format string is optionally prefixed by a type name for the expected
-argument, e.g., to indicate a particular argument is should be an integer,
-the format would be
+The format string is optionally prefixed by a type name separated by a comma
+character for the expected argument without space character (which would be
+interpreted as part for the format).  E.g., to indicate a particular argument
+is should be an integer, the format would be
 \begin{xmpl}
 \begin{verbatim}
    0002=There are {0,integer} known moons orbiting "{1}".
@@ -578,7 +580,9 @@ and time related formatting (the formatting of these values is described
 later in section~\ref{sec:datetime}).  E.g., to format an integer with a
 field width of 10 characters, the argument reference would be
 \begin{small}
+\begin{verbatim}
    0001=Total number is {0,integer,10}
+\end{verbatim}
 \end{small}
 
 The syntax for the format information is (using standard BNF notation)
@@ -608,8 +612,8 @@ where
         characters needed are prepend to the left of the value.
     \item[`\texttt{=}'] Any padding characters needed are added after the
         sign character, e.g., `\texttt{+00010}'.  This is used only with
-        numeric value.  For non-numeric, the `\texttt{<}' is assumed if this
-        alignment character is specified.
+        numeric value.  For non-numeric values, this alignment character is
+        interpreted as `\texttt{<}'.
     \item[`\texttt{\^}'] The value is centered in the field width with any
         padding character being added before and after the value to center
         it.
@@ -628,7 +632,8 @@ where
         are preceeded by the locale plus character, negative values by the
         locale minus character.
     \item[`\texttt{-}'] A sign character is only generated for negative values
-        where the locale minus character is used.
+        where the locale minus character is used.  This is the default
+        behaviour if no sign character is specified.
     \item[`\texttt{ }'] A sign character is only generated for negative values
         where the locale minus character is used, positive values are preceeded
         by a space character.
@@ -725,7 +730,7 @@ where
 The formatting of messages with arguments is based on ``boxing'' message
 argument data values.  The library provides a set of standard boxed types
 corresponding to the standard set of Ada types.  Details on how the formatting
-these types id detailed in the following sections.
+these types is detailed in the following sections.
 
 \subsection{Boolean Type}
 
@@ -741,9 +746,10 @@ references are (the `\texttt{*}' is used to fill for readability):
 \verb|Format ("{0,*^10}", +True)| & $\rightarrow$ & \verb|"***true***"|\\
 \end{tabular}
 \end{center}
-Other formatting information is ignored, e.g., the type specifiers.  The
-accessor argument type for Booleans is \texttt{Boolean\_Category\_Type}
-which is derived from the \texttt{Enumeration\_Category\_Type}.
+Other formatting information is ignored, e.g., a base character associated
+with numeric types, etc.  The accessor argument type for Booleans is
+\texttt{Boolean\_Category\_Type} which is derived from the
+\texttt{Enumeration\_Category\_Type}.
 
 \subsection{Character Type}
 
@@ -1109,14 +1115,13 @@ There is a lot of variety with date and times so the examples are more
 extensive that other types.  In the following, the date/time being formatted
 is 4:48 pm, Blooms Day, June 16, 1904, referred to via the variable
 `\texttt{B}'.  The examples below use two locales for demonstration purposes:
-``\texttt{en\_US}'' and ``\texttt{fr}''
-for the locale `\texttt{en\_US}'.
+``\texttt{en\_US}'' and ``\texttt{fr}''.
 
 \subsubsection{Short date and times styles: Default}
 
 The simplest use is to not specify anything.  The generates an accessor
 using an ``\texttt{Any}'' type category, in this case the `\texttt{datetime}'
-is used to format.  A type specifier is encouraged as the compiler will type
+is used to format.  A type name is encouraged as the compiler will type
 check message arguments.
 \begin{center}
 \begin{tabular}{llrl}
@@ -1593,15 +1598,17 @@ e.g., in a French locale, messages defined by the ``\texttt{\_fr}''
 properties files would be used, if available.  If not available,
 then the messages defined by the base properites file will be used.
 If the application is developed in an English environment, then the base
-properties file will contain English messages.
+properties file will normally contain English messages.  However, it is
+not uncommon to have non-English developers choose to use an English
+base properties file.
 
 By default, the current locale is also used to format arguments to messages.
 This has the biggest impact for dates and times.  For example, the following
 message
 \begin{small}
-\begin{tt}
+\begin{verbatim}
     Today=Today is {0,datetime,EEEE}.
-\end{tt}
+\end{verbatim}
 \end{small}
 will print the day name using the code
 \begin{small}
@@ -1746,7 +1753,7 @@ One of the easiest mistakes to make with an internationalize application is
 to include hard-coded strings, i.e., not externalize the message text into
 a \texttt{.properties} file.  One technique to detect hard-coded strings
 is to generate a pseudo translation in a test locale and test the application.
-This requires "translation" of a \texttt{.properties} file into a psuedo
+This requires "translation" of a \texttt{.properties} file into a pseudo
 locale (the choice is normally Swahili in Kenya, i.e., \verb|sw_KE|) and
 rebuild of a test application with the pseudo translations included.
 
@@ -2020,13 +2027,14 @@ message text is controlled via the two options \verb|-a| and \verb|-G|.
 The first style, \verb|-a|, generates all accessor style packages:
 \begin{enumerate}
 \item \verb|exceptions|, generate routines to raise exceptions with localized
-     message strings (wide strings converted to UTF-8).
-\item \verb|strings|, generate functions returning UTF-8 strings for the
-     localized messages.
+     message strings (wide strings converted to encoding associated with the
+     locale).
+\item \verb|strings|, generate functions returning locale encoded strings for
+      the localized messages.
 \item \verb|wstrings|, generate functions returning wide strings for the
      localized messages.
 \item \verb|prints|, generate routines printing the localized messages to
-     files as UTF-8 strings.
+     files as locale encoded strings.
 \item \verb|wprints|, generate routines printing the localized messages to
      files as wide strings (wide files).
 \end{enumerate}

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,13 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Values.Suites)
-procedure T_0055 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0055 (T : in out Test_Case'Class) is
 
    L          : List_Type := Empty_List;
 
 begin
    Append (L, "a");
    Append (L, "b");
-   Check_Value (R, To_String (To_List_Value (L), "xmpl"), "[a, b]",
+   Check_Value (T, To_String (To_List_Value (L), "xmpl"), "[a, b]",
                 "To_String from List (multiple values)");
 end T_0055;

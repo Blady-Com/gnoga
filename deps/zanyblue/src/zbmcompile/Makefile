@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -36,7 +37,7 @@ TOP=../..
 
 APPNAME=zbmcompile
 ZBMCOMPILE=$(BINDIR)/$(APPNAME)
-RUNV=-v -O
+RUNV=-v
 MESGDIR=mesg
 FACILTIES=zbmcompile \
 	zbmbase \
@@ -44,7 +45,7 @@ FACILTIES=zbmcompile \
 	zbmstrings zbmwstrings \
 	zbmprints zbmwprints
 PACKAGE=ZBMCompile.Messages
-RUNARGS=$(RUNV) $(PACKAGE) -d $(MESGDIR) $(FACILTIES)
+RUNARGS=$(RUNV) -O -A -C $(PACKAGE) -d $(MESGDIR) $(FACILTIES)
 CLEAN_FILES+=$(wildcard *.gcno)
 CLEAN_FILES+=$(wildcard *.gcda)
 CLEAN_FILES+=$(wildcard *.gcov)
@@ -57,7 +58,7 @@ XGENERATED=zbmcompile-messages.ads zbmcompile-messages.adb $(STAMPFILE)
 include $(TOP)/src/mkfile/conf.mk
 
 all:	$(STAMPFILE)
-	$(GNATMAKE) -p $(GNATFLAGS) -P $(APPNAME)
+	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME)
 
 messages:	$(STAMPFILE)
 
@@ -69,7 +70,7 @@ $(STAMPFILE):	$(wildcard $(MESGDIR)/*)
 	$(warning "**** Expect two builds of zbmcompile              ****")
 	$(warning "****                                              ****")
 	$(warning "******************************************************")
-	$(GNATMAKE) $(GNATFLAGS) -P $(APPNAME)
+	$(GPRBUILD) $(GNATFLAGS) -P $(APPNAME)
 	$(ZBMCOMPILE) -p -S $(STAMPFILE) $(RUNARGS)
 	$(MAKE) clean
 
@@ -83,7 +84,7 @@ gprof:
 	$(MAKE) BUILD=Profile
 
 clean::
-	$(GNATCLEAN) $(GNATFLAGS) -P $(APPNAME)
+	$(GNATCLEAN) $(GNATXDEFS) -P $(APPNAME)
 
 vclean:
 	$(MAKE) GENERATED="$(XGENERATED)" clean

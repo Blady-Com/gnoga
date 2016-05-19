@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Suites)
-procedure T_0018 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0018 (T : in out Test_Case'Class) is
 
    procedure Check_Parent (Child_Name  : Wide_String;
                            Parent_Name : Wide_String;
@@ -56,7 +56,7 @@ procedure T_0018 (R : in out AUnit.Test_Cases.Test_Case'Class) is
       Get_Locale_Codes (Locale, Language, Script, Territory);
       Get_Locale_Codes (Root, Root_Language, Root_Script, Root_Territory);
       Parent_Codes (Language, Script, Territory, Root_Territory);
-      Check_Value (R, Locale_Name (Language, Script, Territory), Parent_Name,
+      Check_Value (T, Locale_Name (Language, Script, Territory), Parent_Name,
                    "Incorrect parent calculated");
    end Check_Parent;
 

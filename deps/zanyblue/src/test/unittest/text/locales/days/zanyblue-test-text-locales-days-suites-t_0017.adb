@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,23 +33,23 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Days.Suites)
-procedure T_0017 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0017 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("zh");
 
 begin
-   Check_Value (R, Full_Day_Name (L, Mon), "星期一",
+   Check_Value (T, Full_Day_Name (L, Mon), "星期一",
                 "zh (Hans) full day name, Mon");
-   Check_Value (R, Full_Day_Name (L, Tue), "星期二",
+   Check_Value (T, Full_Day_Name (L, Tue), "星期二",
                 "zh (Hans) full day name, Tue");
-   Check_Value (R, Full_Day_Name (L, Wed), "星期三",
+   Check_Value (T, Full_Day_Name (L, Wed), "星期三",
                 "zh (Hans) full day name, Wed");
-   Check_Value (R, Full_Day_Name (L, Thu), "星期四",
+   Check_Value (T, Full_Day_Name (L, Thu), "星期四",
                 "zh (Hans) full day name, Thu");
-   Check_Value (R, Full_Day_Name (L, Fri), "星期五",
+   Check_Value (T, Full_Day_Name (L, Fri), "星期五",
                 "zh (Hans) full day name, Fri");
-   Check_Value (R, Full_Day_Name (L, Sat), "星期六",
+   Check_Value (T, Full_Day_Name (L, Sat), "星期六",
                 "zh (Hans) full day name, Sat");
-   Check_Value (R, Full_Day_Name (L, Sun), "星期日",
+   Check_Value (T, Full_Day_Name (L, Sun), "星期日",
                 "zh (Hans) full day name, Sun");
 end T_0017;

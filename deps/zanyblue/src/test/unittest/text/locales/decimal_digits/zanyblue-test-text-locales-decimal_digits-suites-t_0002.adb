@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Decimal_Digits.Suites)
-procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0002 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("de");
 
 begin
-   Check_Value (R, Numeric_Item (L, Decimal_Digits_String), "0123456789",
+   Check_Value (T, Numeric_Item (L, Decimal_Digits_String), "0123456789",
                 "de decimal digits");
 end T_0002;

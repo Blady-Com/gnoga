@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -142,10 +143,10 @@ package ZanyBlue.Text.Locales is
    --  Misc. items associated with number, decimal point, zero character, etc.
    --  Numbering system used by the locale (defined by the CLDR data).  E.g.,
    --  "latn" corresponds to the standard Western digits, "0123456789", "arab"
-   --  with the Arabic digits, "٠١٢٣٤٥٦٧٨٩".
+   --  with the Arabic digits.
    --  Note: While the item values here use the term "Character", locales can
    --  have strings values, e.g., Exponent_Character in English "E" while the
-   --  Swedish value is "×10^".
+   --  Swedish value is " x 10^" (ASCII representation).
 
    type Numeric_Style_Type is (Decimal, Scientific, Percent, Currency);
    --  Number style formats.

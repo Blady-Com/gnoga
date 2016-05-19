@@ -1,8 +1,8 @@
---  -*- encoding: utf-8 -*-
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+with Ada.Text_IO;
 with Ada.Command_Line;
-with Ada.Wide_Text_IO;
-with Messages.Moons_Wide_Prints;
+with Messages.Moons_Prints;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
 with ZanyBlue.Text.Version_Status_Arguments;
@@ -43,9 +43,9 @@ with Definitions;
 
 procedure X_AMoons is
 
+   use Ada.Text_IO;
    use Ada.Command_Line;
-   use Ada.Wide_Text_IO;
-   use Messages.Moons_Wide_Prints;
+   use Messages.Moons_Prints;
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
    use ZanyBlue.Text.Version_Status_Arguments;

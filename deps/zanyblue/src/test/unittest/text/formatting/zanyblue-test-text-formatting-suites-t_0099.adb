@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with Ada.Calendar;
 with ZanyBlue.Text.Catalogs;
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0099 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0099 (T : in out Test_Case'Class) is
 
    use Ada.Calendar;
    use ZanyBlue.Text.Catalogs;
@@ -44,17 +44,17 @@ procedure T_0099 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    Catalog   : constant Catalog_Type := Create;
    en        : constant Locale_Type := Make_Locale ("en");
    fr        : constant Locale_Type := Make_Locale ("fr");
-   T         : constant Time := Time_Of (2012, 1, 16, Duration (60483));
+   T_Val     : constant Time := Time_Of (2012, 1, 16, Duration (60483));
 
 begin
    Add (Catalog, "myfac", "mykey", "Today is {0,EEEE}", Root_Locale, en);
    Enable_Source_Locales (Catalog);
-   Check_Value (R, Format ("myfac", "mykey", +T,
+   Check_Value (T, Format ("myfac", "mykey", +T_Val,
                            Catalog => Catalog, Locale => fr),
                    "Today is Monday",
                    "Expected Today is Monday");
    Disable_Source_Locales (Catalog);
-   Check_Value (R, Format ("myfac", "mykey", +T,
+   Check_Value (T, Format ("myfac", "mykey", +T_Val,
                            Catalog => Catalog, Locale => fr),
                    "Today is lundi",
                    "Expected Today is lundi");

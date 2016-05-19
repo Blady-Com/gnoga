@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,13 @@
 --
 
 separate (ZanyBlue.Test.Text.CLDR.Suites)
-procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0020 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("xx");
 
 begin
-   Check_Value (R, Locale_Digits (L, True), "0123456789abcdef",
+   Check_Value (T, Locale_Digits (L, True), "0123456789abcdef",
                 "Fallback digits lowercase");
-   Check_Value (R, Locale_Digits (L, False), "0123456789ABCDEF",
+   Check_Value (T, Locale_Digits (L, False), "0123456789ABCDEF",
                 "Fallback digits uppercase");
 end T_0020;

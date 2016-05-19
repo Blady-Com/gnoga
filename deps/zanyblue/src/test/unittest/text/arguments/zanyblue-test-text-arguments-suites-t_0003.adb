@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Strings;
 
 separate (ZanyBlue.Test.Text.Arguments.Suites)
-procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0003 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Strings;
@@ -45,26 +45,26 @@ procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    List : Argument_List;
 
 begin
-   WAssert (R, List.Length = 0,
+   WAssert (T, List.Length = 0,
             "Length of emtpy list is not 0");
    Append (List, +String'("String#0"));
-   WAssert (R, List.Length = 1,
+   WAssert (T, List.Length = 1,
             "Length is not 1");
    Append (List, +String'("String#1"));
-   WAssert (R, List.Length = 2,
+   WAssert (T, List.Length = 2,
             "Length is not 2");
    Append (List, +String'("String#2"));
-   WAssert (R, List.Length = 3,
+   WAssert (T, List.Length = 3,
             "Length is not 3");
    Append (List, +String'("String#3"));
-   WAssert (R, List.Length = 4,
+   WAssert (T, List.Length = 4,
             "Length is not 4");
-   WAssert (R, List.Format (0, "", "", Locale, False) = "String#0",
+   WAssert (T, List.Format (0, "", "", Locale, False) = "String#0",
             "Unexpected Format (#0)");
-   WAssert (R, List.Format (1, "", "", Locale, False) = "String#1",
+   WAssert (T, List.Format (1, "", "", Locale, False) = "String#1",
             "Unexpected Format (#1)");
-   WAssert (R, List.Format (2, "", "", Locale, False) = "String#2",
+   WAssert (T, List.Format (2, "", "", Locale, False) = "String#2",
             "Unexpected Format (#2)");
-   WAssert (R, List.Format (3, "", "", Locale, False) = "String#3",
+   WAssert (T, List.Format (3, "", "", Locale, False) = "String#3",
             "Unexpected Format (#3)");
 end T_0003;

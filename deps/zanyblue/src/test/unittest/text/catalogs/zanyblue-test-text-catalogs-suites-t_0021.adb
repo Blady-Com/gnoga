@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0021 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0021 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
@@ -48,17 +48,17 @@ procedure T_0021 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   Check_Value (R, Get_Pool (Catalog), "", "Expected an empty pool");
+   Check_Value (T, Get_Pool (Catalog), "", "Expected an empty pool");
    Add (Catalog, "myfac1", "mykey1", Pool1, 1, 5, L_en_US);
    Query_Message (Catalog, 1, 1, 1, First, Last);
-   WAssert (R, First = 1, "Expected first static pool index to be 1");
-   WAssert (R, Last = 5, "Expected last static pool index to be 5");
+   WAssert (T, First = 1, "Expected first static pool index to be 1");
+   WAssert (T, Last = 5, "Expected last static pool index to be 5");
    Add (Catalog, "xyz", "mkr", "12345", L_en_US);
    Query_Message (Catalog, 2, 2, 1, First, Last);
-   WAssert (R, First = 6, "Expected first static pool index to be 6");
-   WAssert (R, Last = 10, "Expected last static pool index to be 10");
+   WAssert (T, First = 6, "Expected first static pool index to be 6");
+   WAssert (T, Last = 10, "Expected last static pool index to be 10");
    Add (Catalog, "xyz", "mkr", "54321", L_fr_FR);
    Query_Message (Catalog, 2, 2, 2, First, Last);
-   WAssert (R, First = 11, "Expected first static pool index to be 11");
-   WAssert (R, Last = 15, "Expected last static pool index to be 15");
+   WAssert (T, First = 11, "Expected first static pool index to be 11");
+   WAssert (T, Last = 15, "Expected last static pool index to be 15");
 end T_0021;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Scopes.Suites)
-procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0003 (T : in out Test_Case'Class) is
 
    Scope : Parameter_Stack_Type;
 
 begin
    Scope.New_Scope;
-   WAssert (R, Scope.Get_Integer ("_level") = 0,
+   WAssert (T, Scope.Get_Integer ("_level") = 0,
             "Expected initial level to be 0");
 end T_0003;

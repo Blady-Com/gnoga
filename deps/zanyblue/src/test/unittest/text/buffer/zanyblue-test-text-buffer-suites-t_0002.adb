@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 --
 
 separate (ZanyBlue.Test.Text.Buffer.Suites)
-procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0002 (T : in out Test_Case'Class) is
 
    Buffer : Buffer_Type;
 
 begin
    Add (Buffer, '1');
    Add (Buffer, "2345");
-   Check_Value (R, To_String (Buffer), "12345", "Buffer should be 12345");
+   Check_Value (T, To_String (Buffer), "12345", "Buffer should be 12345");
 end T_0002;

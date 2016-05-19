@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,16 +35,16 @@
 with Ada.Calendar;
 
 separate (ZanyBlue.Test.Parameters.Values.Suites)
-procedure T_0052 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0052 (T : in out Test_Case'Class) is
 
    use Ada.Calendar;
 
-   T : constant Time := Time_Of (2011, 10, 31, Duration (60483));
+   T_Val : constant Time := Time_Of (2011, 10, 31, Duration (60483));
 
 begin
-   Discard (To_Integer (To_Time_Value (T), "xmpl"));
-   WAssert (R, False, "Time -> Integer, no exception raised");
+   Discard (To_Integer (To_Time_Value (T_Val), "xmpl"));
+   WAssert (T, False, "Time -> Integer, no exception raised");
 exception
 when Not_An_Integer_Error =>
-   WAssert (R, True, "Time -> Integer, exception raised");
+   WAssert (T, True, "Time -> Integer, exception raised");
 end T_0052;

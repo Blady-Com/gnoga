@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -124,17 +125,8 @@ package ZanyBlue.Text.Arguments is
                      Argument  : Argument_Type'Class);
    --  Append an argument to a list of arguments.
 
-   type Any_Category_Type is
-      abstract new Argument_Type with null record;
+   subtype Any_Category_Type is Argument_Type;
    --  General type used as the unspecified type.
-
-   overriding
-   function Format (Value     : Any_Category_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
-      abstract;
-   --  Abstract formatting function.
 
    type Number_Category_Type is
       abstract new Any_Category_Type with null record;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 
 separate (ZanyBlue.Test.Text.Floats.Suites)
-procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0005 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Arguments;
@@ -52,12 +52,12 @@ begin
    Append (List, +V2);
    Append (List, +V3);
    Append (List, +V4);
-   Check_Value (R, List.Format (0, "", "", Root_Locale, False),
+   Check_Value (T, List.Format (0, "", "", Root_Locale, False),
                 "5.50000E+01");
-   Check_Value (R, List.Format (1, "", "", Root_Locale, False),
+   Check_Value (T, List.Format (1, "", "", Root_Locale, False),
                 "6.61000E+01");
-   Check_Value (R, List.Format (2, "", "", Root_Locale, False),
+   Check_Value (T, List.Format (2, "", "", Root_Locale, False),
                 "-5.50000E+01");
-   Check_Value (R, List.Format (3, "", "", Root_Locale, False),
+   Check_Value (T, List.Format (3, "", "", Root_Locale, False),
                 "-6.61000E+01");
 end T_0005;

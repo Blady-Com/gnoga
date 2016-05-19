@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0047 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0047 (T : in out Test_Case'Class) is
 
    L_en_Latn_US   : constant Locale_Type := Make_Locale ("en", "Latn", "US");
    L_en_US        : constant Locale_Type := Make_Locale ("en", "US");
@@ -44,11 +44,11 @@ procedure T_0047 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Add (Catalog, "myfac1", "mykey1", "msg: en_Latn_US", L_en_Latn_US);
-   Check_Value (R, Get_Locale_Name (Catalog, 1), "en_Latn_US");
+   Check_Value (T, Get_Locale_Name (Catalog, 1), "en_Latn_US");
    Add (Catalog, "myfac1", "mykey1", "msg: en_US", L_en_US);
-   Check_Value (R, Get_Locale_Name (Catalog, 2), "en_US");
+   Check_Value (T, Get_Locale_Name (Catalog, 2), "en_US");
    Add (Catalog, "myfac1", "mykey1", "msg: en", L_en);
-   Check_Value (R, Get_Locale_Name (Catalog, 3), "en");
+   Check_Value (T, Get_Locale_Name (Catalog, 3), "en");
    Add (Catalog, "myfac1", "mykey1", "msg: Root", L_Root);
-   Check_Value (R, Get_Locale_Name (Catalog, 4), "");
+   Check_Value (T, Get_Locale_Name (Catalog, 4), "");
 end T_0047;

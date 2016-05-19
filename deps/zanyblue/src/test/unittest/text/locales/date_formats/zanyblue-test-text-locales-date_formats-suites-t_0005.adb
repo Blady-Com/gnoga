@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,17 +33,17 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Date_Formats.Suites)
-procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0005 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("zh");
 
 begin
-   Check_Value (R, Date_Format (L, Full), "y年M月d日EEEE",
+   Check_Value (T, Date_Format (L, Full), "y年M月d日EEEE",
                 "zh (Hans) full date format");
-   Check_Value (R, Date_Format (L, Long), "y年M月d日",
+   Check_Value (T, Date_Format (L, Long), "y年M月d日",
                 "zh (Hans) long date format");
-   Check_Value (R, Date_Format (L, Medium), "y年M月d日",
+   Check_Value (T, Date_Format (L, Medium), "y年M月d日",
                 "zh (Hans) medium date format");
-   Check_Value (R, Date_Format (L, Short), "yy/M/d",
+   Check_Value (T, Date_Format (L, Short), "yy/M/d",
                 "zh (Hans) short date format");
 end T_0005;

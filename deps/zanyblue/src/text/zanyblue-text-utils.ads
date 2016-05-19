@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -53,7 +54,7 @@ package ZanyBlue.Text.Utils is
    --  Return the String value associated with a Wide_String containing
    --  Java style \u escape sequences, e.g.,
    --
-   --  "This is π" => "This is \u03c0"
+   --  "This is (PI)" => "This is \u03c0"
 
    function Non_Blank_Prefix (S : Wide_String) return Wide_String;
    --  Return a non-blank prefix of a string.  E.g., "ar " returns "ar".
@@ -69,6 +70,6 @@ package ZanyBlue.Text.Utils is
    --  Return the Wide_String value associated with a simple String containing
    --  Java style \u escape sequences, e.g.,
    --
-   --  "This is \u03c0" => "This is π"
+   --  "This is \u03c0" => "This is (PI)"
 
 end ZanyBlue.Text.Utils;

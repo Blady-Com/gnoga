@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -38,7 +39,10 @@
 
 project zbcom is
 
-   Version := "1.1.0";
+   V_Major := external ("V_MAJOR");
+   V_Minor := external ("V_MINOR");
+   V_Patch := external ("V_PATCH");
+   Version := V_Major & "." & V_Minor & "." & V_Patch;
    Name    := "zanyblue";
 
    for Source_Dirs use ();
@@ -52,37 +56,28 @@ project zbcom is
    type OS_Kind is ("Windows_NT", "unix");
    OS : OS_Kind := external ("OS", "unix");
 
-   C_Switches := ("-gnat12",
-                  "-gnatW8");
+   Compile_Switches := ("-gnat2012");
 
-   package Compiler is
-      case Build is
-         when "Debug" =>
-            for Default_Switches ("Ada") use C_Switches & ("-g",
-                                                           "-gnatf",
-                                                           "-gnato",
-                                                           "-gnatwale",
-                                                           "-gnatyO",
-                                                           "-gnatyo",
-                                                           "-fstack-check");
-         when "Coverage" =>
-            for Default_Switches ("Ada") use C_Switches & ("-g",
-                                                           "-fprofile-arcs",
-                                                           "-ftest-coverage");
-         when "Profile" =>
-            for Default_Switches ("Ada") use C_Switches & ("-pg",
-                                                           "-O3",
-                                                           "-fprofile-arcs");
-         when "Production" =>
-            for Default_Switches ("Ada") use C_Switches & ("-O3");
-      end case;
-   end Compiler;
-
-   package Linker is
-   end Linker;
-
-   package Builder is
-   end Builder;
+   case Build is
+      when "Debug" =>
+         Compile_Switches := Compile_Switches & ("-g",
+                                                 "-gnatf",
+                                                 "-gnato",
+                                                 "-gnatwale",
+                                                 "-gnatygO",
+                                                 "-gnatyo",
+                                                 "-fstack-check");
+      when "Coverage" =>
+         Compile_Switches := Compile_Switches & ("-g",
+                                                 "-fprofile-arcs",
+                                                 "-ftest-coverage");
+      when "Profile" =>
+         Compile_Switches := Compile_Switches & ("-pg",
+                                                 "-O3",
+                                                 "-fprofile-arcs");
+      when "Production" =>
+         Compile_Switches := Compile_Switches & ("-O3");
+   end case;
 
    package Ide is
       for VCS_Kind use "Subversion";

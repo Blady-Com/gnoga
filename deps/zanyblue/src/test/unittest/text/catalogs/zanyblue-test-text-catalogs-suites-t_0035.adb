@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0035 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0035 (T : in out Test_Case'Class) is
 
    Facility     : constant Wide_String := "xmpl";
    File_Name    : constant Wide_String := Test_Src_Directory (Test_Area)
@@ -46,13 +46,13 @@ procedure T_0035 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
    procedure Check (Key : Wide_String; Message : Wide_String) is
    begin
-      Check_Value (R, Get_Text (Catalog, Facility, Key, L_en_US), Message);
+      Check_Value (T, Get_Text (Catalog, Facility, Key, L_en_US), Message);
    end Check;
 
 begin
    Catalog := Create;
    Count := Load_File (Catalog, File_Name, Facility, L_en_US);
-   WAssert (R, Count = 23, "Expected 23 messages");
+   WAssert (T, Count = 23, "Expected 23 messages");
    Check ("reboot.msg",
           "Before you can use this program you must restart Windows");
    Check ("reboot.title",

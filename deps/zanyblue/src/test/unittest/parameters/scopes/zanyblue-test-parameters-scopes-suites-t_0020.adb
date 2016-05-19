@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Scopes.Suites)
-procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0020 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Parameters;
 
@@ -41,8 +41,8 @@ procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
 begin
    Scope.Append ("xmpl", "z");
-   WAssert (R, False, "Expected exception not raised");
+   WAssert (T, False, "Expected exception not raised");
 exception
 when Empty_Parameter_Stack =>
-   WAssert (R, True, "Expected exception raised");
+   WAssert (T, True, "Expected exception raised");
 end T_0020;

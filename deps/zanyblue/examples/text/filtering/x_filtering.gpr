@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -45,10 +46,12 @@ project X_Filtering is
    for Exec_Dir use "../../../bin";
    for Main use ("x_filtering");
 
+   Compile_Switches := ("-g", "-O3", "-gnata", "-gnatVa", "-gnatQ", "-gnaty",
+                        "-gnatwae", "-gnat2012");
+
    package Compiler is
-       for Default_Switches ("Ada") use
-              ("-g", "-O3", "-gnata", "-gnatVa", "-gnatQ", "-gnaty",
-               "-gnatwae", "-gnat05", "-gnatW8");
+       for Default_Switches ("Ada") use Compile_Switches;
+       for Switches ("messages.adb") use Compile_Switches & ("-gnatW8");
    end Compiler;
 
 end X_Filtering;

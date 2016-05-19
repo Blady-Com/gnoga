@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Values.Suites)
-procedure T_0040 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0040 (T : in out Test_Case'Class) is
 
 begin
    Discard (To_Boolean (To_List_Value (Empty_List), "xmpl"));
-   WAssert (R, False, "List -> Boolean, no exception raised");
+   WAssert (T, False, "List -> Boolean, no exception raised");
 exception
 when Not_A_Boolean_Error =>
-   WAssert (R, True, "List -> Boolean, exception raised");
+   WAssert (T, True, "List -> Boolean, exception raised");
 end T_0040;

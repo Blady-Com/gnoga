@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -104,6 +105,7 @@
 --
 
 with Ada.Calendar;
+with Ada.Text_IO;
 with Ada.Wide_Text_IO;
 with ZanyBlue.Parameters.Sets;
 with ZanyBlue.Parameters.Values;
@@ -113,7 +115,6 @@ private with Ada.Containers.Indefinite_Vectors;
 package ZanyBlue.Parameters.Scopes is
 
    use Ada.Calendar;
-   use Ada.Wide_Text_IO;
    use ZanyBlue.Parameters.Values;
    use ZanyBlue.Parameters.Sets;
 
@@ -231,7 +232,14 @@ package ZanyBlue.Parameters.Scopes is
    --  Set a parameter to a Time value.
 
    procedure Dump (Param_Stack : Parameter_Stack_Type;
-                   Destination : File_Type;
+                   Destination : Ada.Text_IO.File_Type;
+                   All_Scopes  : Boolean);
+   --  Dump the set of parameters defined in a parameter set to a file.  This
+   --  is a debugging routine: no XML quoting is currently performed on the
+   --  parameter values so the general XML might not be valid XML!
+
+   procedure Dump (Param_Stack : Parameter_Stack_Type;
+                   Destination : Ada.Wide_Text_IO.File_Type;
                    All_Scopes  : Boolean);
    --  Dump the set of parameters defined in a parameter set to a file.  This
    --  is a debugging routine: no XML quoting is currently performed on the

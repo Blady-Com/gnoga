@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -635,12 +636,17 @@ package body ZanyBlue.Text.Locales is
    -- Locale_Name --
    -----------------
 
-   function Locale_Name (Locale : Locale_Type) return Wide_String
-   is
+   function Locale_Name (Locale : Locale_Type) return Wide_String is
+      Result : constant Wide_String := Locale_Name (Locale.Language_Code,
+                                                    Locale.Script_Code,
+                                                    Locale.Territory_Code);
+      Encoding_Name : constant Wide_String := Encoding (Locale);
    begin
-      return Locale_Name (Locale.Language_Code,
-                          Locale.Script_Code,
-                          Locale.Territory_Code);
+      if Encoding_Name'Length > 0 then
+         return Result & "." & Encoding_Implementation (Locale);
+      else
+         return Result;
+      end if;
    end Locale_Name;
 
    -------------------

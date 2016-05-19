@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Exponent_Characters.Suites)
-procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0007 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("sv");
 
 begin
-   Check_Value (R, Numeric_Item (L, Exponent_Character), "×10^",
+   Check_Value (T, Numeric_Item (L, Exponent_Character), "×10^",
                 "sv Exponent");
 end T_0007;

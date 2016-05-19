@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with Ada.Calendar;
 
 separate (ZanyBlue.Test.Parameters.Scopes.Suites)
-procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0011 (T : in out Test_Case'Class) is
 
    use Ada.Calendar;
 
@@ -45,12 +45,12 @@ procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
 begin
    Scope.New_Scope;
-   WAssert (R, not Scope.Is_Defined ("t"), "'t' should not be defined");
+   WAssert (T, not Scope.Is_Defined ("t"), "'t' should not be defined");
    Scope.Set_Time ("t", Now);
-   WAssert (R, Scope.Get_Time ("t") = Now, "'t' should be Now");
+   WAssert (T, Scope.Get_Time ("t") = Now, "'t' should be Now");
    Scope.New_Scope;
    Scope.Set_Time ("t", Now1);
-   WAssert (R, Scope.Get_Time ("t") = Now1, "'t' should be Now + 1");
+   WAssert (T, Scope.Get_Time ("t") = Now1, "'t' should be Now + 1");
    Scope.End_Scope;
-   WAssert (R, Scope.Get_Time ("t") = Now, "'t' should be Now");
+   WAssert (T, Scope.Get_Time ("t") = Now, "'t' should be Now");
 end T_0011;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0003 (T : in out Test_Case'Class) is
 
    use Ada.Wide_Text_IO;
 
@@ -59,7 +59,7 @@ procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    procedure Check (V : Wide_String;
                     L : Locale_Type) is
    begin
-      Check_Value (R, Get_Text (Catalog, F, K, L), V,
+      Check_Value (T, Get_Text (Catalog, F, K, L), V,
                    "Locale """ & Locale_Name (L) & """");
    end Check;
 

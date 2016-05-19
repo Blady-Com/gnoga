@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with "aunit";
+with "ahven";
 with "zanyblue";
 with "zbcom";
 with "zbapp";
@@ -56,6 +56,40 @@ project t_zanyblue is
                         "text/characters",
                         "text/cldr",
                         "text/codecs",
+                        "text/codecs/encoding",
+                        "text/codecs/encoding/ascii",
+                        "text/codecs/encoding/cp874",
+                        "text/codecs/encoding/cp932",
+                        "text/codecs/encoding/cp936",
+                        "text/codecs/encoding/cp949",
+                        "text/codecs/encoding/cp950",
+                        "text/codecs/encoding/cp1251",
+                        "text/codecs/encoding/cp1252",
+                        "text/codecs/encoding/cp1253",
+                        "text/codecs/encoding/cp1254",
+                        "text/codecs/encoding/cp1255",
+                        "text/codecs/encoding/cp1256",
+                        "text/codecs/encoding/cp1257",
+                        "text/codecs/encoding/cp1258",
+                        "text/codecs/encoding/big5",
+                        "text/codecs/encoding/gb2312",
+                        "text/codecs/encoding/iso8859_1",
+                        "text/codecs/encoding/iso8859_2",
+                        "text/codecs/encoding/iso8859_3",
+                        "text/codecs/encoding/iso8859_4",
+                        "text/codecs/encoding/iso8859_5",
+                        "text/codecs/encoding/iso8859_6",
+                        "text/codecs/encoding/iso8859_7",
+                        "text/codecs/encoding/iso8859_8",
+                        "text/codecs/encoding/iso8859_9",
+                        "text/codecs/encoding/iso8859_10",
+                        "text/codecs/encoding/iso8859_11",
+                        "text/codecs/encoding/iso8859_13",
+                        "text/codecs/encoding/iso8859_14",
+                        "text/codecs/encoding/iso8859_15",
+                        "text/codecs/encoding/iso8859_16",
+                        "text/codecs/encoding/shift_jis",
+                        "text/codecs/encoding/utf_8",
                         "text/durations",
                         "text/exceptions",
                         "text/floats",
@@ -114,7 +148,10 @@ project t_zanyblue is
                         "text/wide_characters",
                         "text/wide_strings",
                         "utils");
-   package Compiler renames zbcom.Compiler;
+   package Compiler is
+      for Default_Switches ("Ada") use zbcom.Compile_Switches & ("-gnatW8");
+   end Compiler;
+
    package Linker renames zbapp.Linker;
 
 end t_zanyblue;

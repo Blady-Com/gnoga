@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 
 separate (ZanyBlue.Test.Text.Integers.Suites)
-procedure T_0028 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0028 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Integers;
@@ -56,24 +56,24 @@ begin
    Args.Append (Arg2);
    Args.Append (Arg3);
    Args.Append (Arg4);
-   Check_Value (R, Args.Format (0, "", "integer,d", Locale, False),
+   Check_Value (T, Args.Format (0, "", "integer,d", Locale, False),
                    "٠");
-   Check_Value (R, Args.Format (1, "", "integer,d", Locale, False),
+   Check_Value (T, Args.Format (1, "", "integer,d", Locale, False),
                    "٢٠٠٩");
-   Check_Value (R, Args.Format (2, "", "integer,d", Locale, False),
+   Check_Value (T, Args.Format (2, "", "integer,d", Locale, False),
                    "‎-٢٠٠٩");
-   Check_Value (R, Args.Format (3, "", "integer,d", Locale, False),
+   Check_Value (T, Args.Format (3, "", "integer,d", Locale, False),
                    "٢١٤٧٤٨٣٦٤٧");
-   Check_Value (R, Args.Format (4, "", "integer,d", Locale, False),
+   Check_Value (T, Args.Format (4, "", "integer,d", Locale, False),
                    "‎-٢١٤٧٤٨٣٦٤٧");
-   Check_Value (R, Args.Format (0, "", "integer,d*", Locale, False),
+   Check_Value (T, Args.Format (0, "", "integer,d*", Locale, False),
                    "0");
-   Check_Value (R, Args.Format (1, "", "integer,d*", Locale, False),
+   Check_Value (T, Args.Format (1, "", "integer,d*", Locale, False),
                    "2009");
-   Check_Value (R, Args.Format (2, "", "integer,d*", Locale, False),
+   Check_Value (T, Args.Format (2, "", "integer,d*", Locale, False),
                    "-2009");
-   Check_Value (R, Args.Format (3, "", "integer,d*", Locale, False),
+   Check_Value (T, Args.Format (3, "", "integer,d*", Locale, False),
                    "2147483647");
-   Check_Value (R, Args.Format (4, "", "integer,d*", Locale, False),
+   Check_Value (T, Args.Format (4, "", "integer,d*", Locale, False),
                    "-2147483647");
 end T_0028;

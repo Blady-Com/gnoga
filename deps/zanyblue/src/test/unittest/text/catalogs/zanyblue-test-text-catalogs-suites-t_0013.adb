@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0013 (T : in out Test_Case'Class) is
 
    L_en_US      : constant Locale_Type := Make_Locale ("en_US");
    L_fr_FR      : constant Locale_Type := Make_Locale ("fr_FR");
@@ -45,15 +45,15 @@ procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   WAssert (R, Number_Of_Locales (Catalog) = 0, "Expected 0 locales");
+   WAssert (T, Number_Of_Locales (Catalog) = 0, "Expected 0 locales");
    Add (Catalog, "myfac1", "mykey1", "myfac1/mykey1/en_US", L_en_US);
-   WAssert (R, Number_Of_Locales (Catalog) = 1, "Expected 1 locale");
+   WAssert (T, Number_Of_Locales (Catalog) = 1, "Expected 1 locale");
    Add (Catalog, "myfac2", "mykey2", "myfac2/mykey2/L_fr_FR", L_fr_FR);
-   WAssert (R, Number_Of_Locales (Catalog) = 2, "Expected 2 locales");
+   WAssert (T, Number_Of_Locales (Catalog) = 2, "Expected 2 locales");
    Add (Catalog, "myfac3", "mykey3", "myfac3/mykey3/L_en", L_en);
-   WAssert (R, Number_Of_Locales (Catalog) = 3, "Expected 3 locales");
+   WAssert (T, Number_Of_Locales (Catalog) = 3, "Expected 3 locales");
    Add (Catalog, "myfac4", "mykey4", "myfac4/mykey4/L_fr", L_fr);
-   WAssert (R, Number_Of_Locales (Catalog) = 4, "Expected 4 locales");
+   WAssert (T, Number_Of_Locales (Catalog) = 4, "Expected 4 locales");
    Add (Catalog, "myfac5", "mykey5", "myfac5/mykey5", L);
-   WAssert (R, Number_Of_Locales (Catalog) = 5, "Expected 5 locales");
+   WAssert (T, Number_Of_Locales (Catalog) = 5, "Expected 5 locales");
 end T_0013;

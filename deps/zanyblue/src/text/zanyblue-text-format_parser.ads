@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -140,7 +141,7 @@
 --
 --   Type       Meaning
 --   'e'        Exponent notation. Prints the number in scientific
---              notation using the letter ‘e’ to indicate the
+--              notation using the letter 'e' to indicate the
 --              exponent.
 --   'E'        Exponent notation. Same as 'e' except it uses an upper
 --              case 'E' as the separator character.

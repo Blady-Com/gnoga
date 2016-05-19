@@ -34,4 +34,4 @@
 
 desc Test the command invalid option
 
-execute -f -o $(nextlog) zbmcompile -X Package_Name myapp
+execute -f -o $(nextlog) zbmcompile -Z Package_Name myapp

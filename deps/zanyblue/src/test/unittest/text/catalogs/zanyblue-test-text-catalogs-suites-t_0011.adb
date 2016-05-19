@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,15 +33,15 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0011 (T : in out Test_Case'Class) is
 
    Catalog     : Catalog_Type;
 
 begin
    Catalog := Create;
    Discard (Get_Pool (Catalog));
-   WAssert (R, False, "Expected exception");
+   WAssert (T, False, "Expected exception");
 exception
 when Multiple_Pools_Error =>
-   WAssert (R, True, "Expected exception raised");
+   WAssert (T, True, "Expected exception raised");
 end T_0011;

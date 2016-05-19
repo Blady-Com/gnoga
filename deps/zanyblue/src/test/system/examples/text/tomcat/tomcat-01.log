@@ -31,6 +31,6 @@ Alias name xyz does not identify a key entry
 The JMX connector server could not be created or failed to start for the www.example.com server
 MBean xmpl already registered!
 JAAS LoginContext created for username "mrohan"
-Not an ISO 8859-1 character: ٤
+Not an ISO 8859-1 character: Ω
 MBean xmpl already registered!
 Caught exception (NullPointerException) executing WorkerThread, terminating thread

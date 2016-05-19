@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0044 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0044 (T : in out Test_Case'Class) is
 
    Test_Name : constant Wide_String := "t_0044";
    Catalog   : constant Catalog_Type := Create;
@@ -43,6 +43,6 @@ begin
    Add (Catalog, "f2", "k2", "f2-k2 message", Make_Locale ("en"));
    Add (Catalog, "f3", "k3", "f3-k3 message", Make_Locale ("fr"));
    Dump (Catalog, Test_Log_Name (Test_Area, Test_Name));
-   Check_Log_File (R, Test_Area, Test_Name,
+   Check_Log_File (T, Test_Area, Test_Name,
         "Dump of catalog with multiple messages");
 end T_0044;

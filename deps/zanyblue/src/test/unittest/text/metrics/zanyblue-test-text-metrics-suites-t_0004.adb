@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Metrics.Suites)
-procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0004 (T : in out Test_Case'Class) is
 
    fr_FR     : constant Locale_Type := Make_Locale ("fr_FR");
    Test_Name : constant Wide_String := "t_0004";
@@ -62,5 +62,5 @@ begin
    Create_Log_File (Output, Test_Area, Test_Name);
    Write_Usage (Output, Catalog);
    Close (Output);
-   Check_Log_File (R, Test_Area, Test_Name, "Multiple usage, one locale");
+   Check_Log_File (T, Test_Area, Test_Name, "Multiple usage, one locale");
 end T_0004;

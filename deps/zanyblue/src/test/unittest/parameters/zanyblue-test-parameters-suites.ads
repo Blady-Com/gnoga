@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,26 +32,17 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit.Test_Suites;
+with Ahven.Framework;
 
 package ZanyBlue.Test.Parameters.Suites is
 
-   use AUnit;
-   use AUnit.Test_Suites;
+   use Ahven.Framework;
 
-   type Test_Case is new AUnit.Test_Cases.Test_Case with null record;
-
-   overriding
-   procedure Register_Tests
-     (T : in out Test_Case);
-   --  Register routines to be run.
+   type Test is new Test_Case with null record;
 
    overriding
-   function Name
-     (T : Test_Case) return AUnit.Test_String;
-   --  Provide name identifying the test case.
+   procedure Initialize (T : in out Test);
 
-   function Suite return Access_Test_Suite;
-   --  Return the full test suite.
+   function Suite return Test_Suite;
 
 end ZanyBlue.Test.Parameters.Suites;

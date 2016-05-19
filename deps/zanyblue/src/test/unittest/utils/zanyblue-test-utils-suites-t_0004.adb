@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Utils.Suites)
-procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0004 (T : in out Test_Case'Class) is
 
 begin
-   Check_Value (R, Body_File_Name ("XYZ", GNAT_Naming_Style), "xyz.adb",
+   Check_Value (T, Body_File_Name ("XYZ", GNAT_Naming_Style), "xyz.adb",
                 "Failed to generate simple body file name");
-   Check_Value (R, Body_File_Name ("X.Y.Z", GNAT_Naming_Style), "x-y-z.adb",
+   Check_Value (T, Body_File_Name ("X.Y.Z", GNAT_Naming_Style), "x-y-z.adb",
                 "Failed to generate hierarchical body file name");
 end T_0004;

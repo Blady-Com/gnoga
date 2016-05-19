@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,12 @@
 with ZanyBlue.Text.Format_Parser;
 
 separate (ZanyBlue.Test.Text.Utils.Suites)
-procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0002 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Format_Parser;
 
 begin
-   Check_Value (R, Align ("123", '0', 5, Left), "12300", "Align Left");
-   Check_Value (R, Align ("123", '0', 5, Right), "00123", "Align Right");
-   Check_Value (R, Align ("123", '0', 5, Center), "01230", "Align Center");
+   Check_Value (T, Align ("123", '0', 5, Left), "12300", "Align Left");
+   Check_Value (T, Align ("123", '0', 5, Right), "00123", "Align Right");
+   Check_Value (T, Align ("123", '0', 5, Center), "01230", "Align Center");
 end T_0002;

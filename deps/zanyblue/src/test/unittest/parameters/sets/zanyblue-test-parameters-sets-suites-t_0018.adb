@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,16 +33,16 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Sets.Suites)
-procedure T_0018 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0018 (T : in out Test_Case'Class) is
 
    S : Parameter_Set_Type;
 
 begin
    S.Set_Name ("XMPL");
    S.Set_Integer ("i1", 2011);
-   WAssert (R, S.Get_Integer ("i1") = 2011, "Expected i1 to be 2011");
+   WAssert (T, S.Get_Integer ("i1") = 2011, "Expected i1 to be 2011");
    S.Increment ("i1");
-   WAssert (R, S.Get_Integer ("i1") = 2012, "Expected i1 to be 2012");
+   WAssert (T, S.Get_Integer ("i1") = 2012, "Expected i1 to be 2012");
    S.Increment ("i1", 10);
-   WAssert (R, S.Get_Integer ("i1") = 2022, "Expected i1 to be 2022");
+   WAssert (T, S.Get_Integer ("i1") = 2022, "Expected i1 to be 2022");
 end T_0018;

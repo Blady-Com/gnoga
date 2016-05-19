@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Catalogs;
 
 separate (ZanyBlue.Test.Text.Properties_Parser.Suites)
-procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0004 (T : in out Test_Case'Class) is
 
    use Ada.Exceptions;
    use ZanyBlue.Text;
@@ -64,11 +64,11 @@ procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Handler.Set_Catalog (Catalog);
    Parse (Handler, File_Name, Facility, Locale);
-   WAssert (R, False, "Expected exception not raised");
+   WAssert (T, False, "Expected exception not raised");
 exception
 when Error : Unicode_Escape_Error =>
-   WAssert (R, True, "Expected syntax error raised");
-   Check_Value (R, To_Wide_String (Last_N (Exception_Message (Error), 20)),
+   WAssert (T, True, "Expected syntax error raised");
+   Check_Value (T, To_Wide_String (Last_N (Exception_Message (Error), 20)),
                    "t_0004.in: 3:\u33x:x",
            "File name and line number not correctly reported");
 end T_0004;

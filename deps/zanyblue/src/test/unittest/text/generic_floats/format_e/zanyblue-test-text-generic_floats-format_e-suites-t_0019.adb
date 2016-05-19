@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,21 +35,21 @@
 with ZanyBlue.Text.Locales;
 
 separate (ZanyBlue.Test.Text.Generic_Floats.Format_E.Suites)
-procedure T_0019 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0019 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
 
    Arg     : constant Float_Argument_Type := Create (1.23456789e10);
 
 begin
-   Check_Value (R, Arg.Format ("float", "e",   Root_Locale), "1.23457E+10");
-   Check_Value (R, Arg.Format ("float", ".0e", Root_Locale), "1E+10");
-   Check_Value (R, Arg.Format ("float", ".1e", Root_Locale), "1.2E+10");
-   Check_Value (R, Arg.Format ("float", ".2e", Root_Locale), "1.23E+10");
-   Check_Value (R, Arg.Format ("float", ".3e", Root_Locale), "1.235E+10");
-   Check_Value (R, Arg.Format ("float", ".4e", Root_Locale), "1.2346E+10");
-   Check_Value (R, Arg.Format ("float", ".5e", Root_Locale), "1.23457E+10");
-   Check_Value (R, Arg.Format ("float", ".6e", Root_Locale), "1.234570E+10");
-   Check_Value (R, Arg.Format ("float", ".7e", Root_Locale), "1.2345700E+10");
-   Check_Value (R, Arg.Format ("float", ".8e", Root_Locale), "1.23457000E+10");
+   Check_Value (T, Arg.Format ("float", "e",   Root_Locale), "1.23457E+10");
+   Check_Value (T, Arg.Format ("float", ".0e", Root_Locale), "1E+10");
+   Check_Value (T, Arg.Format ("float", ".1e", Root_Locale), "1.2E+10");
+   Check_Value (T, Arg.Format ("float", ".2e", Root_Locale), "1.23E+10");
+   Check_Value (T, Arg.Format ("float", ".3e", Root_Locale), "1.235E+10");
+   Check_Value (T, Arg.Format ("float", ".4e", Root_Locale), "1.2346E+10");
+   Check_Value (T, Arg.Format ("float", ".5e", Root_Locale), "1.23457E+10");
+   Check_Value (T, Arg.Format ("float", ".6e", Root_Locale), "1.234570E+10");
+   Check_Value (T, Arg.Format ("float", ".7e", Root_Locale), "1.2345700E+10");
+   Check_Value (T, Arg.Format ("float", ".8e", Root_Locale), "1.23457000E+10");
 end T_0019;

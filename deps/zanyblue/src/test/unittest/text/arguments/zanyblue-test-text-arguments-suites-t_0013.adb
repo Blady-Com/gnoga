@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Text.Arguments.Suites)
-procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0013 (T : in out Test_Case'Class) is
 
 begin
-   Check_Value (R, Type_Name_Prefix ("enum"), "enum",
+   Check_Value (T, Type_Name_Prefix ("enum"), "enum",
                 "Expected enum prefix");
-   Check_Value (R, Type_Name_Prefix ("enum,dkfjkljdskl"), "enum",
+   Check_Value (T, Type_Name_Prefix ("enum,dkfjkljdskl"), "enum",
                 "Expected enum prefix");
 end T_0013;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,12 @@
 with ZanyBlue.Text.Locales;
 
 separate (ZanyBlue.Test.Text.Generic_Floats.Format_G.Suites)
-procedure T_0072 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0072 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
 
    Arg     : constant Float_Argument_Type := Create (7.777e+9);
 
 begin
-   Check_Value (R, Arg.Format ("float", ".5g", Root_Locale), "7.77700E+09");
+   Check_Value (T, Arg.Format ("float", ".5g", Root_Locale), "7.77700E+09");
 end T_0072;

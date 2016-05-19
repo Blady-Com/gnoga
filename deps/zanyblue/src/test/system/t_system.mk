@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -35,6 +36,7 @@
 ZBTEST=$(TOP)/bin/zbtest$E
 ZBTFILE=$(basename $(firstword $(filter-out _startup_.zbt,$(wildcard *.zbt))))
 XMLOUT=$(abspath $(TOP)/src/test/$(ZBTFILE).xml)
+ZBTESTFLAGS+=-d make $(firstword $(MAKE))
 CLEAN_DIRS+=$(wildcard test-area)
 # Test subdirectories have Makefiles
 TEST_DIRS=$(foreach i,$(wildcard *),$(if $(realpath $(wildcard $i/Makefile)),$i))

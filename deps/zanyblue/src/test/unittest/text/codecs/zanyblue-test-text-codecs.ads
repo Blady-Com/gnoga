@@ -32,6 +32,40 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+with Ahven.Framework;
+with ZanyBlue.Text.Codecs;
+
 package ZanyBlue.Test.Text.Codecs is
+
+   use Ahven.Framework;
+   use ZanyBlue.Text.Codecs;
+
+   procedure Check_Encoding (T   : in out Test_Case'Class;
+                             CS  : Codecs_Type;
+                             WCh : Wide_Character;
+                             Ch  : Character);
+
+   procedure Check_Encoding (T   : in out Test_Case'Class;
+                             CS  : Codecs_Type;
+                             WCh : Wide_Character;
+                             Ch1 : Character;
+                             Ch2 : Character);
+
+   procedure Check_Encoding (T   : in out Test_Case'Class;
+                             CS  : Codecs_Type;
+                             WCP : Natural;
+                             CP  : Natural);
+
+   procedure Check_Encoding (T   : in out Test_Case'Class;
+                             CS  : Codecs_Type;
+                             WCP : Natural;
+                             CP1 : Natural;
+                             CP2 : Natural);
+
+   procedure Check_Encoding (T   : in out Test_Case'Class;
+                             CS  : Codecs_Type;
+                             WCh : Wide_Character;
+                             CP1 : Natural;
+                             CP2 : Natural);
 
 end ZanyBlue.Test.Text.Codecs;

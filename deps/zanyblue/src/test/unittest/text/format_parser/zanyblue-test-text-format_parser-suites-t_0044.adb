@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with Ada.Exceptions;
 
 separate (ZanyBlue.Test.Text.Format_Parser.Suites)
-procedure T_0044 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0044 (T : in out Test_Case'Class) is
 
    use Ada.Exceptions;
    use ZanyBlue.Text;
@@ -45,12 +45,12 @@ procedure T_0044 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
 begin
    Maximum_Field_Width (10);
-   Check_Value (R, To_String (Parse (Format_Spec, Locale)), "",
+   Check_Value (T, To_String (Parse (Format_Spec, Locale)), "",
            "Expected field width exception on parsing 100d");
    Maximum_Field_Width (100);
 exception
 when Error : Field_Too_Wide_Error =>
    Maximum_Field_Width (100);
-   WAssert (R, True, "Expected field width exception raised");
-   Check_Value (R, To_Wide_String (Exception_Message (Error)), " 100");
+   WAssert (T, True, "Expected field width exception raised");
+   Check_Value (T, To_Wide_String (Exception_Message (Error)), " 100");
 end T_0044;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,18 +32,11 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+with Ahven.Framework;
 with Ada.Calendar;
 with Ada.Wide_Text_IO;
-with AUnit.Test_Cases;
-with AUnit.Reporter;
 
 package ZanyBlue.Test is
-
-   use AUnit.Test_Cases;
-
-   procedure Add_Routine (Test    : in out Test_Case'Class;
-                          Routine : Test_Routine;
-                          Name    : String);
 
    --  Following are useful during testing when we are not interested
    --  in a string value but need to generate it, e.g., when we expect
@@ -55,16 +48,16 @@ package ZanyBlue.Test is
    procedure Discard (Value      : Ada.Calendar.Time);
    procedure Discard (Value      : Boolean);
 
-   procedure Check_Value (Test      : in out AUnit.Test_Cases.Test_Case'Class;
+   procedure Check_Value (Test      : in out Ahven.Framework.Test_Case'Class;
                           Generated : Wide_String;
                           Expected  : Wide_String;
                           Message   : Wide_String := "Failure");
 
-   procedure WAssert (Test      : in out AUnit.Test_Cases.Test_Case'Class;
+   procedure WAssert (Test      : in out Ahven.Framework.Test_Case'Class;
                       Condition : Boolean;
                       Message   : Wide_String);
 
-   procedure Check_Log_File (Test    : in out AUnit.Test_Cases.Test_Case'Class;
+   procedure Check_Log_File (Test    : in out Ahven.Framework.Test_Case'Class;
                              Test_Area : Wide_String;
                              Test_Name : Wide_String;
                              Message   : Wide_String);
@@ -91,8 +84,6 @@ package ZanyBlue.Test is
 
    Usage_Error : exception;
 
-   function Use_XML return Boolean;
    function Top_Directory return Wide_String;
-   function Reporter_Implementation return AUnit.Reporter.Reporter'Class;
 
 end ZanyBlue.Test;

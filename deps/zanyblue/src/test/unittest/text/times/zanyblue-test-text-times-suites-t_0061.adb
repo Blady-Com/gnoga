@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ with Ada.Calendar.Time_Zones;
 with ZanyBlue.Text.Locales;
 
 separate (ZanyBlue.Test.Text.Times.Suites)
-procedure T_0061 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0061 (T : in out Test_Case'Class) is
 
    use Ada.Calendar;
    use Ada.Calendar.Time_Zones;
@@ -57,7 +57,7 @@ procedure T_0061 (R : in out AUnit.Test_Cases.Test_Case'Class) is
       Arg1      : constant Time_Argument_Type := Create (V1, -60);
 
    begin
-      Check_Value (R, Arg1.Format (Type_Name, Template, Locale), Value,
+      Check_Value (T, Arg1.Format (Type_Name, Template, Locale), Value,
                    """" & Type_Name & "/" & Template & """ format");
    end Check;
 

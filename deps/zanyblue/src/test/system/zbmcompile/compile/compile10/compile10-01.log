@@ -17,6 +17,7 @@
   <parameter name="disable_checks" type="boolean" value="false" />
   <parameter name="optimize" type="boolean" value="false" />
   <parameter name="output_directory" type="string" value="." />
+  <parameter name="ascii_only" type="boolean" value="false" />
   <parameter name="verbose" type="boolean" value="false" />
   <parameter name="extension" type="string" value="messages" />
   <parameter name="n_facilities" type="integer" value="2" />
@@ -27,6 +28,7 @@
   <parameter name="base_locale" type="boolean" value="false" />
   <parameter name="pool_size" type="integer" value="60" />
   <parameter name="debug" type="boolean" value="true" />
+  <parameter name="invalid_ada_key_handler" type="string" value="error" />
   <parameter name="mesg_dirs" type="list">
     <value>mesg1</value>
     <value>mesg2</value>

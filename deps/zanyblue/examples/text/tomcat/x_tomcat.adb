@@ -1,8 +1,8 @@
---  -*- encoding: utf-8 -*-
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -90,11 +90,12 @@ procedure X_Tomcat is
    Alias : constant Wide_String := "xyz";
    Server : constant Wide_String := "www.example.com";
    User : constant Wide_String := "mrohan";
-   WCh : constant Wide_Character := '٤';
+   Omega : constant Wide_Character := Wide_Character'Val (16#03A9#);  -- Ω
    Ex_Name : constant Wide_String := "NullPointerException";
    Th_Name : constant Wide_String := "WorkerThread";
 
 begin
+   Disable_Wide_IO;
    Print_Line ("This is TOMCAT, Version {0}.{1}.{2} - {3}",
                +ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
                +ZanyBlue.Version_Patch, +ZanyBlue.Version_Status);
@@ -132,7 +133,7 @@ begin
                          +Server);
    Print_Line ("membership", "cluster.mbean.register.already", +Bean);
    Print_Line ("realm", "jaasRealm.loginContextCreated", +User);
-   Print_Line ("servlet", "err.not_iso8859_1", +WCh);
+   Print_Line ("servlet", "err.not_iso8859_1", +Omega);
    Print_Line ("tribes", "cluster.mbean.register.already", +Bean);
    Print_Line ("util-threads", "threadpool.thread_error", +Ex_Name, +Th_Name);
 exception

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0028 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0028 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
@@ -46,14 +46,14 @@ procedure T_0028 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   Check_Value (R, Get_Pool (Catalog), "", "Expected an empty pool");
+   Check_Value (T, Get_Pool (Catalog), "", "Expected an empty pool");
    Add (Catalog, "myfac1", "mykey1", Pool1, 1, 5, L_en_US);
    Query_Message (Catalog, 1, 1, 1, First, Last);
-   WAssert (R, First = 1, "Query message did not return First = 1");
-   WAssert (R, Last = 5, "Query message did not return Last = 5");
+   WAssert (T, First = 1, "Query message did not return First = 1");
+   WAssert (T, Last = 5, "Query message did not return Last = 5");
    Query_Message (Catalog, 2, 1, 1, First, Last);
-   WAssert (R, False, "Expected No_Such_Message_Error exception not raised");
+   WAssert (T, False, "Expected No_Such_Message_Error exception not raised");
 exception
 when No_Such_Message_Error =>
-   WAssert (R, True, "Expected No_Such_Message_Error exception raised");
+   WAssert (T, True, "Expected No_Such_Message_Error exception raised");
 end T_0028;

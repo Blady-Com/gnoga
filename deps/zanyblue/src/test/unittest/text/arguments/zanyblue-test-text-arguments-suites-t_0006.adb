@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Strings;
 
 separate (ZanyBlue.Test.Text.Arguments.Suites)
-procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0006 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text;
    use ZanyBlue.Text.Locales;
@@ -46,11 +46,11 @@ procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    List : Argument_List;
 
 begin
-   WAssert (R, List.Length = 0, "Length of emtpy list is not 0");
+   WAssert (T, List.Length = 0, "Length of emtpy list is not 0");
    Append (List, +String'("String#0"));
-   WAssert (R, List.Length = 1, "Length is not 1");
-   Check_Value (R, List.Format (0, "", "", Locale, False), "String#0",
+   WAssert (T, List.Length = 1, "Length is not 1");
+   Check_Value (T, List.Format (0, "", "", Locale, False), "String#0",
            "Format valid argument");
-   Check_Value (R, List.Format (1, "", "xyz", Locale, False), "⁅1⁆",
+   Check_Value (T, List.Format (1, "", "xyz", Locale, False), "⁅1⁆",
            "Format missing argument");
 end T_0006;

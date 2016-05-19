@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -41,11 +42,6 @@ DOCSUBST=$(SRCDIR)/bin/docsubst.py
 MKNOTICES=$(SRCDIR)/bin/mknotices.py
 MKDEFSHTI=$(SRCDIR)/bin/mkdefshti.pl
 DEFSHTI=$(SRCDIR)/doc/website/defs.hti
-GNATHTMLFLAGS+=-I$(INCDIR)
-GNATHTMLFLAGS+=-I$(LIBDIR)
-GNATHTMLFLAGS+=-o $(HTMLREFDIR)
-GNATHTMLFLAGS+=-ext html
-GNATHTMLFLAGS+=-l 5
 LABELSPL=$(TOP)/doc/zanyblue/labels.pl
 DOCSUBSTFLAGS+=ZB_VERSION="$(VERSION)"
 DOCSUBSTFLAGS+=ZB_STATUS="$(V_STATUS)"
@@ -88,7 +84,7 @@ html:	zbdefs.tex $(HTMLREFDIR)
 	rm -rf $(HTMLDIR)
 	mkdir $(HTMLDIR)
 	latex2html -local_icons -dir $(HTMLDIR) zanyblue.tex 
-	$(GNATHTML) $(GNATHTMLFLAGS) $(ZBFILES)
+	$(GNATDOC) -P$(SRCDIR)/zblib
 
 notices:
 	$(MKNOTICES)

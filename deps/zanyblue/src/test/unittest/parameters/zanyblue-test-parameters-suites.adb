@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -42,31 +42,25 @@ package body ZanyBlue.Test.Parameters.Suites is
    use ZanyBlue.Parameters;
    use ZanyBlue.Test.Parameters;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class);
+   procedure T_0001 (T : in out Test_Case'Class);
 
    overriding
-   function Name (T : Test_Case) return Test_String is
-      pragma Unreferenced (T);
+   procedure Initialize (T : in out Test) is
    begin
-      return Format ("ZanyBlue.Parameters");
-   end Name;
+      Set_Name (T, "ZanyBlue.Parameters");
+      Add_Test_Routine (T, T_0001'Access, "T_0001, Empty_List");
+   end Initialize;
 
-   overriding
-   procedure Register_Tests (T : in out Test_Case) is
+   function Suite return Test_Suite is
    begin
-      Add_Routine (T, T_0001'Access, "T_0001, Empty_List");
-   end Register_Tests;
-
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Add_Test (Result, Values.Suites.Suite);
-      Add_Test (Result, Sets.Suites.Suite);
-      Add_Test (Result, Scopes.Suites.Suite);
-      Add_Test (Result, new Test_Case);
-      return Result;
+      return S : Test_Suite do
+         Add_Static_Test (S, Values.Suites.Suite);
+         Add_Static_Test (S, Sets.Suites.Suite);
+         Add_Static_Test (S, Scopes.Suites.Suite);
+         Add_Test (S, new Test);
+      end return;
    end Suite;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
+   procedure T_0001 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Parameters.Suites;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0034 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0034 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
@@ -46,19 +46,19 @@ procedure T_0034 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   Check_Value (R, Get_Pool (Catalog), "", "Expected an empty pool");
+   Check_Value (T, Get_Pool (Catalog), "", "Expected an empty pool");
    Add (Catalog, "myfac1", "mykey1", "abcd", L_en_US);
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey1", L_en_US), "abcd",
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey1", L_en_US), "abcd",
            "Expected myfac1/mykey1 = abcde");
    Add (Catalog, "myfac1", "mykey2", "efgh", L_en_US);
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey2", L_en_US), "efgh",
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey2", L_en_US), "efgh",
            "Expected myfac1/mykey2 = efgh");
    Add (Catalog, "myfac2", "mykey1", "xyz", L_en_US);
-   Check_Value (R, Get_Text (Catalog, "myfac2", "mykey1", L_en_US), "xyz",
+   Check_Value (T, Get_Text (Catalog, "myfac2", "mykey1", L_en_US), "xyz",
            "Expected myfac2/mykey1 = xyz");
    Query_Message (Catalog, 2, 2, 1, First, Last);
-   WAssert (R, False, "Query_Message should have raised an exception");
+   WAssert (T, False, "Query_Message should have raised an exception");
 exception
 when No_Such_Message_Error =>
-   WAssert (R, True, "Query_Message raised an exception");
+   WAssert (T, True, "Query_Message raised an exception");
 end T_0034;

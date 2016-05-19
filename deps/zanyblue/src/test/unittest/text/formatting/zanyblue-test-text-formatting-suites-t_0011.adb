@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0011 (T : in out Test_Case'Class) is
 
    Test_Name : constant Wide_String := "t_0011";
    Filename  : constant Wide_String := Test_Log_Name (Test_Area, Test_Name);
@@ -43,6 +43,6 @@ begin
    Wide_Create (Output, Filename);
    New_Line (Output, Spacing => 5);
    Close (Output);
-   Check_Log_File (R, Test_Area, Test_Name,
+   Check_Log_File (T, Test_Area, Test_Name,
            "File Create/New_Line/Close failed");
 end T_0011;

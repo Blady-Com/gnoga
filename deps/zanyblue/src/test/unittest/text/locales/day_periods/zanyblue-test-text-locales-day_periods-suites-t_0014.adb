@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Day_Periods.Suites)
-procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0014 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("de");
 
@@ -47,7 +47,7 @@ procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class) is
       Val : constant Day_Period_Type := Day_Period_For_Time (L,
                                                              Hour, Minute, 0);
    begin
-      WAssert (R, Val = Period,
+      WAssert (T, Val = Period,
                Locale_Name (L)
                & Hour_Type'Wide_Image (Hour)
                & "h "

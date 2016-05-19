@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Text.Utils.Suites)
-procedure T_0016 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0016 (T : in out Test_Case'Class) is
 
 begin
-   WAssert (R, Starts_With ("ABCD", 1, "ABC"), "ABDC starts with ABC");
-   WAssert (R, not Starts_With ("ABCD", 1, "XYZ"), "ABDC starts with XYZ");
-   WAssert (R, not Starts_With ("AXYZ", 1, "XYZ"), "AXYZ starts with XYZ");
-   WAssert (R, Starts_With ("AXYZ", 2, "XYZ"), "AXYZ/2 starts with XYZ");
+   WAssert (T, Starts_With ("ABCD", 1, "ABC"), "ABDC starts with ABC");
+   WAssert (T, not Starts_With ("ABCD", 1, "XYZ"), "ABDC starts with XYZ");
+   WAssert (T, not Starts_With ("AXYZ", 1, "XYZ"), "AXYZ starts with XYZ");
+   WAssert (T, Starts_With ("AXYZ", 2, "XYZ"), "AXYZ/2 starts with XYZ");
 end T_0016;

@@ -1,8 +1,8 @@
---  -*- encoding: utf-8 -*-
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
 --
 
 with Ada.Command_Line;
-with Messages.Xmpl_Wide_Prints;
+with Messages.Xmpl_Prints;
 with ZanyBlue.Text.Formatting;
 with ZanyBlue.Text.Version_Status_Arguments;
 with My_Filter;
@@ -42,7 +42,7 @@ with My_Filter;
 procedure X_Filtering is
 
    use Ada.Command_Line;
-   use Messages.Xmpl_Wide_Prints;
+   use Messages.Xmpl_Prints;
    use ZanyBlue.Text.Formatting;
    use ZanyBlue.Text.Version_Status_Arguments;
    use My_Filter;

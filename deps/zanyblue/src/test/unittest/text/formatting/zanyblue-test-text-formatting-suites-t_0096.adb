@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Catalogs;
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0096 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0096 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Catalogs;
 
@@ -55,11 +55,11 @@ procedure T_0096 (R : in out AUnit.Test_Cases.Test_Case'Class) is
       Create_Log_File (Output, Test_Area, Name);
       Print (Output, Facility, Key, +10, Locale => Locale);
       Close (Output);
-      WAssert (R, False, "Exception not raised");
+      WAssert (T, False, "Exception not raised");
    exception
    when No_Such_Argument_Error =>
       Close (Output);
-      WAssert (R, True, "Expected exception raised");
+      WAssert (T, True, "Expected exception raised");
    end With_Exceptions;
 
    procedure Without_Exception (Name : Wide_String) is
@@ -75,9 +75,9 @@ procedure T_0096 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Add (Standard_Catalog, Facility, Key, Message, Locale);
    With_Exceptions (Test_Name & "a");
-   Check_Log_File (R, Test_Area, Test_Name & "a",
+   Check_Log_File (T, Test_Area, Test_Name & "a",
            "Should be empty from exception");
    Without_Exception (Test_Name & "b");
-   Check_Log_File (R, Test_Area, Test_Name & "b",
+   Check_Log_File (T, Test_Area, Test_Name & "b",
            "Exception output failure");
 end T_0096;

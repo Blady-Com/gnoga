@@ -6,6 +6,7 @@ Usage: zbmcompile [ options ] package facility
 where available options are
   -q             Quiet mode
   -v             Verbose mode
+  -A             Generate only ASCII source files
   -m             Always include argument modes in generated code
   -p             Number list entries (gnatcheck +RPositional_Components)
   -D             Debug mode (dump the catalog definitions)
@@ -27,3 +28,4 @@ where available options are
   -G name        Generate named accessor ([w]prints, [w]strings, exceptions)
   -C             Disable comments on generated accessor routines
   -T item size   Set the size of an Ada output limit: pool or comment
+  -X handling    Handling of non-Ada keys for accessors (error, ignore)

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0026 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0026 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
@@ -46,9 +46,9 @@ procedure T_0026 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Add (Catalog, "myfac1", "mykey1", Pool1, 1, 5, L_en_US);
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey1", L_en_US), "abcde");
-   Check_Value (R, Get_Text (Catalog, "myfac1", "mykey1", L_en), "");
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey1", L_en_US), "abcde");
+   Check_Value (T, Get_Text (Catalog, "myfac1", "mykey1", L_en), "");
 exception
 when No_Such_Message_Error =>
-   WAssert (R, True, "Expected No_Such_Message exception raised");
+   WAssert (T, True, "Expected No_Such_Message exception raised");
 end T_0026;

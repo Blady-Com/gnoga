@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Suites)
-procedure T_0023 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0023 (T : in out Test_Case'Class) is
 
 begin
-   WAssert (R, Is_Locale_Defined ("en", "", ""),
+   WAssert (T, Is_Locale_Defined ("en", "", ""),
              "Expected en locale to be defined");
 end T_0023;

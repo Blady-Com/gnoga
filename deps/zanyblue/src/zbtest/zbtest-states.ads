@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +34,7 @@
 --
 
 with Ada.Calendar;
-with Ada.Wide_Text_IO;
+with Ada.Text_IO;
 with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Parameters.Values;
 
@@ -41,7 +42,7 @@ private with ZanyBlue.Parameters.Scopes;
 
 package ZBTest.States is
 
-   use Ada.Wide_Text_IO;
+   use Ada.Text_IO;
    use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Parameters;
    use ZanyBlue.Parameters.Values;

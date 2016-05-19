@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,25 +33,25 @@
 --
 
 separate (ZanyBlue.Test.Text.CLDR.Suites)
-procedure T_0019 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0019 (T : in out Test_Case'Class) is
 
    L_Name : constant Wide_String := "zh";
    L : constant Locale_Type := Make_Locale (L_Name);
 
 begin
-   Check_Value (R, Full_Locale_Name (Make_Locale (""), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale (""), L),
                 "根语言",
                 L_Name & " full locale name for base");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("en"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("en"), L),
                 "英文",
                 L_Name & " full locale name for en");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("en_US"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("en_US"), L),
                 "英文 (美国)",
                 L_Name & " full locale name for en_US");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("fr"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("fr"), L),
                 "法文",
                 L_Name & " full locale name for fr");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("fr_CA"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("fr_CA"), L),
                 "法文 (加拿大)",
                 L_Name & " full locale name for fr_CA");
 end T_0019;

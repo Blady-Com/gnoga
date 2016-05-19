@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -106,5 +107,9 @@ package ZBMCompile is
                        Argument3  : Argument_Type'Class := Null_Argument;
                        Argument4  : Argument_Type'Class := Null_Argument);
    --  Print a message if the given condition is true.
+
+   function Is_Ada_Identifier_OK (Name : Wide_String) return Boolean;
+   --  Is the given name a valid Ada identifier name?  Leading digits are
+   --  OK as the name will be prefixed with standard prefixes later.
 
 end ZBMCompile;

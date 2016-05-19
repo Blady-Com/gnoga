@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -41,11 +42,11 @@
 --
 
 with Ada.Command_Line;
-with ZanyBlue.OS;
+with ZanyBlue.Text;
 
 package body ZanyBlue.Wide_Command_Line is
 
-   use ZanyBlue.OS;
+   use ZanyBlue.Text;
    use Ada.Command_Line;
 
    -------------------

@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +34,7 @@
 --
 
 with Ada.Calendar;
-with Ada.Wide_Text_IO;
+with Ada.Text_IO;
 with Ada.Command_Line;
 with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Utils;
@@ -41,18 +42,18 @@ with ZanyBlue.Text.Formatting;
 with ZanyBlue.Wide_Command_Line;
 with ZBTest.States;
 with ZBTest_Messages.ZBTest_Exceptions;
-with ZBTest_Messages.ZBTest_Wide_Prints;
+with ZBTest_Messages.ZBTest_Prints;
 
 procedure ZBTest.Main is
 
-   use Ada.Wide_Text_IO;
+   use Ada.Text_IO;
    use ZanyBlue.Text;
    use ZanyBlue.Utils;
    use ZanyBlue.Text.Formatting;
    use ZanyBlue.Wide_Command_Line;
    use ZBTest.States;
    use ZBTest_Messages.ZBTest_Exceptions;
-   use ZBTest_Messages.ZBTest_Wide_Prints;
+   use ZBTest_Messages.ZBTest_Prints;
 
    Usage_Error : exception;
 
@@ -71,6 +72,10 @@ procedure ZBTest.Main is
                                   Index     : in out Positive);
 
       procedure Set_Parameter_Value (Index     : in out Positive);
+
+      ---------------------
+      -- Handle_Argument --
+      ---------------------
 
       procedure Handle_Argument (Value : Wide_String;
                                  Index : in out Positive) is
@@ -111,6 +116,10 @@ procedure ZBTest.Main is
             Raise_10015 (Usage_Error'Identity, +Wide_Argument (Index));
          end if;
       end Set_Option_Value;
+
+      -------------------------
+      -- Set_Parameter_Value --
+      -------------------------
 
       procedure Set_Parameter_Value (Index : in out Positive) is
       begin

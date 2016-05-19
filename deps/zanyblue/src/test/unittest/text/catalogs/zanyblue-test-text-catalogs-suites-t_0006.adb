@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0006 (T : in out Test_Case'Class) is
 
    Locale      : constant Locale_Type := Make_Locale ("en_US");
    Catalog     : Catalog_Type;
@@ -41,25 +41,25 @@ procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    procedure Check_Extra_Indexes;
    procedure Check_Extra_Indexes is
    begin
-      WAssert (R, Get_Facility (Catalog, 3) = "nosuchfac",
+      WAssert (T, Get_Facility (Catalog, 3) = "nosuchfac",
                "Exception not raised!");
    exception
    when No_Such_Facility_Error =>
-      WAssert (R, True, "Exception raised");
+      WAssert (T, True, "Exception raised");
    end Check_Extra_Indexes;
 
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   WAssert (R, Number_Of_Facilities (Catalog) = 0, "Expected 0 facility");
+   WAssert (T, Number_Of_Facilities (Catalog) = 0, "Expected 0 facility");
    Add (Catalog, "myfac1", "mykey1", "My Message", Locale);
-   WAssert (R, Get_Facility (Catalog, 1) = "myfac1",
+   WAssert (T, Get_Facility (Catalog, 1) = "myfac1",
             "Expected facility name myfac1");
    Add (Catalog, "myfac1", "mykey2", "My Message", Locale);
-   WAssert (R, Get_Facility (Catalog, 1) = "myfac1",
+   WAssert (T, Get_Facility (Catalog, 1) = "myfac1",
             "Expected facility name myfac1");
    Add (Catalog, "myfac2", "mykey1", "My Message", Locale);
-   WAssert (R, Get_Facility (Catalog, 2) = "myfac2",
+   WAssert (T, Get_Facility (Catalog, 2) = "myfac2",
             "Expected facility name myfac1");
    Check_Extra_Indexes;
 end T_0006;

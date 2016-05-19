@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,10 +33,10 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Suites)
-procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0013 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("fr_001");
 
 begin
-   Check_Value (R, Territory (L), "001", "Expected 001 terrority code");
+   Check_Value (T, Territory (L), "001", "Expected 001 terrority code");
 end T_0013;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Text.Utils.Suites)
-procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0010 (T : in out Test_Case'Class) is
 
    Value : Wide_String := "ABC";
 
 begin
    ASCII_Uppercase (Value);
-   Check_Value (R, Value, "ABC");
+   Check_Value (T, Value, "ABC");
 end T_0010;

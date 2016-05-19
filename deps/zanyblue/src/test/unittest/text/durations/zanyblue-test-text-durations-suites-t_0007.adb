@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 
 separate (ZanyBlue.Test.Text.Durations.Suites)
-procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0007 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Durations;
@@ -58,20 +58,20 @@ begin
    Args.Append (Arg2);
    Args.Append (Arg3);
    Args.Append (Arg4);
-   Check_Value (R, Args.Format (0, "", "duration,", Locale, False),
+   Check_Value (T, Args.Format (0, "", "duration,", Locale, False),
                    "٠:٠٠:٠٠.٠٠٠");
-   Check_Value (R, Args.Format (1, "", "duration,", Locale, False),
+   Check_Value (T, Args.Format (1, "", "duration,", Locale, False),
                    "٠:٠١:٠١.٠٠٠");
-   Check_Value (R, Args.Format (2, "", "duration,", Locale, False),
+   Check_Value (T, Args.Format (2, "", "duration,", Locale, False),
                    "١:٠١:٠١.٠٠٠");
-   Check_Value (R, Args.Format (3, "", "duration,", Locale, False),
+   Check_Value (T, Args.Format (3, "", "duration,", Locale, False),
                    "١ ١:٠١:٠١.٠٠٠");
-   Check_Value (R, Args.Format (0, "", "duration,*", Locale, False),
+   Check_Value (T, Args.Format (0, "", "duration,*", Locale, False),
                    "0:00:00.000");
-   Check_Value (R, Args.Format (1, "", "duration,*", Locale, False),
+   Check_Value (T, Args.Format (1, "", "duration,*", Locale, False),
                    "0:01:01.000");
-   Check_Value (R, Args.Format (2, "", "duration,*", Locale, False),
+   Check_Value (T, Args.Format (2, "", "duration,*", Locale, False),
                    "1:01:01.000");
-   Check_Value (R, Args.Format (3, "", "duration,*", Locale, False),
+   Check_Value (T, Args.Format (3, "", "duration,*", Locale, False),
                    "1 1:01:01.000");
 end T_0007;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,33 +33,33 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Months.Suites)
-procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0011 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("zh");
 
 begin
-   Check_Value (R, Full_Month_Name (L, Jan), "一月",
+   Check_Value (T, Full_Month_Name (L, Jan), "一月",
                 "zh (Hans) full month name, Jan");
-   Check_Value (R, Full_Month_Name (L, Feb), "二月",
+   Check_Value (T, Full_Month_Name (L, Feb), "二月",
                 "zh (Hans) full month name, Feb");
-   Check_Value (R, Full_Month_Name (L, Mar), "三月",
+   Check_Value (T, Full_Month_Name (L, Mar), "三月",
                 "zh (Hans) full month name, Mar");
-   Check_Value (R, Full_Month_Name (L, Apr), "四月",
+   Check_Value (T, Full_Month_Name (L, Apr), "四月",
                 "zh (Hans) full month name, Apr");
-   Check_Value (R, Full_Month_Name (L, May), "五月",
+   Check_Value (T, Full_Month_Name (L, May), "五月",
                 "zh (Hans) full month name, May");
-   Check_Value (R, Full_Month_Name (L, Jun), "六月",
+   Check_Value (T, Full_Month_Name (L, Jun), "六月",
                 "zh (Hans) full month name, Jun");
-   Check_Value (R, Full_Month_Name (L, Jul), "七月",
+   Check_Value (T, Full_Month_Name (L, Jul), "七月",
                 "zh (Hans) full month name, Jul");
-   Check_Value (R, Full_Month_Name (L, Aug), "八月",
+   Check_Value (T, Full_Month_Name (L, Aug), "八月",
                 "zh (Hans) full month name, Aug");
-   Check_Value (R, Full_Month_Name (L, Sep), "九月",
+   Check_Value (T, Full_Month_Name (L, Sep), "九月",
                 "zh (Hans) full month name, Sep");
-   Check_Value (R, Full_Month_Name (L, Oct), "十月",
+   Check_Value (T, Full_Month_Name (L, Oct), "十月",
                 "zh (Hans) full month name, Oct");
-   Check_Value (R, Full_Month_Name (L, Nov), "十一月",
+   Check_Value (T, Full_Month_Name (L, Nov), "十一月",
                 "zh (Hans) full month name, Nov");
-   Check_Value (R, Full_Month_Name (L, Dec), "十二月",
+   Check_Value (T, Full_Month_Name (L, Dec), "十二月",
                 "zh (Hans) full month name, Dec");
 end T_0011;

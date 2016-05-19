@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,57 +32,50 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit;
 with ZanyBlue.Text.Generic_Buffer;
 pragma Elaborate_All (ZanyBlue.Text.Generic_Buffer);
 
 package body ZanyBlue.Test.Text.Generic_Buffer.Suites is
 
+   use Ahven.Framework;
+
    type My_Integer is new Integer range 1964 .. 296400;
    package My_Buffer is
       new ZanyBlue.Text.Generic_Buffer (My_Integer);
 
-   use AUnit;
    use My_Buffer;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class);
+   procedure T_0001 (T : in out Test_Case'Class);
+   procedure T_0002 (T : in out Test_Case'Class);
+   procedure T_0003 (T : in out Test_Case'Class);
+   procedure T_0004 (T : in out Test_Case'Class);
+   procedure T_0005 (T : in out Test_Case'Class);
+   procedure T_0006 (T : in out Test_Case'Class);
 
    overriding
-   function Name (T : Test_Case) return Test_String is
-      pragma Unreferenced (T);
+   procedure Initialize (T : in out Test) is
    begin
-      return Format ("ZanyBlue.Text.Generic_Buffer");
-   end Name;
+      Set_Name (T, "ZanyBlue.Text.Generic_Buffer");
+      Add_Test_Routine (T, T_0001'Access, "T_0001, Empty buffer");
+      Add_Test_Routine (T, T_0002'Access, "T_0002, Simple add");
+      Add_Test_Routine (T, T_0003'Access, "T_0003, Accumulate w/ Width");
+      Add_Test_Routine (T, T_0004'Access, "T_0004, Accumulate w/ Base");
+      Add_Test_Routine (T, T_0005'Access, "T_0005, Accumulate w/ Lower Base");
+      Add_Test_Routine (T, T_0006'Access, "T_0006, Accumulate w/ Upper Base");
+   end Initialize;
 
-   --  Register test routines to call:
-   overriding
-   procedure Register_Tests (T : in out Test_Case) is
+   function Suite return Test_Suite is
    begin
-      Add_Routine (T, T_0001'Access, "T_0001, Empty buffer");
-      Add_Routine (T, T_0002'Access, "T_0002, Simple add");
-      Add_Routine (T, T_0003'Access, "T_0003, Accumulate w/ Width");
-      Add_Routine (T, T_0004'Access, "T_0004, Accumulate w/ Base");
-      Add_Routine (T, T_0005'Access, "T_0005, Accumulate w/ Lower Base");
-      Add_Routine (T, T_0006'Access, "T_0006, Accumulate w/ Upper Base");
-   end Register_Tests;
-
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Add_Test (Result, new Test_Case);
-      return Result;
+      return S : Test_Suite do
+         Add_Test (S, new Test);
+      end return;
    end Suite;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
+   procedure T_0001 (T : in out Test_Case'Class) is separate;
+   procedure T_0002 (T : in out Test_Case'Class) is separate;
+   procedure T_0003 (T : in out Test_Case'Class) is separate;
+   procedure T_0004 (T : in out Test_Case'Class) is separate;
+   procedure T_0005 (T : in out Test_Case'Class) is separate;
+   procedure T_0006 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Text.Generic_Buffer.Suites;

@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -79,8 +80,51 @@ package body ZanyBlue.Parameters.Scopes is
    ----------
 
    procedure Dump (Param_Stack : Parameter_Stack_Type;
-                   Destination : File_Type;
+                   Destination : Ada.Text_IO.File_Type;
                    All_Scopes  : Boolean) is
+
+      use Ada.Text_IO;
+
+      procedure Dump_Set (Params : Parameter_Set_Type);
+      --  Helper routine used to dump an individual parameter set.
+
+      Level : Natural := 0;
+
+      --------------
+      -- Dump_Set --
+      --------------
+
+      procedure Dump_Set (Params : Parameter_Set_Type) is
+      begin
+         Params.Dump (Destination, Level => Level);
+      end Dump_Set;
+
+   begin
+      if All_Scopes then
+         Level := 1;
+         Put_Line (Destination, "<parameter-stack>");
+         for Index in 1 .. Top_Index (Param_Stack) loop
+            Query_Element (Param_Stack.Values,
+                           Index,
+                           Dump_Set'Access);
+         end loop;
+         Put_Line (Destination, "</parameter-stack>");
+      else
+         Query_Element (Param_Stack.Values,
+                        Top_Index (Param_Stack),
+                        Dump_Set'Access);
+      end if;
+   end Dump;
+
+   ----------
+   -- Dump --
+   ----------
+
+   procedure Dump (Param_Stack : Parameter_Stack_Type;
+                   Destination : Ada.Wide_Text_IO.File_Type;
+                   All_Scopes  : Boolean) is
+
+      use Ada.Wide_Text_IO;
 
       procedure Dump_Set (Params : Parameter_Set_Type);
       --  Helper routine used to dump an individual parameter set.

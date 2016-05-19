@@ -1,0 +1,13 @@
+This is ZBMCompile, Version .* on .*
+Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
+Loaded 2 messages for the facility "xmpl2" (1 locales)
+Performing consistency checks for the facility "xmpl2"
+Performing consistency checks for the accessor package generation
+The key "msg.a" is not a valid Ada identifier (ignoring it)
+The key "msg.b" is not a valid Ada identifier (ignoring it)
+Loaded 1 facilities, 2 keys, 1 locales and 2 messages
+Loaded total 34 characters, stored 34 unique characters, 0% saving
+Wrote the spec "Messages" to the file "./messages.ads"
+Wrote the body "Messages" to the file "./messages.adb"
+Warning, no valid keys for the facility "xmpl2", no accessors created
+ZBMCompile completed on .*, elapsed time .*

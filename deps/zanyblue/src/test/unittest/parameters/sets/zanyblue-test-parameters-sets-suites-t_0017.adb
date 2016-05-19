@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,13 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Sets.Suites)
-procedure T_0017 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0017 (T : in out Test_Case'Class) is
 
    S : Parameter_Set_Type;
 
 begin
    S.Set_Name ("XMPL");
    S.Set_String ("s1", "a string");
-   Check_Value (R, S.Type_Name ("s1"), "string",
+   Check_Value (T, S.Type_Name ("s1"), "string",
                 "Expected s1 to be a string");
 end T_0017;

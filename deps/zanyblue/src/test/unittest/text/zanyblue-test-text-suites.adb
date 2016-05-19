@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -69,46 +70,61 @@ with ZanyBlue.Test.Text.Wide_Strings.Suites;
 
 package body ZanyBlue.Test.Text.Suites is
 
-   use ZanyBlue.Test.Text;
+   use Ahven.Framework;
 
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
+   procedure T_0001 (T : in out Test_Case'Class);
+   procedure T_0002 (T : in out Test_Case'Class);
+
+   overriding
+   procedure Initialize (T : in out Test) is
    begin
-      Add_Test (Result, Arguments.Suites.Suite);
-      Add_Test (Result, Booleans.Suites.Suite);
-      Add_Test (Result, Buffer.Suites.Suite);
-      Add_Test (Result, Catalogs.Suites.Suite);
-      Add_Test (Result, Characters.Suites.Suite);
-      Add_Test (Result, CLDR.Suites.Suite);
-      Add_Test (Result, Codecs.Suites.Suite);
-      Add_Test (Result, Durations.Suites.Suite);
-      Add_Test (Result, Exceptions.Suites.Suite);
-      Add_Test (Result, Floats.Suites.Suite);
-      Add_Test (Result, Long_Floats.Suites.Suite);
-      Add_Test (Result, Format_Errors.Suites.Suite);
-      Add_Test (Result, Format_Message.Suites.Suite);
-      Add_Test (Result, Format_Parser.Suites.Suite);
-      Add_Test (Result, Formatting.Suites.Suite);
-      Add_Test (Result, Generic_Buffer.Suites.Suite);
-      Add_Test (Result, Generic_Enumerations.Suites.Suite);
-      Add_Test (Result, Generic_Fixed.Suites.Suite);
-      Add_Test (Result, Generic_Floats.Suites.Suite);
-      Add_Test (Result, Generic_Integers.Suites.Suite);
-      Add_Test (Result, Generic_Modulars.Suites.Suite);
-      Add_Test (Result, Integers.Suites.Suite);
-      Add_Test (Result, Locales.Suites.Suite);
-      Add_Test (Result, Metrics.Suites.Suite);
-      Add_Test (Result, Null_Object.Suites.Suite);
-      Add_Test (Result, Properties_Parser.Suites.Suite);
-      Add_Test (Result, Pseudo.Suites.Suite);
-      Add_Test (Result, Strings.Suites.Suite);
-      Add_Test (Result, Times.Suites.Suite);
-      Add_Test (Result, Unbounded_Strings.Suites.Suite);
-      Add_Test (Result, Unbounded_Wide_Strings.Suites.Suite);
-      Add_Test (Result, Utils.Suites.Suite);
-      Add_Test (Result, Wide_Characters.Suites.Suite);
-      Add_Test (Result, Wide_Strings.Suites.Suite);
-      return Result;
+      Set_Name (T, "ZanyBlue.Text");
+      Add_Test_Routine (T, T_0001'Access, "T_0004, To_UTF8 ('')");
+      Add_Test_Routine (T, T_0002'Access, "T_0005, From_UTF8 ('')");
+   end Initialize;
+
+   function Suite return Test_Suite is
+   begin
+      return S : Test_Suite do
+         Add_Static_Test (S, Arguments.Suites.Suite);
+         Add_Static_Test (S, Booleans.Suites.Suite);
+         Add_Static_Test (S, Buffer.Suites.Suite);
+         Add_Static_Test (S, Catalogs.Suites.Suite);
+         Add_Static_Test (S, Characters.Suites.Suite);
+         Add_Static_Test (S, CLDR.Suites.Suite);
+         Add_Static_Test (S, Codecs.Suites.Suite);
+         Add_Static_Test (S, Durations.Suites.Suite);
+         Add_Static_Test (S, Exceptions.Suites.Suite);
+         Add_Static_Test (S, Floats.Suites.Suite);
+         Add_Static_Test (S, Long_Floats.Suites.Suite);
+         Add_Static_Test (S, Format_Errors.Suites.Suite);
+         Add_Static_Test (S, Format_Message.Suites.Suite);
+         Add_Static_Test (S, Format_Parser.Suites.Suite);
+         Add_Static_Test (S, Formatting.Suites.Suite);
+         Add_Static_Test (S, Generic_Buffer.Suites.Suite);
+         Add_Static_Test (S, Generic_Enumerations.Suites.Suite);
+         Add_Static_Test (S, Generic_Fixed.Suites.Suite);
+         Add_Static_Test (S, Generic_Floats.Suites.Suite);
+         Add_Static_Test (S, Generic_Integers.Suites.Suite);
+         Add_Static_Test (S, Generic_Modulars.Suites.Suite);
+         Add_Static_Test (S, Integers.Suites.Suite);
+         Add_Static_Test (S, Locales.Suites.Suite);
+         Add_Static_Test (S, Metrics.Suites.Suite);
+         Add_Static_Test (S, Null_Object.Suites.Suite);
+         Add_Static_Test (S, Properties_Parser.Suites.Suite);
+         Add_Static_Test (S, Pseudo.Suites.Suite);
+         Add_Static_Test (S, Strings.Suites.Suite);
+         Add_Static_Test (S, Times.Suites.Suite);
+         Add_Static_Test (S, Unbounded_Strings.Suites.Suite);
+         Add_Static_Test (S, Unbounded_Wide_Strings.Suites.Suite);
+         Add_Static_Test (S, Utils.Suites.Suite);
+         Add_Static_Test (S, Wide_Characters.Suites.Suite);
+         Add_Static_Test (S, Wide_Strings.Suites.Suite);
+         Add_Test (S, new Test);
+      end return;
    end Suite;
+
+   procedure T_0001 (T : in out Test_Case'Class) is separate;
+   procedure T_0002 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Text.Suites;

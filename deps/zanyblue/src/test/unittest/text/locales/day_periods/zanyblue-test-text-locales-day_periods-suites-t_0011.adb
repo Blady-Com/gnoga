@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,20 +33,20 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Day_Periods.Suites)
-procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0011 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("zh");
 
 begin
-   Check_Day_Period (R, AM,            "上午", L);
-   Check_Day_Period (R, Wee_Hours,     "凌晨", L);
-   Check_Day_Period (R, Early_Morning, "清晨", L);
-   Check_Day_Period (R, Morning,       "上午", L);
-   Check_Day_Period (R, Late_Morning,  "",     L);
-   Check_Day_Period (R, Noon,          "中午", L);
-   Check_Day_Period (R, Midday,        "中午", L);
-   Check_Day_Period (R, Afternoon,     "下午", L);
-   Check_Day_Period (R, Evening,       "",     L);
-   Check_Day_Period (R, Night,         "晚上", L);
-   Check_Day_Period (R, PM,            "下午", L);
+   Check_Day_Period (T, AM,            "上午", L);
+   Check_Day_Period (T, Wee_Hours,     "凌晨", L);
+   Check_Day_Period (T, Early_Morning, "清晨", L);
+   Check_Day_Period (T, Morning,       "上午", L);
+   Check_Day_Period (T, Late_Morning,  "",     L);
+   Check_Day_Period (T, Noon,          "中午", L);
+   Check_Day_Period (T, Midday,        "中午", L);
+   Check_Day_Period (T, Afternoon,     "下午", L);
+   Check_Day_Period (T, Evening,       "",     L);
+   Check_Day_Period (T, Night,         "晚上", L);
+   Check_Day_Period (T, PM,            "下午", L);
 end T_0011;

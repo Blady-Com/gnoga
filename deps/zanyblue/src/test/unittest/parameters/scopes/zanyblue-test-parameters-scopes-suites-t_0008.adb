@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,18 +33,18 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Scopes.Suites)
-procedure T_0008 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0008 (T : in out Test_Case'Class) is
 
    Scope : Parameter_Stack_Type;
 
 begin
    Scope.New_Scope;
-   WAssert (R, not Scope.Is_Defined ("f"), "'i' should not be defined");
+   WAssert (T, not Scope.Is_Defined ("f"), "'i' should not be defined");
    Scope.Set_Float ("f", 0.0);
-   WAssert (R, Scope.Get_Float ("f") = 0.0, "'f' should be 0.0");
+   WAssert (T, Scope.Get_Float ("f") = 0.0, "'f' should be 0.0");
    Scope.New_Scope;
    Scope.Set_Float ("f", 1.0);
-   WAssert (R, Scope.Get_Float ("f") = 1.0, "'f' should be 1.0");
+   WAssert (T, Scope.Get_Float ("f") = 1.0, "'f' should be 1.0");
    Scope.End_Scope;
-   WAssert (R, Scope.Get_Float ("f") = 0.0, "'f' should be 0.0");
+   WAssert (T, Scope.Get_Float ("f") = 0.0, "'f' should be 0.0");
 end T_0008;

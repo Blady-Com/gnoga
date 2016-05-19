@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Catalogs;
 
 separate (ZanyBlue.Test.Text.Properties_Parser.Suites)
-procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0013 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Catalogs;
@@ -51,8 +51,8 @@ procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Handler.Set_Catalog (Catalog);
    Parse (Handler, File_Name, Facility, Locale);
-   Check_Value (R, Get_Text (Catalog, Facility, "00 13", Locale),
+   Check_Value (T, Get_Text (Catalog, Facility, "00 13", Locale),
                    "abc",
                 "Expected value 'abc' for key 00 13");
-   WAssert (R, Handler.Get_N_Messages = 1, "No message parsed");
+   WAssert (T, Handler.Get_N_Messages = 1, "No message parsed");
 end T_0013;

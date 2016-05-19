@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -44,11 +45,10 @@ INCLUDE_SRC_DIRS=root os os/$(OS) parameters text utils
 INCLUDE_SRCS=$(foreach d,$(INCLUDE_SRC_DIRS),\
                  $(patsubst $(SRCDIR)/$d/%,%,\
                      $(wildcard $(SRCDIR)/$d/*.ads) \
-                     $(wildcard $(SRCDIR)/$d/*.adb) \
-                     $(wildcard $(SRCDIR)/$d/*generic*.adb)))
+                     $(wildcard $(SRCDIR)/$d/$(if $(filter-out Production,$(BUILD)),*,*generic*).adb)))
 INCLUDE_FILES=$(patsubst %,$(INCDIR)/%,$(INCLUDE_SRCS))
 GENERATED=$(INCLUDE_FILES)
-APPDIRS=zbmcompile zbtest
+APPDIRS=zbmcompile zbinfo zbtest
 APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
 CLEAN_DEPS=$(patsubst %,%.clean,$(APPDIRS) root doc test)
 CLEAN_FILES+=$(wildcard bin/pylib/*.pyc)
@@ -72,7 +72,7 @@ all: setup library applications
 setup: $(ZANYBLUEADB) $(INCDIR) $(INCLUDE_FILES)
 
 library:
-	$(GNATMAKE) $(GNATFLAGS) -P zblib.gpr
+	$(GPRBUILD) $(GNATFLAGS) -P zblib.gpr
 
 applications:	$(APPTARGETS)
 
@@ -98,7 +98,7 @@ verify-distribution:
 	$(MAKE) -C $*
 
 clean::
-	$(GNATCLEAN) -P zblib.gpr
+	$(GNATCLEAN) $(GNATXDEFS) -P zblib.gpr
 
 clean::	$(CLEAN_DEPS)
 

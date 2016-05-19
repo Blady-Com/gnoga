@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,17 +32,19 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit.Run;
+with Ahven.Framework;
+with Ahven.Text_Runner;
 with ZanyBlue.Text.CLDR;
-with ZanyBlue.Test;
 with ZanyBlue.Test.Suites;
 
 procedure T_ZanyBlue is
 
-   procedure Run is
-      new AUnit.Run.Test_Runner (ZanyBlue.Test.Suites.Suites);
+   use Ahven.Framework;
+   use Ahven.Text_Runner;
+
+   S : Test_Suite := ZanyBlue.Test.Suites.Suite;
 
 begin
    ZanyBlue.Text.CLDR.Initialize;
-   Run (ZanyBlue.Test.Reporter_Implementation);
+   Run (S);
 end T_ZanyBlue;

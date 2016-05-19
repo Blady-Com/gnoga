@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -52,10 +53,10 @@ OS ?= unix
 #TYPE=relocatable
 TYPE=static
 
-GNATMAKE=gnatmake
+GPRBUILD=gprbuild
 GNATCHECK=gnat check
 GNATCLEAN=gnat clean
-GNATHTML=gnathtml.pl
+GNATDOC=gnatdoc
 
 # HTML Preprocessor
 HTP=htp
@@ -109,9 +110,14 @@ endif
 
 # ---------------------------------------------------------------------------
 # Macros derived from the configuration macros.
-GNATFLAGS+=-XOS=$(OS)
-GNATFLAGS+=-XTYPE=$(TYPE)
-GNATFLAGS+=-XBUILD=$(BUILD)
+GNATXDEFS+=-XOS=$(OS)
+GNATXDEFS+=-XTYPE=$(TYPE)
+GNATXDEFS+=-XBUILD=$(BUILD)
+GNATXDEFS+=-XV_MAJOR=$(V_MAJOR)
+GNATXDEFS+=-XV_MINOR=$(V_MINOR)
+GNATXDEFS+=-XV_PATCH=$(V_PATCH)
+GNATXDEFS+=-XV_STATUS=$(V_STATUS)
+GNATFLAGS+=$(GNATXDEFS)
 GNATFLAGS+=-aP$(TOP)/lib/gnat
 GNATFLAGS+=-aP$(TOP)/src
 

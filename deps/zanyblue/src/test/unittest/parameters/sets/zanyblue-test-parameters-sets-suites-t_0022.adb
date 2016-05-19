@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ with Ada.Wide_Text_IO;
 with ZanyBlue.OS;
 
 separate (ZanyBlue.Test.Parameters.Sets.Suites)
-procedure T_0022 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0022 (T : in out Test_Case'Class) is
 
    use Ada.Calendar;
    use Ada.Wide_Text_IO;
@@ -45,7 +45,7 @@ procedure T_0022 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
    Test_Name : constant Wide_String := "t_0022";
    Filename  : constant Wide_String := Test_Log_Name (Test_Area, Test_Name);
-   T         : constant Time := Time_Of (2011, 10, 31, Duration (60483));
+   T_Val     : constant Time := Time_Of (2011, 10, 31, Duration (60483));
    S         : Parameter_Set_Type;
    Output    : File_Type;
 
@@ -54,11 +54,11 @@ begin
    S.Set_Boolean ("b1", True);
    S.Set_Float ("f1", 1.0);
    S.Set_Integer ("i1", 2011);
-   S.Set_Time ("t1", T);
+   S.Set_Time ("t1", T_Val);
    S.Set_String ("s1", "a string");
    Wide_Create (Output, Filename);
    S.Dump (Output);
    Close (Output);
-   Check_Log_File (R, Test_Area, Test_Name,
+   Check_Log_File (T, Test_Area, Test_Name,
            "Dump parameter set");
 end T_0022;

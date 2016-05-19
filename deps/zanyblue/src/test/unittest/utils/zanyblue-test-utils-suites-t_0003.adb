@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@
 --
 
 separate (ZanyBlue.Test.Utils.Suites)
-procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0003 (T : in out Test_Case'Class) is
 
 begin
-   Check_Value (R, Spec_File_Name ("XYZ", GNAT_Naming_Style), "xyz.ads",
+   Check_Value (T, Spec_File_Name ("XYZ", GNAT_Naming_Style), "xyz.ads",
                 "Failed to generate simple spec file name");
-   Check_Value (R, Spec_File_Name ("X.Y.Z", GNAT_Naming_Style), "x-y-z.ads",
+   Check_Value (T, Spec_File_Name ("X.Y.Z", GNAT_Naming_Style), "x-y-z.ads",
                 "Failed to generate hierarchical spec file name");
 end T_0003;

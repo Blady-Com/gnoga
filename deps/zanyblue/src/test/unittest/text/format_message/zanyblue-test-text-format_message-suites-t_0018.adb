@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Strings;
 
 separate (ZanyBlue.Test.Text.Format_Message.Suites)
-procedure T_0018 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0018 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Strings;
 
@@ -59,7 +59,7 @@ procedure T_0018 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Mapping := new Pseudo_Map_Type;
    Add_Mapping (Mapping.all, Halfwidth_Forms_Map);
-   Check_Value (R, Format ("This is a test: {0}", +Value, Mapping),
+   Check_Value (T, Format ("This is a test: {0}", +Value, Mapping),
                 "Ｔｈｉｓ ｉｓ ａ ｔｅｓｔ： «xyz»",
                 "Format with pseudo translation, no message markers");
 end T_0018;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0020 (T : in out Test_Case'Class) is
 
    L_en_US      : constant Locale_Type := Make_Locale ("en_US");
    L_fr_FR      : constant Locale_Type := Make_Locale ("fr_FR");
@@ -44,13 +44,13 @@ procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   Check_Value (R, Get_Pool (Catalog), "", "Expected an empty pool");
+   Check_Value (T, Get_Pool (Catalog), "", "Expected an empty pool");
    Add (Catalog, "xyz", "mkr", "12345", L_en_US);
    Add (Catalog, "xyz", "mkr", "54321", L_fr_FR);
    Query_Message (Catalog, 1, 1, 1, First, Last);
-   WAssert (R, First = 1, "Expected first static pool index to be 1");
-   WAssert (R, Last = 5, "Expected last static pool index to be 5");
+   WAssert (T, First = 1, "Expected first static pool index to be 1");
+   WAssert (T, Last = 5, "Expected last static pool index to be 5");
    Query_Message (Catalog, 1, 1, 2, First, Last);
-   WAssert (R, First = 6, "Expected first static pool index to be 1");
-   WAssert (R, Last = 10, "Expected last static pool index to be 5");
+   WAssert (T, First = 6, "Expected first static pool index to be 1");
+   WAssert (T, Last = 10, "Expected last static pool index to be 5");
 end T_0020;

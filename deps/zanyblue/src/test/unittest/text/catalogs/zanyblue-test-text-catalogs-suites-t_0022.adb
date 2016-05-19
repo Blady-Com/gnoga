@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0022 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0022 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
@@ -45,10 +45,10 @@ procedure T_0022 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   Check_Value (R, Get_Pool (Catalog), "", "Expected an empty pool");
+   Check_Value (T, Get_Pool (Catalog), "", "Expected an empty pool");
    Add (Catalog, "myfac1", "mykey1", Pool1, 1, 30, L_en_US);
-   WAssert (R, False, "Invalid_Static_Message_Error exception not raised");
+   WAssert (T, False, "Invalid_Static_Message_Error exception not raised");
 exception
 when Invalid_Static_Message_Error =>
-   WAssert (R, True, "Expected Invalid_Static_Message_Error exception raised");
+   WAssert (T, True, "Expected Invalid_Static_Message_Error exception raised");
 end T_0022;

@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -48,14 +49,14 @@ copy main.adb
 copy tzbmapp.gpr
 
 copy main_01.gpr
-execute -o $(nextlog -c build) gnatmake -aP$project_dir $build_opt -P main_01
+execute -o $(nextlog -c build) gprbuild -aP$project_dir $build_opt -P main_01
 execute -f -o $(nextlog) main
 
 execute gnatclean -aP$project_dir -P main_01
 
 copy main_02.gpr
 
-execute -o $(nextlog -c build) gnatmake -aP$project_dir $build_opt -P main_02
+execute -o $(nextlog -c build) gprbuild -aP$project_dir $build_opt -P main_02
 rename xmpl.ads $(nextlog)
 rename xmpl.adb $(nextlog)
 execute -o $(nextlog) main

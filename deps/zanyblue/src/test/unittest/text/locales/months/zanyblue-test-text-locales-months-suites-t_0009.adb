@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,33 +33,33 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Months.Suites)
-procedure T_0009 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0009 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("fr");
 
 begin
-   Check_Value (R, Full_Month_Name (L, Jan), "janvier",
+   Check_Value (T, Full_Month_Name (L, Jan), "janvier",
                 "fr full month name, Jan");
-   Check_Value (R, Full_Month_Name (L, Feb), "février",
+   Check_Value (T, Full_Month_Name (L, Feb), "février",
                 "fr full month name, Feb");
-   Check_Value (R, Full_Month_Name (L, Mar), "mars",
+   Check_Value (T, Full_Month_Name (L, Mar), "mars",
                 "fr full month name, Mar");
-   Check_Value (R, Full_Month_Name (L, Apr), "avril",
+   Check_Value (T, Full_Month_Name (L, Apr), "avril",
                 "fr full month name, Apr");
-   Check_Value (R, Full_Month_Name (L, May), "mai",
+   Check_Value (T, Full_Month_Name (L, May), "mai",
                 "fr full month name, May");
-   Check_Value (R, Full_Month_Name (L, Jun), "juin",
+   Check_Value (T, Full_Month_Name (L, Jun), "juin",
                 "fr full month name, Jun");
-   Check_Value (R, Full_Month_Name (L, Jul), "juillet",
+   Check_Value (T, Full_Month_Name (L, Jul), "juillet",
                 "fr full month name, Jul");
-   Check_Value (R, Full_Month_Name (L, Aug), "août",
+   Check_Value (T, Full_Month_Name (L, Aug), "août",
                 "fr full month name, Aug");
-   Check_Value (R, Full_Month_Name (L, Sep), "septembre",
+   Check_Value (T, Full_Month_Name (L, Sep), "septembre",
                 "fr full month name, Sep");
-   Check_Value (R, Full_Month_Name (L, Oct), "octobre",
+   Check_Value (T, Full_Month_Name (L, Oct), "octobre",
                 "fr full month name, Oct");
-   Check_Value (R, Full_Month_Name (L, Nov), "novembre",
+   Check_Value (T, Full_Month_Name (L, Nov), "novembre",
                 "fr full month name, Nov");
-   Check_Value (R, Full_Month_Name (L, Dec), "décembre",
+   Check_Value (T, Full_Month_Name (L, Dec), "décembre",
                 "fr full month name, Dec");
 end T_0009;

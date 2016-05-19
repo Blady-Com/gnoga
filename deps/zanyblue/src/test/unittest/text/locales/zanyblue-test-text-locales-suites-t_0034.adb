@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,50 +33,50 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Suites)
-procedure T_0034 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0034 (T : in out Test_Case'Class) is
 
    Locale : Locale_Type := Make_Locale ("en");
 
 begin
-   Check_Value (R, Locale_Name (Locale), "en",
+   Check_Value (T, Locale_Name (Locale), "en",
                    "Expected locale name 'en'");
-   Check_Value (R, Traits_Tag (Locale), "EN        ",
+   Check_Value (T, Traits_Tag (Locale), "EN        ",
                    "Unexpected traits tag 'EN'");
-   Check_Value (R, Traits_Name (Locale), "en",
+   Check_Value (T, Traits_Name (Locale), "en",
                    "Unexpected traits name 'en'");
-   Check_Value (R, Short_Day_Name (Locale, Mon), "Mon",
+   Check_Value (T, Short_Day_Name (Locale, Mon), "Mon",
                 "en short day name, Mon");
-   Check_Value (R, Short_Day_Name (Locale, Tue), "Tue",
+   Check_Value (T, Short_Day_Name (Locale, Tue), "Tue",
                 "en short day name, Tue");
-   Check_Value (R, Short_Day_Name (Locale, Wed), "Wed",
+   Check_Value (T, Short_Day_Name (Locale, Wed), "Wed",
                 "en short day name, Wed");
-   Check_Value (R, Short_Day_Name (Locale, Thu), "Thu",
+   Check_Value (T, Short_Day_Name (Locale, Thu), "Thu",
                 "en short day name, Thu");
-   Check_Value (R, Short_Day_Name (Locale, Fri), "Fri",
+   Check_Value (T, Short_Day_Name (Locale, Fri), "Fri",
                 "en short day name, Fri");
-   Check_Value (R, Short_Day_Name (Locale, Sat), "Sat",
+   Check_Value (T, Short_Day_Name (Locale, Sat), "Sat",
                 "en short day name, Sat");
-   Check_Value (R, Short_Day_Name (Locale, Sun), "Sun",
+   Check_Value (T, Short_Day_Name (Locale, Sun), "Sun",
                 "en short day name, Sun");
    Set_Traits (Locale, Wide_Name => "fr");
-   Check_Value (R, Locale_Name (Locale), "en",
+   Check_Value (T, Locale_Name (Locale), "en",
                    "Expected locale name 'en'");
-   Check_Value (R, Traits_Tag (Locale), "FR        ",
+   Check_Value (T, Traits_Tag (Locale), "FR        ",
                    "Unexpected traits tag 'FR'");
-   Check_Value (R, Traits_Name (Locale), "fr",
+   Check_Value (T, Traits_Name (Locale), "fr",
                    "Unexpected traits name 'fr'");
-   Check_Value (R, Short_Day_Name (Locale, Mon), "lun.",
+   Check_Value (T, Short_Day_Name (Locale, Mon), "lun.",
                 "fr short day name, Mon");
-   Check_Value (R, Short_Day_Name (Locale, Tue), "mar.",
+   Check_Value (T, Short_Day_Name (Locale, Tue), "mar.",
                 "fr short day name, Tue");
-   Check_Value (R, Short_Day_Name (Locale, Wed), "mer.",
+   Check_Value (T, Short_Day_Name (Locale, Wed), "mer.",
                 "fr short day name, Wed");
-   Check_Value (R, Short_Day_Name (Locale, Thu), "jeu.",
+   Check_Value (T, Short_Day_Name (Locale, Thu), "jeu.",
                 "fr short day name, Thu");
-   Check_Value (R, Short_Day_Name (Locale, Fri), "ven.",
+   Check_Value (T, Short_Day_Name (Locale, Fri), "ven.",
                 "fr short day name, Fri");
-   Check_Value (R, Short_Day_Name (Locale, Sat), "sam.",
+   Check_Value (T, Short_Day_Name (Locale, Sat), "sam.",
                 "fr short day name, Sat");
-   Check_Value (R, Short_Day_Name (Locale, Sun), "dim.",
+   Check_Value (T, Short_Day_Name (Locale, Sun), "dim.",
                 "fr short day name, Sun");
 end T_0034;

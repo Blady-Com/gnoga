@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Integers;
 
 separate (ZanyBlue.Test.Text.Format_Message.Suites)
-procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0014 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Integers;
 
@@ -55,7 +55,7 @@ procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    end Format;
 
 begin
-   Check_Value (R, Format ("Ａ＃１： ＜{0}＞； Ａ＃２： ＜{1}＞", +11, +55),
+   Check_Value (T, Format ("Ａ＃１： ＜{0}＞； Ａ＃２： ＜{1}＞", +11, +55),
                 "Ａ＃１： ＜11＞； Ａ＃２： ＜55＞",
                 "Format with wide character content");
 end T_0014;

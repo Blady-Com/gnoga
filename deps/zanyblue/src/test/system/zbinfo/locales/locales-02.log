@@ -1,0 +1,127 @@
+This is ZBTest, Version .*
+Copyright \(c\) .*, Michael Rohan.  All rights reserved
+
+ZanyBlue data for the locale "en"
+
+    Locale implementation "en"
+
+    Language                  "en"
+    Script                    ""
+    Territory                 ""
+    Encoding                  "" (implemented as "UTF-8")
+    Name                      "en"
+    Traits Name               "en"
+    Traits Tag                "EN        "
+    Locale Level              1
+    Is Root Locale            false
+    Layout                    LEFT_TO_RIGHT
+    Lower Digits              0123456789abcdef
+    Upper Digits              0123456789ABCDEF
+    Hash Value                6625609
+
+  Date/Time Formats
+  -----------------
+                      Date                  Time                  Date & Time
+    FULL              EEEE, MMMM d, y       h:mm:ss a zzzz        {1} 'at' {0}
+    LONG              MMMM d, y             h:mm:ss a z           {1} 'at' {0}
+    MEDIUM            MMM d, y              h:mm:ss a             {1}, {0}
+    SHORT             M/d/yy                h:mm a                {1}, {0}
+
+  Day Periods
+  -----------
+    AM                        AM
+    WEE_HOURS                 
+    EARLY_MORNING             
+    MORNING                   
+    LATE_MORNING              
+    NOON                      noon
+    MIDDAY                    
+    AFTERNOON                 
+    EVENING                   
+    LATE_EVENING              
+    NIGHT                     
+    PM                        PM
+
+  Time to Day Periods
+  -------------------
+    00:00 => AM                  00:30 => AM
+    01:00 => AM                  01:30 => AM
+    02:00 => AM                  02:30 => AM
+    03:00 => AM                  03:30 => AM
+    04:00 => AM                  04:30 => AM
+    05:00 => AM                  05:30 => AM
+    06:00 => AM                  06:30 => AM
+    07:00 => AM                  07:30 => AM
+    08:00 => AM                  08:30 => AM
+    09:00 => AM                  09:30 => AM
+    10:00 => AM                  10:30 => AM
+    11:00 => AM                  11:30 => AM
+    12:00 => NOON                12:30 => PM
+    13:00 => PM                  13:30 => PM
+    14:00 => PM                  14:30 => PM
+    15:00 => PM                  15:30 => PM
+    16:00 => PM                  16:30 => PM
+    17:00 => PM                  17:30 => PM
+    18:00 => PM                  18:30 => PM
+    19:00 => PM                  19:30 => PM
+    20:00 => PM                  20:30 => PM
+    21:00 => PM                  21:30 => PM
+    22:00 => PM                  22:30 => PM
+    23:00 => PM                  23:30 => PM
+
+  Eras
+  ----
+    BCE                       BC
+    CE                        AD
+
+  Day Names
+  -------------
+                        Short               Full
+    SUN                 Sun                 Sunday          
+    MON                 Mon                 Monday          
+    TUE                 Tue                 Tuesday         
+    WED                 Wed                 Wednesday       
+    THU                 Thu                 Thursday        
+    FRI                 Fri                 Friday          
+    SAT                 Sat                 Saturday        
+
+  Month Names
+  -----------
+                        Short               Full
+    JAN                 Jan                 January         
+    FEB                 Feb                 February        
+    MAR                 Mar                 March           
+    APR                 Apr                 April           
+    MAY                 May                 May             
+    JUN                 Jun                 June            
+    JUL                 Jul                 July            
+    AUG                 Aug                 August          
+    SEP                 Sep                 September       
+    OCT                 Oct                 October         
+    NOV                 Nov                 November        
+    DEC                 Dec                 December        
+
+  Numeric Formats
+  ---------------
+    DECIMAL                   #,##0.###
+    SCIENTIFIC                #E0
+    PERCENT                   #,##0%
+    CURRENCY                  ¤#,##0.00;(¤#,##0.00)
+
+  Numeric Items
+  -------------
+    DECIMAL_POINT_CHARACTER   .
+    GROUP_CHARACTER           ,
+    LIST_CHARACTER            ;
+    ZERO_CHARACTER            0
+    PLUS_CHARACTER            +
+    MINUS_CHARACTER           -
+    EXPONENT_CHARACTER        E
+    PERCENT_CHARACTER         %
+    PERMILLE_CHARACTER        ‰
+    INFINITY_CHARACTER        ∞
+    NAN_CHARACTER             NaN
+    DIGIT_PATTERN_CHARACTER   #
+    DECIMAL_DIGITS_STRING     0123456789
+
+ZBInfo completed on .*

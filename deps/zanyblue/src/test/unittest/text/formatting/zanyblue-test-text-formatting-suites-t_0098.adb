@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with Ada.Exceptions;
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0098 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0098 (T : in out Test_Case'Class) is
 
    use Ada.Exceptions;
 
@@ -44,9 +44,9 @@ procedure T_0098 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 
 begin
    Raise_Exception (My_Error'Identity, My_Message);
-   WAssert (R, False, "Raise_Exception returned!");
+   WAssert (T, False, "Raise_Exception returned!");
 exception
 when E : My_Error =>
-   Check_Value (R, From_UTF8 (Exception_Message (E)), My_Message,
+   Check_Value (T, From_UTF8 (Exception_Message (E)), My_Message,
            "My message not raised");
 end T_0098;

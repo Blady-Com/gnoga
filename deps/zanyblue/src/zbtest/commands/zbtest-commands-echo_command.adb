@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -40,10 +41,10 @@ procedure Echo_Command (State : in out State_Type;
 
 begin
    for I in 2 .. Length (Args) loop
-      Put (Value (Args, I));
+      Print (Value (Args, I));
       if I /= Length (Args) then
-         Put (" ");
+         Print (" ");
       end if;
    end loop;
-   New_Line;
+   Print_Line ("");
 end Echo_Command;

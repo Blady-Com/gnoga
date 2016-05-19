@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Locales;
 
 separate (ZanyBlue.Test.Text.Unbounded_Strings.Suites)
-procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0001 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
 
@@ -49,12 +49,12 @@ begin
    Append (V2, "a");
    Append (V3, "James Joyce");
    Append (V4, "Ulysses");
-   Check_Value (R, Create (V1).Format ("string", "", Root_Locale),
+   Check_Value (T, Create (V1).Format ("string", "", Root_Locale),
                    "");
-   Check_Value (R, Create (V2).Format ("string", "", Root_Locale),
+   Check_Value (T, Create (V2).Format ("string", "", Root_Locale),
                    "a");
-   Check_Value (R, Create (V3).Format ("string", "", Root_Locale),
+   Check_Value (T, Create (V3).Format ("string", "", Root_Locale),
                    "James Joyce");
-   Check_Value (R, Create (V4).Format ("string", "", Root_Locale),
+   Check_Value (T, Create (V4).Format ("string", "", Root_Locale),
                    "Ulysses");
 end T_0001;

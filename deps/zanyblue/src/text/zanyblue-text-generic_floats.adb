@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -115,7 +116,7 @@ package body ZanyBlue.Text.Generic_Floats is
                               Formatting : Format_Type;
                               Negative   : Boolean;
                               Locale     : Locale_Type);
-   --  Format the infinity value, e.g., "Inf", "∞", etc.
+   --  Format the infinity value, e.g., "Inf", etc.
 
    procedure Format_Value (Buffer       : in out Buffer_Type;
                            Fill         : out Wide_Character;
@@ -127,7 +128,7 @@ package body ZanyBlue.Text.Generic_Floats is
 
    procedure Format_NaN (Buffer     : in out Buffer_Type;
                          Locale     : Locale_Type);
-   --  Format the "Not a Number" value, e.g., "Nan", "не число", etc.
+   --  Format the "Not a Number" value, e.g., "Nan", etc.
 
    function Is_Infinity (Value : Float_Type) return Boolean;
    --  Determine if the value is the representation for Infinity.
@@ -171,9 +172,9 @@ package body ZanyBlue.Text.Generic_Floats is
                         Number_Digits  : out Digits_List_Type;
                         Exponent       : out Integer) is
 
-      C1 : constant := 0.3010_2999_5663_981;    --  log₁₀2
-      C2 : constant := 0.2895_2965_4602_168;    --  1/(1.5*logₑ 10)
-      C3 : constant := 0.1760_9125_9055_8;      --  log₁₀1.5
+      C1 : constant := 0.3010_2999_5663_981;    --  log_{10} 2
+      C2 : constant := 0.2895_2965_4602_168;    --  1/(1.5*log_{2} 10)
+      C3 : constant := 0.1760_9125_9055_8;      --  log_{10} 1.5
       --  These C* constants are taken from Gay's and are used to determine the
       --  base 10 exponent for a floating point value.  The estimate of this
       --  value (k, in Gay's paper) might be off by 1.  It is adjusted during

@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +36,6 @@
 with Ada.Calendar;
 with Ada.Exceptions;
 with Ada.Command_Line;
-with ZanyBlue.OS;
 with ZanyBlue.Utils;
 with ZanyBlue.Text.Formatting;
 with ZBMCompile.Messages;
@@ -45,7 +45,6 @@ procedure ZBMCompile.Main is
 
    use Ada.Exceptions;
    use Ada.Command_Line;
-   use ZanyBlue.OS;
    use ZanyBlue.Utils;
    use ZanyBlue.Text;
    use ZanyBlue.Text.Formatting;
@@ -118,6 +117,7 @@ procedure ZBMCompile.Main is
       end Set_Accessor_Type;
 
    begin
+      Options.Set_Boolean ("ascii_only",           False);
       Options.Set_Boolean ("base_locale",          False);
       Options.Set_Boolean ("body_initialize",      False);
       Options.Set_Boolean ("debug",                False);
@@ -134,14 +134,15 @@ procedure ZBMCompile.Main is
       for I in Accessor_Types'Range loop
          Set_Accessor_Type (Accessor_Types (I).all, False);
       end loop;
-      Options.Set_Integer ("comment_size",      Output_Comment_Size);
-      Options.Set_Integer ("n_facilities",      0);
-      Options.Set_Integer ("pool_size",         Output_Pool_Size);
-      Options.Set_String ("extension",          "properties");
-      Options.Set_String ("output_directory",   ".");
-      Options.Set_String ("reference_locale",   "");
-      Options.Set_String ("source_root_locale", "");
-      Options.Set_String ("cur_dir",            ".");
+      Options.Set_Integer ("comment_size",           Output_Comment_Size);
+      Options.Set_Integer ("n_facilities",           0);
+      Options.Set_Integer ("pool_size",              Output_Pool_Size);
+      Options.Set_String ("extension",               "properties");
+      Options.Set_String ("output_directory",        ".");
+      Options.Set_String ("reference_locale",        "");
+      Options.Set_String ("source_root_locale",      "");
+      Options.Set_String ("invalid_ada_key_handler", "error");
+      Options.Set_String ("cur_dir",                 ".");
       while Index <= Argument_Count loop
          declare
             Value : constant String := Argument (Index);
@@ -156,6 +157,8 @@ procedure ZBMCompile.Main is
                   Raise_Exception (Usage'Identity,
                                    ZBMCompile_Facility, "E00026");
                end if;
+            elsif Value = "-A" then
+               Options.Set_Boolean ("ascii_only", True);
             elsif Value = "-B" then
                Options.Set_Boolean ("base_locale", True);
             elsif Value = "-C" then
@@ -218,6 +221,20 @@ procedure ZBMCompile.Main is
             elsif Value = "-x" then
                Options.Set_Boolean ("use_export_name", True);
                Options.Set_String ("export_name", Get_Option_Value ('x'));
+            elsif Value = "-X" then
+               declare
+                  Handling : constant Wide_String := Get_Option_Value ('X');
+               begin
+                  if Handling = "ignore" then
+                     Options.Set_String ("invalid_ada_key_handler", "ignore");
+                  elsif Handling = "error" then
+                     Options.Set_String ("invalid_ada_key_handler", "error");
+                  else
+                     Raise_Exception (Usage'Identity,
+                                      ZBMCompile_Facility, "E00029",
+                                      Argument0 => +Handling);
+                  end if;
+               end;
             elsif Value'Length > 0
               and then Value (Value'First) = '-'
             then

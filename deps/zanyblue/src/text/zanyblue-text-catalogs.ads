@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -65,14 +66,14 @@ package ZanyBlue.Text.Catalogs is
    --        ORA-17001 => Internal Error
    --        ...
    --      Locale => "zh_CN" (Simplified Chinese)
-   --        ORA-17001 => 内部错误
+   --        ORA-17001 => ....
    --        ...
    --    Facility => "sunorb"
    --      Locale => "" (base, again English in this case, locale)
    --        servertool.serverup => server is already up.
    --        ...
    --      Locale => "fr" (French)
-   --        servertool.serverup => le serveur fonctionne déjà.
+   --        servertool.serverup => le serveur fonctionne ....
    --        ...
    --
    --  The Catalog type allows adding localized messges for a Facility and the

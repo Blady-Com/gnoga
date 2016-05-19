@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 
 separate (ZanyBlue.Test.Text.Integers.Suites)
-procedure T_0030 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0030 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Integers;
@@ -56,24 +56,24 @@ begin
    Args.Append (Arg2);
    Args.Append (Arg3);
    Args.Append (Arg4);
-   Check_Value (R, Args.Format (0, "", "integer,o", Locale, False),
+   Check_Value (T, Args.Format (0, "", "integer,o", Locale, False),
                    "٠");
-   Check_Value (R, Args.Format (1, "", "integer,o", Locale, False),
+   Check_Value (T, Args.Format (1, "", "integer,o", Locale, False),
                    "٣٧٣١");
-   Check_Value (R, Args.Format (2, "", "integer,o", Locale, False),
+   Check_Value (T, Args.Format (2, "", "integer,o", Locale, False),
                    "‎-٣٧٣١");
-   Check_Value (R, Args.Format (3, "", "integer,o", Locale, False),
+   Check_Value (T, Args.Format (3, "", "integer,o", Locale, False),
                    "١٧٧٧٧٧٧٧٧٧٧");
-   Check_Value (R, Args.Format (4, "", "integer,o", Locale, False),
+   Check_Value (T, Args.Format (4, "", "integer,o", Locale, False),
                    "‎-١٧٧٧٧٧٧٧٧٧٧");
-   Check_Value (R, Args.Format (0, "", "integer,o*", Locale, False),
+   Check_Value (T, Args.Format (0, "", "integer,o*", Locale, False),
                    "0");
-   Check_Value (R, Args.Format (1, "", "integer,o*", Locale, False),
+   Check_Value (T, Args.Format (1, "", "integer,o*", Locale, False),
                    "3731");
-   Check_Value (R, Args.Format (2, "", "integer,o*", Locale, False),
+   Check_Value (T, Args.Format (2, "", "integer,o*", Locale, False),
                    "-3731");
-   Check_Value (R, Args.Format (3, "", "integer,o*", Locale, False),
+   Check_Value (T, Args.Format (3, "", "integer,o*", Locale, False),
                    "17777777777");
-   Check_Value (R, Args.Format (4, "", "integer,o*", Locale, False),
+   Check_Value (T, Args.Format (4, "", "integer,o*", Locale, False),
                    "-17777777777");
 end T_0030;

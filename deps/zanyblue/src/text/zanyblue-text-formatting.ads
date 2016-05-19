@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -164,6 +165,14 @@ package ZanyBlue.Text.Formatting is
    procedure Disable_Source_Locales;
    --  Disable usage of source locales for message argument formatting.
 
+   procedure Enable_Wide_IO;
+   --  Enable usage of Ada.Wide_Text_IO.Current_Output for Print/Print_Line
+   --  when no explicit destination is defined.
+
+   procedure Disable_Wide_IO;
+   --  Enable usage of Ada.Text_IO.Current_Output for Print/Print_Line
+   --  when no explicit destination is defined.
+
    function Source_Locales_Enabled return Boolean;
    --  Are source locales for message argument formatting enabled.
 
@@ -297,7 +306,24 @@ package ZanyBlue.Text.Formatting is
        Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
+   procedure Print
+      (Destination : Ada.Text_IO.File_Type;
+       Facility    : Wide_String;
+       Key         : Wide_String;
+       Arguments   : Argument_List;
+       Locale      : Locale_Type := Current_Locale;
+       Catalog     : Catalog_Type := Standard_Catalog);
+   --  Print a message with arguments.
+
    procedure Print_Line (Destination : Ada.Wide_Text_IO.File_Type;
+                         Facility    : Wide_String;
+                         Key         : Wide_String;
+                         Arguments   : Argument_List;
+                         Locale      : Locale_Type := Current_Locale;
+                         Catalog     : Catalog_Type := Standard_Catalog);
+   --  Print a message with arguments.
+
+   procedure Print_Line (Destination : Ada.Text_IO.File_Type;
                          Facility    : Wide_String;
                          Key         : Wide_String;
                          Arguments   : Argument_List;
@@ -317,8 +343,33 @@ package ZanyBlue.Text.Formatting is
                     Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with upto 5 arguments.
 
+   procedure Print (Destination : Ada.Text_IO.File_Type;
+                    Facility    : Wide_String;
+                    Key         : Wide_String;
+                    Argument0   : Argument_Type'Class := Null_Argument;
+                    Argument1   : Argument_Type'Class := Null_Argument;
+                    Argument2   : Argument_Type'Class := Null_Argument;
+                    Argument3   : Argument_Type'Class := Null_Argument;
+                    Argument4   : Argument_Type'Class := Null_Argument;
+                    Locale      : Locale_Type := Current_Locale;
+                    Catalog     : Catalog_Type := Standard_Catalog);
+   --  Print a message with upto 5 arguments.
+
    procedure Print_Line
       (Destination : Ada.Wide_Text_IO.File_Type;
+       Facility    : Wide_String;
+       Key         : Wide_String;
+       Argument0   : Argument_Type'Class := Null_Argument;
+       Argument1   : Argument_Type'Class := Null_Argument;
+       Argument2   : Argument_Type'Class := Null_Argument;
+       Argument3   : Argument_Type'Class := Null_Argument;
+       Argument4   : Argument_Type'Class := Null_Argument;
+       Locale      : Locale_Type := Current_Locale;
+       Catalog     : Catalog_Type := Standard_Catalog);
+   --  Print a message with upto 5 arguments.
+
+   procedure Print_Line
+      (Destination : Ada.Text_IO.File_Type;
        Facility    : Wide_String;
        Key         : Wide_String;
        Argument0   : Argument_Type'Class := Null_Argument;
@@ -365,7 +416,19 @@ package ZanyBlue.Text.Formatting is
                     Locale       : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
+   procedure Print (Destination  : Ada.Text_IO.File_Type;
+                    Text         : Wide_String;
+                    Arguments    : Argument_List;
+                    Locale       : Locale_Type := Current_Locale);
+   --  Print a message with arguments.
+
    procedure Print_Line (Destination  : Ada.Wide_Text_IO.File_Type;
+                         Text         : Wide_String;
+                         Arguments    : Argument_List;
+                         Locale       : Locale_Type := Current_Locale);
+   --  Print a message with arguments.
+
+   procedure Print_Line (Destination  : Ada.Text_IO.File_Type;
                          Text         : Wide_String;
                          Arguments    : Argument_List;
                          Locale       : Locale_Type := Current_Locale);
@@ -381,8 +444,29 @@ package ZanyBlue.Text.Formatting is
                     Locale       : Locale_Type := Current_Locale);
    --  Print a message with upto 5 arguments.
 
+   procedure Print (Destination  : Ada.Text_IO.File_Type;
+                    Text         : Wide_String;
+                    Argument0    : Argument_Type'Class := Null_Argument;
+                    Argument1    : Argument_Type'Class := Null_Argument;
+                    Argument2    : Argument_Type'Class := Null_Argument;
+                    Argument3    : Argument_Type'Class := Null_Argument;
+                    Argument4    : Argument_Type'Class := Null_Argument;
+                    Locale       : Locale_Type := Current_Locale);
+   --  Print a message with upto 5 arguments.
+
    procedure Print_Line
       (Destination  : Ada.Wide_Text_IO.File_Type;
+       Text         : Wide_String;
+       Argument0    : Argument_Type'Class := Null_Argument;
+       Argument1    : Argument_Type'Class := Null_Argument;
+       Argument2    : Argument_Type'Class := Null_Argument;
+       Argument3    : Argument_Type'Class := Null_Argument;
+       Argument4    : Argument_Type'Class := Null_Argument;
+       Locale       : Locale_Type := Current_Locale);
+   --  Print a message with upto 5 arguments.
+
+   procedure Print_Line
+      (Destination  : Ada.Text_IO.File_Type;
        Text         : Wide_String;
        Argument0    : Argument_Type'Class := Null_Argument;
        Argument1    : Argument_Type'Class := Null_Argument;

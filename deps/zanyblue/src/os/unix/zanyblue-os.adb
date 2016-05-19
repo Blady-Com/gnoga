@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,32 +34,20 @@
 --
 
 with GNAT.OS_Lib;
-with GNAT.Decode_UTF8_String;
-with GNAT.Encode_UTF8_String;
 with Ada.Directories;
 with Ada.Environment_Variables;
-with Ada.Characters.Conversions;
+with ZanyBlue.Text;
 with ZanyBlue.Wide_Directories;
 
 package body ZanyBlue.OS is
 
    use Ada.Directories;
    use Ada.Environment_Variables;
-   use Ada.Characters.Conversions;
+   use ZanyBlue.Text;
    use ZanyBlue.Wide_Directories;
 
    Lang_Environment_Name : constant String := "LANG";
    --  Name of the environment variable defining the locale.
-
-   ---------------
-   -- From_UTF8 --
-   ---------------
-
-   function From_UTF8 (Value : String) return Wide_String is
-      use GNAT.Decode_UTF8_String;
-   begin
-      return Decode_Wide_String (Value);
-   end From_UTF8;
 
    ---------------------
    -- Integrity_Check --
@@ -79,7 +68,7 @@ package body ZanyBlue.OS is
       if Ada.Environment_Variables.Exists (Lang_Environment_Name) then
          return To_Wide_String (Value (Lang_Environment_Name));
       else
-         return "";
+         return "en_US.UTF-8";
       end if;
    end OS_Locale_Name;
 
@@ -91,16 +80,6 @@ package body ZanyBlue.OS is
    begin
       return Unix;
    end OS_Name;
-
-   -------------
-   -- To_UTF8 --
-   -------------
-
-   function To_UTF8 (Value : Wide_String) return String is
-      use GNAT.Encode_UTF8_String;
-   begin
-      return Encode_Wide_String (Value);
-   end To_UTF8;
 
    --------------------
    -- UTF8_File_Form --
@@ -158,6 +137,20 @@ package body ZanyBlue.OS is
    -- Wide_Create --
    -----------------
 
+   procedure Wide_Create (File : in out Ada.Text_IO.File_Type;
+                          Name : Wide_String) is
+      use Ada.Text_IO;
+   begin
+      Create (File,
+              Mode => Out_File,
+              Name => To_UTF8 (Name),
+              Form => UTF8_File_Form);
+   end Wide_Create;
+
+   -----------------
+   -- Wide_Create --
+   -----------------
+
    procedure Wide_Create (File : in out Ada.Wide_Text_IO.File_Type;
                           Name : Wide_String) is
       use Ada.Wide_Text_IO;
@@ -195,6 +188,21 @@ package body ZanyBlue.OS is
    begin
       return Wide_Exists (Name) and then Kind (To_UTF8 (Name)) = Ordinary_File;
    end Wide_Is_File;
+
+   ---------------
+   -- Wide_Open --
+   ---------------
+
+   procedure Wide_Open (File : in out Ada.Text_IO.File_Type;
+                        Mode : Ada.Text_IO.File_Mode;
+                        Name : Wide_String) is
+      use Ada.Text_IO;
+   begin
+      Open (File,
+            Mode => Mode,
+            Name => To_UTF8 (Name),
+            Form => UTF8_File_Form);
+   end Wide_Open;
 
    ---------------
    -- Wide_Open --

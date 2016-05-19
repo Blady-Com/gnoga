@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,26 +35,26 @@
 with ZanyBlue.Test.Text.Formatting.Suites.T_0094_Types;
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0094 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0094 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Test.Text.Formatting.Suites.T_0094_Types;
 
    Locale : constant Locale_Type := Make_Locale ("");
 
 begin
-   Check_Value (R, Format ("Arg: {0}", +T_0094_1,
+   Check_Value (T, Format ("Arg: {0}", +T_0094_1,
                            Locale => Locale),
                    "Arg: T_0094_1 : ",
            "Formatting should have generated T_0094_1");
-   Check_Value (R, Format ("Arg: {0,2}", +T_0094_2,
+   Check_Value (T, Format ("Arg: {0,2}", +T_0094_2,
                            Locale => Locale),
                    "Arg: T_0094_2 : 2",
            "Formatting should have generated T_0094_2");
-   Check_Value (R, Format ("Arg: {0:2}", +T_0094_3,
+   Check_Value (T, Format ("Arg: {0:2}", +T_0094_3,
                            Locale => Locale),
                    "Arg: T_0094_3 : 2",
            "Formatting should have generated T_0094_3");
-   Check_Value (R, Format ("Arg: {0:2//////}", +T_0094_4,
+   Check_Value (T, Format ("Arg: {0:2//////}", +T_0094_4,
                            Locale => Locale),
                    "Arg: T_0094_4 : 2//////",
            "Formatting should have generated T_0094_4");

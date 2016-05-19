@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with Ada.Wide_Text_IO;
 
 separate (ZanyBlue.Test.OS.Suites)
-procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0003 (T : in out Test_Case'Class) is
 
    Test_Area : constant Wide_String := "os";
    Test_Name : constant Wide_String := "t_0003";
@@ -45,6 +45,6 @@ procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Wide_Create (Output, Filename);
    Ada.Wide_Text_IO.Close (Output);
-   Check_Log_File (R, Test_Area, Test_Name,
+   Check_Log_File (T, Test_Area, Test_Name,
                    "Wide_Create should have created an empty file");
 end T_0003;

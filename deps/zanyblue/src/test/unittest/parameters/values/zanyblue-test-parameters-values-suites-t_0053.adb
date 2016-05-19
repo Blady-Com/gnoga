@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,14 +35,14 @@
 with Ada.Calendar;
 
 separate (ZanyBlue.Test.Parameters.Values.Suites)
-procedure T_0053 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0053 (T : in out Test_Case'Class) is
 
    use Ada.Calendar;
 
-   T : constant Time := Time_Of (2011, 10, 31, Duration (60483));
+   T_Val : constant Time := Time_Of (2011, 10, 31, Duration (60483));
 
 begin
-   Check_Value (R, Value (To_List (To_Time_Value (T), "xmpl"), 1),
+   Check_Value (T, Value (To_List (To_Time_Value (T_Val), "xmpl"), 1),
                    "10/31/11, 4:48 PM",
                 "To_List from Time");
 end T_0053;

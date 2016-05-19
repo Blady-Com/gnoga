@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -34,6 +35,9 @@
 
 with Ada.Calendar;
 with Ada.Strings.Wide_Unbounded;
+with Ada.Strings.Wide_Fixed;
+with Ada.Strings.Wide_Maps;
+with Ada.Strings.Wide_Maps.Wide_Constants;
 with ZanyBlue.OS;
 with ZanyBlue.Parameters;
 with ZanyBlue.Text.Locales;
@@ -98,9 +102,23 @@ package body ZBMCompile is
                             Options.Get_String ("reference_locale"));
       end loop;
       if Options.Get_Boolean ("generate_accessors") then
-         Accessors_Check (Handler);
+         Accessors_Check (
+            Handler,
+            Options.Get_String ("invalid_ada_key_handler") = "ignore");
       end if;
    end Check_Loaded;
+
+   --------------------------
+   -- Is_Ada_Identifier_OK --
+   --------------------------
+
+   function Is_Ada_Identifier_OK (Name : Wide_String) return Boolean is
+      use Ada.Strings.Wide_Fixed;
+      use Ada.Strings.Wide_Maps;
+      use Ada.Strings.Wide_Maps.Wide_Constants;
+   begin
+      return Index (Name, not (Alphanumeric_Set or To_Set ("_"))) = 0;
+   end Is_Ada_Identifier_OK;
 
    ----------------
    -- Load_Files --

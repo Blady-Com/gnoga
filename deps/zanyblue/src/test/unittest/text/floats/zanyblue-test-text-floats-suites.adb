@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,73 +36,71 @@ with ZanyBlue.Text.Floats;
 
 package body ZanyBlue.Test.Text.Floats.Suites is
 
-   use AUnit;
+   use Ahven.Framework;
    use ZanyBlue.Text.Floats;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0008 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0009 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0015 (R : in out AUnit.Test_Cases.Test_Case'Class);
+   procedure T_0001 (T : in out Test_Case'Class);
+   procedure T_0002 (T : in out Test_Case'Class);
+   procedure T_0003 (T : in out Test_Case'Class);
+   procedure T_0004 (T : in out Test_Case'Class);
+   procedure T_0005 (T : in out Test_Case'Class);
+   procedure T_0006 (T : in out Test_Case'Class);
+   procedure T_0007 (T : in out Test_Case'Class);
+   procedure T_0008 (T : in out Test_Case'Class);
+   procedure T_0009 (T : in out Test_Case'Class);
+   procedure T_0010 (T : in out Test_Case'Class);
+   procedure T_0011 (T : in out Test_Case'Class);
+   procedure T_0012 (T : in out Test_Case'Class);
+   procedure T_0013 (T : in out Test_Case'Class);
+   procedure T_0014 (T : in out Test_Case'Class);
+   procedure T_0015 (T : in out Test_Case'Class);
 
    overriding
-   function Name (T : Test_Case) return Test_String is
-      pragma Unreferenced (T);
+   procedure Initialize (T : in out Test) is
    begin
-      return Format ("ZanyBlue.Text.Floats");
-   end Name;
+      Set_Name (T, "ZanyBlue.Text.Floats");
+      Add_Test_Routine (T, T_0001'Access, "T_0001, Create/Format");
+      Add_Test_Routine (T, T_0002'Access, "T_0002, +/Format");
+      Add_Test_Routine (T, T_0003'Access, "T_0003, Format with space sign");
+      Add_Test_Routine (T, T_0004'Access, "T_0004, Format with explicit sign");
+      Add_Test_Routine (T, T_0005'Access, "T_0005, Argument_List/Format");
+      Add_Test_Routine (T, T_0006'Access, "T_0006, ar Argument_List/Format");
+      Add_Test_Routine (T, T_0007'Access, "T_0007, sv Argument_List/Format");
+      Add_Test_Routine (T, T_0008'Access, "T_0008, Numeric format w/ fill");
+      Add_Test_Routine (T, T_0009'Access, "T_0009, Numeric format w/o fill");
+      Add_Test_Routine (T, T_0010'Access, "T_0010, Numeric format w/ fill, *");
+      Add_Test_Routine (T, T_0011'Access,
+                        "T_0011, Numeric format w/o fill, *");
+      Add_Test_Routine (T, T_0012'Access,
+                        "T_0012, Numeric format w/ fill, ar");
+      Add_Test_Routine (T, T_0013'Access,
+                        "T_0013, Numeric format w/o fill, ar");
+      Add_Test_Routine (T, T_0014'Access, "T_0014, Numeric format w/ fill, *");
+      Add_Test_Routine (T, T_0015'Access,
+                        "T_0015, Numeric format w/o fill, *");
+   end Initialize;
 
-   overriding
-   procedure Register_Tests (T : in out Test_Case) is
+   function Suite return Test_Suite is
    begin
-      Add_Routine (T, T_0001'Access, "T_0001, Create/Format");
-      Add_Routine (T, T_0002'Access, "T_0002, +/Format");
-      Add_Routine (T, T_0003'Access, "T_0003, Format with space sign");
-      Add_Routine (T, T_0004'Access, "T_0004, Format with explicit sign");
-      Add_Routine (T, T_0005'Access, "T_0005, Argument_List/Format");
-      Add_Routine (T, T_0006'Access, "T_0006, ar Argument_List/Format");
-      Add_Routine (T, T_0007'Access, "T_0007, sv Argument_List/Format");
-      Add_Routine (T, T_0008'Access, "T_0008, Numeric format w/ fill");
-      Add_Routine (T, T_0009'Access, "T_0009, Numeric format w/o fill");
-      Add_Routine (T, T_0010'Access, "T_0010, Numeric format w/ fill, *");
-      Add_Routine (T, T_0011'Access, "T_0011, Numeric format w/o fill, *");
-      Add_Routine (T, T_0012'Access, "T_0012, Numeric format w/ fill, ar");
-      Add_Routine (T, T_0013'Access, "T_0013, Numeric format w/o fill, ar");
-      Add_Routine (T, T_0014'Access, "T_0014, Numeric format w/ fill, *");
-      Add_Routine (T, T_0015'Access, "T_0015, Numeric format w/o fill, *");
-   end Register_Tests;
-
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Add_Test (Result, new Test_Case);
-      return Result;
+      return S : Test_Suite do
+         Add_Test (S, new Test);
+      end return;
    end Suite;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0008 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0009 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0015 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
+   procedure T_0001 (T : in out Test_Case'Class) is separate;
+   procedure T_0002 (T : in out Test_Case'Class) is separate;
+   procedure T_0003 (T : in out Test_Case'Class) is separate;
+   procedure T_0004 (T : in out Test_Case'Class) is separate;
+   procedure T_0005 (T : in out Test_Case'Class) is separate;
+   procedure T_0006 (T : in out Test_Case'Class) is separate;
+   procedure T_0007 (T : in out Test_Case'Class) is separate;
+   procedure T_0008 (T : in out Test_Case'Class) is separate;
+   procedure T_0009 (T : in out Test_Case'Class) is separate;
+   procedure T_0010 (T : in out Test_Case'Class) is separate;
+   procedure T_0011 (T : in out Test_Case'Class) is separate;
+   procedure T_0012 (T : in out Test_Case'Class) is separate;
+   procedure T_0013 (T : in out Test_Case'Class) is separate;
+   procedure T_0014 (T : in out Test_Case'Class) is separate;
+   procedure T_0015 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Text.Floats.Suites;

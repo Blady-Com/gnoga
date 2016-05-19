@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,17 +33,17 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Time_Formats.Suites)
-procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0001 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("en");
 
 begin
-   Check_Value (R, Time_Format (L, Full), "h:mm:ss a zzzz",
+   Check_Value (T, Time_Format (L, Full), "h:mm:ss a zzzz",
                 "en_US full time format");
-   Check_Value (R, Time_Format (L, Long), "h:mm:ss a z",
+   Check_Value (T, Time_Format (L, Long), "h:mm:ss a z",
                 "en_US long time format");
-   Check_Value (R, Time_Format (L, Medium), "h:mm:ss a",
+   Check_Value (T, Time_Format (L, Medium), "h:mm:ss a",
                 "en_US medium time format");
-   Check_Value (R, Time_Format (L, Short), "h:mm a",
+   Check_Value (T, Time_Format (L, Short), "h:mm a",
                 "en_US short time format");
 end T_0001;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,13 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Sets.Suites)
-procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0002 (T : in out Test_Case'Class) is
 
    S : Parameter_Set_Type;
 
 begin
    S.Set_Name ("XMPL");
-   WAssert (R, S.Number_Of_Parameters = 0, "No parameters in the empty set");
+   WAssert (T, S.Number_Of_Parameters = 0, "No parameters in the empty set");
    S.Set_String ("a", "b");
-   WAssert (R, S.Number_Of_Parameters = 1, "Expected 1 parameter");
+   WAssert (T, S.Number_Of_Parameters = 1, "Expected 1 parameter");
 end T_0002;

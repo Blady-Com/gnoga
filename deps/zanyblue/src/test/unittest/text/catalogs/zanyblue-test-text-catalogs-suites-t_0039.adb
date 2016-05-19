@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,20 +33,20 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0039 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0039 (T : in out Test_Case'Class) is
 
    Catalog : constant Catalog_Type := Create;
 
 begin
-   WAssert (R, Number_Of_Facilities (Catalog) = 0, "Expected 0 facilities");
+   WAssert (T, Number_Of_Facilities (Catalog) = 0, "Expected 0 facilities");
    Add_Facility (Catalog, "fac1");
-   WAssert (R, Number_Of_Facilities (Catalog) = 1, "Expected 1 facility");
-   Check_Value (R, Get_Facility (Catalog, 1), "fac1", "Expected fac1");
+   WAssert (T, Number_Of_Facilities (Catalog) = 1, "Expected 1 facility");
+   Check_Value (T, Get_Facility (Catalog, 1), "fac1", "Expected fac1");
    Add_Facility (Catalog, "fac1");
-   WAssert (R, Number_Of_Facilities (Catalog) = 1, "Expected 1 facility");
-   Check_Value (R, Get_Facility (Catalog, 1), "fac1", "Expected fac1");
+   WAssert (T, Number_Of_Facilities (Catalog) = 1, "Expected 1 facility");
+   Check_Value (T, Get_Facility (Catalog, 1), "fac1", "Expected fac1");
    Add_Facility (Catalog, "fac2");
-   WAssert (R, Number_Of_Facilities (Catalog) = 2, "Expected 2 facilities");
-   Check_Value (R, Get_Facility (Catalog, 1), "fac1", "Expected fac1");
-   Check_Value (R, Get_Facility (Catalog, 2), "fac2", "Expected fac2");
+   WAssert (T, Number_Of_Facilities (Catalog) = 2, "Expected 2 facilities");
+   Check_Value (T, Get_Facility (Catalog, 1), "fac1", "Expected fac1");
+   Check_Value (T, Get_Facility (Catalog, 2), "fac2", "Expected fac2");
 end T_0039;

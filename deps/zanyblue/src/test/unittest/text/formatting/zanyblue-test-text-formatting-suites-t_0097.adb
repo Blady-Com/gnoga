@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,14 @@
 --
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0097 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0097 (T : in out Test_Case'Class) is
 
 begin
-   WAssert (R, Exceptions_Enabled, "Expected exceptions to be enabled");
+   WAssert (T, Exceptions_Enabled, "Expected exceptions to be enabled");
    Enable_Exceptions;
-   WAssert (R, Exceptions_Enabled, "Expected exceptions to be enabled");
+   WAssert (T, Exceptions_Enabled, "Expected exceptions to be enabled");
    Disable_Exceptions;
-   WAssert (R, not Exceptions_Enabled, "Expected exceptions to be disabled");
+   WAssert (T, not Exceptions_Enabled, "Expected exceptions to be disabled");
    Enable_Exceptions;
-   WAssert (R, Exceptions_Enabled, "Expected exceptions to be enabled");
+   WAssert (T, Exceptions_Enabled, "Expected exceptions to be enabled");
 end T_0097;

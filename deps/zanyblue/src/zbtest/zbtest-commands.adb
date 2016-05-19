@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,27 +33,28 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Text_IO;
+with Ada.Text_IO;
 with ZanyBlue.OS;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Catalogs;
 with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Formatting;
 
-with ZBTest_Messages.ZBTest_Wide_Prints;
+with ZBTest_Messages.ZBTest_Prints;
 
 pragma Elaborate_All (ZanyBlue.OS);
-pragma Elaborate_All (ZBTest_Messages.ZBTest_Wide_Prints);
+pragma Elaborate_All (ZBTest_Messages.ZBTest_Prints);
 
 package body ZBTest.Commands is
 
-   use Ada.Wide_Text_IO;
+   use Ada.Text_IO;
    use ZanyBlue.OS;
+   use ZanyBlue.Text;
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Formatting;
-   use ZBTest_Messages.ZBTest_Wide_Prints;
+   use ZBTest_Messages.ZBTest_Prints;
 
    type Simple_Message_Printer is
       access procedure (Destination : File_Type    := Current_Output;

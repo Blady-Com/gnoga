@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -35,6 +36,20 @@
 # Regeneration of the CLDR data
 TOP=../..
 ZBMCOMPILE=$(realpath $(TOP)/bin/zbmcompile$E)
+#ASCII_ONLY=-A
+ASCII_ONLY=
+ZBMCFLAGS+=$(ASCII_ONLY)
+ifeq ($(ASCII_ONLY),-A)
+   # Disable inclusion of text of messages in generated files in ASCII mode
+   ZBMCFLAGS+=-C
+endif
+# Optimize for locale based access
+ZBMCFLAGS+=-O
+# Verbose
+ZBMCFLAGS+=-v
+# Defined the message directory
+ZBMCFLAGS+=-d $(MESGDIR)
+MKCODECSMAPS=$(TOP)/src/bin/mkcodecsmaps.py
 CLDR2LOCALES=$(TOP)/src/bin/cldr2locales.py
 CLDR_PACKAGE=ZanyBlue.Text.CLDR_Data
 LOCALES_SOURCE=zanyblue-text-locales.adb
@@ -104,6 +119,24 @@ ALL_LOCALES=aa_DJ aa_ER aa_ET aa af_NA af af_ZA ak_GH ak am_ET am ar_AE \
 	wo_Latn_SN wo_Latn wo_SN wo xh xh_ZA xog_UG xog yo_NG yo zh_CN \
 	zh_Hans_CN zh_Hans_HK zh_Hans_MO zh_Hans_SG zh_Hans zh_Hant_HK \
 	zh_Hant_MO zh_Hant_TW zh_Hant zh_HK zh_MO zh_SG zh_TW zh zu zu_ZA
+ENCODING_ALIASES+=-A SHIFT_JIS=CP932
+ENCODING_ALIASES+=-A GB2312=CP936
+ENCODING_ALIASES+=-A BIG5=CP950
+ENCODING_ALIASES+=-A CP28591=ASCII
+ENCODING_ALIASES+=-A CP28592=ISO8859-2
+ENCODING_ALIASES+=-A CP28593=ISO8859-3
+ENCODING_ALIASES+=-A CP28594=ISO8859-4
+ENCODING_ALIASES+=-A CP28595=ISO8859-5
+ENCODING_ALIASES+=-A CP28596=ISO8859-6
+ENCODING_ALIASES+=-A CP28597=ISO8859-7
+ENCODING_ALIASES+=-A CP28598=ISO8859-8
+ENCODING_ALIASES+=-A CP28599=ISO8859-9
+ENCODING_ALIASES+=-A CP28603=ISO8859-13
+ENCODING_ALIASES+=-A CP28605=ISO8859-15
+MKCODECSMAPS_FLAGS+=-K
+MKCODECSMAPS_FLAGS+=$(ENCODING_ALIASES)
+MKCODECSMAPS_FLAGS+=$(MISC_ENCODINGS)
+MKCODECSMAPS_FLAGS+=$(EBCDIC_ENCODINGS)
 
 # Include configuration definitions
 include $(TOP)/src/mkfile/conf.mk
@@ -112,21 +145,29 @@ include $(TOP)/src/mkfile/rules.mk
 all:
 	$(warning )
 	$(warning This Makefile is only used to regenerate the compiled)
-	$(warning locale data file.  Use)
+	$(warning locale data file and codecs information.  Use)
 	$(warning )
 	$(warning     make regenerate)
 	$(warning )
 	$(warning to perform this regeneration after a build, the zbmcompile)
 	$(warning utility is needed.)
 	$(warning )
+	$(warning To regenerate just the CLDR data, use)
+	$(warning )
+	$(warning     make cldr)
+	$(warning )
+	$(warning To regenerate just the Codecs data, use)
+	$(warning )
+	$(warning     make codecs)
+	$(warning )
 
-regenerate:	zbmcompile cldr
+regenerate:	cldr codecs
 
-cldr:	properties
-	$(ZBMCOMPILE) -O -v $(CLDR_PACKAGE) -d $(MESGDIR) $(FACILTIES)
+cldr:	properties zbmcompile
+	$(ZBMCOMPILE) $(ZBMCFLAGS) $(CLDR_PACKAGE) $(FACILTIES)
 
 properties:
-	$(PYTHON) $(CLDR2LOCALES) -v -d $(CLDR_DIR) -B $(BASE_LOCALE) -p $(MESGDIR) -e $(LOCALES_SOURCE) $(LOCALES)
+	$(PYTHON) $(CLDR2LOCALES) $(ASCII_ONLY) -v -d $(CLDR_DIR) -B $(BASE_LOCALE) -p $(MESGDIR) -e $(LOCALES_SOURCE) $(LOCALES)
 
 fullset:
 	$(MAKE) LOCALES="$(ALL_LOCALES)" regenerate
@@ -137,3 +178,6 @@ $(ZBMCOMPILE):
 	$(warning The executable '$(ZBMCOMPILE)' is not present)
 	$(warning Need to perform a build before regenerating locale data)
 	$(error Please rebuild)
+
+codecs:
+	$(MKCODECSMAPS) $(MKCODECSMAPS_FLAGS)

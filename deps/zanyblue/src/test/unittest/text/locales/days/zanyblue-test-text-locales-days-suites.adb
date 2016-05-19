@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,94 +32,87 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit;
 with ZanyBlue.Text.Locales;
 
 package body ZanyBlue.Test.Text.Locales.Days.Suites is
 
-   use AUnit;
+   use Ahven.Framework;
    use ZanyBlue.Text;
    use ZanyBlue.Text.Locales;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0008 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0009 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0015 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0016 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0017 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0018 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0019 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class);
+   procedure T_0001 (T : in out Test_Case'Class);
+   procedure T_0002 (T : in out Test_Case'Class);
+   procedure T_0003 (T : in out Test_Case'Class);
+   procedure T_0004 (T : in out Test_Case'Class);
+   procedure T_0005 (T : in out Test_Case'Class);
+   procedure T_0006 (T : in out Test_Case'Class);
+   procedure T_0007 (T : in out Test_Case'Class);
+   procedure T_0008 (T : in out Test_Case'Class);
+   procedure T_0009 (T : in out Test_Case'Class);
+   procedure T_0010 (T : in out Test_Case'Class);
+   procedure T_0011 (T : in out Test_Case'Class);
+   procedure T_0012 (T : in out Test_Case'Class);
+   procedure T_0013 (T : in out Test_Case'Class);
+   procedure T_0014 (T : in out Test_Case'Class);
+   procedure T_0015 (T : in out Test_Case'Class);
+   procedure T_0016 (T : in out Test_Case'Class);
+   procedure T_0017 (T : in out Test_Case'Class);
+   procedure T_0018 (T : in out Test_Case'Class);
+   procedure T_0019 (T : in out Test_Case'Class);
+   procedure T_0020 (T : in out Test_Case'Class);
 
    overriding
-   function Name (T : Test_Case) return Test_String is
-      pragma Unreferenced (T);
+   procedure Initialize (T : in out Test) is
    begin
-      return Format ("ZanyBlue.Text.Locales.Days");
-   end Name;
+      Set_Name (T, "ZanyBlue.Text.Locales.Days");
+      Add_Test_Routine (T, T_0001'Access, "T_0001, en day name for date");
+      Add_Test_Routine (T, T_0002'Access, "T_0002, de day name for date");
+      Add_Test_Routine (T, T_0003'Access, "T_0003, fr day name for date");
+      Add_Test_Routine (T, T_0004'Access, "T_0004, ja day name for date");
+      Add_Test_Routine (T, T_0005'Access, "T_0005, zh day name for date");
+      Add_Test_Routine (T, T_0006'Access, "T_0006, ar day name for date");
+      Add_Test_Routine (T, T_0007'Access, "T_0007, en short day name");
+      Add_Test_Routine (T, T_0008'Access, "T_0008, de short day name");
+      Add_Test_Routine (T, T_0009'Access, "T_0009, fr short day name");
+      Add_Test_Routine (T, T_0010'Access, "T_0010, ja short day name");
+      Add_Test_Routine (T, T_0011'Access, "T_0011, zh short day name");
+      Add_Test_Routine (T, T_0012'Access, "T_0012, ar short day name");
+      Add_Test_Routine (T, T_0013'Access, "T_0013, en full day name");
+      Add_Test_Routine (T, T_0014'Access, "T_0014, de full day name");
+      Add_Test_Routine (T, T_0015'Access, "T_0015, fr full day name");
+      Add_Test_Routine (T, T_0016'Access, "T_0016, ja full day name");
+      Add_Test_Routine (T, T_0017'Access, "T_0017, zh full day name");
+      Add_Test_Routine (T, T_0018'Access, "T_0018, ar full day name");
+      Add_Test_Routine (T, T_0019'Access, "T_0019, Short_Day_Name fallback");
+      Add_Test_Routine (T, T_0020'Access, "T_0020, Full_Day_Name fallback");
+   end Initialize;
 
-   overriding
-   procedure Register_Tests (T : in out Test_Case) is
+   function Suite return Test_Suite is
    begin
-      Add_Routine (T, T_0001'Access, "T_0001, en day name for date");
-      Add_Routine (T, T_0002'Access, "T_0002, de day name for date");
-      Add_Routine (T, T_0003'Access, "T_0003, fr day name for date");
-      Add_Routine (T, T_0004'Access, "T_0004, ja day name for date");
-      Add_Routine (T, T_0005'Access, "T_0005, zh day name for date");
-      Add_Routine (T, T_0006'Access, "T_0006, ar day name for date");
-      Add_Routine (T, T_0007'Access, "T_0007, en short day name");
-      Add_Routine (T, T_0008'Access, "T_0008, de short day name");
-      Add_Routine (T, T_0009'Access, "T_0009, fr short day name");
-      Add_Routine (T, T_0010'Access, "T_0010, ja short day name");
-      Add_Routine (T, T_0011'Access, "T_0011, zh short day name");
-      Add_Routine (T, T_0012'Access, "T_0012, ar short day name");
-      Add_Routine (T, T_0013'Access, "T_0013, en full day name");
-      Add_Routine (T, T_0014'Access, "T_0014, de full day name");
-      Add_Routine (T, T_0015'Access, "T_0015, fr full day name");
-      Add_Routine (T, T_0016'Access, "T_0016, ja full day name");
-      Add_Routine (T, T_0017'Access, "T_0017, zh full day name");
-      Add_Routine (T, T_0018'Access, "T_0018, ar full day name");
-      Add_Routine (T, T_0019'Access, "T_0019, Short_Day_Name fallback");
-      Add_Routine (T, T_0020'Access, "T_0020, Full_Day_Name fallback");
-   end Register_Tests;
-
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Add_Test (Result, new Test_Case);
-      return Result;
+      return S : Test_Suite do
+         Add_Test (S, new Test);
+      end return;
    end Suite;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0008 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0009 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0013 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0014 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0015 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0016 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0017 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0018 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0019 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0020 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
+   procedure T_0001 (T : in out Test_Case'Class) is separate;
+   procedure T_0002 (T : in out Test_Case'Class) is separate;
+   procedure T_0003 (T : in out Test_Case'Class) is separate;
+   procedure T_0004 (T : in out Test_Case'Class) is separate;
+   procedure T_0005 (T : in out Test_Case'Class) is separate;
+   procedure T_0006 (T : in out Test_Case'Class) is separate;
+   procedure T_0007 (T : in out Test_Case'Class) is separate;
+   procedure T_0008 (T : in out Test_Case'Class) is separate;
+   procedure T_0009 (T : in out Test_Case'Class) is separate;
+   procedure T_0010 (T : in out Test_Case'Class) is separate;
+   procedure T_0011 (T : in out Test_Case'Class) is separate;
+   procedure T_0012 (T : in out Test_Case'Class) is separate;
+   procedure T_0013 (T : in out Test_Case'Class) is separate;
+   procedure T_0014 (T : in out Test_Case'Class) is separate;
+   procedure T_0015 (T : in out Test_Case'Class) is separate;
+   procedure T_0016 (T : in out Test_Case'Class) is separate;
+   procedure T_0017 (T : in out Test_Case'Class) is separate;
+   procedure T_0018 (T : in out Test_Case'Class) is separate;
+   procedure T_0019 (T : in out Test_Case'Class) is separate;
+   procedure T_0020 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Text.Locales.Days.Suites;

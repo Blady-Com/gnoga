@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -71,7 +72,37 @@ package body ZanyBlue.Parameters.Sets is
    ----------
 
    procedure Dump (Params      : Parameter_Set_Type;
-                   Destination : File_Type;
+                   Destination : Ada.Text_IO.File_Type;
+                   Level       : Natural := 0) is
+
+      Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');
+
+      procedure Dump_Parameter (Position : Cursor);
+      --  Helper routine to handle an individual parameter
+
+      --------------------
+      -- Dump_Parameter --
+      --------------------
+
+      procedure Dump_Parameter (Position : Cursor) is
+      begin
+         Element (Position).Dump (Key (Position), Destination, Level => Level);
+      end Dump_Parameter;
+
+   begin
+      Print_Line (Destination, "{0}<parameter-set name=""{1}"">",
+                               +Indentation, +Get_Name (Params));
+      Iterate (Params.Values, Dump_Parameter'Access);
+      Print_Line (Destination, "{0}</parameter-set>",
+                               +Indentation);
+   end Dump;
+
+   ----------
+   -- Dump --
+   ----------
+
+   procedure Dump (Params      : Parameter_Set_Type;
+                   Destination : Ada.Wide_Text_IO.File_Type;
                    Level       : Natural := 0) is
 
       Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 --
 
 separate (ZanyBlue.Test.Parameters.Values.Suites)
-procedure T_0036 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0036 (T : in out Test_Case'Class) is
 
 begin
    Discard (To_Float (To_Integer_Value (4), "xmpl"));
-   WAssert (R, False, "Integer -> Float, no exception raised");
+   WAssert (T, False, "Integer -> Float, no exception raised");
 exception
 when Not_A_Real_Error =>
-   WAssert (R, True, "Integer -> Float, exception raised");
+   WAssert (T, True, "Integer -> Float, exception raised");
 end T_0036;

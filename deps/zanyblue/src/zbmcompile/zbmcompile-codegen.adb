@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -46,13 +47,13 @@ package body ZBMCompile.Codegen is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
 
-   Continue_Character : constant Wide_Character := '⤶';        --  U+2936
-   --  U+2936 ARROW POINTING DOWNWARDS THEN CURVING LEFTWARDS
+   Continue_Marker : constant Wide_Character := Wide_Character'Val (16#2936#);
+   --  U+2936 ARROW POINTING DOWNWARDS THEN CURVING LEFTWARDS ('⤶')
    --  Used to indicate lines of the accessor comment that have been split
    --  to ensure the generated output is within 80 column limit.
 
-   Newline_Character  : constant Wide_Character := '⏎';
-   --  U+23CE RETURN SYMBOL
+   Newline_Marker  : constant Wide_Character := Wide_Character'Val (16#23CE#);
+   --  U+23CE RETURN SYMBOL ('⏎'')
    --  Used to indicate lines of the accessor comment that have embedded
    --  new line characters.  To preserve the intended structure, this
    --  character is always followed by a new line on output to the accessor
@@ -276,7 +277,7 @@ package body ZBMCompile.Codegen is
          exit Comment_Blocks when To = 0;
          Write_Commented_Text_Line (File,
                                     Safe_Value (From .. To - 1)
-                                    & Newline_Character,
+                                    & Newline_Marker,
                                     Block_Size);
          From := To + 1;
       end loop Comment_Blocks;
@@ -307,7 +308,7 @@ package body ZBMCompile.Codegen is
             To := From + Block_Size - 1;
             Print_Line (File, ZBMBase_Facility, "10023",
                               Argument0 => +Value (From .. To),
-                              Argument1 => +Continue_Character);
+                              Argument1 => +Continue_Marker);
          end loop;
          From := Value'First + N_Blocks * Block_Size;
          To := Natural'Min (From + Block_Size, Value'Last);

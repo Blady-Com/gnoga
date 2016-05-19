@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,25 +33,25 @@
 --
 
 separate (ZanyBlue.Test.Text.CLDR.Suites)
-procedure T_0021 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0021 (T : in out Test_Case'Class) is
 
    L_Name : constant Wide_String := "xx";
    L : constant Locale_Type := Make_Locale (L_Name);
 
 begin
-   Check_Value (R, Full_Locale_Name (Make_Locale (""), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale (""), L),
                 "Root",
                 "Fallback full locale name for base");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("en"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("en"), L),
                 "English",
                 "Fallback full locale name for en");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("en_US"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("en_US"), L),
                 "English (United States)",
                 "Fallback full locale name for en_US");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("fr"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("fr"), L),
                 "French",
                 "Fallback full locale name for fr");
-   Check_Value (R, Full_Locale_Name (Make_Locale ("fr_CA"), L),
+   Check_Value (T, Full_Locale_Name (Make_Locale ("fr_CA"), L),
                 "French (Canada)",
                 "Fallback full locale name for fr_CA");
 end T_0021;

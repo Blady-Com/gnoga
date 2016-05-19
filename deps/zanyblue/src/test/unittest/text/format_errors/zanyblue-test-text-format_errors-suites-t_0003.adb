@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,14 @@
 --
 
 separate (ZanyBlue.Test.Text.Format_Errors.Suites)
-procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0003 (T : in out Test_Case'Class) is
 
    Message   : constant Wide_String := "Message with illegal char {!}";
    Handler   : aliased Test_Handler_Type;
    Arguments : Argument_List;
 
 begin
-   Check_Value (R,
+   Check_Value (T,
                 Format_Message (Message,
                                 Arguments,
                                 null,
@@ -51,12 +51,12 @@ begin
                                 Handler'Access),
                  "Message with illegal char ⁅0⁆",
                  "Illegal character argument");
-   WAssert (R, Handler. N_Format_Not_Closed = 0,
+   WAssert (T, Handler. N_Format_Not_Closed = 0,
             "Expected no open formats");
-   WAssert (R, Handler.N_Illegal_Character = 1,
+   WAssert (T, Handler.N_Illegal_Character = 1,
             "Expected one illegal characters");
-   WAssert (R, Handler.N_Missing_Argument = 1,
+   WAssert (T, Handler.N_Missing_Argument = 1,
             "Expected one missing arguments");
-   WAssert (R, Handler.Argument_Count = 1,
+   WAssert (T, Handler.Argument_Count = 1,
             "Expected one argument count");
 end T_0003;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,18 +33,18 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0046 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0046 (T : in out Test_Case'Class) is
 
    Catalog      : Catalog_Type;
 
 begin
    Catalog := Create;
-   WAssert (R, Exceptions_Enabled (Catalog),
+   WAssert (T, Exceptions_Enabled (Catalog),
             "Expected exceptions to be enabled");
    Disable_Exceptions (Catalog);
-   WAssert (R, not Exceptions_Enabled (Catalog),
+   WAssert (T, not Exceptions_Enabled (Catalog),
             "Expected exceptions to be disabled");
    Enable_Exceptions (Catalog);
-   WAssert (R, Exceptions_Enabled (Catalog),
+   WAssert (T, Exceptions_Enabled (Catalog),
             "Expected exceptions to be enabled");
 end T_0046;

@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -37,8 +38,10 @@ with ZanyBlue.Text.Buffer;
 
 package body ZanyBlue.Text.Arguments is
 
-   Missing_Start : constant Wide_Character := '⁅';   --  U+2045
-   Missing_End   : constant Wide_Character := '⁆';   --  U+2046
+   --  U+2045 LEFT SQUARE BRACKET WITH QUILL
+   Missing_Start : constant Wide_Character := Wide_Character'Val (16#2045#);
+   --  U+2046 LEFT SQUARE BRACKET WITH QUILL
+   Missing_End   : constant Wide_Character := Wide_Character'Val (16#2046#);
 
    type Format_Map_Type is
       record

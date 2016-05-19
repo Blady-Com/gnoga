@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,46 +37,34 @@ with ZanyBlue.OS;
 
 package body ZanyBlue.Test.OS.Suites is
 
-   use AUnit;
+   use Ahven.Framework;
    use ZanyBlue.OS;
 
    Test_Area : constant Wide_String := "os";
    pragma Unreferenced (Test_Area);
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class);
+   procedure T_0001 (T : in out Test_Case'Class);
+   procedure T_0002 (T : in out Test_Case'Class);
+   procedure T_0003 (T : in out Test_Case'Class);
 
    overriding
-   function Name (T : Test_Case) return AUnit.Test_String is
-      pragma Unreferenced (T);
+   procedure Initialize (T : in out Test) is
    begin
-      return Format ("ZanyBlue.OS");
-   end Name;
+      Set_Name (T, "ZanyBlue.OS");
+      Add_Test_Routine (T, T_0001'Access, "T_0001, OS name");
+      Add_Test_Routine (T, T_0002'Access, "T_0002, OS integrity check");
+      Add_Test_Routine (T, T_0003'Access, "T_0003, Wide_Create check");
+   end Initialize;
 
-   overriding
-   procedure Register_Tests (T : in out Test_Case) is
+   function Suite return Test_Suite is
    begin
-      Add_Routine (T, T_0001'Access, "T_0001, OS name");
-      Add_Routine (T, T_0002'Access, "T_0002, OS integrity check");
-      Add_Routine (T, T_0003'Access, "T_0003, Wide_Create check");
-      Add_Routine (T, T_0004'Access, "T_0002, To_UTF8 ('')");
-      Add_Routine (T, T_0005'Access, "T_0003, From_UTF8 ('')");
-   end Register_Tests;
-
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Add_Test (Result, new Test_Case);
-      return Result;
+      return S : Test_Suite do
+         Add_Test (S, new Test);
+      end return;
    end Suite;
 
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
+   procedure T_0001 (T : in out Test_Case'Class) is separate;
+   procedure T_0002 (T : in out Test_Case'Class) is separate;
+   procedure T_0003 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.OS.Suites;

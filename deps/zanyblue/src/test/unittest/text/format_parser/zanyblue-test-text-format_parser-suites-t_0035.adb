@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,16 +33,16 @@
 --
 
 separate (ZanyBlue.Test.Text.Format_Parser.Suites)
-procedure T_0035 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0035 (T : in out Test_Case'Class) is
 
    Locale      : constant Locale_Type := Make_Locale ("en_US");
    Format_Spec : constant Wide_String := "*^#11.8D";
 
 begin
-   Check_Value (R, To_String (Parse (Format_Spec, Locale)),
+   Check_Value (T, To_String (Parse (Format_Spec, Locale)),
                 "['*', CENTER, NONE, TRUE,  11,  8, 'D']",
                 "Full format spec 'D', failed");
 exception
 when Invalid_Format =>
-   WAssert (R, True, "Expected Invalid_Format, D format dropped");
+   WAssert (T, True, "Expected Invalid_Format, D format dropped");
 end T_0035;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,16 +35,16 @@
 with ZanyBlue.Text.Integers;
 
 separate (ZanyBlue.Test.Text.Arguments.Suites)
-procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0004 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Integers;
 
    List : Argument_List;
 
 begin
-   WAssert (R, List.Length = 0, "Length of emtpy list is not 0");
+   WAssert (T, List.Length = 0, "Length of emtpy list is not 0");
    Append (List, +10);
-   WAssert (R, List.Length = 1, "Length is not 1");
+   WAssert (T, List.Length = 1, "Length is not 1");
    List.Clear;
-   WAssert (R, List.Length = 0, "Length of cleared list is not 0");
+   WAssert (T, List.Length = 0, "Length of cleared list is not 0");
 end T_0004;

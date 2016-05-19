@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0037 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0037 (T : in out Test_Case'Class) is
 
    Facility     : constant Wide_String := "strings";
    Dir_Name     : constant Wide_String := Test_Src_Directory (Test_Area);
@@ -48,14 +48,14 @@ procedure T_0037 (R : in out AUnit.Test_Cases.Test_Case'Class) is
                     Value  : Wide_String) is
       L : constant Locale_Type := Make_Locale (Locale);
    begin
-      Check_Value (R, Get_Text (Catalog, Facility, "reboot.title", L), Value);
+      Check_Value (T, Get_Text (Catalog, Facility, "reboot.title", L), Value);
    end Check;
 
 begin
    Catalog := Create;
    Load_Facility (Catalog, Facility, N_Locales, N_Messages, Dir_Name);
-   WAssert (R, N_Locales = 10, "Expected 10 locales");
-   WAssert (R, N_Messages = 212, "Expected 212 messages");
+   WAssert (T, N_Locales = 10, "Expected 10 locales");
+   WAssert (T, N_Messages = 212, "Expected 212 messages");
    Check ("", "Restart");
    Check ("de", "Neustart");
    Check ("de_DE", "Neustart");

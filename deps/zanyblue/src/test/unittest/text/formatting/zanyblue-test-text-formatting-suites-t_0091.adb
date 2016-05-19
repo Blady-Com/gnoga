@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Formatting.Suites)
-procedure T_0091 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0091 (T : in out Test_Case'Class) is
 
    Test_Name : constant Wide_String := "t_0091";
    Locale    : constant Locale_Type := Make_Locale ("");
@@ -46,10 +46,10 @@ begin
    Print (Output, "Message: #1={0}, #2={1}", +10,
           Locale => Locale);
    Close (Output);
-   WAssert (R, False, "Expected exception not raised");
+   WAssert (T, False, "Expected exception not raised");
 exception
 when No_Such_Argument_Error =>
    Close (Output);
-   Check_Log_File (R, Test_Area, Test_Name,
+   Check_Log_File (T, Test_Area, Test_Name,
            "Print with 2 argument failed");
 end T_0091;

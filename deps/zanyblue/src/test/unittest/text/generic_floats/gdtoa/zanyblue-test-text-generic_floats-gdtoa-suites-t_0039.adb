@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,8 @@
 --
 
 separate (ZanyBlue.Test.Text.Generic_Floats.GDTOA.Suites)
-procedure T_0039 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0039 (T : in out Test_Case'Class) is
 
 begin
-   Check_LFloat (R, 2.2250738585072013e-308, "2.22507385850720E-308");
+   Check_LFloat (T, 2.2250738585072013e-308, "2.22507385850720E-308");
 end T_0039;

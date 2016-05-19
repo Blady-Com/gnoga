@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -42,11 +43,13 @@ MESGDIR=mesg
 FACILTIES=ZBTest
 PACKAGE=ZBTest_Messages
 STAMPFILE=mesg/zbtest-messages.stamp
+ZBMCOMPILE_FLAGS+=-A
+ZBMCOMPILE_FLAGS+=-C
 ZBMCOMPILE_FLAGS+=-p
 ZBMCOMPILE_FLAGS+=-v
 ZBMCOMPILE_FLAGS+=-O
 ZBMCOMPILE_FLAGS+=-G exceptions
-ZBMCOMPILE_FLAGS+=-G wprints
+ZBMCOMPILE_FLAGS+=-G prints
 ZBMCOMPILE_FLAGS+=-o mesg
 ZBMCOMPILE_FLAGS+=-d mesg
 ZBMCOMPILE_FLAGS+=-S $(STAMPFILE)
@@ -65,7 +68,7 @@ CLEAN_DIRS+=$(wildcard test-area)
 include $(TOP)/src/mkfile/conf.mk
 
 all:	$(STAMPFILE)
-	$(GNATMAKE) -p $(GNATFLAGS) -P $(APPNAME)
+	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME)
 
 messages:	$(STAMPFILE)
 
@@ -82,7 +85,7 @@ gprof:
 	$(MAKE) BUILD=Profile
 
 clean::
-	$(GNATCLEAN) $(GNATFLAGS) -P $(APPNAME)
+	$(GNATCLEAN) $(GNATXDEFS) -P $(APPNAME)
 
 run:	$(ZBTEST)
 	$(ZBTEST)

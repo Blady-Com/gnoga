@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,23 +33,23 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Days.Suites)
-procedure T_0019 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0019 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("xx");
 
 begin
-   Check_Value (R, Short_Day_Name (L, Mon), "Mon",
+   Check_Value (T, Short_Day_Name (L, Mon), "Mon",
                 "xx (fallback) short day name, Mon");
-   Check_Value (R, Short_Day_Name (L, Tue), "Tue",
+   Check_Value (T, Short_Day_Name (L, Tue), "Tue",
                 "xx (fallback) short day name, Tue");
-   Check_Value (R, Short_Day_Name (L, Wed), "Wed",
+   Check_Value (T, Short_Day_Name (L, Wed), "Wed",
                 "xx (fallback) short day name, Wed");
-   Check_Value (R, Short_Day_Name (L, Thu), "Thu",
+   Check_Value (T, Short_Day_Name (L, Thu), "Thu",
                 "xx (fallback) short day name, Thu");
-   Check_Value (R, Short_Day_Name (L, Fri), "Fri",
+   Check_Value (T, Short_Day_Name (L, Fri), "Fri",
                 "xx (fallback) short day name, Fri");
-   Check_Value (R, Short_Day_Name (L, Sat), "Sat",
+   Check_Value (T, Short_Day_Name (L, Sat), "Sat",
                 "xx (fallback) short day name, Sat");
-   Check_Value (R, Short_Day_Name (L, Sun), "Sun",
+   Check_Value (T, Short_Day_Name (L, Sun), "Sun",
                 "xx (fallback) short day name, Sun");
 end T_0019;

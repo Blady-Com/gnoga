@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,33 +33,33 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Months.Suites)
-procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0004 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("ja");
 
 begin
-   Check_Value (R, Short_Month_Name (L, Jan), "1月",
+   Check_Value (T, Short_Month_Name (L, Jan), "1月",
                 "ja short month name, Jan");
-   Check_Value (R, Short_Month_Name (L, Feb), "2月",
+   Check_Value (T, Short_Month_Name (L, Feb), "2月",
                 "ja short month name, Feb");
-   Check_Value (R, Short_Month_Name (L, Mar), "3月",
+   Check_Value (T, Short_Month_Name (L, Mar), "3月",
                 "ja short month name, Mar");
-   Check_Value (R, Short_Month_Name (L, Apr), "4月",
+   Check_Value (T, Short_Month_Name (L, Apr), "4月",
                 "ja short month name, Apr");
-   Check_Value (R, Short_Month_Name (L, May), "5月",
+   Check_Value (T, Short_Month_Name (L, May), "5月",
                 "ja short month name, May");
-   Check_Value (R, Short_Month_Name (L, Jun), "6月",
+   Check_Value (T, Short_Month_Name (L, Jun), "6月",
                 "ja short month name, Jun");
-   Check_Value (R, Short_Month_Name (L, Jul), "7月",
+   Check_Value (T, Short_Month_Name (L, Jul), "7月",
                 "ja short month name, Jul");
-   Check_Value (R, Short_Month_Name (L, Aug), "8月",
+   Check_Value (T, Short_Month_Name (L, Aug), "8月",
                 "ja short month name, Aug");
-   Check_Value (R, Short_Month_Name (L, Sep), "9月",
+   Check_Value (T, Short_Month_Name (L, Sep), "9月",
                 "ja short month name, Sep");
-   Check_Value (R, Short_Month_Name (L, Oct), "10月",
+   Check_Value (T, Short_Month_Name (L, Oct), "10月",
                 "ja short month name, Oct");
-   Check_Value (R, Short_Month_Name (L, Nov), "11月",
+   Check_Value (T, Short_Month_Name (L, Nov), "11月",
                 "ja short month name, Nov");
-   Check_Value (R, Short_Month_Name (L, Dec), "12月",
+   Check_Value (T, Short_Month_Name (L, Dec), "12月",
                 "ja short month name, Dec");
 end T_0004;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,18 +33,14 @@
 --
 
 with Ada.Command_Line;
-with AUnit.Assertions;
-with AUnit.Reporter.Text;
 with GNAT.Regexp;
 with ZanyBlue.OS;
 with ZanyBlue.Text;
-with ZanyBlue.Test.Reporter_XML;
 with ZanyBlue.Wide_Directories;
 
 package body ZanyBlue.Test is
 
-   use AUnit;
-   use AUnit.Assertions;
+   use Ahven;
    use ZanyBlue.OS;
    use ZanyBlue.Text;
 
@@ -52,27 +48,11 @@ package body ZanyBlue.Test is
 
    type String_Access is access String;
    CL_Initialized : Boolean := False;
-   CL_Use_XML : Boolean := False;
    CL_Top_Directory : String_Access := null;
-   Prefix : String_Access := null;
-   Reporter : access AUnit.Reporter.Reporter'Class;
-   --  Text_Reporter : access AUnit.Reporter.Text.Text_Reporter;
-   --  XML_Reporter : access ZanyBlue.Test.Reporter_XML.XML_Reporter;
 
    function Base_Log_Name (Test_Area : Wide_String;
                            Test_Name : Wide_String) return Wide_String;
    function Matched (Left : Wide_String; Right : Wide_String) return Boolean;
-
-   -----------------
-   -- Add_Routine --
-   -----------------
-
-   procedure Add_Routine (Test    : in out Test_Case'Class;
-                          Routine : Test_Routine;
-                          Name    : String) is
-   begin
-      Test.Add_Routine (Routine_Spec'(Routine, Format (Name)));
-   end Add_Routine;
 
    -------------------
    -- Base_Log_Name --
@@ -88,7 +68,7 @@ package body ZanyBlue.Test is
    -- Check_Log_File --
    --------------------
 
-   procedure Check_Log_File (Test    : in out AUnit.Test_Cases.Test_Case'Class;
+   procedure Check_Log_File (Test    : in out Ahven.Framework.Test_Case'Class;
                              Test_Area : Wide_String;
                              Test_Name : Wide_String;
                              Message   : Wide_String) is
@@ -100,7 +80,7 @@ package body ZanyBlue.Test is
    -- Check_Value --
    -----------------
 
-   procedure Check_Value (Test      : in out AUnit.Test_Cases.Test_Case'Class;
+   procedure Check_Value (Test      : in out Ahven.Framework.Test_Case'Class;
                           Generated : Wide_String;
                           Expected  : Wide_String;
                           Message   : Wide_String := "Failure") is
@@ -239,23 +219,25 @@ package body ZanyBlue.Test is
    procedure Load_Command_Line is
       use Ada.Command_Line;
       Index : Positive := 1;
+      In_Test_Args : Boolean := False;
+      Done : Boolean := False;
    begin
       if not CL_Initialized then
-         while Index <= Argument_Count loop
-            if Argument (Index) = "-X" then
-               CL_Use_XML := True;
+         while Index <= Argument_Count and not In_Test_Args loop
+            if Argument (Index) = "-i" then
+               In_Test_Args := True;
+            end if;
+            Index := Index + 1;
+         end loop;
+         while Index <= Argument_Count and not Done loop
+            if Argument (Index) = "--" then
+               Done := True;
             elsif Argument (Index) = "-T" then
                Index := Index + 1;
                if Index > Argument_Count then
                   raise Usage_Error with "missing -T argument";
                end if;
                CL_Top_Directory := new String'(Argument (Index));
-            elsif Argument (Index) = "-P" then
-               Index := Index + 1;
-               if Index > Argument_Count then
-                  raise Usage_Error with "missing -P argument";
-               end if;
-               Prefix := new String'(Argument (Index));
             else
                raise Usage_Error with "unknown argument: " & Argument (Index);
             end if;
@@ -276,24 +258,6 @@ package body ZanyBlue.Test is
    begin
       return Left = Right or else Match (Right_S, Compile (Left_S));
    end Matched;
-
-   -----------------------------
-   -- Reporter_Implementation --
-   -----------------------------
-
-   function Reporter_Implementation return AUnit.Reporter.Reporter'Class is
-   begin
-      if Use_XML then
-         if Reporter = null then
-            Reporter := new ZanyBlue.Test.Reporter_XML.XML_Reporter (Prefix);
-         end if;
-      else
-         if Reporter = null then
-            Reporter := new AUnit.Reporter.Text.Text_Reporter;
-         end if;
-      end if;
-      return Reporter.all;
-   end Reporter_Implementation;
 
    --------------------
    -- Restore_Output --
@@ -380,20 +344,10 @@ package body ZanyBlue.Test is
    end Top_Directory;
 
    -------------
-   -- Use_XML --
-   -------------
-
-   function Use_XML return Boolean is
-   begin
-      Load_Command_Line;
-      return CL_Use_XML;
-   end Use_XML;
-
-   -------------
    -- WAssert --
    -------------
 
-   procedure WAssert (Test      : in out AUnit.Test_Cases.Test_Case'Class;
+   procedure WAssert (Test      : in out Ahven.Framework.Test_Case'Class;
                       Condition : Boolean;
                       Message : Wide_String) is
       pragma Unreferenced (Test);

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Strings;
 
 separate (ZanyBlue.Test.Text.Arguments.Suites)
-procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0005 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text;
    use ZanyBlue.Text.Locales;
@@ -51,22 +51,22 @@ procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    procedure Check (List     : Argument_List;
                     Position : Natural) is
    begin
-      WAssert (R, List.Format (Position, "", "", Locale, True) = "no valid",
+      WAssert (T, List.Format (Position, "", "", Locale, True) = "no valid",
                 "Unexpected Format to be raise an exception");
    exception
    when No_Such_Argument_Error =>
-      WAssert (R, True, "Expected exception No_Such_Argument_Error raised");
+      WAssert (T, True, "Expected exception No_Such_Argument_Error raised");
    end Check;
 
 begin
-   WAssert (R, List.Length = 0,
+   WAssert (T, List.Length = 0,
             "Length of emtpy list is not 0");
    Append (List, +String'("String#0"));
-   WAssert (R, List.Length = 1,
+   WAssert (T, List.Length = 1,
             "Length is not 1");
-   WAssert (R, List.Format (0, "", "", Locale, False) = "String#0",
+   WAssert (T, List.Format (0, "", "", Locale, False) = "String#0",
             "Unexpected To_String (#0)");
-   WAssert (R, List.Format (1, "", "", Locale, False) = "⁅1⁆",
+   WAssert (T, List.Format (1, "", "", Locale, False) = "⁅1⁆",
             "Unexpected To_String (#1) to be |1|");
    Check (List, 1);
 end T_0005;

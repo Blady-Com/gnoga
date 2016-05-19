@@ -1,8 +1,8 @@
---  -*- encoding: utf-8 -*-
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -39,14 +39,14 @@ with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
 with ZanyBlue.Text.Version_Status_Arguments;
-with SLocale_Messages.Day_Wide_Prints;
+with SLocale_Messages.Day_Prints;
 
 procedure X_SLocale is
 
    use Ada.Calendar;
    use ZanyBlue.Text.Formatting;
    use ZanyBlue.Text.Version_Status_Arguments;
-   use SLocale_Messages.Day_Wide_Prints;
+   use SLocale_Messages.Day_Prints;
 
    procedure Process_Command_Line;
 

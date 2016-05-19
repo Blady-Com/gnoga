@@ -1,8 +1,8 @@
---  -*- encoding: utf-8 -*-
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,12 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with ZanyBlue.OS;
 with ZanyBlue.Text.CLDR;
 with ZanyBlue.Text.Formatting;
 
 package body Locale_Buttons is
 
-   use ZanyBlue.OS;
+   use ZanyBlue.Text;
    use ZanyBlue.Text.CLDR;
    use ZanyBlue.Text.Formatting;
 

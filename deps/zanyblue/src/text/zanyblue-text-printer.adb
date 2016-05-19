@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +34,6 @@
 --
 
 with ZanyBlue.Text.Generic_Printer;
-with ZanyBlue.OS;
 
 package body ZanyBlue.Text.Printer is
 
@@ -70,8 +70,9 @@ package body ZanyBlue.Text.Printer is
       end New_Line;
 
       procedure Put (File : Ada.Text_IO.File_Type; Text : Wide_String) is
+         Encoded : constant String := Locale.Encode_To_String (Text);
       begin
-         Ada.Text_IO.Put (File, ZanyBlue.OS.To_UTF8 (Text));
+         Ada.Text_IO.Put (File, Encoded);
       end Put;
 
    begin

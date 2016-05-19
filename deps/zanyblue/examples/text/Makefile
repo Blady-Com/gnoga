@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -33,8 +34,8 @@
 #
 
 TOP=../..
-DIRS=	dumplocale filtering formatting gtkapp load_facility moons \
-	moons_accessors jenkins simple_format sourcelocale time tomcat
+DIRS=	filtering formatting gtkapp load_facility moons moons_accessors \
+	jenkins simple_format sourcelocale time tomcat
 ALLTARGS=$(patsubst %,%.all,$(DIRS))
 CLEANTARGS=$(patsubst %,%.clean,$(DIRS))
 

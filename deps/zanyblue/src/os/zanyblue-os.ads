@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -37,6 +38,7 @@
 --  function definitions giving version information.
 --
 
+with Ada.Text_IO;
 with Ada.Wide_Text_IO;
 
 package ZanyBlue.OS is
@@ -54,12 +56,6 @@ package ZanyBlue.OS is
    function OS_Name return OS_Name_Type;
    --  Return the name of the build operating system.
 
-   function To_UTF8 (Value : Wide_String) return String;
-   --  Convert a Wide_String to a UTF-8 encoded String.
-
-   function From_UTF8 (Value : String) return Wide_String;
-   --  Convert a UTF-8 encoded String to a Wide_String;
-
    function UTF8_File_Form return String;
    --  Return the form string used by the compiler to identify an UTF-8 file.
 
@@ -67,12 +63,21 @@ package ZanyBlue.OS is
                              Target_Name : Wide_String);
    --  Copy a directory tree.
 
+   procedure Wide_Create (File : in out Ada.Text_IO.File_Type;
+                          Name : Wide_String);
+   --  Create a text with UTF8 encoding files.
+
    procedure Wide_Create (File : in out Ada.Wide_Text_IO.File_Type;
                           Name : Wide_String);
    --  Create a text with UTF8 encoding files.
 
    procedure Wide_Open (File : in out Ada.Wide_Text_IO.File_Type;
                         Mode : Ada.Wide_Text_IO.File_Mode;
+                        Name : Wide_String);
+   --  Create a text with UTF8 encoding files.
+
+   procedure Wide_Open (File : in out Ada.Text_IO.File_Type;
+                        Mode : Ada.Text_IO.File_Mode;
                         Name : Wide_String);
    --  Create a text with UTF8 encoding files.
 

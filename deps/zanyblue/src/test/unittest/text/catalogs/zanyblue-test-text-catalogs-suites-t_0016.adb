@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 --
 
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
-procedure T_0016 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0016 (T : in out Test_Case'Class) is
 
    L_en_US      : constant Locale_Type := Make_Locale ("en_US");
    Msg1         : constant Wide_String := "This is message 1";
@@ -43,9 +43,9 @@ procedure T_0016 (R : in out AUnit.Test_Cases.Test_Case'Class) is
 begin
    Catalog := Create;
    Use_Single_Pool (Catalog);
-   Check_Value (R, Get_Pool (Catalog), "", "Expected an empty pool");
+   Check_Value (T, Get_Pool (Catalog), "", "Expected an empty pool");
    Add (Catalog, "myfac1", "mykey1", Msg1, L_en_US);
-   Check_Value (R, Get_Pool (Catalog), Msg1);
+   Check_Value (T, Get_Pool (Catalog), Msg1);
    Add (Catalog, "myfac1", "mykey2", Msg2, L_en_US);
-   Check_Value (R, Get_Pool (Catalog), Msg1 & Msg2);
+   Check_Value (T, Get_Pool (Catalog), Msg1 & Msg2);
 end T_0016;

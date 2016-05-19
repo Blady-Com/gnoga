@@ -1,7 +1,8 @@
+--  -*- coding: utf-8 -*-
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,15 +34,15 @@
 --
 
 with GNAT.OS_Lib;
-with GNAT.Decode_UTF8_String;
-with GNAT.Encode_UTF8_String;
 with Ada.Directories;
 with Interfaces.C;
+with ZanyBlue.Text;
 with ZanyBlue.Wide_Directories;
 
 package body ZanyBlue.OS is
 
    use Ada.Directories;
+   use ZanyBlue.Text;
    use ZanyBlue.Wide_Directories;
 
    use type Interfaces.C.unsigned_long;
@@ -673,16 +674,6 @@ package body ZanyBlue.OS is
    --  LCID value (simple binary search).  If not found, return the empty
    --  string.
 
-   ---------------
-   -- From_UTF8 --
-   ---------------
-
-   function From_UTF8 (Value : String) return Wide_String is
-      use GNAT.Decode_UTF8_String;
-   begin
-      return Decode_Wide_String (Value);
-   end From_UTF8;
-
    ---------------------
    -- Integrity_Check --
    ---------------------
@@ -752,16 +743,6 @@ package body ZanyBlue.OS is
       return Windows;
    end OS_Name;
 
-   -------------
-   -- To_UTF8 --
-   -------------
-
-   function To_UTF8 (Value : Wide_String) return String is
-      use GNAT.Encode_UTF8_String;
-   begin
-      return Encode_Wide_String (Value);
-   end To_UTF8;
-
    --------------------
    -- UTF8_File_Form --
    --------------------
@@ -782,10 +763,10 @@ package body ZanyBlue.OS is
                                Elem : String;
                                Kind : File_Kind);
 
-
       procedure Process_Entry (Path : String;
                                Elem : String;
                                Kind : File_Kind) is
+
          Dest_Path : constant Wide_String := Wide_Compose (Target_Name,
                                                            From_UTF8 (Elem));
       begin
@@ -814,6 +795,20 @@ package body ZanyBlue.OS is
       end loop;
       End_Search (Search);
    end Wide_Copy_Tree;
+
+   -----------------
+   -- Wide_Create --
+   -----------------
+
+   procedure Wide_Create (File : in out Ada.Text_IO.File_Type;
+                          Name : Wide_String) is
+      use Ada.Text_IO;
+   begin
+      Create (File,
+              Mode => Out_File,
+              Name => To_UTF8 (Name),
+              Form => UTF8_File_Form);
+   end Wide_Create;
 
    -----------------
    -- Wide_Create --
@@ -856,6 +851,21 @@ package body ZanyBlue.OS is
    begin
       return Wide_Exists (Name) and then Kind (To_UTF8 (Name)) = Ordinary_File;
    end Wide_Is_File;
+
+   ---------------
+   -- Wide_Open --
+   ---------------
+
+   procedure Wide_Open (File : in out Ada.Text_IO.File_Type;
+                        Mode : Ada.Text_IO.File_Mode;
+                        Name : Wide_String) is
+      use Ada.Text_IO;
+   begin
+      Open (File,
+            Mode => Mode,
+            Name => To_UTF8 (Name),
+            Form => UTF8_File_Form);
+   end Wide_Open;
 
    ---------------
    -- Wide_Open --

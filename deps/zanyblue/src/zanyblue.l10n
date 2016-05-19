@@ -41,3 +41,6 @@
 
 [zbtest/mesg]
     ZBTest%j.properties
+
+[zbinfo/mesg]
+    ZBInfo%j.properties

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 with ZanyBlue.Text.Locales;
 
 separate (ZanyBlue.Test.Text.Floats.Suites)
-procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0012 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
 
@@ -50,12 +50,12 @@ procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class) is
    Arg4     : constant Float_Argument_Type := Create (V4);
 
 begin
-   Check_Value (R, Arg1.Format ("float", "=6.2f", ar),
+   Check_Value (T, Arg1.Format ("float", "=6.2f", ar),
                    "٠٥٥.٠٠");
-   Check_Value (R, Arg2.Format ("float", "=6.2f", ar),
+   Check_Value (T, Arg2.Format ("float", "=6.2f", ar),
                    "٠٦٦.١٠");
-   Check_Value (R, Arg3.Format ("float", "=6.2f", ar),
+   Check_Value (T, Arg3.Format ("float", "=6.2f", ar),
                    "‎-٥٥.٠٠");
-   Check_Value (R, Arg4.Format ("float", "=6.2f", ar),
+   Check_Value (T, Arg4.Format ("float", "=6.2f", ar),
                    "‎-٦٦.١٠");
 end T_0012;

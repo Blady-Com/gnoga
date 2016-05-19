@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,17 +33,17 @@
 --
 
 separate (ZanyBlue.Test.Text.Locales.Localized_Digits.Suites)
-procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0012 (T : in out Test_Case'Class) is
 
    L : constant Locale_Type := Make_Locale ("ar");
 
 begin
-   Check_Delocalization (R, L, "1964", "1964");
-   Check_Delocalization (R, L, "2075", "2075");
-   Check_Delocalization (R, L, "3186", "3186");
-   Check_Delocalization (R, L, "abc1964xyz", "abc1964xyz");
-   Check_Delocalization (R, L, "١٩٦٤", "1964");
-   Check_Delocalization (R, L, "٢٠٧٥", "2075");
-   Check_Delocalization (R, L, "٣١٨٦", "3186");
-   Check_Delocalization (R, L, "abc١٩٦٤xyz", "abc1964xyz");
+   Check_Delocalization (T, L, "1964", "1964");
+   Check_Delocalization (T, L, "2075", "2075");
+   Check_Delocalization (T, L, "3186", "3186");
+   Check_Delocalization (T, L, "abc1964xyz", "abc1964xyz");
+   Check_Delocalization (T, L, "١٩٦٤", "1964");
+   Check_Delocalization (T, L, "٢٠٧٥", "2075");
+   Check_Delocalization (T, L, "٣١٨٦", "3186");
+   Check_Delocalization (T, L, "abc١٩٦٤xyz", "abc1964xyz");
 end T_0012;

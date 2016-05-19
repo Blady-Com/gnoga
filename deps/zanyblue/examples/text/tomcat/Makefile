@@ -1,7 +1,8 @@
+#  -*- coding: utf-8 -*-
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ GENERATED=apache-tomcat-messages.ads apache-tomcat-messages.adb
 include $(TOP)/src/mkfile/conf.mk
 
 all:	$(GENERATED)
-	$(GNATMAKE) -p $(GNATFLAGS) -P $(APPNAME).gpr
+	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
 
 generated:	$(GENERATED)
 $(GENERATED):	$(wildcard mesg/*.properties)

@@ -32,69 +32,21 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit.Assertions;
-with ZanyBlue.Text.Codecs;
+with ZanyBlue.Test.Text.Codecs.Encoding.Suites;
 
 package body ZanyBlue.Test.Text.Codecs.Suites is
 
-   use AUnit;
-   use AUnit.Assertions;
-
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0008 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0009 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class);
-   procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class);
-
    overriding
-   function Name (T : Test_Case) return Test_String is
-      pragma Unreferenced (T);
+   procedure Initialize (T : in out Test) is
    begin
-      return Format ("ZanyBlue.Text.Codecs");
-   end Name;
+      Set_Name (T, "ZanyBlue.Text.Codecs");
+   end Initialize;
 
-   overriding
-   procedure Register_Tests (T : in out Test_Case) is
+   function Suite return Test_Suite is
    begin
-      Add_Routine (T, T_0001'Access, "T_0001, UTF8 encoding");
-      Add_Routine (T, T_0002'Access, "T_0002, ASCII encoding");
-      Add_Routine (T, T_0003'Access, "T_0003, ISO8859-1 encoding");
-      Add_Routine (T, T_0004'Access, "T_0004, Invalid encoding");
-      Add_Routine (T, T_0005'Access, "T_0005, Unsupported_Encoding exception");
-      Add_Routine (T, T_0006'Access, "T_0006, ASCII encode");
-      Add_Routine (T, T_0007'Access, "T_0007, ASCII encode exception");
-      Add_Routine (T, T_0008'Access, "T_0008, ISO8859-1 encode (>7F)");
-      Add_Routine (T, T_0009'Access, "T_0009, ISO8859-1 encode (replace)");
-      Add_Routine (T, T_0010'Access, "T_0010, ISO8859-1 encode exception");
-      Add_Routine (T, T_0011'Access, "T_0011, UTF-8 encode");
-      Add_Routine (T, T_0012'Access, "T_0012, UTF-8 encoding name");
-   end Register_Tests;
-
-   function Suite return Access_Test_Suite is
-      Result : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Add_Test (Result, new Test_Case);
-      return Result;
+      return S : Test_Suite do
+         Add_Static_Test (S, Encoding.Suites.Suite);
+      end return;
    end Suite;
-
-   procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0002 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0003 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0004 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0005 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0006 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0007 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0008 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0009 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0010 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0011 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
-   procedure T_0012 (R : in out AUnit.Test_Cases.Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Text.Codecs.Suites;

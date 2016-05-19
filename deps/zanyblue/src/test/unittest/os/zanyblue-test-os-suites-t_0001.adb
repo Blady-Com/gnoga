@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -32,22 +32,20 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with AUnit.Assertions;
 with Ada.Environment_Variables;
 
 separate (ZanyBlue.Test.OS.Suites)
-procedure T_0001 (R : in out AUnit.Test_Cases.Test_Case'Class) is
+procedure T_0001 (T : in out Test_Case'Class) is
 
-   pragma Warnings (Off, R);
+   pragma Unreferenced (T);
 
-   use AUnit.Assertions;
    use Ada.Environment_Variables;
 
    procedure Verify_OS (Expected : OS_Name_Type);
 
    procedure Verify_OS (Expected : OS_Name_Type) is
    begin
-      Assert (OS_Name = Expected, "OS_Name function value?");
+      Ahven.Assert (OS_Name = Expected, "OS_Name function value?");
    end Verify_OS;
 
 begin

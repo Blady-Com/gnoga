@@ -1,0 +1,13 @@
+This is ZBTest, Version .*
+Copyright \(c\) .*, Michael Rohan.  All rights reserved
+The "zbinfo" command prints information on the data built into ZanyBlue
+library.  By default, information on the current locale is printed.  The
+available options are:
+
+-h|--help            Print this help information
+-r|--reverse         Reverse the encoding dump (map encoded to Unicode)
+--list-encodings     List the available encoding schemes
+--dump-encoding name Print information on the named encoding
+--dump-locale name   Print information on the named locale
+
+ZBInfo completed on .*

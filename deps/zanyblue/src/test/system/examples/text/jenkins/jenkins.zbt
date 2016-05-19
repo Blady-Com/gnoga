@@ -1,7 +1,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -36,8 +36,8 @@ desc Test the jenkins text example application
 
 set jenkins_dir $(joinpaths $text_examples_dir jenkins)
 
-execute -o $(nextlog -c build) make -C $jenkins_dir clean
-execute -o $(nextlog -c build) make -C $jenkins_dir
-execute -o $(nextlog) make -s -C $jenkins_dir run
-execute -o $(nextlog) make -s -C $jenkins_dir run_fr
-execute -o $(nextlog) make -s -C $jenkins_dir run_ja
+execute -o $(nextlog -c build) $make -C $jenkins_dir clean
+execute -o $(nextlog -c build) $make -C $jenkins_dir
+execute -o $(nextlog) $make -s -C $jenkins_dir run
+execute -o $(nextlog) $make -s -C $jenkins_dir run_fr
+execute -o $(nextlog) $make -s -C $jenkins_dir run_ja

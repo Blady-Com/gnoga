@@ -197,7 +197,7 @@ deps/PragmARC:
 pragmarc: deps/PragmARC
 	- cd deps/PragmARC && git pull
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris
+demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -224,6 +224,9 @@ linxtris:
 
 password_gen: pragmarc
 	- cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
+random_int:
+	cd demo/random_int && $(BUILDER) -Prandom_int.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests: gnoga
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}

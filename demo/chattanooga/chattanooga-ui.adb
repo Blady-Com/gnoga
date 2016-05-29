@@ -4,7 +4,8 @@
 --
 -- User Interface
 --
--- V1.0B  2015 Jan 15     1st beta release, now with autoscrolling and dings
+-- V1.1B  2015 Jul 01     New version of Gnoga.Types.Colors
+-- V1.0B  2015 Jan 30     1st beta release, now with limited messaging area
 --
 with Ada.Characters.Handling;
 with Ada.Characters.Latin_1;
@@ -53,6 +54,9 @@ package body Chattanooga.UI is
       if Ding then
          App_Data.Ding.Play;
       end if;
+   exception -- Show
+   when E : others =>
+      Gnoga.Log (Message => "Show: " & Ada.Exceptions.Exception_Information (E) );
    end Show;
 
    Star_Suffix : constant String := " *";
@@ -108,7 +112,7 @@ package body Chattanooga.UI is
       App.Connect_Button.Create (Form => App.Email_Form, Value => "Connect");
       App.Email_Form.New_Line;
       App.Error.Create (Parent => App.Email_Form, Content => "");
-      App.Error.Color (Value => Gnoga.Types.Colors.To_String (Gnoga.Types.Colors.Red));
+      App.Error.Color (Value => Gnoga.Types.Colors.To_String (Gnoga.Types.Colors.Red) );
       App.Error.Display (Value => "block");
       App.Email_Form.New_Line;
       App.Email_Form.New_Line;
@@ -220,16 +224,18 @@ package body Chattanooga.UI is
    procedure On_Send (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
 
-      Message : constant String := App.Message_Entry.Value;
-
       Count : Natural;
    begin -- On_Send
-      if Message = "" then
-         return;
-      end if;
+      Get_Message : declare
+         Message : constant String := App.Message_Entry.Value;
+      begin -- Get_Message
+         if Message = "" then
+            return;
+         end if;
+         Count := DB.Send (From => App.Email, Message => Message);
+         Show (From => App.Email, Message => Message, App_Data => App, Ding => False);
+      end Get_Message;
 
-      Count := DB.Send (From => App.Email, Message => Message);
-      Show (From => App.Email, Message => Message, App_Data => App, Ding => False);
       App.Message_Entry.Value (Value => "");
    exception -- On_Send
    when E : others =>
@@ -314,8 +320,7 @@ package body Chattanooga.UI is
 begin -- Chattanooga.UI
    Gnoga.Application.Title (Name => "Chattanooga");
    Gnoga.Application.HTML_On_Close (HTML => End_Message);
-
-   Gnoga.Application.Multi_Connect.Initialize (Port => 8082);
+   Gnoga.Application.Multi_Connect.Initialize;
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception -- Chattanooga.UI

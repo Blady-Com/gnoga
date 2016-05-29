@@ -8,19 +8,22 @@ http://www.gnoga.com
   Montmollin
 
 * Gnoga uses Simple Components written by Dmitry A. Kazakov for its http and
-  WebSockets communication layer.
+  WebSockets communication layer (http://www.dmitry-kazakov.de/ada/components.htm).
 
-* The PragmArc library, Chattanooga, Password Gen and Mine Detector demo
-  applications were written by Jeffrey Carter.
+* The PragmArc library, Chattanooga, Password Gen, Mine Detector, Random_Int demo
+  applications were written by Jeffrey Carter (https://github.com/jrcarter).
 
 * The Connect Four demo was written originally for GNAT-JVM by Barry Fagin and
-  Martin Carlisle and adapted to Gnoga by Pascal Pignard
+  Martin Carlisle and adapted to Gnoga by Pascal Pignard.
 
 * LinXtris is a multi-platform Tetris clone was written originally in Ada 95 and GtkAda
   by Dulio Matos Leite de C. e Silva and adapted to Gnoga by Pascal Pignard.
 
 * ZanyBlue is an Ada 2005 package supporting localization support in Ada
-  by allowing the externalization of application messages written by Michael Rohan.
+  by allowing the externalization of application messages written
+  by Michael Rohan (http://zanyblue.sourceforge.net).
 
 * JLokalize is a tool for the internationalization (i18n) of applications written by Trilarion.
 
+* The Othello demo was written originally for GTKAda by Adrian Hoe
+  (https://github.com/adrianhoe/adaothello) and adapted to Gnoga by Jeremiah Breeden.

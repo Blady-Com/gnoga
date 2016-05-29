@@ -1,0 +1,17 @@
+with "../../lib/gnoga.gpr";
+
+project Random_Int is
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use "../../obj";
+   for Exec_Dir use "../../bin";
+   for Main use ("random_int-program.adb");
+
+   package Binder is
+      for Default_Switches ("ada") use ("-E");
+   end Binder;
+
+   package Builder is
+      for Executable ("random_int-program.adb") use "random_int";
+   end Builder;
+end Random_Int;

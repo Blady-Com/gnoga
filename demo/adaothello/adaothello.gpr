@@ -1,0 +1,17 @@
+with "../../lib/gnoga.gpr";
+
+project AdaOthello is
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use "../../obj";
+   for Exec_Dir use "../../bin";
+   for Main use ("othello_game.adb");
+
+   package Binder is
+      for Default_Switches ("ada") use ("-E");
+   end Binder;
+
+   package Builder is
+      for Executable ("othello_game.adb") use "othello";
+   end Builder;
+end AdaOthello;

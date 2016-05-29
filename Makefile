@@ -65,8 +65,8 @@ endif
 PATHSEP=$(strip $(PATHSEP2))
 
 ifeq (${PRJ_TARGET}, Windows)
-        SET_READONLY=attrib +R
-        UNSET_READONLY=attrib -R
+	SET_READONLY=attrib +R
+	UNSET_READONLY=attrib -R
 	BUILD_SQLITE3=sqlite3
 else
 	SET_READONLY=chmod -w *
@@ -85,7 +85,8 @@ basic_components:
 xpm_parser:
 	cd deps/simple_components/xpm && $(BUILDER) -p -Pxpm_parser.gpr
 
-gnoga: setup basic_components xpm_parser
+# Gnoga with DEBUG on by default
+gnoga: setup basic_components xpm_parser zanyblue
 	- cd lib && $(UNSET_READONLY)
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
@@ -108,10 +109,22 @@ gnoga_secure: gnoga
 gnoga_tools: gnoga
 	cd tools && $(BUILDER) -p -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+# Gnoga build with DEBUG off
 release: setup basic_components xpm_parser
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
+	cd deps/simple_components/xpm && ar rc ../../../lib/libgnoga.a *.o
+	- $(RM) include$(PATHSEP)*.ad?
+	$(COPY) src$(PATHSEP)*.ad[sb] include
+	$(COPY) src$(PATHSEP)gnoga-server-model-table.adb include
+	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ads include
+	- $(COPY) deps$(PATHSEP)simple_components$(PATHSEP)*.ali lib
+	$(COPY) deps$(PATHSEP)simple_components$(PATHSEP)xpm$(PATHSEP)*.ads include
+	- $(COPY) deps$(PATHSEP)simple_components$(PATHSEP)xpm$(PATHSEP)*.ali lib
+	cd lib && $(SET_READONLY)
 	cd deps/zanyblue && make -C src setup library zbmcompile.app
 
+# Install Gnoga with DEBUG off
 install: release gnoga_tools xpm_parser
 	touch deps/simple_components/strings_edit-text_edit.o
 	cd src && gprinstall -f --prefix=$(PREFIX) -p gnoga.gpr -XPRJ_BUILD=Release
@@ -125,7 +138,8 @@ install: release gnoga_tools xpm_parser
 	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p src/zblib.gpr
 	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
 
-install_debug: gnoga gnoga_tools xpm_parser zanyblue
+# Install Gnoga with DEBUG on
+install_debug: gnoga gnoga_tools xpm_parser
 	touch deps/simple_components/strings_edit-text_edit.o
 	cd src && gprinstall -a -f --prefix=$(PREFIX) -p gnoga.gpr --install-name=gnoga
 	cd tools && gprinstall -f --prefix=$(PREFIX) -p --mode=usage --install-name=tools tools.gpr
@@ -173,6 +187,7 @@ electron:
 	@echo "Start your gnoga app and then run 'nmp start' in deps/electron-quick-start"
 	@echo "See docs/native_desktop_apps.md for instructions on full desktop development"
 
+# Zanyblue with DEBUG on
 zanyblue:
 	cd deps/zanyblue && make -C src BUILD=Debug setup library zbmcompile.app
 
@@ -302,3 +317,6 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown api_summary.md > html/api_summary.html
 	cd docs && ../bin/multimarkdown native_mac_apps.md > html/native_mac_apps.html
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html
+
+gps:
+	gps -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} &

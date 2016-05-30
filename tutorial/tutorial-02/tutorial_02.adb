@@ -33,6 +33,7 @@ procedure Tutorial_02 is
    --  for more details about available events.
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      pragma Unreferenced (Object);
    begin
       My_View.New_Line;
       My_View.Put_Line ("I've been clicked!");
@@ -42,6 +43,7 @@ procedure Tutorial_02 is
    --  When this action is fired it will end the application
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      pragma Unreferenced (Object);
    begin
       My_View.New_Line;
       My_View.Put_Line ("Closing application");

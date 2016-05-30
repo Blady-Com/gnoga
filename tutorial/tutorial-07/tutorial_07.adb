@@ -39,28 +39,28 @@ procedure Tutorial_07 is
 
    procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Source.Opacity (0.4);
    end Start_Drag;
 
    procedure End_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Source.Opacity (1.0);
    end End_Drag;
 
    procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Gnoga.Types.Colors.Red);
    end Enter_Drag;
 
    procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Gnoga.Types.Colors.Black);
    end Leave_Drag;
@@ -69,14 +69,15 @@ procedure Tutorial_07 is
                    X, Y      : in     Integer;
                    Drag_Text : in     String)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      pragma Unreferenced (Y, X);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Gnoga.Types.Colors.Green);
       App.Target.Text (Drag_Text);
    end Drop;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_View.New_Line;
       App.My_View.Put_Line ("Closing application and every connection!");
@@ -97,7 +98,8 @@ procedure Tutorial_07 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
 

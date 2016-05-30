@@ -135,8 +135,8 @@ install: release gnoga_tools xpm_parser
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p strings_edit.gpr
 	cd deps/simple_components && gprinstall -f --prefix=$(PREFIX) -p tables.gpr
 	cd deps/simple_components/xpm && gprinstall -f --prefix=$(PREFIX) -p xpm_parser.gpr
-	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p src/zblib.gpr
-	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
+	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p --install-name=zblib src/zblib.gpr
+	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p --install-name=zbmcompile -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
 
 # Install Gnoga with DEBUG on
 install_debug: gnoga gnoga_tools xpm_parser
@@ -149,8 +149,8 @@ install_debug: gnoga gnoga_tools xpm_parser
 	cd deps/simple_components && gprinstall -a -f --prefix=$(PREFIX) -p --install-name=strings_edit strings_edit.gpr
 	cd deps/simple_components && gprinstall -a -f --prefix=$(PREFIX) -p --install-name=tables tables.gpr
 	cd deps/simple_components/xpm && gprinstall -a -f --prefix=$(PREFIX) -p xpm_parser.gpr
-	cd deps/zanyblue && gprinstall -a -f --prefix=$(PREFIX) -p src/zblib.gpr
-	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
+	cd deps/zanyblue && gprinstall -a -f --prefix=$(PREFIX) -p --install-name=zblib src/zblib.gpr
+	cd deps/zanyblue && gprinstall -f --prefix=$(PREFIX) -p --install-name=zbmcompile -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr
 
 uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr

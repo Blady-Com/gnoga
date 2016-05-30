@@ -76,7 +76,7 @@ procedure Tutorial_04 is
    --  Events for our application.
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_View.Put ("I've been clicked! ");
       --  Put places its text in to a SPAN tag, Put_Line uses a DIV tag.
@@ -84,7 +84,7 @@ procedure Tutorial_04 is
    end On_Click;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_View.New_Line;
       App.My_View.Put_Line ("Closing application and every connection!");

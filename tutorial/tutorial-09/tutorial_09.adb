@@ -67,6 +67,7 @@ procedure Tutorial_09 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       App : App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
@@ -126,7 +127,7 @@ procedure Tutorial_09 is
    end On_Connect;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Gnoga.Gui.Element.Common.Button_Access
         (App.My_Panel.Element ("Exit")).Disabled;
@@ -137,7 +138,7 @@ procedure Tutorial_09 is
    end On_Exit;
 
    procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_Tabs.Select_Tab ("Results");
 
@@ -158,7 +159,8 @@ procedure Tutorial_09 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      Result_View : Gnoga.Gui.View.View_Access := new Gnoga.Gui.View.View_Type;
+      pragma Unreferenced (Connection);
+      Result_View : constant Gnoga.Gui.View.View_Access := new Gnoga.Gui.View.View_Type;
    begin
       Result_View.Dynamic;
       Result_View.Create (Main_Window);

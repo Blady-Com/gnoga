@@ -9,6 +9,8 @@
 --  In order to help see the different approach to setting up the application
 --  we will do something similar to the previous tutorial.
 
+with Ada.Exceptions;
+
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
@@ -27,6 +29,7 @@ procedure Tutorial_03 is
 
    type App_Data is new Gnoga.Types.Connection_Data_Type with
       record
+         My_Window : Gnoga.Gui.Window.Pointer_To_Window_Class;
          My_View   : Gnoga.Gui.View.View_Type;
          My_Button : Gnoga.Gui.Element.Common.Button_Type;
          My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
@@ -41,22 +44,24 @@ procedure Tutorial_03 is
    --  globally.
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_View.New_Line;
       App.My_View.Put_Line ("I've been clicked!");
    end On_Click;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
+      View : Gnoga.Gui.View.View_Type;
    begin
-      App.My_View.New_Line;
-      App.My_View.Put_Line ("Closing application and every connection!");
-
-      App.My_Button.Disabled;
-      App.My_Exit.Disabled;
-
-      Gnoga.Application.Multi_Connect.End_Application;
+      App.My_View.Remove;
+      View.Create (App.My_Window.all);
+      View.Put_Line ("Application exited.");
+      App.My_Window.Close_Connection;
+   exception
+   when E : others =>
+         Gnoga.Log (Message => "On_Exit: " &
+                      Ada.Exceptions.Exception_Information (E));
    end On_Exit;
 
    procedure On_Connect
@@ -74,8 +79,10 @@ procedure Tutorial_03 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
+      App.My_Window := Main_Window'Unchecked_Access;
       Main_Window.Connection_Data (App);
       --  This associates our application data to this connection. Now any
       --  object created on it has access to it using its Connection_Data
@@ -87,7 +94,7 @@ procedure Tutorial_03 is
       App.My_Button.Create (App.My_View, "Click Me!");
       App.My_Button.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      App.My_Exit.Create (App.My_View, "End App");
+      App.My_Exit.Create (App.My_View, "Exit App");
       App.My_Exit.On_Click_Handler (On_Exit'Unrestricted_Access);
 
       App.My_View.Horizontal_Rule;

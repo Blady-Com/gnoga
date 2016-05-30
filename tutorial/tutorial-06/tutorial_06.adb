@@ -34,7 +34,7 @@ procedure Tutorial_06 is
    --  Application event handlers
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_Popup1.Close;
       --  This will not close the popup since it is a cross-origin frame
@@ -45,7 +45,7 @@ procedure Tutorial_06 is
    end On_Click;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_View.New_Line;
       App.My_View.Put_Line ("Closing application and every connection!");
@@ -67,9 +67,10 @@ procedure Tutorial_06 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       use type Gnoga.Gui.Document.Ready_State_Type;
 
-      App : App_Access := new App_Data;
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
 

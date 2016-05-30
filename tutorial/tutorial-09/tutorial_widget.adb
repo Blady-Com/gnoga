@@ -8,7 +8,7 @@ package body Tutorial_Widget is
                      ID      : in     String  := "")
    is
       use Gnoga.Gui.Element.Table;
-      Layout_Table : Table_Access := new Table_Type;
+      Layout_Table : constant Table_Access := new Table_Type;
    begin
       Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
 
@@ -18,9 +18,9 @@ package body Tutorial_Widget is
       Layout_Table.Create (View);
 
       declare
-         row  : Table_Row_Access := new Table_Row_Type;
-         col1 : Table_Column_Access := new Table_Column_Type;
-         col2 : Table_Column_Access := new Table_Column_Type;
+         row  : constant Table_Row_Access := new Table_Row_Type;
+         col1 : constant Table_Column_Access := new Table_Column_Type;
+         col2 : constant Table_Column_Access := new Table_Column_Type;
       begin
          row.Dynamic;
          col1.Dynamic;
@@ -40,9 +40,9 @@ package body Tutorial_Widget is
       end;
 
       declare
-         row  : Table_Row_Access := new Table_Row_Type;
-         col1 : Table_Column_Access := new Table_Column_Type;
-         col2 : Table_Column_Access := new Table_Column_Type;
+         row  : constant Table_Row_Access := new Table_Row_Type;
+         col1 : constant Table_Column_Access := new Table_Column_Type;
+         col2 : constant Table_Column_Access := new Table_Column_Type;
       begin
          row.Dynamic;
          col1.Dynamic;

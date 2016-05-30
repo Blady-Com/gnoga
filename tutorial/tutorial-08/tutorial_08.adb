@@ -41,7 +41,7 @@ procedure Tutorial_08 is
                      ID      : in     String  := "")
    is
       use Gnoga.Gui.Element.Table;
-      Layout_Table : Table_Access := new Table_Type;
+      Layout_Table : constant Table_Access := new Table_Type;
    begin
       Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
 
@@ -53,9 +53,9 @@ procedure Tutorial_08 is
       Layout_Table.Create (View);
 
       declare
-         row  : Table_Row_Access := new Table_Row_Type;
-         col1 : Table_Column_Access := new Table_Column_Type;
-         col2 : Table_Column_Access := new Table_Column_Type;
+         row  : constant Table_Row_Access := new Table_Row_Type;
+         col1 : constant Table_Column_Access := new Table_Column_Type;
+         col2 : constant Table_Column_Access := new Table_Column_Type;
       begin
          row.Dynamic;
          col1.Dynamic;
@@ -84,9 +84,9 @@ procedure Tutorial_08 is
       end;
 
       declare
-         row  : Table_Row_Access := new Table_Row_Type;
-         col1 : Table_Column_Access := new Table_Column_Type;
-         col2 : Table_Column_Access := new Table_Column_Type;
+         row  : constant Table_Row_Access := new Table_Row_Type;
+         col1 : constant Table_Column_Access := new Table_Column_Type;
+         col2 : constant Table_Column_Access := new Table_Column_Type;
       begin
          row.Dynamic;
          col1.Dynamic;
@@ -119,7 +119,7 @@ procedure Tutorial_08 is
    --  Application event handlers
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_View.New_Line;
       App.My_View.Put_Line ("Closing application and every connection!");
@@ -147,7 +147,8 @@ procedure Tutorial_08 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
       App.My_View.Create (Main_Window);
@@ -166,10 +167,12 @@ procedure Tutorial_08 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       --  Since there will be no interactions with page once displayed there
       --  is no need to setup any data to associate with the main window.
 
-      Result_View : Gnoga.Gui.View.View_Access := new Gnoga.Gui.View.View_Type;
+      Result_View : constant Gnoga.Gui.View.View_Access :=
+        new Gnoga.Gui.View.View_Type;
    begin
       Result_View.Dynamic;
       --  By marking the View dynamic it will be deallocated by Main_Window

@@ -18,12 +18,10 @@ with Gnoga.Server.Model.Queries;
 with Gnoga.Server.Model.Table;
 --  These packages will be used to work with our database based data modeling
 
-with Gnoga.Types;
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
 
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers;
 
 procedure Tutorial_11 is

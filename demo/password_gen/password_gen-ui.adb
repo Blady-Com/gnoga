@@ -4,6 +4,7 @@
 --
 -- User Interface
 --
+-- V1.1  2016 Jun 01     Correct handling when no digit
 -- V1.0  2016 Jan 15     Initial version
 --
 with Ada.Characters.Handling;
@@ -81,7 +82,7 @@ package body Password_Gen.UI is
 
       Salted_Input : constant String := ':' & Domain & ':' & App.Master.Value & ':';
 
-      Digit_1_Index : Natural;
+      Digit_1_Index : Natural := 0;
       Digit_1       : Natural := 0;
       Digit_1_Rem   : Natural;
       Length        : Positive := App.Length.Value; -- The requested password length, 8 .. 16

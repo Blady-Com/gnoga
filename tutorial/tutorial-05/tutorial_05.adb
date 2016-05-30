@@ -44,7 +44,7 @@ procedure Tutorial_05 is
    is
       use Gnoga.Gui.Element.Canvas.Context_2D;
 
-      App     : App_Access := App_Access (Object.Connection_Data);
+      App     : constant App_Access := App_Access (Object.Connection_Data);
       Context : Context_2D_Type;
    begin
       Context.Get_Drawing_Context_2D (App.My_Canvas);
@@ -74,7 +74,7 @@ procedure Tutorial_05 is
    is
       use Gnoga.Gui.Element.Canvas.Context_2D;
 
-      App     : App_Access := App_Access (Object.Connection_Data);
+      App     : constant App_Access := App_Access (Object.Connection_Data);
       Context : Context_2D_Type;
    begin
       Context.Get_Drawing_Context_2D (App.My_Canvas);
@@ -93,7 +93,7 @@ procedure Tutorial_05 is
    is
       use Gnoga.Gui.Element.Canvas.Context_2D;
 
-      App     : App_Access := App_Access (Object.Connection_Data);
+      App     : constant App_Access := App_Access (Object.Connection_Data);
       Context : Context_2D_Type;
    begin
       Context.Get_Drawing_Context_2D (App.My_Canvas);
@@ -110,7 +110,7 @@ procedure Tutorial_05 is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       use Gnoga.Gui.Element.Canvas.Context_2D;
 
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
       Context : Context_2D_Type;
    begin
       Context.Get_Drawing_Context_2D (App.My_Canvas);
@@ -130,7 +130,7 @@ procedure Tutorial_05 is
    end On_Click;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_View.New_Line;
       App.My_View.Put_Line ("Closing application and every connection!");
@@ -152,7 +152,8 @@ procedure Tutorial_05 is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
 

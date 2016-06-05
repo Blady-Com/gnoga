@@ -1283,7 +1283,7 @@ package body Gnoga.Server.Connection is
          if Object_Map.Contains (ID) then
             return Object_Map.Element (ID);
          else
-            raise No_Object;
+            raise No_Object with "ID:" & ID'Img;
          end if;
       end Get_Object;
 

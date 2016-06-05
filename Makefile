@@ -1,4 +1,4 @@
-PREFIX=$(dir $(shell which gnatls))..
+PREFIX=$(shell echo $(dir $(shell which gnatls)) | sed "s:/cygdrive/\\(.\\):\\1\\::" )..
 GPRCHECK=$(shell gprbuild --version)
 TARGET=$(shell gcc -dumpmachine)
 

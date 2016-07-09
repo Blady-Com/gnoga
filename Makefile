@@ -300,8 +300,11 @@ clean:
 	cd demo/adablog && $(CLEANER) -Padablog.gpr
 	cd demo/connect_four && $(CLEANER) -Pconnect_four.gpr
 	- cd demo/connect_four && $(RM) connectfour_messages*
+	cd demo/linxtris && $(CLEANER) -Plinxtris.gpr
+	cd demo/adaothello && $(CLEANER) -Padaothello.gpr
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
-	cd demo/password_gen && $(CLEANER) -Ppassword_gen.gpr
+	-cd demo/password_gen && $(CLEANER) -Ppassword_gen.gpr
+	-cd demo/random_int && $(CLEANER) -Prandom_int.gpr
 	- cd deps/zanyblue && make -C src clean
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(CLEANER) -Ptutorial_02.gpr

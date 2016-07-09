@@ -61,7 +61,7 @@ package ZanyBlue.Text.Format_Errors is
                                Raise_Errors   : Boolean);
    --  Handle a reference to a missing argument when formatting a message.
 
-   Standard_Error_Handler : aliased Error_Handler_Type := (others => <>);
+   Standard_Error_Handler : aliased Error_Handler_Type;
    --  The standard formatting handler: simply raise exceptions.
 
 end ZanyBlue.Text.Format_Errors;

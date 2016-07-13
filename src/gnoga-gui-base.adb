@@ -643,8 +643,6 @@ package body Gnoga.Gui.Base is
    ------------
 
    procedure Execute (Object : in out Base_Type; Method : in String) is
-      Message_Script : constant String :=
-                         jQuery (Object) & ".get(0)." & Method;
    begin
       Object.jQuery_Execute ("get(0)." & Method);
    end Execute;

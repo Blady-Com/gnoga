@@ -285,6 +285,7 @@ package body Gnoga.Server.Connection is
          if not Secure_Server then
             declare
                Server : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
+               pragma Unreferenced (Server);
             begin
                accept Stop;
             end;
@@ -293,9 +294,11 @@ package body Gnoga.Server.Connection is
                declare
                   Server1 : Gnoga_HTTP_Connection
                     (Factory'Access,  Server_Port);
+                  pragma Unreferenced (Server1);
                   Server2 : Gnoga_HTTP_Connection
                     (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all,
                      Secure_Port);
+                  pragma Unreferenced (Server2);
                begin
                   accept Stop;
                end;
@@ -304,6 +307,7 @@ package body Gnoga.Server.Connection is
                   Server : Gnoga_HTTP_Connection
                     (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all,
                      Secure_Port);
+               pragma Unreferenced (Server);
                begin
                   accept Stop;
                end;
@@ -1172,11 +1176,8 @@ package body Gnoga.Server.Connection is
                Gnoga.Log ("Ping on long polling -" & ID'Img);
             end if;
 
-            declare
-               T : String := Execute_Script (ID, "0");
-            begin
-               null;
-            end;
+            Execute_Script (ID, "0");
+
          elsif Socket.Content.Connection_Type = WebSocket then
             if Verbose_Output then
                Gnoga.Log ("Ping on websocket -" & ID'Img);

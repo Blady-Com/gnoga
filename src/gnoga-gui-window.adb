@@ -43,6 +43,7 @@ with Ada.Exceptions;
 
 with Gnoga.Client.Storage;
 with Gnoga.Server.Connection;
+pragma Elaborate_All (Gnoga.Server.Connection);
 with Gnoga.Gui.Element;
 with Gnoga.Gui.View;
 

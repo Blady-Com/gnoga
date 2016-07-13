@@ -68,7 +68,7 @@ package body Gnoga is
          elsif C = Character'Val (13) then
             return "\x0D";
          else
-            return C & "";
+            return (1 => C);
          end if;
       end Translate_Character;
 

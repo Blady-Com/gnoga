@@ -254,6 +254,8 @@ project Components is
       "stack_storage.ads",
       "storage_streams.adb",
       "storage_streams.ads",
+      "strings_edit-time_conversions.adb",
+      "strings_edit-time_conversions.ads",
       "strings_edit-symmetric_serialization.adb",
       "strings_edit-symmetric_serialization.ads",
       "synchronization.ads",

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  10:00 09 Apr 2016  --
+--                                Last revision :  07:53 21 Jul 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -504,7 +504,7 @@ package body SQLite is
    end Column_Type;
 
    procedure Exec (Base : Data_Base; Command : String) is
-      Operation : Statement := Prepare (Base, Command);
+      Operation : constant Statement := Prepare (Base, Command);
    begin
       while Step (Operation) loop
          null;
@@ -703,7 +703,7 @@ package body SQLite is
       function Internal (pStmt : SQLite_Handle) return int;
       pragma Import (C, Internal, "sqlite3_step");
       Object : Statement_Object'Class renames Ptr (Command.Handle).all;
-      Result : int := Internal (Object.Handle);
+      Result : constant int := Internal (Object.Handle);
    begin
       case Result is
          when SQLITE_ROW  =>
@@ -727,7 +727,7 @@ package body SQLite is
             (  Base : Data_Base;
                Name : String
             )  return Boolean is
-      Command : Statement :=
+      Command : constant Statement :=
                 Prepare
                 (  Base,
                    (  "SELECT * FROM sqlite_master "

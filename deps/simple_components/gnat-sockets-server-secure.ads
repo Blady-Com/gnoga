@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Interface                                      Winter, 2015       --
 --                                                           --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  12:47 19 Jun 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -74,6 +74,12 @@ package GNAT.Sockets.Server.Secure is
                 Client  : in out Connection'Class;
                 Session : in out Session_Type
              );
+--
+-- Overriding GNAT.Sockets.Server...
+--
+   function Is_TLS_Capable
+            (  Factory : Abstract_GNUTLS_Factory
+            )  return Boolean;
 --
 -- Is_Trace_Decoded -- Check tracing
 --

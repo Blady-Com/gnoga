@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  12:47 19 Jun 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -172,8 +172,19 @@ package body GNAT.Sockets.Server.Secure is
              )  is
    begin
       Client.Session := Session_Connected;
-      Connected (Client);
+      if Is_Opportunistic (Client) then
+         Elevated (Client);
+      else
+         Connected (Client);
+      end if;
    end Handshake_Completed;
+
+   function Is_TLS_Capable
+            (  Factory : Abstract_GNUTLS_Factory
+            )  return Boolean is
+   begin
+      return True;
+   end Is_TLS_Capable;
 
    function Is_Trace_Decoded (Factory : Abstract_GNUTLS_Factory)
       return Boolean is

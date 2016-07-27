@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.X509             Luebeck            --
 -- Interface                                       Winter, 2015       --
 --                                                                    --
---                                Last revision :  18:53 15 Jan 2015  --
+--                                Last revision :  12:47 19 Jun 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -34,7 +34,7 @@ package GNAT.Sockets.Server.Secure.X509 is
 -- X509_Authentication_Factory -- Abstract  factory  for  X.509  authen-
 --                                tication.
 --
-   type X509_Authentication_Factory is abstract
+   type X509_Authentication_Factory is
       new Abstract_GNUTLS_Factory with private;
 --
 -- Add_CRL -- Add trusted CRLs
@@ -369,7 +369,7 @@ package GNAT.Sockets.Server.Secure.X509 is
    procedure Initialize (Factory : in out X509_Authentication_Factory);
 
 private
-   type X509_Authentication_Factory is abstract
+   type X509_Authentication_Factory is
       new Abstract_GNUTLS_Factory with
    record
       Credentials  : Certificate_Credentials;

@@ -3,7 +3,7 @@
 --     Test_HTTP_Continuous_Server                 Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  22:24 02 Mar 2015  --
+--                                Last revision :  12:48 19 Jun 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,10 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;           use Ada.Calendar;
-with Ada.Streams.Stream_IO;  use Ada.Streams.Stream_IO;
-with Strings_Edit;           use Strings_Edit;
-with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
+with Ada.Calendar;         use Ada.Calendar;
+with Strings_Edit;         use Strings_Edit;
+with Strings_Edit.Quoted;  use Strings_Edit.Quoted;
 
 with Ada.Unchecked_Deallocation;
 

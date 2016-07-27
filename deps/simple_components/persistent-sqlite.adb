@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  07:53 21 Jul 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -183,7 +183,7 @@ package body Persistent.SQLite is
             Size : Natural := 0;
          begin
             declare
-               Command : Statement :=
+               Command : constant Statement :=
                          Prepare
                          (  Storage.Connection,
                             (  "SELECT name FROM sqlite_master "
@@ -280,7 +280,7 @@ package body Persistent.SQLite is
          "DROP TABLE IF EXISTS has_not_out_" & ID_Text
       );
       declare
-         Command : Statement :=
+         Command : constant Statement :=
                    Prepare
                    (  Storage.Connection,
                       (  "DELETE FROM "
@@ -318,7 +318,7 @@ package body Persistent.SQLite is
          return Object_Key'(Null_Key);
       end if;
       declare
-         Command : Statement :=
+         Command : constant Statement :=
                    Prepare
                    (  Storage.Connection,
                       (  "SELECT "

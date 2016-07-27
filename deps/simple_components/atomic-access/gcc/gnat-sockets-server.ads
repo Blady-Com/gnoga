@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  18:59 21 Mar 2016  --
+--                                Last revision :  17:41 19 Jun 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -289,6 +289,20 @@ package GNAT.Sockets.Server is
                Client   : access Connection'Class
             )  return Encoder_Ptr;
 --
+-- Create_Transport -- Continue with a transport layer
+--
+--    Client - The connection object
+--
+-- The connections  with  Is_Opportunistic  returning true  do not start
+-- secure exchange until this procedure is called.
+--
+-- Exceptions :
+--
+--    Status_Error - The connection is already secured
+--    Use_Error    - No secure secure connections support
+--
+   procedure Create_Transport (Client : in out Connection);
+--
 -- Disconnected -- Client disconnection notification
 --
 --    Client - The client object
@@ -318,6 +332,18 @@ package GNAT.Sockets.Server is
              (  Listener : in out Connections_Server;
                 Client   : in out Connection'Class
              );
+--
+-- Elevated -- Notification of opportunistic transport creation
+--
+--    Client - The connection object
+--
+-- This procedure is called when an  opportunistic  transport  layer  is
+-- created and ready to use. When  a  connection  with  Is_Opportunistic
+-- returning True calls Create_Transport this creates a transport layer,
+-- usually  encrypted,  and after successful handshake this procedure is
+-- called.
+--
+   procedure Elevated (Client : in out Connection);
 --
 -- Encode -- Encode and send
 --
@@ -552,6 +578,16 @@ package GNAT.Sockets.Server is
 --
    function Is_Down (Client : Connection) return Boolean;
 --
+-- Is_Elevated -- Check if connection uses a transport layer
+--
+--    Client - The client connection object
+--
+-- Returns :
+--
+--    True if a transport layer is present
+--
+   function Is_Elevated (Client : Connection) return Boolean;
+--
 -- Is_Incoming -- Connection type
 --
 --    Client - The client connection object
@@ -561,6 +597,37 @@ package GNAT.Sockets.Server is
 --    True if client handles and incoming connection
 --
    function Is_Incoming (Client : Connection) return Boolean;
+--
+-- Is_Opportunistic -- Secure connection type
+--
+--    Client - The client connection object
+--
+-- This function returns True if the  connection  deploys  opportunistic
+-- security  encoding.  The  default is False, that means the connection
+-- engages  security  transport  immediately once established. When True
+-- the  exchange starts not secured and turns into secure mode only when
+-- both  parties  agree  on  that.  An  example  of opportunistic secure
+-- connection is SMTP's STARTTLS command.
+--
+-- Returns :
+--
+--    True if the connection deploys opportunistic security encoding
+--
+   function Is_Opportunistic (Client : Connection) return Boolean;
+--
+-- Is_TLS_Capable -- Secure connection type
+--
+--    Factory - The factory object
+--
+-- The default implementation returns False
+--
+-- Returns :
+--
+--    True if the factory can create TLS transport
+--
+   function Is_TLS_Capable
+            (  Factory : Connections_Factory
+            )  return Boolean;
 --
 -- Is_Trace_Received_On -- Tracing state
 --

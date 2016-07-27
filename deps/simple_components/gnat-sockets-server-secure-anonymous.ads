@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.                 Luebeck            --
 --     Anonymous                                   Winter, 2015       --
 --  Interface                                                         --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  12:47 19 Jun 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,7 +35,7 @@ package GNAT.Sockets.Server.Secure.Anonymous is
 --                                     authentication
 --
    type Anonymous_Authentication_Factory is
-      abstract new Abstract_GNUTLS_Factory with private;
+      new Abstract_GNUTLS_Factory with private;
 --
 -- Set_Priorities -- Set priorities for the anonymous authentication
 --
@@ -69,7 +69,7 @@ package GNAT.Sockets.Server.Secure.Anonymous is
 
 private
    type Priorities_Ptr is access String;
-   type Anonymous_Authentication_Factory is abstract
+   type Anonymous_Authentication_Factory is
       new Abstract_GNUTLS_Factory with
    record
       Credentials : Anon_Server_Credentials;

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  12:47 19 Jun 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,13 +25,12 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar.Formatting;  use Ada.Calendar.Formatting;
-with Ada.Calendar.Time_Zones;  use Ada.Calendar.Time_Zones;
-with Ada.Calendar;             use Ada.Calendar;
-with Ada.Exceptions;           use Ada.Exceptions;
-with Ada.Strings.Maps;         use Ada.Strings.Maps;
-with Ada.Task_Identification;  use Ada.Task_Identification;
-with Ada.Text_IO;              use Ada.Text_IO;
+with Ada.Calendar;                   use Ada.Calendar;
+with Ada.Exceptions;                 use Ada.Exceptions;
+with Ada.Strings.Maps;               use Ada.Strings.Maps;
+with Ada.Task_Identification;        use Ada.Task_Identification;
+with Ada.Text_IO;                    use Ada.Text_IO;
+with Strings_Edit.Time_Conversions;  use Strings_Edit.Time_Conversions;
 
 with Ada.Finalization;
 with Generic_Discrete_Set;
@@ -1369,7 +1368,8 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --    String representation of the parameter Date in the format:
 --    Sun, 17 Feb 2013 21:02:43 +0100
 --
-   function To_HTTP (Date : Time) return String;
+   function To_HTTP (Date : Time) return String
+      renames Strings_Edit.Time_Conversions.To_String;
 --
 -- To_Time -- Time conversion
 --
@@ -1385,7 +1385,8 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
 --
 --    Time_Error - On error
 --
-   function To_Time (Date : String) return Time;
+   function To_Time (Date : String) return Time
+      renames Strings_Edit.Time_Conversions.To_Time;
 ------------------------------------------------------------------------
    CRLF  : constant String := (Character'Val (13), Character'Val (10));
    Lower : constant Character_Mapping :=
@@ -1835,12 +1836,6 @@ private
       Header : Boolean := True;
    end record;
 
-   procedure Check_Spelling (Name : String);
-   function Check_Matched
-            (  Source  : String;
-               Pointer : Integer
-            )  return Boolean;
-
    package HTTP_Tables_Raw is new Tables (HTTP_Method);
    package HTTP_Tables is new HTTP_Tables_Raw.Names;
    use HTTP_Tables;
@@ -1849,18 +1844,6 @@ private
    package Request_Header_Tables is
       new Request_Header_Tables_Raw.Names;
    use Request_Header_Tables;
-
-   package Day_Tables_Raw is new Tables (Day_Name);
-   package Day_Tables is new Day_Tables_Raw.Names;
-   use Day_Tables;
-
-   package Month_Tables_Raw is new Tables (Month_Number);
-   package Month_Tables is new Month_Tables_Raw.Names;
-   use Month_Tables;
-
-   package Zone_Tables_Raw is new Tables (Time_Zones.Time_Offset);
-   package Zone_Tables is new Zone_Tables_Raw.Names;
-   use Zone_Tables;
 
    package Connection_Tables_Raw is new Tables (Connection_Flags);
    package Connection_Tables is new Connection_Tables_Raw.Names;
@@ -1872,9 +1855,6 @@ private
 
    Commands        : HTTP_Tables.Dictionary;
    Request_Headers : Request_Header_Tables.Dictionary;
-   Week_Days       : Day_Tables.Dictionary;
-   Months          : Month_Tables.Dictionary;
-   Zones           : Zone_Tables.Dictionary;
    Connections     : Connection_Tables.Dictionary;
    Schemes         : Scheme_Tables.Dictionary;
 

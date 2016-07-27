@@ -5,14 +5,14 @@
 <TITLE>Simple components for Ada</TITLE>
 <meta http-equiv="Content-Style-Type" content="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
-<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client, MQTT, MQTT broker, ELV, eQ-3, MAX!, MAX! cube">
+<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client, MQTT, MQTT broker, ELV, eQ-3, MAX!, MAX! cube, SMTP, SMTP client">
 <META name="Author" content="Dmitry Kazakov">
 <META name="Description" content="Simple components for Ada">
 </HEAD>
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.12</EM><BR>
+<EM>version 4.15</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -76,6 +76,7 @@ MAX! client implementation</a><br>
 <a href="#persistent_storage">Persistent storage</a> and <a href="#persistent_storage_handle">handles to</a><br>
 <a href="#Pools_etc">Pools</a><br>
 <a href="#Sets_etc">Sets and maps</a><br>
+<a href="#SMTP">SMTP client implementation</a><br>
 <a href="#SQLite">SQLite bindings</a><br>
 <a href="#Stacks_etc">Stacks</a><br>
 <a href="#Streams">Streams</a><br>
@@ -129,13 +130,13 @@ MAX! client implementation</a><br>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_12.tgz">components_4_12.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_15.tgz">components_4_15.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_12.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_15.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -352,8 +353,8 @@ objects</a> task-safe. Note that this by no means makes the objects themselves t
 	operations.</li>
 	<li><i>Unsafe</i> implementation can be found in the subdirectory <i>
 	single-task</i>. The source files there replace files with the corresponding
-	names in the parent directory. The project files for GNAT Ada allow choice
-	of the implementation per project scenario variable &quot;Tasking&quot;.</li>
+	names in the parent directory. The project files for GNAT Ada allow choice 
+	of the implementation per project scenario variable <i>Tasking</i>.</li>
 	<li><i>Tracing</i> implementation is intended for use with GNAT Ada. The
 	corresponding files
 	provide run-time tracing of reference counts. The implementation is located in the subdirectory <i>gnat-debug</i>. Upon an error the source
@@ -13976,13 +13977,8 @@ know if the destination is still valid:</p>
   <TR>
 <TD>
 <i>When the compiler does not support atomic access to 64-bit integers, an 
-alternative version based on GCC's built-in functions is used. When compiling 
-from sources using the project file, the scenario variable Atomic_Access 
-controls the method to use:</i><ul>
-	<li><i>Pragma-atomic (subdirectory atomic-access/ada)</i></li>
-	<li><i>GCC-built-ins (subdirectory atomic-access/gcc)</i></li>
-</ul>
-<p><i>Precompiled distributions select an appropriate implementation 
+alternative version based on GCC's built-in functions must be used. See
+<a href="#GNAT-project-scenario-variables">scenario variables</a>. Precompiled distributions select an appropriate implementation 
 automatically.</i></TD>
   </TR>
 </TABLE>
@@ -25037,6 +25033,22 @@ expiration as defined by <a href="#GNAT.Sockets.Server.Get_IO_Timeout">Get_IO_Ti
 function can be overridden in order to change the value.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Is_TLS_Capable"></a>
+function</font> 
+Is_TLS_Capable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b> : 
+Connections_Factory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<font color="#0000FF">&nbsp; 
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if the factory 
+can create TLS transport (see <a href="#GNAT.Sockets.Server.Create_Transport">
+Create_Transport</a>). When an opportunistic TLS is used a connection object can 
+use this function in order to determine if the provided factory is capable of 
+TLS before proposing or accepting switching to TLS. The default implementation 
+returns <i><font color="#800000">false</font></i>.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF">function</font> 
 Is_Trace_Received_On<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Factory</b> : Connections_Factory;<br>
@@ -25314,7 +25326,7 @@ Received</a> to feed the client with decoded data.</p>
 layer:</p>
 
 <blockquote>
-<p><tt><font color="#0000FF">function</font> Create_Transport<br>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Create_Transport"></a>function</font> Create_Transport<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Factory</b>&nbsp; :
 <font color="#0000FF">access</font> Connections_Factory;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Listener</b> 
@@ -25469,6 +25481,18 @@ here. The implementation may propagate Connection_Error if it decides to refuse
 connection this late.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">procedure</font> 
+Create_Transport (<b>Client</b> : <font color="#0000FF">in out</font> 
+Connection);</tt></p>
+</blockquote>
+<p>The connections with <a href="#GNAT.Sockets.Server.Is_Opportunistic">
+Is_Opportunistic</a> returning <font color="#800000"><i>true</i></font> do not 
+start secure exchange. It is explicitly started by calling this procedure. 
+Status_Error is propagated when the connection already has a transport layer. 
+Use_Error is propagated when transport is not created (<a href="#GNAT.Sockets.Server.Create_Transport">Create_Transport</a> 
+returned <font color="#800000"><i>false</i></font>).</p>
+
+<blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Disconnected_Client"></a>
 procedure</font> Disconnected (<b>Client</b> : <font color="#0000FF">in out</font> 
 Connection);</tt></p>
@@ -25476,6 +25500,27 @@ Connection);</tt></p>
 <p>This is procedure is called when connection is dropped. If overridden, the 
 parent's implementation must be called from the override. The implementation may propagate Connection_Error 
 to prevent reconnection if the object services an outgoing connection.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Elevated"></a>
+procedure</font> Elevated (<b>Client</b> : <font color="#0000FF">in out</font> 
+Connection);</tt></p>
+</blockquote>
+<p>This procedure is called when an opportunistic transport layer is created and 
+ready to use. When a connection with <a href="#GNAT.Sockets.Server.Is_Opportunistic">
+Is_Opportunistic</a> returning <font color="#800000"><i>true</i></font> calls 
+Create_Transport this creates a transport layer, usually encrypted, to continue 
+exchange over the layer. After a successful handshake, when the exchange can be 
+continued this procedure is called. The default implementation does nothing. 
+Note that when <a href="#GNAT.Sockets.Server.Is_Opportunistic">
+Is_Opportunistic</a> returning <font color="#800000"><i>false</i></font> the 
+transport is created right after establishing a connection and handshake 
+completion is notified by calling <a href="#GNAT.Sockets.Server.Connected">
+Connected</a>. In contrast to this when <a href="#GNAT.Sockets.Server.Is_Opportunistic">
+Is_Opportunistic</a> returns <font color="#800000"><i>true</i></font>,
+<a href="#GNAT.Sockets.Server.Connected">Connected</a> is called first, then the 
+client class Create_Transport and after that receives
+<a href="#GNAT.Sockets.Server.Elevated">Elevated</a>.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Finalize_Connection">
@@ -25588,6 +25633,14 @@ should clean up the object's extension fields if any. Usually
 to do this.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Is_Elevated"></a>function</font> 
+Is_Elevated (<b>Client</b> : 
+Connection) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if the 
+connection uses a transport layer, e.g. TLS.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Is_Incoming"></a>function</font> 
 Is_Incoming (<b>Client</b> : 
 Connection) <font color="#0000FF">return</font> Boolean;</tt></p>
@@ -25596,6 +25649,19 @@ Connection) <font color="#0000FF">return</font> Boolean;</tt></p>
 handles an incoming connection and acts as a server. It returns
 <font color="#800000"><i>false</i></font> if <b>Client</b> handles an outgoing 
 connection (a client).</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Is_Opportunistic"></a>function</font> 
+Is_Opportunistic (<b>Client</b> : 
+Connection) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if the 
+connection deploys opportunistic security encoding. The default is
+<font color="#800000"><i>false</i></font>, that means the connection engages 
+security transport immediately once established. When the result is
+<font color="#800000"><i>true</i></font> the exchange starts not secured and 
+turns into secure mode only when both parties agree on that. An example of 
+opportunistic secure connection is SMTP with its STARTTLS command.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">
@@ -33645,7 +33711,7 @@ databases.</p>
 <p align="right">
   <A name="16.15"></A><a href="#16.14"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#20"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.16"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>16.15. MQTT protocol implementation</H3>
 <p><b><a name="MQTT"></a>M</b>essage <b>Q</b>ueueing <b>T</b>elemetry <b>T</b>ransport (<b>MQTT</b>) 
 is an ISO standard (<a href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=69466">ISO/IEC 
@@ -33743,7 +33809,8 @@ return</font> Stream_Element_Count;</tt></p>
 buffer is allocated on demand when the output buffer becomes full. The size of 
 the buffer is limited by
 <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
-Set_Max_Secondary_Buffer_Size</a>. Zero limit means unlimited buffer.</p>
+Set_Max_Secondary_Buffer_Size</a>. Zero limit means unlimited buffer. By default&nbsp; 
+the secondary buffer size is not limited.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Get_QoS"></a>function</font> 
@@ -34163,7 +34230,7 @@ Set_Max_Secondary_Buffer_Size</a>.</p>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Ping"></a>procedure</font> 
 Send_Ping (<b>Pier</b> : <font color="#0000FF">in out </font>MQTT_Pier);</tt></p>
 </blockquote>
-<p>The procedure sends a <i>PINKREQ</i> request. Use_Error is propagated when <b>
+<p>The procedure sends a <i>PINGREQ</i> request. Use_Error is propagated when <b>
 Pier</b> is not connected. Data_Error is propagated on secondary buffer overflow 
 if its size is limited by
 <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
@@ -34172,7 +34239,7 @@ Set_Max_Secondary_Buffer_Size</a>.</p>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Send_Ping_Response"></a>procedure</font> 
 Send_Ping_Response (<b>Pier</b> : <font color="#0000FF">in out </font>MQTT_Pier);</tt></p>
 </blockquote>
-<p>The procedure sends a <i>PINKRES</i> response. Use_Error is propagated when
+<p>The procedure sends a <i>PINGRES</i> response. Use_Error is propagated when
 <b>Pier</b> is not connected. Data_Error is propagated on secondary buffer 
 overflow if its size is limited by
 <a href="#GNAT.Sockets.MQTT.Set_Max_Secondary_Buffer_Size">
@@ -34478,7 +34545,7 @@ is array </font>(Positive <font color="#0000FF">range</font> &lt;&gt;)
 </blockquote>
 <p>This is an array of <a href="#GNAT.Sockets.MQTT.Return_Code">Return_Code</a> 
 elements.</p>
-<p><u><b>Lists of topics</b></u>. </p>
+<p><u><b>Lists of topics</b></u>.</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.MQTT.Topics_List"></a>type</font> 
 Topics_List (&lt;&gt;) <font color="#0000FF">is private</font>;<br>
@@ -35079,6 +35146,1028 @@ This function returns the name of the session used by <b>Client</b>. The name is
 specified in the <a href="#GNAT.Sockets.MQTT.On_Connect">connect request</a>. 
 For an anonymous session the result is empty string.</p>
 
+<p align="right">
+  <A name="16.16"></A><a href="#16.15"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#20"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.16. SMTP</H3>
+<p><b><a name="SMTP"></a></b><b>S</b>imple <b>M</b>ail <b>T</b>ransfer <b>
+Protocol </b>(<b>SMTP</b>) is a protocol used for exchange of electronic mail. 
+The protocol is defined by
+<a class="external mw-magiclink-rfc" rel="nofollow" href="https://tools.ietf.org/html/rfc821">
+RFC 821</a> and
+<a class="external mw-magiclink-rfc" rel="nofollow" href="https://tools.ietf.org/html/rfc5321">
+RFC 5321</a> standards. The provided implementation supports asynchronous 
+sending mails. The application need not to wait for the client to connect and 
+mails sent. Secure TLS connections are supported.</p>
+<p><a name="GNAT.Sockets.SMTP"></a>The package <a href="#GNAT.Sockets.SMTP">GNAT.Sockets.SMTP</a> defines basic 
+SMTP data types and operations on them:</p>
+
+<blockquote>
+<p><tt>SMTP_Port : <font color="#0000FF">constant</font> :=
+<font color="#800000">25</font>;</tt></p>
+</blockquote>
+<p>
+The default port used by SMTP is 25.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> SMTP_Command <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; SMTP_Greeting,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SMTP_QUIT<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This type lists SMTP commands and generic states. E.g. SMTP_Greeting corresponds 
+to the greeting line sent by the server upon client connection.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> SMTP_Extension <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; SMTP_8BITMIME,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SMTP_XVRB<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This type lists SMTP extensions the server advertises to the client in response 
+to the SMTP_EHLO command.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.SMTP_AUTH_Mechanism">
+</a>type</font> SMTP_AUTH_Mechanism <font color="#0000FF">is mod</font>
+<font color="#800000">2</font>**<font color="#800000">3</font>;<br>
+SMTP_ANONYMOUS : <font color="#0000FF">constant</font> SMTP_AUTH_Mechanism :=
+<font color="#800000">0</font>;<br>
+SMTP_PLAIN&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
+SMTP_AUTH_Mechanism := <font color="#800000">2</font>**<font color="#800000">0</font>;<br>
+SMTP_LOGIN&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
+SMTP_AUTH_Mechanism := <font color="#800000">2</font>**<font color="#800000">1</font>;<br>
+SMTP_CRAM_MD5&nbsp; : <font color="#0000FF">constant</font> SMTP_AUTH_Mechanism 
+:= <font color="#800000">2</font>**<font color="#800000">2</font>;</tt></p>
+</blockquote>
+<p>
+This type specifies the methods of authentication. The more secure methods have 
+greater values.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Reply_Code <font color="#0000FF">is 
+range</font> <font color="#FF0000">200</font>..<font color="#FF0000">554</font>;<br>
+<font color="#0000FF">function</font> Image (<b>Code</b> : Reply_Code)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This type defines the reply codes the server uses in its responses to the 
+client. Codes 2xx indicate success.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Text (<b>Code</b> : Reply_Code)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns a textual description of a reply code.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Code_Class <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Success,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Persistent_Transient_Failure,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Permanent_Failure<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">type</font> Code_Subject <font color="#0000FF">is range</font>
+<font color="#800000">0</font>..<font color="#800000">999</font>;<br>
+<font color="#0000FF">type</font> Code_Detail&nbsp; <font color="#0000FF">is 
+range</font> <font color="#800000">0</font>..<font color="#800000">999</font>;<br>
+<br>
+<font color="#0000FF">type</font> Enhanced_Status_Code <font color="#0000FF">is 
+record</font><br>
+&nbsp;&nbsp; Class&nbsp;&nbsp; : Code_Class;<br>
+&nbsp;&nbsp; Subject : Code_Subject;<br>
+&nbsp;&nbsp; Detail&nbsp; : Code_Detail;<br>
+<font color="#0000FF">end record</font>;<br>
+<font color="#0000FF">function</font> Image (<b>Code</b> : Enhanced_Status_Code)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This type declares the enhanced status code as defined in
+<a class="external mw-magiclink-rfc" rel="nofollow" href="https://tools.ietf.org/html/rfc3463">
+RFC 3463</a>. Some servers provide extended status code in addition to the 
+standard reply code.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Text (<b>Code</b>&nbsp;&nbsp;&nbsp; 
+: Enhanced_Status_Code) <font color="#0000FF">return</font> String;<br>
+<font color="#0000FF">function</font> Text (<b>Class</b>&nbsp;&nbsp; : 
+Code_Class) <font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+return</font> String;<br>
+<font color="#0000FF">function</font> Text (<b>Subject</b> : Code_Subject)
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</font> 
+String;</tt></p>
+</blockquote>
+<p>
+These functions return textual descriptions for the components of enhanced code.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Error_Code (Enhanced : Boolean := 
+False) <font color="#0000FF">is record</font><br>
+&nbsp;&nbsp; Reply : Reply_Code;<br>
+&nbsp;&nbsp; <font color="#0000FF">case</font> Enhanced <font color="#0000FF">is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> True =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Error : Enhanced_Status_Code;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> False =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+<font color="#0000FF">end record</font>;<br>
+<font color="#0000FF">function</font> Image (<b>Code</b> : Error_Code)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This type combines reply and enhanced status code into one value.</p>
+<h4><a name="16.16.1"></a>16.16.1. Mail address lists</h4>
+
+<p>
+<a name="GNAT.Sockets.SMTP.Client"></a>The child package
+<a href="#GNAT.Sockets.SMTP.Client">GNAT.Sockets.SMTP.Client</a> 
+provides the type
+<a href="#GNAT.Sockets.SMTP.Client.Mail_Address_List">Mail_Address_List</a>:</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.SMTP.Client.Mail_Address_List"></a>type</font> 
+Mail_Address_List <font color="#0000FF">is tagged private</font>;</tt></p>
+</blockquote>
+<p>The following operations are defined on the type:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Add_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>List</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Mail_Address_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure adds an address to the list. Nothing happens when the address is 
+already in the list or an empty string.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Empty <font color="#0000FF">return</font> 
+Mail_Address_List;</tt></p>
+</blockquote>
+<p>
+This function returns an empty list.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Find<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>List</b>&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Natural;</tt></p>
+</blockquote>
+<p>
+This function returns the position of address in the list or 0 when address is 
+not in the list.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> From_String (<b>List</b> : String)
+<font color="#0000FF">return</font> Mail_Address_List;</tt></p>
+</blockquote>
+<p>
+This function creates mail list from a string containing a comma-separated list 
+of addresses.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>List</b>&nbsp; : 
+Mail_Address_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Index</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns address by its position. Contraint_Error is propagated 
+when <b>Index</b> is invalid.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Length (<b>List</b> : 
+Mail_Address_List) <font color="#0000FF">return</font> Natural;</tt></p>
+</blockquote>
+<p>
+This function returns the number of addresses in the list.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> From_String (<b>List</b> : String)
+<font color="#0000FF">return</font> Mail_Address_List;</tt></p>
+</blockquote>
+<p>
+This function creates mail list from a string containing a comma-separated list 
+of addresses.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>List</b> : 
+Mail_Address_List) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns a string containing comma-separated list of addresses.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Empty (<b>List</b> : 
+Mail_Address_List) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+This function returns <font color="#800000"><i>true</i></font> if the list is 
+empty.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_In<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>List</b>&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+This function returns <font color="#800000"><i>true</i></font> if address is in 
+the list.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Remove<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>List</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Mail_Address_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b> : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure removes address from the list.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Remove<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>List</b>&nbsp; 
+: <font color="#0000FF">in out</font> Mail_Address_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b> : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure removes address by its position. Constraint_Error is propagated 
+when <b>Index</b> is invalid.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">/</font>&quot; (<b>Left</b>,
+<b>Right</b> : String) <font color="#0000FF">return</font> Mail_Address_List;</tt></p>
+</blockquote>
+<p>
+This function creates mail list consisting of the addresses <b>Left</b> and <b>
+Right</b>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">/</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>List</b>&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Address</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
+Mail_Address_List;</tt></p>
+</blockquote>
+<p>
+This function returns a new list created by adding <b>Address</b> to <b>List</b>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">and</font>&quot; 
+(<b>Left</b>, <b>Right</b> : Mail_Address_List)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Mail_Address_List;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">or</font>&quot; (<b>Left</b>,
+<b>Right</b> : Mail_Address_List)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Mail_Address_List;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">xor</font>&quot; (<b>Left</b>,
+<b>Right</b> : Mail_Address_List)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Mail_Address_List;</tt></p>
+</blockquote>
+<p>
+This functions provide set-theoretic operations on mail lists.</p>
+<h4><a name="16.16.2"></a>16.16.2. Mail objects</h4>
+
+<p>Objects of the type <a href="#GNAT.Sockets.SMTP.Client.Mail">Mail</a> defined 
+in the package
+<a href="#GNAT.Sockets.MQTT.Server">GNAT.Sockets.SMTP.Client</a> 
+contain mails to send:</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.SMTP.Client.Mail"></a>type</font> 
+Mail<font color="#0000FF"> is private</font>;<br>
+<font color="#0000FF">type</font> Mail_Array <font color="#0000FF">is array</font> 
+(Positive <font color="#0000FF">range</font> &lt;&gt;) <font color="#0000FF">of</font> 
+Mail;</tt></p>
+</blockquote>
+<p>The instances of <a href="#GNAT.Sockets.SMTP.Client.Mail">Mail</a> have 
+referential semantics. Therefore copying of
+<a href="#GNAT.Sockets.SMTP.Client.Mail">Mail</a> is shallow, when assigned both 
+instances refer to the same mail. Thus any changes on one instance have the same 
+effect on another. The following operations are defined on the type <a href="#GNAT.Sockets.SMTP.Client.Mail">Mail</a>:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Attach_File"></a>procedure</font> 
+Attach_File<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Contents</b>&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content_Type</b> : String := &quot;<font color="#FF0000">text/plain</font>&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Disposition</b>&nbsp; : String := &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Description</b>&nbsp; : String := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Attach_Stream"></a>
+procedure</font> Attach_Stream<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Contents</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">access</font> 
+Root_Stream_Type'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content_Type</b> : String := &quot;<font color="#FF0000">text/plain</font>&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Disposition</b>&nbsp; : String := &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Description</b>&nbsp; : String := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Attach_Stream<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Contents</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+Root_Stream_Type'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content_Type</b> : String := &quot;<font color="#FF0000">text/plain</font>&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Disposition</b>&nbsp; : String := &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Description</b>&nbsp; : String := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Attach_String"></a>
+procedure</font> Attach_String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out </font>Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Contents</b>&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Content_Type</b> : String := &quot;<font color="#FF0000">text/plain</font>&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Disposition</b>&nbsp; : String := &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Description</b>&nbsp; : String := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+These procedures add contents to a mail. A mail must have at least one contents 
+attached which serves a the mail body. When contents is attached using one of 
+these procedures the mail will use MIME (<b>M</b>ultipurpose <b>I</b>nternet <b>
+M</b>ail <b>E</b>xtensions), which also happens where the mail has several 
+contents attached (attachments). The parameter <b>Contents</b> specifies the 
+source of the contents. It may have the following forms:</p>
+<ul>
+	<li><a href="#GNAT.Sockets.SMTP.Client.Attach_String">Attach_String</a>. The 
+	parameter <b>
+	Contents</b> is a plain string containing the message.</li>
+	<li><a href="#GNAT.Sockets.SMTP.Client.Attach_Stream">Attach_Stream</a>. The 
+	message is stored in a stream provided by the parameter <b>
+	Contents</b>. When the parameter <b>Contents</b> 
+	is Root_Stream_Type'Class the caller must ensure that the stream object 
+	would exist as long as the mail object does. A premature destruction of the 
+	stream object will lead to severe errors. When the parameter <b>Contents</b> 
+	is an access to Root_Stream_Type'Class the mail object will take care of its finalization and decallocation. Typically the caller will create a 
+	new instance using an allocator <font color="#0000FF">new</font> and pass it 
+	to <a href="#GNAT.Sockets.SMTP.Client.Attach_Stream">Attach_Stream</a>. The 
+	object will be freed when no more used.</li>
+	<li><a href="#GNAT.Sockets.SMTP.Client.Attach_File">Attach_File</a>. 
+	The parameter <b>Contents</b> is the name of a file. Note that the file will be opened for read 
+	and kept open until the message is sent or else the mail object ceases to 
+	exist.</li>
+</ul>
+<p>The parameter <b>Content_Type</b> specifies the type of the content. The 
+parameters <b>Disposition</b> and <b>Description</b> define the corresponding 
+MIME headers to appear when not empty.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Check (<b>Message</b> : Mail);</tt></p>
+</blockquote>
+<p>
+This procedure verifies if all mandatory parts of message are set. Use_Error is 
+propagated otherwise.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Create"></a>
+function</font> Create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Subject</b>&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: String / Mail_Address_List'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Cc</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List'Class := Empty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Bcc</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List'Class := Empty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Date</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Time := Clock<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Mail;<font color="#0000FF"><br>
+function</font> Create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>From</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Subject</b>&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: String / Mail_Address_List'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Contents</b> 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Cc</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List'Class := Empty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Bcc</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List'Class := Empty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Date</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Time&nbsp;&nbsp; := Clock;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>MIME</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: String := &quot;<font color="#FF0000">text/plain</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Mail;</tt></p>
+</blockquote>
+<p>
+These functions create a new mail object. The parameter <b>From</b> specifies 
+the sender's address. The parameter <b>Subject</b> is the mail subject. The 
+parameter <b>To</b> can be plain string of a list mail addresses. When <b>
+Contents</b> is absent it must be added later using
+<a href="#GNAT.Sockets.SMTP.Client.Attach_File">Attach_File</a>,
+<a href="#GNAT.Sockets.SMTP.Client.Attach_Stream">Attach_Stream</a> or
+<a href="#GNAT.Sockets.SMTP.Client.Attach_String">Attach_String</a>. When <b>
+Contents</b> is String, <b>MIME</b> is empty string and there is no attachments 
+the contents will be transferred without MIME. This can be used with legacy 
+servers that do not support MIME. Parameters <b>Cc</b> and <b>Bcc</b> are lists 
+of mail addresses. The parameter <b>Date</b> is the mail's time stamp. The 
+parameter <b>MIME</b> specifies the content type. When not empty it forces MIME.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Erase (<b>Message</b> :
+<font color="#0000FF">in out</font> Mail);</tt></p>
+</blockquote>
+<p>
+This procedure cleans mail object up.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> : Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Header</b>&nbsp; 
+: Text_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;<br>
+<font color="#0000FF">function</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> : Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Header</b>&nbsp; 
+: List_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Mail_Address_List;<br>
+<font color="#0000FF">function</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> : Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Header</b>&nbsp; 
+: Date_Header<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Time;</tt></p>
+</blockquote>
+<p>
+These functions return one of the mail headers. The headers are defined by the 
+enumeration type:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Mail_Header"></a>
+type</font> Mail_Header <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Mail_From,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Message_ID,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_In_Reply_To,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Subject,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_MIME_Version,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Content_Type,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Precedence,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_References,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Reply_To,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Sender,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Archived_At,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_To,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Bcc,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Cc,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Date,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Body <font color="#008000">-- 
+Not used as a header, mail body introduction</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>Some headers are set implicitly when a mail object is created. Other headers 
+must be explicitly set if they must be appear in the mail. The headers are 
+subdivided into string, mail address list and date subtypes:</p>
+<blockquote>
+<p><tt><font color="#0000FF">subtype</font> Text_Header <font color="#0000FF">is</font> 
+Mail_Header <font color="#0000FF">range</font> Mail_From..Mail_Archived_At;<br>
+<font color="#0000FF">subtype</font> List_Header <font color="#0000FF">is</font> 
+Mail_Header <font color="#0000FF">range</font> Mail_To..Mail_Cc;<br>
+<font color="#0000FF">subtype</font> Date_Header <font color="#0000FF">is</font> 
+Mail_Header <font color="#0000FF">range</font> Mail_Date..Mail_Date;</tt></p>
+</blockquote>
+<p>Unset string headers are returned as empty strings. Unset address lists are 
+empty. The following function returns textual representation of a header:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Header</b> : Mail_Header)
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns <b>Header</b> textual representation.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Get_Status"></a>function</font> 
+Get_Status (<b>Message</b> : Mail) <font color="#0000FF">return</font> 
+Mail_Status;</tt></p>
+</blockquote>
+<p>
+These functions returns the mail status which is one of:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Mail_Status <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Mail_Pending,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Sent,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mail_Rejected<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+The status can be queried concurrently.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> :
+<font color="#0000FF">in out</font> Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Header</b>&nbsp; : Text_Header;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Text</b>&nbsp;&nbsp;&nbsp; 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> :
+<font color="#0000FF">in out</font> Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Header</b>&nbsp; : List_Header;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>List</b>&nbsp;&nbsp;&nbsp; 
+: Mail_Address_List'Class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> :
+<font color="#0000FF">in out</font> Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Header</b>&nbsp; : Date_Header;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Date</b>&nbsp;&nbsp;&nbsp; 
+: Time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+These procedures are used to set a mail header.</p>
+<h4><a name="16.16.3"></a>16.16.3. SMTP client implementation</h4>
+
+<p>The package
+<a href="#GNAT.Sockets.SMTP.Client">GNAT.Sockets.SMTP.Client</a> 
+defines the SMTP client connection object type:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.SMTP_Client"></a>type</font> 
+SMTP_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">access</font> Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp;&nbsp; : 
+Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size&nbsp; : Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reply_Length : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new </font>Connection
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The type is derived from <a href="#GNAT.Sockets.Server.Connection">Connection</a> 
+object. The dicriminants of the type 
+are:</p>
+
+<ul>
+	<li><i>Listener</i> is an instance of
+	<a href="#GNAT.Sockets.Server.Connections_Server">Connections_Server</a> 
+	object handling the pier;</li>
+	<li><i>Input_Size</i> is the size of the input buffer used to read the 
+	socket into. See for <a href="#GNAT.Sockets.Server.Connection">Connection</a> 
+	further explanation;</li>
+	<li><i>Output_Size</i> is the size of the output buffer used to keep sent 
+	data before the socket becomes available to write. It must be large enough 
+	to contain single SMTP request line including trailing CR and LF. This does 
+	not limit the mail message and attachment which may have lines of any length 
+	or none. The standard limits the request length to about one kilobyte, which 
+	should be enough for <i>Output_Size</i>;</li>
+	<li><i>Reply_Length</i> is the maximum length of a reply which is also 
+	limited by about one kilobyte.</li>
+</ul>
+<p>
+The client once connected starts posting mails queued by
+<a href="#GNAT.Sockets.SMTP.Client.Send">Send</a>. Once there is no more mails 
+to send it disconnects from the server. Therefore a typical procedure is:</p>
+<ol>
+	<li>Create an <a href="#GNAT.Sockets.SMTP.Client.SMTP_Client">SMTP_Client</a>;</li>
+	<li>Call <a href="#GNAT.Sockets.SMTP.Client.Send">Send</a> to queue mails to 
+	send;</li>
+	<li>Call <a href="#GNAT.Sockets.Server.Connect">Connect</a> to initiate exchange.</li>
+</ol>
+<p>The process of connection and sending mails is asynchronous to the caller. Once completed 
+notification callbacks are called (<a href="#GNAT.Sockets.SMTP.Client.Send_Abandoned">Send_Abandoned</a>,
+<a href="#GNAT.Sockets.SMTP.Client.Send_Error">Send_Error</a>,
+<a href="#GNAT.Sockets.SMTP.Client.Send_Success">Send_Success</a>) and the client object is collected if allowed 
+(see <a href="#memory-management-of-connection-objects">management of connection 
+objects</a>). The following minimal example illustrates sending of a plain E-mail 
+asynchronously:</p>
+<TABLE border="1" cellpadding="15" cellspacing="0">
+  <TR>
+<TD bgcolor="#C0D8D6"><tt>&nbsp;&nbsp; Factory : <font color="#0000FF">aliased</font> 
+Connections_Factory;<br>
+&nbsp;&nbsp; Server&nbsp; : <font color="#0000FF">aliased</font> 
+Connections_Server (Factory'Access, <font color="#800000">0</font>);<br>
+&nbsp;&nbsp; Client&nbsp; : Connection_Ptr := <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#0000FF">new</font> SMTP_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+(&nbsp; Listener&nbsp;&nbsp;&nbsp;&nbsp; =&gt; Server'Unchecked_Access,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Reply_Length =&gt; <font color="#800000">1024</font>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Input_Size&nbsp;&nbsp; =&gt; <font color="#800000">80</font>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Output_Size&nbsp; =&gt; <font color="#800000">1024</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+);<br>
+<font color="#0000FF">begin</font><br>
+&nbsp;&nbsp; Set_Credentials (SMTP_Client (Client.all), &quot;<font color="#FF0000">user</font>&quot;, 
+&quot;<font color="#FF0000">password</font>&quot;);<br>
+&nbsp;&nbsp; Send<br>
+&nbsp;&nbsp; (&nbsp; SMTP_Client (Client.<font color="#0000FF">all</font>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; From&nbsp;&nbsp;&nbsp;&nbsp; =&gt; &quot;<font color="#FF0000">&lt;</font><font color="#FF0000">test@localhost</font><font color="#FF0000">&gt;</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Subject&nbsp; =&gt; &quot;<font color="#FF0000">Sample</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+=&gt; &quot;<font color="#FF0000">&lt;</font><font color="#FF0000">smpt4dev@localhost</font><font color="#FF0000">&gt;</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Contents =&gt; &quot;<font color="#FF0000">Hello 
+all</font>&quot;<br>
+&nbsp;&nbsp; )&nbsp; );<br>
+&nbsp;&nbsp; Connect (Server, Client, &quot;<font color="#FF0000">127.0.0.1</font>&quot;, 
+SMTP_Port);</tt></TD>
+  </TR>
+</TABLE>
+<p>
+In this example one must ensure that the object Server is not prematurely 
+destroyed before a connection is established and the mail is sent. Error handing 
+is not shown as well. There are two methods to deal with errors:</p>
+<ul>
+	<li>At the <a href="#GNAT.Sockets.SMTP.Client.SMTP_Client">SMTP_Client</a> 
+	object level by overriding corresponding notification callbacks
+	<a href="#GNAT.Sockets.SMTP.Client.Send_Abandoned">Send_Abandoned</a>,
+	<a href="#GNAT.Sockets.SMTP.Client.Send_Error">Send_Error</a>,
+	<a href="#GNAT.Sockets.SMTP.Client.Send_Success">Send_Success</a>;</li>
+	<li>To keep references to the mails and query the status of with
+	<a href="#GNAT.Sockets.SMTP.Client.Get_Status">Get_Status</a>.</li>
+</ul>
+<p>For sending mail synchronously with waiting for completion see the package
+<a href="#GNAT.Sockets.SMTP.Client.Synchronous">GNAT.Sockets.SMTP.Client.Synchronous</a>.</p>
+<p>
+<u><b><a name="secure-SMTP"></a>Secure connections</b></u>. The client support 
+secure SSL/TLS connections. In order to be able to use such a connection the 
+client must work with a <a href="#GNAT.Sockets.Server.Secure">secure connections 
+server</a> and a TLS factory, e.g.
+<a href="#GNAT.Sockets.Server.Secure.X509.X509_Authentication_Factory">
+X509_Authentication_Factory</a>. There are two methods how secure SMTP 
+connection is established:</p>
+<ul>
+	<li><i>Opportunistic</i> TLS. The client starts without TLS. When the server 
+	offers to go to TLS the client confirms that (by sending STARTTLS request) 
+	and both continue using a secure TLS layer. This is the default behavior of
+<a href="#GNAT.Sockets.SMTP.Client.SMTP_Client">SMTP_Client</a>. The procedure
+	<a href="#GNAT.Sockets.SMTP.Client.Set_TLS">Set_TLS</a> with the parameter
+	<b>Enable</b> set to <i><font color="#800000">false</font></i> can be used 
+	to force the client to continue without TLS;</li>
+	<li><i>Forced</i> TLS, that is when the connection creates a secure TLS 
+	layer right after the client gets connected. This is similar to how secure 
+	HTTP connections work. In order to use this method the primitive operation
+	<a href="#GNAT.Sockets.Server.Is_Opportunistic">Is_Opportunistic</a> must be 
+	overridden to return <font color="#800000"><i>false</i></font>.</li>
+</ul>
+<p>The opportunistic TLS has the advantage that it can work with both servers 
+supporting and not supporting TLS.</p>
+<p>
+The following primitive operations are additionally defined on
+<a href="#GNAT.Sockets.SMTP.Client.SMTP_Client">SMTP_Client</a>:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Completed"></a>
+procedure</font> Completed (<b>Client</b> : <font color="#0000FF">in out</font> 
+SMTP_Client);</tt></p>
+</blockquote>
+<p>
+This procedure is called when all mails are sent. An implementation may queue 
+further mails to send. If it does not the client disconnects from the server. 
+The default implementation does nothing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Get_Accepted">
+</a>function</font> Get_Accepted<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+SMTP_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> SMTP_AUTH_Mechanism;</tt></p>
+</blockquote>
+<p>
+This function returns the list of authentication methods the client is allowed 
+to use. The method used is one with highest value among ones accepted and 
+supported by the server. The list of accepted methods is set by calling
+<a href="#GNAT.Sockets.SMTP.Client.Set_Credentials">Set_Credentials</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Authentication<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> : 
+SMTP_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> SMTP_AUTH_Mechanism;</tt></p>
+</blockquote>
+<p>
+This function returns authentication method used by the client when called after 
+the connection to the server was established.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Get_Enhanced">
+</a>function</font> Get_Enhanced (<b>Client</b> : SMTP_Client)
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+This function returns <font color="#800000"><i>true</i></font> if the client 
+attempts enhanced SMTP regardless the server greeting. See
+<a href="#GNAT.Sockets.SMTP.Client.Set_Enhanced">Set_Enhanced</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Get_Extension">
+</a>function</font> Get_Extension<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp; 
+: SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Extension</b> 
+: SMTP_Extension<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+When the client is connected to the server the returned value indicates if the 
+server announced the corresponding SMTP enhancement support in the greeting.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Mail_Size (<b>Client</b> : 
+SMTP_Client) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+This function returns the maximum mail size allowed by the server when called 
+after&nbsp; the connection to the server was established.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Password (<b>Client</b> : 
+SMTP_Client) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns the password set by
+<a href="#GNAT.Sockets.SMTP.Client.Set_Credentials">Set_Credentials</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_TLS (<b>Client</b> : 
+SMTP_Client) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>
+This function returns <font color="#800000"><i>true</i></font> if the client 
+will use secure TLS layer when offered by the server. See
+<a href="#GNAT.Sockets.SMTP.Client.Set_TLS">Set_TLS</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_User (<b>Client</b> : 
+SMTP_Client) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>
+This function returns the user name set by
+<a href="#GNAT.Sockets.SMTP.Client.Set_Credentials">Set_Credentials</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Send"></a>
+procedure</font> Send<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message </b>: Mail<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> Send<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Messages </b>: Mail_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+These procedures queue a message or messages to send.&nbsp; The operation is 
+completed with a call to <a href="#GNAT.Sockets.SMTP.Client.Send_Abandoned">
+Send_Abandoned</a>, <a href="#GNAT.Sockets.SMTP.Client.Send_Error">Send_Error</a>,
+<a href="#GNAT.Sockets.SMTP.Client.Send_Success">Send_Success</a> with the mail 
+in it. Usually the client is not yet connected when
+<a href="#GNAT.Sockets.SMTP.Client.Send">Send</a> is called.
+<a href="#GNAT.Sockets.SMTP.Client.Send">Send</a>can be called multiple times in 
+order to send several mails. Use_Error is propagated when a message is invalid.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Send_Abandoned">
+</a>procedure</font> Send_Abandoned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Messages </b>: Mail_Array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure is called to notify the client that some mails were abandoned, 
+e.g. because the connection was dropped. The default implementation traces 
+abandoned mails.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Send_Error"></a>
+procedure</font> Send_Error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
+: Error_Code;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Context</b> : SMTP_Command;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Reply</b>&nbsp;&nbsp; : String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> Send_Error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
+: Error_Code;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Context</b> : SMTP_Command;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Reply</b>&nbsp;&nbsp; : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : Mail<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+These procedures are called when the server responds with an error code 
+indicating an unrecoverable error. <b>Code</b> is the responded code. The 
+parameter <b>Context</b> specifies the failed command. <b>Reply</b> is the text 
+provided by the server in its response. When <b>Message</b> is not given no 
+attempt is made to recover. The connection is dropped. When <b>Message</b> is 
+passed the error is limited to this message. The client will attempt to send 
+other messages in the queue. The default implementation traces the error.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Send_Success">
+</a>procedure</font> Send_Success<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b> : Mail<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure is called <b>Message</b> was accepted by the server. The default 
+implementation does tracing.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Set_Credentials">
+</a>procedure</font> Set_Credentials<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>User</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Password</b> : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Accepted</b> : SMTP_AUTH_Mechanism :=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+SMTP_AUTH_Mechanism'Last<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure is called to set the user credentials (name and password) and the 
+list authentication methods allowed to use. By default all methods are allowed 
+and the one with the highest value offered by the server is used. When the 
+server does not offer desired method the client tries to anonymous access. This 
+also happens when the server does not support SMTP enhancements (see
+<a href="#GNAT.Sockets.SMTP.Client.Set_Enhanced">Set_Enhanced</a>).</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Set_Enhanced">
+</a>procedure</font> Set_Enhanced<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enhanced</b> : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+Normally the client uses enhanced mode when the server greets it with a line 
+containing the word ESMTP, which by convention indicates that the server 
+supports enhanced SMPT. When the server does not advertise ESMTP but nonetheless 
+it is known to support it this procedure can be called with the parameter <b>
+Enhanced</b> set to <font color="#800000"><i>true</i></font> in order to use 
+enhanced SMTP anyway. This procedure has the effect only when the client is not 
+yet connected to the server.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.Client.Set_TLS"></a>
+procedure</font> Set_TLS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+<font color="#0000FF">in out</font> SMTP_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Enable</b> : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>
+This procedure can be used to prevent the client to use secure TLS layer when 
+offered by the server. For this <b>Enable</b> must be set to <i>
+<font color="#800000">false</font></i>. See the description of
+<a href="#secure-SMTP">secure SMTP</a> connections. This procedure has the 
+effect only when the client is not yet connected to the server.</p>
+
+<h4><a name="16.16.4"></a>16.16.4. SMTP synchronous client implementation</h4>
+
+<p><a name="GNAT.Sockets.SMTP.Client.Synchronous"></a>The package
+<a href="#GNAT.Sockets.SMTP.Client.Synchronous">GNAT.Sockets.SMTP.Client.Synchronous</a> 
+provides a simplified way to send E-mail:</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.SMTP.Client.Synchronous.Send"></a>procedure</font> Send<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Server</b>&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> Connections_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Host</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b>&nbsp; : Mail;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>User</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Password</b> : String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Accepted</b> : SMTP_AUTH_Mechanism :=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+SMTP_AUTH_Mechanism'Last;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Port</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Port_Type := SMTP_Port;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Timeout</b>&nbsp; : Duration&nbsp; := Duration'Last<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure sends mail synchronously. The procedure awaits for connection 
+to the server and completion of sending. The parameter <b>Timeout</b> specifies 
+the operation timeout.</p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>Timeout is expired</TD>
+  </TR>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Mail sending error</TD>
+  </TR>
+  <TR>
+    <TD>  Host_Error</TD>
+    <TD>Invalid host name</TD>
+  </TR>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>Invalid mail</TD>
+  </TR>
+  </TABLE>
+
+<p>The following example illustrates usage:</p>
+<TABLE border="1" cellpadding="15" cellspacing="0">
+  <TR>
+<TD bgcolor="#C0D8D6"><tt>&nbsp;&nbsp; Factory : <font color="#0000FF">aliased</font> 
+Connections_Factory;<br>
+&nbsp;&nbsp; Server&nbsp; : <font color="#0000FF">aliased</font> 
+Connections_Server (Factory'Access, <font color="#800000">0</font>);<br>
+<font color="#0000FF">begin</font><br>
+&nbsp;&nbsp;&nbsp; Send<br>
+&nbsp;&nbsp;&nbsp; (&nbsp; Server&nbsp; =&gt; Server,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Host&nbsp;&nbsp;&nbsp; =&gt; &quot;<font color="#FF0000">127.0.0.1</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message =&gt; Create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+(&nbsp; From&nbsp;&nbsp;&nbsp;&nbsp; =&gt; &quot;<font color="#FF0000">&lt;test@localhost&gt;</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Subject&nbsp; =&gt; &quot;Hi!&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+To&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; &quot;<font color="#FF0000">&lt;smpt4dev@localhost&gt;</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Contents =&gt; &quot;<font color="#FF0000">Hello all</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; User&nbsp;&nbsp;&nbsp;&nbsp; =&gt; &quot;<font color="#FF0000">User</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Password =&gt; &quot;<font color="#FF0000">Password</font>&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Timeout&nbsp; =&gt; <font color="#800000">10.0</font><br>
+&nbsp;&nbsp; );</tt></TD>
+  </TR>
+</TABLE>
+
 <hr>
 <p align="right">
 <a name="17"></a><a href="#16.15"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#20"><IMG src="index.gif"
@@ -35648,6 +36737,31 @@ Block_Streams</a></TD>
     <TD colspan="5" style="border-left-style: solid; border-left-width: 1px; border-bottom-style:solid; border-bottom-width:1px; border-top-style:solid; border-top-width:1px">
 	<a href="#GNAT.Sockets.MQTT.Streams">Streams</a></TD>
     <TD>Stream interface to MQTT messages</TD>
+  </tr>
+  <tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px">&nbsp;</TD>
+    <TD colspan="13" style="border-style:solid; border-width:1px; ">
+	<a href="#SMTP">SMTP</a></TD>
+    <TD style="border-left-style: solid; border-left-width: 1px">Base package of 
+	SMTP</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:solid; border-bottom-width:1px">&nbsp;</TD>
+    <TD colspan="8" style="border-left-style:none; border-left-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px; border-bottom-style:solid; border-bottom-width:1px; border-top-style:solid; border-top-width:1px">
+	<a href="#GNAT.Sockets.SMTP.Client.SMTP_Client">Client</a></TD>
+    <TD>An implementation of SMTP client</TD>
+  </tr>
+  <tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8" style="border-style:none; border-width:medium; " bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium; border-top-style:none; border-top-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#GNAT.Sockets.SMTP.Client.Synchronous">Synchronous</a></TD>
+    <TD>Synchronous mail sending</TD>
   </tr>
   <tr>
     <TD colspan="16">GNU.DB.CLI.API</TD>
@@ -36856,6 +37970,12 @@ Block_Streams</a></TD>
     <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
   </tr>
   <tr>
+    <TD bgcolor="#FFFF99">test_smtp_client</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">SMTP client test</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
+  <tr>
     <TD bgcolor="#FFFF99">test_sqlite_benchmark</TD>
     <TD align="center" bgcolor="#FFFF99">yes</TD>
     <TD bgcolor="#FFFF99">SQLite vs. persistent B-tree benchmark test</TD>
@@ -37095,28 +38215,28 @@ parts of the Simple Components will fail. These faults can be safely ignored
 during the installation.</p>
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <TR>
-    <TD valign="bottom" bgcolor="#008080" rowspan="13"><FONT color="#FFFFFF"><B>Project files </B>
+    <TD valign="bottom" bgcolor="#008080" rowspan="14"><FONT color="#FFFFFF"><B>Project files </B>
 	*.gpr</FONT></TD>
-    <TD valign="top" bgcolor="#008080" colspan="14" style="border-right-style: none; border-right-width: medium; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Simple Components,
+    <TD valign="top" bgcolor="#008080" colspan="15" style="border-right-style: solid; border-right-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-top-style:solid; border-top-width:1px"><b><font color="#FFFFFF">Simple Components,
 	Strings Edit,
 	Tables</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="13" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Multiple 
+    <TD valign="top" bgcolor="#008080" colspan="14" style="border-left-style: solid; border-left-width: 1px; border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Multiple 
 	TCP/IP connections server</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="12" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">HTTP server 
+    <TD valign="top" bgcolor="#008080" colspan="13" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">HTTP server 
 	and client</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="11">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-right-style:solid; border-right-width:1px" colspan="12">
 	<b><font color="#FFFFFF">ELV/e-Q3 MAX! cube client</font></b></TD>
   </TR>
   <TR>
@@ -37124,7 +38244,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="10">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-right-style:solid; border-right-width:1px" colspan="11">
 	<b><font color="#FFFFFF">MODBUS client</font></b></TD>
   </TR>
   <TR>
@@ -37133,7 +38253,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="9" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Secure 
+    <TD valign="top" bgcolor="#008080" colspan="10" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">Secure 
 	SSL/TSL connections server</font></b></TD>
   </TR>
   <TR>
@@ -37143,7 +38263,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="8" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3</font></b></TD>
+    <TD valign="top" bgcolor="#008080" colspan="9" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
@@ -37153,7 +38273,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="7" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">ODBC 
+    <TD valign="top" bgcolor="#008080" colspan="8" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">ODBC 
 	32/64</font></b></TD>
   </TR>
   <TR>
@@ -37165,7 +38285,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="6" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3 HTTP 
+    <TD valign="top" bgcolor="#008080" colspan="7" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">SQLite3 HTTP 
 	browser</font></b></TD>
   </TR>
   <TR>
@@ -37178,7 +38298,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="5" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">GNUTLS</font></b></TD>
+    <TD valign="top" bgcolor="#008080" colspan="6" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><b><font color="#FFFFFF">GNUTLS</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
@@ -37190,8 +38310,8 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="4" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">
+    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="5" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px">
 	<font color="#FFFFFF"><b>MQTT</b></font></TD>
   </TR>
   <TR>
@@ -37206,7 +38326,23 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="3" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium"><font color="#FFFFFF"><b>GNADE </b>
+    <TD valign="top" bgcolor="#008080" colspan="4" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">
+	<b><font color="#FFFFFF">SMTP</font></b></TD>
+  </TR>
+  <TR>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="3" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px"><font color="#FFFFFF"><b>GNADE </b>
 	(depreciated)</font></TD>
   </TR>
   <TR>
@@ -37222,7 +38358,8 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="2" style="border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px"><b><font color="#FFFFFF">APQ</font></b><font color="#FFFFFF">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" colspan="2" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px"><b><font color="#FFFFFF">APQ</font></b><font color="#FFFFFF">
 	(depreciated)<B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Usage in 
 	a custom 
 	project</B></font></TD>
@@ -37242,6 +38379,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components.gpr&quot;;</tt></TD>
@@ -37249,6 +38387,7 @@ during the installation.</p>
   <TR>
     <TD valign="top">components-apq</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -37280,6 +38419,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server.gpr&quot;;</tt></TD>
@@ -37289,6 +38429,7 @@ during the installation.</p>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -37318,6 +38459,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server-http_server-sqlite_browser.gpr&quot;;</tt></TD>
@@ -37328,6 +38470,7 @@ during the installation.</p>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#FFFFFF">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
@@ -37356,6 +38499,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server-modbus_client.gpr&quot;;</tt></TD>
@@ -37373,6 +38517,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
@@ -37394,9 +38539,30 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
 	<font color="#0000FF">with</font> 
 	&quot;components-connections_server-secure.gpr&quot;;</tt></TD>
+  </tr>
+  <tr>
+    <TD valign="top">components-connections_server-smtp</TD>
+    <TD align="center">+</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center">+</TD>
+    <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD valign="top"><tt>
+	<font color="#0000FF">with</font> 
+	&quot;components-connections_server-smtp.gpr&quot;</tt></TD>
   </tr>
   <tr>
     <TD valign="top">components-gnade</TD>
@@ -37411,6 +38577,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">&nbsp;</TD>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
@@ -37430,6 +38597,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center">+</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">&nbsp;</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
@@ -37449,6 +38617,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">&nbsp;</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top"><tt>
@@ -37468,6 +38637,7 @@ during the installation.</p>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
+    <TD align="center" bgcolor="#C0C0C0">&nbsp;</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD align="center" bgcolor="#C0C0C0">-</TD>
     <TD valign="top" style="border-bottom-style: solid; border-bottom-width: 1px"><tt>
@@ -37475,7 +38645,40 @@ during the installation.</p>
 	&quot;components-sqlite.gpr&quot;;</tt></TD>
   </tr>
   </TABLE>
-<h3><a name="18.1"></a>18.1. Debian and Fedora packages</h3>
+<p><u><b><a name="GNAT-project-scenario-variables"></a>GNAT project scenario 
+variables</b></u>.</p>
+<p><i>Atomic_Access</i> 
+controls the method to use:</p>
+<ul>
+	<li><i>Pragma-atomic</i> (subdirectory <i>atomic-access/ada</i>). This 
+	scenario is used when the compiler supports pragma Atomic for 64-bit scalar 
+	variables. This is the choice for GNAT hosted on a 64-bit OS. Note however 
+	that GNAT hosted on a 64-bit OS may be targeted for 32-bit, which is the 
+	case for Windows 64-bit.</li>
+	<li><i>GCC-built-ins</i> (subdirectory <i>atomic-access/gcc</i>). This 
+	scenario is used when the compiler does not support pragma Atomic for 64-bit 
+	scalar variables. This is the choice for GNAT targeted for a 32-bit OS. Note 
+	that though x86 supports atomic access to 64-bit words, GNAT still does not 
+	support pragma Atomic for 64-bit scalar variables;</li>
+	<li><i>GCC-long-offsets</i> (subdirectory <i>atomic-access/gcc-long-offsets</i>). 
+	This scenario is similar to <i>GCC-built-ins</i> when additionally <i>
+	Stream_Element_Offset</i> is 64-bit. This is the case for all newer versions 
+	of GNAT for 32-bit targets.</li>
+</ul>
+<p><i>Tasking</i> controls reference-counted objects access from multiple tasks:<ul>
+	<li><i>Multiple</i> allows accessing counted objects concurrently. This is 
+	the default implementation;</li>
+	<li><i>Single</i> does not allow it. Files from <i>single-task </i>
+	subdirectory replace corresponding files in the main directory.</li>
+	</ul>
+	<p><i>Traced_objects</i> controls if tracing referenced objects is active:</p>
+	<ul>
+		<li><i>Off</i> disables tracing. This is the default choice;</li>
+		<li><i>On</i> enables extensive tracing to the standard output. Files 
+		from gnat-debug subdirectory replace corresponding files in the main 
+		directory.</li>
+		</ul>
+		<h3><a name="18.1"></a>18.1. Debian and Fedora packages</h3>
 <p>Under Fedora, Debian Linux and their derivates you can use packages for
 <a href="#fedora_packages">Fedora</a> and
 	<a href="#debian_packages">Debian</a> and the corresponding architectures.
@@ -37503,9 +38706,41 @@ these packages add the following line to <i>/etc/apt/sources.list</i>:</p>
 The following versions were tested with the compilers:</i>
 <ul>
   <li>
+GNAT GPL 2016 (20160515-49)</li>
+	<li><i>GNAT 6</i></li>
+  </ul>
+<P><i>and the GtkAda versions:</i></p>
+<ul>
+	<li><i>GtkAda 3.14.2</i></li>
+</ul>
+<P>
+Changes (25 July 2016) to the version 4.14:<ul>
+	<li>Compatibility with GtkAda 3.14</li>
+	</ul>
+<P>
+<i>
+The following versions were tested with the compilers:</i>
+<ul>
+  <li>
 <i>GNAT GPL 2015 (20150428-49)</i></li>
 	<li><i>GNAT 5.3</i></li>
+	<li><i>GNAT 6</i></li>
   </ul>
+<P>
+Changes (21 June 2016) to the version 4.13:<ul>
+	<li>SMTP client implementation is now provided by the package 
+	GNAT.Sockets.SMTP.Client;</li>
+	<li>Secure connection server support for opportunistic secures connection was 
+	added;</li>
+	<li>Operations Create_Transport, Elevated, Is_Elevated, Is_Opportunistic and Is_TLS_Capable were 
+	added to the package GNAT.Sockets.Server.</li>
+	</ul>
+<P>
+Changes (30 May 2016) to the version 4.12:<ul>
+	<li>MQTT server bug fix causing externally published messages not pushed to 
+	the subscribers;</li>
+	<li>MQTT publish: the length count removed from payload data.</li>
+	</ul>
 <P>
 Changes (10 April 2016) to the version 4.11:<ul>
 	<li>MQTT protocol implementation added;</li>
@@ -38185,11 +39420,11 @@ Sample</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#12.3">12.3. The base package</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#12.4">12.4. Sources</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.1">12.4.1. Source cursors I/O</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.2">12.4.2. Procedures to skip blanks</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.2">12.4.2. Procedures to skip blanks</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.3">12.4.3. Procedure to skip text</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.4">12.4.4. Matching keywords</a>
 </td>
 <td valign="top">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.3">12.4.3. Procedure to skip text</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.4">12.4.4. Matching keywords</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.5">12.4.5. Parsing XPM files</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.6">12.4.6. String sources</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.7">12.4.7. Multi-line sources</a><br>
@@ -38295,7 +39530,16 @@ selector</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.1">16.15.1. MQTT pier</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.2">16.15.2. MQTT message 
 stream I/O</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.3">16.15.3. MQTT server (broker)</a><hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.3">16.15.3. MQTT server (broker)</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.16">16.16. SMTP</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.1">16.16.1. Mail address 
+lists</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.2">16.16.2. Mail objects</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.3">16.16.3. SMTP client 
+implementation</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.4">16.16.4. SMTP 
+synchronous client 
+implementation</a><hr>
 <b><big><big>17</big></big></b>&nbsp;<a href="#17"><big>Packages</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.1">17.1. Source packages</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.2">17.2. Tests and examples</a><br>

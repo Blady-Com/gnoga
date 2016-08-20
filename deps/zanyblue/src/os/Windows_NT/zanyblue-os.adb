@@ -35,6 +35,7 @@
 
 with GNAT.OS_Lib;
 with Ada.Directories;
+with Ada.Characters.Conversions;
 with Interfaces.C;
 with ZanyBlue.Text;
 with ZanyBlue.Wide_Directories;
@@ -48,10 +49,15 @@ package body ZanyBlue.OS is
    use type Interfaces.C.unsigned_long;
 
    subtype LCID is Interfaces.C.unsigned_long;
+   subtype CPID is Interfaces.C.unsigned_long;
 
    function GetUserDefaultLCID return LCID;
    pragma Import (Stdcall, GetUserDefaultLCID, "GetUserDefaultLCID");
    --  Return the Windows LCID value for the current user.
+
+   function GetACP return CPID;
+   pragma Import (Stdcall, GetACP, "GetACP");
+   -- Return current code page id
 
    type String_Access is access constant Wide_String;
    type LCID_Map_Type is
@@ -674,6 +680,19 @@ package body ZanyBlue.OS is
    --  LCID value (simple binary search).  If not found, return the empty
    --  string.
 
+   function Code_Page (CP : CPID) return Wide_String;
+   -- Convert a code page id to a string code page name, e.g. 1252 => "CP1252"
+
+   ---------------
+   -- Code_Page --
+   ---------------
+
+   function Code_Page (CP : CPID) return Wide_String is
+      CP_W : constant Wide_String := CPID'Wide_Image (CP);
+   begin
+      return "CP" & CP_W (CP_W'First + 1 .. CP_W'Last);
+   end Code_Page;
+
    ---------------------
    -- Integrity_Check --
    ---------------------
@@ -731,7 +750,7 @@ package body ZanyBlue.OS is
 
    function OS_Locale_Name return Wide_String is
    begin
-      return LCID_To_Locale (GetUserDefaultLCID);
+      return LCID_To_Locale (GetUserDefaultLCID) & "." & Code_Page (GetACP);
    end OS_Locale_Name;
 
    -------------
@@ -742,6 +761,17 @@ package body ZanyBlue.OS is
    begin
       return Windows;
    end OS_Name;
+
+   -----------------
+   -- OS_New_Line --
+   -----------------
+
+   function OS_New_Line return Wide_String is
+   begin
+      return ""
+         & Ada.Characters.Conversions.To_Wide_Character (ASCII.CR)
+         & Ada.Characters.Conversions.To_Wide_Character (ASCII.LF);
+   end OS_New_Line;
 
    --------------------
    -- UTF8_File_Form --

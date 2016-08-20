@@ -40,7 +40,7 @@
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=x_slocale
+APPNAME=zbx_slocale
 APPLICATION=$(TOP)/bin/$(APPNAME)
 FACILITY=Day
 PACKAGE=SLocale_Messages

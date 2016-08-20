@@ -33,25 +33,9 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Calendar;
-with ZanyBlue.Text.Catalogs;
-with ZanyBlue.Text.Formatting;
-
 package ZanyBlue.Utils is
 
-   use Ada.Calendar;
-   use ZanyBlue.Text.Catalogs;
-   use ZanyBlue.Text.Formatting;
-
    type Source_Naming_Style_Type is (GNAT_Naming_Style);
-
-   function Banner (Facility_Name      : Wide_String;
-                    Banner_Message     : Wide_String := "00001";
-                    Copyright_Message  : Wide_String := "00002";
-                    Catalog            : Catalog_Type := Standard_Catalog)
-      return Time;
-   --  Print a stdandard application banner on startup returning the start
-   --  time.
 
    function Body_File_Name (Package_Name : Wide_String;
                             Style        : Source_Naming_Style_Type)
@@ -62,11 +46,5 @@ package ZanyBlue.Utils is
                             Style        : Source_Naming_Style_Type)
       return Wide_String;
    --  Return the file name the compiler expects for a spec file.
-
-   procedure Trailer (Facility_Name     : Wide_String;
-                      Start_Time        : Time;
-                      Trailer_Message   : Wide_String := "00003";
-                      Catalog           : Catalog_Type := Standard_Catalog);
-   --  Print the standard "goodbye" message prior to exiting an application.
 
 end ZanyBlue.Utils;

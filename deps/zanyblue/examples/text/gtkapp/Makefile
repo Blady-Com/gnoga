@@ -41,7 +41,7 @@
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=x_gjenkins
+APPNAME=zbx_gjenkins
 APPLICATION=$(TOP)/bin/$(APPNAME)
 GENERATED=appmsg.ads appmsg.adb jenkins-messages.ads jenkins-messages.adb
 

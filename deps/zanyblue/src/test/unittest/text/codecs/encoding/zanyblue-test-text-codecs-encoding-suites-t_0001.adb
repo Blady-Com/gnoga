@@ -40,5 +40,5 @@ procedure T_0001 (T : in out Test_Case'Class) is
    Codecs : constant Codecs_Type := Make_Codecs ("NO-SUCH-CODECS");
 
 begin
-   Assert (Name (Codecs) = "UTF-8", "Unknown codecs should map to UTF-8");
+   Assert (Name (Codecs) = "UTF8", "Unknown codecs should map to UTF-8");
 end T_0001;

@@ -35,9 +35,9 @@
 
 with Ada.Calendar;
 with Ada.Strings.Wide_Unbounded;
-with ZanyBlue.Utils;
 with ZanyBlue.Wide_Command_Line;
 with ZanyBlue.Text.Formatting;
+with ZanyBlue.Text.Version_Status_Arguments;
 with ZBInfo.Dump_Locale;
 with ZBInfo.Dump_Encoding;
 with ZBInfo.List_Encodings;
@@ -46,10 +46,11 @@ with ZBInfo_Messages.ZBInfo_Prints;
 
 procedure ZBInfo.Main is
 
+   use Ada.Calendar;
    use Ada.Strings.Wide_Unbounded;
-   use ZanyBlue.Utils;
    use ZanyBlue.Wide_Command_Line;
    use ZanyBlue.Text.Formatting;
+   use ZanyBlue.Text.Version_Status_Arguments;
    use ZBInfo_Messages.ZBInfo_Exceptions;
    use ZBInfo_Messages.ZBInfo_Prints;
 
@@ -57,11 +58,27 @@ procedure ZBInfo.Main is
 
    Usage_Error : exception;
 
+   function Banner return Time;
    procedure Process_Command_Line (Mode            : out Mode_Type;
                                    Locale_Name     : out Unbounded_Wide_String;
                                    Locale          : out Locale_Type;
                                    Encoding_Name   : out Unbounded_Wide_String;
                                    Reverse_Mapping : out Boolean);
+   procedure Trailer (Start_Time : Time);
+
+   ------------
+   -- Banner --
+   ------------
+
+   function Banner return Time is
+      Start_Time : constant Time := Clock;
+   begin
+      Print_00001 (+ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
+                   +ZanyBlue.Version_Patch, +ZanyBlue.Version_Status,
+                   +ZanyBlue.Revision, +Start_Time);
+      Print_00002 (+ZanyBlue.Copyright_Year);
+      return Start_Time;
+   end Banner;
 
    --------------------------
    -- Process_Command_Line --
@@ -132,7 +149,18 @@ procedure ZBInfo.Main is
       end loop;
    end Process_Command_Line;
 
-   Start_Time      : Ada.Calendar.Time;
+   -------------
+   -- Trailer --
+   -------------
+
+   procedure Trailer (Start_Time : Time) is
+      Now : constant Time := Clock;
+      Elapsed : constant Duration := Now - Start_Time;
+   begin
+      Print_00003 (+Now, +Elapsed);
+   end Trailer;
+
+   Start_Time      : constant Time := Banner;
    Locale_Name     : Unbounded_Wide_String;
    Locale          : Locale_Type;
    Encoding_Name   : Unbounded_Wide_String;
@@ -140,7 +168,6 @@ procedure ZBInfo.Main is
    Mode            : Mode_Type;
 
 begin
-   Start_Time := Banner ("ZBInfo");
    Process_Command_Line (Mode, Locale_Name, Locale,
                          Encoding_Name, Reverse_Mapping);
    case Mode is
@@ -153,5 +180,5 @@ begin
    when Encoding_Info =>
       ZBInfo.Dump_Encoding (To_Wide_String (Encoding_Name), Reverse_Mapping);
    end case;
-   Trailer ("ZBInfo", Start_Time);
+   Trailer (Start_Time);
 end ZBInfo.Main;

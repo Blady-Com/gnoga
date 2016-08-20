@@ -41,7 +41,7 @@
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=x_amoons
+APPNAME=zbx_amoons
 APPLICATION=$(TOP)/bin/$(APPNAME)
 PACKAGE=Messages
 FACILITY=Moons
@@ -49,7 +49,7 @@ STAMPFILE=messages.stamp
 PROPERTIES=$(wildcard Moons*.properties)
 GENERATED=messages.ads messages.adb \
 	$(wildcard messages-*.ads) $(wildcard messages-*.adb) \
-	$(STAMPFILE)
+	$(STAMPFILE) $(wildcard moons.zbmx)
 
 include $(TOP)/src/mkfile/conf.mk
 
@@ -63,7 +63,10 @@ run:	all
 	$(APPLICATION)
 
 run_%:	all
-	$(APPLICATION) $*
+	$(APPLICATION) $(subst :, ,$*)
+
+metrics:
+	$(MAKE) run_en:moons.zbmx
 
 clean::
 	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr

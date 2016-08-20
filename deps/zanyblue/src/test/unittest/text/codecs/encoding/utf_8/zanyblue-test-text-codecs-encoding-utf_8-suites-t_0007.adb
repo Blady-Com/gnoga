@@ -38,5 +38,5 @@ procedure T_0007 (T : in out Test_Case'Class) is
    Codecs : constant Codecs_Type := Make_Codecs ("UTF-8");
 
 begin
-   WAssert (T, Codecs.Name = "UTF-8", "UTF-8 encoding name failed");
+   WAssert (T, Codecs.Name = "UTF8", "UTF-8 encoding name failed");
 end T_0007;

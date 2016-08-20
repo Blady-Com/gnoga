@@ -76,11 +76,12 @@
 --
 
 with Ada.Containers;
-private with ZanyBlue.Text.Codecs;
+with ZanyBlue.Text.Codecs;
 
 package ZanyBlue.Text.Locales is
 
    use Ada.Containers;
+   use ZanyBlue.Text.Codecs;
 
    Maximum_Level : constant := 4;
    --  Maximum depth for a locale: '' 'lang' 'lang-territory', 'lang-script'
@@ -235,6 +236,8 @@ package ZanyBlue.Text.Locales is
    --  codecs.  Invalid encodings are normally mapped to UTF-8.  The
    --  result returned by "Encoding" will be the as supplied name.
 
+   function Codecs (Locale : Locale_Type) return Codecs_Type;
+   --  Return the codecs implementation associated with the argument locale.
    function Era_Name (Locale : Locale_Type;
                       Era    : Era_Type) return Wide_String;
    --  Localized name of the era.
@@ -428,8 +431,6 @@ package ZanyBlue.Text.Locales is
    --  available.
 
 private
-
-   use ZanyBlue.Text.Codecs;
 
    overriding
    function "=" (Left, Right : Locale_Type) return Boolean;

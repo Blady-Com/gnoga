@@ -34,7 +34,8 @@
 #
 
 TOP=../../..
-ZBTESTFLAGS+=-N $(firstword $(ZBTESTNAME) zanyblue) -X summary.xml
+ZBTESTFLAGS+=-N $(firstword $(ZBTESTNAME) zanyblue)
+ZBTESTFLAGS+=-X summary.xml
 
 include $(TOP)/src/test/system/t_system.mk
 

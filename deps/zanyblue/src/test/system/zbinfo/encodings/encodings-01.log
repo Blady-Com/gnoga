@@ -1,4 +1,4 @@
-This is ZBTest, Version .*
+This is ZBInfo, Version .*
 Copyright \(c\) .*, Michael Rohan.  All rights reserved
 
 Encodings supported by the ZanyBlue library:
@@ -24,28 +24,29 @@ Encodings supported by the ZanyBlue library:
     CP28599
     CP28603
     CP28605
+    CP65001
     CP874
     CP932
     CP936
     CP949
     CP950
     GB2312
-    ISO8859-1
-    ISO8859-10
-    ISO8859-11
-    ISO8859-13
-    ISO8859-14
-    ISO8859-15
-    ISO8859-16
-    ISO8859-2
-    ISO8859-3
-    ISO8859-4
-    ISO8859-5
-    ISO8859-6
-    ISO8859-7
-    ISO8859-8
-    ISO8859-9
-    SHIFT_JIS
-    UTF-8
+    ISO88591
+    ISO885910
+    ISO885911
+    ISO885913
+    ISO885914
+    ISO885915
+    ISO885916
+    ISO88592
+    ISO88593
+    ISO88594
+    ISO88595
+    ISO88596
+    ISO88597
+    ISO88598
+    ISO88599
+    SHIFTJIS
+    UTF8
 
 ZBInfo completed on .*

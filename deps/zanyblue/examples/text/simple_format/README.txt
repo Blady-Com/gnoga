@@ -7,7 +7,7 @@ using non-externalized strings, as in this example, defeats this purpose.
 This final message printed is expected to raise an exception.
 
 Following the standard ZB convention, example applications are prefixed
-with "x".
+with "zbx".
 
 This example has no third party dependencies.
 
@@ -15,24 +15,23 @@ Typical build and run sequence
 
 -----------------------------------------------------------------------------
 $ make
-gprbuild -p -aP../../../lib -P xsimple.gpr
-creating auto.cgpr
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 xsimple.adb
-gprbind xsimple.bexch
-gnatbind xsimple.ali
-gcc-4.4 -c b__xsimple.adb
-gcc-4.4 xsimple.o -o xsimple
+gprbuild -p -aP../../../lib -XOS=unix -XTYPE=static -XBUILD=Debug -XV_MAJOR=1 -XV_MINOR=3 -XV_PATCH=0 -XV_STATUS=Beta -aP../../../lib/gnat -aP../../../src -P zbx_simple.gpr
+gcc -c -g -O3 -gnata -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 zbx_simple.adb
+gcc -c -g -O3 -gnata -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 definitions.ads
+gprbind zbx_simple.bexch
+gnatbind zbx_simple.ali
+gcc -c b__zbx_simple.adb
+gcc zbx_simple.o -o zbx_simple
 
 -----------------------------------------------------------------------------
 $ make run
-gprbuild -p -aP../../../lib -P xsimple.gpr
-creating auto.cgpr
-gprbuild: "xsimple" up to date
-../../../bin/xsimple
-This is TEXT_XMPL V1.0.0, ALPHA
+gprbuild -p -aP../../../lib -XOS=unix -XTYPE=static -XBUILD=Debug -XV_MAJOR=1 -XV_MINOR=3 -XV_PATCH=0 -XV_STATUS=Beta -aP../../../lib/gnat -aP../../../src -P zbx_simple.gpr
+gprbuild: "zbx_simple" up to date
+../../../bin/zbx_simple
+This is SIMPLE_FORMAT, Version 1.3.0 - BETA
+X is 32100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0
 Here is an "a value" embedded string
 1964 base 16 in a field of width 10 is |       7ac|
+A NaN: NaN
 Expect a missing argument exception for the following
-
-raised ZANYBLUE.TEXT.NO_SUCH_ARGUMENT_ERROR : 1
-make: *** [run] Error 1
+The exception "ZANYBLUE.TEXT.NO_SUCH_ARGUMENT_ERROR" was raised

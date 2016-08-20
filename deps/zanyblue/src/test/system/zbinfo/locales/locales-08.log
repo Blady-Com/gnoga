@@ -1,15 +1,15 @@
-This is ZBTest, Version .*
+This is ZBInfo, Version .*
 Copyright \(c\) .*, Michael Rohan.  All rights reserved
 
 ZanyBlue data for the locale "fr_FR.ISO8859-1"
 
-    Locale implementation "fr_FR.ISO8859-1"
+    Locale implementation "fr_FR.ISO88591"
 
     Language                  "fr"
     Script                    ""
     Territory                 "FR"
-    Encoding                  "ISO8859-1" (implemented as "ISO8859-1")
-    Name                      "fr_FR.ISO8859-1"
+    Encoding                  "ISO8859-1" (implemented as "ISO88591")
+    Name                      "fr_FR.ISO88591"
     Traits Name               "fr"
     Traits Tag                "FR        "
     Locale Level              1
@@ -17,7 +17,7 @@ ZanyBlue data for the locale "fr_FR.ISO8859-1"
     Layout                    LEFT_TO_RIGHT
     Lower Digits              0123456789abcdef
     Upper Digits              0123456789ABCDEF
-    Hash Value                4279843134
+    Hash Value                1179038647
 
   Date/Time Formats
   -----------------
@@ -124,4 +124,4 @@ ZanyBlue data for the locale "fr_FR.ISO8859-1"
     DIGIT_PATTERN_CHARACTER   #
     DECIMAL_DIGITS_STRING     0123456789
 
-ZBInfo completed on .*
+ZBInfo completed on .*, elapsed time .*

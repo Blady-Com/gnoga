@@ -40,7 +40,7 @@
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=x_filtering
+APPNAME=zbx_filtering
 APPLICATION=$(TOP)/bin/$(APPNAME)
 PACKAGE=Messages
 FACILITY=Xmpl

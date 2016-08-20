@@ -39,4 +39,7 @@
 V_MAJOR=1
 V_MINOR=3
 V_PATCH=0
+#V_STATUS=Alpha
 V_STATUS=Beta
+#V_STATUS=Production
+V_STATUS_C=$(subst Alpha,a,$(subst Beta,b,$(subst Production,p,$(V_STATUS))))

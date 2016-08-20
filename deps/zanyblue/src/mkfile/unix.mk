@@ -46,6 +46,13 @@ PYTHON=
 # Current year
 CURRENT_YEAR=$(shell date +%Y)
 
+# Control testing of the GTK example, if GTK is not available set the test
+# directory to the no-op directory, "nogtk"
+HAVE_GTK=$(firstword $(wildcard /usr/gnat/current/include/gtkada))
+ifeq ($(HAVE_GTK),)
+ZBTESTFLAGS+=-d gtk_testdir nogtk
+endif
+
 define COPY
 cp -p $1 $2
 endef

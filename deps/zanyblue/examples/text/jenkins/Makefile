@@ -42,10 +42,15 @@
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=x_jenkins
+APPNAME=zbx_jenkins
 APPLICATION=$(TOP)/bin/$(APPNAME)
 PACKAGE=Jenkins.Messages
+J_TLD=jenkins
+J_VERSION=jenkins-2.9
+J_URL=https://github.com/jenkinsci/jenkins.git
+J_APPDIR=core/src/main/resources/hudson
 GENERATED=jenkins-messages.ads jenkins-messages.adb
+CLEAN_DIRS+=jenkins
 
 include $(TOP)/src/mkfile/conf.mk
 
@@ -65,5 +70,21 @@ clean::
 	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
 
 messages:	$(GENERATED)
+
+J_PROPERTIES=$(patsubst $(J_TLD)/$(J_APPDIR)/Messages%,mesg/Jenkins%,$(wildcard $(J_TLD)/$(J_APPDIR)/Messages*.properties))
+
+jenkins-sync:	$(J_TLD)
+	$(MAKE) jenkins-properties
+
+jenkins-properties:	$(J_PROPERTIES)
+
+# Not all Jenkins properties are plain ASCII, use native2ascii here to convert
+# rather than simply using cp!
+mesg/Jenkins%:	$(J_TLD)/$(J_APPDIR)/Messages%
+	native2ascii $< $@
+
+$(J_TLD):
+	git clone $(J_URL)
+	cd $(J_TLD); git checkout $(J_VERSION)
 
 include $(TOP)/src/mkfile/rules.mk

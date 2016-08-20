@@ -50,17 +50,27 @@ INCLUDE_FILES=$(patsubst %,$(INCDIR)/%,$(INCLUDE_SRCS))
 GENERATED=$(INCLUDE_FILES)
 APPDIRS=zbmcompile zbinfo zbtest
 APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
+DOCLINKSRST=$(SRCDIR)/doc/source/links.rst
 CLEAN_DEPS=$(patsubst %,%.clean,$(APPDIRS) root doc test)
 CLEAN_FILES+=$(wildcard bin/pylib/*.pyc)
 CLEAN_FILES+=$(wildcard bin/pylib/zb/*.pyc)
 CLEAN_FILES+=$(wildcard gnatcheck.out)
 CLEAN_FILES+=$(wildcard obj/*)
-CLEAN_FILES+=$(wildcard ../lib/b~*)
-CLEAN_FILES+=$(wildcard ../zanyblue-*)
-CLEAN_FILES+=$(wildcard ../doc/*.*)
-CLEAN_FILES+=$(wildcard ../doc/.htaccess)
-CLEAN_DIRS+=$(wildcard ../doc/zanyblue)
+CLEAN_FILES+=$(wildcard $(TOP)/lib/b~*)
+CLEAN_FILES+=$(wildcard $(TOP)/zanyblue-*.tar.gz)
+CLEAN_FILES+=$(wildcard $(TOP)/zanyblue-*.zip)
+CLEAN_FILES+=$(wildcard $(TOP)/doc/*.*)
+CLEAN_FILES+=$(wildcard $(TOP)/doc/.buildinfo)
+CLEAN_DIRS+=$(wildcard $(TOP)/doc/ref)
+CLEAN_DIRS+=$(wildcard $(TOP)/doc/_images)
+CLEAN_DIRS+=$(wildcard $(TOP)/doc/_sources)
+CLEAN_DIRS+=$(wildcard $(TOP)/doc/_static)
+CLEAN_DIRS+=$(wildcard $(TOP)/doc/text)
+CLEAN_DIRS+=$(wildcard $(TOP)/doc/utilities)
+CLEAN_DIRS+=$(wildcard $(TOP)/src/doc/build)
+CLEAN_DIRS+=$(wildcard $(TOP)/src/text/cldr)
 CLEAN_FILES+=$(wildcard $(TOP)/src/admin/inventory.lis)
+CLEAN_FILES+=$(wildcard $(DOCLINKSRST))
 CLEAN_DIRS+=$(STAGEDIR)
 CLEAN_DEPS+=../examples.clean
 
@@ -76,23 +86,28 @@ library:
 
 applications:	$(APPTARGETS)
 
-docs:
-	$(MAKE) -C doc
+docs:	gnatdocs $(DOCLINKSRST)
+	$(MAKE) -C doc html
+	$(MAKE) -C doc latexpdf
+	$(call COPY,doc/build/latex/ZanyBlue.pdf,$(DOCDIR)/ZanyBlue.pdf)
 
-website:
-	$(MAKE) -C doc/website
+$(DOCLINKSRST):
+	echo ".. _download: $(DOWNLOAD_URL)" > $(DOCLINKSRST)
+
+gnatdocs:
+	$(GNATDOC) -P$(SRCDIR)/zblib
 
 changelog:
 	$(SRCDIR)/bin/mkchangelog
 
-distribution: clean inventory all xcheck docs test.clean bundles website ws-bundle
+distribution: clean inventory all xcheck docs test.clean bundles ws-bundle
 
 verify-distribution:
 	rm -rf $(STAGEDIR)
 	mkdir -p $(STAGEDIR)
-	tar -C $(STAGEDIR) -xvf $(DISTRIBUTION)
-	cd $(STAGEDIR); md5sum --check --quiet */MANIFEST.txt
-	cd $(STAGEDIR)/*/src; make clean all xcheck
+	$(TAR) -C $(STAGEDIR) -xvf $(DISTRIBUTION)
+	cd $(STAGEDIR); $(MD5SUM) --check --quiet $(DIST_TLD)/MANIFEST.txt
+	cd $(STAGEDIR)/$(DIST_TLD)/src; $(MAKE) clean all xcheck
 
 %.app:
 	$(MAKE) -C $*

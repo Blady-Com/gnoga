@@ -1,21 +1,21 @@
 .*: ".* up to date.*
 This is JENKINS, Version .*
-Whitespace can no longer be used as the separator. Please Use ',' as the separator instead.
-'This' doesn't match anything, but 'That' does. Perhaps that's what you mean?
-'This' doesn't match anything, although 'That' exists
-'This' doesn't match anything: 'That' exists but not 'Other'
-'This' doesn't match anything
-'This' doesn't match anything: even 'That' doesn't exist
+Whitespace can no longer be used as the separator. Please Use ‘,’ as the separator instead.
+‘This’ doesn’t match anything, but ‘That’ does. Perhaps that’s what you mean?
+‘This’ doesn’t match anything, although ‘That’ exists
+‘This’ doesn’t match anything: ‘That’ exists but not ‘Other’
+‘This’ doesn’t match anything
+‘This’ doesn’t match anything: even ‘That’ doesn’t exist
 Wildcard is not allowed here
-'This' is not a file
-'This' is not a directory
-No such file: 'This'
-No such directory: 'This'
-This plugin doesn't support dynamic loading. Jenkins needs to be restarted for the update to take effect
+‘This’ is not a file
+‘This’ is not a directory
+No such file: ‘This’
+No such directory: ‘This’
+This plugin doesn’t support dynamic loading. Jenkins needs to be restarted for the update to take effect
 This plugin is already installed. Jenkins needs to be restarted for the update to take effect
-'~' is only supported in a Unix shell and nowhere else.
+‘~’ is only supported in a Unix shell and nowhere else.
 Plugin Manager
 Port is not a number
-Port does't range from 10 to 100
+Port doesn’t range from 10 to 100
 About Jenkins
-See the version and license information
+See the version and license information.

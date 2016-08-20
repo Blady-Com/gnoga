@@ -43,14 +43,20 @@ TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
 ZBM_FLAGS=-O -F -i -v
-APPNAME=x_tomcat
+APPNAME=zbx_tomcat
 APPLICATION=$(TOP)/bin/$(APPNAME)
-FACILITIES=ajp authenticator connector core ha ha-session ha-tcp host http11 \
-	http jasper jsse loader manager mbeans membership naming naming-res \
-	realm security servlet servlets session startup transport tribes users \
-	util-buf util-http util-net util util-threads valves webapps zbtomcat
+TC_VERSION=9.0.0.M8
+TC_TLD=apache-tomcat-$(TC_VERSION)-src
+TC_TGZ=apache-tomcat-$(TC_VERSION)-src.tar.gz
+TC_URL=http://mirrors.sonic.net/apache/tomcat/tomcat-9/v$(TC_VERSION)/src/$(TC_TGZ)
+TC_APPDIR=java/org/apache/catalina
+TC_FACILITIES=authenticator connector core manager realm security servlets\
+	startup users util valves
+FACILITIES=$(TC_FACILITIES) zbtomcat
 PACKAGE=Apache.Tomcat.Messages
 GENERATED=apache-tomcat-messages.ads apache-tomcat-messages.adb
+CLEAN_FILES+=$(wildcard $(TC_TGZ))
+CLEAN_DIRS+=$(wildcard $(TC_TLD))
 
 include $(TOP)/src/mkfile/conf.mk
 
@@ -71,5 +77,48 @@ clean::
 	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
 
 messages:	$(GENERATED)
+
+PROPERTIES=$(foreach f,$(TC_FACILITIES),$(patsubst $(TC_TLD)/$(TC_APPDIR)/$f/LocalStrings%,mesg/$f%,$(wildcard $(TC_TLD)/$(TC_APPDIR)/$f/LocalStrings*.properties)))
+
+tomcat-sync: $(TC_TLD) $(PROPERTIES)
+
+mesg/authenticator%:	$(TC_TLD)/$(TC_APPDIR)/authenticator/LocalStrings%
+	cp $< $@
+
+mesg/connector%:	$(TC_TLD)/$(TC_APPDIR)/connector/LocalStrings%
+	cp $< $@
+
+mesg/core%:	$(TC_TLD)/$(TC_APPDIR)/core/LocalStrings%
+	cp $< $@
+
+mesg/manager%:	$(TC_TLD)/$(TC_APPDIR)/manager/LocalStrings%
+	cp $< $@
+
+mesg/realm%:	$(TC_TLD)/$(TC_APPDIR)/realm/LocalStrings%
+	cp $< $@
+
+mesg/security%:	$(TC_TLD)/$(TC_APPDIR)/security/LocalStrings%
+	cp $< $@
+
+mesg/servlets%:	$(TC_TLD)/$(TC_APPDIR)/servlets/LocalStrings%
+	cp $< $@
+
+mesg/startup%:	$(TC_TLD)/$(TC_APPDIR)/startup/LocalStrings%
+	cp $< $@
+
+mesg/users%:	$(TC_TLD)/$(TC_APPDIR)/users/LocalStrings%
+	cp $< $@
+
+mesg/util%:	$(TC_TLD)/$(TC_APPDIR)/util/LocalStrings%
+	cp $< $@
+
+mesg/valves%:	$(TC_TLD)/$(TC_APPDIR)/valves/LocalStrings%
+	cp $< $@
+
+$(TC_TLD):	$(TC_TGZ)
+	tar xzf $(TC_TGZ)
+
+$(TC_TGZ):
+	wget $(TC_URL)
 
 include $(TOP)/src/mkfile/rules.mk

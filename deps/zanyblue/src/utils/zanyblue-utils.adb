@@ -36,14 +36,12 @@
 with Ada.Strings.Wide_Maps;
 with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Text.Arguments;
-with ZanyBlue.Text.Version_Status_Arguments;
 
 package body ZanyBlue.Utils is
 
    use Ada.Strings.Wide_Maps;
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Text.Arguments;
-   use ZanyBlue.Text.Version_Status_Arguments;
 
    Mapping : constant Wide_Character_Mapping := To_Mapping (
                                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ.",
@@ -53,36 +51,6 @@ package body ZanyBlue.Utils is
    function Gnat_Source_Name (Package_Name : Wide_String)
       return Wide_String;
    --  Return the GNAT externally formatted (file name) for a package.
-
-   ------------
-   -- Banner --
-   ------------
-
-   function Banner (Facility_Name      : Wide_String;
-                    Banner_Message     : Wide_String := "00001";
-                    Copyright_Message  : Wide_String := "00002";
-                    Catalog            : Catalog_Type := Standard_Catalog)
-      return Time
-   is
-
-      Arguments  : ZanyBlue.Text.Arguments.Argument_List;
-      Start_Time : Time;
-
-   begin
-      Start_Time := Clock;
-      Append (Arguments, +ZanyBlue.Version_Major);
-      Append (Arguments, +ZanyBlue.Version_Minor);
-      Append (Arguments, +ZanyBlue.Version_Patch);
-      Append (Arguments, +ZanyBlue.Version_Status);
-      Append (Arguments, +ZanyBlue.Revision);
-      Append (Arguments, +Start_Time);
-      Print_Line (Facility_Name, Banner_Message, Arguments,
-                  Catalog => Catalog);
-      Print_Line (Facility_Name, Copyright_Message,
-                  Argument0 => +ZanyBlue.Copyright_Year,
-                  Catalog   => Catalog);
-      return Start_Time;
-   end Banner;
 
    --------------------
    -- Body_File_Name --
@@ -124,25 +92,5 @@ package body ZanyBlue.Utils is
          return Gnat_Source_Name (Package_Name) & ".ads";
       end case;
    end Spec_File_Name;
-
-   -------------
-   -- Trailer --
-   -------------
-
-   procedure Trailer (Facility_Name     : Wide_String;
-                      Start_Time        : Ada.Calendar.Time;
-                      Trailer_Message   : Wide_String := "00003";
-                      Catalog           : Catalog_Type := Standard_Catalog)
-   is
-
-      Now     : constant Time := Clock;
-      Elapsed : constant Duration := Now - Start_Time;
-
-   begin
-      Print_Line (Facility_Name, Trailer_Message,
-                  Argument0 => +Now,
-                  Argument1 => +Elapsed,
-                  Catalog   => Catalog);
-   end Trailer;
 
 end ZanyBlue.Utils;

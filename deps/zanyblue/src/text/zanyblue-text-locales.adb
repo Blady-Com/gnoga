@@ -185,6 +185,15 @@ package body ZanyBlue.Text.Locales is
          and then Left.Territory_Code = Right.Territory_Code;
    end "=";
 
+   ------------
+   -- Codecs --
+   ------------
+
+   function Codecs (Locale : Locale_Type) return Codecs_Type is
+   begin
+      return Locale.Codecs;
+   end Codecs;
+
    --------------------
    -- Current_Locale --
    --------------------

@@ -34,7 +34,7 @@
 #
 
 TOP=../..
-DIRS=	filtering formatting gtkapp load_facility moons moons_accessors \
+DIRS=	econv filtering formatting load_facility moons moons_accessors \
 	jenkins simple_format sourcelocale time tomcat
 ALLTARGS=$(patsubst %,%.all,$(DIRS))
 CLEANTARGS=$(patsubst %,%.clean,$(DIRS))

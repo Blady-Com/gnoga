@@ -46,7 +46,7 @@ package ZanyBlue.Text.Printer is
    type Printer_Type is abstract tagged private;
    type Printer_Access is not null access all Printer_Type'Class;
 
-   procedure Print (Printer     : Printer_Type;
+   procedure Print (Printer     : in out Printer_Type;
                     Destination : Ada.Text_IO.File_Type;
                     Facility    : Wide_String;
                     Key         : Wide_String;
@@ -56,7 +56,7 @@ package ZanyBlue.Text.Printer is
                     With_NL     : Boolean) is
       abstract;
 
-   procedure Print (Printer     : Printer_Type;
+   procedure Print (Printer     : in out Printer_Type;
                     Destination : Ada.Wide_Text_IO.File_Type;
                     Facility    : Wide_String;
                     Key         : Wide_String;
@@ -69,7 +69,7 @@ package ZanyBlue.Text.Printer is
    type Standard_Printer_Type is new Printer_Type with private;
 
    overriding
-   procedure Print (Printer     : Standard_Printer_Type;
+   procedure Print (Printer     : in out Standard_Printer_Type;
                     Destination : Ada.Text_IO.File_Type;
                     Facility    : Wide_String;
                     Key         : Wide_String;
@@ -79,7 +79,7 @@ package ZanyBlue.Text.Printer is
                     With_NL     : Boolean);
 
    overriding
-   procedure Print (Printer     : Standard_Printer_Type;
+   procedure Print (Printer     : in out Standard_Printer_Type;
                     Destination : Ada.Wide_Text_IO.File_Type;
                     Facility    : Wide_String;
                     Key         : Wide_String;
@@ -93,6 +93,7 @@ package ZanyBlue.Text.Printer is
 private
 
    type Printer_Type is abstract tagged null record;
+
    type Standard_Printer_Type is new Printer_Type with null record;
 
 end ZanyBlue.Text.Printer;

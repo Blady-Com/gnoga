@@ -41,7 +41,7 @@
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=x_formatting
+APPNAME=zbx_formatting
 APPLICATION=$(TOP)/bin/$(APPNAME)
 PROPNAME=xformatting
 PACKAGE=XFormatting_Messages

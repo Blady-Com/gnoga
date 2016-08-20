@@ -1,36 +1,24 @@
 .*: ".*" up to date.*
 This is TOMCAT, Version .*
-Error pausing endpoint
 Configuration error:  Must be attached to a Context
+Authorizing connector provided user [mrohan] via Tomcat Realm
 Protocol handler resume failed
-createSession: Too many active sessions
-Cant load data replication sender mapping list
-Cannot invoke host manager servlet through invoker
-Error initializing socket factory
-Negative Length given in write method
-IMPORTANT: Do not modify the generated servlets
-Cannot auto-reload unless our Container is a Context
-Deploy directory or WAR file located on server
-No naming context bound to this thread
-Resources has not yet been started
-An exception occurs when running the PrivilegedExceptionAction block.
-Cannot call invoker servlet with a named dispatcher
-The database connection is null or was found to be closed. Trying to re-open it.
-Error closing application web.xml
-Unable to perform replication request.
-User database has been configured to be read only. Changes cannot be saved
-Bad hexadecimal digit
-Non-Authoritative Information
-Caught exception trying to close socket
-Web Application Manifest
-Semaphore valve has already been started
-Request Parameters Example
+Exception while attempting to add an entry to the access log
 Path ../example.dat does not start with a "/" character
-MBean xmpl already registered!
-Alias name xyz does not identify a key entry
-The JMX connector server could not be created or failed to start for the www.example.com server
-MBean xmpl already registered!
+Exception thrown by attributes event listener
+Deploy directory or WAR file located on server
+FAIL - War file "../example.dat" cannot be uploaded if context is defined in server.xml
 JAAS LoginContext created for username "mrohan"
-Not an ISO 8859-1 character: Ω
-MBean xmpl already registered!
-Caught exception (NullPointerException) executing WorkerThread, terminating thread
+Principal "mrohan" is a valid user class. We will use this as the user Principal.
+An exception occurs when running the PrivilegedExceptionAction block.
+Failed to parse value [mask] as a valid umask.
+JAXP initialization failed
+The requested resource (resource) is not available
+The required Server component failed to start so Tomcat is unable to start.
+alt-dd file ../example.dat not found
+User database has been configured to be read only. Changes cannot be saved
+Null or zero length role name specified. The role will be ignored.
+Web Application Manifest
+The destroy() method was called on component [component] after destroy() had already been called. The second call will be ignored.
+Exception performing insert access entry
+Failed to open access log file [../example.dat]

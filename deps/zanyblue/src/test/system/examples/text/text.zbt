@@ -36,7 +36,7 @@ desc Test the text example applications
 
 run filtering
 run formatting
-run gtkapp
+run $gtk_testdir
 run jenkins
 run load_facility
 run moons

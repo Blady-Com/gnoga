@@ -51,7 +51,8 @@ project zblib is
 
    for Library_Kind    use zbcom.Library_Type;
    for Object_Dir      use "./obj";
-   for Library_Dir     use "../lib/zanyblue";
+   for Library_Dir     use "../lib";
+   for Library_ALI_Dir use "../lib/zanyblue";
    for Library_Name    use zbcom.Name;
    for Library_Version use "lib" & Project'Library_Name & ".so." & zbcom.Version;
 
@@ -69,7 +70,7 @@ project zblib is
    end Linker;
 
    package IDE is
-      for Documentation_Dir use "../doc/zanyblue/ref";
+      for Documentation_Dir use "../doc/ref";
       for VCS_Kind use "Subversion";
    end IDE;
 

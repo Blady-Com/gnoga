@@ -43,4 +43,7 @@
 #    $ pip install -r requirements.txt
 # 
 
-lxml==3.5.0
+airspeed==0.5.4dev-20150515
+PyYAML==3.11
+Sphinx==1.4.4
+sphinxcontrib-programoutput==0.8

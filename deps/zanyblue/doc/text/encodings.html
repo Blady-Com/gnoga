@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Encodings and The Codecs Type &mdash; ZanyBlue 1.3.0b documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="up" title="The Text Package" href="index.html" />
+    <link rel="next" title="Built-in Localizations" href="builtin-cldr.html" />
+    <link rel="prev" title="Locale Type" href="locale-type.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="encodings-and-the-codecs-type">
+<span id="zb-text-encoding"></span><h1>Encodings and The Codecs Type<a class="headerlink" href="#encodings-and-the-codecs-type" title="Permalink to this headline">¶</a></h1>
+<p>The codecs type captures the information related to encoding and decoding
+internal wide Unicode strings to externally useable character sequences,
+i.e., narrow strings.  The current implementation initializes the locale
+based on the encoding defined by the <code class="docutils literal"><span class="pre">ZB_LANG</span></code> or <code class="docutils literal"><span class="pre">LANG</span></code> environment varaible
+encoding definition.  This is normally appended to the locale name separated
+by a period.  Typical examples of <code class="docutils literal"><span class="pre">LANG</span></code> values are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">LANG</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">en_US.UTF-8</span></code></td>
+<td>English, as used in the United States with UTF-8 encoding</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">fr_FR.ISO8859-1</span></code></td>
+<td>French, as used in France with ISO8859-1 encoding,
+Latin-1 encoding for Western European languages</td>
+</tr>
+</tbody>
+</table>
+<p>Internally, the encodings are implementated as either direct, algorithmic,
+implementation, e.g., the <code class="docutils literal"><span class="pre">UTF-8</span></code> encoding is implemented using
+the standard Ada runtime Unicode support packages, or as table driven
+lookups on the encoding translation data published on <a class="reference internal" href="../references.html#unicodemappings" id="id1">[UnicodeMappings]</a>.</p>
+<p>The encodings support included, by default, in the ZanyBlue library are</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Encoding</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ASCII</span></code></td>
+<td>7-bit ASCII characters only</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">BIG5</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">CP950</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP874</span></code></td>
+<td>ANSI/OEM Thai (ISO 8859-11); Thai (Windows)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP932</span></code></td>
+<td>ANSI/OEM Japanese; Japanese (Shift-JIS)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP936</span></code></td>
+<td>ANSI/OEM Simplified Chinese (PRC, Singapore)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP949</span></code></td>
+<td>ANSI/OEM Korean (Unified Hangul Code)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP950</span></code></td>
+<td>ANSI/OEM Traditional Chinese (Taiwan; Hong Kong SAR, PRC)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP1250</span></code></td>
+<td>ANSI Central European; Central European (Windows)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP1251</span></code></td>
+<td>ANSI Cyrillic; Cyrillic (Windows)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP1252</span></code></td>
+<td>ANSI Latin 1; Western European (Windows)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP1253</span></code></td>
+<td>ANSI Greek; Greek (Windows)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP1254</span></code></td>
+<td>ANSI Turkish; Turkish (Windows)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP1255</span></code></td>
+<td>ANSI Hebrew; Hebrew (Windows)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP1256</span></code></td>
+<td>ANSI Arabic; Arabic (Windows)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP1257</span></code></td>
+<td>ANSI Baltic; Baltic (Windows)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP1258</span></code></td>
+<td>ANSI/OEM Vietnamese; Vietnamese (Windows)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP28591</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-1</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP28592</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-2</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP28593</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-3</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP28594</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-4</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP28595</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-5</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP28596</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-6</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP28597</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-7</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP28598</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-8</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP28599</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-9</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP28603</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-13</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">CP28605</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">ISO8859-15</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">CP65001</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">UTF-8</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GB2312</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">CP936</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-1</span></code></td>
+<td>ISO 8859-1 Western European</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ISO8859-2</span></code></td>
+<td>ISO 8859-2 Central European</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-3</span></code></td>
+<td>ISO 8859-3 South European</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ISO8859-4</span></code></td>
+<td>ISO 8859-4 Baltic</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-5</span></code></td>
+<td>ISO 8859-5 Cyrillic</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ISO8859-6</span></code></td>
+<td>ISO 8859-6 Arabic</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-7</span></code></td>
+<td>ISO 8859-7 Greek</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ISO8859-8</span></code></td>
+<td>ISO 8859-8 Hebrew</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-9</span></code></td>
+<td>ISO 8859-9 Turkish</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ISO8859-10</span></code></td>
+<td>ISO 8859-10 Nordic languages</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-11</span></code></td>
+<td>ISO 8859-11 Thai</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ISO8859-13</span></code></td>
+<td>ISO 8859-13 Baltic Rim</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-14</span></code></td>
+<td>ISO 8859-14 Celtic</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ISO8859-15</span></code></td>
+<td>ISO 8859-15 Western European (with Euro sign)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ISO8859-16</span></code></td>
+<td>ISO 8859-16 South-Eastern European</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">SHIFT_JIS</span></code></td>
+<td>Alias for <code class="docutils literal"><span class="pre">CP932</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">UTF-8</span></code></td>
+<td>Unicode 8-bit encoding</td>
+</tr>
+</tbody>
+</table>
+<p>The <code class="docutils literal"><span class="pre">Codecs_Type</span></code> defines two functions to perform encoding and
+decoding on strings:</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nf">Encode</span> <span class="p">(</span><span class="nv">Codecs</span> <span class="p">: </span><span class="nv">Codecs_Type</span><span class="p">;</span>
+                 <span class="nv">Value</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">)</span> <span class="kr">return</span> <span class="kt">String</span><span class="p">;</span>
+<span class="kd">function</span> <span class="nf">Decode</span> <span class="p">(</span><span class="nv">Codecs</span> <span class="p">: </span><span class="nv">Codecs_Type</span><span class="p">;</span>
+                 <span class="nv">Value</span> <span class="p">: </span><span class="nv">String</span><span class="p">)</span> <span class="kr">return</span> <span class="kt">Wide_String</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>It is not generally necessary to the encoding functions as the formatting
+routines that return <code class="docutils literal"><span class="pre">String</span></code>&#8216;s encode using the Codecs associated
+with the locale.  The decoding routine is not currently used by the library
+and is available if applications need to convert encoded input to
+<code class="docutils literal"><span class="pre">Wide_String</span></code>&#8216;s.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The Text Package</a><ul>
+      <li>Previous: <a href="locale-type.html" title="previous chapter">Locale Type</a></li>
+      <li>Next: <a href="builtin-cldr.html" title="next chapter">Built-in Localizations</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/text/encodings.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/text/encodings.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

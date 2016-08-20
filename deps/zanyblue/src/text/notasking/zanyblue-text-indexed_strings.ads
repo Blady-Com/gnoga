@@ -70,9 +70,8 @@ private package ZanyBlue.Text.Indexed_Strings is
 private
 
    package Id_To_Name_Vectors is
-
-      new Indefinite_Vectors (Index_Type      => Positive,
-                              Element_Type    => Wide_String);
+      new Indefinite_Vectors (Index_Type   => Positive,
+                              Element_Type => Wide_String);
 
    package Name_To_Id_Maps is
       new Indefinite_Hashed_Maps (Key_Type        => Wide_String,

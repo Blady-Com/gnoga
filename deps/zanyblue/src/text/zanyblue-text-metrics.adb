@@ -67,13 +67,13 @@ package body ZanyBlue.Text.Metrics is
          pragma Unreferenced (First);
          pragma Unreferenced (Last);
       begin
-         Put_Line (Destination, "<message facility=" &
+         Put (Destination, "  <message facility=" &
                    """" & Get_Facility (Catalog, Facility) & """");
-         Put_Line (Destination, "         key=" &
-                   """" & Get_Key (Catalog, Key) & """");
-         Put_Line (Destination, "         locale=" &
+         Put (Destination, " locale=" &
                    """" & Get_Locale_Name (Catalog, Locale) & """");
-         Put (Destination, "         count=""");
+         Put (Destination, " key=" &
+                   """" & Get_Key (Catalog, Key) & """");
+         Put (Destination, " count=""");
          Put (Destination, Count, Width => 0);
          Put_Line (Destination, """ />");
       end Iterator;

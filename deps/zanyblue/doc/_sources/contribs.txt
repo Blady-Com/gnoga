@@ -1,0 +1,28 @@
+.. -*- coding: utf-8 -*-
+   Copyright © 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+
+Contributions
+=============
+
+This software includes contributions from the following open source developers:
+
+* :ref:`zb-contrib-pascalpignard`
+
+Contributions to ZanyBlue are contributed under the same BSD style license that
+covers the ZanyBlue project.
+The following sections document the contributions made to the ZanyBlue project.
+
+
+.. _zb-contrib-pascalpignard:
+
+Pascal Pignard
+--------------
+
+Contact: `blady-com@users.sf.net <mailto:blady-com@users.sf.net>`_.
+
+
+:Feb, 2016:
+    The initial ISO8859-2 implementation of the Encoding/Decoding support
+    was implemented and contributed by Pascal.
+    

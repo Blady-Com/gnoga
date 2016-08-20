@@ -1,0 +1,9 @@
+%YAML 1.2
+---
+- name: Pascal Pignard
+  email: blady-com@users.sf.net
+  contributions:
+    - when: 'Feb, 2016'
+      description: |
+        The initial ISO8859-2 implementation of the Encoding/Decoding support
+        was implemented and contributed by Pascal.

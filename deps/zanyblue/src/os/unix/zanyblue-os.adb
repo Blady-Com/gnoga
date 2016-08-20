@@ -35,6 +35,7 @@
 
 with GNAT.OS_Lib;
 with Ada.Directories;
+with Ada.Characters.Conversions;
 with Ada.Environment_Variables;
 with ZanyBlue.Text;
 with ZanyBlue.Wide_Directories;
@@ -80,6 +81,15 @@ package body ZanyBlue.OS is
    begin
       return Unix;
    end OS_Name;
+
+   -----------------
+   -- OS_New_Line --
+   -----------------
+
+   function OS_New_Line return Wide_String is
+   begin
+      return "" & Ada.Characters.Conversions.To_Wide_Character (ASCII.LF);
+   end OS_New_Line;
 
    --------------------
    -- UTF8_File_Form --

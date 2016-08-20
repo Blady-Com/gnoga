@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Example Using Accessor Functions &mdash; ZanyBlue 1.3.0b documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="up" title="The Text Package" href="index.html" />
+    <link rel="next" title="Message Formatting" href="msg-format.html" />
+    <link rel="prev" title="Example Using Low Level Functions" href="lowlevel.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="example-using-accessor-functions">
+<h1>Example Using Accessor Functions<a class="headerlink" href="#example-using-accessor-functions" title="Permalink to this headline">¶</a></h1>
+<p>The style of message generation using a facility string, key string and
+message arguments opens an application up to the risk of a mis-match between
+the expected arguments for a message and the supplied arguments (possibly
+causing the ZanyBlue exceptions <code class="docutils literal"><span class="pre">No_Such_Argument_Error</span></code> or
+<code class="docutils literal"><span class="pre">No_Such_Key_Error</span></code> to be raised).  It is also possible to silently, in
+the sense the compiler does not fail to compile, introduce errors by
+accidentally mis-spelling a facility or key value (again possibly causing the
+exceptions <code class="docutils literal"><span class="pre">No_Such_Facility_Error</span></code> or <code class="docutils literal"><span class="pre">No_Such_Key_Error</span></code> to raised).</p>
+<p>For an Ada application, where the compile time detection of errors is an
+expectation.  This situation is not ideal.  To overcome this, the ZanyBlue
+message compiler utility can generate accessor packages for the compiled
+facilities.  These packages define functions and procedures for each key in
+the facility with a list of arguments matching the expected number of
+arguments.  This allows the Ada compiler to perform checks on the references
+to messages of ZanyBlue-ised applications.</p>
+<p>The <code class="docutils literal"><span class="pre">zbmcompile</span></code> utility generates three major classes of accessor
+packages (when the <code class="docutils literal"><span class="pre">-a</span></code> option is given):</p>
+<ol class="arabic">
+<li><p class="first">Accessor functions which return the localized formatted message for
+a message key.  There are two accessor function packages generated:</p>
+<ul class="simple">
+<li>A package for functions with return typed of <code class="docutils literal"><span class="pre">Wide_String</span></code>.</li>
+<li>A package for functions with return typed of <code class="docutils literal"><span class="pre">String</span></code>
+(the standard Wide Strings are encoding using the encoding
+schema defined by the locale, the default being UTF-8 encoding).
+See <a class="reference internal" href="encodings.html#zb-text-encoding"><span class="std std-ref">Encodings and The Codecs Type</span></a> for more information on encodings.</li>
+</ul>
+<p>In both cases, the functions generated are named by using message key
+prefixed with the string <code class="docutils literal"><span class="pre">Format_</span></code>.  This requires message
+keys, when prefixed with <code class="docutils literal"><span class="pre">Format_</span></code> be valid Ada identifier.</p>
+</li>
+<li><p class="first">Accessor that print the localized formatted message similar to the
+standard <code class="docutils literal"><span class="pre">Put_Line</span></code> routines.  There are two styles of routines
+generated:</p>
+<ul class="simple">
+<li>Routines that use the standard <code class="docutils literal"><span class="pre">Ada.Wide_Text_IO</span></code> routines to print
+the formatted messages.</li>
+<li>Routines that convert the <code class="docutils literal"><span class="pre">Wide_String</span></code> to <code class="docutils literal"><span class="pre">String</span></code> using the
+locale encoding and print this encoded string using Ada&#8217;s <code class="docutils literal"><span class="pre">Stream_IO</span></code>
+routines.</li>
+</ul>
+</li>
+<li><p class="first">Accessor procedures which raise an exception with a localized formatted
+message (similar to the standard <code class="docutils literal"><span class="pre">Raise_Exception</span></code> procedure but extended
+to allow message arguments).  The procedures names generated prefix the
+message key with the string <code class="docutils literal"><span class="pre">Raise_</span></code>.</p>
+</li>
+</ol>
+<p>Normally, the narrow accessors should be used instead of the wide accessors
+as these support the user&#8217;s encoding.</p>
+<p>These accessor packages are generated for each facility compiled and are
+created as child packages of the command line package name.</p>
+<p>As an example, reworking the moons example in terms of the safer accessor
+functions, the code would be, e.g., for the message that prints the number
+of moons for a planet, using the generated wide print routine:</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kn">with</span> <span class="nn">Messages.Moons_Wide_Prints</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="n">Print_0002</span> <span class="p">(</span><span class="o">+</span><span class="n">Moons</span> <span class="p">(</span><span class="n">Planet</span><span class="p">),</span> <span class="o">+</span><span class="n">Planet</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Here, the compiled messages are generated to the <code class="docutils literal"><span class="pre">Messages</span></code> package
+and the accessor packages are child packages of it.</p>
+<p>For this accessor example, the <code class="docutils literal"><span class="pre">zbmcompile</span></code> utility must be used with
+the <code class="docutils literal"><span class="pre">-a</span></code> command line option to generate the accessor packages and
+the target parent package is given as <code class="docutils literal"><span class="pre">Messages</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ zbmcompile -a -i -v Messages Moons
+This is ZBMCompile, Version 1.3.0 BETA (r3009M) on 6/20/16 at 1:59 AM
+Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
+Loaded 25 messages for the facility &quot;Moons&quot; (4 locales)
+Performing consistency checks for the facility &quot;Moons&quot;
+Performing consistency checks for the accessor package generation
+Loaded 1 facilities, 7 keys, 4 locales and 25 messages
+Loaded total 829 characters, stored 829 unique characters, 0% saving
+Wrote the spec &quot;Messages&quot; to the file &quot;./messages.ads&quot;
+Wrote the body &quot;Messages&quot; to the file &quot;./messages.adb&quot;
+Generated accessor package spec &quot;Messages.Moons_Exceptions&quot; to &quot;./messages-moons_exceptions.ads&quot;
+Generated accessor package body &quot;Messages.Moons_Exceptions&quot; to &quot;./messages-moons_exceptions.adb&quot;
+Generated accessor package spec &quot;Messages.Moons_Strings&quot; to &quot;./messages-moons_strings.ads&quot;
+Generated accessor package body &quot;Messages.Moons_Strings&quot; to &quot;./messages-moons_strings.adb&quot;
+Generated accessor package spec &quot;Messages.Moons_Wide_Strings&quot; to &quot;./messages-moons_wide_strings.ads&quot;
+Generated accessor package body &quot;Messages.Moons_Wide_Strings&quot; to &quot;./messages-moons_wide_strings.adb&quot;
+Generated accessor package spec &quot;Messages.Moons_Prints&quot; to &quot;./messages-moons_prints.ads&quot;
+Generated accessor package body &quot;Messages.Moons_Prints&quot; to &quot;./messages-moons_prints.adb&quot;
+Generated accessor package spec &quot;Messages.Moons_Wide_Prints&quot; to &quot;./messages-moons_wide_prints.ads&quot;
+Generated accessor package body &quot;Messages.Moons_Wide_Prints&quot; to &quot;./messages-moons_wide_prints.adb&quot;
+ZBMCompile completed on 6/20/16 at 1:59 AM, elapsed time 0:00:00.124
+</pre></div>
+</div>
+<p>The minor difference in the naming of the properties files should also be
+noted: for the example in the previous section, the files, and hence the
+facility, were all lower case.  Here, the base file name is <code class="docutils literal"><span class="pre">Moons</span></code>.
+This allow the generated Ada packages to have the more expected name
+<code class="docutils literal"><span class="pre">Moons_Wide_Strings</span></code>.</p>
+<p>Since the messages are now, in a sense, handled by the Ada compiler, IDE&#8217;s,
+e.g., GPS, will display the message text (the generated packages include the
+message text, with markers explained later).  The accessor display in GPS
+for the example message above is given in following image:</p>
+<img alt="../_images/gps-accessor.png" src="../_images/gps-accessor.png" />
+<p>The keys used for the messages in this example are simple numeric style
+strings.  The GPS IDE will also display the base language text and
+the number of arguments expected for accessors as the generated Ada code
+includes this text as a comment.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The Text Package</a><ul>
+      <li>Previous: <a href="lowlevel.html" title="previous chapter">Example Using Low Level Functions</a></li>
+      <li>Next: <a href="msg-format.html" title="next chapter">Message Formatting</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/text/accessor-xmpl.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/text/accessor-xmpl.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

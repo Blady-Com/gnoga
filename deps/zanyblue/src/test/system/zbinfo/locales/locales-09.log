@@ -1,15 +1,15 @@
-This is ZBTest, Version .*
+This is ZBInfo, Version .*
 Copyright \(c\) .*, Michael Rohan.  All rights reserved
 
 ZanyBlue data for the locale "de.NOENC"
 
-    Locale implementation "de.UTF-8"
+    Locale implementation "de.UTF8"
 
     Language                  "de"
     Script                    ""
     Territory                 ""
-    Encoding                  "NOENC" (implemented as "UTF-8")
-    Name                      "de.UTF-8"
+    Encoding                  "NOENC" (implemented as "UTF8")
+    Name                      "de.UTF8"
     Traits Name               "de"
     Traits Tag                "DE        "
     Locale Level              1
@@ -17,7 +17,7 @@ ZanyBlue data for the locale "de.NOENC"
     Layout                    LEFT_TO_RIGHT
     Lower Digits              0123456789abcdef
     Upper Digits              0123456789ABCDEF
-    Hash Value                573592421
+    Hash Value                958861726
 
   Date/Time Formats
   -----------------
@@ -124,4 +124,4 @@ ZanyBlue data for the locale "de.NOENC"
     DIGIT_PATTERN_CHARACTER   #
     DECIMAL_DIGITS_STRING     0123456789
 
-ZBInfo completed on .*
+ZBInfo completed on .*, elapsed time .*

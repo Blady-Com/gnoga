@@ -1,0 +1,26 @@
+V "GNAT Lib v2016"
+A -O3
+A -gnatA
+A -g
+A -gnata
+A -gnatVa
+A -gnatQ
+A -gnaty
+A -gnatwa
+A -gnatwe
+A -gnat2012
+A -gnatW8
+A -mtune=generic
+A -march=x86-64
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U jenkins%s		jenkins.ads		f65c68f7 NE OO PU PK
+
+D jenkins.ads		20160807020148 f65c68f7 jenkins%s
+D system.ads		20160516092929 6326c08a system%s
+X 1 jenkins.ads
+40K9*Jenkins 44l5 44e12
+

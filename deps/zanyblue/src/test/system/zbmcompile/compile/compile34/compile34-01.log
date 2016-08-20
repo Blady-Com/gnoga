@@ -12,6 +12,7 @@ where available options are
   -D             Debug mode (dump the catalog definitions)
   -d directory   Directory containing facility (defaults to ".")
   -e extension   Properties extension (default "properties")
+  -h             Print this usage information
   -i             Include initialization call in body
   -O             Optimize string pool for locale based access
   -g             Disable locale based access optimization (default)
@@ -29,3 +30,4 @@ where available options are
   -C             Disable comments on generated accessor routines
   -T item size   Set the size of an Ada output limit: pool or comment
   -X handling    Handling of non-Ada keys for accessors (error, ignore)
+ZBMCompile completed on .*, elapsed time .*

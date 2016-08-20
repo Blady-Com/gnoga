@@ -3,3 +3,4 @@
 # examples under this directory.
 
 set text_examples_dir $(joinpaths $examples_dir text)
+set -u gtk_testdir gtkapp

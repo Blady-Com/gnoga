@@ -33,6 +33,8 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+with Ada.Text_IO.Text_Streams;
+with ZanyBlue.OS;
 with ZanyBlue.Text.Generic_Printer;
 
 package body ZanyBlue.Text.Printer is
@@ -44,7 +46,7 @@ package body ZanyBlue.Text.Printer is
    -----------
 
    overriding
-   procedure Print (Printer     : Standard_Printer_Type;
+   procedure Print (Printer     : in out Standard_Printer_Type;
                     Destination : Ada.Text_IO.File_Type;
                     Facility    : Wide_String;
                     Key         : Wide_String;
@@ -55,28 +57,44 @@ package body ZanyBlue.Text.Printer is
 
       pragma Unreferenced (Printer);
 
-      procedure New_Line (File : Ada.Text_IO.File_Type);
-      procedure Put (File : Ada.Text_IO.File_Type; Text : Wide_String);
+      use Ada.Text_IO.Text_Streams;
+
+      procedure New_Line (The_Stream : Stream_Access);
+      procedure Put (The_Stream : Stream_Access; Text : Wide_String);
+
+      The_Stream : constant Stream_Access := Stream (Destination);
+
+      ----------
+      -- Impl --
+      ----------
 
       procedure Impl is
          new ZanyBlue.Text.Generic_Printer (
-                File_Type => Ada.Text_IO.File_Type,
+                File_Type => Stream_Access,
                 Put => Put,
                 New_Line => New_Line);
 
-      procedure New_Line (File : Ada.Text_IO.File_Type) is
+      --------------
+      -- New_Line --
+      --------------
+
+      procedure New_Line (The_Stream : Stream_Access) is
       begin
-         Ada.Text_IO.New_Line (File);
+         Put (The_Stream, ZanyBlue.OS.OS_New_Line);
       end New_Line;
 
-      procedure Put (File : Ada.Text_IO.File_Type; Text : Wide_String) is
+      ---------
+      -- Put --
+      ---------
+
+      procedure Put (The_Stream : Stream_Access; Text : Wide_String) is
          Encoded : constant String := Locale.Encode_To_String (Text);
       begin
-         Ada.Text_IO.Put (File, Encoded);
+         String'Write (The_Stream, Encoded);
       end Put;
 
    begin
-      Impl (Destination, Facility, Key, Locale, Arguments, Message, With_NL);
+      Impl (The_Stream, Facility, Key, Locale, Arguments, Message, With_NL);
    end Print;
 
    -----------
@@ -84,7 +102,7 @@ package body ZanyBlue.Text.Printer is
    -----------
 
    overriding
-   procedure Print (Printer     : Standard_Printer_Type;
+   procedure Print (Printer     : in out Standard_Printer_Type;
                     Destination : Ada.Wide_Text_IO.File_Type;
                     Facility    : Wide_String;
                     Key         : Wide_String;
@@ -95,7 +113,14 @@ package body ZanyBlue.Text.Printer is
 
       pragma Unreferenced (Printer);
 
+      use Ada.Characters.Conversions;
+
       procedure New_Line (File : Ada.Wide_Text_IO.File_Type);
+      --  procedure Put(File : Ada.Wide_Text_IO.File_Type; Text : Wide_String);
+
+      ----------
+      -- Impl --
+      ----------
 
       procedure Impl is
          new ZanyBlue.Text.Generic_Printer (
@@ -103,14 +128,32 @@ package body ZanyBlue.Text.Printer is
                 Put => Ada.Wide_Text_IO.Put,
                 New_Line => New_Line);
 
+      --------------
+      -- New_Line --
+      --------------
+
       procedure New_Line (File : Ada.Wide_Text_IO.File_Type) is
       begin
          Ada.Wide_Text_IO.New_Line (File);
       end New_Line;
 
+      ---------
+      -- Put --
+      ---------
+
+      --  procedure Put (File : Ada.Wide_Text_IO.File_Type; Text
+      --  : Wide_String) is
+      --  begin
+         --  Ada.Wide_Text_IO.Put (File, Text);
+      --  end Put;
+
    begin
       Impl (Destination, Facility, Key, Locale, Arguments, Message, With_NL);
    end Print;
+
+   ----------------------
+   -- Standard_Printer --
+   ----------------------
 
    function Standard_Printer return Printer_Access is
    begin

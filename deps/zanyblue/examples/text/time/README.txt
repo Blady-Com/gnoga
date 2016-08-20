@@ -4,7 +4,7 @@ messages are externalized to the file "curtime.properties" which is first
 compiled to the Ada package Curtime_Messages using zbmcompile.
 
 Following the standard ZB convention, example applications are prefixed
-with "x".
+with "zbx".
 
 This example has no third party dependencies.
 
@@ -13,51 +13,52 @@ Typical build and run sequence
 -----------------------------------------------------------------------------
 $ make
 ../../../bin/zbmcompile -i -v Curtime_Messages curtime
-This is ZBMCompile, Version 0.1.0 ALPHA (r1462) at 9:05 AM on 8/24/10
-Copyright (c) 2009-2010, Michael Rohan.  All rights reserved
-Loaded 10 messages for the facility "curtime" (1 locales)
-Loaded 1 facilities, 10 keys, 1 locales and 10 messages
-Created the spec "Curtime_Messages" in the file "curtime_messages.ads"
-Created the body "Curtime_Messages" in the file "curtime_messages.adb"
-ZBMCompile completed at 9:05 AM on 8/24/10, elapsed time 0:00:00.056
-gprbuild -p -aP../../../lib -P xcurtime.gpr
-creating auto.cgpr
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 xcurtime.adb
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 curtime_messages.adb
-gprbind xcurtime.bexch
-gnatbind xcurtime.ali
-gcc-4.4 -c b__xcurtime.adb
-gcc-4.4 xcurtime.o -o xcurtime
+This is ZBMCompile, Version 1.3.0 BETA (r3038:3039M) on 7/30/16 at 12:30 PM
+Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
+Loaded 12 messages for the facility "curtime" (1 locales)
+Performing consistency checks for the facility "curtime"
+Loaded 1 facilities, 12 keys, 1 locales and 12 messages
+Loaded total 664 characters, stored 664 unique characters, 0% saving
+Wrote the spec "Curtime_Messages" to the file "./curtime_messages.ads"
+Wrote the body "Curtime_Messages" to the file "./curtime_messages.adb"
+ZBMCompile completed on 7/30/16 at 12:30 PM, elapsed time 0:00:00.017
+gprbuild -p -aP../../../lib -XOS=unix -XTYPE=static -XBUILD=Debug -XV_MAJOR=1 -XV_MINOR=3 -XV_PATCH=0 -XV_STATUS=Beta -aP../../../lib/gnat -aP../../../src -P zbx_curtime.gpr
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 zbx_curtime.adb
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 curtime_messages.adb
+gprbind zbx_curtime.bexch
+gnatbind zbx_curtime.ali
+gcc -c b__zbx_curtime.adb
+gcc zbx_curtime.o -o zbx_curtime
 
 -----------------------------------------------------------------------------
 $ make run
-gprbuild -p -aP../../../lib -P xcurtime.gpr
-creating auto.cgpr
-gprbuild: "xcurtime" up to date
-../../../bin/xcurtime
-Current time (short):       9:05 AM
-Current time (medium):      9:05:36 AM
-Current time (long):        9:05:36 AM -0700
-Current time (full):        9:05:36 AM -0700
-Current date (short):       8/24/10
-Current date (medium):      Aug 24, 2010
-Current date (long):        August 24, 2010
-Current date (full):        Tuesday, August 24, 2010
-Current date/time (locale): 9:05 AM 8/24/10
-Current date/time (custom): Tue Aug 24 09:05:36 2010
+gprbuild -p -aP../../../lib -XOS=unix -XTYPE=static -XBUILD=Debug -XV_MAJOR=1 -XV_MINOR=3 -XV_PATCH=0 -XV_STATUS=Beta -aP../../../lib/gnat -aP../../../src -P zbx_curtime.gpr
+gprbuild: "zbx_curtime" up to date
+../../../bin/zbx_curtime
+This is CURTIME, Version 1.3.0 - BETA
+Current time (short):       12:31 PM
+Current time (medium):      12:31:00 PM
+Current time (long):        12:31:00 PM -0700
+Current time (full):        12:31:00 PM -0700
+Current date (short):       7/30/16
+Current date (medium):      Jul 30, 2016
+Current date (long):        July 30, 2016
+Current date (full):        Saturday, July 30, 2016
+Current date/time (locale): 7/30/16, 12:31 PM
+Current date/time (custom): Sat Jul 30 12:31:00 2016
 
 $ make run_ru
-gprbuild -p -aP../../../lib -P xcurtime.gpr
-creating auto.cgpr
-gprbuild: "xcurtime" up to date
-ZB_LANG=ru ../../../bin/xcurtime
-Current time (short):       9:05
-Current time (medium):      9:05:50
-Current time (long):        9:05:50 -0700
-Current time (full):        9:05:50 -0700
-Current date (short):       24.08.10
-Current date (medium):      24.08.2010
-Current date (long):        24 августа 2010 г.
-Current date (full):        вторник, 24 августа 2010 г.
-Current date/time (locale): 9:05 24.08.10
-Current date/time (custom): Вт авг. 24 09:05:50 2010
+gprbuild -p -aP../../../lib -XOS=unix -XTYPE=static -XBUILD=Debug -XV_MAJOR=1 -XV_MINOR=3 -XV_PATCH=0 -XV_STATUS=Beta -aP../../../lib/gnat -aP../../../src -P zbx_curtime.gpr
+gprbuild: "zbx_curtime" up to date
+../../../bin/zbx_curtime -lru
+This is CURTIME, Version 1.3.0 - BETA
+Current time (short):       12:31
+Current time (medium):      12:31:04
+Current time (long):        12:31:04 -0700
+Current time (full):        12:31:04 -0700
+Current date (short):       30.07.16
+Current date (medium):      30 июля 2016 г.
+Current date (long):        30 июля 2016 г.
+Current date (full):        суббота, 30 июля 2016 г.
+Current date/time (locale): 30.07.16, 12:31
+Current date/time (custom): сб июля 30 12:31:04 2016

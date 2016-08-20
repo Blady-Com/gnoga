@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Message ‘Metrics’ &mdash; ZanyBlue 1.3.0b documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="up" title="The Text Package" href="index.html" />
+    <link rel="next" title="The zbmcompile Utility" href="zbmcompile.html" />
+    <link rel="prev" title="Pseudo Translations" href="pseudo.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="message-metrics">
+<h1>Message &#8216;Metrics&#8217;<a class="headerlink" href="#message-metrics" title="Permalink to this headline">¶</a></h1>
+<p>Testing of internationalized applications (globalization, g11n, testing) is
+slightly different from normal functional testing.  It is generally assumed
+the core functionality of the application is not dependent on the the messaging.
+Core testing is frequently driven by coverage data derived from the test
+cases.  Performing testing in a globalized application to meet the same
+coverage to generally not something that is needed.  The globalization
+testing needs to verify the application is fully localized in the target
+language and can handle localized input.  This is generally a subset of
+the overall testing applied to an application.</p>
+<p>To facilitate globalization testing, the library keeps track of the number
+of times a message is used giving a coverage number, from a message point
+of view.  The accumulated usage information can be saved to an XML file
+using the <code class="docutils literal"><span class="pre">Write_Usage</span></code> routines in the text <code class="docutils literal"><span class="pre">Metrics</span></code> package.</p>
+<p>The example application <code class="docutils literal"><span class="pre">moons_accessors</span></code> will generate a message
+usage report if given two command line arguments (the first being the locale
+name to use), e.g., for a simple execution with a usage file
+<code class="docutils literal"><span class="pre">moons.zbmx</span></code> given on the command line:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ x_amoons en moons.zbmx
+This is MOONS, Version 1.3.0 - BETA
+Please enter a planet: mars
+There are 2 known moons orbiting &quot;MARS&quot;.
+Please enter a planet:
+OK, goodbye.
+</pre></div>
+</div>
+<p>The generate usage information looks like</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;zanyblue-message-usage&gt;</span>
+  <span class="nt">&lt;message</span> <span class="na">facility=</span><span class="s">&quot;Moons&quot;</span> <span class="na">locale=</span><span class="s">&quot;de&quot;</span> <span class="na">key=</span><span class="s">&quot;0001&quot;</span> <span class="na">count=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;message</span> <span class="na">facility=</span><span class="s">&quot;Moons&quot;</span> <span class="na">locale=</span><span class="s">&quot;&quot;</span> <span class="na">key=</span><span class="s">&quot;0003&quot;</span> <span class="na">count=</span><span class="s">&quot;1&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;message</span> <span class="na">facility=</span><span class="s">&quot;Moons&quot;</span> <span class="na">locale=</span><span class="s">&quot;fr&quot;</span> <span class="na">key=</span><span class="s">&quot;0001&quot;</span> <span class="na">count=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;message</span> <span class="na">facility=</span><span class="s">&quot;Moons&quot;</span> <span class="na">locale=</span><span class="s">&quot;de&quot;</span> <span class="na">key=</span><span class="s">&quot;0005&quot;</span> <span class="na">count=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;message</span> <span class="na">facility=</span><span class="s">&quot;Moons&quot;</span> <span class="na">locale=</span><span class="s">&quot;&quot;</span> <span class="na">key=</span><span class="s">&quot;0004&quot;</span> <span class="na">count=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+  ...
+  <span class="nt">&lt;message</span> <span class="na">facility=</span><span class="s">&quot;Moons&quot;</span> <span class="na">locale=</span><span class="s">&quot;es&quot;</span> <span class="na">key=</span><span class="s">&quot;0001&quot;</span> <span class="na">count=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;message</span> <span class="na">facility=</span><span class="s">&quot;Moons&quot;</span> <span class="na">locale=</span><span class="s">&quot;es&quot;</span> <span class="na">key=</span><span class="s">&quot;0003&quot;</span> <span class="na">count=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/zanyblue-message-usage&gt;</span>
+</pre></div>
+</div>
+<p>The contents of the file has been truncated for display purposes.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The Text Package</a><ul>
+      <li>Previous: <a href="pseudo.html" title="previous chapter">Pseudo Translations</a></li>
+      <li>Next: <a href="zbmcompile.html" title="next chapter">The zbmcompile Utility</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/text/metrics.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/text/metrics.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

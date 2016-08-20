@@ -74,18 +74,24 @@ procedure ZBInfo.Dump_Encoding (Name            : Wide_String;
       Code_Point : constant Natural := Wide_Character'Pos (WCh);
    begin
       if Encoding'Length = 2 then
-         Print_00033 (+Character'Pos (Encoding (Encoding'First)),
-                      +Character'Pos (Encoding (Encoding'First + 1)),
-                      +Code_Point);
+         if Is_Graphic (WCh) then
+            Print_00035 (+Character'Pos (Encoding (Encoding'First)),
+                         +Character'Pos (Encoding (Encoding'First + 1)),
+                         +WCh, +Code_Point);
+         else
+            Print_00033 (+Character'Pos (Encoding (Encoding'First)),
+                         +Character'Pos (Encoding (Encoding'First + 1)),
+                         +Code_Point);
+         end if;
       else
-         Print_00034 (+Character'Pos (Encoding (Encoding'First)),
-                      +Code_Point);
+         if Is_Graphic (WCh) then
+            Print_00036 (+Character'Pos (Encoding (Encoding'First)),
+                         +WCh, +Code_Point);
+         else
+            Print_00034 (+Character'Pos (Encoding (Encoding'First)),
+                         +Code_Point);
+         end if;
       end if;
-      --  if Is_Graphic (WCh) then
-      --     Print_00029 (+Code_Point, +WCh, With_NL => False);
-      --  else
-      --     Print_00030 (+Code_Point, With_NL => False);
-      --  end if;
    end Dump_Decoding;
 
    -------------------

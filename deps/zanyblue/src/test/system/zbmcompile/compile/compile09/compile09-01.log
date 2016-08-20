@@ -23,6 +23,7 @@
   <parameter name="n_facilities" type="integer" value="2" />
   <parameter name="accessor:wprints" type="boolean" value="false" />
   <parameter name="quiet" type="boolean" value="false" />
+  <parameter name="usage" type="boolean" value="false" />
   <parameter name="package" type="string" value="My_Package" />
   <parameter name="accessor:wstrings" type="boolean" value="false" />
   <parameter name="base_locale" type="boolean" value="false" />

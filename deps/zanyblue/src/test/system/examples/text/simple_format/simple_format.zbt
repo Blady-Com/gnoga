@@ -38,4 +38,4 @@ set simple_format_dir $(joinpaths $text_examples_dir simple_format)
 
 execute -o $(nextlog -c build) $make -C $simple_format_dir clean
 execute -o $(nextlog -c build) $make -C $simple_format_dir
-execute -o $(nextlog) -f $make -s -C $simple_format_dir run
+execute -o $(nextlog) $make -s -C $simple_format_dir run

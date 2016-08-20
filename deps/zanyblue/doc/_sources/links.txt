@@ -1,0 +1,1 @@
+.. _download: http://sourceforge.net/projects/zanyblue/files/zanyblue-1.3.0b-r3059.tar.gz

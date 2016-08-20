@@ -1,15 +1,15 @@
-This is ZBTest, Version .*
+This is ZBInfo, Version .*
 Copyright \(c\) .*, Michael Rohan.  All rights reserved
 
 ZanyBlue data for the locale "en_US.UTF-8"
 
-    Locale implementation "en_US.UTF-8"
+    Locale implementation "en_US.UTF8"
 
     Language                  "en"
     Script                    ""
     Territory                 "US"
-    Encoding                  "UTF-8" (implemented as "UTF-8")
-    Name                      "en_US.UTF-8"
+    Encoding                  "UTF-8" (implemented as "UTF8")
+    Name                      "en_US.UTF8"
     Traits Name               "en"
     Traits Tag                "EN        "
     Locale Level              1
@@ -17,7 +17,7 @@ ZanyBlue data for the locale "en_US.UTF-8"
     Layout                    LEFT_TO_RIGHT
     Lower Digits              0123456789abcdef
     Upper Digits              0123456789ABCDEF
-    Hash Value                2302685560
+    Hash Value                1298104011
 
   Date/Time Formats
   -----------------
@@ -124,4 +124,4 @@ ZanyBlue data for the locale "en_US.UTF-8"
     DIGIT_PATTERN_CHARACTER   #
     DECIMAL_DIGITS_STRING     0123456789
 
-ZBInfo completed on .*
+ZBInfo completed on .*, elapsed time .*

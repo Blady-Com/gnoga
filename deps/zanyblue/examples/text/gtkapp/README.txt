@@ -8,7 +8,7 @@ messages are externalized and are first compiled to the Ada package
 OJDBC.Messages using zbmcompile.
 
 Following the standard ZB convention, example applications are prefixed
-with "x".
+with "zbx".
 
 This example has a third party dependency on the GtkAda library.  The
 gprbuild project path might need to be adjusted to locate the gtkada.gpr
@@ -19,33 +19,38 @@ Typical build and run sequence
 -----------------------------------------------------------------------------
 $ make
 ../../../bin/zbmcompile -i -v AppMsg -d mesg appmsg
-This is ZBMCompile, Version 0.1.0 ALPHA (r1462) at 8:41 AM on 8/24/10
-Copyright (c) 2009-2010, Michael Rohan.  All rights reserved
-Loaded 7 messages for the facility "appmsg" (2 locales)
-Loaded 1 facilities, 4 keys, 2 locales and 7 messages
-Created the spec "AppMsg" in the file "appmsg.ads"
-Created the body "AppMsg" in the file "appmsg.adb"
-ZBMCompile completed at 8:41 AM on 8/24/10, elapsed time 0:00:00.046
-../../../bin/zbmcompile -i -v OJDBC.Messages -d ../ojdbc/mesg ojdbc
-This is ZBMCompile, Version 0.1.0 ALPHA (r1462) at 8:41 AM on 8/24/10
-Copyright (c) 2009-2010, Michael Rohan.  All rights reserved
-Loaded 9693 messages for the facility "ojdbc" (29 locales)
-Loaded 1 facilities, 338 keys, 29 locales and 9693 messages
-Created the spec "OJDBC.Messages" in the file "ojdbc-messages.ads"
-Created the body "OJDBC.Messages" in the file "ojdbc-messages.adb"
-ZBMCompile completed at 8:41 AM on 8/24/10, elapsed time 0:00:17.294
-gprbuild -p -aP../../../lib -P xgojdbc.gpr
-creating auto.cgpr
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 xgojdbc.adb
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 appmsg.adb
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 locale_buttons.adb
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 ojdbc.ads
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 ojdbc-messages.adb
-gcc-4.4 -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat05 -gnatW8 text_display.adb
-gprbind xgojdbc.bexch
-gnatbind xgojdbc.ali
-gcc-4.4 -c b__xgojdbc.adb
-gcc-4.4 xgojdbc.o -o xgojdbc
+This is ZBMCompile, Version 1.3.0 BETA (r3038:3039M) on 7/30/16 at 12:21 PM
+Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
+Loaded 8 messages for the facility "appmsg" (2 locales)
+Performing consistency checks for the facility "appmsg"
+Loaded 1 facilities, 5 keys, 2 locales and 8 messages
+Loaded total 150 characters, stored 115 unique characters, 23% saving
+Wrote the spec "AppMsg" to the file "./appmsg.ads"
+Wrote the body "AppMsg" to the file "./appmsg.adb"
+ZBMCompile completed on 7/30/16 at 12:21 PM, elapsed time 0:00:00.010
+../../../bin/zbmcompile -i -v Jenkins.Messages -d ../jenkins/mesg Jenkins
+This is ZBMCompile, Version 1.3.0 BETA (r3038:3039M) on 7/30/16 at 12:21 PM
+Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
+Loaded 405 messages for the facility "Jenkins" (16 locales)
+Performing consistency checks for the facility "Jenkins"
+Loaded 1 facilities, 37 keys, 16 locales and 405 messages
+Loaded total 14857 characters, stored 14261 unique characters, 4% saving
+Wrote the spec "Jenkins.Messages" to the file "./jenkins-messages.ads"
+Wrote the body "Jenkins.Messages" to the file "./jenkins-messages.adb"
+ZBMCompile completed on 7/30/16 at 12:21 PM, elapsed time 0:00:00.209
+gprbuild -p -aP../../../lib -XOS=unix -XTYPE=static -XBUILD=Debug -XV_MAJOR=1 -XV_MINOR=3 -XV_PATCH=0 -XV_STATUS=Beta -aP../../../lib/gnat -aP../../../src -P zbx_gjenkins.gpr
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 zbx_gjenkins.adb
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 appmsg.adb
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 button_cb.ads
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 display_strings.adb
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 jenkins.ads
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 jenkins-messages.adb
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 locale_buttons.adb
+gcc -c -g -O3 -gnata -gnatVa -gnatQ -gnaty -gnatwae -gnat2012 -gnatW8 text_display.adb
+gprbind zbx_gjenkins.bexch
+gnatbind zbx_gjenkins.ali
+gcc -c b__zbx_gjenkins.adb
+gcc zbx_gjenkins.o -L/usr/gnat/2016/lib -L/usr/gnat/2016/bin -Wl,--export-dynamic -pthread -L/usr/gnat/2016/lib -lgtk-3 -lgdk-3 -latk-1.0 -lgio-2.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo-gobject -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lrt -lglib-2.0 -lfontconfig -lfreetype -L/usr/gnat/2016/lib -L/usr/gnat/2016/bin -Wl,--export-dynamic -pthread -L/usr/gnat/2016/lib -lgtk-3 -lgdk-3 -latk-1.0 -lgio-2.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo-gobject -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lrt -lglib-2.0 -lfontconfig -lfreetype -o zbx_gjenkins
 
 -----------------------------------------------------------------------------
 $ make run

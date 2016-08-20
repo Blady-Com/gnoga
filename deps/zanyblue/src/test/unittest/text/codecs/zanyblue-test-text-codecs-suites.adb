@@ -32,6 +32,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+with ZanyBlue.Test.Text.Codecs.Decoding.Suites;
 with ZanyBlue.Test.Text.Codecs.Encoding.Suites;
 
 package body ZanyBlue.Test.Text.Codecs.Suites is
@@ -45,6 +46,7 @@ package body ZanyBlue.Test.Text.Codecs.Suites is
    function Suite return Test_Suite is
    begin
       return S : Test_Suite do
+         Add_Static_Test (S, Decoding.Suites.Suite);
          Add_Static_Test (S, Encoding.Suites.Suite);
       end return;
    end Suite;

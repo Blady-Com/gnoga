@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Pseudo Translations &mdash; ZanyBlue 1.3.0b documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="up" title="The Text Package" href="index.html" />
+    <link rel="next" title="Message ‘Metrics’" href="metrics.html" />
+    <link rel="prev" title="Unicode CLDR Data" href="cldr-data.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pseudo-translations">
+<span id="zb-text-pseudo-translation"></span><h1>Pseudo Translations<a class="headerlink" href="#pseudo-translations" title="Permalink to this headline">¶</a></h1>
+<p>One of the easiest mistakes to make with an internationalize application is
+to include hard-coded strings, i.e., not externalize the message text into
+a <code class="docutils literal"><span class="pre">.properties</span></code> file.  One technique to detect hard-coded strings
+is to generate a pseudo translation in a test locale and test the application.
+This requires &#8220;translation&#8221; of a <code class="docutils literal"><span class="pre">.properties</span></code> file into a pseudo
+locale (the choice is normally Swahili in Kenya, i.e., <code class="docutils literal"><span class="pre">sw_KE</span></code>) and
+rebuild of a test application with the pseudo translations included.</p>
+<p>ZanyBlue adopts a different approach and includes psuedo translation as
+part of the library rather than an after the fact exercise.  The pseudo
+translation support built into the library support the translation of
+messages using simple wide character to wide character replacement, e.g.,
+replace all ASCII character with their uppercase equivalents.  Each message
+is further highlighted using start and end of message marker characters,
+the left and right diamond characters.  Additionally, embedded arguments
+are surrounded by French quote characters.</p>
+<p>To enable the built-in pseudo translations, the catalogs procedure</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">procedure</span> <span class="nf">Enable_Pseudo_Translations</span> <span class="p">(</span><span class="nv">Catalog</span> <span class="p">: </span><span class="nv">Catalog_Type</span><span class="p">;</span>
+                                      <span class="nv">Mapping</span> <span class="p">: </span><span class="nv">Pseudo_Map_Vector</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>can be used.  The <code class="docutils literal"><span class="pre">Mapping</span></code> argument gives the character to character
+mapping that should be used in addition to the message and argument marking
+of the pseudo translation.</p>
+<p>The mappings defined by the ZanyBlue library are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Null_Map</span></code> which preserves the message text but includes
+the start and end of messages and arguments.</li>
+<li><code class="docutils literal"><span class="pre">Uppercase_Map</span></code> in addition to the start and end markers
+for messages and arguments, convert the message text to upper
+case (applies only to ASCII characters).</li>
+<li><code class="docutils literal"><span class="pre">Lowercase_Map</span></code> in addition to the start and end markers
+for messages and arguments, convert the message text to lower
+case (applies only to ASCII characters).</li>
+<li><code class="docutils literal"><span class="pre">Halfwidth_Forms_Map</span></code> in addition to the start and end markers
+for messages and arguments, convert the message text to the
+halfwidth forms for Latin alphabetic and numeric characters.</li>
+<li><code class="docutils literal"><span class="pre">Enclosed_Alphanumeric_Map</span></code> in addition to the start and end
+markers for messages and arguments, convert the message text to the
+enclosed alphanumeric forms for Latin alphabetic characters.</li>
+</ul>
+<p><strong>Note</strong>: The halfwidth forms and enclosed alphanumeric mappings
+require the appropriate fonts be installed.</p>
+<p>In addition to changing the characters used for the message, the Unicode
+character <code class="docutils literal"><span class="pre">Diamond</span> <span class="pre">with</span> <span class="pre">left</span> <span class="pre">half</span> <span class="pre">black</span></code> (U+2816) is prefixed and <code class="docutils literal"><span class="pre">Diamond</span>
+<span class="pre">with</span> <span class="pre">right</span> <span class="pre">half</span> <span class="pre">black</span></code> is suffixed.  This allow the visual determination
+of where message strings begin and end.  A relatively common programming
+error is to generate a message by concatenate a set of sub-messages.  This
+is apparent in a psuedo translated view of the application.</p>
+<p>Normal argument handling occurs for pseudo translated messages and the
+values are substituted into the message string.  The text of the values are
+not modified by psuedo translation.  Value are, however, delimited by
+French quotes (guillemets, chevrons).  The following figure
+shows the output of the texttt{zbinfo} example application with
+half width psuedo translation enabled.  As can be seen from the message
+delimiters, the header <code class="docutils literal"><span class="pre">Numeric</span> <span class="pre">Formats</span></code> is a multi-line messages and
+is displayed using the half width font.  The Decimal, Scientific, etc,
+values are formatted arguments (as can be seen from the chevrons surrounding
+the values and are not displayed using the half width font.</p>
+<img alt="../_images/pseudo-dump.png" src="../_images/pseudo-dump.png" />
+<p>The example applications support pseudo translation via the verb|-x|
+options.</p>
+<p>The GPS example patches enable pseudo translation for GPS via the command
+line options <code class="docutils literal"><span class="pre">--pseudo=</span></code> <em>val</em>, where <em>val</em> is one of <code class="docutils literal"><span class="pre">u</span></code> (upper),
+<code class="docutils literal"><span class="pre">l</span></code> (lower), <code class="docutils literal"><span class="pre">h</span></code> (halfwidth) and <code class="docutils literal"><span class="pre">e</span></code> (enclosed).  When halfwidth or
+enclosed mappings are used, the <code class="docutils literal"><span class="pre">linkage</span></code> between the standard menu item
+names and the localized names is lost and additional menu items are created.
+The following figures show screenshots of a patched GPS:</p>
+<img alt="../_images/gps-normal.png" src="../_images/gps-normal.png" />
+<img alt="../_images/gps-upper.png" src="../_images/gps-upper.png" />
+<img alt="../_images/gps-enclosed.png" src="../_images/gps-enclosed.png" />
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The Text Package</a><ul>
+      <li>Previous: <a href="cldr-data.html" title="previous chapter">Unicode CLDR Data</a></li>
+      <li>Next: <a href="metrics.html" title="next chapter">Message &#8216;Metrics&#8217;</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/text/pseudo.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/text/pseudo.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

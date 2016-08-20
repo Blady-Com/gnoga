@@ -1,4 +1,4 @@
-This is ZBTest, Version .*
+This is ZBInfo, Version .*
 Copyright \(c\) .*, Michael Rohan.  All rights reserved
 The "zbinfo" command prints information on the data built into ZanyBlue
 library.  By default, information on the current locale is printed.  The

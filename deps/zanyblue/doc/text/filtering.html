@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Message Filtering &mdash; ZanyBlue 1.3.0b documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="up" title="The Text Package" href="index.html" />
+    <link rel="next" title="Stub Implementations" href="stubs.html" />
+    <link rel="prev" title="Argument Types" href="argtypes.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="message-filtering">
+<h1>Message Filtering<a class="headerlink" href="#message-filtering" title="Permalink to this headline">¶</a></h1>
+<p>Frequently an application has different output modes, e.g., debug, verbose,
+normal, quiet, etc.  If the various <code class="docutils literal"><span class="pre">Print</span></code> routines are used to
+generate messages for the application, these messages can be filtered using
+the tagged type <code class="docutils literal"><span class="pre">Message_Filter_Type</span></code> which is used by the ZanyBlue
+library to determine if a message should be really be printed.</p>
+<p>The <code class="docutils literal"><span class="pre">Message_Filter_Type</span></code> defines the method</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nf">Is_Filtered</span> <span class="p">(</span><span class="nv">Filter</span>   <span class="p">: </span><span class="nv">Message_Filter_Type</span><span class="p">;</span>
+                      <span class="nv">Facility</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">;</span>
+                      <span class="nv">Key</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">)</span> <span class="kr">return</span> <span class="kt">Boolean</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>An application convention can be used on the message keys to define, e.g.,
+verbose message filtering.  The example application
+<code class="docutils literal"><span class="pre">examples/text/filtering</span></code> uses the convention:</p>
+<ul class="simple">
+<li>Verbose messages begin with the letter <code class="docutils literal"><span class="pre">V</span></code></li>
+<li>Informational messages begin with the letter <code class="docutils literal"><span class="pre">I</span></code></li>
+<li>Warning messages begin with the letter <code class="docutils literal"><span class="pre">W</span></code></li>
+<li>Error messages begin with the letter <code class="docutils literal"><span class="pre">E</span></code></li>
+</ul>
+<p>The declaration of a filtering type for this configuration would be</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">type</span> <span class="kt">My_Filter_Type</span> <span class="kr">is</span> <span class="kr">new</span> <span class="n">Message_Filter_Type</span> <span class="kr">with</span>
+   <span class="kr">record</span>
+      <span class="n">Verbose</span> <span class="p">:</span> <span class="kt">Boolean</span> <span class="p">:=</span> <span class="kc">False</span><span class="p">;</span>
+   <span class="kr">end record</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nf">Is_Filtered</span> <span class="p">(</span><span class="nv">Filter</span>   <span class="p">: </span><span class="nv">My_Filter_Type</span><span class="p">;</span>
+                      <span class="nv">Facility</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">;</span>
+                      <span class="nv">Key</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">)</span> <span class="kr">return</span> <span class="kt">Boolean</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>with the simple implementation for this example being</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nf">Is_Filtered</span> <span class="p">(</span><span class="nv">Filter</span>   <span class="p">: </span><span class="nv">My_Filter_Type</span><span class="p">;</span>
+                      <span class="nv">Facility</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">;</span>
+                      <span class="nv">Key</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">)</span> <span class="kr">return</span> <span class="kt">Boolean</span> <span class="kr">is</span>
+<span class="kr">begin</span>
+   <span class="kr">return</span> <span class="n">Key</span> <span class="p">(</span><span class="n">Key</span><span class="p">&#39;</span><span class="na">First</span><span class="p">)</span> <span class="o">=</span> <span class="p">&#39;</span><span class="na">V</span><span class="p">&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">Filter</span><span class="p">.</span><span class="n">Verbose</span><span class="p">;</span>
+<span class="kr">end</span> <span class="nf">Is_Filtered</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>To enable the filtering, the filter must be registered with the ZanyBlue
+library via the <code class="docutils literal"><span class="pre">Set_Filter</span></code> routine.  This routine takes an access to
+<code class="docutils literal"><span class="pre">Message_Filter_Type'Class</span></code> object.  E.g., for the example filtering
+application, the filter is installed using:</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kn">use</span> <span class="nn">ZanyBlue.Text.Formatting</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="n">App_Filter</span> <span class="p">:</span> <span class="kr">aliased</span> <span class="n">My_Filter_Type</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="n">Set_Filter</span> <span class="p">(</span><span class="n">App_Filter</span><span class="p">&#39;</span><span class="na">Access</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>There is a cost associated with filtered messages:</p>
+<ul class="simple">
+<li>The various ZanyBlue routines are called.</li>
+<li>Any arguments will be &#8220;boxed&#8221; and appended to an argument list.</li>
+<li>The filtering code is called for all messages.</li>
+</ul>
+<p>This cost, however, does not included the cost associated with formatting
+the message as the filtering occurs before any message formatting happens.
+Normally, it is this formatting cost that is the highest for general
+messages.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The Text Package</a><ul>
+      <li>Previous: <a href="argtypes.html" title="previous chapter">Argument Types</a></li>
+      <li>Next: <a href="stubs.html" title="next chapter">Stub Implementations</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/text/filtering.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/text/filtering.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

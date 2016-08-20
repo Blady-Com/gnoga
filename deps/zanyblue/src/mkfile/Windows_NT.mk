@@ -43,6 +43,9 @@ E=.exe
 # Explicitly use "python script.py" on Windows
 PYTHON=python
 
+# TODO: Issues with line endings on Windows, use Production builds
+BUILD=Production
+
 # This is a real hack to get the year and probably doesn't work on non-English
 # systems!
 CURRENT_YEAR=$(notdir $(lastword $(shell cmd.exe /c "date /t")))

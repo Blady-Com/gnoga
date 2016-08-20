@@ -1,7 +1,7 @@
 The ZanyBlue.Text Package
 -------------------------
 
-ZanyBlue.Text is an Ada 2005 package supporting localization support in Ada
+ZanyBlue.Text is an Ada 2012 package supporting localization support in Ada
 by allowing the externalization of application messages into a properties
 file which can be localized into additional languages, similar to Java.
 The localized files include the locale string in the file name, e.g., the
@@ -62,7 +62,7 @@ argument types can be checked by the compiler.
 Website
 -------
 
-For up-to-date information, visit the web site:
+For full documentation and up-to-date information, visit the web site:
 
    http://zanyblue.sourceforge.net
 
@@ -77,7 +77,7 @@ Building
 --------
 
 The ZanyBlue packages have been build primarily on Unix systems using
-GNAT GPL 2010 (or on Windows using GNAT GPL 2010).  To build the library
+GNAT GPL 2016 (or on Windows using GNAT GPL 2016).  To build the library
 and message compiler (zbmcompile) only the compiler is needed.
 
 The build is GNU make based.  To build on Unix, assuming your PATH is
@@ -87,7 +87,7 @@ setup correctly:
    $ cd src
    $ make
 
-To run the regression tests, AUnit is needed and is expected to be be installed
+To run the regression tests, Ahven is needed and is expected to be be installed
 on the build system, use the "check" build target in the src directory:
 
     $ make check

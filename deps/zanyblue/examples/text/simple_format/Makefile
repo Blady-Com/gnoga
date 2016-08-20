@@ -40,7 +40,7 @@
 
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
-APPNAME=x_simple
+APPNAME=zbx_simple
 APPLICATION=$(TOP)/bin/$(APPNAME)
 
 include $(TOP)/src/mkfile/conf.mk

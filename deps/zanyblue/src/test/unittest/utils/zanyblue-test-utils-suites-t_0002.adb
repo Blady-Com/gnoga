@@ -32,35 +32,12 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Calendar;
-with ZanyBlue.Text.Catalogs;
-
 separate (ZanyBlue.Test.Utils.Suites)
 procedure T_0002 (T : in out Test_Case'Class) is
 
-   use ZanyBlue.Text.Catalogs;
-
-   Test_Name  : constant Wide_String := "t_0002";
-   Locale     : constant Locale_Type := Make_Locale ("");
-   Facility   : constant Wide_String := "fac1";
-   Catalog    : constant Catalog_Type := Create;
-   Start_Time : Ada.Calendar.Time;
-   Output     : File_Type;
-
 begin
-   Add (Catalog, Facility, "00001",
-        "App, V{0}.{1}.{2} {3} (r{4}) at {5}",
-        Locale);
-   Add (Catalog, Facility, "00002",
-        "Copyright notice: {0}",
-        Locale);
-   Add (Catalog, Facility, "00003",
-        "Goodbye {0}, {1}",
-        Locale);
-   Set_Output (Output, Test_Area, Test_Name);
-   Start_Time := Banner (Facility, Catalog => Catalog);
-   Trailer (Facility, Start_Time, Catalog => Catalog);
-   Restore_Output (Output);
-   Check_Log_File (T, Test_Area, Test_Name,
-                   "Banner should have been printed");
+   Check_Value (T, Body_File_Name ("XYZ", GNAT_Naming_Style), "xyz.adb",
+                "Failed to generate simple body file name");
+   Check_Value (T, Body_File_Name ("X.Y.Z", GNAT_Naming_Style), "x-y-z.adb",
+                "Failed to generate hierarchical body file name");
 end T_0002;

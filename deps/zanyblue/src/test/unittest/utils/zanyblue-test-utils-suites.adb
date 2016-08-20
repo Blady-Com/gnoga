@@ -32,32 +32,25 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Text_IO;
 with ZanyBlue.Utils;
-with ZanyBlue.Text.Locales;
 
 package body ZanyBlue.Test.Utils.Suites is
 
    use Ahven.Framework;
-   use Ada.Wide_Text_IO;
    use ZanyBlue.Utils;
-   use ZanyBlue.Text.Locales;
 
    Test_Area : constant Wide_String := "utils";
+   pragma Unreferenced (Test_Area);
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);
-   procedure T_0003 (T : in out Test_Case'Class);
-   procedure T_0004 (T : in out Test_Case'Class);
 
    overriding
    procedure Initialize (T : in out Test) is
    begin
       Set_Name (T, "ZanyBlue.Utils");
-      Add_Test_Routine (T, T_0001'Access, "T_0001, Banner procedure");
-      Add_Test_Routine (T, T_0002'Access, "T_0002, Trailer procedure");
-      Add_Test_Routine (T, T_0003'Access, "T_0003, Spec_File_Name function");
-      Add_Test_Routine (T, T_0004'Access, "T_0004, Body_File_Name function");
+      Add_Test_Routine (T, T_0001'Access, "T_0003, Spec_File_Name function");
+      Add_Test_Routine (T, T_0002'Access, "T_0004, Body_File_Name function");
    end Initialize;
 
    function Suite return Test_Suite is
@@ -69,7 +62,5 @@ package body ZanyBlue.Test.Utils.Suites is
 
    procedure T_0001 (T : in out Test_Case'Class) is separate;
    procedure T_0002 (T : in out Test_Case'Class) is separate;
-   procedure T_0003 (T : in out Test_Case'Class) is separate;
-   procedure T_0004 (T : in out Test_Case'Class) is separate;
 
 end ZanyBlue.Test.Utils.Suites;

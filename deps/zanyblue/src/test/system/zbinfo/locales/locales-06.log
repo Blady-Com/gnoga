@@ -1,4 +1,4 @@
-This is ZBTest, Version .*
+This is ZBInfo, Version .*
 Copyright \(c\) .*, Michael Rohan.  All rights reserved
 
 ZanyBlue data for the locale "ja"
@@ -8,7 +8,7 @@ ZanyBlue data for the locale "ja"
     Language                  "ja"
     Script                    ""
     Territory                 ""
-    Encoding                  "" (implemented as "UTF-8")
+    Encoding                  "" (implemented as "UTF8")
     Name                      "ja"
     Traits Name               "ja"
     Traits Tag                "JA        "
@@ -124,4 +124,4 @@ ZanyBlue data for the locale "ja"
     DIGIT_PATTERN_CHARACTER   #
     DECIMAL_DIGITS_STRING     0123456789
 
-ZBInfo completed on .*
+ZBInfo completed on .*, elapsed time .*

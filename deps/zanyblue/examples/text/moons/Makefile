@@ -41,7 +41,7 @@
 TOP=../../..
 GNATFLAGS=-aP$(TOP)/lib
 ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=x_moons
+APPNAME=zbx_moons
 APPLICATION=$(TOP)/bin/$(APPNAME)
 PACKAGE=Moons_Messages
 STAMPFILE=messages.stamp

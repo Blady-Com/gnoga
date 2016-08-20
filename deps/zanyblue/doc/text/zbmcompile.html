@@ -1,0 +1,466 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The zbmcompile Utility &mdash; ZanyBlue 1.3.0b documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="up" title="The Text Package" href="index.html" />
+    <link rel="next" title="Command Line Utilities" href="../utilities/index.html" />
+    <link rel="prev" title="Message ‘Metrics’" href="metrics.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-zbmcompile-utility">
+<span id="zb-text-zbmcompile"></span><h1>The zbmcompile Utility<a class="headerlink" href="#the-zbmcompile-utility" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">zbmcompile</span></code> utility compiles <code class="docutils literal"><span class="pre">.properties</span></code> files into
+an Ada representation allowing easier access to the message text via
+lookup in a catalog.</p>
+<p>The simplest usage of the utility defines the name of the package to be
+created and the facility to be compiled, e.g., for the moons example
+application:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ zbmcompile -i -v Moons_Messages moons
+This is ZBMCompile, Version 1.3.0 BETA (r3009M) on 6/20/16 at 8:50 AM
+Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
+Loaded 20 messages for the facility &quot;moons&quot; (4 locales)
+Performing consistency checks for the facility &quot;moons&quot;
+Loaded 1 facilities, 5 keys, 4 locales and 20 messages
+Loaded total 677 characters, stored 677 unique characters, 0% saving
+Wrote the spec &quot;Moons_Messages&quot; to the file &quot;./moons_messages.ads&quot;
+Wrote the body &quot;Moons_Messages&quot; to the file &quot;./moons_messages.adb&quot;
+ZBMCompile completed on 6/20/16 at 8:50 AM, elapsed time 0:00:00.033
+</pre></div>
+</div>
+<p>Here the generated package <code class="docutils literal"><span class="pre">Moons_Messages</span></code> is compiled from the
+<code class="docutils literal"><span class="pre">.properties</span></code> files for the <code class="docutils literal"><span class="pre">moons</span></code> facility in the current
+directory.</p>
+<p>The utility gives usage information when given the <code class="docutils literal"><span class="pre">-h</span></code> option:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>$ zbmcompile -h
+This is ZBMCompile, Version 1.3.0 BETA (r3059) on 8/6/16 at 7:44 PM
+Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
+Usage: zbmcompile [ options ] package facility
+where available options are
+  -q             Quiet mode
+  -v             Verbose mode
+  -A             Generate only ASCII source files
+  -m             Always include argument modes in generated code
+  -p             Number list entries (gnatcheck +RPositional_Components)
+  -D             Debug mode (dump the catalog definitions)
+  -d directory   Directory containing facility (defaults to &quot;.&quot;)
+  -e extension   Properties extension (default &quot;properties&quot;)
+  -h             Print this usage information
+  -i             Include initialization call in body
+  -O             Optimize string pool for locale based access
+  -g             Disable locale based access optimization (default)
+  -B             Compile only the base locale
+  -u             Disable consistency checked (unchecked mode)
+  -L locale      Compile only the named locale, e.g., &quot;fr&quot;, &quot;fr_FR&quot;
+  -r locale      Define reference (base) locale for consistency checking
+  -s locale      Define source root locale
+  -S stamp-file  File to always create/update (contains a timestamp)
+  -x name        Define external name for Initialize procedure
+  -F             Force generation, ignoring errors.  Generated code might
+                 not compile
+  -a             Generate all accessors ([w]prints, [w]strings, exceptions)
+  -G name        Generate named accessor ([w]prints, [w]strings, exceptions)
+  -C             Disable comments on generated accessor routines
+  -T item size   Set the size of an Ada output limit: pool or comment
+  -X handling    Handling of non-Ada keys for accessors (error, ignore)
+ZBMCompile completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.001
+</pre></div>
+</div>
+<div class="section" id="controlling-status-output">
+<h2>Controlling Status Output<a class="headerlink" href="#controlling-status-output" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">zbmcompile</span></code> utility supports options to control the amount
+of status information printed:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span></code></dt>
+<dd>Reduced the amount of output to just error and warning messages.</dd>
+<dt><code class="docutils literal"><span class="pre">-v</span></code></dt>
+<dd>Increase the amount of output generated.</dd>
+<dt><code class="docutils literal"><span class="pre">-D</span></code></dt>
+<dd>Increase the amount of output to aid debugging.</dd>
+</dl>
+</div>
+<div class="section" id="definition-of-properties-directory">
+<h2>Definition of Properties Directory<a class="headerlink" href="#definition-of-properties-directory" title="Permalink to this headline">¶</a></h2>
+<p>The default usage assumes the <code class="docutils literal"><span class="pre">.properties</span></code> files are located
+in the current directory.   To locate the files in another directory,
+the <code class="docutils literal"><span class="pre">-d</span></code> option can be used, e.g.,:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ zbmcompile -i -v -d mesg Moons_Messages moons
+</pre></div>
+</div>
+<p>would locate the properties associated with the <code class="docutils literal"><span class="pre">moons</span></code> facility
+in the <code class="docutils literal"><span class="pre">mesg</span></code> directory.</p>
+</div>
+<div class="section" id="properties-file-extension">
+<h2>Properties File Extension<a class="headerlink" href="#properties-file-extension" title="Permalink to this headline">¶</a></h2>
+<p>The default file extension used when locating properties files is
+<code class="docutils literal"><span class="pre">.properties</span></code>.  This can be change using the <code class="docutils literal"><span class="pre">-e</span></code> option.
+E.g., to load all <code class="docutils literal"><span class="pre">.msg</span></code> files,:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ zbmcompile -i -v -e .msg Moons_Messages moons
+</pre></div>
+</div>
+</div>
+<div class="section" id="auto-initialization">
+<h2>Auto-Initialization<a class="headerlink" href="#auto-initialization" title="Permalink to this headline">¶</a></h2>
+<p>The generate Ada code include an initialization routine which loads
+the messages into a catalog (defaulting to the standard global
+catalog).  The <code class="docutils literal"><span class="pre">-i</span></code> option includes a call to this initialization
+procedure in the body of the generated package.  This allows the
+inclusion of the message in an application by simply including the
+specification in a compilation unit, normally the main unit.  The
+option also causes the inclusion of a warning suppression pragma
+in the specification to allow compilation in a strict compilation
+environment.</p>
+</div>
+<div class="section" id="optimization-of-messages">
+<h2>Optimization of Messages<a class="headerlink" href="#optimization-of-messages" title="Permalink to this headline">¶</a></h2>
+<p>When the <code class="docutils literal"><span class="pre">zbmcompile</span></code> loads facilities in sequence which, in
+general, distributes the messages associated with various locales.
+The <code class="docutils literal"><span class="pre">zbmcompile</span></code> optimize mode, the <code class="docutils literal"><span class="pre">-O</span></code> option, performs
+a second pass on the loaded messages gathering messages for each
+locale together.  Since applications generally don&#8217;t change locale
+very often, if at all, having all the message strings for a locale
+located in the same set of pages can improve performance.</p>
+<p>For symmetry reasons, the <code class="docutils literal"><span class="pre">-g</span></code> option is included which
+disables optimization.</p>
+</div>
+<div class="section" id="locale-selection">
+<h2>Locale Selection<a class="headerlink" href="#locale-selection" title="Permalink to this headline">¶</a></h2>
+<p>Occasionally, only a subset of the <code class="docutils literal"><span class="pre">.properties</span></code> files should
+be compiled into the generated Ada package.  This selection is supported
+using the <code class="docutils literal"><span class="pre">-B</span></code>, for base locale, and <code class="docutils literal"><span class="pre">-L</span></code> options.  E.g., to
+generate the Moons message package for just the base language, French and
+German, the command would be:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ zbmcompile -v -B -L fr -L de Moons_Messages moons
+</pre></div>
+</div>
+<p>These option could be used to generate language packs, possibly via shared
+library or dll implementations.</p>
+</div>
+<div class="section" id="forced-compilation">
+<h2>Forced Compilation<a class="headerlink" href="#forced-compilation" title="Permalink to this headline">¶</a></h2>
+<p>When testing using messages from Java projects, the message files will
+frequently be found to contain errors from a verb|zbmcompile| point of
+view.  To force the generation of Ada in the context of input errors, the
+<code class="docutils literal"><span class="pre">-F</span></code> can be used.  Note, when used, there is no guarantee the resultant
+generated Ada code will compile.</p>
+</div>
+<div class="section" id="definition-of-external-initialization-routine">
+<h2>Definition of External Initialization Routine<a class="headerlink" href="#definition-of-external-initialization-routine" title="Permalink to this headline">¶</a></h2>
+<p>The possible direction for Ada localization is to allow the loading of
+language pack at run-time via shared library or dlls.  This has not been
+investigated but in the context of dynamic loading of shared libraries or
+dll&#8217;s, having an initialization name that is well defined makes the
+implementation easier.  To support this, the untested functionality of
+supplying a linker name for the initialization routine is allowed via the
+<code class="docutils literal"><span class="pre">-x</span></code> option, e.g.,:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ zbmcompile -v -B -x &quot;moons_messages&quot; Moons_Messages moons
+</pre></div>
+</div>
+</div>
+<div class="section" id="generation-of-accessor-packages">
+<h2>Generation of Accessor Packages<a class="headerlink" href="#generation-of-accessor-packages" title="Permalink to this headline">¶</a></h2>
+<p>The generation of message accessor packages creating routines for each
+message defined with parameter lists matching the arguments defined by the
+message text is controlled via the two options <code class="docutils literal"><span class="pre">-a</span></code> and <code class="docutils literal"><span class="pre">-G</span></code>.</p>
+<p>The first style, <code class="docutils literal"><span class="pre">-a</span></code>, generates all accessor style packages:</p>
+<ol class="arabic simple">
+<li><code class="docutils literal"><span class="pre">exceptions</span></code>, generate routines to raise exceptions with localized
+message strings (wide strings converted to encoding associated with the
+locale).</li>
+<li><code class="docutils literal"><span class="pre">strings</span></code>, generate functions returning locale encoded strings for
+the localized messages.</li>
+<li><code class="docutils literal"><span class="pre">wstrings</span></code>, generate functions returning wide strings for the
+localized messages.</li>
+<li><code class="docutils literal"><span class="pre">prints</span></code>, generate routines printing the localized messages to
+files as locale encoded strings.</li>
+<li><code class="docutils literal"><span class="pre">wprints</span></code>, generate routines printing the localized messages to
+files as wide strings (wide files).</li>
+</ol>
+<p>The <code class="docutils literal"><span class="pre">-G</span></code> option allows the selection of individual accessor style
+packages, e.g., for an application that only uses messages to raise
+exceptions and print to wide files, the command line options would be
+<code class="docutils literal"><span class="pre">-G</span> <span class="pre">exceptions</span></code> and <code class="docutils literal"><span class="pre">-G</span> <span class="pre">wprints</span></code>, i.e., the <code class="docutils literal"><span class="pre">-G</span></code> option
+can used multiple time on the same command line.</p>
+<p>The packages generated are child packages of the primary package given on
+the command line with names based on the facility name, e.g., if the
+facility name is &#8220;Moons&#8221;, the generated child packages would be</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Style</th>
+<th class="head">Child Package Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">exceptions</span></code></td>
+<td><code class="docutils literal"><span class="pre">Moons_Exceptions</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">strings</span></code></td>
+<td><code class="docutils literal"><span class="pre">Moons_Strings</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">wstrings</span></code></td>
+<td><code class="docutils literal"><span class="pre">Moons_Wide_Strings</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">prints</span></code></td>
+<td><code class="docutils literal"><span class="pre">Moons_Prints</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">wprints</span></code></td>
+<td><code class="docutils literal"><span class="pre">Moons_Wide_Prints</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="handling-non-ada-message-keys">
+<h2>Handling non-Ada Message Keys<a class="headerlink" href="#handling-non-ada-message-keys" title="Permalink to this headline">¶</a></h2>
+<p>When generating accessors, the keys in the various properties files
+are assumed to be valid Ada identifiers.  <code class="docutils literal"><span class="pre">zbmcompile</span></code> raises an
+error if it encounters non-Ada identifier keys, e.g., keys containing
+periods.</p>
+<p>The command line option <code class="docutils literal"><span class="pre">-X</span></code> can be used to define how such keys
+should be handled with values of <code class="docutils literal"><span class="pre">error</span></code> to generate errors for such
+keys and abandon the generation process (this is the default behaviour),
+or <code class="docutils literal"><span class="pre">ignore</span></code> to simply ignore such keys and continue generating accessors
+for the valid Ada identifier keys.</p>
+</div>
+<div class="section" id="output-directory">
+<h2>Output Directory<a class="headerlink" href="#output-directory" title="Permalink to this headline">¶</a></h2>
+<p>By default, the generated packages are written to the current directory.  To
+select a different directory, the <code class="docutils literal"><span class="pre">-o</span></code> option can be used, e.g.,:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ zbmcompile -o mesg Moons_Messages moons
+</pre></div>
+</div>
+<p>would write the packages to the <code class="docutils literal"><span class="pre">mesg</span></code> directory.  The directory must
+already exist.</p>
+</div>
+<div class="section" id="adjusting-the-generated-code">
+<h2>Adjusting the Generated Code<a class="headerlink" href="#adjusting-the-generated-code" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">`zbmcompile</span></code> command has a number of options used to adjust the
+generated code.</p>
+<div class="section" id="comments-for-accessors">
+<h3>Comments for Accessors<a class="headerlink" href="#comments-for-accessors" title="Permalink to this headline">¶</a></h3>
+<p>By default, the generated routines for accessors include the base message
+text as a comment.  This allows the display of the text of the messages within
+GPS and makes browsing the source easier.  These comments can be suppressed
+using the <code class="docutils literal"><span class="pre">-C</span></code> option.  One reason to suppress these comments would be
+to minimize recompilations when updating messages.  The <code class="docutils literal"><span class="pre">zbmcompile</span></code>
+command will only create new source files if the generated contents differs
+from the existing files (or the files currently doesn&#8217;t exist).  With
+comments suppressed, updating message strings would only result in the update
+to the primary package body requiring, in general, a single recompilation and
+re-link of an application.  With comment enabled, the accessor spec files
+would be updated resulting in larger recompilations.</p>
+</div>
+<div class="section" id="argument-modes">
+<h3>Argument Modes<a class="headerlink" href="#argument-modes" title="Permalink to this headline">¶</a></h3>
+<p>The default code generated does not include the <code class="docutils literal"><span class="pre">in</span></code> keyword for in
+routine arguments.  Some code bases might have style rules requiring explicit
+use of this keyword.  To require the generated code include this keyword, the
+<code class="docutils literal"><span class="pre">-m</span></code> option can be used.</p>
+</div>
+<div class="section" id="positional-elements">
+<h3>Positional Elements<a class="headerlink" href="#positional-elements" title="Permalink to this headline">¶</a></h3>
+<p>The generated code includes a number of initialized tables (arrays).  The
+default style for such tables is simply to list the entries using implicit
+index association.  Again, some code bases might require that explicit
+numbering of such code.  This can be enabled using the <code class="docutils literal"><span class="pre">-p</span></code> command
+line option.  E.g., instead of</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="no">Facilities</span> <span class="p">:</span> <span class="kr">constant</span> <span class="n">ZT</span><span class="p">.</span><span class="n">Constant_String_List</span> <span class="p">(</span><span class="mi">1</span> <span class="p">..</span> <span class="mi">7</span><span class="p">)</span> <span class="p">:=</span> <span class="p">(</span>
+                <span class="n">Facility_1</span><span class="p">&#39;</span><span class="na">Access</span><span class="p">,</span>
+                <span class="n">Facility_2</span><span class="p">&#39;</span><span class="na">Access</span><span class="p">,</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>the generated code would be</p>
+<div class="highlight-ada"><div class="highlight"><pre><span></span><span class="no">Facilities</span> <span class="p">:</span> <span class="kr">constant</span> <span class="n">ZT</span><span class="p">.</span><span class="n">Constant_String_List</span> <span class="p">(</span><span class="mi">1</span> <span class="p">..</span> <span class="mi">7</span><span class="p">)</span> <span class="p">:=</span> <span class="p">(</span>
+                <span class="mi">1</span> <span class="p">=&gt;</span> <span class="n">Facility_1</span><span class="p">&#39;</span><span class="na">Access</span><span class="p">,</span>
+                <span class="mi">2</span> <span class="p">=&gt;</span> <span class="n">Facility_2</span><span class="p">&#39;</span><span class="na">Access</span><span class="p">,</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="output-line-lengths">
+<h3>Output Line Lengths<a class="headerlink" href="#output-line-lengths" title="Permalink to this headline">¶</a></h3>
+<p>The generated code keeps within the standard 80 column style for source files.
+There are two control parameters which can be used as arguments to the <code class="docutils literal"><span class="pre">-T</span></code>
+command line option to adjust this for selected items:</p>
+<ol class="arabic simple">
+<li>The accumulated message strings are stored as a single constant string
+initialized using a multi-line string.  The length of the substrings
+written per line can be controlled using the command line <code class="docutils literal"><span class="pre">pool</span></code>
+item with an integer value, e.g., <code class="docutils literal"><span class="pre">-T</span> <span class="pre">pool</span> <span class="pre">30</span></code> to reduce the size.</li>
+<li>The base message text written as a comment on accessors is wrapped to
+ensure the 80 column limit is not exceeded.   This results in wrapping
+within words.  To increase the limit for messages, use the <code class="docutils literal"><span class="pre">comment</span></code>
+item, e.g., <code class="docutils literal"><span class="pre">-T</span> <span class="pre">comment</span> <span class="pre">120</span></code>.  Accessor comments include breaks
+for messages with new lines.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="consistency-checks">
+<h2>Consistency Checks<a class="headerlink" href="#consistency-checks" title="Permalink to this headline">¶</a></h2>
+<p>Localized messages are cross checked with the base locale messages to ensure
+they are consistent, i.e., it is an error for a localized message to refer
+to an argument not present in the base message.</p>
+<p>There are two options that control the consistency checks performed</p>
+<ol class="arabic simple">
+<li><code class="docutils literal"><span class="pre">-u</span></code> disable the consistency checks.  This is a rather dangerous
+thing to do and should be avoided.</li>
+<li><code class="docutils literal"><span class="pre">-r</span></code> define the base locale.  Normally the base locale messages
+are in the properties file without a locale, i.e., the root locale.
+Some applications might choose to use explicit locale naming for all
+properties files.  The <code class="docutils literal"><span class="pre">-r</span></code> option can be used to designate which
+of the available locales is the base locale.</li>
+</ol>
+</div>
+<div class="section" id="selection-of-source-locale">
+<h2>Selection of Source Locale<a class="headerlink" href="#selection-of-source-locale" title="Permalink to this headline">¶</a></h2>
+<p>The source locale for the base properties file can be specified using the
+<code class="docutils literal"><span class="pre">-s</span></code> option.  See <a class="reference internal" href="locale-type.html#zb-text-sourcelocale"><span class="std std-ref">Message Source Locale</span></a> for details on this
+functionality.</p>
+</div>
+<div class="section" id="generating-ascii-only-sources">
+<h2>Generating ASCII Only Sources<a class="headerlink" href="#generating-ascii-only-sources" title="Permalink to this headline">¶</a></h2>
+<p>By default, the <code class="docutils literal"><span class="pre">zbmcompile</span></code> utility generates UTF-8 encoded source files,
+in particular, the <code class="docutils literal"><span class="pre">Wide_String</span></code> used to store the compiled messages is a
+UTF-8 encoded string in the source file.</p>
+<p>It is assumed the compilation environment will be configured to use UTF-8
+encoded sources, e.g., the GNAT <code class="docutils literal"><span class="pre">-gnatW8</span></code> compilation option.  The
+<code class="docutils literal"><span class="pre">zbmcompile</span></code> command line option <code class="docutils literal"><span class="pre">-A</span></code> causes the generated source files
+to used string concatenation along with <code class="docutils literal"><span class="pre">Wide_Character'Val</span></code> for non-ASCII
+characters in these strings.</p>
+</div>
+<div class="section" id="stamp-file">
+<h2>Stamp File<a class="headerlink" href="#stamp-file" title="Permalink to this headline">¶</a></h2>
+<p>For Makefile base builds, dependency checking is simplified if a single fixed
+named file can be used rather than the set of generated spec and body files
+normally created by <code class="docutils literal"><span class="pre">zbmcompile</span></code>.  The <code class="docutils literal"><span class="pre">-S</span></code> option allows the
+definition of a simple time stamp file which is updated whenever the
+<code class="docutils literal"><span class="pre">zbmcompile</span></code> command is run.  This file can be used to define built
+dependencies in Makefiles.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The zbmcompile Utility</a><ul>
+<li><a class="reference internal" href="#controlling-status-output">Controlling Status Output</a></li>
+<li><a class="reference internal" href="#definition-of-properties-directory">Definition of Properties Directory</a></li>
+<li><a class="reference internal" href="#properties-file-extension">Properties File Extension</a></li>
+<li><a class="reference internal" href="#auto-initialization">Auto-Initialization</a></li>
+<li><a class="reference internal" href="#optimization-of-messages">Optimization of Messages</a></li>
+<li><a class="reference internal" href="#locale-selection">Locale Selection</a></li>
+<li><a class="reference internal" href="#forced-compilation">Forced Compilation</a></li>
+<li><a class="reference internal" href="#definition-of-external-initialization-routine">Definition of External Initialization Routine</a></li>
+<li><a class="reference internal" href="#generation-of-accessor-packages">Generation of Accessor Packages</a></li>
+<li><a class="reference internal" href="#handling-non-ada-message-keys">Handling non-Ada Message Keys</a></li>
+<li><a class="reference internal" href="#output-directory">Output Directory</a></li>
+<li><a class="reference internal" href="#adjusting-the-generated-code">Adjusting the Generated Code</a><ul>
+<li><a class="reference internal" href="#comments-for-accessors">Comments for Accessors</a></li>
+<li><a class="reference internal" href="#argument-modes">Argument Modes</a></li>
+<li><a class="reference internal" href="#positional-elements">Positional Elements</a></li>
+<li><a class="reference internal" href="#output-line-lengths">Output Line Lengths</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#consistency-checks">Consistency Checks</a></li>
+<li><a class="reference internal" href="#selection-of-source-locale">Selection of Source Locale</a></li>
+<li><a class="reference internal" href="#generating-ascii-only-sources">Generating ASCII Only Sources</a></li>
+<li><a class="reference internal" href="#stamp-file">Stamp File</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The Text Package</a><ul>
+      <li>Previous: <a href="metrics.html" title="previous chapter">Message &#8216;Metrics&#8217;</a></li>
+      <li>Next: <a href="../utilities/index.html" title="next chapter">Command Line Utilities</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/text/zbmcompile.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/text/zbmcompile.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

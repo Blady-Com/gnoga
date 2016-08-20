@@ -41,19 +41,22 @@
 MKBUNDLES=$(TOP)/src/bin/mkbundles.py
 MKWEBBUNDLE=$(TOP)/src/bin/mkwebbundle.py
 MKWEBBUNDLE_OPTIONS=
+VERSION_BUNDLE_OPTIONS+=-V "$(VERSION)"
+VERSION_BUNDLE_OPTIONS+=-S "$(V_STATUS)"
+VERSION_BUNDLE_OPTIONS+=-R "$(SVN_VERSION)"
 
 dist-bundles bundles: tar-bundles
 
 # The website bundle is a zip to make it easier to distinguish it from the
 # source bundle (a .tar.gz file).
 ws-bundle:
-	$(MKWEBBUNDLE) $(MKWEBBUNDLE_OPTIONS) -t zip
+	$(MKWEBBUNDLE) $(VERSION_BUNDLE_OPTIONS) $(MKWEBBUNDLE_OPTIONS) -t zip
 
 inventory:
 	$(MKBUNDLES) -I
 
 tar-bundles:
-	$(MKBUNDLES) -t tar.gz
+	$(MKBUNDLES) $(VERSION_BUNDLE_OPTIONS) -t tar.gz
 
 zip-bundles:
-	$(MKBUNDLES) -t zip
+	$(MKBUNDLES) $(VERSION_BUNDLE_OPTIONS) -t zip

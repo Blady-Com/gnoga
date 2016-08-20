@@ -1,0 +1,35 @@
+[GENERATED OBJECT FILE]
+b__zbx_gjenkins.o
+[PROJECT FILES]
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/zbx_gjenkins.gpr
+20160807020148
+/u/mrohan/zb/ZANYBLUE-1.3.0B/lib/gnat/zanyblue.gpr
+20160807020131
+/usr/gnat/2016/lib/gnat/gtkada.gpr
+20160725182203
+[BOUND OBJECT FILES]
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/jenkins.o
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/text_display.o
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/button_cb.o
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/locale_buttons.o
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/appmsg.o
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/jenkins-messages.o
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/display_strings.o
+/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/zbx_gjenkins.o
+[GENERATED SOURCE FILES]
+b__zbx_gjenkins.ads
+b__zbx_gjenkins.adb
+b__zbx_gjenkins.ali
+[RESULTING OPTIONS]
+-L/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/
+-L/u/mrohan/zb/ZANYBLUE-1.3.0B/examples/text/gtkapp/
+-L/usr/gnat/2016/lib/gtkada/gtkada.static/gtkada/
+-L/u/mrohan/zb/ZANYBLUE-1.3.0B/lib/zanyblue/
+-L/usr/gnat/2016/lib/gcc/x86_64-pc-linux-gnu/4.9.4/adalib/
+-static
+-static-libgcc
+-shared-libgcc
+-shared-libgcc
+-shared-libgcc
+/usr/gnat/2016/lib/gcc/x86_64-pc-linux-gnu/4.9.4/adalib/libgnat.a
+-ldl

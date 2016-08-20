@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Built-in Localizations &mdash; ZanyBlue 1.3.0b documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="up" title="The Text Package" href="index.html" />
+    <link rel="next" title="Unicode CLDR Data" href="cldr-data.html" />
+    <link rel="prev" title="Encodings and The Codecs Type" href="encodings.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="built-in-localizations">
+<h1>Built-in Localizations<a class="headerlink" href="#built-in-localizations" title="Permalink to this headline">¶</a></h1>
+<p>Localization for dates, times, language names, script names and territory
+names are compiled into the ZanyBlue Text library based on the Unicode.org
+Common Locale Date Repository (CLDR).  For details on date and time formatting
+see the section on <code class="docutils literal"><span class="pre">Ada.Calendar.Time</span></code> argument types later.</p>
+<p>The localized name associated with standard language, script and territory
+abbreviations are available via the various routines defined in the package
+<code class="docutils literal"><span class="pre">ZanyBlue.Text.CLDR</span></code>.</p>
+<p>The library is currently implemented to use the CLDR data to determine the
+zero character when printing numbers (integers).  This is normally the
+standard ASCII &#8220;0&#8221;, however, some languages, e.g., Arabic, have there own
+numeric characters.  In Arabic locale, <code class="docutils literal"><span class="pre">ZanyBlue.Text</span></code> will generate
+numeric (integer) output using Arabic numerals.  Whether this is a feature
+or an error is unclear at this time.</p>
+<p>For this release, the built-in locales are</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Code</th>
+<th class="head">Language</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ar</span></code></td>
+<td>Arabic</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cs</span></code></td>
+<td>Czech</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">da</span></code></td>
+<td>Danish</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">de</span></code></td>
+<td>German</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">el</span></code></td>
+<td>Greek</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">en</span></code></td>
+<td>English</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">en_AU</span></code></td>
+<td>English (Australia)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">en_CA</span></code></td>
+<td>English (Canada)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">en_IE</span></code></td>
+<td>English (Ireland)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">en_GB</span></code></td>
+<td>English (Great Britian)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">en_NZ</span></code></td>
+<td>English (New Zealand)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">en_ZA</span></code></td>
+<td>English (South Africa)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">es</span></code></td>
+<td>Spanish</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">fi</span></code></td>
+<td>Finnish</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">fr</span></code></td>
+<td>French</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ga</span></code></td>
+<td>Irish</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">he</span></code></td>
+<td>Hebrew</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">hu</span></code></td>
+<td>Hungarian</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">it</span></code></td>
+<td>Italian</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ja</span></code></td>
+<td>Japanese</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ko</span></code></td>
+<td>Korean</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nb</span></code></td>
+<td>Norwegian Bokmäl</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nl</span></code></td>
+<td>Dutch</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">pl</span></code></td>
+<td>Polish</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">pt</span></code></td>
+<td>Portuguese</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ro</span></code></td>
+<td>Romanian</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ru</span></code></td>
+<td>Russian</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sk</span></code></td>
+<td>Slovak</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sv</span></code></td>
+<td>Swedish</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">th</span></code></td>
+<td>Thai</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tr</span></code></td>
+<td>Turkish</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">zh</span></code></td>
+<td>Chinese (Simplified)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">zh_Hant</span></code></td>
+<td>Chinese (Traditional)</td>
+</tr>
+</tbody>
+</table>
+<p>Running the example applications, in particular the <code class="docutils literal"><span class="pre">time</span></code> example,
+will display localized day, month, etc. names and localized formats.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The Text Package</a><ul>
+      <li>Previous: <a href="encodings.html" title="previous chapter">Encodings and The Codecs Type</a></li>
+      <li>Next: <a href="cldr-data.html" title="next chapter">Unicode CLDR Data</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/text/builtin-cldr.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/text/builtin-cldr.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

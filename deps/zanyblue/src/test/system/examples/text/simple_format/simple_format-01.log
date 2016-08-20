@@ -5,6 +5,4 @@ Here is an "a value" embedded string
 1964 base 16 in a field of width 10 is |       7ac|
 A NaN: NaN
 Expect a missing argument exception for the following
-
-raised ZANYBLUE.TEXT.NO_SUCH_ARGUMENT_ERROR :  1
-make.*: \*\*\* \[run\] Error 1
+The exception "ZANYBLUE.TEXT.NO_SUCH_ARGUMENT_ERROR" was raised

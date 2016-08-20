@@ -41,9 +41,22 @@
 with Ada.Text_IO;
 with Ada.Wide_Text_IO;
 
+--
+--  @summary
+--  Operating system interfacing routines.
+--
+--  @description
+--  The "ZanyBlue.OS" package implements routines and functions used to
+--  1) Query environment attributes that are operating system specific, e.g.,
+--  the locale name associated with the current process 2) Implementation of
+--  file hanlding for Wide pathnames.
+--
 package ZanyBlue.OS is
 
    type OS_Name_Type is (Unix, Windows);
+   --  Operating system names recognized by the ZanyBlue library.
+   --  @value Unix Unix based systems, e.g., Linux, FreeBSD, etc.
+   --  @value Windows Microsoft Windows based systems.
 
    procedure Integrity_Check;
    --  Perform OS specific integrity checks on internal data: used only by
@@ -51,10 +64,15 @@ package ZanyBlue.OS is
    --  it's sorted.
 
    function OS_Locale_Name return Wide_String;
-   --  Operating system defined locale name, e.g., $LANG on Unix.
+   --  Operating system defined locale name, e.g., $LANG on Unix.  On Windows
+   --  systems, the Win API is used to query the LCID associated with the
+   --  process.
 
    function OS_Name return OS_Name_Type;
    --  Return the name of the build operating system.
+
+   function OS_New_Line return Wide_String;
+   --  Return the sequence of characters used to represent a new line.
 
    function UTF8_File_Form return String;
    --  Return the form string used by the compiler to identify an UTF-8 file.

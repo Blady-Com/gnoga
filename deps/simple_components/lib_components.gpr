@@ -1,0 +1,504 @@
+with "shared";
+
+library project Lib_Components is
+
+   Version     := "4.15";
+
+   type Object_Tracing_Mode is ("Off", "On");
+   Object_Tracing : Object_Tracing_Mode := external ("Traced_objects", "Off");
+
+   type Tasking_Mode is ("Multiple", "Single");
+   Tasking : Tasking_Mode := external ("Tasking", "Multiple");
+
+   type Atomic_Access_Mode is
+        (  "Pragma-atomic",
+           "GCC-built-ins",
+           "GCC-long-offsets"
+        );
+   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "GCC-long-offsets");
+
+   case Object_Tracing is
+      when "Off" =>
+         case Tasking is
+            when "Multiple" =>
+               case Atomic_Access is
+                  when "Pragma-atomic" =>
+                     for Source_Dirs use (".", "atomic-access/ada", "xpm");
+                  when "GCC-built-ins" =>
+                     for Source_Dirs use (".", "atomic-access/gcc", "xpm");
+                  when "GCC-long-offsets" =>
+                     for Source_Dirs use (".", "atomic-access/gcc-long-offsets", "xpm");
+               end case;
+            when "Single" =>
+               case Atomic_Access is
+                  when "Pragma-atomic" =>
+                     for Source_Dirs use ("single-task", ".", "atomic-access/ada", "xpm");
+                  when "GCC-built-ins" =>
+                     for Source_Dirs use ("single-task", ".", "atomic-access/gcc", "xpm");
+                  when "GCC-long-offsets" =>
+                     for Source_Dirs use ("single-task", ".", "atomic-access/gcc-long-offsets", "xpm");
+               end case;
+         end case;
+      when "On" =>
+         case Atomic_Access is
+            when "Pragma-atomic" =>
+               for Source_Dirs use ("gnat-debug", ".", "atomic-access/ada", "xpm");
+            when "GCC-built-ins" =>
+               for Source_Dirs use ("gnat-debug", ".", "atomic-access/gcc", "xpm");
+            when "GCC-long-offsets" =>
+               for Source_Dirs use ("gnat-debug", ".", "atomic-access/gcc-long-offsets", "xpm");
+         end case;
+   end case;
+
+   String_Edit_Source_Files :=
+       (  "strings_edit-base64.adb",
+          "strings_edit-base64.ads",
+          "strings_edit-fields.adb",
+          "strings_edit-fields.ads",
+          "strings_edit-floats.ads",
+          "strings_edit-float_edit.adb",
+          "strings_edit-float_edit.ads",
+          "strings_edit-generic_scale.adb",
+          "strings_edit-generic_scale.ads",
+          "strings_edit-integers-subscript.ads",
+          "strings_edit-integers-superscript.ads",
+          "strings_edit-integers.ads",
+          "strings_edit-integer_edit.adb",
+          "strings_edit-integer_edit.ads",
+          "strings_edit-lexicographical_order.adb",
+          "strings_edit-lexicographical_order.ads",
+          "strings_edit-quoted.adb",
+          "strings_edit-quoted.ads",
+          "strings_edit-roman_edit.adb",
+          "strings_edit-roman_edit.ads",
+          "strings_edit-streams.adb",
+          "strings_edit-streams.ads",
+          "strings_edit-streams-generic_modular.adb",
+          "strings_edit-streams-generic_modular.ads",
+          "strings_edit-streams-generic_integer.adb",
+          "strings_edit-streams-generic_integer.ads",
+          "strings_edit-streams-generic_unsigned.adb",
+          "strings_edit-streams-generic_unsigned.ads",
+          "strings_edit-streams-integers.ads",
+          "strings_edit-streams-integers_32.ads",
+          "strings_edit-streams-integers_64.ads",
+          "strings_edit-streams-naturals.ads",
+          "strings_edit-streams-unsigneds_32.ads",
+          "strings_edit-streams-unsigneds_64.ads",
+          "strings_edit-text_edit.adb",
+          "strings_edit-utf8-handling.adb",
+          "strings_edit-utf8-handling.ads",
+          "strings_edit-utf8-categorization.adb",
+          "strings_edit-utf8-categorization.ads",
+          "strings_edit-utf8-blocks.ads",
+          "strings_edit-utf8-maps.adb",
+          "strings_edit-utf8-maps.ads",
+          "strings_edit-utf8-maps-constants.ads",
+          "strings_edit-utf8-mapping.adb",
+          "strings_edit-utf8-mapping.ads",
+          "strings_edit-utf8-integer_edit.adb",
+          "strings_edit-utf8-integer_edit.ads",
+          "strings_edit-utf8-subscript-integer_edit.ads",
+          "strings_edit-utf8-subscript.adb",
+          "strings_edit-utf8-subscript.ads",
+          "strings_edit-utf8-superscript-integer_edit.ads",
+          "strings_edit-utf8-superscript.adb",
+          "strings_edit-utf8-superscript.ads",
+          "strings_edit-utf8-wildcards.adb",
+          "strings_edit-utf8-wildcards.ads",
+          "strings_edit-utf8-wildcards-case_insensitive.adb",
+          "strings_edit-utf8-wildcards-case_insensitive.ads",
+          "strings_edit-utf8.adb",
+          "strings_edit-utf8.ads",
+          "strings_edit.adb",
+          "strings_edit.ads"
+       );
+   Tables_Source_Files :=
+       (  "tables-names.adb",
+          "tables-names.ads",
+          "tables.adb",
+          "tables.ads"
+       );
+   Components_Source_Files :=
+   (  "backward_link_handles.ads",
+      "backward_link_handles-sets.ads",
+      "block_streams.adb",
+      "block_streams.ads",
+      "deposit_handles.ads",
+      "gamma.adb",
+      "generic_address_order.adb",
+      "generic_address_order.ads",
+      "generic_blackboard.adb",
+      "generic_blackboard.ads",
+      "generic_blackboard-generic_task_safe.adb",
+      "generic_blackboard-generic_task_safe.ads",
+      "generic_b_tree.adb",
+      "generic_b_tree.ads",
+      "generic_chebyshev_polynomials.adb",
+      "generic_chebyshev_polynomials.ads",
+      "generic_cubic_spline.adb",
+      "generic_cubic_spline.ads",
+      "generic_directed_graph.adb",
+      "generic_directed_graph.ads",
+      "generic_directed_weighted_graph.adb",
+      "generic_directed_weighted_graph.ads",
+      "generic_directed_graph.ads",
+      "generic_discrete_map.adb",
+      "generic_discrete_map.ads",
+      "generic_discrete_indefinite_map.adb",
+      "generic_discrete_indefinite_map.ads",
+      "generic_discrete_set.adb",
+      "generic_discrete_set.ads",
+      "generic_doubly_linked.ads",
+      "generic_doubly_linked_web-generic_list.adb",
+      "generic_doubly_linked_web-generic_list.ads",
+      "generic_doubly_linked_web.adb",
+      "generic_doubly_linked_web.ads",
+      "generic_fifo.adb",
+      "generic_fifo.ads",
+      "generic_fifo-generic_signaled.adb",
+      "generic_fifo-generic_signaled.ads",
+      "generic_indefinite_b_tree.adb",
+      "generic_indefinite_b_tree.ads",
+      "generic_indefinite_fifo.adb",
+      "generic_indefinite_fifo.ads",
+      "generic_indefinite_fifo-generic_signaled.adb",
+      "generic_indefinite_fifo-generic_signaled.ads",
+      "generic_indefinite_map.adb",
+      "generic_indefinite_map.ads",
+      "generic_indefinite_set.adb",
+      "generic_indefinite_set.ads",
+      "generic_map.adb",
+      "generic_map.ads",
+      "generic_segmented_stack.adb",
+      "generic_segmented_stack.ads",
+      "generic_random_sequence.adb",
+      "generic_random_sequence.ads",
+      "generic_set.adb",
+      "generic_set.ads",
+      "generic_stack.adb",
+      "generic_stack.ads",
+      "generic_unbounded_array.adb",
+      "generic_unbounded_array.ads",
+      "generic_unbounded_ptr_array.adb",
+      "generic_unbounded_ptr_array.ads",
+      "ieee_754.ads",
+      "ieee_754-generic_double_precision.adb",
+      "ieee_754-generic_double_precision.ads",
+      "ieee_754-generic_single_precision.adb",
+      "ieee_754-generic_single_precision.ads",
+      "ieee_754-floats.ads",
+      "ieee_754-long_floats.ads",
+      "long_float_chebyshev_polynomials.ads",
+      "long_float_cubic_spline.ads",
+      "object.adb",
+      "object.ads",
+      "object-archived-handle.adb",
+      "object-archived-handle.ads",
+      "object-archived-iterators.adb",
+      "object-archived-iterators.ads",
+      "object-archived-lists.adb",
+      "object-archived-lists.ads",
+      "object-archived-sets.adb",
+      "object-archived-sets.ads",
+      "object-archived.adb",
+      "object-archived.ads",
+      "object-handle-generic_bounded_array.adb",
+      "object-handle-generic_bounded_array.ads",
+      "object-handle-generic_handle_set.adb",
+      "object-handle-generic_handle_set.ads",
+      "object-handle-generic_set.adb",
+      "object-handle-generic_set.ads",
+      "object-handle-generic_unbounded_array.adb",
+      "object-handle-generic_unbounded_array.ads",
+      "object-handle.adb",
+      "object-handle.ads",
+      "parsers-generic_argument-segmented_stack.adb",
+      "parsers-generic_argument-segmented_stack.ads",
+      "parsers-generic_argument.ads",
+      "parsers-generic_lexer-ada_2005_blanks.adb",
+      "parsers-generic_lexer-ada_2005_blanks.ads",
+      "parsers-generic_lexer-ada_blanks.adb",
+      "parsers-generic_lexer-ada_blanks.ads",
+      "parsers-generic_lexer-blanks.adb",
+      "parsers-generic_lexer-blanks.ads",
+      "parsers-generic_lexer-cpp_blanks.adb",
+      "parsers-generic_lexer-cpp_blanks.ads",
+      "parsers-generic_lexer.adb",
+      "parsers-generic_lexer.ads",
+      "parsers-generic_operation-generic_stack.adb",
+      "parsers-generic_operation-generic_stack.ads",
+      "parsers-generic_operation-segmented_stack.ads",
+      "parsers-generic_operation.ads",
+      "parsers-generic_source-get_ada_2005_blank.adb",
+      "parsers-generic_source-get_ada_2005_blank.ads",
+      "parsers-generic_source-get_ada_blank.adb",
+      "parsers-generic_source-get_ada_blank.ads",
+      "parsers-generic_source-get_blank.adb",
+      "parsers-generic_source-get_blank.ads",
+      "parsers-generic_source-get_cpp_blank.adb",
+      "parsers-generic_source-get_cpp_blank.ads",
+      "parsers-generic_source-get_text.adb",
+      "parsers-generic_source-get_text.ads",
+      "parsers-generic_source-get_token.adb",
+      "parsers-generic_source-get_token.ads",
+      "parsers-generic_source-get_utf8_text.adb",
+      "parsers-generic_source-get_utf8_text.ads",
+      "parsers-generic_source-keywords.adb",
+      "parsers-generic_source-keywords.ads",
+      "parsers-generic_source-text_io.adb",
+      "parsers-generic_source-text_io.ads",
+      "parsers-generic_source.ads",
+      "parsers-generic_token-generic_token_lexer.adb",
+      "parsers-generic_token-generic_token_lexer.ads",
+      "parsers-generic_token-segmented_lexer.ads",
+      "parsers-generic_token.adb",
+      "parsers-generic_token.ads",
+      "parsers-multiline_source-latin1_text_io.adb",
+      "parsers-multiline_source-latin1_text_io.ads",
+      "parsers-multiline_source-location_text_io.ads",
+      "parsers-multiline_source-standard_input.adb",
+      "parsers-multiline_source-standard_input.ads",
+      "parsers-multiline_source-stream_io.adb",
+      "parsers-multiline_source-stream_io.ads",
+      "parsers-multiline_source-text_io.adb",
+      "parsers-multiline_source-text_io.ads",
+      "parsers-multiline_source-wide_text_io.adb",
+      "parsers-multiline_source-wide_text_io.ads",
+      "parsers-multiline_source.adb",
+      "parsers-multiline_source.ads",
+      "parsers-string_source.adb",
+      "parsers-string_source.ads",
+      "parsers.ads",
+      "persistent-blocking_files.adb",
+      "persistent-blocking_files.ads",
+      "persistent-blocking_files-text_io.adb",
+      "persistent-blocking_files-text_io.ads",
+      "persistent-blocking_files-transactional.adb",
+      "persistent-blocking_files-transactional.ads",
+      "persistent-blocking_files-transactional-dump.adb",
+      "persistent-blocking_files-transactional-dump.ads",
+      "persistent-data_bank-index.adb",
+      "persistent-data_bank-index.ads",
+      "persistent-data_bank-index-text_io.adb",
+      "persistent-data_bank-index-text_io.ads",
+      "persistent-data_bank-mutexes.ads",
+      "persistent-data_bank-indexed.adb",
+      "persistent-data_bank-indexed.ads",
+      "persistent-data_bank-indexed-text_io.adb",
+      "persistent-data_bank-indexed-text_io.ads",
+      "persistent-data_bank-reference.adb",
+      "persistent-data_bank-reference.ads",
+      "persistent-data_bank.adb",
+      "persistent-data_bank.ads",
+      "persistent-directory.adb",
+      "persistent-directory.ads",
+      "persistent-handle.adb",
+      "persistent-handle.ads",
+      "persistent-memory_pools.adb",
+      "persistent-memory_pools.ads",
+      "persistent-memory_pools-dump.adb",
+      "persistent-memory_pools-dump.ads",
+      "persistent-memory_pools-streams-external_b_tree.adb",
+      "persistent-memory_pools-streams-external_b_tree.ads",
+      "persistent-memory_pools-streams-generic_external_b_tree.adb",
+      "persistent-memory_pools-streams-generic_external_b_tree.ads",
+      "persistent-memory_pools-streams-generic_external_ptr_b_tree.adb",
+      "persistent-memory_pools-streams-generic_external_ptr_b_tree.ads",
+      "persistent-memory_pools-streams-external_b_tree-generic_table.adb",
+      "persistent-memory_pools-streams-external_b_tree-generic_table.ads",
+      "persistent-memory_pools-streams.adb",
+      "persistent-memory_pools-streams.ads",
+      "persistent-single_file.adb",
+      "persistent-single_file.ads",
+      "persistent-single_file_keys.adb",
+      "persistent-single_file_keys.ads",
+      "persistent-single_file_keys-arrays.ads",
+      "persistent-single_file_keys-sets.ads",
+      "persistent-single_file-text_io.adb",
+      "persistent-single_file-text_io.ads",
+      "persistent.adb",
+      "persistent.ads",
+      "stack_storage-mark_and_release.adb",
+      "stack_storage-mark_and_release.ads",
+      "stack_storage.adb",
+      "stack_storage.ads",
+      "storage_streams.adb",
+      "storage_streams.ads",
+      "strings_edit-time_conversions.adb",
+      "strings_edit-time_conversions.ads",
+      "strings_edit-symmetric_serialization.adb",
+      "strings_edit-symmetric_serialization.ads",
+      "synchronization.ads",
+      "synchronization-events.adb",
+      "synchronization-events.ads",
+      "synchronization-generic_events_array.adb",
+      "synchronization-generic_events_array.ads",
+      "synchronization-generic_mutexes_array.adb",
+      "synchronization-generic_mutexes_array.ads",
+      "synchronization-generic_pulse_events.adb",
+      "synchronization-generic_pulse_events.ads",
+      "synchronization-mutexes.adb",
+      "synchronization-mutexes.ads",
+      "synchronization-pulse_events.adb",
+      "synchronization-pulse_events.ads",
+      "tables-utf8_names.adb",
+      "tables-utf8_names.ads"
+   );
+   Components_Connections_Server_Source_Files :=
+   (  "gnat-sockets-connection_state_machine.adb",
+      "gnat-sockets-connection_state_machine.ads",
+      "gnat-sockets-connection_state_machine-big_endian.ads",
+      "gnat-sockets-connection_state_machine-big_endian-generic_double_precision_ieee_754.ads",
+      "gnat-sockets-connection_state_machine-big_endian-generic_double_precision_ieee_754.adb",
+      "gnat-sockets-connection_state_machine-big_endian-generic_single_precision_ieee_754.ads",
+      "gnat-sockets-connection_state_machine-big_endian-generic_single_precision_ieee_754.adb",
+      "gnat-sockets-connection_state_machine-big_endian-ieee_754_floats.ads",
+      "gnat-sockets-connection_state_machine-big_endian-ieee_754_long_floats.ads",
+      "gnat-sockets-connection_state_machine-big_endian-integers.adb",
+      "gnat-sockets-connection_state_machine-big_endian-integers.ads",
+      "gnat-sockets-connection_state_machine-big_endian-unsigneds.adb",
+      "gnat-sockets-connection_state_machine-big_endian-unsigneds.ads",
+      "gnat-sockets-connection_state_machine-chain_code.ads",
+      "gnat-sockets-connection_state_machine-chain_code-generic_integer.adb",
+      "gnat-sockets-connection_state_machine-chain_code-generic_integer.ads",
+      "gnat-sockets-connection_state_machine-chain_code-generic_unsigned.adb",
+      "gnat-sockets-connection_state_machine-chain_code-generic_unsigned.ads",
+      "gnat-sockets-connection_state_machine-chain_code-integers.ads",
+      "gnat-sockets-connection_state_machine-chain_code-naturals.ads",
+      "gnat-sockets-connection_state_machine-expected_sequence.adb",
+      "gnat-sockets-connection_state_machine-expected_sequence.ads",
+      "gnat-sockets-connection_state_machine-little_endian.ads",
+      "gnat-sockets-connection_state_machine-little_endian-generic_double_precision_ieee_754.ads",
+      "gnat-sockets-connection_state_machine-little_endian-generic_double_precision_ieee_754.adb",
+      "gnat-sockets-connection_state_machine-little_endian-generic_single_precision_ieee_754.ads",
+      "gnat-sockets-connection_state_machine-little_endian-generic_single_precision_ieee_754.adb",
+      "gnat-sockets-connection_state_machine-little_endian-ieee_754_floats.ads",
+      "gnat-sockets-connection_state_machine-little_endian-ieee_754_long_floats.ads",
+      "gnat-sockets-connection_state_machine-little_endian-integers.adb",
+      "gnat-sockets-connection_state_machine-little_endian-integers.ads",
+      "gnat-sockets-connection_state_machine-little_endian-unsigneds.adb",
+      "gnat-sockets-connection_state_machine-little_endian-unsigneds.ads",
+      "gnat-sockets-connection_state_machine-terminated_strings.adb",
+      "gnat-sockets-connection_state_machine-terminated_strings.ads",
+      "gnat-sockets-connection_state_machine-variable_length_arrays.adb",
+      "gnat-sockets-connection_state_machine-variable_length_arrays.ads",
+      "gnat-sockets-connection_state_machine-variable_length_strings.adb",
+      "gnat-sockets-connection_state_machine-variable_length_strings.ads",
+      "gnat-sockets-server.ads",
+      "gnat-sockets-server.adb",
+      "gnat-sockets-server-handles.ads",
+      "gnat-sockets-server-pooled.adb",
+      "gnat-sockets-server-pooled.ads"
+   );
+   Components_Connections_Server_SMPT_Source_Files :=
+       (  "gnat-sockets-smtp.adb",
+          "gnat-sockets-smtp.ads",
+          "gnat-sockets-smtp-client.adb",
+          "gnat-sockets-smtp-client.ads",
+          "gnat-sockets-smtp-client-synchronous.adb",
+          "gnat-sockets-smtp-client-synchronous.ads"
+       );
+   Components_Connections_Server_Secure_Source_Files :=
+       (  "gnat-sockets-server-secure.adb",
+          "gnat-sockets-server-secure.ads",
+          "gnat-sockets-server-secure-anonymous.adb",
+          "gnat-sockets-server-secure-anonymous.ads",
+          "gnat-sockets-server-secure-x509.adb",
+          "gnat-sockets-server-secure-x509.ads"
+       );
+   Components_Connections_Server_MQTT_Source_Files :=
+       (  "gnat-sockets-mqtt.adb",
+          "gnat-sockets-mqtt.ads",
+          "gnat-sockets-mqtt-server.adb",
+          "gnat-sockets-mqtt-server.ads",
+          "gnat-sockets-mqtt-streams.adb",
+          "gnat-sockets-mqtt-streams.ads"
+       );
+   Components_Connections_Server_Modbus_Source_Files :=
+       (  "gnat-sockets-connection_state_machine-modbus_client.adb",
+          "gnat-sockets-connection_state_machine-modbus_client.ads",
+          "gnat-sockets-connection_state_machine-modbus_client-synchronous.adb",
+          "gnat-sockets-connection_state_machine-modbus_client-synchronous.ads"
+       );
+   Components_Connections_Server_HTTP_Server_Source_Files :=
+       (  "gnat-sockets-connection_state_machine-http_client.adb",
+          "gnat-sockets-connection_state_machine-http_client.ads",
+          "gnat-sockets-connection_state_machine-http_client-signaled.adb",
+          "gnat-sockets-connection_state_machine-http_client-signaled.ads",
+          "gnat-sockets-connection_state_machine-http_server.adb",
+          "gnat-sockets-connection_state_machine-http_server.ads"
+       );
+   Components_Connections_Server_HTTP_Server_Sqlite_Browser_Source_Files :=
+       (  "gnat-sockets-connection_state_machine-http_server-sqlite_browser.adb",
+          "gnat-sockets-connection_state_machine-http_server-sqlite_browser.ads"
+       );
+   Components_Connections_Server_ELV_Max_Cube_Source_Files :=
+       (  "gnat-sockets-connection_state_machine-elv_max_cube_client.adb",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client.ads",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.adb",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads"
+       );
+   Components_Sqlite_Source_Files :=
+   (  "persistent-sqlite_keys-arrays.ads",
+      "persistent-sqlite_keys-sets.ads",
+      "persistent-sqlite_keys.adb",
+      "persistent-sqlite_keys.ads",
+      "persistent-sqlite_links.adb",
+      "persistent-sqlite_links.ads",
+      "persistent-sqlite.adb",
+      "persistent-sqlite.ads",
+      "persistent-sqlite-text_io.adb",
+      "persistent-sqlite-text_io.ads",
+      "sqlite.adb",
+      "sqlite.ads"
+   );
+   XPM_Parser_Source_Files :=
+      (  "parsers-generic_source-xpm.adb",
+         "parsers-generic_source-xpm.ads",
+         "parsers-multiline_source-xpm.ads"
+      );
+   GNUTLS_Source_Files :=
+       (  "gnutls.adb",
+          "gnutls.ads"
+       );
+   for Source_Files use
+      String_Edit_Source_Files &
+      Tables_Source_Files &
+      Components_Source_Files &
+      Components_Connections_Server_Source_Files &
+      Components_Connections_Server_SMPT_Source_Files &
+      Components_Connections_Server_Secure_Source_Files &
+      Components_Connections_Server_MQTT_Source_Files &
+      Components_Connections_Server_Modbus_Source_Files &
+      Components_Connections_Server_HTTP_Server_Source_Files &
+      Components_Connections_Server_HTTP_Server_Sqlite_Browser_Source_Files &
+      Components_Connections_Server_ELV_Max_Cube_Source_Files &
+      Components_Sqlite_Source_Files &
+      XPM_Parser_Source_Files &
+      GNUTLS_Source_Files;
+
+   for Library_Kind use Shared.Library_Kind;
+   for Library_Name use "components";
+   for Object_Dir  use "obj/" & Project'Library_Name & "/" & Project'Library_Kind;
+   for Library_Dir use "lib/" & Project'Library_Name & "/" & Project'Library_Kind;
+   for Library_Version use
+      "lib" & Project'Library_Name & Shared.DyLib_Ext & "." & Version;
+
+   package Builder  renames Shared.Builder;
+   package Compiler renames Shared.Compiler;
+   package Binder   renames Shared.Binder;
+
+   package Install is
+      for Install_Name use "components";
+      for Artifacts ("share/doc/components") use
+         ("*.jpg", "*.gif", "*.png", "*.htm", "doc/components_rm");
+      for Artifacts ("share/examples/components") use
+         ("parser-examples/*");
+   end Install;
+
+   package Ide is
+      for Documentation_Dir use "doc/components_rm";
+   end Ide;
+
+end Lib_Components;

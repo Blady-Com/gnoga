@@ -1,7 +1,0 @@
-project Gnoga is
-   for Languages use ("Ada");
-   for Source_Dirs use ("../include");
-   for Library_Name use "gnoga";
-   for Library_Dir use ".";
-   for Externally_Built use "true";
-end Gnoga;

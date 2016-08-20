@@ -1,6 +1,5 @@
 with "../settings";
-with "../deps/simple_components/components-connections_server-http_server.gpr";
-with "../deps/simple_components/xpm/xpm_parser.gpr";
+with "lib_components.gpr";
 
 project Gnoga is
 

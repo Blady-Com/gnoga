@@ -1,4 +1,5 @@
-with "../../lib/gnoga.gpr";
+with "../../src/gnoga.gpr";
+with "../../settings.gpr";
 
 project Chattanooga is
    for Languages use ("Ada");
@@ -14,4 +15,7 @@ project Chattanooga is
    package Builder is
       for Executable ("chattanooga-program.adb") use "chattanooga";
    end Builder;
+
+   package Linker renames Settings.Linker;
+
 end Chattanooga;

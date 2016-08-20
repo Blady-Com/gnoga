@@ -63,7 +63,7 @@ run_%:	all
 	$(APPLICATION) -l$*
 
 clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
+	-gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
 
 messages:	$(GENERATED)
 

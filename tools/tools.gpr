@@ -1,5 +1,5 @@
-with "../lib/gnoga";
-with "../settings";
+with "../src/gnoga.gpr";
+with "../settings.gpr";
 
 project Tools is
 
@@ -21,4 +21,7 @@ project Tools is
       for Executable ("gnoga_make-main.adb") use "gnoga_make";
       for Executable ("gnoga_doc-main.adb") use "gnoga_doc";
    end Builder;
+
+   package Linker renames Settings.Linker;
+
 end Tools;

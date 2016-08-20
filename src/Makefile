@@ -26,9 +26,13 @@ endif
 
 ifdef ComSpec
 	COPY=copy
+	RM=del
 else
-	COPY=cp
+	COPY=cp -p
+	RM=rm -f
 endif
+
+all: gnoga-application.adb
 
 gnoga-application.adb:
 ifeq (${PRJ_TARGET}, Windows)
@@ -44,4 +48,5 @@ else
 endif
 endif
 
-
+clean:
+	$(RM) gnoga-application.adb

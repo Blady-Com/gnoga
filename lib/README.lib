@@ -1,9 +1,0 @@
-This directory contains release gpr files for gnoga.
-
-After running make gnoga this directory will contain the .ali files fo both and
-Gnoga and Simple_Components and libgnoga.a for static linking of both. The .ali
-files are marked readonly to recognize that there should be no reconsideration
-for recompiling the libs. ../include will contain the matching Ada specs.
-
-To include gnoga in your projects that have not used the global install option
-just with the gnoga.gpr file from this directory. 

@@ -1,11 +1,10 @@
 obj/
 bin/
 lib/
-include/
-gnatinspect.db
+build/
 .DS_Store
-*.o
-*.ali
 *.npp
-*.cgpr
 docs/html/
+deps/zanyblue/include/
+gnatinspect.db
+gpsauto.cgpr

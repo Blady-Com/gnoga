@@ -4,7 +4,7 @@ ifdef ComSpec
 	RMS=del /S
 	PATHSEP2=\\
 else
-	COPY=cp
+	COPY=cp -p
 	RM=rm
 	RMS=rm -rf
 	PATHSEP2=/

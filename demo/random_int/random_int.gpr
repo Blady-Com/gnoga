@@ -1,4 +1,5 @@
-with "../../lib/gnoga.gpr";
+with "../../src/gnoga.gpr";
+with "../../settings.gpr";
 
 project Random_Int is
    for Languages use ("Ada");
@@ -14,4 +15,7 @@ project Random_Int is
    package Builder is
       for Executable ("random_int-program.adb") use "random_int";
    end Builder;
+
+   package Linker renames Settings.Linker;
+
 end Random_Int;

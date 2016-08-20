@@ -1,9 +1,0 @@
-with "gnoga";
-
-project Gnoga_Secure is
-   for Languages use ("Ada");
-   for Source_Dirs use ("../ssl");
-   for Library_Name use "gnoga_secure";
-   for Library_Dir use ".";
-   for Externally_Built use "true";
-end Gnoga_Secure;

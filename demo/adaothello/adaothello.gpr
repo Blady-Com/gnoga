@@ -1,4 +1,5 @@
-with "../../lib/gnoga.gpr";
+with "../../src/gnoga.gpr";
+with "../../settings.gpr";
 
 project AdaOthello is
    for Languages use ("Ada");
@@ -14,4 +15,7 @@ project AdaOthello is
    package Builder is
       for Executable ("othello_game.adb") use "othello";
    end Builder;
+
+   package Linker renames Settings.Linker;
+
 end AdaOthello;

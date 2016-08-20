@@ -3,7 +3,7 @@ ifdef ComSpec
 	RM=del
 	PATHSEP2=\\
 else
-	COPY=cp
+	COPY=cp -p
 	RM=rm
 	PATHSEP2=/
 endif

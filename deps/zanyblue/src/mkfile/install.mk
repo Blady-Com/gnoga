@@ -78,13 +78,16 @@ $(INSTALL_INCDIR):
 $(INSTALL_INCDIR)/%:	$(INCDIR)/%
 	$(call COPY,$(INCDIR)/$*,$(INSTALL_INCDIR)/$*)
 
-libraries: $(INSTALL_LIBDIR) $(INSTALL_LIB_FILES) $(INSTALL_GPRFILE)
+libraries: $(INSTALL_LIBDIR) $(INSTALL_LIB_FILES) install_lib $(INSTALL_GPRFILE)
 
 $(INSTALL_LIBDIR):
 	$(call MKDIR,$(INSTALL_LIBDIR))
 
 $(INSTALL_LIBDIR)/%:	$(LIBDIR)/%
 	$(call COPY,$(LIBDIR)/$*,$(INSTALL_LIBDIR)/$*)
+
+install_lib:	$(LIBDIR)/../libzanyblue.a
+	$(call COPY,$(LIBDIR)/../libzanyblue.a,$(INSTALL_LIBDIR)/..)
 
 $(INSTALL_GPRFILE): $(GPRFILE)
 	$(call MKDIR,$(INSTALL_GPRDIR))

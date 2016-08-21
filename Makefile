@@ -2,7 +2,7 @@ PREFIX=$(shell echo $(dir $(shell which gnatls)) | sed "s:/cygdrive/\\(.\\):\\1\
 GPRCHECK=$(shell gprbuild --version)
 TARGET=$(shell gcc -dumpmachine)
 CWD=$(shell pwd)
-DEPS_GPR_PATH=$(CWD)/build/share/gpr
+DEPS_GPR_FLAGS=-aP $(CWD)/build/share/gpr -aP $(CWD)/build/lib/gnat
 
 ATOMIC_ACCESS=GCC-long-offsets
 #if using GNAT GPL prior to 2014 or earlier on a 32bit host (Windows or Linux)
@@ -103,17 +103,10 @@ lib/libsqlite3.a:
 
 sqlite3: lib/libsqlite3.a
 
-# Needed for Zanyblue install
-include deps/zanyblue/src/mkfile/version.mk
-ZBGNATXDEFS=-XV_MAJOR=$(V_MAJOR)
-ZBGNATXDEFS+=-XV_MINOR=$(V_MINOR)
-ZBGNATXDEFS+=-XV_PATCH=$(V_PATCH)
-
 # Zanyblue with DEBUG on
 zanyblue:
-	cd deps/zanyblue && make -C src setup library zbmcompile.app
-	cd deps/zanyblue && $(INSTALLER) --prefix=$(CWD)/build --install-name=zanyblue src/zblib.gpr $(ZBGNATXDEFS)
-	cd deps/zanyblue && $(INSTALLER) --prefix=$(CWD)/build --install-name=zanyblue -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr $(ZBGNATXDEFS)
+	cd deps/zanyblue/src && make BUILD=Debug
+	cd deps/zanyblue/src && make INSTALL_DIR=$(CWD)/build install
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
@@ -152,17 +145,17 @@ bin/multimarkdown:
 
 # Gnoga with DEBUG on by default
 gnoga:
-	$(BUILDER) -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} -aP $(DEPS_GPR_PATH)
+	$(BUILDER) -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} $(DEPS_GPR_FLAGS)
 
 gnoga_secure:
-	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} -aP $(DEPS_GPR_PATH)
+	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} $(DEPS_GPR_FLAGS)
 
 gnoga_tools:
-	$(BUILDER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	$(BUILDER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 # Gnoga build with DEBUG off
 release: deps setup basic_components
-	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} -aP $(DEPS_GPR_PATH)
+	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} $(DEPS_GPR_FLAGS)
 
 # Install Gnoga with DEBUG off
 install: release gnoga_tools
@@ -171,8 +164,8 @@ install: release gnoga_tools
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue src/zblib.gpr $(ZBGNATXDEFS)
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr $(ZBGNATXDEFS)
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} -aP $(DEPS_GPR_PATH)
-	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} -aP $(DEPS_GPR_PATH)
+	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} $(DEPS_GPR_FLAGS)
+	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} $(DEPS_GPR_FLAGS)
 
 # Install Gnoga with DEBUG on
 install_debug:
@@ -181,8 +174,8 @@ install_debug:
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue src/zblib.gpr $(ZBGNATXDEFS)
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr $(ZBGNATXDEFS)
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} -aP $(DEPS_GPR_PATH)
-	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} -aP $(DEPS_GPR_PATH)
+	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} $(DEPS_GPR_FLAGS)
+	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} $(DEPS_GPR_FLAGS)
 
 uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall lib_components.gpr
@@ -195,55 +188,55 @@ uninstall:
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello
 
 snake:
-	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 mine_detector:
-	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 chattanooga:
-	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 adaedit:
-	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 adablog:
-	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 connect_four: zanyblue
 	cd demo/connect_four && ../../deps/zanyblue/bin/zbmcompile -i -v -G strings connectfour_messages connectfour
-	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 linxtris:
-	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
 
 password_gen: pragmarc
-	cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 random_int:
-	cd demo/random_int && $(BUILDER) -Prandom_int.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/random_int && $(BUILDER) -Prandom_int.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 adaothello:
-	cd demo/adaothello && $(BUILDER) -Padaothello.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd demo/adaothello && $(BUILDER) -Padaothello.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 tests:
-	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 tests_ssl: gnoga_secure
-	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 tutorials:
-	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-03 && $(BUILDER) -Ptutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-04 && $(BUILDER) -Ptutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-05 && $(BUILDER) -Ptutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-06 && $(BUILDER) -Ptutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
-	cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET} -aP $(DEPS_GPR_PATH)
+	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-03 && $(BUILDER) -Ptutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-04 && $(BUILDER) -Ptutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-05 && $(BUILDER) -Ptutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-06 && $(BUILDER) -Ptutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 clean_all: clean clean_deps
 	$(MAKE) -C components uninstall

@@ -1,6 +1,6 @@
 with "../../src/gnoga.gpr";
 with "../../settings.gpr";
-with "zblib.gpr";
+with "zanyblue.gpr";
 
 project Connect_Four is
 

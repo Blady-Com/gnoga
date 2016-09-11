@@ -208,7 +208,7 @@ deps/PragmARC:
 pragmarc: deps/PragmARC
 	- cd deps/PragmARC && git pull
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello
+demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -241,6 +241,9 @@ random_int:
 
 adaothello:
 	cd demo/adaothello && $(BUILDER) -Padaothello.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
+tic_tac_toe:
+	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests: gnoga
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -305,6 +308,7 @@ clean:
 	cd demo/adaedit && $(CLEANER) -Padaedit.gpr
 	-cd demo/password_gen && $(CLEANER) -Ppassword_gen.gpr
 	-cd demo/random_int && $(CLEANER) -Prandom_int.gpr
+	-cd demo/tic_tac_toe && $(CLEANER) -Ptic_tac_toe.gpr
 	- cd deps/zanyblue && make -C src clean
 	cd tutorial/tutorial-01 && $(CLEANER) -Ptutorial_01.gpr
 	cd tutorial/tutorial-02 && $(CLEANER) -Ptutorial_02.gpr

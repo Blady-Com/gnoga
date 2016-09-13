@@ -21,13 +21,13 @@
 --| Filename         : $Source: /othello_pkg.adb,v $
 --| Author           : Adrian Hoe (byhoe)
 --| Created On       : 2001/11/15
---| Last Modified By : $Author: JHB $
---| Last Modified On : $Date: 2016/03/06 09:18:25 $
+--| Last Modified By : $Author: Jeff Carter $
+--| Last Modified On : $Date: 2016/08/03 $
 --| Status           : $State: Exp $
 --|
 --------------------------------------------------------------------------------
 with Ada.Unchecked_Conversion;
-with Ada.Numerics.Discrete_Random;
+with Ada.Numerics.Elementary_Functions;
 with Ada.Integer_Text_Io;    use Ada.Integer_Text_Io;
 
 with Othello_Pkg.Callbacks;
@@ -147,8 +147,8 @@ package body Othello_Pkg is
    end Check_Move;
    ----------------------------------------------------------------------------
    function Count_Bead
-      (Playing_Board : in out Othello_Types.Board_Matrix;
-       Color         : in     Bead_Color)
+      (Playing_Board : in Othello_Types.Board_Matrix;
+       Color         : in Bead_Color)
        return integer
    is
       Count : Integer := 0;
@@ -439,25 +439,44 @@ package body Othello_Pkg is
    end Get_Possible_Moves;
    ----------------------------------------------------------------------------
    procedure Pick_Move (Possible_Moves : in     Possible_Moves_Matrix;
-                        Factor         : in     Integer;
+                        Board          : in     Othello_Types.Board_Matrix;
                         Row            :    out Othello_Types.Valid_Row;
                         Column         :    out Othello_Types.Valid_Column)
    is
-      subtype Move is Integer range 1 .. Factor;
+      package Math renames Ada.Numerics.Elementary_Functions;
 
-      package Random_Move is new Ada.Numerics.Discrete_Random (Move);
-      use Random_Move;
+      type Weight_Set is array (Othello_Types.Valid_Row, Othello_Types.Valid_Column) of Float;
 
-      G        : Generator;
-      The_Move : Move;
+      Weight : constant Weight_Set := (1 | 8 => (1 | 8 => 21.0, 2 .. 7 => 18.0),
+                                       2 | 7 => (1 | 8 => 18.0, 2 | 7 => 3.0, 3 .. 6 => 6.0),
+                                       3 | 6 => (1 | 8 => 18.0, 2 | 7 => 6.0, 3 | 6 => 12.0, 4 .. 5 => 9.0),
+                                       4 | 5 => (1 | 8 => 18.0, 2 | 7 => 6.0, 3 .. 6 => 9.0) );
+
+      Count : constant Float := Float (Count_Bead (Board, Blue) + Count_Bead (Board, Red) );
+      Fp    : constant Float := Math.Exp (-Count / 48.0); -- Factor for positioning weight
+      Fm    : constant Float := 1.0 - Fp;                 -- Factor for material weight (Check component of Possible_Moves)
+      -- Factors give more weight to positioning early and to material later
+
+      Wt         : Float; -- Total weighting
+      Max_Weight : Float; -- Best Wt seen so far
    begin
-      Reset (G);
+      if Possible_Moves'Length = 0 then
+         raise Program_Error with "Pick_Move: No possible moves";
+      end if;
 
-      The_Move := Random (G);
+      Row := Possible_Moves (Possible_Moves'First).Row;
+      Column := Possible_Moves (Possible_Moves'First).Column;
+      Max_Weight := Fm * Float (Possible_Moves (Possible_Moves'First).Check) + Fp * Weight (Row, Column);
 
-      Row      := Possible_Moves (The_Move).Row;
-      Column   := Possible_Moves (The_Move).Column;
+      Find_Max : for I in Possible_Moves'First + 1 .. Possible_Moves'Last loop
+         Wt := Fm * Float (Possible_Moves (I).Check) + Fp * Weight (Possible_Moves (I).Row, Possible_Moves (I).Column);
 
+         if Wt > Max_Weight then
+            Row := Possible_Moves (I).Row;
+            Column := Possible_Moves (I).Column;
+            Max_Weight := Wt;
+         end if;
+      end loop Find_Max;
    end Pick_Move;
    ----------------------------------------------------------------------------
    procedure Computer_Make_Move
@@ -476,7 +495,7 @@ package body Othello_Pkg is
 
       Get_Possible_Moves (Othello,Playing_Board,Computer_Move, Possible_Moves, Computer_Factor);
       if Computer_Factor > 0 then
-         Pick_Move (Possible_Moves, Computer_Factor, Row, Column);
+         Pick_Move (Possible_Moves (1 .. Computer_Factor), Playing_Board, Row, Column);
          Put_Move (Othello,Playing_Board, Row, Column, Computer_Move);
       end if;
       Get_Possible_Moves (Othello,Playing_Board, Player_Move, Possible_Moves, Player_Factor);
@@ -618,7 +637,7 @@ package body Othello_Pkg is
    begin
       Gnoga.Application.Title ("Ada Othello");
 
-      Gnoga.Application.HTML_On_Close ("Ada Othello ended.");
+      Gnoga.Application.HTML_On_Close (Othello_Types.End_Message);
 
       Gnoga.Application.Multi_Connect.Initialize;
 

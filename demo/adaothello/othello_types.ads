@@ -81,20 +81,20 @@ package Othello_Types is
    subtype Bead_Color is Cell_Status;
 
    -- This is what each user's data looks like
-   type App_Data_Type is new Gnoga.Types.Connection_Data_Type
-   with
-      record
-         Window_View   : Gnoga.Gui.View.View_Type;
-         Main_View     : Gnoga.Gui.View.View_Type;
+   type App_Data_Type is new Gnoga.Types.Connection_Data_Type with record
+      Window        : Gnoga.Gui.Window.Pointer_To_Window_Class;
+      Window_View   : Gnoga.Gui.View.View_Type;
+      Main_View     : Gnoga.Gui.View.View_Type;
 
-         Othello       : Othello_Record;
+      Othello       : Othello_Record;
 
-         Playing_Board : Board_Matrix;
-         Whose_Move    : Bead_Color := Blue;
-         Game_Over     : Boolean    := False;
+      Playing_Board : Board_Matrix;
+      Whose_Move    : Bead_Color := Blue;
+      Game_Over     : Boolean    := False;
       end record;
 
    type App_Data_Access is access all App_Data_Type;
 
-
+   End_Message : constant String := "Ada Othello ended.";
 end Othello_Types;
+

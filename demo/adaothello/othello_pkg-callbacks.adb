@@ -85,8 +85,15 @@ package body Othello_Pkg.Callbacks is
    procedure On_Exit1_Activate
      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
+      App_Data : Othello_Types.App_Data_Access :=
+         Othello_Types.App_Data_Access(Object.Connection_Data);
    begin
-      Gnoga.Application.Multi_Connect.End_Application;
+--        Gnoga.Application.Multi_Connect.End_Application;
+
+      App_Data.Main_View.Remove;
+      App_Data.Window_View.Put_Line (Message => Othello_Types.End_Message);
+      App_Data.Window.Close;
+      App_Data.Window.Close_Connection;
    end On_Exit1_Activate;
 
    -----------------------
@@ -138,6 +145,7 @@ package body Othello_Pkg.Callbacks is
    begin
       -- Set the variable data for this connection
       Main_Window.Connection_Data (App);
+      App.Window := Main_Window'Unchecked_Access;
 
       -- Initialize top level layout
       App.Window_View.Create(Main_Window);
@@ -223,3 +231,4 @@ package body Othello_Pkg.Callbacks is
    end On_Connect;
 
 end Othello_Pkg.Callbacks;
+

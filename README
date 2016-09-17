@@ -16,20 +16,23 @@ Either download and unarchive the stable version of Gnoga from
 http://www.gnoga.com or use git to get the latest development version:
 
 ```
-git clone git://git.code.sf.net/p/gnoga/code gnoga
-cd gnoga
+git clone git://git.code.sf.net/p/gnoga/code gnoga-code
+cd gnoga-code
 make  (or run "make release" for no debug info in compile)
 ```
 
-then run the snake demo or tutorials in /bin. There are additional demos in
- /demo
+then run the snake demo or tutorials in /bin. There are additional demos in /demo
 
 See INSTALL for more information about installing Gnoga as a standard gcc/ada
 library if desired.
 
-See docs/user_guide.md to get started.
+See docs/html/user_guide.html to get started (make html-docs).
+See docs/html/gnoga_rm/index.html for reference manual (make rm-docs).
 
-Gnoga includes a copy of Dmitry A. Kazakov's Simple Components and uses it for http and websockets. See deps/simple_components/components.htm for details. It includes an incredible wealth of Ada components you can incorporate in your software freely and is under the GMGPLv2.
+Gnoga includes a copy of Dmitry A. Kazakov's Simple Components and uses it for http and websockets.
+See deps/simple_components/components.htm for details.
+It includes an incredible wealth of Ada components you can incorporate in your software freely and
+is under the GMGPLv2.
 
 Here is an overview of Gnoga's framework:
 

@@ -5,7 +5,7 @@ Among various followings ideas, if you want to have one available in your favori
  - open a ticket: https://sourceforge.net/p/gnoga/tickets/
 
 
-To do 1.2:
+To do 1.3:
 
 1. Complete SVG DOM bindings
 2. Direct connection to webkit via API instead of sockets for Gtk and Mac
@@ -74,7 +74,7 @@ Some other ideas:
 16. An installer using GNOGA would be a nice way to demonstrate package management.
    You may get some inspiration from the GWindows installer, made completely in Ada and using GWindows for the UI:
    http://sf.net/p/gnavi/code/HEAD/tree/gwindows/installer/
-17. Provide components not just of Gnoga GUI elements but to also package up for use things like
+DONE 17. Provide components not just of Gnoga GUI elements but to also package up for use things like
    Jeff's PargmArc (http://pragmada.x10hosting.com/pragmarc.htm) etc.
    Added Jeff's PargmArc library.
 18. Install also tutorials and demos
@@ -97,7 +97,7 @@ DONE 19. Internationalisation with language translation of displayed text.
 29. Getting good scientific 2D plots is a hard requirement, getting some nice 3D stuff would be a nice addition.
    Added Jeff's plotting library.
 30. Use Wide_Strings type for Gnoga APIs strings and keep UTF-8 support
-31. Add AdaOthello port to Gnoga.
+DONE 31. Add AdaOthello port to Gnoga.
 32. Support games with http://phaser.io/.
 33. Instrument Gnoga tasks with a Ada.Task_Termination handler.
 34. Simplified Gnoga built with plugins copied files and GPR project files with GPS

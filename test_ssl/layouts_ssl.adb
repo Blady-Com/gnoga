@@ -9,6 +9,7 @@ with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 
 with Gnoga.Server.Connection.Secure;
+with Gnoga.Types.Colors;
 
 procedure Layouts_SSL is
    use Gnoga;
@@ -79,9 +80,9 @@ procedure Layouts_SSL is
       Tabs.Dynamic;
       Tabs.Create (Parent       => Dex.all,
                    Card_View    => App.View,
-                   Text_Color   => Gnoga.Types.RGBA_Type'(255, 255, 255, 1.0),
-                   Tab_Color    => Gnoga.Types.RGBA_Type'(0, 0, 255, 1.0),
-                   Select_Color => Gnoga.Types.RGBA_Type'(0, 0, 128, 1.0));
+                   Text_Color   => Gnoga.Types.Colors.Black,
+                   Tab_Color    => Gnoga.Types.Colors.Blue,
+                   Select_Color => Gnoga.Types.Colors.Light_Blue);
 
       Tab := new View.Card.Tab_Item_Type;
       Tab.Dynamic;

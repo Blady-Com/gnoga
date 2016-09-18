@@ -2,7 +2,7 @@ PREFIX=$(shell echo $(dir $(shell which gnatls)) | sed "s:/cygdrive/\\(.\\):\\1\
 GPRCHECK=$(shell gprbuild --version)
 TARGET=$(shell gcc -dumpmachine)
 CWD=$(shell pwd)
-DEPS_GPR_FLAGS=-aP $(CWD)/build/share/gpr -aP $(CWD)/build/lib/gnat
+DEPS_GPR_FLAGS=-aP$(CWD)/build/share/gpr -aP$(CWD)/build/lib/gnat
 
 ATOMIC_ACCESS=GCC-long-offsets
 #if using GNAT GPL prior to 2014 or earlier on a 32bit host (Windows or Linux)
@@ -255,51 +255,51 @@ clean_deps:
 	$(RM) lib/libsqlite3.a
 
 clean: clean_demo clean_tutorials clean_tests
-	cd src && $(CLEANER) -Pgnoga.gpr -aP$(DEPS_GPR_PATH)
-	cd ssl && $(CLEANER) -Pgnoga_secure.gpr -aP$(DEPS_GPR_PATH)
-	cd tools && $(CLEANER) -Ptools.gpr -aP$(DEPS_GPR_PATH)
+	cd src && $(CLEANER) -Pgnoga.gpr $(DEPS_GPR_FLAGS)
+	cd ssl && $(CLEANER) -Pgnoga_secure.gpr $(DEPS_GPR_FLAGS)
+	cd tools && $(CLEANER) -Ptools.gpr $(DEPS_GPR_FLAGS)
 	$(RM) bin/*.db
 	$(RM) bin/temp.txt
 	$(RM) obj/gnoga_gtk_window.o
 
 clean_demo:
-	cd demo/snake && $(CLEANER) -P snake.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/mine_detector && $(CLEANER) -P mine_detector.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/adaedit && $(CLEANER) -P adaedit.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/adablog && $(CLEANER) -P adablog.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/connect_four && $(CLEANER) -P connect_four.gpr -aP$(DEPS_GPR_PATH)
+	cd demo/snake && $(CLEANER) -P snake.gpr $(DEPS_GPR_FLAGS)
+	cd demo/mine_detector && $(CLEANER) -P mine_detector.gpr $(DEPS_GPR_FLAGS)
+	cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr $(DEPS_GPR_FLAGS)
+	cd demo/adaedit && $(CLEANER) -P adaedit.gpr $(DEPS_GPR_FLAGS)
+	cd demo/adablog && $(CLEANER) -P adablog.gpr $(DEPS_GPR_FLAGS)
+	cd demo/connect_four && $(CLEANER) -P connect_four.gpr $(DEPS_GPR_FLAGS)
 	cd demo/connect_four && $(RM) connectfour_messages*
-	cd demo/linxtris && $(CLEANER) -P linxtris.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/password_gen && $(CLEANER) -P password_gen.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/random_int && $(CLEANER) -P random_int.gpr -aP$(DEPS_GPR_PATH)
-	cd demo/adaothello && $(CLEANER) -P adaothello.gpr -aP$(DEPS_GPR_PATH)
+	cd demo/linxtris && $(CLEANER) -P linxtris.gpr $(DEPS_GPR_FLAGS)
+	cd demo/password_gen && $(CLEANER) -P password_gen.gpr $(DEPS_GPR_FLAGS)
+	cd demo/random_int && $(CLEANER) -P random_int.gpr $(DEPS_GPR_FLAGS)
+	cd demo/adaothello && $(CLEANER) -P adaothello.gpr $(DEPS_GPR_FLAGS)
 
 clean_tutorials:
-	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-02 && $(CLEANER) -P tutorial_02.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-03 && $(CLEANER) -P tutorial_03.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-04 && $(CLEANER) -P tutorial_04.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-05 && $(CLEANER) -P tutorial_05.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-06 && $(CLEANER) -P tutorial_06.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-07 && $(CLEANER) -P tutorial_07.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-08 && $(CLEANER) -P tutorial_08.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-09 && $(CLEANER) -P tutorial_09.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-10 && $(CLEANER) -P tutorial_10.gpr -aP$(DEPS_GPR_PATH)
-	cd tutorial/tutorial-11 && $(CLEANER) -P tutorial_11.gpr -aP$(DEPS_GPR_PATH)
+	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-02 && $(CLEANER) -P tutorial_02.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-03 && $(CLEANER) -P tutorial_03.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-04 && $(CLEANER) -P tutorial_04.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-05 && $(CLEANER) -P tutorial_05.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-06 && $(CLEANER) -P tutorial_06.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-07 && $(CLEANER) -P tutorial_07.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-08 && $(CLEANER) -P tutorial_08.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-09 && $(CLEANER) -P tutorial_09.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-10 && $(CLEANER) -P tutorial_10.gpr $(DEPS_GPR_FLAGS)
+	cd tutorial/tutorial-11 && $(CLEANER) -P tutorial_11.gpr $(DEPS_GPR_FLAGS)
 
 clean_tests:
-	cd test && $(CLEANER) -P test.gpr -aP$(DEPS_GPR_PATH)
-	cd test_ssl && $(CLEANER) -P test_ssl.gpr -aP$(DEPS_GPR_PATH)
-	cd test/tickets/001 && $(CLEANER) -P test.gpr -aP$(DEPS_GPR_PATH)
-	cd test/tickets/002 && $(CLEANER) -P test.gpr -aP$(DEPS_GPR_PATH)
-	cd test/tickets/005 && $(CLEANER) -P test.gpr -aP$(DEPS_GPR_PATH)
-	cd test/tickets/007 && $(CLEANER) -P test.gpr -aP$(DEPS_GPR_PATH)
-	cd test/tickets/011 && $(CLEANER) -P test.gpr -aP$(DEPS_GPR_PATH)
-	cd test/tickets/019 && $(CLEANER) -P test.gpr -aP$(DEPS_GPR_PATH)
+	cd test && $(CLEANER) -P test.gpr $(DEPS_GPR_FLAGS)
+	cd test_ssl && $(CLEANER) -P test_ssl.gpr $(DEPS_GPR_FLAGS)
+	cd test/tickets/001 && $(CLEANER) -P test.gpr $(DEPS_GPR_FLAGS)
+	cd test/tickets/002 && $(CLEANER) -P test.gpr $(DEPS_GPR_FLAGS)
+	cd test/tickets/005 && $(CLEANER) -P test.gpr $(DEPS_GPR_FLAGS)
+	cd test/tickets/007 && $(CLEANER) -P test.gpr $(DEPS_GPR_FLAGS)
+	cd test/tickets/011 && $(CLEANER) -P test.gpr $(DEPS_GPR_FLAGS)
+	cd test/tickets/019 && $(CLEANER) -P test.gpr $(DEPS_GPR_FLAGS)
 
 rm-docs: gnoga
-	GPR_PROJECT_PATH=$(DEPS_GPR_PATH) gnatdoc -P src/gnoga.gpr --no-subprojects -XAtomic_Access=${ATOMIC_ACCESS} -XPRJ_TARGET=${PRJ_TARGET}
+	GPR_PROJECT_PATH=$(DEPS_GPR_FLAGS) gnatdoc -P src/gnoga.gpr --no-subprojects -XAtomic_Access=${ATOMIC_ACCESS} -XPRJ_TARGET=${PRJ_TARGET}
 
 html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown user_guide.md > html/user_guide.html
@@ -308,4 +308,4 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html
 
 gps:
-	GPR_PROJECT_PATH=$(DEPS_GPR_PATH) gps -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} &
+	GPR_PROJECT_PATH=$(DEPS_GPR_FLAGS) gps -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} &

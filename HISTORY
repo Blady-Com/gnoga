@@ -1,0 +1,88 @@
+201609xx - Gnoga V1.3-alpha:
+
+- xxxx
+
+20160917 - Gnoga V1.2a:
+
+- Various minor Gnoga fixes
+
+
+20160713 - Gnoga V1.2-beta:
+
+- Cleaning stuff such as withed units, unreferenced objects.
+- Fix ticket #36 (makefile issue)
+- Demos Tic-Tac-Toe, AdaOthello and RandomInt added
+- Zanyblue upgrade from SVN revision 2992
+- LinXtris fixes
+- AdaOthello improved game play
+- Fix ticket #35 (Temporary suppress gnat option checking end line style making compilation
+  errors on Windows with Zanyblue generated files.)
+- Simple Components upgrade from 4.12
+
+
+20160505 - Gnoga V1.2-alpha:
+
+- Zanyblue upgrade from SVN revision 2958
+- Demos Password_Gen, LinXtris added
+- Plotting facilities added
+- PragmARC library added
+- Connect_Four localisation with Zanyblue
+- JLokalise tool added
+- Electron support added
+- Fix ticket #30 (Add SQLite support for UTF-8 encoding)
+- Fix ticket #29 (Add SQLite pragmas full_column_names and short_column_names support)
+- Simple Components upgrade from 4.10
+- Fix ticket #14 (Color sub-routines are proposed also directly for Gnoga.Types.Colors.Color_Enumeration type)
+- Fix ticket #3 (Use Exception_Information for exceptions extended to more exception handlers)
+- Fix ticket #26 (Add support for parsing URL form GET parameters with
+  encodings ISO-8859-1 (default) and UTF-8)
+- Fix ticket #27 (Install html docs and RM)
+- Fix ticket #23 (Add support to XPM parser)
+- Add Sqlite build on Windows
+- Fix ticket #21 (bug in connect four demo)
+- Gnatdoc support
+- Various demos updates and Gnoga fixes
+
+
+20150702 - Gnoga V1.1a:
+
+- Simple Components upgrade from 4.8
+
+
+20150701 - Gnoga V1.1:
+
+- Ticket #019 - Firefox issue with Ace Editor
+- Ticket #015 - Local storage fix
+- Ticket #008 - Mouse events local to element of event
+- Ticket #007 - Test case
+- Messages boxes facilities added
+- Ticket #013 - Resolved - Moved http and watchdog tasks to types created on initialize.
+- Ticket #020 - Fixed On_Drop in tutorial
+- Ticket #006 - Added X, Y support to On_Drop
+- Ticket #005 - Program blocked without issuing error
+- Ticket #001 - Program_Error with Window_Type in a package specification
+- Fix various typo
+- Demo Connect Four added
+- Ticket #014 - Change Gnoga.Types.Colors to enumeration
+- Keyboard handling change
+- Simple Components upgrade from 4.7
+- Ticket #002 - Grid not working in child popups
+- Chattanooga demo added
+- Color constants support added
+- Various demos updates and Gnoga fixes
+
+
+20141230 - Gnoga V1.0:
+- Add mouse and keyboard events
+- Remove Cairo
+- Switch to use Simple_Components instead of AWS
+- Remove PHP
+- Tutorials added
+- Demo Snake added
+- Various Gnoga facilities added
+
+
+20140808 - Gnoga V0.0:
+
+- Initial Gnoga code release
+

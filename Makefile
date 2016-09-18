@@ -185,7 +185,7 @@ uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello
+demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
@@ -218,6 +218,9 @@ random_int:
 
 adaothello:
 	cd demo/adaothello && $(BUILDER) -Padaothello.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
+
+tic_tac_toe:
+	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
 
 tests:
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET} $(DEPS_GPR_FLAGS)
@@ -274,6 +277,7 @@ clean_demo:
 	cd demo/password_gen && $(CLEANER) -P password_gen.gpr $(DEPS_GPR_FLAGS)
 	cd demo/random_int && $(CLEANER) -P random_int.gpr $(DEPS_GPR_FLAGS)
 	cd demo/adaothello && $(CLEANER) -P adaothello.gpr $(DEPS_GPR_FLAGS)
+	cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr $(DEPS_GPR_FLAGS)
 
 clean_tutorials:
 	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr $(DEPS_GPR_FLAGS)

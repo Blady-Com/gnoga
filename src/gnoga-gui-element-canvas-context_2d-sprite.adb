@@ -36,10 +36,29 @@
 ------------------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
+with Ada.Numerics.Elementary_Functions;
 
 package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    Sprite_List : Sprite_Lists.Vector;
+
+   protected Sprite_Resource is
+      entry Seize;
+      procedure Release;
+   private
+      Busy : Boolean := False;
+   end Sprite_Resource;
+
+   protected body Sprite_Resource is
+      entry Seize when not Busy is
+      begin
+         Busy := True;
+      end Seize;
+      procedure Release is
+      begin
+         Busy := False;
+      end Release;
+   end Sprite_Resource;
 
    ------------
    -- Create --
@@ -83,6 +102,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Sprite_Element : constant Sprite_Data_Access :=
         Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
    begin
+      Sprite_Resource.Seize;
       Sprite_Element.Context.Put_Image_Data
       (Sprite_Element.Saved_Image, Sprite_Element.Column, Sprite_Element.Row);
       Sprite_Element.Row    := Row;
@@ -96,6 +116,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
          .Drawn_Image.Height);
       Sprite_Element.Context.Put_Image_Data
       (Sprite_Element.Drawn_Image, Sprite_Element.Column, Sprite_Element.Row);
+      Sprite_Resource.Release;
    end Locate;
 
    --------------
@@ -143,8 +164,10 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Sprite_Element : constant Sprite_Data_Access :=
         Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
    begin
+      Sprite_Resource.Seize;
       Sprite_Element.Drawn_Image.Connection_ID := Image_Data.Connection_ID;
       Sprite_Element.Drawn_Image.Context_ID    := Image_Data.Context_ID;
+      Sprite_Resource.Release;
    end Pattern;
 
    -------------
@@ -172,8 +195,10 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Sprite_Element : constant Sprite_Data_Access :=
         Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
    begin
+      Sprite_Resource.Seize;
       Sprite_Element.Row_Velocity    := Row_Velocity;
       Sprite_Element.Column_Velocity := Column_Velocity;
+      Sprite_Resource.Release;
    end Motion;
 
    ------------------
@@ -207,13 +232,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Tolerance        : in Natural) return Boolean
    is
    begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Coincidence unimplemented");
-      raise Program_Error with "Unimplemented function Coincidence";
-      return Coincidence
-          (Sprite1   => Sprite1,
-           Sprite2   => Sprite2,
-           Tolerance => Tolerance);
+      return Distance (Sprite1, Sprite2) <= Tolerance;
    end Coincidence;
 
    -----------------
@@ -226,14 +245,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Tolerance   : in Natural) return Boolean
    is
    begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Coincidence unimplemented");
-      raise Program_Error with "Unimplemented function Coincidence";
-      return Coincidence
-          (Sprite    => Sprite,
-           Row       => Row,
-           Column    => Column,
-           Tolerance => Tolerance);
+      return Distance (Sprite, Row, Column) <= Tolerance;
    end Coincidence;
 
    --------------
@@ -241,11 +253,19 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    --------------
 
    function Distance (Sprite1, Sprite2 : in Sprite_Type) return Natural is
+      Sprite_Element1 : constant Sprite_Data_Access :=
+        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite1));
+      Sprite_Element2 : constant Sprite_Data_Access :=
+        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite2));
+      D2, D : Natural;
    begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Distance unimplemented");
-      raise Program_Error with "Unimplemented function Distance";
-      return Distance (Sprite1 => Sprite1, Sprite2 => Sprite2);
+      Sprite_Resource.Seize;
+      D2 :=
+        (Sprite_Element2.Row - Sprite_Element1.Row)**2 +
+        (Sprite_Element2.Column - Sprite_Element1.Column)**2;
+      D := Natural (Ada.Numerics.Elementary_Functions.Sqrt (Float (D2)));
+      Sprite_Resource.Release;
+      return D;
    end Distance;
 
    --------------
@@ -256,29 +276,36 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
      (Sprite      : in Sprite_Type;
       Row, Column : in Integer) return Natural
    is
+      Sprite_Element : constant Sprite_Data_Access :=
+        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+      D2, D : Natural;
    begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Distance unimplemented");
-      raise Program_Error with "Unimplemented function Distance";
-      return Distance (Sprite => Sprite, Row => Row, Column => Column);
+      Sprite_Resource.Seize;
+      D2 :=
+        (Sprite_Element.Row - Row)**2 + (Sprite_Element.Column - Column)**2;
+      D := Natural (Ada.Numerics.Elementary_Functions.Sqrt (Float (D2)));
+      Sprite_Resource.Release;
+      return D;
    end Distance;
 
    ------------
    -- Delete --
    ------------
 
-   procedure Free is new Ada.Unchecked_Deallocation
-     (Sprite_Data,
-      Sprite_Data_Access);
-
    procedure Delete (Sprite : in out Sprite_Type) is
       Sprite_Element : Sprite_Data_Access :=
         Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+      procedure Free is new Ada.Unchecked_Deallocation
+        (Sprite_Data,
+         Sprite_Data_Access);
    begin
+      Sprite_Resource.Seize;
       Sprite_Element.Context.Put_Image_Data
       (Sprite_Element.Saved_Image, Sprite_Element.Column, Sprite_Element.Row);
       Free (Sprite_Element);
       Delete (Sprite_List, Sprite);
+      Sprite := Sprite_Type (Sprite_Lists.No_Element);
+      Sprite_Resource.Release;
    end Delete;
 
    ----------------
@@ -287,9 +314,13 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    procedure Delete_All is
    begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Delete_All unimplemented");
-      raise Program_Error with "Unimplemented procedure Delete_All";
+      for Sprite in Sprite_List.Iterate loop
+         declare
+            S : Sprite_Type := Sprite_Type (Sprite);
+         begin
+            Delete (S);
+         end;
+      end loop;
    end Delete_All;
 
    -------------

@@ -81,11 +81,16 @@ procedure Sprite_Test is
          90, Height    =>
          40);
 
-      Trigger (500);
+      Trigger (600);
       Create (App.SP1, C, Img_Dat, 10, 10, 5, 10);
-      delay 5.0;
+      while not Coincidence (App.SP1, 110, 210, 20) loop
+         delay 0.1;
+      end loop;
       Locate (App.SP1, 150, 5);
       delay 5.0;
+      Gnoga.Log ("Distance:" & Distance (App.SP1, 100, 100)'Img);
+      delay 5.0;
+      Gnoga.Log ("Distance:" & Distance (App.SP1, 100, 100)'Img);
       Delete (App.SP1);
 
       Connection.Hold;

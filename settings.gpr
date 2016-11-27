@@ -10,7 +10,7 @@ abstract project Settings is
    -- Compiler --
    --------------
 
-   Common_Options := ("-gnaty3abcefhiklmnOprsStu", "-gnat2012", "-gnatW8");
+   Common_Options := ("-gnaty3abcefhiklM120nOprsStu", "-gnat2012", "-gnatW8");
    --  Common options used for the Debug and Release modes
 
    Debug_Options := ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVa", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF");
@@ -55,5 +55,13 @@ abstract project Settings is
             null;
       end case;
    end Linker;
+
+   --------------------
+   -- Pretty Printer --
+   --------------------
+
+   package Pretty_Printer is
+      for Default_Switches ("ada") use ("-M120", "-W8", "--par_threshold=1");
+   end Pretty_Printer;
 
 end Settings;

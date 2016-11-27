@@ -1,4 +1,4 @@
-﻿# The Gnoga User Guide
+# The Gnoga User Guide
 ## Gnoga - The GNU Omnificent GUI for Ada
 ## The Ada Open-Source Mission-Critical Cloud, Desktop and Mobile Application Development Framework
 
@@ -948,7 +948,6 @@ If you use the gnoga_make tool it will set up a development directory structure 
 For reference the following directory structure is the basic structure during development:
 
 ```
-
 App Dir
   |
   |___ bin - your gnoga app binary
@@ -1139,5 +1138,5 @@ Display changes how the elements are laid out by the browser. Using Display (Non
 
 Retrieving the contents of an Element in Gnoga differs depending on the type of Element. For form Elements the Value method is used. For others Text can be used to retrieve the text alone or Inner_HTML to retrieve the contents including any HTML tags present.
 
-The reason there are different methods is based on the way the underlying HTML 5 works. Text and Inner_HTML are retrieving all child nodes with in the element while Value is an attribute of Form elements. So Text or Inner_HTML will return the contents of every child.
+The reason there are different methods is based on the way the underlying HTML 5 works. Text and Inner\_HTML are retrieving all child nodes with in the element while Value is an attribute of Form elements. So Text or Inner_HTML will return the contents of every child.
 

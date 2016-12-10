@@ -41,7 +41,7 @@
 --  Sprites are updated on canvas every specified trigger value in milli-seconds.
 --  All motions are in position unit per trigger value.
 
-private with Ada.Containers.Vectors;
+private with Ada.Containers.Ordered_Maps;
 
 package Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
@@ -58,7 +58,7 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    procedure Create
      (Sprite                        :    out Sprite_Type;
-      Context                       : in     Context_2D_Type'Class;
+      Canvas                        : in     Canvas_Access;
       Image_Data                    : in     Image_Data_Type'Class;
       Row, Column                   : in     Integer;
       Row_Velocity, Column_Velocity : in     Integer := 0);
@@ -130,14 +130,14 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
 private
    type Sprite_Data is limited record
-      Context                       : Context_2D_Type;
+      Canvas                        : Canvas_Access;
       Row, Column                   : Integer;
       Row_Velocity, Column_Velocity : Integer;
       Saved_Image, Drawn_Image      : Image_Data_Type;
    end record;
    type Sprite_Data_Access is access Sprite_Data;
-   package Sprite_Lists is new Ada.Containers.Vectors
-     (Positive,
+   type Sprite_Type is new Gnoga.Types.Unique_ID;
+   package Sprite_Lists is new Ada.Containers.Ordered_Maps
+     (Sprite_Type,
       Sprite_Data_Access);
-   type Sprite_Type is new Sprite_Lists.Cursor;
 end Gnoga.Gui.Element.Canvas.Context_2D.Sprite;

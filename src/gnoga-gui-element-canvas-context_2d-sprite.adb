@@ -37,10 +37,11 @@
 
 with Ada.Unchecked_Deallocation;
 with Ada.Numerics.Elementary_Functions;
+with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
-   Sprite_List : Sprite_Lists.Vector;
+   Sprite_List : Sprite_Lists.Map;
 
    protected Sprite_Resource is
       entry Seize;
@@ -66,32 +67,33 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    procedure Create
      (Sprite                        :    out Sprite_Type;
-      Context                       : in     Context_2D_Type'Class;
+      Canvas                        : in     Canvas_Access;
       Image_Data                    : in     Image_Data_Type'Class;
       Row, Column                   : in     Integer;
       Row_Velocity, Column_Velocity : in     Integer := 0)
    is
       Sprite_Element : constant Sprite_Data_Access := new Sprite_Data;
+      Sprite_ID      : Gnoga.Types.Unique_ID;
+      Context        : Context_2D_Type;
    begin
-      Sprite_Element.Context.Connection_ID     := Context.Connection_ID;
-      Sprite_Element.Context.Context_ID        := Context.Context_ID;
+      Sprite_Element.Canvas                    := Canvas;
       Sprite_Element.Drawn_Image.Connection_ID := Image_Data.Connection_ID;
       Sprite_Element.Drawn_Image.Context_ID    := Image_Data.Context_ID;
       Sprite_Element.Row                       := Row;
       Sprite_Element.Column                    := Column;
       Sprite_Element.Row_Velocity              := Row_Velocity;
       Sprite_Element.Column_Velocity           := Column_Velocity;
-      Sprite_Element.Context.Get_Image_Data
+      Get_Drawing_Context_2D (Context, Canvas.all);
+      Context.Get_Image_Data
       (Sprite_Element
          .Saved_Image, Sprite_Element
          .Column, Sprite_Element
-         .Row, Sprite_Element
-         .Drawn_Image.Width, Sprite_Element
-         .Drawn_Image.Height);
-      Sprite_Element.Context.Put_Image_Data
+         .Row, Image_Data.Width, Image_Data.Height);
+      Context.Put_Image_Data
       (Sprite_Element.Drawn_Image, Sprite_Element.Column, Sprite_Element.Row);
-      Sprite_List.Append (Sprite_Element);
-      Sprite := Sprite_Type (Sprite_List.Last);
+      Gnoga.Server.Connection.New_Unique_ID (Sprite_ID);
+      Sprite := Sprite_Type (Sprite_ID);
+      Sprite_List.Insert (Sprite, Sprite_Element);
    end Create;
 
    ------------
@@ -99,22 +101,24 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    ------------
 
    procedure Locate (Sprite : in Sprite_Type; Row, Column : in Integer) is
-      Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+      Sprite_Element : Sprite_Data_Access;
+      Context        : Context_2D_Type;
    begin
       Sprite_Resource.Seize;
-      Sprite_Element.Context.Put_Image_Data
+      Sprite_Element := Sprite_List.Element (Sprite);
+      Get_Drawing_Context_2D (Context, Sprite_Element.Canvas.all);
+      Context.Put_Image_Data
       (Sprite_Element.Saved_Image, Sprite_Element.Column, Sprite_Element.Row);
       Sprite_Element.Row    := Row;
       Sprite_Element.Column := Column;
-      Sprite_Element.Context.Get_Image_Data
+      Context.Get_Image_Data
       (Sprite_Element
          .Saved_Image, Sprite_Element
          .Column, Sprite_Element
          .Row, Sprite_Element
          .Drawn_Image.Width, Sprite_Element
          .Drawn_Image.Height);
-      Sprite_Element.Context.Put_Image_Data
+      Context.Put_Image_Data
       (Sprite_Element.Drawn_Image, Sprite_Element.Column, Sprite_Element.Row);
       Sprite_Resource.Release;
    end Locate;
@@ -125,7 +129,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    procedure Position (Sprite : in Sprite_Type; Row, Column : out Integer) is
       Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+        Sprite_List.Element (Sprite);
    begin
       Row    := Sprite_Element.Row;
       Column := Sprite_Element.Column;
@@ -137,7 +141,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    function Row (Sprite : in Sprite_Type) return Integer is
       Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+        Sprite_List.Element (Sprite);
    begin
       return Sprite_Element.Row;
    end Row;
@@ -148,7 +152,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    function Column (Sprite : in Sprite_Type) return Integer is
       Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+        Sprite_List.Element (Sprite);
    begin
       return Sprite_Element.Column;
    end Column;
@@ -161,10 +165,10 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
      (Sprite     : in Sprite_Type;
       Image_Data : in Image_Data_Type'Class)
    is
-      Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+      Sprite_Element : Sprite_Data_Access;
    begin
       Sprite_Resource.Seize;
+      Sprite_Element                           := Sprite_List.Element (Sprite);
       Sprite_Element.Drawn_Image.Connection_ID := Image_Data.Connection_ID;
       Sprite_Element.Drawn_Image.Context_ID    := Image_Data.Context_ID;
       Sprite_Resource.Release;
@@ -175,12 +179,14 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    -------------
 
    function Pattern (Sprite : in Sprite_Type) return Image_Data_Type'Class is
-      Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+      Sprite_Element : Sprite_Data_Access;
    begin
       return Pattern : Image_Data_Type do
+         Sprite_Resource.Seize;
+         Sprite_Element        := Sprite_List.Element (Sprite);
          Pattern.Connection_ID := Sprite_Element.Drawn_Image.Connection_ID;
          Pattern.Context_ID    := Sprite_Element.Drawn_Image.Context_ID;
+         Sprite_Resource.Release;
       end return;
    end Pattern;
 
@@ -192,10 +198,10 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
      (Sprite                        : in Sprite_Type;
       Row_Velocity, Column_Velocity : in Integer)
    is
-      Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+      Sprite_Element : Sprite_Data_Access;
    begin
       Sprite_Resource.Seize;
+      Sprite_Element                 := Sprite_List.Element (Sprite);
       Sprite_Element.Row_Velocity    := Row_Velocity;
       Sprite_Element.Column_Velocity := Column_Velocity;
       Sprite_Resource.Release;
@@ -207,7 +213,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    function Row_Velocity (Sprite : in Sprite_Type) return Integer is
       Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+        Sprite_List.Element (Sprite);
    begin
       return Sprite_Element.Row_Velocity;
    end Row_Velocity;
@@ -218,7 +224,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    function Column_Velocity (Sprite : in Sprite_Type) return Integer is
       Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+        Sprite_List.Element (Sprite);
    begin
       return Sprite_Element.Column_Velocity;
    end Column_Velocity;
@@ -253,14 +259,14 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    --------------
 
    function Distance (Sprite1, Sprite2 : in Sprite_Type) return Natural is
-      Sprite_Element1 : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite1));
-      Sprite_Element2 : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite2));
-      D2, D : Natural;
+      Sprite_Element1 : Sprite_Data_Access;
+      Sprite_Element2 : Sprite_Data_Access;
+      D2, D           : Natural;
    begin
       Sprite_Resource.Seize;
-      D2 :=
+      Sprite_Element1 := Sprite_List.Element (Sprite1);
+      Sprite_Element2 := Sprite_List.Element (Sprite2);
+      D2              :=
         (Sprite_Element2.Row - Sprite_Element1.Row)**2 +
         (Sprite_Element2.Column - Sprite_Element1.Column)**2;
       D := Natural (Ada.Numerics.Elementary_Functions.Sqrt (Float (D2)));
@@ -276,12 +282,12 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
      (Sprite      : in Sprite_Type;
       Row, Column : in Integer) return Natural
    is
-      Sprite_Element : constant Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
-      D2, D : Natural;
+      Sprite_Element : Sprite_Data_Access;
+      D2, D          : Natural;
    begin
       Sprite_Resource.Seize;
-      D2 :=
+      Sprite_Element := Sprite_List.Element (Sprite);
+      D2             :=
         (Sprite_Element.Row - Row)**2 + (Sprite_Element.Column - Column)**2;
       D := Natural (Ada.Numerics.Elementary_Functions.Sqrt (Float (D2)));
       Sprite_Resource.Release;
@@ -293,18 +299,20 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    ------------
 
    procedure Delete (Sprite : in out Sprite_Type) is
-      Sprite_Element : Sprite_Data_Access :=
-        Sprite_Lists.Element (Sprite_Lists.Cursor (Sprite));
+      Sprite_Element : Sprite_Data_Access;
+      Context        : Context_2D_Type;
       procedure Free is new Ada.Unchecked_Deallocation
         (Sprite_Data,
          Sprite_Data_Access);
    begin
       Sprite_Resource.Seize;
-      Sprite_Element.Context.Put_Image_Data
+      Sprite_Element := Sprite_List.Element (Sprite);
+      Get_Drawing_Context_2D (Context, Sprite_Element.Canvas.all);
+      Context.Put_Image_Data
       (Sprite_Element.Saved_Image, Sprite_Element.Column, Sprite_Element.Row);
       Free (Sprite_Element);
-      Delete (Sprite_List, Sprite);
-      Sprite := Sprite_Type (Sprite_Lists.No_Element);
+      Sprite_List.Delete (Sprite);
+      Sprite := 0;
       Sprite_Resource.Release;
    end Delete;
 
@@ -313,14 +321,30 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    ----------------
 
    procedure Delete_All is
+      Sprite_Element : Sprite_Data_Access;
+      Context        : Context_2D_Type;
+      procedure Free is new Ada.Unchecked_Deallocation
+        (Sprite_Data,
+         Sprite_Data_Access);
+      use type Sprite_Lists.Cursor;
    begin
-      for Sprite in Sprite_List.Iterate loop
+      Sprite_Resource.Seize;
+      while Sprite_List.First /= Sprite_Lists.No_Element loop
          declare
-            S : Sprite_Type := Sprite_Type (Sprite);
+            Sprite : Sprite_Lists.Cursor := Sprite_List.First;
          begin
-            Delete (S);
+            Sprite_Element := Sprite_Lists.Element (Sprite);
+            Get_Drawing_Context_2D (Context, Sprite_Element.Canvas.all);
+            Context.Put_Image_Data
+            (Sprite_Element
+               .Saved_Image, Sprite_Element
+               .Column, Sprite_Element
+               .Row);
+            Free (Sprite_Element);
+            Sprite_List.Delete (Sprite);
          end;
       end loop;
+      Sprite_Resource.Release;
    end Delete_All;
 
    -------------
@@ -349,10 +373,13 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    task Sprite;
    task body Sprite is
+      Context : Context_2D_Type;
    begin
       loop
+         Sprite_Resource.Seize;
          for Sprite_Element of Sprite_List loop
-            Sprite_Element.Context.Put_Image_Data
+            Get_Drawing_Context_2D (Context, Sprite_Element.Canvas.all);
+            Context.Put_Image_Data
             (Sprite_Element
                .Saved_Image, Sprite_Element
                .Column, Sprite_Element
@@ -361,19 +388,20 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
               Sprite_Element.Row + Sprite_Element.Row_Velocity;
             Sprite_Element.Column :=
               Sprite_Element.Column + Sprite_Element.Column_Velocity;
-            Sprite_Element.Context.Get_Image_Data
+            Context.Get_Image_Data
             (Sprite_Element
                .Saved_Image, Sprite_Element
                .Column, Sprite_Element
                .Row, Sprite_Element
                .Drawn_Image.Width, Sprite_Element
                .Drawn_Image.Height);
-            Sprite_Element.Context.Put_Image_Data
+            Context.Put_Image_Data
             (Sprite_Element
                .Drawn_Image, Sprite_Element
                .Column, Sprite_Element
                .Row);
          end loop;
+         Sprite_Resource.Release;
          delay Standard.Duration (Trigger_Value) / 1000.0;
       end loop;
    end Sprite;

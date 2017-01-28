@@ -1159,21 +1159,21 @@ package body Gnoga.Gui.Element is
 
    procedure Background_Attachment
      (Element : in out Element_Type;
-      Value   : in     Background_Attachment_type)
+      Value   : in     Background_Attachment_Type)
    is
    begin
       Element.Style ("background-attachment", Value'Img);
    end Background_Attachment;
 
    function Background_Attachment (Element : Element_Type)
-                                   return Background_Attachment_type
+                                   return Background_Attachment_Type
    is
       Value : constant String := Element.Style ("background-color");
    begin
       if Value = "" then
          return Scroll;
       else
-         return Background_Attachment_type'Value (Value);
+         return Background_Attachment_Type'Value (Value);
       end if;
    end Background_Attachment;
 

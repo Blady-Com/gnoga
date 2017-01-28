@@ -1,0 +1,16 @@
+-- AdaControl rules file for GNOGA coding standard
+set format gnat_short;
+
+-- Due to an ASIS bug, AdaControl loops on reduceable_scope in this unit:
+inhibit reduceable_scope (gnoga.server.model.queries);
+
+check header_comments (model, "gnoga_header.txt");
+check max_line_length (120);
+check style (casing_keyword, lowercase);
+check style (casing_identifier, original);
+check naming_convention (all, case_sensitive "[A-Z][A-Z]*[a-z0-9]*(_[A-Z][A-Z]*[a-z0-9])*");
+check naming_convention (access_to_class_type, case_sensitive "_Class$");
+check naming_convention (others access_type,   case_sensitive "_Access$");
+check naming_convention (others type,          case_sensitive "_Type$");
+check declarations (no_spec_function, no_spec_procedure);
+check reduceable_scope (use);

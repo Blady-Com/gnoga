@@ -15,6 +15,7 @@ project Gnoga is
 
    package Ide is
       for Documentation_Dir use "../docs/html/gnoga_rm";
+      for Default_Switches ("adacontrol") use ("-f", "../rules/gnoga.aru", "-s", "--", "-T../obj");
    end Ide;
 
    package Install is

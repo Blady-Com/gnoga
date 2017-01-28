@@ -37,8 +37,6 @@
 
 with GNAT.Sockets;
 with GNAT.Sockets.Server; use GNAT.Sockets.Server;
-with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
-use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
 
 package Gnoga.Server.Connection.Common is
 

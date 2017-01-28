@@ -501,13 +501,13 @@ package Gnoga.Gui.Element is
 
    --  Backgroud --
 
-   type Background_Attachment_type is (Scroll, Fixed, Local);
+   type Background_Attachment_Type is (Scroll, Fixed, Local);
 
    procedure Background_Attachment
      (Element : in out Element_Type;
-      Value   : in     Background_Attachment_type);
+      Value   : in     Background_Attachment_Type);
    function Background_Attachment (Element : Element_Type)
-                                   return Background_Attachment_type;
+                                   return Background_Attachment_Type;
 
    procedure Background_Color (Element : in out Element_Type;
                                Value   : in     String);

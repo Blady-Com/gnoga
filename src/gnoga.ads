@@ -38,11 +38,11 @@
 with Ada.Strings.Unbounded;
 
 package Gnoga is
-   version      : constant String := "1.3-alpha";
-   version_high : constant        := 1;
-   version_low  : constant        := 2;
+   Version      : constant String := "1.3-alpha";
+   Version_High : constant        := 1;
+   Version_Low  : constant        := 2;
 
-   HTTP_Server_Name : constant String := "gnoga/" & version;
+   HTTP_Server_Name : constant String := "gnoga/" & Version;
 
    function Escape_Quotes (S : String) return String;
    --  Escape quotes for Java Script.

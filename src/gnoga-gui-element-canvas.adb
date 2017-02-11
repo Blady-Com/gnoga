@@ -118,6 +118,21 @@ package body Gnoga.Gui.Element.Canvas is
       Context.Execute (Name & "=" & Value'Img & ";");
    end Property;
 
+   procedure Property (Context : in out Context_Type;
+                       Name    : in     String;
+                       Value   : in     Boolean)
+   is
+   begin
+      Context.Execute (Name & "=" & Value'Img & ";");
+   end Property;
+
+   procedure Property (Context : in out Context_Type;
+                       Name    : in     String;
+                       Value   : in     Float)   is
+   begin
+      Context.Execute (Name & "=" & Value'Img & ";");
+   end Property;
+
    function Property (Context : Context_Type; Name : String) return String
    is
    begin
@@ -133,6 +148,27 @@ package body Gnoga.Gui.Element.Canvas is
          Log ("Error Property converting to Integer (forced to 0).");
          Log (Ada.Exceptions.Exception_Information (E));
          return 0;
+   end Property;
+
+   function Property (Context : Context_Type; Name : String) return Boolean
+   is
+   begin
+      return Boolean'Value (Context.Property (Name));
+   exception
+      when E : others =>
+         Log ("Error Property converting to Boolean (forced to False).");
+         Log (Ada.Exceptions.Exception_Information (E));
+         return False;
+   end Property;
+
+   function Property (Context : Context_Type; Name : String) return Float is
+   begin
+      return Float'Value (Context.Property (Name));
+   exception
+      when E : others =>
+         Log ("Error Property converting to Float (forced to 0.0).");
+         Log (Ada.Exceptions.Exception_Information (E));
+         return 0.0;
    end Property;
 
    -------------

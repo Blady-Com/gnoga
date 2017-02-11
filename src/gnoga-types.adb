@@ -56,6 +56,19 @@ package body Gnoga.Types is
         Left_Trim (RGBA.Alpha'Img) & ")";
    end To_String;
 
+   ------------
+   -- To_Hex --
+   ------------
+
+   function To_Hex (RGBA : RGBA_Type) return String is
+      Hex : constant String := "0123456789ABCDEF";
+   begin
+      return "0x" &
+        Hex (Natural (RGBA.Red) / 16 + 1) & Hex (Natural (RGBA.Red) mod 16 + 1) &
+        Hex (Natural (RGBA.Green) / 16 + 1) & Hex (Natural (RGBA.Green) mod 16 + 1) &
+        Hex (Natural (RGBA.Blue) / 16 + 1) & Hex (Natural (RGBA.Blue) mod 16 + 1);
+   end To_Hex;
+
    -------------
    -- To_RGBA --
    -------------

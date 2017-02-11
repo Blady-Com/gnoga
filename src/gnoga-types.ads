@@ -93,7 +93,10 @@ package Gnoga.Types is
       end record;
 
    function To_String (RGBA : RGBA_Type) return String;
-   --  Returns and rgba(r,g,b,a) representation of RGBA
+   --  Returns an rgba(r,g,b,a) representation of RGBA
+
+   function To_Hex (RGBA : RGBA_Type) return String;
+   --  Returns a 0xRRGGBB representation of RGBA
 
    function To_RGBA (Value : String) return RGBA_Type;
    --  Will convert rgb(r,g,b) and rgba(r,g,b,a), or

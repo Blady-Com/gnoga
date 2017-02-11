@@ -81,8 +81,16 @@ package Gnoga.Gui.Element.Canvas is
    procedure Property (Context : in out Context_Type;
                        Name    : in     String;
                        Value   : in     Integer);
+   procedure Property (Context : in out Context_Type;
+                       Name    : in     String;
+                       Value   : in     Boolean);
+   procedure Property (Context : in out Context_Type;
+                       Name    : in     String;
+                       Value   : in     Float);
    function Property (Context : Context_Type; Name : String) return String;
    function Property (Context : Context_Type; Name : String) return Integer;
+   function Property (Context : Context_Type; Name : String) return Boolean;
+   function Property (Context : Context_Type; Name : String) return Float;
 
    -------------------------------------------------------------------------
    --  Context_Type - Methods

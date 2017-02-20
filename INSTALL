@@ -30,10 +30,10 @@ and add this option to your grpbuild: -aP /path/to/gnoga/build/share/gpr
 
 2) To install debug version:
 
-make
+make all
 sudo make install_debug
 
 To use without installing, just do:
 
-make
+make all
 

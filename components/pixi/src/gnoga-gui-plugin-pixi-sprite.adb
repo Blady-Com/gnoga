@@ -36,9 +36,39 @@
 
 with Ada.Numerics.Elementary_Functions;
 with Gnoga.Server.Connection;
-with Gnoga.Types;
 
 package body Gnoga.Gui.Plugin.Pixi.Sprite is
+
+   Frame_Rate : constant := 60.0;
+   --  Standard value for most browsers (FPS)
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Sprite                        : in out Sprite_Type;
+      Parent                        : in out Container_Type'Class;
+      Texture                       : in     Texture_Type;
+      Row, Column                   : in     Integer;
+      Row_Velocity, Column_Velocity : in     Velocity_Type := 0.0)
+   is
+      Sprite_ID : constant String := Gnoga.Server.Connection.New_GID;
+   begin
+      Sprite.ID (Sprite_ID, Gnoga.Types.Gnoga_ID);
+      Sprite.Connection_ID (Parent.Connection_ID);
+      Gnoga.Server.Connection.Execute_Script
+        (Sprite.Connection_ID,
+         "gnoga['" &
+         Sprite_ID &
+         "'] = new PIXI.Sprite(gnoga['" &
+         Texture.ID &
+         "']);");
+      Sprite.Locate (Row, Column);
+      Sprite.Motion (Row_Velocity, Column_Velocity);
+      Sprite.Rotation_Velocity (0.0);
+      Parent.Add_Child (Sprite);
+   end Create;
 
    ------------
    -- Create --
@@ -49,7 +79,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Parent                        : in out Container_Type'Class;
       Image_Path                    : in     String;
       Row, Column                   : in     Integer;
-      Row_Velocity, Column_Velocity : in     Velocity := 0.0)
+      Row_Velocity, Column_Velocity : in     Velocity_Type := 0.0)
    is
       Sprite_ID : constant String := Gnoga.Server.Connection.New_GID;
    begin
@@ -64,6 +94,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
          "');");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
+      Sprite.Rotation_Velocity (0.0);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -131,31 +162,375 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    procedure Motion
      (Sprite                        : in out Sprite_Type;
-      Row_Velocity, Column_Velocity : in     Velocity)
+      Row_Velocity, Column_Velocity : in     Velocity_Type)
    is
    begin
-      Sprite.Property ("gnoga_vx", Column_Velocity / 60.0);
-      Sprite.Property ("gnoga_vy", Row_Velocity / 60.0);
+      Sprite.Property ("gnoga_vx", Column_Velocity / Frame_Rate);
+      Sprite.Property ("gnoga_vy", Row_Velocity / Frame_Rate);
    end Motion;
 
    ------------------
    -- Row_Velocity --
    ------------------
 
-   function Row_Velocity (Sprite : in Sprite_Type) return Velocity is
+   function Row_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
    begin
-      return Sprite.Property ("gnoga_vy") * 60.0;
+      return Sprite.Property ("gnoga_vy") * Frame_Rate;
    end Row_Velocity;
 
    ---------------------
    -- Column_Velocity --
    ---------------------
 
-   function Column_Velocity (Sprite : in Sprite_Type) return Velocity is
+   function Column_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
 
    begin
-      return Sprite.Property ("gnoga_vx") * 60.0;
+      return Sprite.Property ("gnoga_vx") * Frame_Rate;
    end Column_Velocity;
+
+   -----------
+   -- Alpha --
+   -----------
+
+   procedure Alpha
+     (Sprite : in out Sprite_Type;
+      Value  : in     Gnoga.Types.Alpha_Type)
+   is
+   begin
+      Sprite.Property ("alpha", Float (Value));
+   end Alpha;
+
+   -----------
+   -- Alpha --
+   -----------
+
+   function Alpha (Sprite : in Sprite_Type) return Gnoga.Types.Alpha_Type is
+   begin
+      return Gnoga.Types.Alpha_Type (Float'(Sprite.Property ("alpha")));
+   end Alpha;
+
+   ------------
+   -- Anchor --
+   ------------
+
+   procedure Anchor
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Gnoga.Types.Frational_Range_Type)
+   is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Sprite.Connection_ID,
+         "gnoga['" &
+         Sprite.ID &
+         "'].anchor = {x:" &
+         Column'Img &
+         ",y:" &
+         Row'Img &
+         "};");
+   end Anchor;
+
+   ----------------
+   -- Row_Anchor --
+   ----------------
+
+   function Row_Anchor
+     (Sprite : in Sprite_Type) return Gnoga.Types.Frational_Range_Type
+   is
+   begin
+      return Gnoga.Types.Frational_Range_Type
+          (Float'(Sprite.Property ("anchor.y")));
+   end Row_Anchor;
+
+   -------------------
+   -- Column_Anchor --
+   -------------------
+
+   function Column_Anchor
+     (Sprite : in Sprite_Type) return Gnoga.Types.Frational_Range_Type
+   is
+   begin
+      return Gnoga.Types.Frational_Range_Type
+          (Float'(Sprite.Property ("anchor.x")));
+   end Column_Anchor;
+
+   ----------------
+   -- Blend_Mode --
+   ----------------
+
+   procedure Blend_Mode
+     (Sprite : in out Sprite_Type;
+      Value  : in     Blend_Modes_Type)
+   is
+   begin
+      Sprite.Property ("blendMode", Value'Img);
+   end Blend_Mode;
+
+   ----------------
+   -- Blend_Mode --
+   ----------------
+
+   function Blend_Mode (Sprite : in Sprite_Type) return Blend_Modes_Type is
+   begin
+      return Blend_Modes_Type'Value (Sprite.Property ("blendMode"));
+   end Blend_Mode;
+
+   -----------
+   -- Pivot --
+   -----------
+
+   procedure Pivot (Sprite : in out Sprite_Type; Row, Column : in Integer) is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Sprite.Connection_ID,
+         "gnoga['" &
+         Sprite.ID &
+         "'].pivot = {x:" &
+         Column'Img &
+         ",y:" &
+         Row'Img &
+         "};");
+   end Pivot;
+
+   ---------------
+   -- Row_Pivot --
+   ---------------
+
+   function Row_Pivot (Sprite : in Sprite_Type) return Integer is
+   begin
+      return Sprite.Property ("pivot.x");
+   end Row_Pivot;
+
+   ------------------
+   -- Column_Pivot --
+   ------------------
+
+   function Column_Pivot (Sprite : in Sprite_Type) return Integer is
+   begin
+      return Sprite.Property ("pivot.y");
+   end Column_Pivot;
+
+   --------------
+   -- Rotation --
+   --------------
+
+   procedure Rotation (Sprite : in out Sprite_Type; Value : in Integer) is
+   begin
+      Sprite.Property ("rotation", Float (Value) * Ada.Numerics.Pi / 180.0);
+   end Rotation;
+
+   --------------
+   -- Rotation --
+   --------------
+
+   function Rotation (Sprite : in Sprite_Type) return Integer is
+   begin
+      return Integer
+          (Float'(Sprite.Property ("rotation")) * 180.0 / Ada.Numerics.Pi);
+   end Rotation;
+
+   -----------------------
+   -- Rotation_Velocity --
+   -----------------------
+
+   procedure Rotation_Velocity
+     (Sprite : in out Sprite_Type;
+      Value  :        Velocity_Type)
+   is
+   begin
+      Sprite.Property
+      ("gnoga_vr", Value / Frame_Rate * Ada.Numerics.Pi / 180.0);
+   end Rotation_Velocity;
+
+   -----------------------
+   -- Rotation_Velocity --
+   -----------------------
+
+   function Rotation_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
+   begin
+      return Float'(Sprite.Property ("gnoga_vr")) *
+        Frame_Rate *
+        180.0 /
+        Ada.Numerics.Pi;
+   end Rotation_Velocity;
+
+   -----------
+   -- Width --
+   -----------
+
+   overriding procedure Width
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer)
+   is
+   begin
+      Sprite.Property ("width", Value);
+   end Width;
+
+   -----------
+   -- Width --
+   -----------
+
+   overriding function Width (Sprite : in Sprite_Type) return Integer is
+   begin
+      return Sprite.Property ("width");
+   end Width;
+
+   ------------
+   -- Height --
+   ------------
+
+   overriding procedure Height
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer)
+   is
+   begin
+      Sprite.Property ("height", Value);
+   end Height;
+
+   ------------
+   -- Height --
+   ------------
+
+   overriding function Height (Sprite : in Sprite_Type) return Integer is
+   begin
+      return Sprite.Property ("height");
+   end Height;
+
+   -----------
+   -- Scale --
+   -----------
+
+   procedure Scale (Sprite : in out Sprite_Type; Row, Column : in Positive) is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Sprite.Connection_ID,
+         "gnoga['" &
+         Sprite.ID &
+         "'].scale = {x:" &
+         Column'Img &
+         ",y:" &
+         Row'Img &
+         "};");
+   end Scale;
+
+   ---------------
+   -- Row_Scale --
+   ---------------
+
+   function Row_Scale (Sprite : in Sprite_Type) return Positive is
+   begin
+      return Sprite.Property ("scale.y");
+   end Row_Scale;
+
+   ------------------
+   -- Column_Scale --
+   ------------------
+
+   function Column_Scale (Sprite : in Sprite_Type) return Positive is
+   begin
+      return Sprite.Property ("scale.x");
+   end Column_Scale;
+
+   ----------
+   -- Skew --
+   ----------
+
+   procedure Skew (Sprite : in out Sprite_Type; Row, Column : in Positive) is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Sprite.Connection_ID,
+         "gnoga['" &
+         Sprite.ID &
+         "'].skew = {x:" &
+         Column'Img &
+         ",y:" &
+         Row'Img &
+         "};");
+   end Skew;
+
+   --------------
+   -- Row_Skew --
+   --------------
+
+   function Row_Skew (Sprite : in Sprite_Type) return Positive is
+   begin
+      return Sprite.Property ("skew.y");
+   end Row_Skew;
+
+   -----------------
+   -- Column_Skew --
+   -----------------
+
+   function Column_Skew (Sprite : in Sprite_Type) return Positive is
+   begin
+      return Sprite.Property ("skew.x");
+   end Column_Skew;
+
+   -----------------
+   -- Get_Texture --
+   -----------------
+
+   procedure Get_Texture
+     (Sprite : in     Sprite_Type;
+      Value  : in out Texture_Type'Class)
+   is
+      Texture_ID : constant String := Gnoga.Server.Connection.New_GID;
+   begin
+      Value.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
+      Value.Connection_ID (Sprite.Connection_ID);
+      Gnoga.Server.Connection.Execute_Script
+        (Sprite.Connection_ID,
+         "gnoga['" & Texture_ID & "'] = gnoga['" & Sprite.ID & "'].texture;");
+   end Get_Texture;
+
+   -----------------
+   -- Put_Texture --
+   -----------------
+
+   procedure Put_Texture
+     (Sprite : in out Sprite_Type;
+      Value  : in     Texture_Type'Class)
+   is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Sprite.Connection_ID,
+         "gnoga['" & Sprite.ID & "'].texture = gnoga['" & Value.ID & "'];");
+   end Put_Texture;
+
+   ----------
+   -- Tint --
+   ----------
+
+   procedure Tint (Sprite : in out Sprite_Type; Value : in Natural) is
+   begin
+      Sprite.Property ("tint", Value);
+   end Tint;
+
+   ----------
+   -- Tint --
+   ----------
+
+   function Tint (Sprite : in Sprite_Type) return Natural is
+   begin
+      return Sprite.Property ("tint");
+   end Tint;
+
+   -------------
+   -- Visible --
+   -------------
+
+   procedure Visible (Sprite : in out Sprite_Type; Value : in Boolean) is
+   begin
+      Sprite.Property ("visible", Value);
+   end Visible;
+
+   -------------
+   -- Visible --
+   -------------
+
+   function Visible (Sprite : in Sprite_Type) return Boolean is
+   begin
+      return Sprite.Property ("visible");
+   end Visible;
 
    -----------------
    -- Coincidence --

@@ -66,7 +66,7 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    --  Graphics_2D_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create
+   overriding procedure Create
      (Graphics : in out Graphics_2D_Type;
       Parent   : in out Container_Type'Class);
 

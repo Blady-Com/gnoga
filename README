@@ -18,10 +18,12 @@ http://www.gnoga.com or use git to get the latest development version:
 ```
 git clone git://git.code.sf.net/p/gnoga/code gnoga-code
 cd gnoga-code
-make  (or run "make release" for no debug info in compile)
+make all (or run "make release" for no debug info in compile)
+make help (for all options)
 ```
 
-then run the snake demo or tutorials in /bin. There are additional demos in /demo
+then run the snake demo or tutorials in /bin. There are additional demos in /demo.
+Open a web browser with URL like: "http://127.0.0.1:8080".
 
 See INSTALL for more information about installing Gnoga as a standard gcc/ada
 library if desired.

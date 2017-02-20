@@ -103,6 +103,14 @@ help :
 	@echo "--         | gps           -- launch GPS with gnoga environnement            --"
 	@echo "--         | check_rules   -- check gnoga with AdaControl                    --"
 	@echo "--                                                                           --"
+	@echo "--         PREFIX           = $(PREFIX)"
+	@echo "--         GPRCHECK         = $(GPRCHECK)"
+	@echo "--         TARGET           = $(TARGET)"
+	@echo "--         GPR_PROJECT_PATH = $(GPR_PROJECT_PATH)"
+	@echo "--         ATOMIC_ACCESS    = $(ATOMIC_ACCESS)"
+	@echo "--         BUILDER          = $(BUILDER)"
+	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)"
+	@echo "--                                                                           --"
 	@echo "-------------------------------------------------------------------------------"
 
 all: deps $(BUILD_SQLITE3) setup basic_components gnoga gnoga_tools demo tutorials

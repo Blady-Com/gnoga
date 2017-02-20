@@ -45,6 +45,7 @@ procedure Pixi_Sprite_Test is
       R   : Plugin.Pixi.Renderer_Type;
       C   : Plugin.Pixi.Container_Type;
       G   : Plugin.Pixi.Graphics.Graphics_2D_Type;
+      T   : Plugin.Pixi.Texture_Type;
 
       Button1 : Common.Button_Type;
 
@@ -69,9 +70,11 @@ procedure Pixi_Sprite_Test is
       App.My_Canvas.Place_Inside_Bottom_Of
       (App.Main_Window.Document.Body_Element.all);
 
-      R.Get_Drawing_Context_2D (App.My_Canvas);
+      R.Create (App.My_Canvas);
       C.Create (R);
       G.Create (C);
+
+--        delay 30.1;
 
 --        C.Begin_Path;
       G.Stroke_Color ("yellow");
@@ -89,6 +92,9 @@ procedure Pixi_Sprite_Test is
          delay 0.1;
       end loop;
       App.SP1.Locate (150, 5);
+      T.Create (R, "img/E6a.png");
+      App.SP1.Put_Texture (T);
+      App.SP1.Rotation_Velocity (10.0);
       delay 5.0;
       G.Stroke_Color ("green");
 --        C.Begin_Path;
@@ -96,6 +102,7 @@ procedure Pixi_Sprite_Test is
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
+      Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
       delay 5.0;
       G.Stroke_Color ("green");
 --        C.Begin_Path;
@@ -103,6 +110,7 @@ procedure Pixi_Sprite_Test is
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
+      Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
       delay 5.0;
       App.SP1.Delete (C);
 
@@ -110,12 +118,14 @@ procedure Pixi_Sprite_Test is
       App.SP2.Create (C, "img/E17a.png", 250, 100);
       App.SP1.Motion (0.0, 5.0);
       App.SP2.Motion (0.0, 5.0);
+      App.SP2.Anchor (0.5, 0.5);
+      App.SP2.Rotation_Velocity (-45.0);
 
       loop
          if not Gnoga.Gui.Plugin.Pixi.Sprite.Coincidence
              (App.SP1,
               App.SP2,
-              45) and
+              60) and
            not Coinc
          then
             App.SP1.Position (Y_Pos, X_Pos);

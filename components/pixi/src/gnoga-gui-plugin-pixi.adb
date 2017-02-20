@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Gnoga.Server.Connection;
-with Gnoga.Types;
 
 package body Gnoga.Gui.Plugin.Pixi is
 
@@ -51,11 +50,11 @@ package body Gnoga.Gui.Plugin.Pixi is
        " type=""text/javascript"" charset=""utf-8""></script>')");
    end Load_PIXI;
 
-   ----------------------------
-   -- Get_Drawing_Context_2D --
-   ----------------------------
+   ------------
+   -- Create --
+   ------------
 
-   procedure Get_Drawing_Context_2D
+   procedure Create
      (Renderer : in out Renderer_Type;
       Canvas   : in     Gnoga.Gui.Element.Canvas.Canvas_Type'Class)
    is
@@ -76,7 +75,7 @@ package body Gnoga.Gui.Plugin.Pixi is
          Canvas.ID &
          "')});");
       Renderer.Property ("gnoga_autoRendering", False);
-   end Get_Drawing_Context_2D;
+   end Create;
 
    ------------
    -- Render --
@@ -113,7 +112,8 @@ package body Gnoga.Gui.Plugin.Pixi is
             " for (var gnoga_sprite of gnoga['" &
             Container.ID &
             "'].children) if (gnoga_sprite instanceof PIXI.Sprite)" &
-            " {gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;}" &
+            " {gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
+            " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;}" &
             " gnoga['" &
             Renderer.ID &
             "'].render(gnoga['" &
@@ -132,9 +132,9 @@ package body Gnoga.Gui.Plugin.Pixi is
       return Renderer.Property ("gnoga_autoRendering");
    end Auto_Rendering;
 
-   -------------------------------------------------------------------------
-   --  Container_Type - Creation Methods
-   -------------------------------------------------------------------------
+   ------------
+   -- Create --
+   ------------
 
    procedure Create
      (Container : in out Container_Type;
@@ -148,6 +148,10 @@ package body Gnoga.Gui.Plugin.Pixi is
         (Container.Connection_ID,
          "gnoga['" & Container_ID & "'] = new PIXI.Container();");
    end Create;
+
+   ------------
+   -- Create --
+   ------------
 
    procedure Create
      (Container : in out Container_Type;
@@ -185,5 +189,208 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Container.Execute ("removeChild(gnoga['" & Child.ID & "']);");
    end Remove_Child;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Texture   : in out Texture_Type;
+      Renderer  : in out Renderer_Type'Class;
+      Image_URL : in     String)
+   is
+      Texture_ID : constant String := Gnoga.Server.Connection.New_GID;
+   begin
+      Texture.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
+      Texture.Connection_ID (Renderer.Connection_ID);
+      Gnoga.Server.Connection.Execute_Script
+        (Texture.Connection_ID,
+         "gnoga['" &
+         Texture_ID &
+         "'] = new PIXI.Texture.fromImage('" &
+         Image_URL &
+         "');");
+   end Create;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Texture  : in out Texture_Type;
+      Renderer : in out Renderer_Type'Class;
+      Canvas   : in     Gnoga.Gui.Element.Canvas.Canvas_Type'Class)
+   is
+      Texture_ID : constant String := Gnoga.Server.Connection.New_GID;
+   begin
+      Texture.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
+      Texture.Connection_ID (Renderer.Connection_ID);
+      Gnoga.Server.Connection.Execute_Script
+        (Texture.Connection_ID,
+         "gnoga['" &
+         Texture_ID &
+         "'] = new PIXI.Texture.fromCanvas(gnoga['" &
+         Canvas.ID &
+         "']);");
+   end Create;
+
+   -----------
+   -- Frame --
+   -----------
+
+   procedure Frame
+     (Texture : in Texture_Type;
+      Value   : in Gnoga.Types.Rectangle_Type)
+   is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Texture.Connection_ID,
+         "gnoga['" &
+         Texture.ID &
+         "'].frame = new PIXI.Rectangle(" &
+         Value.X'Img &
+         ',' &
+         Value.Y'Img &
+         ',' &
+         Value.Width'Img &
+         ',' &
+         Value.Height'Img &
+         ");");
+   end Frame;
+
+   -----------
+   -- Frame --
+   -----------
+
+   function Frame
+     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type
+   is
+   begin
+      return
+        (Texture.Property ("frame.x"),
+         Texture.Property ("frame.y"),
+         Texture.Property ("frame.width"),
+         Texture.Property ("frame.height"));
+   end Frame;
+
+   -----------
+   -- Width --
+   -----------
+
+   overriding procedure Width
+     (Texture : in out Texture_Type;
+      Value   : in     Integer)
+   is
+   begin
+      Texture.Property ("width", Value);
+   end Width;
+
+   -----------
+   -- Width --
+   -----------
+
+   overriding function Width (Texture : in Texture_Type) return Integer is
+   begin
+      return Texture.Property ("width");
+   end Width;
+
+   ------------
+   -- Height --
+   ------------
+
+   overriding procedure Height
+     (Texture : in out Texture_Type;
+      Value   : in     Integer)
+   is
+   begin
+      Texture.Property ("height", Value);
+   end Height;
+
+   ------------
+   -- Height --
+   ------------
+
+   overriding function Height (Texture : in Texture_Type) return Integer is
+   begin
+      return Texture.Property ("height");
+   end Height;
+
+   ----------
+   -- Orig --
+   ----------
+
+   procedure Orig
+     (Texture : in Texture_Type;
+      Value   : in Gnoga.Types.Rectangle_Type)
+   is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Texture.Connection_ID,
+         "gnoga['" &
+         Texture.ID &
+         "'].orig = new PIXI.Rectangle(" &
+         Value.X'Img &
+         ',' &
+         Value.Y'Img &
+         ',' &
+         Value.Width'Img &
+         ',' &
+         Value.Height'Img &
+         ");");
+   end Orig;
+
+   ----------
+   -- Orig --
+   ----------
+
+   function Orig
+     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type
+   is
+   begin
+      return
+        (Texture.Property ("orig.x"),
+         Texture.Property ("orig.y"),
+         Texture.Property ("orig.width"),
+         Texture.Property ("orig.height"));
+   end Orig;
+
+   ----------
+   -- Trim --
+   ----------
+
+   procedure Trim
+     (Texture : in Texture_Type;
+      Value   : in Gnoga.Types.Rectangle_Type)
+   is
+   begin
+      Gnoga.Server.Connection.Execute_Script
+        (Texture.Connection_ID,
+         "gnoga['" &
+         Texture.ID &
+         "'].trim = new PIXI.Rectangle(" &
+         Value.X'Img &
+         ',' &
+         Value.Y'Img &
+         ',' &
+         Value.Width'Img &
+         ',' &
+         Value.Height'Img &
+         ");");
+   end Trim;
+
+   ----------
+   -- Trim --
+   ----------
+
+   function Trim
+     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type
+   is
+   begin
+      return
+        (Texture.Property ("trim.x"),
+         Texture.Property ("trim.y"),
+         Texture.Property ("trim.width"),
+         Texture.Property ("trim.height"));
+   end Trim;
 
 end Gnoga.Gui.Plugin.Pixi;

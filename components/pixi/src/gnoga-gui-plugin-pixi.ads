@@ -35,14 +35,26 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Gnoga.Types;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.Element.Canvas;
 
 package Gnoga.Gui.Plugin.Pixi is
 
+   --  PIXI Ada API is inpired by https://github.com/pixijs/pixi.js.
+   --  Pixi.js is released under the (http://opensource.org/licenses/MIT) MIT License.
+   --  Some comments come from Pixi.js documentation:
+   --  Pixi.js is a rendering library that will allow you to create rich, interactive graphics,
+   --  cross platform applications, and games without having to dive into the WebGL API or
+   --  deal with browser and device compatibility.
+
    procedure Load_PIXI (Window : in out Gnoga.Gui.Window.Window_Type'Class);
    --  Load PIXI code into Window
+
+   -------------------------------------------------------------------------
+   --  Renderer_Type and Container_Type
+   -------------------------------------------------------------------------
 
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Renderer_Access is access all Renderer_Type;
@@ -52,21 +64,34 @@ package Gnoga.Gui.Plugin.Pixi is
    type Container_Access is access all Container_Type;
    type Pointer_To_Container_Class is access all Container_Type'Class;
 
-   procedure Get_Drawing_Context_2D
+   -------------------------------------------------------------------------
+   --  Renderer_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create
      (Renderer : in out Renderer_Type;
       Canvas   : in     Gnoga.Gui.Element.Canvas.Canvas_Type'Class);
    --  Create renderer associated to the canvas
 
+   -------------------------------------------------------------------------
+   --  Renderer_Type - Methods
+   -------------------------------------------------------------------------
+
    procedure Render
      (Renderer  : in out Renderer_Type;
       Container : in     Container_Type'Class);
-   --  Render the graphic objects in the container
+   --  Render the graphic objects included in the container
 
    procedure Auto_Rendering
      (Renderer  : in out Renderer_Type;
       Container : in     Container_Type'Class;
       Enable    : in     Boolean);
    function Auto_Rendering (Renderer : in out Renderer_Type) return Boolean;
+   --  Enables periodic rendering based on animation frame
+
+   -------------------------------------------------------------------------
+   --  Container_Type - Creation Methods
+   -------------------------------------------------------------------------
 
    procedure Create
      (Container : in out Container_Type;
@@ -75,6 +100,10 @@ package Gnoga.Gui.Plugin.Pixi is
    procedure Create
      (Container : in out Container_Type;
       Parent    : in out Container_Type'Class);
+
+   -------------------------------------------------------------------------
+   --  Container_Type - Methods
+   -------------------------------------------------------------------------
 
    procedure Add_Child
      (Container : in out Container_Type;
@@ -86,7 +115,92 @@ package Gnoga.Gui.Plugin.Pixi is
       Child     : in     Container_Type'Class);
    --  Remove a child graphic object in the container
 
+   type Blend_Modes_Type is
+     (NORMAL,
+      ADD,
+      MULTIPLY,
+      SCREEN,
+      OVERLAY,
+      DARKEN,
+      LIGHTEN,
+      COLOR_DODGE,
+      COLOR_BURN,
+      HARD_LIGHT,
+      SOFT_LIGHT,
+      DIFFERENCE,
+      EXCLUSION,
+      HUE,
+      SATURATION,
+      COLOR,
+      LUMINOSITY);
+   --  Various blend modes supported by PIXI.
+
+   type Scale_Modes_Type is (LINEAR, NEAREST);
+   --  The scale modes that are supported by pixi.
+   --  - LINEAR: Smooth scaling
+   --  - NEAREST: Pixelating scaling
+
+   -------------------------------------------------------------------------
+   --  Texture_Type
+   -------------------------------------------------------------------------
+
+   type Texture_Type is new Gnoga.Gui.Base.Base_Type with private;
+   type Texture_Access is access all Texture_Type;
+   type Pointer_To_Texture_Class is access all Texture_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Texture_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (Texture   : in out Texture_Type;
+      Renderer  : in out Renderer_Type'Class;
+      Image_URL : in     String);
+   --  Helper function that creates a Texture object from the given image url.
+
+   procedure Create
+     (Texture  : in out Texture_Type;
+      Renderer : in out Renderer_Type'Class;
+      Canvas   : in     Gnoga.Gui.Element.Canvas.Canvas_Type'Class);
+   --  Helper function that creates a new Texture based on the given canvas element.
+
+   -------------------------------------------------------------------------
+   --  Texture_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Frame
+     (Texture : in Texture_Type;
+      Value   : in Gnoga.Types.Rectangle_Type);
+   function Frame
+     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type;
+   --  The frame specifies the region of the base texture that this texture uses.
+
+   overriding procedure Width
+     (Texture : in out Texture_Type;
+      Value   : in     Integer);
+   overriding function Width (Texture : in Texture_Type) return Integer;
+   --  The height of the Texture in pixels.
+
+   overriding procedure Height
+     (Texture : in out Texture_Type;
+      Value   : in     Integer);
+   overriding function Height (Texture : in Texture_Type) return Integer;
+   --  The height of the Texture in pixels.
+
+   procedure Orig
+     (Texture : in Texture_Type;
+      Value   : in Gnoga.Types.Rectangle_Type);
+   function Orig (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type;
+   --  This is the area of original texture, before it was put in atlas.
+
+   procedure Trim
+     (Texture : in Texture_Type;
+      Value   : in Gnoga.Types.Rectangle_Type);
+   function Trim (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type;
+   --  This is the trimmed area of original texture, before it was put in atlas.
+
 private
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Container_Type is new Gnoga.Gui.Base.Base_Type with null record;
+   type Texture_Type is new Gnoga.Gui.Base.Base_Type with null record;
 end Gnoga.Gui.Plugin.Pixi;

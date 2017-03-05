@@ -126,13 +126,13 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
      (Sprite : in out Sprite_Type;
       Value  : in     Blend_Modes_Type);
    function Blend_Mode (Sprite : in Sprite_Type) return Blend_Modes_Type;
---  The blend mode to be applied to the sprite. Apply a value of PIXI.BLEND_MODES.NORMAL to reset the blend mode.
+   --  The blend mode to be applied to the sprite. Apply a value of PIXI.BLEND_MODES.NORMAL to reset the blend mode.
 
---  mask PIXI.Graphics PIXI.Sprite
---  Sets a mask for the displayObject. A mask is an object that limits the visibility of an
---  object to the shape of the mask applied to it. In PIXI a regular mask must be a
---  PIXI.Graphics or a PIXI.Sprite object. This allows for much faster masking in canvas as it
---  utilises shape clipping. To remove a mask, set this property to null.
+   --  mask PIXI.Graphics PIXI.Sprite
+   --  Sets a mask for the displayObject. A mask is an object that limits the visibility of an
+   --  object to the shape of the mask applied to it. In PIXI a regular mask must be a
+   --  PIXI.Graphics or a PIXI.Sprite object. This allows for much faster masking in canvas as it
+   --  utilises shape clipping. To remove a mask, set this property to null.
 
    procedure Pivot (Sprite : in out Sprite_Type; Row, Column : in Integer);
    function Row_Pivot (Sprite : in Sprite_Type) return Integer;

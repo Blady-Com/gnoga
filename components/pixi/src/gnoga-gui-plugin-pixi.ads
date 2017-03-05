@@ -35,7 +35,7 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Gnoga.Types;
+with Gnoga.Types.Colors;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.Element.Canvas;
@@ -199,8 +199,204 @@ package Gnoga.Gui.Plugin.Pixi is
    function Trim (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type;
    --  This is the trimmed area of original texture, before it was put in atlas.
 
+   -------------------------------------------------------------------------
+   --  Style_Types
+   -------------------------------------------------------------------------
+
+   type Style_Type is new Gnoga.Gui.Base.Base_Type with private;
+   type Style_Access is access all Style_Type;
+   type Pointer_To_Style_Class is access all Style_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Sprite_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (Style  : in out Style_Type;
+      Parent : in out Container_Type'Class);
+
+   -------------------------------------------------------------------------
+   --  Style_Type - properties
+   -------------------------------------------------------------------------
+
+   procedure Align
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Alignment_Type);
+   function Align
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Alignment_Type;
+   --  align string 'left' default
+   --  Alignment for multiline text ('left', 'center' or 'right'),
+   --  does not affect single line text
+
+   procedure Break_Words (Style : in out Style_Type; Value : in Boolean);
+   function Break_Words (Style : in out Style_Type) return Boolean;
+   --  breakWords boolean false default
+   --  Indicates if lines can be wrapped within words, it
+   --  needs wordWrap to be set to true
+
+   procedure Drop_Shadow (Style : in out Style_Type; Value : in Boolean);
+   function Drop_Shadow (Style : in out Style_Type) return Boolean;
+   --  dropShadow boolean false default
+   --  Set a drop shadow for the text
+
+   procedure Drop_Shadow_Alpha
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Alpha_Type);
+   function Drop_Shadow_Alpha
+     (Style : in out Style_Type) return Gnoga.Types.Alpha_Type;
+   --  dropShadowAlpha number 1 default
+   --  Set alpha for the drop shadow
+
+   procedure Drop_Shadow_Angle (Style : in out Style_Type; Value : in Integer);
+   function Drop_Shadow_Angle (Style : in out Style_Type) return Integer;
+   --  dropShadowAngle number 30° default
+   --  Set a angle of the drop shadow
+
+   procedure Drop_Shadow_Blur (Style : in out Style_Type; Value : in Natural);
+   function Drop_Shadow_Blur (Style : in out Style_Type) return Natural;
+   --  dropShadowBlur number 0 default
+   --  Set a shadow blur radius
+
+   procedure Drop_Shadow_Color
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Colors.Color_Enumeration);
+   function Drop_Shadow_Color
+     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration;
+   --  dropShadowColor string '#000000' default
+   --  A fill style to be used on the dropshadow e.g 'red', '#00FF00'
+
+   procedure Drop_Shadow_Distance
+     (Style : in out Style_Type;
+      Value : in     Integer);
+   function Drop_Shadow_Distance (Style : in out Style_Type) return Integer;
+   --  dropShadowDistance number 5 default
+   --  Set a distance of the drop shadow
+
+   procedure Fill
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Colors.Color_Enumeration);
+   function Fill
+     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration;
+   --  fill string | Array.<string> | number | Array.<number> | CanvasGradient | CanvasPattern 'black' default
+   --  A canvas fillstyle that will be used on the text e.g 'red', '#00FF00'. Can be an array to create a gradient
+   --  eg ['#000000','#FFFFFF']
+
+   --  fillGradientType number PIXI.TEXT_GRADIENT.LINEAR_VERTICAL default
+   --  If fill is an array of colours
+   --  to create a gradient, this can change the type/direction of the gradient. See PIXI.TEXT_GRADIENT
+
+   --  fillGradientStops Array.<number>  default
+   --  If fill is an array of colours to create a gradient, this array can set
+   --  the stop points (numbers between 0 and 1) for the color, overriding the default behaviour of evenly spacing them.
+
+   procedure Font_Family (Style : in out Style_Type; Value : in String);
+   function Font_Family (Style : in out Style_Type) return String;
+   --  fontFamily string | Array.<string> 'Arial' default
+   --  The font family
+
+   procedure Font_Size (Style : in out Style_Type; Value : in String);
+   function Font_Size (Style : in out Style_Type) return String;
+   --  fontSize number | string 26 default
+   --  The font size (as a number it converts to px, but as a string,
+   --  equivalents are '26px','20pt','160%' or '1.6em')
+
+   procedure Font_Style
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Font_Style_Type);
+   function Font_Style
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Style_Type;
+   --  fontStyle string 'normal' default
+   --  The font style ('normal', 'italic' or 'oblique')
+
+   procedure Font_Variant
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Font_Variant_Type);
+   function Font_Variant
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Variant_Type;
+   --  fontVariant string 'normal' default
+   --  The font variant ('normal' or 'small-caps')
+
+   procedure Font_Weight
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Font_Weight_Type);
+   function Font_Weight
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Weight_Type;
+   --  fontWeight string 'normal' default
+   --  The font weight ('normal', 'bold', 'bolder', 'lighter' and '100',
+   --  '200', '300', '400', '500', '600', '700', 800' or '900')
+
+   procedure Letter_Spacing (Style : in out Style_Type; Value : in Natural);
+   function Letter_Spacing (Style : in out Style_Type) return Natural;
+   --  letterSpacing number 0 default
+   --  The amount of spacing between letters, default is 0
+
+   procedure Line_Height (Style : in out Style_Type; Value : in Natural);
+   function Line_Height (Style : in out Style_Type) return Natural;
+   --  lineHeight number  default
+   --  The line height, a number that represents the vertical space that a letter uses
+
+   type Line_Join_Type is (Bevel, Round, Miter);
+
+   procedure Line_Join (Style : in out Style_Type; Value : in Line_Join_Type);
+   function Line_Join (Style : in out Style_Type) return Line_Join_Type;
+   --  lineJoin string 'miter' default
+   --  The lineJoin property sets the type of corner created, it can resolve
+   --  spiked text issues. Default is 'miter' (creates a sharp corner).
+
+   procedure Miter_Limit (Style : in out Style_Type; Value : in Natural);
+   function Miter_Limit (Style : in out Style_Type) return Natural;
+   --  miterLimit number 10 default
+   --  The miter limit to use when using the 'miter' lineJoin mode. This can reduce
+   --  or increase the spikiness of rendered text.
+
+   procedure Padding (Style : in out Style_Type; Value : in Natural);
+   function Padding (Style : in out Style_Type) return Natural;
+   --  padding number 0 default
+   --  Occasionally some fonts are cropped. Adding some padding will prevent this from
+   --  happening by adding padding to all sides of the text.
+
+   procedure Stroke
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Colors.Color_Enumeration);
+   function Stroke
+     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration;
+   --  stroke string | number 'black' default
+   --  A canvas fillstyle that will be used on the text stroke
+   --  e.g 'blue', '#FCFF00'
+
+   procedure Stroke_Thickness (Style : in out Style_Type; Value : in Natural);
+   function Stroke_Thickness (Style : in out Style_Type) return Natural;
+   --  strokeThickness number 0 default
+   --  A number that represents the thickness of the stroke.
+   --  Default is 0 (no stroke)
+
+   procedure Trim (Style : in out Style_Type; Value : in Boolean);
+   function Trim (Style : in out Style_Type) return Boolean;
+   --  trim boolean false default
+   --  Trim transparent borders
+
+   type Baseline_Type is
+     (Alphabetic, Top, Hanging, Middle, Ideographic, Bottom);
+
+   procedure Text_Baseline
+     (Style : in out Style_Type;
+      Value : in     Baseline_Type);
+   function Text_Baseline (Style : in out Style_Type) return Baseline_Type;
+   --  textBaseline string 'alphabetic' default
+   --  The baseline of the text that is rendered.
+
+   procedure Word_Wrap (Style : in out Style_Type; Value : in Boolean);
+   function Word_Wrap (Style : in out Style_Type) return Boolean;
+   --  wordWrap boolean false default
+   --  Indicates if word wrap should be used
+
+   procedure Word_Wrap_Width (Style : in out Style_Type; Value : in Natural);
+   function Word_Wrap_Width (Style : in out Style_Type) return Natural;
+   --  wordWrapWidth number 100 default
+   --  The width at which text will wrap, it needs wordWrap to be set to true
 private
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Container_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Texture_Type is new Gnoga.Gui.Base.Base_Type with null record;
+   type Style_Type is new Gnoga.Gui.Base.Base_Type with null record;
 end Gnoga.Gui.Plugin.Pixi;

@@ -1431,6 +1431,27 @@ package body Gnoga.Gui.Element is
       return Element.Style ("cursor");
    end Cursor;
 
+   -----------
+   -- Image --
+   -----------
+
+   function Image (Value : in Gnoga.Gui.Element.Font_Weight_Type) return String
+   is
+      W : constant String := Value'Img;
+   begin
+      return W (W'First + 7 .. W'Last);
+   end Image;
+
+   -----------
+   -- Value --
+   -----------
+
+   function Value (Value : in String) return Gnoga.Gui.Element.Font_Weight_Type
+   is
+   begin
+      return Gnoga.Gui.Element.Font_Weight_Type'Value ("Weight_" & Value);
+   end Value;
+
    ----------
    -- Font --
    ----------

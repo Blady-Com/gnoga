@@ -7,7 +7,9 @@ with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.Plugin.Pixi;
 with Gnoga.Gui.Plugin.Pixi.Graphics;
 with Gnoga.Gui.Plugin.Pixi.Sprite;
+with Gnoga.Gui.Plugin.Pixi.Text;
 with Gnoga.Types;
+with Gnoga.Types.Colors;
 
 procedure Pixi_Sprite_Test is
    use Gnoga;
@@ -41,11 +43,13 @@ procedure Pixi_Sprite_Test is
       Connection  :        access Gnoga.Application.Multi_Connect
         .Connection_Holder_Type)
    is
-      App : constant App_Access := new App_Data;
-      R   : Plugin.Pixi.Renderer_Type;
-      C   : Plugin.Pixi.Container_Type;
-      G   : Plugin.Pixi.Graphics.Graphics_2D_Type;
-      T   : Plugin.Pixi.Texture_Type;
+      App        : constant App_Access := new App_Data;
+      R          : Plugin.Pixi.Renderer_Type;
+      C          : Plugin.Pixi.Container_Type;
+      G          : Plugin.Pixi.Graphics.Graphics_2D_Type;
+      T          : Plugin.Pixi.Texture_Type;
+      S1, S2     : Plugin.Pixi.Style_Type;
+      M0, M1, M2 : Plugin.Pixi.Text.Text_Type;
 
       Button1 : Common.Button_Type;
 
@@ -76,16 +80,40 @@ procedure Pixi_Sprite_Test is
 
 --        delay 30.1;
 
---        C.Begin_Path;
       G.Stroke_Color ("yellow");
       G.Line_Width (8);
-      G.Rectangle ((100, 70, 90, 40));
+      G.Rectangle ((50, 10, 90, 40));
       R.Render (C);
 
---        C.Font (Height => "40px");
-      G.Stroke_Text (R, "Hello World!", 100, 100);
+      S1.Create (G);
+      S1.Font_Family ("Arial");
+      S1.Font_Size ("36px");
+      S1.Font_Style (Gnoga.Gui.Element.Italic);
+      S1.Font_Weight (Gnoga.Gui.Element.Weight_Bold);
+      S1.Fill (Gnoga.Types.Colors.Purple);
+      S1.Stroke (Gnoga.Types.Colors.Orange);
+      S1.Stroke_Thickness (5);
+      S1.Drop_Shadow (True);
+      S1.Drop_Shadow_Color (Gnoga.Types.Colors.Green);
+      S1.Drop_Shadow_Distance (6);
+      --  Create M0 in G so it won't be considered as sprite
+      M0.Create (G, "Hello World!", 100, 100);
+      M0.Set_Style (S1);
+
+      S2.Create (G);
+      S2.Fill (Gnoga.Types.Colors.Cyan);
+      S2.Font_Size ("40px");
+      --  Create M1 in C so it will be considered as sprite
+      M1.Create (C, "with", 150, 150);
+      M1.Set_Style (S2);
+      M1.Rotation_Velocity (10.0);
+      --  Create M2 in C so it will be considered as sprite
+      M2.Create (C, "PIXI", 150, 250);
+      M2.Set_Style (S2);
+      M2.Rotation_Velocity (-10.0);
 
       App.SP1.Create (C, "img/E4a.png", 10, 10, 8.0, 16.0);
+      --  C is set as the container of sprites
       R.Auto_Rendering (C, True);
 
       while not App.SP1.Coincidence (110, 210, 20) loop
@@ -97,16 +125,14 @@ procedure Pixi_Sprite_Test is
       App.SP1.Rotation_Velocity (10.0);
       delay 5.0;
       G.Stroke_Color ("green");
---        C.Begin_Path;
-      G.Move_To (100, 100);
+      G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
       delay 5.0;
       G.Stroke_Color ("green");
---        C.Begin_Path;
-      G.Move_To (100, 100);
+      G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);

@@ -605,6 +605,10 @@ package Gnoga.Gui.Element is
                              Weight_400, Weight_500, Weight_600,
                              Weight_700, Weight_800, Weight_900);
 
+   function Image (Value : in Gnoga.Gui.Element.Font_Weight_Type) return String;
+
+   function Value (Value : in String) return Gnoga.Gui.Element.Font_Weight_Type;
+
    type Font_Variant_Type is (Normal, Small_Caps);
 
    type System_Font_Type is (Caption, Icon, Menu, Message_Box, Small_Caption,

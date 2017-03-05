@@ -393,4 +393,535 @@ package body Gnoga.Gui.Plugin.Pixi is
          Texture.Property ("trim.height"));
    end Trim;
 
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Style  : in out Style_Type;
+      Parent : in out Container_Type'Class)
+   is
+      Style_ID : constant String := Gnoga.Server.Connection.New_GID;
+   begin
+      Style.ID (Style_ID, Gnoga.Types.Gnoga_ID);
+      Style.Connection_ID (Parent.Connection_ID);
+      Gnoga.Server.Connection.Execute_Script
+        (Style.Connection_ID,
+         "gnoga['" & Style_ID & "'] = new PIXI.TextStyle();");
+   end Create;
+
+   -----------
+   -- Align --
+   -----------
+
+   procedure Align
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Alignment_Type)
+   is
+   begin
+      Style.Property ("align", Value'Img);
+   end Align;
+
+   -----------
+   -- Align --
+   -----------
+
+   function Align
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Alignment_Type
+   is
+   begin
+      return Gnoga.Gui.Element.Alignment_Type'Value (Style.Property ("align"));
+   end Align;
+
+   -----------------
+   -- Break_Words --
+   -----------------
+
+   procedure Break_Words (Style : in out Style_Type; Value : in Boolean) is
+   begin
+      Style.Property ("breakWords", Value);
+   end Break_Words;
+
+   -----------------
+   -- Break_Words --
+   -----------------
+
+   function Break_Words (Style : in out Style_Type) return Boolean is
+   begin
+      return Style.Property ("breakWords");
+   end Break_Words;
+
+   -----------------
+   -- Drop_Shadow --
+   -----------------
+
+   procedure Drop_Shadow (Style : in out Style_Type; Value : in Boolean) is
+   begin
+      Style.Property ("dropShadow", Value);
+   end Drop_Shadow;
+
+   -----------------
+   -- Drop_Shadow --
+   -----------------
+
+   function Drop_Shadow (Style : in out Style_Type) return Boolean is
+   begin
+      return Style.Property ("dropShadow");
+   end Drop_Shadow;
+
+   -----------------------
+   -- Drop_Shadow_Alpha --
+   -----------------------
+
+   procedure Drop_Shadow_Alpha
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Alpha_Type)
+   is
+   begin
+      Style.Property ("dropShadowAlpha", Float (Value));
+   end Drop_Shadow_Alpha;
+
+   -----------------------
+   -- Drop_Shadow_Alpha --
+   -----------------------
+
+   function Drop_Shadow_Alpha
+     (Style : in out Style_Type) return Gnoga.Types.Alpha_Type
+   is
+   begin
+      return Gnoga.Types.Alpha_Type
+          (Float'(Style.Property ("dropShadowAlpha")));
+   end Drop_Shadow_Alpha;
+
+   -----------------------
+   -- Drop_Shadow_Angle --
+   -----------------------
+
+   procedure Drop_Shadow_Angle
+     (Style : in out Style_Type;
+      Value : in     Integer)
+   is
+   begin
+      Style.Property ("dropShadowAngle", Value);
+   end Drop_Shadow_Angle;
+
+   -----------------------
+   -- Drop_Shadow_Angle --
+   -----------------------
+
+   function Drop_Shadow_Angle (Style : in out Style_Type) return Integer is
+   begin
+      return Style.Property ("dropShadowAngle");
+   end Drop_Shadow_Angle;
+
+   ----------------------
+   -- Drop_Shadow_Blur --
+   ----------------------
+
+   procedure Drop_Shadow_Blur
+     (Style : in out Style_Type;
+      Value : in     Natural)
+   is
+   begin
+      Style.Property ("dropShadowBlur", Value);
+   end Drop_Shadow_Blur;
+
+   ----------------------
+   -- Drop_Shadow_Blur --
+   ----------------------
+
+   function Drop_Shadow_Blur (Style : in out Style_Type) return Natural is
+   begin
+      return Style.Property ("dropShadowBlur");
+   end Drop_Shadow_Blur;
+
+   -----------------------
+   -- Drop_Shadow_Color --
+   -----------------------
+
+   procedure Drop_Shadow_Color
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Style.Property ("dropShadowColor", Value'Img);
+   end Drop_Shadow_Color;
+
+   -----------------------
+   -- Drop_Shadow_Color --
+   -----------------------
+
+   function Drop_Shadow_Color
+     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
+   is
+   begin
+      return Gnoga.Types.Colors.Color_Enumeration'Value
+          (Style.Property ("dropShadowColor"));
+   end Drop_Shadow_Color;
+
+   --------------------------
+   -- Drop_Shadow_Distance --
+   --------------------------
+
+   procedure Drop_Shadow_Distance
+     (Style : in out Style_Type;
+      Value : in     Integer)
+   is
+   begin
+      Style.Property ("dropShadowDistance", Value);
+   end Drop_Shadow_Distance;
+
+   --------------------------
+   -- Drop_Shadow_Distance --
+   --------------------------
+
+   function Drop_Shadow_Distance (Style : in out Style_Type) return Integer is
+   begin
+      return Style.Property ("dropShadowDistance");
+   end Drop_Shadow_Distance;
+
+   ----------
+   -- Fill --
+   ----------
+
+   procedure Fill
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Style.Property ("fill", Value'Img);
+   end Fill;
+
+   ----------
+   -- Fill --
+   ----------
+
+   function Fill
+     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
+   is
+   begin
+      return Gnoga.Types.Colors.Color_Enumeration'Value
+          (Style.Property ("fill"));
+   end Fill;
+
+   -----------------
+   -- Font_Family --
+   -----------------
+
+   procedure Font_Family (Style : in out Style_Type; Value : in String) is
+   begin
+      Style.Property ("fontFamily", Value);
+   end Font_Family;
+
+   -----------------
+   -- Font_Family --
+   -----------------
+
+   function Font_Family (Style : in out Style_Type) return String is
+   begin
+      return Style.Property ("fontFamily");
+   end Font_Family;
+
+   ---------------
+   -- Font_Size --
+   ---------------
+
+   procedure Font_Size (Style : in out Style_Type; Value : in String) is
+   begin
+      Style.Property ("fontSize", Value);
+   end Font_Size;
+
+   ---------------
+   -- Font_Size --
+   ---------------
+
+   function Font_Size (Style : in out Style_Type) return String is
+   begin
+      return Style.Property ("fontSize");
+   end Font_Size;
+
+   ----------------
+   -- Font_Style --
+   ----------------
+
+   procedure Font_Style
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Font_Style_Type)
+   is
+   begin
+      Style.Property ("fontStyle", Value'Img);
+   end Font_Style;
+
+   ----------------
+   -- Font_Style --
+   ----------------
+
+   function Font_Style
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Style_Type
+   is
+   begin
+      return Gnoga.Gui.Element.Font_Style_Type'Value
+          (Style.Property ("fontStyle"));
+   end Font_Style;
+
+   ------------------
+   -- Font_Variant --
+   ------------------
+
+   procedure Font_Variant
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Font_Variant_Type)
+   is
+   begin
+      Style.Property ("fontVariant", Value'Img);
+   end Font_Variant;
+
+   ------------------
+   -- Font_Variant --
+   ------------------
+
+   function Font_Variant
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Variant_Type
+   is
+   begin
+      return Gnoga.Gui.Element.Font_Variant_Type'Value
+          (Style.Property ("fontVariant"));
+   end Font_Variant;
+
+   -----------------
+   -- Font_Weight --
+   -----------------
+
+   procedure Font_Weight
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Gui.Element.Font_Weight_Type)
+   is
+   begin
+      Style.Property ("fontWeight", Gnoga.Gui.Element.Image (Value));
+   end Font_Weight;
+
+   -----------------
+   -- Font_Weight --
+   -----------------
+
+   function Font_Weight
+     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Weight_Type
+   is
+   begin
+      return Gnoga.Gui.Element.Value (Style.Property ("fontWeight"));
+   end Font_Weight;
+
+   --------------------
+   -- Letter_Spacing --
+   --------------------
+
+   procedure Letter_Spacing (Style : in out Style_Type; Value : in Natural) is
+   begin
+      Style.Property ("letterSpacing", Value);
+   end Letter_Spacing;
+
+   --------------------
+   -- Letter_Spacing --
+   --------------------
+
+   function Letter_Spacing (Style : in out Style_Type) return Natural is
+   begin
+      return Style.Property ("letterSpacing");
+   end Letter_Spacing;
+
+   -----------------
+   -- Line_Height --
+   -----------------
+
+   procedure Line_Height (Style : in out Style_Type; Value : in Natural) is
+   begin
+      Style.Property ("lineHeight", Value);
+   end Line_Height;
+
+   -----------------
+   -- Line_Height --
+   -----------------
+
+   function Line_Height (Style : in out Style_Type) return Natural is
+   begin
+      return Style.Property ("lineHeight");
+   end Line_Height;
+
+   ---------------
+   -- Line_Join --
+   ---------------
+
+   procedure Line_Join
+     (Style : in out Style_Type;
+      Value : in     Line_Join_Type)
+   is
+   begin
+      Style.Property ("lineJoin", Value'Img);
+   end Line_Join;
+
+   ---------------
+   -- Line_Join --
+   ---------------
+
+   function Line_Join (Style : in out Style_Type) return Line_Join_Type is
+   begin
+      return Line_Join_Type'Value (Style.Property ("lineJoin"));
+   end Line_Join;
+
+   -----------------
+   -- Miter_Limit --
+   -----------------
+
+   procedure Miter_Limit (Style : in out Style_Type; Value : in Natural) is
+   begin
+      Style.Property ("miterLimit", Value);
+   end Miter_Limit;
+
+   -----------------
+   -- Miter_Limit --
+   -----------------
+
+   function Miter_Limit (Style : in out Style_Type) return Natural is
+   begin
+      return Style.Property ("miterLimit");
+   end Miter_Limit;
+
+   -------------
+   -- Padding --
+   -------------
+
+   procedure Padding (Style : in out Style_Type; Value : in Natural) is
+   begin
+      Style.Property ("padding", Value);
+   end Padding;
+
+   -------------
+   -- Padding --
+   -------------
+
+   function Padding (Style : in out Style_Type) return Natural is
+   begin
+      return Style.Property ("padding");
+   end Padding;
+
+   ------------
+   -- Stroke --
+   ------------
+
+   procedure Stroke
+     (Style : in out Style_Type;
+      Value : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
+   begin
+      Style.Property ("stroke", Value'Img);
+   end Stroke;
+
+   ------------
+   -- Stroke --
+   ------------
+
+   function Stroke
+     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
+   is
+   begin
+      return Gnoga.Types.Colors.Color_Enumeration'Value
+          (Style.Property ("stroke"));
+   end Stroke;
+
+   ----------------------
+   -- Stroke_Thickness --
+   ----------------------
+
+   procedure Stroke_Thickness
+     (Style : in out Style_Type;
+      Value : in     Natural)
+   is
+   begin
+      Style.Property ("strokeThickness", Value);
+   end Stroke_Thickness;
+
+   ----------------------
+   -- Stroke_Thickness --
+   ----------------------
+
+   function Stroke_Thickness (Style : in out Style_Type) return Natural is
+   begin
+      return Style.Property ("strokeThickness");
+   end Stroke_Thickness;
+
+   ----------
+   -- Trim --
+   ----------
+
+   procedure Trim (Style : in out Style_Type; Value : in Boolean) is
+   begin
+      Style.Property ("trim", Value);
+   end Trim;
+
+   ----------
+   -- Trim --
+   ----------
+
+   function Trim (Style : in out Style_Type) return Boolean is
+   begin
+      return Style.Property ("trim");
+   end Trim;
+
+   --------------------
+   -- Text_Base_line --
+   --------------------
+
+   procedure Text_Baseline
+     (Style : in out Style_Type;
+      Value : in     Baseline_Type)
+   is
+   begin
+      Style.Property ("textBaseline", Value'Img);
+   end Text_Baseline;
+
+   --------------------
+   -- Text_Base_line --
+   --------------------
+
+   function Text_Baseline (Style : in out Style_Type) return Baseline_Type is
+   begin
+      return Baseline_Type'Value (Style.Property ("textBaseline"));
+   end Text_Baseline;
+
+   ---------------
+   -- Word_Wrap --
+   ---------------
+
+   procedure Word_Wrap (Style : in out Style_Type; Value : in Boolean) is
+   begin
+      Style.Property ("wordWrap", Value);
+   end Word_Wrap;
+
+   ---------------
+   -- Word_Wrap --
+   ---------------
+
+   function Word_Wrap (Style : in out Style_Type) return Boolean is
+   begin
+      return Style.Property ("wordWrap");
+   end Word_Wrap;
+
+   ---------------------
+   -- Word_Wrap_Width --
+   ---------------------
+
+   procedure Word_Wrap_Width (Style : in out Style_Type; Value : in Natural) is
+   begin
+      Style.Property ("wordWrapWidth", Value);
+   end Word_Wrap_Width;
+
+   ---------------------
+   -- Word_Wrap_Width --
+   ---------------------
+
+   function Word_Wrap_Width (Style : in out Style_Type) return Natural is
+   begin
+      return Style.Property ("wordWrapWidth");
+   end Word_Wrap_Width;
+
 end Gnoga.Gui.Plugin.Pixi;

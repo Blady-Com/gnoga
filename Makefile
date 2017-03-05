@@ -345,7 +345,7 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html
 
 gps:
-	gps -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} &
+	gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} &
 
 # Use AdaControl to check rules/gnoga.aru
 # Make sure AdaControl utilities are in your PATH

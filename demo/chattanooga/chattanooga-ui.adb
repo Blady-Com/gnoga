@@ -1,9 +1,10 @@
 -- Chattanooga: a simple chat program
--- Copyright (C) 2015 by PragmAda Software Engineering.  All rights reserved.
+-- Copyright (C) 2017 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
 -- User Interface
 --
+-- V1.2B  2017 Feb 15     Corrected error in On_Connect_Submit
 -- V1.1B  2015 Jul 01     New version of Gnoga.Types.Colors
 -- V1.0B  2015 Jan 30     1st beta release, now with limited messaging area
 --
@@ -199,9 +200,9 @@ package body Chattanooga.UI is
          return;
       end if;
 
+      DB.Add (User => +Email, App_Data => App);
       App.Email := +Email;
       Create_Chat_Screen (App => App);
-      DB.Add (User => +Email, App_Data => App);
    exception -- Add
    when Constraint_Error =>
       App.Error.Text (Value => Email & " is already connected. Try again.");

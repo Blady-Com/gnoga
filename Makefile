@@ -62,7 +62,7 @@ ifdef ComSpec
 	RMS=del /S /Q
 	PATHSEP2=\\
 else
-	COPY=cp
+	COPY=cp -p
 	MOVE=mv
 	MKDIR=mkdir
 	RM=rm -f
@@ -218,7 +218,7 @@ uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr
 	- gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe
+demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -254,6 +254,9 @@ adaothello:
 
 tic_tac_toe:
 	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
+leaves:
+	cd demo/leaves && $(BUILDER) -Pleaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -311,6 +314,7 @@ clean_demo:
 	cd demo/random_int && $(CLEANER) -P random_int.gpr
 	cd demo/adaothello && $(CLEANER) -P adaothello.gpr
 	cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr
+	cd demo/leaves && $(CLEANER) -P leaves.gpr
 
 clean_tutorials:
 	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr

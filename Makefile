@@ -9,8 +9,10 @@ export GPR_PROJECT_PATH=$(CWD)/build/share/gpr:$(CWD)/build/lib/gnat
 ATOMIC_ACCESS=GCC-long-offsets
 # If using GNAT GPL prior to 2014 or earlier on a 32bit host (Windows or Linux)
 # You need to change this to:
-#
-#ATOMIC_ACCESS=GCC-built-ins
+# ATOMIC_ACCESS=GCC-built-ins
+# If using GNAT which supports pragma Atomic for 64-bit scalar variables for GNAT hosted on a 64-bit OS.
+# You can change this to:
+# ATOMIC_ACCESS=Pragma-atomic
 
 ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
 	BUILDER=gprbuild -p --target=${TARGET}
@@ -125,8 +127,8 @@ basic_components:
 deps : simple_components
 
 simple_components:
-	$(BUILDER) -P deps/simple_components/lib_components.gpr
-	$(INSTALLER) --prefix=$(CWD)/build --install-name=components deps/simple_components/lib_components.gpr
+	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS}
+	$(INSTALLER) --prefix=$(CWD)/build --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS}
 
 lib/libsqlite3.a:
 	cd deps/simple_components/sqlite-sources && gcc -s -c -O2 -o sqlite3.o sqlite3.c
@@ -178,37 +180,37 @@ bin/multimarkdown:
 
 # Gnoga with DEBUG on by default
 gnoga:
-	$(BUILDER) -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	$(BUILDER) -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_secure:
-	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_tools:
 	$(BUILDER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 # Gnoga build with DEBUG off
 release: deps setup basic_components
-	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 
 # Install Gnoga with DEBUG off
 install: release gnoga_tools
-	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr
+	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS}
 # TODO libsqlite3
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue src/zblib.gpr $(ZBGNATXDEFS)
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr $(ZBGNATXDEFS)
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
-	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 
 # Install Gnoga with DEBUG on
 install_debug:
-	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr
+	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS}
 # TODO libsqlite3
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue src/zblib.gpr $(ZBGNATXDEFS)
 	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr $(ZBGNATXDEFS)
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
-	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 uninstall:
 	- gprinstall -f --prefix=$(PREFIX) --uninstall lib_components.gpr
@@ -340,7 +342,7 @@ clean_tests:
 	cd test/tickets/019 && $(CLEANER) -P test.gpr
 
 rm-docs: gnoga
-	gnatdoc -P src/gnoga.gpr --no-subprojects -XAtomic_Access=${ATOMIC_ACCESS} -XPRJ_TARGET=${PRJ_TARGET}
+	gnatdoc -P src/gnoga.gpr --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}
 
 html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown user_guide.md > html/user_guide.html
@@ -349,11 +351,11 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html
 
 gps:
-	gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS} &
+	gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} &
 
 # Use AdaControl to check rules/gnoga.aru
 # Make sure AdaControl utilities are in your PATH
 # https://sourceforge.net/projects/adacontrol
 check_rules:
-	$(BUILDER) -c -f -P src/gnoga.gpr -gnatct -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
+	$(BUILDER) -c -f -P src/gnoga.gpr -gnatct -XPRJ_TARGET=${PRJ_TARGET}
 	adactl -f rules/gnoga.aru -p src/gnoga.gpr src/*.ads -- -Tobj

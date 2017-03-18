@@ -78,11 +78,12 @@ package body Gnoga.Application is
    -- Open_URL_OSX --
    ------------------
 
-   procedure Open_URL_OSX (url : String := "http://127.0.0.1:8080") is
+   procedure Open_URL_OSX (URL : String := "http://127.0.0.1:8080") is
       Args : GNAT.OS_Lib.Argument_List_Access;
       PID  : GNAT.OS_Lib.Process_Id;
+      pragma Unreferenced (PID);
    begin
-      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/open " & url);
+      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/open " & URL);
       PID := GNAT.OS_Lib.Non_Blocking_Spawn
         (Program_Name => Args (Args'First).all,
          Args         => Args (Args'First + 1 .. Args'Last));
@@ -92,11 +93,12 @@ package body Gnoga.Application is
    -- Open_URL_Linux --
    --------------------
 
-   procedure Open_URL_Linux (url : String := "http://127.0.0.1:8080") is
+   procedure Open_URL_Linux (URL : String := "http://127.0.0.1:8080") is
       Args : GNAT.OS_Lib.Argument_List_Access;
       PID  : GNAT.OS_Lib.Process_Id;
+      pragma Unreferenced (PID);
    begin
-      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/xdg-open " & url);
+      Args := GNAT.OS_Lib.Argument_String_To_List ("/usr/bin/xdg-open " & URL);
       PID := GNAT.OS_Lib.Non_Blocking_Spawn
         (Program_Name => Args (Args'First).all,
          Args         => Args (Args'First + 1 .. Args'Last));
@@ -106,11 +108,12 @@ package body Gnoga.Application is
    -- Open_URL_Windows --
    ----------------------
 
-   procedure Open_URL_Windows (url : String := "http://127.0.0.1:8080") is
+   procedure Open_URL_Windows (URL : String := "http://127.0.0.1:8080") is
       Args : GNAT.OS_Lib.Argument_List_Access;
       PID  : GNAT.OS_Lib.Process_Id;
+      pragma Unreferenced (PID);
    begin
-      Args := GNAT.OS_Lib.Argument_String_To_List ("cmd /c start " & url);
+      Args := GNAT.OS_Lib.Argument_String_To_List ("cmd /c start " & URL);
       PID := GNAT.OS_Lib.Non_Blocking_Spawn
         (Program_Name => Args (Args'First).all,
          Args         => Args (Args'First + 1 .. Args'Last));
@@ -120,9 +123,9 @@ package body Gnoga.Application is
    -- Open_URL --
    --------------
 
-   procedure Open_URL (url : String := "http://127.0.0.1:8080") is
+   procedure Open_URL (URL : String := "http://127.0.0.1:8080") is
    begin
-      Open_URL_Linux (url);
+      Open_URL_Linux (URL);
    end Open_URL;
 
 end Gnoga.Application;

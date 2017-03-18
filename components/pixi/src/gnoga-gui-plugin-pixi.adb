@@ -190,6 +190,199 @@ package body Gnoga.Gui.Plugin.Pixi is
       Container.Execute ("removeChild(gnoga['" & Child.ID & "']);");
    end Remove_Child;
 
+   ---------------------
+   -- Remove_Children --
+   ---------------------
+
+   procedure Remove_Children (Container : in out Container_Type) is
+   begin
+      Container.Execute ("removeChildren();");
+   end Remove_Children;
+
+   ----------------
+   -- Set_Parent --
+   ----------------
+
+   procedure Set_Parent
+     (Container : in out Container_Type;
+      Parent    : in     Container_Type'Class)
+   is
+   begin
+      Container.Execute ("setParent(gnoga['" & Parent.ID & "']);");
+   end Set_Parent;
+
+   ----------------
+   -- Get_Bounds --
+   ----------------
+
+   function Get_Bounds
+     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type
+   is
+   begin
+      return
+        (Container.Property ("getBounds().x;"),
+         Container.Property ("getBounds().y;"),
+         Container.Property ("getBounds().width;"),
+         Container.Property ("getBounds().height;"));
+   end Get_Bounds;
+
+   ----------------
+   -- Get_Bounds --
+   ----------------
+
+   procedure Get_Bounds
+     (Container : in     Container_Type;
+      Rect      :    out Gnoga.Types.Rectangle_Type)
+   is
+   begin
+      Rect :=
+        (Container.Property ("getBounds().x;"),
+         Container.Property ("getBounds().y;"),
+         Container.Property ("getBounds().width;"),
+         Container.Property ("getBounds().height;"));
+   end Get_Bounds;
+
+   ----------------------
+   -- Get_Local_Bounds --
+   ----------------------
+
+   function Get_Local_Bounds
+     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type
+   is
+   begin
+      return
+        (Container.Property ("getLocalBounds().x;"),
+         Container.Property ("getLocalBounds().y;"),
+         Container.Property ("getLocalBounds().width;"),
+         Container.Property ("getLocalBounds().height;"));
+   end Get_Local_Bounds;
+
+   ----------------------
+   -- Get_Local_Bounds --
+   ----------------------
+
+   procedure Get_Local_Bounds
+     (Container : in     Container_Type;
+      Rect      :    out Gnoga.Types.Rectangle_Type)
+   is
+   begin
+      Rect :=
+        (Container.Property ("getLocalBounds().x;"),
+         Container.Property ("getLocalBounds().y;"),
+         Container.Property ("getLocalBounds().width;"),
+         Container.Property ("getLocalBounds().height;"));
+   end Get_Local_Bounds;
+
+   ---------------
+   -- To_Global --
+   ---------------
+
+   function To_Global
+     (Container : in Container_Type;
+      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type
+   is
+   begin
+      return
+        (Container.Property
+         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Property
+         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+   end To_Global;
+
+   ---------------
+   -- To_Global --
+   ---------------
+
+   procedure To_Global
+     (Container : in     Container_Type;
+      Position  :        Gnoga.Types.Point_Type;
+      Point     :    out Gnoga.Types.Point_Type)
+   is
+   begin
+      Point :=
+        (Container.Property
+         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Property
+         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+   end To_Global;
+
+   --------------
+   -- To_Local --
+   --------------
+
+   function To_Local
+     (Container : in Container_Type;
+      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type
+   is
+   begin
+      return
+        (Container.Property
+         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Property
+         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+   end To_Local;
+
+   --------------
+   -- To_Local --
+   --------------
+
+   procedure To_Local
+     (Container : in     Container_Type;
+      Position  :        Gnoga.Types.Point_Type;
+      Point     :    out Gnoga.Types.Point_Type)
+   is
+   begin
+      Point :=
+        (Container.Property
+         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Property
+         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+   end To_Local;
+
+   -------------------
+   -- Set_Transform --
+   -------------------
+
+   procedure Set_Transform
+     (Container      : in out Container_Type;
+      x, y           : in     Integer;
+      scaleX, scaleY : in     Integer;
+      rotation       : in     Integer;
+      skewX, skewY   : in     Integer;
+      pivotX, pivotY : in     Integer)
+   is
+   begin
+      Container.Execute
+      ("setTransform(" &
+       x'Img &
+       ',' &
+       y'Img &
+       ',' &
+       scaleX'Img &
+       ',' &
+       scaleY'Img &
+       ',' &
+       rotation'Img &
+       ',' &
+       skewX'Img &
+       ',' &
+       skewY'Img &
+       ',' &
+       pivotX'Img &
+       ',' &
+       pivotY'Img &
+       ");");
+   end Set_Transform;
+
+   ----------------------
+   -- Update_Transform --
+   ----------------------
+
+   procedure Update_Transform (Container : in out Container_Type) is
+   begin
+      Container.Execute ("updateTransform();");
+   end Update_Transform;
+
    ------------
    -- Create --
    ------------

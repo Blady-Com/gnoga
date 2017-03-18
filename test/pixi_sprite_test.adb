@@ -46,7 +46,7 @@ procedure Pixi_Sprite_Test is
       App        : constant App_Access := new App_Data;
       R          : Plugin.Pixi.Renderer_Type;
       C          : Plugin.Pixi.Container_Type;
-      G          : Plugin.Pixi.Graphics.Graphics_2D_Type;
+      G          : Plugin.Pixi.Graphics.Graphics_Type;
       T          : Plugin.Pixi.Texture_Type;
       S1, S2     : Plugin.Pixi.Style_Type;
       M0, M1, M2 : Plugin.Pixi.Text.Text_Type;
@@ -80,9 +80,9 @@ procedure Pixi_Sprite_Test is
 
 --        delay 30.1;
 
-      G.Stroke_Color ("yellow");
+      G.Line_Color (Gnoga.Types.Colors.Yellow);
       G.Line_Width (8);
-      G.Rectangle ((50, 10, 90, 40));
+      G.Draw_Rect (50, 10, 90, 40);
       R.Render (C);
 
       S1.Create (G);
@@ -124,14 +124,14 @@ procedure Pixi_Sprite_Test is
       App.SP1.Put_Texture (T);
       App.SP1.Rotation_Velocity (10.0);
       delay 5.0;
-      G.Stroke_Color ("green");
+      G.Line_Color (Gnoga.Types.Colors.Green);
       G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
       delay 5.0;
-      G.Stroke_Color ("green");
+      G.Line_Color (Gnoga.Types.Colors.Grey);
       G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);

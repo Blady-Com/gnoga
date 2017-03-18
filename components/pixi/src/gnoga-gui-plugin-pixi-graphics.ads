@@ -35,490 +35,229 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Unchecked_Deallocation;
 with Gnoga.Types;
 with Gnoga.Types.Colors;
-with Gnoga.Gui.Element;
 
 package Gnoga.Gui.Plugin.Pixi.Graphics is
 
    -------------------------------------------------------------------------
-   --  Graphics_2D_Types
+   --  Graphics_Types
    -------------------------------------------------------------------------
 
-   type Graphics_2D_Type is new Container_Type with private;
-   type Graphics_2D_Access is access all Graphics_2D_Type;
-   type Pointer_To_Graphics_2D_Class is access all Graphics_2D_Type'Class;
-
-   type Gradient_Type is new Container_Type with private;
-   type Gradient_Access is access all Gradient_Type;
-   type Pointer_To_Gradient_Class is access all Gradient_Type'Class;
-
-   type Pattern_Type is new Container_Type with private;
-   type Pattern_Access is access all Pattern_Type;
-   type Pointer_To_Pattern_Class is access all Pattern_Type'Class;
-
-   type Image_Data_Type is new Container_Type with private;
-   type Image_Data_Access is access all Image_Data_Type;
-   type Pointer_To_Image_Data_Class is access all Image_Data_Type'Class;
+   type Graphics_Type is new Container_Type with private;
+   type Graphics_Access is access all Graphics_Type;
+   type Pointer_To_Graphics_Class is access all Graphics_Type'Class;
 
    -------------------------------------------------------------------------
-   --  Graphics_2D_Type - Creation Methods
+   --  Graphics_Type - Creation Methods
    -------------------------------------------------------------------------
 
    overriding procedure Create
-     (Graphics : in out Graphics_2D_Type;
+     (Graphics : in out Graphics_Type;
       Parent   : in out Container_Type'Class);
 
    -------------------------------------------------------------------------
-   --  Graphics_2D_Type - Properties
+   --  Graphics_Type - Properties
    -------------------------------------------------------------------------
 
-   --  Colors, Styles, Shadows
+   procedure Alpha
+     (Graphics : in out Graphics_Type;
+      Value    : in     Gnoga.Types.Alpha_Type);
+   function Alpha (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type;
+   --  The opacity of the object.
 
-   procedure Fill_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Gnoga.Types.RGBA_Type);
-   procedure Fill_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     String);
-   procedure Fill_Color
-     (Graphics : in out Graphics_2D_Type;
+   procedure Blend_Mode
+     (Graphics : in out Graphics_Type;
+      Value    : in     Blend_Modes_Type);
+   function Blend_Mode (Graphics : in Graphics_Type) return Blend_Modes_Type;
+   --  The blend mode to be applied to the graphic shape.
+   --  Apply a value of PIXI.BLEND_MODES.NORMAL to reset the blend mode.
+
+   procedure Bounds_Padding
+     (Graphics : in out Graphics_Type;
+      Value    : in     Integer);
+   function Bounds_Padding (Graphics : in Graphics_Type) return Integer;
+   --  The bounds' padding used for bounds calculation.
+
+   procedure Fill_Alpha
+     (Graphics : in out Graphics_Type;
+      Value    : in     Gnoga.Types.Alpha_Type);
+   function Fill_Alpha
+     (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type;
+   --  The alpha value used when filling the Graphics object.
+
+   overriding procedure Width
+     (Graphics : in out Graphics_Type;
+      Value    : in     Integer);
+   overriding function Width (Graphics : in Graphics_Type) return Integer;
+   --  The width of the Text, setting this will actually modify the scale to achieve the value set.
+
+   overriding procedure Height
+     (Graphics : in out Graphics_Type;
+      Value    : in     Integer);
+   overriding function Height (Graphics : in Graphics_Type) return Integer;
+   --  The height of the Text, setting this will actually modify the scale to achieve the value set.
+
+   procedure Line_Color
+     (Graphics : in out Graphics_Type;
       Value    : in     Gnoga.Types.Colors.Color_Enumeration);
-   --  Color used to fill in the drawing
+   function Line_Color
+     (Graphics : in out Graphics_Type) return Gnoga.Types.RGBA_Type;
+   --  The color of any lines drawn.
 
-   procedure Fill_Gradient
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in out Gradient_Type'Class);
-   --  Gradient used to fill in drawing
+   procedure Line_Width (Graphics : in out Graphics_Type; Value : in Integer);
+   function Line_Width (Graphics : in Graphics_Type) return Integer;
+   --  The width (thickness) of any lines drawn.
 
-   procedure Fill_Pattern
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in out Pattern_Type'Class);
-   --  Pattern used to fill in the drawing
+   procedure Position (Graphics : in Graphics_Type; Row, Column : out Integer);
+   function Row (Graphics : in Graphics_Type) return Integer;
+   function Column (Graphics : in Graphics_Type) return Integer;
+   --  The coordinate of the object relative to the local coordinates of the parent.
 
-   procedure Stroke_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Gnoga.Types.RGBA_Type);
-   procedure Stroke_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     String);
-   procedure Stroke_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Gnoga.Types.Colors.Color_Enumeration);
-   --  Color used for strokes
+   procedure Rotation (Graphics : in out Graphics_Type; Value : in Integer);
+   function Rotation (Graphics : in Graphics_Type) return Integer;
+   --  The rotation of the object in degrees.
 
-   procedure Stroke_Gradient
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in out Gradient_Type'Class);
-   --  Gradient used for strokes
+   procedure Scale
+     (Graphics    : in out Graphics_Type;
+      Row, Column : in     Positive);
+   function Row_Scale (Graphics : in Graphics_Type) return Positive;
+   function Column_Scale (Graphics : in Graphics_Type) return Positive;
+   --  The scale factor of the object.
 
-   procedure Stroke_Pattern
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in out Pattern_Type'Class);
+   procedure Skew (Graphics : in out Graphics_Type; Row, Column : in Positive);
+   function Row_Skew (Graphics : in Graphics_Type) return Positive;
+   function Column_Skew (Graphics : in Graphics_Type) return Positive;
+   --  The skew factor for the object in radians.
 
-   procedure Shadow_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Gnoga.Types.RGBA_Type);
-   procedure Shadow_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     String);
-   procedure Shadow_Color
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Gnoga.Types.Colors.Color_Enumeration);
-   --  Color to use for shadows
+   procedure Tint (Graphics : in out Graphics_Type; Value : in Natural);
+   function Tint (Graphics : in Graphics_Type) return Natural;
+   --  The tint applied to the graphic shape.
+   --  This is a hex value. Apply a value of 0xFFFFFF to reset the tint.
 
-   procedure Shadow_Blur
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Integer);
-   --  Blur level for shadows
-
-   procedure Shadow_Offset_X
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Integer);
-   --  Horizontal distance of the shadow from the shape
-
-   procedure Shadow_Offset_Y
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Integer);
-   --  Vertical distance of the shadow from the shape
-
-   --  Line Styles
-
-   type Line_Cap_Type is (Butt, Round, Square);
-
-   procedure Line_Cap
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Line_Cap_Type);
-   --  Style of the end caps for a line
-
-   type Line_Join_Type is (Bevel, Round, Miter);
-
-   procedure Line_Join
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Line_Join_Type);
-   --  Type of corner created when two lines meet
-
-   procedure Line_Width
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Integer);
-
-   procedure Miter_Limit
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Positive);
-   --  Maximum miter length
-
-   type Dash_Array_Type is array (Positive range <>) of Natural;
-
-   Empty_Dash_List  : constant Dash_Array_Type (1 .. 0) := (others => 0);
-   Dotted_Dash_List : constant Dash_Array_Type          := (2, 2);
-   Center_Dash_List : constant Dash_Array_Type          := (4, 3, 6, 3);
-   Dashed_Dash_List : constant Dash_Array_Type          := (5, 3);
-
-   procedure Set_Line_Dash
-     (Graphics  : in out Graphics_2D_Type;
-      Dash_List : in     Dash_Array_Type);
-
-   --  Text
-
-   procedure Font
-     (Graphics : in out Graphics_2D_Type;
-      Family   : in     String                             := "sans-serif";
-      Height   : in     String                             := "10px";
-      Style : in Gnoga.Gui.Element.Font_Style_Type := Gnoga.Gui.Element.Normal;
-      Weight   : in     Gnoga.Gui.Element.Font_Weight_Type :=
-        Gnoga.Gui.Element.Weight_Normal;
-      Variant : in Gnoga.Gui.Element.Font_Variant_Type :=
-        Gnoga.Gui.Element.Normal);
-   procedure Font
-     (Graphics    : in out Graphics_2D_Type;
-      System_Font : in     Gnoga.Gui.Element.System_Font_Type);
-   --  Sets or returns the current font properties for text content
-
-   procedure Text_Alignment
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Gnoga.Gui.Element.Alignment_Type);
-   --  Text Alignment, At_Start = Left, and To_End = Right in ltr languages
-   --  in rtl languages At_Start = Right, and To_End = Left.
-
-   type Baseline_Type is
-     (Alphabetic, Top, Hanging, Middle, Ideographic, Bottom);
-
-   procedure Text_Baseline
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Baseline_Type);
-   --  Baseline used when drawing text
-
-   --  Image Data
-
-   --  width    Returns the width of an ImageData object
-   --  height   Returns the height of an ImageData object
-   --  data     Returns an object that contains image data of a specified
-   --           ImageData object
-
-   --  Compositing
-
-   --  globalAlpha
-   procedure Global_Alpha
-     (Graphics : in out Graphics_2D_Type;
-      Alpha    :        Gnoga.Types.Alpha_Type);
-   --  Global Alpha Transparency
-
-   --  globalCompositeOperation
-   type Composite_Method_Type is
-     (Source_Over,
-      Source_Atop,
-      Source_In,
-      Source_Out,
-      Destination_Over,
-      Destination_Atop,
-      Destination_In,
-      Destination_Out,
-      Lighter,
-      Copy,
-      Xor_Copy);
-
-   procedure Glogal_Composite_Operation
-     (Graphics : in out Graphics_2D_Type;
-      Value    : in     Composite_Method_Type);
-   --  How a new image are composited onto Graphics
+   procedure Visible (Graphics : in out Graphics_Type; Value : in Boolean);
+   function Visible (Graphics : in Graphics_Type) return Boolean;
+   --  The visibility of the object. If false the object will not be drawn, and
+   --  the updateTransform function will not be called.
+   --  Only affects recursive calls from parent. You can ask for bounds or call updateTransform manually
 
    -------------------------------------------------------------------------
-   --  Graphics_2D_Type - Methods
+   --  Graphics_Type - Methods
    -------------------------------------------------------------------------
 
-   --  Colors, Styles, Shadows
-
-   procedure Create_Linear_Gradient
-     (Gradient : in out Gradient_Type;
-      Graphics : in out Graphics_2D_Type'Class;
-      X_1      : in     Integer;
-      Y_1      : in     Integer;
-      X_2      : in     Integer;
-      Y_2      : in     Integer);
-   --  Creates a linear gradient. Gradient Start Point = (X_1,Y_1),
-   --  End Point = (X_2, Y_2)
-
-   procedure Create_Radial_Gradient
-     (Gradient : in out Gradient_Type;
-      Graphics : in out Graphics_2D_Type'Class;
-      X_1      : in     Integer;
-      Y_1      : in     Integer;
-      R_1      : in     Integer;
-      X_2      : in     Integer;
-      Y_2      : in     Integer;
-      R_2      : in     Integer);
-   --  Creates a radial gradient. Gradient Start Point = (X_1,Y_1) with radius
-   --  R_1 and End Point = (X_2, Y_2) with Radius R_2
-
-   procedure Add_Color_Stop
-     (Gradient : in out Gradient_Type;
-      Position : in     Gnoga.Types.Frational_Range_Type;
-      Color    : in     Gnoga.Types.RGBA_Type);
-   procedure Add_Color_Stop
-     (Gradient : in out Gradient_Type;
-      Position : in     Gnoga.Types.Frational_Range_Type;
-      Color    : in     String);
-   procedure Add_Color_Stop
-     (Gradient : in out Gradient_Type;
-      Position : in     Gnoga.Types.Frational_Range_Type;
-      Color    : in     Gnoga.Types.Colors.Color_Enumeration);
-   --  Specifies the colors and stop positions in a gradient object
-
-   type Repeat_Type is (Repeat, Repeat_X_Only, Repeat_Y_Only, No_Repeat);
-
-   procedure Create_Pattern
-     (Pattern        : in out Pattern_Type;
-      Graphics       : in out Graphics_2D_Type'Class;
-      Image          : in out Gnoga.Gui.Element.Element_Type'Class;
-      Repeat_Pattern : in     Repeat_Type := Repeat);
-   --  Uses Image as a pattern according to Repeat. Image can be a
-   --  Gnoga.Element.Common.IMG_Type, Canvas_Type or a
-   --  Gnoga.Multimedia.Video_Type
-
-   --  Rectangles
-
-   procedure Rectangle
-     (Graphics  : in out Graphics_2D_Type;
-      Rectangle : in     Gnoga.Types.Rectangle_Type);
-   --  Create a Rectangle path (Stroke and/or Fill must be called to draw it).
-
-   procedure Fill_Rectangle
-     (Graphics  : in out Graphics_2D_Type;
-      Rectangle : in     Gnoga.Types.Rectangle_Type);
-
-   procedure Stroke_Rectangle
-     (Graphics  : in out Graphics_2D_Type;
-      Renderer  : in out Renderer_Type;
-      Rectangle : in     Gnoga.Types.Rectangle_Type);
-
-   procedure Clear_Rectangle
-     (Graphics  : in out Graphics_2D_Type;
-      Rectangle : in     Gnoga.Types.Rectangle_Type);
-
-   --  Paths
-
-   procedure Begin_Fill
-     (Graphics : in out Graphics_2D_Type;
-      Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.Black;
-      Alpha : Gnoga.Types.Alpha_Type := 1.0);
-   procedure End_Fill (Graphics : in out Graphics_2D_Type);
-   --  Fills the current drawing path
-
-   procedure Stroke
-     (Graphics : in out Graphics_2D_Type;
-      Renderer : in out Renderer_Type);
-   --  Draws the current path
-
-   procedure Begin_Path (Graphics : in out Graphics_2D_Type);
-   --  Begins a path or reset current path
-
-   procedure Move_To (Graphics : in out Graphics_2D_Type; X, Y : Integer);
-   --  Moves the path to the specified point in the canvas without creating
-   --  a line
-
-   procedure Close_Path (Graphics : in out Graphics_2D_Type);
-   --  Creates a path from the current point back to the first point of path
-
-   procedure Line_To (Graphics : in out Graphics_2D_Type; X, Y : Integer);
-   --  Adds a line from the current point to X, Y
-
-   procedure Clip (Graphics : in out Graphics_2D_Type);
-   --  Transforms the current path in to a clipping region
-
-   procedure Quadractic_Curve_To
-     (Graphics         : in out Graphics_2D_Type;
-      CP_X, CP_Y, X, Y :        Integer);
-   --  Creates a quadratic Bézier curve, using control point CP_X, CP_Y to
-   --  point X, Y.
-
-   procedure Bezier_Curve_To
-     (Graphics                       : in out Graphics_2D_Type;
-      CP_X_1, CP_Y_1, CP_X_2, CP_Y_2 : in     Integer;
-      X, Y                           : in     Integer);
-   --  Creates a cubic Bézier curve
+   procedure Add_Hole (Graphics : in out Graphics_Type);
+   --  Adds a hole in the current path.
 
    procedure Arc_Radians
-     (Graphics                     : in out Graphics_2D_Type;
+     (Graphics                     : in out Graphics_Type;
       X, Y                         : in     Integer;
       Radius                       : in     Integer;
       Starting_Angle, Ending_Angle : in     Float;
       Counter_Clockwise            : in     Boolean := False);
 
    procedure Arc_Degrees
-     (Graphics                     : in out Graphics_2D_Type;
+     (Graphics                     : in out Graphics_Type;
       X, Y                         : in     Integer;
       Radius                       : in     Integer;
       Starting_Angle, Ending_Angle : in     Float;
       Counter_Clockwise            : in     Boolean := False);
-   --  Creates an arc / curve (used to create circles, or parts of circles)
+
+   procedure Arc
+     (Graphics                     : in out Graphics_Type;
+      X, Y                         : in     Integer;
+      Radius                       : in     Integer;
+      Starting_Angle, Ending_Angle : in     Float;
+      Counter_Clockwise            : in     Boolean := False) renames
+     Arc_Radians;
+   --  The arc method creates an arc/curve (used to create circles, or parts of circles).
+   --  Angles in radians.
 
    procedure Arc_To
-     (Graphics           : in out Graphics_2D_Type;
+     (Graphics           : in out Graphics_Type;
       X_1, Y_1, X_2, Y_2 : in     Integer;
       Radius             : in     Integer);
-   --  Creates an arc / curve between two tangents
+   --  The arcTo() method creates an arc/curve between two tangents on the canvas.
 
-   function Is_Point_In_Path
-     (Graphics : Graphics_2D_Type;
-      X, Y     : Integer) return Boolean;
-   --  Returns true if the specified point is in the current path, otherwise
-   --  false
+   procedure Begin_Fill
+     (Graphics : in out Graphics_Type;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
+        Gnoga.Types.Colors.Black;
+      Alpha : Gnoga.Types.Alpha_Type := 1.0);
+   --  Specifies a simple one-color fill that subsequent calls to other Graphics methods
+   --  (such as lineTo() or drawCircle()) use when drawing.
 
-   --  Transforms
+   procedure End_Fill (Graphics : in out Graphics_Type);
+   --  Fills the current drawing path
 
-   procedure Scale (Graphics : in out Graphics_2D_Type; Width, Height : Float);
-   --  Scales the current drawing bigger or smaller, 1.0 = 100%
+   procedure Bezier_Curve_To
+     (Graphics                       : in out Graphics_Type;
+      CP_X_1, CP_Y_1, CP_X_2, CP_Y_2 : in     Integer;
+      X, Y                           : in     Integer);
+   --  Calculate the points for a Bézier curve and then draws it.
 
-   procedure Rotate_Radians
-     (Graphics : in out Graphics_2D_Type;
-      Radians  : in     Float);
-   procedure Rotate_Degrees
-     (Graphics : in out Graphics_2D_Type;
-      Degrees  : in     Float);
-   --  Rotates the current drawing
+   procedure Clear (Graphics : in out Graphics_Type);
+   --  Clears the graphics that were drawn to this Graphics object, and resets fill and line style settings.
 
-   procedure Translate (Graphics : in out Graphics_2D_Type; X, Y : Integer);
-   --  Remaps the (0, 0) position on the canvas
+   procedure Close_Path (Graphics : in out Graphics_Type);
+   --  Closes the current path.
 
-   procedure Transform
-     (Graphics                          : in out Graphics_2D_Type;
-      Scale_Horizontal, Skew_Horizontal : in     Float;
-      Scale_Vertical, Skew_Vertical     : in     Float;
-      Move_Horizontal, Move_Vertical    : in     Float);
-   --  Sets the current transformation matrix for the drawing relative to last
-   --  transformation
+   function Contains_Point
+     (Graphics    : in Graphics_Type;
+      Row, Column : in Integer) return Boolean;
+   --  Tests if a point is inside this graphics object
 
-   procedure Set_Transform
-     (Graphics                          : in out Graphics_2D_Type;
-      Scale_Horizontal, Skew_Horizontal : in     Float;
-      Scale_Vertical, Skew_Vertical     : in     Float;
-      Move_Horizontal, Move_Vertical    : in     Float);
-   --  Sets the current transformation matrix for the drawing
-
-   --  Text
-
-   procedure Fill_Text
-     (Graphics   : in out Graphics_2D_Type;
-      Text       : in     String;
-      X, Y       : in     Integer;
-      Max_Length : in     Natural := 0);
-   --  Place Text and fill on Graphics at X, Y with Max_Lenght if > 0
-
-   procedure Stroke_Text
-     (Graphics   : in out Graphics_2D_Type;
-      Renderer   : in out Renderer_Type;
-      Text       : in     String;
-      X, Y       : in     Integer;
-      Max_Length : in     Natural := 0);
-   --  Place Text without fill on Graphics at X, Y with Max_Lenght if > 0
-
-   function Measure_Text_Width
-     (Graphics : Graphics_2D_Type;
-      Text     : String) return Float;
-   --  Width of Text if drawn on Graphics
-
-   --  Image Drawing
-
-   procedure Draw_Image
-     (Graphics : in out Graphics_2D_Type'Class;
-      Image    : in out Gnoga.Gui.Element.Element_Type'Class;
-      X, Y     : in     Integer);
-   --  Draw Image at point X, Y. Image can be a
-   --  Gnoga.Element.Common.IMG_Type, Canvas_Type or a
-   --  Gnoga.Multimedia.Video_Type
-
-   --  Image Data
-
-   function Pixel
-     (Graphics : Graphics_2D_Type;
-      X, Y     : Integer) return Gnoga.Types.Pixel_Type;
-   procedure Pixel
-     (Graphics : in out Graphics_2D_Type;
+   procedure Draw_Circle
+     (Graphics : in out Graphics_Type;
       X, Y     : in     Integer;
-      Color    : in     Gnoga.Types.Pixel_Type);
-   procedure Pixel
-     (Graphics : in out Graphics_2D_Type;
-      X, Y     : in     Integer;
-      Color    : in     Gnoga.Types.Colors.Color_Enumeration);
-   --  Set or Get the Pixel at X, Y
-   --  Note: Left and Top are absolute and not affected by Translate
+      Radius   : in     Integer);
+   --  Draws a circle.
 
-   procedure Create_Image_Data
-     (Graphics      : in out Graphics_2D_Type;
-      Image_Data    : in out Image_Data_Type'Class;
+   procedure Draw_Ellipse
+     (Graphics      : in out Graphics_Type;
+      X, Y          : in     Integer;
       Width, Height : in     Integer);
-   --  Create a blank Image_Data_Type with Width and Height matching the pixel
-   --  properties of Graphics
+   --  Draws a circle.
 
-   procedure Get_Image_Data
-     (Graphics      : in out Graphics_2D_Type;
-      Image_Data    : in out Image_Data_Type'Class;
-      Left, Top     : in     Integer;
-      Width, Height : in     Integer);
-   --  Creates an Image_Data object containing pixel data from Graphics at
-   --  Left, Top with Width and Height dimensions
-   --  Note: Left and Top are absolute and not affected by Translate
+   procedure Draw_Polygon
+     (Graphics : in out Graphics_Type;
+      Path     : in     Gnoga.Types.Point_Array_Type);
+   --  Draws a polygon using the given path.
 
-   procedure Put_Image_Data
-     (Graphics   : in out Graphics_2D_Type;
-      Image_Data : in out Image_Data_Type'Class;
-      Left, Top  : in     Integer);
-   --   Put Image_Data at Left, Top of Graphics
-   --  Note: Left and Top are absolute and not affected by Translate
+   procedure Draw_Rect
+     (Graphics            : in out Graphics_Type;
+      X, Y, Width, Height : in     Integer);
+   --  Draws a rectangle.
 
-   function Width0 (Image_Data : Image_Data_Type) return Natural;
+   procedure Draw_Rounded_Rect
+     (Graphics            : in out Graphics_Type;
+      X, Y, Width, Height : in     Integer);
+   --  Draws a rounded rectangle.
 
-   function Height0 (Image_Data : Image_Data_Type) return Natural;
+   procedure Generate_Canvas_Texture
+     (Graphics : in out Graphics_Type;
+      Texture  :    out Texture_Type);
+   --  Generates a canvas texture.
 
-   procedure Data
-     (Image_Data : in out Image_Data_Type;
-      Value      : in     Gnoga.Types.Pixel_Data_Type);
-   function Data
-     (Image_Data : Image_Data_Type) return Gnoga.Types.Pixel_Data_Type;
-   --  Data property of Image_Data_Type
+   procedure Line_Style
+     (Graphics   : in out Graphics_Type;
+      Line_Width : in     Natural;
+      Color      : in     Gnoga.Types.Colors.Color_Enumeration;
+      Alpha      : in     Gnoga.Types.Alpha_Type := 1.0);
+   --  Specifies the line style used for subsequent calls to Graphics methods
+   --  such as the lineTo() method or the drawCircle() method.
 
-   procedure New_From_XPM
-     (Image     : out Gnoga.Types.Pixel_Data_Access;
-      File_Name :     String);
-   --  Read XPM data from File_Name to Image which is allocated with XPM size
-   procedure Free is new Ada.Unchecked_Deallocation
-     (Gnoga.Types.Pixel_Data_Type,
-      Gnoga.Types.Pixel_Data_Access);
-   --  Free image data allocated with New_From_XPM
+   procedure Line_To (Graphics : in out Graphics_Type; X, Y : in Integer);
+   --  Draws a line using the current line style from the current drawing position to (x, y);
+   --  The current drawing position is then set to (x, y).
 
-   --  Other
+   procedure Move_To (Graphics : in out Graphics_Type; X, Y : in Integer);
+   --  Moves the current drawing position to x, y.
 
-   procedure Save (Graphics : in out Graphics_2D_Type);
-   --  Saves/Pushes the state of the current Graphics, states stack
-
-   procedure Restore (Graphics : in out Graphics_2D_Type);
-   --  Restores/Pops the state the the previous Graphics
+   procedure Quadractic_Curve_To
+     (Graphics         : in out Graphics_Type;
+      CP_X, CP_Y, X, Y : in     Integer);
+   --  Calculate the points for a quadratic Bézier curve and then draws it.
 
 private
-   type Graphics_2D_Type is new Container_Type with null record;
-   type Gradient_Type is new Container_Type with null record;
-   type Pattern_Type is new Container_Type with null record;
-   type Image_Data_Type is new Container_Type with null record;
+   type Graphics_Type is new Container_Type with null record;
 end Gnoga.Gui.Plugin.Pixi.Graphics;

@@ -328,7 +328,7 @@ procedure Leaves_main is
    is
    pragma Unreferenced (Connection);
       App : constant App_Access := new Game_App_Data (13, 7);
-      G   : Plugin.Pixi.Graphics.Graphics_2D_Type;
+      G   : Plugin.Pixi.Graphics.Graphics_Type;
    begin
       Main_Window.Connection_Data (App);
 

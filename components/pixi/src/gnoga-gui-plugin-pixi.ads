@@ -39,6 +39,7 @@ with Gnoga.Types.Colors;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.Element.Canvas;
+with Gnoga.Types;
 
 package Gnoga.Gui.Plugin.Pixi is
 
@@ -115,30 +116,57 @@ package Gnoga.Gui.Plugin.Pixi is
       Child     : in     Container_Type'Class);
    --  Remove a child graphic object in the container
 
-   type Blend_Modes_Type is
-     (NORMAL,
-      ADD,
-      MULTIPLY,
-      SCREEN,
-      OVERLAY,
-      DARKEN,
-      LIGHTEN,
-      COLOR_DODGE,
-      COLOR_BURN,
-      HARD_LIGHT,
-      SOFT_LIGHT,
-      DIFFERENCE,
-      EXCLUSION,
-      HUE,
-      SATURATION,
-      COLOR,
-      LUMINOSITY);
-   --  Various blend modes supported by PIXI.
+   procedure Remove_Children (Container : in out Container_Type);
+   --  Removes all children from this container
 
-   type Scale_Modes_Type is (LINEAR, NEAREST);
-   --  The scale modes that are supported by pixi.
-   --  - LINEAR: Smooth scaling
-   --  - NEAREST: Pixelating scaling
+   procedure Set_Parent
+     (Container : in out Container_Type;
+      Parent    : in     Container_Type'Class);
+   --  Set the parent Container of this DisplayObject
+
+   function Get_Bounds
+     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type;
+   procedure Get_Bounds
+     (Container : in     Container_Type;
+      Rect      :    out Gnoga.Types.Rectangle_Type);
+   --  Retrieves the bounds of the displayObject as a rectangle object.
+
+   function Get_Local_Bounds
+     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type;
+   procedure Get_Local_Bounds
+     (Container : in     Container_Type;
+      Rect      :    out Gnoga.Types.Rectangle_Type);
+   --  Retrieves the local bounds of the displayObject as a rectangle object.
+
+   function To_Global
+     (Container : in Container_Type;
+      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type;
+   procedure To_Global
+     (Container : in     Container_Type;
+      Position  :        Gnoga.Types.Point_Type;
+      Point     :    out Gnoga.Types.Point_Type);
+   --  Calculates the global position of the display object
+
+   function To_Local
+     (Container : in Container_Type;
+      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type;
+   procedure To_Local
+     (Container : in     Container_Type;
+      Position  :        Gnoga.Types.Point_Type;
+      Point     :    out Gnoga.Types.Point_Type);
+   --  Calculates the local position of the display object relative to another point
+
+   procedure Set_Transform
+     (Container      : in out Container_Type;
+      x, y           : in     Integer;
+      scaleX, scaleY : in     Integer;
+      rotation       : in     Integer;
+      skewX, skewY   : in     Integer;
+      pivotX, pivotY : in     Integer);
+   --  Convenience function to set the position, scale, skew and pivot at once.
+
+   procedure Update_Transform (Container : in out Container_Type);
+   --  Updates the transform on all children of this container for rendering
 
    -------------------------------------------------------------------------
    --  Texture_Type
@@ -394,6 +422,32 @@ package Gnoga.Gui.Plugin.Pixi is
    function Word_Wrap_Width (Style : in out Style_Type) return Natural;
    --  wordWrapWidth number 100 default
    --  The width at which text will wrap, it needs wordWrap to be set to true
+
+   type Blend_Modes_Type is
+     (NORMAL,
+      ADD,
+      MULTIPLY,
+      SCREEN,
+      OVERLAY,
+      DARKEN,
+      LIGHTEN,
+      COLOR_DODGE,
+      COLOR_BURN,
+      HARD_LIGHT,
+      SOFT_LIGHT,
+      DIFFERENCE,
+      EXCLUSION,
+      HUE,
+      SATURATION,
+      COLOR,
+      LUMINOSITY);
+   --  Various blend modes supported by PIXI.
+
+   type Scale_Modes_Type is (LINEAR, NEAREST);
+   --  The scale modes that are supported by pixi.
+   --  - LINEAR: Smooth scaling
+   --  - NEAREST: Pixelating scaling
+
 private
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Container_Type is new Gnoga.Gui.Base.Base_Type with null record;

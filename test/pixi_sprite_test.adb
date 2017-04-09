@@ -119,10 +119,12 @@ procedure Pixi_Sprite_Test is
       while not App.SP1.Coincidence (110, 210, 20) loop
          delay 0.1;
       end loop;
+
       App.SP1.Locate (150, 5);
       T.Create (R, "img/E6a.png");
       App.SP1.Put_Texture (T);
       App.SP1.Rotation_Velocity (10.0);
+      App.SP1.Rotation_Acceleration (10.0);
       delay 5.0;
       G.Line_Color (Gnoga.Types.Colors.Green);
       G.Move_To (100, 140);
@@ -131,18 +133,20 @@ procedure Pixi_Sprite_Test is
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
       delay 5.0;
+      App.SP1.Rotation_Acceleration (-10.0);
       G.Line_Color (Gnoga.Types.Colors.Grey);
       G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
-      delay 5.0;
+      delay 10.0;
       App.SP1.Delete (C);
 
       App.SP1.Create (C, "img/E11a.png", 250, 10);
       App.SP2.Create (C, "img/E17a.png", 250, 100);
       App.SP1.Motion (0.0, 5.0);
+      App.SP1.Acceleration (0.0, 1.0);
       App.SP2.Motion (0.0, 5.0);
       App.SP2.Anchor (0.5, 0.5);
       App.SP2.Rotation_Velocity (-45.0);
@@ -155,8 +159,9 @@ procedure Pixi_Sprite_Test is
            not Coinc
          then
             App.SP1.Position (Y_Pos, X_Pos);
-            if X_Pos > 50 then
-               App.SP1.Motion (0.0, App.SP1.Column_Velocity + 1.0);
+            if X_Pos > 350 then
+               App.SP1.Acceleration (0.0, -5.0);
+               exit;
             end if;
          else
             if Coinc then
@@ -179,11 +184,9 @@ procedure Pixi_Sprite_Test is
          Gnoga.Log
            ("Distance:" &
             Gnoga.Gui.Plugin.Pixi.Sprite.Distance (App.SP1, App.SP2)'Img);
-         exit when X_Pos > 300;
       end loop;
 
-      App.SP1.Motion (0.0, 10.0);
-      delay 3.0;
+      delay 10.0;
       Gnoga.Gui.Plugin.Pixi.Sprite.Delete_All (C);
       R.Auto_Rendering (C, False);
 

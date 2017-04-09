@@ -52,29 +52,26 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    type Sprite_Access is access all Sprite_Type;
    type Pointer_To_Sprite_Class is access all Sprite_Type'Class;
 
-   subtype Velocity_Type is Float range -1000.0 .. +1000.0;
-   --  A positive value moves the sprite down or to the right, clockwise for rotation
-   --  A negative value moves the sprite up or to the left, anti-clockwise for rotation
-   --  A value of 1 moves the sprite at the speed of 1 pixel per second or 1 degree per second for rotation
-   --  A value of 0 stops the sprite
-
    -------------------------------------------------------------------------
    --  Sprite_Type - Creation Methods
    -------------------------------------------------------------------------
 
    procedure Create
-     (Sprite                        : in out Sprite_Type;
-      Parent                        : in out Container_Type'Class;
-      Texture                       : in     Texture_Type;
-      Row, Column                   : in     Integer;
-      Row_Velocity, Column_Velocity : in     Velocity_Type := 0.0);
+     (Sprite                                : in out Sprite_Type;
+      Parent                                : in out Container_Type'Class;
+      Texture                               : in     Texture_Type;
+      Row, Column                           : in     Integer;
+      Row_Velocity, Column_Velocity         : in     Velocity_Type     := 0.0;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type := 0.0);
    procedure Create
-     (Sprite                        : in out Sprite_Type;
-      Parent                        : in out Container_Type'Class;
-      Image_Path                    : in     String;
-      Row, Column                   : in     Integer;
-      Row_Velocity, Column_Velocity : in     Velocity_Type := 0.0);
-   --  Defines sprite, specifying the image to draw, the position and the motion (optionnal)
+     (Sprite                                : in out Sprite_Type;
+      Parent                                : in out Container_Type'Class;
+      Image_Path                            : in     String;
+      Row, Column                           : in     Integer;
+      Row_Velocity, Column_Velocity         : in     Velocity_Type     := 0.0;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type := 0.0);
+   --  Defines sprite, specifying the image to draw, the position, the motion (optionnal)
+   --  and the acceleration (optional)
    --  Path is defined from application root path
 
    -------------------------------------------------------------------------
@@ -103,6 +100,17 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    function Row_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
    function Column_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
    --   Returns motion properties
+
+   procedure Acceleration
+     (Sprite                                : in out Sprite_Type;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type);
+   --  Specifies the acceleration of a sprite
+
+   function Row_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type;
+   function Column_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type;
+   --   Returns acceleration properties
 
    procedure Alpha
      (Sprite : in out Sprite_Type;
@@ -148,6 +156,13 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
       Value  :        Velocity_Type);
    function Rotation_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
    --  The rotation velocity
+
+   procedure Rotation_Acceleration
+     (Sprite : in out Sprite_Type;
+      Value  :        Acceleration_Type);
+   function Rotation_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type;
+   --  The rotation acceleration
 
    overriding procedure Width
      (Sprite : in out Sprite_Type;

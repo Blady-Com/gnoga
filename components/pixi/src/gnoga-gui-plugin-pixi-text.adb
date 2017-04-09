@@ -40,9 +40,6 @@ with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.Pixi.Text is
 
-   Frame_Rate : constant := 60.0;
-   --  Standard value for most browsers (FPS)
-
    ------------
    -- Create --
    ------------
@@ -62,7 +59,9 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
          "gnoga['" & Text_ID & "'] = new PIXI.Text('" & Message & "');");
       Text.Locate (Row, Column);
       Text.Motion (0.0, 0.0);
+      Text.Acceleration (0.0, 0.0);
       Text.Rotation_Velocity (0.0);
+      Text.Rotation_Acceleration (0.0);
       Parent.Add_Child (Text);
    end Create;
 
@@ -136,6 +135,41 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    begin
       return Text.Property ("gnoga_vx") * Frame_Rate;
    end Column_Velocity;
+
+   ------------------
+   -- Acceleration --
+   ------------------
+
+   procedure Acceleration
+     (Text                                  : in out Text_Type;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type)
+   is
+   begin
+      Text.Property
+      ("gnoga_ax", Column_Acceleration / Frame_Rate / Frame_Rate);
+      Text.Property ("gnoga_ay", Row_Acceleration / Frame_Rate / Frame_Rate);
+   end Acceleration;
+
+   ----------------------
+   -- Row_Acceleration --
+   ----------------------
+
+   function Row_Acceleration (Text : in Text_Type) return Acceleration_Type is
+   begin
+      return Text.Property ("gnoga_ay") * (Frame_Rate * Frame_Rate);
+   end Row_Acceleration;
+
+   -------------------------
+   -- Column_Acceleration --
+   -------------------------
+
+   function Column_Acceleration
+     (Text : in Text_Type) return Acceleration_Type
+   is
+
+   begin
+      return Text.Property ("gnoga_ax") * (Frame_Rate * Frame_Rate);
+   end Column_Acceleration;
 
    -----------
    -- Alpha --
@@ -318,6 +352,34 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
         180.0 /
         Ada.Numerics.Pi;
    end Rotation_Velocity;
+
+   -----------------------
+   -- Rotation_Acceleration --
+   -----------------------
+
+   procedure Rotation_Acceleration
+     (Text  : in out Text_Type;
+      Value :        Acceleration_Type)
+   is
+   begin
+      Text.Property
+      ("gnoga_ar", Value / Frame_Rate / Frame_Rate * Ada.Numerics.Pi / 180.0);
+   end Rotation_Acceleration;
+
+   -----------------------
+   -- Rotation_Acceleration --
+   -----------------------
+
+   function Rotation_Acceleration
+     (Text : in Text_Type) return Acceleration_Type
+   is
+   begin
+      return Float'(Text.Property ("gnoga_ar")) *
+        Frame_Rate *
+        Frame_Rate *
+        180.0 /
+        Ada.Numerics.Pi;
+   end Rotation_Acceleration;
 
    -----------
    -- Width --

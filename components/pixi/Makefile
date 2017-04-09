@@ -22,4 +22,3 @@ uninstall:
 	- $(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-pixi*.ad?
 	- $(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)pixi.js
 	- $(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)pixi.js.map
-	- cd ../../js && ${RMS} pixi

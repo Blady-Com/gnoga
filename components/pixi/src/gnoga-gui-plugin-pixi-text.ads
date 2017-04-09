@@ -52,12 +52,6 @@ package Gnoga.Gui.Plugin.Pixi.Text is
    type Text_Access is access all Text_Type;
    type Pointer_To_Text_Class is access all Text_Type'Class;
 
-   subtype Velocity_Type is Float range -1000.0 .. +1000.0;
-   --  A positive value moves the Text down or to the right, clockwise for rotation
-   --  A negative value moves the Text up or to the left, anti-clockwise for rotation
-   --  A value of 1 moves the Text at the speed of 1 pixel per second or 1 degree per second for rotation
-   --  A value of 0 stops the Text
-
    -------------------------------------------------------------------------
    --  Text_Type - Creation Methods
    -------------------------------------------------------------------------
@@ -89,6 +83,15 @@ package Gnoga.Gui.Plugin.Pixi.Text is
    function Row_Velocity (Text : in Text_Type) return Velocity_Type;
    function Column_Velocity (Text : in Text_Type) return Velocity_Type;
    --   Returns motion properties
+
+   procedure Acceleration
+     (Text                                  : in out Text_Type;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type);
+   --  Specifies the acceleration of a text
+
+   function Row_Acceleration (Text : in Text_Type) return Acceleration_Type;
+   function Column_Acceleration (Text : in Text_Type) return Acceleration_Type;
+   --  Returns acceleration properties
 
    procedure Alpha
      (Text  : in out Text_Type;
@@ -136,6 +139,13 @@ package Gnoga.Gui.Plugin.Pixi.Text is
       Value :        Velocity_Type);
    function Rotation_Velocity (Text : in Text_Type) return Velocity_Type;
    --  The rotation velocity
+
+   procedure Rotation_Acceleration
+     (Text  : in out Text_Type;
+      Value :        Acceleration_Type);
+   function Rotation_Acceleration
+     (Text : in Text_Type) return Acceleration_Type;
+   --  The rotation acceleration
 
    overriding procedure Width (Text : in out Text_Type; Value : in Integer);
    overriding function Width (Text : in Text_Type) return Integer;

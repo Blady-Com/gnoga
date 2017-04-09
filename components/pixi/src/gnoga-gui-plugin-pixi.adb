@@ -112,7 +112,9 @@ package body Gnoga.Gui.Plugin.Pixi is
             " for (var gnoga_sprite of gnoga['" &
             Container.ID &
             "'].children) if (gnoga_sprite instanceof PIXI.Sprite)" &
-            " {gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
+            " {gnoga_sprite.gnoga_vx += gnoga_sprite.gnoga_ax; gnoga_sprite.gnoga_vy += gnoga_sprite.gnoga_ay;" &
+            " gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
+            " gnoga_sprite.gnoga_vr += gnoga_sprite.gnoga_ar;" &
             " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;}" &
             " gnoga['" &
             Renderer.ID &

@@ -423,6 +423,10 @@ package Gnoga.Gui.Plugin.Pixi is
    --  wordWrapWidth number 100 default
    --  The width at which text will wrap, it needs wordWrap to be set to true
 
+   -------------------------------------------------------------------------
+   --  Declaration types
+   -------------------------------------------------------------------------
+
    type Blend_Modes_Type is
      (NORMAL,
       ADD,
@@ -448,7 +452,23 @@ package Gnoga.Gui.Plugin.Pixi is
    --  - LINEAR: Smooth scaling
    --  - NEAREST: Pixelating scaling
 
+   subtype Velocity_Type is Float range -1000.0 .. +1000.0;
+   --  A positive value moves the object down or to the right, clockwise for rotation.
+   --  A negative value moves the object up or to the left, anti-clockwise for rotation.
+   --  A value of 1 moves the object at the speed of 1 pixel per second or 1 degree per second for rotation.
+   --  A value of 0 stops the object.
+
+   subtype Acceleration_Type is Float range -100.0 .. +100.0;
+   --  A positive value increases the object velocity.
+   --  A negative value decreases the object velocity.
+   --  A value of 1 increases the object velocity at the speed of 1 pixel per second
+   --  or 1 degree per second for rotation.
+   --  A value of 0 stops the acceleration's object.
+
 private
+   Frame_Rate : constant := 60.0;
+   --  Standard value for most browsers (FPS)
+
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Container_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Texture_Type is new Gnoga.Gui.Base.Base_Type with null record;

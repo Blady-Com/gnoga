@@ -39,19 +39,17 @@ with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
-   Frame_Rate : constant := 60.0;
-   --  Standard value for most browsers (FPS)
-
    ------------
    -- Create --
    ------------
 
    procedure Create
-     (Sprite                        : in out Sprite_Type;
-      Parent                        : in out Container_Type'Class;
-      Texture                       : in     Texture_Type;
-      Row, Column                   : in     Integer;
-      Row_Velocity, Column_Velocity : in     Velocity_Type := 0.0)
+     (Sprite                                : in out Sprite_Type;
+      Parent                                : in out Container_Type'Class;
+      Texture                               : in     Texture_Type;
+      Row, Column                           : in     Integer;
+      Row_Velocity, Column_Velocity         : in     Velocity_Type     := 0.0;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type := 0.0)
    is
       Sprite_ID : constant String := Gnoga.Server.Connection.New_GID;
    begin
@@ -66,7 +64,9 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
          "']);");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
+      Sprite.Acceleration (Row_Acceleration, Column_Acceleration);
       Sprite.Rotation_Velocity (0.0);
+      Sprite.Rotation_Acceleration (0.0);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -75,11 +75,12 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    ------------
 
    procedure Create
-     (Sprite                        : in out Sprite_Type;
-      Parent                        : in out Container_Type'Class;
-      Image_Path                    : in     String;
-      Row, Column                   : in     Integer;
-      Row_Velocity, Column_Velocity : in     Velocity_Type := 0.0)
+     (Sprite                                : in out Sprite_Type;
+      Parent                                : in out Container_Type'Class;
+      Image_Path                            : in     String;
+      Row, Column                           : in     Integer;
+      Row_Velocity, Column_Velocity         : in     Velocity_Type     := 0.0;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type := 0.0)
    is
       Sprite_ID : constant String := Gnoga.Server.Connection.New_GID;
    begin
@@ -94,7 +95,9 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
          "');");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
+      Sprite.Acceleration (Row_Acceleration, Column_Acceleration);
       Sprite.Rotation_Velocity (0.0);
+      Sprite.Rotation_Acceleration (0.0);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -187,6 +190,43 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    begin
       return Sprite.Property ("gnoga_vx") * Frame_Rate;
    end Column_Velocity;
+
+   ------------------
+   -- Acceleration --
+   ------------------
+
+   procedure Acceleration
+     (Sprite                                : in out Sprite_Type;
+      Row_Acceleration, Column_Acceleration : in     Acceleration_Type)
+   is
+   begin
+      Sprite.Property
+      ("gnoga_ax", Column_Acceleration / Frame_Rate / Frame_Rate);
+      Sprite.Property ("gnoga_ay", Row_Acceleration / Frame_Rate / Frame_Rate);
+   end Acceleration;
+
+   ----------------------
+   -- Row_Acceleration --
+   ----------------------
+
+   function Row_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type
+   is
+   begin
+      return Sprite.Property ("gnoga_ay") * (Frame_Rate * Frame_Rate);
+   end Row_Acceleration;
+
+   -------------------------
+   -- Column_Acceleration --
+   -------------------------
+
+   function Column_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type
+   is
+
+   begin
+      return Sprite.Property ("gnoga_ax") * (Frame_Rate * Frame_Rate);
+   end Column_Acceleration;
 
    -----------
    -- Alpha --
@@ -352,6 +392,34 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
         180.0 /
         Ada.Numerics.Pi;
    end Rotation_Velocity;
+
+   -----------------------
+   -- Rotation_Acceleration --
+   -----------------------
+
+   procedure Rotation_Acceleration
+     (Sprite : in out Sprite_Type;
+      Value  :        Acceleration_Type)
+   is
+   begin
+      Sprite.Property
+      ("gnoga_ar", Value / Frame_Rate / Frame_Rate * Ada.Numerics.Pi / 180.0);
+   end Rotation_Acceleration;
+
+   -----------------------
+   -- Rotation_Acceleration --
+   -----------------------
+
+   function Rotation_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type
+   is
+   begin
+      return Float'(Sprite.Property ("gnoga_ar")) *
+        Frame_Rate *
+        Frame_Rate *
+        180.0 /
+        Ada.Numerics.Pi;
+   end Rotation_Acceleration;
 
    -----------
    -- Width --

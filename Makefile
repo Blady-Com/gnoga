@@ -140,8 +140,8 @@ sqlite3: lib/libsqlite3.a
 
 # Zanyblue with DEBUG on
 zanyblue:
-	cd deps/zanyblue/src && make BUILD=Debug
-	cd deps/zanyblue/src && make INSTALL_DIR=$(CWD)/build install
+	cd deps/zanyblue/src && $(MAKE) BUILD=Debug
+	cd deps/zanyblue/src && $(MAKE) INSTALL_DIR=$(CWD)/build install
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
@@ -174,7 +174,7 @@ bin/multimarkdown:
 	- cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git
 	- cd deps/MultiMarkdown-4 && git submodule init
 	- cd deps/MultiMarkdown-4 && git submodule update
-	- cd deps/MultiMarkdown-4 && make
+	- cd deps/MultiMarkdown-4 && $(MAKE)
 	- $(MKDIR) bin
 	- $(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 
@@ -189,36 +189,41 @@ gnoga_tools:
 	$(BUILDER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 # Gnoga build with DEBUG off
-release: deps setup basic_components
+release: deps $(BUILD_SQLITE3) setup basic_components
 	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 
-# Install Gnoga with DEBUG off
+# Install Gnoga and deps with DEBUG off
 install: release gnoga_tools
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS}
 # TODO libsqlite3
-	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue src/zblib.gpr $(ZBGNATXDEFS)
-	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr $(ZBGNATXDEFS)
+	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) install
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 
-# Install Gnoga with DEBUG on
+# Install Gnoga and deps with DEBUG on
 install_debug:
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS}
 # TODO libsqlite3
-	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue src/zblib.gpr $(ZBGNATXDEFS)
-	cd deps/zanyblue && $(INSTALLER) --prefix=$(PREFIX) --install-name=zanyblue -aP src -aP lib/gnat src/zbmcompile/zbmcompile.gpr $(ZBGNATXDEFS)
+	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) BUILD=Debug install
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+# Install Gnoga alone with DEBUG on
+install_gnoga_debug:
+	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
 uninstall:
-	- gprinstall -f --prefix=$(PREFIX) --uninstall lib_components.gpr
-	- gprinstall -f --prefix=$(PREFIX) --uninstall zblib.gpr
-	- gprinstall -f --prefix=$(PREFIX) --uninstall zbmcompile.gpr
-	- gprinstall -f --prefix=$(PREFIX) --uninstall pragmarc.gpr
-	- gprinstall -f --prefix=$(PREFIX) --uninstall gnoga.gpr
-	- gprinstall -f --prefix=$(PREFIX) --uninstall tools.gpr
+	- $(INSTALLER) --prefix=$(PREFIX) --install-name=components --uninstall lib_components.gpr
+	- $(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc --uninstall pragmarc.gpr
+	- $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --uninstall gnoga.gpr
+	- $(RM) $(PREFIX)/bin/zb*
+	- $(RMS) $(PREFIX)/include/zanyblue
+	- $(RMS) $(PREFIX)/lib/zanyblue
+	- $(RM) $(PREFIX)/lib/gnat/zanyblue.gpr
+	- $(RM) $(PREFIX)/lib/libzanyblue*
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves
 
@@ -288,7 +293,7 @@ clean_all: clean clean_deps
 clean_deps:
 	$(CLEANER) -P deps/simple_components/lib_components.gpr
 	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
-	cd deps/zanyblue && make -C src clean
+	cd deps/zanyblue && $(MAKE) -C src clean
 	$(RMS) build
 	cd deps && $(RMS) MultiMarkdown-4
 	cd deps && $(RMS) electron-quick-start

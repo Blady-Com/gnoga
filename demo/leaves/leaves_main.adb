@@ -50,6 +50,7 @@ procedure Leaves_main is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Element.Canvas;
+   use Gnoga.Gui.Plugin.Pixi;
    use Gnoga.Gui.Plugin.Pixi.Sprite;
    use Gnoga.Gui.View;
 

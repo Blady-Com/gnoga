@@ -97,6 +97,7 @@ help :
 	@echo "--         | uninstall     -- uninstall gnoga                                --"
 	@echo "--         | demo          -- build all demos                                --"
 	@echo "--         | tutorials     -- build all tutorials                            --"
+	@echo "--         | gnoga_tools   -- build all tools                                --"
 	@echo "--         | tests         -- build all tests                                --"
 	@echo "--         | clean         -- clean build files                              --"
 	@echo "--         | clean_all     -- clean build files and deps                     --"
@@ -225,7 +226,7 @@ uninstall:
 	- $(RM) $(PREFIX)/lib/gnat/zanyblue.gpr
 	- $(RM) $(PREFIX)/lib/libzanyblue*
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves
+demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -264,6 +265,9 @@ tic_tac_toe:
 
 leaves:
 	cd demo/leaves && $(BUILDER) -Pleaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
+db_maker:
+	cd demo/db_maker && $(BUILDER) -Pdb_maker.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -322,6 +326,7 @@ clean_demo:
 	cd demo/adaothello && $(CLEANER) -P adaothello.gpr
 	cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr
 	cd demo/leaves && $(CLEANER) -P leaves.gpr
+	cd demo/db_maker && $(CLEANER) -P db_maker.gpr
 
 clean_tutorials:
 	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr

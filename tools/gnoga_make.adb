@@ -269,6 +269,8 @@ package body Gnoga_Make is
       Put_Line ("Creating directory : " & Lower_Name);
       Create_Directory (Lower_Name);
       Set_Directory (Lower_Name);
+      Create_Directory ("obj");
+      Create_Directory ("bin");
       Search (Directory => Gnoga_Make_Templates & App_Template_Name,
               Pattern   => "",
               Process   => Create_Tree'Access);

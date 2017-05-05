@@ -739,7 +739,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
-      Style.Property ("dropShadowColor", Value'Img);
+      Style.Property ("dropShadowColor", Gnoga.Types.Colors.To_String (Value));
    end Drop_Shadow_Color;
 
    -----------------------
@@ -750,7 +750,7 @@ package body Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
    is
    begin
-      return Gnoga.Types.Colors.Color_Enumeration'Value
+      return Gnoga.Types.Colors.To_Color_Enumeration
           (Style.Property ("dropShadowColor"));
    end Drop_Shadow_Color;
 
@@ -784,7 +784,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
-      Style.Property ("fill", Value'Img);
+      Style.Property ("fill", Gnoga.Types.Colors.To_String (Value));
    end Fill;
 
    ----------
@@ -795,8 +795,7 @@ package body Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
    is
    begin
-      return Gnoga.Types.Colors.Color_Enumeration'Value
-          (Style.Property ("fill"));
+      return Gnoga.Types.Colors.To_Color_Enumeration (Style.Property ("fill"));
    end Fill;
 
    -----------------
@@ -1008,7 +1007,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
-      Style.Property ("stroke", Value'Img);
+      Style.Property ("stroke", Gnoga.Types.Colors.To_String (Value));
    end Stroke;
 
    ------------
@@ -1019,7 +1018,7 @@ package body Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
    is
    begin
-      return Gnoga.Types.Colors.Color_Enumeration'Value
+      return Gnoga.Types.Colors.To_Color_Enumeration
           (Style.Property ("stroke"));
    end Stroke;
 

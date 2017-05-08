@@ -125,6 +125,9 @@ package Gnoga.Server.Connection is
    --  specific path used for ID (e.g. not the WebSocket URL). Returns "" if
    --  ID is invalid.
 
+   function Active_Connections return Natural;
+   --  Returns the number of active connections
+
    type Post_Request_Event is access
      procedure
        (URI                 : in String;

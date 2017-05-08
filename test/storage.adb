@@ -7,6 +7,7 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Multimedia;
 with Gnoga.Types;
 with Gnoga.Client.Storage;
+with Gnoga.Server.Connection;
 
 with Ada.Calendar;
 with Ada.Calendar.Conversions;
@@ -49,9 +50,9 @@ procedure Storage is
    begin
       Gnoga.Log ("On Storage");
       App.Main_Window.Alert
-        (To_String (Storage_Event.Name) & "=" &
+        (To_String (Storage_Event.Name) & ": old = " &
            To_String (Storage_Event.Old_Value) &
-           " now = " & To_String (Storage_Event.New_Value));
+           ", now = " & To_String (Storage_Event.New_Value));
    end On_Storage;
 
    procedure On_Connect
@@ -66,7 +67,7 @@ procedure Storage is
    is
       App     : access App_Data := new App_Data;
       View    : Gnoga.Gui.View.View_Type;
-      Storage : Gnoga.Client.Storage.Local_Storage_Type :=
+      Local : Gnoga.Client.Storage.Local_Storage_Type :=
                   Gnoga.Client.Storage.Local_Storage (Main_Window);
       Session : Gnoga.Client.Storage.Session_Storage_Type :=
                   Gnoga.Client.Storage.Session_Storage (Main_Window);
@@ -84,8 +85,8 @@ procedure Storage is
       App.Message.Create (View, "Click me and I will hide.");
       App.Message.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      View.Put_Line ("Last access was at " & Storage.Get ("Last_View"));
-      Storage.Set
+      View.Put_Line ("Last access was at " & Local.Get ("Last_View"));
+      Local.Set
         ("Last_View",
          Ada.Calendar.Conversions.To_Unix_Time (Ada.Calendar.Clock)'Img);
 
@@ -99,9 +100,10 @@ procedure Storage is
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);
       Gnoga.Log ("Session len = " & Session.Length'Img);
-      Gnoga.Log ("Local len = " & Storage.Length'Img);
-      Gnoga.Log ("Session 1 = " & Session.Key (1));
-      Gnoga.Log ("Local 1 = " & Storage.Key (1));
+      Gnoga.Log ("Local len = " & Local.Length'Img);
+      Gnoga.Log ("Session 1 = " & Session.Key (1) & " : " & Session.Get (Session.Key (1)));
+      Gnoga.Log ("Local 1 = " & Local.Key (1) & " : " & Local.Get (Local.Key (1)));
+      Gnoga.Log ("Number of active connections = " & Gnoga.Server.Connection.Active_Connections'Img);
       Gnoga.Log ("END");
    end On_Connect;
 

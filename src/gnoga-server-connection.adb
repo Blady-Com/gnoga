@@ -905,6 +905,9 @@ package body Gnoga.Server.Connection is
 
       procedure Delete_All_Connections;
       --  Called by Stop to close down server
+
+      function Active_Connections return Ada.Containers.Count_Type;
+      --  Returns the number of active connections
    private
       Socket_Count          : Gnoga.Types.Connection_ID := 0;
       Connection_Holder_Map : Connection_Holder_Maps.Map;
@@ -1107,6 +1110,11 @@ package body Gnoga.Server.Connection is
             Do_Delete (Socket_Map.First);
          end loop;
       end Delete_All_Connections;
+
+      function Active_Connections return Ada.Containers.Count_Type is
+      begin
+         return Socket_Map.Length;
+      end Active_Connections;
    end Connection_Manager;
 
    task body Event_Task_Type is
@@ -2142,6 +2150,15 @@ package body Gnoga.Server.Connection is
          Log (Ada.Exceptions.Exception_Information (E));
          return "";
    end Connection_Path;
+
+   ------------------------
+   -- Active_Connections --
+   ------------------------
+
+   function Active_Connections return Natural is
+   begin
+      return Natural (Connection_Manager.Active_Connections);
+   end Active_Connections;
 
    -----------------------------
    -- On_Post_Request_Handler --

@@ -31,7 +31,7 @@ Unless you have extreme memory constraints, just overwrite the pointer since the
 1. In general if you find yourself needing to use Unrestricted_Access you are likely going to have issues. For the "tutorials" it was used since it was wanted to keep everything to a single procedure, etc. but perhaps was not the smartest thing to have laying around. Try and keep handlers at package level when possible is a good principle to live by.
 
 1. How do I get a hold on a child element, on the gnoga side, knowing its ID?
-My\_Button.Attach\_Using\_Parent (View, ID => "my\_button"); 
+My\_Button.Attach\_Using\_Parent (View, ID => "my\_button");
 
 1. Try setting any callbacks to null before deleting visual elements, that would remove any race conditions.
 
@@ -43,5 +43,28 @@ You will need to add an On\_Focus handler to the forms, you can write a single h
 1. Just freeing an object on the Gnoga side will not remove it from the DOM, that is intended. You need to call Remove first.
 
 1. To avoid two visual elements to disappear and then reappear, somewhat slowly and flickering. Create visual element that is hidden. Fill it in. Hide first and show second. Can either delete the old one or recycle it.
+
+1. Colors in Gnoga.Types.Colors can be displayed or chosen from [www.w3schools.com/cssref/css_colors.asp](https://www.w3schools.com/cssref/css_colors.asp) or [www.w3schools.com/colors/colors_picker.asp](https://www.w3schools.com/colors/colors_picker.asp).
+
+1. Want to see what is going on in the browser console ?
+Turn debug on in your boot page <script>var gnoga_debug = true;</script> or use debug.html.
+
+1. Trying to use Connection\_Data in a handler bounded to On\_Destroy\_Handler did not work when closing the browser window because at that point Object.Connection\_Data returns null.
+Use instead On\_Before\_Unload\_Handler. Note: it is not effective when only closing the connection.
+
+1. How about reloading the whole page when On\_Resize is called?
+Call Main\_Window.Location.Reload.
+
+1. If the user clicks the refresh button on the browser, it breaks the connection and creates a new one. This is extremely annoying, since the program starts over from scratch.
+Refresh implies a lost connection and new session on web browsers, that is expected functionality. Local storage could be used on the browser side (Gnoga.Client.Storage) to store session information or any other data on the client side and use that data after a refresh or even weeks later to restore them to some state in your software.
+
+1. HTML\_On\_Close text is displayed only when connection is broken and not when connection is closed. In order to display some text before closing connection, remove current view, create a new one with your text and then close connection, for instance:
+
+``` ada
+App.My_View.Remove;
+View.Create (App.My_Window.all);
+View.Put_Line ("Application exited.");
+App.My_Window.Close_Connection;
+```
 
 1. next tip...

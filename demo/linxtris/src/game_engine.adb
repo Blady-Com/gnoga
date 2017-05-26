@@ -310,7 +310,7 @@ package body Game_Engine is
       procedure Remove (ID : out Natural);
       function ID return Natural;
    private
-      TO_ID : Natural;
+      TO_ID : Natural := 0;
    end Time_out;
 
    procedure Terminate_Game is

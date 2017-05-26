@@ -66,7 +66,7 @@ Example:
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 ```
 
@@ -102,7 +102,7 @@ procedure Resizable (Element : in out Element_Type;
                      Value   : in     Resizable_Type);
 function Resizable (Element : Element_Type) return Resizable_Type;
 ```
->Discussion: (JPR) This is current practice in Gnoga, however I'm not so much in favour of it, because it prevents the usual usage that functions names are names or adjectives, while procedure names are verbs. Presumably too late to change for Gnoga.
+>Discussion: (JPR) This is current practice in Gnoga, however I'm not so much in favor of it, because it prevents the usual usage that functions names are names or adjectives, while procedure names are verbs. Presumably too late to change for Gnoga.
 >(JRC) This is current Gnoga style, but I find it awkward. Standard usage is for procedure names to be verbs or verb phrases. Non-Boolean functions should be nouns or noun phrases; Boolean functions should be adjectives, adjective
 phrases, or predicates.
 
@@ -147,7 +147,7 @@ type Pointer_To_Element_Class is access all Element_Type'Class;
 ```
 >Discussion: (M) I think that this kind of "style" rule was really only necessarily helpful in languages like C that did not have a strong type system. (JCR) I think it fair to point out that the guidelines have to fit with the existing Gnoga code. (JPR) We are not starting a new project here, just making sure that contributors keep a standard style. IMHO, I do not fully agree with all these rules, however, whatever the rules, the important issue is to keep a uniform style.
 
-###9. Protype declaration
+###9. Prototype declaration
 Functions and procedures must be declared before coding the body. Comments describing a subprogram should come after its declaration.
 
 Example:
@@ -251,7 +251,7 @@ Example:
 $ make gnoga
 ```
 
-Before label set, tests, demos and tutos shall compile in debug mode and should execute without exceptions on at least one platform.
+Before label set, tests, demos and tutorials shall compile in debug mode and should execute without exceptions on at least one platform.
 
 Example:
 

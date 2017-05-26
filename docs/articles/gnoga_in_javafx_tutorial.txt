@@ -1,0 +1,175 @@
+Using Gnoga with a JavaFX WebEngine Object
+-------------------------------------------
+In addition, to normal browsers like Firefox, IE, Chrome, and others, Gnoga can also now be run inside of a JavaFX WebEngine object (only for Java versions 8 and higher).  Beginning with version 8, HTML5 rendering was added to the WebEngine class.  
+
+A JavaFX WebEngine object is very much like a minimal browser that the developer gets to configure.  To open it, only a very few lines of code are needed:
+
+        stage.setTitle(title);
+        scene = new Scene(browser,width,height);
+        stage.setScene(scene);     
+        stage.show();
+
+        WebEngine webEngine = browser.getEngine();
+        webEngine.load(url);
+
+The variables title, width, height, and url are all variables that can be passed in as arguments to the java application or specified statically.  You can optionally leave out the width and height by using the following constructor call instead:
+
+        scene = new Scene(browser);
+
+To create the JavaFX Browser, you will need to either download the latest Java 8 JDK (with JavaFX) or use a precompiled class/jar file.  Either way you will need the Java 8 Runtime Environment to run it.  Below is an example file that can be compiled by JDK version 8 (with JavaFX):
+
+//#############################################################################
+//#############################################################################
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
+import java.util.*;
+ 
+ 
+public class JavaBrowser extends Application {
+    private Scene scene;
+    @Override public void start(Stage stage) {
+
+        int width  = 750;
+        int height = 500;
+        String url = "http://127.0.0.1:8080";
+        String title = "";
+
+        //get and use various parameters
+        List<String> params = getParameters().getRaw();
+
+        if(params.size() > 0){
+           url = params.get(0);
+        }
+
+        if(params.size() > 1){
+           try{
+              width = Integer.parseInt(params.get(1));
+           }catch(NumberFormatException e){
+              System.out.println("Invalid Width Specified");
+           }
+        }
+
+        if(params.size() > 2){
+           try{
+              height = Integer.parseInt(params.get(2));
+           }catch(NumberFormatException e){
+              System.out.println("Invalid Height Specified");
+           }
+        }
+
+        if(params.size() > 3){
+           title = params.get(3);
+           for (int i = 4; i < params.size(); i++){
+              title = title + " " + params.get(i);
+           }
+        }
+
+        
+        //Create browser object
+        WebView browser = new WebView();
+        
+        //Create the scene and attach it to the browser
+        stage.setTitle(title);
+        scene = new Scene(browser,width,height);
+        stage.setScene(scene);     
+        stage.show();
+
+        //Start the rendering engine and load the URL
+        WebEngine webEngine = browser.getEngine();
+        webEngine.load(url);
+    }
+ 
+    public static void main(String[] args){
+        launch(args);
+    }
+}
+//#############################################################################
+//#############################################################################
+
+The additional code is for creating an application and using parameters.  In the default state, the JavaFX browser doesn't allow setting the title via Gnoga calls.  This is a quick workaround for example.
+
+To compile this code, save this code to a file named JavaBrowser.java and fire up a shell or command window.  Now type:
+javac JavaBrowser.java
+
+It should create a file called JavaBrowser.class.  Place this class file in the directory that you are running your Gnoga application in (if running from GPS, this might be the directory where the gpr file is located instead of the Ada executable if they are different).
+
+Now all that is left is to add some Ada code to use it.  Here is some example code that has been tested on Windows with GNAT.  Other operating systems or compilers may be slightly different:
+
+
+--##############################################################################
+--##############################################################################
+   procedure Open_URL_Java (url    : String  := "http://127.0.0.1:8080";
+                            title  : String  := "Gnoga App";
+                            width  : Natural := 750;
+                            height : Natural := 500) is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("java -cp . JavaBrowser " &
+                                                     url & " " &
+                                                     Integer'Image(width) & " " &
+                                                     Integer'Image(height)& " " &
+                                                     title);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_Java;
+--##############################################################################
+--##############################################################################
+
+
+Don't forget to with GNAT.OS_Lib or whatever compiler library you use.  Then to spawn the browser, call that procedure, specifying desired parameters:
+
+Open_URL_Java(url => "http://localhost:8080", width => 1000, height => 500);
+
+If everything is in the right place, a JavaFX browser will open and load your Gnoga application.  Below is a full Ada example (again tested on Windows with GNAT):
+
+
+--##############################################################################
+--##############################################################################
+with Gnoga.Application.Singleton;
+with Gnoga.Gui.Window; 
+with Gnoga.Gui.View;
+
+with GNAT.OS_Lib;
+
+procedure Main is
+   Main_Window  : Gnoga.Gui.Window.Window_Type;
+   Main_View    : Gnoga.Gui.View.View_Type;
+
+   procedure Open_URL_Java (url    : String  := "http://127.0.0.1:8080";
+                            title  : String  := "Gnoga App";
+                            width  : Natural := 750;
+                            height : Natural := 500) is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List ("java -cp . JavaBrowser " &
+                                                     url & " " &
+                                                     Integer'Image(width) & " " &
+                                                     Integer'Image(height)& " " &
+                                                     title);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL_Java;
+
+begin
+   --Gnoga.Application.Open_URL_Windows;
+   Open_URL_Java(url    => "http://localhost:8080", 
+                 width  => 1000, 
+                 height => 500,
+                 title  => "Gnoga in JavaFX");
+   Gnoga.Application.Singleton.Initialize(Main_Window => Main_Window);
+
+   Main_View.Create(Main_Window);
+   Main_View.Put_Line("Hello World");
+
+   Gnoga.Application.Singleton.Message_Loop;
+
+end Main;
+--##############################################################################
+--##############################################################################

@@ -63,7 +63,7 @@ abstract project Settings is
    --------------------
 
    package Pretty_Printer is
-      for Default_Switches ("ada") use ("-M120", "-W8", "--par_threshold=1");
+      for Default_Switches ("Ada") use ("-M120", "-W8", "--par_threshold=1");
    end Pretty_Printer;
 
 end Settings;

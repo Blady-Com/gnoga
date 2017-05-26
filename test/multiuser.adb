@@ -4,6 +4,8 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
+with System.Address_Image;
+with Ada.Unchecked_Conversion;
 
 procedure Multiuser is
    use Gnoga;
@@ -39,7 +41,7 @@ procedure Multiuser is
             accept Stop;
             exit;
          or
-            delay 0.1;
+            delay 1.0;
          end select;
       end loop;
    end Color_Me_Task;
@@ -49,6 +51,7 @@ procedure Multiuser is
          Main_Window : Window.Pointer_To_Window_Class;
          Hello_World : aliased Common.DIV_Type;
          Click_Quit  : Common.DIV_Type;
+         Click_Close : Common.DIV_Type;
          X           : Common.DIV_Type;
          Y           : Common.DIV_Type;
          Key         : Common.DIV_Type;
@@ -86,7 +89,10 @@ procedure Multiuser is
    procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record);
    procedure On_Context (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Before_Unload (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
@@ -105,12 +111,35 @@ procedure Multiuser is
       App.Hello_World.Color ("red");
    end On_Context;
 
+   procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      App : App_Access := App_Access (Object.Connection_Data);
+   begin
+      Log ("Close connection");
+      App.Main_Window.Close_Connection;
+   end On_Close;
+
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
    begin
       Log ("Ending Application");
       Application.Multi_Connect.End_Application;
    end End_App;
+
+   procedure On_Before_Unload (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+      function Conv is new Ada.Unchecked_Conversion (App_Access, System.Address);
+   begin
+      Log ("Winwdow is about to be unloaded, Connection_Data is " & System.Address_Image (Conv (App)));
+   end On_Before_Unload;
+
+   procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+      App : App_Access := App_Access (Object.Connection_Data);
+      function Conv is new Ada.Unchecked_Conversion (App_Access, System.Address);
+   begin
+      Log ("Winwdow is destroyed, Connection_Data is " & System.Address_Image (Conv (App)));
+   end On_Destroy;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
@@ -152,8 +181,12 @@ procedure Multiuser is
       Hr1.Create (Main_Window);
       Hr1.Place_After (App.Hello_World);
 
+      App.Click_Close.Create (Main_Window, "Click to close the connection");
+      App.Click_Close.Place_After (Hr1);
+      App.Click_Close.On_Click_Handler (On_Close'Unrestricted_Access);
+
       App.Click_Quit.Create (Main_Window, "Click to close down server");
-      App.Click_Quit.Place_After (Hr1);
+      App.Click_Quit.Place_After (App.Click_Close);
       App.Click_Quit.On_Click_Handler (End_App'Unrestricted_Access);
 
       App.X.Create (Main_Window);
@@ -180,6 +213,10 @@ procedure Multiuser is
       Img.Place_After (Hr2);
 
       App.Main_Window.On_Key_Down_Handler (On_Key_Press'Unrestricted_Access);
+
+      App.Main_Window.On_Destroy_Handler (Multiuser.On_Destroy'Unrestricted_Access);
+
+      App.Main_Window.On_Before_Unload_Handler (On_Before_Unload'Unrestricted_Access);
 
       Color_Me.Start;
 

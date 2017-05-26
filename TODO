@@ -44,14 +44,14 @@ Some other ideas:
    boards or mockup for designers. They shan't use Gnoga's GUI builder. Instead, what they produce
    needs to be mapped to or merged with what the Create (I guess) family of functions of Gnoga needs to do.
 7. How about a identity / login package  which can validate via google or facebook to establish the identity?
-8. How would you go about genrating/sending mail from a gnoga app?
+8. How would you go about generating/sending mail from a gnoga app?
    (There is mail support in AWS, pretty comprehesive.
    Basil was made for MIME, http://hafdconsulting.com/projects/basil/)
 9. How to get the content of the clipboard and how to modify it ?
    (see https://w3c.github.io/clipboard-apis/)
    http://sourceforge.net/p/gnoga/tickets/17/
-10. Add tips or compile faq in a wiki
-11. Add menu bar widget
+DONE 10. Add tips or compile faq in a wiki
+DONE 11. Add menu bar widget
     (see https://github.com/manusa/mnmenu)
     http://sourceforge.net/p/gnoga/tickets/18/
 12. Equivalent of List_View_Control_Type (GWindows.Common_Controls) ?
@@ -65,7 +65,7 @@ Some other ideas:
     - alternate colors
     - payload
     - sorting on various columns
-13. Add example with a JavaFX webview browser object (HTML5 rendering, minimal user interaction)
+DONE 13. Add example with a JavaFX webview browser object (HTML5 rendering, minimal user interaction)
 14. Add more support for HTML5 (header, hgroup, h, footer, section, aside, article, nav, time,
     details, address, figure, role...)
 15. ConnectFour : Some instruction on the nature of the game and how to play might be in order.
@@ -105,3 +105,11 @@ DONE 31. Add AdaOthello port to Gnoga.
 36. Add a higher level "animated canvas" as a component that provided the double buffering
 37. Add mouse scrolling wheel support
 38. Explore ways to allow more controlled re-raising of exceptions in to the user code when it makes sense.
+39. Add RTCDataChannel in Gnoga to support the creation of highly reactive HTML5 online games.
+   1. TCP can severely degrades online game experience when there is packet loss.
+   2. SCTP, the protocol backing RTCDataChannels, can be configured to act like UDP.
+   For highly reactive games this is wanted/needed because present time information
+   (e.g: position) is more important than reliability.
+   note: read http://gafferongames.com/networking-for-game-programmers/udp-vs-tcp/ for a
+   more in depth explanation.
+40. Adapt to Gnoga Chess game: http://adachess.com

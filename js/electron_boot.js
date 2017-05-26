@@ -14,7 +14,7 @@
      }
   }
 
-  function Shutdown_ws() {
+  function Shutdown_ws(event) {
      ws = null;
      clearInterval (pingerid);
      if (gnoga['html_on_close'] != "") {
@@ -38,7 +38,7 @@
 
      ws.onerror = function (event) {
         console.log ("onerror: reconnect");
-        ws=null;
+        ws = null;
         ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
         ws.onopen = function (event) {
            console.log ("onerror: reconnect successful");
@@ -46,13 +46,13 @@
         }
         ws.onclose = function (event) {
            console.log ("onerror: reconnect failure");
-           Shutdown_ws();
+           Shutdown_ws(event);
         }
      }
 
      ws.onclose = function (event) {
         console.log ("onclose: reconnect");
-        ws=null;
+        ws = null;
         ws = new WebSocket (adr  + "?Old_ID=" + gnoga['Connection_ID']);
         ws.onopen = function (event) {
            console.log ("onclose: reconnect successful");
@@ -60,7 +60,7 @@
         }
         ws.onclose = function (event) {
            console.log ("onclose: reconnect failure");
-           Shutdown_ws();
+           Shutdown_ws(event);
         }
      }
   }

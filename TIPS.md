@@ -4,10 +4,8 @@ Many tips will be found also in source code specification for types and subprogr
 
 1. Want to take an HTML snapshot of your page:
 
- ``` ada
-Gnoga.Server.Template_Parser.Write_String_To_File
-("site.html", Main_Window.Document.Document_Element.Outer_HTML);
-```
+    Gnoga.Server.Template_Parser.Write_String_To_File
+    ("site.html", Main_Window.Document.Document_Element.Outer_HTML);
 
 1. Use View.Hidden to remove from browser, then View.Remove to remove from DOM. When View finalizes on the Ada side it will also tell the browser to reclaim the elements memory as well.
 
@@ -35,9 +33,7 @@ Unless you have extreme memory constraints, just overwrite the pointer since the
 
 1. How do I get a hold on a child element, on the gnoga side, knowing its ID?
 
- ``` ada
-My_Button.Attach_Using_Parent (View, ID => "my_button");
-```
+    My_Button.Attach_Using_Parent (View, ID => "my_button");
 
 1. Try setting any callbacks to null before deleting visual elements, that would remove any race conditions.
 
@@ -66,41 +62,31 @@ Refresh implies a lost connection and new session on web browsers, that is expec
 
 1. HTML\_On\_Close text is displayed only when connection is broken and not when connection is closed. In order to display some text before closing connection, remove current view, create a new one with your text and then close connection, for instance:
 
- ``` ada
-App.My_View.Remove;
-View.Create (App.My_Window.all);
-View.Put_Line ("Application exited.");
-App.My_Window.Close_Connection;
-```
+    App.My_View.Remove;
+    View.Create (App.My_Window.all);
+    View.Put_Line ("Application exited.");
+    App.My_Window.Close_Connection;
 
 1. You want to browse through Gnoga API, generate them with gnatdoc:
 
- ```
-$ make rm-docs
-$ open docs/html/gnoga_rm/index.html
-```
+    $ make rm-docs
+    $ open docs/html/gnoga_rm/index.html
 
 1. Command "make" alone or "make help" prints main make targets and make environnement variables.
 
 1. How to create a button of a specified size?
 
- ``` ada
-Button.Create (Parent => Parent, Content => Content);
-```
+    Button.Create (Parent => Parent, Content => Content);
 
- creates a button of the default size for Content, with a thin border with rounded corners. Adding
+    creates a button of the default size for Content, with a thin border with rounded corners. Adding
 
- ``` ada
-Button.Box_Width  (Value => Button_Size);
-Button.Box_Height (Value => Button_Size);
-```
+    Button.Box_Width  (Value => Button_Size);
+    Button.Box_Height (Value => Button_Size);
 
- has no effect. But also adding
+    has no effect. But also adding
 
- ``` ada
-Button.Border;
-```
+    Button.Border;
 
- results in a button of the desired size, with a fairly thick, black border with square corners. Adding (Width => "thin") to the call to Border may be desirable.
+    results in a button of the desired size, with a fairly thick, black border with square corners. Adding (Width => "thin") to the call to Border may be desirable.
 
 1. next tip...

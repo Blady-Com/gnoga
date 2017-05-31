@@ -115,7 +115,12 @@ package body Gnoga.Gui.Plugin.Pixi is
             " {gnoga_sprite.gnoga_vx += gnoga_sprite.gnoga_ax; gnoga_sprite.gnoga_vy += gnoga_sprite.gnoga_ay;" &
             " gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
             " gnoga_sprite.gnoga_vr += gnoga_sprite.gnoga_ar;" &
-            " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;}" &
+            " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;" &
+            " if (gnoga_sprite.gnoga_tfin > 0)" &
+            " {gnoga_sprite.gnoga_tcur += 1;" &
+            " if (gnoga_sprite.gnoga_tcur > gnoga_sprite.gnoga_tfin)" &
+            " {gnoga_sprite.gnoga_tcur = 0; gnoga_sprite.gnoga_tfin = 0; gnoga_sprite.gnoga_vx = 0;" &
+            " gnoga_sprite.gnoga_vy = 0; gnoga_sprite.gnoga_ax = 0; gnoga_sprite.gnoga_ay = 0;}}}" &
             " gnoga['" &
             Renderer.ID &
             "'].render(gnoga['" &

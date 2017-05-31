@@ -55,6 +55,7 @@ procedure Pixi_Sprite_Test is
 
       X_Pos, Y_Pos : Integer;
       Coinc        : Boolean := False;
+      Time_To_Wait : Duration;
    begin
       Main_Window.Connection_Data (App);
 
@@ -91,7 +92,7 @@ procedure Pixi_Sprite_Test is
       S1.Font_Style (Gnoga.Gui.Element.Italic);
       S1.Font_Weight (Gnoga.Gui.Element.Weight_Bold);
       S1.Fill (Gnoga.Types.Colors.Purple);
-      S1.Stroke (Gnoga.Types.Colors.Orange);
+      S1.Stroke (Gnoga.Types.Colors.Light_Golden_Rod_Yellow);
       S1.Stroke_Thickness (5);
       S1.Drop_Shadow (True);
       S1.Drop_Shadow_Color (Gnoga.Types.Colors.Green);
@@ -112,19 +113,19 @@ procedure Pixi_Sprite_Test is
       M2.Set_Style (S2);
       M2.Rotation_Velocity (-10.0);
 
-      App.SP1.Create (C, "img/E4a.png", 10, 10, 8.0, 16.0);
-      --  C is set as the container of sprites
+      App.SP1.Create (C, "img/E4a.png", 10, 10);
+      --  C is taken as the container of sprites
+      App.SP1.Move_To (200, 200, 10.0, 10.0, Time_To_Wait);
       R.Auto_Rendering (C, True);
 
-      while not App.SP1.Coincidence (110, 210, 20) loop
-         delay 0.1;
-      end loop;
+      delay Time_To_Wait + 2.0;
+      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
 
-      App.SP1.Locate (150, 5);
       T.Create (R, "img/E6a.png");
       App.SP1.Put_Texture (T);
-      App.SP1.Rotation_Velocity (10.0);
-      App.SP1.Rotation_Acceleration (10.0);
+      App.SP1.Locate (200, 500);
+      App.SP1.Motion (50.0, -145);
+      App.SP1.Acceleration (10.0, 90);
       delay 5.0;
       G.Line_Color (Gnoga.Types.Colors.Green);
       G.Move_To (100, 140);
@@ -132,7 +133,7 @@ procedure Pixi_Sprite_Test is
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
-      delay 5.0;
+      delay 3.0;
       App.SP1.Rotation_Acceleration (-10.0);
       G.Line_Color (Gnoga.Types.Colors.Grey);
       G.Move_To (100, 140);
@@ -140,7 +141,7 @@ procedure Pixi_Sprite_Test is
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
-      delay 10.0;
+      delay 3.0;
       App.SP1.Delete (C);
 
       App.SP1.Create (C, "img/E11a.png", 250, 10);

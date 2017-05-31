@@ -95,22 +95,65 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Motion
      (Sprite                        : in out Sprite_Type;
       Row_Velocity, Column_Velocity : in     Velocity_Type);
-   --  Specifies the motion of a sprite
+   --  Specifies the motion of a sprite in cartesian coordinate
 
    function Row_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
    function Column_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
-   --   Returns motion properties
+   --  Returns cartesian motion properties
+
+   procedure Motion
+     (Sprite              : in out Sprite_Type;
+      Radial_Velocity     : in     Velocity_Type;
+      Azimuth_Of_Velocity : in     Integer);
+   procedure Radial_Velocity
+     (Sprite : in out Sprite_Type;
+      Value  : in     Velocity_Type);
+   procedure Azimuth_Of_Velocity
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer);
+   --  Specifies the motion of a sprite in polar coordinate
+
+   procedure Orient_Velocity
+     (Sprite            : in out Sprite_Type;
+      To_Row, To_Column : in     Integer);
+   --  Points the velocity vector to the specified point
+
+   function Radial_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
+   function Azimuth_Of_Velocity (Sprite : in Sprite_Type) return Integer;
+   --  Returns polar motion properties
 
    procedure Acceleration
      (Sprite                                : in out Sprite_Type;
       Row_Acceleration, Column_Acceleration : in     Acceleration_Type);
-   --  Specifies the acceleration of a sprite
+   --  Specifies the acceleration of a sprite in cartesian coordinate
 
    function Row_Acceleration
      (Sprite : in Sprite_Type) return Acceleration_Type;
    function Column_Acceleration
      (Sprite : in Sprite_Type) return Acceleration_Type;
-   --   Returns acceleration properties
+   --  Returns cartesian acceleration properties
+
+   procedure Acceleration
+     (Sprite                  : in out Sprite_Type;
+      Radial_Acceleration     : in     Acceleration_Type;
+      Azimuth_Of_Acceleration : in     Integer);
+   procedure Radial_Acceleration
+     (Sprite : in out Sprite_Type;
+      Value  : in     Acceleration_Type);
+   procedure Azimuth_Of_Acceleration
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer);
+   --  Specifies the acceleration of a sprite in polar coordinate
+
+   procedure Orient_Acceleration
+     (Sprite            : in out Sprite_Type;
+      To_Row, To_Column : in     Integer);
+   --  Points the acceleration vector to the specified point
+
+   function Radial_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type;
+   function Azimuth_Of_Acceleration (Sprite : in Sprite_Type) return Integer;
+   --  Returns polar acceleration properties
 
    procedure Alpha
      (Sprite : in out Sprite_Type;
@@ -221,6 +264,11 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    --  Tolerance is in the same unit as position
    --  Tolerance of 0 indicates the exact coincdence
 
+   function Overlap_Point
+     (Sprite      : in Sprite_Type;
+      Row, Column : in Integer) return Boolean;
+   --  Retuns if specified point is within the sprite surface
+
    function Distance (Sprite1, Sprite2 : in Sprite_Type) return Natural;
    function Distance
      (Sprite      : in Sprite_Type;
@@ -228,6 +276,27 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    --  Determines the distance between two sprites or a sprite and a location
    --  The result is the nearest integer from square root between the upper left hand corner of two sprites
    --  or between the upper left hand corner of a sprite and a location
+
+   procedure Move_To
+     (Sprite              : in out Sprite_Type;
+      Row, Column         : in     Integer;
+      Radial_Velocity     : in     Velocity_Type;
+      Radial_Acceleration : in     Acceleration_Type;
+      Spent_Time          :    out Duration);
+   --  Sets sprite motion in order to reach specified point on a straight line then stop.
+   --  Based on specified target point, velocity and acceleration, actual velocity and acceleration are set
+   --  during a calculated spent time. Whatever position, velocity or acceleration are changed during this time,
+   --  velocity and acceleration are set to zero at the end of time. Thus the sprite may not have reached
+   --  the target point. If the time cannot be calculated then Constraint_Error is raised.
+
+   procedure Move_Rel
+     (Sprite              : in out Sprite_Type;
+      Rel_Row, Rel_Column : in     Integer;
+      Velocity            : in     Velocity_Type;
+      Acceleration        : in     Acceleration_Type;
+      Spent_Time          :    out Duration);
+   --  Sets sprite motion in order to reach specified relative point then stop.
+   --  See Move_to for details.
 
    procedure Delete
      (Sprite : in out Sprite_Type;

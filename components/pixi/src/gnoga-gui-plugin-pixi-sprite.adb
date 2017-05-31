@@ -38,6 +38,22 @@ with Ada.Numerics.Elementary_Functions;
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.Pixi.Sprite is
+   use Ada.Numerics.Elementary_Functions;
+
+   function To_Radian
+     (Angle : Integer) return Float is
+     (Float (Angle) * Ada.Numerics.Pi / 180.0);
+   --  Converts integer angle in degree to radian.
+
+   function To_Degree
+     (Angle : Float) return Integer is
+     (Integer (Angle * 180.0 / Ada.Numerics.Pi));
+   --  Converts integer angle in degree to radian.
+
+   procedure Loop_Times
+     (Sprite         : in out Sprite_Type;
+      Current, Final :        Natural);
+   --  Sets both times current and final for move loop
 
    ------------
    -- Create --
@@ -67,6 +83,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Acceleration (Row_Acceleration, Column_Acceleration);
       Sprite.Rotation_Velocity (0.0);
       Sprite.Rotation_Acceleration (0.0);
+      Sprite.Loop_Times (0, 0);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -147,6 +164,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    procedure Pattern (Sprite : in Sprite_Type; Image_Data : in String) is
    begin
+      pragma Compile_Time_Warning (Standard.True, "Pattern unimplemented");
       null; -- TODO
    end Pattern;
 
@@ -156,6 +174,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Pattern (Sprite : in Sprite_Type) return String is
    begin
+      pragma Compile_Time_Warning (Standard.True, "Pattern unimplemented");
       return ""; -- TODO
    end Pattern;
 
@@ -190,6 +209,80 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    begin
       return Sprite.Property ("gnoga_vx") * Frame_Rate;
    end Column_Velocity;
+
+   ------------
+   -- Motion --
+   ------------
+
+   procedure Motion
+     (Sprite              : in out Sprite_Type;
+      Radial_Velocity     : in     Velocity_Type;
+      Azimuth_Of_Velocity : in     Integer)
+   is
+   begin
+      Sprite.Motion
+      (Radial_Velocity *
+       Sin (To_Radian (Azimuth_Of_Velocity)), Radial_Velocity *
+       Cos (To_Radian (Azimuth_Of_Velocity)));
+   end Motion;
+
+   ---------------------
+   -- Radial_Velocity --
+   ---------------------
+
+   procedure Radial_Velocity
+     (Sprite : in out Sprite_Type;
+      Value  : in     Velocity_Type)
+   is
+   begin
+      Sprite.Motion (Value, Sprite.Azimuth_Of_Velocity);
+   end Radial_Velocity;
+
+   -------------------------
+   -- Azimuth_Of_Velocity --
+   -------------------------
+
+   procedure Azimuth_Of_Velocity
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer)
+   is
+   begin
+      Sprite.Motion (Sprite.Radial_Velocity, Value);
+   end Azimuth_Of_Velocity;
+
+   ---------------------
+   -- Orient_Velocity --
+   ---------------------
+
+   procedure Orient_Velocity
+     (Sprite            : in out Sprite_Type;
+      To_Row, To_Column : in     Integer)
+   is
+   begin
+      Sprite.Azimuth_Of_Velocity
+      (To_Degree
+         (Arctan
+            (Float (To_Row - Sprite.Row),
+             Float (To_Column - Sprite.Column))));
+   end Orient_Velocity;
+
+   ---------------------
+   -- Radial_Velocity --
+   ---------------------
+
+   function Radial_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
+   begin
+      return Sqrt (Sprite.Row_Velocity**2 + Sprite.Column_Velocity**2);
+   end Radial_Velocity;
+
+   -------------------------
+   -- Azimuth_Of_Velocity --
+   -------------------------
+
+   function Azimuth_Of_Velocity (Sprite : in Sprite_Type) return Integer is
+   begin
+      return To_Degree (Arctan (Sprite.Row_Velocity, Sprite.Column_Velocity));
+   end Azimuth_Of_Velocity;
 
    ------------------
    -- Acceleration --
@@ -227,6 +320,83 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    begin
       return Sprite.Property ("gnoga_ax") * (Frame_Rate * Frame_Rate);
    end Column_Acceleration;
+
+   ------------------
+   -- Acceleration --
+   ------------------
+
+   procedure Acceleration
+     (Sprite                  : in out Sprite_Type;
+      Radial_Acceleration     : in     Acceleration_Type;
+      Azimuth_Of_Acceleration : in     Integer)
+   is
+   begin
+      Sprite.Acceleration
+      (Radial_Acceleration *
+       Sin (To_Radian (Azimuth_Of_Acceleration)), Radial_Acceleration *
+       Cos (To_Radian (Azimuth_Of_Acceleration)));
+   end Acceleration;
+
+   -------------------------
+   -- Radial_Acceleration --
+   -------------------------
+
+   procedure Radial_Acceleration
+     (Sprite : in out Sprite_Type;
+      Value  : in     Acceleration_Type)
+   is
+   begin
+      Sprite.Acceleration (Value, Sprite.Azimuth_Of_Acceleration);
+   end Radial_Acceleration;
+
+   -----------------------------
+   -- Azimuth_Of_Acceleration --
+   -----------------------------
+
+   procedure Azimuth_Of_Acceleration
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer)
+   is
+   begin
+      Sprite.Acceleration (Sprite.Radial_Acceleration, Value);
+   end Azimuth_Of_Acceleration;
+
+   -------------------------
+   -- Orient_Acceleration --
+   -------------------------
+
+   procedure Orient_Acceleration
+     (Sprite            : in out Sprite_Type;
+      To_Row, To_Column : in     Integer)
+   is
+   begin
+      Sprite.Azimuth_Of_Acceleration
+      (To_Degree
+         (Arctan
+            (Float (To_Row - Sprite.Row),
+             Float (To_Column - Sprite.Column))));
+   end Orient_Acceleration;
+
+   -------------------------
+   -- Radial_Acceleration --
+   -------------------------
+
+   function Radial_Acceleration
+     (Sprite : in Sprite_Type) return Acceleration_Type
+   is
+   begin
+      return Sqrt (Sprite.Row_Acceleration**2 + Sprite.Column_Acceleration**2);
+   end Radial_Acceleration;
+
+   -----------------------------
+   -- Azimuth_Of_Acceleration --
+   -----------------------------
+
+   function Azimuth_Of_Acceleration (Sprite : in Sprite_Type) return Integer is
+   begin
+      return To_Degree
+          (Arctan (Sprite.Row_Acceleration, Sprite.Column_Acceleration));
+   end Azimuth_Of_Acceleration;
 
    -----------
    -- Alpha --
@@ -625,6 +795,20 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       return Distance (Sprite, Row, Column) <= Tolerance;
    end Coincidence;
 
+   -------------------
+   -- Overlap_Point --
+   -------------------
+
+   function Overlap_Point
+     (Sprite      : in Sprite_Type;
+      Row, Column : in Integer) return Boolean
+   is
+   begin
+      return Row in
+          Sprite.Row - Sprite.Height .. Sprite.Row + Sprite.Height and
+        Column in Sprite.Column - Sprite.Width .. Sprite.Column + Sprite.Width;
+   end Overlap_Point;
+
    --------------
    -- Distance --
    --------------
@@ -651,6 +835,64 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
              (Float (Sprite.Row - Row)**2 +
               Float (Sprite.Column - Column)**2));
    end Distance;
+
+   -------------
+   -- Move_To --
+   -------------
+
+   procedure Loop_Times
+     (Sprite         : in out Sprite_Type;
+      Current, Final :        Natural)
+   is
+   begin
+      Sprite.Property ("gnoga_tcur", Current);
+      Sprite.Property ("gnoga_tfin", Final);
+   end Loop_Times;
+
+   procedure Move_To
+     (Sprite              : in out Sprite_Type;
+      Row, Column         : in     Integer;
+      Radial_Velocity     : in     Velocity_Type;
+      Radial_Acceleration : in     Acceleration_Type;
+      Spent_Time          :    out Duration)
+   is
+      --  Distance: Sqrt ((Row - Sprite.Row)**2 + (Column - Sprite.Column)**2)
+      --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
+      --  Discriminant: V**2 - 4 * (A/2) * (-D)
+      --  Time spent: (-V + Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
+      Azimut : constant Integer :=
+        To_Degree
+          (Arctan (Float (Row - Sprite.Row), Float (Column - Sprite.Column)));
+      Distance : constant Float :=
+        Sqrt (Float (Row - Sprite.Row)**2 + Float (Column - Sprite.Column)**2);
+      Discriminant : constant Float :=
+        Radial_Velocity**2 + 2.0 * Distance * Radial_Acceleration;
+   begin
+      Sprite.Motion (Radial_Velocity, Azimut);
+      Sprite.Acceleration (Radial_Acceleration, Azimut);
+      Spent_Time :=
+        Duration
+          ((Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration);
+      Sprite.Loop_Times (0, Integer (Frame_Rate * Spent_Time));
+   end Move_To;
+
+   --------------
+   -- Move_Rel --
+   --------------
+
+   procedure Move_Rel
+     (Sprite              : in out Sprite_Type;
+      Rel_Row, Rel_Column : in     Integer;
+      Velocity            : in     Velocity_Type;
+      Acceleration        : in     Acceleration_Type;
+      Spent_Time          :    out Duration)
+   is
+   begin
+      Sprite.Move_To
+      (Sprite.Row +
+       Rel_Row, Sprite.Column +
+       Rel_Column, Velocity, Acceleration, Spent_Time);
+   end Move_Rel;
 
    ------------
    -- Delete --

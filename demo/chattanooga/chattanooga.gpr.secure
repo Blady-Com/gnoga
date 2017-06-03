@@ -1,5 +1,6 @@
 with "../../src/gnoga.gpr";
 with "../../ssl/gnoga_secure.gpr";
+with "../../settings.gpr";
 
 project Chattanooga is
    for Languages use ("Ada");
@@ -8,11 +9,14 @@ project Chattanooga is
    for Exec_Dir use "../../bin";
    for Main use ("chattanooga-program.adb");
 
-   package Binder is
-      for Default_Switches ("ada") use ("-E");
-   end Binder;
-
    package Builder is
       for Executable ("chattanooga-program.adb") use "chattanooga";
    end Builder;
+
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
+   package Binder renames Settings.Binder;
+   package Linker renames Settings.Linker;
 end Chattanooga;

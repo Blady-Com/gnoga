@@ -3,22 +3,34 @@
 -- **************************************************************************
 --
 -- History:
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2000 May 01     J. Carter          V1.0--Initial release
+-- 2016 Oct 01     J. Carter     V1.0--Initial Version
 --
-package body PragmARC.US_Deck is
-   procedure Standard_Deck (Item : in out Deck_52) is
-      -- Empty
-   begin -- Standard_Deck
-      Deck.Make_Empty (Item => Item);
+function PragmARC.Random_Ranges (G : Generator; Min : Interfaces.Unsigned_32; Max : Interfaces.Unsigned_32) return Interfaces.Unsigned_32
+is
+   subtype Unsigned_32 is Interfaces.Unsigned_32;
 
-      All_Suits : for Suit in US_Card.Suit_Id loop
-         All_Ranks : for Rank in US_Card.Rank_Id loop
-            Deck.Add (Item => US_Card.Make (Suit, Rank), To => Item);
-         end loop All_Ranks;
-      end loop All_Suits;
-   end Standard_Deck;
-end PragmARC.US_Deck;
+   type U33 is mod 2 ** 33; -- 1 bit more than Unsigned_32, for calculating Max_Random
+
+   Min_Work : constant Unsigned_32 := Unsigned_32'Min (Min, Max);
+   Max_Work : constant Unsigned_32 := Unsigned_32'Max (Min, Max);
+
+   use type Unsigned_32;
+
+   Spread : constant Unsigned_32 := Max_Work - Min_Work + 1;
+   S33    : constant U33         := U33 (Spread);
+
+   Max_Random : constant Unsigned_32 := Interfaces.Unsigned_32 (S33 * (Unsigned_32'Modulus / S33) - 1);
+
+   Value : Unsigned_32;
+begin -- PragmARC.Random_Ranges
+   Get_Value : loop
+      Value := Random (G);
+
+      exit Get_Value when Value <= Max_Random;
+   end loop Get_Value;
+
+   return Min_Work + Value rem Spread;
+end PragmARC.Random_Ranges;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software

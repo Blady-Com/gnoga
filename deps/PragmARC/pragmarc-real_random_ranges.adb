@@ -3,22 +3,36 @@
 -- **************************************************************************
 --
 -- History:
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2000 May 01     J. Carter          V1.0--Initial release
+-- 2016 Oct 01     J. Carter          V1.0--Initial version
 --
-package body PragmARC.US_Deck is
-   procedure Standard_Deck (Item : in out Deck_52) is
+package body PragmARC.Real_Random_Ranges is
+   function Random_Range (R : Uniform; Min : Real; Max : Real) return Real is
       -- Empty
-   begin -- Standard_Deck
-      Deck.Make_Empty (Item => Item);
+   begin -- Random_Range
+      return R * (Max - Min) + Min;
+   end Random_Range;
 
-      All_Suits : for Suit in US_Card.Suit_Id loop
-         All_Ranks : for Rank in US_Card.Rank_Id loop
-            Deck.Add (Item => US_Card.Make (Suit, Rank), To => Item);
-         end loop All_Ranks;
-      end loop All_Suits;
-   end Standard_Deck;
-end PragmARC.US_Deck;
+   function Random_Int (R : Uniform; Min : Integer; Max : Integer) return Integer is
+      Min_Work : constant Integer := Integer'Min (Min, Max);
+      Max_Work : constant Integer := Integer'Max (Min, Max);
+      -- assert: Min_Work <= Max_Work
+      Value : constant Real := Random_Range (R, Real (Min_Work), Real (Max_Work) + 1.0);
+      -- assert: Min_Work <= Value < Max_Work + 1
+      -- assert: Min_Work <= Floor (Value) <= Max_Work
+   begin -- Random_Int
+      return Integer (Real'Floor (Value) );
+   end Random_Int;
+
+   function Normal (List : Normal_List; Mean : Real; Sigma : Real) return Real is
+      Sum : Real := 0.0;
+   begin -- Normal
+      Add : for I in List'Range loop
+         Sum := Sum + List (I);
+      end loop Add;
+
+      return Sigma * (Sum - 6.0) + Mean;
+   end Normal;
+end PragmARC.Real_Random_Ranges;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software

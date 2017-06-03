@@ -2,23 +2,20 @@
 -- Copyright (C) 2016 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
--- History:
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2000 May 01     J. Carter          V1.0--Initial release
+-- Returns a uniformly distributed integer in Min .. Max
+-- Internally, it declares a type mod 2 ** 33, so this won't work with compilers that have
+-- System.Max_Binary_Modulus < 2 ** 33
 --
-package body PragmARC.US_Deck is
-   procedure Standard_Deck (Item : in out Deck_52) is
-      -- Empty
-   begin -- Standard_Deck
-      Deck.Make_Empty (Item => Item);
+-- History:
+-- 2016 Oct 01     J. Carter     V1.0--Initial Version
+--
+with Interfaces;
 
-      All_Suits : for Suit in US_Card.Suit_Id loop
-         All_Ranks : for Rank in US_Card.Rank_Id loop
-            Deck.Add (Item => US_Card.Make (Suit, Rank), To => Item);
-         end loop All_Ranks;
-      end loop All_Suits;
-   end Standard_Deck;
-end PragmARC.US_Deck;
+generic -- PragmARC.Random_Ranges
+   type Generator (<>) is limited private;
+
+   with function Random (G : Generator) return Interfaces.Unsigned_32;
+function PragmARC.Random_Ranges (G : Generator; Min : Interfaces.Unsigned_32; Max : Interfaces.Unsigned_32) return Interfaces.Unsigned_32;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software

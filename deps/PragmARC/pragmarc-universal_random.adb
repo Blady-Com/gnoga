@@ -1,8 +1,10 @@
 -- PragmAda Reusable Component (PragmARC)
--- Copyright (C) 2003 by PragmAda Software Engineering.  All rights reserved.
+-- Copyright (C) 2016 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
 -- History:
+-- 2016 Oct 01     J. Carter          V1.4--Removed Random_Range, Random_Int, and Normal, replaced by PragmARC.Real_Random_Ranges
+-- 2016 Jun 01     J. Carter          V1.3--Changed comment for empty declarative part and formatting
 -- 2003 Sep 01     J. Carter          V1.2--Improve Randomize
 -- 2001 Feb 01     J. Carter          V1.1--Use Date_Handler in Randomize
 -- 2000 May 01     J. Carter          V1.0--Initial release
@@ -34,8 +36,7 @@ package body PragmARC.Universal_Random is
    procedure Set_Seed (New_I : Seed_Range_1 := Default_I;
                        New_J : Seed_Range_1 := Default_J;
                        New_K : Seed_Range_1 := Default_K;
-                       New_L : Seed_Range_2 := Default_L
-                      )
+                       New_L : Seed_Range_2 := Default_L)
    is
       S : Real;
       T : Real;
@@ -96,18 +97,18 @@ package body PragmARC.Universal_Random is
       -- assert: Minute in Seed_Range_1
 
       Seconds := Natural (Day_Seconds);
-      
+
       if Duration (Seconds) > Day_Seconds then
          Seconds := Seconds - 1;
       end if;
       -- assert: Seconds <= Day_Seconds
-      
+
       Day_Seconds := Day_Seconds - Duration (Seconds);
       -- assert: Day_Seconds < 0.0
-      
+
       Seconds := Integer'Max (Seconds, Seed_Range_1'First);
       -- assert: Seconds in Seed_Range_1
-      
+
       Hundredths := Natural (100 * Day_Seconds);
 
       Set_Seed (New_I => Hour, New_J => Minute, New_K => Seconds, New_L => Hundredths);
@@ -145,36 +146,6 @@ package body PragmARC.Universal_Random is
 
       return Temp;
    end Random;
-
-   function Random_Range (Min : Real; Max : Real) return Real is
-      -- null;
-   begin -- Random_Range
-      return Random * (Max - Min) + Min;
-   end Random_Range;
-
-   function Random_Int (Min : Integer; Max : Integer) return Integer is
-      Min_Work : Integer := Integer'Min (Min, Max);
-      Max_Work : Integer := Integer'Max (Min, Max);
-      Value    : Real;
-   begin -- Random_Int
-      -- assert: Min_Work <= Max_Work
-
-      Value := Random_Range (Real (Min_Work), Real (Max_Work) + 1.0);
-      -- assert: Min_Work <= Value < Max_Work + 1
-      -- assert: Min_Work <= Floor (Value) <= Max_Work
-
-      return Integer (Real'Floor (Value) );
-   end Random_Int;
-
-   function Normal (Mean : Real; Sigma : Real) return Real is
-      Sum : Real := 0.0;
-   begin -- Normal
-      Add : for I in 1 .. 12 loop
-         Sum := Sum + Random;
-      end loop Add;
-
-      return Sigma * (Sum - 6.0) + Mean;
-   end Normal;
 begin -- PragmARC.Universal_Random
    Set_Seed; -- Initialize to default seeds
 end PragmARC.Universal_Random;

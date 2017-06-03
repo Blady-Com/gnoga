@@ -2,23 +2,40 @@
 -- Copyright (C) 2016 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
--- History:
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2000 May 01     J. Carter          V1.0--Initial release
+-- Provides holders for values of indefinite types
 --
-package body PragmARC.US_Deck is
-   procedure Standard_Deck (Item : in out Deck_52) is
-      -- Empty
-   begin -- Standard_Deck
-      Deck.Make_Empty (Item => Item);
+-- History:
+-- 2016 Sep 15     J. Carter          V1.0--Initial release
+--
+private with Ada.Finalization;
 
-      All_Suits : for Suit in US_Card.Suit_Id loop
-         All_Ranks : for Rank in US_Card.Rank_Id loop
-            Deck.Add (Item => US_Card.Make (Suit, Rank), To => Item);
-         end loop All_Ranks;
-      end loop All_Suits;
-   end Standard_Deck;
-end PragmARC.US_Deck;
+generic -- PragmARC.Holders
+   type Element (<>) is private;
+package PragmARC.Holders is
+   pragma Preelaborate;
+
+   type Handle is tagged private;
+   -- Initial value: empty
+
+   procedure Put (Onto : in out Handle; Item : in Element);
+   -- Makes the value stored in Onto be Item
+   -- Onto is not empty after a call to Put
+
+   function Get (From : Handle) return Element;
+   -- Returns the value stored in From
+   -- From must not be empty; raises Empty if it is
+   --
+   -- Precondition: From is not empty     raise Empty if violated
+private -- PragmARC.Holders
+   type Element_Ptr is access Element;
+
+   type Handle is new Ada.Finalization.Controlled with record
+      Ptr : Element_Ptr;
+   end record;
+
+   procedure Adjust (Object : in out Handle);
+   procedure Finalize (Object : in out Handle);
+end PragmARC.Holders;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software

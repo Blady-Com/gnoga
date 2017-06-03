@@ -2,23 +2,28 @@
 -- Copyright (C) 2016 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
--- History:
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2000 May 01     J. Carter          V1.0--Initial release
+-- Creates a random values in a range from a random value R such that 0 <= R < 1
 --
-package body PragmARC.US_Deck is
-   procedure Standard_Deck (Item : in out Deck_52) is
-      -- Empty
-   begin -- Standard_Deck
-      Deck.Make_Empty (Item => Item);
+-- History:
+-- 2016 Oct 01     J. Carter          V1.0--Initial version
+--
+generic -- PragmARC.Real_Random_Ranges
+   type Supplied_Real is digits <>;
+package PragmARC.Real_Random_Ranges is
+   subtype Real is Supplied_Real'Base;
+   subtype Uniform is Real range 0.0 .. Real'Adjacent (1.0, 0.0);
 
-      All_Suits : for Suit in US_Card.Suit_Id loop
-         All_Ranks : for Rank in US_Card.Rank_Id loop
-            Deck.Add (Item => US_Card.Make (Suit, Rank), To => Item);
-         end loop All_Ranks;
-      end loop All_Suits;
-   end Standard_Deck;
-end PragmARC.US_Deck;
+   function Random_Range (R : Uniform; Min : Real; Max : Real) return Real;
+   -- Converts R into a value in Min .. Max
+
+   function Random_Int (R : Uniform; Min : Integer; Max : Integer) return Integer;
+   -- Converts R into a value in Min .. Max
+
+   type Normal_List is array (1 .. 12) of Uniform;
+
+   function Normal (List : Normal_List; Mean : Real; Sigma : Real) return Real;
+   -- Uses the random values in List to approximate a normally distributed random number with the given mean & standard deviation
+end PragmARC.Real_Random_Ranges;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software

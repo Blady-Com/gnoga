@@ -3,22 +3,42 @@
 -- **************************************************************************
 --
 -- History:
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2000 May 01     J. Carter          V1.0--Initial release
+-- 2016 Sep 15     J. Carter          V1.0--Initial release
 --
-package body PragmARC.US_Deck is
-   procedure Standard_Deck (Item : in out Deck_52) is
-      -- Empty
-   begin -- Standard_Deck
-      Deck.Make_Empty (Item => Item);
+with Ada.Unchecked_Deallocation;
 
-      All_Suits : for Suit in US_Card.Suit_Id loop
-         All_Ranks : for Rank in US_Card.Rank_Id loop
-            Deck.Add (Item => US_Card.Make (Suit, Rank), To => Item);
-         end loop All_Ranks;
-      end loop All_Suits;
-   end Standard_Deck;
-end PragmARC.US_Deck;
+package body PragmARC.Holders is
+   procedure Free is new Ada.Unchecked_Deallocation (Object => Element, Name => Element_Ptr);
+
+   procedure Put (Onto : in out Handle; Item : in Element) is
+      -- Empty
+   begin -- Put
+      Free (Onto.Ptr);
+      Onto.Ptr := new Element'(Item);
+   end Put;
+
+   function Get (From : Handle) return Element is
+      -- Empty
+   begin -- Get
+      if From.Ptr = null then -- Precondition
+         raise Empty;
+      end if;
+
+      return From.Ptr.all;
+   end Get;
+
+   procedure Adjust (Object : in out Handle) is
+      -- Empty
+   begin -- Adjust
+      Object.Ptr := new Element'(Object.Ptr.all);
+   end Adjust;
+
+   procedure Finalize (Object : in out Handle) is
+      -- Empty
+   begin -- Finalize
+      Free (Object.Ptr);
+   end Finalize;
+end PragmARC.Holders;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software

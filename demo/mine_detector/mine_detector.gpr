@@ -9,6 +9,10 @@ project Mine_Detector is
    for Exec_Dir use "../../bin";
    for Main use ("mine_detector.adb");
 
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
 end Mine_Detector;

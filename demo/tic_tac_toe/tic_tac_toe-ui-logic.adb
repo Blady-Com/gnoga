@@ -152,7 +152,7 @@ package body Logic is
          -- Otherwise, sets Moved to False
          --
          -- These replace the heuristic "prevent Player from getting 2 in a row in more than one direction"
-         -- Except for 5 cases on the Computer's 2nd move when Player is X and the Computer has moved in the center, this is
+         -- Except for 6 cases on the Computer's 2nd move when Player is X and the Computer has moved in the center, this is
          -- accomplished by the other heuristics, so it's easier to just check those special cases
 
          function Board_Count (App : App_Info) return Count_Set;
@@ -457,7 +457,6 @@ package body Logic is
          Count : Count_Set;
       begin -- Computer_Move
          App.Computer_Move := App.Computer_Move + 1;
-         Won := False;
 
          Find_Winning_Move (App => App, Won => Won); -- See if Computer can win
 

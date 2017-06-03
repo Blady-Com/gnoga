@@ -195,7 +195,7 @@ package body DB_Maker is
 
       Current : constant Lists.Result := List.Search (Item);
    begin -- Add_Item
-      if Current.Found and then Item = Current.Item then
+      if Current.Found then
          Window.Alert (Message => "Item already exists. Use Modify to change.");
 
          return;
@@ -203,6 +203,8 @@ package body DB_Maker is
 
       List.Insert (Item => Item);
       Refresh;
+      And_Rad.Checked;
+      Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Add_Item
    when E : others =>
       Gnoga.Log (Message => "Add_Item: " & Ada.Exceptions.Exception_Information (E) );
@@ -225,6 +227,8 @@ package body DB_Maker is
 
       List.Insert (Item => Item);
       Refresh;
+      And_Rad.Checked;
+      Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Modify
    when E : others =>
       Gnoga.Log (Message => "Modify: " & Ada.Exceptions.Exception_Information (E) );

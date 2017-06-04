@@ -4,7 +4,6 @@ with Gnoga.Gui.Window;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.View.Docker;
 with Gnoga.Gui.Element.Form;
-with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.Ace_Editor;
 with Gnoga.Server.Template_Parser.Simple;
 
@@ -34,9 +33,9 @@ procedure AdaEdit is
 
    procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
 
-      Fname : String := App.File_List.Value;
+      Fname : constant String := App.File_List.Value;
    begin
       if Fname (1) /= '.' and Fname (1) /= '/' then
          App.Editor.Text
@@ -51,6 +50,7 @@ procedure AdaEdit is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       use Ada.Directories;
 
       App : App_Access := new App_Data;
@@ -70,7 +70,7 @@ procedure AdaEdit is
       App.Main_Window := Main_Window'Unchecked_Access;
 
       --  If not using a custom boot loader like boot_ace.html use:
-      --  Gnoga.Gui.Plugin.Ace_Editor.Load_Ace_Editor (Main_Window);
+      Gnoga.Gui.Plugin.Ace_Editor.Load_Ace_Editor (Main_Window);
 
       App.Dock.Create (Main_Window);
       App.Control_Form.Create (App.Dock);
@@ -102,7 +102,8 @@ procedure AdaEdit is
 begin
    Application.Multi_Connect.Initialize
      (Event => On_Connect'Unrestricted_Access,
-      Boot  => "boot_ace.html");
+--        Boot  => "boot_ace.html");
+      Boot  => "boot.html");
 
    Application.Title ("AdaEdit");
    Application.HTML_On_Close

@@ -1,12 +1,10 @@
 with Ada.Calendar;
 
 with Gnoga.Types;
-with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
-with Gnoga.Gui.Window;
 
 with AdaBlog.View;
 with AdaBlog.Model;
@@ -148,6 +146,8 @@ package body AdaBlog.Controller is
    begin
       User.Find_Where ("last_session ='" & Main_Window.Gnoga_Session_ID & "'");
 
+      Main_Window.Disable_Auto_Set_View;
+
       Content_Area.Create (Parent  => Main_Window, ID => "main-body");
 
       AdaBlog.Connection.Iterate
@@ -192,6 +192,8 @@ package body AdaBlog.Controller is
          return;
       end if;
 
+      Main_Window.Disable_Auto_Set_View;
+
       View.New_Entry_Form (Main_Window => Main_Window,
                            Content     => Content_Area);
 
@@ -214,6 +216,7 @@ package body AdaBlog.Controller is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       User : AdaBlog.Model.Users.Active_Record;
    begin
       User.Find_Where ("last_session ='" & Main_Window.Gnoga_Session_ID & "'");

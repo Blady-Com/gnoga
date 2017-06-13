@@ -1065,15 +1065,17 @@ package body Gnoga.Server.Connection is
       function Connection_Socket (ID : in Gnoga.Types.Connection_ID)
                                   return Socket_Type
       is
+         use type Socket_Maps.Cursor;
+         Connection_Cursor : constant Socket_Maps.Cursor := Socket_Map.Find (ID);
       begin
-         return Socket_Map.Element (ID);
-      exception
-         when E : others =>
-            Log ("Error connection_Socket - " & ID'Img);
-            Log (Ada.Exceptions.Exception_Information (E));
+         if Connection_Cursor = Socket_Maps.No_Element then
+            Log ("Error Connection_Socket - " & ID'Img & " not found in connection map. ");
             raise Connection_Error with
               "Connection ID" & ID'Img & " not found in connection map. " &
               "Connection most likely was previously closed.";
+         else
+            return Socket_Maps.Element (Connection_Cursor);
+         end if;
       end Connection_Socket;
 
       function Find_Connection_ID (Socket : Socket_Type)

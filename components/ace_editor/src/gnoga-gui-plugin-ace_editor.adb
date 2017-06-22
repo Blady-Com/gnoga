@@ -47,8 +47,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('<script src=""/js/ace-builds/src-min-noconflict/ace.js""" &
-       " type=""text/javascript"" charset=""utf-8""></script>')");
+      ("append('" & Escape_Quotes ("<script src='/js/ace-builds/src-min-noconflict/ace.js'" &
+       " type='text/javascript' charset='utf-8'></script>") & "')");
    end Load_Ace_Editor;
 
    ------------
@@ -67,7 +67,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
         Ada.Strings.Unbounded.To_Unbounded_String ("gnoga['" & GID & "']");
       Gnoga.Server.Connection.Execute_Script
         (View.Connection_ID,
-         View.Editor_Var & "=ace.edit(""" & View.ID & """);");
+         View.Editor_Var & "=ace.edit('" & View.ID & "');");
    end Create;
 
    ----------
@@ -79,7 +79,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Text : in     String)
    is
    begin
-      View.Editor_Execute ("setValue (""" & Escape_Quotes (Text) & """)");
+      View.Editor_Execute ("setValue ('" & Escape_Quotes (Text) & "')");
    end Text;
 
    overriding function Text (View : Ace_Editor_Type) return String is
@@ -106,7 +106,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Text : in     String)
    is
    begin
-      View.Editor_Execute ("insert(""" & Escape_Quotes (Text) & """)");
+      View.Editor_Execute ("insert('" & Escape_Quotes (Text) & "')");
    end Insert_Text_At_Cursor;
 
    ------------------
@@ -222,9 +222,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       View.Editor_Execute
-      ("find(""" &
+      ("find('" &
        Escape_Quotes (Text) &
-       """,{" &
+       "',{" &
        "backwards: " &
        Backwards'Img &
        "," &
@@ -257,7 +257,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Replace_Text (View : in out Ace_Editor_Type; Text : in String) is
    begin
-      View.Editor_Execute ("replace(""" & Escape_Quotes (Text) & """)");
+      View.Editor_Execute ("replace('" & Escape_Quotes (Text) & "')");
    end Replace_Text;
 
    -----------------
@@ -266,7 +266,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Replace_All (View : in out Ace_Editor_Type; Text : in String) is
    begin
-      View.Editor_Execute ("replaceAll(""" & Escape_Quotes (Text) & """)");
+      View.Editor_Execute ("replaceAll('" & Escape_Quotes (Text) & "')");
    end Replace_All;
 
    ---------------
@@ -275,7 +275,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Set_Theme (View : in out Ace_Editor_Type; Name : in String) is
    begin
-      View.Editor_Execute ("setTheme(""ace/theme/" & Name & """)");
+      View.Editor_Execute ("setTheme('ace/theme/" & Name & "')");
    end Set_Theme;
 
    -----------------------
@@ -288,7 +288,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       View.Editor_Execute
-      ("getSession().setMode(""ace/mode/" & Language & """)");
+      ("getSession().setMode('ace/mode/" & Language & "')");
    end Set_Language_Mode;
 
    procedure Scroll_To_Line
@@ -371,12 +371,12 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Delete (View : in out Ace_Editor_Type) is
    begin
-      View.Editor_Execute ("remove(""right"")");
+      View.Editor_Execute ("remove('right')");
    end Delete;
 
    procedure Backspace (View : in out Ace_Editor_Type) is
    begin
-      View.Editor_Execute ("remove(""left"")");
+      View.Editor_Execute ("remove('left')");
    end Backspace;
 
    function Get_New_Line_Character (View : Ace_Editor_Type) return String is
@@ -491,9 +491,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
          Start_Row'Img &
          "); " &
          View.Editor_Var &
-         ".getSession().getDocument().insert(p, """ &
+         ".getSession().getDocument().insert(p, '" &
          Escape_Quotes (Text) &
-         """)");
+         "')");
    end Insert;
 
    procedure InsertNewLine

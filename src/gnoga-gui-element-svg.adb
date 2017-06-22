@@ -49,9 +49,9 @@ package body Gnoga.Gui.Element.SVG is
    is
    begin
       SVG.Create_From_HTML (Parent,
-                            "<svg xmlns=""http://www.w3.org/2000/svg"" " &
-                              "xmlns:xlink=""http://www.w3.org/1999/xlink"">" &
-                              Escape_Quotes (Content) &
-                              "</svg>", ID);
+                            Escape_Quotes ("<svg xmlns='http://www.w3.org/2000/svg' " &
+                              "xmlns:xlink='http://www.w3.org/1999/xlink'>" &
+                              Content &
+                              "</svg>"), ID);
    end Create;
 end Gnoga.Gui.Element.SVG;

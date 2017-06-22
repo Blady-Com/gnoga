@@ -106,7 +106,7 @@ package body Gnoga.Gui.Plugin.MacGap is
                        URL    : in     String)
    is
    begin
-      MacGap_Execute (Window, "openURL(""" & URL & """)");
+      MacGap_Execute (Window, "openURL('" & Escape_Quotes (URL) & "')");
    end Open_URL;
 
    -----------------

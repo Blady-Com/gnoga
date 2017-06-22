@@ -54,9 +54,9 @@ package body Gnoga.Gui.Element.Common is
       ID      : in     String := "")
    is
    begin
-      A.Create_From_HTML (Parent, "<a target=""" & Escape_Quotes (Target) &
-                            """ href=""" & Escape_Quotes (Link) & """>" &
-                            Escape_Quotes (Content) & "</a>", ID);
+      A.Create_From_HTML (Parent, Escape_Quotes ("<a target='" & Target &
+                            "' href='" & Link & "'>" &
+                            Content & "</a>"), ID);
    end Create;
 
    ----------
@@ -103,8 +103,8 @@ package body Gnoga.Gui.Element.Common is
    is
    begin
       Button.Create_From_HTML
-        (Parent, "<button type='button'>" & Escape_Quotes (Content) &
-           "</button>", ID);
+        (Parent, Escape_Quotes ("<button type='button'>" & Content &
+           "</button>"), ID);
    end Create;
 
    --------------
@@ -178,9 +178,9 @@ package body Gnoga.Gui.Element.Common is
    is
    begin
       IMG.Create_From_HTML (Parent,
-                            "<img src=""" & Escape_Quotes (URL_Source) &
-                              """ Alt=""" & Escape_Quotes (Alternative_Text) &
-                              """>", ID);
+                            Escape_Quotes ("<img src='" & URL_Source &
+                              "' Alt='" & Alternative_Text &
+                              "'>"), ID);
    end Create;
 
    -----------------

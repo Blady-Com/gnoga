@@ -56,7 +56,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       Text.Connection_ID (Parent.Connection_ID);
       Gnoga.Server.Connection.Execute_Script
         (Text.Connection_ID,
-         "gnoga['" & Text_ID & "'] = new PIXI.Text('" & Message & "');");
+         "gnoga['" & Text_ID & "'] = new PIXI.Text('" & Escape_Quotes (Message) & "');");
       Text.Locate (Row, Column);
       Text.Motion (0.0, 0.0);
       Text.Acceleration (0.0, 0.0);

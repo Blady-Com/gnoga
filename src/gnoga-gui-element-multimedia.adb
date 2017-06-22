@@ -949,7 +949,7 @@ package body Gnoga.Gui.Element.Multimedia is
       function Has_Source return String is
       begin
          if Source /= "" then
-            return " src=""" & Escape_Quotes (Source) & """";
+            return " src='" & Escape_Quotes (Source) & "'";
          else
             return "";
          end if;
@@ -1038,7 +1038,7 @@ package body Gnoga.Gui.Element.Multimedia is
       function Has_Poster return String is
       begin
          if Source /= "" then
-            return " poster=""" & Escape_Quotes (Poster) & """";
+            return " poster='" & Escape_Quotes (Poster) & "'";
          else
             return "";
          end if;
@@ -1047,7 +1047,7 @@ package body Gnoga.Gui.Element.Multimedia is
       function Has_Source return String is
       begin
          if Source /= "" then
-            return " src=""" & Escape_Quotes (Source) & """";
+            return " src='" & Escape_Quotes (Source) & "'";
          else
             return "";
          end if;

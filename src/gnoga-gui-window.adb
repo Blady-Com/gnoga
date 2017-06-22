@@ -621,7 +621,7 @@ package body Gnoga.Gui.Window is
 
    procedure Alert (Window : in out Window_Type; Message : String) is
    begin
-      Window.Execute ("alert (""" & Escape_Quotes (Message) & """);");
+      Window.Execute ("alert ('" & Escape_Quotes (Message) & "');");
    end Alert;
 
    ---------
@@ -630,7 +630,7 @@ package body Gnoga.Gui.Window is
 
    procedure Log (Window : in out Window_Type; Message : String) is
    begin
-      Window.Execute ("console.log (""" & Escape_Quotes (Message) & """);");
+      Window.Execute ("console.log ('" & Escape_Quotes (Message) & "');");
    end Log;
 
    -----------
@@ -639,7 +639,7 @@ package body Gnoga.Gui.Window is
 
    procedure Error (Window : in out Window_Type; Message : String) is
    begin
-      Window.Execute ("console.error (""" & Escape_Quotes (Message) & """);");
+      Window.Execute ("console.error ('" & Escape_Quotes (Message) & "');");
    end Error;
 
    -----------

@@ -107,7 +107,7 @@ package body Gnoga.Gui.Element.Canvas is
                        Value   : in     String)
    is
    begin
-      Context.Execute (Name & "=""" & Escape_Quotes (Value) & """;");
+      Context.Execute (Name & "='" & Escape_Quotes (Value) & "';");
    end Property;
 
    procedure Property (Context : in out Context_Type;

@@ -554,8 +554,8 @@ package body Gnoga.Gui.Base is
                        Value  : in     String)
    is
    begin
-      Object.jQuery_Execute ("prop ('" & Name & "',""" &
-                               Escape_Quotes (Value) & """);");
+      Object.jQuery_Execute ("prop ('" & Name & "','" &
+                               Escape_Quotes (Value) & "');");
    end Property;
 
    function Property (Object : Base_Type; Name : String) return String is
@@ -1435,8 +1435,8 @@ package body Gnoga.Gui.Base is
            (Event   => "dragstart",
             Message => "",
             Eval  =>
-             "e.originalEvent.dataTransfer.setData(""" & Drag_Type & """, """ &
-             Escape_Quotes (Drag_Text) & """);");
+             "e.originalEvent.dataTransfer.setData('" & Drag_Type & "', '" &
+             Escape_Quotes (Drag_Text) & "');");
       end if;
    end On_Drag_Start_Handler;
 
@@ -1569,8 +1569,8 @@ package body Gnoga.Gui.Base is
               "e.target.getBoundingClientRect().left) + '|' + " &
               "(e.originalEvent.clientY - " &
               "e.target.getBoundingClientRect().top)  + '|' + " &
-              "e.originalEvent.dataTransfer.getData(""" &
-              Drag_Type & """) + '|'");
+              "e.originalEvent.dataTransfer.getData('" &
+              Drag_Type & "') + '|'");
       end if;
    end On_Drop_Handler;
 
@@ -2129,8 +2129,8 @@ package body Gnoga.Gui.Base is
    begin
       Bind_Event_Script (Object => Object,
                          Event  => Event,
-                         Script => Eval & "ws.send (""" &
-                           Escape_Quotes (Full_Message) & """" &
+                         Script => Eval & "ws.send ('" &
+                           Escape_Quotes (Full_Message) & "'" &
                            If_Script & ");" & Cancel_Event);
    end Bind_Event;
 
@@ -2143,7 +2143,7 @@ package body Gnoga.Gui.Base is
                                 Script : in     String)
    is
    begin
-      Object.jQuery_Execute ("on (""" & Event & """, function (e, data) {" &
+      Object.jQuery_Execute ("on ('" & Event & "', function (e, data) {" &
                                Script & "});");
    end Bind_Event_Script;
 
@@ -2155,7 +2155,7 @@ package body Gnoga.Gui.Base is
                            Event  : in     String)
    is
    begin
-      Object.jQuery_Execute ("off (""" & Event & """);");
+      Object.jQuery_Execute ("off ('" & Event & "');");
    end Unbind_Event;
 
    -----------------------------

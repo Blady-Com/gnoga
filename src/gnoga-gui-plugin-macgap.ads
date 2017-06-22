@@ -128,5 +128,6 @@ package Gnoga.Gui.Plugin.MacGap is
                             Method : String)
                             return String;
    --  Execute a method on the MacGap object for Window
+   --  Method is eval'd JavaScript (quotes have to be escaped if any).
 
 end Gnoga.Gui.Plugin.MacGap;

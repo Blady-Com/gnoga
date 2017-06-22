@@ -60,7 +60,7 @@ package body Gnoga.Gui.Element.Form.Fieldset is
    is
       D : Gnoga.Gui.Element.Element_Type;
    begin
-      D.Create_From_HTML (View, "<legend>" & Value & "</legend>", ID);
+      D.Create_From_HTML (View, "<legend>" & Escape_Quotes (Value) & "</legend>", ID);
    end Put_Legend;
 
 end Gnoga.Gui.Element.Form.Fieldset;

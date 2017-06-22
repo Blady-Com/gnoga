@@ -104,9 +104,8 @@ package body Gnoga.Gui.Element is
          Element.Create_With_Script
            (Connection_ID => Parent.Connection_ID,
             ID            => GID,
-            Script        => "gnoga['" & GID & "']=$(""" &
-              Escape_Quotes (HTML) &
-              """); gnoga['" & GID & "'].first().prop('id','" & GID & "');",
+            Script        => "gnoga['" & GID & "']=$('" & HTML &
+              "'); gnoga['" & GID & "'].first().prop('id','" & GID & "');",
             ID_Type       => Gnoga.Types.Gnoga_ID);
       end if;
 
@@ -141,7 +140,7 @@ package body Gnoga.Gui.Element is
         (Connection_ID => Parent.Connection_ID,
          ID            => GID,
          Script        => "gnoga['" & GID & "']=$(" &
-           "document.createElementNS(""" & Namespace & """, '" &
+           "document.createElementNS('" & Namespace & "', '" &
            Element_Type & "'));",
          ID_Type       => Gnoga.Types.Gnoga_ID);
       Element.Attribute ("id", GID);
@@ -176,8 +175,8 @@ package body Gnoga.Gui.Element is
                     Value   : in String)
    is
    begin
-      Element.jQuery_Execute ("css ('" & Name & "', """ &
-                                Escape_Quotes (Value) & """);");
+      Element.jQuery_Execute ("css ('" & Name & "', '" &
+                                Escape_Quotes (Value) & "');");
    end Style;
 
    procedure Style (Element : in out Element_Type;
@@ -212,8 +211,8 @@ package body Gnoga.Gui.Element is
                         Value   : in String)
    is
    begin
-      Element.jQuery_Execute ("attr ('" & Name & "',""" &
-                                Escape_Quotes (Value) & """);");
+      Element.jQuery_Execute ("attr ('" & Name & "','" &
+                                Escape_Quotes (Value) & "');");
    end Attribute;
 
    function Attribute (Element : Element_Type; Name : String) return String is
@@ -783,7 +782,7 @@ package body Gnoga.Gui.Element is
                          Value   : in     String)
    is
    begin
-      Element.jQuery_Execute ("html (""" & Escape_Quotes (Value) & """);");
+      Element.jQuery_Execute ("html ('" & Escape_Quotes (Value) & "');");
    end Inner_HTML;
 
    function Inner_HTML (Element : Element_Type) return String is
@@ -837,7 +836,7 @@ package body Gnoga.Gui.Element is
 
    procedure Text (Element : in out Element_Type; Value : in String) is
    begin
-      Element.jQuery_Execute ("text (""" & Escape_Quotes (Value) & """);");
+      Element.jQuery_Execute ("text ('" & Escape_Quotes (Value) & "');");
    end Text;
 
    function Text (Element : Element_Type) return String is
@@ -1565,7 +1564,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.jQuery_Execute
-        ("addClass(""" & Escape_Quotes (Class_Name) & """)");
+        ("addClass('" & Class_Name & "')");
    end Add_Class;
 
    procedure Remove_Class (Element    : in out Element_Type;
@@ -1573,7 +1572,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.jQuery_Execute
-        ("removeClass(""" & Escape_Quotes (Class_Name) & """)");
+        ("removeClass('" & Class_Name & "')");
    end Remove_Class;
 
    procedure Toggle_Class (Element    : in out Element_Type;
@@ -1581,7 +1580,7 @@ package body Gnoga.Gui.Element is
    is
    begin
       Element.jQuery_Execute
-        ("toggleClass(""" & Escape_Quotes (Class_Name) & """)");
+        ("toggleClass('" & Class_Name & "')");
    end Toggle_Class;
 
    -------------------------

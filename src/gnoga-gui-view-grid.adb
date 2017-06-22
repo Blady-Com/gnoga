@@ -149,7 +149,7 @@ package body Gnoga.Gui.View.Grid is
          C := C & "</div>";
       end if;
 
-      Grid.Create_From_HTML (Parent, To_String (C), ID);
+      Grid.Create_From_HTML (Parent, Escape_Quotes (To_String (C)), ID);
 
       N := 0;
       for Row in Layout'Range (1) loop

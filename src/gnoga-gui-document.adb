@@ -188,8 +188,8 @@ package body Gnoga.Gui.Document is
    procedure Load_CSS (Document : in out Document_Type; URL : String) is
    begin
       Document.Head_Element.jQuery_Execute
-        ("append('<link rel=""stylesheet"" " &
-           "href=""" & Escape_Quotes (URL) & """ type=""text/css"">')");
+        ("append('" & Escape_Quotes ("<link rel='stylesheet' " &
+           "href='" & URL & "' type='text/css'>'") & "')");
    end Load_CSS;
 
    -----------
@@ -198,7 +198,7 @@ package body Gnoga.Gui.Document is
 
    procedure Write (Document : in out Document_Type; Value : String) is
    begin
-      Document.Execute ("write(""" & Escape_Quotes (Value) & """);");
+      Document.Execute ("write('" & Escape_Quotes (Value) & "');");
    end Write;
 
    ----------------
@@ -207,7 +207,7 @@ package body Gnoga.Gui.Document is
 
    procedure Write_Line (Document : in out Document_Type; Value : String) is
    begin
-      Document.Execute ("writeln(""" & Escape_Quotes (Value) & """);");
+      Document.Execute ("writeln('" & Escape_Quotes (Value) & "');");
    end Write_Line;
 
    --------------

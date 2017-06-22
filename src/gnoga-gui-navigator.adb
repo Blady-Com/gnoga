@@ -142,6 +142,6 @@ package body Gnoga.Gui.Navigator is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Window.Connection_ID, "window.location='" & URL & "'");
+        (Window.Connection_ID, "window.location='" & Escape_Quotes (URL) & "'");
    end Navigate_To_URL;
 end Gnoga.Gui.Navigator;

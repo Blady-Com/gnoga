@@ -271,7 +271,7 @@ package body Gnoga.Gui.View.Card is
         (Parent, "<li />", ID);
       Item.Inner_HTML ("<a id='" & Item.ID & "_a" &
                          "' href='javascript:void(0)'>" &
-                         Escape_Quotes (Label) & "</a>");
+                         Label & "</a>");
 
       Item.On_Click_Handler (On_Click'Access);
 

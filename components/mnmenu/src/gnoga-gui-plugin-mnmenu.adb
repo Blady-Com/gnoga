@@ -46,11 +46,11 @@ package body Gnoga.Gui.Plugin.MNMenu is
    is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('<link href=""/css/mnmenu.css""" &
-       " type=""text/css"" rel=""stylesheet"">')");
+      ("append('" & Escape_Quotes ("<link href='/css/mnmenu.css'" &
+       " type='text/css' rel='stylesheet'>") & "')");
       Window.Document.Head_Element.jQuery_Execute
-      ("append('<script src=""/js/jquery.mnmenu.js""" &
-       " type=""text/javascript"" charset=""utf-8""></script>')");
+      ("append('" & Escape_Quotes ("<script src='/js/jquery.mnmenu.js'" &
+       " type='text/javascript' charset='utf-8'></script>") & "')");
    end Load_MNMenu;
 
    ------------------

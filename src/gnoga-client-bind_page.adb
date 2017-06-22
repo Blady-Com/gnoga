@@ -51,9 +51,9 @@ package body Gnoga.Client.Bind_Page is
    begin
       Gnoga.Server.Connection.Execute_Script
         (View.Connection_ID,
-         "gnoga['idbuf']=""""; $(""[id]"").each ( function (index, n)" &
+         "gnoga['idbuf']=''; $('[id]').each ( function (index, n)" &
            " { gnoga['idbuf'] = gnoga['idbuf'] + " &
-           " $(this).attr(""id"") + ""|""; } );");
+           " $(this).attr('id') + '|'; } );");
 
       declare
          Buf : constant String  := Gnoga.Server.Connection.Execute_Script

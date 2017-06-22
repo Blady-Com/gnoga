@@ -225,7 +225,7 @@ package body Gnoga.Gui.Location is
 
    procedure Replace (Location : in out Location_Type; URL : in String) is
    begin
-      Location.Execute ("replace('" & Gnoga.Escape_Quotes (URL) & "')");
+      Location.Execute ("replace('" & Escape_Quotes (URL) & "')");
    end Replace;
 
    ------------
@@ -234,7 +234,7 @@ package body Gnoga.Gui.Location is
 
    procedure Assign (Location : in out Location_Type; URL : in String) is
    begin
-      Location.Execute ("assign('" & Gnoga.Escape_Quotes (URL) & "')");
+      Location.Execute ("assign('" & Escape_Quotes (URL) & "')");
    end Assign;
 
 end Gnoga.Gui.Location;

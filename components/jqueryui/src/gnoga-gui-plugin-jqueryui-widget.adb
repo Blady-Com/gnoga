@@ -115,8 +115,8 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
             if Left_Icon = "" and Right_Icon = "" then
                return "";
             else
-               return ", icons: { primary: """ & Left_Icon & """," &
-                 "secondary: """ & Right_Icon & """}";
+               return ", icons: { primary: '" & Left_Icon & "'," &
+                 "secondary: '" & Right_Icon & "'}";
             end if;
          end Is_Icon;
       begin
@@ -187,7 +187,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
         (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
 
       Dialog.jQuery_Execute
-        ("dialog({title: """ & Escape_Quotes (Title) & """," &
+        (Escape_Quotes ("dialog({title: '" & Title & "'," &
            "height:" & Is_Auto (Height) & "," &
            "width:" & Is_Auto (Width) & "," &
            "position: { my: '" & Position_My & "', at: '" &
@@ -201,7 +201,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
            "maxWidth:" & Is_False (Maximum_Width) & "," &
            "modal: " & Modal'Img & "," &
            "closeOnEscape: " & Close_On_Escape'Img & "," &
-           "draggable: " & Draggable'Img & "})");
+           "draggable: " & Draggable'Img & "})"));
 
       Dialog.Bind_Event (Event   => "dialogresizestop",
                          Message => "");
@@ -213,7 +213,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    procedure Open (Dialog : in out Dialog_Type) is
    begin
-      Dialog.jQuery_Execute ("dialog(""open"")");
+      Dialog.jQuery_Execute ("dialog('open'");
       Dialog.Fire_On_Open;
    end Open;
 
@@ -223,7 +223,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    procedure Close (Dialog : in out Dialog_Type) is
    begin
-      Dialog.jQuery_Execute ("dialog(""close"")");
+      Dialog.jQuery_Execute ("dialog('close')");
    end Close;
 
    -----------------
@@ -232,7 +232,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    procedure Move_To_Top (Dialog : in out Dialog_Type) is
    begin
-      Dialog.jQuery_Execute ("dialog(""moveToTop"")");
+      Dialog.jQuery_Execute ("dialog('moveToTop')");
    end Move_To_Top;
 
    -------------
@@ -241,7 +241,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    function Is_Open (Dialog : in out Dialog_Type) return Boolean is
    begin
-      return Dialog.jQuery_Execute ("dialog(""isOpen"")") = "true";
+      return Dialog.jQuery_Execute ("dialog('isOpen')") = "true";
    end Is_Open;
 
    -------------
@@ -387,9 +387,9 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       L : Gnoga.Gui.Element.Element_Type;
    begin
       L.Create_From_HTML (Tabs.Labels,
-                          "<li><a href=""" & View.DOM_Selector & """>" &
-                            Escape_Quotes (Label) &
-                            "</a></li>");
+                          Escape_Quotes ("<li><a href='" & View.DOM_Selector & "'>" &
+                            Label &
+                            "</a></li>"));
       L.Place_Inside_Bottom_Of (Tabs.Labels);
       View.Place_Inside_Bottom_Of (Tabs);
    end Add_Tab;
@@ -400,7 +400,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    procedure Render_Tabs (Tabs : in out Tabs_Type) is
    begin
-      Tabs.jQuery_Execute ("tabs ({heightStyle: ""auto""})");
+      Tabs.jQuery_Execute ("tabs ({heightStyle: 'auto'})");
    end Render_Tabs;
 
    -----------------------

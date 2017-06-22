@@ -46,8 +46,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    procedure Load_PIXI (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('<script src=""/js/pixi.js""" &
-       " type=""text/javascript"" charset=""utf-8""></script>')");
+      ("append('" & Escape_Quotes ("<script src='/js/pixi.js'" &
+       " type='text/javascript' charset='utf-8'></script>") & "')");
    end Load_PIXI;
 
    ------------

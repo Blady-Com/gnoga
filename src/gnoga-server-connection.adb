@@ -2000,7 +2000,7 @@ package body Gnoga.Server.Connection is
             declare
                Message : constant String := "ws.send (" &
                            """S" & Script_ID'Img & "|""+" &
-                           "eval (""" & Escape_Quotes (UTF8_Script) & """)" &
+                           "eval (""" & UTF8_Script & """)" &
                            ");";
             begin
                if Socket.Content.Connection_Type = Long_Polling then
@@ -2247,8 +2247,8 @@ package body Gnoga.Server.Connection is
    is
    begin
       Execute_Script (ID     => ID,
-                      Script => "gnoga['html_on_close']=""" &
-                        Escape_Quotes (HTML) & """;");
+                      Script => "gnoga['html_on_close']='" &
+                        Escape_Quotes (HTML) & "';");
    end HTML_On_Close;
 
    ---------------------

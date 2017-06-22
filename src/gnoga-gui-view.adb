@@ -160,7 +160,7 @@ package body Gnoga.Gui.View is
    is
       D : Gnoga.Gui.Element.Element_Type;
    begin
-      D.Create_From_HTML (View, HTML, ID);
+      D.Create_From_HTML (View, Escape_Quotes (HTML), ID);
       if Class /= "" then
          D.Class_Name (Class);
       end if;
@@ -239,7 +239,7 @@ package body Gnoga.Gui.View is
    begin
       Document.Attach (View.Connection_ID);
       Document.Head_Element.jQuery_Execute
-        ("append ('<link rel=""stylesheet"" href=""" & URL & """ />')");
+        ("append ('<link rel='stylesheet' href='" & Escape_Quotes (URL) & "' />')");
    end Load_CSS;
 
    -------------------

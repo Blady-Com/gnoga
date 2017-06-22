@@ -46,16 +46,16 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    is
    begin
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('<link rel=""stylesheet"" " &
-           "href=""https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
-           "css/bootstrap.min.css"" />')");
+        ("append ('" & Escape_Quotes ("<link rel='stylesheet' " &
+           "href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
+           "css/bootstrap.min.css' />\'") & "'");
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('<link rel=""stylesheet"" " &
-           "href=""https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
-           "css/bootstrap-theme.min.css"" />')");
+        ("append ('" & Escape_Quotes ("<link rel='stylesheet' " &
+           "href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
+           "css/bootstrap-theme.min.css' />") & "')");
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('<script src=""https://maxcdn.bootstrapcdn.com/" &
-           "bootstrap/3.2.0/js/bootstrap.min.js""></script>')");
+        ("append ('" & Escape_Quotes ("<script src='https://maxcdn.bootstrapcdn.com/" &
+           "bootstrap/3.2.0/js/bootstrap.min.js'></script>") & "')");
    end Load_Boot_Strap;
 
    ------------
@@ -68,7 +68,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID        : in     String  := "")
    is
    begin
-      Container.Create_From_HTML (Parent, "<div class=""container"" />", ID);
+      Container.Create_From_HTML (Parent, Escape_Quotes ("<div class='container' />"), ID);
    end Create;
 
    ------------
@@ -82,7 +82,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    is
    begin
       Container.Create_From_HTML
-        (Parent, "<div class=""container-fluid"" />", ID);
+        (Parent, Escape_Quotes ("<div class='container-fluid' />"), ID);
    end Create;
 
    --------------------
@@ -117,7 +117,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID     : in     String  := "")
    is
    begin
-      Row.Create_From_HTML (Parent, "<div class='row' />", ID);
+      Row.Create_From_HTML (Parent, Escape_Quotes ("<div class='row' />"), ID);
    end Create;
 
    -----------------
@@ -158,8 +158,8 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    is
    begin
       Jumbotron.Create_From_HTML (Parent,
-                                  "<div class='jumbotron'>" &
-                                    Escape_Quotes (Content) & "</div>",
+                                  Escape_Quotes ("<div class='jumbotron'>" &
+                                    Content & "</div>"),
                                   ID);
    end Create;
 
@@ -176,7 +176,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID        : in     String  := "")
    is
    begin
-      Element.Create_From_HTML (Parent, "<div class='table-responsive'/>", ID);
+      Element.Create_From_HTML (Parent, Escape_Quotes ("<div class='table-responsive'/>"), ID);
       Element.Table.Create (Element);
       Element.Table.Add_Class ("table");
 
@@ -215,7 +215,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID         : in     String  := "")
    is
    begin
-      Form_Group.Create_From_HTML (Parent, "<div class='form-group' />", ID);
+      Form_Group.Create_From_HTML (Parent, Escape_Quotes ("<div class='form-group' />"), ID);
    end Create;
 
    procedure Make_Boot_Strap_Form_Item
@@ -237,8 +237,8 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       H : Gnoga.Gui.Element.Element_Type;
    begin
       H.Create_From_HTML (Parent => Element.Parent.all,
-                          HTML   => "<span class='help-block'>" &
-                            Escape_Quotes (Text) & "</span>",
+                          HTML   => Escape_Quotes ("<span class='help-block'>" &
+                            Text & "</span>"),
                           ID     => ID);
    end Add_Help_Block;
 
@@ -255,7 +255,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID      : in     String := "")
    is
    begin
-      Element.Create_From_HTML (Form, "<div class='checkbox'/>", ID);
+      Element.Create_From_HTML (Form, Escape_Quotes ("<div class='checkbox'/>"), ID);
       Element.Box.Create (Form, Checked, Value, Name, ID);
       Element.Box.Place_Inside_Top_Of (Element);
    end Create;
@@ -286,7 +286,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       ID      : in     String := "")
    is
    begin
-      Element.Create_From_HTML (Form, "<div class='radio'/>", ID);
+      Element.Create_From_HTML (Form, Escape_Quotes ("<div class='radio'/>"), ID);
       Element.Radio.Create (Form, Checked, Value, Name, ID);
       Element.Radio.Place_Inside_Top_Of (Element);
    end Create;

@@ -88,6 +88,7 @@ package Gnoga.Gui.Element is
    --  is called. This is done automatically if Parent is a child type of
    --  Gnoga_Gui.View.View_Base_Type unless the Auto_Place property is
    --  set to False _before_ any creation method is called.
+   --  Quotes in HTML have to be escaped if any.
    --
    --  Note: All IDs _must_ be unique for use in Gnoga.
 

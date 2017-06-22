@@ -68,7 +68,7 @@ package body Gnoga.Gui.Plugin.Message_Boxes is
       pragma Unreferenced (Object);
       begin
          if Result = None then
-            Gnoga.Log ("fermeture ""croix""");
+            Gnoga.Log ("fermeture 'croix'");
             Result := Cancel;
          end if;
       end Cancel_Window_Dialog;

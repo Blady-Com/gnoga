@@ -107,8 +107,8 @@ package body Gnoga.Client.Storage is
 
    procedure Set (Storage : in out Storage_Type; Name, Value : String) is
    begin
-      Execute (Storage, "setItem (""" & Escape_Quotes (Name) & """," &
-                 """" & Escape_Quotes (Value) & """)");
+      Execute (Storage, "setItem ('" & Escape_Quotes (Name) & "','" &
+                 Escape_Quotes (Value) & "')");
    end Set;
 
    ---------
@@ -117,7 +117,7 @@ package body Gnoga.Client.Storage is
 
    function Get (Storage : Storage_Type; Name : String) return String is
    begin
-      return Execute (Storage, "getItem(""" & Escape_Quotes (Name) & """)");
+      return Execute (Storage, "getItem('" & Escape_Quotes (Name) & "')");
    end Get;
 
    ---------------------

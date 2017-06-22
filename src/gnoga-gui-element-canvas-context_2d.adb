@@ -848,7 +848,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          end if;
       end Max_To_String;
    begin
-      Context.Execute ("fillText(""" & Escape_Quotes (Text) & """," &
+      Context.Execute ("fillText('" & Escape_Quotes (Text) & "'," &
                          X'Img & "," & Y'Img & Max_To_String & ");");
    end Fill_Text;
 
@@ -868,7 +868,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          end if;
       end Max_To_String;
    begin
-      Context.Execute ("strokeText(""" & Escape_Quotes (Text) & """," &
+      Context.Execute ("strokeText('" & Escape_Quotes (Text) & "'," &
                          X'Img & "," & Y'Img & Max_To_String & ");");
    end Stroke_Text;
 
@@ -881,7 +881,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
         (ID     => Context.Connection_ID,
          Script => "gnoga['" &
            Ada.Strings.Unbounded.To_String (Context.Context_ID) &
-           "'].measureText (" & Escape_Quotes (Text) & ").width"));
+           "'].measureText ('" & Escape_Quotes (Text) & "').width"));
    end Measure_Text_Width;
 
    ----------------

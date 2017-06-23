@@ -46,6 +46,7 @@ with Ada.Exceptions;
 package body Gnoga is
 
    Use_File : Boolean := False;
+   Automatic_Flush : Boolean := False;
    Log_File : Ada.Text_IO.File_Type;
 
    -------------------
@@ -324,7 +325,8 @@ package body Gnoga is
    -- Log_To_File --
    -----------------
 
-   procedure Log_To_File (File_Name : in String) is
+   procedure Log_To_File (File_Name : in String;
+                          Flush_Auto : in Boolean := False) is
       use Ada.Text_IO;
    begin
       Create (File => Log_File,
@@ -332,6 +334,7 @@ package body Gnoga is
               Name => File_Name);
 
       Use_File := True;
+      Automatic_Flush := Flush_Auto;
    exception
       when E : others =>
          Log ("Error failed to open log file " & File_Name);
@@ -344,18 +347,30 @@ package body Gnoga is
 
    procedure Log (Message : in String) is
       T : constant Ada.Calendar.Time := Ada.Calendar.Clock;
+      Date_Message : constant String := Ada.Calendar.Formatting.Image
+        (Date                  => T,
+         Include_Time_Fraction => True,
+         Time_Zone             =>
+           Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
+        " : " & Message;
    begin
       if Use_File then
-         Ada.Text_IO.Put_Line (Log_File, Message);
+         Ada.Text_IO.Put_Line (Log_File, Date_Message);
+         if Automatic_Flush then
+            Flush_Log;
+         end if;
       else
-         Write_To_Console
-           (Ada.Calendar.Formatting.Image
-              (Date                  => T,
-               Include_Time_Fraction => True,
-               Time_Zone             =>
-                 Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
-              " : " & Message);
+         Write_To_Console (Date_Message);
       end if;
    end Log;
+
+   ---------------
+   -- Flush_Log --
+   ---------------
+
+   procedure Flush_Log  is
+   begin
+      Ada.Text_IO.Flush (Log_File);
+   end Flush_Log;
 
 end Gnoga;

@@ -11,7 +11,7 @@ project Test is
                  "popups.adb", "forms.adb", "canvas_test.adb", "sprite_test.adb",
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb", "menu.adb",
                  "jdemo.adb", "svg_demo.adb", "align.adb", "pack.adb",
-                 "message_boxes.adb", "tree.adb", "plot_test.adb",
+                 "message_boxes.adb", "tree.adb", "plot_test.adb", "test_modal_dialog.adb",
                  "demo.adb", "db_sqlite.adb", "db_active.adb", -- "db_mysql.adb",
 --                 "singleton.adb", "mac_test.adb", "pragma_sqlite.adb");
                  "mac_test.adb", "pragma_sqlite.adb");

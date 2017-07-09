@@ -187,7 +187,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
         (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
 
       Dialog.jQuery_Execute
-        (Escape_Quotes ("dialog({title: '" & Title & "'," &
+        ("dialog({title: '" & Title & "'," &
            "height:" & Is_Auto (Height) & "," &
            "width:" & Is_Auto (Width) & "," &
            "position: { my: '" & Position_My & "', at: '" &
@@ -201,7 +201,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
            "maxWidth:" & Is_False (Maximum_Width) & "," &
            "modal: " & Modal'Img & "," &
            "closeOnEscape: " & Close_On_Escape'Img & "," &
-           "draggable: " & Draggable'Img & "})"));
+           "draggable: " & Draggable'Img & "})");
 
       Dialog.Bind_Event (Event   => "dialogresizestop",
                          Message => "");
@@ -213,7 +213,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    procedure Open (Dialog : in out Dialog_Type) is
    begin
-      Dialog.jQuery_Execute ("dialog('open'");
+      Dialog.jQuery_Execute ("dialog('open')");
       Dialog.Fire_On_Open;
    end Open;
 

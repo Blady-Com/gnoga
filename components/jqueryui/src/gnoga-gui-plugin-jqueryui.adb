@@ -63,11 +63,9 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    begin
       Window.Document.Head_Element.jQuery_Execute
         ("append ('" & Escape_Quotes ("<link rel='stylesheet' " &
-           "href='//ajax.googleapis.com/ajax/libs/" &
-           "jqueryui/1.11.2/themes/smoothness/jquery-ui.css' />") & "')");
+           "href='/css/jquery-ui.min.css' />") & "')");
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('" & Escape_Quotes ("<script src='//ajax.googleapis.com/ajax/libs/" &
-           "jqueryui/1.11.2/jquery-ui.min.js' />") & "')");
+        ("append ('" & Escape_Quotes ("<script src='/js/jquery-ui.min.js' />") & "')");
 
       while
         Gnoga.Server.Connection.Execute_Script

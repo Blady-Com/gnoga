@@ -5,7 +5,6 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.List;
-with Gnoga.Gui.Element.Form;
 with Gnoga.Types;
 
 with Gnoga.Gui.Plugin.jQueryUI;
@@ -42,7 +41,7 @@ procedure jDemo is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       declare
          C : List.List_Item_Access := new List.List_Item_Type;
@@ -52,8 +51,9 @@ procedure jDemo is
 
          while C.ID /= "undefined" loop
 
-            App.Console.Put_Line ("-->" & C.Text);
-            App.Console.Put_Line (jQueryUI.Is_Selected (C.all)'Img);
+            App.Console.Put ("-->" & C.Text & ": ");
+            App.Console.Put (jQueryUI.Is_Selected (C.all)'Img);
+            App.Console.New_Line;
 
             N := new List.List_Item_Type;
             C.Next_Sibling (N.all);
@@ -70,7 +70,7 @@ procedure jDemo is
    end On_Click;
 
    procedure On_Menu_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Console.Put_Line ("Menu Clicked - " & Element_Type (Object).Text);
    end On_Menu_Click;
@@ -80,7 +80,7 @@ procedure jDemo is
                       Message   : in     String;
                       Continue  : out    Boolean)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       if Event = jQueryUI.jQuery_Dropped_Event_Name then
          App.Console.Put_Line ("Dropped on me! - " & Message);
@@ -100,6 +100,7 @@ procedure jDemo is
    procedure On_Open (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Open (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      pragma Unreferenced (Object);
    begin
       Log ("Dialog Opened");
    end On_Open;
@@ -107,6 +108,7 @@ procedure jDemo is
    procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      pragma Unreferenced (Object);
    begin
       Log ("Dialog Closed");
    end On_Close;
@@ -117,6 +119,7 @@ procedure jDemo is
    procedure On_Move (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
                       Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
+      pragma Unreferenced (Mouse_Event);
       procedure Act (E : in out Element_Type'Class);
 
       procedure Act (E : in out Element_Type'Class) is
@@ -138,7 +141,8 @@ procedure jDemo is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
@@ -146,10 +150,11 @@ procedure jDemo is
       --  It is more efficient and faster to load jQueryUI and setup basic
       --  UI styes in the bootfile. See boot_jqueryui.html
       --
-      --        Main_Window.Document.Body_Element.Font
-      --          (Family  => "Verdana, Arial",
-      --           Height  => "10px");
       --        jQueryUI.Load_jQueryUI (Main_Window);
+
+      Main_Window.Document.Body_Element.Font
+        (Family  => "Verdana, Arial",
+         Height  => "10px");
 
       jQueryUI.Widget.Turn_On_Tool_Tips (Main_Window);
 
@@ -157,7 +162,7 @@ procedure jDemo is
 
       App.Box.Create (App.Console);
       App.Box.Put_Line ("Drag me around!");
-      App.Box.Width (100);
+      App.Box.Width (150);
       App.Box.Height (20);
       App.Box.Border;
       jQueryUI.Position (App.Box, 10, 10, Using_My => "left top");
@@ -359,7 +364,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+   --     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end jDemo;

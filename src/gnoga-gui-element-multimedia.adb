@@ -913,7 +913,7 @@ package body Gnoga.Gui.Element.Multimedia is
       function Has_Preload return String is
       begin
          if Preload then
-            return " preload='auto'";
+            return Escape_Quotes (" preload='auto'");
          else
             return "";
          end if;
@@ -949,7 +949,7 @@ package body Gnoga.Gui.Element.Multimedia is
       function Has_Source return String is
       begin
          if Source /= "" then
-            return " src='" & Escape_Quotes (Source) & "'";
+            return Escape_Quotes (" src='" & Source & "'");
          else
             return "";
          end if;
@@ -1038,7 +1038,7 @@ package body Gnoga.Gui.Element.Multimedia is
       function Has_Poster return String is
       begin
          if Source /= "" then
-            return " poster='" & Escape_Quotes (Poster) & "'";
+            return Escape_Quotes (" poster='" & Poster & "'");
          else
             return "";
          end if;
@@ -1047,7 +1047,7 @@ package body Gnoga.Gui.Element.Multimedia is
       function Has_Source return String is
       begin
          if Source /= "" then
-            return " src='" & Escape_Quotes (Source) & "'";
+            return Escape_Quotes (" src='" & Source & "'");
          else
             return "";
          end if;

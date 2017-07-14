@@ -39,12 +39,12 @@ procedure Popups is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       use Gnoga.Server;
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Connection.Execute_Script (Object.Connection_ID,
-                                 "newWin = window.open (""/demo"");");
+                                 "newWin = window.open ('/demo');");
       Connection.Execute_Script (Object.Connection_ID,
-                                 "newWin2 = window.open (""/no_boot.html"");");
+                                 "newWin2 = window.open ('/no_boot.html');");
       App.Chld_Window.Launch (App.Main_Window.all, "/demo");
 
       App.Frame.Window.Document.Body_Element.Background_Color ("Orange");
@@ -52,12 +52,13 @@ procedure Popups is
 
    procedure On_Click3 (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
+      pragma Unreferenced (Object);
    begin
       Log ("Click 3 worked");
    end On_Click3;
 
    procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
       W   : Window.Window_Type;
       W2  : Window.Window_Type;
    begin
@@ -65,7 +66,7 @@ procedure Popups is
       W.Document.Body_Element.Background_Color ("Red");
 
       declare
-         App2 : App_Access2 := App_Access2 (W.Connection_Data);
+         App2 : constant App_Access2 := App_Access2 (W.Connection_Data);
          --  Note this would fail for W2 and App.Chld_Window since their
          --  connections are still on App.Main_Window's Connection.
       begin
@@ -98,10 +99,11 @@ procedure Popups is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      App : constant App_Access := new App_Data;
       Hr1 : Gnoga.Gui.Element.Common.HR_Type;
       B   : Common.Button_Type;
    begin
+      Main_Window.Disable_Auto_Set_View;
       Main_Window.Connection_Data (App);
 
       App.Main_Window := Main_Window'Unchecked_Access;
@@ -139,7 +141,7 @@ procedure Popups is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access2 := new App_Data2;
+      App : constant App_Access2 := new App_Data2;
       D : Gnoga.Gui.Element.Common.DIV_Type;
       B : Common.Button_Type;
    begin

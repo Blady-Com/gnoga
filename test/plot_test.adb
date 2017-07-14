@@ -21,9 +21,10 @@ procedure Plot_Test is
    Quit : Gnoga.Gui.Element.Common.Button_Type;
    List : Gnoga.Gui.Element.Canvas.Context_2D.Plotting.Point_List
      (1 .. Integer (20 * X_Limit) + 5);
+   Last : Positive := List'Last;
 
    procedure On_Quit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      --  Empty
+      pragma Unreferenced (Object);
    begin -- On_Quit
       View.Remove;
       Gnoga.Application.Singleton.End_Application;
@@ -53,16 +54,20 @@ begin -- Plot_Test
    All_Points : for I in List'First + 1 .. List'Last loop
       List (I).X := List (I - 1).X + 0.1;
 
-      exit All_Points when List (I).X > X_Limit;
-
       if List (I).X = 0.0 then
          List (I).Y := 1.0;
       else
          List (I).Y := Math.Sin (List (I).X) / List (I).X;
       end if;
+
+      if List (I).X > X_Limit then
+         Last := I;
+
+         exit All_Points;
+      end if;
    end loop All_Points;
 
-   Plot.Graph (List => List, Color => "red");
+   Plot.Graph (List => List (List'First .. Last), Color => "red");
    Quit.Create (Parent => View, Content => "Quit");
    Quit.On_Click_Handler (Handler => On_Quit'Unrestricted_Access);
 

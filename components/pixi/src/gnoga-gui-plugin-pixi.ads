@@ -458,7 +458,7 @@ package Gnoga.Gui.Plugin.Pixi is
    --  A value of 1 moves the object at the speed of 1 pixel per second or 1 degree per second for rotation.
    --  A value of 0 stops the object.
 
-   subtype Acceleration_Type is Float range -100.0 .. +100.0;
+   subtype Acceleration_Type is Float range -1000.0 .. +1000.0;
    --  A positive value increases the object velocity.
    --  A negative value decreases the object velocity.
    --  A value of 1 increases the object velocity at the speed of 1 pixel per second

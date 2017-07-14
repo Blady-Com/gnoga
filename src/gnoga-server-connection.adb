@@ -621,7 +621,7 @@ package body Gnoga.Server.Connection is
       if On_Post_Event /= null and Status.Kind = File then
          for i in 1 .. Client.Get_CGI_Size loop
             Parameters.Insert (Client.Get_CGI_Key (i),
-                               Client.Get_CGI_Value (i));
+                               Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Value (i)));
          end loop;
 
          On_Post_Event (Status.File, Parameters);
@@ -1954,12 +1954,12 @@ package body Gnoga.Server.Connection is
             Log ("Error Try_Execute - " & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
             raise Connection_Error with
-              "Socket Closed before execute of : " & UTF8_Script;
+              "Socket Closed before execute of : " & Script;
          when E : others =>
             Log ("Error Try_Execute - " & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
             raise Connection_Error with
-              "Socket Error during execute of : " & UTF8_Script;
+              "Socket Error during execute of : " & Script;
       end Try_Execute;
 
    begin
@@ -2025,7 +2025,7 @@ package body Gnoga.Server.Connection is
             end;
 
             declare
-               Result : constant String := Script_Holder.Result;
+               Result : constant String := Strings_Edit.UTF8.Handling.To_String (Script_Holder.Result);
             begin
                Script_Manager.Delete_Script_Holder (Script_ID);
 
@@ -2037,12 +2037,12 @@ package body Gnoga.Server.Connection is
             Log ("Error Try_Execute -" & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
             raise Connection_Error with
-              "Socket Closed before execute of : " & UTF8_Script;
+              "Socket Closed before execute of : " & Script;
          when E : others =>
             Log ("Error Try_Execute -" & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
             raise Connection_Error with
-              "Socket Error during execute of : " & UTF8_Script;
+              "Socket Error during execute of : " & Script;
       end Try_Execute;
    begin
       begin

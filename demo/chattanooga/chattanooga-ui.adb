@@ -4,6 +4,7 @@
 --
 -- User Interface
 --
+-- V1.3B  2017 Jul 15     2017 Feb 15 fix caused problems; this is intended to fix it correctly
 -- V1.2B  2017 Feb 15     Corrected error in On_Connect_Submit
 -- V1.1B  2015 Jul 01     New version of Gnoga.Types.Colors
 -- V1.0B  2015 Jan 30     1st beta release, now with limited messaging area
@@ -197,12 +198,19 @@ package body Chattanooga.UI is
          Ada.Strings.Fixed.Trim (Ada.Characters.Handling.To_Lower (App.Email_Entry.Value), Ada.Strings.Both);
    begin -- On_Connect_Submit
       if Email = "" then
-         return;
+
+        return;
       end if;
 
-      DB.Add (User => +Email, App_Data => App);
+      if Db.Exists (+Email) then
+         App.Error.Text (Value => Email & " is already connected. Try again.");
+
+        return;
+      end if;
+
       App.Email := +Email;
       Create_Chat_Screen (App => App);
+      DB.Add (User => App.Email, App_Data => App);
    exception -- Add
    when Constraint_Error =>
       App.Error.Text (Value => Email & " is already connected. Try again.");
@@ -249,7 +257,9 @@ package body Chattanooga.UI is
       Friend : constant String :=
          Ada.Strings.Fixed.Trim (Ada.Characters.Handling.To_Lower (App.Friend_Entry.Value), Ada.Strings.Both);
    begin -- On_Add
-      if Friend = "" then
+      if Friend = "" or Friend = App.Email then
+         App.Friend_Entry.Value (Value => "");
+
          return;
       end if;
 

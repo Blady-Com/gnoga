@@ -26,6 +26,9 @@
 - Add coding guidelines.
 - Demos Tic-Tac-Toe added.
 - AdaOthello improved game play.
+- Upgrade to Zanyblue 1.3.0b-r3059.
+- Building structure reworked (make easier debugging with GPS).
+- Upgrade to Simple Components 4.15.
 
 
 20160917 - Gnoga V1.2a:

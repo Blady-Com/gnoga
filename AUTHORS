@@ -4,13 +4,15 @@ http://www.gnoga.com
 
 * The author of the Gnoga framework is David Botton.
 
-* Additional maintainers of Gnoga currently are: Pascal Pignard and Gautier de
-  Montmollin
+* Additional maintainers of Gnoga currently are: Gautier de Montmollin, Jeffrey Carter and Pascal Pignard.
+
+* Main contributors currently are: Gautier de Montmollin, Jeffrey Carter, Jeremiah Breeden and Pascal Pignard.
+  (See SF GIT commit messages for all contributors)
 
 * Gnoga uses Simple Components written by Dmitry A. Kazakov for its http and
   WebSockets communication layer (http://www.dmitry-kazakov.de/ada/components.htm).
 
-* The PragmArc library, Chattanooga, Password Gen, Mine Detector, Random_Int demo
+* The PragmArc library, Chattanooga, Password Gen, Mine Detector, Random_Int, Movies, tic tac toe demos
   applications were written by Jeffrey Carter (https://github.com/jrcarter).
 
 * The Connect Four demo was written originally for GNAT-JVM by Barry Fagin and
@@ -27,3 +29,5 @@ http://www.gnoga.com
 
 * The Othello demo was written originally for GTKAda by Adrian Hoe
   (https://github.com/adrianhoe/adaothello) and adapted to Gnoga by Jeremiah Breeden.
+
+* The leaves demo was written by Gautier de Montmollin.

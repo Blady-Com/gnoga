@@ -62,6 +62,9 @@ Here is an overview of Gnoga's framework:
                           custom Gnoga Ada only widgets
       Gnoga.Gui.Views.Docker - Dock child views to view sides
       Gnoga.Gui.Views.Card - Stacks of views
+      Gnoga.Gui.Views.Console - Views with auto scroll down
+      Gnoga.Gui.Views.Grid - Grid of views
+      Gnoga.Gui.Views.Modal_Dialog - Modal views
 
 5. Gnoga client side application APIs
       Gnoga.Client.Storage - local persistent and session storage on browser
@@ -84,6 +87,10 @@ Here is an overview of Gnoga's framework:
       Gnoga.Gui.Plugin.jQuery - jQuery support to access non-Gnoga Elements
       Gnoga.Gui.Plugin.jQueryUI - all the jQueryUI Interactions and Effects
       Gnoga.Gui.Plugin.jQueryUI.Widgets - the jQueryUI Widgets
+      Gnoga.Gui.Plugin.Boot_Strap - general binding to Boot Strap
+      Gnoga.Gui.Plugin.Messages_Boxes - dialog message boxes
+      Gnoga.Gui.Plugin.MNMenu - menu construction based on list
+      Gnoga.Gui.Plugin.PIXI - dynamic randering graphic elements such as sprites
 
 9. Native Desktop and Mobile Application Support coming:
       Gnoga.Server.Application.Gtk_Window - Native GTK front end

@@ -89,4 +89,16 @@ Refresh implies a lost connection and new session on web browsers, that is expec
 
     results in a button of the desired size, with a fairly thick, black border with square corners. Adding (Width => "thin") to the call to Border may be desirable.
 
+1. How do I add a class attribute to an element in code? Use the class property:
+
+    Gnoga.Gui.Element.Class
+
+    Which replaces all class with the value of Class or the method
+
+    Gnoga.Gui.Element.Add_Class
+    
+    which will add a class but not remove other classes that may already apply to the element.
+
+1. Take care of latency, many subprograms do query the client side and wait for an answer, so they can be very slow if server and client are far from each other!
+
 1. next tip...

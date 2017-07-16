@@ -1,9 +1,37 @@
-201609xx - Gnoga V1.3-alpha:
+2017xxxx - Gnoga V1.3-beta:
 
-- xxxx
+- xxx
+
+
+20170716 - Gnoga V1.3-alpha:
+
+- JQuery UI Javascript source upgrade version 1.12.1.
+- Modal dialog support from a contribution of Jeremiah Breeden.
+- Enhancement from Miguel Ángel Oliván which bring automatic log file flushing if specified and date / time in log to file.
+- Fix multiple calls to EscapeQuotes issue see ticket #37.
+- Fix from Gautier to avoid some exception issues without checks (-gnatp).
+- Fix in Adablog demo: call Disable_Auto_Set_View to prevent elements taking all the window place.
+- JQuery Javascript source upgrade version 3.2.0.
+- ACE Javascript source (2016.12.03 Version 1.2.6) is now embedded in Gnoga.
+- Update Jeff Carter's Pragmarc from Github.
+- Update Jeff Carter's demos from Github.
+- Added the possibility to get the number of active connections.
+- Added TIPS.
+- Added DB_Maker with movies demo from Jeff Carter.
+- Add support to MNMenu javascript library (https://github.com/manusa/mnmenu).
+- First demo based on PIXI plugin: Leaves a GNOGA application with a "match-3"-style game from Gautier de Montmollin.
+- Add support to PIXI javascript library (https://github.com/pixijs/pixi.js).
+- Add coding rules checking with AdaControl (https://sourceforge.net/projects/adacontrol).
+- Add Sprite package to set some motion properties to an image on a canvas.
+- Add coding guidelines.
+- Demos Tic-Tac-Toe added.
+- AdaOthello improved game play.
+
 
 20160917 - Gnoga V1.2a:
 
+- Demos Tic-Tac-Toe added
+- AdaOthello improved game play
 - Various minor Gnoga fixes
 
 
@@ -14,7 +42,6 @@
 - Demos Tic-Tac-Toe, AdaOthello and RandomInt added
 - Zanyblue upgrade from SVN revision 2992
 - LinXtris fixes
-- AdaOthello improved game play
 - Fix ticket #35 (Temporary suppress gnat option checking end line style making compilation
   errors on Windows with Zanyblue generated files.)
 - Simple Components upgrade from 4.12

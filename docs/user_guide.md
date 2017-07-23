@@ -1074,10 +1074,7 @@ While Gnoga is not exactly HTML in Ada, knowing the relationships may be of assi
 
 *  HTML5 Tags Unbound as Gui Elements in Gnoga
 
-       Note: All tags can be bound and used with
-             Element\_Type.Create\_With\_HTML
-             For various reasons as described here,
-             they are not bound specifically.
+Note: All tags can be bound and used with Element\_Type.Create\_With\_HTML. For various reasons as described here, they are not bound specifically.
 
 ```
 <map>,<area>

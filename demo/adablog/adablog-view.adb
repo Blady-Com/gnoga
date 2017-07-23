@@ -16,7 +16,6 @@ package body AdaBlog.View is
            Data.Element ("entry_date") & ":</div><br />" &
            "<div class='blog_text'>" & Data.Element ("entry_text") &
            "</div></div>");
-      Entry_Div.Place_Inside_Bottom_Of (Parent);
    end Display_Blog_Entry;
 
    procedure New_Entry_Form
@@ -81,6 +80,7 @@ package body AdaBlog.View is
       Message_Area : Element.Common.DIV_Type;
    begin
       Main_Window.Document.Load_CSS ("/css/adablog.css");
+      Main_Window.Disable_Auto_Set_View;
 
       Title_Div.Create (Parent  => Main_Window,
                         Content => "AdaBlog",

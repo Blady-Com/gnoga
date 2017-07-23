@@ -1,5 +1,17 @@
+20170723 - Gnoga V1.2b:
+
+- AUTHORS, HISTORY and TIPS updated; miscellaneous fixes.
+- Update Jeff Carter's demos from Github. Turn off all style checks.
+- Update TIPS and TODO, Javascript fix for Firefox.
+- Added Gnoga in JavaFX, a contribution from Jeremiah Breeden.
+- Added tutorial for forms.
+- Added TIPS.
+
+
 20160917 - Gnoga V1.2a:
 
+- Demos Tic-Tac-Toe added
+- AdaOthello improved game play
 - Various minor Gnoga fixes
 
 
@@ -7,10 +19,9 @@
 
 - Cleaning stuff such as withed units, unreferenced objects.
 - Fix ticket #36 (makefile issue)
-- Demos Tic-Tac-Toe, AdaOthello and RandomInt added
+- Demos AdaOthello and RandomInt added
 - Zanyblue upgrade from SVN revision 2992
 - LinXtris fixes
-- AdaOthello improved game play
 - Fix ticket #35 (Temporary suppress gnat option checking end line style making compilation
   errors on Windows with Zanyblue generated files.)
 - Simple Components upgrade from 4.12

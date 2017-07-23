@@ -1,6 +1,6 @@
-with "../../src/gnoga.gpr";
+with "../../lib/gnoga.gpr";
 with "../../settings.gpr";
-with "lib_pragmarc.gpr";
+with "../../deps/pragmarc.gpr";
 
 project DB_Maker is
    for Languages use ("Ada");

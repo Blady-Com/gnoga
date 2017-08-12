@@ -3,7 +3,7 @@
 --     GNAT.Sockets.SMTP.Client                    Luebeck            --
 --  Interface                                      Summer, 2016       --
 --                                                                    --
---                                Last revision :  17:51 21 Jun 2016  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -239,7 +239,7 @@ package GNAT.Sockets.SMTP.Client is
 --    Message      - The object
 --    Contents     - The text, stream or else file name
 --    Content_Type - The type of content
---    Description  - The content disposition
+--    Description  - The content description
 --    Disposition  - The content disposition
 --
 -- When Stream is attached,  there are two variants.  The variant  using
@@ -305,10 +305,7 @@ package GNAT.Sockets.SMTP.Client is
 -- must exists  until  sending  or  rejecting  mail  is  confirmed.  The
 -- parameter MIME when not empty forces  MIME  multipart  body  even  if
 -- there is no attachments in the mail. In this case MIME is the content
--- type, e.g.  text/plain.  When  Stream  is  attached,  there  are  two
--- variants.  The variant using access type onws the object and frees it
--- when no more used. When the object is passed it must exist as long as
--- the mail object does.
+-- type, e.g. text/plain.
 --
    function Create
             (  From     : String;
@@ -855,6 +852,16 @@ private
            Send_Content_Header,
            Send_Content
         );
+   type SMTP_Challenge is
+        (  SMTP_ALGORITHM,
+           SMTP_DIGEST_URI,
+           SMTP_CHARSET,
+           SMTP_CNONCE,
+           SMTP_NONCE,
+           SMTP_QOP,
+           SMTP_REALM
+        );
+
    package SMTP_Extension_Tables_Raw is new Tables (SMTP_Extension);
    package SMTP_Extension_Tables is new SMTP_Extension_Tables_Raw.Names;
    use SMTP_Extension_Tables;
@@ -863,8 +870,14 @@ private
    package SMTP_AUTH_Tables is new SMTP_AUTH_Tables_Raw.Names;
    use SMTP_AUTH_Tables;
 
+   package SMTP_Challenges_Tables_Raw is new Tables (SMTP_Challenge);
+   package SMTP_Challenges_Tables is
+      new SMTP_Challenges_Tables_Raw.Names;
+   use SMTP_Challenges_Tables;
+
    Extensions      : SMTP_Extension_Tables.Dictionary;
    Authentications : SMTP_AUTH_Tables.Dictionary;
+   Challenges      : SMTP_Challenges_Tables.Dictionary;
 
    type Extension_Flags is array (SMTP_Extension) of Boolean;
 ------------------------------------------------------------------------

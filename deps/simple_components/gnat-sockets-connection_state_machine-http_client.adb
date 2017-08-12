@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:49 10 Apr 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -3048,8 +3048,14 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
    end Write;
 
 begin
+   Add (Response_Headers, "Access-Control-Allow-Headers",
+                                          Access_Control_Allow_Headers);
+   Add (Response_Headers, "Access-Control-Allow-Methods",
+                                          Access_Control_Allow_Methods);
    Add (Response_Headers, "Access-Control-Allow-Origin",
-                                   Access_Control_Allow_Origin_Header);
+                                    Access_Control_Allow_Origin_Header);
+   Add (Response_Headers, "Access-Control-Max-Age",
+                                                Access_Control_Max_Age);
    Add (Response_Headers, "Accept-Patch",     Accept_Patch_Header);
    Add (Response_Headers, "Accept-Ranges",    Accept_Ranges_Header);
    Add (Response_Headers, "Age",              Age_Header);

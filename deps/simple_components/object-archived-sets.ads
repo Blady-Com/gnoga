@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2004       --
 --                                                                    --
---                                Last revision :  15:03 28 Mar 2009  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

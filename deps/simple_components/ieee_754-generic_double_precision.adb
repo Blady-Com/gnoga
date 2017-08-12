@@ -3,7 +3,7 @@
 --     IEEE_754.Generic_Double_Precision           Luebeck            --
 --  Implementation                                 Summer, 2008       --
 --                                                                    --
---                                Last revision :  22:28 15 Feb 2009  --
+--                                Last revision :  09:27 06 Nov 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -63,7 +63,6 @@ package body IEEE_754.Generic_Double_Precision is
                 Mantissa : out Unsigned_64;
                 Exponent : out Integer
              )  is
-      pragma Inline (Normalize);
    begin
       if Number'Machine_Radix = 2 then
          --

@@ -9,7 +9,9 @@ project Components.Connections_Server.HTTP_Server is
           "gnat-sockets-connection_state_machine-http_client-signaled.adb",
           "gnat-sockets-connection_state_machine-http_client-signaled.ads",
           "gnat-sockets-connection_state_machine-http_server.adb",
-          "gnat-sockets-connection_state_machine-http_server.ads"
+          "gnat-sockets-connection_state_machine-http_server.ads",
+          "gnat-sockets-connection_state_machine-http_server-websocket_server.adb",
+          "gnat-sockets-connection_state_machine-http_server-websocket_server.ads"
        );
 
    package Compiler renames Components.Compiler;

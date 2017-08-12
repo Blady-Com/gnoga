@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Terminated_Strings                          Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  19:56 08 Aug 2015  --
+--                                Last revision :  09:27 06 Nov 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -196,7 +196,7 @@ package body GNAT.Sockets.Connection_State_Machine.Terminated_Strings is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - 1 > Data'Last
          )  )
       then
          Raise_Exception

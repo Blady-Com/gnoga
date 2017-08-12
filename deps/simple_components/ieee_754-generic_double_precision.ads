@@ -3,7 +3,7 @@
 --     IEEE_754.Generic_Double_Precision           Luebeck            --
 --  Interface                                      Summer, 2008       --
 --                                                                    --
---                                Last revision :  11:26 27 Jul 2008  --
+--                                Last revision :  09:27 06 Nov 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -91,6 +91,18 @@ package IEEE_754.Generic_Double_Precision is
 --
    function Is_Real (Value : Float_64) return Boolean;
 --
+-- Normalize -- Split number into integer mantissa and binary exponent
+--
+--    Value    - The argument
+--    Mantissa - The mantissa
+--    Exponent - The binary exponent
+--
+   procedure Normalize
+             (  Value    : Number;
+                Mantissa : out Unsigned_64;
+                Exponent : out Integer
+             );
+--
 -- To_IEEE -- Conversion to 32-bit single precision IEEE 754 float
 --
 --    Value - The argument
@@ -104,10 +116,12 @@ package IEEE_754.Generic_Double_Precision is
 --    The corresponding IEEE 754 representation
 --
    function To_IEEE (Value : Number) return Float_64;
+
 private
    pragma Inline (Is_NaN);
    pragma Inline (Is_Negative);
    pragma Inline (Is_Real);
+   pragma Inline (Normalize);
 
    Positive_Infinity : constant Float_64 := (16#7F#,16#F0#,others => 0);
    Positive_Zero     : constant Float_64 := (others => 0);

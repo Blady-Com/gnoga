@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Server                    Luebeck            --
 --  Implementation                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  15:46 28 May 2016  --
+--                                Last revision :  18:49 10 Apr 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1570,6 +1570,13 @@ package body GNAT.Sockets.MQTT.Server is
             Shutdown (Session.Client.all);
          else -- Queued
             Increment_Count (Ptr (Handle).all);
+            if Queued_To_Send (Session.Client.all) = 0 then
+               --
+               -- There is nothing to send.  Re-activate sending in case
+               -- sending was blocked
+               --
+               Sent (Session.Client.all);
+            end if;
          end if;
       end if;
    end Push;

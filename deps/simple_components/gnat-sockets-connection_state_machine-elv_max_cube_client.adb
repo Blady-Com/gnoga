@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:49 10 Apr 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -507,6 +507,21 @@ package body GNAT.Sockets.Connection_State_Machine.
       end case;
    end Encode;
 
+   function Encode (Time : Duration; Valve : Ratio) return Character is
+      Value : Integer;
+   begin
+      if Time >= 3600.0 then
+         Value := 7; -- Special value 1 hour
+      else
+         Value := Integer (Time / 300.0);
+         if Value = 7 then
+            Value := 6;
+         end if;
+      end if;
+      Value := Value * 32 + Integer (Float (Valve) * 20.0);
+      return Character'Val (Value);
+   end Encode;
+
    function Find_Room
             (  Client : ELV_MAX_Cube_Client;
                ID     : Room_ID
@@ -627,8 +642,16 @@ package body GNAT.Sockets.Connection_State_Machine.
                "Invalid C-response, schedule"
             );
          end if;
-         Device.Data.Boost_Time :=
-            Duration (Character'Pos (Data (Pointer)) / 2**5) * 300.0;
+         declare
+            Value : constant Integer :=
+                             Character'Pos (Data (Pointer)) / 2**5;
+         begin
+            if Value = 7 then
+               Device.Data.Boost_Time := 3600.0;
+            else
+               Device.Data.Boost_Time := Duration (Value) * 300.0;
+            end if;
+         end;
          Device.Data.Boost_Valve :=
             Ratio
             (  Float (Character'Pos (Data (Pointer)) mod 2**5) * 0.05
@@ -1254,7 +1277,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          end case;
          Last.Valve_Position :=
             Ratio
-            (  Float (Character'Pos (Data (Pointer))) / 255.0
+            (  Float (Character'Pos (Data (Pointer))) / 100.0
             );
          Pointer := Pointer + 1;
          Last.Set_Temperature :=
@@ -1850,6 +1873,7 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Client : in out ELV_MAX_Cube_Client'Class;
                 Line   : String
              )  is
+      Last    : constant := 100;
       Duty    : Ratio;
       Error   : Integer;
       Slots   : Integer;
@@ -1861,10 +1885,10 @@ package body GNAT.Sockets.Connection_State_Machine.
          Get (Line, Pointer, Value, Base => 16);
          if Value <= 0 then
             Duty := Ratio'First;
-         elsif Value >= 100 then
+         elsif Value >= Last then
             Duty := Ratio'Last;
          else
-            Duty := Ratio (Float (Value) / 100.0);
+            Duty := Ratio (Float (Value) / Float (Last));
          end if;
       exception
          when others =>
@@ -2178,6 +2202,7 @@ package body GNAT.Sockets.Connection_State_Machine.
    procedure Initialize (Client : in out ELV_MAX_Cube_Client) is
    begin
       Client.LF.Value (1) := Stream_Element'Val (10);
+      Initialize (State_Machine (Client));
    end Initialize;
 
    function Is_In
@@ -2399,8 +2424,9 @@ package body GNAT.Sockets.Connection_State_Machine.
    end Set_NTP_Servers;
 
    procedure Set_Thermostat_Automatic
-             (  Client : in out ELV_MAX_Cube_Client;
-                Device : Device_Descriptor'Class
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Device      : Device_Descriptor'Class;
+                Temperature : Centigrade
              )  is
    begin
       if Device.Kind_Of not in Radiator_Thermostat..Wall_Thermostat then
@@ -2411,34 +2437,51 @@ package body GNAT.Sockets.Connection_State_Machine.
             &  " is not a thermostat"
          )  );
       end if;
-      Send
-      (  Client,
-         (  "s:"
-         &  To_Base64
-            (  S_Head
-            &  Encode (Device.Data.Address)
-            &  Character'Val (Ptr (Device.Room).ID)
-            &  Character'Val (0)
-            )
-         &  CRLF
-      )  );
+      if Temperature = Centigrade'First then
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Head
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (0)
+               )
+            &  CRLF
+         )  );
+      else
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Head
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (Encode (Temperature))
+               )
+            &  CRLF
+         )  );
+      end if;
    end Set_Thermostat_Automatic;
 
    procedure Set_Thermostat_Automatic
-             (  Client : in out ELV_MAX_Cube_Client;
-                Index  : Positive
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Temperature : Centigrade := Centigrade'First
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
       Set_Thermostat_Automatic
       (  Client,
-         Ptr (Get (Client.Topology.Devices, Index)).all
-     );
+         Ptr (Get (Client.Topology.Devices, Index)).all,
+         Temperature
+      );
    end Set_Thermostat_Automatic;
 
    procedure Set_Thermostat_Automatic
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Address : RF_Address
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Temperature : Centigrade := Centigrade'First
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2448,7 +2491,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          (  Get
             (  Client.Topology.Devices,
                Get_Device_Unchecked (Client, Address)
-         )  ) .all
+         )  ) .all,
+         Temperature
       );
    end Set_Thermostat_Automatic;
 
@@ -2515,7 +2559,8 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Min         : Centigrade;
                 Offset      : Centigrade;
                 Window_Open : Centigrade;
-                Window_Time : Day_Duration
+                Window_Time : Day_Duration;
+                Mode        : Setting_Mode
              )  is
       Minutes : constant Integer := Integer (Window_Time / 60.0);
    begin
@@ -2528,35 +2573,39 @@ package body GNAT.Sockets.Connection_State_Machine.
             &  " is not a radiator thermostat"
          )  );
       end if;
-      Send
-      (  Client,
-         (  "s:"
-         &  To_Base64
-            (  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#11#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Encode (Device.Data.Address)
-            &  Character'Val (Ptr (Device.Room).ID)
-            &  Character'Val (Encode (Comfort))
-            &  Character'Val (Encode (Eco))
-            &  Character'Val (Encode (Max))
-            &  Character'Val (Encode (Min))
-            &  Character'Val (Encode (Offset + 3.5))
-            &  Character'Val (Encode (Window_Open))
-            &  Character'Val (Minutes)
-            )
-         &  CRLF
-      )  );
-      Device.Data.Comfort     := Comfort;
-      Device.Data.Eco         := Eco;
-      Device.Data.Min         := Min;
-      Device.Data.Max         := Max;
-      Device.Data.Offset      := Offset;
-      Device.Data.Window_Open := Window_Open;
-      Device.Data.Window_Time := Window_Time;
+      if 0 /= (S_Command and Mode) then
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#11#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (Encode (Comfort))
+               &  Character'Val (Encode (Eco))
+               &  Character'Val (Encode (Max))
+               &  Character'Val (Encode (Min))
+               &  Character'Val (Encode (Offset + 3.5))
+               &  Character'Val (Encode (Window_Open))
+               &  Character'Val (Minutes)
+               )
+            &  CRLF
+         )  );
+      end if;
+      if 0 /= (S_Response and Mode) then
+         Device.Data.Comfort     := Comfort;
+         Device.Data.Eco         := Eco;
+         Device.Data.Min         := Min;
+         Device.Data.Max         := Max;
+         Device.Data.Offset      := Offset;
+         Device.Data.Window_Open := Window_Open;
+         Device.Data.Window_Time := Window_Time;
+      end if;
    end Set_Thermostat_Parameters;
 
    procedure Set_Thermostat_Parameters
@@ -2568,7 +2617,8 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Min         : Centigrade;
                 Offset      : Centigrade;
                 Window_Open : Centigrade;
-                Window_Time : Day_Duration
+                Window_Time : Day_Duration;
+                Mode        : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2581,7 +2631,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          Min         => Min,
          Offset      => Offset,
          Window_Open => Window_Open,
-         Window_Time => Window_Time
+         Window_Time => Window_Time,
+         Mode        => Mode
       );
    end Set_Thermostat_Parameters;
 
@@ -2594,7 +2645,8 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Min         : Centigrade;
                 Offset      : Centigrade;
                 Window_Open : Centigrade;
-                Window_Time : Day_Duration
+                Window_Time : Day_Duration;
+                Mode        : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2611,7 +2663,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          Min         => Min,
          Offset      => Offset,
          Window_Open => Window_Open,
-         Window_Time => Window_Time
+         Window_Time => Window_Time,
+         Mode        => Mode
       );
    end Set_Thermostat_Parameters;
 
@@ -2621,7 +2674,8 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
-                Min     : Centigrade
+                Min     : Centigrade;
+                Mode    : Setting_Mode
              )  is
    begin
       if Device.Kind_Of /= Wall_Thermostat then
@@ -2632,32 +2686,36 @@ package body GNAT.Sockets.Connection_State_Machine.
             &  " is not a wall thermostat"
          )  );
       end if;
-      Send
-      (  Client,
-         (  "s:"
-         &  To_Base64
-            (  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#11#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Encode (Device.Data.Address)
-            &  Character'Val (Ptr (Device.Room).ID)
-            &  Character'Val (Encode (Comfort))
-            &  Character'Val (Encode (Eco))
-            &  Character'Val (Encode (Max))
-            &  Character'Val (Encode (Min))
-            &  Character'Val (0)
-            &  Character'Val (0)
-            &  Character'Val (0)
-            )
-         &  CRLF
-      )  );
-      Device.Data.Comfort := Comfort;
-      Device.Data.Eco     := Eco;
-      Device.Data.Min     := Min;
-      Device.Data.Max     := Max;
+      if 0 /= (S_Command and Mode) then
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#11#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (Encode (Comfort))
+               &  Character'Val (Encode (Eco))
+               &  Character'Val (Encode (Max))
+               &  Character'Val (Encode (Min))
+               &  Character'Val (0)
+               &  Character'Val (0)
+               &  Character'Val (0)
+               )
+            &  CRLF
+         )  );
+      end if;
+      if 0 /= (S_Response and Mode) then
+         Device.Data.Comfort := Comfort;
+         Device.Data.Eco     := Eco;
+         Device.Data.Min     := Min;
+         Device.Data.Max     := Max;
+      end if;
    end Set_Thermostat_Parameters;
 
    procedure Set_Thermostat_Parameters
@@ -2666,7 +2724,8 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
-                Min     : Centigrade
+                Min     : Centigrade;
+                Mode    : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2676,7 +2735,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          Comfort => Comfort,
          Eco     => Eco,
          Max     => Max,
-         Min     => Min
+         Min     => Min,
+         Mode    => Mode
       );
    end Set_Thermostat_Parameters;
 
@@ -2686,7 +2746,8 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
-                Min     : Centigrade
+                Min     : Centigrade;
+                Mode    : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2700,7 +2761,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          Comfort => Comfort,
          Eco     => Eco,
          Max     => Max,
-         Min     => Min
+         Min     => Min,
+         Mode    => Mode
       );
    end Set_Thermostat_Parameters;
 
@@ -2708,7 +2770,8 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Client   : in out ELV_MAX_Cube_Client;
                 Device   : in out Device_Descriptor'Class;
                 Day      : Week_Day;
-                Schedule : Points_List
+                Schedule : Points_List;
+                Mode     : Setting_Mode
              )  is
       Last    : Day_Duration;
       Program : String (1..13 * 2);
@@ -2764,48 +2827,53 @@ package body GNAT.Sockets.Connection_State_Machine.
             Pointer := Pointer + 2;
          end loop;
       end;
-      Send
-      (  Client,
-         (  "s:"
-         &  To_Base64
-            (  Character'Val (16#00#)
-            &  Character'Val (16#04#) -- Room mode
-            &  Character'Val (16#10#) -- Week program
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Encode (Device.Data.Address)
-            &  Character'Val (Ptr (Device.Room).ID)
-            &  Character'Val (Encode (Day))
-            &  Program (1..7 * 2)     -- First 7 points
-            )
-         &  CRLF
-      )  );
-      Send
-      (  Client,
-         (  "s:"
-         &  To_Base64
-            (  Character'Val (16#00#)
-            &  Character'Val (16#04#) -- Room mode
-            &  Character'Val (16#10#) -- Week program
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Character'Val (16#00#)
-            &  Encode (Device.Data.Address)
-            &  Character'Val (Ptr (Device.Room).ID)
-            &  Character'Val (Encode (Day) + 2#1_0000#)
-            &  Program (7 * 2 + 1..Program'Last) -- Last 6 points
-            )
-         &  CRLF
-      )  );
-      Device.Data.Schedule (Day) := (Schedule'Length, Schedule);
+      if 0 /= (S_Command and Mode) then
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  Character'Val (16#00#)
+               &  Character'Val (16#04#) -- Room mode
+               &  Character'Val (16#10#) -- Week program
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (Encode (Day))
+               &  Program (1..7 * 2)     -- First 7 points
+               )
+            &  CRLF
+         )  );
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  Character'Val (16#00#)
+               &  Character'Val (16#04#) -- Room mode
+               &  Character'Val (16#10#) -- Week program
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (Encode (Day) + 2#1_0000#)
+               &  Program (7 * 2 + 1..Program'Last) -- Last 6 points
+               )
+            &  CRLF
+         )  );
+      end if;
+      if 0 /= (S_Response and Mode) then
+         Device.Data.Schedule (Day) := (Schedule'Length, Schedule);
+      end if;
    end Set_Thermostat_Schedule;
 
    procedure Set_Thermostat_Schedule
              (  Client   : in out ELV_MAX_Cube_Client;
                 Index    : Positive;
                 Day      : Week_Day;
-                Schedule : Points_List
+                Schedule : Points_List;
+                Mode     : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2813,7 +2881,8 @@ package body GNAT.Sockets.Connection_State_Machine.
       (  Client,
          Ptr (Get (Client.Topology.Devices, Index)).all,
          Day,
-         Schedule
+         Schedule,
+         Mode
       );
    end Set_Thermostat_Schedule;
 
@@ -2821,7 +2890,8 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Client   : in out ELV_MAX_Cube_Client;
                 Address  : RF_Address;
                 Day      : Week_Day;
-                Schedule : Points_List
+                Schedule : Points_List;
+                Mode     : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2833,14 +2903,16 @@ package body GNAT.Sockets.Connection_State_Machine.
                Get_Device_Unchecked (Client, Address)
          )  ) .all,
          Day,
-         Schedule
+         Schedule,
+         Mode
       );
    end Set_Thermostat_Schedule;
 
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
-                Temperature : Centigrade
+                Temperature : Centigrade;
+                Manual      : Boolean
              )  is
    begin
       if Device.Kind_Of not in Radiator_Thermostat..Wall_Thermostat then
@@ -2852,37 +2924,54 @@ package body GNAT.Sockets.Connection_State_Machine.
          )  );
       end if;
       Device.Last.New_Temperature := Temperature;
-      Send
-      (  Client,
-         (  "s:"
-         &  To_Base64
-            (  S_Head
-            &  Encode (Device.Data.Address)
-            &  Character'Val (Ptr (Device.Room).ID)
-            &  Character'Val (2#0100_0000# + Encode (Temperature))
-            )
-         &  CRLF
-      )  );
+      if Device.Last.Mode = Automatic and then not Manual then
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Head
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (Encode (Temperature))
+               )
+            &  CRLF
+         )  );
+      else
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Head
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Character'Val (2#0100_0000# + Encode (Temperature))
+               )
+            &  CRLF
+         )  );
+      end if;
    end Set_Thermostat_Temperature;
 
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
                 Index       : Positive;
-                Temperature : Centigrade
+                Temperature : Centigrade;
+                Manual      : Boolean := True
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
       Set_Thermostat_Temperature
       (  Client,
          Ptr (Get (Client.Topology.Devices, Index)).all,
-         Temperature
+         Temperature,
+         Manual
       );
    end Set_Thermostat_Temperature;
 
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
                 Address     : RF_Address;
-                Temperature : Centigrade
+                Temperature : Centigrade;
+                Manual      : Boolean := True
              )  is
       Lock : Holder (Client.Topology.Lock'Access);
    begin
@@ -2893,7 +2982,8 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client.Topology.Devices,
                Get_Device_Unchecked (Client, Address)
          )  ) .all,
-         Temperature
+         Temperature,
+         Manual
       );
    end Set_Thermostat_Temperature;
 
@@ -2962,6 +3052,111 @@ package body GNAT.Sockets.Connection_State_Machine.
          Up_Until
       );
    end Set_Thermostat_Temperature;
+
+   procedure Set_Thermostat_Valve
+             (  Client          : in out ELV_MAX_Cube_Client;
+                Device          : in out Device_Descriptor'Class;
+                Boost_Time      : Duration;
+                Boost_Valve     : Ratio;
+                Decalcification : Week_Time;
+                Max_Valve       : Ratio;
+                Valve_Offset    : Ratio;
+                Mode            : Setting_Mode
+             )  is
+   begin
+      if Device.Kind_Of not in Radiator_Thermostat
+                            .. Radiator_Thermostat_Plus then
+         Raise_Exception
+         (  Mode_Error'Identity,
+            (  "The device "
+            &  Image (Device.Data.Address)
+            &  " is not a radiator thermostat"
+         )  );
+      end if;
+      if 0 /= (S_Command and Mode) then
+         Send
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  Character'Val (16#00#)
+               &  Character'Val (16#04#)
+               &  Character'Val (16#12#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Character'Val (16#00#)
+               &  Encode (Device.Data.Address)
+               &  Character'Val (Ptr (Device.Room).ID)
+               &  Encode (Boost_Time, Boost_Valve)
+               &  Character'Val
+                  (  Encode (Decalcification.Day) * 32
+                  +  Integer (Decalcification.Time / 3600.0)
+                  )
+               &  Character'Val (Integer (Float (Max_Valve) * 255.0))
+               &  Character'Val (Integer (Float (Valve_Offset) * 255.0))
+               )
+            &  CRLF
+         )  );
+      end if;
+      if 0 /= (S_Response and Mode) then
+         Device.Data.Boost_Time      := Boost_Time;
+         Device.Data.Boost_Valve     := Boost_Valve;
+         Device.Data.Decalcification := Decalcification;
+         Device.Data.Max_Valve       := Max_Valve;
+         Device.Data.Valve_Offset    := Valve_Offset;
+      end if;
+   end Set_Thermostat_Valve;
+
+   procedure Set_Thermostat_Valve
+             (  Client          : in out ELV_MAX_Cube_Client;
+                Index           : Positive;
+                Boost_Time      : Duration  := 3.0;
+                Boost_Valve     : Ratio     := 1.0;
+                Decalcification : Week_Time := (Mo, 12.0 * 3600.0);
+                Max_Valve       : Ratio     := 1.0;
+                Valve_Offset    : Ratio     := 0.0;
+                Mode         : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Holder (Client.Topology.Lock'Access);
+   begin
+      Set_Thermostat_Valve
+      (  Client => Client,
+         Device => Ptr (Get (Client.Topology.Devices, Index)).all,
+         Boost_Time      => Boost_Time,
+         Boost_Valve     => Boost_Valve,
+         Decalcification => Decalcification,
+         Max_Valve       => Max_Valve,
+         Valve_Offset    => Valve_Offset,
+         Mode            => Mode
+      );
+   end Set_Thermostat_Valve;
+
+   procedure Set_Thermostat_Valve
+             (  Client          : in out ELV_MAX_Cube_Client;
+                Address         : RF_Address;
+                Boost_Time      : Duration  := 3.0;
+                Boost_Valve     : Ratio     := 1.0;
+                Decalcification : Week_Time := (Mo, 12.0 * 3600.0);
+                Max_Valve       : Ratio     := 1.0;
+                Valve_Offset    : Ratio     := 0.0;
+                Mode         : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Holder (Client.Topology.Lock'Access);
+   begin
+      Set_Thermostat_Valve
+      (  Client => Client,
+         Device => Ptr
+                   (  Get
+                      (  Client.Topology.Devices,
+                         Get_Device_Unchecked (Client, Address)
+                   )  ) .all,
+         Boost_Time      => Boost_Time,
+         Boost_Valve     => Boost_Valve,
+         Decalcification => Decalcification,
+         Max_Valve       => Max_Valve,
+         Valve_Offset    => Valve_Offset,
+         Mode            => Mode
+      );
+   end Set_Thermostat_Valve;
 
    procedure Status_Received
              (  Client : in out ELV_MAX_Cube_Client;

@@ -3,7 +3,7 @@
 --     IEEE_754.Generic_Single_Precision           Luebeck            --
 --  Implementation                                 Summer, 2008       --
 --                                                                    --
---                                Last revision :  11:26 27 Jul 2008  --
+--                                Last revision :  09:27 06 Nov 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -58,7 +58,6 @@ package body IEEE_754.Generic_Single_Precision is
                 Mantissa : out Unsigned_32;
                 Exponent : out Integer
              )  is
-      pragma Inline (Normalize);
    begin
       if Number'Machine_Radix = 2 then
          --

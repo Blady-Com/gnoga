@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.X509             Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  18:53 15 Jan 2015  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -432,11 +432,15 @@ package body GNAT.Sockets.Server.Secure.X509 is
    procedure Generate_Diffie_Hellman_Parameters
              (  Factory : in out X509_Authentication_Factory
              )  is
+      Bits : Natural;
    begin
-      DH_Params_Generate2
-      (  Factory.Parameters,
-         Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY)
-      );
+      Bits := Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY);
+      if Bits > 0 then
+         DH_Params_Generate2
+         (  Factory.Parameters,
+            Bits
+         );
+      end if;
       Certificate_Set_DH_Params
       (  Factory.Credentials,
          Factory.Parameters
@@ -456,16 +460,20 @@ package body GNAT.Sockets.Server.Secure.X509 is
                 Client  : in out Connection'Class;
                 Session : in out Session_Type
              )  is
+      Bits : Natural;
    begin
       if not Is_Initialized (Factory.Cache) then
          Initialize (Factory.Cache, Default_Priorities);
       end if;
       Priority_Set (Session, Factory.Cache);
       if not Factory.DH_Generated then
-         DH_Params_Generate2
-         (  Factory.Parameters,
-            Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY)
-         );
+         Bits := Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY);
+         if Bits > 0 then
+            DH_Params_Generate2
+            (  Factory.Parameters,
+               Bits
+            );
+         end if;
          Certificate_Set_DH_Params
          (  Factory.Credentials,
             Factory.Parameters

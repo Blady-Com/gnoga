@@ -30,6 +30,7 @@
 ./blackboard.gif
 ./block_streams.adb
 ./block_streams.ads
+./centos-logo.jpg
 ./components-apq.gpr
 ./components-connections_server-elv_max_cube.gpr
 ./components-connections_server-http_server-sqlite_browser.gpr
@@ -37,6 +38,7 @@
 ./components-connections_server-modbus.gpr
 ./components-connections_server-mqtt.gpr
 ./components-connections_server-secure.gpr
+./components-connections_server-smtp.gpr
 ./components-connections_server.gpr
 ./components-gnade.gpr
 ./components-gnutls.gpr
@@ -141,6 +143,8 @@
 ./gnat-sockets-connection_state_machine-http_client.ads
 ./gnat-sockets-connection_state_machine-http_server-sqlite_browser.adb
 ./gnat-sockets-connection_state_machine-http_server-sqlite_browser.ads
+./gnat-sockets-connection_state_machine-http_server-websocket_server.adb
+./gnat-sockets-connection_state_machine-http_server-websocket_server.ads
 ./gnat-sockets-connection_state_machine-http_server.adb
 ./gnat-sockets-connection_state_machine-http_server.ads
 ./gnat-sockets-connection_state_machine-little_endian-generic_double_precision_ieee_754.adb
@@ -181,6 +185,12 @@
 ./gnat-sockets-server-secure-x509.ads
 ./gnat-sockets-server-secure.adb
 ./gnat-sockets-server-secure.ads
+./gnat-sockets-smtp-client-synchronous.adb
+./gnat-sockets-smtp-client-synchronous.ads
+./gnat-sockets-smtp-client.adb
+./gnat-sockets-smtp-client.ads
+./gnat-sockets-smtp.adb
+./gnat-sockets-smtp.ads
 ./gnu-db-sqlcli-api-keys-arrays.ads
 ./gnu-db-sqlcli-api-keys-edit.ads
 ./gnu-db-sqlcli-api-keys-sets.ads
@@ -424,6 +434,8 @@
 ./storage_streams.ads
 ./strings_edit-symmetric_serialization.adb
 ./strings_edit-symmetric_serialization.ads
+./strings_edit-time_conversions.adb
+./strings_edit-time_conversions.ads
 ./synchronization-events.adb
 ./synchronization-events.ads
 ./synchronization-generic_events_array.adb
@@ -445,11 +457,13 @@
 ./test_components/components-connections_server-http_server-test_http_server.gpr
 ./test_components/components-connections_server-modbus-test_modbus_client.gpr
 ./test_components/components-connections_server-mqtt-test_mqtt.gpr
+./test_components/components-connections_server-smtp-test_smtp.gpr
 ./test_components/components-connections_server-test_data_client.gpr
 ./test_components/components-connections_server-test_data_server.gpr
 ./test_components/components-connections_server-test_echo_client.gpr
 ./test_components/components-connections_server-test_echo_client_async.gpr
 ./test_components/components-connections_server-test_echo_server.gpr
+./test_components/components-connections_server-test_websockets_mqtt.gpr
 ./test_components/components-gnade-odbc_persistence_tests.gpr
 ./test_components/components-odbc-odbc_bindings_tests.gpr
 ./test_components/components-odbc-odbc_persistence_tests.gpr
@@ -472,7 +486,6 @@
 ./test_components/test_block_streams.adb
 ./test_components/test_b_trees.adb
 ./test_components/test_cubic_spline.adb
-./test_components/test_data_client.adb
 ./test_components/test_data_server.adb
 ./test_components/test_data_servers.adb
 ./test_components/test_data_servers.ads
@@ -500,6 +513,8 @@
 ./test_components/test_http_continuous_server.adb
 ./test_components/test_http_continuous_servers.adb
 ./test_components/test_http_continuous_servers.ads
+./test_components/test_http_mqtt_servers.adb
+./test_components/test_http_mqtt_servers.ads
 ./test_components/test_http_server.adb
 ./test_components/test_http_servers-secure.adb
 ./test_components/test_http_servers-secure.ads
@@ -537,6 +552,7 @@
 ./test_components/test_mqtt_server.adb
 ./test_components/test_mqtt_servers.adb
 ./test_components/test_mqtt_servers.ads
+./test_components/test_mqtt_webserver.adb
 ./test_components/test_my_string-handle.adb
 ./test_components/test_my_string-handle.ads
 ./test_components/test_my_string.ads
@@ -566,6 +582,7 @@
 ./test_components/test_sequencer_sets.ads
 ./test_components/test_set.ads
 ./test_components/test_single_file_persistence.adb
+./test_components/test_smtp_client.adb
 ./test_components/test_sqlite_benchmark.adb
 ./test_components/test_sqlite_persistence.adb
 ./test_components/test_stack.adb
@@ -594,6 +611,7 @@
 ./test_components/test_websocket_server.adb
 ./test_components/test_websocket_servers.adb
 ./test_components/test_websocket_servers.ads
+./ubuntu-logo.jpg
 ./xpm/parsers-generic_source-xpm.adb
 ./xpm/parsers-generic_source-xpm.ads
 ./xpm/parsers-multiline_source-xpm.ads

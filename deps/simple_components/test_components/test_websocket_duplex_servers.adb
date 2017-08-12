@@ -4,7 +4,7 @@
 --  Test WebSocket                                 Winter, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  21:26 01 Feb 2015  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -246,7 +246,8 @@ package body Test_WebSocket_Duplex_Servers is
             "Sending length" & Integer'Image (Length)
          );
          declare
-            Header : String := "Length" & Integer'Image (Length) & ' ';
+            Header : constant String :=
+                              "Length" & Integer'Image (Length) & ' ';
          begin
             WebSocket_Send
             (  Client.all,

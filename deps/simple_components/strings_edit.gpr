@@ -11,8 +11,8 @@ project Strings_Edit is
 
    for Source_Files use
        (  "strings_edit-base64.adb",
-	      "strings_edit-base64.ads",
-	      "strings_edit-fields.adb",
+          "strings_edit-base64.ads",
+          "strings_edit-fields.adb",
           "strings_edit-fields.ads",
           "strings_edit-floats.ads",
           "strings_edit-float_edit.adb",

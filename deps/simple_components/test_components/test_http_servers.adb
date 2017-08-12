@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  12:25 15 May 2015  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,10 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Streams.Stream_IO;  use Ada.Streams.Stream_IO;
-with GNAT.OS_Lib;            use GNAT.OS_Lib;
-with Strings_Edit;           use Strings_Edit;
-with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
+with GNAT.OS_Lib;          use GNAT.OS_Lib;
+with Strings_Edit;         use Strings_Edit;
+with Strings_Edit.Quoted;  use Strings_Edit.Quoted;
 
 package body Test_HTTP_Servers is
 
@@ -117,11 +116,11 @@ package body Test_HTTP_Servers is
                      then
                         Pointer := Pointer + 9;
                         declare
-                           Name : String :=
-                                  Get_Quoted
-                                  (  Disposition,
-                                     Pointer'Access
-                                  );
+                           Name : constant String :=
+                                           Get_Quoted
+                                           (  Disposition,
+                                              Pointer'Access
+                                           );
                         begin
                            Create
                            (  Client.Content.File,
@@ -279,6 +278,18 @@ package body Test_HTTP_Servers is
                   "</body></html>"
                );
                Send_Body (Client, Get);
+            elsif Status.File = "test_queries.htm" then
+               Send_Status_Line (Client, 200, "OK");
+               Send_Date (Client);
+               Send_Server (Client);
+               Send_Content_Type (Client, "text/html");
+               Accumulate_Body
+               (  Client,
+                  "<html><head><title>Forms</title></head><body>"
+               );
+               Accumulate_Body (Client, Status.Query);
+               Accumulate_Body (Client, "</body></html>");
+               Send_Body (Client, Get);
             elsif Is_Directory (Status.File) then
                Do_Directory (Status.File);
             elsif Is_Regular_File (Status.File) then
@@ -422,7 +433,7 @@ package body Test_HTTP_Servers is
       begin
          if Name = ".." then  -- Parent
             declare
-               Parent : String := Normalize_Pathname (Name);
+               Parent : constant String := Normalize_Pathname (Name);
             begin
                return
                (  "<a href="""

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Streams                   Luebeck            --
 --  Implementation                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  20:01 04 Apr 2016  --
+--                                Last revision :  18:49 10 Apr 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -46,7 +46,8 @@ package body GNAT.Sockets.MQTT.Streams is
                 Item   : out Stream_Element_Array;
                 Last   : out Stream_Element_Offset
              )  is
-      This : Message_Object_Ptr := Ptr (Stream.Message.Reference);
+      This : constant Message_Object_Ptr :=
+                      Ptr (Stream.Message.Reference);
    begin
       if This = null then
          Raise_Exception
@@ -61,7 +62,7 @@ package body GNAT.Sockets.MQTT.Streams is
             Last := Item'First - 1;
          else
             declare
-               Length : Stream_Element_Offset :=
+               Length : constant Stream_Element_Offset :=
                         Stream_Element_Offset'Min
                         (  Object.Count - Stream.Position + 1,
                            Item'Length

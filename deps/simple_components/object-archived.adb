@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Summer, 2003       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

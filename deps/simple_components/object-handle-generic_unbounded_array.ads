@@ -3,7 +3,7 @@
 --     Object.Handle.Generic_Unbounded_Array       Luebeck            --
 --  Interface                                      Spring, 2003       --
 --                                                                    --
---                                Last revision :  22:28 15 Feb 2009  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

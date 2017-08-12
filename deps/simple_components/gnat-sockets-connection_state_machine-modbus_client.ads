@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client                               Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  17:58 10 Mar 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -563,7 +563,7 @@ private
    type MODBUS_Client
         (  Listener    : access Connections_Server'Class;
            Output_Size : Buffer_Length
-        )  is new State_Machine (128 + 16, Output_Size) with
+        )  is new State_Machine (256 + 16, Output_Size) with
    record
          -- Response fields
       Transaction_ID : Unsigned_16_Data_Item;
@@ -572,7 +572,7 @@ private
       Data_Length    : Set_Data_Length (MODBUS_Client'Unchecked_Access);
       Unit_ID        : Unsigned_8_Data_Item;
       Function_Code  : Unsigned_8_Data_Item;
-      Payload_Data   : Array_Data_Item (128);
+      Payload_Data   : Array_Data_Item (256);
    end record;
 
    procedure Prepare_To_Send

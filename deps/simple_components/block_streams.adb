@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2011       --
 --                                                                    --
---                                Last revision :  22:06 23 Jul 2014  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -145,7 +145,7 @@ package body Block_Streams is
       No :=
          (  Unsigned_32 (Stream.Buffer (Stream.Buffer'Last - 5)) * 2**24
          +  Unsigned_32 (Stream.Buffer (Stream.Buffer'Last - 4)) * 2**16
-         +  Unsigned_32 (Stream.Buffer (Stream.Buffer'Last - 3)) * 2**16
+         +  Unsigned_32 (Stream.Buffer (Stream.Buffer'Last - 3)) * 2**8
          +  Unsigned_32 (Stream.Buffer (Stream.Buffer'Last - 2))
          );
       Stream.Index := 1;

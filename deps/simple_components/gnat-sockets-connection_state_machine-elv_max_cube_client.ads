@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  10:25 19 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -108,13 +108,13 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
    type Operating_Mode is (Automatic, Manual, Vacation, Boost);
    type Device_Data (Kind_Of : Device_Type) is record
       Address       : RF_Address := 0;
-      Error         : Boolean := False;
-      Initialized   : Boolean := False;
-      Battery_Low   : Boolean := False;
-      Link_Error    : Boolean := False;
-      Panel_Locked  : Boolean := False;
-      Gateway_Known : Boolean := False;
-      DST           : Boolean := False; -- Daylight saving time
+      Error         : Boolean    := False;
+      Initialized   : Boolean    := False;
+      Battery_Low   : Boolean    := False;
+      Link_Error    : Boolean    := False;
+      Panel_Locked  : Boolean    := False;
+      Gateway_Known : Boolean    := False;
+      DST           : Boolean    := False; -- Daylight saving time
       Mode          : Operating_Mode := Automatic;
       case Kind_Of is
          when Cube | Eco_Button | Unknown =>
@@ -172,6 +172,12 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
             end case;
       end case;
    end record;
+--
+-- Setting_Mode -- S-command execution mode
+--
+   type Setting_Mode is mod 4;
+   S_Command  : constant Setting_Mode := 1;
+   S_Response : constant Setting_Mode := 2;
 --
 -- ELV_MAX_Cube_Client -- An object implementing ELV MAX! Cube client
 --
@@ -841,6 +847,7 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
 --    Client          - The connection object
 --    Index / Address - The device index 1..Get_Number_Of_Devices
+--  [ Temperature ]   - The temperature to set
 --
 -- In the automatic mode the device run the scheduled program
 --
@@ -853,12 +860,14 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --    Use_Error        - The device is busy
 --
    procedure Set_Thermostat_Automatic
-             (  Client : in out ELV_MAX_Cube_Client;
-                Index  : Positive
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Temperature : Centigrade := Centigrade'First
              );
    procedure Set_Thermostat_Automatic
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Address : RF_Address
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Temperature : Centigrade := Centigrade'First
              );
 --
 -- Set_Thermostat_Boost -- Boost device
@@ -894,6 +903,15 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --  [ Offset          - Between the set and actual temperatures
 --    Window_Open     - When associated window is open
 --    Window_Time ]   - Before engaging window mode
+--    Mode            - Execution mode
+--
+-- The parameter  Mode  specifies  execution method.  When S_Command  is
+-- specified  the  parameters are sent to the cube.  When S_Response  is
+-- specified the parameters are set in the local cache.  The  default is
+-- both sending to the cube and updating the local cache.  If there is a
+-- danger that  the cube may reject the command  it must be called first
+-- as S_Command and  second as S_Response  after confirmation  to update
+-- the cache.
 --
 -- Exceptions :
 --
@@ -912,7 +930,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Min         : Centigrade;
                 Offset      : Centigrade;
                 Window_Open : Centigrade;
-                Window_Time : Day_Duration
+                Window_Time : Day_Duration;
+                Mode        : Setting_Mode := S_Command or S_Response
              );
    procedure Set_Thermostat_Parameters
              (  Client      : in out ELV_MAX_Cube_Client;
@@ -923,7 +942,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Min         : Centigrade;
                 Offset      : Centigrade;
                 Window_Open : Centigrade;
-                Window_Time : Day_Duration
+                Window_Time : Day_Duration;
+                Mode        : Setting_Mode := S_Command or S_Response
              );
    procedure Set_Thermostat_Parameters
              (  Client  : in out ELV_MAX_Cube_Client;
@@ -931,7 +951,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
-                Min     : Centigrade
+                Min     : Centigrade;
+                Mode    : Setting_Mode := S_Command or S_Response
              );
    procedure Set_Thermostat_Parameters
              (  Client  : in out ELV_MAX_Cube_Client;
@@ -939,7 +960,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
-                Min     : Centigrade
+                Min     : Centigrade;
+                Mode    : Setting_Mode := S_Command or S_Response
              );
 --
 -- Set_Thermostat_Schedule -- Set device schedule
@@ -948,11 +970,14 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --    Index / Address - The device index 1..Get_Number_Of_Devices
 --    Day             - The day for which to set the program
 --    Schedule        - The list of point
+--    Mode            - Execution mode
 --
 -- The list of  points must  be sorted  end  time ascending.  Note  that
 -- there  is no way to get confirmation  that the  schedule is set.  The
 -- object assumes  that it was and updates  the schedule  cached  in the
--- memory. The actual schedule will be read only upon a new connection.
+-- memory.  The actual schedule will be read only upon a new connection.
+-- The parameter  Mode specifies  execution method  of schedule setting.
+-- See Set_Thermostat_Parameters
 --
 -- Exceptions :
 --
@@ -966,21 +991,29 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
              (  Client   : in out ELV_MAX_Cube_Client;
                 Index    : Positive;
                 Day      : Week_Day;
-                Schedule : Points_List
+                Schedule : Points_List;
+                Mode     : Setting_Mode := S_Command or S_Response
              );
    procedure Set_Thermostat_Schedule
              (  Client   : in out ELV_MAX_Cube_Client;
                 Address  : RF_Address;
                 Day      : Week_Day;
-                Schedule : Points_List
+                Schedule : Points_List;
+                Mode     : Setting_Mode := S_Command or S_Response
              );
 --
 -- Set_Thermostat_Temperature -- Set device temperature
 --
---    Client          - The connection object
---    Index / Address - The device index 1..Get_Number_Of_Devices
---    Temperature     - To set
---  [ Up_Until ]      - Until this time
+--    Client              - The connection object
+--    Index / Address     - The device index 1..Get_Number_Of_Devices
+--    Temperature         - To set
+--  [ Up_Until / Manual ] - Until this time or switch to manual flag
+--
+-- When Up_Until is specified the thermostat is switched to the vacation
+-- mode. Otherwise, if Manual is set true the thermostat is switched  to
+-- the manual mode. When Manual is false  and  the thermostat  is in the
+-- automatic mode, it remains in this mode.  Otherwise it is switched to
+-- the manual mode.
 --
 -- Exceptions :
 --
@@ -993,12 +1026,14 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
                 Index       : Positive;
-                Temperature : Centigrade
+                Temperature : Centigrade;
+                Manual      : Boolean := True
              );
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
                 Address     : RF_Address;
-                Temperature : Centigrade
+                Temperature : Centigrade;
+                Manual      : Boolean := True
              );
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
@@ -1011,6 +1046,46 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Address     : RF_Address;
                 Temperature : Centigrade;
                 Up_Until    : Time
+             );
+--
+-- Set_Thermostat_Valve -- Set device valve parameters
+--
+--    Client          - The connection object
+--    Index / Address - The device index 1..Get_Number_Of_Devices
+--    Boost_Time      - Duration of the boost mode
+--    Boost_Valve     - Valve position in the boost mode
+--    Decalcification - The time of decalcification
+--    Max_Maximum     - Maximum valve position
+--    Valve_Offset    - Valve position offset
+--    Mode            - Execution mode
+--
+-- Exceptions :
+--
+--    Constraint_Error - Wrong device number
+--    End_Error        - No device with the given address
+--    Socket_Error     - I/O error
+--    Mode_Error       - The device is not a thermostat
+--    Use_Error        - The device is busy
+--
+   procedure Set_Thermostat_Valve
+             (  Client          : in out ELV_MAX_Cube_Client;
+                Index           : Positive;
+                Boost_Time      : Duration  := 3.0;
+                Boost_Valve     : Ratio     := 1.0;
+                Decalcification : Week_Time := (Mo, 12.0 * 3600.0);
+                Max_Valve       : Ratio     := 1.0;
+                Valve_Offset    : Ratio     := 0.0;
+                Mode         : Setting_Mode := S_Command or S_Response
+             );
+   procedure Set_Thermostat_Valve
+             (  Client          : in out ELV_MAX_Cube_Client;
+                Address         : RF_Address;
+                Boost_Time      : Duration  := 3.0;
+                Boost_Valve     : Ratio     := 1.0;
+                Decalcification : Week_Time := (Mo, 12.0 * 3600.0);
+                Max_Valve       : Ratio     := 1.0;
+                Valve_Offset    : Ratio     := 0.0;
+                Mode         : Setting_Mode := S_Command or S_Response
              );
 --
 -- Status_Received -- Status reception callback
@@ -1180,8 +1255,9 @@ private
                Address : RF_Address
             )  return Positive;
    procedure Set_Thermostat_Automatic
-             (  Client : in out ELV_MAX_Cube_Client;
-                Device : Device_Descriptor'Class
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Device      : Device_Descriptor'Class;
+                Temperature : Centigrade
              );
    procedure Set_Thermostat_Boost
              (  Client : in out ELV_MAX_Cube_Client;
@@ -1196,7 +1272,8 @@ private
                 Min         : Centigrade;
                 Offset      : Centigrade;
                 Window_Open : Centigrade;
-                Window_Time : Day_Duration
+                Window_Time : Day_Duration;
+                Mode        : Setting_Mode
              );
    procedure Set_Thermostat_Parameters
              (  Client  : in out ELV_MAX_Cube_Client;
@@ -1204,24 +1281,37 @@ private
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
-                Min     : Centigrade
+                Min     : Centigrade;
+                Mode    : Setting_Mode
              );
    procedure Set_Thermostat_Schedule
              (  Client   : in out ELV_MAX_Cube_Client;
                 Device   : in out Device_Descriptor'Class;
                 Day      : Week_Day;
-                Schedule : Points_List
+                Schedule : Points_List;
+                Mode     : Setting_Mode
              );
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
-                Temperature : Centigrade
+                Temperature : Centigrade;
+                Manual      : Boolean
              );
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
                 Temperature : Centigrade;
                 Up_Until    : Time
+             );
+   procedure Set_Thermostat_Valve
+             (  Client          : in out ELV_MAX_Cube_Client;
+                Device          : in out Device_Descriptor'Class;
+                Boost_Time      : Duration;
+                Boost_Valve     : Ratio;
+                Decalcification : Week_Time;
+                Max_Valve       : Ratio;
+                Valve_Offset    : Ratio;
+                Mode            : Setting_Mode
              );
 
    procedure Process_Packet (Client : in out ELV_MAX_Cube_Client);

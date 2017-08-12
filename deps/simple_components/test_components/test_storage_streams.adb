@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2011       --
 --                                                                    --
---                                Last revision :  22:35 02 Dec 2011  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,33 +31,80 @@ with Ada.Text_IO;      use Ada.Text_IO;
 with Storage_Streams;  use Storage_Streams;
 
 procedure Test_Storage_Streams is
-   Stream : aliased Storage_Stream (13);
-   Item   : Integer;
 begin
    Put_Line ("Testing storage streams ...");
-   for Index in 1..1_000 loop
-      Integer'Write (Stream'Access, Index);
-   end loop;
-   Put_Line
-   (  "  Elements written, size"
-   &  Stream_Element_Count'Image (Get_Size (Stream))
-   );
-   for Index in 1..1_000 loop
-      Integer'Read (Stream'Access, Item);
-      if Item /= Index then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            (  "Read"
-            &  Integer'Image (Item)
-            &  ", expected"
-            &  Integer'Image (Index)
-         )  );
-      end if;
-   end loop;
-   Put_Line
-   (  "  Elements read, size"
-   &  Stream_Element_Count'Image (Get_Size (Stream))
-   );
+   declare
+      Stream : aliased Storage_Stream (20);
+   begin
+      String'Write (Stream'Access, "1");
+      String'Write (Stream'Access, "23");
+      String'Write (Stream'Access, "456");
+      String'Write (Stream'Access, "789a");
+      String'Write (Stream'Access, "12345");
+      String'Write (Stream'Access, "6789b1");
+      String'Write (Stream'Access, "2345678");
+      String'Write (Stream'Access, "9c123456");
+      String'Write (Stream'Access, "789d12345");
+      String'Write (Stream'Access, "6789e12345");
+      String'Write (Stream'Access, "6789f123456");
+      String'Write (Stream'Access, "789g12345678");
+      String'Write (Stream'Access, "9h123456789i1");
+      String'Write (Stream'Access, "23456789j12345");
+      String'Write (Stream'Access, "6789k123456789l");
+      String'Write (Stream'Access, "123456789m123456");
+      String'Write (Stream'Access, "789n123456789o123");
+      String'Write (Stream'Access, "456789p123456789q1");
+      String'Write (Stream'Access, "23456789r123456789s");
+      String'Write (Stream'Access, "123456789t123456789u");
+      String'Write (Stream'Access, "123456789v123456789w1");
+      String'Write (Stream'Access, "23456789x123456789y123");
+      String'Write (Stream'Access, "456789z");
+      declare
+         Buffer : String (1..10);
+         Ends   : constant String := "abcdefghijklmnopqrstuvwxyz";
+      begin
+         for Index in Ends'Range loop
+            String'Read (Stream'Access, Buffer);
+            if Buffer /= "123456789" & Ends (Index) then
+               Raise_Exception
+               (  Constraint_Error'Identity,
+                  (  "Read "
+                  &  Buffer
+                  &  ", expected "
+                  &  "123456789" & Ends (Index)
+               )  );
+             end if;
+          end loop;
+      end;
+   end;
+   declare
+      Stream : aliased Storage_Stream (13);
+      Item   : Integer;
+   begin
+      for Index in 1..1_000 loop
+         Integer'Write (Stream'Access, Index);
+      end loop;
+      Put_Line
+      (  "  Elements written, size"
+      &  Stream_Element_Count'Image (Get_Size (Stream))
+      );
+      for Index in 1..1_000 loop
+         Integer'Read (Stream'Access, Item);
+         if Item /= Index then
+            Raise_Exception
+            (  Constraint_Error'Identity,
+               (  "Read"
+               &  Integer'Image (Item)
+               &  ", expected"
+               &  Integer'Image (Index)
+            )  );
+         end if;
+      end loop;
+      Put_Line
+      (  "  Elements read, size"
+      &  Stream_Element_Count'Image (Get_Size (Stream))
+      );
+   end;
    Put_Line ("... Done");
 exception
    when Error : others =>

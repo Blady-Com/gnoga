@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  17:41 19 Jun 2016  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -329,6 +329,27 @@ package GNAT.Sockets.Server is
 --    Connection_Error - Do not reconnect
 --
    procedure Disconnected
+             (  Listener : in out Connections_Server;
+                Client   : in out Connection'Class
+             );
+--
+-- Downed -- Client shutdown notification
+--
+--    Client - The client object
+--
+-- The default implementation  does nothing.
+--
+   procedure Downed (Client : in out Connection);
+--
+-- Downed -- Server notification about client shutdown
+--
+--    Listener - The server object
+--    Client   - The client object being deleted
+--
+-- The server may do some bookkeeping here. It is called before Client's
+-- Downed is.
+--
+   procedure Downed
              (  Listener : in out Connections_Server;
                 Client   : in out Connection'Class
              );
@@ -911,6 +932,26 @@ package GNAT.Sockets.Server is
 --
    procedure Sent (Client : in out Connection);
 --
+-- Set_Client_Data -- Set the client address and server
+--
+--    Client   - The connection object
+--    Address  - The address
+--    Listener - The client's handler
+--
+-- The procedure  is used  for  clients  running  over  a virtual socket
+-- connections, e.g. WebSockets.  For conventional  clients address  and
+-- handler are preset and this call raises Constraint_Error.
+--
+-- Exceptions :
+--
+--    Constraint_Error -- The client has a handler already
+--
+   procedure Set_Client_Data
+             (  Client   : in out Connection;
+                Address  : Sock_Addr_Type;
+                Listener : Connections_Server_Ptr
+             );
+--
 -- Set_Expected_Count -- Set minimal elements to read
 --
 --    Client - The client connection object
@@ -959,6 +1000,19 @@ package GNAT.Sockets.Server is
 -- connection the object is finalized and deallocated.
 --
    procedure Shutdown (Client : in out Connection);
+--
+-- Shutdown -- Request connection shutdown notification
+--
+--    Listener - The server object
+--    Client   - The client connection object
+--
+-- This  procedure is called when client requests shutdown.  The default
+-- implementation does nothing.
+--
+   procedure Shutdown
+             (  Listener : in out Connections_Server;
+                Client   : in out Connection'Class
+             );
 --
 -- Trace -- Tracing facility
 --
@@ -1099,6 +1153,20 @@ package GNAT.Sockets.Server is
 --
 -- Unblock_Send -- Request send socket polling
 --
+--    Listener - The server
+--    Client   - The client connection object
+--
+-- Normally the socket polling is stopped when there is nothing to send.
+-- It is resumed  once a portion of data is sent, e.g. a Send is called.
+-- This procedure has the same effect without sending any data.
+--
+   procedure Unblock_Send
+             (  Listener : in out Connections_Server;
+                Client   : in out Connection'Class
+             );
+--
+-- Unblock_Send -- Request send socket polling
+--
 --    Client - The client connection object
 --
 -- Normally the socket polling is stopped when there is nothing to send.
@@ -1149,6 +1217,22 @@ package GNAT.Sockets.Server is
    procedure Read
              (  Client  : in out Connection;
                 Factory : in out Connections_Factory'Class
+             );
+--
+-- Send_Socket -- Send data over client's socket
+--
+--    Listener - The connections server
+--    Client   - The client
+--    Data     - To send
+--    Last     - The last element sent, can be less than Data'Last
+--
+-- The default implementation calls socket's Send_Socket.
+--
+   procedure Send_Socket
+             (  Listener : in out Connections_Server;
+                Client   : in out Connection'Class;
+                Data     : Stream_Element_Array;
+                Last     : out Stream_Element_Offset
              );
 --
 -- Set_Failed -- Mark connection as failed
@@ -1303,6 +1387,7 @@ private
       Data_Sent        : Boolean := False;
       Dont_Block       : Boolean := False;
       Client           : Boolean := False;
+      Reconnect        : Boolean := True;
       Connect_No       : Natural := 0;
       Max_Connect_No   : Natural := Natural'Last;
       Predecessor      : Connection_Ptr;
@@ -1317,6 +1402,7 @@ private
       pragma Atomic (Connect_No);
       pragma Atomic (Failed);
       pragma Atomic (Dont_Block);
+      pragma Atomic (Reconnect);
       pragma Atomic (Session);
       pragma Atomic (Shutdown_Request);
    end record;

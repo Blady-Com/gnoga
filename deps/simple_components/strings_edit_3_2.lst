@@ -1,3 +1,4 @@
+./centos-logo.jpg
 ./debian-logo.jpg
 ./download.jpg
 ./fedora-logo.jpg
@@ -79,3 +80,4 @@
 ./test_strings_edit/test_strings_edit.adb
 ./test_strings_edit/test_string_streams.adb
 ./test_strings_edit/UnicodeData.txt
+./ubuntu-logo.jpg

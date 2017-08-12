@@ -5,14 +5,14 @@
 <TITLE>Simple components for Ada</TITLE>
 <meta http-equiv="Content-Style-Type" content="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
-<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client, MQTT, MQTT broker, ELV, eQ-3, MAX!, MAX! cube, SMTP, SMTP client">
+<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client, MQTT, MQTT broker, WebSockets, WebSockets MQTT, ELV, eQ-3, MAX!, MAX! cube, SMTP, SMTP client">
 <META name="Author" content="Dmitry Kazakov">
 <META name="Description" content="Simple components for Ada">
 </HEAD>
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.15</EM><BR>
+<EM>version 4.22</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -41,7 +41,8 @@ tables, string editing, unbounded arrays, expression analyzers, lock-free data
 structures, synchronization primitives (events, race condition free pulse 
 events, arrays of events, reentrant mutexes, deadlock-free arrays of mutexes), pseudo-random 
 non-repeating numbers, symmetric encoding and decoding, IEEE 754 representations 
-support, multiple connections server/client designing tools. It grew out of needs and does not pretend to be universal.
+support, streams, multiple connections server/client designing tools and 
+protocols implementations. It grew out of needs and does not pretend to be universal.
 Tables management and strings editing are described in separate documents see <a href="http://www.dmitry-kazakov.de/ada/tables.htm">Tables</a>
 and <a href="http://www.dmitry-kazakov.de/ada/strings_edit.htm">Strings edit</a>.
 The library is kept conform to the <a href="http://www.adaic.com/standards/95lrm/html/RM-TTL.html">Ada 95</a>,
@@ -116,8 +117,20 @@ MAX! client implementation</a><br>
 		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/components_fedora_i686.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 	</tr>
 	<tr>
+		<td style="border-top-style: solid; border-top-width: 1px">
+		<a name="CentOS_packages"></a>CentOS packages <img border="0" src="centos-logo.jpg" width="16" height="16" alt="CentOS"></td>
+		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
+		<td style="border-top-style: solid; border-top-width: 1px">precompiled
+		and packaged using RPM</td>
+		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
+		<td>&nbsp;</td>
+		<td align="right">&nbsp;</td>
+		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/centos/components_centos_x86_64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/centoscomponents_centos_i686.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+	</tr>
+	<tr>
 		<td style="border-top-style: solid; border-top-width: 1px; ">
-		<a name="debian_packages"></a>Debian packages <img border="0" src="debian-logo.jpg" width="16" height="16" alt="debian"></td>
+		<a name="debian_packages"></a>Debian packages <img border="0" src="debian-logo.jpg" width="16" height="16" alt="Debian"></td>
 		<td style="border-top-style: solid; border-top-width: 1px; ">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium" colspan="2">precompiled and packaged for dpkg</td>
 		<td>&nbsp;</td>
@@ -127,16 +140,26 @@ MAX! client implementation</a><br>
 		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 	</tr>
 	<tr>
+		<td style="border-top-style: solid; border-top-width: 1px; ">
+		<a name="ubuntu_packages"></a>Ubuntu packages <img border="0" src="ubuntu-logo.jpg" width="16" height="16" alt="Ubuntu"></td>
+		<td style="border-top-style: solid; border-top-width: 1px; ">&nbsp;</td>
+		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium" colspan="2">precompiled and packaged for dpkg</td>
+		<td>&nbsp;</td>
+		<td align="right">&nbsp;</td>
+		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/ubuntu/components_ubuntu_x86_64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+		<td align="center"><a href="http://www.dmitry-kazakov.de/distributions/ubuntu/components_ubuntu_i686.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
+	</tr>
+	<tr>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_15.tgz">components_4_15.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_22.tgz">components_4_22.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_15.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_22.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -24801,7 +24824,8 @@ simple, easy to implement and relatively efficient design when connections are
 few. The problems arise with large number of connections. The number of tasks the 
 OS can handle is limited. Furthermore, with a large number of tasks, switching 
 them would consume considerable resources. An alternative would be a single task 
-handling a set of sockets, one socket per connection. The available number of sockets is considerably greater than the number of tasks. However, 
+handling a set of sockets, one socket per connection. The available number of sockets is 
+usually much greater than the number of tasks. However, 
 the design of 
 a server working in this way is sufficiently more difficult because differently 
 to blocking I/O, the server becomes driven by data. A connection would process as 
@@ -24902,7 +24926,7 @@ Client</b>&nbsp;&nbsp; : <font color="#0000FF">in out</font> Connection'Class<br
 <p>This procedure is called to notify the server <b>Listener</b> that the client 
 is being connected. It is called after <b>Client</b>'s 
 <a href="#GNAT.Sockets.Server.Connected">Connected</a>. The default implementation 
-does nothing. The implementation may propagate Connection_Error 
+must be called from the override. The implementation may propagate Connection_Error 
 to refuse connection.</p>
 
 <blockquote>
@@ -24920,6 +24944,20 @@ called. The implementation removes the client from the list of
 clients postponed for service. If overridden the new implementation should call 
 the parent's one. The implementation may propagate Connection_Error 
 to prevent further connection attempts for outgoing connections.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Downed"></a>procedure</font> Downed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Listener</b> :
+<font color="#0000FF">in out</font> Connections_Server;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Client</b>&nbsp;&nbsp; : <font color="#0000FF">in out</font> Connection'Class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called to notify the server <b>Listener</b> that the client 
+has been shot down. It is called before <b>Client</b>'s 
+<a href="#GNAT.Sockets.Server.Downed_Client">Downed</a> operation is 
+called. The reference to the object is released after the call. The default implementation 
+must be called from the override.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Finalize (<b>Listener</b> :
@@ -24965,6 +25003,20 @@ procedure it shall call it from its implementation.</p>
 </blockquote>
 <p>This function returns <i><font color="#800000">true</font></i> if a request 
 to unblock send is queued (see <a href="#GNAT.Sockets.Server.Unblock_Send">Unblock_Send</a>).</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Unblock_Send_Server">
+</a>procedure</font> Unblock_Send<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Listener </b> 
+: <font color="#0000FF">in out</font> Connections_Server<b>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Client</b>&nbsp;&nbsp; :
+<font color="#0000FF">in out</font> Connection'Class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure explicitly unblocks socket polling for send. Normally it 
+happens automatically when <a href="#GNAT.Sockets.Server.Send">Send</a> is 
+called or when the timeout expires (see
+<a href="#GNAT.Sockets.Server.Get_Polling_Timeout">Get_Polling_Timeout</a>).</p>
 
 <p><u><b>Connection objects factory</b></u>.</p>
 
@@ -25502,6 +25554,16 @@ parent's implementation must be called from the override. The implementation may
 to prevent reconnection if the object services an outgoing connection.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Downed_Client"></a>
+procedure</font> Downed (<b>Client</b> : <font color="#0000FF">in out</font> 
+Connection);</tt></p>
+</blockquote>
+<p>This is procedure is called when connection has been shot down. After this 
+call server's <a href="#GNAT.Sockets.Server.Downed">Downed</a> is called and 
+finally the reference to the connection object is released after. The default 
+implementation does nothing.</p>
+
+<blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Elevated"></a>
 procedure</font> Elevated (<b>Client</b> : <font color="#0000FF">in out</font> 
 Connection);</tt></p>
@@ -25963,7 +26025,9 @@ deallocate it at any time. </p>
 <p>This procedure explicitly unblocks socket polling for send. Normally it 
 happens automatically when <a href="#GNAT.Sockets.Server.Send">Send</a> is 
 called or when the timeout expires (see
-<a href="#GNAT.Sockets.Server.Get_Polling_Timeout">Get_Polling_Timeout</a>).</p>
+<a href="#GNAT.Sockets.Server.Get_Polling_Timeout">Get_Polling_Timeout</a>). The 
+implementation calls to the connection server's
+<a href="#GNAT.Sockets.Server.Unblock_Send_Server">Unblock_Send</a>.</p>
 
 <h4><a name="16.1.3"></a>16.1.3. Secure servers</h4>
 <p><a name="GNAT.Sockets.Server.Secure"></a>The package
@@ -26586,7 +26650,7 @@ Factory&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> Echo_Factory;<br
 
 <p><a name="GNAT.Sockets.Connection_State_Machine"></a>The package
 <a href="#GNAT.Sockets.Connection_State_Machine">GNAT.Sockets.Connection_State_Machine</a> provides an 
-implementation of a server's side connection object that implements a state 
+implementation of a server's side connection object that deploys a state 
 machine to receive packets from the client side. The structure of a packet is 
 described by the contents of connection object itself. Fields of the object 
 derived from a special abstract type (<a href="#GNAT.Sockets.Connection_State_Machine.Data_Item">Data_Item</a>) 
@@ -28054,9 +28118,9 @@ Status_Line_Type <font color="#0000FF">is</font> (None, File, URI);</tt></p>
 <p>This type defines the status line format:</p>
 <ul>
 	<li><i>None</i> indicates a status line that does not contain a file path or 
-	URI;</li>
-	<li><i>File</i> indicates a status line that contains a file path;</li>
-	<li><i>URI</i> indicates a status line with an URI.</li>
+	URI, e.g. <tt>GET *</tt>;</li>
+	<li><i>File</i> indicates a status line that contains a file path, e.g. <tt>GET /hello.txt</tt>;</li>
+	<li><i>URI</i> indicates a status line with an URI, e.g. <tt>GET http://www.somewhere.com/hello.txt</tt>.</li>
 </ul>
 
 <blockquote>
@@ -28070,7 +28134,8 @@ Status_Line<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Query_Length : Natural<br>
 &nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
 record<br>
-&nbsp;&nbsp; case </font>Kind <font color="#0000FF">is<br>
+</font>&nbsp;&nbsp; Query : String (<font color="#800000">1</font>..Query_Length);<br>
+<font color="#0000FF">&nbsp;&nbsp; case </font>Kind <font color="#0000FF">is<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>None =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> File =&gt;<br>
@@ -28080,7 +28145,6 @@ record<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Host&nbsp;&nbsp; : String (<font color="#800000">1</font>..Host_Length);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Port&nbsp;&nbsp; : Port_Type;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Path&nbsp;&nbsp; : String (<font color="#800000">1</font>..Path_Length);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Query&nbsp; : String (<font color="#800000">1</font>..Query_Length);<br>
 &nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
 <font color="#0000FF">end record</font>;</tt></p>
 </blockquote>
@@ -29367,6 +29431,10 @@ or
 is called. Finally the procedure 
 <a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Finalize">WebSocket_Finalize</a> 
 is called, which is the last operation performed on a connection.</p>
+<p>A <a href="#GNAT.Sockets.Server.Connection">connection object</a> can be 
+reused to run the protocol it implements over WebSocket, see
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server.HTTP_WebSocket_Client">
+HTTP_WebSocket_Client</a> for further information.</p>
 <p>Here is the list of WebSocket operations defined on
 <a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.HTTP_Client">
 HTTP_Client</a>:</p>
@@ -29528,7 +29596,7 @@ exchange:</p>
 	are blocking. When
 	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Send">WebSocket_Send</a> 
 	is called on the context of the server's working task this causes the 
-	message queueing without blocking. Therefore sending messages on the worker's task context may 
+	message queuing without blocking. Therefore sending messages on the worker's task context may 
 	allocate dynamic memory. In the full-duplex mode the server continues reading from the socket even if there is 
 	pending output (<a href="#GNAT.Sockets.Server.Set_Overlapped_Size">Set_Overlapped_Size</a> 
 	is called to allow this).</li>
@@ -30476,6 +30544,103 @@ Statement</b> : String<br>
 <p>This procedure should be used in order to execute a statement and then show 
 its result set as a part of the content. The execution happens when the content 
 is sent using Send_Body. Typically it is set from the CGI key <i>statement</i>.</p>
+
+<h4><a name="16.11.11"></a>16.11.11. WebSocket connection handler</h4>
+
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server">
+</a>There are protocols defined for both TCP and WebSockets. For instance MQTT 
+is such a protocol. The <a href="#GNAT.Sockets.Server.Connection">connection 
+object</a> 
+implementations can be used for both without modification. When a <a href="#GNAT.Sockets.Server.Connection">connection object</a> is handled by
+a
+<a href="#GNAT.Sockets.Server.Connections_Server">Connections_Server</a> the 
+protocol implemented by the object runs over a TCP socket. For WebSocket it is a HTTP client that handles the
+<a href="#GNAT.Sockets.Server.Connection">connection object</a>.
+The package
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server">GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server</a> provides 
+an implementation of HTTP server capable to handle 
+<a href="#GNAT.Sockets.Server.Connection">connection objects</a>.</p>
+
+<blockquote>
+<p>
+<a name="GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server.HTTP_WebSocket_Client">
+</a><tt><font color="#0000FF">type</font> HTTP_WebSocket_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+<font color="#0000FF">access</font> Connections_Server'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Request_Length : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp;&nbsp;&nbsp;&nbsp; : 
+Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size&nbsp;&nbsp;&nbsp; : 
+Buffer_Length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Factory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">access</font> Connections_Factory'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Buffer_Size&nbsp;&nbsp;&nbsp; : 
+Buffer_Length<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> HTTP_Client
+<font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The type
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server.HTTP_WebSocket_Client">
+HTTP_WebSocket_Client</a> is a HTTP server accepting WebSocket connections. It 
+can be used to derive custom HTTP implementations if the server should also 
+provide some HTTP content. When the client switches into WebSocket mode, the 
+server asks its factory to create a <a href="#GNAT.Sockets.Server.Connection">
+connection object</a> which then is used to handle WebSocket exchange. The discriminants <i>Listener</i>, <i>Request_Length</i>,
+<i>Input_Size</i>, <i>Output_Size</i> are same as in
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.HTTP_Client">
+HTTP_Client</a>. The other discriminants are:</p>
+<ul>
+	<li><i>Factory</i> is <a href="#GNAT.Sockets.Server.Connections_Factory">Connections_Factory</a> 
+	used upon WebSocket connection to create the connection object that will run 
+	over the WebSocket;</li>
+	<li><i>Buffer_Size</i> is the WebSocket buffer size used for connection.</li>
+</ul>
+<p>The following primitive operations are defined:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_WebSocket_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Client : 
+HTTP_WebSocket_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Handle;</tt></p>
+</blockquote>
+<p>This function returns a handle (from GNAT.Sockets.Server.Handles) to the 
+current connection object running over the WebSocket. The handle is invalid when 
+no WebSocket connection is engaged.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Error_Code<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Client : 
+HTTP_WebSocket_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>When the factory of WebSocket connection objects refuses connection, the 
+result of this function is used to report the error code. The default 
+implementation returns 400.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Error_Reason<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Client : 
+HTTP_WebSocket_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>When the factory of WebSocket connection objects refuses connection, the 
+result of this function is used to report the reason text. The default 
+implementation returns &quot;<i>Bad request</i>&quot;.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Protocols<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Client : 
+HTTP_WebSocket_Client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>When accepted the client receives a list of supported protocols as returned 
+by this function. When the result is empty the value of <i>Sec-WebSocket-Protocol</i> 
+is used instead. The default implementation returns empty string.</p>
 
 <p align="right">
   <A name="16.12"></A><a href="#16.11"><IMG src="prev.gif" alt="[Back]" width="29"
@@ -33086,7 +33251,9 @@ changing operating mode of the device:</p>
 	Set_Thermostat_Schedule</a>;</li>
 	<li>
 	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Temperature">
-	Set_Thermostat_Temperature</a>.</li>
+	Set_Thermostat_Temperature</a>;</li>
+	<li>
+	<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Valve">Set_Thermostat_Valve</a>.</li>
 </ul>
 <blockquote>
 <p><tt><font color="#0000FF">
@@ -33359,21 +33526,26 @@ or else it is a set of strings with the server name.</p>
 <p><tt><font color="#0000FF">
 <a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Automatic">
 </a>procedure</font> Set_Thermostat_Automatic<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b> :
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client&nbsp;&nbsp;&nbsp;&nbsp; </b> &nbsp;:
 <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Index</b>&nbsp; : Positive<br>
+Index</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Temperature</b> : Centigrade := Centigrade'First<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Set_Thermostat_Automatic<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp; 
-: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Address</b> : RF_Address<br>
+Address</b>&nbsp;&nbsp;&nbsp;&nbsp; : RF_Address;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Temperature</b> : Centigrade := Centigrade'First<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>These procedures set a thermostat device in the automatic mode. The device 
 can be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
-(<b>Client</b>) or by its radio frequency address.</p>
+(<b>Client</b>) or by its radio frequency address. The parameter Temperature if 
+specified overrides the schedule's set temperature for the current time 
+interval. After the interval expiration the thermostat will follow the schedule.</p>
 
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <CAPTION align="top">
@@ -33469,7 +33641,9 @@ Offset</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Window_Open</b> : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Window_Time</b> : Day_Duration ]<br>
+Window_Time</b> : Day_Duration; ]<b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>&nbsp;: 
+Setting_Mode := S_Command or S_Response<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Set_Thermostat_Parameters<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -33489,13 +33663,31 @@ Offset</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Window_Open</b> : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Window_Time</b> : Day_Duration ]<br>
+Window_Time</b> : Day_Duration; ]<br>
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>&nbsp;: 
+Setting_Mode := S_Command or S_Response<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>These procedures set thermostat device parameters. For a wall mounted 
 thermostat parameters <b>Offset</b>..<b>Window_Time</b> are omitted. The device can be 
 specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
-(<b>Client</b>) or by its radio frequency address.</p>
+(<b>Client</b>) or by its radio frequency address. The parameter <b>Mode</b> 
+specifies execution method.</p>
+<blockquote>
+	<p><tt><font color="#0000FF">type</font> Setting_Mode <font color="#0000FF">
+	is mod</font> <font color="#800000">4</font>;<br>
+	S_Command&nbsp; : <font color="#0000FF">constant</font> Setting_Mode :=
+	<font color="#800000">1</font>;<br>
+	S_Response : <font color="#0000FF">constant</font> Setting_Mode :=
+	<font color="#800000">2</font>;</tt></p>
+</blockquote>
+<p>When <i>S_Command</i> is specified the parameters are sent to the cube. When
+<i>S_Response</i> is specified the parameters are set into the local cache. The 
+default is both sending to the cube and updating the local cache. If there is a 
+danger that the cube may reject the command it must be called first as <i>
+S_Command</i> and second as <i>S_Response</i> after confirmation to update the 
+cache.</p>
 
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <CAPTION align="top">
@@ -33534,7 +33726,10 @@ Index</b>&nbsp;&nbsp;&nbsp; : Positive;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Day</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 : Week_Day;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Schedule</b> : Points_List<br>
+Schedule</b> : Points_List;<br>
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp; </b>: 
+Setting_Mode := S_Command or S_Response<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Set_Thermostat_Schedule<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp; 
@@ -33544,7 +33739,10 @@ Address</b>&nbsp; : RF_Address;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Day</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 : Week_Day;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Schedule</b> : Points_List<br>
+Schedule</b> : Points_List;<br>
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp; </b>: 
+Setting_Mode := S_Command or S_Response<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>These procedures are used to set the thermostat's day program. The device can 
@@ -33553,7 +33751,12 @@ be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_Sta
 sorted end time ascending. Note that there is no way to get confirmation that 
 the schedule is set. The object assumes that it was and updates the schedule 
 cached in the memory. The actual schedule will be read only upon a new 
-connection.</p>
+connection. The parameter <b>Mode</b> specifies execution method. When <i>
+S_Command</i> is specified the schedule is sent to the cube. When <i>S_Response</i> 
+is specified the schedule is set into the local cache. The default is both 
+sending to the cube and updating the local cache. If there is a danger that the 
+cube may reject the command it must be called first as <i>S_Command</i> and 
+second as <i>S_Response</i> after confirmation to update the cache.</p>
 
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <CAPTION align="top">
@@ -33591,8 +33794,18 @@ connection.</p>
 Index</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Positive;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Temperature</b> : Centigrade;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Up_Until</b>&nbsp;&nbsp;&nbsp; 
-: Time ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Manual</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Boolean := True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> Set_Thermostat_Temperature<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Temperature</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Up_Until</b>&nbsp;&nbsp;&nbsp; : Time<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Set_Thermostat_Temperature<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -33601,14 +33814,117 @@ Temperature</b> : Centigrade;<br>
 Address</b>&nbsp;&nbsp;&nbsp;&nbsp; : RF_Address;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Temperature</b> : Centigrade;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Up_Until</b>&nbsp;&nbsp;&nbsp; 
-: Time ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Manual</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Boolean := True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Thermostat_Temperature<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b>&nbsp;&nbsp;&nbsp;&nbsp; : RF_Address;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Temperature</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Up_Until</b>&nbsp;&nbsp;&nbsp; 
+: Time<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
-<p>These procedures set thermostat temperature. When the parameter Up_Until is 
+<p>These procedures set thermostat temperature. The parameter <b>Manual</b> 
+controls switching the thermostat into the manual mode if the current mode is 
+not manual. When the thermostat is in the automatic mode and Manual is
+<font color="#800000"><i>false</i></font>, the thermostat remains in the 
+automatic mode. In this case it will keep the temperature until expiration of 
+the current time interval. After that it will follow the schedule. When the parameter
+<b>Up_Until</b> is 
 specified, it is the time until the temperature is set before the device returns 
 to its previous mode. The device can be specified by its number in the range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
 (<b>Client</b>) or by its radio frequency address.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Set_Thermostat_Valve">
+</a>procedure</font> Set_Thermostat_Valve<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Index</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Boost_Time</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Duration&nbsp;&nbsp;&nbsp;&nbsp; :=
+<font color="#800000">3.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Boost_Valve</b>&nbsp;&nbsp;&nbsp;&nbsp; : Ratio&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; :=
+<font color="#800000">1.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Decalcification</b> : Week_Time&nbsp;&nbsp;&nbsp; := (Mo, <font color="#800000">12.0</font> *
+<font color="#800000">3600.0</font>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Max_Valve</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Ratio&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; 
+:= <font color="#800000">1.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Valve_Offset</b>&nbsp;&nbsp;&nbsp; : Ratio&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; :=
+<font color="#800000">0.0</font>;<br>
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>: 
+Setting_Mode := S_Command or S_Response<font color="#800000"><br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Set_Thermostat_Valve<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Client</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 
+: <font color="#0000FF">in out</font> ELV_MAX_Cube_Client;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Address</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; : RF_Address;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Boost_Time</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Duration&nbsp;&nbsp;&nbsp;&nbsp; :=
+<font color="#800000">3.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Boost_Valve</b>&nbsp;&nbsp;&nbsp;&nbsp; : Ratio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; :=
+<font color="#800000">1.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Decalcification</b> : Week_Time&nbsp;&nbsp;&nbsp; := (Mo, <font color="#800000">12.0</font> *
+<font color="#800000">3600.0</font>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Max_Valve</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Ratio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 
+:= <font color="#800000">1.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Valve_Offset</b>&nbsp;&nbsp;&nbsp; : Ratio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :=
+<font color="#800000">0.0</font>;<br>
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>: 
+Setting_Mode := S_Command or S_Response<font color="#800000"><br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures set radiator thermostat valve parameters. The device can be 
+specified by its number in the range 1..<a href="#GNAT.SocketSet_Thermostat_Valvee.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a> 
+(<b>Client</b>) or by its radio frequency address. The parameter <b>Mode</b> 
+specifies execution method. When <i>S_Command</i> is specified the valve 
+parameters are sent to the cube. When <i>S_Response</i> is specified the 
+parameters are set into the local cache. The default is both sending to the cube 
+and updating the local cache. If there is a danger that the cube may reject the 
+command it must be called first as <i>S_Command</i> and second as <i>S_Response</i> 
+after confirmation to update the cache.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The device number is out of range 1..<a href="#GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Get_Number_Of_Devices">Get_Number_Of_Devices</a></TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>There is no device with the specified address</TD>
+  </TR>
+  <tr>
+    <TD>  Mode_Error</TD>
+    <TD>The device is not a thermostat</TD>
+  </tr>
+  <TR>
+    <TD>  Socket_Error</TD>
+    <TD>I/O error, connection is dropped</TD>
+  </TR>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD>The output buffer is full (connection is preserved)</TD>
+  </TR>
+  </TABLE>
 
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <CAPTION align="top">
@@ -33715,7 +34031,7 @@ databases.</p>
 <H3>16.15. MQTT protocol implementation</H3>
 <p><b><a name="MQTT"></a>M</b>essage <b>Q</b>ueueing <b>T</b>elemetry <b>T</b>ransport (<b>MQTT</b>) 
 is an ISO standard (<a href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=69466">ISO/IEC 
-PRF 20922</a>) messaging protocol. The protocol is a TCP/IP based and supports 
+PRF 20922</a>) messaging protocol. The protocol is TCP or WebSockets based and supports 
 publishing and subscribing to messages identified by UTF-8 encoded names, 
 so-called topics. There is no topic any registration procedure. Topics are 
 introduced ad-hoc. A message is an untyped bucket of octets, represented in the 
@@ -33727,18 +34043,22 @@ subscriber may require three levels of delivery acknowledgement (at most once,
 at least once, exactly once). For further information
 <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">see</a>.</p>
 <p>The MQTT protocol architecture is relatively heavy-weight, especially because 
-topics are introduced ad-hoc. Possibly, it is also the reason why the protocol 
-supports no naming and browsing services. Server discovery services are not 
-provided. The protocol lacks time stamping, message instance identification, live 
+topics are introduced ad-hoc. Possibly it is also the reason why the protocol 
+supports neither naming nor browsing services. Server discovery services are not 
+provided either. The protocol lacks time stamping, message instance identification, live 
 lock detection. Published messages are not filtered, nor there is publishing 
 confirmation, rejection or other form of data returned to the message's issuer.</p>
-<p>The provided implementation provides:</p>
+<p>The implementation provides:</p>
 <ul>
 	<li>A minimal implementation of a MQTT pier. It implements the MQTT stack 
 	with procedures to encode/decode all MQTT packets;</li>
 	<li>A full MQTT broker supporting messages subscriptions and 
 	publishing.</li>
 </ul>
+
+<p>For MQTT on WebSockets the HTTP client
+<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server.HTTP_WebSocket_Client">
+HTTP_WebSocket_Client</a> or its derivative is used.</p>
 
 <h4><a name="16.15.1"></a>16.15.1. MQTT pier</h4>
 
@@ -35195,15 +35515,17 @@ to the SMTP_EHLO command.</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.SMTP.SMTP_AUTH_Mechanism">
 </a>type</font> SMTP_AUTH_Mechanism <font color="#0000FF">is mod</font>
-<font color="#800000">2</font>**<font color="#800000">3</font>;<br>
-SMTP_ANONYMOUS : <font color="#0000FF">constant</font> SMTP_AUTH_Mechanism :=
+<font color="#800000">2</font>**<font color="#800000">4</font>;<br>
+SMTP_ANONYMOUS&nbsp; : <font color="#0000FF">constant</font> SMTP_AUTH_Mechanism :=
 <font color="#800000">0</font>;<br>
-SMTP_PLAIN&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
+SMTP_PLAIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
 SMTP_AUTH_Mechanism := <font color="#800000">2</font>**<font color="#800000">0</font>;<br>
-SMTP_LOGIN&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
+SMTP_LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
 SMTP_AUTH_Mechanism := <font color="#800000">2</font>**<font color="#800000">1</font>;<br>
-SMTP_CRAM_MD5&nbsp; : <font color="#0000FF">constant</font> SMTP_AUTH_Mechanism 
-:= <font color="#800000">2</font>**<font color="#800000">2</font>;</tt></p>
+SMTP_CRAM_MD5&nbsp;&nbsp; : <font color="#0000FF">constant</font> SMTP_AUTH_Mechanism 
+:= <font color="#800000">2</font>**<font color="#800000">2</font>;<br>
+SMTP_DIGEST_MD5 : <font color="#0000FF">constant</font> SMTP_AUTH_Mechanism 
+:= <font color="#800000">2</font>**<font color="#800000">3</font>;</tt></p>
 </blockquote>
 <p>
 This type specifies the methods of authentication. The more secure methods have 
@@ -36570,7 +36892,18 @@ Block_Streams</a></TD>
     <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.SQLite_Browser">
 	SQLite_Browser</a></TD>
-    <TD>HTTP browser of SQLite3 database</TD>
+    <TD>HTTP server for browsing SQLite3 databases</TD>
+  </tr>
+	<tr>
+    <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="8" style="border-style:none; border-width:medium; " bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="2" style="border-left-style: none; border-left-width: medium; border-bottom-style:none; border-bottom-width:medium" bgcolor="#C0C0C0">
+	&nbsp;</TD>
+    <TD colspan="3" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server">
+	WebSocket_Server</a></TD>
+    <TD>HTTP server for running connection objects over WebSockets</TD>
   </tr>
 	<tr>
     <TD colspan="3" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
@@ -37677,6 +38010,13 @@ Block_Streams</a></TD>
     <TD align="center">&nbsp;</TD>
   </tr>
   <tr>
+    <TD>test_http_mqtt_servers</TD>
+    <TD align="center">no</TD>
+    <TD>Implementation of a custom HTTP server accepting MQTT connections over 
+	WebSockets</TD>
+    <TD align="center">&nbsp;</TD>
+  </tr>
+  <tr>
     <TD bgcolor="#FFFF99">test_http_sqlite_browser</TD>
     <TD align="center" bgcolor="#FFFF99">yes</TD>
     <TD bgcolor="#FFFF99">SQLite database browser test</TD>
@@ -37835,6 +38175,12 @@ Block_Streams</a></TD>
     <TD bgcolor="#FFFF99">test_mqtt_server</TD>
     <TD align="center" bgcolor="#FFFF99">yes</TD>
     <TD bgcolor="#FFFF99">Test for MQTT server</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
+  <tr>
+    <TD bgcolor="#FFFF99">test_mqtt_webserver</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Test for MQTT WebSockets server</TD>
     <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
   </tr>
   <tr>
@@ -38678,9 +39024,9 @@ controls the method to use:</p>
 		from gnat-debug subdirectory replace corresponding files in the main 
 		directory.</li>
 		</ul>
-		<h3><a name="18.1"></a>18.1. Debian and Fedora packages</h3>
-<p>Under Fedora, Debian Linux and their derivates you can use packages for
-<a href="#fedora_packages">Fedora</a> and
+		<h3><a name="18.1"></a>18.1. Centos, Debian and Fedora packages</h3>
+<p>Under CenOS, Fedora, Debian Linux and their derivates you can use packages for
+<a href="#fedora_packages">Fedora</a> (<a href="#CentOS_packages">CentOS</a>) and
 	<a href="#debian_packages">Debian</a> and the corresponding architectures.
 See release notes of the corresponding pages.</p>
 <h3><a name="18.2"></a>18.2. Fedora packages repository</h3>
@@ -38694,6 +39040,12 @@ can be put into the directory <i>/etc/yum.repos.d</i>.</p>
 these packages add the following line to <i>/etc/apt/sources.list</i>:</p>
 <blockquote>
 	<tt>deb http://dmitry-kazakov.de/distributions sid main</tt></blockquote>
+<h3><a name="18.4"></a>18.4. CentOS packages repository</h3>
+<p>The Fedora packages of this library are located in a <i>yum</i> software 
+package manager repository. They can be searched, installed and updated 
+automatically using <i>yum</i>. In order to do so, the file
+<a href="http://dmitry-kazakov.de/dmitry-kazakov.centos.repo">dmitry-kazakov.centos.repo</a> 
+can be put into the directory <i>/etc/yum.repos.d</i>.</p>
 <hr>
 <p align="right">
   <a name="19"></a><a href="#18"><IMG src="prev.gif" alt="[Back]" width="29"
@@ -38706,13 +39058,75 @@ these packages add the following line to <i>/etc/apt/sources.list</i>:</p>
 The following versions were tested with the compilers:</i>
 <ul>
   <li>
-GNAT GPL 2016 (20160515-49)</li>
+<i>GNAT GPL 2017 (20170515-63)</i></li>
+	<li>
+<i>GNAT 7</i></li>
 	<li><i>GNAT 6</i></li>
   </ul>
 <P><i>and the GtkAda versions:</i></p>
 <ul>
 	<li><i>GtkAda 3.14.2</i></li>
 </ul>
+<P>
+Changes (24 July 2017) to the version 4.21:<ul>
+	<li>Bug fix in the package Block_Streams. Only very large transmissions were 
+	affected by the it;</li>
+	<li>Bug fix in the HTTP server implementation. The query part is now 
+	recognized when the status line contains file.</li>
+	</ul>
+<P>
+<i>
+The following versions were tested with the compilers:</i>
+<ul>
+  <li>
+<i>GNAT GPL 2016 (20160515-49)</i></li>
+	<li><i>GNAT 6</i></li>
+  </ul>
+<P><i>and the GtkAda versions:</i></p>
+<P>
+Changes (17 April 2017) to the version 4.20:<ul>
+	<li>The package WebSocket_Server, child of 
+	GNAT.Sockets.Connection_State_Machine.HTTP_Server provides an implementation 
+	or base of HTTP server capable to handle connections running over <br>
+	WebSockets instead of normal sockets. No changes in the implementation of 
+	connection objects required. For example the same MQTT_Connection object 
+	implementing MQTT protocol can be used and thus providing MQTT over 
+	WebSockets.</li>
+	</ul>
+<P>
+Changes (12 March 2017) to the version 4.19:<ul>
+	<li>ModBus client bug that led to rejecting long responses is fixed.</li>
+	</ul>
+<P>
+Changes (20 February 2017) to the version 4.18:<ul>
+	<li>Set_Thermostat_Temperature and Set_Thermostat_Automatic procedures of&nbsp; GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client 
+	allow specifying the temperature even if the thermostat is in the automatic 
+	mode;</li>
+	<li>Downed primitive operations were added to GNAT.Sockets.Server package.</li>
+	</ul>
+<P>
+Changes (4 February 2017) to the version 4.17:<ul>
+	<li>Bug fixes in GNAT.Sockets.SMTP and GNAT.Sockets.SMTP.Client related to 
+	decoding enhanced error code;</li>
+	<li>GNAT.Sockets.Server.Secure.X509 workaround for the case when GNUTLS returns 
+	zero for the 
+	estimated number of key bits;</li>
+	<li>Bug fix in the Storage_Streams package.</li>
+	</ul>
+<P>
+Changes (19 November 2016) to the version 4.16:<ul>
+	<li>Bug fix in GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client 
+	related to decoding valve position;</li>
+	<li>Set_Thermostat_Valve procedures were added to GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client;</li>
+	<li>Set_Thermostat_Parameters and Set_Thermostat_Schedule have the mode 
+	parameter added;</li>
+	<li>Digest-MD5 authentication method was added to SMTP_Client.</li>
+	</ul>
+<P>
+Changes (14 October 2016) to the version 4.15:<ul>
+	<li>Big fix in GNAT.Sockets.Server. The bug caused Constraint_Error in upon 
+	stopping a client after it failed to connect.</li>
+	</ul>
 <P>
 Changes (25 July 2016) to the version 4.14:<ul>
 	<li>Compatibility with GtkAda 3.14</li>
@@ -39385,8 +39799,8 @@ persistent storage test</a><br>
 <b><big><big>9</big></big></b>&nbsp;<a href="#9"><big>Graphs</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#9.1">9.1. Directed graphs</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#9.2">9.2. Directed weighted graphs</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#9.2.1">9.2.1. Suffix tree example</a>
-<hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#9.2.1">9.2.1. Suffix tree example</a></td>
+<td valign="top">
 <b><big><big>10</big></big></b>&nbsp;<a href="#10"><big>Lock-free structures</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#10.1">10.1. FIFO</a><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#10.1.1">10.1.1. Lock-free FIFO of definite elements</a><br>
@@ -39422,9 +39836,7 @@ Sample</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.1">12.4.1. Source cursors I/O</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.2">12.4.2. Procedures to skip blanks</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.3">12.4.3. Procedure to skip text</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.4">12.4.4. Matching keywords</a>
-</td>
-<td valign="top">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.4">12.4.4. Matching keywords</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.5">12.4.5. Parsing XPM files</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.6">12.4.6. String sources</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.4.7">12.4.7. Multi-line sources</a><br>
@@ -39474,8 +39886,8 @@ usage of the operation stack</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.5">15.6.5. Transactions</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.6">15.6.6. ODBC commands</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.6.7">15.6.7. Binding parameters</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#15.7">15.7. GNUTLS bindings</a><br>
-<hr>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#15.7">15.7. GNUTLS bindings</a></td>
+<td valign="top">
 <b><big><big>16</big></big></b>&nbsp;<a href="#16"><big>Networking</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.1">16.1. Multiple TCP connections server</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.1.1">16.1.1. Multiple connection servers</a><br>
@@ -39484,13 +39896,10 @@ usage of the operation stack</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.1.4">16.1.4. Simple echo server sample</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.2">16.2. Connection state machine</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.1">16.2.1. State machine connection object</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.2">16.2.2. State machine 
-data items</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.3">16.2.3. Block of data 
-items</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.2">16.2.2. State machine data items</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.3">16.2.3. Block of data items</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.4">16.2.4. Null data item</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.5">16.2.5. Data items 
-selector</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.2.5">16.2.5. Data items selector</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.3">16.3. Data items encoded big-endian</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.3.1">16.3.1. Big-endian IEEE 754 double precision float numbers</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.3.2">16.3.2. Big-endian IEEE 754 single precision float numbers</a><br>
@@ -39520,6 +39929,7 @@ selector</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.8">16.11.8. WebSockets</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.9">16.11.9. Utility routines</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.10">16.11.10. SQLite3 database browser</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.11.11">16.11.11. WebSocket connection handler</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.12">16.12. HTTP client protocol implementation</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.12.1">16.12.1. Signaled client</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.13">16.13. MODBUS client protocol implementation</a><br>
@@ -39528,18 +39938,13 @@ selector</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.14.1">16.14.1. Stream I/O</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.15">16.15. MQTT protocol implementation</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.1">16.15.1. MQTT pier</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.2">16.15.2. MQTT message 
-stream I/O</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.2">16.15.2. MQTT message stream I/O</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.15.3">16.15.3. MQTT server (broker)</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.16">16.16. SMTP</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.1">16.16.1. Mail address 
-lists</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.1">16.16.1. Mail address lists</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.2">16.16.2. Mail objects</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.3">16.16.3. SMTP client 
-implementation</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.4">16.16.4. SMTP 
-synchronous client 
-implementation</a><hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.3">16.16.3. SMTP client implementation</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#16.16.4">16.16.4. SMTP synchronous client implementation</a><hr>
 <b><big><big>17</big></big></b>&nbsp;<a href="#17"><big>Packages</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.1">17.1. Source packages</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#17.2">17.2. Tests and examples</a><br>
@@ -39549,7 +39954,8 @@ implementation</a><hr>
 <b><big><big>18</big></big></b>&nbsp;<a href="#18"><big>Installation</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#18.1">18.1. Debian and Fedora packages</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#18.2">18.2. Fedora packages repository</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#18.3">18.3. Debian packages repository</a>
+&nbsp;&nbsp;&nbsp; <a href="#18.3">18.3. Debian packages repository</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#18.4">18.4. CentOS packages repository</a>&nbsp;
 <hr>
 <b><big><big>19</big></big></b>&nbsp;<a href="#19"><big>Changes log</big></a>
 <hr>

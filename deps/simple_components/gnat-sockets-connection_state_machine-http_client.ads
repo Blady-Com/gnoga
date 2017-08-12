@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:49 10 Apr 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -45,6 +45,9 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Client is
 --
    type Response_Header is
         (  Access_Control_Allow_Origin_Header,
+           Access_Control_Allow_Methods,
+           Access_Control_Allow_Headers,
+           Access_Control_Max_Age,
            Accept_Patch_Header,
            Accept_Ranges_Header,
            Age_Header,

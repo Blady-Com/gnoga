@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -67,21 +67,19 @@ package body GNAT.Sockets.Server.Secure is
                        );
       end if;
       declare
-         TLS : TLS_Session renames TLS_Session (Result.all);
+         TLS  : TLS_Session renames TLS_Session (Result.all);
+         Self : Abstract_GNUTLS_Factory'Class renames
+                Abstract_GNUTLS_Factory'Class (Factory.all);
       begin
          Session_Set_Ptr (TLS.Session, Client'Address);
          Socket_Pull.Set (TLS.Session, Client);
          Socket_Push.Set (TLS.Session, Client);
          if Factory.Trace_Session then
-            Trace (Factory.all, "TLS setting up session");
+            Trace (Self, "TLS setting up session");
          end if;
-         Prepare
-         (  Abstract_GNUTLS_Factory'Class (Factory.all),
-            Client.all,
-            TLS.Session
-         );
+         Prepare (Self, Client.all, TLS.Session);
          if Factory.Trace_Session then
-            Trace (Factory.all, "TLS handshake engaged");
+            Trace (Self, "TLS handshake engaged");
          end if;
       end;
       return Result;

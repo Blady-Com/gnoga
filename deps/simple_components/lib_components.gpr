@@ -2,7 +2,7 @@ with "shared";
 
 library project Lib_Components is
 
-   Version     := "4.15";
+   Version     := "4.22";
 
    type Object_Tracing_Mode is ("Off", "On");
    Object_Tracing : Object_Tracing_Mode := external ("Traced_objects", "Off");
@@ -427,7 +427,9 @@ library project Lib_Components is
           "gnat-sockets-connection_state_machine-http_client-signaled.adb",
           "gnat-sockets-connection_state_machine-http_client-signaled.ads",
           "gnat-sockets-connection_state_machine-http_server.adb",
-          "gnat-sockets-connection_state_machine-http_server.ads"
+          "gnat-sockets-connection_state_machine-http_server.ads",
+          "gnat-sockets-connection_state_machine-http_server-websocket_server.adb",
+          "gnat-sockets-connection_state_machine-http_server-websocket_server.ads"
        );
    Components_Connections_Server_HTTP_Server_Sqlite_Browser_Source_Files :=
        (  "gnat-sockets-connection_state_machine-http_server-sqlite_browser.adb",
@@ -497,8 +499,8 @@ library project Lib_Components is
          ("parser-examples/*");
    end Install;
 
-   package Ide is
-      for Documentation_Dir use "doc/components_rm";
-   end Ide;
+   package Documentation is
+      for HTML_Custom_Dir use "doc/components_rm";
+   end Documentation;
 
 end Lib_Components;

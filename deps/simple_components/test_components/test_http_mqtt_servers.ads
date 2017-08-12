@@ -1,7 +1,7 @@
 --                                                                    --
---  package Test_MQTT_Servers       Copyright (c)  Dmitry A. Kazakov  --
---  Interface                                      Luebeck            --
---                                                 Spring, 2016       --
+--  package Test_HTTP_MQTT_Servers  Copyright (c)  Dmitry A. Kazakov  --
+--  Test server                                    Luebeck            --
+--  Interface                                      Spring, 2017       --
 --                                                                    --
 --                                Last revision :  18:49 10 Apr 2017  --
 --                                                                    --
@@ -25,25 +25,49 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Streams;               use Ada.Streams;
-with GNAT.Sockets;              use GNAT.Sockets;
-with GNAT.Sockets.MQTT.Server;  use GNAT.Sockets.MQTT.Server;
-with GNAT.Sockets.Server;       use GNAT.Sockets.Server;
+with Ada.Exceptions;               use Ada.Exceptions;
+with Ada.Streams;                  use Ada.Streams;
+with Ada.Streams.Stream_IO;        use Ada.Streams.Stream_IO;
+with GNAT.Directory_Operations;    use GNAT.Directory_Operations;
+with GNAT.Sockets;                 use GNAT.Sockets;
+with GNAT.Sockets.Server;          use GNAT.Sockets.Server;
+with GNAT.Sockets.Server.Handles;  use GNAT.Sockets.Server.Handles;
+with Synchronization.Events;       use Synchronization.Events;
 
-package Test_MQTT_Servers is
+with GNAT.Sockets.Connection_State_Machine.HTTP_Server.WebSocket_Server;
 
-   type Test_Factory is new Connections_Factory with record
-      Server : aliased MQTT_Server;
-   end record;
+with Test_MQTT_Servers;
+
+package Test_HTTP_MQTT_Servers is
+   use GNAT.Sockets.Connection_State_Machine.HTTP_Server;
+   use WebSocket_Server;
+--
+-- Test_HTTP_Factory -- A factory of HTTP connection objects
+--
+   type Test_HTTP_Factory
+        (  Request_Length  : Positive;
+           Input_Size      : Buffer_Length;
+           Output_Size     : Buffer_Length;
+           Max_Connections : Positive;
+           Factory         : access Test_MQTT_Servers.Test_Factory
+        )  is new Connections_Factory with null record;
+--
+-- Create -- A HTTP connection object
+--
    function Create
-            (  Factory  : access Test_Factory;
+            (  Factory  : access Test_HTTP_Factory;
                Listener : access Connections_Server'Class;
                From     : Sock_Addr_Type
             )  return Connection_Ptr;
+--
+-- Test_HTTP_Server -- A HTTP server listening HTTP connections
+--
+   type Test_HTTP_Server is new Connections_Server with null record;
+--
+-- Test_HTTP_Client -- HTTP  connection   object   that   accepts   MQTT
+--                     connections over WebSockets
+--
+   type Test_HTTP_Client is new HTTP_WebSocket_Client with null record;
+   function Get_Protocols (Client : Test_HTTP_Client) return String;
 
-   type Test_Server is new MQTT_Connection with private;
-
-private
-   type Test_Server is new MQTT_Connection with null record;
-
-end Test_MQTT_Servers;
+end Test_HTTP_MQTT_Servers;

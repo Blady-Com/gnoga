@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -894,7 +894,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    function Get_Status_Line (Client : HTTP_Client) return Status_Line is
    begin
       if Client.Status = null then
-         return (None, 0, 0, 0);
+         return (None, 0, 0, 0, "");
       else
          return Client.Status.all;
       end if;
@@ -1541,17 +1541,29 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          Pointer := Pointer + 1;
          Status_Line_Received (Client, Client.Method, Get_Version);
       elsif Request (Pointer) = '/' then
+         Pointer := Pointer + 1;
          declare
-            Path : Integer;
+            Path  : constant Integer := Pointer;
+            Query : Integer := Request'Last + 1;
          begin
-            Pointer := Pointer + 1;
-            Path    := Pointer;
-            Skip (Request, Pointer);
+            while Pointer <= Request'Last loop
+               case Request (Pointer) is
+                  when ' ' =>
+                     exit;
+                  when '?' =>
+                     Query   := Integer'Min (Query, Pointer);
+                     Pointer := Pointer + 1;
+                  when others =>
+                     Pointer := Pointer + 1;
+               end case;
+            end loop;
+            Query := Integer'Min (Query, Pointer);
             Status_Line_Received
-            (  Client,
-               Client.Method,
-               From_Escaped (Request (Path..Pointer - 1)),
-               Get_Version
+            (  Client  => Client,
+               Method  => Client.Method,
+               Path    => From_Escaped (Request (Path..Query - 1)),
+               Query   => From_Escaped (Request (Query + 1..Pointer - 1)),
+               Version => Get_Version
             );
          end;
       else
@@ -3298,6 +3310,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              (  Client  : in out HTTP_Client;
                 Method  : HTTP_Method;
                 Path    : String;
+                Query   : String;
                 Version : HTTP_Version
              )  is
       type Status_Ptr is access Status_Line;
@@ -3307,8 +3320,9 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                    (  Kind         => File,
                       Path_Length  => Path'Length,
                       Host_Length  => 0,
-                      Query_Length => 0,
-                      File         => Path
+                      Query_Length => Query'Length,
+                      File         => Path,
+                      Query        => Query
                    );
    begin
       Client.Method  := Method;

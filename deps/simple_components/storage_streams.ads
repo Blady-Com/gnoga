@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2011       --
 --                                                                    --
---                                Last revision :  10:35 22 Oct 2011  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -40,7 +40,7 @@ package Storage_Streams is
         (  Block_Size : Stream_Element_Count
         )  is new Root_Stream_Type with private;
 --
--- Erase -- Write the last block onto the stream
+-- Erase -- The stream
 --
 --    Stream - To flush
 --

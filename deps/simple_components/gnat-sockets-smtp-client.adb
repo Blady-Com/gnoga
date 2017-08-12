@@ -3,7 +3,7 @@
 --     GNAT.Sockets.SMTP.Client                    Luebeck            --
 --  Implementation                                 Summer, 2016       --
 --                                                                    --
---                                Last revision :  17:51 21 Jun 2016  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,7 +33,9 @@ with Strings_Edit;                use Strings_Edit;
 with Strings_Edit.Base64;         use Strings_Edit.Base64;
 with Strings_Edit.Integers;       use Strings_Edit.Integers;
 with Strings_Edit.Quoted;         use Strings_Edit.Quoted;
+with Strings_Edit.UTF8.Mapping;   use Strings_Edit.UTF8.Mapping;
 
+with Ada.Numerics.Discrete_Random;
 with Ada.Unchecked_Deallocation;
 with GNAT.MD5;
 
@@ -53,6 +55,11 @@ package body GNAT.Sockets.SMTP.Client is
    Multipart_End  : constant String := "--" & CRLF & Data_End;
    Boundary       : constant String :=   -- 1234567890123456
                              CRLF & CRLF & "--[message part]" & CRLF;
+
+   package Random_UID is
+      new Ada.Numerics.Discrete_Random (Interfaces.Unsigned_64);
+
+   Dice : Random_UID.Generator;
 
    procedure Free is
       new Ada.Unchecked_Deallocation
@@ -342,6 +349,227 @@ package body GNAT.Sockets.SMTP.Client is
                 &  To_String (Digest ((Secret xor Ipad) & Challenge))
              )  );
    end CRAM_MD5;
+
+   function Cnonce return String is
+      use Interfaces;
+      use Random_UID;
+      use GNAT.MD5;
+      Value  : constant Unsigned_64 := Random (Dice);
+      Result : constant String :=
+                  (  1 => Character'Val (          Value mod 2**8),
+                     2 => Character'Val ((Value / 2**8 ) mod 2**8),
+                     3 => Character'Val ((Value / 2**16) mod 2**8),
+                     4 => Character'Val ((Value / 2**24) mod 2**8),
+                     5 => Character'Val ((Value / 2**32) mod 2**8),
+                     6 => Character'Val ((Value / 2**40) mod 2**8),
+                     7 => Character'Val ((Value / 2**48) mod 2**8),
+                     8 => Character'Val ( Value / 2**56)
+                  );
+      Encode : constant String := Digest (Result);
+   begin
+      return Encode (Encode'First..Encode'First + 13);
+   end Cnonce;
+
+   function DIGEST_MD5
+            (  Host      : String;
+               User      : String;
+               Password  : String;
+               Challenge : String;
+               Request   : String;
+               Cnonce    : String
+            )  return String is
+      use GNAT.MD5;
+      Method  : constant String := "AUTHENTICATE";
+      QOP     : constant String := "auth";
+      Nc      : constant String := "00000001";
+
+      Pointer : Integer := Challenge'First;
+      Topic   : SMTP_Challenge;
+      From    : array (SMTP_Challenge) of Integer :=
+                   (others => Challenge'First);
+      To      : array (SMTP_Challenge) of Integer :=
+                   (others => Challenge'First - 1);
+
+      function Nonce return String is
+      begin
+         return Challenge (From (SMTP_NONCE)..To (SMTP_NONCE));
+      end Nonce;
+
+      function Realm return String is
+      begin
+         if From (SMTP_REALM) <= To (SMTP_REALM) then
+            return Challenge (From (SMTP_REALM)..To (SMTP_REALM));
+         else
+            return Host;
+         end if;
+      end Realm;
+
+      function URI return String is
+      begin
+         return Request & '/' & Realm;
+      end URI;
+
+      function A1 return String is
+      begin
+         if (  To_Lowercase
+               (  Challenge
+                  (  From (SMTP_ALGORITHM)
+                  .. To (SMTP_ALGORITHM)
+               )  )
+            =  "md5-sess"
+            )
+         then
+            return
+            (  To_String (Digest (User & ':' & Realm & ':' & Password))
+            &  ':'
+            &  Nonce
+            &  ':'
+            &  Cnonce
+            );
+         else
+            return User & ':' & Realm & ':' & Password;
+         end if;
+      end A1;
+
+      function A2 return String is
+         QOP : constant String :=
+                  To_Lowercase
+                  (  Challenge (From (SMTP_QOP)..To (SMTP_QOP))
+                  );
+      begin
+         if QOP = "auth-int" or else QOP = "auth-conf" then
+            return
+            (  Method
+            &  ':'
+            &  URI
+            &  ":00000000000000000000000000000000"
+           );
+         else
+            return Method & ':' & URI;
+         end if;
+      end A2;
+
+   begin
+      while Pointer <= Challenge'Last loop
+         Get (Challenge, Pointer);
+         exit when Pointer > Challenge'Last;
+         begin
+            Get (Challenge, Pointer, Challenges, Topic);
+         exception
+            when End_Error =>
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Invalid digest-md5 challenge, unsupported " &
+                  "topic at " &
+                  Challenge (Pointer..Challenge'Last)
+               );
+         end;
+         Get (Challenge, Pointer);
+         if Pointer > Challenge'Last or else Challenge (Pointer) /= '='
+         then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Invalid digest-md5 challenge, '=' is expected after " &
+               "a keyword at " &
+               Challenge (Pointer..Challenge'Last)
+            );
+         end if;
+         Pointer := Pointer + 1;
+         Get (Challenge, Pointer);
+         if Pointer > Challenge'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Invalid digest-md5 challenge, topic value is " &
+               "expected after equality sign at " &
+               Challenge (Pointer..Challenge'Last)
+            );
+         end if;
+         if Challenge (Pointer) = '"' then
+            Pointer := Pointer + 1;
+            From (Topic) := Pointer;
+            while Pointer <= Challenge'Last loop
+               if Challenge (Pointer) = '"' then
+                  To (Topic) := Pointer - 1;
+                  exit;
+               end if;
+               Pointer := Pointer + 1;
+            end loop;
+            if Pointer > Challenge'Last then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Invalid digest-md5 challenge, missing closing " &
+                  "quotation marks"
+               );
+            end if;
+            Pointer := Pointer + 1;
+         else
+            From (Topic) := Pointer;
+            loop
+               if Pointer > Challenge'Last then
+                  To (Topic) := Pointer - 1;
+                  exit;
+               end if;
+               case Challenge (Pointer) is
+                  when ' ' | ',' | Character'Val (9) =>
+                     To (Topic) := Pointer - 1;
+                     exit;
+                  when others =>
+                     Pointer := Pointer + 1;
+               end case;
+            end loop;
+         end if;
+         Get (Challenge, Pointer);
+         exit when Pointer > Challenge'Last;
+         if Challenge (Pointer) /= ',' then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Invalid digest-md5 challenge, ',' is expected at " &
+               Challenge (Pointer..Challenge'Last)
+            );
+         end if;
+         Pointer := Pointer + 1;
+      end loop;
+      declare
+         Response : constant String :=
+                       Digest
+                       (  Digest (A1)
+                       &  ':'
+                       &  Nonce
+                       &  ':'
+                       &  Nc
+                       &  ':'
+                       &  Cnonce
+                       &  ':'
+                       &  QOP
+                       &  ':'
+                       &  Digest (A2)
+                       );
+      begin
+         declare
+            Decoded : constant String :=
+               (  "charset=utf-8,"
+               &  "username="""
+               &  User
+               &  """,realm="""
+               &  Realm
+               &  """,nonce="""
+               &  Nonce
+               &  """,nc="
+               &  Nc
+               &  ",cnonce="""
+               &  Cnonce
+               &  """,digest-uri="""
+               &  URI
+               &  """,response="
+               &  Response
+               &  ",qop="
+               &  QOP
+               );
+         begin
+            return To_Base64 (Decoded);
+         end;
+      end;
+   end DIGEST_MD5;
 
    function Create
             (  From     : String;
@@ -883,7 +1111,29 @@ package body GNAT.Sockets.SMTP.Client is
 
    procedure On_Auth (Client : in out SMTP_Client'Class) is
    begin
-      if Client.Authentication >= SMTP_CRAM_MD5 then
+      if Client.Authentication >= SMTP_DIGEST_MD5 then
+         case Client.Index is
+            when 1 =>
+               Client.Index := 2;
+               Send_Text
+               (  Client,
+                  (  DIGEST_MD5
+                     (  Image (Client.Get_Client_Address.Addr),
+                        Value (Client.User),
+                        Value (Client.Password),
+                        From_Base64
+                        (  Client.Reply (1..Client.Pointer - 1)
+                        ),
+                        "smtp",
+                        Cnonce
+                     )
+                  & CRLF
+               )  );
+            when others =>
+               Client.Command := SMTP_MAIL;
+               On_Mail (Client);
+         end case;
+      elsif Client.Authentication >= SMTP_CRAM_MD5 then
          case Client.Index is
             when 1 =>
                Client.Index := 2;
@@ -957,9 +1207,23 @@ package body GNAT.Sockets.SMTP.Client is
                loop
                   Get (Reply, Pointer);
                   exit when Pointer > Reply'Last;
-                  Get (Reply, Pointer, Authentications, Mode);
-                  Client.Authentication :=
-                     Client.Authentication or Mode;
+                  begin
+                     Get (Reply, Pointer, Authentications, Mode);
+                     Client.Authentication :=
+                        Client.Authentication or Mode;
+                  exception
+                     when End_Error => -- Skip an unsupported method
+                        loop
+                           case Reply (Pointer) is
+                              when ' ' | Character'Val (9) =>
+                                 Pointer := Pointer + 1;
+                                 exit;
+                              when others =>
+                                 Pointer := Pointer + 1;
+                           end case;
+                           exit when Pointer > Reply'Last;
+                        end loop;
+                  end;
                end loop;
             exception
                when others =>
@@ -1059,7 +1323,16 @@ package body GNAT.Sockets.SMTP.Client is
          else -- Use authentication
             Client.Authentication :=
                Client.Authentication and Client.Supported;
-            if Client.Authentication >= SMTP_CRAM_MD5 then
+            if Client.Authentication >= SMTP_DIGEST_MD5 then
+               Client.Authentication := SMTP_DIGEST_MD5;
+               Client.Command := SMTP_AUTH;
+               Send_Text (Client, "AUTH DIGEST-MD5" & CRLF);
+               Client.Send_State    := Send_Command;
+               Client.Receive_State := Receive_Code;
+               Client.Count         := 0;
+               Client.Index         := 1;
+               return;
+            elsif Client.Authentication >= SMTP_CRAM_MD5 then
                Client.Authentication := SMTP_CRAM_MD5;
                Client.Command := SMTP_AUTH;
                Send_Text (Client, "AUTH CRAM-MD5" & CRLF);
@@ -1396,15 +1669,17 @@ package body GNAT.Sockets.SMTP.Client is
                   when Character'Pos ('.') =>
                      if Client.Count = 0 then
                         Client.Count := 1;
-                     elsif Client.Count > 1 then
+                        Client.Code.Error.Subject := 0;
+                     elsif Client.Count = 1 then
                         Raise_Exception
                         (  Data_Error'Identity,
                            (  "Invalid extended status code, "
                            &  "missing numeric code subject"
                         )  );
                      else
-                        Client.Receive_State := Receive_Detail;
-                        Client.Count         := 0;
+                        Client.Receive_State     := Receive_Detail;
+                        Client.Count             := 0;
+                        Client.Code.Error.Detail := 0;
                      end if;
                   when Character'Pos ('0')..Character'Pos ('9') =>
                      if Client.Count = 0 then
@@ -1423,8 +1698,10 @@ package body GNAT.Sockets.SMTP.Client is
                      Client.Count := Client.Count + 1;
                      Client.Code.Error.Subject :=
                         (  Client.Code.Error.Subject * 10
-                        +  Code_Subject (Data (Pointer))
-                        );
+                        +  Code_Subject
+                           (  Data (Pointer)
+                           -  Character'Pos ('0')
+                        )  );
                   when others =>
                      Raise_Exception
                      (  Data_Error'Identity,
@@ -1446,8 +1723,10 @@ package body GNAT.Sockets.SMTP.Client is
                      Client.Count := Client.Count + 1;
                      Client.Code.Error.Detail :=
                         (  Client.Code.Error.Detail * 10
-                        +  Code_Detail (Data (Pointer))
-                        );
+                        +  Code_Detail
+                           (  Data (Pointer)
+                           -  Character'Pos ('0')
+                        )  );
                      Pointer := Pointer + 1;
                   when Character'Pos (' ') =>
                      if Client.Count = 0 then
@@ -2298,9 +2577,18 @@ begin
    Add (Extensions, "XUSR",                SMTP_XUSR);
    Add (Extensions, "XVRB",                SMTP_XVRB);
 
-   Add (Authentications, "LOGIN",     SMTP_LOGIN);
-   Add (Authentications, "PLAIN",     SMTP_PLAIN);
-   Add (Authentications, "CRAM-MD5",  SMTP_CRAM_MD5);
-   Add (Authentications, "ANONYMOUS", SMTP_ANONYMOUS);
+   Add (Authentications, "ANONYMOUS",  SMTP_ANONYMOUS);
+   Add (Authentications, "CRAM-MD5",   SMTP_CRAM_MD5);
+   Add (Authentications, "DIGEST-MD5", SMTP_DIGEST_MD5);
+   Add (Authentications, "LOGIN",      SMTP_LOGIN);
+   Add (Authentications, "PLAIN",      SMTP_PLAIN);
+
+   Add (Challenges, "algorithm",  SMTP_ALGORITHM);
+   Add (Challenges, "charset",    SMTP_CHARSET);
+   Add (Challenges, "cnonce",     SMTP_CNONCE);
+   Add (Challenges, "digest-uri", SMTP_DIGEST_URI);
+   Add (Challenges, "nonce",      SMTP_NONCE);
+   Add (Challenges, "qop",        SMTP_QOP);
+   Add (Challenges, "realm",      SMTP_REALM);
 
 end GNAT.Sockets.SMTP.Client;

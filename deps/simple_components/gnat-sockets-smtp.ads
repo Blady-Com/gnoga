@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Summer, 2016       --
 --                                                                    --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -101,11 +101,12 @@ package GNAT.Sockets.SMTP is
 --
 -- SMTP_AUTH_Mechanism
 --
-   type SMTP_AUTH_Mechanism is mod 2**3;
-   SMTP_ANONYMOUS : constant SMTP_AUTH_Mechanism := 0;
-   SMTP_PLAIN     : constant SMTP_AUTH_Mechanism := 2**0;
-   SMTP_LOGIN     : constant SMTP_AUTH_Mechanism := 2**1;
-   SMTP_CRAM_MD5  : constant SMTP_AUTH_Mechanism := 2**2;
+   type SMTP_AUTH_Mechanism is mod 2**4;
+   SMTP_ANONYMOUS  : constant SMTP_AUTH_Mechanism := 0;
+   SMTP_PLAIN      : constant SMTP_AUTH_Mechanism := 2**0;
+   SMTP_LOGIN      : constant SMTP_AUTH_Mechanism := 2**1;
+   SMTP_CRAM_MD5   : constant SMTP_AUTH_Mechanism := 2**2;
+   SMTP_DIGEST_MD5 : constant SMTP_AUTH_Mechanism := 2**3;
 --
 -- Reply_Code -- The code introducing SMTP server response
 --

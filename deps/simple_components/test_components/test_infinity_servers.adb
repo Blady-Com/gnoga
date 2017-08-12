@@ -3,7 +3,7 @@
 --     Test_Infinity_Servers                       Luebeck            --
 --  Test HTTP content flood                        Winter, 2013       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;         use Ada.Calendar;
 with Strings_Edit.Quoted;  use Strings_Edit.Quoted;
 
 package body Test_Infinity_Servers is
@@ -110,7 +109,7 @@ package body Test_Infinity_Servers is
          return Page;
       else
          declare
-            Now : Time := Clock;
+            Now : constant Time := Clock;
          begin
             if Now > Source.Last + 1.0 then
                Source.Last := Now;

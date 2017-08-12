@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Summer, 2016       --
 --                                                                    --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  09:54 04 Feb 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -64,14 +64,29 @@ package body GNAT.Sockets.SMTP is
    function Image (Code : Error_Code) return String is
    begin
       if Code.Enhanced then
-         return
-         (  Text (Code.Error)
-         &  " ["
-         &  Image (Code)
-         &  " "
-         &  Image (Code.Error)
-         &  "]"
-         );
+         declare
+            Message : constant String := Text (Code.Error);
+         begin
+            if Message = "Unknown" then -- Use reply instead
+               return
+               (  Text (Code.Reply)
+               &  " ["
+               &  Image (Code.Reply)
+               &  " "
+               &  Image (Code.Error)
+               &  "]"
+               );
+            else
+               return
+               (  Message
+               &  " ["
+               &  Image (Code.Reply)
+               &  " "
+               &  Image (Code.Error)
+               &  "]"
+               );
+            end if;
+         end;
       else
          return Text (Code.Reply) & " [" & Image (Code.Reply) & "]";
       end if;

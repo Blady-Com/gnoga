@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Little_Endian.Unsigneds                     Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  09:27 06 Nov 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -155,7 +155,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - 1 > Data'Last
          )  )
       then
          Raise_Exception
@@ -177,7 +177,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - 1 > Data'Last
          )  )
       then
          Raise_Exception
@@ -204,7 +204,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - 1 > Data'Last
          )  )
       then
          Raise_Exception
@@ -233,7 +233,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - 1 > Data'Last
          )  )
       then
          Raise_Exception

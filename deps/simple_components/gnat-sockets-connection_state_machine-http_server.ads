@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  20:41 21 Jul 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -310,6 +310,7 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
            Query_Length : Natural
         )  is
    record
+      Query : String (1..Query_Length);
       case Kind is
          when None =>
             null;
@@ -320,7 +321,6 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             Host   : String (1..Host_Length);
             Port   : Port_Type;
             Path   : String (1..Path_Length);
-            Query  : String (1..Query_Length);
       end case;
    end record;
 --
@@ -1773,13 +1773,13 @@ private
 --
 -- Status_Line_Received -- Stauts line receipt
 --
---    Client  - The HTTP client connection object
---    Method  - The method being requested
---  [ Path    - The file path
---    Host    - The host specified in the URI
---    Port    - The port specified in the URI
---    Query ] - The query part specified in the URI
---    Version - The HTTP version requested
+--    Client   - The HTTP client connection object
+--    Method   - The method being requested
+--  [ Path     - The file path
+--    Host     - The host specified in the URI
+--    Port     - The port specified in the URI
+--  [ Query ]] - The query part specified in the URI
+--    Version  - The HTTP version requested
 --
 -- This procedure is called when the status list is successfully parsed.
 -- The default implementation stores fields of the status line.
@@ -1790,9 +1790,10 @@ private
                 Version : HTTP_Version
              );
    procedure Status_Line_Received
-             (  Client : in out HTTP_Client;
-                Method : HTTP_Method;
-                Path   : String;
+             (  Client  : in out HTTP_Client;
+                Method  : HTTP_Method;
+                Path    : String;
+                Query   : String;
                 Version : HTTP_Version
              );
    procedure Status_Line_Received

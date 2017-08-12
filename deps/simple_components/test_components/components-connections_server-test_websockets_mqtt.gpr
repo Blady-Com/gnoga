@@ -1,0 +1,17 @@
+with "../components-connections_server.gpr";
+with "../components-connections_server-mqtt.gpr";
+with "../components-connections_server-http_server.gpr";
+
+project Components.Connections_Server.Test_WebSockets_MQTT is
+   for Exec_Dir use ".";
+   for Source_Files use
+       (  "test_http_mqtt_servers.adb",
+          "test_http_mqtt_servers.ads",
+          "test_mqtt_webserver.adb",
+          "test_mqtt_servers.adb",
+          "test_mqtt_servers.ads"
+       );
+   for Main use
+       (  "test_mqtt_webserver.adb"
+       );
+end Components.Connections_Server.Test_WebSockets_MQTT;

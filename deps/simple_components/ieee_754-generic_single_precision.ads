@@ -3,7 +3,7 @@
 --     IEEE_754.Generic_Single_Precision           Luebeck            --
 --  Interface                                      Summer, 2008       --
 --                                                                    --
---                                Last revision :  11:26 27 Jul 2008  --
+--                                Last revision :  09:27 06 Nov 2016  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -91,6 +91,18 @@ package IEEE_754.Generic_Single_Precision is
 --
    function Is_Real (Value : Float_32) return Boolean;
 --
+-- Normalize -- Split number into integer mantissa and binary exponent
+--
+--    Value    - The argument
+--    Mantissa - The mantissa
+--    Exponent - The binary exponent
+--
+   procedure Normalize
+             (  Value    : Number;
+                Mantissa : out Unsigned_32;
+                Exponent : out Integer
+             );
+--
 -- To_IEEE -- Conversion to 32-bit single precision IEEE 754 float
 --
 --    Value - The argument
@@ -109,6 +121,7 @@ private
    pragma Inline (Is_NaN);
    pragma Inline (Is_Negative);
    pragma Inline (Is_Real);
+   pragma Inline (Normalize);
 
    Negative_Infinity : constant Float_32 := (16#FF#,16#80#,0,0);
    Negative_Zero     : constant Float_32 := (16#80#,0,0,0);

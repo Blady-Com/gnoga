@@ -3,7 +3,7 @@
 --     Parsers.Generic_Operation.                  Luebeck            --
 --        Generic_Stack                            Winter, 2004       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  09:37 03 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -246,7 +246,7 @@ package body Parsers.Generic_Operation.Generic_Stack is
                         )
                      then
                         declare
-                           Inverse : constant Operation_Type :=
+                           Inverse : Operation_Type :=
                               Group_Inverse (Operation);
                         begin
                            Push
@@ -327,6 +327,8 @@ package body Parsers.Generic_Operation.Generic_Stack is
       end if;
       raise Wrong_Comma_Type;
    exception
+      when Unexpected_Operation =>
+         raise Unexpected_Comma;
       when Association_Error =>
          raise Wrong_Comma_Type;
    end Push_Comma;

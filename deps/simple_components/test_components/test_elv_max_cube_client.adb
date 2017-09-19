@@ -3,7 +3,7 @@
 --     Test_ELV_MAX_Cube_Client                    Luebeck            --
 --  ELV MAX! Cube client test                      Summer, 2015       --
 --                                                                    --
---                                Last revision :  16:49 28 Feb 2016  --
+--                                Last revision :  09:37 03 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,10 +39,9 @@ with Strings_Edit.Streams;         use Strings_Edit.Streams;
 
 with GNAT.Sockets.Connection_State_Machine.
      ELV_MAX_Cube_Client.Stream_IO;
-with Strings_Edit.Streams;
 
 procedure Test_ELV_MAX_Cube_Client is
-   Timeout : Duration := 3.0;
+   Timeout : constant Duration := 3.0;
 
    procedure Test_Asynchronous (Cube : String) is
       use GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client;
@@ -163,8 +162,8 @@ procedure Test_ELV_MAX_Cube_Client is
                end if;
                Put_Line (Line (1..Pointer - 1));
                declare
-                  Data : Device_Parameters :=
-                         Get_Device_Parameters (Client, Index);
+                  Data : constant Device_Parameters :=
+                                  Get_Device_Parameters (Client, Index);
                begin
                   case Data.Kind_Of is
                      when Radiator_Thermostat |
@@ -226,7 +225,7 @@ procedure Test_ELV_MAX_Cube_Client is
                         for Day in Data.Schedule'Range loop
                            Put ("         " & Image (Day) & " ");
                            declare
-                              List : Points_List :=
+                              List : constant Points_List :=
                                      Data.Schedule (Day).Points;
                            begin
                               for Point in List'Range loop
@@ -234,7 +233,8 @@ procedure Test_ELV_MAX_Cube_Client is
                                     Put (", ");
                                  end if;
                                  declare
-                                    This : Set_Point := List (Point);
+                                    This : constant Set_Point :=
+                                                    List (Point);
                                  begin
                                     Put (Minutes (This.Last));
                                     Put ("=");
@@ -265,7 +265,7 @@ procedure Test_ELV_MAX_Cube_Client is
                         for Day in Data.Schedule'Range loop
                            Put ("         " & Image (Day) & " ");
                            declare
-                              List : Points_List :=
+                              List : constant Points_List :=
                                      Data.Schedule (Day).Points;
                            begin
                               for Point in List'Range loop
@@ -273,7 +273,8 @@ procedure Test_ELV_MAX_Cube_Client is
                                     Put (", ");
                                  end if;
                                  declare
-                                    This : Set_Point := List (Point);
+                                    This : constant Set_Point :=
+                                                    List (Point);
                                  begin
                                     Put (Minutes (This.Last));
                                     Put ("=");
@@ -297,8 +298,9 @@ procedure Test_ELV_MAX_Cube_Client is
          delay Timeout;
 if false then
          declare
-            Address : RF_Address := 16#0B76DA#;
-            Data    : Device_Data := Get_Device_Data (Client, Address);
+            Address : constant RF_Address  := 16#0B76DA#;
+            Data    : constant Device_Data :=
+                               Get_Device_Data (Client, Address);
             procedure To_Automatic is
             begin
                Put_Line
@@ -421,7 +423,6 @@ begin
    declare
       use GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client;
       use Stream_IO;
-      use Strings_Edit.Streams;
       Stream : aliased String_Stream (1024 * 2);
    begin
       declare
@@ -468,8 +469,8 @@ begin
       end loop;
       Rewind (Stream);
       declare
-         H  : Day_Duration := 3600.0;
-         M  : Day_Duration := 60.0;
+         H  : constant Day_Duration := 3600.0;
+         M  : constant Day_Duration := 60.0;
          V1 : Day_Schedule (9);
       begin
          V1.Points (1) := ( 1 * H, 18.0);
@@ -484,7 +485,7 @@ begin
          Write (Stream'Access, V1);
          Set (Stream, Get (Stream));
          declare
-            V2 : Day_Schedule := Read (Stream'Access);
+            V2 : constant Day_Schedule := Read (Stream'Access);
          begin
             if V1.Length /= V2.Length then
                Raise_Exception
@@ -494,8 +495,8 @@ begin
             end if;
             for Index in V1.Points'Range loop
                declare
-                  P1 : Set_Point := V1.Points (Index);
-                  P2 : Set_Point := V2.Points (Index);
+                  P1 : constant Set_Point := V1.Points (Index);
+                  P2 : constant Set_Point := V2.Points (Index);
                begin
                   if P1.Point /= P2.Point then
                      Raise_Exception
@@ -527,7 +528,7 @@ begin
    end;
    declare
       use GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client;
-      Cubes : Cube_Descriptor_Array := Discover;
+      Cubes : constant Cube_Descriptor_Array := Discover;
    begin
       if Cubes'Length = 0 then
          Put_Line ("No MAX! cube discovered");

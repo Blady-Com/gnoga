@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Stream_IO               Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  09:37 03 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -121,14 +121,15 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
          )  );
       end if;
       declare
-         Result : Day_Schedule (Point_Count (Byte));
+         List   : Points_List (1..Point_Count (Byte));
          Last   : Duration := -1.0;
+         Length : Point_Count := 0;
       begin
-         for Index in Result.Points'Range loop
+         for Index in List'Range loop
             declare
                Data  : Unsigned_16;
                Value : Duration;
-               This  : Set_Point renames Result.Points (Index);
+               This  : Set_Point;
             begin
                Data :=
                   Unsigned_16 (Stream_Element'Input (Stream)) * 2**8;
@@ -141,17 +142,34 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
                else
                   This.Last := Value;
                end if;
-               if Last >= This.Last then
-                  Raise_Exception
-                  (  Data_Error'Identity,
-                     "Day schedule last time not ascending"
-                  );
-               else
-                  Last := This.Last;
+               if Last < This.Last then
+                  Last   := This.Last;
+                  Length := Length + 1;
+                  List (Length) := This;
+               elsif Last > This.Last then
+                  declare
+                     To : Point_Count := Length;
+                  begin
+                     while To > 0 and then List (To).Last > This.Last
+                     loop
+                        List (To + 1) := List (To);
+                        To := To - 1;
+                     end loop;
+                     List (To + 1) := This;
+                     Length := Length + 1;
+                  end;
+--                    Raise_Exception
+--                    (  Data_Error'Identity,
+--                       (  "Day schedule last time not ascending ["
+--                       &  Minutes (Last)
+--                       &  "<"
+--                       &  Minutes (This.Last)
+--                       &  "]"
+--                    )  );
                end if;
             end;
          end loop;
-         return Result;
+         return (Length, List (1..Length));
       end;
    end Read;
 
@@ -246,7 +264,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
       if Byte / 2**5 > 6 then
          Raise_Exception
          (  Data_Error'Identity,
-            "Inavalid week time day number"
+            "Invalid week time day number"
          );
       end if;
       Result.Day := Week_Day'Val (Byte / 2**5);
@@ -254,7 +272,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
       if Byte > 24 then
          Raise_Exception
          (  Data_Error'Identity,
-            "Inavalid week time hour number"
+            "Invalid week time hour number"
          );
       end if;
       Result.Time := Duration (Byte) * 3600.0;

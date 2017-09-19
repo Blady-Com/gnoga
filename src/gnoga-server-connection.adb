@@ -416,25 +416,10 @@ package body Gnoga.Server.Connection is
       function Adjust_Name return String;
 
       function Adjust_Name return String is
-         function Base_Name return String;
          function Start_Path return String;
          function After_Start_Path return String;
 
-         function Base_Name return String is
-            Q : Integer := Index (Status.File, "?", Going => Forward);
-         begin
-            if Q = 0 then
-               Q := Index (Status.File, "#", Going => Backward);
-            end if;
-
-            if Q = 0 then
-               return Status.File;
-            else
-               return Status.File (Status.File'First .. Q - 1);
-            end if;
-         end Base_Name;
-
-         File_Name : constant String := Base_Name;
+         File_Name : constant String := Status.File;
 
          function Start_Path return String is
             Q : constant Integer := Index (File_Name, "/");
@@ -481,6 +466,9 @@ package body Gnoga.Server.Connection is
       end Adjust_Name;
 
    begin
+      if Verbose_Output then
+         Gnoga.Log ("Kind: " & Status.Kind'Img & ", File: " & Status.File & ", Query: " & Status.Query);
+      end if;
       case Status.Kind is
          when None =>
             Gnoga.Log ("File kind none requested");
@@ -512,9 +500,9 @@ package body Gnoga.Server.Connection is
                   declare
                      MH      : constant String := "?m=";
                      Q       : constant Integer := Index
-                       (Status.File, MH, Going => Forward);
-                     Message : constant String := Status.File
-                       (Q + MH'Length .. Status.File'Last);
+                       (Status.Query, MH, Going => Forward);
+                     Message : constant String := Status.Query
+                       (Q + MH'Length .. Status.Query'Last);
                   begin
                      Dispatch_Message (Message);
                   end;
@@ -624,7 +612,7 @@ package body Gnoga.Server.Connection is
                                Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Value (i)));
          end loop;
 
-         On_Post_Event (Status.File, Parameters);
+         On_Post_Event (Status.File & Status.Query, Parameters);
       end if;
    end Body_Received;
 
@@ -648,7 +636,7 @@ package body Gnoga.Server.Connection is
         (Content_Disposition_Header);
    begin
       if On_Post_Request_Event /= null then
-         On_Post_Request_Event (Status.File, Param_List);
+         On_Post_Request_Event (Status.File & Status.Query, Param_List);
       end if;
 
       if Content_Type = "application/x-www-form-urlencoded" then
@@ -696,7 +684,7 @@ package body Gnoga.Server.Connection is
                                  Receive_Body
                                    (Client, Stream (Client.Content.FS));
 
-                                 On_Post_File_Event (Status.File,
+                                 On_Post_File_Event (Status.File & Status.Query,
                                                      File_Name,
                                                      File_Name & ".tmp");
                               end if;
@@ -1241,7 +1229,7 @@ package body Gnoga.Server.Connection is
             end loop;
          exception
             when E : others =>
-               Log ("Watchdog error.");
+               Log ("Watchdog error on websocket - " & ID'Img);
                Log (Ada.Exceptions.Exception_Information (E));
          end;
 
@@ -1331,8 +1319,8 @@ package body Gnoga.Server.Connection is
 
       F : constant String := Status.File;
    begin
-      if F /= "gnoga" and Index (F, "gnoga?") = 0 then
-         Gnoga.Log ("Invalid URL for Websocket");
+      if F /= "gnoga" then
+         Gnoga.Log ("Invalid URL for Websocket: " & F);
          declare
             Reason : constant String := "Invalid URL";
          begin
@@ -1374,7 +1362,7 @@ package body Gnoga.Server.Connection is
    is
       Status : Status_Line renames Get_Status_Line (Client);
 
-      F      : constant String := Status.File;
+      F      : constant String := Status.Query;
       S      : constant Socket_Type := Client'Unchecked_Access;
 
       ID     : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;

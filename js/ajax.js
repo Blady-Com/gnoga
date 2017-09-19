@@ -26,6 +26,7 @@
 
   if (location.port != "") { adr = adr + ":" + location.port; }
   adr = adr + "/gnoga_ajax";
+  console.log ("ADR: " + adr);
 
   ws = new Object;
 
@@ -49,5 +50,8 @@
     };
 
     xhr.open ("GET", adr + "?m=" + encodeURIComponent(message), true);
+    if (gnoga_debug == true) {
+       console.log ("GET: " + adr + "?m=" + encodeURIComponent(message));
+    }
     xhr.send (null);
   }

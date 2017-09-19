@@ -67,34 +67,13 @@ package body Gnoga.Application.Multi_Connect is
       Connection : access Gnoga.Server.Connection.Connection_Holder_Type)
    is
       Main_Window : Gnoga.Gui.Window.Window_Type;
-
-      function Get_Path return String;
-      --  return the URL Path with out query or hash
-
-      function Get_Path return String is
-         use Ada.Strings.Fixed;
-
-         P : constant String  := Server.Connection.Connection_Path (ID);
-         Q : Integer := Index (P, "?");
-         H : constant Integer := Index (P, "#", Ada.Strings.Backward);
-      begin
-         if Q = 0 then
-            if H = 0 then
-               Q := P'Last + 1;
-            else
-               Q := H;
-            end if;
-         end if;
-
-         return P (P'First .. Q - 1);
-      end Get_Path;
    begin
       Main_Window.Attach (Connection_ID => ID);
       Main_Window.Document.Title (Title);
       Server.Connection.HTML_On_Close (ID, HTML_On_Close);
 
       declare
-         Path : constant String := Right_Trim_Slashes (Get_Path);
+         Path : constant String := Right_Trim_Slashes (Server.Connection.Connection_Path (ID));
       begin
          if Path_Map.Contains (Path) then
             Path_Map.Element (Path) (Main_Window, Connection);

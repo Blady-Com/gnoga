@@ -128,6 +128,9 @@
     };
 
     xhr.open ("GET", xadr + "?m=" + encodeURIComponent(message), true);
+    if (gnoga_debug == true) {
+       console.log ("GET: " + adr + "?m=" + encodeURIComponent(message));
+    }
     xhr.send (null);
   }
 

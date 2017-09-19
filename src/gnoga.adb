@@ -78,7 +78,7 @@ package body Gnoga is
       R : Ada.Strings.Unbounded.Unbounded_String;
    begin
       for C in S'Range loop
-         R := R & Translate_Character (S (C));
+         Ada.Strings.Unbounded.Append (R, Translate_Character (S (C)));
       end loop;
 
       return Ada.Strings.Unbounded.To_String (R);
@@ -108,13 +108,13 @@ package body Gnoga is
                begin
                   C := C + 4;
 
-                  return Character'Val (H) & "";
+                  return (1 => Character'Val (H));
                end;
             end if;
          end if;
 
          declare
-            R : constant String := S (C) & "";
+            R : constant String := (1 => S (C));
          begin
             C := C + 1;
             return R;
@@ -124,7 +124,7 @@ package body Gnoga is
       R : Ada.Strings.Unbounded.Unbounded_String;
    begin
       loop
-         R := R & Translate_Character;
+         Ada.Strings.Unbounded.Append (R, Translate_Character);
          exit when C > S'Last;
       end loop;
 
@@ -168,7 +168,7 @@ package body Gnoga is
       end if;
 
       for C in 1 .. Ada.Strings.Unbounded.Length (T) loop
-         R := R & Translate_Character (Ada.Strings.Unbounded.Element (T, C));
+         Ada.Strings.Unbounded.Append (R, Translate_Character (Ada.Strings.Unbounded.Element (T, C)));
       end loop;
 
       return Ada.Strings.Unbounded.To_String (R);

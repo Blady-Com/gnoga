@@ -53,7 +53,7 @@ package Gnoga.Gui.Element.Multimedia is
    procedure Loop_Media (Media : in out Multimedia_Type; Value : in Boolean);
    function Loop_Media (Media : Multimedia_Type) return Boolean;
 
-   function Media_Duration (Media : Multimedia_Type) return Integer;
+   function Media_Duration (Media : Multimedia_Type) return Float;
    --  Returns the duration of Media in seconds.
 
    procedure Media_Source (Media : in out Multimedia_Type; Source : in String);
@@ -61,8 +61,8 @@ package Gnoga.Gui.Element.Multimedia is
    --  Returns the URL of the current Media
 
    procedure Media_Position (Media   : in out Multimedia_Type;
-                             Seconds : in     Integer);
-   function Media_Position (Media : Multimedia_Type) return Integer;
+                             Seconds : in     Float);
+   function Media_Position (Media : Multimedia_Type) return Float;
    --  Position of Media in seconds
 
    procedure Muted (Media : in out Multimedia_Type; Value : in Boolean);

@@ -75,7 +75,7 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Media_Duration --
    --------------------
 
-   function Media_Duration (Media : Multimedia_Type) return Integer is
+   function Media_Duration (Media : Multimedia_Type) return Float is
    begin
       return Media.Property ("duration");
    end Media_Duration;
@@ -100,13 +100,13 @@ package body Gnoga.Gui.Element.Multimedia is
    --------------------
 
    procedure Media_Position (Media   : in out Multimedia_Type;
-                             Seconds : in     Integer)
+                             Seconds : in     Float)
    is
    begin
       Media.Property ("currentTime", Seconds);
    end Media_Position;
 
-   function Media_Position (Media : Multimedia_Type) return Integer is
+   function Media_Position (Media : Multimedia_Type) return Float is
    begin
       return Media.Property ("currentTime");
    end Media_Position;
@@ -178,7 +178,7 @@ package body Gnoga.Gui.Element.Multimedia is
 
    function Ready_To_Play (Media : Multimedia_Type) return Boolean is
    begin
-      return Media.Property ("readyState");
+      return Media.Property ("readyState") /= 0;
    end Ready_To_Play;
 
    -------------

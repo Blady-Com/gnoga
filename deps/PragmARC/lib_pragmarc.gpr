@@ -15,11 +15,7 @@ library project Lib_PragmARC is
 
    package Install is
       for Install_Name use "pragmarc";
-      for Artifacts ("share/doc/pragmarc") use ("doc/pragmarc_rm");
+      for Artifacts ("share/doc/pragmarc_rm") use (Project'Object_Dir & "/gnatdoc/*");
    end Install;
-
-   package Ide is
-      for Documentation_Dir use "doc/pragmarc_rm";
-   end Ide;
 
 end Lib_PragmARC;

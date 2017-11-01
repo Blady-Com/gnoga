@@ -1,7 +1,23 @@
-2017xxxx - Gnoga V1.3-beta:
+20171031 - Gnoga V1.3a:
 
-- xxx
+- Fix Documentation_Dir obsolescence.
+- Update TODO, HISTORY and TIPS.
 
+20171022 - Gnoga V1.3-beta:
+
+- Add Ding test from Jeff Carter.
+- Fix some audio time types to float instead of integer and fix Ready_To_Play.
+- Enhancement from Miguel Ángel Oliván which changes this reassignation by using Ada.Strings.Unbounded.Append to solve the issue making time lag.
+- Upgrade and adapt to Simple Components 4.23.
+
+20170723 - Gnoga V1.2b:
+
+- AUTHORS, HISTORY and TIPS updated; miscellaneous fixes.
+- Update Jeff Carter's demos from Github. Turn off all style checks.
+- Update TIPS and TODO, Javascript fix for Firefox.
+- Added Gnoga in JavaFX, a contribution from Jeremiah Breeden.
+- Added tutorial for forms.
+- Added TIPS.
 
 20170716 - Gnoga V1.3-alpha:
 
@@ -42,7 +58,7 @@
 
 - Cleaning stuff such as withed units, unreferenced objects.
 - Fix ticket #36 (makefile issue)
-- Demos Tic-Tac-Toe, AdaOthello and RandomInt added
+- Demos AdaOthello and RandomInt added
 - Zanyblue upgrade from SVN revision 2992
 - LinXtris fixes
 - Fix ticket #35 (Temporary suppress gnat option checking end line style making compilation

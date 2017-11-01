@@ -2,7 +2,7 @@ with "shared";
 
 library project Lib_Components is
 
-   Version     := "4.22";
+   Version     := "4.23";
 
    type Object_Tracing_Mode is ("Off", "On");
    Object_Tracing : Object_Tracing_Mode := external ("Traced_objects", "Off");
@@ -494,13 +494,11 @@ library project Lib_Components is
    package Install is
       for Install_Name use "components";
       for Artifacts ("share/doc/components") use
-         ("*.jpg", "*.gif", "*.png", "*.htm", "doc/components_rm");
+         ("*.jpg", "*.gif", "*.png", "*.htm");
+      for Artifacts ("share/doc/components/components_rm") use
+         (Project'Object_Dir & "/gnatdoc/*");
       for Artifacts ("share/examples/components") use
          ("parser-examples/*");
    end Install;
-
-   package Documentation is
-      for HTML_Custom_Dir use "doc/components_rm";
-   end Documentation;
 
 end Lib_Components;

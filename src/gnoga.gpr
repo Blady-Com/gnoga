@@ -14,12 +14,12 @@ project Gnoga is
    package Binder renames Settings.Binder;
 
    package Ide is
-      for Documentation_Dir use "../docs/html/gnoga_rm";
       for Default_Switches ("adacontrol") use ("-f", "../rules/gnoga.aru", "-s", "--", "-T../obj");
    end Ide;
 
    package Install is
       for Artifacts ("share/gnoga") use ("../docs/html", "../docs/user_guide");
+      for Artifacts ("share/gnoga/gnoga_rm") use (Project'Object_Dir & "/gnatdoc/*");
    end Install;
 
    package Pretty_Printer renames Settings.Pretty_Printer;

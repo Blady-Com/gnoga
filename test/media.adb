@@ -37,7 +37,7 @@ procedure Media is
       Gnoga.Log ("Current position : " & App.Audio1.Media_Position'Img);
       Gnoga.Log ("Duration : " & App.Audio1.Media_Duration'Img);
       Gnoga.Log ("Playback rate : " & App.Audio1.Playback_Rate'Img);
-      App.Audio1.Media_Position (0);
+      App.Audio1.Media_Position (0.0);
       App.Audio1.Playback_Rate (App.Audio1.Playback_Rate * 1.25);
    end On_Click;
 

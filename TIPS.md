@@ -10,11 +10,11 @@ Many tips will be found also in source code specification for types and subprogr
 1. Use View.Hidden to remove from browser, then View.Remove to remove from DOM. When View finalizes on the Ada side it will also tell the browser to reclaim the elements memory as well.
 
 1. How do I add scrollbars to a view?
-View.Overflow or View.Overflow\_X or View.Overflow\_Y with Visible, Hidden, Scroll, Auto.
+Set View.Overflow or View.Overflow\_X or View.Overflow\_Y with Visible, Hidden, Scroll, Auto.
 
 1. When using the Grid view you always get best results when placing Views in to the grids instead of using the individual cell directly. When encapsulating what you want in to another container (especially if its size is known) will get a more predictable layout of the underlying table.
 
-1.  If I create an object dynamically and add it to the DOM via create on a parent.  If I later free that object manually and replace it with a newly created version (still set to dynamic), does that cause any memory leaks?
+1.  If I create an object dynamically and add it to the DOM via create on a parent. If I later free that object manually and replace it with a newly created version (still set to dynamic), does that cause any memory leaks?
 If you free the memory Ada's runtime will finalize the object which will remove any references to it in the Gnoga cache on the browser side. If you leaving "dangling pointer" on the Ada side you will of course have a leak. (Unless of course they were marked dynamic before creation and so the parent Gnoga view has a reference and will deallocate it when it finalizes)
 
 1. Does the DOM remember every object I add to a parent or will freeing it remove it completely from the DOM?
@@ -100,5 +100,32 @@ Refresh implies a lost connection and new session on web browsers, that is expec
     which will add a class but not remove other classes that may already apply to the element.
 
 1. Take care of latency, many subprograms do query the client side and wait for an answer, so they can be very slow if server and client are far from each other!
+
+1. How can I play a file not in the current directory?
+Gnoga recognizes executable in bin (if exist) directory and thus sets its root directory for relative paths and then same for html, img directories and so on if they exist. The browser generally only has access to files you can serve  ie in your app directory. Your app though using normal Ada code has access as usual to everything. You could copy the file into the html directory play it and then clear it.
+
+1. When giving this URL: http://127.0.0.1:8080/toto?m=a&l=b#ici
+Why do I receive:
+    2017-09-17 11:31:07.56 : Kind: FILE, File: toto, Query: m=a&l=b
+Because HTML browser sends just
+    GET /toto?m=a&l=b HTTP/1.1
+which turns to become File.
+
+1. How to keep label of GUI elements accessible in event handlers?
+Create a labelled element as for instance:
+   type Labeled_Range_Type is new Gnoga.Gui.Element.Form.Range_Type with record
+      Label : Gnoga.Gui.Element.Form.Label_Type;
+   end record;
+Use it as:
+      procedure On_Range_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+      is
+      begin
+         Labeled_Range_Type (Object).Label.Text
+         (Labeled_Range_Type (Object).Value);
+      end On_Range_Change;
+
+1. You want to browse through Gnoga API, generate them with gnatdoc:
+    $ make rm-docs
+    $ open obj/gnatdoc/index.html
 
 1. next tip...

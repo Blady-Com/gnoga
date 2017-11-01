@@ -5,7 +5,23 @@ Among various followings ideas, if you want to have one available in your favori
  - open a ticket: https://sourceforge.net/p/gnoga/tickets/
 
 
-To do 1.3:
+Proposals for 2.x:
+
+Let's now think of version Gnoga version 2.0.
+What would you like for next gen Gnoga?
+
+Gnoga is presently oriented to web applications but APIs are not so oriented to web applications.
+A set of APIs could be used to native GUI applications or even textual applications for console oriented or embedded applications.
+For instance:
+Gnoga.User_Interface.Web_Server.Multi_Connect, Views... (the Gnoga we presently know)
+Gnoga.User_Interface.Native_GUI.Windows, Views... (for native GUI applications)
+Gnoga.User_Interface.Embedded.Display, Views... (for console oriented or embedded applications)
+Gnoga.Data_Base.SQL... (as it is presently with mySQL and SQLite)
+Gnoga.Data_Base.XML... (XML parser)
+Gnoga.Data_Base.JSON... (JSON parser)
+
+
+To do 1.x:
 
 1. Complete SVG DOM bindings
 2. Direct connection to webkit via API instead of sockets for Gtk and Mac
@@ -19,6 +35,7 @@ To do 1.3:
 9. Complete Ace Editor plugin
 10. Complete MacGap support for menus
 11. Add coding style rules documentation
+12. Add Pixi Sprite new features (bounce on walls, event on position, event on collision, turtle à la Logo)
 
 
 Some other ideas:
@@ -113,3 +130,8 @@ DONE 31. Add AdaOthello port to Gnoga.
    note: read http://gafferongames.com/networking-for-game-programmers/udp-vs-tcp/ for a
    more in depth explanation.
 40. Adapt to Gnoga Chess game: http://adachess.com
+41. Add an exception handler for singleton apps (main procedure would have an
+exception handler and call End_Application if it handles an exception.)
+42. Enhancement for logging API à la Python
+
+

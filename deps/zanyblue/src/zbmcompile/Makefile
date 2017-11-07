@@ -57,7 +57,7 @@ XGENERATED=zbmcompile-messages.ads zbmcompile-messages.adb $(STAMPFILE)
 # Include configuration definitions
 include $(TOP)/src/mkfile/conf.mk
 
-all:	$(STAMPFILE)
+all:
 	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME)
 
 messages:	$(STAMPFILE)
@@ -70,7 +70,7 @@ $(STAMPFILE):	$(wildcard $(MESGDIR)/*)
 	$(warning "**** Expect two builds of zbmcompile              ****")
 	$(warning "****                                              ****")
 	$(warning "******************************************************")
-	$(GPRBUILD) $(GNATFLAGS) -P $(APPNAME)
+	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME)
 	$(ZBMCOMPILE) -p -S $(STAMPFILE) $(RUNARGS)
 	$(MAKE) clean
 

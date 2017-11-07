@@ -1,24 +1,61 @@
 Gnoga can be installed as a gcc/ada standard library on many platforms and
 can always be used from its own directory.
 
-## As a Standard gcc/ada library:
-
-1) To install release version:
+1) To install release version in build directory:
 
 make release
-sudo make install
+make install
 
 gnoga_make will also be installed in to the gcc/ada bin directory. Make sure to
 check the permission on the gnoga_make executable as some versions of gprinstall
 fail to correctly change permissions to execute for all users.
 
-## Using from Gnoga's own directory:
+In your gpr file use:
 
-### Gnoga _does not_ require installation, it is a convenience feature.
+with "gnoga"
 
-To use without installing:
+and add this option to your grpbuild: -aP/path/to/gnoga/build/share/gpr -aP/path/to/gnoga/build/lib/gnat
+or
+export GPR_PROJECT_PATH=/path/to/gnoga/build/share/gpr;/path/to/gnoga/build/lib/gnat
+
+
+2) To install debug version in build directory:
+
+make all
+make install_debug
+
+In your gpr file use:
+
+with "gnoga"
+
+and add this option to your grpbuild: -aP/path/to/gnoga/build/share/gpr -aP/path/to/gnoga/build/lib/gnat
+or
+export GPR_PROJECT_PATH=/path/to/gnoga/build/share/gpr;/path/to/gnoga/build/lib/gnat
+
+
+3) Installation directory:
+
+By default Gnoga and dependent libraries are installed in /path/to/gnoga/build directory.
+Installation is customizable with PREFIX, as for instance:
+
+sudo make PREFIX=/path/to/install install
+or
+sudo make PREFIX=/path/to/install install_debug
+
+In your gpr file use:
+
+with "gnoga"
+
+and add this option to your grpbuild: -aP/path/to/install/share/gpr -aP/path/to/install/lib/gnat
+or
+export GPR_PROJECT_PATH=/path/to/install/share/gpr;/path/to/install/lib/gnat
+
+
+4) Using from Gnoga's own directory without installing:
 
 make release
+or
+make all
 
 gnoga_make is found in the bin directory.
 
@@ -26,14 +63,7 @@ In your gpr file use:
 
 with "/path/to/gnoga/src/gnoga.gpr" instead of with "gnoga"
 
-and add this option to your grpbuild: -aP /path/to/gnoga/build/share/gpr
-
-2) To install debug version:
-
-make all
-sudo make install_debug
-
-To use without installing, just do:
-
-make all
+and add this option to your grpbuild: -aP/path/to/gnoga/build/share/gpr -aP/path/to/gnoga/build/lib/gnat
+or
+export GPR_PROJECT_PATH=/path/to/gnoga/build/share/gpr;/path/to/gnoga/build/lib/gnat
 

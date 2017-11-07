@@ -1,7 +1,8 @@
-PREFIX=$(shell echo $(dir $(shell which gnatls)) | sed "s:/cygdrive/\\(.\\):\\1\\::" )..
+#PREFIX=$(shell echo $(dir $(shell which gnatls)) | sed "s:/cygdrive/\\(.\\):\\1\\::" )..
 GPRCHECK=$(shell gprbuild --version)
 TARGET=$(shell gcc -dumpmachine)
 CWD=$(shell pwd)
+PREFIX=$(CWD)/build
 export GPR_PROJECT_PATH=$(CWD)/build/share/gpr:$(CWD)/build/lib/gnat
 # If Simple Components, Zanyblue or PragmArc libs are already existing in your environnement
 # Put their location in GPR_PROJECT_PATH and comment the previous line
@@ -132,6 +133,7 @@ simple_components:
 	$(INSTALLER) --prefix=$(CWD)/build --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
 
 lib/libsqlite3.a:
+	- $(MKDIR) lib
 	cd deps/simple_components/sqlite-sources && gcc -s -c -O2 -o sqlite3.o sqlite3.c
 	cd deps/simple_components/sqlite-sources && ar rcs libsqlite3.a sqlite3.o
 	cd deps/simple_components/sqlite-sources && $(MOVE) libsqlite3.a ..$(PATHSEP)..$(PATHSEP)..$(PATHSEP)lib
@@ -141,8 +143,8 @@ sqlite3: lib/libsqlite3.a
 
 # Zanyblue with DEBUG on
 zanyblue:
-	cd deps/zanyblue/src && $(MAKE) BUILD=Debug
-	cd deps/zanyblue/src && $(MAKE) INSTALL_DIR=$(CWD)/build install
+	- cd deps/zanyblue/src && $(MAKE) BUILD=Debug APPDIRS="zbmcompile zbinfo"
+	- cd deps/zanyblue/src && $(MAKE) INSTALL_DIR=$(CWD)/build APPDIRS="zbmcompile zbinfo" install
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
@@ -196,8 +198,8 @@ release: deps $(BUILD_SQLITE3) setup basic_components
 # Install Gnoga and deps with DEBUG off
 install: release gnoga_tools
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
-# TODO libsqlite3
-	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) install
+	- $(CP) lib/libsqlite3.a $(PREFIX)/lib
+	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) APPDIRS="zbmcompile zbinfo" install
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
@@ -205,8 +207,8 @@ install: release gnoga_tools
 # Install Gnoga and deps with DEBUG on
 install_debug:
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
-# TODO libsqlite3
-	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) BUILD=Debug install
+	- $(CP) lib/libsqlite3.a $(PREFIX)/lib
+	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) BUILD=Debug APPDIRS="zbmcompile zbinfo" install
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -244,8 +246,8 @@ adablog:
 	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 connect_four: zanyblue
-	cd demo/connect_four && ../../deps/zanyblue/bin/zbmcompile -i -v -G strings connectfour_messages connectfour
-	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/connect_four && ../../deps/zanyblue/bin/zbmcompile -i -v -G strings connectfour_messages connectfour
+	- cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 linxtris:
 	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -285,8 +287,8 @@ tutorials:
 	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean_all: clean clean_deps
 	$(MAKE) -C components uninstall
@@ -297,7 +299,7 @@ clean_all: clean clean_deps
 clean_deps:
 	$(CLEANER) -P deps/simple_components/lib_components.gpr
 	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
-	cd deps/zanyblue && $(MAKE) -C src clean
+	cd deps/zanyblue && $(MAKE) -C src APPDIRS="zbmcompile zbinfo" clean
 	$(RMS) build
 	cd deps && $(RMS) MultiMarkdown-4
 	cd deps && $(RMS) electron-quick-start
@@ -318,15 +320,15 @@ clean_demo:
 	cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr
 	cd demo/adaedit && $(CLEANER) -P adaedit.gpr
 	cd demo/adablog && $(CLEANER) -P adablog.gpr
-	-cd demo/connect_four && $(CLEANER) -P connect_four.gpr
+	- cd demo/connect_four && $(CLEANER) -P connect_four.gpr
 	cd demo/connect_four && $(RM) connectfour_messages*
 	cd demo/linxtris && $(CLEANER) -P linxtris.gpr
-	-cd demo/password_gen && $(CLEANER) -P password_gen.gpr
-	-cd demo/random_int && $(CLEANER) -P random_int.gpr
+	- cd demo/password_gen && $(CLEANER) -P password_gen.gpr
+	- cd demo/random_int && $(CLEANER) -P random_int.gpr
 	cd demo/adaothello && $(CLEANER) -P adaothello.gpr
-	-cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr
+	- cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr
 	cd demo/leaves && $(CLEANER) -P leaves.gpr
-	-cd demo/db_maker && $(CLEANER) -P db_maker.gpr
+	- cd demo/db_maker && $(CLEANER) -P db_maker.gpr
 
 clean_tutorials:
 	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr

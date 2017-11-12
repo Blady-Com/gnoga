@@ -4,7 +4,7 @@
 --                                                                          --
 --                     G N O G A . A P P L I C A T I O N                    --
 --                                                                          --
---                             S e p a r a t e                               --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --
@@ -35,9 +35,63 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-separate (Gnoga.Application)
-function Open_Command return String is
---  Open the default browser on Linux
-begin
-   return ("/usr/bin/xdg-open ");
-end Open_Command;
+with Ada.Strings.Unbounded;
+
+with GNAT.OS_Lib;
+
+package body Gnoga.Application is
+   App_Name : Ada.Strings.Unbounded.Unbounded_String :=
+     Ada.Strings.Unbounded.To_Unbounded_String
+       ("Gnoga - The GNU Omnificent GUI for Ada");
+
+   HTML_For_On_Close : Ada.Strings.Unbounded.Unbounded_String;
+
+   ----------------------
+   -- Application_Name --
+   ----------------------
+
+   procedure Title (Name : in String) is
+   begin
+      App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
+   end Title;
+
+   function Title return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (App_Name);
+   end Title;
+
+   -------------------
+   -- HTML_On_Close --
+   -------------------
+
+   procedure HTML_On_Close (HTML : String) is
+   begin
+      HTML_For_On_Close := Ada.Strings.Unbounded.To_Unbounded_String (HTML);
+   end HTML_On_Close;
+
+   function HTML_On_Close return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (HTML_For_On_Close);
+   end HTML_On_Close;
+
+   --------------
+   -- Open_URL --
+   --------------
+
+   function Open_Command return String;
+   --  Returns the appropriate command for opening URL regarding the system
+
+   function Open_Command return String is separate;
+
+   procedure Open_URL (URL : String := "http://127.0.0.1:8080") is
+      Args : GNAT.OS_Lib.Argument_List_Access;
+      PID  : GNAT.OS_Lib.Process_Id;
+      pragma Unreferenced (PID);
+   begin
+      Args := GNAT.OS_Lib.Argument_String_To_List (Open_Command & URL);
+      PID := GNAT.OS_Lib.Non_Blocking_Spawn
+        (Program_Name => Args (Args'First).all,
+         Args         => Args (Args'First + 1 .. Args'Last));
+   end Open_URL;
+
+end Gnoga.Application;

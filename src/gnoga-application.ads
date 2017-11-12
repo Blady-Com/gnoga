@@ -59,19 +59,10 @@ package Gnoga.Application is
    --  spawned at program start. Therefore these if used should be used
    --  before the application initialization is called.
 
-   procedure Open_URL_OSX (URL : String := "http://127.0.0.1:8080");
-   --  Open the default browser on Mac OS X
-
-   procedure Open_URL_Linux (URL : String := "http://127.0.0.1:8080");
-   --  Open the default browser on Linux
-   --  Uses /usr/bin/xdg-open
-
-   procedure Open_URL_Windows (URL : String := "http://127.0.0.1:8080");
-   --  Open the default browser on Windows
-
    procedure Open_URL (URL : String := "http://127.0.0.1:8080");
-   --  By default this calls Open_URL_Linux, however the Makefile
-   --  if it identfies Gnoga is being compiled on Mac OS X or Windows
+   --  Open the default browser
+   --  By default this calls open for Linux, however the Makefile
+   --  if it identifies Gnoga is being compiled on Mac OS X or Windows
    --  it will switch to use the appropriate procedure.
 
 end Gnoga.Application;

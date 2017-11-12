@@ -9,6 +9,10 @@ project Gnoga is
    for Library_Dir use "../lib";
    for Library_Kind use "static";
 
+   package Naming is
+      for Body ("Gnoga.Application.Open_command") use "gnoga-application." & Settings.Build_Target;
+   end Naming;
+
    package Compiler renames Settings.Compiler;
 
    package Binder renames Settings.Binder;

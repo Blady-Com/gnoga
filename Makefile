@@ -116,10 +116,7 @@ help :
 	@echo "--                                                                           --"
 	@echo "-------------------------------------------------------------------------------"
 
-all: deps $(BUILD_SQLITE3) setup basic_components gnoga gnoga_tools demo tutorials
-
-setup:
-	$(MAKE) -C src
+all: deps $(BUILD_SQLITE3) basic_components gnoga gnoga_tools demo tutorials
 
 basic_components:
 	$(MAKE) -C components
@@ -190,7 +187,7 @@ gnoga_tools:
 	$(BUILDER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 # Gnoga build with DEBUG off
-release: deps $(BUILD_SQLITE3) setup basic_components
+release: deps $(BUILD_SQLITE3) basic_components
 	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 
 # Install Gnoga and deps with DEBUG off
@@ -297,7 +294,7 @@ clean_all: clean clean_deps
 clean_deps:
 	$(CLEANER) -P deps/simple_components/lib_components.gpr
 	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
-	cd deps/zanyblue && $(MAKE) -C src clean
+	- cd deps/zanyblue && $(MAKE) -C src clean
 	$(RMS) build
 	cd deps && $(RMS) MultiMarkdown-4
 	cd deps && $(RMS) electron-quick-start
@@ -305,51 +302,51 @@ clean_deps:
 	$(RM) lib/libsqlite3.a
 
 clean: clean_demo clean_tutorials clean_tests
-	cd src && $(CLEANER) -Pgnoga.gpr
-	cd ssl && $(CLEANER) -Pgnoga_secure.gpr
-	cd tools && $(CLEANER) -Ptools.gpr
+	- cd src && $(CLEANER) -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd ssl && $(CLEANER) -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tools && $(CLEANER) -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(RM) bin/*.db
 	$(RM) bin/temp.txt
 	$(RM) obj/gnoga_gtk_window.o
 
 clean_demo:
-	cd demo/snake && $(CLEANER) -P snake.gpr
-	cd demo/mine_detector && $(CLEANER) -P mine_detector.gpr
-	cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr
-	cd demo/adaedit && $(CLEANER) -P adaedit.gpr
-	cd demo/adablog && $(CLEANER) -P adablog.gpr
-	-cd demo/connect_four && $(CLEANER) -P connect_four.gpr
-	cd demo/connect_four && $(RM) connectfour_messages*
-	cd demo/linxtris && $(CLEANER) -P linxtris.gpr
-	-cd demo/password_gen && $(CLEANER) -P password_gen.gpr
-	-cd demo/random_int && $(CLEANER) -P random_int.gpr
-	cd demo/adaothello && $(CLEANER) -P adaothello.gpr
-	-cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr
-	cd demo/leaves && $(CLEANER) -P leaves.gpr
-	-cd demo/db_maker && $(CLEANER) -P db_maker.gpr
+	- cd demo/snake && $(CLEANER) -P snake.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/mine_detector && $(CLEANER) -P mine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/adaedit && $(CLEANER) -P adaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/adablog && $(CLEANER) -P adablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/connect_four && $(CLEANER) -P connect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/connect_four && $(RM) connectfour_messages*
+	- cd demo/linxtris && $(CLEANER) -P linxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/password_gen && $(CLEANER) -P password_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/random_int && $(CLEANER) -P random_int.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/adaothello && $(CLEANER) -P adaothello.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/leaves && $(CLEANER) -P leaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/db_maker && $(CLEANER) -P db_maker.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean_tutorials:
-	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr
-	cd tutorial/tutorial-02 && $(CLEANER) -P tutorial_02.gpr
-	cd tutorial/tutorial-03 && $(CLEANER) -P tutorial_03.gpr
-	cd tutorial/tutorial-04 && $(CLEANER) -P tutorial_04.gpr
-	cd tutorial/tutorial-05 && $(CLEANER) -P tutorial_05.gpr
-	cd tutorial/tutorial-06 && $(CLEANER) -P tutorial_06.gpr
-	cd tutorial/tutorial-07 && $(CLEANER) -P tutorial_07.gpr
-	cd tutorial/tutorial-08 && $(CLEANER) -P tutorial_08.gpr
-	cd tutorial/tutorial-09 && $(CLEANER) -P tutorial_09.gpr
-	cd tutorial/tutorial-10 && $(CLEANER) -P tutorial_10.gpr
-	cd tutorial/tutorial-11 && $(CLEANER) -P tutorial_11.gpr
+	- cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-02 && $(CLEANER) -P tutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-03 && $(CLEANER) -P tutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-04 && $(CLEANER) -P tutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-05 && $(CLEANER) -P tutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-06 && $(CLEANER) -P tutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-07 && $(CLEANER) -P tutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-08 && $(CLEANER) -P tutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-09 && $(CLEANER) -P tutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-10 && $(CLEANER) -P tutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-11 && $(CLEANER) -P tutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean_tests:
-	cd test && $(CLEANER) -P test.gpr
-	cd test_ssl && $(CLEANER) -P test_ssl.gpr
-	cd test/tickets/001 && $(CLEANER) -P test.gpr
-	cd test/tickets/002 && $(CLEANER) -P test.gpr
-	cd test/tickets/005 && $(CLEANER) -P test.gpr
-	cd test/tickets/007 && $(CLEANER) -P test.gpr
-	cd test/tickets/011 && $(CLEANER) -P test.gpr
-	cd test/tickets/019 && $(CLEANER) -P test.gpr
+	- cd test && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd test_ssl && $(CLEANER) -P test_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd test/tickets/001 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd test/tickets/002 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd test/tickets/005 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd test/tickets/007 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd test/tickets/011 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd test/tickets/019 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 rm-docs: gnoga
 	gnatdoc -P src/gnoga.gpr --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}

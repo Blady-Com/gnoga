@@ -13,7 +13,5 @@ PATHSEP=$(strip $(PATHSEP2))
 all: install
 
 install:
-	$(COPY) src$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)src
 
 uninstall:
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-message_boxes.ad?

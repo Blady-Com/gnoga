@@ -1,10 +1,11 @@
 with "../settings";
 with "lib_components.gpr";
+with "../components/plugins.gpr";
 
 project Gnoga is
 
    for Object_Dir use "../obj";
-   for Source_Dirs use (".");
+   for Source_Dirs use (".") & Plugins.Source_Dirs;
    for Library_Name use "gnoga";
    for Library_Dir use "../lib";
    for Library_Kind use "static";

@@ -13,7 +13,6 @@ PATHSEP=$(strip $(PATHSEP2))
 all: install
 
 install:
-	$(COPY) src$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)src
 	$(COPY) css$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)css
 	$(COPY) html$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)html
 	- mkdir ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
@@ -21,7 +20,6 @@ install:
 	$(COPY) js$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)js
 
 uninstall:
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)src$(PATHSEP)gnoga-gui-plugin-jqueryui*
 	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)jquery-ui*
 	- $(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)boot_jqueryui.html
 	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images$(PATHSEP)*.png

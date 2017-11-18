@@ -11,17 +11,18 @@ else
 endif
 
 PATHSEP=$(strip $(PATHSEP2))
+INSTALL_DIR=..$(PATHSEP)..
 
 all: install
 
 install:
-	$(COPY) css$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)css
-	$(COPY) html$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)html
-	$(COPY) img$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)img
-	$(COPY) js$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)js
+	$(COPY) css$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)css
+	$(COPY) html$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)html
+	$(COPY) img$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)img
+	$(COPY) js$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)js
 
 uninstall:
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)mnmenu.css
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)boot_mnmenu.html
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)img$(PATHSEP)menu*.png
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)jquery.mnmenu.js
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)css$(PATHSEP)mnmenu.css
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)html$(PATHSEP)boot_mnmenu.html
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)img$(PATHSEP)menu*.png
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)jquery.mnmenu.js

@@ -9,6 +9,7 @@ else
 endif
 
 PATHSEP=$(strip $(PATHSEP2))
+INSTALL_DIR=..$(PATHSEP)..
 
 all: install
 

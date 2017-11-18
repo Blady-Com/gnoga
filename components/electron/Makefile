@@ -16,8 +16,9 @@ INSTALL_DIR=..$(PATHSEP)..
 all: install
 
 install:
+	$(COPY) html$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)html
 	$(COPY) js$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)js
 
 uninstall:
-	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)pixi.js
-	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)pixi.js.map
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)html$(PATHSEP)electron.html
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)electron_boot.js

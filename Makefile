@@ -198,6 +198,7 @@ install: release gnoga_tools
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
+	$(MAKE) -C components INSTALL_DIR=$(PREFIX)/share/gnoga
 
 # Install Gnoga and deps with DEBUG on
 install_debug:
@@ -207,11 +208,13 @@ install_debug:
 	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(MAKE) -C components INSTALL_DIR=$(PREFIX)/share/gnoga
 
 # Install Gnoga alone with DEBUG on
 install_gnoga_debug:
 	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(MAKE) -C components INSTALL_DIR=$(PREFIX)/share/gnoga
 
 uninstall:
 	- $(INSTALLER) --prefix=$(PREFIX) --install-name=components --uninstall lib_components.gpr
@@ -232,12 +235,14 @@ mine_detector:
 	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 chattanooga:
+	$(COPY) demo/chattanooga/glass.ogg html
 	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 adaedit:
 	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 adablog:
+	$(COPY) demo/adablog/adablog.css css
 	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 connect_four: zanyblue
@@ -261,6 +266,8 @@ tic_tac_toe:
 	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 leaves:
+	$(COPY) demo/leaves/img/*.png img
+	$(COPY) demo/leaves/img/*.jpg img
 	cd demo/leaves && $(BUILDER) -Pleaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 db_maker:
@@ -287,7 +294,11 @@ tutorials:
 
 clean_all: clean clean_deps
 	$(MAKE) -C components uninstall
-	$(MAKE) -C src clean
+	$(RMS) css
+	$(RMS) html
+	$(RMS) img
+	$(RMS) js
+	$(RMS) upload
 	cd docs && $(RM) html/*.html
 	cd docs && $(RMS) html/gnoga_rm
 

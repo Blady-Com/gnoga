@@ -1,6 +1,12 @@
-install: install_bootstrap install_jqueryui install_message_boxes install_ace_editor install_pixi install_mnmenu
+install: install_basic install_electron install_bootstrap install_jqueryui install_message_boxes install_ace_editor install_pixi install_mnmenu
 
-uninstall: uninstall_bootstrap uninstall_jqueryui uninstall_message_boxes uninstall_ace_editor uninstall_pixi uninstall_mnmenu
+uninstall: uninstall_basic uninstall_electron uninstall_bootstrap uninstall_jqueryui uninstall_message_boxes uninstall_ace_editor uninstall_pixi uninstall_mnmenu
+
+install_basic:
+	$(MAKE) -C basic install
+
+install_electron:
+	$(MAKE) -C electron install
 
 install_bootstrap:
 	$(MAKE) -C bootstrap install
@@ -19,6 +25,12 @@ install_pixi:
 
 install_mnmenu:
 	$(MAKE) -C mnmenu install
+
+uninstall_basic:
+	$(MAKE) -C basic uninstall
+
+uninstall_electron:
+	$(MAKE) -C electron uninstall
 
 uninstall_bootstrap:
 	$(MAKE) -C bootstrap uninstall

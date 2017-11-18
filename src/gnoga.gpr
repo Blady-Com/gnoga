@@ -23,7 +23,7 @@ project Gnoga is
    end Ide;
 
    package Install is
-      for Artifacts ("share/gnoga") use ("../docs/html", "../docs/user_guide");
+      for Artifacts ("share/gnoga/doc") use ("../docs/html/*.html", "../docs/*.txt", "../docs/user_guide");
       for Artifacts ("share/gnoga/gnoga_rm") use (Project'Object_Dir & "/gnatdoc/*");
    end Install;
 

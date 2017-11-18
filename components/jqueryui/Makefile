@@ -9,19 +9,20 @@ else
 endif
 
 PATHSEP=$(strip $(PATHSEP2))
+INSTALL_DIR=..$(PATHSEP)..
 
 all: install
 
 install:
-	$(COPY) css$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)css
-	$(COPY) html$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)html
-	- mkdir ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
-	$(COPY) css$(PATHSEP)images$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
-	$(COPY) js$(PATHSEP)*.* ..$(PATHSEP)..$(PATHSEP)js
+	$(COPY) css$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)css
+	$(COPY) html$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)html
+	- mkdir $(INSTALL_DIR)$(PATHSEP)css$(PATHSEP)images
+	$(COPY) css$(PATHSEP)images$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)css$(PATHSEP)images
+	$(COPY) js$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)js
 
 uninstall:
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)jquery-ui*
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)html$(PATHSEP)boot_jqueryui.html
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images$(PATHSEP)*.png
-	- rmdir ..$(PATHSEP)..$(PATHSEP)css$(PATHSEP)images
-	- $(RM) ..$(PATHSEP)..$(PATHSEP)js$(PATHSEP)jquery-ui.min.js
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)css$(PATHSEP)jquery-ui*
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)html$(PATHSEP)boot_jqueryui.html
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)css$(PATHSEP)images$(PATHSEP)*.png
+	- rmdir $(INSTALL_DIR)$(PATHSEP)css$(PATHSEP)images
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)jquery-ui.min.js

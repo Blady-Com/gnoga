@@ -4,7 +4,6 @@ with Gnoga.Gui.View;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
-with Gnoga.Gui.Element.Multimedia;
 with Gnoga.Types;
 with Gnoga.Client.Storage;
 with Gnoga.Server.Connection;
@@ -33,7 +32,7 @@ procedure Storage is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Message.Display ("none");
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);
@@ -46,7 +45,7 @@ procedure Storage is
    is
       use Ada.Strings.Unbounded;
 
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Gnoga.Log ("On Storage");
       App.Main_Window.Alert
@@ -65,7 +64,8 @@ procedure Storage is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : access App_Data := new App_Data;
+      pragma Unreferenced (Connection);
+      App     : constant access App_Data := new App_Data;
       View    : Gnoga.Gui.View.View_Type;
       Local : Gnoga.Client.Storage.Local_Storage_Type :=
                   Gnoga.Client.Storage.Local_Storage (Main_Window);

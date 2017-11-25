@@ -31,7 +31,7 @@ procedure Media is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Audio1.Play;
       Gnoga.Log ("Current position : " & App.Audio1.Media_Position'Img);
@@ -43,7 +43,7 @@ procedure Media is
 
    procedure On_Progress (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Gnoga.Log ("Progress position : " & App.Audio1.Media_Position'Img);
    end On_Progress;
@@ -53,7 +53,7 @@ procedure Media is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : App_Access := new App_Data;
+      App     : constant App_Access := new App_Data;
       Play    : Common.Button_Type;
       View    : Gnoga.Gui.View.View_Type;
    begin
@@ -97,7 +97,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Media;

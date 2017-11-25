@@ -202,7 +202,7 @@ package body Gnoga_Make is
                               App_Template_Name : in String)
    is
       Data       : Gnoga.Server.Template_Parser.View_Data;
-      Lower_Name : String := Translate (App_Name, Lower_Case_Map);
+      Lower_Name : constant String := Translate (App_Name, Lower_Case_Map);
 
       procedure Create_Tree (Directory_Entry : Directory_Entry_Type);
       --  Copy template tree and parse template files
@@ -212,7 +212,7 @@ package body Gnoga_Make is
       --  the .tpl extension
 
       function Parse_Name (Name : String) return String is
-         P : Natural := Index (Name, App_Template_Name);
+         P : constant Natural := Index (Name, App_Template_Name);
       begin
          if P = 0 then
             return Name (Name'First .. Name'Last - 4);
@@ -257,7 +257,7 @@ package body Gnoga_Make is
 
       for i in 1 .. Ada.Command_Line.Argument_Count loop
          declare
-            n : String := i'Img;
+            n : constant String := i'Img;
          begin
             Data.Insert ("Argument_" & n (n'First + 1 .. n'Last),
                          Ada.Command_Line.Argument (i));
@@ -287,9 +287,9 @@ package body Gnoga_Make is
                                 Template_Name      : in String)
    is
       Data              : Gnoga.Server.Template_Parser.View_Data;
-      App_Template_Name : String := "app_name";
-      App_Lower_Name    : String := Translate (App_Name, Lower_Case_Map);
-      Lower_Name        : String := Translate (Name, Lower_Case_Map);
+      App_Template_Name : constant String := "app_name";
+      App_Lower_Name    : constant String := Translate (App_Name, Lower_Case_Map);
+      Lower_Name        : constant String := Translate (Name, Lower_Case_Map);
 
       procedure Create_Tree (Directory_Entry : Directory_Entry_Type);
       --  Copy template tree and parse template files
@@ -300,7 +300,7 @@ package body Gnoga_Make is
       --  extension
 
       function Parse_Name (Name : String) return String is
-         P  : Natural := Index (Name, App_Template_Name);
+         P  : constant Natural := Index (Name, App_Template_Name);
          B  : Ada.Strings.Unbounded.Unbounded_String;
       begin
          if P = 0 then
@@ -312,8 +312,8 @@ package body Gnoga_Make is
          end if;
 
          declare
-            Name : String := To_String (B);
-            P    : Natural := Index (Name, Template_Name);
+            Name : constant String := To_String (B);
+            P    : constant Natural := Index (Name, Template_Name);
          begin
             if P = 0 then
                return Name (Name'First .. Name'Last - 4);

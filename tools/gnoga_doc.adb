@@ -37,8 +37,6 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Characters.Latin_1;
-with Ada.Strings.Maps;
-with Ada.Strings.Maps.Constants;
 with Ada.Strings.Unbounded;
 
 with Gnoga;
@@ -76,7 +74,7 @@ package body Gnoga_Doc is
 
          loop
             declare
-               Type_Info : String := Token_Name (S, P);
+               Type_Info : constant String := Token_Name (S, P);
             begin
                if Type_Info = "in" or
                  Type_Info = "out" or
@@ -111,7 +109,7 @@ package body Gnoga_Doc is
       Put_Line ("Parsing file : " & File_Name);
 
       declare
-         S : String := Gnoga.Server.Template_Parser.Simple.Load_View
+         S : constant String := Gnoga.Server.Template_Parser.Simple.Load_View
            (File_Name);
          P : Integer := S'First;
          T : Integer;

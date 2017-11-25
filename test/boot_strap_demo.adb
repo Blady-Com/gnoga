@@ -1,13 +1,11 @@
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
-with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Section;
 with Gnoga.Gui.Element.List;
 with Gnoga.Types;
-with Gnoga.Server.Template_Parser;
 
 with Gnoga.Gui.Plugin.Boot_Strap;
 
@@ -28,15 +26,6 @@ procedure Boot_Strap_Demo is
       end record;
    type App_Access is access all App_Data;
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
-      App : App_Access := App_Access (Object.Connection_Data);
-   begin
-      null;
-   end On_Click;
-
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access
@@ -47,7 +36,8 @@ procedure Boot_Strap_Demo is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
@@ -177,7 +167,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Boot_Strap_Demo;

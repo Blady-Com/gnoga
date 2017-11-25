@@ -2,13 +2,11 @@
 --  To use this app, run: db_active setup
 --  then run again: db_active
 
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Exceptions;
 with Ada.Containers;
 
 with GNAT.OS_Lib;
 
-with Gnoga.Types;
 with Gnoga.Server.Database.SQLite;
 with Gnoga.Server.Migration;
 with Gnoga.Server.Model;

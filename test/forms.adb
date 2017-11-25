@@ -1,4 +1,3 @@
-with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 
 with Gnoga.Application.Multi_Connect;
@@ -6,8 +5,6 @@ with Gnoga.Gui.Window;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Form;
-with Gnoga.Gui.Element.Common;
-with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.View.Console;
 with Gnoga.Types;
 with Gnoga.Server.Connection;
@@ -37,7 +34,7 @@ procedure Forms is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Main_Window.Document.Body_Element.Background_Color ("Orange");
 
@@ -45,7 +42,7 @@ procedure Forms is
    end On_Click;
 
    procedure On_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Log ("On submit.");
       App.Main_Window.Alert ("On Submit");
@@ -55,14 +52,14 @@ procedure Forms is
    end On_Submit;
 
    procedure On_Submit_Get (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.My_Form.Method (Form.Get);
       App.My_Form.Submit;
    end On_Submit_Get;
 
    procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Input.Value (String'(App.Pick.Value));
    end On_Change;
@@ -77,7 +74,7 @@ procedure Forms is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : App_Access := new App_Data;
+      App     : constant App_Access := new App_Data;
       Button1 : Form.Input_Button_Type;
       Button2 : Form.Submit_Button_Type;
       Button3 : Form.Input_Button_Type;
@@ -154,6 +151,7 @@ procedure Forms is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       Console : View.Console.Console_View_Type;
    begin
       Console.Create (Main_Window);
@@ -195,6 +193,7 @@ procedure Forms is
      (URI                 : in String;
       Accepted_Parameters : out Ada.Strings.Unbounded.Unbounded_String)
    is
+      pragma Unreferenced (URI);
    begin
       Accepted_Parameters :=
         Ada.Strings.Unbounded.To_Unbounded_String ("Some_Text,fspec");
@@ -206,6 +205,7 @@ procedure Forms is
    procedure On_Post (URI        : String;
                       Parameters : in out Gnoga.Types.Data_Map_Type)
    is
+      pragma Unreferenced (URI);
    begin
       Last_Parameters := Parameters;
       for C in Parameters.Iterate loop
@@ -222,6 +222,7 @@ procedure Forms is
                            File_Name : in String;
                            Temp_Name : in String)
    is
+      pragma Unreferenced (URI);
    begin
       Last_Parameters.Include ("file_name", File_Name);
       Last_Parameters.Include ("temp_name", Temp_Name);
@@ -242,7 +243,7 @@ begin
    Gnoga.Server.Connection.On_Post_File_Handler
      (On_Post_File'Unrestricted_Access);
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

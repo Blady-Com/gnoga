@@ -66,7 +66,6 @@ with Gnoga.Types.Colors;
 with Gnoga.Types; use Gnoga.Types;
 with connectfour_messages.connectfour_Strings;
 use connectfour_messages.connectfour_Strings;
-with Ada.Strings.UTF_Encoding.Strings; use Ada.Strings.UTF_Encoding.Strings;
 
 package body ConnectFour is
    ------------------------

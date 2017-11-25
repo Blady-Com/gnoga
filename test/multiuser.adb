@@ -64,7 +64,7 @@ procedure Multiuser is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                        Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Hello_World.Color ("green");
       App.Hello_World.Background_Color (RGBA_Type'(255, 255, 255, 1.0));
@@ -81,7 +81,7 @@ procedure Multiuser is
      (Object : in out Gnoga.Gui.Base.Base_Type'Class;
       Event  : in     Gnoga.Gui.Base.Keyboard_Event_Record)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Key.Text (Event.Key_Code'Img);
    end On_Key_Press;
@@ -97,7 +97,7 @@ procedure Multiuser is
    procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Gnoga.Log ("Mouse Move - " & Event.X'Img & " X " & Event.Y'Img);
       App.X.Text (Event.X'Img);
@@ -106,20 +106,20 @@ procedure Multiuser is
 
    procedure On_Context (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Hello_World.Color ("red");
    end On_Context;
 
    procedure On_Close (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Log ("Close connection");
       App.Main_Window.Close_Connection;
    end On_Close;
 
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      pragma Unreferenced (Object);
    begin
       Log ("Ending Application");
       Application.Multi_Connect.End_Application;
@@ -127,7 +127,7 @@ procedure Multiuser is
 
    procedure On_Before_Unload (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
       function Conv is new Ada.Unchecked_Conversion (App_Access, System.Address);
    begin
       Log ("Winwdow is about to be unloaded, Connection_Data is " & System.Address_Image (Conv (App)));
@@ -135,7 +135,7 @@ procedure Multiuser is
 
    procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
       function Conv is new Ada.Unchecked_Conversion (App_Access, System.Address);
    begin
       Log ("Winwdow is destroyed, Connection_Data is " & System.Address_Image (Conv (App)));
@@ -235,6 +235,7 @@ procedure Multiuser is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
       Main_Window.Document.Body_Element.Background_Color ("blue");
@@ -252,7 +253,7 @@ begin
    Application.Multi_Connect.On_Connect_Handler
      (On_Connect_2'Unrestricted_Access, "/demo");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Multiuser;

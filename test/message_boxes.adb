@@ -4,7 +4,6 @@ with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
 with Gnoga.Gui.Plugin.Message_Boxes;
-with Gnoga.Gui.Plugin.jQueryUI;
 
 procedure Message_Boxes is
    Main_Window : Gnoga.Gui.Window.Window_Type;
@@ -15,7 +14,7 @@ begin
    Gnoga.Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Gnoga.Application.Open_URL ("http://127.0.0.1:8080");
+--     Gnoga.Application.Open_URL ("http://127.0.0.1:8080");
    Gnoga.Application.Singleton.Initialize (Main_Window,
                                            Port => 8080,
                                            Boot => "boot_jqueryui.html");

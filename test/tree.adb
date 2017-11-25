@@ -118,8 +118,9 @@ procedure Tree is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      Main_View : Pointer_To_View_Class := new View_Type;
-      Tree_View : Pointer_To_Tree_Text_View := new Tree_Test_View_Type;
+      pragma Unreferenced (Connection);
+      Main_View : constant Pointer_To_View_Class := new View_Type;
+      Tree_View : constant Pointer_To_Tree_Text_View := new Tree_Test_View_Type;
    begin
       Main_View.Dynamic;
       Main_View.Create (Main_Window);
@@ -173,7 +174,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Tree;

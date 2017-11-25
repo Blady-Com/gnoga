@@ -25,7 +25,7 @@ procedure Canvas_Test is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
       C   : Context_2D.Context_2D_Type;
       Img : Gnoga.Gui.Element.Common.IMG_Type;
    begin
@@ -52,7 +52,7 @@ procedure Canvas_Test is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : App_Access := new App_Data;
+      App     : constant App_Access := new App_Data;
       C       : Context_2D.Context_2D_Type;
       G       : Context_2D.Gradient_Type;
       P       : Context_2D.Pattern_Type;
@@ -155,7 +155,7 @@ procedure Canvas_Test is
          for X in 1 .. D'Length (1) loop
             for Y in 1 .. D'Length (2) loop
                declare
-                  Avg : Color_Type :=
+                  Avg : constant Color_Type :=
                     (D (X, Y).Red + D (X, Y).Green + D (X, Y).Blue) / 3;
                begin
                   D (X, Y).Red   := Avg;
@@ -176,8 +176,8 @@ procedure Canvas_Test is
          C.Pixel (0, 0, (0, 0, 0, 0));
 
          declare
-            P : Gnoga.Types.Pixel_Type := C.Pixel (10, 10);
-            R : Gnoga.Types.RGBA_Type := To_RGBA (P);
+            P : constant Gnoga.Types.Pixel_Type := C.Pixel (10, 10);
+            R : constant Gnoga.Types.RGBA_Type := To_RGBA (P);
          begin
             Gnoga.Log ("P = " & P.Red'Img & P.Green'Img &
                          P.Blue'Img & P.Alpha'Img);

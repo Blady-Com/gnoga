@@ -155,7 +155,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL ("https://127.0.0.1:8443");
+--     Application.Open_URL ("https://127.0.0.1:8443");
 
    Application.Multi_Connect.Message_Loop;
 end Layouts_SSL;

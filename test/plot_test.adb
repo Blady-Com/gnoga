@@ -30,7 +30,7 @@ procedure Plot_Test is
       Gnoga.Application.Singleton.End_Application;
    end On_Quit;
 begin -- Plot_Test
-   Gnoga.Application.Open_URL;
+--     Gnoga.Application.Open_URL;
    Gnoga.Application.Title (Name => "Plot Test");
    Gnoga.Application.HTML_On_Close (HTML => "Plot Test Finished");
    Gnoga.Application.Singleton.Initialize (Main_Window => Win);

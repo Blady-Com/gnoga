@@ -17,6 +17,7 @@ procedure Mac_Test is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
+      pragma Unreferenced (Object);
    begin
       MacGap.System_Beep (Main_Window);
       MacGap.Open_URL (Main_Window, "http://www.google.com");

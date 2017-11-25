@@ -62,7 +62,7 @@ package body Gnoga_Doc.Token is
    function Is_EOL (S : in String; P : Integer) return Boolean is
       use Ada.Characters;
 
-      C : Character := S (P);
+      C : constant Character := S (P);
    begin
       if C = Latin_1.CR or C = Latin_1.LF then
          return True;
@@ -117,7 +117,7 @@ package body Gnoga_Doc.Token is
       use Ada.Strings.Maps;
       use Ada.Strings.Maps.Constants;
 
-      TabAndSpace : Ada.Strings.Maps.Character_Set :=
+      TabAndSpace : constant Ada.Strings.Maps.Character_Set :=
         To_Set (Sequence => Latin_1.Space &
                   Latin_1.HT &
                   Latin_1.CR &

@@ -3,7 +3,6 @@ with Ada.Containers.Vectors;
 
 with Gnoga.Types;
 with Gnoga.Gui.View;
-with Gnoga.Gui.Window;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.Element.Canvas.Context_2D;
@@ -102,7 +101,7 @@ package body Snake.Connection is
    ----------------
 
    procedure Start_Game (Main_Window : in out Window_Type'Class) is
-      App : App_Access := App_Access (Main_Window.Connection_Data);
+      App : constant App_Access := App_Access (Main_Window.Connection_Data);
 
       Context   : Context_2D_Type;
       Game_Over : Boolean;
@@ -149,7 +148,7 @@ package body Snake.Connection is
    procedure On_Key_Down (Object : in out Base_Type'Class;
                           Key    : in     Keyboard_Event_Record)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       if Key.Key_Code = 38 or Key.Key_Code = Character'Pos ('W') then
          App.Snake_Direction := Up;
@@ -169,8 +168,6 @@ package body Snake.Connection is
                     App       : in     App_Access;
                     Game_Over : out    Boolean)
    is
-      Background_Rectangle : constant Rectangle_Type :=
-        (0, 0, Display_Width, Display_Height);
 
       procedure Draw_Segment (Cell : Point_Type);
 
@@ -188,7 +185,7 @@ package body Snake.Connection is
       begin
          for i in App.Snake.First_Index .. App.Snake.Last_Index loop
             declare
-               Current : Point_Type := App.Snake.Element (i);
+               Current : constant Point_Type := App.Snake.Element (i);
             begin
                if Current.X = Cell.X and Current.Y = Cell.Y then
                   return True;
@@ -283,7 +280,8 @@ package body Snake.Connection is
      (Main_Window : in out Window_Type'Class;
       Connection  : access Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
 

@@ -34,7 +34,7 @@ procedure BootJS is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Main_Window.Alert ("You clicked on me!");
    end On_Click;
@@ -44,7 +44,7 @@ procedure BootJS is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      App : constant App_Access := new App_Data;
 
       View : Gnoga.Gui.View.View_Type;
 
@@ -74,7 +74,8 @@ procedure BootJS is
       Connection  :
       access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App       : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App       : constant App_Access := new App_Data;
       Name_List : Gnoga.Types.Data_Array_Type;
    begin
       Main_Window.Connection_Data (App);

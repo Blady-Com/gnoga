@@ -1,10 +1,8 @@
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
-with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
 with Gnoga.Gui.Element.Table;
-with Gnoga.Gui.Element.Common;
 with Gnoga.Types;
 
 procedure TTables is
@@ -21,15 +19,6 @@ procedure TTables is
       end record;
    type App_Access is access all App_Data;
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
-      App : App_Access := App_Access (Object.Connection_Data);
-   begin
-      null;
-   end On_Click;
-
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  : access
@@ -40,7 +29,8 @@ procedure TTables is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App     : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
@@ -49,8 +39,8 @@ procedure TTables is
       App.My_Table.Create (App.Console);
 
       declare
-         head : Table.Table_Header_Access := new Table.Table_Header_Type;
-         row  : Table.Table_Row_Access := new Table.Table_Row_Type;
+         head : constant Table.Table_Header_Access := new Table.Table_Header_Type;
+         row  : constant Table.Table_Row_Access := new Table.Table_Row_Type;
       begin
          head.Dynamic;
          head.Create (App.My_Table);
@@ -58,7 +48,7 @@ procedure TTables is
 
          for cols in 1 .. 5 loop
             declare
-               col : Table.Table_Heading_Access :=
+               col : constant Table.Table_Heading_Access :=
                        new Table.Table_Heading_Type;
             begin
                col.Dynamic;
@@ -69,14 +59,14 @@ procedure TTables is
 
       for rows in 1 .. 5 loop
          declare
-            row : Table.Table_Row_Access := new Table.Table_Row_Type;
+            row : constant Table.Table_Row_Access := new Table.Table_Row_Type;
          begin
             row.Dynamic;
             row.Create (App.My_Table);
 
             for cols in 1 .. 5 loop
                declare
-                  col : Table.Table_Column_Access :=
+                  col : constant Table.Table_Column_Access :=
                           new Table.Table_Column_Type;
                begin
                   col.Dynamic;
@@ -98,7 +88,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end TTables;

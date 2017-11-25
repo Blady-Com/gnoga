@@ -1,8 +1,6 @@
 with Snake;
 with Gnoga.Application.Multi_Connect;
 
-with Snake.Connection;
-
 procedure Snake.Main is
    use Gnoga;
    use Gnoga.Application.Multi_Connect;

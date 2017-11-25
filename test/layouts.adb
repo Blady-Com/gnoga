@@ -27,8 +27,6 @@ procedure Layouts is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
-
       Click_Count : Common.Span_Type;
       Count       : Natural;
    begin
@@ -50,10 +48,12 @@ procedure Layouts is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       App    : App_Access := new App_Data;
       V      : View.Pointer_To_View_Class;
       Card_1 : View.Pointer_To_View_Class;
       Card_2 : View.Pointer_To_View_Base_Class;
+      pragma Unreferenced (Card_2);
       Tabs   : View.Card.Tab_Access;
       Tab    : View.Card.Tab_Item_Access;
       Dex    : View.Docker.Pointer_To_Docker_View_Class;
@@ -152,7 +152,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Layouts;

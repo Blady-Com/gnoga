@@ -20,7 +20,10 @@ project Test is
       for Executable ("demo.adb") use "gnoga-demo";
    end Builder;
 
-   package Compiler renames Settings.Compiler;
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
 

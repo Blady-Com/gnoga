@@ -6,7 +6,6 @@ with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.View.Docker;
-with Gnoga.Server.Connection;
 
 procedure Align is
    use Gnoga.Gui.Element;
@@ -50,16 +49,19 @@ procedure Align is
    procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
                       Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
+      pragma Unreferenced (Object);
    begin
       Gnoga.Log (Event.X'Img & " x " & Event.Y'Img);
    end On_Move;
 
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
+      pragma Unreferenced (Element);
    begin
       Range_Value.Text (Dec_Range.Value);
    end Dec_Change;
 
    procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
+      pragma Unreferenced (Element);
    begin
       Main_View.Put_Line (Number_Choice.Value);
    end Calculate;
@@ -74,7 +76,7 @@ procedure Align is
    end Radio_Select;
 
 begin
-   Gnoga.Application.Open_URL;
+--     Gnoga.Application.Open_URL;
 
    Gnoga.Application.Singleton.Initialize (Main_Window);
 

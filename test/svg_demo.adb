@@ -7,8 +7,6 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.SVG;
 with Gnoga.Types;
 
-with Gnoga.Gui.Plugin.jQueryUI;
-
 procedure SVG_Demo is
    use Gnoga;
    use Gnoga.Types;
@@ -33,7 +31,7 @@ procedure SVG_Demo is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Console.Put_Line ("Clicked!");
    end On_Click;
@@ -43,7 +41,8 @@ procedure SVG_Demo is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Access := new App_Data;
+      pragma Unreferenced (Connection);
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
@@ -78,7 +77,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end SVG_Demo;

@@ -12,7 +12,6 @@ with ConnectFour; use ConnectFour;
 with connectfour_messages.connectfour_Strings;
 use connectfour_messages.connectfour_Strings;
 with ZanyBlue.Text.Locales;
-with Ada.Characters.Conversions;
 with Ada.Strings.UTF_Encoding.Strings; use Ada.Strings.UTF_Encoding.Strings;
 with Gnoga.Gui.Navigator;
 

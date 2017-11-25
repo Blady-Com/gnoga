@@ -25,13 +25,14 @@ procedure Pack is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      pragma Unreferenced (Object);
    begin
       Main_View.Panel (2, 1).Box_Width ("10%");
       Split_View.Panel (1, 1).Box_Height ("90%");
       Split_View.Panel (2, 1).Background_Color (To_RGBA (Yellow_Green));
    end On_Click;
 begin
-   Gnoga.Application.Open_URL;
+--     Gnoga.Application.Open_URL;
 
    Gnoga.Application.Singleton.Initialize (Main_Window, Boot => "ajax.html");
 

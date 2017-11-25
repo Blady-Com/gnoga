@@ -36,8 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Containers.Indefinite_Ordered_Maps;
-with Ada.Strings.Fixed;
-
 with Ada.Exceptions;
 
 with Gnoga.Types;

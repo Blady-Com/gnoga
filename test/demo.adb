@@ -49,7 +49,7 @@ procedure Demo is
                    Drag_Text : in     String);
 
    procedure On_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Console.Put_Line ("Dynamic reasign of click handler worked");
       Object.On_Click_Handler (null);
@@ -59,7 +59,7 @@ procedure Demo is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
       D : Common.DIV_Access;
    begin
       for i in 1 .. App.My_Select.Length loop
@@ -80,28 +80,28 @@ procedure Demo is
 
    procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Source.Opacity (0.4);
    end Start_Drag;
 
    procedure End_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Source.Opacity (1.0);
    end End_Drag;
 
    procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Colors.Red);
    end Enter_Drag;
 
    procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Colors.Black);
    end Leave_Drag;
@@ -110,7 +110,7 @@ procedure Demo is
                    X, Y      : in     Integer;
                    Drag_Text : in     String)
    is
-      App : App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Colors.Green);
       App.Target.Text (Drag_Text & "@" &  X'Img & Y'Img);
@@ -126,9 +126,10 @@ procedure Demo is
       Connection  : access
         Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App     : App_Access := new App_Data;
-      Play    : Common.Button_Access := new Common.Button_Type;
-      Label   : Form.Label_Access := new Form.Label_Type;
+      pragma Unreferenced (Connection);
+      App     : constant App_Access := new App_Data;
+      Play    : constant Common.Button_Access := new Common.Button_Type;
+      Label   : constant Form.Label_Access := new Form.Label_Type;
       Option  : Form.Option_Access;
       optgrp  : Form.Option_Group_Access;
       Query   : Gnoga.Gui.Plugin.jQuery.jQuery_Type;
@@ -244,7 +245,7 @@ procedure Demo is
          App.Console.Put_Line ("From Gnoga Simple parser:");
 
          declare
-            S : String := Simple.Load_View ("test_sample.tpl", Items);
+            S : constant String := Simple.Load_View ("test_sample.tpl", Items);
          begin
             App.Console.Put_Line (S);
 
@@ -254,8 +255,8 @@ procedure Demo is
       end;
 
       declare
-         s   : Style_Block.Style_Access := new Style_Block.Style_Type;
-         ul1 : List.Ordered_List_Access := new List.Ordered_List_Type;
+         s   : constant Style_Block.Style_Access := new Style_Block.Style_Type;
+         ul1 : constant List.Ordered_List_Access := new List.Ordered_List_Type;
       begin
          s.Dynamic;
          s.Create (App.Console);
@@ -300,7 +301,7 @@ begin
    Application.HTML_On_Close
      ("<b>Connection to Application has been terminated</b>");
 
-   Application.Open_URL;
+--     Application.Open_URL;
 
    Application.Multi_Connect.Message_Loop;
 end Demo;

@@ -19,11 +19,9 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Strings.Maps.Constants; use Ada.Strings.Maps.Constants;
-with Ada.Directories;
 
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
@@ -40,7 +38,7 @@ begin
    end if;
 
    declare
-      Command : String := Translate (Argument (1), Lower_Case_Map);
+      Command : constant String := Translate (Argument (1), Lower_Case_Map);
    begin
       if Command = "version" or Command = "-v" or Command = "/v" then
          Gnoga_Make.Version;

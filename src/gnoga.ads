@@ -36,6 +36,8 @@
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with Ada.Exceptions;
+with Ada.Task_Identification;
 
 package Gnoga is
    Version      : constant String := "1.4-alpha";
@@ -80,7 +82,13 @@ package Gnoga is
    procedure Log (Message : in String);
    --  Output message to log
 
+   procedure Log (Occurrence : in Ada.Exceptions.Exception_Occurrence);
+   --  Output exception occurence to log
+
    procedure Flush_Log;
    --  Manual flush log file
+
+   procedure Activate_Exception_Handler (Id : Ada.Task_Identification.Task_Id);
+   --  Activate exception log for the designated task
 
 end Gnoga;

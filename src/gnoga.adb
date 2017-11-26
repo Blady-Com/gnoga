@@ -41,7 +41,7 @@ with Ada.Calendar.Formatting;
 with Ada.Calendar.Time_Zones;
 with Ada.Integer_Text_IO;
 with Ada.Strings.UTF_Encoding.Strings;
-with Ada.Exceptions;
+with Ada.Task_Termination;
 
 package body Gnoga is
 
@@ -338,7 +338,7 @@ package body Gnoga is
    exception
       when E : others =>
          Log ("Error failed to open log file " & File_Name);
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (E);
    end Log_To_File;
 
    ---------
@@ -364,6 +364,11 @@ package body Gnoga is
       end if;
    end Log;
 
+   procedure Log (Occurrence : in Ada.Exceptions.Exception_Occurrence) is
+   begin
+      Log (Ada.Exceptions.Exception_Information (Occurrence));
+   end Log;
+
    ---------------
    -- Flush_Log --
    ---------------
@@ -372,5 +377,38 @@ package body Gnoga is
    begin
       Ada.Text_IO.Flush (Log_File);
    end Flush_Log;
+
+   --------------------------------
+   -- Activate_Exception_Handler --
+   --------------------------------
+
+   protected Exception_Handler is
+      procedure Log (Cause      : in Ada.Task_Termination.Cause_Of_Termination;
+                     Id         : in Ada.Task_Identification.Task_Id;
+                     Occurrence : in Ada.Exceptions.Exception_Occurrence);
+   end Exception_Handler;
+
+   protected body Exception_Handler is
+      procedure Log (Cause      : in Ada.Task_Termination.Cause_Of_Termination;
+                     Id         : in Ada.Task_Identification.Task_Id;
+                     Occurrence : in Ada.Exceptions.Exception_Occurrence) is
+         use all type Ada.Task_Termination.Cause_Of_Termination;
+      begin
+         case Cause is
+            when Normal =>
+               Log ("Normal exit of task: " & Ada.Task_Identification.Image (Id));
+            when Abnormal =>
+               Log ("Abnormal exit of task: " & Ada.Task_Identification.Image (Id));
+            when Unhandled_Exception =>
+               Log ("Unhandled exception in task: " & Ada.Task_Identification.Image (Id));
+               Log (Occurrence);
+         end case;
+      end Log;
+   end Exception_Handler;
+
+   procedure Activate_Exception_Handler  (Id : Ada.Task_Identification.Task_Id) is
+   begin
+      Ada.Task_Termination.Set_Specific_Handler (Id, Exception_Handler.Log'Access);
+   end Activate_Exception_Handler;
 
 end Gnoga;

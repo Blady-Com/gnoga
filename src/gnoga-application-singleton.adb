@@ -35,6 +35,8 @@
 -- For more information please go to http://www.gnoga.com                   --
 ------------------------------------------------------------------------------
 
+with Ada.Task_Identification;
+
 with Gnoga.Server.Connection;
 with Gnoga.Types;
 
@@ -107,6 +109,7 @@ package body Gnoga.Application.Singleton is
       Verbose     : in     Boolean := True)
    is
    begin
+      Gnoga.Activate_Exception_Handler (Ada.Task_Identification.Current_Task);
       Gnoga.Server.Connection.Initialize (Host, Port, Boot, Verbose);
 
       Gnoga.Server.Connection.On_Connect_Handler

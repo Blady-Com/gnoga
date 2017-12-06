@@ -1,8 +1,8 @@
 ifdef ComSpec
 	COPY=copy
-	COPYS=xcopy /S
+	COPYS=xcopy /S /Y
 	RM=del
-	RMS=del /S
+	RMS=del /S /Q
 	PATHSEP2=\\
 else
 	COPY=cp -p

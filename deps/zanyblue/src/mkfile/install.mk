@@ -73,7 +73,7 @@ install:	includes libraries applications
 includes: $(INSTALL_INCDIR) $(INSTALL_INCLUDE_FILES)
 
 $(INSTALL_INCDIR):
-	$(call MKDIR,$(INSTALL_INCDIR))
+	- $(call MKDIR,$(INSTALL_INCDIR))
 
 $(INSTALL_INCDIR)/%:	$(INCDIR)/%
 	$(call COPY,$(INCDIR)/$*,$(INSTALL_INCDIR)/$*)
@@ -81,7 +81,7 @@ $(INSTALL_INCDIR)/%:	$(INCDIR)/%
 libraries: $(INSTALL_LIBDIR) $(INSTALL_LIB_FILES) install_lib $(INSTALL_GPRFILE)
 
 $(INSTALL_LIBDIR):
-	$(call MKDIR,$(INSTALL_LIBDIR))
+	- $(call MKDIR,$(INSTALL_LIBDIR))
 
 $(INSTALL_LIBDIR)/%:	$(LIBDIR)/%
 	$(call COPY,$(LIBDIR)/$*,$(INSTALL_LIBDIR)/$*)
@@ -90,13 +90,13 @@ install_lib:	$(LIBDIR)/../libzanyblue.a
 	$(call COPY,$(LIBDIR)/../libzanyblue.a,$(INSTALL_LIBDIR)/..)
 
 $(INSTALL_GPRFILE): $(GPRFILE)
-	$(call MKDIR,$(INSTALL_GPRDIR))
+	- $(call MKDIR,$(INSTALL_GPRDIR))
 	$(call COPY,$(GPRFILE),$(INSTALL_GPRFILE))
 
 applications: $(INSTALL_BINDIR) $(INSTALL_BIN_FILES)
 
 $(INSTALL_BINDIR):
-	$(call MKDIR,$(INSTALL_BINDIR))
+	- $(call MKDIR,$(INSTALL_BINDIR))
 
 $(INSTALL_BINDIR)/%:	$(BINDIR)/%
 	$(call COPY,$(BINDIR)/$*,$(INSTALL_BINDIR)/$*)

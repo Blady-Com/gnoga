@@ -79,6 +79,7 @@ package Gnoga.Types is
      access all Connection_Data_Type'Class;
 
    type Frational_Range_Type is delta 0.001 range 0.0 .. 1.0;
+   for Frational_Range_Type'Small use 0.001;
 
    subtype Alpha_Type is Frational_Range_Type;
 

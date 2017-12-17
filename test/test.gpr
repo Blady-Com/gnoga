@@ -8,7 +8,7 @@ project Test is
    for Object_Dir use "../obj";
    for Exec_Dir use "../bin";
    for Main use ("layouts.adb", "boot_strap_demo.adb", "multiuser.adb", "pixi_sprite_test.adb",
-                 "popups.adb", "forms.adb", "canvas_test.adb", "sprite_test.adb",
+                 "popups.adb", "forms.adb", "canvas_test.adb", "sprite_test.adb", "cli.adb",
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb", "menu.adb",
                  "jdemo.adb", "svg_demo.adb", "align.adb", "pack.adb", "ding.adb",
                  "message_boxes.adb", "tree.adb", "plot_test.adb", "test_modal_dialog.adb",

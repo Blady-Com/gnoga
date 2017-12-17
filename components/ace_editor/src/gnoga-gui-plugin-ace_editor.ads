@@ -57,6 +57,18 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    type Ace_Editor_Access is access all Ace_Editor_Type;
    type Pointer_To_Ace_Editor_Class is access all Ace_Editor_Type'Class;
 
+   type Anchor_Type is new Gnoga.Gui.Base.Base_Type with private;
+   type Anchor_Access is access all Anchor_Type;
+   type Pointer_To_Anchor_Class is access all Anchor_Type'Class;
+
+   type Position_Type is record
+      Row, Column : Integer;
+   end record;
+
+   type Range_Type is record
+      Start_Row, Start_Column, End_Row, End_Column : Integer;
+   end record;
+
    procedure Load_Ace_Editor
      (Window : in out Gnoga.Gui.Window.Window_Type'Class);
    --  Load Ace_Editor code in to Window
@@ -84,13 +96,19 @@ package Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Current_Line (View  : in out Ace_Editor_Type;
                            Value : in     Positive);
+   --  Starts at 1
 
    function Current_Line (View : Ace_Editor_Type) return Natural;
+   --  Starts at 0
 
    function Current_Column (View : Ace_Editor_Type) return Natural;
+   --  Starts at 0
 
    function Length (View : Ace_Editor_Type) return Natural;
    --  Total lines in View
+
+   function Last_Column (View : Ace_Editor_Type; Row : Natural) return Natural;
+   --  Last column of given row, starts at 0
 
    function Get_New_Line_Character
      (View : Gnoga.Gui.Plugin.Ace_Editor.Ace_Editor_Type) return String;
@@ -106,14 +124,56 @@ package Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Line_Highlighting (View  : in out Ace_Editor_Type;
                                 Value : in     Boolean := True);
+   pragma Obsolescent (Line_Highlighting);
 
    procedure Print_Margin_Visible (View  : in out Ace_Editor_Type;
                                    Value : in     Boolean := True);
 
+   procedure Show_Gutter (View  : in out Ace_Editor_Type;
+                          Value : in     Boolean := True);
+
+   procedure Show_Invisibles (View  : in out Ace_Editor_Type;
+                              Value : in     Boolean := True);
+
    procedure Read_Only (View  : in out Ace_Editor_Type;
                         Value : in     Boolean := True);
 
--------------------------------------------------------------------------
+   procedure Set_Highlight_Active_Line
+     (View             : in out Ace_Editor_Type;
+      Should_Highlight :        Boolean);
+
+   procedure Set_Highlight_Selected_Word
+     (View             : in out Ace_Editor_Type;
+      Should_Highlight :        Boolean);
+
+   procedure Set_Overwrite
+     (View      : in out Ace_Editor_Type;
+      Overwrite :        Boolean);
+
+   procedure Set_Show_Print_Margin
+     (View              : in out Ace_Editor_Type;
+      Show_Print_Margin :        Boolean);
+
+   procedure Set_Use_Wrap_Mode
+     (View          : in out Ace_Editor_Type;
+      Use_Wrap_Mode :        Boolean);
+   pragma Obsolescent (Set_Use_Wrap_Mode);
+
+   procedure Set_Wrap_Limit_Range
+     (View     : in out Ace_Editor_Type;
+      Min, Max :        Natural);
+
+   procedure Wrap_Limit
+     (View     : in out Ace_Editor_Type;
+      To :        Natural);
+
+   function Wrap_Limit (View : Ace_Editor_Type) return Natural;
+
+   function First_Visible_Row (View : Ace_Editor_Type) return Natural;
+
+   function Last_Visible_Row (View : Ace_Editor_Type) return Natural;
+
+   -------------------------------------------------------------------------
    --  Ace_Editor_Type - Methods
    -------------------------------------------------------------------------
 
@@ -123,9 +183,15 @@ package Gnoga.Gui.Plugin.Ace_Editor is
                         Wrap           : in     Boolean := False;
                         Whole_Word     : in     Boolean := False;
                         Case_Sensitive : in     Boolean := False;
-                        Reg_Exp        : in     Boolean := False);
+                        Reg_Exp        : in     Boolean := False;
+                        Search_Range   : in     Range_Type := (-1, -1, -1, -1);
+                        Start          : in     Position_Type := (-1, -1);
+                        Skip_Current   : in     Boolean := False;
+                        Animate        : in     Boolean := False);
 
    procedure Find_Next (View : in out Ace_Editor_Type);
+
+   procedure Find_Previous (View : in out Ace_Editor_Type);
 
    procedure Replace_Text (View : in out Ace_Editor_Type;
                            Text : in     String);
@@ -142,7 +208,7 @@ package Gnoga.Gui.Plugin.Ace_Editor is
 
    procedure Scroll_To_Line
      (View            : in out Ace_Editor_Type;
-      Line            :        Positive;
+      Line            :        Natural;
       Center, Animate :        Boolean := False);
 
    procedure Move_Cursor_To
@@ -189,30 +255,6 @@ package Gnoga.Gui.Plugin.Ace_Editor is
      (View                : in out Ace_Editor_Type;
       First_Row, Last_Row :        Natural);
 
-   procedure Set_Highlight_Active_Line
-     (View             : in out Ace_Editor_Type;
-      Should_Highlight :        Boolean);
-
-   procedure Set_Highlight_Selected_Word
-     (View             : in out Ace_Editor_Type;
-      Should_Highlight :        Boolean);
-
-   procedure Set_Overwrite
-     (View      : in out Ace_Editor_Type;
-      Overwrite :        Boolean);
-
-   procedure Set_Show_Print_Margin
-     (View              : in out Ace_Editor_Type;
-      Show_Print_Margin :        Boolean);
-
-   procedure Set_Use_Wrap_Mode
-     (View          : in out Ace_Editor_Type;
-      Use_Wrap_Mode :        Boolean);
-
-   procedure Set_Wrap_Limit_Range
-     (View     : in out Ace_Editor_Type;
-      Min, Max :        Natural);
-
    procedure Insert
      (View             : in out Ace_Editor_Type;
       Start_Row, Index :        Natural;
@@ -221,6 +263,10 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    procedure InsertNewLine
      (View             : in out Ace_Editor_Type;
       Start_Row, Index :        Natural);
+
+   function Line (View : Ace_Editor_Type; Row : Natural) return String;
+
+   function Text_Range (View : Ace_Editor_Type; From, To : Position_Type) return String;
 
    -------------------------------------------------------------------------
    --  Ace_Editor_Type - Internal Methods
@@ -244,9 +290,36 @@ package Gnoga.Gui.Plugin.Ace_Editor is
    procedure On_Resize (View : in out Ace_Editor_Type);
    --  Let editor know View resized
 
+   -------------------------------------------------------------------------
+   --  Anchor_Type - Creation Method
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (Anchor : in out Anchor_Type;
+      Parent    : in out Ace_Editor_Type'Class;
+      Row, Column : Natural);
+
+   -------------------------------------------------------------------------
+   --  Anchor_Type - Properties
+   -------------------------------------------------------------------------
+
+   procedure Position (Anchor : in out Anchor_Type; Pos : Position_Type; No_Clip : Boolean := False);
+
+   function Position (Anchor : Anchor_Type) return Position_Type;
+
+   -------------------------------------------------------------------------
+   --  Anchor_Type - Methods
+   -------------------------------------------------------------------------
+
+   procedure Insert_Text_At_Anchor (Anchor : in out Anchor_Type;
+                                    Text : in     String);
+
+   procedure Insert_NewLine_At_Anchor (Anchor : in out Anchor_Type);
+
 private
    type Ace_Editor_Type is new Gnoga.Gui.View.View_Type with
       record
          Script_ID : Gnoga.Types.Web_ID;
       end record;
+   type Anchor_Type is new Gnoga.Gui.Base.Base_Type with null record;
 end Gnoga.Gui.Plugin.Ace_Editor;

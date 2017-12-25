@@ -166,6 +166,7 @@ package body Gnoga.Gui.View.Grid is
                Column_Object.Dynamic (True);
                Column_Object.Attach_Using_Parent
                  (Grid, CID & "_" & Left_Trim (N'Img));
+               Column_Object.Parent (Grid);
 
                if Column = Layout'First (2) and Row = Layout'First (1) then
                   Column_Object.Box_Height (P_Height);

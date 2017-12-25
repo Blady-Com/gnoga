@@ -272,6 +272,9 @@ db_maker:
 tests:
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+logo:
+	cd demo/logo && $(BUILDER) -Plogo.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
 tests_ssl: gnoga_secure
 	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
 

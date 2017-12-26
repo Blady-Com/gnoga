@@ -46,8 +46,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    procedure Load_PIXI (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('" & Escape_Quotes ("<script src='/js/pixi.js'" &
-       " type='text/javascript' charset='utf-8'></script>") & "')");
+      ("append('" &
+       Escape_Quotes
+         ("<script src='/js/pixi.js'" &
+          " type='text/javascript' charset='utf-8'></script>") &
+       "')");
    end Load_PIXI;
 
    ------------
@@ -120,7 +123,8 @@ package body Gnoga.Gui.Plugin.Pixi is
             " {gnoga_sprite.gnoga_tcur += 1;" &
             " if (gnoga_sprite.gnoga_tcur > gnoga_sprite.gnoga_tfin)" &
             " {gnoga_sprite.gnoga_tcur = 0; gnoga_sprite.gnoga_tfin = 0; gnoga_sprite.gnoga_vx = 0;" &
-            " gnoga_sprite.gnoga_vy = 0; gnoga_sprite.gnoga_ax = 0; gnoga_sprite.gnoga_ay = 0;}}}" &
+            " gnoga_sprite.gnoga_vy = 0; gnoga_sprite.gnoga_ax = 0; gnoga_sprite.gnoga_ay = 0;" &
+            " gnoga_sprite.gnoga_vr = 0; gnoga_sprite.gnoga_ar = 0;}}}" &
             " gnoga['" &
             Renderer.ID &
             "'].render(gnoga['" &

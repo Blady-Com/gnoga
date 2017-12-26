@@ -117,9 +117,26 @@ procedure Pixi_Sprite_Test is
       --  C is taken as the container of sprites
       App.SP1.Move_To (200, 200, 10.0, 10.0, Time_To_Wait);
       R.Auto_Rendering (C, True);
-
-      delay Time_To_Wait + 2.0;
       Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      delay Time_To_Wait + 2.0;
+
+      App.SP1.Move_Rel (-50, 30, 10.0, 10.0, Time_To_Wait);
+      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      delay Time_To_Wait + 2.0;
+
+      App.SP1.Pivot (App.SP1.Height / 2, App.SP1.Width / 2);
+      App.SP1.Rotation (-60);
+      App.SP1.Move_Rel (-120, -10.0, -10.0, Time_To_Wait);
+      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      delay Time_To_Wait + 2.0;
+
+      App.SP1.Rotate_Rel (150, 10.0, 10.0, Time_To_Wait);
+      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      delay Time_To_Wait + 2.0;
+
+      App.SP1.Rotate_To (0, 10.0, 10.0, Time_To_Wait);
+      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      delay Time_To_Wait + 2.0;
 
       T.Create (R, "img/E6a.png");
       App.SP1.Put_Texture (T);
@@ -133,15 +150,15 @@ procedure Pixi_Sprite_Test is
       R.Render (C);
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
-      delay 3.0;
       App.SP1.Rotation_Acceleration (-10.0);
+      delay 3.0;
       G.Line_Color (Gnoga.Types.Colors.Grey);
       G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
+      delay 3.0;
       Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
-      delay 3.0;
       App.SP1.Delete (C);
 
       App.SP1.Create (C, "img/E11a.png", 250, 10);
@@ -200,8 +217,8 @@ begin
       Boot  => "debug.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+--     Application.HTML_On_Close
+--       ("<b>Connection to Application has been terminated</b>");
 
    Application.Multi_Connect.Message_Loop;
 end Pixi_Sprite_Test;

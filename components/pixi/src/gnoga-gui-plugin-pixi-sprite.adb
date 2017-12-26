@@ -859,7 +859,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       --  Distance: Sqrt ((Row - Sprite.Row)**2 + (Column - Sprite.Column)**2)
       --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
       --  Discriminant: V**2 - 4 * (A/2) * (-D)
-      --  Time spent: (-V + Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
+      --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
       Azimut : constant Integer :=
         To_Degree
           (Arctan (Float (Row - Sprite.Row), Float (Column - Sprite.Column)));
@@ -867,12 +867,14 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
         Sqrt (Float (Row - Sprite.Row)**2 + Float (Column - Sprite.Column)**2);
       Discriminant : constant Float :=
         Radial_Velocity**2 + 2.0 * Distance * Radial_Acceleration;
+      Root1 : constant Float :=
+        (Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
+      Root2 : constant Float :=
+        (-Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
    begin
       Sprite.Motion (Radial_Velocity, Azimut);
       Sprite.Acceleration (Radial_Acceleration, Azimut);
-      Spent_Time :=
-        Duration
-          ((Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration);
+      Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
       Sprite.Loop_Times (0, Integer (Frame_Rate * Spent_Time));
    end Move_To;
 
@@ -893,6 +895,80 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
        Rel_Row, Sprite.Column +
        Rel_Column, Velocity, Acceleration, Spent_Time);
    end Move_Rel;
+
+   --------------
+   -- Move_Rel --
+   --------------
+
+   procedure Move_Rel
+     (Sprite       : in out Sprite_Type;
+      Distance     : in     Integer;
+      Velocity     : in     Velocity_Type;
+      Acceleration : in     Acceleration_Type;
+      Spent_Time   :    out Duration)
+   is
+      --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
+      --  Discriminant: V**2 - 4 * (A/2) * (-D)
+      --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
+      Discriminant : constant Float :=
+        Velocity**2 + 2.0 * Float (Distance) * Acceleration;
+      Root1 : constant Float :=
+        (Sqrt (Discriminant) - Velocity) / Acceleration;
+      Root2 : constant Float :=
+        (-Sqrt (Discriminant) - Velocity) / Acceleration;
+   begin
+      Sprite.Motion (Velocity, Sprite.Rotation);
+      Sprite.Acceleration (Acceleration, Sprite.Rotation);
+      Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+      Sprite.Loop_Times (0, Natural (Frame_Rate * Spent_Time));
+   end Move_Rel;
+
+   ----------------
+   -- Rotate_To --
+   ----------------
+
+   procedure Rotate_To
+     (Sprite       : in out Sprite_Type;
+      Angle        : in     Integer;
+      Velocity     : in     Velocity_Type;
+      Acceleration : in     Acceleration_Type;
+      Spent_Time   :    out Duration)
+   is
+      Delta_Angle : constant Integer := Angle - Sprite.Rotation;
+   begin
+      if Delta_Angle >= 0 then
+         Sprite.Rotate_Rel (Delta_Angle, Velocity, Acceleration, Spent_Time);
+      else
+         Sprite.Rotate_Rel (Delta_Angle, -Velocity, -Acceleration, Spent_Time);
+      end if;
+   end Rotate_To;
+
+   ----------------
+   -- Rotate_Rel --
+   ----------------
+
+   procedure Rotate_Rel
+     (Sprite       : in out Sprite_Type;
+      Rel_Angle    : in     Integer;
+      Velocity     : in     Velocity_Type;
+      Acceleration : in     Acceleration_Type;
+      Spent_Time   :    out Duration)
+   is
+      --  Quadratic time equation: A/2 * t**2 + V * t - RA = 0
+      --  Discriminant: V**2 - 4 * (A/2) * (-RA)
+      --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-RA))) / 2 (A/2)
+      Discriminant : constant Float :=
+        Velocity**2 + 2.0 * Float (Rel_Angle) * Acceleration;
+      Root1 : constant Float :=
+        (Sqrt (Discriminant) - Velocity) / Acceleration;
+      Root2 : constant Float :=
+        (-Sqrt (Discriminant) - Velocity) / Acceleration;
+   begin
+      Sprite.Rotation_Velocity (Velocity);
+      Sprite.Rotation_Acceleration (Acceleration);
+      Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+      Sprite.Loop_Times (0, Integer (Frame_Rate * Spent_Time));
+   end Rotate_Rel;
 
    ------------
    -- Delete --

@@ -298,6 +298,33 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    --  Sets sprite motion in order to reach specified relative point then stop.
    --  See Move_to for details.
 
+   procedure Move_Rel
+     (Sprite       : in out Sprite_Type;
+      Distance     : in     Integer;
+      Velocity     : in     Velocity_Type;
+      Acceleration : in     Acceleration_Type;
+      Spent_Time   :    out Duration);
+   --  Sets sprite motion in order to reach specified distance in the current direction then stop.
+   --  See Move_to for details.
+
+   procedure Rotate_To
+     (Sprite       : in out Sprite_Type;
+      Angle        : in     Integer;
+      Velocity     : in     Velocity_Type;
+      Acceleration : in     Acceleration_Type;
+      Spent_Time   :    out Duration);
+   --  Sets sprite rotation in order to reach specified angle then stop.
+   --  See Move_to for details.
+
+   procedure Rotate_Rel
+     (Sprite       : in out Sprite_Type;
+      Rel_Angle    : in     Integer;
+      Velocity     : in     Velocity_Type;
+      Acceleration : in     Acceleration_Type;
+      Spent_Time   :    out Duration);
+--  Sets sprite rotation in order to reach specified relative angle then stop.
+--  See Move_to for details.
+
    procedure Delete
      (Sprite : in out Sprite_Type;
       Parent : in out Container_Type'Class);

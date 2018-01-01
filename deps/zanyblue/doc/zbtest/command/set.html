@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The set Command &mdash; ZanyBlue 1.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../../index.html" />
+    <link rel="up" title="ZBTest Commands" href="index.html" />
+    <link rel="next" title="The setenv Command" href="setenv.html" />
+    <link rel="prev" title="The run Command" href="run.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-set-command">
+<span id="zb-zbtest-commands-set"></span><h1>The <tt class="docutils literal"><span class="pre">set</span></tt> Command<a class="headerlink" href="#the-set-command" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">set</span></tt>, set the value of a parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>set [ -s | -i | -b | -f | -t | -u ] parameter value
+</pre></div>
+</div>
+<p>Set the value of a parameter.  The options selects type: integer,
+boolean, etc. or, for &#8220;-u&#8221; conditionally set the parameter only if it is
+not already defined, i.e., provide fall-back values for parameters that
+can be set on the command line.</p>
+<p>Examples,</p>
+<ul>
+<li><p class="first">Set a parameter to a string value, the &#8220;-s&#8221; is optional:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; set SFO &quot;San Francisco&quot;
+ZBTest&gt; print SFO
+San Francisco
+ZBTest&gt; set -s LLW Lilongwe
+ZBTest&gt; print LLW
+Lilongwe
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set a parameter to an integer value, the &#8220;-i&#8221; is required:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; set -i ten 10
+ZBTest&gt; print ten
+10
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set a parameter to a Boolean value, the &#8220;-b&#8221; is required:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; set -b flag true
+ZBTest&gt; print flag
+TRUE
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set a parameter to a floating point value, the &#8220;-f&#8221; is required:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; set -f pi 3.141592
+ZBTest&gt; print pi
+3.14159E+00
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set a parameter to a time value, the &#8220;-t&#8221; is required.  The only time
+value supported is the special time &#8220;now&#8221;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; set -t start now
+ZBTest&gt; print start
+1:59 PM 11/21/16
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set a parameter if not already defined, e.g., via the command line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; set -u -s build_opt &quot;&quot;
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a><ul>
+  <li><a href="index.html">ZBTest Commands</a><ul>
+      <li>Previous: <a href="run.html" title="previous chapter">The <tt class="docutils literal"><span class="pre">run</span></tt> Command</a></li>
+      <li>Next: <a href="setenv.html" title="next chapter">The <tt class="docutils literal"><span class="pre">setenv</span></tt> Command</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/zbtest/command/set.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/zbtest/command/set.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

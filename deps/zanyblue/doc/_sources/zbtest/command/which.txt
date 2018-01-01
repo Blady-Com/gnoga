@@ -1,0 +1,34 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-which:
+
+The ``which`` Command
+=====================
+
+``which``, print the location of a file or command::
+
+    which [ -e | -f ] name
+
+Print the locations of files.  The zbtest locates various files during the
+execution of a test script, e.g., the "copy" command will copy a data file
+located via a search of the directories on the "searchpath" parameter, the
+"execute" command uses the "path" parameter.  As an aid to debugging, the
+"which" command print the results of these searches.  The options select
+the type of file to search for:
+
+* "-e" Search for a file that is executables
+* "-f" Search for a file
+
+The result is printed.
+
+Example:
+
+* Executeable::
+
+    ZBTest> which -e ls
+    /bin/ls
+

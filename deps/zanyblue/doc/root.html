@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>The Root Package &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>The Root Package &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="index.html" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="index.html" />
     <link rel="next" title="The Text Package" href="text/index.html" />
     <link rel="prev" title="Releases" href="releases.html" />
    
@@ -34,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -44,24 +44,24 @@
             
   <div class="section" id="the-root-package">
 <span id="zb-root"></span><h1>The Root Package<a class="headerlink" href="#the-root-package" title="Permalink to this headline">¶</a></h1>
-<p>The ZanyBlue root package, <code class="docutils literal"><span class="pre">ZanyBlue</span></code> contains definitions
+<p>The ZanyBlue root package, <tt class="docutils literal"><span class="pre">ZanyBlue</span></tt> contains definitions
 about the library, primiarly version information.  The version
 numbers associated with the library are available via the
 functions</p>
 <ul>
 <li><dl class="first docutils">
-<dt><code class="docutils literal"><span class="pre">Version_Major</span></code>, the major version number for the ZanyBlue</dt>
+<dt><tt class="docutils literal"><span class="pre">Version_Major</span></tt>, the major version number for the ZanyBlue</dt>
 <dd><p class="first last">release.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><code class="docutils literal"><span class="pre">Version_Minor</span></code>, the minor version number for the ZanyBlue</dt>
+<dt><tt class="docutils literal"><span class="pre">Version_Minor</span></tt>, the minor version number for the ZanyBlue</dt>
 <dd><p class="first last">release.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">Version_Patch</span></code>, the patch number for the ZanyBlue release.</p>
+<li><p class="first"><tt class="docutils literal"><span class="pre">Version_Patch</span></tt>, the patch number for the ZanyBlue release.</p>
 </li>
 </ul>
 <p>Each release also has a release status given by the function:</p>
@@ -71,9 +71,9 @@ functions</p>
 <p>The return value is an enumeration type: Alpha, Beta, Production.</p>
 <p>To futher refine the release identification, a source code
 revision value (a wide string) is returned by the function
-<code class="docutils literal"><span class="pre">Revision</span></code>.  The source code system is currently Subversion
-and this string has the format of the letter <code class="docutils literal"><span class="pre">r</span></code> followed by the
-Subversion revision number, e.g., <code class="docutils literal"><span class="pre">r2500</span></code>.</p>
+<tt class="docutils literal"><span class="pre">Revision</span></tt>.  The source code system is currently Subversion
+and this string has the format of the letter <tt class="docutils literal"><span class="pre">r</span></tt> followed by the
+Subversion revision number, e.g., <tt class="docutils literal"><span class="pre">r2500</span></tt>.</p>
 <p>Finally, the copyright year for the bundle is given by the function:</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nf">Copyright_Year</span> <span class="nf">return</span> <span class="nf">Positive</span><span class="p">;</span>
 </pre></div>
@@ -85,7 +85,7 @@ Subversion revision number, e.g., <code class="docutils literal"><span class="pr
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/zb-logo.png" alt="Logo"/>
@@ -98,21 +98,22 @@ Subversion revision number, e.g., <code class="docutils literal"><span class="pr
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/root.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/root.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -120,11 +121,11 @@ Subversion revision number, e.g., <code class="docutils literal"><span class="pr
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="_sources/root.txt"

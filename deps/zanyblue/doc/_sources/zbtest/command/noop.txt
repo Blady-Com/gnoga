@@ -1,0 +1,24 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-noop:
+
+The ``noop`` Command
+====================
+
+``noop``, the no operation command::
+
+    noop
+
+No operation.  The noop command does nothing and can be used in test
+scripts that would otherwise be empty, e.g., running a script based
+on the current platform::
+
+    run $_platform
+
+If, on Unix, no additional tests are needed, the file ``unix/unix.zbt``
+can simply include the "noop" command (an empty file also works, however).
+

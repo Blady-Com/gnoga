@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The execute Command &mdash; ZanyBlue 1.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../../index.html" />
+    <link rel="up" title="ZBTest Commands" href="index.html" />
+    <link rel="next" title="The exit Command" href="exit.html" />
+    <link rel="prev" title="The end Command" href="end.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-execute-command">
+<span id="zb-zbtest-commands-execute"></span><h1>The <tt class="docutils literal"><span class="pre">execute</span></tt> Command<a class="headerlink" href="#the-execute-command" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">execute</span></tt>, execute a system command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>execute [ -f | -s | -o output ] command [ command-arg ... ]
+</pre></div>
+</div>
+<p>Execute a command given the command name and an optional list
+of command arguments.  The command to execute is located by</p>
+<ol class="arabic simple">
+<li>Searching from the current test directory up the directory tree
+for an executable with the command name in a bin directory, i.e.,
+if executing a command built in the current source tree.</li>
+<li>Or, searching the value of the &#8220;path&#8221; list parameter (initialized to
+the value of the &#8220;PATH&#8221; environment variable).</li>
+</ol>
+<p>The search attempts to find the first file with an extension defined by
+the &#8220;exes&#8221; list parameter that matches the command name.  For example,
+on Windows, the directories listed on the &#8220;path&#8221; parameter are searched
+for files with extensions &#8220;bat&#8221;, &#8220;cmd&#8221;, &#8220;com&#8221; or &#8220;exe&#8221;.</p>
+<p>Once an executable is found, a new process is spawned to execute it.
+If the &#8220;-o&#8221; option is given, then the command output (standard output
+and standard error) is sent to the named file.</p>
+<p>The &#8220;-s&#8221; option defines a command that is expected to execute successfully.
+This is the default and the &#8220;-s&#8221; option is normally not given.</p>
+<p>The &#8220;-f&#8221; option defines a command that is expected fail (non-zero exit
+status).</p>
+<p>An execute failure file is generated if a command does not exit with the
+expected status.</p>
+<p>Examples</p>
+<ol class="arabic">
+<li><p class="first">Execute the &#8220;ls&#8221; command, the output is sent to the &#8220;screen&#8221;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; execute ls
+</pre></div>
+</div>
+</li>
+<li><p class="first">Execute the &#8220;ls&#8221; command, the output is sent to the the file &#8220;ls.out&#8221;
+in the test area:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; execute -o ls.out ls
+</pre></div>
+</div>
+</li>
+<li><p class="first">Execute the &#8220;ls&#8221; command, the output is sent to the the file &#8220;ls.out&#8221;
+in the test area.  The command is expected to exit with a failure
+status in this case, i.e., the file &#8220;nosuchfile&#8221; is not expected to
+exist:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; execute -f -o ls.out ls nosuchfile
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The &#8220;execute&#8221; command is normally used with the &#8220;-o&#8221; option generating
+a log file for comparision with a reference log file via the ZBTest
+function &#8220;nextlog&#8221;.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a><ul>
+  <li><a href="index.html">ZBTest Commands</a><ul>
+      <li>Previous: <a href="end.html" title="previous chapter">The <tt class="docutils literal"><span class="pre">end</span></tt> Command</a></li>
+      <li>Next: <a href="exit.html" title="next chapter">The <tt class="docutils literal"><span class="pre">exit</span></tt> Command</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/zbtest/command/execute.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/zbtest/command/execute.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

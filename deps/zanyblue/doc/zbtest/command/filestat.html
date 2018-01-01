@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The filestat Command &mdash; ZanyBlue 1.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../../index.html" />
+    <link rel="up" title="ZBTest Commands" href="index.html" />
+    <link rel="next" title="The getenv Command" href="getenv.html" />
+    <link rel="prev" title="The exit Command" href="exit.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-filestat-command">
+<span id="zb-zbtest-commands-filestat"></span><h1>The <tt class="docutils literal"><span class="pre">filestat</span></tt> Command<a class="headerlink" href="#the-filestat-command" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">filestat</span></tt>, write status of a test area file to a log file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>filestat name log-file
+</pre></div>
+</div>
+<p>Write status of a test area file to a log file.  This is frequently
+used to verify the existence/non-existence of a file or directory in the
+test area.  The information written to the file stat log file, for ordinary
+files is:</p>
+<ul class="simple">
+<li>The file name</li>
+<li>The file type (&#8220;ORDINARY_FILE&#8221;)</li>
+<li>The file size in bytes</li>
+<li>The time stamp associated with the file</li>
+</ul>
+<p>For directories and other non-ordinary files only the file name and type is
+writeen to the log file.</p>
+<p>If the target file for the filestat command does not exist in the test area
+the generated log file contains message:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>The file &quot;NAME&quot; does not exist
+</pre></div>
+</div>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; filestat a
+ZBTest&gt; filestat expected.txt expected01.log
+Generated status report on the file &quot;expected.txt&quot; (non-existent)
+    to &quot;expected01.log&quot;
+...
+ZBTest&gt; filestat expected.txt expected02.log
+Generated status report on the file &quot;expected.txt&quot; to &quot;expected02.log&quot;
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a><ul>
+  <li><a href="index.html">ZBTest Commands</a><ul>
+      <li>Previous: <a href="exit.html" title="previous chapter">The <tt class="docutils literal"><span class="pre">exit</span></tt> Command</a></li>
+      <li>Next: <a href="getenv.html" title="next chapter">The <tt class="docutils literal"><span class="pre">getenv</span></tt> Command</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/zbtest/command/filestat.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/zbtest/command/filestat.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

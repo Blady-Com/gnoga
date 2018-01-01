@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Formatting Syntax &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>Formatting Syntax &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../index.html" />
     <link rel="up" title="The Text Package" href="index.html" />
     <link rel="next" title="Argument Types" href="argtypes.html" />
     <link rel="prev" title="Message Formatting" href="msg-format.html" />
@@ -35,7 +35,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -57,7 +57,7 @@ time).</p>
 character for the expected argument without space character (which would be
 interpreted as part for the format).  E.g., to indicate a particular argument
 is should be an integer, the format would be:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">0002</span><span class="o">=</span><span class="n">There</span> <span class="n">are</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="n">integer</span><span class="p">}</span> <span class="n">known</span> <span class="n">moons</span> <span class="n">orbiting</span> <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>0002=There are {0,integer} known moons orbiting &quot;{1}&quot;.
 </pre></div>
 </div>
 <p>The type names recognized are given in the following table:</p>
@@ -72,52 +72,52 @@ is should be an integer, the format would be:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">any</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">any</span></tt></td>
 <td>No specific type required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">boolean</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">boolean</span></tt></td>
 <td>Boolean values required</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">character</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">character</span></tt></td>
 <td>Character (wide or narrow) values required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">date</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">date</span></tt></td>
 <td>A Calendar type required (formatted as a date)</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">datetime</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">datetime</span></tt></td>
 <td>A Calendar type required (formatted as a date and time)</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">duration</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">duration</span></tt></td>
 <td>Duration type required</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">enum</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">enum</span></tt></td>
 <td>Enumeration type required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">exception</span></code></td>
-<td>Exception type required (e.g., <code class="docutils literal"><span class="pre">when</span> <span class="pre">E</span> <span class="pre">:</span> <span class="pre">others</span></code>)</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">exception</span></tt></td>
+<td>Exception type required (e.g., <tt class="docutils literal"><span class="pre">when</span> <span class="pre">E</span> <span class="pre">:</span> <span class="pre">others</span></tt>)</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">fixed</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">fixed</span></tt></td>
 <td>A fixed point value is required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">float</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">float</span></tt></td>
 <td>A floating point value is required</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">integer</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">integer</span></tt></td>
 <td>An integer value is required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">modular</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">modular</span></tt></td>
 <td>A modular type value is required</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">number</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">number</span></tt></td>
 <td>A numeric value (integer, real, etc) is required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">real</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">real</span></tt></td>
 <td>A real value (float or fixed) is required</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">string</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">string</span></tt></td>
 <td>A string (wide or narrow) is required (characters also ok)</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">time</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">time</span></tt></td>
 <td>A Calendar type required (formatted as a time)</td>
 </tr>
 </tbody>
@@ -127,7 +127,7 @@ impact runtime formatting (the boxed value is formatted according to the
 boxed type formatting routine).  The type information does, however, impact
 the signature of accessor routine generated.</p>
 <p>For example, the message,:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">0002</span><span class="o">=</span><span class="n">There</span> <span class="n">are</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="n">integer</span><span class="p">}</span> <span class="n">known</span> <span class="n">moons</span> <span class="n">orbiting</span> <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>0002=There are {0,integer} known moons orbiting &quot;{1}&quot;.
 </pre></div>
 </div>
 <p>would generate a format style access with the signature</p>
@@ -150,13 +150,13 @@ integer, float, fixed, etc, arguments.</p>
 <p>The formatting information for the various types supported, in general,
 follow the Python/C style embedded formatting format for all but the date
 and time related formatting (the formatting of these values is described
-later in section <a class="reference internal" href="argtypes.html#zb-text-datetime"><span class="std std-ref">Date and Time Types</span></a>).  E.g., to format an integer with a
+later in section <a class="reference internal" href="argtypes.html#zb-text-datetime"><em>Date and Time Types</em></a>).  E.g., to format an integer with a
 field width of 10 characters, the argument reference would be:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">0001</span><span class="o">=</span><span class="n">Total</span> <span class="n">number</span> <span class="ow">is</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="n">integer</span><span class="p">,</span><span class="mi">10</span><span class="p">}</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>0001=Total number is {0,integer,10}
 </pre></div>
 </div>
 <p>The syntax for the format information is (using standard BNF notation):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">fill</span><span class="p">]</span><span class="n">align</span><span class="p">][</span><span class="n">sign</span><span class="p">][</span><span class="c1">#][0][width][.precision][type][qual]</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>[[fill]align][sign][#][0][width][.precision][type][qual]
 </pre></div>
 </div>
 <p>where</p>
@@ -165,24 +165,24 @@ field width of 10 characters, the argument reference would be:</p>
 <dd>The fill character to use when padding, e.g., if the formatted value
 string is less than the field width additional padding characters
 are added fill out the field.  Where the characters are added is
-defined by the next character, <code class="docutils literal"><span class="pre">align</span></code>.  The fill character
-cannot be the <code class="docutils literal"><span class="pre">}</span></code> character.</dd>
+defined by the next character, <tt class="docutils literal"><span class="pre">align</span></tt>.  The fill character
+cannot be the <tt class="docutils literal"><span class="pre">}</span></tt> character.</dd>
 <dt><strong>align</strong></dt>
 <dd><p class="first">The align character defines the alignment of the formatted value
 within the minimum field width.  The alignment characters recognized are</p>
 <dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">&lt;</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">&lt;</span></tt></dt>
 <dd>Value is flushed left, any additional padding characters needed
 are added to the right of the value.</dd>
-<dt><code class="docutils literal"><span class="pre">&gt;</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">&gt;</span></tt></dt>
 <dd>Value is flushed right, any additional padding characters needed
 are prepend to the left of the value.</dd>
-<dt><code class="docutils literal"><span class="pre">=</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">=</span></tt></dt>
 <dd>Any padding characters needed are added after the sign character,
-e.g., <code class="docutils literal"><span class="pre">+00010</span></code>.  This is used only with numeric value.  For
+e.g., <tt class="docutils literal"><span class="pre">+00010</span></tt>.  This is used only with numeric value.  For
 non-numeric values, this alignment character is interpreted as
-<code class="docutils literal"><span class="pre">&lt;</span></code>.</dd>
-<dt><code class="docutils literal"><span class="pre">^</span></code></dt>
+<tt class="docutils literal"><span class="pre">&lt;</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">^</span></tt></dt>
 <dd>The value is centered in the field width with any padding character
 being added before and after the value to center it.</dd>
 </dl>
@@ -196,11 +196,11 @@ This applies only to the sign of the value, the exponent of floating
 point numbers formatted in scientific notation is always preceeded by
 a sign character.  It has three valid values:</p>
 <dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">+</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">+</span></tt></dt>
 <dd>A sign character is always generated.  Positive values are preceeded
 by the locale plus character, negative values by the
 locale minus character.</dd>
-<dt><code class="docutils literal"><span class="pre">-</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">-</span></tt></dt>
 <dd>A sign character is only generated for negative values where the
 locale minus character is used.  This is the default behaviour if
 no sign character is specified.</dd>
@@ -215,15 +215,15 @@ space character.</dd>
 <dd><p class="first">The hash character causes integer formatted values formatted as binary,
 octal or hexadecimal to be decorated with the base using standard Ada
 notation.  E.g., formatting the integer 2012 using base 16:</p>
-<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">x</span>  <span class="o">=&gt;</span> <span class="mi">7</span><span class="n">dc</span>
-<span class="c1">#x =&gt; 16#7dc#</span>
+<div class="last highlight-python"><div class="highlight"><pre><span></span>x  =&gt; 7dc
+#x =&gt; 16#7dc#
 </pre></div>
 </div>
 </dd>
 <dt><strong>0</strong></dt>
-<dd>If the width field is preceded by a zero (<code class="docutils literal"><span class="pre">0</span></code>) character, this
+<dd>If the width field is preceded by a zero (<tt class="docutils literal"><span class="pre">0</span></tt>) character, this
 enables zero-padding. This is equivalent to an alignment type of
-<cite>&#8216;=`</cite> and a fill character of <code class="docutils literal"><span class="pre">0</span></code>.</dd>
+<cite>&#8216;=`</cite> and a fill character of <tt class="docutils literal"><span class="pre">0</span></tt>.</dd>
 <dt><strong>width</strong></dt>
 <dd>The width is a Latin integer value defining the minimum field width for
 the argument.  Padding, using the fill character, is added if needed to
@@ -238,56 +238,56 @@ formatting integer arguments and style when formatting floating point
 arguments.  Style indicators are ignored if the argument is
 not numeric.  The integer formatting style characters supported are</p>
 <dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">b</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">b</span></tt></dt>
 <dd>Binary format. Outputs the number in base 2.</dd>
-<dt><code class="docutils literal"><span class="pre">d</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">d</span></tt></dt>
 <dd>Decimal Integer. Outputs the number in base 10.</dd>
-<dt><code class="docutils literal"><span class="pre">o</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">o</span></tt></dt>
 <dd>Octal format. Outputs the number in base 8.</dd>
-<dt><code class="docutils literal"><span class="pre">x</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">x</span></tt></dt>
 <dd>Hex format. Outputs the number in base 16, using lowercase letters for
 the digits above 9.</dd>
-<dt><code class="docutils literal"><span class="pre">X</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">X</span></tt></dt>
 <dd>Hex format. Outputs the number in base 16, using uppercase letters for
 the digits above 9.</dd>
 <dt><strong>None</strong></dt>
-<dd>The same as <code class="docutils literal"><span class="pre">d</span></code>.</dd>
+<dd>The same as <tt class="docutils literal"><span class="pre">d</span></tt>.</dd>
 </dl>
 <p>The floating point formatting style characters supported are:</p>
 <dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">E</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">E</span></tt></dt>
 <dd>Exponent notation. Prints the number in scientific notation using the
-localized equivalent of the letter <code class="docutils literal"><span class="pre">E</span></code> to indicate the
+localized equivalent of the letter <tt class="docutils literal"><span class="pre">E</span></tt> to indicate the
 exponent.</dd>
-<dt><code class="docutils literal"><span class="pre">e</span></code></dt>
-<dd>Exponent notation. Same as <code class="docutils literal"><span class="pre">E</span></code>.  Other formatting systems,
+<dt><tt class="docutils literal"><span class="pre">e</span></tt></dt>
+<dd>Exponent notation. Same as <tt class="docutils literal"><span class="pre">E</span></tt>.  Other formatting systems,
 e.g., C, would use case difference in the format string to change the
 case of the exponent character in the formatted value.  Since localzied
 versions are being used, it is not clear if lowercasing/uppercasing
 such strings is valid.  The two format characters are treated the
 same.</dd>
-<dt><code class="docutils literal"><span class="pre">F</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">F</span></tt></dt>
 <dd>Fixed point. Displays the number as a fixed-point number.</dd>
-<dt><code class="docutils literal"><span class="pre">f</span></code></dt>
-<dd>Fixed point. Same as <code class="docutils literal"><span class="pre">F</span></code>.</dd>
-<dt><code class="docutils literal"><span class="pre">G</span></code></dt>
+<dt><tt class="docutils literal"><span class="pre">f</span></tt></dt>
+<dd>Fixed point. Same as <tt class="docutils literal"><span class="pre">F</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">G</span></tt></dt>
 <dd>General format. This prints the number as a fixed-point
 number, unless the number is too large, in which case
-it switches to <code class="docutils literal"><span class="pre">E</span></code> exponent notation.</dd>
-<dt><code class="docutils literal"><span class="pre">g</span></code></dt>
-<dd>General format. Same as <code class="docutils literal"><span class="pre">G</span></code>.</dd>
+it switches to <tt class="docutils literal"><span class="pre">E</span></tt> exponent notation.</dd>
+<dt><tt class="docutils literal"><span class="pre">g</span></tt></dt>
+<dd>General format. Same as <tt class="docutils literal"><span class="pre">G</span></tt>.</dd>
 <dt><strong>None</strong></dt>
-<dd>The same as <code class="docutils literal"><span class="pre">E</span></code>.</dd>
+<dd>The same as <tt class="docutils literal"><span class="pre">E</span></tt>.</dd>
 </dl>
 <p class="last">Infinity and NaN values are formatted as using localized versions.</p>
 </dd>
 <dt><strong>qual</strong></dt>
 <dd>The format string can be terminated with a final qualifier character.  For
-the current version, the only valid value for this character is <code class="docutils literal"><span class="pre">*</span></code>
+the current version, the only valid value for this character is <tt class="docutils literal"><span class="pre">*</span></tt>
 which forces the formatting of the value using the Root locale, i.e.,
 standard Ada Latin formatting.  This impact the formatting of date and time
 values and the formatting of numbers where a localized version might use
-localized digits instead of the Latin <code class="docutils literal"><span class="pre">0123456789</span></code>, e.g.,
+localized digits instead of the Latin <tt class="docutils literal"><span class="pre">0123456789</span></tt>, e.g.,
 Arabic locales.</dd>
 </dl>
 </div>
@@ -297,7 +297,7 @@ Arabic locales.</dd>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
@@ -321,21 +321,22 @@ Arabic locales.</dd>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/text/format-syntax.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/text/format-syntax.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -343,11 +344,11 @@ Arabic locales.</dd>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/text/format-syntax.txt"

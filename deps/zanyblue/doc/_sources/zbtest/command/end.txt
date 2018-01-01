@@ -1,0 +1,36 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-end:
+
+The ``end`` Command
+===================
+
+``end``, end a parameter scope returning to previous scope::
+
+    end
+
+Exit a parameter scope.  Any assignments to made duing the scope
+are lost.  Previous definitions are restored, e.g.,::
+
+    ZBTest> set xyz abc
+    ZBTest> begin
+    ZBTest> set xyz 123
+    ZBTest> echo $xyz
+    ZBTest> end
+    ZBTest> echo $xyz
+
+The first "echo" prints the value "123" which the second prints the value
+"abc".
+
+It not normally necessary to use the "begin" and "end" commands as running
+a test script automatically start a new scope which is ended when the
+script completes.
+
+The "end" command also executes any "end actions" defined by commands
+executed during the scope.  E.g., the "copy" command add an "end action"
+to remove the file or directory copied into the test area.
+

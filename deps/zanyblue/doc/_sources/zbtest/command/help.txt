@@ -1,0 +1,45 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-help:
+
+The ``help`` Command
+====================
+
+``help``, print help information on commands and functions::
+
+    help [ -c | -f ] [ item ]
+
+Print help information on commands and functions.  The options "-c" and
+"-f" select either command or function information.  Without an item
+argument, a summary of available commands ("-c") or functions ("-f") is
+printed.
+
+Examples:
+
+#. Print help information on the "help" command::
+
+    ZBTest> help
+
+#. Print help information on the "help" command, equivalent to "help"::
+
+    ZBTest> help -c help
+
+#. Print a summary of available commands::
+
+    ZBTest> help -c
+
+#. Print help information on the "execute" command::
+
+    ZBTest> help execute
+
+#. Print a summary of available functions::
+
+    ZBTest> help -f
+#. Print help information on the "dirname" function::
+
+    ZBTest> help -f dirname
+

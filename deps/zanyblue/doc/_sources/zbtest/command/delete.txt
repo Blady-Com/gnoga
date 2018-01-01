@@ -1,0 +1,18 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-delete:
+
+The ``delete`` Command
+======================
+
+``delete``, delete a file in the test area::
+
+    delete [ -r ] name
+
+Delete a file from the test area.  With the "-r" option, a directory
+tree is deleted.
+

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Message Filtering &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>Message Filtering &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../index.html" />
     <link rel="up" title="The Text Package" href="index.html" />
     <link rel="next" title="Stub Implementations" href="stubs.html" />
     <link rel="prev" title="Argument Types" href="argtypes.html" />
@@ -35,7 +35,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -46,11 +46,11 @@
   <div class="section" id="message-filtering">
 <h1>Message Filtering<a class="headerlink" href="#message-filtering" title="Permalink to this headline">¶</a></h1>
 <p>Frequently an application has different output modes, e.g., debug, verbose,
-normal, quiet, etc.  If the various <code class="docutils literal"><span class="pre">Print</span></code> routines are used to
+normal, quiet, etc.  If the various <tt class="docutils literal"><span class="pre">Print</span></tt> routines are used to
 generate messages for the application, these messages can be filtered using
-the tagged type <code class="docutils literal"><span class="pre">Message_Filter_Type</span></code> which is used by the ZanyBlue
+the tagged type <tt class="docutils literal"><span class="pre">Message_Filter_Type</span></tt> which is used by the ZanyBlue
 library to determine if a message should be really be printed.</p>
-<p>The <code class="docutils literal"><span class="pre">Message_Filter_Type</span></code> defines the method</p>
+<p>The <tt class="docutils literal"><span class="pre">Message_Filter_Type</span></tt> defines the method</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nf">Is_Filtered</span> <span class="p">(</span><span class="nv">Filter</span>   <span class="p">: </span><span class="nv">Message_Filter_Type</span><span class="p">;</span>
                       <span class="nv">Facility</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">;</span>
                       <span class="nv">Key</span> <span class="p">: </span><span class="nv">Wide_String</span><span class="p">)</span> <span class="kr">return</span> <span class="kt">Boolean</span><span class="p">;</span>
@@ -58,12 +58,12 @@ library to determine if a message should be really be printed.</p>
 </div>
 <p>An application convention can be used on the message keys to define, e.g.,
 verbose message filtering.  The example application
-<code class="docutils literal"><span class="pre">examples/text/filtering</span></code> uses the convention:</p>
+<tt class="docutils literal"><span class="pre">examples/text/filtering</span></tt> uses the convention:</p>
 <ul class="simple">
-<li>Verbose messages begin with the letter <code class="docutils literal"><span class="pre">V</span></code></li>
-<li>Informational messages begin with the letter <code class="docutils literal"><span class="pre">I</span></code></li>
-<li>Warning messages begin with the letter <code class="docutils literal"><span class="pre">W</span></code></li>
-<li>Error messages begin with the letter <code class="docutils literal"><span class="pre">E</span></code></li>
+<li>Verbose messages begin with the letter <tt class="docutils literal"><span class="pre">V</span></tt></li>
+<li>Informational messages begin with the letter <tt class="docutils literal"><span class="pre">I</span></tt></li>
+<li>Warning messages begin with the letter <tt class="docutils literal"><span class="pre">W</span></tt></li>
+<li>Error messages begin with the letter <tt class="docutils literal"><span class="pre">E</span></tt></li>
 </ul>
 <p>The declaration of a filtering type for this configuration would be</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kd">type</span> <span class="kt">My_Filter_Type</span> <span class="kr">is</span> <span class="kr">new</span> <span class="n">Message_Filter_Type</span> <span class="kr">with</span>
@@ -86,8 +86,8 @@ verbose message filtering.  The example application
 </pre></div>
 </div>
 <p>To enable the filtering, the filter must be registered with the ZanyBlue
-library via the <code class="docutils literal"><span class="pre">Set_Filter</span></code> routine.  This routine takes an access to
-<code class="docutils literal"><span class="pre">Message_Filter_Type'Class</span></code> object.  E.g., for the example filtering
+library via the <tt class="docutils literal"><span class="pre">Set_Filter</span></tt> routine.  This routine takes an access to
+<tt class="docutils literal"><span class="pre">Message_Filter_Type'Class</span></tt> object.  E.g., for the example filtering
 application, the filter is installed using:</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kn">use</span> <span class="nn">ZanyBlue.Text.Formatting</span><span class="p">;</span>
 <span class="p">...</span>
@@ -112,7 +112,7 @@ messages.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
@@ -127,21 +127,22 @@ messages.</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/text/filtering.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/text/filtering.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -149,11 +150,11 @@ messages.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/text/filtering.txt"

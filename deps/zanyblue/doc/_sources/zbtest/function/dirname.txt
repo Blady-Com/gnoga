@@ -1,0 +1,20 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest function
+   implementation files (.adb files).
+
+.. _zb-zbtest-functions-dirname:
+
+The ``dirname`` Function
+========================
+
+dirname path
+
+
+The "dirname" function takes a path as an argument and returns the
+containing directory.  It is used in the zbmcompile tests to determine the
+installation directory for the zbmcompile executable, e.g.,::
+
+    ZBTest> set project_dir $(dirname $(dirname $(which zbmcompile)))\n
+

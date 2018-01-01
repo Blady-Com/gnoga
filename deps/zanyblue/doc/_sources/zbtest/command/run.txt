@@ -1,0 +1,26 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-run:
+
+The ``run`` Command
+===================
+
+``run``, run another ZBTest script::
+
+    run script
+
+Run a script given the script name, i.e., without the "zbt" extension.
+The script should either be in the current directory or in a sub-directory
+with the same name as the script, e.g., "run xmpl", will try the files::
+
+    xmpl.zbt
+    xmpl/xmpl.zbt
+
+Once located, the ZBTest commands in the script are executed within the
+context of a new implicit scope.  Modifications to the environment made
+by the script are discarded (via undo actions) when the script completes.
+

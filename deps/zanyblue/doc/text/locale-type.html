@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Locale Type &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>Locale Type &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../index.html" />
     <link rel="up" title="The Text Package" href="index.html" />
     <link rel="next" title="Encodings and The Codecs Type" href="encodings.html" />
     <link rel="prev" title="ZanyBlue Formatting Implementation" href="format-impl.html" />
@@ -35,7 +35,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -45,35 +45,35 @@
             
   <div class="section" id="locale-type">
 <h1>Locale Type<a class="headerlink" href="#locale-type" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal"><span class="pre">Locale_Type</span></code> defines a locale which is used to select localized
+<p>The <tt class="docutils literal"><span class="pre">Locale_Type</span></tt> defines a locale which is used to select localized
 messages at run time.  The type basically maps to the standard ISO names
 used to identify the language, script and territory for the locale.  Typical
 examples of a locale name are</p>
 <ol class="arabic simple">
-<li><code class="docutils literal"><span class="pre">fr</span></code> for French.  Here only the language abbreviation is
+<li><tt class="docutils literal"><span class="pre">fr</span></tt> for French.  Here only the language abbreviation is
 used.  Here only the language is specified.</li>
-<li><code class="docutils literal"><span class="pre">en_US</span></code> for English as spoken in the United Stated, where
+<li><tt class="docutils literal"><span class="pre">en_US</span></tt> for English as spoken in the United Stated, where
 the language and territory are specified.</li>
-<li><code class="docutils literal"><span class="pre">zh_Hant</span></code> for Traditional Chinese, where the language and
+<li><tt class="docutils literal"><span class="pre">zh_Hant</span></tt> for Traditional Chinese, where the language and
 script are specified.</li>
-<li><code class="docutils literal"><span class="pre">zh_Hans_CN</span></code> for Simplified Chinese as spoken in China
+<li><tt class="docutils literal"><span class="pre">zh_Hans_CN</span></tt> for Simplified Chinese as spoken in China
 where language, script and territory are specified.</li>
 </ol>
 <p>Language and territory abbreviations must be either 2 or 3 characters in length,
 script abbreviations must be 4 characters.  For a list the various language,
 script and territory codes, see the source properties files in
-<code class="docutils literal"><span class="pre">src/text/mesg</span></code>.</p>
+<tt class="docutils literal"><span class="pre">src/text/mesg</span></tt>.</p>
 <div class="section" id="locale-encodings">
 <h2>Locale Encodings<a class="headerlink" href="#locale-encodings" title="Permalink to this headline">¶</a></h2>
 <p>The system encoding name is normally appended to the this value separated
-by a period, e.g., <code class="docutils literal"><span class="pre">en_US.UTF-8</span></code>.  The ZanyBlue library respects this
-encoding information and associates a <code class="docutils literal"><span class="pre">Codecs</span></code> object with the locale
-to encode and decode from and to <code class="docutils literal"><span class="pre">Wide_String</span></code>&#8216;s.  The <code class="docutils literal"><span class="pre">Codecs_Type</span></code>
-assocated with a locale is available via the <code class="docutils literal"><span class="pre">Codecs</span></code> method, e.g.,</p>
+by a period, e.g., <tt class="docutils literal"><span class="pre">en_US.UTF-8</span></tt>.  The ZanyBlue library respects this
+encoding information and associates a <tt class="docutils literal"><span class="pre">Codecs</span></tt> object with the locale
+to encode and decode from and to <tt class="docutils literal"><span class="pre">Wide_String</span></tt>&#8216;s.  The <tt class="docutils literal"><span class="pre">Codecs_Type</span></tt>
+assocated with a locale is available via the <tt class="docutils literal"><span class="pre">Codecs</span></tt> method, e.g.,</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="no">Current_Codecs</span> <span class="p">:</span> <span class="kr">constant</span> <span class="n">Codecs_Type</span> <span class="p">:=</span> <span class="n">Current_Locale</span><span class="p">.</span><span class="n">Codecs</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="encodings.html#zb-text-encoding"><span class="std std-ref">Encodings and The Codecs Type</span></a> for more information on the <code class="docutils literal"><span class="pre">Codecs_Type</span></code>.</p>
+<p>See <a class="reference internal" href="encodings.html#zb-text-encoding"><em>Encodings and The Codecs Type</em></a> for more information on the <tt class="docutils literal"><span class="pre">Codecs_Type</span></tt>.</p>
 </div>
 <div class="section" id="locale-resolution">
 <h2>Locale Resolution<a class="headerlink" href="#locale-resolution" title="Permalink to this headline">¶</a></h2>
@@ -86,19 +86,19 @@ locales walking up a virtual tree of locales until the requested data is found
 or the root locale is reached.</p>
 <p>The algorithm implemented in the ZanyBlue library is a general locale
 parenting algorithm which does the obvious for simple language and territory
-locales.  E.g., the parent of the locale <code class="docutils literal"><span class="pre">de_DE</span></code> is <code class="docutils literal"><span class="pre">de</span></code>
+locales.  E.g., the parent of the locale <tt class="docutils literal"><span class="pre">de_DE</span></tt> is <tt class="docutils literal"><span class="pre">de</span></tt>
 which, in turn, has as it&#8217;s parent the root locale.  A similar algorithm is
 used for simple language and script locales, e.g., the parent of the locale
-<code class="docutils literal"><span class="pre">en_Latn</span></code> is <code class="docutils literal"><span class="pre">en</span></code>, which, again, has as it&#8217;s parent the root locale.</p>
+<tt class="docutils literal"><span class="pre">en_Latn</span></tt> is <tt class="docutils literal"><span class="pre">en</span></tt>, which, again, has as it&#8217;s parent the root locale.</p>
 <p>The locale parenting algorithm for full language, script and territory
 locales will have an ancestor tree of language and script, then language
 and territory, then language and finally the root locale.  For example,
-the sequence of locales tried for the locale &#8220;<code class="docutils literal"><span class="pre">fr_Latn_FR</span></code>&#8221; is</p>
+the sequence of locales tried for the locale &#8220;<tt class="docutils literal"><span class="pre">fr_Latn_FR</span></tt>&#8221; is</p>
 <ol class="arabic simple">
-<li><code class="docutils literal"><span class="pre">fr_Latn_FR</span></code></li>
-<li><code class="docutils literal"><span class="pre">fr_Latn</span></code></li>
-<li><code class="docutils literal"><span class="pre">fr_FR</span></code></li>
-<li><code class="docutils literal"><span class="pre">fr</span></code></li>
+<li><tt class="docutils literal"><span class="pre">fr_Latn_FR</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">fr_Latn</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">fr_FR</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">fr</span></tt></li>
 <li>Root Locale</li>
 </ol>
 <p>This locale resolution occurs at run-time when a message for a particular
@@ -117,33 +117,33 @@ lookups are at runtime, e.g.,</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">Full_Day_Name</span> <span class="pre">(Make_Locale</span> <span class="pre">(&quot;en&quot;),</span> <span class="pre">Sun)</span></code></td>
-<td><code class="docutils literal"><span class="pre">&quot;Sunday&quot;</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Full_Day_Name</span> <span class="pre">(Make_Locale</span> <span class="pre">(&quot;en&quot;),</span> <span class="pre">Sun)</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;Sunday&quot;</span></tt></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">Full_Day_Name</span> <span class="pre">(Make_Locale</span> <span class="pre">(&quot;fr&quot;),</span> <span class="pre">Mon)</span></code></td>
-<td><code class="docutils literal"><span class="pre">&quot;lundi&quot;</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">Full_Day_Name</span> <span class="pre">(Make_Locale</span> <span class="pre">(&quot;fr&quot;),</span> <span class="pre">Mon)</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;lundi&quot;</span></tt></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">Full_Day_Name</span> <span class="pre">(Make_Locale</span> <span class="pre">(&quot;de&quot;),</span> <span class="pre">Tue)</span></code></td>
-<td><code class="docutils literal"><span class="pre">&quot;Dienstag&quot;</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Full_Day_Name</span> <span class="pre">(Make_Locale</span> <span class="pre">(&quot;de&quot;),</span> <span class="pre">Tue)</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;Dienstag&quot;</span></tt></td>
 </tr>
 </tbody>
 </table>
 <p>Note: applications would normally just format, via message strings, values,
-e.g., <code class="docutils literal"><span class="pre">Time</span></code> values and let the type formatter access the lower level
-localized values, in this case when formatting <code class="docutils literal"><span class="pre">Time</span></code> values as dates,
+e.g., <tt class="docutils literal"><span class="pre">Time</span></tt> values and let the type formatter access the lower level
+localized values, in this case when formatting <tt class="docutils literal"><span class="pre">Time</span></tt> values as dates,
 the localized date names might be accessed depending on the format style and
 locale.</p>
 <p>It should also be noted the values returned for localized data are
-<code class="docutils literal"><span class="pre">Wide_Strings</span></code> and generally contain non-ASCII characters.  Ad hoc
+<tt class="docutils literal"><span class="pre">Wide_Strings</span></tt> and generally contain non-ASCII characters.  Ad hoc
 testing on modern Unix (Linux) systems using X-Windows will display the correct
-characters (with the cooperation of the compiler, e.g., the <code class="docutils literal"><span class="pre">-gnatW8</span></code>
+characters (with the cooperation of the compiler, e.g., the <tt class="docutils literal"><span class="pre">-gnatW8</span></tt>
 switch for GNAT).  On Windows, the DOS command will will normally <em>not</em>
 display such character correctly.  It is possible to enable display of non-ASCII
 characters via the selection of a code page for the command window.</p>
 </div>
 <div class="section" id="creating-locales">
 <h2>Creating Locales<a class="headerlink" href="#creating-locales" title="Permalink to this headline">¶</a></h2>
-<p>Values of <code class="docutils literal"><span class="pre">Locale_Type</span></code> are created via the <code class="docutils literal"><span class="pre">Make_Locale</span></code>
+<p>Values of <tt class="docutils literal"><span class="pre">Locale_Type</span></tt> are created via the <tt class="docutils literal"><span class="pre">Make_Locale</span></tt>
 function, e.g.,</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="no">My_Locale</span> <span class="p">:</span> <span class="kr">constant</span> <span class="n">Locale_Type</span> <span class="p">:=</span> <span class="n">Make_Locale</span> <span class="p">(</span><span class="s">&quot;en_IE&quot;</span><span class="p">);</span>
 </pre></div>
@@ -154,7 +154,7 @@ function, e.g.,</p>
 <p>The ZanyBlue Text routines allow the explicit definition of the locale for a
 particular function/procedure call but this normally not needed allowing the
 locale to default to the currently defined locale.  The default locale is
-taken from the process environment via the variable <code class="docutils literal"><span class="pre">ZB_LANG</span></code>, and,
+taken from the process environment via the variable <tt class="docutils literal"><span class="pre">ZB_LANG</span></tt>, and,
 if that is not defined, uses</p>
 <ol class="arabic simple">
 <li>On Unix systems, the value of the environment variable LANG.</li>
@@ -162,17 +162,17 @@ if that is not defined, uses</p>
 to a standard locale name (language, script and territory triple).</li>
 </ol>
 <p>The default locale used can be adjusted at run time using the
-<code class="docutils literal"><span class="pre">Set_Locale</span></code> routine, e.g., to explicitly set the locale to Canadian
+<tt class="docutils literal"><span class="pre">Set_Locale</span></tt> routine, e.g., to explicitly set the locale to Canadian
 French, the call would be</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="n">Set_Locale</span> <span class="p">(</span><span class="n">Name</span> <span class="p">=&gt;</span> <span class="s">&quot;fr_CA&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>The Makefiles for the example applications generally include <code class="docutils literal"><span class="pre">run</span></code>
+<p>The Makefiles for the example applications generally include <tt class="docutils literal"><span class="pre">run</span></tt>
 targets which run the applications in the default locale.  They also include
 rules to run application in other locales by tagging on the locale name to
-<code class="docutils literal"><span class="pre">run_</span></code>, e.g., to run the texttt{tomcat} example in a Greek locale,
+<tt class="docutils literal"><span class="pre">run_</span></tt>, e.g., to run the texttt{tomcat} example in a Greek locale,
 the command would be:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ make run_el
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ make run_el
 </pre></div>
 </div>
 </div>
@@ -181,7 +181,7 @@ the command would be:</p>
 <p>The default locale is created on application started and defaults to the locale
 associated with the running process.  This is normally the expected locale.
 A locale can be explicitly created using the three variations of the
-<code class="docutils literal"><span class="pre">Make_Locale</span></code> function:</p>
+<tt class="docutils literal"><span class="pre">Make_Locale</span></tt> function:</p>
 <div class="section" id="simple-string-locale-name">
 <h3>Simple String Locale Name<a class="headerlink" href="#simple-string-locale-name" title="Permalink to this headline">¶</a></h3>
 <p>Creating a locale using a simple string contains the locale information of language,
@@ -197,7 +197,7 @@ script, territory and encoding (not all are required, e.g.,:</p>
 <div class="section" id="message-source-locale">
 <span id="zb-text-sourcelocale"></span><h2>Message Source Locale<a class="headerlink" href="#message-source-locale" title="Permalink to this headline">¶</a></h2>
 <p>The current locale is used to locate localized messages in a facility,
-e.g., in a French locale, messages defined by the <code class="docutils literal"><span class="pre">_fr</span></code>
+e.g., in a French locale, messages defined by the <tt class="docutils literal"><span class="pre">_fr</span></tt>
 properties files would be used, if available.  If not available,
 then the messages defined by the base properites file will be used.
 If the application is developed in an English environment, then the base
@@ -207,7 +207,7 @@ base properties file.</p>
 <p>By default, the current locale is also used to format arguments to messages.
 This has the biggest impact for dates and times.  For example, the following
 message:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Today</span><span class="o">=</span><span class="n">Today</span> <span class="ow">is</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="n">datetime</span><span class="p">,</span><span class="n">EEEE</span><span class="p">}</span><span class="o">.</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Today=Today is {0,datetime,EEEE}.
 </pre></div>
 </div>
 <p>will print the day name using the code</p>
@@ -222,7 +222,7 @@ message:</p>
 of the message is not available for the message, then the base message text
 is used, i.e., the English text.  However, if the French locale will be used
 to format the date/time argument generating the message,:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Today</span> <span class="ow">is</span> <span class="n">jeudi</span><span class="o">.</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Today is jeudi.
 </pre></div>
 </div>
 <p>Such mixed language messages should normally be avoid in applications.  It
@@ -230,13 +230,13 @@ is better the entire message be in English, even in non-English locales.</p>
 <p>To support this functionality, the ZanyBlue Text library associates a locale
 with each message.  For localized messages, this is the locale associated with
 the localized property file, e.g., messages in the file
-<code class="docutils literal"><span class="pre">App_fr.properties</span></code> will have the locale <code class="docutils literal"><span class="pre">fr</span></code> associated
+<tt class="docutils literal"><span class="pre">App_fr.properties</span></tt> will have the locale <tt class="docutils literal"><span class="pre">fr</span></tt> associated
 with them.  Using the associated message locale is controlled via the enable
 and disable source locale routines.  This is enabled by default.  See the
 source locale text example.</p>
 <p>For the base message file, the default locale associated with the messages
 is the root locale.  This should normally be explicitly set using the
-<code class="docutils literal"><span class="pre">zbmcompile</span></code> <code class="docutils literal"><span class="pre">-s</span></code> option.</p>
+<tt class="docutils literal"><span class="pre">zbmcompile</span></tt> <tt class="docutils literal"><span class="pre">-s</span></tt> option.</p>
 </div>
 </div>
 
@@ -244,7 +244,7 @@ is the root locale.  This should normally be explicitly set using the
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
@@ -275,21 +275,22 @@ is the root locale.  This should normally be explicitly set using the
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/text/locale-type.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/text/locale-type.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -297,11 +298,11 @@ is the root locale.  This should normally be explicitly set using the
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/text/locale-type.txt"

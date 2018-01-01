@@ -1,0 +1,35 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-prepend:
+
+The ``prepend`` Command
+=======================
+
+``prepend``, prepend a value to list parameter::
+
+    prepend parameter value
+
+The prepend command adds a value to the beginning of a list parameter.
+If the parameter doesn''t exist in the current scope, it is created as a
+list parameter.  The prepend append is normally used to force a path to
+the "front" of a search path parameter, e.g., the "path" or "searchpath"
+parameters.
+
+Example of use, where the "begin" command is used start a new, empty,
+scope::
+
+    ZBTest> begin
+    ZBTest> print -l l
+    Emtpy list
+    ZBTest> prepend l a
+    ZBTest> print -l l
+    1) "a"
+    ZBTest> prepend l b
+    ZBTest> print -l l
+    1) "b"
+    2) "a"
+

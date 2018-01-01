@@ -1,0 +1,23 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-compare:
+
+The ``compare`` Command
+=======================
+
+``compare``, compare a log file with a reference log::
+
+    compare log-file [ ref-log-file ]
+
+The compare command compares (with regular expression matching) a
+generated log file with a reference log file.  If the files match, a
+.ok file is created and the number of OK tests is incremented, otherwise
+a .fail file is created and the number of FAIL tests is incremented.
+
+The reference log file is found by searching the searchpath parameter
+and is normally in the same directory as the .zbt test script.
+

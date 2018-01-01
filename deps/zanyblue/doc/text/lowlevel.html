@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Example Using Low Level Functions &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>Example Using Low Level Functions &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../index.html" />
     <link rel="up" title="The Text Package" href="index.html" />
     <link rel="next" title="Example Using Accessor Functions" href="accessor-xmpl.html" />
     <link rel="prev" title="Messages and Arguments" href="messages.html" />
@@ -35,7 +35,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -45,7 +45,7 @@
             
   <div class="section" id="example-using-low-level-functions">
 <h1>Example Using Low Level Functions<a class="headerlink" href="#example-using-low-level-functions" title="Permalink to this headline">¶</a></h1>
-<p>As an introduction to the <code class="docutils literal"><span class="pre">Text</span></code> package, a simple example, which
+<p>As an introduction to the <tt class="docutils literal"><span class="pre">Text</span></tt> package, a simple example, which
 continues the example based on the number of moons orbiting the various
 planets, is developed here.</p>
 <p><strong>Note</strong>, the preferred way to access messages is using accessor
@@ -54,7 +54,7 @@ calls using strings to identify facilities and key to demonstrate the
 concepts involved.</p>
 <p>The task is to ask the user for a planet name and print the number of currently
 known moons for the planet.  The source for this simple example
-is available in the directory <code class="docutils literal"><span class="pre">examples/text/moons</span></code> and is listed here:</p>
+is available in the directory <tt class="docutils literal"><span class="pre">examples/text/moons</span></tt> and is listed here:</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="kn">with</span> <span class="nn">Ada.Wide_Text_IO</span><span class="p">;</span>
 <span class="kn">with</span> <span class="nn">Moons_Messages</span><span class="p">;</span>
 <span class="kn">with</span> <span class="nn">ZanyBlue.Text.Formatting</span><span class="p">;</span>
@@ -94,27 +94,27 @@ is available in the directory <code class="docutils literal"><span class="pre">e
 <span class="kr">end</span> <span class="nf">Moons</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>The example source code uses the <code class="docutils literal"><span class="pre">Generic_Enumerations</span></code> ZanyBlue
+<p>The example source code uses the <tt class="docutils literal"><span class="pre">Generic_Enumerations</span></tt> ZanyBlue
 package for planet name arguments.  Generic ZanyBlue packages should
 be instanciated at the library level.</p>
 <p>Here the messages for the application are referred to by message id or
-key, i.e., numeric strings, e.g., <code class="docutils literal"><span class="pre">0001</span></code> for the facility
-<code class="docutils literal"><span class="pre">moons</span></code>.</p>
+key, i.e., numeric strings, e.g., <tt class="docutils literal"><span class="pre">0001</span></tt> for the facility
+<tt class="docutils literal"><span class="pre">moons</span></tt>.</p>
 <p>The text associated with these message keys are externalized to a
-<code class="docutils literal"><span class="pre">.properties</span></code> file.  For this example, the root properties file,
-<code class="docutils literal"><span class="pre">moons.properties</span></code>, containing English, is:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">0001</span><span class="o">=</span><span class="n">Please</span> <span class="n">enter</span> <span class="n">a</span> <span class="n">planet</span><span class="p">:</span>
-<span class="mi">0002</span><span class="o">=</span><span class="n">There</span> <span class="n">are</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="n">known</span> <span class="n">moons</span> <span class="n">orbiting</span> <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span>
-<span class="mi">0003</span><span class="o">=</span><span class="n">There</span> <span class="ow">is</span> <span class="mi">1</span> <span class="n">known</span> <span class="n">moon</span> <span class="n">orbiting</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span>
-<span class="mi">0004</span><span class="o">=</span><span class="n">OK</span><span class="p">,</span> <span class="n">goodbye</span><span class="o">.</span>
+<tt class="docutils literal"><span class="pre">.properties</span></tt> file.  For this example, the root properties file,
+<tt class="docutils literal"><span class="pre">moons.properties</span></tt>, containing English, is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>0001=Please enter a planet:
+0002=There are {0} known moons orbiting &quot;{1}&quot;.
+0003=There is 1 known moon orbiting &quot;{0}&quot;.
+0004=OK, goodbye.
 </pre></div>
 </div>
-<p>A German translation of this properties, <code class="docutils literal"><span class="pre">moons_de.properties</span></code>,
+<p>A German translation of this properties, <tt class="docutils literal"><span class="pre">moons_de.properties</span></tt>,
 file would be (via Google Translate):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">0001</span><span class="o">=</span><span class="n">Bitte</span> <span class="n">geben</span> <span class="n">Sie</span> <span class="n">einen</span> <span class="n">Planeten</span><span class="p">:</span>
-<span class="mi">0002</span><span class="o">=</span><span class="n">Es</span> <span class="n">gibt</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="n">bekannte</span> <span class="n">Monde</span> <span class="n">umkreisen</span> <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span>
-<span class="mi">0003</span><span class="o">=</span><span class="n">Es</span> <span class="n">gibt</span> <span class="mi">1</span> <span class="n">bekannt</span> <span class="n">Mond</span> <span class="n">umkreisen</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span>
-<span class="mi">0004</span><span class="o">=</span><span class="n">OK</span><span class="p">,</span> <span class="n">auf</span> <span class="n">Wiedersehen</span><span class="o">.</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>0001=Bitte geben Sie einen Planeten:
+0002=Es gibt {0} bekannte Monde umkreisen &quot;{1}&quot;.
+0003=Es gibt 1 bekannt Mond umkreisen &quot;{0}&quot;.
+0004=OK, auf Wiedersehen.
 </pre></div>
 </div>
 <p>French and Spanish Google translated version of this file in the examples
@@ -123,31 +123,19 @@ directory.</p>
 properties files into an Ada package and simply <strong>with</strong>&#8216;ing the
 compiled package in the application (normally in the unit containing
 the main procedure).  In this example, the generated package referenced
-in the source above is <code class="docutils literal"><span class="pre">Moons_Messages</span></code> which is created using
-the <code class="docutils literal"><span class="pre">zbmcompile</span></code> ZanyBlue message compiler utility:</p>
-<div class="highlight-text"><div class="highlight"><pre><span></span>$ zbmcompile -i -v Moons_Messages moons
-This is ZBMCompile, Version 1.3.0 BETA (r3059) on 8/6/16 at 7:44 PM
-Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
-Loaded 20 messages for the facility &quot;moons&quot; (4 locales)
-Performing consistency checks for the facility &quot;moons&quot;
-Loaded 1 facilities, 5 keys, 4 locales and 20 messages
-Loaded total 677 characters, stored 677 unique characters, 0% saving
-Retained the spec &quot;Moons_Messages&quot; in the file &quot;./moons_messages.ads&quot;
-Wrote the body &quot;Moons_Messages&quot; to the file &quot;./moons_messages.adb&quot;
-ZBMCompile completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.026
-</pre></div>
-</div>
+in the source above is <tt class="docutils literal"><span class="pre">Moons_Messages</span></tt> which is created using
+the <tt class="docutils literal"><span class="pre">zbmcompile</span></tt> ZanyBlue message compiler utility:</p>
 <p>This generates an Ada specification containing the name of the facility,
-<code class="docutils literal"><span class="pre">moons</span></code> in this case, and the definition of a single initialization routine.
+<tt class="docutils literal"><span class="pre">moons</span></tt> in this case, and the definition of a single initialization routine.
 The body file contains the message text data, the initialization routine which
-adds the message data to a shared message pool.  Since the <code class="docutils literal"><span class="pre">-i</span></code>
+adds the message data to a shared message pool.  Since the <tt class="docutils literal"><span class="pre">-i</span></tt>
 command line option was used, the generated package body includes a call
 to the initialization routine allowing the message data to be included
 in the application via a simple <strong>with</strong> of the package, i.e., no
 explicit call to the initialization routine is needed.</p>
 <p>The execution of the generated application will now display messages selected
 for the run-time locale, e.g., in an English locale:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ make run
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ make run
 ../../../bin/x_moons
 This is MOONS, Version 1.3.0 - BETA
 Please enter a planet: mars
@@ -162,7 +150,7 @@ OK, goodbye.
 </div>
 <p>And running the application selecting a German locale displays the German
 messages:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ make run_de
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ make run_de
 ../../../bin/x_moons de
 Dies ist MOONS, Version 1.3.0 - BETA
 Bitte geben Sie einen Planeten: mars
@@ -177,17 +165,17 @@ OK, auf Wiedersehen.
 </div>
 <p>The locale is selected via a command line argument here, however, the
 environment variables can be used instead, see section
-<a class="reference internal" href="locale-type.html#zb-text-changelocale"><span class="std std-ref">Changing Default Locale</span></a> for more details on selecting locales.</p>
+<a class="reference internal" href="locale-type.html#zb-text-changelocale"><em>Changing Default Locale</em></a> for more details on selecting locales.</p>
 <p>This example application did not attempt to localize the planet names.  A
 more involved example would add another facility for the planet names with
-message keys matching the <code class="docutils literal"><span class="pre">Image</span></code> of the enumeration values.</p>
+message keys matching the <tt class="docutils literal"><span class="pre">Image</span></tt> of the enumeration values.</p>
 </div>
 
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
@@ -202,21 +190,22 @@ message keys matching the <code class="docutils literal"><span class="pre">Image
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/text/lowlevel.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/text/lowlevel.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -224,11 +213,11 @@ message keys matching the <code class="docutils literal"><span class="pre">Image
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/text/lowlevel.txt"

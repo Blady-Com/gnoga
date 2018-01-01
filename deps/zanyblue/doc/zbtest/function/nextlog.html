@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The nextlog Function &mdash; ZanyBlue 1.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../../index.html" />
+    <link rel="up" title="ZBTest Functions" href="index.html" />
+    <link rel="next" title="The which Function" href="which.html" />
+    <link rel="prev" title="The joinpaths Function" href="joinpaths.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-nextlog-function">
+<span id="zb-zbtest-functions-nextlog"></span><h1>The <tt class="docutils literal"><span class="pre">nextlog</span></tt> Function<a class="headerlink" href="#the-nextlog-function" title="Permalink to this headline">¶</a></h1>
+<p>nextlog [ -c counter ] [ -n ]</p>
+<p>The &#8220;nextlog&#8221; function returns the next log name for the current test
+based on a sequence controlled by the &#8220;_lognum&#8221; parameter.  By default,
+an undo action is also created to compare the generated log name with a
+reference log file on exiting the test scope.  The undo action creation
+is suppressed if the &#8220;-n&#8221; option is given.  The format of the log file
+name generated is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">TESTNAME</span><span class="o">-</span><span class="n">nn</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+<p>where &#8220;TESTNAME&#8221; is the name of the current test and &#8220;nn&#8221; the sequence
+number.  The use of the &#8220;nextlog&#8221; function can simplify test scripts,
+e.g.,:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>execute -o mytest-01.log mycmd1
+execute -o mytest-02.log mycmd2
+compare mytest-01.log
+compare mytest-02.log
+</pre></div>
+</div>
+<p>can be re-written as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>execute -o $(nextlog) mycmd1
+execute -o $(nextlog) mycmd2
+</pre></div>
+</div>
+<p>The &#8220;-c&#8221; option can be used to start a new log naming sequence for log
+files that are not part of the normal test reference logs, e.g., the output
+of the build commands to generate an executable are too platform specific
+to to be used as reference log files but the output should be stored in a
+log file for debugging.  The argument to the &#8220;-c&#8221; option is the name of
+an integer parameter which is used to sequence the log file name (the
+parameter is created if it does not already exist in the current scope).</p>
+<p>By default, log file using alternative counter names do not create
+undo actions to execute the compare command.  If the log files should
+be compared on scope exit, the &#8220;-n&#8221; option can be used.</p>
+<p>For example, save the output of a build command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>execute -o $(nextlog -c build) build.sh
+</pre></div>
+</div>
+<p>would generate the log file TESTNAME-build-nn.log, the counter name
+is embedded in the log file.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a><ul>
+  <li><a href="index.html">ZBTest Functions</a><ul>
+      <li>Previous: <a href="joinpaths.html" title="previous chapter">The <tt class="docutils literal"><span class="pre">joinpaths</span></tt> Function</a></li>
+      <li>Next: <a href="which.html" title="next chapter">The <tt class="docutils literal"><span class="pre">which</span></tt> Function</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/zbtest/function/nextlog.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/zbtest/function/nextlog.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

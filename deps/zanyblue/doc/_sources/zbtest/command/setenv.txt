@@ -1,0 +1,45 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-setenv:
+
+The ``setenv`` Command
+======================
+
+``setenv``, set an environment variable::
+
+    setenv [ -l | -p ] variable value
+
+Set an environment variable to a value, e.g.,::
+
+    ZBTest> setenv PROFILE yes
+    Setting the environment variable "PROFILE" to "yes"
+
+sets the variable "PROFILE" to the value "yes" for the current process and
+any processes created using the "execute" command.  The definition is
+scoped and is reverted when the current scope exits (normally at the end of
+a test script).  The reversion is either by deleting the environment
+variable it did not have a current value or by restoring the value prior
+to the setenv.
+
+The options allow the definition of environment variables based on the
+value of parameters.  For simple definitions, the "-p" option can be used,
+e.g.,::
+
+    ZBTest> set LLW Lilongwe
+    ZBTest> setenv -p DESTINATION LLW
+    Setting the environment variable "DESTINATION" to "Lilongwe"
+
+parameters are converted to strings for these simple definitions.  If the
+parameter is a list, the "-l" option can be used which concatenates the
+list elements into string separated by the OS separator character.   This
+can be used to set PATH values, etc., e.g.,::
+
+    ZBTest> set mypath /bin
+    ZBTest> append mypath /usr/bin
+    ZBTest> setenv -l PATH mypath
+    Setting the environment variable "PATH" to "/bin:/usr/bin"
+

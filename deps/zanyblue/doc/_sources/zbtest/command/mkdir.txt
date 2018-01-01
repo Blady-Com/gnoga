@@ -1,0 +1,19 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-mkdir:
+
+The ``mkdir`` Command
+=====================
+
+``mkdir``, create a directory::
+
+    mkdir name
+
+Create a new directory in the test area.  Directories created in the test
+area are automatically removed when the current scope exited (either at the
+end of the test script or via an explicit "end").
+

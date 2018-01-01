@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The end Command &mdash; ZanyBlue 1.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../../index.html" />
+    <link rel="up" title="ZBTest Commands" href="index.html" />
+    <link rel="next" title="The execute Command" href="execute.html" />
+    <link rel="prev" title="The echo Command" href="echo.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-end-command">
+<span id="zb-zbtest-commands-end"></span><h1>The <tt class="docutils literal"><span class="pre">end</span></tt> Command<a class="headerlink" href="#the-end-command" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">end</span></tt>, end a parameter scope returning to previous scope:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">end</span>
+</pre></div>
+</div>
+<p>Exit a parameter scope.  Any assignments to made duing the scope
+are lost.  Previous definitions are restored, e.g.,:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ZBTest&gt; set xyz abc
+ZBTest&gt; begin
+ZBTest&gt; set xyz 123
+ZBTest&gt; echo $xyz
+ZBTest&gt; end
+ZBTest&gt; echo $xyz
+</pre></div>
+</div>
+<p>The first &#8220;echo&#8221; prints the value &#8220;123&#8221; which the second prints the value
+&#8220;abc&#8221;.</p>
+<p>It not normally necessary to use the &#8220;begin&#8221; and &#8220;end&#8221; commands as running
+a test script automatically start a new scope which is ended when the
+script completes.</p>
+<p>The &#8220;end&#8221; command also executes any &#8220;end actions&#8221; defined by commands
+executed during the scope.  E.g., the &#8220;copy&#8221; command add an &#8220;end action&#8221;
+to remove the file or directory copied into the test area.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/zb-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a><ul>
+  <li><a href="index.html">ZBTest Commands</a><ul>
+      <li>Previous: <a href="echo.html" title="previous chapter">The <tt class="docutils literal"><span class="pre">echo</span></tt> Command</a></li>
+      <li>Next: <a href="execute.html" title="next chapter">The <tt class="docutils literal"><span class="pre">execute</span></tt> Command</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/zbtest/command/end.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/zbtest/command/end.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

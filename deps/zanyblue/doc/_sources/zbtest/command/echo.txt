@@ -1,0 +1,26 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-echo:
+
+The ``echo`` Command
+====================
+
+``echo``, echo arguments to output::
+
+    echo name ...
+
+Echo arguments to output.  References to parameters are expanded
+to string values before printing.
+
+Examples::
+
+    ZBTest> echo a
+    a
+    ZBTest> set -i a 10
+    ZBTest> echo a is $a
+    a is 10
+

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Command Line Utilities &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>Command Line Utilities &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../index.html" />
     <link rel="next" title="Additional Documentation" href="../docs.html" />
-    <link rel="prev" title="The zbmcompile Utility" href="../text/zbmcompile.html" />
+    <link rel="prev" title="The which Function" href="../zbtest/function/which.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -34,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -49,81 +49,24 @@ of the documentation.  The full documentation for some general utilities
 is given here, the other utilities will simply refer back to the section
 that covers them.</p>
 <div class="section" id="the-zbinfo-utility">
-<span id="zb-utilities-zbinfo"></span><h2>The <code class="docutils literal"><span class="pre">zbinfo</span></code> Utility<a class="headerlink" href="#the-zbinfo-utility" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">zbinfo</span></code> utility prints information on data built into the ZanyBlue
+<span id="zb-utilities-zbinfo"></span><h2>The <tt class="docutils literal"><span class="pre">zbinfo</span></tt> Utility<a class="headerlink" href="#the-zbinfo-utility" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">zbinfo</span></tt> utility prints information on data built into the ZanyBlue
 library.  The utility usage is</p>
-<div class="highlight-text"><div class="highlight"><pre><span></span>$ zbinfo -h
-This is ZBInfo, Version 1.3.0 BETA (r3059) on 8/6/16 at 7:44 PM
-Copyright (c) 2016, Michael Rohan.  All rights reserved
-The &quot;zbinfo&quot; command prints information on the data built into ZanyBlue
-library.  By default, information on the current locale is printed.  The
-available options are:
-
--h|--help            Print this help information
--r|--reverse         Reverse the encoding dump (map encoded to Unicode)
---list-encodings     List the available encoding schemes
---dump-encoding name Print information on the named encoding
---dump-locale name   Print information on the named locale
-
-ZBInfo completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.001
-</pre></div>
-</div>
 </div>
 <div class="section" id="the-zbmcompile-utility">
-<h2>The <code class="docutils literal"><span class="pre">zbmcompile</span></code> Utility<a class="headerlink" href="#the-zbmcompile-utility" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">zbmcompile</span></code> utility compiles message properties files into Ada
+<h2>The <tt class="docutils literal"><span class="pre">zbmcompile</span></tt> Utility<a class="headerlink" href="#the-zbmcompile-utility" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">zbmcompile</span></tt> utility compiles message properties files into Ada
 sources for use in applications.  It is described in the section
-<a class="reference internal" href="../text/zbmcompile.html#zb-text-zbmcompile"><span class="std std-ref">The zbmcompile Utility</span></a>.  It&#8217;s usage is</p>
-<div class="highlight-text"><div class="highlight"><pre><span></span>$ zbmcompile -h
-This is ZBMCompile, Version 1.3.0 BETA (r3059) on 8/6/16 at 7:44 PM
-Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
-Usage: zbmcompile [ options ] package facility
-where available options are
-  -q             Quiet mode
-  -v             Verbose mode
-  -A             Generate only ASCII source files
-  -m             Always include argument modes in generated code
-  -p             Number list entries (gnatcheck +RPositional_Components)
-  -D             Debug mode (dump the catalog definitions)
-  -d directory   Directory containing facility (defaults to &quot;.&quot;)
-  -e extension   Properties extension (default &quot;properties&quot;)
-  -h             Print this usage information
-  -i             Include initialization call in body
-  -O             Optimize string pool for locale based access
-  -g             Disable locale based access optimization (default)
-  -B             Compile only the base locale
-  -u             Disable consistency checked (unchecked mode)
-  -L locale      Compile only the named locale, e.g., &quot;fr&quot;, &quot;fr_FR&quot;
-  -r locale      Define reference (base) locale for consistency checking
-  -s locale      Define source root locale
-  -S stamp-file  File to always create/update (contains a timestamp)
-  -x name        Define external name for Initialize procedure
-  -F             Force generation, ignoring errors.  Generated code might
-                 not compile
-  -a             Generate all accessors ([w]prints, [w]strings, exceptions)
-  -G name        Generate named accessor ([w]prints, [w]strings, exceptions)
-  -C             Disable comments on generated accessor routines
-  -T item size   Set the size of an Ada output limit: pool or comment
-  -X handling    Handling of non-Ada keys for accessors (error, ignore)
-ZBMCompile completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.001
-</pre></div>
-</div>
+<a class="reference internal" href="../text/zbmcompile.html#zb-text-zbmcompile"><em>The zbmcompile Utility</em></a>.  It&#8217;s usage is</p>
 </div>
 <div class="section" id="the-zbtest-utility">
-<h2>The <code class="docutils literal"><span class="pre">zbtest</span></code> Utility<a class="headerlink" href="#the-zbtest-utility" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">zbtest</span></code> utility is a simple application testing utility which
+<h2>The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility<a class="headerlink" href="#the-zbtest-utility" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">zbtest</span></tt> utility is a simple application testing utility which
 compares expected output (with regex masking) for a commmand with the
 output actually generated.  It has a hierarchical test script structure
 based on the testing directory structure.  At this point, the only
 documentation of this utility is the source and the test scripts in
-the <code class="docutils literal"><span class="pre">src/test/system</span></code> directory.  It&#8217;s usage is</p>
-<div class="highlight-text"><div class="highlight"><pre><span></span>$ zbtest -h
-This is ZBTest, Version 1.3.0 BETA (r3059) on 8/6/16 at 7:44 PM
-Copyright (c) 2009-2016, Michael Rohan.  All rights reserved
-zbtest [ -h ] [ -t test-area ] [ -X xml-summary ] [ -d param value ] [ test-script ]
-ZBTest completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.003
-</pre></div>
-</div>
+the <tt class="docutils literal"><span class="pre">src/test/system</span></tt> directory.  It&#8217;s usage is</p>
 </div>
 </div>
 
@@ -131,7 +74,7 @@ ZBTest completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.003
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
@@ -139,9 +82,9 @@ ZBTest completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.003
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Command Line Utilities</a><ul>
-<li><a class="reference internal" href="#the-zbinfo-utility">The <code class="docutils literal"><span class="pre">zbinfo</span></code> Utility</a></li>
-<li><a class="reference internal" href="#the-zbmcompile-utility">The <code class="docutils literal"><span class="pre">zbmcompile</span></code> Utility</a></li>
-<li><a class="reference internal" href="#the-zbtest-utility">The <code class="docutils literal"><span class="pre">zbtest</span></code> Utility</a></li>
+<li><a class="reference internal" href="#the-zbinfo-utility">The <tt class="docutils literal"><span class="pre">zbinfo</span></tt> Utility</a></li>
+<li><a class="reference internal" href="#the-zbmcompile-utility">The <tt class="docutils literal"><span class="pre">zbmcompile</span></tt> Utility</a></li>
+<li><a class="reference internal" href="#the-zbtest-utility">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a></li>
 </ul>
 </li>
 </ul>
@@ -149,26 +92,27 @@ ZBTest completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.003
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../text/zbmcompile.html" title="previous chapter">The zbmcompile Utility</a></li>
+      <li>Previous: <a href="../zbtest/function/which.html" title="previous chapter">The <tt class="docutils literal"><span class="pre">which</span></tt> Function</a></li>
       <li>Next: <a href="../docs.html" title="next chapter">Additional Documentation</a></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/utilities/index.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/utilities/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -176,11 +120,11 @@ ZBTest completed on 8/6/16 at 7:44 PM, elapsed time 0:00:00.003
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/utilities/index.txt"

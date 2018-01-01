@@ -1,0 +1,65 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-execute:
+
+The ``execute`` Command
+=======================
+
+``execute``, execute a system command::
+
+    execute [ -f | -s | -o output ] command [ command-arg ... ]
+
+Execute a command given the command name and an optional list
+of command arguments.  The command to execute is located by
+
+#. Searching from the current test directory up the directory tree
+   for an executable with the command name in a bin directory, i.e.,
+   if executing a command built in the current source tree.
+
+#. Or, searching the value of the "path" list parameter (initialized to
+   the value of the "PATH" environment variable).
+
+The search attempts to find the first file with an extension defined by
+the "exes" list parameter that matches the command name.  For example,
+on Windows, the directories listed on the "path" parameter are searched
+for files with extensions "bat", "cmd", "com" or "exe".
+
+Once an executable is found, a new process is spawned to execute it.
+If the "-o" option is given, then the command output (standard output
+and standard error) is sent to the named file.
+
+The "-s" option defines a command that is expected to execute successfully.
+This is the default and the "-s" option is normally not given.
+
+The "-f" option defines a command that is expected fail (non-zero exit
+status).
+
+An execute failure file is generated if a command does not exit with the
+expected status.
+
+Examples
+
+#. Execute the "ls" command, the output is sent to the "screen"::
+
+    ZBTest> execute ls
+
+#. Execute the "ls" command, the output is sent to the the file "ls.out"
+   in the test area::
+
+    ZBTest> execute -o ls.out ls
+
+#. Execute the "ls" command, the output is sent to the the file "ls.out"
+   in the test area.  The command is expected to exit with a failure
+   status in this case, i.e., the file "nosuchfile" is not expected to
+   exist::
+
+    ZBTest> execute -f -o ls.out ls nosuchfile
+
+The "execute" command is normally used with the "-o" option generating
+a log file for comparision with a reference log file via the ZBTest
+function "nextlog".
+

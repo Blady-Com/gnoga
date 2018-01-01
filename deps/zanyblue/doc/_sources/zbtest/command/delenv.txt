@@ -1,0 +1,30 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-delenv:
+
+The ``delenv`` Command
+======================
+
+``delenv``, delete an environment variable::
+
+    delenv name
+
+Delete an environment variable.  The value of the variable, if any,
+is restored on exiting the current scope.
+
+Examples::
+
+  ZBTest> begin
+  ZBTest> delenv HOME
+  Deleting environment variable "HOME"
+  ZBTest> end
+  Executing the 'undo' action "setenv HOME "/home/mrohan""
+  Setting the environment variable "HOME" to "/home/mrohan"
+
+Any commands executed after the "delenv" until the end of the scope will
+not see a value for the environment variable.
+

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Unicode CLDR Data &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>Unicode CLDR Data &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="../index.html" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="../index.html" />
     <link rel="up" title="The Text Package" href="index.html" />
     <link rel="next" title="Pseudo Translations" href="pseudo.html" />
     <link rel="prev" title="Built-in Localizations" href="builtin-cldr.html" />
@@ -35,7 +35,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -48,16 +48,16 @@
 <p>The Unicode.org CLDR data used to define the locale specific information
 such as the date and time formats also includes localized names for languages,
 scripts and territories.  This localized information is included in the
-ZanyBlue Text library via the <code class="docutils literal"><span class="pre">ZanyBlue.Text.CLDR</span></code> package and can
-be used to translate abbreviations, e.g, <code class="docutils literal"><span class="pre">en</span></code> to localized
+ZanyBlue Text library via the <tt class="docutils literal"><span class="pre">ZanyBlue.Text.CLDR</span></tt> package and can
+be used to translate abbreviations, e.g, <tt class="docutils literal"><span class="pre">en</span></tt> to localized
 named, e.g., the function call,</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="n">Language_Name</span> <span class="p">(</span><span class="s">&quot;en&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>returns <code class="docutils literal"><span class="pre">English</span></code> in an English locale and <code class="docutils literal"><span class="pre">anglais</span></code> in a French locale.
+<p>returns <tt class="docutils literal"><span class="pre">English</span></tt> in an English locale and <tt class="docutils literal"><span class="pre">anglais</span></tt> in a French locale.
 There localized names for scripts and territories are available via the functions
-<code class="docutils literal"><span class="pre">Script_Name</span></code> and <code class="docutils literal"><span class="pre">Territory_Name</span></code> functions.</p>
-<p>All functions take an optional <code class="docutils literal"><span class="pre">Unknown</span></code> parameter giving the result
+<tt class="docutils literal"><span class="pre">Script_Name</span></tt> and <tt class="docutils literal"><span class="pre">Territory_Name</span></tt> functions.</p>
+<p>All functions take an optional <tt class="docutils literal"><span class="pre">Unknown</span></tt> parameter giving the result
 returned for unknown names (defaulting to the empty string) and a final
 locale parameter.</p>
 </div>
@@ -66,7 +66,7 @@ locale parameter.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/zb-logo.png" alt="Logo"/>
@@ -81,21 +81,22 @@ locale parameter.</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/text/cldr-data.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/text/cldr-data.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -103,11 +104,11 @@ locale parameter.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/text/cldr-data.txt"

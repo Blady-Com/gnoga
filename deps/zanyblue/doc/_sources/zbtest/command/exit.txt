@@ -1,0 +1,19 @@
+.. -*- coding: utf-8 -*-
+   Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+   All rights reserved.
+   This file was generated based on the comments in the ZBTest command
+   implementation files (.adb files).
+
+.. _zb-zbtest-commands-exit:
+
+The ``exit`` Command
+====================
+
+``exit``, the current test script::
+
+    exit
+
+Exit a test script.  This command is normally only used when entering
+commands interactively to exit the zbtest application.  Using it in a test
+script causes immediate exit of the zbtest application.
+

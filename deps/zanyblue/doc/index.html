@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ZanyBlue Library and Tools &mdash; ZanyBlue 1.3.0b documentation</title>
+    <title>ZanyBlue Library and Tools &mdash; ZanyBlue 1.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.3.0b',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="ZanyBlue 1.3.0b documentation" href="#" />
+    <link rel="top" title="ZanyBlue 1.4.0 documentation" href="#" />
     <link rel="next" title="ZanyBlue License" href="license.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -33,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -43,8 +43,8 @@
             
   <div class="section" id="zanyblue-library-and-tools">
 <h1>ZanyBlue Library and Tools<a class="headerlink" href="#zanyblue-library-and-tools" title="Permalink to this headline">¶</a></h1>
-<p>This documentation covers version 1.3 of the ZanyBlue library and
-applications.  For download information see <a class="reference internal" href="download.html#zb-download"><span class="std std-ref">Downloads</span></a>.  If
+<p>This documentation covers version 1.4 of the ZanyBlue library and
+applications.  For download information see <a class="reference internal" href="download.html#zb-download"><em>Downloads</em></a>.  If
 you encounter bugs in this software, please file reports in the
 <a class="reference external" href="http://sourceforge.net/tracker/?group_id=225351">Source Forge Bug Tracker</a>.
 You can also visit the <a class="reference external" href="http://sourceforge.net/projects/zanyblue/">Source Forge ZanyBlue Project Page</a>.</p>
@@ -60,8 +60,8 @@ text library by providing routines to access and format messages in Ada
 sources (the i18n aspect of g11n) and localization via the externalization
 of messages strings to properties files.  For example, the following properties
 file defines a simple message refered to in the source code via the key
-<code class="docutils literal"><span class="pre">Hello</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Hello</span><span class="o">=</span><span class="n">Hello</span> <span class="n">World</span><span class="p">,</span> <span class="n">I</span> <span class="n">am</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+<tt class="docutils literal"><span class="pre">Hello</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Hello=Hello World, I am {0}
 </pre></div>
 </div>
 <p>An Ada application code could print this message using the accessor routine</p>
@@ -70,12 +70,12 @@ file defines a simple message refered to in the source code via the key
 <span class="n">Print_Hello</span> <span class="p">(</span><span class="o">+</span><span class="n">Name</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="text/index.html#zb-text"><span class="std std-ref">The Text Package</span></a> documentation and <a class="reference internal" href="text/zbmcompile.html#zb-text-zbmcompile"><span class="std std-ref">The zbmcompile Utility</span></a> application.</p>
+<p>See <a class="reference internal" href="text/index.html#zb-text"><em>The Text Package</em></a> documentation and <a class="reference internal" href="text/zbmcompile.html#zb-text-zbmcompile"><em>The zbmcompile Utility</em></a> application.</p>
 </div>
 <div class="section" id="parameter-handling">
 <h2>Parameter Handling<a class="headerlink" href="#parameter-handling" title="Permalink to this headline">¶</a></h2>
 <p>To support command line handling and user defined parameters and scopes
-in the <code class="docutils literal"><span class="pre">zbtest</span></code> application, the <code class="docutils literal"><span class="pre">Parameters</span></code> packages are
+in the <tt class="docutils literal"><span class="pre">zbtest</span></tt> application, the <tt class="docutils literal"><span class="pre">Parameters</span></tt> packages are
 available, e.g.,</p>
 <div class="highlight-ada"><div class="highlight"><pre><span></span><span class="n">Parameters</span> <span class="p">:</span> <span class="n">Parameter_Set_Type</span><span class="p">;</span>
 <span class="p">...</span>
@@ -91,14 +91,14 @@ available, e.g.,</p>
 <p>The stability of the code based is improved via a large set of tests.  These
 tests are split between AUnit based unit-tests and a set of tests designed to
 exercise the ZanyBlue utilities, more black-box style testing.  These tests
-use the <code class="docutils literal"><span class="pre">zbtest</span></code> utility.  There is no formal documentation on this
+use the <tt class="docutils literal"><span class="pre">zbtest</span></tt> utility.  There is no formal documentation on this
 at this time other than the built-in help and the example test scripts in
-the <code class="docutils literal"><span class="pre">tests</span></code> directory.</p>
+the <tt class="docutils literal"><span class="pre">tests</span></tt> directory.</p>
 </div>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
 <p>ZanyBlue is distributed under the terms of a BSD-style license.  See
-<a class="reference internal" href="license.html#zb-license"><span class="std std-ref">ZanyBlue License</span></a> for details.</p>
+<a class="reference internal" href="license.html#zb-license"><em>ZanyBlue License</em></a> for details.</p>
 </div>
 </div>
 <div class="section" id="zanyblue-documentation">
@@ -143,10 +143,14 @@ the <code class="docutils literal"><span class="pre">tests</span></code> directo
 <li class="toctree-l2"><a class="reference internal" href="text/zbmcompile.html">The zbmcompile Utility</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="zbtest/index.html">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zbtest/index.html#zbtest-documentation">ZBTest Documentation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Command Line Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="utilities/index.html#the-zbinfo-utility">The <code class="docutils literal"><span class="pre">zbinfo</span></code> Utility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utilities/index.html#the-zbmcompile-utility">The <code class="docutils literal"><span class="pre">zbmcompile</span></code> Utility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utilities/index.html#the-zbtest-utility">The <code class="docutils literal"><span class="pre">zbtest</span></code> Utility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/index.html#the-zbinfo-utility">The <tt class="docutils literal"><span class="pre">zbinfo</span></tt> Utility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/index.html#the-zbmcompile-utility">The <tt class="docutils literal"><span class="pre">zbmcompile</span></tt> Utility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/index.html#the-zbtest-utility">The <tt class="docutils literal"><span class="pre">zbtest</span></tt> Utility</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs.html">Additional Documentation</a></li>
@@ -159,7 +163,6 @@ the <code class="docutils literal"><span class="pre">tests</span></code> directo
 <li class="toctree-l2"><a class="reference internal" href="notices.html#apache-tomcat-9-0-0-m8">Apache Tomcat, 9.0.0.M8</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notices.html#cldr-release-26-0-1">CLDR, release-26-0-1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notices.html#jenkins-ci-jenkins-2-9">Jenkins CI, jenkins-2.9</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notices.html#xml-ada-2016">XML/Ada, 2016</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
@@ -169,9 +172,9 @@ the <code class="docutils literal"><span class="pre">tests</span></code> directo
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
 </ul>
 </div>
 
@@ -179,7 +182,7 @@ the <code class="docutils literal"><span class="pre">tests</span></code> directo
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="#">
               <img class="logo" src="_static/zb-logo.png" alt="Logo"/>
@@ -204,21 +207,22 @@ the <code class="docutils literal"><span class="pre">tests</span></code> directo
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -226,11 +230,11 @@ the <code class="docutils literal"><span class="pre">tests</span></code> directo
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Michael Rohan <mrohan@zanyblue.com>.
+      &copy;2018, Michael Rohan <mrohan@zanyblue.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="_sources/index.txt"

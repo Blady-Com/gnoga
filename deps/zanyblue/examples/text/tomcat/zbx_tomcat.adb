@@ -43,12 +43,10 @@ with Apache.Tomcat.Messages;
 with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 
 procedure ZBX_Tomcat is
 
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
 
    procedure Process_Command_Line;
 
@@ -93,9 +91,9 @@ procedure ZBX_Tomcat is
 
 begin
    Disable_Wide_IO;
-   Print_Line ("This is TOMCAT, Version {0}.{1}.{2} - {3}",
+   Print_Line ("zbtomcat", "Banner",
                +ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
-               +ZanyBlue.Version_Patch, +ZanyBlue.Version_Status);
+               +ZanyBlue.Version_Patch);
    Process_Command_Line;
    Print_Line ("authenticator", "authenticator.notContext");
    Print_Line ("authenticator", "authenticator.check.authorize", +User);

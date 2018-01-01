@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,7 @@ with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Formatting;
 
 with ZBTest_Messages.ZBTest_Prints;
+with ZBTest_Messages.Commands_Prints;
 
 pragma Elaborate_All (ZanyBlue.OS);
 pragma Elaborate_All (ZBTest_Messages.ZBTest_Prints);
@@ -55,6 +56,7 @@ package body ZBTest.Commands is
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Formatting;
    use ZBTest_Messages.ZBTest_Prints;
+   use ZBTest_Messages.Commands_Prints;
 
    type Simple_Message_Printer is
       access procedure (Destination : File_Type    := Current_Output;
@@ -145,153 +147,153 @@ package body ZBTest.Commands is
 
                  (Name           => new Wide_String'("append"),
                   Implementation => Append_Command'Access,
-                  Usage          => Print_20001'Access,
-                  Summary        => Print_30001'Access,
-                  Help           => Print_40001'Access),
+                  Usage          => Print_Append_Usage'Access,
+                  Summary        => Print_Append_Summary'Access,
+                  Help           => Print_Append_Docstring'Access),
 
                  (Name           => new Wide_String'("begin"),
                   Implementation => Begin_Command'Access,
-                  Usage          => Print_20002'Access,
-                  Summary        => Print_30002'Access,
-                  Help           => Print_40002'Access),
+                  Usage          => Print_Begin_Usage'Access,
+                  Summary        => Print_Begin_Summary'Access,
+                  Help           => Print_Begin_Docstring'Access),
 
                  (Name           => new Wide_String'("compare"),
                   Implementation => Compare_Command'Access,
-                  Usage          => Print_20019'Access,
-                  Summary        => Print_30019'Access,
-                  Help           => Print_40019'Access),
+                  Usage          => Print_Compare_Usage'Access,
+                  Summary        => Print_Compare_Summary'Access,
+                  Help           => Print_Compare_Docstring'Access),
 
                  (Name           => new Wide_String'("copy"),
                   Implementation => Copy_Command'Access,
-                  Usage          => Print_20013'Access,
-                  Summary        => Print_30013'Access,
-                  Help           => Print_40013'Access),
+                  Usage          => Print_Copy_Usage'Access,
+                  Summary        => Print_Copy_Summary'Access,
+                  Help           => Print_Copy_Docstring'Access),
 
                  (Name           => new Wide_String'("delenv"),
                   Implementation => Delenv_Command'Access,
-                  Usage          => Print_20026'Access,
-                  Summary        => Print_30026'Access,
-                  Help           => Print_40026'Access),
+                  Usage          => Print_Delenv_Usage'Access,
+                  Summary        => Print_Delenv_Summary'Access,
+                  Help           => Print_Delenv_Docstring'Access),
 
                  (Name           => new Wide_String'("delete"),
                   Implementation => Delete_Command'Access,
-                  Usage          => Print_20020'Access,
-                  Summary        => Print_30020'Access,
-                  Help           => Print_40020'Access),
+                  Usage          => Print_Delete_Usage'Access,
+                  Summary        => Print_Delete_Summary'Access,
+                  Help           => Print_Delete_Docstring'Access),
 
                  (Name           => new Wide_String'("desc"),
                   Implementation => Desc_Command'Access,
-                  Usage          => Print_20017'Access,
-                  Summary        => Print_30017'Access,
-                  Help           => Print_40017'Access),
+                  Usage          => Print_Desc_Usage'Access,
+                  Summary        => Print_Desc_Summary'Access,
+                  Help           => Print_Desc_Docstring'Access),
 
                  (Name           => new Wide_String'("dump"),
                   Implementation => Dump_Command'Access,
-                  Usage          => Print_20003'Access,
-                  Summary        => Print_30003'Access,
-                  Help           => Print_40003'Access),
+                  Usage          => Print_Dump_Usage'Access,
+                  Summary        => Print_Dump_Summary'Access,
+                  Help           => Print_Dump_Docstring'Access),
 
                  (Name           => new Wide_String'("echo"),
                   Implementation => Echo_Command'Access,
-                  Usage          => Print_20023'Access,
-                  Summary        => Print_30023'Access,
-                  Help           => Print_40023'Access),
+                  Usage          => Print_Echo_Usage'Access,
+                  Summary        => Print_Echo_Summary'Access,
+                  Help           => Print_Echo_Docstring'Access),
 
                  (Name           => new Wide_String'("end"),
                   Implementation => End_Command'Access,
-                  Usage          => Print_20004'Access,
-                  Summary        => Print_30004'Access,
-                  Help           => Print_40004'Access),
+                  Usage          => Print_End_Usage'Access,
+                  Summary        => Print_End_Summary'Access,
+                  Help           => Print_End_Docstring'Access),
 
                  (Name           => new Wide_String'("execute"),
                   Implementation => Execute_Command'Access,
-                  Usage          => Print_20014'Access,
-                  Summary        => Print_30014'Access,
-                  Help           => Print_40014'Access),
+                  Usage          => Print_Execute_Usage'Access,
+                  Summary        => Print_Execute_Summary'Access,
+                  Help           => Print_Execute_Docstring'Access),
 
                  (Name           => new Wide_String'("exit"),
                   Implementation => Exit_Command'Access,
-                  Usage          => Print_20005'Access,
-                  Summary        => Print_30005'Access,
-                  Help           => Print_40005'Access),
+                  Usage          => Print_Exit_Usage'Access,
+                  Summary        => Print_Exit_Summary'Access,
+                  Help           => Print_Exit_Docstring'Access),
 
                  (Name           => new Wide_String'("filestat"),
                   Implementation => Filestat_Command'Access,
-                  Usage          => Print_20022'Access,
-                  Summary        => Print_30022'Access,
-                  Help           => Print_40022'Access),
+                  Usage          => Print_Filestat_Usage'Access,
+                  Summary        => Print_Filestat_Summary'Access,
+                  Help           => Print_Filestat_Docstring'Access),
 
                  (Name           => new Wide_String'("getenv"),
                   Implementation => Getenv_Command'Access,
-                  Usage          => Print_20006'Access,
-                  Summary        => Print_30006'Access,
-                  Help           => Print_40006'Access),
+                  Usage          => Print_Getenv_Usage'Access,
+                  Summary        => Print_Getenv_Summary'Access,
+                  Help           => Print_Getenv_Docstring'Access),
 
                  (Name           => new Wide_String'("help"),
                   Implementation => Help_Command'Access,
-                  Usage          => Print_20007'Access,
-                  Summary        => Print_30007'Access,
-                  Help           => Print_40007'Access),
+                  Usage          => Print_Help_Usage'Access,
+                  Summary        => Print_Help_Summary'Access,
+                  Help           => Print_Help_Docstring'Access),
 
                  (Name           => new Wide_String'("incr"),
                   Implementation => Incr_Command'Access,
-                  Usage          => Print_20024'Access,
-                  Summary        => Print_30024'Access,
-                  Help           => Print_40024'Access),
+                  Usage          => Print_Incr_Usage'Access,
+                  Summary        => Print_Incr_Summary'Access,
+                  Help           => Print_Incr_Docstring'Access),
 
                  (Name           => new Wide_String'("mkdir"),
                   Implementation => Mkdir_Command'Access,
-                  Usage          => Print_20021'Access,
-                  Summary        => Print_30021'Access,
-                  Help           => Print_40021'Access),
+                  Usage          => Print_Mkdir_Usage'Access,
+                  Summary        => Print_Mkdir_Summary'Access,
+                  Help           => Print_Mkdir_Docstring'Access),
 
                  (Name           => new Wide_String'("noop"),
                   Implementation => Noop_Command'Access,
-                  Usage          => Print_20008'Access,
-                  Summary        => Print_30008'Access,
-                  Help           => Print_40008'Access),
+                  Usage          => Print_Noop_Usage'Access,
+                  Summary        => Print_Noop_Summary'Access,
+                  Help           => Print_Noop_Docstring'Access),
 
                  (Name           => new Wide_String'("prepend"),
                   Implementation => Prepend_Command'Access,
-                  Usage          => Print_20009'Access,
-                  Summary        => Print_30009'Access,
-                  Help           => Print_40009'Access),
+                  Usage          => Print_Prepend_Usage'Access,
+                  Summary        => Print_Prepend_Summary'Access,
+                  Help           => Print_Prepend_Docstring'Access),
 
                  (Name           => new Wide_String'("print"),
                   Implementation => Print_Command'Access,
-                  Usage          => Print_20010'Access,
-                  Summary        => Print_30010'Access,
-                  Help           => Print_40010'Access),
+                  Usage          => Print_Print_Usage'Access,
+                  Summary        => Print_Print_Summary'Access,
+                  Help           => Print_Print_Docstring'Access),
 
                  (Name           => new Wide_String'("rename"),
                   Implementation => Rename_Command'Access,
-                  Usage          => Print_20015'Access,
-                  Summary        => Print_30015'Access,
-                  Help           => Print_40015'Access),
+                  Usage          => Print_Rename_Usage'Access,
+                  Summary        => Print_Rename_Summary'Access,
+                  Help           => Print_Rename_Docstring'Access),
 
                  (Name           => new Wide_String'("run"),
                   Implementation => Run_Command'Access,
-                  Usage          => Print_20016'Access,
-                  Summary        => Print_30016'Access,
-                  Help           => Print_40016'Access),
+                  Usage          => Print_Run_Usage'Access,
+                  Summary        => Print_Run_Summary'Access,
+                  Help           => Print_Run_Docstring'Access),
 
                  (Name           => new Wide_String'("set"),
                   Implementation => Set_Command'Access,
-                  Usage          => Print_20011'Access,
-                  Summary        => Print_30011'Access,
-                  Help           => Print_40011'Access),
+                  Usage          => Print_Set_Usage'Access,
+                  Summary        => Print_Set_Summary'Access,
+                  Help           => Print_Set_Docstring'Access),
 
                  (Name           => new Wide_String'("setenv"),
                   Implementation => Setenv_Command'Access,
-                  Usage          => Print_20025'Access,
-                  Summary        => Print_30025'Access,
-                  Help           => Print_40025'Access),
+                  Usage          => Print_Setenv_Usage'Access,
+                  Summary        => Print_Setenv_Summary'Access,
+                  Help           => Print_Setenv_Docstring'Access),
 
                  (Name           => new Wide_String'("which"),
                   Implementation => Which_Command'Access,
-                  Usage          => Print_20012'Access,
-                  Summary        => Print_30012'Access,
-                  Help           => Print_40012'Access));
+                  Usage          => Print_Which_Usage'Access,
+                  Summary        => Print_Which_Summary'Access,
+                  Help           => Print_Which_Docstring'Access));
 
    function Find_Index (Name : Wide_String) return Natural;
    --  Return the index in the command table for the named command.  If the
@@ -578,7 +580,7 @@ begin   -- ZBTest.Commands
    for I in Command_Table'First .. Command_Table'Last - 1 loop
       if Command_Table (I).Name.all > Command_Table (I + 1).Name.all then
          raise Command_Table_Not_Sorted
-            with To_UTF8 (Command_Table (I + 1).Name.all);
+            with Wide_To_UTF8 (Command_Table (I + 1).Name.all);
       end if;
    end loop;
 end ZBTest.Commands;

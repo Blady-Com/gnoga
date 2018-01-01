@@ -33,6 +33,13 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage delete [ -r ] name
+--  @summary delete a file in the test area
+--  @start-doc
+--  Delete a file from the test area.  With the "-r" option, a directory
+--  tree is deleted.
+--
+
 with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Wide_Directories;
 

@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -41,5 +41,5 @@ procedure T_0001 (T : in out Test_Case'Class) is
    use ZanyBlue.Text;
 
 begin
-   WAssert (T, To_UTF8 ("") = "", "Empty UTF-8 string conversion");
+   WAssert (T, Wide_To_UTF8 ("") = "", "Empty UTF-8 string conversion");
 end T_0001;

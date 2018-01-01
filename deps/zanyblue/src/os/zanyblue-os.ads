@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -68,10 +68,18 @@ package ZanyBlue.OS is
    --  systems, the Win API is used to query the LCID associated with the
    --  process.
 
+   function OS_Locale_Name return Wide_Wide_String;
+   --  Operating system defined locale name, e.g., $LANG on Unix.  On Windows
+   --  systems, the Win API is used to query the LCID associated with the
+   --  process.
+
    function OS_Name return OS_Name_Type;
    --  Return the name of the build operating system.
 
    function OS_New_Line return Wide_String;
+   --  Return the sequence of characters used to represent a new line.
+
+   function OS_New_Line return Wide_Wide_String;
    --  Return the sequence of characters used to represent a new line.
 
    function UTF8_File_Form return String;

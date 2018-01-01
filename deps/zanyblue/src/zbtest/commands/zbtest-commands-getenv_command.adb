@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,35 @@
 --  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 --  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+
+--  @usage getenv [ -l | -s | -p | -a ] name [ parameter ]
+--  @summary define a parameter based on an environment variable
+--  @start-doc
+--  Define an internal parameter based on the value of an environment
+--  variable.  For example,::
+--
+--      ZBTest> print HOME
+--      The parameter "HOME" is not defined
+--      ZBTest> getenv HOME
+--      ZBTest> print HOME
+--      /u/mrohan
+--
+--  The options available are
+--
+--  -l
+--     Define an internal list parameter by splitting on the pathsep
+--
+--  -s
+--     Define a simple scalar (string) parameter (default)
+--
+--  -a
+--     Append the values (implies the -l option)
+--
+--  -p
+--     Prepend the values (implies the -l option)
+--
+--  If the target is not given then import to name.
 --
 
 with Ada.Environment_Variables;
@@ -84,9 +113,9 @@ procedure Getenv_Command (State : in out State_Type;
       List_Values : List_Type;
 
    begin  -- Get_List_Value
-      if Exists (To_UTF8 (Source)) then
+      if Exists (Wide_To_UTF8 (Source)) then
          Parse_Values (List_Values,
-                       To_Wide_String (Value (To_UTF8 (Source))));
+                       To_Wide_String (Value (Wide_To_UTF8 (Source))));
          if Append_Values then
             for I in 1 .. Length (List_Values) loop
                State.Append (Target, Value (List_Values, I));
@@ -138,6 +167,6 @@ begin
    else
       State.Set_String (
             Value (Args, Target_Idx),
-            To_Wide_String (Value (To_UTF8 (Value (Args, Source_Idx)))));
+            To_Wide_String (Value (Wide_To_UTF8 (Value (Args, Source_Idx)))));
    end if;
 end Getenv_Command;

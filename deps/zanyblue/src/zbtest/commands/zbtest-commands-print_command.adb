@@ -33,6 +33,34 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage print [ -l | -s ] parameter [ -l | -s ] parameter ...
+--  @summary print the value of parameters
+--  @start-doc
+--  Print the value of a scalar (-s, default) or list (-l) parameters.  With
+--  the -s option, the value is first converted to a string which gives the
+--  normal representation of value (list values are enclosed in square
+--  brackers, e.g.,d::
+--
+--      ZBTest> print path
+--      [/home/mrohan/xmpl/test-area, /home/mrohan/bin, /usr/bin, /bin]
+--      ZBTest> print _platform
+--      unix
+--
+--  With the -l option, the value is printed as a list.  If the parameter is
+--  not a list, it''s value is first converted to a list.  E.g.,::
+--
+--      ZBTest> print -l l1
+--      ZBTest> print _platform
+--      unix
+--      ZBTest> print -l _platform
+--      1) "unix"
+--      ZBTest> print -l path
+--      1) "/home/mrohan/xmpl/test-area"
+--      2) "/home/mrohan/bin"
+--      3) "/usr/bin"
+--      4) "/bin"
+--
+
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)

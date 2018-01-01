@@ -33,6 +33,23 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage which [ -f | -e ] filename
+--  @summary return the path to a file or executable
+--  @start-doc
+--  The "which" function returns the path to a file searched on the
+--  "searchpath" list, using the "-f" option (the default) or an executable
+--  on the "path" list, using the "-e" option.
+--
+--  The "which" function is primarily used to determine where applications are
+--  installed with the result normally processed by the "dirname" function to
+--  to determine the parent directory, e.g.::
+--
+--      ZBTest> set project_dir $(dirname $(dirname $(which zbmcompile)))
+--
+--  where "project_dir" is set to "/usr" for an installed "zbmcompile"
+--  located at "/usr/bin/zbmcompile".
+--
+
 separate (ZBTest.Functions)
 function Which_Function (State : access State_Type;
                          Args  : List_Type) return Wide_String is

@@ -38,14 +38,12 @@ with Ada.Command_Line;
 with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with SLocale_Messages.Day_Prints;
 
 procedure ZBX_SLocale is
 
    use Ada.Calendar;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use SLocale_Messages.Day_Prints;
 
    procedure Process_Command_Line;
@@ -82,7 +80,7 @@ procedure ZBX_SLocale is
 
 begin
    Print_0001 (+ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
-               +ZanyBlue.Version_Patch, +ZanyBlue.Version_Status);
+               +ZanyBlue.Version_Patch);
    Process_Command_Line;
    Enable_Source_Locales;
    Print_0002 (+Now);

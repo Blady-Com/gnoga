@@ -33,6 +33,21 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage echo name ...
+--  @summary echo arguments to output
+--  @start-doc
+--  Echo arguments to output.  References to parameters are expanded
+--  to string values before printing.
+--
+--  Examples::
+--
+--      ZBTest> echo a
+--      a
+--      ZBTest> set -i a 10
+--      ZBTest> echo a is $a
+--      a is 10
+--
+
 separate (ZBTest.Commands)
 procedure Echo_Command (State : in out State_Type;
                         Args  : List_Type) is

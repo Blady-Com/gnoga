@@ -1,38 +1,43 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest setenv command
 Set the test description to "Test the help text for the zbtest setenv command"
 zbtest.help (2) 
 zbtest.help (3) help setenv
-Set an environment variable to a value, e.g.,
+setenv: set an environment variable
+
+    Usage: setenv [ -l | -p ] variable value
+
+Set an environment variable to a value, e.g.,::
 
     ZBTest> setenv PROFILE yes
     Setting the environment variable "PROFILE" to "yes"
 
 sets the variable "PROFILE" to the value "yes" for the current process and
-any processes created using the "execute" command.  The definition is scoped
-and is reverted when the current scope exits (normally at the end of a test
-script).  The reversion is either by deleting the environment variable it it
-didn't have a current value or by restoring the value prior to the setenv.
+any processes created using the "execute" command.  The definition is
+scoped and is reverted when the current scope exits (normally at the end of
+a test script).  The reversion is either by deleting the environment
+variable it did not have a current value or by restoring the value prior
+to the setenv.
 
-The options allow the definition of environment variables based on the value
-of parameters.  For simple definitions, the "-p" option can be used, e.g.,
+The options allow the definition of environment variables based on the
+value of parameters.  For simple definitions, the "-p" option can be used,
+e.g.,::
 
     ZBTest> set LLW Lilongwe
     ZBTest> setenv -p DESTINATION LLW
     Setting the environment variable "DESTINATION" to "Lilongwe"
 
 parameters are converted to strings for these simple definitions.  If the
-parameter is a list, the "-l" option can be used which concatenates the list
-elements into string separated by the OS separator character.   This can be
-used to set PATH values, etc., e.g.,
+parameter is a list, the "-l" option can be used which concatenates the
+list elements into string separated by the OS separator character.   This
+can be used to set PATH values, etc., e.g.,::
 
     ZBTest> set mypath /bin
     ZBTest> append mypath /usr/bin
-    ZBTest> append mypath /usr/local/bin
     ZBTest> setenv -l PATH mypath
-    Setting the environment variable "PATH" to "/bin:/usr/bin:/usr/local/bin"
+    Setting the environment variable "PATH" to "/bin:/usr/bin"
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

@@ -44,8 +44,6 @@ with ZanyBlue.Text.CLDR;       use ZanyBlue.Text.CLDR;
 with ZanyBlue.Text.Pseudo;     use ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;    use ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting; use ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
-use ZanyBlue.Text.Version_Status_Arguments;
 
 with AppMsg;
 with Jenkins.Messages;
@@ -110,8 +108,7 @@ procedure ZBX_GJenkins is
 begin
    Print_Line ("appmsg", "banner", +ZanyBlue.Version_Major,
                                    +ZanyBlue.Version_Minor,
-                                   +ZanyBlue.Version_Patch,
-                                   +ZanyBlue.Version_Status);
+                                   +ZanyBlue.Version_Patch);
    ZanyBlue.Text.CLDR.Initialize;
    AppMsg.Initialize;
    Jenkins.Messages.Initialize;

@@ -1,16 +1,22 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest dump command
 Set the test description to "Test the help text for the zbtest dump command"
 zbtest.help (2) 
 zbtest.help (3) help dump
+dump: dump the contents of the parameter scope(s)
+
+    Usage: dump [ -o output-file ] [ -a ]
+
 Dump parameters values.  The default is to dump the parameters
 for the current scope.  This is primarily a debugging command.
 
 The options are
-  -a  Dump the parameters for all scopes
-  -o  Dump the output to a file in the test area
+
+* "-a", Dump the parameters for all scopes
+
+* "-o", Dump the output to a file in the test area
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

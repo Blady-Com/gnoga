@@ -39,6 +39,7 @@ with ZanyBlue.Text.Catalogs;
 with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Formatting;
 with ZBTest_Messages.ZBTest_Prints;
+with ZBTest_Messages.Functions_Prints;
 
 pragma Elaborate_All (ZBTest_Messages.ZBTest_Prints);
 
@@ -50,6 +51,7 @@ package body ZBTest.Functions is
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Formatting;
    use ZBTest_Messages.ZBTest_Prints;
+   use ZBTest_Messages.Functions_Prints;
 
    type Simple_Message_Printer is
       access procedure (Destination : File_Type    := Current_Output;
@@ -93,27 +95,27 @@ package body ZBTest.Functions is
    Function_Table : constant Function_List := (
                  (Name           => new Wide_String'("dirname"),
                   Implementation => Dirname_Function'Access,
-                  Usage          => Print_21000'Access,
-                  Summary        => Print_31000'Access,
-                  Help           => Print_41000'Access),
+                  Usage          => Print_Dirname_Usage'Access,
+                  Summary        => Print_Dirname_Summary'Access,
+                  Help           => Print_Dirname_Docstring'Access),
 
                  (Name           => new Wide_String'("joinpaths"),
                   Implementation => Joinpaths_Function'Access,
-                  Usage          => Print_21001'Access,
-                  Summary        => Print_31001'Access,
-                  Help           => Print_41001'Access),
+                  Usage          => Print_Joinpaths_Usage'Access,
+                  Summary        => Print_Joinpaths_Summary'Access,
+                  Help           => Print_Joinpaths_Docstring'Access),
 
                  (Name           => new Wide_String'("nextlog"),
                   Implementation => Nextlog_Function'Access,
-                  Usage          => Print_21002'Access,
-                  Summary        => Print_31002'Access,
-                  Help           => Print_41002'Access),
+                  Usage          => Print_Nextlog_Usage'Access,
+                  Summary        => Print_Nextlog_Summary'Access,
+                  Help           => Print_Nextlog_Docstring'Access),
 
                  (Name           => new Wide_String'("which"),
                   Implementation => Which_Function'Access,
-                  Usage          => Print_21003'Access,
-                  Summary        => Print_31003'Access,
-                  Help           => Print_41003'Access));
+                  Usage          => Print_Which_Usage'Access,
+                  Summary        => Print_Which_Summary'Access,
+                  Help           => Print_Which_Docstring'Access));
 
    ----------------------
    -- Dirname_Function --

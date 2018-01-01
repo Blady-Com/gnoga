@@ -49,7 +49,7 @@ begin
                                 False,
                                 False,
                                 Handler'Access),
-                 "Message ⁅0⁆ ⁅1⁆", "Format regular message");
+                 "Message [0] [1]", "Format regular message");
    WAssert (T, Handler. N_Format_Not_Closed = 0,
             "Expected no open formats");
    WAssert (T, Handler.N_Illegal_Character = 0,

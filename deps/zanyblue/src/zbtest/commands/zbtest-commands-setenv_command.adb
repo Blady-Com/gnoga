@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,40 @@
 --  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 --  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+
+--  @usage setenv [ -l | -p ] variable value
+--  @summary set an environment variable
+--  @start-doc
+--  Set an environment variable to a value, e.g.,::
+--
+--      ZBTest> setenv PROFILE yes
+--      Setting the environment variable "PROFILE" to "yes"
+--
+--  sets the variable "PROFILE" to the value "yes" for the current process and
+--  any processes created using the "execute" command.  The definition is
+--  scoped and is reverted when the current scope exits (normally at the end of
+--  a test script).  The reversion is either by deleting the environment
+--  variable it did not have a current value or by restoring the value prior
+--  to the setenv.
+--
+--  The options allow the definition of environment variables based on the
+--  value of parameters.  For simple definitions, the "-p" option can be used,
+--  e.g.,::
+--
+--      ZBTest> set LLW Lilongwe
+--      ZBTest> setenv -p DESTINATION LLW
+--      Setting the environment variable "DESTINATION" to "Lilongwe"
+--
+--  parameters are converted to strings for these simple definitions.  If the
+--  parameter is a list, the "-l" option can be used which concatenates the
+--  list elements into string separated by the OS separator character.   This
+--  can be used to set PATH values, etc., e.g.,::
+--
+--      ZBTest> set mypath /bin
+--      ZBTest> append mypath /usr/bin
+--      ZBTest> setenv -l PATH mypath
+--      Setting the environment variable "PATH" to "/bin:/usr/bin"
 --
 
 with Ada.Environment_Variables;
@@ -87,14 +121,14 @@ procedure Setenv_Command (State : in out State_Type;
                                 Name        : Wide_String;
                                 Definition  : Wide_String) is
    begin
-      if Exists (To_UTF8 (Name)) then
+      if Exists (Wide_To_UTF8 (Name)) then
          State.Add_Undo_Action (Format ("setenv {0} ""{1}""",
-                                        +Name, +Value (To_UTF8 (Name))));
+                                        +Name, +Value (Wide_To_UTF8 (Name))));
       else
          State.Add_Undo_Action (Format ("delenv {0}", +Name));
       end if;
       Print_00038 (+Name, +Definition);
-      Set (To_UTF8 (Name), To_UTF8 (Definition));
+      Set (Wide_To_UTF8 (Name), Wide_To_UTF8 (Definition));
    end Set_Literal_Value;
 
    ----------------------

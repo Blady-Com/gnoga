@@ -1,11 +1,22 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest noop command
 Set the test description to "Test the help text for the zbtest noop command"
 zbtest.help (2) 
 zbtest.help (3) help noop
-No operation.  The noop command does nothing.
+noop: the no operation command
+
+    Usage: noop
+
+No operation.  The noop command does nothing and can be used in test
+scripts that would otherwise be empty, e.g., running a script based
+on the current platform::
+
+    run $_platform
+
+If, on Unix, no additional tests are needed, the file ``unix/unix.zbt``
+can simply include the "noop" command (an empty file also works, however).
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

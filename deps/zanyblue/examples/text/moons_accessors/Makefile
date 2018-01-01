@@ -38,39 +38,30 @@
 # package.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=zbx_amoons
-APPLICATION=$(TOP)/bin/$(APPNAME)
-PACKAGE=Messages
-FACILITY=Moons
-STAMPFILE=messages.stamp
-PROPERTIES=$(wildcard Moons*.properties)
-GENERATED=messages.ads messages.adb \
-	$(wildcard messages-*.ads) $(wildcard messages-*.adb) \
-	$(STAMPFILE) $(wildcard moons.zbmx)
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(STAMPFILE)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_amoons:	messages.stamp
+	gprbuild -q -p -aP../../../src -P zbx_amoons.gpr
 
-$(STAMPFILE):	$(PROPERTIES)
-	$(ZBMCOMPILE) -G prints -i -S $(STAMPFILE) -v $(PACKAGE) $(FACILITY)
+messages.stamp:	$(wildcard Moons*.properties)
+	zbmcompile -G prints -i -S messages.stamp -v Messages Moons
 
-run:	all
-	$(APPLICATION)
+run:	zbx_amoons
+	zbx_amoons
 
-run_%:	all
-	$(APPLICATION) $(subst :, ,$*)
+run_%:	zbx_amoons
+	zbx_amoons $(subst :, ,$*)
 
 metrics:
 	$(MAKE) run_en:moons.zbmx
 
-clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+clean:
+	gprclean -aP../../../src -P zbx_amoons.gpr
+	-$(RM) $(wildcard messages*) $(wildcard moons.zbmx)

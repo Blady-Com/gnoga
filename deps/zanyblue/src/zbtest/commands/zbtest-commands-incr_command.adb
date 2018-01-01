@@ -33,6 +33,32 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage incr [ -a ] name
+--  @summary increment a parameter value
+--  @start-doc
+--  Increment an integer parameter value.  The parameter must already
+--  exist and it's value is incremented by one.  This operation breaks the
+--  scoping models as the value is updated in the first scope the defines
+--  the parameter.  If this is deeper than the current scope, the incremented
+--  value is retained after the current scope ends.  If the -a option is given
+--  all instances of the parameter in all scopes is incremented (this is the
+--  mechanism used to increment the number of OK and failure tests).
+--
+--  Examples::
+--
+--      ZBTest> set -i num 0
+--      ZBTest> incr num
+--      Incremented the parmeter "num" to 1
+--      ZBTest> begin
+--      ZBTest> incr num
+--      Incremented the parmeter "num" to 2
+--      ZBTest> print num
+--      2
+--      ZBTest> end
+--      ZBTest> print num
+--      2
+--
+
 separate (ZBTest.Commands)
 procedure Incr_Command (State : in out State_Type;
                         Args  : List_Type) is

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,6 @@ begin
    WAssert (T, False, "Raise_Exception returned!");
 exception
 when E : My_Error =>
-   Check_Value (T, From_UTF8 (Exception_Message (E)), My_Message,
+   Check_Value (T, Wide_From_UTF8 (Exception_Message (E)), My_Message,
            "My message not raised");
 end T_0098;

@@ -50,6 +50,6 @@ begin
    WAssert (T, List.Length = 1, "Length of singleton list is not 1");
    WAssert (T, List.Format (0, "", "", Locale, False) = "This is a string",
             "Unexpected string format");
-   WAssert (T, List.Format (5, "", "", Locale, False) = "⁅5⁆",
+   WAssert (T, List.Format (5, "", "", Locale, False) = "[5]",
             "Expected null format of |5|");
 end T_0002;

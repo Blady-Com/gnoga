@@ -1,11 +1,15 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* (.*) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest compare command
 Set the test description to "Test the help text for the zbtest compare command"
 zbtest.help (2) 
 zbtest.help (3) help compare
+compare: compare a log file with a reference log
+
+    Usage: compare log-file [ ref-log-file ]
+
 The compare command compares (with regular expression matching) a
 generated log file with a reference log file.  If the files match, a
 .ok file is created and the number of OK tests is incremented, otherwise
@@ -14,4 +18,4 @@ a .fail file is created and the number of FAIL tests is incremented.
 The reference log file is found by searching the searchpath parameter
 and is normally in the same directory as the .zbt test script.
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

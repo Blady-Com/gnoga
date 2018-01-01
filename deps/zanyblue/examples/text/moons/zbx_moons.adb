@@ -38,7 +38,6 @@ with Ada.Wide_Text_IO;
 with Moons_Messages;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with Definitions;
 
 procedure ZBX_Moons is
@@ -47,7 +46,6 @@ procedure ZBX_Moons is
    use Ada.Wide_Text_IO;
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use Definitions;
    use Definitions.Planet_Name_Formatting;
    use Definitions.Planet_Name_IO;
@@ -60,8 +58,7 @@ begin
    end if;
    Print_Line ("moons", "0001", +ZanyBlue.Version_Major,
                                 +ZanyBlue.Version_Minor,
-                                +ZanyBlue.Version_Patch,
-                                +ZanyBlue.Version_Status);
+                                +ZanyBlue.Version_Patch);
    loop
       Print ("moons", "0002");
       Get (Planet);

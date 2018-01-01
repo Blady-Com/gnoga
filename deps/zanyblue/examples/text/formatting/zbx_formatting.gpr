@@ -43,7 +43,7 @@ with "zanyblue";
 project zbx_formatting is
 
    for Object_Dir use ".";
-   for Exec_Dir use "../../../bin";
+   for Exec_Dir use ".";
    for Main use ("zbx_formatting");
 
    package Compiler is

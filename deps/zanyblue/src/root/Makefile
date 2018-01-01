@@ -39,10 +39,19 @@
 
 TOP=../..
 
+PREPFLAGS+=-DV_MAJOR=$(V_MAJOR)
+PREPFLAGS+=-DV_MINOR=$(V_MINOR)
+PREPFLAGS+=-DV_PATCH=$(V_PATCH)
+PREPFLAGS+=-DVERSION=$(VERSION)
+PREPFLAGS+=-DSVN_VERSION='"$(SVN_VERSION)"'
+PREPFLAGS+=-DCOPYRIGHT_YEAR=$(COPYRIGHT_YEAR)
+DEV_CLEAN_FILES+=zanyblue.ads
+
 include $(TOP)/src/mkfile/conf.mk
 
-GENERATED=zanyblue.adb
+all:	zanyblue.ads
 
-all:	$(GENERATED)
+zanyblue.ads:	zanyblue.ads-in
+	$(GNATPREP) $(PREPFLAGS) $< $@
 
 include $(TOP)/src/mkfile/rules.mk

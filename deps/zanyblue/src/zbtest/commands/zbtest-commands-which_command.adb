@@ -33,6 +33,29 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage which [ -e | -f ] name
+--  @summary print the location of a file or command
+--  @start-doc
+--  Print the locations of files.  The zbtest locates various files during the
+--  execution of a test script, e.g., the "copy" command will copy a data file
+--  located via a search of the directories on the "searchpath" parameter, the
+--  "execute" command uses the "path" parameter.  As an aid to debugging, the
+--  "which" command print the results of these searches.  The options select
+--  the type of file to search for:
+--
+--  * "-e" Search for a file that is executables
+--  * "-f" Search for a file
+--
+--  The result is printed.
+--
+--  Example:
+--
+--  * Executeable::
+--
+--      ZBTest> which -e ls
+--      /bin/ls
+--
+
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)

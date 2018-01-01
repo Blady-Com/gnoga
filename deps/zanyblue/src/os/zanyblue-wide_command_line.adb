@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ package body ZanyBlue.Wide_Command_Line is
 
    function Wide_Argument (Number : Positive) return Wide_String is
    begin
-      return From_UTF8 (Argument (Number));
+      return Wide_From_UTF8 (Argument (Number));
    end Wide_Argument;
 
    -------------------------
@@ -73,7 +73,7 @@ package body ZanyBlue.Wide_Command_Line is
 
    function Wide_Command_Name return Wide_String is
    begin
-      return From_UTF8 (Command_Name);
+      return Wide_From_UTF8 (Command_Name);
    end Wide_Command_Name;
 
 end ZanyBlue.Wide_Command_Line;

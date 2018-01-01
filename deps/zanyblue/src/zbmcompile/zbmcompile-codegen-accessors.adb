@@ -37,7 +37,6 @@ with Ada.Wide_Characters.Unicode;
 with Ada.Containers.Vectors;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with ZanyBlue.Utils;
 with ZanyBlue.Wide_Directories;
 
@@ -47,7 +46,6 @@ package body ZBMCompile.Codegen.Accessors is
    use ZanyBlue.Text;
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use ZanyBlue.Utils;
    use ZanyBlue.Wide_Directories;
 
@@ -299,13 +297,11 @@ package body ZBMCompile.Codegen.Accessors is
       Print_Line (Spec_File, Accessor_Facility, "10001",
                   Argument0 => +Version_Major,
                   Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch,
-                  Argument3 => +Version_Status);
+                  Argument2 => +Version_Patch);
       Print_Line (Body_File, Accessor_Facility, "20001",
                   Argument0 => +Version_Major,
                   Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch,
-                  Argument3 => +Version_Status);
+                  Argument2 => +Version_Patch);
       --  Write the with clauses.  If there are no message arguments then
       --  the Arguments package in with'ed in the body rather than the
       --  spec.
@@ -417,15 +413,23 @@ package body ZBMCompile.Codegen.Accessors is
 
       function "<" (Left, Right : Key_Descriptor_Type) return Boolean is
          use Ada.Wide_Characters.Unicode;
-         Left_Key : Wide_String := Get_Key (Catalog, Left.Index);
-         Right_Key : Wide_String := Get_Key (Catalog, Right.Index);
+
+         function Norm (Key : Wide_String) return Wide_String;
+         --  Return a normalize value for the key: simply lowercase it
+
+         function Norm (Key : Wide_String) return Wide_String is
+            Result : Wide_String (Key'Range);
+         begin
+            for I in Key'Range loop
+               Result (I) := To_Lower_Case (Key (I));
+            end loop;
+            return Result;
+         end Norm;
+
+         Left_Key : Wide_String := Norm (Get_Key (Catalog, Left.Index));
+         Right_Key : Wide_String := Norm (Get_Key (Catalog, Right.Index));
+
       begin
-         for I in Left_Key'Range loop
-            Left_Key (I) := To_Upper_Case (Left_Key (I));
-         end loop;
-         for I in Right_Key'Range loop
-            Right_Key (I) := To_Upper_Case (Right_Key (I));
-         end loop;
          return Left_Key < Right_Key;
       end "<";
 

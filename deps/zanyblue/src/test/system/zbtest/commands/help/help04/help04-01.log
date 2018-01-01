@@ -1,7 +1,7 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help command
 Set the test description to "Test the help command"
 zbtest.help (2) 
@@ -14,12 +14,12 @@ Available ZBTest commands:
   4) "copy", copy a file to the test area
   5) "delenv", delete an environment variable
   6) "delete", delete a file in the test area
-  7) "desc", set the test description
+  7) "desc", desc", set the test description
   8) "dump", dump the contents of the parameter scope(s)
   9) "echo", echo arguments to output
  10) "end", end a parameter scope returning to previous scope
  11) "execute", execute a system command
- 12) "exit", exit the current test script
+ 12) "exit", the current test script
  13) "filestat", write status of a test area file to a log file
  14) "getenv", define a parameter based on an environment variable
  15) "help", print help information on commands and functions
@@ -37,4 +37,4 @@ Available ZBTest commands:
 For additional information on a command, use "help command"
 
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

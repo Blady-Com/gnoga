@@ -38,32 +38,25 @@
 # package without a properties file defining the messages.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=zbx_formatting
-APPLICATION=$(TOP)/bin/$(APPNAME)
-PROPNAME=xformatting
-PACKAGE=XFormatting_Messages
-GENERATED=$(PROPNAME)_messages.ads $(PROPNAME)_messages.adb
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(GENERATED)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_formatting:	zbx_formatting.adb definitions.ads $(wildcard *.properties)
+	zbmcompile -i -v XFormatting_Messages xformatting
+	gprbuild -q -p -aP../../../src -P zbx_formatting.gpr
 
-$(GENERATED):	$(wildcard $(PROPNAME)*.properties)
-	$(ZBMCOMPILE) -i -v $(PACKAGE) $(PROPNAME)
+run:	zbx_formatting
+	zbx_formatting
 
-run:	all
-	$(APPLICATION)
-
-run_%:	all
-	$(APPLICATION) -l$*
+run_%:	zbx_formatting
+	zbx_formatting -l$*
 
 clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+	gprclean -aP../../../src -P zbx_formatting.gpr
+	-$(RM) $(wildcard xformatting_*.*)

@@ -33,6 +33,19 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage dump [ -o output-file ] [ -a ]
+--  @summary dump the contents of the parameter scope(s)
+--  @start-doc
+--  Dump parameters values.  The default is to dump the parameters
+--  for the current scope.  This is primarily a debugging command.
+--
+--  The options are
+--
+--  * "-a", Dump the parameters for all scopes
+--
+--  * "-o", Dump the output to a file in the test area
+--
+
 separate (ZBTest.Commands)
 procedure Dump_Command (State : in out State_Type;
                         Args  : List_Type) is

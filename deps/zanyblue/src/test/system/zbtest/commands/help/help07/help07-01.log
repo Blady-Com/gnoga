@@ -1,16 +1,20 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help command
 Set the test description to "Test the help command"
 zbtest.help (2) 
 zbtest.help (3) help -f dirname
+dirname: return directory component of a path
+
+    Usage: dirname path
+
 The "dirname" function takes a path as an argument and returns the
 containing directory.  It is used in the zbmcompile tests to determine the
-installation directory for the zbmcompile executable, e.g.,
+installation directory for the zbmcompile executable, e.g.,::
 
     ZBTest> set project_dir $(dirname $(dirname $(which zbmcompile)))
 
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

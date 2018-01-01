@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -287,7 +287,7 @@ package body ZanyBlue.Text.Catalogs is
       pragma Unreferenced (Locale);
    begin
       raise Duplicate_Key_Error with
-                       To_UTF8 (File_Name & ":" & Key) & ":"
+                       Wide_To_UTF8 (File_Name & ":" & Key) & ":"
                      & Natural'Image (Current_Line) & ":"
                      & Natural'Image (Previous_Line);
    end Duplicate_Key;
@@ -534,7 +534,7 @@ package body ZanyBlue.Text.Catalogs is
                           Base_Territory => Base_Territory);
          end Map_Locale_Triple;
       end loop Locale_Loop;
-      raise No_Such_Message_Error with To_UTF8 (Facility & "/" & Key);
+      raise No_Such_Message_Error with Wide_To_UTF8 (Facility & "/" & Key);
    end Get_Text;
 
    --------------
@@ -580,7 +580,7 @@ package body ZanyBlue.Text.Catalogs is
    begin
       if Pool_Length /= Expected_Length then
          raise Pool_Size_Mismatch_Error with
-            To_UTF8 (Package_Name) &
+            Wide_To_UTF8 (Package_Name) &
                Natural'Image (Pool_Length) & " /=" &
                Natural'Image (Expected_Length);
       end if;
@@ -614,7 +614,7 @@ package body ZanyBlue.Text.Catalogs is
       pragma Unreferenced (Facility);
    begin
       raise Unicode_Escape_Error with
-                       To_UTF8 (File_Name) & ":"
+                       Wide_To_UTF8 (File_Name) & ":"
                      & Natural'Image (Current_Line) & ":"
                      & "Invalid character: " & Ch;
    end Invalid_Character;
@@ -635,7 +635,7 @@ package body ZanyBlue.Text.Catalogs is
       pragma Unreferenced (Locale);
    begin
       raise Unicode_Escape_Error with
-                       To_UTF8 (File_Name) & ":"
+                       Wide_To_UTF8 (File_Name) & ":"
                      & Natural'Image (Current_Line) & ":"
                      & Additional_Info;
    end Invalid_Definition;

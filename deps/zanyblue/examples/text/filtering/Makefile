@@ -37,36 +37,27 @@
 # Makefile for the message filtering example.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=zbx_filtering
-APPLICATION=$(TOP)/bin/$(APPNAME)
-PACKAGE=Messages
-FACILITY=Xmpl
-STAMPFILE=messages.stamp
-PROPERTIES=$(wildcard $(FACILITY)*.properties)
-GENERATED=messages.ads messages.adb \
-	$(wildcard messages-*.ads) $(wildcard messages-*.adb) \
-	$(STAMPFILE)
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(STAMPFILE)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_filtering:	messages.stamp $(wildcard *.ad?)
+	gprbuild -q -p -aP../../../src -P zbx_filtering.gpr
 
-$(STAMPFILE):	$(PROPERTIES)
-	$(ZBMCOMPILE) -G prints -i -S $(STAMPFILE) -v $(PACKAGE) $(FACILITY)
+messages.stamp:	$(wildcard Xmpl*.properties)
+	zbmcompile -G prints -i -S messages.stamp -v Messages Xmpl
 
-run:	all
-	$(APPLICATION)
+run:	zbx_filtering
+	zbx_filtering
 
-run_v:	all
-	$(APPLICATION) -v
+run_v:	zbx_filtering
+	zbx_filtering -v
 
-clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+clean:
+	gprclean -aP../../../src -P zbx_filtering.gpr
+	-$(RM) $(wildcard messages*.*)

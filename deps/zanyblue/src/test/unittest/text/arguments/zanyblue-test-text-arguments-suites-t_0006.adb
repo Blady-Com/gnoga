@@ -51,6 +51,6 @@ begin
    WAssert (T, List.Length = 1, "Length is not 1");
    Check_Value (T, List.Format (0, "", "", Locale, False), "String#0",
            "Format valid argument");
-   Check_Value (T, List.Format (1, "", "xyz", Locale, False), "⁅1⁆",
+   Check_Value (T, List.Format (1, "", "xyz", Locale, False), "[1]",
            "Format missing argument");
 end T_0006;

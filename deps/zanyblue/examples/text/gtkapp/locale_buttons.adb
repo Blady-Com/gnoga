@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,9 @@ package body Locale_Buttons is
                                 Locale  : Locale_Type) is
    begin
       Button := new Locale_Button_Record;
-      Initialize (Button, To_UTF8 (Format ("appmsg", "button_text",
+      Initialize (Button, Format ("appmsg", "button_text",
                                        +Locale_Name (Locale),
-                                       +Full_Locale_Name (Locale))));
+                                       +Full_Locale_Name (Locale)));
       Button.Locale := Locale;
    end New_Locale_Button;
 

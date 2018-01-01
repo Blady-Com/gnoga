@@ -37,33 +37,27 @@
 # Makefile for the simple date/time printing application.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-ZBMCFLAGS+=-i
-ZBMCFLAGS+=-v
-APPNAME=zbx_curtime
-APPLICATION=$(TOP)/bin/$(APPNAME)
-PACKAGE=Curtime_Messages
-GENERATED=curtime_messages.ads curtime_messages.adb
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(GENERATED)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_curtime:	curtime_messages.ads curtime_messages.adb
+	gprbuild -q -p -aP../../../src -P zbx_curtime.gpr
 
-$(GENERATED):	$(wildcard curtime*.properties)
-	$(ZBMCOMPILE) $(ZBMCFLAGS) $(PACKAGE) curtime
+curtime_messages.ads curtime_messages.adb:	$(wildcard curtime*.properties)
+	zbmcompile -i -v Curtime_Messages curtime
 
-run:	all
-	$(APPLICATION)
+run:	zbx_curtime
+	zbx_curtime
 
-run_%:	all
-	$(APPLICATION) -l$*
+run_%:	zbx_curtime
+	zbx_curtime -l$*
 
 clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+	gprclean -aP../../../src -P zbx_curtime.gpr
+	-$(RM) $(wildcard curtime_messages.*)

@@ -39,38 +39,38 @@
 # window does not support UTF-8 ouptut.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=zbx_jenkins
-APPLICATION=$(TOP)/bin/$(APPNAME)
-PACKAGE=Jenkins.Messages
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
+
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
+
+zbx_jenkins:	$(wildcard *.ad?) jenkins-messages.ads jenkins-messages.adb
+	gprbuild -q -p -aP../../../src -P zbx_jenkins.gpr
+
+jenkins-messages.ads jenkins-messages.adb: $(wildcard mesg/*.properties)
+	zbmcompile -O -v Jenkins.Messages -d mesg App Jenkins
+
+run:	zbx_jenkins
+	zbx_jenkins
+
+run_%:	zbx_jenkins
+	zbx_jenkins -l$*
+
+clean:
+	gprclean -aP../../../src -P zbx_jenkins.gpr
+	-$(RM) $(wildcard jenkins-messages.*)
+
+# Following definitions are used to sync the properties from a Git clone of the
+# Jenkins repository.  Not really part of the example, just needed a good place
+# to keep this.
 J_TLD=jenkins
 J_VERSION=jenkins-2.9
 J_URL=https://github.com/jenkinsci/jenkins.git
 J_APPDIR=core/src/main/resources/hudson
-GENERATED=jenkins-messages.ads jenkins-messages.adb
-CLEAN_DIRS+=jenkins
-
-include $(TOP)/src/mkfile/conf.mk
-
-all:	$(GENERATED)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
-
-$(GENERATED):	$(wildcard mesg/ojdbc*.properties)
-	$(ZBMCOMPILE) -O -v $(PACKAGE) -d mesg App Jenkins
-
-run:	all
-	$(APPLICATION)
-
-run_%:	all
-	$(APPLICATION) -l$*
-
-clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
 J_PROPERTIES=$(patsubst $(J_TLD)/$(J_APPDIR)/Messages%,mesg/Jenkins%,$(wildcard $(J_TLD)/$(J_APPDIR)/Messages*.properties))
 
 jenkins-sync:	$(J_TLD)
@@ -86,5 +86,3 @@ mesg/Jenkins%:	$(J_TLD)/$(J_APPDIR)/Messages%
 $(J_TLD):
 	git clone $(J_URL)
 	cd $(J_TLD); git checkout $(J_VERSION)
-
-include $(TOP)/src/mkfile/rules.mk

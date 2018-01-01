@@ -33,8 +33,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with "xmlada";
-with "../../lib/gnat/zanyblue";
+with "../zanyblue";
 with "../zbapp";
 with "../zbcom";
 

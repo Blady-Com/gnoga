@@ -37,6 +37,7 @@ TOP=../..
 CLEAN_FILES+=$(wildcard system.log)
 CLEAN_FILES+=$(wildcard system.xml)
 CLEAN_FILES+=$(wildcard TEST*.xml)
+CLEAN_FILES+=$(wildcard ZBTest*.xml)
 
 include $(TOP)/src/mkfile/conf.mk
 

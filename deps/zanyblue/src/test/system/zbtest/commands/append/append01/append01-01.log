@@ -1,18 +1,23 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest append command
 Set the test description to "Test the help text for the zbtest append command"
 zbtest.help (2) 
 zbtest.help (3) help append
-The append command adds a value to the end of a list parameter within
-current scope.  If the parameter does not exist, it is created as a list value
-with a single element.  If the parameter exists but is not a list, the value
-is first converted to a string and then converted to a list with a single
-value.  The argument value is then append to this list.
+append: append values to a list parameter
 
-Example
+    Usage: append parameter value
+
+The append command adds a value to the end of a list parameter within
+current scope.  If the parameter does not exist, it is created as a list
+value with a single element.  If the parameter exists but is not a list,
+the value is first converted to a string and then converted to a list with
+a single value.  The argument value is then append to this list.
+
+Example::
+
     ZBTest> print l1
     The parameter "l1" is not defined
     ZBTest> append l1 a
@@ -27,4 +32,4 @@ Example
     1) "a"
     2) "b"
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

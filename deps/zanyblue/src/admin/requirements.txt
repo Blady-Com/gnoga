@@ -43,7 +43,9 @@
 #    $ pip install -r requirements.txt
 # 
 
-airspeed==0.5.4dev-20150515
+pep8==1.7.0
+pyflakes==1.2.3
+pylint==1.6.4
 PyYAML==3.11
 Sphinx==1.4.4
 sphinxcontrib-programoutput==0.8

@@ -33,6 +33,16 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage dirname path
+--  @summary return directory component of a path
+--  @start-doc
+--  The "dirname" function takes a path as an argument and returns the
+--  containing directory.  It is used in the zbmcompile tests to determine the
+--  installation directory for the zbmcompile executable, e.g.,::
+--
+--      ZBTest> set project_dir $(dirname $(dirname $(which zbmcompile)))\n
+--
+
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Functions)

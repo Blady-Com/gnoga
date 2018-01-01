@@ -44,10 +44,10 @@ procedure T_0001 (T : in out Test_Case'Class) is
 
 begin
    WAssert (T, List.Length = 0, "Length of emtpy list is not 0");
-   WAssert (T, List.Format (0, "", "", Locale, False) = "⁅0⁆",
+   WAssert (T, List.Format (0, "", "", Locale, False) = "[0]",
             "All Format requests should be index value");
-   WAssert (T, List.Format (1, "", "", Locale, False) = "⁅1⁆",
+   WAssert (T, List.Format (1, "", "", Locale, False) = "[1]",
             "All Format requests should be index value");
-   WAssert (T, List.Format (5, "", "", Locale, False) = "⁅5⁆",
+   WAssert (T, List.Format (5, "", "", Locale, False) = "[5]",
             "All Format requests should be index value");
 end T_0001;

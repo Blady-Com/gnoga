@@ -62,11 +62,16 @@ print_%:
 	$(MAKE) -C $* clean
 
 #
+# noop target that does nothing (used by the build system if a platform doesn't
+# have anything that needs to be done)
+noop:
+
+#
+# Platform specific packaging rule, e.g., "make fedora.package"
+%.package:
+	$(MAKE) -C package/$*
+
+#
 # Rule to generate the coverage file for a source file
 %.gcov:
 	gcov -o $(TOP)/src/obj $*
-
-#
-# Rule to apply the version definitions to a template file
-%.adb:	%.adb-in
-	gnatprep $(PREPFLAGS) $< $@

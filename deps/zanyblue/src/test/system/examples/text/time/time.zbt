@@ -35,6 +35,8 @@
 desc Test the dumplocale text example application
 
 set time_dir $(joinpaths $text_examples_dir time)
+prepend path $time_dir
+setenv -l PATH path
 
 execute -o $(nextlog -c build) $make -C $time_dir clean
 execute -o $(nextlog -c build) $make -C $time_dir

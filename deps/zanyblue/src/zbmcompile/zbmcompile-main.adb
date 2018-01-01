@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@ with Ada.Calendar;
 with Ada.Exceptions;
 with Ada.Command_Line;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with ZBMCompile.Messages;
 with ZBMCompile.Message_Filter;
 
@@ -48,7 +47,6 @@ procedure ZBMCompile.Main is
    use Ada.Command_Line;
    use ZanyBlue.Text;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use ZBMCompile;
    use ZBMCompile.Message_Filter;
 
@@ -70,7 +68,6 @@ procedure ZBMCompile.Main is
       Append (Arguments, +ZanyBlue.Version_Major);
       Append (Arguments, +ZanyBlue.Version_Minor);
       Append (Arguments, +ZanyBlue.Version_Patch);
-      Append (Arguments, +ZanyBlue.Version_Status);
       Append (Arguments, +ZanyBlue.Revision);
       Append (Arguments, +Start_Time);
       Print_Line (ZBMCompile_Facility, "I00001", Arguments);
@@ -106,7 +103,7 @@ procedure ZBMCompile.Main is
             Raise_Exception (Usage'Identity, ZBMCompile_Facility, "E00001",
                              Argument0 => +Ch);
          end if;
-         return From_UTF8 (Argument (Index));
+         return Wide_From_UTF8 (Argument (Index));
       end Get_Option_Value;
 
       ----------------------
@@ -266,10 +263,10 @@ procedure ZBMCompile.Main is
                Raise_Exception (Usage'Identity, ZBMCompile_Facility, "E00020",
                                 Argument0 => +Value);
             elsif not Options.Is_Defined ("package") then
-               Options.Set_String ("package", From_UTF8 (Value));
+               Options.Set_String ("package", Wide_From_UTF8 (Value));
             else
                Options.Append ("mesg_dirs", Options.Get_String ("cur_dir"));
-               Options.Append ("facilities", From_UTF8 (Value));
+               Options.Append ("facilities", Wide_From_UTF8 (Value));
                Options.Increment ("n_facilities");
             end if;
          end;

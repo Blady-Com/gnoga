@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -254,7 +254,7 @@ package body ZanyBlue.Text.Formatting is
                    & ":"
                    & Key
                    & ":"
-                   & From_UTF8 (Exception_Message (E)));
+                   & Wide_From_UTF8 (Exception_Message (E)));
    end Format;
 
    ------------

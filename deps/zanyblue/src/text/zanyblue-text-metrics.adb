@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ package body ZanyBlue.Text.Metrics is
    procedure Write_Usage (File_Name : String;
                           Catalog   : Catalog_Type := Standard_Catalog) is
    begin
-      Write_Usage (From_UTF8 (File_Name), Catalog);
+      Write_Usage (Wide_From_UTF8 (File_Name), Catalog);
    end Write_Usage;
 
 end ZanyBlue.Text.Metrics;

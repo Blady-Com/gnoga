@@ -37,34 +37,27 @@
 # Makefile for the simple date/time printing application.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=zbx_slocale
-APPLICATION=$(TOP)/bin/$(APPNAME)
-FACILITY=Day
-PACKAGE=SLocale_Messages
-GENERATED=slocale_messages.ads slocale_messages.adb\
-	slocale_messages-day_prints.ads \
-	slocale_messages-day_prints.adb
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(GENERATED)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_slocale:	slocale_messages.ads slocale_messages.adb slocale_messages-day_prints.ads slocale_messages-day_prints.adb
+	gprbuild -q -p -aP../../../src -P zbx_slocale.gpr
 
-$(GENERATED):	$(wildcard $(FACILITY)*.properties)
-	$(ZBMCOMPILE) -i -G prints -s en -v $(PACKAGE) $(FACILITY)
+slocale_messages.ads slocale_messages.adb slocale_messages-day_prints.ads slocale_messages-day_prints.adb: $(wildcard Day*.properties)
+	zbmcompile -i -G prints -s en -v SLocale_Messages Day
 
-run:	all
-	$(APPLICATION)
+run:	zbx_slocale
+	zbx_slocale
 
-run_%:	all
-	$(APPLICATION) -l$*
+run_%:	zbx_slocale
+	zbx_slocale -l$*
 
 clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+	gprclean -aP../../../src -P zbx_slocale.gpr
+	-$(RM) $(wildcard slocale_messages*)

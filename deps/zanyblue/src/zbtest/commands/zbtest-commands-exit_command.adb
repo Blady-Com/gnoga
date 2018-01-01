@@ -33,6 +33,14 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage exit
+--  @summary the current test script
+--  @start-doc
+--  Exit a test script.  This command is normally only used when entering
+--  commands interactively to exit the zbtest application.  Using it in a test
+--  script causes immediate exit of the zbtest application.
+--
+
 separate (ZBTest.Commands)
 procedure Exit_Command (State : in out State_Type;
                         Args  : List_Type) is

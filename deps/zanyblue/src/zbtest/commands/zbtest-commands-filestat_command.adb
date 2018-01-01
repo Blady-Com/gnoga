@@ -33,6 +33,38 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage filestat name log-file
+--  @summary write status of a test area file to a log file
+--  @start-doc
+--  Write status of a test area file to a log file.  This is frequently
+--  used to verify the existence/non-existence of a file or directory in the
+--  test area.  The information written to the file stat log file, for ordinary
+--  files is:
+--
+--  * The file name
+--  * The file type ("ORDINARY_FILE")
+--  * The file size in bytes
+--  * The time stamp associated with the file
+--
+--  For directories and other non-ordinary files only the file name and type is
+--  writeen to the log file.
+--
+--  If the target file for the filestat command does not exist in the test area
+--  the generated log file contains message::
+--
+--      The file "NAME" does not exist
+--
+--  Examples::
+--
+--      ZBTest> filestat a
+--      ZBTest> filestat expected.txt expected01.log
+--      Generated status report on the file "expected.txt" (non-existent)
+--          to "expected01.log"
+--      ...
+--      ZBTest> filestat expected.txt expected02.log
+--      Generated status report on the file "expected.txt" to "expected02.log"
+--
+
 with Ada.Directories;
 with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Wide_Directories;

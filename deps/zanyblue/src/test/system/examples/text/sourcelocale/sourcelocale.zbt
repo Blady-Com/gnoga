@@ -35,6 +35,8 @@
 desc Test the sourcelocale text example application
 
 set sourcelocale_dir $(joinpaths $text_examples_dir sourcelocale)
+prepend path $sourcelocale_dir
+setenv -l PATH path
 
 execute -o $(nextlog -c build) $make -C $sourcelocale_dir clean
 execute -o $(nextlog -c build) $make -C $sourcelocale_dir

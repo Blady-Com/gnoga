@@ -33,6 +33,28 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage begin
+--  @summary begin a new parameter scope
+--  @start-doc
+--  The ``begin`` command starts a new ZBTest scope for parameters definitions.
+--  This is similar to standard scoping in programming languages, local
+--  definitions "hide" definitions in enclosing scopes, e.g.,::
+--
+--     set x 10
+--     begin
+--     set x 11
+--     # References to the parameter "x" yield 11 here
+--     end
+--     # References to the parameter "x" yield 10 here
+--
+--  Scopes allow tests to inherit definitions from enclosing scopes and
+--  localize parameter definitions and changes to the current test, restoring
+--  values on scope exit via the :ref:`zb-zbtest-commands-end` command.
+--
+--  It is not normally necessary to explicitly begin a scope using the
+--  ``begin`` command, scopes are implicitly created on starting the execution
+--  of a ZBTest script via the :ref:`zb-zbtest-commands-run` command.
+
 separate (ZBTest.Commands)
 procedure Begin_Command (State   : in out State_Type;
                          Args    : List_Type) is

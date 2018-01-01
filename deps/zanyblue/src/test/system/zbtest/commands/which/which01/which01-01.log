@@ -1,27 +1,32 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest which command
 Set the test description to "Test the help text for the zbtest which command"
 zbtest.help (2) 
 zbtest.help (3) help which
-Print the locations of files.  The zbtest locates various files
-during the execution of a test script, e.g., the "copy" command will
-copy a data file located via a search of the directories on the "searchpath"
-parameter, the "execute" command uses the "path" parameter.  As an aid to
-debugging, the "which" command print the results of these searches.  The
-options select the type of file to search for:
+which: print the location of a file or command
+
+    Usage: which [ -e | -f ] name
+
+Print the locations of files.  The zbtest locates various files during the
+execution of a test script, e.g., the "copy" command will copy a data file
+located via a search of the directories on the "searchpath" parameter, the
+"execute" command uses the "path" parameter.  As an aid to debugging, the
+"which" command print the results of these searches.  The options select
+the type of file to search for:
 
 * "-e" Search for a file that is executables
 * "-f" Search for a file
 
 The result is printed.
 
-Examples:
+Example:
 
-* Executeable:
+* Executeable::
+
     ZBTest> which -e ls
     /bin/ls
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

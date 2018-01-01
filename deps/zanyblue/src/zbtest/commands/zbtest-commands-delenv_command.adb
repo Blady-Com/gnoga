@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,25 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage delenv name
+--  @summary delete an environment variable
+--  @start-doc
+--  Delete an environment variable.  The value of the variable, if any,
+--  is restored on exiting the current scope.
+--
+--  Examples::
+--
+--    ZBTest> begin
+--    ZBTest> delenv HOME
+--    Deleting environment variable "HOME"
+--    ZBTest> end
+--    Executing the 'undo' action "setenv HOME "/home/mrohan""
+--    Setting the environment variable "HOME" to "/home/mrohan"
+--
+--  Any commands executed after the "delenv" until the end of the scope will
+--  not see a value for the environment variable.
+--
+
 with Ada.Environment_Variables;
 
 separate (ZBTest.Commands)
@@ -52,10 +71,10 @@ procedure Delenv_Command (State : in out State_Type;
    procedure Delenv (State : in out State_Type;
                      Name  : Wide_String) is
    begin
-      if Exists (To_UTF8 (Name)) then
+      if Exists (Wide_To_UTF8 (Name)) then
          State.Add_Undo_Action (Format ("setenv {0} ""{1}""",
-                                        +Name, +Value (To_UTF8 (Name))));
-         Clear (To_UTF8 (Name));
+                                        +Name, +Value (Wide_To_UTF8 (Name))));
+         Clear (Wide_To_UTF8 (Name));
          Print_00040 (+Name);
       else
          Print_00039 (+Name);

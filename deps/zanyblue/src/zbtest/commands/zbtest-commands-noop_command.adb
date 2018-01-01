@@ -33,6 +33,19 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage noop
+--  @summary the no operation command
+--  @start-doc
+--  No operation.  The noop command does nothing and can be used in test
+--  scripts that would otherwise be empty, e.g., running a script based
+--  on the current platform::
+--
+--      run $_platform
+--
+--  If, on Unix, no additional tests are needed, the file ``unix/unix.zbt``
+--  can simply include the "noop" command (an empty file also works, however).
+--
+
 separate (ZBTest.Commands)
 procedure Noop_Command (State : in out State_Type;
                         Args  : List_Type) is

@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,8 @@ package body ZanyBlue.Wide_Regexp is
                      Glob           : Boolean := False;
                      Case_Sensitive : Boolean := True) return Regexp is
    begin
-      return GNAT.Regexp.Compile (To_UTF8 (Pattern), Glob, Case_Sensitive);
+      return GNAT.Regexp.Compile (Wide_To_UTF8 (Pattern), Glob,
+                                  Case_Sensitive);
    end Compile;
 
    -----------
@@ -63,7 +64,7 @@ package body ZanyBlue.Wide_Regexp is
 
    function Match (S : Wide_String; R : Regexp) return Boolean is
    begin
-      return GNAT.Regexp.Match (To_UTF8 (S), R);
+      return GNAT.Regexp.Match (Wide_To_UTF8 (S), R);
    end Match;
 
 end ZanyBlue.Wide_Regexp;

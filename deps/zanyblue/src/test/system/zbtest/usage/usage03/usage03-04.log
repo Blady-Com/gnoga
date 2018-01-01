@@ -1,4 +1,8 @@
-File name: "test-area.summary.xml"
-File type: ORDINARY_FILE
-File size: .*
-File date: .*
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite errors="0" failures="1" skips="0" tests="1" time=".*" name="zbtest.noop">
+    <testcase classname="zbtest.noop" name="nolog.log" time="0.000000000">
+        <failure><![CDATA[Error, the reference log file "nolog.log" was not found
+]]></failure>
+    </testcase>
+</testsuite>
+

@@ -43,7 +43,7 @@ with "zanyblue";
 project ZBX_Filtering is
 
    for Object_Dir use ".";
-   for Exec_Dir use "../../../bin";
+   for Exec_Dir use ".";
    for Main use ("zbx_filtering");
 
    Compile_Switches := ("-g", "-O3", "-gnata", "-gnatVa", "-gnatQ", "-gnaty",

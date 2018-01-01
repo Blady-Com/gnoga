@@ -1,45 +1,77 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest help command
 Set the test description to "Test the help text for the zbtest help command"
 zbtest.help (2) 
 zbtest.help (3) help
-Print help information on commands and functions.  The options "-c" and "-f"
-select either command or function information.  Without an item argument, a
-summary of available commands ("-c") or functions ("-f") is printed.
+help: print help information on commands and functions
+
+    Usage: help [ -c | -f ] [ item ]
+
+Print help information on commands and functions.  The options "-c" and
+"-f" select either command or function information.  Without an item
+argument, a summary of available commands ("-c") or functions ("-f") is
+printed.
 
 Examples:
+
+#. Print help information on the "help" command::
+
     ZBTest> help
-        Print help information on the "help" command
+
+#. Print help information on the "help" command, equivalent to "help"::
+
     ZBTest> help -c help
-        Print help information on the "help" command, equivalent to "help"
+
+#. Print a summary of available commands::
+
     ZBTest> help -c
-        Print a summary of available commands
+
+#. Print help information on the "execute" command::
+
     ZBTest> help execute
-        Print help information on the "execute" command
+
+#. Print a summary of available functions::
+
     ZBTest> help -f
-        Print a summary of available functions
+#. Print help information on the "dirname" function::
+
     ZBTest> help -f dirname
-        Print help information on the "dirname" function
 zbtest.help (4) help help
-Print help information on commands and functions.  The options "-c" and "-f"
-select either command or function information.  Without an item argument, a
-summary of available commands ("-c") or functions ("-f") is printed.
+help: print help information on commands and functions
+
+    Usage: help [ -c | -f ] [ item ]
+
+Print help information on commands and functions.  The options "-c" and
+"-f" select either command or function information.  Without an item
+argument, a summary of available commands ("-c") or functions ("-f") is
+printed.
 
 Examples:
+
+#. Print help information on the "help" command::
+
     ZBTest> help
-        Print help information on the "help" command
+
+#. Print help information on the "help" command, equivalent to "help"::
+
     ZBTest> help -c help
-        Print help information on the "help" command, equivalent to "help"
+
+#. Print a summary of available commands::
+
     ZBTest> help -c
-        Print a summary of available commands
+
+#. Print help information on the "execute" command::
+
     ZBTest> help execute
-        Print help information on the "execute" command
+
+#. Print a summary of available functions::
+
     ZBTest> help -f
-        Print a summary of available functions
+#. Print help information on the "dirname" function::
+
     ZBTest> help -f dirname
-        Print help information on the "dirname" function
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

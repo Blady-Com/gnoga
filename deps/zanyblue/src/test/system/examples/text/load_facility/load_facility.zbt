@@ -35,6 +35,8 @@
 desc Test the load_facility text example application
 
 set load_facility_dir $(joinpaths $text_examples_dir load_facility)
+prepend path $load_facility_dir
+setenv -l PATH path
 
 execute -o $(nextlog -c build) $make -C $load_facility_dir clean
 execute -o $(nextlog -c build) $make -C $load_facility_dir

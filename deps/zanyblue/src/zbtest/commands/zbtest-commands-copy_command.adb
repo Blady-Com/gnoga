@@ -33,6 +33,34 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage copy file [ target ]
+--  @summary copy a file to the test area
+--  @start-doc
+--  Copy a file to the test area to use as input to commands under test.
+--  The file copied is located by searching the directories listed on the
+--  ''searchpath'' parameter.
+--
+--  The file copied retains the name of the source file.  To use another name
+--  the optional second argument can be used.
+--
+--  To copy a directory tree, the "-r" option should be used.
+--
+--  Examples
+--
+--  * copy xmpl.in
+--    Copy the file named "xmpl.in" to the test area retaining the name.
+--
+--  * copy xmpl.in example.dat
+--    Copy the file "xmpl.in" to the name "example.dat" in the test area.
+--
+--  * copy -r mydir
+--    Copy the directory "mydir" to the test area.
+--
+--  Files or directories copied to the test area are automatically removed
+--  when the current scope exited (either at the end of the test script or
+--  via an explicit "end").
+--
+
 with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Wide_Directories;
 

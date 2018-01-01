@@ -1,4 +1,4 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* \(.*\) on .* at .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
 Setting the parameter "a" to the value "b"
 Warning, test area ".*test-area.test-area", already exists, removing it

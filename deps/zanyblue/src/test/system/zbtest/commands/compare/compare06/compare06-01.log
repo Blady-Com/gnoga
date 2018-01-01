@@ -1,4 +1,4 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* \(.*\) on .* at .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
 Setting the parameter "mydir" to the value ".*zbtest.commands.compare.compare06"
 Creating test area directory ".*test-area.test-area"

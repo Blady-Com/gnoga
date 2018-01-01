@@ -36,7 +36,6 @@
 with Ada.Command_Line;
 with Messages.Xmpl_Prints;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with My_Filter;
 
 procedure ZBX_Filtering is
@@ -44,14 +43,11 @@ procedure ZBX_Filtering is
    use Ada.Command_Line;
    use Messages.Xmpl_Prints;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use My_Filter;
 
 begin
-   Print_I0001 (+ZanyBlue.Version_Major,
-                +ZanyBlue.Version_Minor,
-                +ZanyBlue.Version_Patch,
-                +ZanyBlue.Version_Status);
+   Print_I0001 (+ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
+                +ZanyBlue.Version_Patch);
    Set_Filter (App_Filter'Access);
    if Argument_Count = 1 and then Argument (1) = "-v" then
       App_Filter.Verbose := True;
@@ -60,4 +56,5 @@ begin
    Print_I0002;
    Print_W0001;
    Print_E0001;
+   Set_Exit_Status (Success);
 end ZBX_Filtering;

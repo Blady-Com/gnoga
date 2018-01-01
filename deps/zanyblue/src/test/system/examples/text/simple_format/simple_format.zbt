@@ -35,6 +35,8 @@
 desc Test the simple_format text example application
 
 set simple_format_dir $(joinpaths $text_examples_dir simple_format)
+prepend path $simple_format_dir
+setenv -l PATH path
 
 execute -o $(nextlog -c build) $make -C $simple_format_dir clean
 execute -o $(nextlog -c build) $make -C $simple_format_dir

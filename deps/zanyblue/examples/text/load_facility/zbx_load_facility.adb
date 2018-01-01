@@ -43,7 +43,6 @@ with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Catalogs;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 
 procedure ZBX_Load_Facility is
 
@@ -54,7 +53,6 @@ procedure ZBX_Load_Facility is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
 
    Usage_Error : exception;
 
@@ -96,8 +94,7 @@ begin
                   To_Wide_String (To_String (Message_Directory)));
    Print_Line ("textxmpl", "banner", +ZanyBlue.Version_Major,
                                      +ZanyBlue.Version_Minor,
-                                     +ZanyBlue.Version_Patch,
-                                     +ZanyBlue.Version_Status);
+                                     +ZanyBlue.Version_Patch);
    Print_Line ("textxmpl", "loaded", +N_Messages, +N_Locales);
 exception
 when Usage_Error =>

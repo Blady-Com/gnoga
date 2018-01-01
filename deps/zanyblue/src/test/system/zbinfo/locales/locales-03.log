@@ -8,7 +8,7 @@ ZanyBlue data for the locale "en_US"
     Language                  "en"
     Script                    ""
     Territory                 "US"
-    Encoding                  "" (implemented as "UTF8")
+    Encoding                  "" (implemented as "")
     Name                      "en_US"
     Traits Name               "en"
     Traits Tag                "EN        "

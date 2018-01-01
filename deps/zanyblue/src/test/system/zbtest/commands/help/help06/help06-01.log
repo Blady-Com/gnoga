@@ -1,7 +1,7 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help command
 Set the test description to "Test the help command"
 zbtest.help (2) 
@@ -9,11 +9,11 @@ zbtest.help (3) help -f
 Available ZBTest functions:
 
   1) "dirname", return directory component of a path
-  2) "joinpath", return a list of path concatenated into a single path
+  2) "joinpaths", return a list of path concatenated into a single path
   3) "nextlog", return the name of next number log file
   4) "which", return the path to a file or executable
 
 For additional information on a function, use "help -f function"
 
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

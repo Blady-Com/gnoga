@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -253,8 +253,8 @@ package body ZanyBlue.Test is
 
    function Matched (Left : Wide_String; Right : Wide_String) return Boolean is
       use GNAT.Regexp;
-      Left_S : constant String := To_UTF8 (Left);
-      Right_S : constant String := To_UTF8 (Right);
+      Left_S : constant String := Wide_To_UTF8 (Left);
+      Right_S : constant String := Wide_To_UTF8 (Right);
    begin
       return Left = Right or else Match (Right_S, Compile (Left_S));
    end Matched;
@@ -356,7 +356,7 @@ package body ZanyBlue.Test is
       --  GNAT AUnit 2011 requires its
       --  Suppress warnings on it use to support AUnit 2010.
       pragma Warnings (Off, Assert);
-      Assert (Condition, To_UTF8 (Message));
+      Assert (Condition, Wide_To_UTF8 (Message));
    end WAssert;
 
 end ZanyBlue.Test;

@@ -1,23 +1,27 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest print command
 Set the test description to "Test the help text for the zbtest print command"
 zbtest.help (2) 
 zbtest.help (3) help print
-Print the value of a scalar (-s, default) or list (-l) parameters.
-With the -s option, the value is first converted to a string which gives
-the normal representation of value (list values are enclosed in square
-brackers, e.g., long lines have been wrapped
+print: print the value of parameters
+
+    Usage: print [ -l | -s ] parameter [ -l | -s ] parameter ...
+
+Print the value of a scalar (-s, default) or list (-l) parameters.  With
+the -s option, the value is first converted to a string which gives the
+normal representation of value (list values are enclosed in square
+brackers, e.g.,d::
 
     ZBTest> print path
     [/home/mrohan/xmpl/test-area, /home/mrohan/bin, /usr/bin, /bin]
     ZBTest> print _platform
     unix
 
-With the -l option, the value is printed as a list.  If the parameter is not
-a list, it's value is first converted to a list.  E.g.,
+With the -l option, the value is printed as a list.  If the parameter is
+not a list, it's value is first converted to a list.  E.g.,::
 
     ZBTest> print -l l1
     ZBTest> print _platform
@@ -30,4 +34,4 @@ a list, it's value is first converted to a list.  E.g.,
     3) "/usr/bin"
     4) "/bin"
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

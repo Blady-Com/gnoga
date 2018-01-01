@@ -44,7 +44,6 @@ with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 
 procedure ZBX_Formatting is
 
@@ -53,7 +52,6 @@ procedure ZBX_Formatting is
    use ZanyBlue.Text.Pseudo;
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use Definitions;
    use Definitions.Long_Integer_Arguments;
    use Definitions.Long_Long_Integer_Arguments;
@@ -134,8 +132,7 @@ begin
    Process_Command_Line;
    Print_Line ("xformatting", "banner", +ZanyBlue.Version_Major,
                                         +ZanyBlue.Version_Minor,
-                                        +ZanyBlue.Version_Patch,
-                                        +ZanyBlue.Version_Status);
+                                        +ZanyBlue.Version_Patch);
    Display_Value (+Integer'(1964), "Simple positive value");
    Display_Value (+Integer'(-1964), "Simple negative value");
    Display_Value (+Integer'First, "First integer value");

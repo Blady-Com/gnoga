@@ -39,13 +39,11 @@ with Curtime_Messages;
 with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 
 procedure ZBX_CurTime is
 
    use Ada.Calendar;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
 
    type Mode_Type is (Normal, Help);
 
@@ -91,8 +89,7 @@ procedure ZBX_CurTime is
 begin
    Print_Line ("curtime", "0001", +ZanyBlue.Version_Major,
                                   +ZanyBlue.Version_Minor,
-                                  +ZanyBlue.Version_Patch,
-                                  +ZanyBlue.Version_Status);
+                                  +ZanyBlue.Version_Patch);
    Process_Command_Line (Mode);
    case Mode is
    when Normal =>

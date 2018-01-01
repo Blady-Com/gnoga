@@ -1,24 +1,38 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest getenv command
 Set the test description to "Test the help text for the zbtest getenv command"
 zbtest.help (2) 
 zbtest.help (3) help getenv
-Define an internal parameter based on the value of an environment
-variable.  For example,
+getenv: define a parameter based on an environment variable
 
+    Usage: getenv [ -l | -s | -p | -a ] name [ parameter ]
+
+Define an internal parameter based on the value of an environment
+variable.  For example,::
+
+    ZBTest> print HOME
+    The parameter "HOME" is not defined
     ZBTest> getenv HOME
     ZBTest> print HOME
-    /home/mrohan
+    /u/mrohan
 
 The options available are
-  -l  Define an internal list parameter by splitting on the pathsep
-  -s  Define a simple scalar (string) parameter (default)
-  -a  Append the values (implies the -l option)
-  -p  Prepend the values (implies the -l option)
+
+-l
+   Define an internal list parameter by splitting on the pathsep
+
+-s
+   Define a simple scalar (string) parameter (default)
+
+-a
+   Append the values (implies the -l option)
+
+-p
+   Prepend the values (implies the -l option)
 
 If the target is not given then import to name.
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

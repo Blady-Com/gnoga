@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,60 @@
 --  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 --  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+
+--  @usage execute [ -f | -s | -o output ] command [ command-arg ... ]
+--  @summary execute a system command
+--  @start-doc
+--  Execute a command given the command name and an optional list
+--  of command arguments.  The command to execute is located by
+--
+--  #. Searching from the current test directory up the directory tree
+--     for an executable with the command name in a bin directory, i.e.,
+--     if executing a command built in the current source tree.
+--
+--  #. Or, searching the value of the "path" list parameter (initialized to
+--     the value of the "PATH" environment variable).
+--
+--  The search attempts to find the first file with an extension defined by
+--  the "exes" list parameter that matches the command name.  For example,
+--  on Windows, the directories listed on the "path" parameter are searched
+--  for files with extensions "bat", "cmd", "com" or "exe".
+--
+--  Once an executable is found, a new process is spawned to execute it.
+--  If the "-o" option is given, then the command output (standard output
+--  and standard error) is sent to the named file.
+--
+--  The "-s" option defines a command that is expected to execute successfully.
+--  This is the default and the "-s" option is normally not given.
+--
+--  The "-f" option defines a command that is expected fail (non-zero exit
+--  status).
+--
+--  An execute failure file is generated if a command does not exit with the
+--  expected status.
+--
+--  Examples
+--
+--  #. Execute the "ls" command, the output is sent to the "screen"::
+--
+--      ZBTest> execute ls
+--
+--  #. Execute the "ls" command, the output is sent to the the file "ls.out"
+--     in the test area::
+--
+--      ZBTest> execute -o ls.out ls
+--
+--  #. Execute the "ls" command, the output is sent to the the file "ls.out"
+--     in the test area.  The command is expected to exit with a failure
+--     status in this case, i.e., the file "nosuchfile" is not expected to
+--     exist::
+--
+--      ZBTest> execute -f -o ls.out ls nosuchfile
+--
+--  The "execute" command is normally used with the "-o" option generating
+--  a log file for comparision with a reference log file via the ZBTest
+--  function "nextlog".
 --
 
 with GNAT.OS_Lib;
@@ -78,16 +132,16 @@ procedure Execute_Command (State : in out State_Type;
       Print_00029 (+Command);
       for I in Args_Index .. Args_Index + N_Args - 1 loop
          Arguments (I - Args_Index + 1) :=
-                                     new String'(To_UTF8 (Value (Args, I)));
+                                   new String'(Wide_To_UTF8 (Value (Args, I)));
          Append (Command_Line, Value (Args, I));
          Append (Command_Line, " ");
       end loop;
       if Output_Name'Length > 0 then
-         GNAT.OS_Lib.Spawn (To_UTF8 (Command), Arguments,
-                            To_UTF8 (Output_Name),
+         GNAT.OS_Lib.Spawn (Wide_To_UTF8 (Command), Arguments,
+                            Wide_To_UTF8 (Output_Name),
                             Success, Return_Code);
       else
-         Return_Code := GNAT.OS_Lib.Spawn (To_UTF8 (Command), Arguments);
+         Return_Code := GNAT.OS_Lib.Spawn (Wide_To_UTF8 (Command), Arguments);
       end if;
       if not (Expect_Failure xor Return_Code = 0) then
          Register_Execute_Failure (State, To_Wide_String (Command_Line),

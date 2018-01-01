@@ -1,5 +1,4 @@
-.*: ".*" up to date.*
-This is TOMCAT, Version .*
+This is ZBX_TOMCAT, Version .*
 設定エラー: コンテキストに指定しなければいけません
 Authorizing connector provided user [mrohan] via Tomcat Realm
 プロトコルハンドラの再開に失敗しました

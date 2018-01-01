@@ -40,9 +40,11 @@ APPNAME=zbtest
 ZBMCOMPILE=$(BINDIR)/zbmcompile
 ZBTEST=$(BINDIR)/$(APPNAME)
 MESGDIR=mesg
-FACILTIES=ZBTest
+FACILTIES=ZBTest Commands Functions
 PACKAGE=ZBTest_Messages
 STAMPFILE=mesg/zbtest-messages.stamp
+ZBTEST_PROPERTIES=$(patsubst %,mesg/%.properties,$(FACILTIES))
+GENERATED_PROPERTIES=$(patsubst %,mesg/%.properties,$(filter-out ZBTest,$(FACILTIES)))
 ZBMCOMPILE_FLAGS+=-i
 ZBMCOMPILE_FLAGS+=-A
 ZBMCOMPILE_FLAGS+=-C
@@ -51,6 +53,8 @@ ZBMCOMPILE_FLAGS+=-v
 ZBMCOMPILE_FLAGS+=-O
 ZBMCOMPILE_FLAGS+=-G exceptions
 ZBMCOMPILE_FLAGS+=-G prints
+ZBMCOMPILE_FLAGS+=-G wprints
+ZBMCOMPILE_FLAGS+=-G wstrings
 ZBMCOMPILE_FLAGS+=-o mesg
 ZBMCOMPILE_FLAGS+=-d mesg
 ZBMCOMPILE_FLAGS+=-S $(STAMPFILE)
@@ -64,17 +68,23 @@ CLEAN_FILES+=$(wildcard mesg/*.ads)
 CLEAN_FILES+=$(wildcard mesg/*.adb)
 CLEAN_FILES+=$(wildcard $(STAMPFILE))
 CLEAN_DIRS+=$(wildcard test-area)
+DEV_CLEAN_FILES+=$(wildcard mesg/Commands.properties)
+DEV_CLEAN_FILES+=$(wildcard mesg/Functions.properties)
 
 # Include configuration definitions
 include $(TOP)/src/mkfile/conf.mk
 
-all:	$(STAMPFILE)
+all:	$(ZBTEST_PROPERTIES) $(STAMPFILE)
 	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME)
 
-messages:	$(STAMPFILE)
+messages:	$(ZBTEST_PROPERTIES) $(STAMPFILE)
+	echo $(ZBTEST_PROPERTIES)
 
 $(STAMPFILE):	$(wildcard $(MESGDIR)/*.properties)
 	$(ZBMCOMPILE) $(ZBMCOMPILE_FLAGS) $(PACKAGE) $(FACILTIES)
+
+$(GENERATED_PROPERTIES):	$(wildcard commands/*.adb) $(wildcard functions/*.adb)
+	$(ZBDEV) mkzbtestdoc -P
 
 gcheck:
 	ADA_PROJECT_PATH=.:..:$(GPRDIR) gnat check -rules -from=$(SRCDIR)/admin/gnatcheck.rules -P $(APPNAME).gpr

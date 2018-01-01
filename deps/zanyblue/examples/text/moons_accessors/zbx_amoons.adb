@@ -38,7 +38,6 @@ with Ada.Command_Line;
 with Messages.Moons_Prints;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with ZanyBlue.Text.Metrics;
 with Definitions;
 
@@ -49,7 +48,6 @@ procedure ZBX_AMoons is
    use Messages.Moons_Prints;
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use ZanyBlue.Text.Metrics;
    use Definitions;
    use Definitions.Planet_Name_Formatting;
@@ -101,8 +99,7 @@ begin
    end case;
    Print_0001 (+ZanyBlue.Version_Major,
                +ZanyBlue.Version_Minor,
-               +ZanyBlue.Version_Patch,
-               +ZanyBlue.Version_Status);
+               +ZanyBlue.Version_Patch);
    Moons_Example;
    if Dump_Metrics then
       Write_Usage (Argument (2));

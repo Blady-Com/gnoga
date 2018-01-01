@@ -1,19 +1,24 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest echo command
 Set the test description to "Test the help text for the zbtest echo command"
 zbtest.help (2) 
 zbtest.help (3) help echo
+echo: echo arguments to output
+
+    Usage: echo name ...
+
 Echo arguments to output.  References to parameters are expanded
 to string values before printing.
 
-Examples:
+Examples::
+
     ZBTest> echo a
     a
     ZBTest> set -i a 10
     ZBTest> echo a is $a
     a is 10
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

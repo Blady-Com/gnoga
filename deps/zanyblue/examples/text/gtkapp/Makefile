@@ -38,33 +38,30 @@
 # package without a properties file defining the messages.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=zbx_gjenkins
-APPLICATION=$(TOP)/bin/$(APPNAME)
-GENERATED=appmsg.ads appmsg.adb jenkins-messages.ads jenkins-messages.adb
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(GENERATED)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_gjenkins:	appmsg.ads appmsg.adb jenkins-messages.ads jenkins-messages.adb
+	gprbuild -q -p -aP../../../src -P zbx_gjenkins.gpr
 
 appmsg.ads appmsg.adb:	$(wildcard mesg/appmsg*.properties)
-	$(ZBMCOMPILE) -i -v AppMsg -d mesg appmsg
+	zbmcompile -i -v AppMsg -d mesg appmsg
 
 jenkins-messages.ads jenkins-messages.adb:	$(wildcard ../jenkins/mesg/Jenkins*.properties)
-	$(ZBMCOMPILE) -i -v Jenkins.Messages -d ../jenkins/mesg Jenkins
+	zbmcompile -i -v Jenkins.Messages -d ../jenkins/mesg Jenkins
 
-run:	all
-	$(APPLICATION)
+run:	zbx_gjenkins
+	zbx_gjenkins
 
-run_%:	all
-	$(APPLICATION) -l$*
+run_%:	zbx_gjenkins
+	zbx_gjenkins -l$*
 
-clean::
-	-gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+clean:
+	-gprclean -aP../../../src -P zbx_gjenkins.gpr
+	-$(RM) $(wildcard appmsg.*) $(wildcard jenkins-messages.*)

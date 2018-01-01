@@ -35,11 +35,22 @@
 
 # Target used to install the ZanyBlue build to an installation directory.
 
-.PHONY:	install install-not-defined
+.PHONY:	install install-not-defined install-zb
 
 ifndef INSTALL_DIR
+INSTALL_DEP=install-not-defined
+else
+INSTALL_DEP=install-zb
+endif
+GPRINSTALL_FLAGS+=-f
+GPRINSTALL_FLAGS+=-p
+GPRINSTALL_FLAGS+=--prefix=$(INSTALL_DIR)
+#GPRINSTALL_FLAGS+=--install-name=zanyblue
+GPRINSTALL_FLAGS+=$(GNATFLAGS)
 
-install:
+install:	$(INSTALL_DEP)
+
+install-not-defined:
 	$(warning Installation requires the definition of a)
 	$(warning target directory via the INSTALL_DIR macro,)
 	$(warning normally defined on command line for make,)
@@ -49,56 +60,8 @@ install:
 	$(warning )
 	$(error Please try again)
 
-else
-
-INCLUDE_FILES=$(wildcard $(INCDIR)/*)
-INSTALL_INCDIR=$(INSTALL_DIR)/include/zanyblue
-INSTALL_INCLUDE_FILES=$(patsubst $(INCDIR)/%,$(INSTALL_INCDIR)/%,$(INCLUDE_FILES))
-
-LIB_FILES=$(wildcard $(LIBDIR)/*zanyblue*)
-INSTALL_LIBDIR=$(INSTALL_DIR)/lib/zanyblue
-INSTALL_LIB_FILES=$(patsubst $(LIBDIR)/%,$(INSTALL_LIBDIR)/%,$(LIB_FILES))
-
-INSTALL_GPRDIR=$(INSTALL_DIR)/lib/gnat
-INSTALL_GPRFILE=$(INSTALL_GPRDIR)/zanyblue.gpr
-GPRFILE=$(GPRDIR)/zanyblue.gpr
-
-BIN_FILES=$(wildcard $(BINDIR)/zb*)
-INSTALL_BINDIR=$(INSTALL_DIR)/bin
-INSTALL_BIN_FILES=$(patsubst $(BINDIR)/%,$(INSTALL_BINDIR)/%,$(BIN_FILES))
-
-install:	includes libraries applications
-	$(info OK, installed to $(INSTALL_DIR))
-
-includes: $(INSTALL_INCDIR) $(INSTALL_INCLUDE_FILES)
-
-$(INSTALL_INCDIR):
-	$(call MKDIR,$(INSTALL_INCDIR))
-
-$(INSTALL_INCDIR)/%:	$(INCDIR)/%
-	$(call COPY,$(INCDIR)/$*,$(INSTALL_INCDIR)/$*)
-
-libraries: $(INSTALL_LIBDIR) $(INSTALL_LIB_FILES) install_lib $(INSTALL_GPRFILE)
-
-$(INSTALL_LIBDIR):
-	$(call MKDIR,$(INSTALL_LIBDIR))
-
-$(INSTALL_LIBDIR)/%:	$(LIBDIR)/%
-	$(call COPY,$(LIBDIR)/$*,$(INSTALL_LIBDIR)/$*)
-
-install_lib:	$(LIBDIR)/../libzanyblue.a
-	$(call COPY,$(LIBDIR)/../libzanyblue.a,$(INSTALL_LIBDIR)/..)
-
-$(INSTALL_GPRFILE): $(GPRFILE)
-	$(call MKDIR,$(INSTALL_GPRDIR))
-	$(call COPY,$(GPRFILE),$(INSTALL_GPRFILE))
-
-applications: $(INSTALL_BINDIR) $(INSTALL_BIN_FILES)
-
-$(INSTALL_BINDIR):
-	$(call MKDIR,$(INSTALL_BINDIR))
-
-$(INSTALL_BINDIR)/%:	$(BINDIR)/%
-	$(call COPY,$(BINDIR)/$*,$(INSTALL_BINDIR)/$*)
-
-endif
+install-zb:
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) zanyblue.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbmcompile/zbmcompile.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbinfo/zbinfo.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbtest/zbtest.gpr

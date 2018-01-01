@@ -63,10 +63,6 @@ package ZBTest.States is
    --  Define the initial parameters on startup.  This is called one to
    --  initialize the root parameter set.
 
-   procedure Define_XML_Initial_Parameters (State : in out State_Type);
-   --  Define the initial parameter required to support the XML summary
-   --  document created at the end of the test run.
-
    procedure Setup_Test_Area (State : in out State_Type);
    --  Setup for testing, create the test area directory
 
@@ -232,12 +228,6 @@ package ZBTest.States is
                        Name   : Wide_String;
                        Value  : Ada.Calendar.Time);
    --  Set a time value.
-
-   procedure Set_XML_Elapsed_Time (State : in out State_Type);
-   --  The elapsed time attribute for the XML document for the current test.
-
-   procedure Register_XML_Scope (State : in out State_Type);
-   --  Register a new scope in the XML document.
 
    procedure Dump (State       : State_Type;
                    File_Name   : Wide_String;

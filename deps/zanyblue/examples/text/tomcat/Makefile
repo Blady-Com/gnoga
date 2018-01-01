@@ -39,44 +39,42 @@
 # to Ada optimizes the messages for locale based access.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-ZBM_FLAGS=-O -F -i -v
-APPNAME=zbx_tomcat
-APPLICATION=$(TOP)/bin/$(APPNAME)
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
+
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
+
+TC_FACILITIES=authenticator connector core manager realm security servlets\
+	startup users util valves
+FACILITIES=$(TC_FACILITIES) zbtomcat
+
+zbx_tomcat:	apache-tomcat-messages.ads apache-tomcat-messages.adb
+	gprbuild -q -p -aP../../../src -P zbx_tomcat.gpr
+
+apache-tomcat-messages.ads apache-tomcat-messages.adb: $(wildcard mesg/*.properties)
+	zbmcompile -O -F -i -v Apache.Tomcat.Messages -d mesg $(FACILITIES)
+
+run:	zbx_tomcat
+	zbx_tomcat
+
+run_%:	zbx_tomcat
+	zbx_tomcat -l$*
+
+clean:
+	gprclean -aP../../../src -P zbx_tomcat.gpr
+	-$(RM) $(wildcard apache-tomcat-messages.*)
+
+# Following definitions are used to sync the properties from a Tomcat distribution.
+# Not really part of the example, just needed a good place to keep this.
 TC_VERSION=9.0.0.M8
 TC_TLD=apache-tomcat-$(TC_VERSION)-src
 TC_TGZ=apache-tomcat-$(TC_VERSION)-src.tar.gz
 TC_URL=http://mirrors.sonic.net/apache/tomcat/tomcat-9/v$(TC_VERSION)/src/$(TC_TGZ)
 TC_APPDIR=java/org/apache/catalina
-TC_FACILITIES=authenticator connector core manager realm security servlets\
-	startup users util valves
-FACILITIES=$(TC_FACILITIES) zbtomcat
-PACKAGE=Apache.Tomcat.Messages
-GENERATED=apache-tomcat-messages.ads apache-tomcat-messages.adb
-CLEAN_FILES+=$(wildcard $(TC_TGZ))
-CLEAN_DIRS+=$(wildcard $(TC_TLD))
-
-include $(TOP)/src/mkfile/conf.mk
-
-all:	$(GENERATED)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
-
-generated:	$(GENERATED)
-$(GENERATED):	$(wildcard mesg/*.properties)
-	$(ZBMCOMPILE) $(ZBM_FLAGS) $(PACKAGE) -d mesg $(FACILITIES)
-
-run:	all
-	$(APPLICATION)
-
-run_%:	all
-	$(APPLICATION) -l$*
-
-clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
 
 PROPERTIES=$(foreach f,$(TC_FACILITIES),$(patsubst $(TC_TLD)/$(TC_APPDIR)/$f/LocalStrings%,mesg/$f%,$(wildcard $(TC_TLD)/$(TC_APPDIR)/$f/LocalStrings*.properties)))
 
@@ -120,5 +118,3 @@ $(TC_TLD):	$(TC_TGZ)
 
 $(TC_TGZ):
 	wget $(TC_URL)
-
-include $(TOP)/src/mkfile/rules.mk

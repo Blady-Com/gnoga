@@ -33,6 +33,31 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage end
+--  @summary end a parameter scope returning to previous scope
+--  @start-doc
+--  Exit a parameter scope.  Any assignments to made duing the scope
+--  are lost.  Previous definitions are restored, e.g.,::
+--
+--      ZBTest> set xyz abc
+--      ZBTest> begin
+--      ZBTest> set xyz 123
+--      ZBTest> echo $xyz
+--      ZBTest> end
+--      ZBTest> echo $xyz
+--
+--  The first "echo" prints the value "123" which the second prints the value
+--  "abc".
+--
+--  It not normally necessary to use the "begin" and "end" commands as running
+--  a test script automatically start a new scope which is ended when the
+--  script completes.
+--
+--  The "end" command also executes any "end actions" defined by commands
+--  executed during the scope.  E.g., the "copy" command add an "end action"
+--  to remove the file or directory copied into the test area.
+--
+
 separate (ZBTest.Commands)
 procedure End_Command (State : in out State_Type;
                        Args  : List_Type) is

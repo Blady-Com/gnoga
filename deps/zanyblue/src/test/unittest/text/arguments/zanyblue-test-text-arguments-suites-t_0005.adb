@@ -66,7 +66,7 @@ begin
             "Length is not 1");
    WAssert (T, List.Format (0, "", "", Locale, False) = "String#0",
             "Unexpected To_String (#0)");
-   WAssert (T, List.Format (1, "", "", Locale, False) = "⁅1⁆",
+   WAssert (T, List.Format (1, "", "", Locale, False) = "[1]",
             "Unexpected To_String (#1) to be |1|");
    Check (List, 1);
 end T_0005;

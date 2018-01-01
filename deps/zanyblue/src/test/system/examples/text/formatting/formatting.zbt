@@ -35,6 +35,8 @@
 desc Test the formatting text example application
 
 set formatting_dir $(joinpaths $text_examples_dir formatting)
+prepend path $formatting_dir
+setenv -l PATH path
 
 execute -o $(nextlog -c build) $make -C $formatting_dir clean
 execute -o $(nextlog -c build) $make -C $formatting_dir

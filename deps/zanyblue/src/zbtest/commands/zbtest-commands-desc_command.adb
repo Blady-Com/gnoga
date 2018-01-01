@@ -33,6 +33,12 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage desc word ...
+--  @summary desc", set the test description
+--  @start-doc
+--  Set the test description
+--
+
 with Ada.Strings.Wide_Unbounded;
 
 separate (ZBTest.Commands)

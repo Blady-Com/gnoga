@@ -6,8 +6,8 @@ Performing consistency checks for the accessor package generation
 The key "msg.b" is not a valid Ada identifier (ignoring it)
 Loaded 1 facilities, 2 keys, 1 locales and 2 messages
 Loaded total 34 characters, stored 34 unique characters, 0% saving
-Wrote the spec "Messages" to the file "./messages.ads"
-Wrote the body "Messages" to the file "./messages.adb"
+Wrote the spec "Messages" to the file "..messages.ads"
+Wrote the body "Messages" to the file "..messages.adb"
 Generated accessor package spec "Messages.xmpl1_Prints" to "..messages-xmpl1_prints.ads"
 Generated accessor package body "Messages.xmpl1_Prints" to "..messages-xmpl1_prints.adb"
 ZBMCompile completed on .*, elapsed time .*

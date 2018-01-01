@@ -38,23 +38,23 @@
 # package without a properties file defining the messages.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-APPNAME=zbx_simple
-APPLICATION=$(TOP)/bin/$(APPNAME)
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_simple:
+	gprbuild -q -p -aP../../../src -P zbx_simple.gpr
 
-run:	all
-	$(APPLICATION)
+run:	zbx_simple
+	zbx_simple
 
-run_%:	all
-	$(APPLICATION) -l$*
+run_%:	zbx_simple
+	zbx_simple -l$*
 
-clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-include $(TOP)/src/mkfile/rules.mk
+clean:
+	gprclean -aP../../../src -P zbx_simple.gpr

@@ -33,9 +33,8 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-TOP=../..
 DIRS=	econv filtering formatting load_facility moons moons_accessors \
-	jenkins simple_format sourcelocale time tomcat
+	jenkins simple_format sourcelocale time tomcat gtkapp
 ALLTARGS=$(patsubst %,%.all,$(DIRS))
 CLEANTARGS=$(patsubst %,%.clean,$(DIRS))
 
@@ -44,7 +43,7 @@ all:	$(ALLTARGS)
 clean:	$(CLEANTARGS)
 
 %.all:
-	$(MAKE) -C $* all
+	$(MAKE) -C $*
 
 %.clean:
 	$(MAKE) -C $* clean

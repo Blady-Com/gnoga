@@ -37,12 +37,11 @@
 -- Common build definitions for the ZanyBlue library and apps.
 --
 
+with "zbvers";
+
 project zbcom is
 
-   V_Major := external ("V_MAJOR");
-   V_Minor := external ("V_MINOR");
-   V_Patch := external ("V_PATCH");
-   Version := V_Major & "." & V_Minor & "." & V_Patch;
+   Version := zbvers.V_Major & "." & zbvers.V_Minor & "." & zbvers.V_Patch;
    Name    := "zanyblue";
 
    for Source_Dirs use ();

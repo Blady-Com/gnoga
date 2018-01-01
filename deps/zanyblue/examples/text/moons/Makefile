@@ -38,33 +38,27 @@
 # package.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-APPNAME=zbx_moons
-APPLICATION=$(TOP)/bin/$(APPNAME)
-PACKAGE=Moons_Messages
-STAMPFILE=messages.stamp
-PROPERTIES=$(wildcard moons*.properties)
-GENERATED=moons_messages.ads moons_messages.adb $(STAMPFILE)
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(STAMPFILE)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_moons:	messages.stamp $(wildcard *.ad?)
+	gprbuild -q -p -aP../../../src -P zbx_moons.gpr
 
-$(STAMPFILE):	$(wildcard moons*.properties)
-	$(ZBMCOMPILE) -O -i -v -S $(STAMPFILE) $(PACKAGE) moons
+messages.stamp:	$(wildcard moons*.properties)
+	zbmcompile -O -i -v -S messages.stamp Moons_Messages moons
 
 run:	all
-	$(APPLICATION)
+	zbx_moons
 
 run_%:	all
-	$(APPLICATION) $*
+	zbx_moons $*
 
 clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+	gprclean -aP../../../src -P zbx_moons.gpr
+	-$(RM) $(wildcard moons_messages.*) messages.stamp

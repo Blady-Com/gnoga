@@ -33,6 +33,31 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage append parameter value
+--  @summary append values to a list parameter
+--  @start-doc
+--  The append command adds a value to the end of a list parameter within
+--  current scope.  If the parameter does not exist, it is created as a list
+--  value with a single element.  If the parameter exists but is not a list,
+--  the value is first converted to a string and then converted to a list with
+--  a single value.  The argument value is then append to this list.
+--
+--  Example::
+--
+--      ZBTest> print l1
+--      The parameter "l1" is not defined
+--      ZBTest> append l1 a
+--      ZBTest> print l1
+--      [a]
+--      ZBTest> print -l l1
+--      1) "a"
+--      ZBTest> append l1 b
+--      ZBTest> print l1
+--      [a, b]
+--      ZBTest> print -l l1
+--      1) "a"
+--      2) "b"
+
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)

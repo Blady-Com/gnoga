@@ -39,7 +39,7 @@
   <parameter name="parameter_modes" type="boolean" value="true" />
   <parameter name="accessor:exceptions" type="boolean" value="true" />
 </parameter-set>
-This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBMCompile, Version .* \(.*\) on .* at .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
 Loaded 149 messages for the facility "ZBTest" (1 locales)
 Performing consistency checks for the facility "ZBTest"

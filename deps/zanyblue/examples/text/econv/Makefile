@@ -37,33 +37,24 @@
 # Makefile for the application to perform encoding conversions.
 #
 
-TOP=../../..
-GNATFLAGS=-aP$(TOP)/lib
-ZBMCOMPILE=$(TOP)/bin/zbmcompile
-ZBM_FLAGS=-O -G prints -G exceptions -i -v
-APPNAME=zbx_econv
-APPLICATION=$(TOP)/bin/$(APPNAME)
-FACILITIES=Econv
-PACKAGE=Messages
-GENERATED=messages.ads messages.adb \
-	messages-econv_prints.ads messages-econv_prints.adb \
-	messages-econv_exceptions.ads messages-econv_exceptions.adb
+# If run from within the source tree, add the bin directory to the path
+PATH:=../../../bin:$(PATH)
+export PATH
 
-include $(TOP)/src/mkfile/conf.mk
+RM=rm -f
+ifeq ($(OS),Windows_NT)
+RM=del
+endif
 
-all:	$(GENERATED)
-	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME).gpr
+zbx_econv:	zbx_econv.adb messages.stamp
+	gprbuild -q -p -aP../../../src -P zbx_econv.gpr
 
-generated:	$(GENERATED)
-$(GENERATED):	$(wildcard mesg/*.properties)
-	$(ZBMCOMPILE) $(ZBM_FLAGS) $(PACKAGE) -d mesg $(FACILITIES)
+messages.stamp:	$(wildcard mesg/*.properties)
+	zbmcompile -O -S messages.stamp -G prints -G exceptions -i -v Messages -d mesg Econv
 
-run:	all
-	$(APPLICATION)
+run:	zbx_econv
+	zbx_econv
 
-clean::
-	gnat clean $(GNATFLAGS) -P $(APPNAME).gpr
-
-messages:	$(GENERATED)
-
-include $(TOP)/src/mkfile/rules.mk
+clean:
+	gprclean -aP../../../src -P zbx_econv.gpr
+	-$(RM) $(wildcard messages*.*)

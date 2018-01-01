@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@
 
 with Ada.Containers;
 with Ada.Strings.UTF_Encoding.Wide_Strings;
+with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 with Ada.Wide_Text_IO;
 with Ada.Characters.Conversions;
 
@@ -136,14 +137,37 @@ package ZanyBlue.Text is
 
    type Static_Message_Pool_Type is access constant Wide_String;
 
-   function To_UTF8 (Value : Wide_String) return String is
+   function Wide_To_UTF8 (Value : Wide_String) return String is
       (String'(Ada.Strings.UTF_Encoding.Wide_Strings.Encode (Value)));
    --  Convert a Wide_String to a UTF-8 encoded String.
 
-   function From_UTF8 (Value : String) return Wide_String is
+   function Wide_From_UTF8 (Value : String) return Wide_String is
       (Ada.Strings.UTF_Encoding.Wide_Strings.Decode (
            Ada.Strings.UTF_Encoding.UTF_8_String'(Value)));
    --  Convert a UTF-8 encoded String to a Wide_String;
+
+   function Wide_Wide_To_UTF8 (Value : Wide_Wide_String) return String is
+      (String'(Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Encode (Value)));
+   --  Convert a Wide_Wide_String to a UTF-8 encoded String.
+
+   function Wide_Wide_From_UTF8 (Value : String) return Wide_Wide_String is
+      (Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Decode (
+           Ada.Strings.UTF_Encoding.UTF_8_String'(Value)));
+   --  Convert a UTF-8 encoded String to a Wide_String;
+
+   function To_UTF8 (Value : Wide_String) return String
+       renames Wide_To_UTF8;
+   --  Convert a Wide_String to a UTF-8 encoded String (deprecated).
+   pragma Obsolescent (
+      Entity  => To_UTF8,
+      Message => "Use Wide_To_UTF8 instead of To_UTF8");
+
+   function From_UTF8 (Value : String) return Wide_String
+      renames Wide_From_UTF8;
+   --  Convert a UTF-8 encoded String to a Wide_String (deprecated).
+   pragma Obsolescent (
+      Entity  => From_UTF8,
+      Message => "Use Wide_From_UTF8 instead of From_UTF8");
 
    function Files_Differ (Left_File_Name  : Wide_String;
                           Right_File_Name : Wide_String) return Boolean;

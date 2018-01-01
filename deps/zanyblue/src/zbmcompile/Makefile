@@ -70,7 +70,7 @@ $(STAMPFILE):	$(wildcard $(MESGDIR)/*)
 	$(warning "**** Expect two builds of zbmcompile              ****")
 	$(warning "****                                              ****")
 	$(warning "******************************************************")
-	$(GPRBUILD) $(GNATFLAGS) -P $(APPNAME)
+	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME)
 	$(ZBMCOMPILE) -p -S $(STAMPFILE) $(RUNARGS)
 	$(MAKE) clean
 

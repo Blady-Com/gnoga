@@ -35,6 +35,8 @@
 desc Test the gtkapp text example application (compilation only)
 
 set gtkapp_dir $(joinpaths $text_examples_dir gtkapp)
+prepend path $gtkapp_dir
+setenv -l PATH path
 
 execute -o $(nextlog -c build) $make -C $gtkapp_dir clean
 execute -o $(nextlog -c build) $make -C $gtkapp_dir

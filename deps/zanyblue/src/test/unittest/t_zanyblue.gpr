@@ -43,6 +43,7 @@ project t_zanyblue is
    for Exec_Dir use "../../bin";
    for Main use (external ("MAIN"));
    for Source_Dirs use (".",
+                        "root",
                         "os",
                         "parameters",
                         "parameters/values",

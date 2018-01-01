@@ -8,7 +8,7 @@ ZanyBlue data for the locale "zh_Hant"
     Language                  "zh"
     Script                    "Hant"
     Territory                 ""
-    Encoding                  "" (implemented as "UTF8")
+    Encoding                  "" (implemented as "")
     Name                      "zh_Hant"
     Traits Name               "zh_Hant"
     Traits Tag                "ZH HANT   "

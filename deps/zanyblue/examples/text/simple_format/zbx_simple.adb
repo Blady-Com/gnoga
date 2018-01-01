@@ -41,13 +41,11 @@ with Ada.Command_Line;
 with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with Definitions;
 
 procedure ZBX_Simple is
 
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use Definitions.Long_Long_Float_Arguments;
 
    function Get_NaN return Float;
@@ -95,9 +93,9 @@ procedure ZBX_Simple is
 
 begin
    Process_Command_Line;
-   Print_Line ("This is SIMPLE_FORMAT, Version {0}.{1}.{2} - {3}",
+   Print_Line ("This is SIMPLE_FORMAT, Version {0}.{1}.{2}",
                +ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
-               +ZanyBlue.Version_Patch, +ZanyBlue.Version_Status);
+               +ZanyBlue.Version_Patch);
    Print_Line ("X is {0,f}", +X);
    Print_Line ("Here is an ""{0}"" embedded string", +String'("a value"));
    Print_Line ("{1} base 16 in a field of width {0} is |{1:>{0,*}x}|",

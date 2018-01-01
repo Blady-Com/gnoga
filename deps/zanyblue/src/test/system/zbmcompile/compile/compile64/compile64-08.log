@@ -7,7 +7,7 @@ The key "msg.a" is not a valid Ada identifier (ignoring it)
 The key "msg.b" is not a valid Ada identifier (ignoring it)
 Loaded 1 facilities, 2 keys, 1 locales and 2 messages
 Loaded total 34 characters, stored 34 unique characters, 0% saving
-Wrote the spec "Messages" to the file "./messages.ads"
-Wrote the body "Messages" to the file "./messages.adb"
+Wrote the spec "Messages" to the file "..messages.ads"
+Wrote the body "Messages" to the file "..messages.adb"
 Warning, no valid keys for the facility "xmpl2", no accessors created
 ZBMCompile completed on .*, elapsed time .*

@@ -1,4 +1,4 @@
-This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBMCompile, Version .* \(.*\) on .* at .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
 Invalid command usage: Error, invalid accessor type name value, "nosuchitem", for the -G option
 

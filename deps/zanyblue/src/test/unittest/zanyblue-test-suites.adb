@@ -32,6 +32,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+with ZanyBlue.Test.Root.Suites;
 with ZanyBlue.Test.OS.Suites;
 with ZanyBlue.Test.Parameters.Suites;
 with ZanyBlue.Test.Text.Suites;
@@ -48,8 +49,9 @@ package body ZanyBlue.Test.Suites is
    end Initialize;
 
    function Suite return Test_Suite is
-      S : Test_Suite := Create_Suite ("ZanyBlue.Root");
+      S : Test_Suite := Create_Suite ("ZanyBlue");
    begin
+      Add_Static_Test (S, ZanyBlue.Test.Root.Suites.Suite);
       Add_Static_Test (S, ZanyBlue.Test.OS.Suites.Suite);
       Add_Static_Test (S, ZanyBlue.Test.Parameters.Suites.Suite);
       Add_Static_Test (S, ZanyBlue.Test.Text.Suites.Suite);

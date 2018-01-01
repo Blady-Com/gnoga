@@ -33,6 +33,14 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage mkdir name
+--  @summary create a directory
+--  @start-doc
+--  Create a new directory in the test area.  Directories created in the test
+--  area are automatically removed when the current scope exited (either at the
+--  end of the test script or via an explicit "end").
+--
+
 with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Wide_Directories;
 

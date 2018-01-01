@@ -35,6 +35,8 @@
 desc Test the moons text example application (build only)
 
 set moons_dir $(joinpaths $text_examples_dir moons)
+prepend path $moons_dir
+setenv -l PATH path
 
 execute -o $(nextlog -c build) $make -C $moons_dir clean
 execute -o $(nextlog -c build) $make -C $moons_dir

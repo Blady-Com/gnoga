@@ -33,6 +33,15 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage joinpaths path ...
+--  @summary return a list of path concatenated into a single path
+--  @start-doc
+--  The "joinpaths" function takes one or more path components and combines
+--  them into a single path, e.g.,::
+--
+--      ZBTest> set libdir $(joinpaths $project_dir lib)
+--
+
 with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Wide_Directories;
 

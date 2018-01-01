@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -753,6 +753,16 @@ package body ZanyBlue.OS is
       return LCID_To_Locale (GetUserDefaultLCID) & "." & Code_Page (GetACP);
    end OS_Locale_Name;
 
+   --------------------
+   -- OS_Locale_Name --
+   --------------------
+
+   function OS_Locale_Name return Wide_Wide_String is
+      use Ada.Characters.Conversions;
+   begin
+      return To_Wide_Wide_String (OS_Locale_Name);
+   end OS_Locale_Name;
+
    -------------
    -- OS_Name --
    -------------
@@ -771,6 +781,16 @@ package body ZanyBlue.OS is
       return ""
          & Ada.Characters.Conversions.To_Wide_Character (ASCII.CR)
          & Ada.Characters.Conversions.To_Wide_Character (ASCII.LF);
+   end OS_New_Line;
+
+   -----------------
+   -- OS_New_Line --
+   -----------------
+
+   function OS_New_Line return Wide_Wide_String is
+      use Ada.Characters.Conversions;
+   begin
+      return To_Wide_Wide_String (OS_New_Line);
    end OS_New_Line;
 
    --------------------
@@ -797,17 +817,18 @@ package body ZanyBlue.OS is
                                Elem : String;
                                Kind : File_Kind) is
 
+         Wide_Elem : constant Wide_String := Wide_From_UTF8 (Elem);
          Dest_Path : constant Wide_String := Wide_Compose (Target_Name,
-                                                           From_UTF8 (Elem));
+                                                           Wide_Elem);
       begin
          if Elem'Length = 0 or else Elem (Elem'First) = '.' then
             return;
          end if;
          case Kind is
          when Ordinary_File =>
-            Wide_Copy_File (From_UTF8 (Path), Dest_Path);
+            Wide_Copy_File (Wide_From_UTF8 (Path), Dest_Path);
          when Directory =>
-            Wide_Copy_Tree (From_UTF8 (Path), Dest_Path);
+            Wide_Copy_Tree (Wide_From_UTF8 (Path), Dest_Path);
          when others =>
             null;
          end case;
@@ -818,7 +839,7 @@ package body ZanyBlue.OS is
 
    begin
       Wide_Create_Directory (Target_Name);
-      Start_Search (Search, To_UTF8 (Source_Name), "*");
+      Start_Search (Search, Wide_To_UTF8 (Source_Name), "*");
       while More_Entries (Search) loop
          Get_Next_Entry (Search, Item);
          Process_Entry (Full_Name (Item), Simple_Name (Item), Kind (Item));
@@ -836,7 +857,7 @@ package body ZanyBlue.OS is
    begin
       Create (File,
               Mode => Out_File,
-              Name => To_UTF8 (Name),
+              Name => Wide_To_UTF8 (Name),
               Form => UTF8_File_Form);
    end Wide_Create;
 
@@ -850,7 +871,7 @@ package body ZanyBlue.OS is
    begin
       Create (File,
               Mode => Out_File,
-              Name => To_UTF8 (Name),
+              Name => Wide_To_UTF8 (Name),
               Form => UTF8_File_Form);
    end Wide_Create;
 
@@ -860,7 +881,8 @@ package body ZanyBlue.OS is
 
    function Wide_Is_Directory (Name : Wide_String) return Boolean is
    begin
-      return Wide_Exists (Name) and then Kind (To_UTF8 (Name)) = Directory;
+      return Wide_Exists (Name)
+         and then Kind (Wide_To_UTF8 (Name)) = Directory;
    end Wide_Is_Directory;
 
    -----------------------------
@@ -870,7 +892,7 @@ package body ZanyBlue.OS is
    function Wide_Is_Executable_File (Name : Wide_String) return Boolean is
    begin
       return Wide_Is_File (Name)
-             and then GNAT.OS_Lib.Is_Executable_File (To_UTF8 (Name));
+             and then GNAT.OS_Lib.Is_Executable_File (Wide_To_UTF8 (Name));
    end Wide_Is_Executable_File;
 
    ------------------
@@ -879,7 +901,8 @@ package body ZanyBlue.OS is
 
    function Wide_Is_File (Name : Wide_String) return Boolean is
    begin
-      return Wide_Exists (Name) and then Kind (To_UTF8 (Name)) = Ordinary_File;
+      return Wide_Exists (Name)
+         and then Kind (Wide_To_UTF8 (Name)) = Ordinary_File;
    end Wide_Is_File;
 
    ---------------
@@ -893,7 +916,7 @@ package body ZanyBlue.OS is
    begin
       Open (File,
             Mode => Mode,
-            Name => To_UTF8 (Name),
+            Name => Wide_To_UTF8 (Name),
             Form => UTF8_File_Form);
    end Wide_Open;
 
@@ -908,7 +931,7 @@ package body ZanyBlue.OS is
    begin
       Open (File,
             Mode => Mode,
-            Name => To_UTF8 (Name),
+            Name => Wide_To_UTF8 (Name),
             Form => UTF8_File_Form);
    end Wide_Open;
 

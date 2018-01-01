@@ -33,6 +33,30 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage prepend parameter value
+--  @summary prepend a value to list parameter
+--  @start-doc
+--  The prepend command adds a value to the beginning of a list parameter.
+--  If the parameter doesn''t exist in the current scope, it is created as a
+--  list parameter.  The prepend append is normally used to force a path to
+--  the "front" of a search path parameter, e.g., the "path" or "searchpath"
+--  parameters.
+--
+--  Example of use, where the "begin" command is used start a new, empty,
+--  scope::
+--
+--      ZBTest> begin
+--      ZBTest> print -l l
+--      Emtpy list
+--      ZBTest> prepend l a
+--      ZBTest> print -l l
+--      1) "a"
+--      ZBTest> prepend l b
+--      ZBTest> print -l l
+--      1) "b"
+--      2) "a"
+--
+
 separate (ZBTest.Commands)
 procedure Prepend_Command (State : in out State_Type;
                            Args  : List_Type) is

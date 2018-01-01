@@ -1,4 +1,4 @@
-This is ZBMCompile, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBMCompile, Version .* \(.*\) on .* at .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
 "..xmpl.properties", line 1, Error, type mis-match for argument 0: "Number_Category_Type" and "Calendar_Category_Type"
 1 errors detected, no sources generated

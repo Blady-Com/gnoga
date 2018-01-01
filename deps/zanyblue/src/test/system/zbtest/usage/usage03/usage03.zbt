@@ -1,7 +1,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -32,17 +32,12 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-desc Basic zbtest usage: define summary xml file
+desc Basic zbtest usage: verify xml file
 
 copy noop.zbtt noop.zbt
-execute -o $(nextlog) zbtest noop
-filestat test-area/zbtest.xml $(nextlog)
-delete -r test-area
 
-execute -o $(nextlog) zbtest -X summary.xml noop
-filestat test-area/summary.xml $(nextlog)
-delete -r test-area
-
-execute -o $(nextlog) zbtest -X $_testarea/summary.xml noop
-rename summary.xml $(nextlog)
+execute -o $(nextlog) zbtest -x noop
+rename test-area/zbtest.noop.nolog.fail $(nextlog)
+filestat test-area/ZBTest-zbtest.noop.xml $(nextlog)
+rename test-area/ZBTest-zbtest.noop.xml $(nextlog)
 delete -r test-area

@@ -47,7 +47,6 @@ with ZanyBlue.Wide_Command_Line;
 with ZanyBlue.Text.Codecs;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 
 procedure ZBX_Econv is
 
@@ -60,7 +59,6 @@ procedure ZBX_Econv is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Wide_Command_Line;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
 
    procedure Process_Command_Line;
 
@@ -178,7 +176,7 @@ procedure ZBX_Econv is
 
 begin
    Print_00001 (+ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
-                +ZanyBlue.Version_Patch, +ZanyBlue.Version_Status);
+                +ZanyBlue.Version_Patch);
    Print_00002;
    --  Raise exceptions for unknown encodings and invalid data
    --  Set_Unsupported_Encoding_Action (Raise_Exception);

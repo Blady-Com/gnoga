@@ -38,10 +38,8 @@ with ZanyBlue.Text.Buffer;
 
 package body ZanyBlue.Text.Arguments is
 
-   --  U+2045 LEFT SQUARE BRACKET WITH QUILL
-   Missing_Start : constant Wide_Character := Wide_Character'Val (16#2045#);
-   --  U+2046 LEFT SQUARE BRACKET WITH QUILL
-   Missing_End   : constant Wide_Character := Wide_Character'Val (16#2046#);
+   Missing_Start : constant Wide_Character := '[';
+   Missing_End   : constant Wide_Character := ']';
 
    type Format_Map_Type is
       record

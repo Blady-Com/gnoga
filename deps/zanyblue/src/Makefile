@@ -39,86 +39,61 @@
 
 TOP=..
 
-GNATFLAGS+=-p
-ZANYBLUEADB=$(SRCDIR)/root/zanyblue.adb
-INCLUDE_SRC_DIRS=root os os/$(OS) parameters text utils
-INCLUDE_SRCS=$(foreach d,$(INCLUDE_SRC_DIRS),\
-                 $(patsubst $(SRCDIR)/$d/%,%,\
-                     $(wildcard $(SRCDIR)/$d/*.ads) \
-                     $(wildcard $(SRCDIR)/$d/$(if $(filter-out Production,$(BUILD)),*,*generic*).adb)))
-INCLUDE_FILES=$(patsubst %,$(INCDIR)/%,$(INCLUDE_SRCS))
-GENERATED=$(INCLUDE_FILES)
 APPDIRS=zbmcompile zbinfo zbtest
 APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
-DOCLINKSRST=$(SRCDIR)/doc/source/links.rst
-CLEAN_DEPS=$(patsubst %,%.clean,$(APPDIRS) root doc test)
+
+CLEAN_DEPS+=$(patsubst %,%.clean,$(APPDIRS) root doc test)
 CLEAN_FILES+=$(wildcard bin/pylib/*.pyc)
 CLEAN_FILES+=$(wildcard bin/pylib/zb/*.pyc)
 CLEAN_FILES+=$(wildcard gnatcheck.out)
 CLEAN_FILES+=$(wildcard obj/*)
 CLEAN_FILES+=$(wildcard $(TOP)/lib/b~*)
 CLEAN_FILES+=$(wildcard $(TOP)/zanyblue-*.tar.gz)
-CLEAN_FILES+=$(wildcard $(TOP)/zanyblue-*.zip)
-CLEAN_FILES+=$(wildcard $(TOP)/doc/*.*)
-CLEAN_FILES+=$(wildcard $(TOP)/doc/.buildinfo)
-CLEAN_DIRS+=$(wildcard $(TOP)/doc/ref)
-CLEAN_DIRS+=$(wildcard $(TOP)/doc/_images)
-CLEAN_DIRS+=$(wildcard $(TOP)/doc/_sources)
-CLEAN_DIRS+=$(wildcard $(TOP)/doc/_static)
-CLEAN_DIRS+=$(wildcard $(TOP)/doc/text)
-CLEAN_DIRS+=$(wildcard $(TOP)/doc/utilities)
-CLEAN_DIRS+=$(wildcard $(TOP)/src/doc/build)
+CLEAN_FILES+=$(wildcard $(TOP)/website.tar.gz)
 CLEAN_DIRS+=$(wildcard $(TOP)/src/text/cldr)
-CLEAN_FILES+=$(wildcard $(TOP)/src/admin/inventory.lis)
-CLEAN_FILES+=$(wildcard $(DOCLINKSRST))
+CLEAN_FILES+=$(wildcard $(TOP)/src/admin/*.TXT)
 CLEAN_DIRS+=$(STAGEDIR)
-CLEAN_DEPS+=../examples.clean
+
+DEV_CLEAN_DIRS+=$(TOP)/doc
+DEV_CLEAN_DIRS+=$(TOP)/src/doc/_build
+DEV_CLEAN_FILES+=$(wildcard $(ZBVERSGPR))
 
 # Include configuration definitions
 include $(TOP)/src/mkfile/conf.mk
 
 all: setup library applications
 
-setup: $(ZANYBLUEADB) $(INCDIR) $(INCLUDE_FILES)
+setup: $(ZANYBLUEADS) $(ZBVERSGPR)
 
 library:
-	$(GPRBUILD) $(GNATFLAGS) -P zblib.gpr
+	$(GPRBUILD) $(GNATFLAGS) -P zanyblue.gpr
 
 applications:	$(APPTARGETS)
 
-docs:	gnatdocs $(DOCLINKSRST)
-	$(MAKE) -C doc html
-	$(MAKE) -C doc latexpdf
-	$(call COPY,doc/build/latex/ZanyBlue.pdf,$(DOCDIR)/ZanyBlue.pdf)
+docs:
+	$(MAKE) -C doc all
 
-$(DOCLINKSRST):
-	echo ".. _download: $(DOWNLOAD_URL)" > $(DOCLINKSRST)
-
-gnatdocs:
-	$(GNATDOC) -P$(SRCDIR)/zblib
-
-changelog:
-	$(SRCDIR)/bin/mkchangelog
-
-distribution: clean inventory all xcheck docs test.clean bundles ws-bundle
+distribution: clean
+	$(MAKE) all xcheck docs
+	$(ZBDEV) mkbundle $(GOOGLE_ANALYTICS_FLAG)
+	$(MAKE) $(PLATFORM_TARGET)
 
 verify-distribution:
-	rm -rf $(STAGEDIR)
-	mkdir -p $(STAGEDIR)
-	$(TAR) -C $(STAGEDIR) -xvf $(DISTRIBUTION)
-	cd $(STAGEDIR); $(MD5SUM) --check --quiet $(DIST_TLD)/MANIFEST.txt
-	cd $(STAGEDIR)/$(DIST_TLD)/src; $(MAKE) clean all xcheck
+	$(ZBDEV) verify -W $(TOP)/stage $(DISTRIBUTION)
 
 %.app:
 	$(MAKE) -C $*
 
-clean::
-	$(GNATCLEAN) $(GNATXDEFS) -P zblib.gpr
+clean:: $(ZBVERSGPR) examples-clean
+	$(GNATCLEAN) $(GNATXDEFS) -P zanyblue.gpr
 
 clean::	$(CLEAN_DEPS)
 
 %.clean:
 	$(MAKE) -C $* clean
+
+examples-clean:
+	GPR_PROJECT_PATH=$(realpath $(SRCDIR)) $(MAKE) -C ../examples clean
 
 check:
 	$(MAKE) -C test check
@@ -126,35 +101,20 @@ check:
 xcheck:
 	$(MAKE) -C test xcheck
 
+xcheck-%:
+	$(MAKE) -C test/$* xcheck
+
 gcheck:
 	$(info Expect 'use of equality operation for float values' in zanyblue-text-generic_floats.adb)
-	$(GNATCHECK) -rules -from=admin/gnatcheck.rules -P zblib.gpr
+	$(GNATCHECK) -rules -from=admin/gnatcheck.rules -P zanyblue.gpr
 
 force:
 
-$(ZANYBLUEADB):
+$(ZANYBLUEADS):
 	$(MAKE) -C $(SRCDIR)/root
 
-$(INCDIR):
-	$(call MKDIR,$(INCDIR))
-
-$(INCDIR)/%:	$(SRCDIR)/root/%
-	$(call COPY,$(SRCDIR)/root/$*,$(INCDIR)/$*)
-
-$(INCDIR)/%:	$(SRCDIR)/os/%
-	$(call COPY,$(SRCDIR)/os/$*,$(INCDIR)/$*)
-
-$(INCDIR)/%:	$(SRCDIR)/os/$(OS)/%
-	$(call COPY,$(SRCDIR)/os/$(OS)/$*,$(INCDIR)/$*)
-
-$(INCDIR)/%:	$(SRCDIR)/parameters/%
-	$(call COPY,$(SRCDIR)/parameters/$*,$(INCDIR)/$*)
-
-$(INCDIR)/%:	$(SRCDIR)/text/%
-	$(call COPY,$(SRCDIR)/text/$*,$(INCDIR)/$*)
-
-$(INCDIR)/%:	$(SRCDIR)/utils/%
-	$(call COPY,$(SRCDIR)/utils/$*,$(INCDIR)/$*)
+$(ZBVERSGPR): $(ZBVERSGPRSRC)
+	$(ZBDEV) docsubst $(DOCSUBSTDEFS) $< $@
 
 # Include general rules.
 include $(TOP)/src/mkfile/rules.mk
@@ -167,9 +127,6 @@ include $(TOP)/src/mkfile/gcov.mk
 
 # Include the "gprof" target to build for profile runs.
 include $(TOP)/src/mkfile/gprof.mk
-
-# Include the "dist-bundles" target and support macros.
-include $(TOP)/src/mkfile/bundles.mk
 
 # Include the "install" target and support macros.
 include $(TOP)/src/mkfile/install.mk

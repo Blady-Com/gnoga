@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2016, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ procedure T_0006 (T : in out Test_Case'Class) is
 
    Codecs : constant Codecs_Type := Make_Codecs ("UTF-8");
    W_S : constant Wide_String := "Some Arabic numerals: ٠١٣";
-   E_S : constant String := To_UTF8 (W_S);
+   E_S : constant String := Wide_To_UTF8 (W_S);
    N_S : constant String := Codecs.Encode (W_S);
 
 begin

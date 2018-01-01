@@ -1,49 +1,55 @@
-This is ZBTest, Version [0-9]+.[0-9]+.[0-9]+ .* \(.*\) on .* at .*
+This is ZBTest, Version .* on .*
 Copyright \(c\) 2009-.*, Michael Rohan.  All rights reserved
-Creating test area directory ".*test-area.test-area"
-Executing the ZBTest script ".*test-area.help.zbt"
+Creating test area directory ".*test-area"
+Executing the ZBTest script ".*help.zbt"
 zbtest.help (1) desc Test the help text for the zbtest nextlog text function
 Set the test description to "Test the help text for the zbtest nextlog text function"
 zbtest.help (2) 
 zbtest.help (3) help -f nextlog
+nextlog: return the name of next number log file
+
+    Usage: nextlog [ -c counter ] [ -n ]
+
 The "nextlog" function returns the next log name for the current test
-based on a sequence controlled by the "_lognum" parameter.  By default, an
-undo action is also created to compare the generated log name with a reference
-log file on exiting the test scope.  The undo action creation is suppressed if
-the "-n" option is given.  The format of the log file name generated is
+based on a sequence controlled by the "_lognum" parameter.  By default,
+an undo action is also created to compare the generated log name with a
+reference log file on exiting the test scope.  The undo action creation
+is suppressed if the "-n" option is given.  The format of the log file
+name generated is::
 
     TESTNAME-nn.log
 
-where "TESTNAME" is the name of the current test and "nn" the sequence number.
-The use of the "nextlog" function can simplify test scripts, e.g.,
+where "TESTNAME" is the name of the current test and "nn" the sequence
+number.  The use of the "nextlog" function can simplify test scripts,
+e.g.,::
 
     execute -o mytest-01.log mycmd1
     execute -o mytest-02.log mycmd2
     compare mytest-01.log
     compare mytest-02.log
 
-can be re-written as
+can be re-written as::
 
     execute -o $(nextlog) mycmd1
     execute -o $(nextlog) mycmd2
 
-The "-c" option can be used to start a new log naming sequence for log files
-that are not part of the normal test reference logs, e.g., the output of
-the build commands to generate an executable are too platform specific to
-to be used as reference log files but the output should be stored in a
+The "-c" option can be used to start a new log naming sequence for log
+files that are not part of the normal test reference logs, e.g., the output
+of the build commands to generate an executable are too platform specific
+to to be used as reference log files but the output should be stored in a
 log file for debugging.  The argument to the "-c" option is the name of
 an integer parameter which is used to sequence the log file name (the
-parameter is created if it does not already exist in the current scope)
+parameter is created if it does not already exist in the current scope).
 
 By default, log file using alternative counter names do not create
 undo actions to execute the compare command.  If the log files should
 be compared on scope exit, the "-n" option can be used.
 
-For example, save the output of a build command:
+For example, save the output of a build command::
 
     execute -o $(nextlog -c build) build.sh
 
 would generate the log file TESTNAME-build-nn.log, the counter name
 is embedded in the log file.
 Status for "zbtest.help": 0 failures, 0 OK
-ZBTest completed on .* at .*, elapsed time .*
+ZBTest completed on .*, elapsed time .*

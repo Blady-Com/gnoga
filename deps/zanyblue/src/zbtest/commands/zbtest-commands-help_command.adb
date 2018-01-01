@@ -33,6 +33,40 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage help [ -c | -f ] [ item ]
+--  @summary print help information on commands and functions
+--  @start-doc
+--  Print help information on commands and functions.  The options "-c" and
+--  "-f" select either command or function information.  Without an item
+--  argument, a summary of available commands ("-c") or functions ("-f") is
+--  printed.
+--
+--  Examples:
+--
+--  #. Print help information on the "help" command::
+--
+--      ZBTest> help
+--
+--  #. Print help information on the "help" command, equivalent to "help"::
+--
+--      ZBTest> help -c help
+--
+--  #. Print a summary of available commands::
+--
+--      ZBTest> help -c
+--
+--  #. Print help information on the "execute" command::
+--
+--      ZBTest> help execute
+--
+--  #. Print a summary of available functions::
+--
+--      ZBTest> help -f
+--  #. Print help information on the "dirname" function::
+--
+--      ZBTest> help -f dirname
+--
+
 with ZBTest.Functions;
 
 separate (ZBTest.Commands)

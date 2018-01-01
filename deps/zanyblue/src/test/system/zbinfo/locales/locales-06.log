@@ -8,7 +8,7 @@ ZanyBlue data for the locale "ja"
     Language                  "ja"
     Script                    ""
     Territory                 ""
-    Encoding                  "" (implemented as "UTF8")
+    Encoding                  "" (implemented as "")
     Name                      "ja"
     Traits Name               "ja"
     Traits Tag                "JA        "

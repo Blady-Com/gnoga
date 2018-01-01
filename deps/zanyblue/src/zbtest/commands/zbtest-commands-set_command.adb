@@ -33,6 +33,55 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+--  @usage set [ -s | -i | -b | -f | -t | -u ] parameter value
+--  @summary set the value of a parameter
+--  @start-doc
+--  Set the value of a parameter.  The options selects type: integer,
+--  boolean, etc. or, for "-u" conditionally set the parameter only if it is
+--  not already defined, i.e., provide fall-back values for parameters that
+--  can be set on the command line.
+--
+--  Examples,
+--
+--  * Set a parameter to a string value, the "-s" is optional::
+--
+--      ZBTest> set SFO "San Francisco"
+--      ZBTest> print SFO
+--      San Francisco
+--      ZBTest> set -s LLW Lilongwe
+--      ZBTest> print LLW
+--      Lilongwe
+--
+--  * Set a parameter to an integer value, the "-i" is required::
+--
+--      ZBTest> set -i ten 10
+--      ZBTest> print ten
+--      10
+--
+--  * Set a parameter to a Boolean value, the "-b" is required::
+--
+--      ZBTest> set -b flag true
+--      ZBTest> print flag
+--      TRUE
+--
+--  * Set a parameter to a floating point value, the "-f" is required::
+--
+--      ZBTest> set -f pi 3.141592
+--      ZBTest> print pi
+--      3.14159E+00
+--
+--  * Set a parameter to a time value, the "-t" is required.  The only time
+--    value supported is the special time "now"::
+--
+--      ZBTest> set -t start now
+--      ZBTest> print start
+--      1:59 PM 11/21/16
+--
+--  * Set a parameter if not already defined, e.g., via the command line::
+--
+--      ZBTest> set -u -s build_opt ""
+--
+
 with Ada.Calendar;
 with Ada.Strings.Wide_Fixed;
 

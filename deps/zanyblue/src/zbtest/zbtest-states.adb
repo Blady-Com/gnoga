@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -34,16 +34,18 @@
 --
 
 with System;
+with Ada.Direct_IO;
+with Ada.Directories;
 with Ada.Wide_Text_IO;
 with Ada.Characters.Handling;
 with ZBTest.Input_Parser;
 with ZBTest.Commands;
 with ZBTest.Functions;
-with ZBTest.XML_Data;
 with ZanyBlue.OS;
 with ZanyBlue.Wide_Directories;
 with ZanyBlue.Text.Formatting;
 with ZBTest_Messages.ZBTest_Prints;
+with ZBTest_Messages.ZBTest_Wide_Strings;
 
 pragma Unreferenced (ZBTest.Functions);
 
@@ -53,7 +55,6 @@ package body ZBTest.States is
    use ZBTest.Commands;
    use ZBTest.Functions;
    use ZBTest.Input_Parser;
-   use ZBTest.XML_Data;
    use ZanyBlue.OS;
    use ZanyBlue.Text;
    use ZanyBlue.Wide_Directories;
@@ -67,11 +68,6 @@ package body ZBTest.States is
    --  Add the directory tree rooted in the test area directory to the
    --  executeable search path.
 
-   procedure Add_XML_Test_Case (State     : in out State_Type;
-                                Test_Name : Wide_String);
-   --  Add a test case to the XML document when a failure or success is
-   --  registered.
-
    procedure Expand_Functions (State  : in out State_Type;
                                Buffer : in out Unbounded_Wide_String);
    --  Expand references to function, e.g., $(which -e zbmcompile)
@@ -79,6 +75,9 @@ package body ZBTest.States is
    procedure Expand_References (State  : State_Type;
                                 Buffer : in out Unbounded_Wide_String);
    --  Exopand reference to parameters, e.g., $_testname
+
+   function Read_Test_Failure (File_Name : Wide_String) return String;
+   --  Read and return the text contained in a fail file
 
    procedure Remove_Test_Area (Test_Area : Wide_String);
    --  Remove pre-existing test area prior to running a test.
@@ -100,10 +99,8 @@ package body ZBTest.States is
    --  Set the time stamp associate with the end of the current test, the
    --  "_last_test" parameter.
 
-   procedure Set_XML_Failure (State     : in out State_Type;
-                              Test_Name : Wide_String;
-                              Fail_Name : Wide_String);
-   --  Register a test failure with the XML document summarizing the tests.
+   procedure Write_XML (State : in out State_Type);
+   --  Write the summary XML for an individual test (current scope).
 
    ----------------------
    -- Add_Tree_To_Path --
@@ -135,27 +132,6 @@ package body ZBTest.States is
       State.Prepend ("_undo", Action);
    end Add_Undo_Action;
 
-   -----------------------
-   -- Add_XML_Test_Case --
-   -----------------------
-
-   procedure Add_XML_Test_Case (State     : in out State_Type;
-                                Test_Name : Wide_String) is
-      use Ada.Calendar;
-      Now     : constant Time  := Clock;
-      Elapsed : constant Float :=
-                      Float (Now - State.Get_Time ("_last_test"));
-   begin
-      if State.Get_Boolean ("_xml_p") then
-         State.Set ("_testcase", Create_XML_Node (State.Get ("_doc"),
-                                                  State.Get ("_xmlnode"),
-                                                  "testcase"));
-         Set_Attribute (State.Get ("_testcase"), "name", Test_Name);
-         Set_Attribute (State.Get ("_testcase"),
-                        "time", Format ("{0:f}", +Elapsed));
-      end if;
-   end Add_XML_Test_Case;
-
    ------------
    -- Append --
    ------------
@@ -180,6 +156,8 @@ package body ZBTest.States is
       State.Set_String ("prompt", "ZBTest> ");
       State.Set_String ("_testname", "zbtest");
       State.Set_String ("_testarea", "test-area");
+      State.Set_String ("_curlog", "zbtest.log");
+      State.Set_String ("_fulltestname", "zbtest");
       State.Set_Boolean ("_implicit_scope", True);
       case OS_Name is
       when Unix =>
@@ -197,21 +175,9 @@ package body ZBTest.States is
       end case;
       State.Set_Integer ("_word_size", System.Word_Size);
       Add_Tree_To_Path (State, Here);
+      State.Set_Boolean ("_xml_p", False);
       State.Execute_Line ("getenv -l PATH path");
    end Define_Initial_Parameters;
-
-   -----------------------------------
-   -- Define_XML_Initial_Parameters --
-   -----------------------------------
-
-   procedure Define_XML_Initial_Parameters (State : in out State_Type) is
-      Doc  : constant Value_Type'Class := Document_XML;
-   begin
-      if State.Get_Boolean ("_xml_p") then
-         State.Set ("_doc", Doc);
-         State.Set ("_xmlnode", Create_XML_Node (Doc, Doc, "testsuites"));
-      end if;
-   end Define_XML_Initial_Parameters;
 
    ----------
    -- Dump --
@@ -222,7 +188,7 @@ package body ZBTest.States is
                    All_Scopes  : Boolean) is
       File : File_Type;
    begin
-      Create (File, Mode => Out_File, Name => To_UTF8 (File_Name));
+      Create (File, Mode => Out_File, Name => Wide_To_UTF8 (File_Name));
       State.Dump (File, All_Scopes);
       Close (File);
    end Dump;
@@ -263,8 +229,11 @@ package body ZBTest.States is
          Print_00032 (+Value (Undo_Actions, I));
          State.Execute_Line (Value (Undo_Actions, I));
       end loop;
-      N_OK   := State.Get_Integer ("_n_fail");
-      N_Fail := State.Get_Integer ("_n_ok");
+      N_OK   := State.Get_Integer ("_n_ok_cumulative");
+      N_Fail := State.Get_Integer ("_n_fail_cumulative");
+      if State.Get_Boolean ("_xml_p") then
+         Write_XML (State);
+      end if;
       State.Parameters.End_Scope;
    end End_Scope;
 
@@ -572,8 +541,12 @@ package body ZBTest.States is
                                Script_Dir     : Wide_String;
                                Implicit_Scope : Boolean := False) is
    begin
+      State.Set_Integer ("_n_fail_cumulative", 0);
+      State.Set_Integer ("_n_ok_cumulative", 0);
       State.Set_Integer ("_n_fail", 0);
       State.Set_Integer ("_n_ok", 0);
+      State.Set_Integer ("_n_tests", 0);
+      State.Set_Integer ("_n_tests", 0);
       State.Set_Integer ("_lognum", 0);
       State.Set_Integer ("_lineno", 0);
       State.Set_Integer ("_execfail", 1);
@@ -658,12 +631,33 @@ package body ZBTest.States is
             Print_00033 (+State.Get_String ("prompt"), With_NL => False);
          end if;
          State.Increment ("_lineno", Deep => False);
-         State.Execute_Line (From_UTF8 (Get_Line (Input)), Interactive);
+         State.Execute_Line (Wide_From_UTF8 (Get_Line (Input)), Interactive);
       end loop;
    exception
    when End_Error =>
       return;
    end Read_Eval_Loop;
+
+   -----------------------
+   -- Read_Test_Failure --
+   -----------------------
+
+   function Read_Test_Failure (File_Name : Wide_String) return String is
+
+      use Ada.Directories;
+
+      File_Name_S : constant String := Wide_To_UTF8 (File_Name);
+      File_Size : constant Natural := Natural (Size (File_Name_S));
+      subtype Element_Type is String (1 .. File_Size);
+      package File_IO is new Ada.Direct_IO (Element_Type);
+      Input : File_IO.File_Type;
+      Result : Element_Type;
+   begin
+      File_IO.Open (Input, File_IO.In_File, File_Name_S);
+      File_IO.Read (Input, Result);
+      File_IO.Close (Input);
+      return Result;
+   end Read_Test_Failure;
 
    ----------------------
    -- Register_Failure --
@@ -671,15 +665,24 @@ package body ZBTest.States is
 
    procedure Register_Failure (State     : in out State_Type;
                                Test_Name : Wide_String) is
+
+      use ZBTest_Messages.ZBTest_Wide_Strings;
+
+      Cur_Name : constant Wide_String := State.Get_String ("_fulltestname");
+      Cur_Log : constant Wide_String := State.Get_String ("_curlog");
       Fail_Name : constant Wide_String := Wide_Compose (
                                                Name      => Test_Name,
                                                Extension => "fail");
    begin
-      Add_XML_Test_Case (State, Test_Name);
       Set_Last_Test (State);
       Rename_Test_Marker (Test_Name, Fail_Name);
-      State.Increment ("_n_fail");
-      Set_XML_Failure (State, Test_Name, Fail_Name);
+      State.Increment ("_n_fail_cumulative", Deep => True);
+      State.Increment ("_n_fail", Deep => False);
+      State.Increment ("_n_tests", Deep => False);
+      State.Prepend ("_xml_results",
+                     Format_01004 (+Cur_Name,
+                                   +Cur_Log,
+                                   +Read_Test_Failure (Fail_Name)));
       Print_10024 (+Test_Name);
    end Register_Failure;
 
@@ -689,30 +692,23 @@ package body ZBTest.States is
 
    procedure Register_Success (State     : in out State_Type;
                                Test_Name : Wide_String) is
+
+      use ZBTest_Messages.ZBTest_Wide_Strings;
+
+      Cur_Name : constant Wide_String := State.Get_String ("_fulltestname");
+      Cur_Log : constant Wide_String := State.Get_String ("_curlog");
       OK_Name : constant Wide_String := Wide_Compose (
                                                Name      => Test_Name,
                                                Extension => "ok");
    begin
-      Add_XML_Test_Case (State, Test_Name);
       Set_Last_Test (State);
       Rename_Test_Marker (Test_Name, OK_Name);
-      State.Increment ("_n_ok");
+      State.Increment ("_n_ok_cumulative", Deep => True);
+      State.Increment ("_n_ok", Deep => False);
+      State.Increment ("_n_tests", Deep => False);
+      State.Prepend ("_xml_results", Format_01003 (+Cur_Name, +Cur_Log));
       Print_10023 (+Test_Name);
    end Register_Success;
-
-   ------------------------
-   -- Register_XML_Scope --
-   ------------------------
-
-   procedure Register_XML_Scope (State : in out State_Type) is
-   begin
-      if State.Get_Boolean ("_xml_p") then
-         State.Set ("_xmlnode", Create_XML_Node (State.Get ("_doc"),
-                                                 State.Get ("_xmlnode"),
-                                                 "testsuite"));
-         Set_Attribute (State.Get ("_xmlnode"), "name", State.Full_Test_Name);
-      end if;
-   end Register_XML_Scope;
 
    ----------------------
    -- Remove_Test_Area --
@@ -857,44 +853,6 @@ package body ZBTest.States is
       State.Parameters.Set_Time (Name, Value);
    end Set_Time;
 
-   --------------------------
-   -- Set_XML_Elapsed_Time --
-   --------------------------
-
-   procedure Set_XML_Elapsed_Time (State : in out State_Type) is
-      use Ada.Calendar;
-      XML_Node : XML_Node_Type;
-      Start    : Time;
-      Elapsed  : Float;
-   begin
-      if State.Get_Boolean ("_xml_p") then
-         XML_Node := XML_Node_Type (State.Get ("_xmlnode"));
-         Start := State.Get_Time ("_start_time");
-         Elapsed := Float (Clock - Start);
-         Set_Attribute (XML_Node, "time", Format ("{0:f}", +Elapsed));
-      end if;
-   end Set_XML_Elapsed_Time;
-
-   ---------------------
-   -- Set_XML_Failure --
-   ---------------------
-
-   procedure Set_XML_Failure (State     : in out State_Type;
-                              Test_Name : Wide_String;
-                              Fail_Name : Wide_String) is
-   begin
-      if State.Get_Boolean ("_xml_p") then
-         State.Set ("_failure", Create_XML_Node (State.Get ("_doc"),
-                                                 State.Get ("_testcase"),
-                                                 "failure"));
-         State.Set ("_failure_text",
-                    Add_Text_Node_From_File (State.Get ("_doc"),
-                                             State.Get ("_failure"),
-                                             Fail_Name));
-         Set_Attribute (State.Get ("_testcase"), "name", Test_Name);
-      end if;
-   end Set_XML_Failure;
-
    ---------------------
    -- Setup_Test_Area --
    ---------------------
@@ -922,16 +880,20 @@ package body ZBTest.States is
       raise Invalid_Environment;
    end Setup_Test_Area;
 
+   ---------------
+   -- Write_XML --
+   ---------------
+
+   procedure Write_XML (State : in out State_Type) is
+      separate;
+
    ----------------------
    -- Write_XML_Report --
    ----------------------
 
    procedure Write_XML_Report (State     : State_Type) is
    begin
-      if State.Get_Boolean ("_xml_p") then
-         Write (State.Get_String ("_xml_file"),
-                XML_Node_Type (State.Get ("_doc")));
-      end if;
+      null;
    end Write_XML_Report;
 
 end ZBTest.States;

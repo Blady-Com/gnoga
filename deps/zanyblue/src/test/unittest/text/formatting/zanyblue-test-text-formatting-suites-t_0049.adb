@@ -43,7 +43,7 @@ procedure T_0049 (T : in out Test_Case'Class) is
    Facility  : constant Wide_String := "fac1";
    Key       : constant Wide_String := "key1";
    Message   : constant Wide_String := "Message: #1={0}, #2={1}";
-   Expect    : constant Wide_String := "Message: #1=10, #2=⁅1⁆";
+   Expect    : constant Wide_String := "Message: #1=10, #2=[1]";
    Catalog   : constant Catalog_Type := Create;
 
    procedure With_Exception;

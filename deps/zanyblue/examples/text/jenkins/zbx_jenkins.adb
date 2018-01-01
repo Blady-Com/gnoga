@@ -45,14 +45,12 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Null_Object;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 
 procedure ZBX_Jenkins is
 
    use ZanyBlue.Text.Null_Object;
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
 
    Help_Error  : exception;
    Usage_Error : exception;
@@ -112,8 +110,7 @@ begin
    Jenkins.Messages.Initialize;
    Print_Line ("App", "Banner", +ZanyBlue.Version_Major,
                                 +ZanyBlue.Version_Minor,
-                                +ZanyBlue.Version_Patch,
-                                +ZanyBlue.Version_Status);
+                                +ZanyBlue.Version_Patch);
    Process_Command_Line;
    Display ("FilePath.validateAntFileMask.whitespaceSeprator");
    Display ("FilePath.validateAntFileMask.doesntMatchAndSuggest",

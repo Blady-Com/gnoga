@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -131,10 +131,10 @@ is
          end if;
          if Do_Load then
             if E.Locale = Root_Locale then
-               Load_File (From_UTF8 (To_String (E.File_Name)), Facility,
+               Load_File (Wide_From_UTF8 (To_String (E.File_Name)), Facility,
                           E.Locale, Handler, Source_Root_Locale);
             else
-               Load_File (From_UTF8 (To_String (E.File_Name)), Facility,
+               Load_File (Wide_From_UTF8 (To_String (E.File_Name)), Facility,
                           E.Locale, Handler, E.Locale);
             end if;
             N_Locales := N_Locales + 1;
@@ -181,17 +181,17 @@ is
       end File_Locale;
 
       Base_File_Name   : constant String :=
-         Compose (Containing_Directory => To_UTF8 (Directory),
-                  Name                 => To_UTF8 (Source_Name),
-                  Extension            => To_UTF8 (Extension));
+         Compose (Containing_Directory => Wide_To_UTF8 (Directory),
+                  Name                 => Wide_To_UTF8 (Source_Name),
+                  Extension            => Wide_To_UTF8 (Extension));
       Base_Full_Name   : constant String := Full_Name (Base_File_Name);
       Base_Directory   : constant String
                                := Containing_Directory (Base_Full_Name);
       Simple_File_Name : constant String
                                := Base_Name (Simple_Name (Base_Full_Name));
-      Search_Pattern   : constant String := To_UTF8 (Source_Name)
+      Search_Pattern   : constant String := Wide_To_UTF8 (Source_Name)
                                           & "_*."
-                                          & To_UTF8 (Extension);
+                                          & Wide_To_UTF8 (Extension);
       File_Search : Search_Type;
       Item : Directory_Entry_Type;
       Filter : constant Filter_Type := (Ordinary_File => True,

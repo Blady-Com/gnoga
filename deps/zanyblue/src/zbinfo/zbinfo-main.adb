@@ -37,7 +37,6 @@ with Ada.Calendar;
 with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Wide_Command_Line;
 with ZanyBlue.Text.Formatting;
-with ZanyBlue.Text.Version_Status_Arguments;
 with ZBInfo.Dump_Locale;
 with ZBInfo.Dump_Encoding;
 with ZBInfo.List_Encodings;
@@ -50,7 +49,6 @@ procedure ZBInfo.Main is
    use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Wide_Command_Line;
    use ZanyBlue.Text.Formatting;
-   use ZanyBlue.Text.Version_Status_Arguments;
    use ZBInfo_Messages.ZBInfo_Exceptions;
    use ZBInfo_Messages.ZBInfo_Prints;
 
@@ -74,8 +72,7 @@ procedure ZBInfo.Main is
       Start_Time : constant Time := Clock;
    begin
       Print_00001 (+ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
-                   +ZanyBlue.Version_Patch, +ZanyBlue.Version_Status,
-                   +ZanyBlue.Revision, +Start_Time);
+                   +ZanyBlue.Version_Patch, +ZanyBlue.Revision, +Start_Time);
       Print_00002 (+ZanyBlue.Copyright_Year);
       return Start_Time;
    end Banner;

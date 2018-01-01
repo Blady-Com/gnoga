@@ -1,3 +1,5 @@
 desc noop test
 
-noop
+# The following will generate a failure which should force the generation of
+# the summary xml
+compare nolog.log

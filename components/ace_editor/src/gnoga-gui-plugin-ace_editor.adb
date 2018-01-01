@@ -94,7 +94,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    function Selected_Text (View : Ace_Editor_Type) return String is
    begin
       return View.Editor_Execute
-        ("session.getTextRange(" & View.Editor_Var & ".getSelectionRange())");
+        ("getSession().getTextRange(" & View.Editor_Var & ".getSelectionRange())");
    end Selected_Text;
 
    ---------------------------
@@ -109,17 +109,55 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute ("insert('" & Escape_Quotes (Text) & "')");
    end Insert_Text_At_Cursor;
 
+   --------------
+   -- Position --
+   --------------
+
+   procedure Position (View : in out Ace_Editor_Type;
+                       Pos  : in     Position_Type) is
+   begin
+      View.Editor_Execute ("moveCursorTo(" & Pos.Row'Img & ',' & Pos.Column'Img & ')');
+   end Position;
+
+   function Position (View : Ace_Editor_Type) return Position_Type is
+   begin
+      return (View.Editor_Execute ("getCursorPosition().row"),
+              View.Editor_Execute ("getCursorPosition().column"));
+   end Position;
+
    ------------------
    -- Current_Line --
    ------------------
 
    procedure Current_Line
      (View  : in out Ace_Editor_Type;
-      Value : in     Positive)
+      Value : in     Natural)
    is
    begin
-      View.Editor_Execute ("gotoLine(" & Value'Img & ")");
+      View.Position ((View.Position.Row, Value));
    end Current_Line;
+
+   function Current_Line (View : Ace_Editor_Type) return Natural is
+   begin
+      return View.Position.Row;
+   end Current_Line;
+
+   ------------------
+   -- Current_Column --
+   ------------------
+
+   procedure Current_Column
+     (View  : in out Ace_Editor_Type;
+      Value : in     Natural)
+   is
+   begin
+      View.Position ((Value, View.Position.Column));
+   end Current_Column;
+
+   function Current_Column (View : Ace_Editor_Type) return Natural is
+   begin
+      return View.Position.Column;
+   end Current_Column;
 
    ------------
    -- Length --
@@ -136,12 +174,27 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
 
    function Last_Column (View : Ace_Editor_Type; Row : Natural) return Natural is
    begin
-      return View.Editor_Execute ("getDocumentLastRowColumn(" & Row'Img & ",0)");
+      return View.Editor_Execute ("getSession().getDocumentLastRowColumn(" & Row'Img & ",0)");
    end Last_Column;
 
-   ----------------------
-   -- Default_Tab_Size --
-   ----------------------
+   --------------
+   -- Tab_Size --
+   --------------
+
+   procedure Tab_Size
+     (View  : in out Ace_Editor_Type;
+      Value : in     Natural)
+   is
+   begin
+      View.Editor_Execute
+      ("getSession().setTabSize(" & Value'Img & ')');
+   end Tab_Size;
+
+   function Tab_Size (View : Ace_Editor_Type) return Natural
+   is
+   begin
+      return View.Editor_Execute ("getSession().getTabSize()");
+   end Tab_Size;
 
    procedure Default_Tab_Size
      (View  : in out Ace_Editor_Type;
@@ -161,6 +214,12 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       View.Editor_Execute ("getSession().setUseSoftTabs(" & Value'Img & ")");
+   end Soft_Tabs;
+
+   function Soft_Tabs (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getSession().getUseSoftTabs()");
    end Soft_Tabs;
 
    ---------------
@@ -211,6 +270,12 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute ("renderer.setShowGutter(" & Value'Img & ")");
    end Show_Gutter;
 
+   function Show_Gutter (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("renderer.getShowGutter()");
+   end Show_Gutter;
+
    ---------------------
    -- Show_Invisibles --
    ---------------------
@@ -223,6 +288,12 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute ("setShowInvisibles(" & Value'Img & ")");
    end Show_Invisibles;
 
+   function Show_Invisibles (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getShowInvisibles()");
+   end Show_Invisibles;
+
    ---------------
    -- Read_Only --
    ---------------
@@ -233,6 +304,12 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       View.Editor_Execute ("setReadOnly(" & Value'Img & ")");
+   end Read_Only;
+
+   function Read_Only (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getReadOnly()");
    end Read_Only;
 
    ---------------
@@ -333,9 +410,20 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute ("replaceAll('" & Escape_Quotes (Text) & "')");
    end Replace_All;
 
-   ---------------
-   -- Set_Theme --
-   ---------------
+   -----------
+   -- Theme --
+   -----------
+
+   procedure Theme (View : in out Ace_Editor_Type; Name : in String) is
+   begin
+      View.Editor_Execute ("setTheme('ace/theme/" & Name & "')");
+   end Theme;
+
+   function Theme (View : Ace_Editor_Type) return String
+   is
+   begin
+      return View.Editor_Execute ("getTheme()");
+   end Theme;
 
    procedure Set_Theme (View : in out Ace_Editor_Type; Name : in String) is
    begin
@@ -355,6 +443,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       ("getSession().setMode('ace/mode/" & Language & "')");
    end Set_Language_Mode;
 
+   --------------------
+   -- Scroll_To_Line --
+   --------------------
+
    procedure Scroll_To_Line
      (View            : in out Ace_Editor_Type;
       Line            :        Natural;
@@ -371,21 +463,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
        ')');
    end Scroll_To_Line;
 
-   function Current_Line (View : Ace_Editor_Type) return Natural is
-   begin
-      return Natural'Value
-          (Gnoga.Server.Connection.Execute_Script
-             (View.Connection_ID,
-              "var p=" & View.Editor_Var & ".getCursorPosition(); p.row"));
-   end Current_Line;
-
-   function Current_Column (View : Ace_Editor_Type) return Natural is
-   begin
-      return Natural'Value
-          (Gnoga.Server.Connection.Execute_Script
-             (View.Connection_ID,
-              "var p=" & View.Editor_Var & ".getCursorPosition(); p.column"));
-   end Current_Column;
+   --------------------
+   -- Move_Cursor_To --
+   --------------------
 
    procedure Move_Cursor_To
      (View        : in out Ace_Editor_Type;
@@ -395,6 +475,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute ("moveCursorTo(" & Row'Img & ',' & Column'Img & ')');
    end Move_Cursor_To;
 
+   -----------------
+   -- Navigate_To --
+   -----------------
+
    procedure Navigate_To
      (View        : in out Ace_Editor_Type;
       Row, Column :        Natural)
@@ -403,45 +487,81 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute ("navigateTo(" & Row'Img & ',' & Column'Img & ')');
    end Navigate_To;
 
+   -------------------
+   -- Navigate_Left --
+   -------------------
+
    procedure Navigate_Left (View : in out Ace_Editor_Type; Times : Natural) is
    begin
       View.Editor_Execute ("navigateLeft(" & Times'Img & ')');
    end Navigate_Left;
+
+   --------------------
+   -- Navigate_Right --
+   --------------------
 
    procedure Navigate_Right (View : in out Ace_Editor_Type; Times : Natural) is
    begin
       View.Editor_Execute ("navigateRight(" & Times'Img & ')');
    end Navigate_Right;
 
+   -----------------
+   -- Navigate_Up --
+   -----------------
+
    procedure Navigate_Up (View : in out Ace_Editor_Type; Times : Natural) is
    begin
       View.Editor_Execute ("navigateUp(" & Times'Img & ')');
    end Navigate_Up;
+
+   -------------------
+   -- Navigate_Down --
+   -------------------
 
    procedure Navigate_Down (View : in out Ace_Editor_Type; Times : Natural) is
    begin
       View.Editor_Execute ("navigateDown(" & Times'Img & ')');
    end Navigate_Down;
 
+   -----------------------
+   -- Navigate_Line_End --
+   -----------------------
+
    procedure Navigate_Line_End (View : in out Ace_Editor_Type) is
    begin
       View.Editor_Execute ("navigateLineEnd()");
    end Navigate_Line_End;
+
+   -------------------------
+   -- Navigate_Line_Start --
+   -------------------------
 
    procedure Navigate_Line_Start (View : in out Ace_Editor_Type) is
    begin
       View.Editor_Execute ("navigateLineStart()");
    end Navigate_Line_Start;
 
+   ------------
+   -- Delete --
+   ------------
+
    procedure Delete (View : in out Ace_Editor_Type) is
    begin
       View.Editor_Execute ("remove('right')");
    end Delete;
 
+   ---------------
+   -- Backspace --
+   ---------------
+
    procedure Backspace (View : in out Ace_Editor_Type) is
    begin
       View.Editor_Execute ("remove('left')");
    end Backspace;
+
+   ----------------------------
+   -- Get_New_Line_Character --
+   ----------------------------
 
    function Get_New_Line_Character (View : Ace_Editor_Type) return String is
    begin
@@ -449,15 +569,27 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
         ("getSession().getDocument().getNewLineCharacter()");
    end Get_New_Line_Character;
 
+   ------------------------
+   -- Remove_To_Line_End --
+   ------------------------
+
    procedure Remove_To_Line_End (View : in out Ace_Editor_Type) is
    begin
       View.Editor_Execute ("removeToLineEnd()");
    end Remove_To_Line_End;
 
+   --------------------------
+   -- Remove_To_Line_Start --
+   --------------------------
+
    procedure Remove_To_Line_Start (View : in out Ace_Editor_Type) is
    begin
       View.Editor_Execute ("removeToLineStart()");
    end Remove_To_Line_Start;
+
+   --------------------
+   -- Remove_In_Line --
+   --------------------
 
    procedure Remove_In_Line
      (View                          : in out Ace_Editor_Type;
@@ -474,6 +606,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
        ')');
    end Remove_In_Line;
 
+   ------------------
+   -- Remove_Lines --
+   ------------------
+
    procedure Remove_Lines
      (View                : in out Ace_Editor_Type;
       First_Row, Last_Row :        Natural)
@@ -487,6 +623,25 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
        ')');
    end Remove_Lines;
 
+   ---------------------------
+   -- Highlight_Active_Line --
+   ---------------------------
+
+   procedure Highlight_Active_Line
+     (View  : in out Ace_Editor_Type;
+      Value : in     Boolean := True)
+   is
+   begin
+      View.Editor_Execute
+      ("setHighlightActiveLine(" & Value'Img & ')');
+   end Highlight_Active_Line;
+
+   function Highlight_Active_Line (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getHighlightActiveLine()");
+   end Highlight_Active_Line;
+
    procedure Set_Highlight_Active_Line
      (View             : in out Ace_Editor_Type;
       Should_Highlight :        Boolean)
@@ -495,6 +650,25 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute
       ("setHighlightActiveLine(" & Should_Highlight'Img & ')');
    end Set_Highlight_Active_Line;
+
+   -----------------------------
+   -- Highlight_Selected_Word --
+   -----------------------------
+
+   procedure Highlight_Selected_Word
+     (View  : in out Ace_Editor_Type;
+      Value : in     Boolean := True)
+   is
+   begin
+      View.Editor_Execute
+      ("setHighlightSelectedWord(" & Value'Img & ')');
+   end Highlight_Selected_Word;
+
+   function Highlight_Selected_Word (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getHighlightSelectedWord()");
+   end Highlight_Selected_Word;
 
    procedure Set_Highlight_Selected_Word
      (View             : in out Ace_Editor_Type;
@@ -505,6 +679,24 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       ("setHighlightSelectedWord(" & Should_Highlight'Img & ')');
    end Set_Highlight_Selected_Word;
 
+   ---------------
+   -- Overwrite --
+   ---------------
+
+   procedure Overwrite
+     (View      : in out Ace_Editor_Type;
+      Overwrite :        Boolean := True)
+   is
+   begin
+      View.Editor_Execute ("setOverwrite(" & Overwrite'Img & ')');
+   end Overwrite;
+
+   function Overwrite (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getOverwrite()");
+   end Overwrite;
+
    procedure Set_Overwrite
      (View      : in out Ace_Editor_Type;
       Overwrite :        Boolean)
@@ -512,6 +704,25 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    begin
       View.Editor_Execute ("setOverwrite(" & Overwrite'Img & ')');
    end Set_Overwrite;
+
+   -----------------------
+   -- Show_Print_Margin --
+   -----------------------
+
+   procedure Show_Print_Margin
+     (View  : in out Ace_Editor_Type;
+      Value :        Boolean := True)
+   is
+   begin
+      View.Editor_Execute
+      ("setShowPrintMargin(" & Value'Img & ')');
+   end Show_Print_Margin;
+
+   function Show_Print_Margin (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getShowPrintMargin()");
+   end Show_Print_Margin;
 
    procedure Set_Show_Print_Margin
      (View              : in out Ace_Editor_Type;
@@ -522,13 +733,55 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       ("setShowPrintMargin(" & Show_Print_Margin'Img & ')');
    end Set_Show_Print_Margin;
 
+   ------------------
+   -- Print_Margin --
+   ------------------
+
+   procedure Print_Margin
+     (View  : in out Ace_Editor_Type;
+      Value :        Natural)
+   is
+   begin
+      View.Editor_Execute
+      ("setPrintMarginColumn(" & Value'Img & ')');
+   end Print_Margin;
+
+   function Print_Margin (View : Ace_Editor_Type) return Natural
+   is
+   begin
+      return View.Editor_Execute ("getPrintMarginColumn()");
+   end Print_Margin;
+
+   -------------------
+   -- Use_Wrap_Mode --
+   -------------------
+
+   procedure Use_Wrap_Mode
+     (View  : in out Ace_Editor_Type;
+      Value :        Boolean := True)
+   is
+   begin
+      View.Editor_Execute
+      ("getSession().setUseWrapMode(" & Value'Img & ')');
+   end Use_Wrap_Mode;
+
+   function Use_Wrap_Mode (View : Ace_Editor_Type) return Boolean
+   is
+   begin
+      return View.Editor_Execute ("getSession().getUseWrapMode()");
+   end Use_Wrap_Mode;
+
    procedure Set_Use_Wrap_Mode
      (View          : in out Ace_Editor_Type;
       Use_Wrap_Mode :        Boolean)
    is
    begin
-      View.Editor_Execute ("setUseWrapMode(" & Use_Wrap_Mode'Img & ')');
+      View.Editor_Execute ("getSession().setUseWrapMode(" & Use_Wrap_Mode'Img & ')');
    end Set_Use_Wrap_Mode;
+
+   --------------------------
+   -- Set_Wrap_Limit_Range --
+   --------------------------
 
    procedure Set_Wrap_Limit_Range
      (View     : in out Ace_Editor_Type;
@@ -538,6 +791,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       View.Editor_Execute
       ("getSession().setWrapLimitRange(" & Min'Img & ',' & Max'Img & ')');
    end Set_Wrap_Limit_Range;
+
+   ----------------
+   -- Wrap_Limit --
+   ----------------
 
    procedure Wrap_Limit
      (View     : in out Ace_Editor_Type;
@@ -553,38 +810,53 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       return View.Editor_Execute ("getSession().getWrapLimit()");
    end Wrap_Limit;
 
+   -----------------------
+   -- First_Visible_Row --
+   -----------------------
+
    function First_Visible_Row (View : Ace_Editor_Type) return Natural
    is
    begin
-      return View.Editor_Execute ("getSession().getFirstVisibleRow()");
+      return View.Editor_Execute ("getFirstVisibleRow()");
    end First_Visible_Row;
+
+   ----------------------
+   -- Last_Visible_Row --
+   ----------------------
 
    function Last_Visible_Row (View : Ace_Editor_Type) return Natural
    is
    begin
-      return View.Editor_Execute ("getSession().getLastVisibleRow()");
+      return View.Editor_Execute ("getLastVisibleRow()");
    end Last_Visible_Row;
 
+   ------------
+   -- Insert --
+   ------------
+
    procedure Insert
-     (View             : in out Ace_Editor_Type;
-      Start_Row, Index :        Natural;
-      Text             :        String)
+     (View        : in out Ace_Editor_Type;
+      Row, Column :        Natural;
+      Text        :        String)
    is
    begin
-      Gnoga.Server.Connection.Execute_Script
-        (View.Connection_ID,
-         "var p=" &
-         View.Editor_Var &
-         ".getSession().getDocument().indexToPosition(" &
-         Index'Img &
-         ',' &
-         Start_Row'Img &
-         "); " &
-         View.Editor_Var &
-         ".getSession().getDocument().insert(p, '" &
-         Escape_Quotes (Text) &
-         "')");
+      View.Editor_Execute ("getSession().getDocument().insertInLine({row:" &
+                             Row'Img & ",column:" & Column'Img & "}, '" &
+                             Escape_Quotes (Text) & "')");
    end Insert;
+
+   ---------------------
+   -- Insert_New_Line --
+   ---------------------
+
+   procedure Insert_New_Line
+     (View             : in out Ace_Editor_Type;
+      Row, Column :        Natural)
+   is
+   begin
+      View.Editor_Execute ("getSession().getDocument().insertNewLine({row:" &
+                             Row'Img & ",column:" & Column'Img & "})");
+   end Insert_New_Line;
 
    procedure InsertNewLine
      (View             : in out Ace_Editor_Type;
@@ -604,10 +876,18 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
          ".getSession().getDocument().insertNewLine(p)");
    end InsertNewLine;
 
+   ----------
+   -- Line --
+   ----------
+
    function Line (View : Ace_Editor_Type; Row : Natural) return String is
    begin
       return View.Editor_Execute ("getSession().getLine(" & Row'Img & ')');
    end Line;
+
+   ----------------
+   -- Text_Range --
+   ----------------
 
    function Text_Range (View : Ace_Editor_Type; From, To : Position_Type) return String is
    begin
@@ -666,6 +946,14 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
          return 0;
    end Editor_Execute;
 
+   function Editor_Execute
+     (Editor : Ace_Editor_Type;
+      Method : String) return Boolean
+   is
+   begin
+      return Editor.Editor_Execute (Method) = "true";
+   end Editor_Execute;
+
    ---------------
    -- On_Resize --
    ---------------
@@ -684,8 +972,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    ------------
 
    procedure Create
-     (Anchor : in out Anchor_Type;
-      Parent    : in out Ace_Editor_Type'Class;
+     (Anchor      : in out Anchor_Type;
+      Parent      : in out Ace_Editor_Type'Class;
       Row, Column : Natural) is
       Anchor_ID : constant String := Gnoga.Server.Connection.New_GID;
    begin
@@ -717,15 +1005,20 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    ---------------------------
 
    procedure Insert_Text_At_Anchor (Anchor : in out Anchor_Type;
-                                    Text : in     String) is
+                                    Text   : in     String) is
    begin
       Anchor.Execute ("getDocument().insert(gnoga['" & Anchor.ID & "'].getPosition(), '" &
                         Escape_Quotes (Text) & "')");
    end Insert_Text_At_Anchor;
 
-   ------------------------------
-   -- Insert_NewLine_At_Anchor --
-   ------------------------------
+   -------------------------------
+   -- Insert_New_Line_At_Anchor --
+   -------------------------------
+
+   procedure Insert_New_Line_At_Anchor (Anchor : in out Anchor_Type) is
+   begin
+      Anchor.Execute ("getDocument().insertNewLine(gnoga['" & Anchor.ID & "'].getPosition())");
+   end Insert_New_Line_At_Anchor;
 
    procedure Insert_NewLine_At_Anchor (Anchor : in out Anchor_Type) is
    begin

@@ -39,7 +39,7 @@
 
 TOP=..
 
-APPDIRS=zbmcompile zbinfo zbtest
+APPDIRS=zbmcompile zbinfo
 APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
 
 CLEAN_DEPS+=$(patsubst %,%.clean,$(APPDIRS) root doc test)

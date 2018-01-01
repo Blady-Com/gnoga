@@ -185,7 +185,8 @@ package body ZBMCompile.Codegen.Base is
       Print_Line (File, ZBMBase_Facility, "10001",
                   Argument0 => +Version_Major,
                   Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch);
+                  Argument2 => +Version_Patch,
+                  Argument3 => +Revision);
       Print_Line (File, ZBMBase_Facility, "10002",
                   Argument0 => +Package_Name);
       if Number_Of_Messages (Catalog) > 0 then
@@ -254,7 +255,8 @@ package body ZBMCompile.Codegen.Base is
       Print_Line (File, ZBMBase_Facility, "00001",
                   Argument0 => +Version_Major,
                   Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch);
+                  Argument2 => +Version_Patch,
+                  Argument3 => +Revision);
       Print_Line (File, ZBMBase_Facility, "00002");
       Print_Line (File, ZBMBase_Facility, "00003",
                   Argument0 => +Package_Name);

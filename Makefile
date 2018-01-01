@@ -220,11 +220,7 @@ uninstall:
 	- $(INSTALLER) --prefix=$(PREFIX) --install-name=components --uninstall lib_components.gpr
 	- $(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc --uninstall pragmarc.gpr
 	- $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --uninstall gnoga.gpr
-	- $(RM) $(PREFIX)/bin/zb*
-	- $(RMS) $(PREFIX)/include/zanyblue
-	- $(RMS) $(PREFIX)/lib/zanyblue
-	- $(RM) $(PREFIX)/lib/gnat/zanyblue.gpr
-	- $(RM) $(PREFIX)/lib/libzanyblue*
+	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) uninstall
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker
 

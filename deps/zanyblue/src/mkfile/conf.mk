@@ -94,7 +94,7 @@ DOWNLOAD_URL="$(DOWNLOAD_ROOT)/zanyblue-$(VERSION_S).tar.gz"
 DIST_TLD=$(call lc,zanyblue-$(VERSION_TLD))
 TARNAME=zanyblue-$(VERSION_S).tar.gz
 ifndef SVN_VERSION
-SVN_VERSION=$(shell svnversion $(TOP))
+SVN_VERSION=3144
 COPYRIGHT_YEAR=$(CURRENT_YEAR)
 endif
 

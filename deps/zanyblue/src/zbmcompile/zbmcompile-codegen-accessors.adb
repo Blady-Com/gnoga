@@ -297,11 +297,13 @@ package body ZBMCompile.Codegen.Accessors is
       Print_Line (Spec_File, Accessor_Facility, "10001",
                   Argument0 => +Version_Major,
                   Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch);
+                  Argument2 => +Version_Patch,
+                  Argument3 => +Revision);
       Print_Line (Body_File, Accessor_Facility, "20001",
                   Argument0 => +Version_Major,
                   Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch);
+                  Argument2 => +Version_Patch,
+                  Argument3 => +Revision);
       --  Write the with clauses.  If there are no message arguments then
       --  the Arguments package in with'ed in the body rather than the
       --  spec.

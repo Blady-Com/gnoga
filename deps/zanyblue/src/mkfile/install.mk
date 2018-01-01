@@ -39,8 +39,10 @@
 
 ifndef INSTALL_DIR
 INSTALL_DEP=install-not-defined
+UNINSTALL_DEP=install-not-defined
 else
 INSTALL_DEP=install-zb
+UNINSTALL_DEP=uninstall-zb
 endif
 GPRINSTALL_FLAGS+=-f
 GPRINSTALL_FLAGS+=-p
@@ -49,6 +51,8 @@ GPRINSTALL_FLAGS+=--prefix=$(INSTALL_DIR)
 GPRINSTALL_FLAGS+=$(GNATFLAGS)
 
 install:	$(INSTALL_DEP)
+
+uninstall:	$(UNINSTALL_DEP)
 
 install-not-defined:
 	$(warning Installation requires the definition of a)
@@ -64,4 +68,10 @@ install-zb:
 	$(GPRINSTALL) $(GPRINSTALL_FLAGS) zanyblue.gpr
 	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbmcompile/zbmcompile.gpr
 	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbinfo/zbinfo.gpr
-	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbtest/zbtest.gpr
+#	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbtest/zbtest.gpr
+
+uninstall-zb:
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall zanyblue.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbmcompile/zbmcompile.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbinfo/zbinfo.gpr
+#	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbtest/zbtest.gpr

@@ -842,6 +842,7 @@ package body ConnectFour is
          Format_CPYR (This.Locale));
       Repaint (This);
       This.Put_Line (Format_DEVP (This.Locale));
+      This.Put_Line (Format_INFO (This.Locale));
       This.Put_Line (Format_ADPT (This.Locale));
    end Init;
 

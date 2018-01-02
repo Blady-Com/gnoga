@@ -12,8 +12,8 @@ with ConnectFour; use ConnectFour;
 with connectfour_messages.connectfour_Strings;
 use connectfour_messages.connectfour_Strings;
 with ZanyBlue.Text.Locales;
-with Ada.Strings.UTF_Encoding.Strings; use Ada.Strings.UTF_Encoding.Strings;
 with Gnoga.Gui.Navigator;
+with Gnoga.Server.Connection;
 
 procedure Connect_Four is
 
@@ -34,13 +34,13 @@ procedure Connect_Four is
       Page.Locale :=
         ZanyBlue.Text.Locales.Make_Locale_Narrow
           (Gnoga.Gui.Navigator.Language (Main_Window) & ".ISO8859-1");
+      Main_Window.Document.Title (Format_TITL (Page.Locale));
+      Gnoga.Server.Connection.HTML_On_Close (Main_Window.Connection_ID, Format_APPE (Page.Locale));
       Init (Page'Access);
       Connection.Hold;
    end On_Connect;
 
 begin
-   Gnoga.Application.Title (Name => "Connect Four");
-   Gnoga.Application.HTML_On_Close (HTML => Decode (Format_APPE));
    Gnoga.Application.Multi_Connect.Initialize;
    Gnoga.Application.Multi_Connect.On_Connect_Handler
      (Event => On_Connect'Unrestricted_Access);

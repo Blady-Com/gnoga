@@ -56,6 +56,7 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
      (Console : in out Console_IO_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
       ID      : in     String := "");
+   --  Ace Editor must have been loaded before
 
    --------------------------------------------
    -- Specification of line and page lengths --

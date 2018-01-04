@@ -94,7 +94,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 --        Gnoga.Log
 --          (Keyboard_Event.Key_Code'Img & ',' & Keyboard_Event.Key_Char'Img);
       --  ASCII Character
-      if Ch /= Ada.Characters.Latin_1.NUL then
+      if Ch not in Ada.Characters.Latin_1.NUL | Ada.Characters.Latin_1.CR | Ada.Characters.Latin_1.ESC then
          Console_IO_Type (Object).Ring.Write (Ch);
          return;
       end if;
@@ -105,6 +105,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
                Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.BS);
             when Gnoga.Types.Key_Codes.Key_Tab =>
                Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.HT);
+            when Gnoga.Types.Key_Codes.Key_Enter =>
+               Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.CR);
+            when Gnoga.Types.Key_Codes.Key_Esc =>
+               Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.ESC);
             when
                 Gnoga.Types.Key_Codes.Key_F1 ..
                   Gnoga.Types.Key_Codes.Key_F10 =>

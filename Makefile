@@ -377,7 +377,11 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html
 
 gps:
+ifeq ($(BUILD_OS),Windows)
+	cmd /C start /B gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+else
 	gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} &
+endif
 
 # Use AdaControl to check rules/gnoga.aru
 # Make sure AdaControl utilities are in your PATH

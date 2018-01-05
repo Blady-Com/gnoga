@@ -1,10 +1,7 @@
-PREFIX=$(shell echo $(dir $(shell which gnatls)) | sed "s:/cygdrive/\\(.\\):\\1\\::" )..
 GPRCHECK=$(shell gprbuild --version)
 TARGET=$(shell gcc -dumpmachine)
-CWD=$(shell pwd)
-export GPR_PROJECT_PATH=$(CWD)/build/share/gpr:$(CWD)/build/lib/gnat
-# If Simple Components, Zanyblue or PragmArc libs are already existing in your environnement
-# Put their location in GPR_PROJECT_PATH and comment the previous line
+CWD=$(CURDIR)
+PREFIX=$(CWD)/inst_folder
 
 ATOMIC_ACCESS=GCC-long-offsets
 # If using GNAT GPL prior to 2014 or earlier on a 32bit host (Windows or Linux)
@@ -56,13 +53,20 @@ endif
 endif
 endif
 
-ifdef ComSpec
+ifeq ($(shell echo "check_quotes"),"check_quotes")
+   BUILD_OS := Windows
+else
+   BUILD_OS := UnixLike
+endif
+
+ifeq ($(BUILD_OS),Windows)
 	COPY=copy
 	MOVE=move
 	MKDIR=mkdir
 	RM=del
 	RMS=del /S /Q
 	PATHSEP2=\\
+	BUILD_SQLITE3=sqlite3
 else
 	COPY=cp -p
 	MOVE=mv
@@ -70,51 +74,52 @@ else
 	RM=rm -f
 	RMS=rm -rf
 	PATHSEP2=/
+	BUILD_SQLITE3=
 endif
 
 PATHSEP=$(strip $(PATHSEP2))
 
-ifeq (${PRJ_TARGET}, Windows)
-	SET_READONLY=attrib +R
-	UNSET_READONLY=attrib -R
-	BUILD_SQLITE3=sqlite3
+ifeq ($(PRJ_TARGET),Windows)
+	GPR_PROJECT_PATH_SEP=;
 else
-	SET_READONLY=chmod -w *
-	UNSET_READONLY=chmod +w *
-	BUILD_SQLITE3=
+	GPR_PROJECT_PATH_SEP=:
 endif
+export GPR_PROJECT_PATH=$(CWD)/build/share/gpr$(GPR_PROJECT_PATH_SEP)$(CWD)/build/lib/gnat
+# If Simple Components, Zanyblue or PragmArc libs are already existing in your environnement
+# Put their location in GPR_PROJECT_PATH and comment the previous line
 
 help :
-	@echo "-------------------------------------------------------------------------------"
-	@echo "--                                                                           --"
-	@echo "-- make <entry>                                                              --"
-	@echo "--                                                                           --"
-	@echo "-- <entry> ::= help        -- print this message                             --"
-	@echo "--         | all           -- build gnoga and all dependencies in debug mode --"
-	@echo "--         | release       -- build gnoga in release mode                    --"
-	@echo "--         | install       -- install gnoga release mode                     --"
-	@echo "--         | install_debug -- install gnoga debug mode                       --"
-	@echo "--         | uninstall     -- uninstall gnoga                                --"
-	@echo "--         | demo          -- build all demos                                --"
-	@echo "--         | tutorials     -- build all tutorials                            --"
-	@echo "--         | gnoga_tools   -- build all tools                                --"
-	@echo "--         | tests         -- build all tests                                --"
-	@echo "--         | clean         -- clean build files                              --"
-	@echo "--         | clean_all     -- clean build files and deps                     --"
-	@echo "--         | rm-docs       -- build reference manual                         --"
-	@echo "--         | html-docs     -- build html docs                                --"
-	@echo "--         | gps           -- launch GPS with gnoga environnement            --"
-	@echo "--         | check_rules   -- check gnoga with AdaControl                    --"
-	@echo "--                                                                           --"
-	@echo "--         PREFIX           = $(PREFIX)"
-	@echo "--         GPRCHECK         = $(GPRCHECK)"
-	@echo "--         TARGET           = $(TARGET)"
-	@echo "--         GPR_PROJECT_PATH = $(GPR_PROJECT_PATH)"
-	@echo "--         ATOMIC_ACCESS    = $(ATOMIC_ACCESS)"
-	@echo "--         BUILDER          = $(BUILDER)"
-	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)"
-	@echo "--                                                                           --"
-	@echo "-------------------------------------------------------------------------------"
+	@echo "-----------------------------------------------------------------------------"
+	@echo "--                                                                         --"
+	@echo "-- make <entry>                                                            --"
+	@echo "--                                                                         --"
+	@echo "-- <entry> ::= help        -- print this message                           --"
+	@echo "--         | all           -- build gnoga and all dependencies (debug mode)--"
+	@echo "--         | release       -- build gnoga in release mode                  --"
+	@echo "--         | install       -- install gnoga release mode                   --"
+	@echo "--         | install_debug -- install gnoga debug mode                     --"
+	@echo "--         | uninstall     -- uninstall gnoga                              --"
+	@echo "--         | demo          -- build all demos                              --"
+	@echo "--         | tutorials     -- build all tutorials                          --"
+	@echo "--         | gnoga_tools   -- build all tools                              --"
+	@echo "--         | tests         -- build all tests                              --"
+	@echo "--         | clean         -- clean build files                            --"
+	@echo "--         | clean_all     -- clean build files and deps                   --"
+	@echo "--         | rm-docs       -- build reference manual                       --"
+	@echo "--         | html-docs     -- build html docs                              --"
+	@echo "--         | gps           -- launch GPS with gnoga environnement          --"
+	@echo "--         | check_rules   -- check gnoga with AdaControl                  --"
+	@echo "--                                                                         --"
+	@echo "--         PREFIX           = $(PREFIX)                                    --"
+	@echo "--         GPRCHECK         = $(GPRCHECK)                                  --"
+	@echo "--         TARGET           = $(TARGET)                                    --"
+	@echo "--         GPR_PROJECT_PATH = $(GPR_PROJECT_PATH)                          --"
+	@echo "--         ATOMIC_ACCESS    = $(ATOMIC_ACCESS)                             --"
+	@echo "--         BUILDER          = $(BUILDER)                                   --"
+	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)                                --"
+	@echo "--         BUILD_OS         = $(BUILD_OS)                                  --"
+	@echo "--                                                                         --"
+	@echo "-----------------------------------------------------------------------------"
 
 all: deps $(BUILD_SQLITE3) basic_components gnoga gnoga_tools demo tutorials
 
@@ -126,9 +131,10 @@ deps : simple_components
 
 simple_components:
 	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
-	$(INSTALLER) --prefix=$(CWD)/build --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
+	$(INSTALLER) --prefix="$(CWD)/build" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
 
 lib/libsqlite3.a:
+	- $(MKDIR) lib
 	cd deps/simple_components/sqlite-sources && gcc -s -c -O2 -o sqlite3.o sqlite3.c
 	cd deps/simple_components/sqlite-sources && ar rcs libsqlite3.a sqlite3.o
 	cd deps/simple_components/sqlite-sources && $(MOVE) libsqlite3.a ..$(PATHSEP)..$(PATHSEP)..$(PATHSEP)lib
@@ -138,12 +144,12 @@ sqlite3: lib/libsqlite3.a
 
 # Zanyblue with DEBUG on
 zanyblue:
-	cd deps/zanyblue/src && $(MAKE) BUILD=Debug
-	cd deps/zanyblue/src && $(MAKE) INSTALL_DIR=$(CWD)/build install
+	- cd deps/zanyblue/src && "$(MAKE)" BUILD=Debug APPDIRS="zbmcompile zbinfo"
+	- cd deps/zanyblue/src && "$(MAKE)" INSTALL_DIR=../../../build APPDIRS="zbmcompile zbinfo" install
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
-	$(INSTALLER) --prefix=$(CWD)/build --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
+	$(INSTALLER) --prefix="$(CWD)/build" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
@@ -172,7 +178,7 @@ bin/multimarkdown:
 	- cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git
 	- cd deps/MultiMarkdown-4 && git submodule init
 	- cd deps/MultiMarkdown-4 && git submodule update
-	- cd deps/MultiMarkdown-4 && $(MAKE)
+	- cd deps/MultiMarkdown-4 && "$(MAKE)"
 	- $(MKDIR) bin
 	- $(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 
@@ -192,35 +198,35 @@ release: deps $(BUILD_SQLITE3) basic_components
 
 # Install Gnoga and deps with DEBUG off
 install: release gnoga_tools
-	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
-# TODO libsqlite3
-	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) install
-	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
-	$(MAKE) -C components INSTALL_DIR=$(PREFIX)/share/gnoga
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
+	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
+	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" install
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
+	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
+	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 # Install Gnoga and deps with DEBUG on
 install_debug:
-	$(INSTALLER) --prefix=$(PREFIX) --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
-# TODO libsqlite3
-	$(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) BUILD=Debug install
-	$(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(MAKE) -C components INSTALL_DIR=$(PREFIX)/share/gnoga
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
+	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
+	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" BUILD=Debug install
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
+	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 # Install Gnoga alone with DEBUG on
 install_gnoga_debug:
-	cd src && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(MAKE) -C components INSTALL_DIR=$(PREFIX)/share/gnoga
+	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 uninstall:
-	- $(INSTALLER) --prefix=$(PREFIX) --install-name=components --uninstall lib_components.gpr
-	- $(INSTALLER) --prefix=$(PREFIX) --install-name=pragmarc --uninstall pragmarc.gpr
-	- $(INSTALLER) --prefix=$(PREFIX) --install-name=gnoga --uninstall gnoga.gpr
-	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR=$(PREFIX) uninstall
+	- $(INSTALLER) --prefix="$(PREFIX)" --install-name=components --uninstall lib_components.gpr
+	- $(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc --uninstall pragmarc.gpr
+	- $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga.gpr
+	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" uninstall
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker
 
@@ -242,8 +248,8 @@ adablog:
 	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 connect_four: zanyblue
-	cd demo/connect_four && ../../deps/zanyblue/bin/zbmcompile -i -v -G strings connectfour_messages connectfour
-	cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/connect_four && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings connectfour_messages connectfour
+	- cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 linxtris:
 	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -288,36 +294,36 @@ tutorials:
 	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 clean_all: clean clean_deps
-	$(MAKE) -C components uninstall
-	$(RMS) css
-	$(RMS) html
-	$(RMS) img
-	$(RMS) js
-	$(RMS) upload
-	cd docs && $(RM) html/*.html
-	cd docs && $(RMS) html/gnoga_rm
+	- $(MAKE) -C components uninstall
+	- $(RMS) css
+	- $(RMS) html
+	- $(RMS) img
+	- $(RMS) js
+	- $(RMS) upload
+	- $(RM) docs$(PATHSEP)html$(PATHSEP)*.html
+	- $(RMS) docs$(PATHSEP)html$(PATHSEP)gnoga_rm
 
 clean_deps:
-	$(CLEANER) -P deps/simple_components/lib_components.gpr
-	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
+	- $(CLEANER) -P deps/simple_components/lib_components.gpr
+	- $(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
 	- cd deps/zanyblue && $(MAKE) -C src clean
-	$(RMS) build
-	cd deps && $(RMS) MultiMarkdown-4
-	cd deps && $(RMS) electron-quick-start
-	$(RM) bin/multimarkdown
-	$(RM) lib/libsqlite3.a
+	- $(RMS) build
+	- $(RMS) deps$(PATHSEP)MultiMarkdown-4
+	- $(RMS) deps$(PATHSEP)electron-quick-start
+	- $(RM) bin$(PATHSEP)multimarkdown
+	- $(RM) lib$(PATHSEP)libsqlite3.a
 
 clean: clean_demo clean_tutorials clean_tests
 	- cd src && $(CLEANER) -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd ssl && $(CLEANER) -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd tools && $(CLEANER) -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(RM) bin/*.db
-	$(RM) bin/temp.txt
-	$(RM) obj/gnoga_gtk_window.o
+	- $(RM) bin$(PATHSEP)*.db
+	- $(RM) bin$(PATHSEP)temp.txt
+	- $(RM) obj$(PATHSEP)gnoga_gtk_window.o
 
 clean_demo:
 	- cd demo/snake && $(CLEANER) -P snake.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -326,7 +332,7 @@ clean_demo:
 	- cd demo/adaedit && $(CLEANER) -P adaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd demo/adablog && $(CLEANER) -P adablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd demo/connect_four && $(CLEANER) -P connect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/connect_four && $(RM) connectfour_messages*
+	- cd demo/connect_four && $(RM) connectfour_messages*.*
 	- cd demo/linxtris && $(CLEANER) -P linxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd demo/password_gen && $(CLEANER) -P password_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd demo/random_int && $(CLEANER) -P random_int.gpr -XPRJ_TARGET=${PRJ_TARGET}
@@ -368,7 +374,11 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html
 
 gps:
+ifeq ($(BUILD_OS),Windows)
+	cmd /C start /B gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+else
 	gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} &
+endif
 
 # Use AdaControl to check rules/gnoga.aru
 # Make sure AdaControl utilities are in your PATH

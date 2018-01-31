@@ -42,7 +42,7 @@ TOP=..
 APPDIRS=zbmcompile zbinfo
 APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
 
-CLEAN_DEPS+=$(patsubst %,%.clean,$(APPDIRS) root doc test)
+CLEAN_DEPS+=$(patsubst %,%.clean,$(APPDIRS) root test)
 CLEAN_FILES+=$(wildcard bin/pylib/*.pyc)
 CLEAN_FILES+=$(wildcard bin/pylib/zb/*.pyc)
 CLEAN_FILES+=$(wildcard gnatcheck.out)
@@ -54,9 +54,9 @@ CLEAN_DIRS+=$(wildcard $(TOP)/src/text/cldr)
 CLEAN_FILES+=$(wildcard $(TOP)/src/admin/*.TXT)
 CLEAN_DIRS+=$(STAGEDIR)
 
-DEV_CLEAN_DIRS+=$(TOP)/doc
-DEV_CLEAN_DIRS+=$(TOP)/src/doc/_build
-DEV_CLEAN_FILES+=$(wildcard $(ZBVERSGPR))
+#DEV_CLEAN_DIRS+=$(TOP)/doc
+#DEV_CLEAN_DIRS+=$(TOP)/src/doc/_build
+#DEV_CLEAN_FILES+=$(wildcard $(ZBVERSGPR))
 
 # Include configuration definitions
 include $(TOP)/src/mkfile/conf.mk

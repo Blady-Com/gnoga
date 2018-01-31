@@ -310,7 +310,7 @@ clean_all: clean clean_deps
 clean_deps:
 	- $(CLEANER) -P deps/simple_components/lib_components.gpr
 	- $(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
-	- cd deps/zanyblue && $(MAKE) -C src clean
+	- cd deps/zanyblue && "$(MAKE)" -C src clean
 	- $(RMS) build
 	- $(RMS) deps$(PATHSEP)MultiMarkdown-4
 	- $(RMS) deps$(PATHSEP)electron-quick-start

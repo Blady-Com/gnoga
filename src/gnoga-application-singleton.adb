@@ -112,6 +112,11 @@ package body Gnoga.Application.Singleton is
       Gnoga.Activate_Exception_Handler (Ada.Task_Identification.Current_Task);
       Gnoga.Server.Connection.Initialize (Host, Port, Boot, Verbose);
 
+      if Verbose then
+         Gnoga.Write_To_Console ("Singleton application.");
+         Gnoga.Write_To_Console ("Press Ctrl-C to close server.");
+      end if;
+
       Gnoga.Server.Connection.On_Connect_Handler
         (Event => On_Connect'Access);
 

@@ -119,6 +119,7 @@ package body Gnoga.Application.Multi_Connect is
       Gnoga.Server.Connection.Initialize (Host, Port, Boot, Verbose);
 
       if Verbose then
+         Gnoga.Write_To_Console ("Multi-connect application.");
          Gnoga.Write_To_Console ("Press Ctrl-C to close server.");
       end if;
 

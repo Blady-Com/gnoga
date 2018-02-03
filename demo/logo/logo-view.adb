@@ -1,3 +1,14 @@
+-------------------------------------------------------------------------------
+-- NAME (body)                  : logo-view.adb
+-- AUTHOR                       : Pascal Pignard
+-- ROLE                         : User interface display unit.
+-- NOTES                        : Ada 2012, GNOGA 1.4 beta
+--
+-- COPYRIGHT                    : (c) Pascal Pignard 2018
+-- LICENCE                      : CeCILL V2 (http://www.cecill.info)
+-- CONTACT                      : http://blady.pagesperso-orange.fr
+-------------------------------------------------------------------------------
+
 package body Logo.View is
 
    ------------
@@ -24,7 +35,7 @@ package body Logo.View is
       Grid.Renderer.Create (Grid.Canvas);
       Grid.Container.Create (Grid.Renderer);
       Grid.Renderer.Auto_Rendering (Grid.Container, True);
-      Grid.Turtle.Create (Grid.Container, "img/turtle.png", 100, 100);
+      Grid.Turtle.Create (Grid.Container, "img/hector.png", 100, 100);
       delay 2.0; --  Wait for image full loaded
       Grid.Turtle.Pivot (Grid.Turtle.Height / 2, Grid.Turtle.Width / 2);
 

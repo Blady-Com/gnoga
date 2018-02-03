@@ -275,11 +275,13 @@ leaves:
 db_maker:
 	cd demo/db_maker && $(BUILDER) -Pdb_maker.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+logo: zanyblue
+	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
+	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
+	cd demo$(PATHSEP)logo && $(BUILDER) -Plogo.gpr -XPRJ_TARGET=${PRJ_TARGET}
+
 tests:
 	cd test && $(BUILDER) -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
-
-logo:
-	cd demo/logo && $(BUILDER) -Plogo.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 tests_ssl: gnoga_secure
 	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}

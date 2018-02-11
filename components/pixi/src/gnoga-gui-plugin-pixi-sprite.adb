@@ -84,6 +84,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Rotation_Velocity (0.0);
       Sprite.Rotation_Acceleration (0.0);
       Sprite.Loop_Times (0, 0);
+      Sprite.Frame_Limit (0, 0, 0, 0, Null_Effect);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -115,6 +116,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Acceleration (Row_Acceleration, Column_Acceleration);
       Sprite.Rotation_Velocity (0.0);
       Sprite.Rotation_Acceleration (0.0);
+      Sprite.Frame_Limit (0, 0, 0, 0, Null_Effect);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -871,11 +873,15 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
         (Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
       Root2 : constant Float :=
         (-Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
+      TFin : Natural;
    begin
-      Sprite.Motion (Radial_Velocity, Azimut);
-      Sprite.Acceleration (Radial_Acceleration, Azimut);
       Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
-      Sprite.Loop_Times (0, Integer (Frame_Rate * Spent_Time));
+      TFin       := Natural (Frame_Rate * Spent_Time);
+      if TFin > 0 then
+         Sprite.Motion (Radial_Velocity, Azimut);
+         Sprite.Acceleration (Radial_Acceleration, Azimut);
+         Sprite.Loop_Times (0, TFin);
+      end if;
    end Move_To;
 
    --------------
@@ -916,11 +922,15 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
         (Sqrt (Discriminant) - Velocity) / Acceleration;
       Root2 : constant Float :=
         (-Sqrt (Discriminant) - Velocity) / Acceleration;
+      TFin : Natural;
    begin
-      Sprite.Motion (Velocity, Sprite.Rotation);
-      Sprite.Acceleration (Acceleration, Sprite.Rotation);
       Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
-      Sprite.Loop_Times (0, Natural (Frame_Rate * Spent_Time));
+      TFin       := Natural (Frame_Rate * Spent_Time);
+      if TFin > 0 then
+         Sprite.Motion (Velocity, Sprite.Rotation);
+         Sprite.Acceleration (Acceleration, Sprite.Rotation);
+         Sprite.Loop_Times (0, TFin);
+      end if;
    end Move_Rel;
 
    ----------------
@@ -963,12 +973,33 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
         (Sqrt (Discriminant) - Velocity) / Acceleration;
       Root2 : constant Float :=
         (-Sqrt (Discriminant) - Velocity) / Acceleration;
+      TFin : Natural;
    begin
-      Sprite.Rotation_Velocity (Velocity);
-      Sprite.Rotation_Acceleration (Acceleration);
       Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
-      Sprite.Loop_Times (0, Integer (Frame_Rate * Spent_Time));
+      TFin       := Natural (Frame_Rate * Spent_Time);
+      if TFin > 0 then
+         Sprite.Rotation_Velocity (Velocity);
+         Sprite.Rotation_Acceleration (Acceleration);
+         Sprite.Loop_Times (0, TFin);
+      end if;
    end Rotate_Rel;
+
+   -----------------
+   -- Frame_Limit --
+   -----------------
+
+   procedure Frame_Limit
+     (Sprite                                   : in out Sprite_Type;
+      Row_Min, Row_Max, Column_Min, Column_Max :        Integer;
+      Effect                                   :        Effect_Type)
+   is
+   begin
+      Sprite.Property ("gnoga_row_min", Row_Min);
+      Sprite.Property ("gnoga_row_max", Row_Max);
+      Sprite.Property ("gnoga_col_min", Column_Min);
+      Sprite.Property ("gnoga_col_max", Column_Max);
+      Sprite.Property ("gnoga_effect", Effect_Type'Pos (Effect));
+   end Frame_Limit;
 
    ------------
    -- Delete --

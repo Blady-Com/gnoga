@@ -19,9 +19,9 @@ procedure Pixi_Sprite_Test is
    use Gnoga.Gui.Element.Canvas;
 
    type App_Data is new Connection_Data_Type with record
-      Main_Window : Window.Pointer_To_Window_Class;
-      My_Canvas   : aliased Canvas.Canvas_Type;
-      SP1, SP2    : Plugin.Pixi.Sprite.Sprite_Type;
+      Main_Window   : Window.Pointer_To_Window_Class;
+      My_Canvas     : aliased Canvas.Canvas_Type;
+      SP1, SP2, SP3 : Plugin.Pixi.Sprite.Sprite_Type;
    end record;
    type App_Access is access all App_Data;
 
@@ -46,7 +46,7 @@ procedure Pixi_Sprite_Test is
       App        : constant App_Access := new App_Data;
       R          : Plugin.Pixi.Renderer_Type;
       C          : Plugin.Pixi.Container_Type;
-      G          : Plugin.Pixi.Graphics.Graphics_Type;
+      G, B       : Plugin.Pixi.Graphics.Graphics_Type;
       T          : Plugin.Pixi.Texture_Type;
       S1, S2     : Plugin.Pixi.Style_Type;
       M0, M1, M2 : Plugin.Pixi.Text.Text_Type;
@@ -105,6 +105,7 @@ procedure Pixi_Sprite_Test is
       S2.Fill (Gnoga.Types.Colors.Cyan);
       S2.Font_Size ("40px");
       --  Create M1 in C so it will be considered as sprite
+      --  C is taken as the container of sprites
       M1.Create (C, "with", 150, 150);
       M1.Set_Style (S2);
       M1.Rotation_Velocity (10.0);
@@ -113,10 +114,11 @@ procedure Pixi_Sprite_Test is
       M2.Set_Style (S2);
       M2.Rotation_Velocity (-10.0);
 
+      R.Auto_Rendering (C, True);
+
       App.SP1.Create (C, "img/E4a.png", 10, 10);
       --  C is taken as the container of sprites
       App.SP1.Move_To (200, 200, 10.0, 10.0, Time_To_Wait);
-      R.Auto_Rendering (C, True);
       Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
 
@@ -137,6 +139,21 @@ procedure Pixi_Sprite_Test is
       App.SP1.Rotate_To (0, 10.0, 10.0, Time_To_Wait);
       Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
+
+      App.SP3.Create (C, "", 100, 100);
+      B.Create (App.SP3);
+      B.Line_Color (Gnoga.Types.Colors.Yellow_Green);
+      B.Line_Width (8);
+      B.Draw_Circle (0, 0, 10);
+      App.SP3.Frame_Limit
+      (50, 350, 50, 500, Gnoga.Gui.Plugin.Pixi.Sprite.Loop_Effect);
+      for Angle in 0 .. 17 loop
+         App.SP3.Motion (500.0, 10 + 20 * Angle);
+         delay 2.0;
+      end loop;
+      App.SP3.Frame_Limit
+      (50, 350, 50, 500, Gnoga.Gui.Plugin.Pixi.Sprite.Bounce_Effect);
+      delay 4.0;
 
       T.Create (R, "img/E6a.png");
       App.SP1.Put_Texture (T);

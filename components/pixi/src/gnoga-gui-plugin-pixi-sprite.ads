@@ -52,6 +52,8 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    type Sprite_Access is access all Sprite_Type;
    type Pointer_To_Sprite_Class is access all Sprite_Type'Class;
 
+   type Effect_Type is (Null_Effect, Bounce_Effect, Loop_Effect);
+
    -------------------------------------------------------------------------
    --  Sprite_Type - Creation Methods
    -------------------------------------------------------------------------
@@ -322,8 +324,14 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
       Velocity     : in     Velocity_Type;
       Acceleration : in     Acceleration_Type;
       Spent_Time   :    out Duration);
---  Sets sprite rotation in order to reach specified relative angle then stop.
---  See Move_to for details.
+   --  Sets sprite rotation in order to reach specified relative angle then stop.
+   --  See Move_to for details.
+
+   procedure Frame_Limit
+     (Sprite                                   : in out Sprite_Type;
+      Row_Min, Row_Max, Column_Min, Column_Max :        Integer;
+      Effect                                   :        Effect_Type);
+   --  Sets sprite frame limit with special effect
 
    procedure Delete
      (Sprite : in out Sprite_Type;

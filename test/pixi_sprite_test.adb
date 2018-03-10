@@ -208,11 +208,19 @@ procedure Pixi_Sprite_Test is
                   Coinc := False;
                   App.SP1.Position (Y_Pos, X_Pos);
                   App.SP1.Locate (Y_Pos - 40, X_Pos);
+                  App.SP2.Angle_Limit
+                  (App.SP2.Rotation -
+                   145, App.SP2.Rotation, Gnoga.Gui.Plugin.Pixi.Sprite
+                     .Loop_Effect);
                end if;
             else
                Coinc := True;
                App.SP1.Position (Y_Pos, X_Pos);
                App.SP1.Locate (Y_Pos + 40, X_Pos);
+               App.SP2.Angle_Limit
+               (App.SP2.Rotation -
+                145, App.SP2.Rotation, Gnoga.Gui.Plugin.Pixi.Sprite
+                  .Bounce_Effect);
             end if;
          end if;
          delay 1.0;

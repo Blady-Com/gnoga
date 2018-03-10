@@ -120,14 +120,15 @@ package body Gnoga.Gui.Plugin.Pixi is
             " gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
             " gnoga_sprite.gnoga_vr += gnoga_sprite.gnoga_ar;" &
             " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;" &
+            " gnoga_sprite.rotation %= 2 * Math.PI;" &
 
-            " if (gnoga_sprite.gnoga_effect == 1){" &
+            " if (gnoga_sprite.gnoga_frame_effect == 1){" &
             "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max)" &
             "     {gnoga_sprite.gnoga_vx = -gnoga_sprite.gnoga_vx};" &
             "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
             "     {gnoga_sprite.gnoga_vy = -gnoga_sprite.gnoga_vy};};" &
 
-            " if (gnoga_sprite.gnoga_effect == 2){" &
+            " if (gnoga_sprite.gnoga_frame_effect == 2){" &
             "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min && gnoga_sprite.gnoga_vy == 0)" &
             "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_max};" &
             "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max && gnoga_sprite.gnoga_vy == 0)" &
@@ -181,6 +182,17 @@ package body Gnoga.Gui.Plugin.Pixi is
             "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
             "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
             "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};};};" &
+
+            " if (gnoga_sprite.gnoga_angle_effect == 1){" &
+            "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
+            "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+            "     gnoga_sprite.gnoga_vr = -gnoga_sprite.gnoga_vr;};" &
+
+            " if (gnoga_sprite.gnoga_angle_effect == 2){" &
+            "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min)" &
+            "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_max;" &
+            "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+            "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_min;};" &
 
             " if (gnoga_sprite.gnoga_tfin > 0)" &
             "   {gnoga_sprite.gnoga_tcur += 1;" &

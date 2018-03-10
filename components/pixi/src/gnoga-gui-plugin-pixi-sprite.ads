@@ -329,9 +329,15 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
 
    procedure Frame_Limit
      (Sprite                                   : in out Sprite_Type;
-      Row_Min, Row_Max, Column_Min, Column_Max :        Integer;
-      Effect                                   :        Effect_Type);
+      Row_Min, Row_Max, Column_Min, Column_Max : in     Integer;
+      Effect                                   : in     Effect_Type);
    --  Sets sprite frame limit with special effect
+
+   procedure Angle_Limit
+     (Sprite               : in out Sprite_Type;
+      Angle_Min, Angle_Max : in     Integer;
+      Effect               : in     Effect_Type);
+   --  Sets sprite angle limit with special effect
 
    procedure Delete
      (Sprite : in out Sprite_Type;

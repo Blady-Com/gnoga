@@ -85,6 +85,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Rotation_Acceleration (0.0);
       Sprite.Loop_Times (0, 0);
       Sprite.Frame_Limit (0, 0, 0, 0, Null_Effect);
+      Sprite.Angle_Limit (0, 0, Null_Effect);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -117,6 +118,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Rotation_Velocity (0.0);
       Sprite.Rotation_Acceleration (0.0);
       Sprite.Frame_Limit (0, 0, 0, 0, Null_Effect);
+      Sprite.Angle_Limit (0, 0, Null_Effect);
       Parent.Add_Child (Sprite);
    end Create;
 
@@ -990,16 +992,33 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    procedure Frame_Limit
      (Sprite                                   : in out Sprite_Type;
-      Row_Min, Row_Max, Column_Min, Column_Max :        Integer;
-      Effect                                   :        Effect_Type)
+      Row_Min, Row_Max, Column_Min, Column_Max : in     Integer;
+      Effect                                   : in     Effect_Type)
    is
    begin
       Sprite.Property ("gnoga_row_min", Row_Min);
       Sprite.Property ("gnoga_row_max", Row_Max);
       Sprite.Property ("gnoga_col_min", Column_Min);
       Sprite.Property ("gnoga_col_max", Column_Max);
-      Sprite.Property ("gnoga_effect", Effect_Type'Pos (Effect));
+      Sprite.Property ("gnoga_frame_effect", Effect_Type'Pos (Effect));
    end Frame_Limit;
+
+   -----------------
+   -- Angle_Limit --
+   -----------------
+
+   procedure Angle_Limit
+     (Sprite               : in out Sprite_Type;
+      Angle_Min, Angle_Max : in     Integer;
+      Effect               : in     Effect_Type)
+   is
+   begin
+      Sprite.Property
+      ("gnoga_angle_min", Float (Angle_Min) * Ada.Numerics.Pi / 180.0);
+      Sprite.Property
+      ("gnoga_angle_max", Float (Angle_Max) * Ada.Numerics.Pi / 180.0);
+      Sprite.Property ("gnoga_angle_effect", Effect_Type'Pos (Effect));
+   end Angle_Limit;
 
    ------------
    -- Delete --

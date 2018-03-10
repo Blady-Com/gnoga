@@ -62,9 +62,6 @@ project zbcom is
          Compile_Switches := Compile_Switches & ("-g",
                                                  "-gnatf",
                                                  "-gnato",
-                                                 "-gnatwale",
-                                                 "-gnatygO",
-                                                 "-gnatyo",
                                                  "-fstack-check");
       when "Coverage" =>
          Compile_Switches := Compile_Switches & ("-g",

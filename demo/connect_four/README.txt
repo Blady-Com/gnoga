@@ -10,3 +10,7 @@ own move. You win if you can align 4 circles in a straight line (vertically,
 horizontally, or diagonally). When a winning position is reached you can
 restart the game by clicking on the mouse.
 
+Before running connect four, set the language variable for Zanyblue, for instance:
+(Replace fr_FR by your own local language)
+Unix like: export LANG=fr_FR.UTF-8
+Windows: set ZB_LANG=fr_FR.UTF-8

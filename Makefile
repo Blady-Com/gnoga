@@ -174,13 +174,14 @@ electron:
 	@echo "Start your gnoga app and then run 'nmp start' in deps/electron-quick-start"
 	@echo "See docs/native_desktop_apps.md for instructions on full desktop development"
 
+.IGNORE: bin/multimarkdown
 bin/multimarkdown:
-	- cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git
-	- cd deps/MultiMarkdown-4 && git submodule init
-	- cd deps/MultiMarkdown-4 && git submodule update
-	- cd deps/MultiMarkdown-4 && "$(MAKE)"
-	- $(MKDIR) bin
-	- $(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
+	cd deps && git clone git://github.com/fletcher/MultiMarkdown-4.git
+	cd deps/MultiMarkdown-4 && git submodule init
+	cd deps/MultiMarkdown-4 && git submodule update
+	cd deps/MultiMarkdown-4 && "$(MAKE)"
+	$(MKDIR) bin
+	$(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 
 # Gnoga with DEBUG on by default
 gnoga:
@@ -222,11 +223,12 @@ install_gnoga_debug:
 	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
+.IGNORE: uninstall
 uninstall:
-	- $(INSTALLER) --prefix="$(PREFIX)" --install-name=components --uninstall lib_components.gpr
-	- $(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc --uninstall pragmarc.gpr
-	- $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga.gpr
-	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" uninstall
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components --uninstall lib_components.gpr
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc --uninstall pragmarc.gpr
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga.gpr
+	$(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" uninstall
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker
 
@@ -299,72 +301,78 @@ tutorials:
 	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+.IGNORE: clean_all
 clean_all: clean clean_deps
-	- $(MAKE) -C components uninstall
-	- $(RMS) css
-	- $(RMS) html
-	- $(RMS) img
-	- $(RMS) js
-	- $(RMS) upload
-	- $(RM) docs$(PATHSEP)html$(PATHSEP)*.html
-	- $(RMS) docs$(PATHSEP)html$(PATHSEP)gnoga_rm
+	$(MAKE) -C components uninstall
+	$(RMS) css
+	$(RMS) html
+	$(RMS) img
+	$(RMS) js
+	$(RMS) upload
+	$(RM) docs$(PATHSEP)html$(PATHSEP)*.html
+	$(RMS) docs$(PATHSEP)html$(PATHSEP)gnoga_rm
 
+.IGNORE: clean_deps
 clean_deps:
-	- $(CLEANER) -P deps/simple_components/lib_components.gpr
-	- $(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
-	- cd deps/zanyblue && "$(MAKE)" -C src clean
-	- $(RMS) build
-	- $(RMS) deps$(PATHSEP)MultiMarkdown-4
-	- $(RMS) deps$(PATHSEP)electron-quick-start
-	- $(RM) bin$(PATHSEP)multimarkdown
-	- $(RM) lib$(PATHSEP)libsqlite3.a
+	$(CLEANER) -P deps/simple_components/lib_components.gpr
+	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
+	cd deps/zanyblue && "$(MAKE)" -C src clean
+	$(RMS) build
+	$(RMS) deps$(PATHSEP)MultiMarkdown-4
+	$(RMS) deps$(PATHSEP)electron-quick-start
+	$(RM) bin$(PATHSEP)multimarkdown
+	$(RM) lib$(PATHSEP)libsqlite3.a
 
+.IGNORE: clean
 clean: clean_demo clean_tutorials clean_tests
-	- cd src && $(CLEANER) -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd ssl && $(CLEANER) -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tools && $(CLEANER) -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- $(RM) bin$(PATHSEP)*.db
-	- $(RM) bin$(PATHSEP)temp.txt
-	- $(RM) obj$(PATHSEP)gnoga_gtk_window.o
+	cd src && $(CLEANER) -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd ssl && $(CLEANER) -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(CLEANER) -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(RM) bin$(PATHSEP)*.db
+	$(RM) bin$(PATHSEP)temp.txt
+	$(RM) obj$(PATHSEP)gnoga_gtk_window.o
 
+.IGNORE: clean_demo
 clean_demo:
-	- cd demo/snake && $(CLEANER) -P snake.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/mine_detector && $(CLEANER) -P mine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/adaedit && $(CLEANER) -P adaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/adablog && $(CLEANER) -P adablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/connect_four && $(CLEANER) -P connect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/connect_four && $(RM) connectfour_messages*.*
-	- cd demo/linxtris && $(CLEANER) -P linxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/password_gen && $(CLEANER) -P password_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/random_int && $(CLEANER) -P random_int.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/adaothello && $(CLEANER) -P adaothello.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/leaves && $(CLEANER) -P leaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd demo/db_maker && $(CLEANER) -P db_maker.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/snake && $(CLEANER) -P snake.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/mine_detector && $(CLEANER) -P mine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/adaedit && $(CLEANER) -P adaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/adablog && $(CLEANER) -P adablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/connect_four && $(CLEANER) -P connect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/connect_four && $(RM) connectfour_messages*.*
+	cd demo/linxtris && $(CLEANER) -P linxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/password_gen && $(CLEANER) -P password_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/random_int && $(CLEANER) -P random_int.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/adaothello && $(CLEANER) -P adaothello.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/leaves && $(CLEANER) -P leaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/db_maker && $(CLEANER) -P db_maker.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+.IGNORE: clean_tutorials
 clean_tutorials:
-	- cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-02 && $(CLEANER) -P tutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-03 && $(CLEANER) -P tutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-04 && $(CLEANER) -P tutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-05 && $(CLEANER) -P tutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-06 && $(CLEANER) -P tutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-07 && $(CLEANER) -P tutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-08 && $(CLEANER) -P tutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-09 && $(CLEANER) -P tutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-10 && $(CLEANER) -P tutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-11 && $(CLEANER) -P tutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-02 && $(CLEANER) -P tutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-03 && $(CLEANER) -P tutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-04 && $(CLEANER) -P tutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-05 && $(CLEANER) -P tutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-06 && $(CLEANER) -P tutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-07 && $(CLEANER) -P tutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-08 && $(CLEANER) -P tutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-09 && $(CLEANER) -P tutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-10 && $(CLEANER) -P tutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-11 && $(CLEANER) -P tutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
+.IGNORE: clean_tests
 clean_tests:
-	- cd test && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd test_ssl && $(CLEANER) -P test_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd test/tickets/001 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd test/tickets/002 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd test/tickets/005 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd test/tickets/007 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd test/tickets/011 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd test/tickets/019 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test_ssl && $(CLEANER) -P test_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test/tickets/001 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test/tickets/002 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test/tickets/005 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test/tickets/007 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test/tickets/011 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test/tickets/019 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 rm-docs: gnoga
 	gnatdoc -P src/gnoga.gpr --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}

@@ -35,6 +35,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics.Elementary_Functions;
+with Ada.Strings.Fixed;
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.Pixi.Sprite is
@@ -71,13 +72,20 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    begin
       Sprite.ID (Sprite_ID, Gnoga.Types.Gnoga_ID);
       Sprite.Connection_ID (Parent.Connection_ID);
+      Sprite.Attach_Using_Parent
+      (Parent => Parent, ID => Sprite_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
          "gnoga['" &
          Sprite_ID &
          "'] = new PIXI.Sprite(gnoga['" &
          Texture.ID &
-         "']);");
+         "']);" &
+         " gnoga['" &
+         Sprite_ID &
+         "'].sendEvent = function (e) {ws.send ('" &
+         Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
+         "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
       Sprite.Acceleration (Row_Acceleration, Column_Acceleration);
@@ -105,13 +113,20 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    begin
       Sprite.ID (Sprite_ID, Gnoga.Types.Gnoga_ID);
       Sprite.Connection_ID (Parent.Connection_ID);
+      Sprite.Attach_Using_Parent
+      (Parent => Parent, ID => Sprite_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
          "gnoga['" &
          Sprite_ID &
          "'] = new PIXI.Sprite.fromImage('" &
          Image_Path &
-         "');");
+         "');" &
+         " gnoga['" &
+         Sprite_ID &
+         "'].sendEvent = function (e) {ws.send ('" &
+         Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
+         "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
       Sprite.Acceleration (Row_Acceleration, Column_Acceleration);
@@ -993,7 +1008,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Frame_Limit
      (Sprite                                   : in out Sprite_Type;
       Row_Min, Row_Max, Column_Min, Column_Max : in     Integer;
-      Effect                                   : in     Effect_Type)
+      Effect                                   : in     Effect_Type;
+      Handler                                  : in     Sprite_Event := null)
    is
    begin
       Sprite.Property ("gnoga_row_min", Row_Min);
@@ -1001,7 +1017,31 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Property ("gnoga_col_min", Column_Min);
       Sprite.Property ("gnoga_col_max", Column_Max);
       Sprite.Property ("gnoga_frame_effect", Effect_Type'Pos (Effect));
+      Sprite.On_Frame_Event := Handler;
    end Frame_Limit;
+
+   procedure Frame_Effect
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type)
+   is
+   begin
+      Sprite.Property ("gnoga_frame_effect", Effect_Type'Pos (Effect));
+   end Frame_Effect;
+
+   function Frame_Effect (Sprite : in Sprite_Type) return Effect_Type is
+   begin
+      return Effect_Type'Val (Sprite.Property ("gnoga_frame_effect"));
+   end Frame_Effect;
+
+   procedure Fire_On_Frame
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type)
+   is
+   begin
+      if Sprite.On_Frame_Event /= null then
+         Sprite.On_Frame_Event (Sprite, Effect);
+      end if;
+   end Fire_On_Frame;
 
    -----------------
    -- Angle_Limit --
@@ -1010,7 +1050,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Angle_Limit
      (Sprite               : in out Sprite_Type;
       Angle_Min, Angle_Max : in     Integer;
-      Effect               : in     Effect_Type)
+      Effect               : in     Effect_Type;
+      Handler              : in     Sprite_Event := null)
    is
    begin
       Sprite.Property
@@ -1018,7 +1059,55 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Property
       ("gnoga_angle_max", Float (Angle_Max) * Ada.Numerics.Pi / 180.0);
       Sprite.Property ("gnoga_angle_effect", Effect_Type'Pos (Effect));
+      Sprite.On_Angle_Event := Handler;
    end Angle_Limit;
+
+   procedure Angle_Effect
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type)
+   is
+   begin
+      Sprite.Property ("gnoga_angle_effect", Effect_Type'Pos (Effect));
+   end Angle_Effect;
+
+   function Angle_Effect (Sprite : in Sprite_Type) return Effect_Type is
+   begin
+      return Effect_Type'Val (Sprite.Property ("gnoga_angle_effect"));
+   end Angle_Effect;
+
+   procedure Fire_On_Angle
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type)
+   is
+   begin
+      if Sprite.On_Angle_Event /= null then
+         Sprite.On_Angle_Event (Sprite, Effect);
+      end if;
+   end Fire_On_Angle;
+
+   ----------------
+   -- On_Message --
+   ----------------
+
+   overriding procedure On_Message
+     (Object  : in out Sprite_Type;
+      Event   : in     String;
+      Message : in     String)
+   is
+   begin
+      -- Sprite Event --
+      if Event = "inside_frame" then
+         Object.Fire_On_Frame (Inside_Event_Effect);
+      elsif Event = "outside_frame" then
+         Object.Fire_On_Frame (Outside_Event_Effect);
+      elsif Event = "inside_angle" then
+         Object.Fire_On_Angle (Inside_Event_Effect);
+      elsif Event = "outside_angle" then
+         Object.Fire_On_Angle (Outside_Event_Effect);
+      else
+         Gnoga.Gui.Base.Base_Type (Object).On_Message (Event, Message);
+      end if;
+   end On_Message;
 
    ------------
    -- Delete --
@@ -1030,6 +1119,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Parent.Remove_Child (Sprite);
+      Sprite.Finalize;
    end Delete;
 
    ----------------

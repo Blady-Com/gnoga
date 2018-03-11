@@ -33,6 +33,46 @@ procedure Pixi_Sprite_Test is
       App.SP1.Motion (App.SP1.Row_Velocity, App.SP1.Column_Velocity + 1.0);
    end On_Click;
 
+   procedure On_Sprite_Frame_Event
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  :        Plugin.Pixi.Sprite.Effect_Type);
+
+   procedure On_Sprite_Frame_Event
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  :        Plugin.Pixi.Sprite.Effect_Type)
+   is
+      use type Plugin.Pixi.Sprite.Effect_Type;
+   begin
+      Log ("Frame: " & Event'Img);
+      if Event = Plugin.Pixi.Sprite.Inside_Event_Effect then
+         Plugin.Pixi.Sprite.Sprite_Type (Object).Frame_Effect
+         (Plugin.Pixi.Sprite.Outside_Event_Effect);
+      else
+         Plugin.Pixi.Sprite.Sprite_Type (Object).Frame_Effect
+         (Plugin.Pixi.Sprite.Inside_Event_Effect);
+      end if;
+   end On_Sprite_Frame_Event;
+
+   procedure On_Sprite_Angle_Event
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  :        Plugin.Pixi.Sprite.Effect_Type);
+
+   procedure On_Sprite_Angle_Event
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  :        Plugin.Pixi.Sprite.Effect_Type)
+   is
+      use type Plugin.Pixi.Sprite.Effect_Type;
+   begin
+      Log ("Angle: " & Event'Img);
+      if Event = Plugin.Pixi.Sprite.Inside_Event_Effect then
+         Plugin.Pixi.Sprite.Sprite_Type (Object).Angle_Effect
+         (Plugin.Pixi.Sprite.Outside_Event_Effect);
+      else
+         Plugin.Pixi.Sprite.Sprite_Type (Object).Angle_Effect
+         (Plugin.Pixi.Sprite.Inside_Event_Effect);
+      end if;
+   end On_Sprite_Angle_Event;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  :        access Gnoga.Application.Multi_Connect
@@ -118,26 +158,34 @@ procedure Pixi_Sprite_Test is
 
       App.SP1.Create (C, "img/E4a.png", 10, 10);
       --  C is taken as the container of sprites
+      App.SP1.Frame_Limit
+      (70, 90, 70, 90, Plugin.Pixi.Sprite
+         .Inside_Event_Effect, On_Sprite_Frame_Event'
+         Unrestricted_Access);
+      App.SP1.Angle_Limit
+      (-45, 45, Plugin.Pixi.Sprite
+         .Outside_Event_Effect, On_Sprite_Angle_Event'
+         Unrestricted_Access);
       App.SP1.Move_To (200, 200, 10.0, 10.0, Time_To_Wait);
-      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      Gnoga.Log ("Waiting: 2 +" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
 
       App.SP1.Move_Rel (-50, 30, 10.0, 10.0, Time_To_Wait);
-      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      Gnoga.Log ("Waiting: 2 +" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
 
       App.SP1.Pivot (App.SP1.Height / 2, App.SP1.Width / 2);
       App.SP1.Rotation (-60);
       App.SP1.Move_Rel (-120, -10.0, -10.0, Time_To_Wait);
-      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      Gnoga.Log ("Waiting: 2 +" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
 
       App.SP1.Rotate_Rel (150, 10.0, 10.0, Time_To_Wait);
-      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      Gnoga.Log ("Waiting: 2 +" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
 
       App.SP1.Rotate_To (0, 10.0, 10.0, Time_To_Wait);
-      Gnoga.Log ("Waiting: 2+" & Time_To_Wait'Img);
+      Gnoga.Log ("Waiting: 2 +" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
 
       App.SP3.Create (C, "", 100, 100);
@@ -165,8 +213,8 @@ procedure Pixi_Sprite_Test is
       G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
-      Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
-      Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
+      Gnoga.Log ("Distance: " & App.SP1.Distance (100, 100)'Img);
+      Gnoga.Log ("Rotation: " & App.SP1.Rotation'Img);
       App.SP1.Rotation_Acceleration (-10.0);
       delay 3.0;
       G.Line_Color (Gnoga.Types.Colors.Grey);
@@ -174,8 +222,8 @@ procedure Pixi_Sprite_Test is
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
       delay 3.0;
-      Gnoga.Log ("Distance:" & App.SP1.Distance (100, 100)'Img);
-      Gnoga.Log ("Rotation:" & App.SP1.Rotation'Img);
+      Gnoga.Log ("Distance: " & App.SP1.Distance (100, 100)'Img);
+      Gnoga.Log ("Rotation: " & App.SP1.Rotation'Img);
       App.SP1.Delete (C);
 
       App.SP1.Create (C, "img/E11a.png", 250, 10);
@@ -225,7 +273,7 @@ procedure Pixi_Sprite_Test is
          end if;
          delay 1.0;
          Gnoga.Log
-           ("Distance:" &
+           ("Distance: " &
             Gnoga.Gui.Plugin.Pixi.Sprite.Distance (App.SP1, App.SP2)'Img);
       end loop;
 

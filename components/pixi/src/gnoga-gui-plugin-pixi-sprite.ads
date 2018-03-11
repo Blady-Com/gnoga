@@ -41,6 +41,7 @@
 --  Sprites are updated on canvas at 60 FPS in most browsers.
 
 with Gnoga.Types;
+with Gnoga.Gui.Base;
 
 package Gnoga.Gui.Plugin.Pixi.Sprite is
 
@@ -52,7 +53,15 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    type Sprite_Access is access all Sprite_Type;
    type Pointer_To_Sprite_Class is access all Sprite_Type'Class;
 
-   type Effect_Type is (Null_Effect, Bounce_Effect, Loop_Effect);
+   type Effect_Type is
+     (Null_Effect,            --  None effect
+      Bounce_Effect,          --  Sprite bounces inside frame or angle limit
+      Loop_Effect,            --  Sprite loops around frame or angle limit
+      Inside_Event_Effect,    --  Event is sent when sprite is inside frame or angle and resets when fired
+      Outside_Event_Effect);  --  Event is sent when sprite is outside frame or angle and resets when fired
+   type Sprite_Event is access procedure
+     (Object       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Effect_Event : in     Effect_Type);
 
    -------------------------------------------------------------------------
    --  Sprite_Type - Creation Methods
@@ -330,14 +339,38 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Frame_Limit
      (Sprite                                   : in out Sprite_Type;
       Row_Min, Row_Max, Column_Min, Column_Max : in     Integer;
-      Effect                                   : in     Effect_Type);
+      Effect                                   : in     Effect_Type;
+      Handler                                  : in     Sprite_Event := null);
    --  Sets sprite frame limit with special effect
+
+   procedure Fire_On_Frame
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type);
+   --  Handle frame events
+
+   procedure Frame_Effect
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type);
+   function Frame_Effect (Sprite : in Sprite_Type) return Effect_Type;
+   --  The effect of frame limit
 
    procedure Angle_Limit
      (Sprite               : in out Sprite_Type;
       Angle_Min, Angle_Max : in     Integer;
-      Effect               : in     Effect_Type);
+      Effect               : in     Effect_Type;
+      Handler              : in     Sprite_Event := null);
    --  Sets sprite angle limit with special effect
+
+   procedure Fire_On_Angle
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type);
+   --  Handle angle events
+
+   procedure Angle_Effect
+     (Sprite : in out Sprite_Type;
+      Effect : in     Effect_Type);
+   function Angle_Effect (Sprite : in Sprite_Type) return Effect_Type;
+   --  The effect of angle limit
 
    procedure Delete
      (Sprite : in out Sprite_Type;
@@ -345,6 +378,15 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Delete_All (Parent : in out Container_Type'Class);
    --  Deletes sprites
 
+   overriding procedure On_Message
+     (Object  : in out Sprite_Type;
+      Event   : in     String;
+      Message : in     String);
+   --  Called on receiving any message or event from browser.
+
 private
-   type Sprite_Type is new Container_Type with null record;
+   type Sprite_Type is new Container_Type with record
+      On_Frame_Event : Sprite_Event := null;
+      On_Angle_Event : Sprite_Event := null;
+   end record;
 end Gnoga.Gui.Plugin.Pixi.Sprite;

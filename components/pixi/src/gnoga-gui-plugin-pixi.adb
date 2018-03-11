@@ -65,6 +65,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Renderer.ID (Renderer_ID, Gnoga.Types.Gnoga_ID);
       Renderer.Connection_ID (Canvas.Connection_ID);
+      Renderer.Attach_Using_Parent
+      (Parent => Canvas, ID => Renderer_ID, ID_Type => Gnoga.Types.Gnoga_ID);
 
       Gnoga.Server.Connection.Execute_Script
         (Renderer.Connection_ID,
@@ -183,6 +185,16 @@ package body Gnoga.Gui.Plugin.Pixi is
             "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
             "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};};};" &
 
+            " if (gnoga_sprite.gnoga_frame_effect == 3){" &
+            "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_min && gnoga_sprite.x < gnoga_sprite.gnoga_col_max &&" &
+            "       gnoga_sprite.y > gnoga_sprite.gnoga_row_min && gnoga_sprite.y < gnoga_sprite.gnoga_row_max)" &
+            "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('inside_frame')};};" &
+
+            " if (gnoga_sprite.gnoga_frame_effect == 4){" &
+            "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max  ||" &
+            "       gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
+            "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('outside_frame')};};" &
+
             " if (gnoga_sprite.gnoga_angle_effect == 1){" &
             "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
             "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
@@ -193,6 +205,16 @@ package body Gnoga.Gui.Plugin.Pixi is
             "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_max;" &
             "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
             "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_min;};" &
+
+            " if (gnoga_sprite.gnoga_angle_effect == 3){" &
+            "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_min &&" &
+            "       gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_max)" &
+            "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('inside_angle');}};" &
+
+            " if (gnoga_sprite.gnoga_angle_effect == 4){" &
+            "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
+            "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+            "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('outside_angle');}};" &
 
             " if (gnoga_sprite.gnoga_tfin > 0)" &
             "   {gnoga_sprite.gnoga_tcur += 1;" &
@@ -234,6 +256,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Container.ID (Container_ID, Gnoga.Types.Gnoga_ID);
       Container.Connection_ID (Renderer.Connection_ID);
+      Container.Attach_Using_Parent
+      (Parent                  =>
+         Renderer, ID          =>
+         Container_ID, ID_Type =>
+         Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Container.Connection_ID,
          "gnoga['" & Container_ID & "'] = new PIXI.Container();");
@@ -251,6 +278,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Container.ID (Container_ID, Gnoga.Types.Gnoga_ID);
       Container.Connection_ID (Parent.Connection_ID);
+      Container.Attach_Using_Parent
+      (Parent => Parent, ID => Container_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Container.Connection_ID,
          "gnoga['" & Container_ID & "'] = new PIXI.Container();");
@@ -486,6 +515,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Texture.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
       Texture.Connection_ID (Renderer.Connection_ID);
+      Texture.Attach_Using_Parent
+      (Parent => Renderer, ID => Texture_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
          "gnoga['" &
@@ -508,6 +539,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Texture.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
       Texture.Connection_ID (Renderer.Connection_ID);
+      Texture.Attach_Using_Parent
+      (Parent => Renderer, ID => Texture_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
          "gnoga['" &
@@ -688,6 +721,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Style.ID (Style_ID, Gnoga.Types.Gnoga_ID);
       Style.Connection_ID (Parent.Connection_ID);
+      Style.Attach_Using_Parent
+      (Parent => Parent, ID => Style_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Style.Connection_ID,
          "gnoga['" & Style_ID & "'] = new PIXI.TextStyle();");

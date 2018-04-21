@@ -5,7 +5,7 @@ package body GnogaCMD.Controller is
    procedure Default
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class)
    is
-      View : GnogaCMD.View.Default_View_Access :=
+      View : constant GnogaCMD.View.Default_View_Access :=
                new GnogaCMD.View.Default_View_Type;
    begin
       View.Dynamic;

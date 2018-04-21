@@ -1,11 +1,10 @@
 with Gnoga.Gui.Base;
 with Gnoga.Gui.View;
-with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.Element.Canvas.Context_2D;
 
-package GnogaBoard.View is   
-   
+package GnogaBoard.View is
+
    type Default_View_Type is new Gnoga.Gui.View.View_Type with
       record
          On_Change : Gnoga.Gui.Base.Action_Event := null;
@@ -23,10 +22,9 @@ package GnogaBoard.View is
    procedure Create
      (View    : in out Default_View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
-      ID      : in     String  := "");     
-   
+      ID      : in     String  := "");
+
    procedure Draw (View : in out Default_View_Type; X1, Y1, X2, Y2 : Integer);
    --  Draw a line from X1,Y1 to X2, Y2
-   
+
 end GnogaBoard.View;

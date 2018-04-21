@@ -3,7 +3,7 @@ with Gnoga.Gui.View.Console;
 with Gnoga.Gui.Element.Form;
 
 package GnogaCMD.View is
-   
+
    type Default_View_Type is new Gnoga.Gui.View.Console.Console_View_Type with
       record
          Entry_Form : Gnoga.Gui.Element.Form.Form_Type;
@@ -18,7 +18,6 @@ package GnogaCMD.View is
    procedure Create
      (View    : in out Default_View_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Attach  : in     Boolean := True;
       ID      : in     String  := "");
 
 end GnogaCMD.View;

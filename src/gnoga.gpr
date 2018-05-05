@@ -11,7 +11,14 @@ project Gnoga is
    for Library_Kind use "static";
 
    package Naming is
-      for Body ("Gnoga.Application.Open_command") use "gnoga-application." & Settings.Build_Target;
+      case Settings.Build_Target is
+         when "Windows" =>
+            for Body ("Gnoga.Application.Open_command") use "gnoga-application.windows";
+         when "OSX" =>
+            for Body ("Gnoga.Application.Open_command") use "gnoga-application.osx";
+         when others =>
+            for Body ("Gnoga.Application.Open_command") use "gnoga-application.linux";
+      end case;
    end Naming;
 
    package Compiler renames Settings.Compiler;

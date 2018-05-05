@@ -389,4 +389,10 @@ private
       On_Frame_Event : Sprite_Event := null;
       On_Angle_Event : Sprite_Event := null;
    end record;
+
+   procedure Loop_Times
+     (Sprite         : in out Sprite_Type;
+      Current, Final :        Natural);
+   --  Sets both times current and final for move loop
+
 end Gnoga.Gui.Plugin.Pixi.Sprite;

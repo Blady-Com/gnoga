@@ -79,7 +79,7 @@ endif
 
 PATHSEP=$(strip $(PATHSEP2))
 
-ifeq ($(PRJ_TARGET),Windows)
+ifeq ($(BUILD_OS),Windows)
 	GPR_PROJECT_PATH_SEP=;
 else
 	GPR_PROJECT_PATH_SEP=:
@@ -145,7 +145,7 @@ sqlite3: lib/libsqlite3.a
 # Zanyblue with DEBUG on
 zanyblue:
 	- cd deps/zanyblue/src && "$(MAKE)" BUILD=Debug APPDIRS="zbmcompile zbinfo"
-	- cd deps/zanyblue/src && "$(MAKE)" INSTALL_DIR=../../../build APPDIRS="zbmcompile zbinfo" install
+	- cd deps/zanyblue/src && "$(MAKE)" INSTALL_DIR="$(CWD)/build" APPDIRS="zbmcompile zbinfo" install
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr

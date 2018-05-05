@@ -982,7 +982,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Gnoga.Server.Connection.Execute_Script
         (Anchor.Connection_ID,
          "gnoga['" & Anchor_ID & "'] = " & Parent.Editor_Var & "." & "getSession().getDocument().createAnchor(" &
-           Row'Img & ',' & Column'Image & ");");
+           Row'Img & ',' & Column'Img & ");");
    end Create;
 
    --------------

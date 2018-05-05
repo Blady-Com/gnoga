@@ -51,11 +51,6 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
      (Integer (Angle * 180.0 / Ada.Numerics.Pi));
    --  Converts integer angle in degree to radian.
 
-   procedure Loop_Times
-     (Sprite         : in out Sprite_Type;
-      Current, Final :        Natural);
-   --  Sets both times current and final for move loop
-
    ------------
    -- Create --
    ------------

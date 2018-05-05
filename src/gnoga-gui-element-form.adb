@@ -142,7 +142,11 @@ package body Gnoga.Gui.Element.Form is
       Value : in  Boolean := True)
    is
    begin
-      Form.Property ("autocomplete", Value);
+      if Value then
+         Form.Property ("autocomplete", "on");
+      else
+         Form.Property ("autocomplete", "off");
+      end if;
    end Autocomplete;
 
    ------------------
@@ -151,7 +155,7 @@ package body Gnoga.Gui.Element.Form is
 
    function Autocomplete (Form : Form_Type) return Boolean is
    begin
-      return Form.Property ("autocomplete");
+      return Form.Property ("autocomplete") = "on";
    end Autocomplete;
 
    ------------------------
@@ -258,7 +262,11 @@ package body Gnoga.Gui.Element.Form is
       Value   : in     Boolean := True)
    is
    begin
-      Element.Property ("autocomplete", Value);
+      if Value then
+         Element.Property ("autocomplete", "on");
+      else
+         Element.Property ("autocomplete", "off");
+      end if;
    end Autocomplete;
 
    -------------------
@@ -267,7 +275,7 @@ package body Gnoga.Gui.Element.Form is
 
    function Autocomplete (Element : Form_Element_Type) return Boolean is
    begin
-      return Element.Property ("autocomplete");
+      return Element.Property ("autocomplete") = "on";
    end Autocomplete;
 
    ----------------

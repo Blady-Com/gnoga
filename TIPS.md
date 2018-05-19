@@ -96,7 +96,7 @@ Refresh implies a lost connection and new session on web browsers, that is expec
     Which replaces all class with the value of Class or the method
 
     Gnoga.Gui.Element.Add_Class
-    
+
     which will add a class but not remove other classes that may already apply to the element.
 
 1. Take care of latency, many subprograms do query the client side and wait for an answer, so they can be very slow if server and client are far from each other!
@@ -127,5 +127,17 @@ Use it as:
 1. You want to browse through Gnoga API, generate them with gnatdoc:
     $ make rm-docs
     $ open obj/gnatdoc/index.html
+
+1. The way to get window title and on close message to be localized at connection time is to add the following code in your On_Connect subprogram:
+. Get the browser language
+. Make a Zanyblue locale with it and the encoding Latin-1 for Ada String type
+. Change title and on close message via direct API with previous locale and localized messages from Zanyblue
+Example:
+    Page.Locale := ZanyBlue.Text.Locales.Make_Locale_Narrow (Gnoga.Gui.Navigator.Language (Main_Window) & ".ISO8859-1");
+    Main_Window.Document.Title (Format_TITL (Page.Locale));
+    Gnoga.Server.Connection.HTML_On_Close (Main_Window.Connection_ID, Format_APPE (Page.Locale));
+
+1. If sqlite is not provided by your system, just do:
+make sqlite3
 
 1. next tip...

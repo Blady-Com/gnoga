@@ -1,5 +1,15 @@
-20171031 - Gnoga V1.3a:
+2018xxxx - Gnoga V1.3a:
 
+- TIPS: updated.
+- INSTALL: rework the wording.
+- Makefile:
+  . Add GPS launch command for Windows user.
+  . Fix some regression using XMLAda and SQLite3.
+  . Fix some issues with Zanyblue and Windows.
+  . Fix GPR_PROJECT_PATH separator issue for Windows users.
+  . Take care of spaces in paths.
+  . Set "inst_folder" for default installation directory.
+  . Fix issues reported by Jeremiah Breeden.
 - Fix Documentation_Dir obsolescence.
 - Update TODO, HISTORY and TIPS.
 

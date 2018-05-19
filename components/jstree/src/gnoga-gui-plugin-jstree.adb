@@ -121,8 +121,9 @@ package body Gnoga.Gui.Plugin.JSTree is
       ID     : in     String := "")
    is
    begin
-      Tree.View := new Gnoga.Gui.View.View_Type;
+      Tree.View := new JSTree_View_Type;
       Tree.View.Create (Parent, ID);
+      Tree.View.Parent_Tree := Tree'Unchecked_Access;
       Tree.Create (Tree.View.all);
    end Add_Root_Tree;
 
@@ -138,8 +139,9 @@ package body Gnoga.Gui.Plugin.JSTree is
    is
    begin
       Tree      := new JSTree_Type;
-      Tree.View := new Gnoga.Gui.View.View_Type;
+      Tree.View := new JSTree_View_Type;
       Tree.View.Create (Parent, ID);
+      Tree.View.Parent_Tree := Tree;
       JSTree_Access (Tree.View.New_Element (Name, Tree)).Create
       (Tree.View.all);
    end New_Root_Tree;
@@ -313,5 +315,321 @@ package body Gnoga.Gui.Plugin.JSTree is
    begin
       Tree.View.jQuery_Execute ("jstree(" & Build_Options (Options) & ")");
    end Display_Tree;
+
+   ------------------
+   -- On_Open_Node --
+   ------------------
+
+   procedure On_Open_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event)
+   is
+      use type Gnoga.Gui.Base.Action_Event;
+   begin
+      if Tree.View.On_Open_Node_Event /= null then
+         Tree.View.Unbind_Event ("after_open.jstree");
+      end if;
+
+      Tree.View.On_Open_Node_Event := Handler;
+
+      if Handler /= null then
+         Tree.View.Bind_Event
+         (Event                          =>
+            "after_open.jstree", Message =>
+            "", Script                   =>
+            "data.node.text");
+      end if;
+   end On_Open_Node_Handler;
+
+   procedure Fire_On_Open_Node (View : in out JSTree_View_Type; Node : String);
+
+   procedure Fire_On_Open_Node
+     (View : in out JSTree_View_Type;
+      Node :        String)
+   is
+      use type Gnoga.Gui.Base.Action_Event;
+   begin
+      if View.On_Open_Node_Event /= null then
+         View.On_Open_Node_Event (View.Parent_Tree.all, Node);
+      end if;
+   end Fire_On_Open_Node;
+
+   procedure Fire_On_Open_Node (Tree : in out JSTree_Type; Node : String) is
+   begin
+      Tree.View.Fire_On_Open_Node (Node);
+   end Fire_On_Open_Node;
+
+   ------------------
+   -- On_Close_Node --
+   ------------------
+
+   procedure On_Close_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event)
+   is
+      use type Gnoga.Gui.Base.Action_Event;
+   begin
+      if Tree.View.On_Close_Node_Event /= null then
+         Tree.View.Unbind_Event ("after_close.jstree");
+      end if;
+
+      Tree.View.On_Close_Node_Event := Handler;
+
+      if Handler /= null then
+         Tree.View.Bind_Event
+         (Event                           =>
+            "after_close.jstree", Message =>
+            "", Script                    =>
+            "data.node.text");
+      end if;
+   end On_Close_Node_Handler;
+
+   procedure Fire_On_Close_Node
+     (View : in out JSTree_View_Type;
+      Node :        String);
+
+   procedure Fire_On_Close_Node
+     (View : in out JSTree_View_Type;
+      Node :        String)
+   is
+      use type Gnoga.Gui.Base.Action_Event;
+   begin
+      if View.On_Close_Node_Event /= null then
+         View.On_Close_Node_Event (View.Parent_Tree.all, Node);
+      end if;
+   end Fire_On_Close_Node;
+
+   procedure Fire_On_Close_Node (Tree : in out JSTree_Type; Node : String) is
+      use type Gnoga.Gui.Base.Action_Event;
+   begin
+      Tree.View.Fire_On_Close_Node (Node);
+   end Fire_On_Close_Node;
+
+   ------------------
+   -- On_Seclect_Node --
+   ------------------
+
+   procedure On_Select_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event)
+   is
+   begin
+      if Tree.View.On_Select_Node_Event /= null then
+         Tree.View.Unbind_Event ("select_node.jstree");
+      end if;
+
+      Tree.View.On_Select_Node_Event := Handler;
+
+      if Handler /= null then
+         Tree.View.Bind_Event
+         (Event                           =>
+            "select_node.jstree", Message =>
+            "", Eval                      =>
+            "var i, j, r = [];" &
+            "for(i = 0, j = data.selected.length; i < j; i++) {" &
+            "r.push(data.instance.get_node(data.selected[i]).text);" &
+            "}", Script =>
+            "r.join(', ')");
+      end if;
+   end On_Select_Node_Handler;
+
+   procedure Fire_On_Select_Node
+     (View : in out JSTree_View_Type;
+      Node : in     String);
+
+   procedure Fire_On_Select_Node
+     (View : in out JSTree_View_Type;
+      Node : in     String)
+   is
+   begin
+      if View.On_Select_Node_Event /= null then
+         View.On_Select_Node_Event (View.Parent_Tree.all, Node);
+      end if;
+   end Fire_On_Select_Node;
+
+   procedure Fire_On_Select_Node
+     (Tree : in out JSTree_Type;
+      Node : in     String)
+   is
+   begin
+      Tree.View.Fire_On_Select_Node (Node);
+   end Fire_On_Select_Node;
+
+   ------------------
+   -- On_Deseclect --
+   ------------------
+
+   procedure On_Deselect_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event)
+   is
+   begin
+      if Tree.View.On_Select_Node_Event /= null then
+         Tree.View.Unbind_Event ("deselect_node.jstree");
+      end if;
+
+      Tree.View.On_Select_Node_Event := Handler;
+
+      if Handler /= null then
+         Tree.View.Bind_Event
+         (Event                             =>
+            "deselect_node.jstree", Message =>
+            "", Eval                        =>
+            "var i, j, r = [];" &
+            "for(i = 0, j = data.selected.length; i < j; i++) {" &
+            "r.push(data.instance.get_node(data.selected[i]).text);" &
+            "}", Script =>
+            "r.join(', ')");
+      end if;
+   end On_Deselect_Node_Handler;
+
+   procedure Fire_On_Deselect_Node
+     (View : in out JSTree_View_Type;
+      Node : in     String);
+
+   procedure Fire_On_Deselect_Node
+     (View : in out JSTree_View_Type;
+      Node : in     String)
+   is
+   begin
+      if View.On_Select_Node_Event /= null then
+         View.On_Select_Node_Event (View.Parent_Tree.all, Node);
+      end if;
+   end Fire_On_Deselect_Node;
+
+   procedure Fire_On_Deselect_Node
+     (Tree : in out JSTree_Type;
+      Node : in     String)
+   is
+   begin
+      Tree.View.Fire_On_Select_Node (Node);
+   end Fire_On_Deselect_Node;
+
+   ------------------
+   -- On_Check_Node --
+   ------------------
+
+   procedure On_Check_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event)
+   is
+   begin
+      if Tree.View.On_Select_Node_Event /= null then
+         Tree.View.Unbind_Event ("check_node.jstree");
+      end if;
+
+      Tree.View.On_Select_Node_Event := Handler;
+
+      if Handler /= null then
+         Tree.View.Bind_Event
+         (Event                          =>
+            "check_node.jstree", Message =>
+            "", Eval                     =>
+            "var i, j, r = [];" &
+            "for(i = 0, j = data.selected.length; i < j; i++) {" &
+            "r.push(data.instance.get_node(data.selected[i]).text);" &
+            "}", Script =>
+            "r.join(', ')");
+      end if;
+   end On_Check_Node_Handler;
+
+   procedure Fire_On_Check_Node
+     (View     : in out JSTree_View_Type;
+      Selected : in     String);
+
+   procedure Fire_On_Check_Node
+     (View     : in out JSTree_View_Type;
+      Selected : in     String)
+   is
+   begin
+      if View.On_Check_Node_Event /= null then
+         View.On_Check_Node_Event (View.Parent_Tree.all, Selected);
+      end if;
+   end Fire_On_Check_Node;
+
+   procedure Fire_On_Check_Node
+     (Tree : in out JSTree_Type;
+      Node : in     String)
+   is
+   begin
+      Tree.View.Fire_On_Check_Node (Node);
+   end Fire_On_Check_Node;
+
+   ------------------
+   -- On_Uncheck_Node --
+   ------------------
+
+   procedure On_Uncheck_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event)
+   is
+   begin
+      if Tree.View.On_Select_Node_Event /= null then
+         Tree.View.Unbind_Event ("uncheck_node.jstree");
+      end if;
+
+      Tree.View.On_Select_Node_Event := Handler;
+
+      if Handler /= null then
+         Tree.View.Bind_Event
+         (Event                            =>
+            "uncheck_node.jstree", Message =>
+            "", Eval                       =>
+            "var i, j, r = [];" &
+            "for(i = 0, j = data.selected.length; i < j; i++) {" &
+            "r.push(data.instance.get_node(data.selected[i]).text);" &
+            "}", Script =>
+            "r.join(', ')");
+      end if;
+   end On_Uncheck_Node_Handler;
+
+   procedure Fire_On_Uncheck_Node
+     (View     : in out JSTree_View_Type;
+      Selected : in     String);
+
+   procedure Fire_On_Uncheck_Node
+     (View     : in out JSTree_View_Type;
+      Selected : in     String)
+   is
+   begin
+      if View.On_Uncheck_Node_Event /= null then
+         View.On_Uncheck_Node_Event (View.Parent_Tree.all, Selected);
+      end if;
+   end Fire_On_Uncheck_Node;
+
+   procedure Fire_On_Uncheck_Node
+     (Tree : in out JSTree_Type;
+      Node : in     String)
+   is
+   begin
+      Tree.View.Fire_On_Uncheck_Node (Node);
+   end Fire_On_Uncheck_Node;
+
+   ------------------
+   -- On_Message --
+   ------------------
+
+   overriding procedure On_Message
+     (Object  : in out JSTree_View_Type;
+      Event   : in     String;
+      Message : in     String)
+   is
+   begin
+      if Event = "after_open.jstree" then
+         Object.Fire_On_Open_Node (Message);
+      elsif Event = "after_close.jstree" then
+         Object.Fire_On_Close_Node (Message);
+      elsif Event = "select_node.jstree" then
+         Object.Fire_On_Select_Node (Message);
+      elsif Event = "deselect_node.jstree" then
+         Object.Fire_On_Deselect_Node (Message);
+      elsif Event = "check_node.jstree" then
+         Object.Fire_On_Check_Node (Message);
+      elsif Event = "uncheck_node.jstree" then
+         Object.Fire_On_Uncheck_Node (Message);
+      else
+         Object.On_Message (Event, Message);
+      end if;
+   end On_Message;
 
 end Gnoga.Gui.Plugin.JSTree;

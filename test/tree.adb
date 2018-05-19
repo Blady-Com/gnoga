@@ -105,6 +105,32 @@ procedure Tree is
       Connection  :        access Gnoga.Application.Multi_Connect
         .Connection_Holder_Type);
 
+   procedure On_Open
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Node   : in     String);
+
+   procedure On_Open
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Node   : in     String)
+   is
+      pragma Unreferenced (Object);
+   begin
+      Gnoga.Log ("Open/Close: " & Node);
+   end On_Open;
+
+   procedure On_Select
+     (Object   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Selected : in     String);
+
+   procedure On_Select
+     (Object   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Selected : in     String)
+   is
+      pragma Unreferenced (Object);
+   begin
+      Gnoga.Log ("Selected: " & Selected);
+   end On_Select;
+
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  :        access Gnoga.Application.Multi_Connect
@@ -153,6 +179,11 @@ procedure Tree is
       New_Sub_Tree_Item (Tree, "Node23", Sub_Tree);
       New_Item (Sub_Tree, "B3-Node1", Node_Item);
       New_Item (Sub_Tree, "B3-Node2", Node_Item);
+
+      Tree.On_Open_Node_Handler (On_Open'Unrestricted_Access);
+      Tree.On_Close_Node_Handler (On_Open'Unrestricted_Access);
+      Tree.On_Select_Node_Handler (On_Select'Unrestricted_Access);
+      Tree.On_Deselect_Node_Handler (On_Select'Unrestricted_Access);
 
       Display_Tree
         (Tree,

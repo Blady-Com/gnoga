@@ -44,6 +44,7 @@
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Element.List;
+with Gnoga.Gui.Base;
 
 package Gnoga.Gui.Plugin.JSTree is
 
@@ -107,6 +108,10 @@ package Gnoga.Gui.Plugin.JSTree is
       Core    : Core_Type;
       Plugins : Plugins_Type;
    end record;
+
+   type JSTree_Event is access procedure
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Node   : in     String);
 
    -------------------------------------------------------------------------
    --  JSTree_Type - Creation Methods
@@ -211,11 +216,65 @@ package Gnoga.Gui.Plugin.JSTree is
       Options : in Option_Type := (others => <>));
    --  Tree shape display
 
+   -------------------------------------------------------------------------
+   --  JSTree_Type - Event Handlers
+   -------------------------------------------------------------------------
+
+   procedure On_Open_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event);
+   procedure Fire_On_Open_Node (Tree : in out JSTree_Type; Node : in String);
+
+   procedure On_Close_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event);
+   procedure Fire_On_Close_Node (Tree : in out JSTree_Type; Node : in String);
+
+   procedure On_Select_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event);
+   procedure Fire_On_Select_Node (Tree : in out JSTree_Type; Node : in String);
+
+   procedure On_Deselect_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event);
+   procedure Fire_On_Deselect_Node
+     (Tree : in out JSTree_Type;
+      Node : in     String);
+
+   procedure On_Check_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event);
+   procedure Fire_On_Check_Node (Tree : in out JSTree_Type; Node : in String);
+
+   procedure On_Uncheck_Node_Handler
+     (Tree    : in out JSTree_Type;
+      Handler : in     JSTree_Event);
+   procedure Fire_On_Uncheck_Node
+     (Tree : in out JSTree_Type;
+      Node : in     String);
+
 private
+
+   type JSTree_View_Type is new Gnoga.Gui.View.View_Type with record
+      On_Open_Node_Event     : JSTree_Event  := null;
+      On_Close_Node_Event    : JSTree_Event  := null;
+      On_Select_Node_Event   : JSTree_Event  := null;
+      On_Deselect_Node_Event : JSTree_Event  := null;
+      On_Check_Node_Event    : JSTree_Event  := null;
+      On_Uncheck_Node_Event  : JSTree_Event  := null;
+      Parent_Tree            : JSTree_Access := null;
+   end record;
+
+   overriding procedure On_Message
+     (Object  : in out JSTree_View_Type;
+      Event   : in     String;
+      Message : in     String);
+   --  Called on receiving any message or event from browser.
 
    type JSTree_Type is new Gnoga.Gui.Element.List.Unordered_List_Type with
    record
-      View : Gnoga.Gui.View.View_Access;
+      View : access JSTree_View_Type;
    end record;
 
    type JSTree_Item_Type is new Gnoga.Gui.Element.List.List_Item_Type with

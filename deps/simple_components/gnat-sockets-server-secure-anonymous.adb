@@ -38,7 +38,7 @@ package body GNAT.Sockets.Server.Secure.Anonymous is
       Free (Factory.Priorities);
    end Finalize;
 
-   procedure Initalize
+   procedure Initialize
              (  Factory : in out Anonymous_Authentication_Factory
              )  is
    begin
@@ -47,7 +47,7 @@ package body GNAT.Sockets.Server.Secure.Anonymous is
       (  Factory.Parameters,
          Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY)
       );
-   end Initalize;
+   end Initialize;
 
    procedure Prepare
              (  Factory : in out Anonymous_Authentication_Factory;

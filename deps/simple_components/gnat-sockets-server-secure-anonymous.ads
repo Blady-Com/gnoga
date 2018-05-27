@@ -63,7 +63,7 @@ package GNAT.Sockets.Server.Secure.Anonymous is
 --
 -- Overriddes ...HTTP_Server.Secure...
 --
-   procedure Initalize
+   procedure Initialize
              (  Factory : in out Anonymous_Authentication_Factory
              );
 

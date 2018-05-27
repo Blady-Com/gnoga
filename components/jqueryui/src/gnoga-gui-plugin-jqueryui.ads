@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Gnoga.Gui.Window;
@@ -57,7 +57,7 @@ package Gnoga.Gui.Plugin.jQueryUI is
    procedure Load_jQueryUI
      (Window : in out Gnoga.Gui.Window.Window_Type'Class);
    --  Load jQueryUI CSS and Scripting code in to Window
-   --  This proceure loads them from Google's CDN
+   --  This procedure loads them from Google's CDN
    --  You can also modify boot.html to include the jQueryUI CSS
    --  and scripting code so that you can customize themes, etc.
 

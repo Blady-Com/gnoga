@@ -16,7 +16,7 @@
 --  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of --
 --  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                    --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Command_Line; use Ada.Command_Line;

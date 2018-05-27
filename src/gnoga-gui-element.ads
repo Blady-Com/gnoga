@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Containers.Vectors;
@@ -133,7 +133,7 @@ package Gnoga.Gui.Element is
 
    procedure Class_Name (Element : in out Element_Type; Value : in String);
    function Class_Name (Element : Element_Type) return String;
-   --  CSS Class name, can be multiple seperated by <space>
+   --  CSS Class name, can be multiple separated by <space>
    --  See Add_Class, Remove_Class and Toggle_Class Methods for adding and
    --  removing individual or groups of classes in an easier way.
 
@@ -208,7 +208,7 @@ package Gnoga.Gui.Element is
    --  take up space where it was in the layout. Use Element.Hidden to also
    --  remove from layout.
    --  Note: that each property, Visible, Hidden and Display (None) all work
-   --  independantly and do not reflect the actual client side visual state
+   --  independently and do not reflect the actual client side visual state
    --  but the property state. To check if an object is for sure not visible
    --  would require checking all three properties.
 
@@ -280,7 +280,7 @@ package Gnoga.Gui.Element is
    procedure Position (Element : in out Element_Type;
                        Value   : in     Position_Type);
    function Position (Element : Element_Type) return Position_Type;
-   --  Determins how the properties left, right, top and bottom are
+   --  Determines how the properties left, right, top and bottom are
    --  interpreted.
    --
    --  Static   - According to document flow, position properties have no
@@ -303,8 +303,8 @@ package Gnoga.Gui.Element is
    procedure Box_Sizing (Element : in out Element_Type;
                          Value   : in     Box_Sizing_Type);
    function Box_Sizing (Element : Element_Type) return Box_Sizing_Type;
-   --  Affects if height and width properteries represent just the content or
-   --  the border, marging, padding, scroll and conent area as a whole.
+   --  Affects if height and width properties represent just the content or
+   --  the border, margin, padding, scroll and content area as a whole.
    --  The default is Content_Box
 
    procedure Z_Index (Element : in out Element_Type;
@@ -472,7 +472,7 @@ package Gnoga.Gui.Element is
    --  the element itself, whichever is greater
 
    function Scroll_Height (Element : Element_Type) return Natural;
-   --  Eeight of an element's content, including content not visible on the
+   --  Height of an element's content, including content not visible on the
    --  screen due to overflow.
 
    procedure Scroll_Left (Element : in out Element_Type; Value : Integer);
@@ -500,7 +500,7 @@ package Gnoga.Gui.Element is
                       Alpha   : in     Gnoga.Types.Alpha_Type);
    function Opacity (Element : Element_Type) return Gnoga.Types.Alpha_Type;
 
-   --  Backgroud --
+   --  Background --
 
    type Background_Attachment_Type is (Scroll, Fixed, Local);
 
@@ -566,7 +566,7 @@ package Gnoga.Gui.Element is
    procedure Border_Radius (Element : in out Element_Type;
                             Radius  : in     String := "0");
    --  Curve of borders
-   --  Radius = length|%|initial|inhert
+   --  Radius = length|%|initial|inherit
 
    procedure Shadow (Element             : in out Element_Type;
                      Horizontal_Position : in     String;
@@ -637,7 +637,7 @@ package Gnoga.Gui.Element is
    procedure Auto_Place (Element : in out Element_Type; Value : Boolean);
    function Auto_Place (Element : Element_Type) return Boolean;
    --  Elements by default are created outside the DOM and therefore not
-   --  visisble. If Auto_Place is set to false _before_ Create is called on
+   --  visible. If Auto_Place is set to false _before_ Create is called on
    --  an Element, View's will not place the Element in to the DOM as is
    --  the View's default behavior. Custom widgets that have child widgets
    --  should be designed to respect this property. Auto_Place if set to

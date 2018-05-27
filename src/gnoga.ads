@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
@@ -47,10 +47,10 @@ package Gnoga is
    HTTP_Server_Name : constant String := "gnoga/" & Version;
 
    function Escape_Quotes (S : String) return String;
-   --  Escape quotes for Java Script.
+   --  Escape quotes for JavaScript.
 
    function Unescape_Quotes (S : String) return String;
-   --  Unescape a string quoted for Java Script
+   --  Unescape a string quoted for JavaScript
 
    function URL_Encode (S : String; Encoding : String := "") return String;
    function URL_Decode (S : String; Encoding : String := "") return String;

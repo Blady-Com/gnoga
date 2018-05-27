@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Finalization;
@@ -180,9 +180,9 @@ private
       end record;
 
    function Parse_Name (Name : String) return String;
-   --  prefix path from Set_Templat_Directory to Name
+   --  prefix path from Set_Template_Directory to Name
    --  unless Name contains a ':' (as in C:) or starts
-   --  with the OS speratory ('/' or '\' on Windows)
+   --  with the OS separator ('/' or '\' on Windows)
 
    Error_Queue : Gnoga.Types.Data_Array_Type;
    Info_Queue  : Gnoga.Types.Data_Array_Type;

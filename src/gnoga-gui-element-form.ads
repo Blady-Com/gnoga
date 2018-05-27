@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Gnoga.Gui.View;
@@ -126,7 +126,7 @@ package Gnoga.Gui.Element.Form is
    type Pointer_To_Form_Element_Class is access all Form_Element_Type'Class;
 
    type Data_List_Type is new Gnoga.Gui.View.View_Base_Type with private;
-   --  Forward decleration of Data_List_Type used for drop down /
+   --  Forward declaration of Data_List_Type used for drop down /
    --  autocomplete.
 
    -------------------------------------------------------------------------
@@ -937,8 +937,8 @@ package Gnoga.Gui.Element.Form is
    --  standard Element_Type.Place_* methods and can also be removed using
    --  Element.Remove
    --  Selection can be an element of Selection_Type or Option_Group_Type
-   --  NOTE: A few browsers allow limitted styling of Element such as color
-   --        some do not allow any. Test accross your expected delivery
+   --  NOTE: A few browsers allow limited styling of Element such as color
+   --        some do not allow any. Test across your expected delivery
    --        platforms to insure the styling you use works as expected.
 
    -------------------------------------------------------------------------
@@ -985,7 +985,7 @@ package Gnoga.Gui.Element.Form is
                      Label     : in     String;
                      Disabled  : in     Boolean := False;
                      ID        : in     String := "");
-   --  Option Groups create a tree like selection hierachy in the Select.
+   --  Option Groups create a tree like selection hierarchy in the Select.
    --  once added
 
    -------------------------------------------------------------------------

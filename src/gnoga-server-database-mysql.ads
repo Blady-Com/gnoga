@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  This binding is to MySQL
@@ -76,7 +76,7 @@ package Gnoga.Server.Database.MySQL is
    overriding
    function Execute_Update (C : in out Connection; SQL : String)
                             return Natural;
-   --  Executes a SQL Query and retuns the number of affected rows
+   --  Executes a SQL Query and returns the number of affected rows
 
    overriding
    function Affected_Rows (C : Connection) return Natural;
@@ -88,7 +88,7 @@ package Gnoga.Server.Database.MySQL is
 
    overriding
    function Error_Message (C : Connection) return String;
-   --  Returns the last error message that has occured on this connection
+   --  Returns the last error message that has occurred on this connection
 
    overriding
    function List_Of_Tables (C : Connection) return Gnoga.Types.Data_Array_Type;

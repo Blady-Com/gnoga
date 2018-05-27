@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Gnoga.Server.Connection;
@@ -47,7 +47,7 @@ package body Gnoga.Client.Storage is
    procedure Execute (Storage : in out Storage_Type'Class; Method : in String);
    function Execute (Storage : Storage_Type'Class; Method : String)
                      return String;
-   --  Execute access to Storage on its Conneciton_ID
+   --  Execute access to Storage on its Connection_ID
 
    -------------
    -- Execute --
@@ -165,9 +165,9 @@ package body Gnoga.Client.Storage is
       return "localStorage";
    end Script_Accessor;
 
-   ----------------------
-   -- Sessionl_Storage --
-   ----------------------
+   ---------------------
+   -- Session_Storage --
+   ---------------------
 
    function Session_Storage (ID : Gnoga.Types.Connection_ID)
                              return Session_Storage_Type;

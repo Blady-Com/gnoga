@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 package body Gnoga.Gui.Plugin.JSTree is
@@ -359,9 +359,9 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.Fire_On_Open_Node (Node);
    end Fire_On_Open_Node;
 
-   ------------------
+   -------------------
    -- On_Close_Node --
-   ------------------
+   -------------------
 
    procedure On_Close_Node_Handler
      (Tree    : in out JSTree_Type;
@@ -405,9 +405,9 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.Fire_On_Close_Node (Node);
    end Fire_On_Close_Node;
 
-   ------------------
-   -- On_Seclect_Node --
-   ------------------
+   --------------------
+   -- On_Select_Node --
+   --------------------
 
    procedure On_Select_Node_Handler
      (Tree    : in out JSTree_Type;
@@ -455,9 +455,9 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.Fire_On_Select_Node (Node);
    end Fire_On_Select_Node;
 
-   ------------------
-   -- On_Deseclect --
-   ------------------
+   ----------------------
+   -- On_Deselect_Node --
+   ----------------------
 
    procedure On_Deselect_Node_Handler
      (Tree    : in out JSTree_Type;
@@ -505,9 +505,9 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.Fire_On_Select_Node (Node);
    end Fire_On_Deselect_Node;
 
-   ------------------
+   -------------------
    -- On_Check_Node --
-   ------------------
+   -------------------
 
    procedure On_Check_Node_Handler
      (Tree    : in out JSTree_Type;
@@ -555,9 +555,9 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.Fire_On_Check_Node (Node);
    end Fire_On_Check_Node;
 
-   ------------------
+   ---------------------
    -- On_Uncheck_Node --
-   ------------------
+   ---------------------
 
    procedure On_Uncheck_Node_Handler
      (Tree    : in out JSTree_Type;
@@ -605,9 +605,9 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.Fire_On_Uncheck_Node (Node);
    end Fire_On_Uncheck_Node;
 
-   ------------------
+   ----------------
    -- On_Message --
-   ------------------
+   ----------------
 
    overriding procedure On_Message
      (Object  : in out JSTree_View_Type;

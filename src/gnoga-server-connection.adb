@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Directories;
@@ -93,10 +93,10 @@ package body Gnoga.Server.Connection is
       --  Preface to buffer
 
       function Get return String;
-      --  Retrive buffer
+      --  Retrieve buffer
 
       procedure Get_And_Clear (S : out Ada.Strings.Unbounded.Unbounded_String);
-      --  Retrive and clear buffer
+      --  Retrieve and clear buffer
 
       function Length return Natural;
       --  Size of buffer
@@ -790,12 +790,12 @@ package body Gnoga.Server.Connection is
       entry Hold when not Connected is
       begin
          null;
-         --  Semiphore does not reset itself to a blocking state.
+         --  Semaphore does not reset itself to a blocking state.
          --  This ensures that if Released before Hold that Hold
          --  will not block and connection will be released.
          --  It also allows for On_Connect Handler to not have to use
          --  Connection.Hold unless there is a desire code such as to
-         --  clean up after a connetion is ended.
+         --  clean up after a connection is ended.
       end Hold;
 
       procedure Release is
@@ -889,7 +889,7 @@ package body Gnoga.Server.Connection is
 
       function Find_Connection_ID (Socket : Socket_Type)
                                   return Gnoga.Types.Connection_ID;
-      --  Find the Connetion_ID related to Socket.
+      --  Find the Connection_ID related to Socket.
 
       procedure Delete_All_Connections;
       --  Called by Stop to close down server
@@ -1250,7 +1250,7 @@ package body Gnoga.Server.Connection is
 
    function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
                  return Boolean;
-   --  Properly identify equivelant objects
+   --  Properly identify equivalent objects
 
    function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
                  return Boolean
@@ -1507,7 +1507,7 @@ package body Gnoga.Server.Connection is
       entry Hold when not Connected is
       begin
          null;
-         --  Semiphore does not reset itself to a blocking state.
+         --  Semaphore does not reset itself to a blocking state.
          --  This ensures that if Released before Hold that Hold
          --  will not block and connection will be released.
       end Hold;
@@ -1540,7 +1540,7 @@ package body Gnoga.Server.Connection is
 
       procedure Release_Hold (ID     : in Gnoga.Types.Unique_ID;
                               Result : in String);
-      --  Delete conneciton hold with ID.
+      --  Delete connection hold with ID.
    private
       Script_Holder_Map : Script_Holder_Maps.Map;
       Script_ID         : Gnoga.Types.Unique_ID := 0;

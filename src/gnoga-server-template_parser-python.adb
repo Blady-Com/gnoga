@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Interfaces.C;
@@ -108,9 +108,9 @@ package body Gnoga.Server.Template_Parser.Python is
       end if;
    end Python_Encode_Value;
 
-   -------------------
-   -- Excute_Python --
-   -------------------
+   --------------------
+   -- Python_Execute --
+   --------------------
 
    protected Python_Execute is
       procedure Execute (Code   : in  String;

@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
@@ -46,7 +46,7 @@ package Gnoga.Server.Connection is
                          Port    : in Integer := 8080;
                          Boot    : in String  := "boot.html";
                          Verbose : in Boolean := True);
-   --  Ininialize connection to webserver and dispatchers
+   --  Initialize connection to webserver and dispatchers
    --  If Host = "" then server will listen on all network interfaces.
    --  If Host = "localhost" use will be constrained to local machine only.
    --  If Verbose then display start up details.
@@ -90,7 +90,7 @@ package Gnoga.Server.Connection is
    private
       Connected : Boolean := True;
    end Connection_Holder_Type;
-   --  This type is a binary semiphore starting in the seized stated.
+   --  This type is a binary semaphore starting in the seized stated.
    --  It is used to allow Connect_Event handlers to remain in memory
    --  until the web socket connection is closed.
 
@@ -135,7 +135,7 @@ package Gnoga.Server.Connection is
 
    procedure On_Post_Request_Handler (Event : Post_Request_Event);
    --  Event is called when a post request is received. Only those CGI
-   --  parameters in the common seperated Accepted_Parameters list will be
+   --  parameters in the common separated Accepted_Parameters list will be
    --  parsed and sent to the On_Post Event.
 
    type Post_Event is access
@@ -177,13 +177,13 @@ package Gnoga.Server.Connection is
                             HTML : in String);
    --  On connection closed or lost HTML to display in browser.
    --  By default pages are left in the state they were in and an alter box
-   --  announcing connection interuption is displayed.
+   --  announcing connection interruption is displayed.
 
    procedure New_Unique_ID (New_ID : out Gnoga.Types.Unique_ID);
    --  Generates a new unique ID in to New_ID
 
    function New_GID return String;
-   --  Genertes unique ID for use in browser storage of elements
+   --  Generates unique ID for use in browser storage of elements
 
    procedure Add_To_Message_Queue
      (Object : in out Gnoga.Gui.Base.Base_Type'Class);

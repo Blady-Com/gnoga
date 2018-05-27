@@ -25,7 +25,7 @@
 --  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see   --
 --  <http://www.gnu.org/licenses/>.                                         --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 package Gnoga_Make is
@@ -50,7 +50,7 @@ package Gnoga_Make is
    procedure New_Application (App_Name          : in String;
                               App_Template_Name : in String);
    --  Copy new_application template directory and make appropriate project
-   --  name subsitutions
+   --  name substitutions
 
    procedure New_View (App_Name           : in String;
                        View_Name          : in String;

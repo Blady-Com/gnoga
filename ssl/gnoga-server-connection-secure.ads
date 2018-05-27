@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 package Gnoga.Server.Connection.Secure is
@@ -42,7 +42,7 @@ package Gnoga.Server.Connection.Secure is
       Key_File         : String;
       Port             : Integer := 443;
       Disable_Insecure : Boolean := False);
-   --  Register_Secure_Server should be called before the Initilize is
+   --  Register_Secure_Server should be called before the Initialize is
    --  called on the application. Your gpr project file should have:
    --  with "..path_to_gnoga_ssl../gnoga_secure.gpr";
    --  Once called an https listener will be set on Port

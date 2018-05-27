@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  General binding to Boot Strap
@@ -57,7 +57,7 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    procedure Load_Boot_Strap
      (Window : in out Gnoga.Gui.Window.Window_Type'Class);
    --  Load Boot Strap CSS and Scripting code in to Window
-   --  This proceure loads them from MaxCDN
+   --  This procedure loads them from MaxCDN
    --  You can also modify boot.html to include them directly
    --  See boot_bootstrap3.html for an example.
 
@@ -102,7 +102,7 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    --  Bootstrap uses a responsive 12 column grid, with each View_Type taking
    --  from 1 to 12 columns of each row in the grid.
    --  This allows for the screen width gracefully reduce or expand placing
-   --  some columnd in a row below each other as needed to fit the width.
+   --  some columns in a row below each other as needed to fit the width.
    --
    --  Create a Row_Type then Create your Views with Row_Type as parent to
    --  to add them. Use Set_Columns immediately after create to specify
@@ -145,7 +145,7 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    --  buttons. See:
    --     http://www.w3schools.com/bootstrap/bootstrap_ref_css_buttons.asp
 
-   --  Some addtional classes of benefit:
+   --  Some additional classes of benefit:
    --     http://www.w3schools.com/bootstrap/bootstrap_ref_css_text.asp
    --     http://www.w3schools.com/bootstrap/bootstrap_ref_css_helpers.asp
    --     http://www.w3schools.com/bootstrap/bootstrap_ref_css_images.asp

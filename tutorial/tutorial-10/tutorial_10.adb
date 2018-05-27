@@ -27,7 +27,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 procedure Tutorial_10 is
    pragma Linker_Options ("-lsqlite3");
    --  This linker option is needed to link to the database engine's library.
-   --  For example if using the MySQL implementation of the datbase bindings
+   --  For example if using the MySQL implementation of the database bindings
    --  the option would be -lmysqlclient instead. The option can be specified
    --  as part of the build instead.
 

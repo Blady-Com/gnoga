@@ -25,7 +25,7 @@
 --  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see   --
 --  <http://www.gnu.org/licenses/>.                                         --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Text_IO; use Ada.Text_IO;

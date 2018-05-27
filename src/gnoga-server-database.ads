@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  Abstract class for database access. Use one of the specific implementations
@@ -65,7 +65,7 @@ package Gnoga.Server.Database is
    --  Returns the last value assigned to an auto increment field upon insert
 
    function Error_Message (C : Connection) return String is abstract;
-   --  Returns the last error message that has occured on this connection
+   --  Returns the last error message that has occurred on this connection
 
    function List_Of_Tables (C : Connection)
                             return Gnoga.Types.Data_Array_Type is abstract;
@@ -112,7 +112,7 @@ package Gnoga.Server.Database is
    function Field_Options (Field : Field_Description) return String;
    --  Returns the field options portion of a data type, for example:
    --  If the Field.Data_Type = enum('N','Y') then will return 'N','Y'
-   --  as this is described in the datbase in the same way as field
+   --  as this is described in the database in the same way as field
    --  size, this may be used for a string representation of the size
    --  as well. For example varchar(80) will return the string 80
    --  This is also used for descriptions like decimal(10,2), etc.

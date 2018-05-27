@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  Views are used to handle auto insertion of objects in to the DOM and
@@ -61,7 +61,7 @@ package Gnoga.Gui.View is
    --  Deallocate any child element that was marked Dynamic before
    --  being added to View. Child element's marked as Dynamic by calling
    --  Element_Type.Dynamic then created with a View as the parent should
-   --  never be dealocated. If you plan on dealocating a child element in
+   --  never be deallocated. If you plan on deallocating a child element in
    --  your code, do not mark as Dynamic.
 
    -------------------------------------------------------------------------
@@ -162,7 +162,7 @@ package Gnoga.Gui.View is
       Element : access Gnoga.Gui.Element.Element_Type'Class)
       return Gnoga.Gui.Element.Pointer_To_Element_Class;
    --  Only use for dynamic objects.
-   --  Marks Element as Dynamic and returns Element. This is primarly of value
+   --  Marks Element as Dynamic and returns Element. This is primarily of value
    --  for creating a dynamic element that you will no longer interact with
    --  in the future since all reference is lost. Use New_Element if future
    --  named access desired instead. Use with the following idiom:
@@ -193,7 +193,7 @@ package Gnoga.Gui.View is
       Child : in out Gnoga.Gui.Base.Base_Type'Class);
    --  All children of views should be Element_Type'Class, if it is not
    --  it will be ignored. Any child professing the View as its parent
-   --  will automatially have Element.Place_Inside_Bottom_Of (View) applied
+   --  will automatically have Element.Place_Inside_Bottom_Of (View) applied
    --  to it.
    --  Note: Only if an element is marked as dynamic before its Create is
    --  called it is slated for garbage collection by View.

@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  MNMenu Ada API is inspired from a JQuery plugin to create dropdown menus from <ul> lists.
@@ -120,7 +120,7 @@ package Gnoga.Gui.Plugin.MNMenu is
       Item     : in out Gnoga.Gui.Plugin.MNMenu.MNMenu_Item_Type'Class;
       Sub_Menu : in out Gnoga.Gui.Plugin.MNMenu.MNMenu_Type'Class;
       ID       : in     String := "");
-   --  Submenu creation togather with item.
+   --  Submenu creation together with item.
 
    procedure Display_Menu (Menu : in out Gnoga.Gui.Plugin.MNMenu.MNMenu_Type);
    --  Menu shape display
@@ -137,7 +137,7 @@ package Gnoga.Gui.Plugin.MNMenu is
       Name     : in     String;
       Sub_Menu :    out Gnoga.Gui.Plugin.MNMenu.MNMenu_Access;
       ID       : in     String := "");
-   --  Submenu creation togather with item. Only use for dynamic objects.
+   --  Submenu creation together with item. Only use for dynamic objects.
 
    procedure Display_Menu
      (Menu : in not null Gnoga.Gui.Plugin.MNMenu.MNMenu_Access);

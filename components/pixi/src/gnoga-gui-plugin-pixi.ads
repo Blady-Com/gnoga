@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Gnoga.Types.Colors;
@@ -43,7 +43,7 @@ with Gnoga.Types;
 
 package Gnoga.Gui.Plugin.Pixi is
 
-   --  PIXI Ada API is inpired by https://github.com/pixijs/pixi.js.
+   --  PIXI Ada API is inspired by https://github.com/pixijs/pixi.js.
    --  Pixi.js is released under the (http://opensource.org/licenses/MIT) MIT License.
    --  Some comments come from Pixi.js documentation:
    --  Pixi.js is a rendering library that will allow you to create rich, interactive graphics,
@@ -310,11 +310,11 @@ package Gnoga.Gui.Plugin.Pixi is
    --  eg ['#000000','#FFFFFF']
 
    --  fillGradientType number PIXI.TEXT_GRADIENT.LINEAR_VERTICAL default
-   --  If fill is an array of colours
+   --  If fill is an array of colors
    --  to create a gradient, this can change the type/direction of the gradient. See PIXI.TEXT_GRADIENT
 
    --  fillGradientStops Array.<number>  default
-   --  If fill is an array of colours to create a gradient, this array can set
+   --  If fill is an array of colors to create a gradient, this array can set
    --  the stop points (numbers between 0 and 1) for the color, overriding the default behaviour of evenly spacing them.
 
    procedure Font_Family (Style : in out Style_Type; Value : in String);

@@ -29,17 +29,17 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Gnoga.Gui.Window;
 
 package Gnoga.Gui.Screen is
 
-   --  Access informaton about user's screen
+   --  Access information about user's screen
 
    function Width (Window : Gnoga.Gui.Window.Window_Type'Class)
                    return Integer;

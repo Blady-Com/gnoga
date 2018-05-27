@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  Sprite package provides API to set some motion properties to an image on a canvas.
@@ -81,7 +81,7 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
       Row, Column                           : in     Integer;
       Row_Velocity, Column_Velocity         : in     Velocity_Type     := 0.0;
       Row_Acceleration, Column_Acceleration : in     Acceleration_Type := 0.0);
-   --  Defines sprite, specifying the image to draw, the position, the motion (optionnal)
+   --  Defines sprite, specifying the image to draw, the position, the motion (optional)
    --  and the acceleration (optional)
    --  Path is defined from application root path
 
@@ -273,12 +273,12 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
       Tolerance   : in Natural) return Boolean;
    --  Determines if two sprites or a sprite and a point on the screen at or near the same location on the screen
    --  Tolerance is in the same unit as position
-   --  Tolerance of 0 indicates the exact coincdence
+   --  Tolerance of 0 indicates the exact coincidence
 
    function Overlap_Point
      (Sprite      : in Sprite_Type;
       Row, Column : in Integer) return Boolean;
-   --  Retuns if specified point is within the sprite surface
+   --  Returns if specified point is within the sprite surface
 
    function Distance (Sprite1, Sprite2 : in Sprite_Type) return Natural;
    function Distance

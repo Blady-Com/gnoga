@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  An Active Record implementation for Ada similar to that used in Rails
@@ -57,7 +57,7 @@ package Gnoga.Server.Model is
 
    procedure Values (A   : in out Active_Record;
                      Map : in     Gnoga.Types.Data_Map_Type);
-   --  Set table values from Map ingoring any extra key/value pairs in Map
+   --  Set table values from Map ignoring any extra key/value pairs in Map
    --  not found in record schema
 
    function Values (A : Active_Record) return Gnoga.Types.Data_Map_Type;

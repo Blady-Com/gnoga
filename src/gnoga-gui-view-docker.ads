@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  Docker allows for laying out child views by docking them to the sides
@@ -65,7 +65,7 @@ package Gnoga.Gui.View.Docker is
    --
    --  If the Docker is not the top level view (or its Parent(s) are not
    --  Docker(s)) it will not be resized automatically by its Parent
-   --  nor will it receive the Resive events from Parent by default. Therefore
+   --  nor will it receive the Resize events from Parent by default. Therefore
    --  if the Docker is not the child of another Docker or the Window's View
    --  it must be sized after creation and if changes in size to the Parent are
    --  to affect the size of the Docker the Parent element's (and perhaps all
@@ -76,7 +76,7 @@ package Gnoga.Gui.View.Docker is
    --     Docked Views are set to Position (Absolute) when added. In order to
    --     use a Docker_View_Type statically positioned the position should be
    --     set Position (Relative) in order to ensure the Docks are positioned
-   --     relative to itm since Position (Absolute) elements are positioned
+   --     relative to it since Position (Absolute) elements are positioned
    --     relative to the first non Position (Static) element above them.
 
    -------------------------------------------------------------------------

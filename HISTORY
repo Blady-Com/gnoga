@@ -14,29 +14,29 @@
 
 - AUTHORS, HISTORY and TIPS updated; miscellaneous fixes.
 - Update Jeff Carter's demos from Github. Turn off all style checks.
-- Update TIPS and TODO, Javascript fix for Firefox.
+- Update TIPS and TODO, JavaScript fix for Firefox.
 - Added Gnoga in JavaFX, a contribution from Jeremiah Breeden.
 - Added tutorial for forms.
 - Added TIPS.
 
 20170716 - Gnoga V1.3-alpha:
 
-- JQuery UI Javascript source upgrade version 1.12.1.
+- JQuery UI JavaScript source upgrade version 1.12.1.
 - Modal dialog support from a contribution of Jeremiah Breeden.
 - Enhancement from Miguel Ángel Oliván which bring automatic log file flushing if specified and date / time in log to file.
 - Fix multiple calls to EscapeQuotes issue see ticket #37.
 - Fix from Gautier to avoid some exception issues without checks (-gnatp).
 - Fix in Adablog demo: call Disable_Auto_Set_View to prevent elements taking all the window place.
-- JQuery Javascript source upgrade version 3.2.0.
-- ACE Javascript source (2016.12.03 Version 1.2.6) is now embedded in Gnoga.
+- JQuery JavaScript source upgrade version 3.2.0.
+- ACE JavaScript source (2016.12.03 Version 1.2.6) is now embedded in Gnoga.
 - Update Jeff Carter's Pragmarc from Github.
 - Update Jeff Carter's demos from Github.
 - Added the possibility to get the number of active connections.
 - Added TIPS.
 - Added DB_Maker with movies demo from Jeff Carter.
-- Add support to MNMenu javascript library (https://github.com/manusa/mnmenu).
+- Add support to MNMenu JavaScript library (https://github.com/manusa/mnmenu).
 - First demo based on PIXI plugin: Leaves a GNOGA application with a "match-3"-style game from Gautier de Montmollin.
-- Add support to PIXI javascript library (https://github.com/pixijs/pixi.js).
+- Add support to PIXI JavaScript library (https://github.com/pixijs/pixi.js).
 - Add coding rules checking with AdaControl (https://sourceforge.net/projects/adacontrol).
 - Add Sprite package to set some motion properties to an image on a canvas.
 - Add coding guidelines.

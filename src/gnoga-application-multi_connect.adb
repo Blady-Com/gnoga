@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Containers.Indefinite_Ordered_Maps;
@@ -51,7 +51,7 @@ package body Gnoga.Application.Multi_Connect is
      (ID         : in     Gnoga.Types.Connection_ID;
       Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
    --  Handle connections by creating Main_Window object and dispatching
-   --  to correct On_Connect_Handler based on Path. It is not neccessary
+   --  to correct On_Connect_Handler based on Path. It is not necessary
    --  to call Connection.Hold unless you wish to hold the connection and
    --  then following it's release run additional such as to clean up some
    --  dynamically created data, etc.

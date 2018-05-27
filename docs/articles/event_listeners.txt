@@ -1,6 +1,6 @@
 Event Listener Interfaces with Gnoga
 ====================================
-By Jeremiah Breedan
+By Jeremiah Breeden
 
 An option that I have used is to create event listener interface.  I extend the button class to include an event generator that maintains a list of listeners and I add an Add_Listener procedure so outside views can add themselves as listeners.  I create a handler that Gnoga expects but have that handler operate the generator to fire the events out of the button class.
 

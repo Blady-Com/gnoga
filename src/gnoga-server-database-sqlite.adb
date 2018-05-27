@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
@@ -78,7 +78,7 @@ package body Gnoga.Server.Database.SQLite is
       SQLITE_OPEN_CREATE    : constant := 16#4#;
 
       SQLITE_OPEN_NOMUTEX   : constant := 16#8000#;
-      --  Can only be used if datbase access is protected in app
+      --  Can only be used if database access is protected in app
 
       SQLITE_OPEN_FULLMUTEX : constant := 16#10000#;
       --  Serializes access to database, all use safe from multiple threads

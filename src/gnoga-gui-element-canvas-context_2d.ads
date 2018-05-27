@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
@@ -370,13 +370,13 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
                         Text       : in     String;
                         X, Y       : in     Integer;
                         Max_Length : in     Natural := 0);
-   --  Place Text and fill on Context at X, Y with Max_Lenght if > 0
+   --  Place Text and fill on Context at X, Y with Max_Length if > 0
 
    procedure Stroke_Text (Context    : in out Context_2D_Type;
                           Text       : in     String;
                           X, Y       : in     Integer;
                           Max_Length : in     Natural := 0);
-   --  Place Text without fill on Context at X, Y with Max_Lenght if > 0
+   --  Place Text without fill on Context at X, Y with Max_Length if > 0
 
    function Measure_Text_Width (Context : Context_2D_Type;
                                 Text    : String)

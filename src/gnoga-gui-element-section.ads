@@ -29,16 +29,16 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Gnoga.Gui.View;
 
 package Gnoga.Gui.Element.Section is
-   --  Section_Type is a View that describes a symantic section.
+   --  Section_Type is a View that describes a semantic section.
    --  Practically there is no difference with View_Type other than
    --  their underlying tag for styling purposes. Some sections
    --  have some default styling, e.g. as address being italic.

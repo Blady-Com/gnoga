@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
@@ -153,7 +153,7 @@ package Gnoga.Gui.Window is
    --  Before running Reattach you need to be sure that the gnoga websocket
    --  has been established on the launched page.
    --
-   --  Popups are highly unreliable and oustide of Google Chrome only work in
+   --  Popups are highly unreliable and outside of Google Chrome only work in
    --  limited ways beyond just a launch and forget situation.
 
    -------------------------------------------------------------------------

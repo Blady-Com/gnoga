@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 --  General binding to jQuery
@@ -77,7 +77,7 @@ package Gnoga.Gui.Plugin.jQuery is
    --  Object.Execute ("Some_Method()");
 
    function Execute (Object : jQuery_Type; Method : String) return String;
-   --  Return results of excuting method on jQuery Object as a String
+   --  Return results of executing method on jQuery Object as a String
 private
    type jQuery_Type is new Ada.Finalization.Limited_Controlled with
       record

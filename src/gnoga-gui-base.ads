@@ -29,10 +29,10 @@
 --  unit, or you link this unit with other files to produce an executable,  --
 --  this  unit  does not  by itself cause  the resulting executable to be   --
 --  covered by the GNU General Public License. This exception does not      --
---  however invalidate any other reasons why the executable file  might be  --
+--  however invalidate any other reasons why the executable file might be   --
 --  covered by the  GNU Public License.                                     --
 --                                                                          --
--- For more information please go to http://www.gnoga.com                   --
+--  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
 with Ada.Finalization;
@@ -208,7 +208,7 @@ package Gnoga.Gui.Base is
    --  will deallocate on finalization children that are marked as Dynamic
    --  _before_ being Created with the View as parent.
    --  See Gnoga.Gui.View
-   --  If you plan on dealocating a child element in your code, do not mark it
+   --  If you plan on deallocating a child element in your code, do not mark it
    --  as Dynamic. Marking Dynamic is for the purpose of automatic garbage
    --  collection by Gnoga's framework.
 
@@ -272,7 +272,7 @@ package Gnoga.Gui.Base is
    --  Base_Type - Event Handlers
    -------------------------------------------------------------------------
    --  When an event handler is set on any event, binding code will be sent
-   --  to the browser automatically for Gnoga to start receiving notifcations
+   --  to the browser automatically for Gnoga to start receiving notifications
    --  of the event. In theory any event can be set on any object not all
    --  will be fired by every object.
 
@@ -594,7 +594,7 @@ package Gnoga.Gui.Base is
    -------------------------------------------------------------------------
    --  Base_Type - Event Methods
    -------------------------------------------------------------------------
-   --  When overiding events, to ensure that the event handlers will still
+   --  When overriding events, to ensure that the event handlers will still
    --  be executed and internal functionality of the event is handled
    --  properly, always call the base class event method.
    --
@@ -639,22 +639,22 @@ package Gnoga.Gui.Base is
                          Eval    : in     String    := "";
                          Script  : in     String    := "";
                          Cancel  : in     Boolean   := False);
-   --  On Event occuring to Object Gnoga will fire Object.On_Message with
-   --  Event and Message, the result of Script is concatinated to Message.
+   --  On Event occurring to Object Gnoga will fire Object.On_Message with
+   --  Event and Message, the result of Script is concatenated to Message.
    --
-   --  Eval if set is java script to be run before processing the
+   --  Eval if set is JavaScript to be run before processing the
    --  return message which is the result of ("Message|" + Script).
    --  The Eval script has access to the event "e" and an optional event
    --  parameter "data". The Eval script must be terminated with a ';' if
    --  not a block statement.
    --
    --  If Cancel is true then JS will cancel the default behavior of Event
-   --  from occuring on browser. (e.g. stopping a form submit in onsubmit)
+   --  from occurring on browser. (e.g. stopping a form submit in onsubmit)
 
    procedure Bind_Event_Script (Object : in out Base_Type;
                                 Event  : in     String;
                                 Script : in     String);
-   --  On Event occuring to Object, the Script will be executed on browser.
+   --  On Event occurring to Object, the Script will be executed on browser.
 
    procedure Unbind_Event (Object : in out Base_Type;
                            Event  : in     String);

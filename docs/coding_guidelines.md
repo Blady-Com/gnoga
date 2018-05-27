@@ -175,7 +175,7 @@ Example:
 function To_RGBA_From_RGB_or_RGBA (Value : String) return RGBA_Type is
    use Ada.Strings.Fixed;
    S    : Integer   := Value'First;
-...   
+...
 ```
 ``` ada
 function Tab_Selected (Item : Tab_Item_Type) return Boolean
@@ -238,7 +238,7 @@ computations than the subprogram being described. (AV) But it should be shorter 
 
 
 ###14. Platform
-Implementation must target Linux, macOS and Windows platform. Underlying HTML, CSS, SVG and Javascript code must be conformant to https://www.w3.org/TR/ and executable at least with Firefox.
+Implementation must target Linux, macOS and Windows platform. Underlying HTML, CSS, SVG and JavaScript code must be conformant to https://www.w3.org/TR/ and executable at least with Firefox.
 
 ###15. Configuration management
 GIT is currently used on repository https://sourceforge.net/projects/gnoga.
@@ -263,7 +263,7 @@ $ make tests demo tutorials
 Interface shall not be compiler dependent and implementation should not be compiler dependent.
 Both shall compile at least with GNAT FSF.
 
->Discussion: (WP) I find it odd to ask for compiler independence at this point. When last I looked at Gnoga it depends on GNAT specific libraries and attributes (eg Unrestricted_Access). (DB) Well if someone is inspired that upgrade is doable. Most unrestricted access is just used in creating simple examples not in the framework. 
+>Discussion: (WP) I find it odd to ask for compiler independence at this point. When last I looked at Gnoga it depends on GNAT specific libraries and attributes (eg Unrestricted_Access). (DB) Well if someone is inspired that upgrade is doable. Most unrestricted access is just used in creating simple examples not in the framework.
 
 ###17. Language
 The Ada language standard used is Ada 2012 without restrictions.

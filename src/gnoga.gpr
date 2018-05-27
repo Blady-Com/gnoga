@@ -25,6 +25,10 @@ project Gnoga is
 
    package Binder renames Settings.Binder;
 
+   package Builder is
+      for Switches ("ada") use ("-j0");
+   end Builder;
+
    package Ide is
       for Default_Switches ("adacontrol") use ("-f", "../rules/gnoga.aru", "-s", "--", "-T../obj");
    end Ide;

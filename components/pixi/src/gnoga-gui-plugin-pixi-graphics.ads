@@ -253,7 +253,7 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    procedure Move_To (Graphics : in out Graphics_Type; X, Y : in Integer);
    --  Moves the current drawing position to x, y.
 
-   procedure Quadractic_Curve_To
+   procedure Quadratic_Curve_To
      (Graphics         : in out Graphics_Type;
       CP_X, CP_Y, X, Y : in     Integer);
    --  Calculate the points for a quadratic Bézier curve and then draws it.

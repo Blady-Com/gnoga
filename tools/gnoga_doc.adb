@@ -205,7 +205,7 @@ package body Gnoga_Doc is
                      Put_Line ("Type : " & S (L .. P));
                   end if;
                else
-                  Put_Line ("Type : Forward decleration of type.");
+                  Put_Line ("Type : Forward declaration of type.");
                end if;
 
                Get_To_EOL (S, P);

@@ -732,11 +732,11 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Graphics.Execute ("moveTo(" & X'Img & "," & Y'Img & ");");
    end Move_To;
 
-   -------------------------
-   -- Quadractic_Curve_To --
-   -------------------------
+   ------------------------
+   -- Quadratic_Curve_To --
+   ------------------------
 
-   procedure Quadractic_Curve_To
+   procedure Quadratic_Curve_To
      (Graphics         : in out Graphics_Type;
       CP_X, CP_Y, X, Y : in     Integer)
    is
@@ -751,6 +751,6 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
        "," &
        Y'Img &
        ");");
-   end Quadractic_Curve_To;
+   end Quadratic_Curve_To;
 
 end Gnoga.Gui.Plugin.Pixi.Graphics;

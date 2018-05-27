@@ -234,15 +234,15 @@ package Gnoga.Server.Database.SQLite is
    --  create the main database, if it is created by this session.
    --  Source: http://www.sqlite.org/pragma.html#pragma_full_column_names
 
-   procedure UTF8_STring (C : in out Connection; Active : Boolean := True);
-   function UTF8_STring (C : in out Connection) return Boolean;
+   procedure UTF8_String (C : in out Connection; Active : Boolean := True);
+   function UTF8_String (C : in out Connection) return Boolean;
    --  Property to treat String as UTF-8 (default) or treat String as Latin-1
 
 private
    type Connection is new Gnoga.Server.Database.Connection with
       record
          Server_ID : aliased SQLite_ID := null;
-         UTF8_STring : Boolean         := True;
+         UTF8_String : Boolean         := True;
          --  Consider string query parameter
          --  with UTF-8 encoding otherwise with Ada native Latin-1 encoding
       end record;
@@ -254,7 +254,7 @@ private
          Field_Count : Natural           := 0;
          Last_Result : Integer           := 0;
          First_Row   : Boolean           := False;
-         UTF8_STring : Boolean           := True;
+         UTF8_String : Boolean           := True;
          --  Consider string query result
          --  with UTF-8 encoding otherwise with Ada native Latin-1 encoding
       end record;

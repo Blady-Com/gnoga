@@ -204,7 +204,7 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
       Destination_Over, Destination_Atop, Destination_In, Destination_Out,
       Lighter, Copy, Xor_Copy);
 
-   procedure Glogal_Composite_Operation
+   procedure Global_Composite_Operation
      (Context : in out Context_2D_Type;
       Value   : in     Composite_Method_Type);
    --  How a new image are composited onto Context
@@ -298,8 +298,8 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    procedure Clip (Context : in out Context_2D_Type);
    --  Transforms the current path in to a clipping region
 
-   procedure Quadractic_Curve_To (Context           : in out Context_2D_Type;
-                                  CP_X, CP_Y, X, Y  : Integer);
+   procedure Quadratic_Curve_To (Context           : in out Context_2D_Type;
+                                 CP_X, CP_Y, X, Y  : Integer);
    --  Creates a quadratic Bézier curve, using control point CP_X, CP_Y to
    --  point X, Y.
 

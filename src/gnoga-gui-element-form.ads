@@ -45,7 +45,7 @@ package Gnoga.Gui.Element.Form is
 
    type Form_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Form_Access is access all Form_Type;
-   type Pointer_To_Botton_Class is access all Form_Type'Class;
+   type Pointer_To_Form_Class is access all Form_Type'Class;
 
    -------------------------------------------------------------------------
    --  Form_Type - Creation Methods

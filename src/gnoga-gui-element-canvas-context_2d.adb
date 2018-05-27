@@ -378,10 +378,10 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    end Global_Alpha;
 
    --------------------------------
-   -- Glogal_Composite_Operation --
+   -- Global_Composite_Operation --
    --------------------------------
 
-   procedure Glogal_Composite_Operation
+   procedure Global_Composite_Operation
      (Context : in out Context_2D_Type;
       Value   : in     Composite_Method_Type)
    is
@@ -400,7 +400,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          when Xor_Copy =>
             Context.Property ("globalCompositeOperation", "xor");
       end case;
-   end Glogal_Composite_Operation;
+   end Global_Composite_Operation;
 
    ----------------------------
    -- Create_Linear_Gradient --
@@ -660,11 +660,11 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       Context.Execute ("clip();");
    end Clip;
 
-   -------------------------
-   -- Quadractic_Curve_To --
-   -------------------------
+   ------------------------
+   -- Quadratic_Curve_To --
+   ------------------------
 
-   procedure Quadractic_Curve_To (Context           : in out Context_2D_Type;
+   procedure Quadratic_Curve_To (Context           : in out Context_2D_Type;
                                   CP_X, CP_Y, X, Y  : Integer)
    is
    begin
@@ -673,7 +673,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                          CP_Y'Img & "," &
                          X'Img & "," &
                          Y'Img & ");");
-   end Quadractic_Curve_To;
+   end Quadratic_Curve_To;
 
    ---------------------
    -- Bezier_Curve_To --

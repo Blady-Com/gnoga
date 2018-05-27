@@ -202,7 +202,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       Icon : in     String)
    is
    begin
-      View.Put_HTML ("<span class='glphicon glyphicon-" & Icon & "' />");
+      View.Put_HTML ("<span class='glyphicon glyphicon-" & Icon & "' />");
    end Put_Glyphicon;
 
    ------------

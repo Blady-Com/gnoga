@@ -75,10 +75,10 @@ package Gnoga.Gui.View.Grid is
    --                  ((COL, SPN),
    --                   (COL, COL),
    --                   (COL, SPN)),
-   --                  Attach => True);
+   --                  Fill_Parent => True);
    --  This will create a top view two columns wide, left and right middle
    --  views and a bottom view two columns wide. Provided Main_Window is a
-   --  window type, since Attach is True the grid will fill the entire browser
+   --  window type, since Fill_Parent is True the grid will fill the entire browser
    --  window.
    --
    --  Note: If Set_Sizes is used any change in size of panels should be

@@ -324,7 +324,6 @@ package body Gnoga.Gui.Plugin.JSTree is
      (Tree    : in out JSTree_Type;
       Handler : in     JSTree_Event)
    is
-      use type Gnoga.Gui.Base.Action_Event;
    begin
       if Tree.View.On_Open_Node_Event /= null then
          Tree.View.Unbind_Event ("after_open.jstree");
@@ -347,7 +346,6 @@ package body Gnoga.Gui.Plugin.JSTree is
      (View : in out JSTree_View_Type;
       Node :        String)
    is
-      use type Gnoga.Gui.Base.Action_Event;
    begin
       if View.On_Open_Node_Event /= null then
          View.On_Open_Node_Event (View.Parent_Tree.all, Node);
@@ -367,7 +365,6 @@ package body Gnoga.Gui.Plugin.JSTree is
      (Tree    : in out JSTree_Type;
       Handler : in     JSTree_Event)
    is
-      use type Gnoga.Gui.Base.Action_Event;
    begin
       if Tree.View.On_Close_Node_Event /= null then
          Tree.View.Unbind_Event ("after_close.jstree");
@@ -392,7 +389,6 @@ package body Gnoga.Gui.Plugin.JSTree is
      (View : in out JSTree_View_Type;
       Node :        String)
    is
-      use type Gnoga.Gui.Base.Action_Event;
    begin
       if View.On_Close_Node_Event /= null then
          View.On_Close_Node_Event (View.Parent_Tree.all, Node);
@@ -400,7 +396,6 @@ package body Gnoga.Gui.Plugin.JSTree is
    end Fire_On_Close_Node;
 
    procedure Fire_On_Close_Node (Tree : in out JSTree_Type; Node : String) is
-      use type Gnoga.Gui.Base.Action_Event;
    begin
       Tree.View.Fire_On_Close_Node (Node);
    end Fire_On_Close_Node;

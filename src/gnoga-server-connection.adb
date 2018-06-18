@@ -58,7 +58,6 @@ with Gnoga.Server.Template_Parser.Simple;
 with Strings_Edit.UTF8.Handling;
 
 package body Gnoga.Server.Connection is
-   use type Gnoga.Types.Unique_ID;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
 
    On_Connect_Event      : Connect_Event      := null;
@@ -1311,9 +1310,6 @@ package body Gnoga.Server.Connection is
    function WebSocket_Open (Client : access Gnoga_HTTP_Client)
                             return WebSocket_Accept
    is
-      use Ada.Strings.Fixed;
-
-      use type Gnoga.Types.Connection_ID;
 
       Status : Status_Line renames Get_Status_Line (Client.all);
 

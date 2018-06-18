@@ -54,7 +54,6 @@ package body Gnoga is
    -------------------
 
    function Escape_Quotes (S : String) return String is
-      use type Ada.Strings.Unbounded.Unbounded_String;
 
       function Translate_Character (C : Character) return String;
 
@@ -89,7 +88,6 @@ package body Gnoga is
    ---------------------
 
    function Unescape_Quotes (S : String) return String is
-      use type Ada.Strings.Unbounded.Unbounded_String;
 
       C : Integer := S'First;
 
@@ -136,7 +134,6 @@ package body Gnoga is
    ----------------
 
    function URL_Encode (S : String; Encoding : String := "") return String is
-      use type Ada.Strings.Unbounded.Unbounded_String;
 
       function Translate_Character (C : Character) return String;
 

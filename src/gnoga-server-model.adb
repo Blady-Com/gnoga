@@ -218,7 +218,6 @@ package body Gnoga.Server.Model is
    ------------
 
    procedure Delete (A : in out Active_Record) is
-      use Ada.Strings.Unbounded;
 
       SQL : constant String := "delete from " & A.Table_Name.all &
          " where id=" & A.Value ("id");
@@ -242,8 +241,6 @@ package body Gnoga.Server.Model is
    ----------
 
    procedure Find (A : in out Active_Record; ID : in Positive) is
-      use Ada.Strings.Unbounded;
-      use Ada.Strings;
 
       Key : constant String := ID'Img;
       RS  : Gnoga.Server.Database.Recordset'Class :=
@@ -269,8 +266,6 @@ package body Gnoga.Server.Model is
                          Where      : in     String;
                          Create_New : in     Boolean := True)
    is
-      use Ada.Strings.Unbounded;
-      use Ada.Strings;
 
       RS : Gnoga.Server.Database.Recordset'Class :=
         A.Connection.Query ("select * from " & A.Table_Name.all &

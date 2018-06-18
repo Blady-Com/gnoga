@@ -145,7 +145,6 @@ package body Gnoga.Gui.Modal_Dialog is
          := (Dialog.Modal_Background.Width / 2
              - Dialog.Modal_Frame.Width / 2);
 
-      use type String;
    begin
 
       --  Bound to top left corner

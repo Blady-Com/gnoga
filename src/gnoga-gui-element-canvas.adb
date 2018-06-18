@@ -48,7 +48,6 @@ package body Gnoga.Gui.Element.Canvas is
 
    overriding
    procedure Finalize (Object : in out Context_Type) is
-      use type Gnoga.Types.ID_Enumeration;
    begin
       Gnoga.Server.Connection.Execute_Script
         (Object.Connection_ID, "delete gnoga['" &

@@ -7,7 +7,6 @@ with Gnoga.Gui.Plugin.jQueryUI.Widget;
 
 package body Gnoga.Gui.Plugin.Message_Boxes is
 
-   use Gnoga.Gui.Plugin;
    use Gnoga.Gui.Element;
 
    function Message_Box (

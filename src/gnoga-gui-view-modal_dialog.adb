@@ -127,7 +127,6 @@ package body Gnoga.Gui.View.Modal_Dialog is
       Top_Offset  : Integer;
       Left_Offset : Integer;
 
-      use type String;
    begin
 
       Dialog.Position (Gnoga.Gui.Element.Fixed);

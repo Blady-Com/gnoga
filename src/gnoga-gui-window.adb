@@ -222,7 +222,6 @@ package body Gnoga.Gui.Window is
                        Object : in out Gnoga.Gui.Base.Base_Type'Class;
                        Place  : in     Boolean := True)
    is
-      use Gnoga.Types;
       use Gnoga.Gui.Element;
    begin
       if not (Object in Element_Type'Class) then

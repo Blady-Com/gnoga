@@ -1080,7 +1080,6 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    procedure Data (Image_Data : in out Image_Data_Type;
                    Value      : in     Gnoga.Types.Pixel_Data_Type)
    is
-      use Ada.Strings.Unbounded;
 
       C : constant String := ",";
       S : String (1 .. 16 * Value'Length (1) * Value'Length (2));

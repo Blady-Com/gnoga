@@ -129,7 +129,6 @@ package body Gnoga.Gui.View.Card is
      (View : in out Card_View_Type;
       Name : in     String)
    is
-      use Gnoga.Gui.Element;
 
       Current : Pointer_To_View_Base_Class := View.Current_Card;
    begin
@@ -185,7 +184,6 @@ package body Gnoga.Gui.View.Card is
       Tab.Create_From_HTML (Parent, "<ul />", ID);
 
       declare
-         use Gnoga.Types;
 
          Name  : constant String := Tab.ID;
          Style : Gnoga.Gui.Element.Style_Block.Style_Type;

@@ -75,7 +75,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    is
       Sprite_Element : constant Sprite_Data_Access := new Sprite_Data;
       Sprite_ID      : Gnoga.Types.Unique_ID;
-      Context        : Context_2D_Type;
+      Dummy_Context        : Context_2D_Type;
    begin
       Sprite_Element.Canvas                    := Canvas;
       Sprite_Element.Drawn_Image.Connection_ID := Image_Data.Connection_ID;
@@ -84,13 +84,13 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Sprite_Element.Column                    := Column;
       Sprite_Element.Row_Velocity              := Row_Velocity;
       Sprite_Element.Column_Velocity           := Column_Velocity;
-      Get_Drawing_Context_2D (Context, Canvas.all);
-      Context.Get_Image_Data
+      Get_Drawing_Context_2D (Dummy_Context, Canvas.all);
+      Dummy_Context.Get_Image_Data
       (Sprite_Element
          .Saved_Image, Sprite_Element
          .Column, Sprite_Element
          .Row, Image_Data.Width, Image_Data.Height);
-      Context.Put_Image_Data
+      Dummy_Context.Put_Image_Data
       (Sprite_Element.Drawn_Image, Sprite_Element.Column, Sprite_Element.Row);
       Gnoga.Server.Connection.New_Unique_ID (Sprite_ID);
       Sprite := Sprite_Type (Sprite_ID);
@@ -332,9 +332,9 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Sprite_Resource.Seize;
       while Sprite_List.First /= Sprite_Lists.No_Element loop
          declare
-            Sprite : Sprite_Lists.Cursor := Sprite_List.First;
+            Dummy_Sprite : Sprite_Lists.Cursor := Sprite_List.First;
          begin
-            Sprite_Element := Sprite_Lists.Element (Sprite);
+            Sprite_Element := Sprite_Lists.Element (Dummy_Sprite);
             Get_Drawing_Context_2D (Context, Sprite_Element.Canvas.all);
             Context.Put_Image_Data
             (Sprite_Element
@@ -342,7 +342,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
                .Column, Sprite_Element
                .Row);
             Free (Sprite_Element);
-            Sprite_List.Delete (Sprite);
+            Sprite_List.Delete (Dummy_Sprite);
          end;
       end loop;
       Sprite_Resource.Release;

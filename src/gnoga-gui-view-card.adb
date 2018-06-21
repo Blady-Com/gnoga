@@ -186,9 +186,9 @@ package body Gnoga.Gui.View.Card is
       declare
 
          Name  : constant String := Tab.ID;
-         Style : Gnoga.Gui.Element.Style_Block.Style_Type;
+         Dummy_Style : Gnoga.Gui.Element.Style_Block.Style_Type;
       begin
-         Style.Create
+         Dummy_Style.Create
            (Parent,
             "ul#" & Name & " {padding: 0;}" &
               " ul#" & Name & " li {display: inline;}" &
@@ -292,7 +292,7 @@ package body Gnoga.Gui.View.Card is
 
    procedure Tab_Select (Item  : in out Tab_Item_Type)
    is
-      Link : Gnoga.Gui.Element.Element_Type;
+      Dummy_Link : Gnoga.Gui.Element.Element_Type;
    begin
       declare
          C : Gnoga.Gui.Element. Element_Access :=
@@ -303,10 +303,10 @@ package body Gnoga.Gui.View.Card is
 
          while C.ID /= "undefined" loop
             declare
-               L : Gnoga.Gui.Element.Element_Type;
+               Dummy_L : Gnoga.Gui.Element.Element_Type;
             begin
-               L.Attach_Using_Parent (Item, ID => C.ID & "_a");
-               L.Background_Color (Tab_Access (Item.Parent).Tab_Color);
+               Dummy_L.Attach_Using_Parent (Item, ID => C.ID & "_a");
+               Dummy_L.Background_Color (Tab_Access (Item.Parent).Tab_Color);
             end;
 
             N := new Gnoga.Gui.Element.Element_Type;
@@ -318,8 +318,8 @@ package body Gnoga.Gui.View.Card is
          C.Free;
       end;
 
-      Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
-      Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
+      Dummy_Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
+      Dummy_Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
 
       Tab_Access (Item.Parent).Card_View.Show_Card
         (Ada.Strings.Unbounded.To_String (Item.Card_Name));

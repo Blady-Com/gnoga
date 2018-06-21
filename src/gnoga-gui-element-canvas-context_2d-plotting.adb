@@ -72,19 +72,19 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
           Position : in     Plot_Point;
           Color    : in     Gnoga.Types.RGBA_Type := Black)
    is
-      Context : Context_2D_Type;
+      Dummy_Context : Context_2D_Type;
    begin -- Point
-      Context.Get_Drawing_Context_2D (Canvas => Plot);
-      Context.Begin_Path;
-      Context.Stroke_Color (Value => Color);
-      Context.Fill_Color (Value => Color);
-      Context.Line_Width (Value => 1);
-      Context.Arc_Degrees (X              => Plot.Scale_X (Position.X),
+      Dummy_Context.Get_Drawing_Context_2D (Canvas => Plot);
+      Dummy_Context.Begin_Path;
+      Dummy_Context.Stroke_Color (Value => Color);
+      Dummy_Context.Fill_Color (Value => Color);
+      Dummy_Context.Line_Width (Value => 1);
+      Dummy_Context.Arc_Degrees (X              => Plot.Scale_X (Position.X),
                            Y              => Plot.Scale_Y (Position.Y),
                            Radius         => 2,
                            Starting_Angle => 0.0,
                            Ending_Angle   => 360.0);
-      Context.Fill;
+      Dummy_Context.Fill;
    end Point;
 
    procedure Point (Plot     : in out Plot_Info;
@@ -111,14 +111,14 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
          To    : in     Plot_Point;
          Color : in Gnoga.Types.RGBA_Type := Black)
    is
-      Context : Context_2D_Type;
+      Dummy_Context : Context_2D_Type;
    begin -- Line
-      Context.Get_Drawing_Context_2D (Canvas => Plot);
-      Context.Begin_Path;
-      Context.Stroke_Color (Value => Color);
-      Context.Move_To (X => Plot.Scale_X (From.X), Y => Plot.Scale_Y (From.Y));
-      Context.Line_To (X => Plot.Scale_X (To.X), Y => Plot.Scale_Y (To.Y));
-      Context.Stroke;
+      Dummy_Context.Get_Drawing_Context_2D (Canvas => Plot);
+      Dummy_Context.Begin_Path;
+      Dummy_Context.Stroke_Color (Value => Color);
+      Dummy_Context.Move_To (X => Plot.Scale_X (From.X), Y => Plot.Scale_Y (From.Y));
+      Dummy_Context.Line_To (X => Plot.Scale_X (To.X), Y => Plot.Scale_Y (To.Y));
+      Dummy_Context.Stroke;
    end Line;
 
    procedure Line (Plot  : in out Plot_Info;

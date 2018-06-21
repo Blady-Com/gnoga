@@ -1307,9 +1307,9 @@ package body Gnoga.Gui.Element.Form is
    procedure Add_Option (List  : in out Data_List_Type;
                          Value : in     String)
    is
-      D : Gnoga.Gui.Element.Element_Type;
+      Dummy_D : Gnoga.Gui.Element.Element_Type;
    begin
-      D.Create_From_HTML
+      Dummy_D.Create_From_HTML
         (List, Escape_Quotes ("<option value='" & Value & "'>"));
    end Add_Option;
 

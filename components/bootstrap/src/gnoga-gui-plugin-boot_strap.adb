@@ -234,9 +234,9 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       Text    : in     String;
       ID      : in     String := "")
    is
-      H : Gnoga.Gui.Element.Element_Type;
+      Dummy_H : Gnoga.Gui.Element.Element_Type;
    begin
-      H.Create_From_HTML (Parent => Element.Parent.all,
+      Dummy_H.Create_From_HTML (Parent => Element.Parent.all,
                           HTML   => Escape_Quotes ("<span class='help-block'>" &
                             Text & "</span>"),
                           ID     => ID);

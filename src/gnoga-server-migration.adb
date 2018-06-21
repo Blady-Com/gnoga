@@ -82,14 +82,14 @@ package body Gnoga.Server.Migration is
 
       Actual_Level   : Natural := Level;
       Current_Level  : Natural := 0;
-      Migration_Info : Migration_Model.Active_Record;
+      Dummy_Migration_Info : Migration_Model.Active_Record;
    begin
-      Migration_Info.Find_Where ("name='migration_level'", Create_New => True);
+      Dummy_Migration_Info.Find_Where ("name='migration_level'", Create_New => True);
 
-      if Migration_Info.Exists ("name") then
-         Current_Level := Natural'Value (Migration_Info.Value ("value"));
+      if Dummy_Migration_Info.Exists ("name") then
+         Current_Level := Natural'Value (Dummy_Migration_Info.Value ("value"));
       else
-            Migration_Info.Value ("value", "0");
+            Dummy_Migration_Info.Value ("value", "0");
       end if;
 
       Gnoga.Write_To_Console ("Current migration level =" & Current_Level'Img);
@@ -103,7 +103,7 @@ package body Gnoga.Server.Migration is
            ("Requested migration level up to" & Actual_Level'Img);
          for i in Current_Level + 1 .. Actual_Level loop
             Gnoga.Write_To_Console ("Migrating to level" & i'Img);
-            Migration_Info.Value ("value", i'Img);
+            Dummy_Migration_Info.Value ("value", i'Img);
 
             Gnoga.Write_To_Console
               ("Running : " & Collection.Migrations_Up.Element (i));
@@ -117,7 +117,7 @@ package body Gnoga.Server.Migration is
            ("Requested migration level down to" & Actual_Level'Img);
          for i in reverse Actual_Level + 1 .. Current_Level loop
             Gnoga.Write_To_Console ("Migrating from level" & i'Img);
-            Migration_Info.Value ("value", Integer'Image (i - 1));
+            Dummy_Migration_Info.Value ("value", Integer'Image (i - 1));
             Gnoga.Write_To_Console
               ("Running : " & Collection.Migrations_Down.Element (i));
             Connection.Execute_Query (Collection.Migrations_Down.Element (i));
@@ -126,9 +126,9 @@ package body Gnoga.Server.Migration is
       end if;
 
       Gnoga.Write_To_Console
-        ("Saving new migration_level = " & Migration_Info.Value ("value"));
-      Migration_Info.Value ("name", "migration_level");
-      Migration_Info.Save;
+        ("Saving new migration_level = " & Dummy_Migration_Info.Value ("value"));
+      Dummy_Migration_Info.Value ("name", "migration_level");
+      Dummy_Migration_Info.Save;
    end Migrate_To;
 
    -----------

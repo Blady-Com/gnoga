@@ -266,6 +266,8 @@ private
       Parent_Tree            : JSTree_Access := null;
    end record;
 
+   type JSTree_View_Access is access JSTree_View_Type;
+
    overriding procedure On_Message
      (Object  : in out JSTree_View_Type;
       Event   : in     String;
@@ -274,7 +276,7 @@ private
 
    type JSTree_Type is new Gnoga.Gui.Element.List.Unordered_List_Type with
    record
-      View : access JSTree_View_Type;
+      View : JSTree_View_Access;
    end record;
 
    type JSTree_Item_Type is new Gnoga.Gui.Element.List.List_Item_Type with

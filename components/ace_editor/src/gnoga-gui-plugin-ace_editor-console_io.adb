@@ -296,7 +296,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    is
    begin
       for I in 1 .. Spacing loop
-         Console.Anchor.Insert_NewLine_At_Anchor;
+         Console.Anchor.Insert_New_Line_At_Anchor;
       end loop;
    end New_Line;
 
@@ -587,7 +587,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
             when Ada.Characters.Latin_1.CR => -- Carriage Return
                Console.Navigate_To (Start_Row, End_Column);
                Console.Anchor.Position ((Start_Row, End_Column));
-               Console.Anchor.Insert_NewLine_At_Anchor;
+               Console.Anchor.Insert_New_Line_At_Anchor;
                exit; -- Exit loop
             when others => -- Regular characters
                Console.Anchor.Insert_Text_At_Anchor ((1 => Ch));
@@ -606,7 +606,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    procedure Put_Line (Console : in out Console_IO_Type; Item : String) is
    begin
       Console.Anchor.Insert_Text_At_Anchor (Item);
-      Console.Anchor.Insert_NewLine_At_Anchor;
+      Console.Anchor.Insert_New_Line_At_Anchor;
    end Put_Line;
 
 end Gnoga.Gui.Plugin.Ace_Editor.Console_IO;

@@ -290,9 +290,16 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- New_Line --
    --------------
 
+   overriding procedure New_Line
+     (Console : in out Console_IO_Type)
+   is
+   begin
+      Console.New_Line (1);
+   end New_Line;
+
    procedure New_Line
      (Console : in out Console_IO_Type;
-      Spacing :        Positive_Count := 1)
+      Spacing :        Positive_Count)
    is
    begin
       for I in 1 .. Spacing loop
@@ -489,9 +496,14 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Put --
    ---------
 
-   procedure Put (Console : in out Console_IO_Type; Item : String) is
+   overriding procedure Put
+     (Console : in out Console_IO_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "") is
+      pragma Unreferenced (Class, ID);
    begin
-      Console.Anchor.Insert_Text_At_Anchor (Item);
+      Console.Anchor.Insert_Text_At_Anchor (Message);
    end Put;
 
    --------------
@@ -603,9 +615,14 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Put_Line --
    --------------
 
-   procedure Put_Line (Console : in out Console_IO_Type; Item : String) is
+   overriding procedure Put_Line
+     (Console : in out Console_IO_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "") is
+      pragma Unreferenced (Class, ID);
    begin
-      Console.Anchor.Insert_Text_At_Anchor (Item);
+      Console.Anchor.Insert_Text_At_Anchor (Message);
       Console.Anchor.Insert_New_Line_At_Anchor;
    end Put_Line;
 

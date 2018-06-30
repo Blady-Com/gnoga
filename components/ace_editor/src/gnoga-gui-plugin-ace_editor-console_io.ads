@@ -74,9 +74,10 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Column, Line, and Page Control --
    ------------------------------------
 
+   overriding procedure New_Line (Console : in out Console_IO_Type);
    procedure New_Line
      (Console : in out Console_IO_Type;
-      Spacing :        Positive_Count := 1);
+      Spacing :        Positive_Count);
 
    procedure Skip_Line
      (Console : in out Console_IO_Type;
@@ -105,6 +106,7 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    ----------------------------
 
    procedure Get (Console : in out Console_IO_Type; Item : out Character);
+
    procedure Put (Console : in out Console_IO_Type; Item : Character);
 
    procedure Look_Ahead
@@ -126,7 +128,12 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -------------------------
 
    procedure Get (Console : in out Console_IO_Type; Item : out String);
-   procedure Put (Console : in out Console_IO_Type; Item : String);
+
+   overriding procedure Put
+     (Console : in out Console_IO_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "");
 
    procedure Get_Line
      (Console : in out Console_IO_Type;
@@ -135,7 +142,11 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
    function Get_Line (Console : in out Console_IO_Type) return String;
 
-   procedure Put_Line (Console : in out Console_IO_Type; Item : String);
+   overriding procedure Put_Line
+     (Console : in out Console_IO_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "");
 
 private
    Ring_Size : constant := 100;
@@ -158,16 +169,4 @@ private
       Ring   : Ring_Char;
    end record;
 
-   --  Avoid ambiguous declaration coming from View_Base_Type
-   overriding procedure Put_Line
-     (View    : in out Console_IO_Type;
-      Message : in     String;
-      Class   : in     String := "";
-      ID      : in     String := "") is null;
-   overriding procedure Put
-     (View    : in out Console_IO_Type;
-      Message : in     String;
-      Class   : in     String := "";
-      ID      : in     String := "") is null;
-   overriding procedure New_Line (View : in out Console_IO_Type) is null;
 end Gnoga.Gui.Plugin.Ace_Editor.Console_IO;

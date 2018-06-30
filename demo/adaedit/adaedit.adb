@@ -91,9 +91,9 @@ procedure AdaEdit is
 
       App.Editor.Create (App.Dock);
 
-      App.Editor.Set_Theme ("monokai");
+      App.Editor.Theme ("monokai");
       App.Editor.Set_Language_Mode ("ada");
-      App.Editor.Default_Tab_Size (3);
+      App.Editor.Tab_Size (3);
       App.Editor.Soft_Tabs;
 
       App.Dock.Fill_Dock (App.Editor'Access);

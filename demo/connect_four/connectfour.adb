@@ -63,7 +63,6 @@
 --   for specific details on how to create and run the applet.
 
 with Gnoga.Types.Colors;
-with Gnoga.Types; use Gnoga.Types;
 with connectfour_messages.connectfour_Strings;
 use connectfour_messages.connectfour_Strings;
 
@@ -384,10 +383,10 @@ package body ConnectFour is
          Who       :        Player_Kind;
          Column    :        Integer)
       is
-         Row : Integer;
+         Dummy_Row : Integer;
       begin
          New_Board := Board;
-         Place_Disk (New_Board, Column, Row, Who);
+         Place_Disk (New_Board, Column, Dummy_Row, Who);
       end Make_New_Board;
 
       ----------------------
@@ -1173,7 +1172,7 @@ package body ConnectFour is
 --        Y : Integer := E.Y;
 
 --        D      : access Java.Awt.Dimension.Typ'Class := Getsize (This);
-      Column, Row : Integer;
+      Column, Dummy_Row : Integer;
       Self        : constant access Typ := Typ (This)'Access;
    begin
       --  need to do this before checking won, since we use
@@ -1201,7 +1200,7 @@ package body ConnectFour is
               (Board  => Self.Board,
                Column => Column,
                Who    => Computer,
-               Row    => Row);
+               Row    => Dummy_Row);
          else
             Self.User_Turn := True;
          end if;
@@ -1223,7 +1222,7 @@ package body ConnectFour is
         (Board  => Self.Board,
          Column => Column,
          Who    => Computer,
-         Row    => Row);
+         Row    => Dummy_Row);
       --          Check if computer won
       Check_Won
         (Board => Self.Board,
@@ -1251,7 +1250,7 @@ package body ConnectFour is
 --        Y : Integer := E.Y;
 
 --        D      : access Java.Awt.Dimension.Typ'Class := Getsize (This);
-      Column, Row : Integer;
+      Column, Dummy_Row : Integer;
       Self        : constant access Typ := Typ (This)'Access;
    begin
       --  don't place disk if game over
@@ -1283,7 +1282,7 @@ package body ConnectFour is
         (Board  => Self.Board,
          Column => Column,
          Who    => User,
-         Row    => Row);
+         Row    => Dummy_Row);
       --          Check if user won
       Check_Won (Board => Self.Board, Who => User, Won => Self.User_Won);
       Check_Tie (Board => Self.Board, Is_Tie => Self.Tie);

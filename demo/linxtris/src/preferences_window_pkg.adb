@@ -34,7 +34,6 @@ with Main_Window_Pkg;       use Main_Window_Pkg;
 with Game_Engine;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --  with Glib;                  use Glib;
-with Gnoga.Gui.Document;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Form;
 
@@ -151,7 +150,6 @@ package body Preferences_Window_Pkg is
 --        sep    : Gtk_Separator;
 --        alg    : Gtk_Alignment;
 --        adjust : Gtk_Adjustment;
-      use type Gnoga.Gui.Document.Ready_State_Type;
    begin
 --        Gtk.Window.Initialize (Win, Gtk.Enums.Window_Toplevel);
       Win.Create (Main_Window_Pkg.Main_Window.Table.Panel (1, 4).all);

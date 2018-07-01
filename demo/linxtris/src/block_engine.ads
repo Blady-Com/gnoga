@@ -70,7 +70,6 @@ private
    type Object (Width : Positive; Height : Positive) is limited record
       Game_Width            : Positive         := Width;
       Game_Height           : Positive         := Height;
-      Block_Color           : Block_Color_Type (1 .. Width, 1 .. Height);
       Score                 : Natural          := 0;
       Bonus_Down            : Natural          := 0;
       Bonus_Completed       : Natural          := 0;
@@ -93,6 +92,7 @@ private
       Piece_Shape           : Piece_Shape_Type := Piece_I;
       Next_Piece_Shape      : Piece_Shape_Type := Piece_I;
       Random_Piece_Color    : Boolean          := False;
+      Block_Color           : Block_Color_Type (1 .. Width, 1 .. Height);
    end record;
    procedure Put_Initial_Lines (The : in out Object);
    procedure Move_Right (The : in out Object);

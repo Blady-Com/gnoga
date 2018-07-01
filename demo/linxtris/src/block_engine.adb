@@ -85,7 +85,7 @@ package body Block_Engine is
      Random_Shape_Pkg.Random_Shape;
 
    procedure Init (The : in out Object) is
-      t : Boolean;
+      Dummy_OK : Boolean;
    begin
       Random_Shape_Pkg.Init;
       The.Next_Piece_Shape  := Random_Shape;
@@ -103,7 +103,7 @@ package body Block_Engine is
          end loop;
       end loop;
       Put_Initial_Lines (The);
-      Put_Piece (The, t);
+      Put_Piece (The, Dummy_OK);
       Set_Ghost (The);
       The.Score           := 0;
       The.Bonus_Down      := The.Initial_Level;

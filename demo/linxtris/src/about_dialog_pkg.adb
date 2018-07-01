@@ -31,7 +31,6 @@ with Main_Window_Pkg; use Main_Window_Pkg;
 --  with Gdk.Event; use Gdk.Event;
 --  with Pango.Font;      use Pango.Font;
 with Gnoga.Gui.Base;
-with Gnoga.Gui.Document;
 
 package body About_Dialog_Pkg is
 
@@ -103,7 +102,6 @@ package body About_Dialog_Pkg is
 
    procedure Initialize (Win : access About_Dialog_Record'Class) is
       use Callbacks;
-      use type Gnoga.Gui.Document.Ready_State_Type;
    begin
       --        Gtk.Window.Initialize (Win, Gtk.Enums.Window_Toplevel);
       Win.Create (Main_Window_Pkg.Main_Window.Table.Panel (2, 4).all);

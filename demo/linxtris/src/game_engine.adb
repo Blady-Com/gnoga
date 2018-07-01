@@ -50,13 +50,13 @@ package body Game_Engine is
    end Clear_Screen;
 
    procedure Clear_Prev is
-      Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Prev_Screen));
-      Cr.Get_Drawing_Context_2D (Main_Window.Prev_Screen);
+      Dummy_Cr.Get_Drawing_Context_2D (Main_Window.Prev_Screen);
 --      Gdk.Cairo.Set_Source_Pixbuf (Cr, Main_Window.Blank_Prev_Pix, 0.0, 0.0);
 --        Cairo.Paint (Cr);
-      Cr.Put_Image_Data (Main_Window.Blank_Prev_Pix.all, 0, 0);
+      Dummy_Cr.Put_Image_Data (Main_Window.Blank_Prev_Pix.all, 0, 0);
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Drawable( Get_Pixmap( Main_Window.Prev_Screen ),
 --                                 Main_Window.GC, Main_Window.Blank_Prev_Pix,
@@ -76,20 +76,20 @@ package body Game_Engine is
       Y     : Integer;
       Color : Block_Engine.Color)
    is
-      Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
       if Y > 20 then
          return;
       end if;
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Game_Screen));
-      Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
+      Dummy_Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
 --        Gdk.Cairo.Set_Source_Pixbuf
 --          (Cr,
 --           Color_To_Pix (Color),
 --           Gdouble (X_Drawing_Coordinate (X)),
 --           Gdouble (Y_Drawing_Coordinate (Y) + Gint (Main_Window.Delta_Y)));
 --        Cairo.Paint (Cr);
-      Cr.Put_Image_Data
+      Dummy_Cr.Put_Image_Data
       (Color_To_Pix (Color).all, X_Drawing_Coordinate
          (X), Y_Drawing_Coordinate (Y) +
        Main_Window.Delta_Y);
@@ -158,17 +158,17 @@ package body Game_Engine is
       Y     : Integer;
       Color : Block_Engine.Color)
    is
-      Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Game_Screen));
-      Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
+      Dummy_Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
 --        Gdk.Cairo.Set_Source_Pixbuf
 --          (Cr,
 --           Color_To_Pix (Color),
 --           Gdouble (X_Drawing_Coordinate (X)),
 --           Gdouble (Y_Drawing_Coordinate (Y)));
 --        Cairo.Paint (Cr);
-      Cr.Put_Image_Data
+      Dummy_Cr.Put_Image_Data
         (Color_To_Pix (Color).all, X_Drawing_Coordinate (X),
          Y_Drawing_Coordinate (Y));
 --        Cairo.Destroy (Cr);
@@ -183,17 +183,17 @@ package body Game_Engine is
 
    procedure Paint_White_Block (X : Integer; Y : Integer);
    procedure Paint_White_Block (X : Integer; Y : Integer) is
-      Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Game_Screen));
-      Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
+      Dummy_Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
 --        Gdk.Cairo.Set_Source_Pixbuf
 --          (Cr,
 --           Main_Window.White_Pix,
 --           Gdouble (X_Drawing_Coordinate (X)),
 --           Gdouble (Y_Drawing_Coordinate (Y)));
 --        Cairo.Paint (Cr);
-      Cr.Put_Image_Data
+      Dummy_Cr.Put_Image_Data
       (Main_Window.White_Pix.all, X_Drawing_Coordinate
          (X), Y_Drawing_Coordinate (Y) +
        Main_Window.Delta_Y);
@@ -272,13 +272,13 @@ package body Game_Engine is
    end Color_To_Prev_Pix;
 
    procedure Paint_Prev is
-      Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
       if not Main_Window.Piece_Preview then
          return;
       end if;
       --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Prev_Screen));
-      Cr.Get_Drawing_Context_2D (Main_Window.Prev_Screen);
+      Dummy_Cr.Get_Drawing_Context_2D (Main_Window.Prev_Screen);
 --        Gdk.Cairo.Set_Source_Pixbuf
 --          (Cr,
 --           Color_To_Prev_Pix (Block_Engine.Get_Next_Piece_Color
@@ -286,7 +286,7 @@ package body Game_Engine is
 --           0.0,
 --           0.0);
 --        Cairo.Paint (Cr);
-      Cr.Put_Image_Data
+      Dummy_Cr.Put_Image_Data
         (Color_To_Prev_Pix (Block_Engine.Get_Next_Piece_Color
          (Main_Window.Engine.all)).all, 0, 0);
 --        Cairo.Destroy (Cr);

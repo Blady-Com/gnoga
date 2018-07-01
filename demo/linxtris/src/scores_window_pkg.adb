@@ -32,7 +32,6 @@ with Main_Window_Pkg; use Main_Window_Pkg;
 --  with Gtk.Widget;            use Gtk.Widget;
 with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Base;
-with Gnoga.Gui.Document;
 with Gnoga.Application.Singleton;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
@@ -114,7 +113,6 @@ package body Scores_Window_pkg is
       Table : Gnoga.Gui.View.Grid.Grid_View_Type;
 --        alg   : Gtk_Alignment;
 --        frame : Gtk_Frame;
-      use type Gnoga.Gui.Document.Ready_State_Type;
    begin
 --        Gtk.Window.Initialize (Win, Gtk.Enums.Window_Toplevel);
       Win.Create (Main_Window_Pkg.Main_Window.Table.Panel (1, 3).all);

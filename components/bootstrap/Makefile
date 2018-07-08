@@ -2,10 +2,12 @@ ifdef ComSpec
 	COPY=copy
 	RM=del
 	PATHSEP2=\\
+	MKDIR=mkdir
 else
 	COPY=cp -p
 	RM=rm
 	PATHSEP2=/
+	MKDIR=mkdir -p
 endif
 
 PATHSEP=$(strip $(PATHSEP2))

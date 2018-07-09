@@ -3,6 +3,7 @@
 - TIPS: updated.
 - INSTALL: rework the wording.
 - Makefile:
+  . Add gnoga-config target which creates a script with gnoga compilation options
   . Add GPS launch command for Windows user.
   . Fix some regression using XMLAda and SQLite3.
   . Fix some issues with Zanyblue and Windows.

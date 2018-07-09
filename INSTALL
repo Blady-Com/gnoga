@@ -84,3 +84,27 @@ export GPR_PROJECT_PATH=/path/to/gnoga/build/share/gpr:/path/to/gnoga/build/lib/
 or for Windows
 set GPR_PROJECT_PATH=/path/to/gnoga/build/share/gpr;/path/to/gnoga/build/lib/gnat
 
+These options are automatically computed for you with gnoga-config.
+The script is created a first time with makefile and then can be use without makefile.
+gnoga-config sets the search project directories for gprbuild.
+
+a) For Windows users:
+Usage:
+> cd <gnoga-repo>
+> make gnoga-config
+> cd <your-stuff>
+> <gnoga-repo>\build\bin\gnoga-config gprbuild -P your-project.gpr your-main.adb
+(your-project.gpr just have to include 'with "gnoga";')
+You can also add <gnoga-repo>\build\bin to your PATH and then just do:
+gnoga-config gprbuild -P your-project.gpr your-main.adb
+
+b) For Unix like users:
+Usage:
+$ cd <gnoga-repo>
+$ make gnoga-config
+$ cd <your-stuff>
+$ gprbuild -P your-project.gpr your-main.adb `<gnoga-repo>/build/bin/gnoga-config`
+(your-project.gpr just have to include 'with "gnoga";')
+You can also add <gnoga-repo>/build/bin to your PATH and then just do:
+$ gprbuild -P your-project.gpr your-main.adb `gnoga-config`
+

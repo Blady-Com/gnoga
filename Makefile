@@ -69,7 +69,7 @@ ifeq ($(BUILD_OS),Windows)
 else
 	COPY=cp -p
 	MOVE=mv
-	MKDIR=mkdir
+	MKDIR=mkdir -p
 	RM=rm -f
 	RMS=rm -rf
 	PATHSEP2=/
@@ -117,6 +117,7 @@ help :
 	@echo "--         | html-docs     -- build html docs                              --"
 	@echo "--         | gps           -- launch GPS with gnoga environnement          --"
 	@echo "--         | check_rules   -- check gnoga with AdaControl                  --"
+	@echo "--         | gnoga-config  -- create script with gnoga compilation options --"
 	@echo "--                                                                         --"
 	@echo "--         PREFIX           = $(PREFIX)                                    --"
 	@echo "--         GPRCHECK         = $(GPRCHECK)                                  --"
@@ -129,7 +130,7 @@ help :
 	@echo "--                                                                         --"
 	@echo "-----------------------------------------------------------------------------"
 
-all: deps $(BUILD_SQLITE3) setup basic_components gnoga gnoga_tools demo tutorials
+all: gnoga-config deps $(BUILD_SQLITE3) setup basic_components gnoga gnoga_tools demo tutorials
 
 setup:
 	$(MAKE) -C src
@@ -389,3 +390,13 @@ endif
 check_rules:
 	$(BUILDER) -c -f -P src/gnoga.gpr -gnatct -XPRJ_TARGET=${PRJ_TARGET}
 	adactl -f rules/gnoga.aru -p src/gnoga.gpr src/*.ads -- -Tobj
+
+gnoga-config:
+ifeq ($(BUILD_OS),Windows)
+	-$(MKDIR) build$(PATHSEP)bin
+	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > build$(PATHSEP)bin$(PATHSEP)gnoga-config.cmd
+else
+	-$(MKDIR) build$(PATHSEP)bin
+	echo echo -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > build$(PATHSEP)bin$(PATHSEP)gnoga-config
+	chmod +x build$(PATHSEP)bin$(PATHSEP)gnoga-config
+endif

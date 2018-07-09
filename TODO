@@ -133,5 +133,6 @@ DONE 31. Add AdaOthello port to Gnoga.
 41. Add an exception handler for singleton apps (main procedure would have an
 exception handler and call End_Application if it handles an exception.)
 42. Enhancement for logging API à la Python
+43. Implement Simple Components implementation of RFC 8439 (ChaCha20 stream cipher, Poly1203 digest, AEAD)
 
 

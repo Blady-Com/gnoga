@@ -1,4 +1,4 @@
-Install components in your local project by copying the entire compnent to your
+Install components in your local project by copying the entire component to your
 local subdirectory components and then running the containing Makefile with:
 make install
 

@@ -86,7 +86,7 @@ xpm_parser:
 	cd deps/simple_components/xpm && $(BUILDER) -p -Pxpm_parser.gpr
 
 # Gnoga with DEBUG on by default
-gnoga: setup basic_components xpm_parser zanyblue
+gnoga: setup basic_components xpm_parser
 	- cd lib && $(UNSET_READONLY)
 	cd src && $(BUILDER) -p -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} -XAtomic_Access=${ATOMIC_ACCESS}
 	cd deps/simple_components && ar rc ../../lib/libgnoga.a *.o
@@ -208,7 +208,7 @@ deps/PragmARC:
 pragmarc: deps/PragmARC
 	- cd deps/PragmARC && git pull
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe db_maker
+demo: snake mine_detector chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe db_maker
 
 snake:
 	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}

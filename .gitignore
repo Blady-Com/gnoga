@@ -22,3 +22,7 @@
 gnatinspect.db
 gpsauto.cgpr
 /inst_folder/
+demo/connect_four/connectfour_messages-connectfour_strings.adb
+demo/connect_four/connectfour_messages-connectfour_strings.ads
+demo/connect_four/connectfour_messages.adb
+demo/connect_four/connectfour_messages.ads

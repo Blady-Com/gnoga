@@ -84,22 +84,22 @@ package Gnoga.Gui.Plugin.JSTree is
    type Plugins_Enum is
      (CheckBox,
    --  Renders a checkbox icon in front of each node, making multi-selection easy.
-    ContextMenu,
+      ContextMenu,
    --  Makes it possible to right click nodes and shows a list of
    --  configurable actions in a menu.
-    DragAndDrop,
+      DragAndDrop,
    --  Makes it possible to drag and drop tree nodes and rearrange the tree.
-    Sort,
+      Sort,
    --  Automatically arranges all sibling nodes according to a comparison function,
    --  which defaults to alphabetical order.
-    Unique,
+      Unique,
    --  Enforces that no nodes with the same name can coexist as siblings
    --  prevents renaming and moving nodes to a parent,
    --  which already contains a node with the same name.
-    WholeRow
+      WholeRow
    --  Makes each node appear block level which makes selection easier.
    --  May cause slow down for large trees in old browsers.
-   );
+    );
 
    type Plugins_Type is array (Plugins_Enum) of Boolean with
         Default_Component_Value => False;

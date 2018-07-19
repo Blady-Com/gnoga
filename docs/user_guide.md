@@ -72,7 +72,7 @@ The idea of using publishing technologies to display a GUI is not new. Next used
 
 Gnoga applications can be run anywhere that a suitable gcc/ada compiler version 4.7 or above compiler can target that provides a Gnat.Socket implementation or has direct API access to an HTML-5 client widget.
 
-Gnoga is already being used on every major operating system and even in some embedded systems. At least one commercial appliance is being developed using Raspberry Pi boards and Gnoga to provide the user interface.
+Gnoga is already being used on every major operating system and even in some embedded systems. Numerous commercial applications have been developed with Gnoga including some appliances using Raspberry Pi boards and Gnoga to provide the user interface.
 
 ### What can I do with Gnoga?
 
@@ -95,7 +95,7 @@ For example, on Mac OS X, native Gnoga applications use Mac Gap 2's APIs to acce
 
 ### Who wrote Gnoga?
 
-Gnoga's author is [David Botton](http://botton.com). Gnoga's http and websockets implementation is from Simple Components by [Dmitry A. Kazakov](http://www.dmitry-kazakov.de/).
+Gnoga's author is [David Botton](http://botton.com) and Gnoga is maintained by Gautier de Montmollin, Jeffrey Carter and Pascal Pignard. Gnoga's http and websockets implementation is from Simple Components by [Dmitry A. Kazakov](http://www.dmitry-kazakov.de/).
 
 However with out the good people on the [Gnoga e-mail list](https://lists.sourceforge.net/lists/listinfo/gnoga-list) using, testing, and pushing for more, Gnoga would not be a reality. I'm sorry for not mentioning everyone by name but the e-mail archives will bear your fame forever.
 
@@ -106,7 +106,7 @@ Gnoga requires a development environment with gcc/ada 4.7 or above that also imp
 
 For most environments the instructions to get started can be found at GetAdaNow.com
 
-Once you have set up a gcc/ada compiler you can either download the lastest release of Gnoga from http://www.gnoga.com, or you will need to install the git version control system and clone the current development repository. Git is installed by default on Mac OS X and some versions of Linux. For Windows there are excellent free versions available.
+Once you have set up a gcc/ada compiler you can either download the latest release of Gnoga from http://www.gnoga.com, or you will need to install the git version control system and clone the current development repository. Git is installed by default on Mac OS X and some versions of Linux. For Windows there are excellent free versions available.
 
 Use the following command with git to check out the latest version of Gnoga:
 
@@ -1118,4 +1118,3 @@ Display changes how the elements are laid out by the browser. Using Display (Non
 Retrieving the contents of an Element in Gnoga differs depending on the type of Element. For form Elements the Value method is used. For others Text can be used to retrieve the text alone or Inner_HTML to retrieve the contents including any HTML tags present.
 
 The reason there are different methods is based on the way the underlying HTML 5 works. Text and Inner\_HTML are retrieving all child nodes with in the element while Value is an attribute of Form elements. So Text or Inner_HTML will return the contents of every child.
-

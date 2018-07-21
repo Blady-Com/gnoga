@@ -41,12 +41,12 @@ ifeq ($(strip $(findstring cygwin, $(TARGET))),cygwin)
 	PRJ_TARGET=Windows
 else
 ifeq ($(strip $(findstring freebsd, $(TARGET))),freebsd)
-	PRJ_TARGET=Freebsd
+	PRJ_TARGET=FreeBSD
 else
 ifeq ($(strip $(findstring linux, $(TARGET))),linux)
 	PRJ_TARGET=Linux
 else
-	PRJ_TARGET=Unix
+	PRJ_TARGET=UNIX
 endif
 endif
 endif
@@ -131,8 +131,8 @@ basic_components:
 deps : simple_components
 
 simple_components:
-	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
-	$(INSTALLER) --prefix="$(CWD)/build" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
+	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
+	$(INSTALLER) --prefix="$(CWD)/build" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
 
 lib/libsqlite3.a:
 	- $(MKDIR) lib
@@ -200,7 +200,7 @@ release: deps $(BUILD_SQLITE3) basic_components
 
 # Install Gnoga and deps with DEBUG off
 install: release gnoga_tools
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
 	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" install
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
@@ -210,7 +210,7 @@ install: release gnoga_tools
 
 # Install Gnoga and deps with DEBUG on
 install_debug:
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XLegacy=Ada2012
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
 	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" BUILD=Debug install
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr

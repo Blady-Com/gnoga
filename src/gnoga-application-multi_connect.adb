@@ -83,11 +83,15 @@ package body Gnoga.Application.Multi_Connect is
          elsif Path_Map.Contains ("default") then
             Path_Map.Element ("default") (Main_Window, Connection);
 
+            Log ("Sending to default route.");
+
             Server.Connection.Flush_Buffer (ID);
 
             Connection.Hold;
             --  If connection was already released this will not block.
          else
+            Log ("No route to path - " & Path);
+            
             Server.Connection.HTML_On_Close (ID, "No route to path.");
          end if;
       end;

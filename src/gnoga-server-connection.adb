@@ -2314,8 +2314,13 @@ package body Gnoga.Server.Connection is
 
          Connection_Manager.First (ID);
          while ID /= 0 loop
-            Close (ID);
-            Connection_Manager.Next (ID);
+            begin
+               Close (ID);
+               Connection_Manager.Next (ID);
+            exception
+               when others =>
+                  Connection_Manager.First (ID);
+            end;
          end loop;
 
          Connection_Manager.Delete_All_Connections;

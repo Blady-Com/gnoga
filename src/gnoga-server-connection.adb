@@ -173,6 +173,13 @@ package body Gnoga.Server.Connection is
                                 return GNAT.Sockets.Sock_Addr_Type;
    --  Set the listening host if was set in Initialize
 
+   overriding
+   procedure Create_Socket
+     (Listener : in out Gnoga_HTTP_Connection;
+      Socket   : in out GNAT.Sockets.Socket_Type;
+      Address  : GNAT.Sockets.Sock_Addr_Type);
+   --  Create socket with exception handler
+
    --  Gnoga_HTTP_Client  --
 
    type Gnoga_HTTP_Client is new HTTP_Client with
@@ -382,6 +389,40 @@ package body Gnoga.Server.Connection is
 
       return Address;
    end Get_Server_Address;
+
+   --------------------
+   --  Create_Socket --
+   --------------------
+
+   overriding
+   procedure Create_Socket
+     (Listener : in out Gnoga_HTTP_Connection;
+      Socket   : in out GNAT.Sockets.Socket_Type;
+      Address  : GNAT.Sockets.Sock_Addr_Type)
+   is
+      use type GNAT.Sockets.Socket_Type;
+   begin
+      Create_Socket (Connections_Server (Listener), Socket, Address);
+   exception
+      when Error : others =>
+         Gnoga.Log (Error);
+         if Socket /= GNAT.Sockets.No_Socket then
+            begin
+               GNAT.Sockets.Shutdown_Socket (Socket);
+            exception
+               when others =>
+                  null;
+            end;
+            begin
+               GNAT.Sockets.Close_Socket (Socket);
+            exception
+               when others =>
+                  null;
+            end;
+            Socket := GNAT.Sockets.No_Socket;
+         end if;
+         Stop;
+   end Create_Socket;
 
    --------------
    -- Get_Name --
@@ -1655,11 +1696,11 @@ package body Gnoga.Server.Connection is
 
       procedure Delete_Dispatch_Task (ID : in Gnoga.Types.Unique_ID)
       is
-         T : Dispatch_Task_Access := Dispatch_Task_Map.Element (ID);
+         Dummy_T : Dispatch_Task_Access := Dispatch_Task_Map.Element (ID);
       begin
-         Free_Dispatch_Task (T);
+         Free_Dispatch_Task (Dummy_T);
          --  http://adacore.com/developers/development-log/NF-65-H911-007-gnat
-         --  This will cause T to free upon task termination.
+         --  This will cause Dummy_T to free upon task termination.
          Dispatch_Task_Map.Delete (ID);
       end Delete_Dispatch_Task;
    end Dispatch_Task_Objects;

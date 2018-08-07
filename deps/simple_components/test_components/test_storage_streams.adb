@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2011       --
 --                                                                    --
---                                Last revision :  09:54 04 Feb 2017  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -104,6 +104,51 @@ begin
       (  "  Elements read, size"
       &  Stream_Element_Count'Image (Get_Size (Stream))
       );
+   end;
+   declare
+      Stream : aliased Storage_Stream (3);
+   begin
+      for Index in Integer range 1..4 loop
+         Integer'Write (Stream'Access, Index);
+      end loop;
+      Put_Line
+      (  "Stream size:"
+      &  Stream_Element_Count'Image (Get_Size (Stream))
+      );
+      for Index in Integer range 1..4 loop
+         declare
+            Value : Integer;
+         begin
+            Integer'Read (Stream'Access, Value);
+            if Index /= Value then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Read error for" & Integer'Image (Index)
+               );
+            end if;
+         end;
+      end loop;
+      if Get_Size (Stream) /= 0 then
+         Raise_Exception
+         (  Data_Error'Identity,
+            (  "Read error, stream is not empty,"
+            &  Stream_Element_Count'Image (Get_Size (Stream))
+            &  " items left"
+         )  );
+      end if;
+      Erase (Stream);
+      declare
+         Data : Stream_Element_Array (1..100);
+         Last : Stream_Element_Offset;
+      begin
+         Read (Stream, Data, Last);
+         if Last /= 0 then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Read error, read after end"
+            );
+         end if;
+      end;
    end;
    Put_Line ("... Done");
 exception

@@ -4,7 +4,7 @@
 --  Test WebSocket                                 Winter, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  21:26 01 Feb 2015  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

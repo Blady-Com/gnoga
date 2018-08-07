@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools                     Luebeck            --
 --  Interface                                      Winter, 2014       --
 --                                                                    --
---                                Last revision :  21:09 15 Sep 2014  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 --
---  This  package provides  a memory pools resident in a blocking access
+--  This  package provides  a memory pool  resident in a blocking access
 --  file based on Persistent_Array.
 --
 with Persistent.Blocking_Files;  use Persistent.Blocking_Files;

@@ -3,7 +3,7 @@
 --     Test_Infinity_Servers                       Luebeck            --
 --  Test HTTP content flood                        Winter, 2013       --
 --                                                                    --
---                                Last revision :  20:41 21 Jul 2017  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

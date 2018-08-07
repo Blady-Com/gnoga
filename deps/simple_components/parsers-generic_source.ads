@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source                      Luebeck            --
 --  Interface                                      Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  19:06 02 Jan 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -42,7 +42,7 @@
 --
 --  (o)  End_Of returns True at the source end;
 --  (o)  Get_Backup_Pointer  is  used to get the saved cursor. It is one
---       to which Restore_Pointer would return, see below. At the source
+--       to which Reset_Pointer would return,  see below.  At the source
 --       end 1 is the result;
 --  (o)  Get_Line  is a function to get the current source code line. It
 --       remains valid until the first call to Next_Line.  End_Error  is

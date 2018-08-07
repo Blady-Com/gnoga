@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client                               Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -58,7 +58,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       end Image;
    begin
       Trace
-      (  Client,
+      (  MODBUS_Client'Class (Client),
          (  "FC" & Image (Integer (Code))
          &  " bits read "
          &  Image (Values)
@@ -79,7 +79,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
              )  is
    begin
       Trace
-      (  Client,
+      (  MODBUS_Client'Class (Client),
          (  "FC" & Image (Integer (Code))
          &  " bits written at "
          &  Image (Integer (From))
@@ -155,7 +155,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
              )  is
    begin
       Trace
-      (  Client,
+      (  MODBUS_Client'Class (Client),
          (  "FC7 status "
          &  Image (Integer (Status))
          &  " Ref:"
@@ -174,7 +174,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
              )  is
    begin
       Trace
-      (  Client,
+      (  MODBUS_Client'Class (Client),
          (  "FC" & Image (Integer (Code))
          &  " failed: "
          &  Error_Text (Error)
@@ -935,7 +935,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       end Image;
    begin
       Trace
-      (  Client,
+      (  MODBUS_Client'Class (Client),
          (  "FC" & Image (Integer (Code))
          &  " words read "
          &  Image (Values)
@@ -956,7 +956,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
              )  is
    begin
       Trace
-      (  Client,
+      (  MODBUS_Client'Class (Client),
          (  "FC" & Image (Integer (Code))
          &  " words written at "
          &  Image (Integer (From))

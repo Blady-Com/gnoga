@@ -3,7 +3,7 @@
 --     GNAT.Sockets.SMTP.Client                    Luebeck            --
 --  Implementation                                 Summer, 2016       --
 --                                                                    --
---                                Last revision :  09:54 04 Feb 2017  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -14,7 +14,7 @@
 --  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  --
 --  General  Public  License  for  more  details.  You  should  have  --
 --  received  a  copy  of  the GNU General Public License along with  --
---  this library; if not, write to  the  Free  Software  Foundation,  --
+--  this library; if not, write _  the  Free  Software  Foundation,  --
 --  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.    --
 --                                                                    --
 --  As a special exception, if other files instantiate generics from  --
@@ -73,6 +73,47 @@ package body GNAT.Sockets.SMTP.Client is
           );
    procedure Free is
       new Ada.Unchecked_Deallocation (String, String_Ptr);
+
+--     function "abs" (Name : String) return String is
+--        Length : Natural := 0;
+--     begin
+--        for Index in Name'Range loop
+--           case Name (Index) is
+--              when 'A'..'Z' | 'a'..'z' | '0'..'9' |
+--                   '-' | '_' | '.' | '!' | '~' | '*' | ''' | '(' | ')' =>
+--                 Length := Length + 1;
+--              when others =>
+--                 Length := Length + 3;
+--           end case;
+--        end loop;
+--        declare
+--           Pointer : Integer := 1;
+--           Result  : String (1..Length);
+--        begin
+--           for Index in Name'Range loop
+--              case Name (Index) is
+--                 when 'A'..'Z' | 'a'..'z' | '0'..'9' |
+--                      '-' | '_' | '.' | '!' | '~' | '*' |
+--                      ''' | '(' | ')' =>
+--                    Result (Pointer) := Name (Index);
+--                    Pointer := Pointer + 1;
+--                 when others =>
+--                    Result (Pointer) := '%';
+--                    Pointer := Pointer + 1;
+--                    Strings_Edit.Integers.Put
+--                    (  Destination => Result,
+--                       Pointer     => Pointer,
+--                       Value       => Character'Pos (Name (Index)),
+--                       Base        => 16,
+--                       Field       => 2,
+--                       Justify     => Right,
+--                       Fill        => '0'
+--                    );
+--              end case;
+--           end loop;
+--           return Result;
+--        end;
+--     end "abs";
 
    procedure Add_Address
              (  List    : in out Mail_Address_List;
@@ -1038,6 +1079,11 @@ package body GNAT.Sockets.SMTP.Client is
       return Client.Accept_TLS;
    end Get_TLS;
 
+   function Get_TLS_Always (Client : SMTP_Client) return Boolean is
+   begin
+      return Client.Force_TLS;
+   end Get_TLS_Always;
+
    function Get_User (Client : SMTP_Client) return String is
    begin
       return Value (Client.User);
@@ -1307,14 +1353,16 @@ package body GNAT.Sockets.SMTP.Client is
             return;
          end if;
       elsif Client.Command = SMTP_EHLO then
-         if (  Client.Offered_TLS
-            and then
-               Client.Accept_TLS
+         if (  (  Client.Force_TLS
+               or else
+                  (Client.Offered_TLS and then Client.Accept_TLS)
+               )
             and then
                Is_TLS_Capable (Client.Listener.Factory.all)
             and then
                not Is_Elevated (Client)
-            )  then -- Go TLS
+            )
+         then -- Go TLS
             Client.Command       := SMTP_STARTTLS;
             Client.Receive_State := Receive_Code;
             Client.Count         := 0;
@@ -1356,7 +1404,7 @@ package body GNAT.Sockets.SMTP.Client is
                (  Client,
                   (  "AUTH PLAIN "
                   &  To_Base64
-                     (  Value (Client.User) & NUL
+                     (  NUL
                      &  Value (Client.User) & NUL
                      &  Value (Client.Password)
                      )
@@ -1627,43 +1675,51 @@ package body GNAT.Sockets.SMTP.Client is
                   exit when Pointer > Data'Last;
                end loop;
             when Receive_Class =>
-               case Data (Pointer) is
-                  when Character'Pos ('0') |
-                       Character'Pos ('1') |
-                       Character'Pos ('3') |
-                       Character'Pos ('6')..Character'Pos ('9') =>
-                     Raise_Exception
-                     (  Data_Error'Identity,
-                        (  "Invalid extended status code class, "
-                        &  "not 2,4,5"
-                     )  );
-                  when Character'Pos ('2') =>
-                     Client.Receive_State := Receive_Subject;
-                     Client.Count         := 0;
-                     Pointer              := Pointer + 1;
-                     Client.Code :=
-                        (True, Client.Code.Reply, (Success, 0, 0));
-                  when Character'Pos ('4') =>
-                     Client.Receive_State := Receive_Subject;
-                     Client.Count         := 0;
-                     Pointer              := Pointer + 1;
-                     Client.Code :=
-                        (  True,
-                           Client.Code.Reply,
-                           (Persistent_Transient_Failure, 0, 0)
-                        );
-                  when Character'Pos ('5') =>
-                     Client.Receive_State := Receive_Subject;
-                     Client.Count         := 0;
-                     Pointer              := Pointer + 1;
-                     Client.Code :=
-                        (  True,
-                           Client.Code.Reply,
-                           (Permanent_Failure, 0, 0)
-                        );
-                  when others =>
-                     Client.Receive_State := Receive_Line;
-               end case;
+               if (  Pointer = Data'Last
+                  or else
+                     Data (Pointer + 1) /= Character'Pos ('.')
+                  )
+               then -- Assume plain code
+                  Client.Receive_State := Receive_Line;
+               else
+                  case Data (Pointer) is
+                     when Character'Pos ('0') |
+                          Character'Pos ('1') |
+                          Character'Pos ('3') |
+                          Character'Pos ('6')..Character'Pos ('9') =>
+                        Raise_Exception
+                        (  Data_Error'Identity,
+                           (  "Invalid extended status code class, "
+                           &  "not 2,4,5"
+                        )  );
+                     when Character'Pos ('2') =>
+                        Client.Receive_State := Receive_Subject;
+                        Client.Count         := 0;
+                        Pointer              := Pointer + 1;
+                        Client.Code :=
+                           (True, Client.Code.Reply, (Success, 0, 0));
+                     when Character'Pos ('4') =>
+                        Client.Receive_State := Receive_Subject;
+                        Client.Count         := 0;
+                        Pointer              := Pointer + 1;
+                        Client.Code :=
+                           (  True,
+                              Client.Code.Reply,
+                              (Persistent_Transient_Failure, 0, 0)
+                           );
+                     when Character'Pos ('5') =>
+                        Client.Receive_State := Receive_Subject;
+                        Client.Count         := 0;
+                        Pointer              := Pointer + 1;
+                        Client.Code :=
+                           (  True,
+                              Client.Code.Reply,
+                              (Permanent_Failure, 0, 0)
+                           );
+                     when others =>
+                        Client.Receive_State := Receive_Line;
+                  end case;
+               end if;
             when Receive_Subject =>
                case Data (Pointer) is
                   when Character'Pos ('.') =>
@@ -2475,10 +2531,12 @@ package body GNAT.Sockets.SMTP.Client is
 
    procedure Set_TLS
              (  Client : in out SMTP_Client;
-                Enable : Boolean
+                Enable : Boolean;
+                Always : Boolean := False
              )  is
    begin
       Client.Accept_TLS := Enable;
+      Client.Force_TLS  := Always;
    end Set_TLS;
 
    function Value (Text : String_Ptr) return String is

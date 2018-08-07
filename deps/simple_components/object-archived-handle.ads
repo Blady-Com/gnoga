@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Summer, 2003       --
 --                                                                    --
---                                Last revision :  20:41 21 Jul 2017  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,7 +29,7 @@ with Object.Archived.Iterators;  use Object.Archived.Iterators;
 with Object.Archived.Sets;       use Object.Archived.Sets;
 
 generic
-   type Object_Type is abstract new Deposit with private;
+   type Object_Type (<>) is abstract new Deposit with private;
    type Object_Ptr_Type is access Object_Type'Class;
 package Object.Archived.Handle is
    pragma Elaborate_Body (Object.Archived.Handle);

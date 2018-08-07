@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2008       --
 --                                                                    --
---                                Last revision :  16:09 11 May 2008  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,5 +31,6 @@
 package Synchronization is
 
    Ownership_Error : exception;
+   Timeout_Error   : exception;
 
 end Synchronization;

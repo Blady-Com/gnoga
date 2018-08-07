@@ -12,6 +12,7 @@ project Components.Connections_Server.Secure is
           "gnat-sockets-server-secure-x509.adb",
           "gnat-sockets-server-secure-x509.ads"
        );
+   for Object_Dir use Components.Object_Dir_Path;
 
 end Components.Connections_Server.Secure;
 

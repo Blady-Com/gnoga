@@ -3,7 +3,7 @@
 --  Test echo client                               Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

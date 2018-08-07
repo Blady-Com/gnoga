@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  20:41 21 Jul 2017  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -324,8 +324,12 @@ package body Test_HTTP_Servers is
                (  Client,
                   404,
                   "Not found",
-                  "No file " & Quote (Status.File) & " found"
-               );
+                  (  "No file "
+                  &  Quote (Status.File)
+                  &  " found ("
+                  &  Quote (Status.Query)
+                  &  ")"
+               )  );
             end if;
          when URI =>
             if Status.Path = "" then

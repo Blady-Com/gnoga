@@ -13,6 +13,7 @@ project Components.Connections_Server.HTTP_Server is
           "gnat-sockets-connection_state_machine-http_server-websocket_server.adb",
           "gnat-sockets-connection_state_machine-http_server-websocket_server.ads"
        );
+   for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

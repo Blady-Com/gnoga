@@ -1,6 +1,6 @@
 with "../tables.gpr";
 
-project Tables.test is
+project Tables.Test is
 
    for Main use ("test_tables.adb");
    for Source_Files use
@@ -11,9 +11,11 @@ project Tables.test is
           "test_tables_table.ads"
        );
 
+   for Object_Dir use Tables.Object_Dir_Path;
+
    package Binder   renames Tables.Binder;
    package Builder  renames Tables.Builder;
    package Compiler renames Tables.Compiler;
    package Linker   renames Tables.Linker;
 
-end Tables.test;
+end Tables.Test;

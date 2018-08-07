@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  10:00 09 Apr 2016  --
+--                                Last revision :  21:18 26 Jan 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,6 +36,15 @@ with Ada.Unchecked_Deallocation;
 with System;
 
 package body ODBC.API is
+--     procedure Call_Stack (Text : String) is
+--        use Ada.Text_IO, GNAT.Traceback, GNAT.Traceback.Symbolic;
+--        TB : Tracebacks_Array (1..1_000); Len : Natural;
+--     begin
+--        Put_Line (Text);
+--        Call_Chain (TB, Len);
+--        Put_Line (Symbolic_Traceback (TB (1..Len)));
+--     end Call_Stack;
+
    Bytes_In_Wide_Char   : constant := 2;
    SQLGUID_Length       : constant := 16;
    SQLTINYINT_Length    : constant := SQLTINYINT'Size   / SQLCHAR'Size;
@@ -689,8 +698,8 @@ package body ODBC.API is
       Ignore : Boolean := False;
 
       function Get_Message return String is
-         Error   : aliased SQLINTEGER;
-         State   : aliased SQLSTATE := "00000" & nul;
+         Error   : aliased SQLINTEGER := 0;
+         State   : aliased SQLSTATE   := "00000" & nul;
          Message : constant String :=
                    Get_Rec
                    (  Handle_Type => Handle_Type,
@@ -701,11 +710,19 @@ package body ODBC.API is
                    );
       begin
          if Filter (State) then
-            if Message'Length > 0 then
-               return To_Ada (char_array (State)) & ": " & Message;
-            else
-               return To_Ada (char_array (State)) & ": ?";
-            end if;
+            declare
+               Prefix : constant String :=
+                                 To_Ada (char_array (State)) &
+                                 " (" &
+                                 SQLINTEGER_Edit.Image (Error) &
+                                 ")";
+            begin
+               if Message'Length > 0 then
+                  return Prefix & ": " & Message;
+               else
+                  return Prefix;
+               end if;
+            end;
          else
             Ignore := True;
             return "";

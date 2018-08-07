@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  15:46 28 May 2016  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,8 +31,12 @@ with GNAT.Sockets.MQTT;            use GNAT.Sockets.MQTT;
 with GNAT.Sockets.MQTT.Server;     use GNAT.Sockets.MQTT.Server;
 with GNAT.Sockets.Server;          use GNAT.Sockets.Server;
 with GNAT.Sockets.Server.Handles;  use GNAT.Sockets.Server.Handles;
+with Strings_Edit.Floats;          use Strings_Edit.Floats;
 with Strings_Edit.Integers;        use Strings_Edit.Integers;
 with Test_MQTT_Servers;            use Test_MQTT_Servers;
+
+with Ada.Numerics.Elementary_Functions;
+use  Ada.Numerics.Elementary_Functions;
 
 with GNAT.Exception_Traces;
 
@@ -50,9 +54,25 @@ begin
          Sent     => GNAT.Sockets.Server.Trace_Decoded
       );
       Set_Tracing_Flags (Factory.Server, Trace_All);
+      Publish
+      (  Server  => Factory.Server,
+         Topic   => "test/greeting",
+         Message => "Hello!",
+         Policy  => Updated
+      );
       for Index in 1..Try_Count loop
          delay 1.0;
-         Publish (Factory.Server, "/test/count", Image (Index));
+         Publish
+         (  Server  => Factory.Server,
+            Topic   => "test/count",
+            Message => Image (Index),
+            Policy  => Updated
+         );
+         Publish
+         (  Factory.Server,
+            "test/sine",
+            Image (sin (Float (Index) * 0.01) + 1.0)
+         );
       end loop;
    end;
 exception

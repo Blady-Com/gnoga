@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  20:01 04 Apr 2016  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -39,7 +39,16 @@ package body Generic_FIFO is
             if Length < 0 then
                Length := Length + Queue.Size;
             end if;
-            Queue.First := Queue.First + Integer'Min (Length, Count);
+            declare
+               First : constant Positive :=
+                       Queue.First + Integer'Min (Length, Count);
+            begin
+               if First > Queue.Size then
+                  Queue.First := First - Queue.Size;
+               else
+                  Queue.First := First;
+               end if;
+            end;
          end;
       end if;
    end Delete;

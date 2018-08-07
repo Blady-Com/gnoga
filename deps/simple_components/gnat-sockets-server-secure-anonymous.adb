@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.Anonymous        Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  20:28 27 May 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

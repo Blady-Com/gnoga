@@ -9,6 +9,7 @@ project Test_Operation_Stack is
           "operation_stack_expressions.ads",
           "test_operation_stack.adb"
        );
-   
+   for Object_Dir use Components.Object_Dir_Path;
+
 end Test_Operation_Stack;
 

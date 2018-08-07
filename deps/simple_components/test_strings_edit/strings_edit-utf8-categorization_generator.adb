@@ -167,7 +167,7 @@ begin
       Put_Line
       (  Standard_Error,
          (  "Use: strings_edit-utf8-categorization_generator "
-         &  "../strings_edit-utf8-mappings.adb unicodedata.txt"
+         &  "../strings_edit-utf8-categorization.adb unicodedata.txt"
       )  );
       Set_Exit_Status (Failure);
       return;

@@ -14,41 +14,60 @@ project Components is
            "GCC-built-ins",
            "GCC-long-offsets"
         );
-   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "GCC-long-offsets");
+   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "Pragma-atomic");
 
+   type OS_Type is ("Windows", "Windows_NT", "Linux", "UNIX", "OSX", "FreeBSD");
+   OS : OS_Type := external ("OS", "Windows");
+
+   Dir_List := ();
+   
    case Object_Tracing is
       when "Off" =>
-         case Tasking is
-            when "Multiple" =>
-               case Atomic_Access is
-                  when "Pragma-atomic" =>
-                     for Source_Dirs use (".", "atomic-access/ada");
-                  when "GCC-built-ins" =>
-                     for Source_Dirs use (".", "atomic-access/gcc");
-                  when "GCC-long-offsets" =>
-                     for Source_Dirs use (".", "atomic-access/gcc-long-offsets");
-               end case;
-            when "Single" =>
-               case Atomic_Access is
-                  when "Pragma-atomic" =>
-                     for Source_Dirs use ("single-task", ".", "atomic-access/ada");
-                  when "GCC-built-ins" =>
-                     for Source_Dirs use ("single-task", ".", "atomic-access/gcc");
-                  when "GCC-long-offsets" =>
-                     for Source_Dirs use ("single-task", ".", "atomic-access/gcc-long-offsets");
-               end case;
-         end case;
+         null;
       when "On" =>
-         case Atomic_Access is
-            when "Pragma-atomic" =>
-               for Source_Dirs use ("gnat-debug", ".", "atomic-access/ada");
-            when "GCC-built-ins" =>
-               for Source_Dirs use ("gnat-debug", ".", "atomic-access/gcc");
-            when "GCC-long-offsets" =>
-               for Source_Dirs use ("gnat-debug", ".", "atomic-access/gcc-long-offsets");
-         end case;
+         Dir_List := Dir_List & "gnat-debug";
    end case;
-   for Source_Files use
+   
+   case Tasking is
+      when "Multiple" =>
+         null;
+      when "Single" =>
+         Dir_List := Dir_List & "single-task";
+   end case;
+
+   Dir_List := Dir_List & ".";
+
+   case Atomic_Access is
+      when "Pragma-atomic" =>
+         Dir_List := Dir_List & "atomic-access/ada";
+      when "GCC-built-ins" =>
+         Dir_List := Dir_List & "atomic-access/gcc";
+      when "GCC-long-offsets" =>
+         Dir_List := Dir_List & "atomic-access/gcc-long-offsets";
+   end case;
+
+   case OS is
+      when "Windows" | "Windows_NT" =>
+         for Languages use ("Ada");
+         Dir_List := Dir_List & "os/windows";
+      when "Linux" | "UNIX" =>
+         for Languages use ("Ada", "C");
+         Dir_List := Dir_List & "os/linux";
+      when "OSX" =>
+         for Languages use ("Ada");
+         Dir_List := Dir_List & "os/pthreads";
+      when "FreeBSD" =>
+         for Languages use ("Ada");
+         Dir_List := Dir_List & "os/pthreads";
+         for Library_Options use ("-lpthread");
+   end case;
+
+   Object_Dir_Path := Strings_Edit.Object_Dir_Path;
+   for Object_Dir use Object_Dir_Path;
+   
+   for Source_Dirs use Dir_List;
+
+   Files_List :=
    (  "backward_link_handles.ads",
       "backward_link_handles-sets.ads",
       "block_streams.adb",
@@ -267,13 +286,75 @@ project Components is
       "synchronization-generic_mutexes_array.ads",
       "synchronization-generic_pulse_events.adb",
       "synchronization-generic_pulse_events.ads",
+      "synchronization-interprocess.adb",
+      "synchronization-interprocess.ads",
+      "synchronization-interprocess-events.adb",
+      "synchronization-interprocess-events.ads",
+      "synchronization-interprocess-generic_blackboard.adb",
+      "synchronization-interprocess-generic_blackboard.ads",
+      "synchronization-interprocess-generic_fifo.adb",
+      "synchronization-interprocess-generic_fifo.ads",
+      "synchronization-interprocess-generic_shared_object.adb",
+      "synchronization-interprocess-generic_shared_object.ads",
+      "synchronization-interprocess-memory_pools.adb",
+      "synchronization-interprocess-memory_pools.ads",
+      "synchronization-interprocess-mutexes.adb",
+      "synchronization-interprocess-mutexes.ads",
+      "synchronization-interprocess-process_call_service.adb",
+      "synchronization-interprocess-process_call_service.ads",
+      "synchronization-interprocess-process_call_service-generic_call_service_arrays.adb",
+      "synchronization-interprocess-process_call_service-generic_call_service_arrays.ads",
+      "synchronization-interprocess-process_call_service-generic_dyadic_function.adb",
+      "synchronization-interprocess-process_call_service-generic_dyadic_function.ads",
+      "synchronization-interprocess-process_call_service-generic_dyadic_procedure.adb",
+      "synchronization-interprocess-process_call_service-generic_dyadic_procedure.ads",
+      "synchronization-interprocess-process_call_service-generic_parameterless_function.adb",
+      "synchronization-interprocess-process_call_service-generic_parameterless_function.ads",
+      "synchronization-interprocess-process_call_service-parameterless_procedure.adb",
+      "synchronization-interprocess-process_call_service-parameterless_procedure.ads",
+      "synchronization-interprocess-process_call_service-generic_ternary_function.adb",
+      "synchronization-interprocess-process_call_service-generic_ternary_function.ads",
+      "synchronization-interprocess-process_call_service-generic_ternary_procedure.adb",
+      "synchronization-interprocess-process_call_service-generic_ternary_procedure.ads",
+      "synchronization-interprocess-process_call_service-generic_unary_function.adb",
+      "synchronization-interprocess-process_call_service-generic_unary_function.ads",
+      "synchronization-interprocess-process_call_service-generic_unary_procedure.adb",
+      "synchronization-interprocess-process_call_service-generic_unary_procedure.ads",
+      "synchronization-interprocess-process_call_service-get_string.ads",
+      "synchronization-interprocess-process_call_service-manager.adb",
+      "synchronization-interprocess-process_call_service-manager.ads",
+      "synchronization-interprocess-process_call_service-process_string.ads",
+      "synchronization-interprocess-process_call_service-set_string.ads",
+      "synchronization-interprocess-pulse_events.adb",
+      "synchronization-interprocess-pulse_events.ads",
+      "synchronization-interprocess-streams.adb",
+      "synchronization-interprocess-streams.ads",
       "synchronization-mutexes.adb",
       "synchronization-mutexes.ads",
       "synchronization-pulse_events.adb",
       "synchronization-pulse_events.ads",
+      "system_errno.ads",
       "tables-utf8_names.adb",
       "tables-utf8_names.ads"
    );
+   case OS is
+      when "Windows" | "Windows_NT" =>
+         for Source_Files use
+             Files_List & (  "synchronization-windows.adb",
+                             "synchronization-windows.ads"
+                          );
+      when "Linux" | "UNIX" =>
+         for Source_Files use
+             Files_List & (  "synchronization_linux.c",
+                             "synchronization-linux.adb",
+                             "synchronization-linux.ads"
+                          );
+      when "OSX" | "FreeBSD" =>
+         for Source_Files use
+             Files_List & (  "synchronization-pthreads.adb",
+                             "synchronization-pthreads.ads"
+                          );
+   end case;
 
    package Compiler renames Strings_Edit.Compiler;
    package Binder   renames Strings_Edit.Binder;

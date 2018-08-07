@@ -1,8 +1,8 @@
+with "../components.gpr";
 with "../components-sqlite.gpr";
 
 project Components.SQLite.SQLite_Persistence_Tests is
 
-   for Exec_Dir use ".";
    for Source_Files use
        (  "test_sqlite_persistence.adb",
           "test_persistent_object.adb",
@@ -11,6 +11,7 @@ project Components.SQLite.SQLite_Persistence_Tests is
           "test_persistent_tree.ads"
        );
    for Main use ("test_sqlite_persistence.adb");
+   for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler is
       for Default_Switches ("ada") use Components.SQLite.Compiler'Default_Switches ("ada");

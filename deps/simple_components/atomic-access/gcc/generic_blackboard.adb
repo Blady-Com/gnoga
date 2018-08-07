@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  21:31 21 Dec 2011  --
+--                                Last revision :  17:44 21 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -236,20 +236,31 @@ package body Generic_Blackboard is
 
    function Get (Storage : Blackboard; Pointer : Reference)
       return Element_Type is
-      Offset : Storage_Count := Get_Offset (Storage, Pointer);
+      Index  : Reference     := Pointer;
+      Offset : Storage_Count := Get_Offset (Storage, Index);
       Size   : Storage_Offset;
    begin
-      if Pointer >= Storage.Upper'Unchecked_Access then
+      if Index >= Storage.Upper'Unchecked_Access then
          raise Constraint_Error;
       end if;
       Size :=
          Get_Block_Size (Storage, Offset) - Aligned_Storage_Offset_Size;
-      if (  Size <= 0
-         or else
-            Pointer < Storage.Lower'Unchecked_Access
-         )
-      then
-         raise Constraint_Error;
+      if Size <= 0 then
+         if Size = -Aligned_Storage_Offset_Size then -- Wrapping
+            Index := Index + Reference (Storage.Size - Offset);
+            if Index >= Storage.Upper'Unchecked_Access then
+               raise Constraint_Error;  -- Wrapped reference is outside
+            end if;
+            Offset := 0;
+            Size   := Get_Block_Size (Storage, Offset) -
+                      Aligned_Storage_Offset_Size;
+            if Size <= 0 or else Index < Storage.Lower'Unchecked_Access
+            then
+               raise Constraint_Error;
+            end if;
+         else
+            raise Constraint_Error;
+         end if;
       end if;
       --
       -- The  size  must  be valid, that means we can use it to copy the
@@ -270,13 +281,19 @@ package body Generic_Blackboard is
          -- indefinite arrays. Though the offset is static it need to be
          -- evaluated, which the procedure Put does.
          --
-         if Pointer < Storage.Lower'Unchecked_Access then
+         if Index < Storage.Lower'Unchecked_Access then
             raise Constraint_Error;
          else
             return To_Pointer (Result'Address + Address_Offset).all;
          end if;
       end;
    end Get;
+
+   function Image (Pointer : Reference) return String is
+      Result : constant String := Reference'Image (Pointer);
+   begin
+      return Result (Result'First + 1..Result'Last);
+   end Image;
 
    function Is_Valid (Storage : Blackboard; Pointer : Reference)
       return Boolean is
@@ -290,30 +307,36 @@ package body Generic_Blackboard is
                 Pointer : in out Reference;
                 Sequent : out Boolean
              )  is
+      Index  : Reference := Pointer;
       Offset : Storage_Count;
       Size   : Storage_Offset;
       Moved  : Boolean := False;
    begin
       Sequent := True;
-      loop
-         if Pointer >= Storage.Upper'Unchecked_Access then
-            return;
+      if Index >= Storage.Upper'Unchecked_Access then
+         return;
+      end if;
+      Offset := Get_Offset (Storage, Index);
+      Size   := Get_Block_Size (Storage, Offset);
+      if Index < Storage.Lower'Unchecked_Access then
+         Pointer := Load (Storage.Lower'Unchecked_Access);
+         Sequent := False;
+         return;
+      end if;
+      if Size <= 0 then
+         Index := Index + Reference (Size + Storage.Size - Offset);
+         if Index >= Storage.Upper'Unchecked_Access then -- Wrapped to
+            return;                                      -- the end
          end if;
-         Offset := Get_Offset (Storage, Pointer);
+         Offset := 0;
          Size   := Get_Block_Size (Storage, Offset);
-         if Pointer < Storage.Lower'Unchecked_Access then
+         if Index < Storage.Lower'Unchecked_Access then
             Pointer := Load (Storage.Lower'Unchecked_Access);
             Sequent := False;
             return;
          end if;
-         if Size <= 0 then
-            Pointer := Pointer + Reference (Storage.Size - Offset);
-         else
-            exit when Moved;
-            Moved   := True;
-            Pointer := Pointer + Reference (Size);
-         end if;
-      end loop;
+      end if;
+      Pointer := Index + Reference (Size);
    end Next;
 
    procedure Put

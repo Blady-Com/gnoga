@@ -3,7 +3,7 @@
 --     Test_ODBC_Persistence                       Luebeck            --
 --  Implementation                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  15:03 28 Mar 2009  --
+--                                Last revision :  22:26 24 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -59,7 +59,7 @@ begin
    end;
    Put_Line ("Session 2");
    declare
-      DB   : Storage_Handle := Open;
+      DB   : constant Storage_Handle := Open;
       Root : Handle;
    begin
       Root := Get (DB, Object_Name);
@@ -77,7 +77,7 @@ begin
    end;
    Put_Line ("Session 4");
    declare
-      DB   : Storage_Handle := Open;
+      DB   : constant Storage_Handle := Open;
       Dir  : Handle;
       Root : Handle;
    begin

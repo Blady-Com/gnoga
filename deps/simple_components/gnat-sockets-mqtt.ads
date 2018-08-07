@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  11:41 17 Dec 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -271,7 +271,7 @@ package GNAT.Sockets.MQTT is
 --
 -- Returns :
 --
---    True if the topic constains wildcards
+--    True if the topic contains wildcards
 --
 -- Exceptions :
 --

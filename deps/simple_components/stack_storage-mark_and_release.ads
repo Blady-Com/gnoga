@@ -3,7 +3,7 @@
 --     Stack_Storage.Mark_And_Release              Luebeck            --
 --  Interface                                      Winter, 2003       --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  19:15 09 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -128,9 +128,5 @@ private
 -- Last_Allocated -- The last object allocated in the pool
 --
    Last_Allocated : Pool_Object_Ptr;
---
--- Kill_All -- Deletes all objects lingering in the pool
---
-   Kill_All : Pool_Mark;
-   
+
 end Stack_Storage.Mark_And_Release;

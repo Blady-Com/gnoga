@@ -3,7 +3,7 @@
 --     Test_HTTP_SQLite_Servers                    Luebeck            --
 --  Test server to browse SQLite3 Database         Winter, 2014       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

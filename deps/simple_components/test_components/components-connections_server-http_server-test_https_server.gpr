@@ -1,9 +1,9 @@
+with "../components.gpr";
 with "../components-connections_server-http_server.gpr";
 with "../components-connections_server-secure.gpr";
 
 project Components.Connections_Server.HTTP_Server.Test_HTTPS_Server is
 
-   for Exec_Dir use ".";
    for Source_Files use
        (  "test_https_client.adb",
     	  "test_https_server.adb",
@@ -16,5 +16,6 @@ project Components.Connections_Server.HTTP_Server.Test_HTTPS_Server is
        (  "test_https_client.adb",
 	      "test_https_server.adb"
 	   );
+   for Object_Dir use Components.Object_Dir_Path;
 
 end Components.Connections_Server.HTTP_Server.Test_HTTPS_Server;

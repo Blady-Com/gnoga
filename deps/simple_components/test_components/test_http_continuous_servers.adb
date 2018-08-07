@@ -3,7 +3,7 @@
 --     Test_HTTP_Continuous_Server                 Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  12:48 19 Jun 2016  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

@@ -1,8 +1,8 @@
+with "../components.gpr";
 with "../components-gnade.gpr";
 
 project Components.GNADE.ODBC_Persistence_Tests is
 
-   for Exec_Dir use ".";
    for Source_Files use
    (  "test_odbc_persistence.adb",
       "test_odbc_session.ads",
@@ -13,6 +13,7 @@ project Components.GNADE.ODBC_Persistence_Tests is
       "test_persistent_tree.ads"
    );
    for Main use ("test_odbc_persistence.adb");
+   for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler is
       for Default_Switches ("ada") use Components.GNADE.Compiler'Default_Switches ("ada");

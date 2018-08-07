@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  09:54 04 Feb 2017  --
+--                                Last revision :  21:52 09 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -91,7 +91,7 @@ package body GNAT.Sockets.Server.Secure is
                 Got_It    : out Boolean
              )  is
       Factory : Connections_Factory'Class renames
-                Client.Listener.Factory.all;
+                Client.Socket_Listener.Factory.all;
       Buffer  : Input_Buffer renames Transport.Buffer;
       Last    : Stream_Element_Offset;
    begin
@@ -285,7 +285,7 @@ package body GNAT.Sockets.Server.Secure is
    exception
       when Error : others =>
          Trace_Error
-         (  Client.Listener.Factory.all,
+         (  Client.Socket_Listener.Factory.all,
             "TLS transport reading",
             Error
          );
@@ -327,12 +327,12 @@ package body GNAT.Sockets.Server.Secure is
       if (  Last >= Pointer
          and then
             Is_Trace_Received_On
-            (  Client.Listener.Factory.all,
+            (  Client.Socket_Listener.Factory.all,
                Trace_Encoded
          )   )
       then
          Trace_Sent
-         (  Factory => Client.Listener.Factory.all,
+         (  Factory => Client.Socket_Listener.Factory.all,
             Client  => Client,
             Data    => Data,
             From    => Pointer,
@@ -350,7 +350,7 @@ package body GNAT.Sockets.Server.Secure is
          raise;
       when Error : others =>
          Trace_Error
-         (  Client.Listener.Factory.all,
+         (  Client.Socket_Listener.Factory.all,
             "TLS transport writing",
             Error
          );

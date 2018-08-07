@@ -3,7 +3,7 @@
 --     Test_ODBC_Bindings                          Luebeck            --
 --  Implementation                                 Autumn, 2012       --
 --                                                                    --
---                                Last revision :  17:24 20 Oct 2012  --
+--                                Last revision :  22:26 24 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -692,7 +692,7 @@ procedure Test_ODBC_Bindings is
 
 begin
    declare
-      X : SQL_TIMESTAMP_STRUCT := From_Time (Clock);
+      X : constant SQL_TIMESTAMP_STRUCT := From_Time (Clock);
    begin
       if X /= From_Time (To_Time (X)) then
          Raise_Exception
@@ -1768,7 +1768,7 @@ begin
       Put_Line ("------------ supported ODBC functions:");
       declare
          type SQL_API_Array is array (Positive range <>) of SQL_API;
-         List : SQL_API_Array :=
+         List : constant SQL_API_Array :=
                 (  SQL_API_SQLALLOCCONNECT,   SQL_API_SQLALLOCENV,
                    SQL_API_SQLALLOCSTMT,      SQL_API_SQLBINDCOL,
                    SQL_API_SQLCANCEL,         SQL_API_SQLCOLATTRIBUTE,
@@ -1934,7 +1934,7 @@ begin
          procedure Query (Data_Type : SQL_DATA_TYPE) is
          begin
             declare
-               Info : Type_Info :=
+               Info : constant Type_Info :=
                       Get_Type_Info (Command'Access, Data_Type);
             begin
                Put_Line (Info.Type_Name);
@@ -2075,10 +2075,10 @@ begin
          end if;
          declare
             function Get_Text return String is
-               Info : Type_Info := Get_Type_Info
-                                   (  Command'Access,
-                                      SQL_LONGVARCHAR
-                                   );
+               Info : constant Type_Info := Get_Type_Info
+                                            (  Command'Access,
+                                               SQL_LONGVARCHAR
+                                            );
             begin
                if Info.Create_Parameters = "" then
                   return Info.Type_Name;
@@ -2154,8 +2154,8 @@ begin
          begin
             for No in 1..Num_Params (Command) loop
                declare
-                  Info : Param_Description :=
-                         Describe_Param (Command, No);
+                  Info : constant Param_Description :=
+                                  Describe_Param (Command, No);
                begin
                   Put_Line
                   (  "  "
@@ -2199,8 +2199,8 @@ begin
          Put_Line ("Describing colimns:");
          for Column in 1..Num_Result_Cols (Command) loop
             declare
-               Description : Column_Description :=
-                             Describe_Col (Command, Column);
+               Description : constant Column_Description :=
+                                      Describe_Col (Command, Column);
             begin
                Put_Line
                (  "  "

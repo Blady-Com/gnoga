@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2011       --
 --                                                                    --
---                                Last revision :  09:54 04 Feb 2017  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,7 +32,8 @@ package body Storage_Streams is
    procedure Erase (Stream : in out Storage_Stream) is
    begin
       Merge (Stream.Free, Stream.First);
-      Stream.Size := 0;
+      Stream.First     := null;
+      Stream.Size      := 0;
       Stream.Out_Count := 0;
    end Erase;
 

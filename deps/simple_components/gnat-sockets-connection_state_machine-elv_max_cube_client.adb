@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  18:49 10 Apr 2017  --
+--                                Last revision :  20:28 27 May 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -186,7 +186,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       Lock : Holder (Client.Topology.Lock'Access);
    begin
       if Full then
-         Client.Ready    := 0;
+         Client.Ready := 0;
       end if;
       Client.Roomless := 0;
       Erase (Client.Topology.RF);
@@ -207,7 +207,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          when NTP_Servers_List_Update =>
             for Index in 1..Get_Size (Update.NTP_Servers_List) loop
                Trace
-               (  Client,
+               (  ELV_MAX_Cube_Client'Class (Client),
                   (  "> NTP server "
                   &  Image (Index)
                   &  "/"
@@ -218,7 +218,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             end loop;
          when Device_Discovery_Update =>
             Trace
-            (  Client,
+            (  ELV_MAX_Cube_Client'Class (Client),
                (  "> Device found: "
                &  Image (Update.Device)
                &  " "
@@ -227,7 +227,10 @@ package body GNAT.Sockets.Connection_State_Machine.
                &  Update.Serial_No
             )  );
          when End_Discovery_Update =>
-            Trace (Client, "> Device discovery finished");
+            Trace
+            (  ELV_MAX_Cube_Client'Class (Client),
+               "> Device discovery finished"
+            );
       end case;
    end Configuration_Updated;
 
@@ -258,7 +261,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Data   : Device_Data
              )  is
    begin
-      Trace (Client, "> " & Image (Data));
+      Trace (ELV_MAX_Cube_Client'Class (Client), "> " & Image (Data));
    end Data_Received;
 
    function Decode (Value : Natural) return Week_Day is
@@ -1214,8 +1217,8 @@ package body GNAT.Sockets.Connection_State_Machine.
              )  is
       Data        : constant String := From_Base64 (Line);
       Pointer     : Integer := Data'First;
-      Length      : Integer;
-      Next        : Integer;
+      Length      : Integer := 0;
+      Next        : Integer := Data'First;
       Address     : RF_Address;
       Answer      : Boolean;
       Error       : Boolean;
@@ -1384,11 +1387,11 @@ package body GNAT.Sockets.Connection_State_Machine.
       function Get_Data return Device_Data is
          Lock   : Holder (Client.Topology.Lock'Access);
          Device : Device_Descriptor'Class renames
-                     Ptr
-                     (  Get
-                        (  Client.Topology.Devices,
-                           Get_Device_Unchecked (Client, Address)
-                     )  ) .all;
+                  Ptr
+                  (  Get
+                     (  Client.Topology.Devices,
+                        Get_Device_Unchecked (Client, Address)
+                  )  ) .all;
       begin
          case Device.Kind_Of is
             when Cube | Unknown =>
@@ -1469,19 +1472,95 @@ package body GNAT.Sockets.Connection_State_Machine.
             Initialized := 0 /= (Byte and 2**1);
          end;
          Pointer := Pointer + 1;
-         declare
-            Data : constant Device_Data := Get_Data;
-         begin
-            if Data.Kind_Of in Radiator_Thermostat..Eco_Button then
-               Data_Received (Client, Data);
-            end if;
-         end;
+         if not Valid or else not Is_In (Client.Topology.RF, Address)
+         then
+            declare
+               function Is_Valid return String is
+               begin
+                  if not Valid then
+                     return ", invalid";
+                  else
+                     return "";
+                  end if;
+               end Is_Valid;
+
+               function Is_Initialized return String is
+               begin
+                  if not Initialized then
+                     return ", uninitialized";
+                  else
+                     return "";
+                  end if;
+               end Is_Initialized;
+
+               function Is_Error return String is
+               begin
+                  if Error then
+                     return ", error";
+                  else
+                     return "";
+                  end if;
+               end Is_Error;
+            begin
+               Trace
+               (  Client,
+                  (  "> Faulty device "
+                  &  Image (Address)
+                  &  ", data length "
+                  &  Image (Length)
+                  &  Is_Error
+                  &  Is_Initialized
+                  &  Is_Valid
+               )  );
+            end;
+         else
+            declare
+               Data : constant Device_Data := Get_Data;
+            begin
+               if Data.Kind_Of in Radiator_Thermostat..Eco_Button then
+                  Data_Received (Client, Data);
+               end if;
+            end;
+         end if;
          Pointer := Next;
       end loop;
       Client.Ready := Client.Ready or Got_L;
    exception
-      when End_Error =>
-         null; -- Unknown device
+      when Error : others =>
+         declare
+            This : constant Integer := Next - Length - 1;
+         begin
+            if (  This in Data'First..Data'Last + 1
+               and then
+                  Pointer in Data'First..Data'Last + 1
+               and then
+                  Next in Data'First..Data'Last + 1
+               )  then
+               Trace
+               (  Client,
+                  (  "Error parsing L-response "
+                  &  Image (From_String (Data (Data'First..This - 1)))
+                  &  " [ "
+                  &  Image (From_String (Data (This..Pointer - 1)))
+                  &  " | "
+                  &  Image (From_String (Data (Pointer..Next - 1)))
+                  &  " ] "
+                  &  Image (From_String (Data (Next..Data'Last)))
+               )  );
+            else
+               Trace
+               (  Client,
+                  (  "Error parsing L-response "
+                  &  Image (From_String (Data))
+                  &  " Pointer=" & Image (Pointer)
+                  &  " Length="  & Image (Length)
+                  &  " Next="    & Image (Next)
+               )  );
+            end if;
+         end;
+         if Exception_Identity (Error) /= End_Error'Identity then
+            raise; -- Not an unknown device
+         end if;
    end Get_L;
 
    procedure Get_M
@@ -2182,7 +2261,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          end case;
       else
          case Day is
-            when Mo => return "Moday";
+            when Mo => return "Monday";
             when Tu => return "Tuesday";
             when We => return "Wednesday";
             when Th => return "Thursday";
@@ -2331,7 +2410,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             Get_S (Client, Line (Line'First + 2..Last));
          when others =>
             Trace
-            (  Client,
+            (  ELV_MAX_Cube_Client'Class (Client),
                "Unsupported message '" & Line (Line'First) & '''
             );
       end case;
@@ -3174,7 +3253,10 @@ package body GNAT.Sockets.Connection_State_Machine.
       Put (Text, Pointer, "%, ");
       Put (Text, Pointer, Slots);
       Put (Text, Pointer, " free");
-      Trace (Client, "> " & Text (1..Pointer - 1));
+      Trace
+      (  ELV_MAX_Cube_Client'Class (Client),
+         "> " & Text (1..Pointer - 1)
+      );
    end Status_Received;
 
    procedure Trace

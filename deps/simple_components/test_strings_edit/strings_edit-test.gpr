@@ -6,6 +6,7 @@ project Strings_Edit.Test is
        (  "strings_edit-utf8-categorization_generator.adb",
           "strings_edit-utf8-mapping_generator.adb",
           "test_base64.adb",
+          "test_chacha20.adb",
           "test_strings_edit.adb",
           "test_string_streams.adb"
        );
@@ -13,9 +14,12 @@ project Strings_Edit.Test is
        (  "strings_edit-utf8-categorization_generator.adb",
           "strings_edit-utf8-mapping_generator.adb",
           "test_base64.adb",
+          "test_chacha20.adb",
           "test_strings_edit.adb",
           "test_string_streams.adb"
        );
+
+   for Object_Dir use Strings_Edit.Object_Dir_Path;
 
    package Binder   renames Strings_Edit.Binder;
    package Builder  renames Strings_Edit.Builder;

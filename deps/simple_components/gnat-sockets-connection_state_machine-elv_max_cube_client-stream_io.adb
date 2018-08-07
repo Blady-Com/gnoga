@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Stream_IO               Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  09:37 03 Sep 2017  --
+--                                Last revision :  17:44 24 Nov 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -189,9 +189,14 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
          String'Read (Stream, Result.Serial_No);
          String'Read (Stream, Result.Name);
          case Kind_Of is
-            when Cube | Wall_Thermostat | Shutter_Contact | Eco_Button |
-                 Unknown =>
+            when Cube | Shutter_Contact | Eco_Button | Unknown =>
                null;
+            when Wall_Thermostat =>
+               Result.Comfort  := Read (Stream);
+               Result.Eco      := Read (Stream);
+               Result.Max      := Read (Stream);
+               Result.Min      := Read (Stream);
+               Result.Schedule := Read (Stream);
             when Radiator_Thermostat | Radiator_Thermostat_Plus =>
                Result.Comfort         := Read (Stream);
                Result.Eco             := Read (Stream);
@@ -359,9 +364,14 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
       String'Write (Stream, Parameters.Serial_No);
       String'Write (Stream, Parameters.Name);
       case Parameters.Kind_Of is
-         when Cube | Wall_Thermostat | Shutter_Contact | Eco_Button |
-              Unknown =>
+         when Cube | Shutter_Contact | Eco_Button | Unknown =>
             null;
+         when Wall_Thermostat =>
+            Write (Stream, Parameters.Comfort);
+            Write (Stream, Parameters.Eco);
+            Write (Stream, Parameters.Max);
+            Write (Stream, Parameters.Min);
+            Write (Stream, Parameters.Schedule);
          when Radiator_Thermostat | Radiator_Thermostat_Plus =>
             Write (Stream, Parameters.Comfort);
             Write (Stream, Parameters.Eco);

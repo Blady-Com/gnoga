@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.X509             Luebeck            --
 -- Interface                                       Winter, 2015       --
 --                                                                    --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  17:44 21 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

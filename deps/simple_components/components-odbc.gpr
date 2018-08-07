@@ -5,8 +5,10 @@ project Components.ODBC is
 
    type ODBC_Driver_Type is ("ODBC32", "unixODBC");
    ODBC_Driver : ODBC_Driver_Type := external ("odbc", "ODBC32");
-   type Arch_Type is ("x86_64", "i686");
-   Arch : Arch_Type := external ("arch", "i686");
+   type Arch_Type is ("x86_64", "i686", "armhf");
+   Arch : Arch_Type := external ("arch", "x86_64");
+
+   for Object_Dir use Components.Object_Dir_Path;
 
    Common_Files :=
        (  "odbc.ads",
@@ -34,10 +36,20 @@ project Components.ODBC is
       );
    case ODBC_Driver is
       when "ODBC32" =>
-         for Source_Dirs use (".", "./odbc", "./odbc/odbc32", "./odbc/odbc32/" & Arch);
+         case Arch is
+            when "x86_64" =>
+               for Source_Dirs use (".", "./odbc", "./odbc/odbc32", "./odbc/odbc32/x86_64");
+            when "i686" | "armhf" =>
+               for Source_Dirs use (".", "./odbc", "./odbc/odbc32", "./odbc/odbc32/i686");
+         end case;
          for Source_Files use Common_Files;
       when "unixODBC" =>
-         for Source_Dirs use (".", "./odbc", "./odbc/unixodbc", "./odbc/unixodbc/" & Arch);
+         case Arch is
+            when "x86_64" =>
+               for Source_Dirs use (".", "./odbc", "./odbc/unixodbc", "./odbc/unixodbc/x86_64");
+            when "i686" | "armhf" =>
+               for Source_Dirs use (".", "./odbc", "./odbc/unixodbc", "./odbc/unixodbc/i686");
+         end case;
          for Source_Files use Common_Files;
    end case;
 

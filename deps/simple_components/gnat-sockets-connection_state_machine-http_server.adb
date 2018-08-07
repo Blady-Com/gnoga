@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  20:41 21 Jul 2017  --
+--                                Last revision :  20:28 27 May 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1083,6 +1083,15 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       end case;
    end Header_Received;
 
+   function Image (Scheme : Scheme_Type) return String is
+   begin
+      if Scheme_Type'Pos (Scheme) < GetSize (Schemes) then
+         return GetName (Schemes, Scheme_Type'Pos (Scheme) + 1);
+      else
+         return "unknown";
+      end if;
+   end Image;
+
    function Image (Header : Request_Header) return String is
       Result     : String  := Request_Header'Image (Header);
       Capitalize : Boolean := True;
@@ -1478,11 +1487,12 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       function Get_Version return HTTP_Version is
          Version : Float;
       begin
-         if not Is_Prefix (" http/", Request, Pointer, Lower) then
+         Get (Request, Pointer);
+         if not Is_Prefix ("http/", Request, Pointer, Lower) then
             Trace (Client, "No HTTP version specified (1.1 assumed)");
             return 1.1;
          end if;
-         Pointer := Pointer + 6;
+         Pointer := Pointer + 5;
          begin
             Get (Request, Pointer, Version);
          exception
@@ -1577,65 +1587,110 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             Port        : Integer := 80;
             Scheme      : Scheme_Type;
          begin
-            begin
-               Get (Request, Pointer, Schemes, Scheme);
-            exception
-               when others =>
+            loop
+               if Pointer > Request'Last then
                   Raise_Exception
                   (  Data_Error'Identity,
-                     (  "URI does not start with a supported scheme "
-                     &  "(e.g. http)"
-                  )  );
-            end;
-            if not Is_Prefix ("://", Request, Pointer) then
-               Raise_Exception
-               (  Data_Error'Identity,
-                  "Scheme of the URI is not followed by ://"
-               );
-            end if;
-            Pointer := Pointer + 3;
-            Host_First := Pointer;
-            Host_Next  := Pointer;
-            while Pointer <= Request'Last loop
-               case Request (Pointer) is
-                  when ' ' | '/' =>
-                     exit;
-                  when ':' =>
-                     Pointer := Pointer + 1;
-                     begin
-                        Get
-                        (  Source  => Request,
-                           Pointer => Pointer,
-                           Value   => Port,
-                           First   => 1,
-                           Last    => 2**16-1
-                        );
-                     exception
-                        when Constraint_Error =>
-                           Raise_Exception
-                           (  Data_Error'Identity,
-                              "Port number is not in range"
-                           );
-                        when others =>
-                           Raise_Exception
-                           (  Data_Error'Identity,
-                              "No port number after colon ':' in URI"
-                           );
-                     end;
-                     exit;
-                  when others =>
-                     Pointer   := Pointer + 1;
-                     Host_Next := Pointer;
-               end case;
-            end loop;
-            if Host_First >= Host_Next then
-               Raise_Exception
-               (  Data_Error'Identity,
-                  "Empty host address in URI"
-               );
-            end if;
-            if Request (Pointer) = '/' then
+                     "URI does not contain scheme followed by colon ':'"
+                  );
+               end if;
+               if Request (Pointer) = ':' then
+                  declare
+                     Offset : constant Integer :=
+                        Locate (Schemes, Request (1..Pointer - 1));
+                  begin
+                     if Offset > 0 then
+                        Scheme := GetTag (Schemes, Offset);
+                     else
+                        Scheme := Unknown_Scheme;
+                     end if;
+                  end;
+                  if Client.Trace_Header then
+                     Trace (Client, "Scheme: " & Image (Scheme));
+                  end if;
+                  Pointer := Pointer + 1;
+                  exit;
+               end if;
                Pointer := Pointer + 1;
+            end loop;
+            if Is_Prefix ("//", Request, Pointer) then
+               Pointer := Pointer + 2;
+               Host_First := Pointer;
+               Host_Next  := Pointer;
+               while Pointer <= Request'Last loop
+                  case Request (Pointer) is
+                     when ' ' | '/' =>
+                        exit;
+                     when ':' =>
+                        Pointer := Pointer + 1;
+                        begin
+                           Get
+                           (  Source  => Request,
+                              Pointer => Pointer,
+                              Value   => Port,
+                              First   => 1,
+                              Last    => 2**16-1
+                           );
+                        exception
+                           when Constraint_Error =>
+                              Raise_Exception
+                              (  Data_Error'Identity,
+                                 "Port number is not in range"
+                              );
+                           when others =>
+                              Raise_Exception
+                              (  Data_Error'Identity,
+                                 "No port number after colon ':' in URI"
+                              );
+                        end;
+                        exit;
+                     when others =>
+                        Pointer   := Pointer + 1;
+                        Host_Next := Pointer;
+                  end case;
+               end loop;
+               if Host_First >= Host_Next then
+                  Raise_Exception
+                  (  Data_Error'Identity,
+                     "Empty host address in URI"
+                  );
+               end if;
+               if Request (Pointer) = '/' then
+                  Pointer := Pointer + 1;
+                  Path_First := Pointer;
+                  Path_Next  := Pointer;
+                  while Pointer <= Request'Last loop
+                     case Request (Pointer) is
+                        when ' ' =>
+                           exit;
+                        when '?' =>
+                           Pointer     := Pointer + 1;
+                           Query_First := Pointer;
+                           Skip (Request, Pointer);
+                           Query_Next  := Pointer;
+                           exit;
+                        when others =>
+                           Pointer   := Pointer + 1;
+                           Path_Next := Pointer;
+                     end case;
+                  end loop;
+               end if;
+               Status_Line_Received
+               (  Client  => Client,
+                  Scheme  => Scheme,
+                  Method  => Client.Method,
+                  Port    => Port_Type (Port),
+                  Version => Get_Version,
+                  Host    => From_Escaped
+                             (  Request (Host_First..Host_Next - 1)
+                             ),
+                  Path    => From_Escaped
+                             (  Request (Path_First..Path_Next - 1)
+                             ),
+                  Query   => From_Escaped
+                             (  Request (Query_First..Query_Next - 1)
+               )             );
+            else
                Path_First := Pointer;
                Path_Next  := Pointer;
                while Pointer <= Request'Last loop
@@ -1653,20 +1708,20 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                         Path_Next := Pointer;
                   end case;
                end loop;
+               Status_Line_Received
+               (  Client  => Client,
+                  Scheme  => Scheme,
+                  Method  => Client.Method,
+                  Port    => 0,  -- No port
+                  Version => Get_Version,
+                  Host    => "", -- No host
+                  Path    => From_Escaped
+                             (  Request (Path_First..Path_Next - 1)
+                             ),
+                  Query   => From_Escaped
+                             (  Request (Query_First..Query_Next -1)
+               )             );
             end if;
-            Status_Line_Received
-            (  Client  => Client,
-               Scheme  => Scheme,
-               Method  => Client.Method,
-               Port    => Port_Type (Port),
-               Version => Get_Version,
-               Host =>
-                  From_Escaped (Request (Host_First..Host_Next - 1)),
-               Path =>
-                  From_Escaped (Request (Path_First..Path_Next - 1)),
-               Query =>
-                  From_Escaped (Request (Query_First..Query_Next - 1))
-            );
          end;
       end if;
    end Process_Request_Line;
@@ -3495,17 +3550,17 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                Length := Length + 1;
             when others =>
                if Code <= 16#F# then
-                  Length := Length + 4;
-               elsif Code <= 16#FF# then
                   Length := Length + 5;
-               elsif Code <= 16#FFF# then
+               elsif Code <= 16#FF# then
                   Length := Length + 6;
-               elsif Code <= 16#FFFF# then
+               elsif Code <= 16#FFF# then
                   Length := Length + 7;
-               elsif Code <= 16#FFFFF# then
+               elsif Code <= 16#FFFF# then
                   Length := Length + 8;
-               else
+               elsif Code <= 16#FFFFF# then
                   Length := Length + 9;
+               else
+                  Length := Length + 10;
                end if;
          end case;
       end loop;
@@ -3529,7 +3584,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   Result (Index) := Character'Val (Code);
                   Index := Index + 1;
                when others =>
-                  Put (Result, Index, "&#");
+                  Put (Result, Index, "&#x");
                   Put (Result, Index, Integer (Code), Base => 16);
                   Put (Result, Index, ";");
             end case;
@@ -4131,6 +4186,8 @@ begin
    Add (Request_Headers, "Trailer",           Trailer_Header);
    Add (Request_Headers, "Transfer-Encoding", Transfer_Encoding_Header);
    Add (Request_Headers, "Upgrade",           Upgrade_Header);
+   Add (Request_Headers, "Upgrade-Insecure-Requests",
+                                             Upgrade_Insecure_Requests);
    Add (Request_Headers, "User-Agent",        User_Agent_Header);
    Add (Request_Headers, "Via",               Via_Header);
    Add (Request_Headers, "Warning",           Warning_Header);
@@ -4139,9 +4196,312 @@ begin
    Add (Connections, "keep-alive", Connection_Persistent);
    Add (Connections, "upgrade",    Connection_Upgrade);
 
-   Add (Schemes, "http",  HTTP_Scheme);
-   Add (Schemes, "https", HTTPS_Scheme);
-   Add (Schemes, "ws",    WS_Scheme);
-   Add (Schemes, "wss",   WSS_Scheme);
+   Add (Schemes, "aaa",                Aaa_Scheme);
+   Add (Schemes, "aaas",               Aaas_Scheme);
+   Add (Schemes, "about",              About_Scheme);
+   Add (Schemes, "acap",               Acap_Scheme);
+   Add (Schemes, "acct",               Acct_Scheme);
+   Add (Schemes, "acr",                Acr_Scheme);
+   Add (Schemes, "adiumxtra",          Adiumxtra_Scheme);
+   Add (Schemes, "afp",                AFP_Scheme);
+   Add (Schemes, "afs",                AFS_Scheme);
+   Add (Schemes, "aim",                Aim_Scheme);
+   Add (Schemes, "appdata",            Appdata_Scheme);
+   Add (Schemes, "apt",                APT_Scheme);
+   Add (Schemes, "attachment",         Attachment_Scheme);
+   Add (Schemes, "aw",                 Aw_Scheme);
+
+   Add (Schemes, "barion",             Barion_Scheme);
+   Add (Schemes, "beshare",            Beshare_Scheme);
+   Add (Schemes, "bitcoin",            Bitcoin_Scheme);
+   Add (Schemes, "blob",               Blob_Scheme);
+   Add (Schemes, "bolo",               Bolo_Scheme);
+   Add (Schemes, "browserext",         Browserext_Scheme);
+
+   Add (Schemes, "callto",             Callto_Scheme);
+   Add (Schemes, "cap",                Cap_Scheme);
+   Add (Schemes, "chrome",             Chrome_Scheme);
+   Add (Schemes, "chrome-extension",   Chrome_Extension_Scheme);
+   Add (Schemes, "cid",                Cid_Scheme);
+   Add (Schemes, "coap",               Coap_Scheme);
+   Add (Schemes, "coap+tcp",           Coap_Tcp_Scheme);
+   Add (Schemes, "coaps",              Coaps_Scheme);
+   Add (Schemes, "coaps+tcp",          Coaps_Tcp_Scheme);
+   Add (Schemes, "com-eventbrite-attendee",
+                                       Com_Eventbrite_Attendee_Scheme);
+   Add (Schemes, "content",            Content_Scheme);
+   Add (Schemes, "crid",               Crid_Scheme);
+   Add (Schemes, "cvs",                CVS_Scheme);
+
+   Add (Schemes, "data",               Data_Scheme);
+   Add (Schemes, "dav",                Dav_Scheme);
+   Add (Schemes, "diaspora",           Diaspora_Scheme);
+   Add (Schemes, "dict",               Dict_Scheme);
+   Add (Schemes, "dis",                DIS_Scheme);
+   Add (Schemes, "dlna-playcontainer", DLNA_Playcontainer_Scheme);
+   Add (Schemes, "dlna-playsingle",    DLNA_Playsingle_Scheme);
+   Add (Schemes, "dns",                DNS_Scheme);
+   Add (Schemes, "dntp",               DNTP_Scheme);
+   Add (Schemes, "dtn",                DTN_Scheme);
+   Add (Schemes, "dvb",                DVB_Scheme);
+
+   Add (Schemes, "ed2k",               Ed2k_Scheme);
+   Add (Schemes, "example",            Example_Scheme);
+
+   Add (Schemes, "facetime",           Facetime_Scheme);
+   Add (Schemes, "fax",                Fax_Scheme);
+   Add (Schemes, "feed",               Feed_Scheme);
+   Add (Schemes, "feedready",          Feedready_Scheme);
+   Add (Schemes, "file",               File_Scheme);
+   Add (Schemes, "filesystem",         Filesystem_Scheme);
+   Add (Schemes, "finger",             Finger_Scheme);
+   Add (Schemes, "fish",               Fish_Scheme);
+   Add (Schemes, "ftp",                FTP_Scheme);
+
+   Add (Schemes, "geo",                Geo_Scheme);
+   Add (Schemes, "gg",                 Gg_Scheme);
+   Add (Schemes, "git",                Git_Scheme);
+   Add (Schemes, "gizmoproject",       Gizmoproject_Scheme);
+   Add (Schemes, "go",                 Go_Scheme);
+   Add (Schemes, "gopher",             Gopher_Scheme);
+   Add (Schemes, "graph",              Graph_Scheme);
+   Add (Schemes, "gtalk",              Gtalk_Scheme);
+
+   Add (Schemes, "h323",               H323_Scheme);
+   Add (Schemes, "ham",                Ham_Scheme);
+   Add (Schemes, "hcp",                HCP_Scheme);
+   Add (Schemes, "http",               HTTP_Scheme);
+   Add (Schemes, "https",              HTTPS_Scheme);
+   Add (Schemes, "hxxp",               HXXP_Scheme);
+   Add (Schemes, "hxxps",              HXXPS_Scheme);
+   Add (Schemes, "hydrazone",          Hydrazone_Scheme);
+
+   Add (Schemes, "iax",                Iax_Scheme);
+   Add (Schemes, "icap",               Icap_Scheme);
+   Add (Schemes, "icon",               Icon_Scheme);
+   Add (Schemes, "im",                 Im_Scheme);
+   Add (Schemes, "imap",               Imap_Scheme);
+   Add (Schemes, "info",               Info_Scheme);
+   Add (Schemes, "iotdisco",           Iotdisco_Scheme);
+   Add (Schemes, "ipn",                IPN_Scheme);
+   Add (Schemes, "ipp",                IPP_Scheme);
+   Add (Schemes, "ipps",               IPPS_Scheme);
+   Add (Schemes, "irc",                IRC_Scheme);
+   Add (Schemes, "irc6",               IRC6_Scheme);
+   Add (Schemes, "ircs",               IRCS_Scheme);
+   Add (Schemes, "iris",               Iris_Scheme);
+   Add (Schemes, "iris.beep",          Iris_Beep_Scheme);
+   Add (Schemes, "iris.lwz",           Iris_LWZ_Scheme);
+   Add (Schemes, "iris.xpc",           Iris_XPC_Scheme);
+   Add (Schemes, "iris.xpcs",          Iris_XPCS_Scheme);
+   Add (Schemes, "isostore",           Isostore_Scheme);
+   Add (Schemes, "itms",               ITMS_Scheme);
+
+   Add (Schemes, "jabber",             Jabber_Scheme);
+   Add (Schemes, "jar",                Jar_Scheme);
+   Add (Schemes, "jms",                Jms_Scheme);
+
+   Add (Schemes, "keyparc",            Keyparc_Scheme);
+
+   Add (Schemes, "lastfm",             Lastfm_Scheme);
+   Add (Schemes, "ldap",               LDAP_Scheme);
+   Add (Schemes, "ldaps",              LDAPS_Scheme);
+   Add (Schemes, "lvlt",               LVLT_Scheme);
+
+   Add (Schemes, "magnet",             Magnet_Scheme);
+   Add (Schemes, "mailserver",         Mailserver_Scheme);
+   Add (Schemes, "mailto",             Mailto_Scheme);
+   Add (Schemes, "maps",               Maps_Scheme);
+   Add (Schemes, "market",             Market_Scheme);
+   Add (Schemes, "message",            Message_Scheme);
+   Add (Schemes, "mid",                Mid_Scheme);
+   Add (Schemes, "mms",                MMS_Scheme);
+   Add (Schemes, "modem",              Modem_Scheme);
+   Add (Schemes, "mongodb",            Mongodb_Scheme);
+   Add (Schemes, "moz",                Moz_Scheme);
+
+   Add (Schemes, "ms-access",            MS_Access_Scheme);
+   Add (Schemes, "ms-browser-extension", MS_Browser_Extension_Scheme);
+   Add (Schemes, "ms-drive-to",          MS_Drive_To_Scheme);
+   Add (Schemes, "ms-enrollment",        MS_Enrollment_Scheme);
+   Add (Schemes, "ms-excel",             MS_Excel_Scheme);
+   Add (Schemes, "ms-gamebarservices",   MS_Gamebarservices_Scheme);
+   Add (Schemes, "ms-getoffice",         MS_Getoffice_Scheme);
+   Add (Schemes, "ms-help",              MS_Help_Scheme);
+   Add (Schemes, "ms-infopath",          MS_Infopath_Scheme);
+   Add (Schemes, "ms-inputapp",          MS_Inputapp_Scheme);
+   Add (Schemes, "ms-media-stream-id",   MS_Media_Stream_ID_Scheme);
+   Add (Schemes, "ms-officeapp",         MS_Officeapp_Scheme);
+   Add (Schemes, "ms-people",            MS_People_Scheme);
+   Add (Schemes, "ms-project",           MS_Project_Scheme);
+   Add (Schemes, "ms-powerpoint",        MS_Powerpoint_Scheme);
+   Add (Schemes, "ms-publisher",         MS_Publisher_Scheme);
+   Add (Schemes, "ms-search-repair",     MS_Search_Repair_Scheme);
+   Add (Schemes, "ms-secondary-screen-controller",
+                                 MS_Secondary_Screen_Controller_Scheme);
+   Add (Schemes, "ms-secondary-screen-setup",
+                                      MS_Secondary_Screen_Setup_Scheme);
+   Add (Schemes, "ms-settings",          MS_Settings_Scheme);
+   Add (Schemes, "ms-settings-airplanemode",
+                                       MS_Settings_Airplanemode_Scheme);
+   Add (Schemes, "ms-settings-bluetooth", MS_Settings_Bluetooth_Scheme);
+   Add (Schemes, "ms-settings-camera",   MS_Settings_Camera_Scheme);
+   Add (Schemes, "ms-settings-cellular", MS_Settings_Cellular_Scheme);
+   Add (Schemes, "ms-settings-cloudstorage",
+                                       MS_Settings_Cloudstorage_Scheme);
+   Add (Schemes, "ms-settings-connectabledevices",
+                                 MS_Settings_Connectabledevices_Scheme);
+   Add (Schemes, "ms-settings-displays-topology",
+                                  MS_Settings_Displays_Topology_Scheme);
+   Add (Schemes, "ms-settings-emailandaccounts",
+                                   MS_Settings_Emailandaccounts_Scheme);
+   Add (Schemes, "ms-settings-language",
+                                           MS_Settings_Language_Scheme);
+   Add (Schemes, "ms-settings-location",
+                                           MS_Settings_Location_Scheme);
+   Add (Schemes, "ms-settings-lock", MS_Settings_Lock_Scheme);
+   Add (Schemes, "ms-settings-nfctransactions",
+                                    MS_Settings_Nfctransactions_Scheme);
+   Add (Schemes, "ms-settings-notifications",
+                                      MS_Settings_Notifications_Scheme);
+   Add (Schemes, "ms-settings-power", MS_Settings_Power_Scheme);
+   Add (Schemes, "ms-settings-privacy", MS_Settings_Privacy_Scheme);
+   Add (Schemes, "ms-settings-proximity", MS_Settings_Proximity_Scheme);
+   Add (Schemes, "ms-settings-screenrotation",
+                                     MS_Settings_Screenrotation_Scheme);
+   Add (Schemes, "ms-settings-wifi", MS_Settings_WiFi_Scheme);
+   Add (Schemes, "ms-settings-workplace", MS_Settings_Workplace_Scheme);
+   Add (Schemes, "ms-spd",               MS_SPD_Scheme);
+   Add (Schemes, "ms-sttoverlay",        MS_Sttoverlay_Scheme);
+   Add (Schemes, "ms-transit-to",        MS_Transit_To_Scheme);
+   Add (Schemes, "ms-virtualtouchpad",   MS_Virtualtouchpad_Scheme);
+   Add (Schemes, "ms-visio",             MS_Visio_Scheme);
+   Add (Schemes, "ms-walk-to",           MS_Walk_To_Scheme);
+   Add (Schemes, "ms-whiteboard",        MS_Whiteboard_Scheme);
+   Add (Schemes, "ms-whiteboard-cmd",    MS_Whiteboard_CMD_Scheme);
+   Add (Schemes, "ms-word",              MS_Word_Scheme);
+   Add (Schemes, "msnim",                MSnim_Scheme);
+   Add (Schemes, "msrp",                 MSRP_Scheme);
+   Add (Schemes, "msrps",                MSRPS_Scheme);
+   Add (Schemes, "mtqp",                 MTQP_Scheme);
+   Add (Schemes, "mumble",               Mumble_Scheme);
+   Add (Schemes, "mupdate",              Mupdate_Scheme);
+   Add (Schemes, "mvn",                  MVN_Scheme);
+
+   Add (Schemes, "news",                 News_Scheme);
+   Add (Schemes, "nfs",                  NFS_Scheme);
+   Add (Schemes, "ni",                   NI_Scheme);
+   Add (Schemes, "nih",                  NIH_Scheme);
+   Add (Schemes, "nntp",                 NNTP_Scheme);
+   Add (Schemes, "notes",                Notes_Scheme);
+
+   Add (Schemes, "ocf",                  OCF_Scheme);
+   Add (Schemes, "oid",                  OID_Scheme);
+   Add (Schemes, "onenote",              Onenote_Scheme);
+   Add (Schemes, "onenote-cmd",          Onenote_CMD_Scheme);
+   Add (Schemes, "opaquelocktoken",      Opaquelocktoken_Scheme);
+
+   Add (Schemes, "pack",                 Pack_Scheme);
+   Add (Schemes, "palm",                 Palm_Scheme);
+   Add (Schemes, "paparazzi",            Paparazzi_Scheme);
+   Add (Schemes, "pkcs11",               Pkcs11_Scheme);
+   Add (Schemes, "platform",             Platform_Scheme);
+   Add (Schemes, "pop",                  POP_Scheme);
+   Add (Schemes, "pres",                 Pres_Scheme);
+   Add (Schemes, "prospero",             Prospero_Scheme);
+   Add (Schemes, "proxy",                Proxy_Scheme);
+   Add (Schemes, "pwid",                 Pwid_Scheme);
+   Add (Schemes, "psyc",                 Psyc_Scheme);
+
+   Add (Schemes, "qb",                   QB_Scheme);
+   Add (Schemes, "query",                Query_Scheme);
+
+   Add (Schemes, "redis",                Redis_Scheme);
+   Add (Schemes, "rediss",               Rediss_Scheme);
+   Add (Schemes, "reload",               Reload_Scheme);
+   Add (Schemes, "res",                  Res_Scheme);
+   Add (Schemes, "resource",             Resource_Scheme);
+   Add (Schemes, "rmi",                  RMI_Scheme);
+   Add (Schemes, "rsync",                Rsync_Scheme);
+   Add (Schemes, "rtmfp",                RTMFP_Scheme);
+   Add (Schemes, "rtmp",                 RTMP_Scheme);
+   Add (Schemes, "rtsp",                 RTSP_Scheme);
+   Add (Schemes, "rtsps",                RTSPS_Scheme);
+   Add (Schemes, "rtspu",                RTSPU_Scheme);
+
+   Add (Schemes, "secondlife",           Secondlife_Scheme);
+   Add (Schemes, "service",              Service_Scheme);
+   Add (Schemes, "session",              Session_Scheme);
+   Add (Schemes, "sftp",                 SFTP_Scheme);
+   Add (Schemes, "sgn",                  SGN_Scheme);
+   Add (Schemes, "shttp",                SHTTP_Scheme);
+   Add (Schemes, "sieve",                Sieve_Scheme);
+   Add (Schemes, "sip",                  Sip_Scheme);
+   Add (Schemes, "sips",                 Sips_Scheme);
+   Add (Schemes, "skype",                Skype_Scheme);
+   Add (Schemes, "smb",                  SMB_Scheme);
+   Add (Schemes, "sms",                  SMS_Scheme);
+   Add (Schemes, "smtp",                 SMTP_Scheme);
+   Add (Schemes, "snews",                SNews_Scheme);
+   Add (Schemes, "snmp",                 SNTP_Scheme);
+   Add (Schemes, "soap.beep",            Soap_Beep_Scheme);
+   Add (Schemes, "soap.beeps",           Soap_Beeps_Scheme);
+   Add (Schemes, "soldat",               Soldat_Scheme);
+   Add (Schemes, "spotify",              Spotify_Scheme);
+   Add (Schemes, "ssh",                  SSH_Scheme);
+   Add (Schemes, "steam",                Steam_Scheme);
+   Add (Schemes, "stun",                 Stun_Scheme);
+   Add (Schemes, "stuns",                Stuns_Scheme);
+   Add (Schemes, "submit",               Submit_Scheme);
+   Add (Schemes, "svn",                  SVN_Scheme);
+
+   Add (Schemes, "tag",                  Tag_Scheme);
+   Add (Schemes, "teamspeak",            Teamspeak_Scheme);
+   Add (Schemes, "tel",                  Tel_Scheme);
+   Add (Schemes, "teliaeid",             Teliaeid_Scheme);
+   Add (Schemes, "telnet",               Telnet_Scheme);
+   Add (Schemes, "tftp",                 TFTP_Scheme);
+   Add (Schemes, "things",               Things_Scheme);
+   Add (Schemes, "thismessage",          Thismessage_Scheme);
+   Add (Schemes, "tip",                  Tip_Scheme);
+   Add (Schemes, "tn3270",               Tn3270_Scheme);
+   Add (Schemes, "tool",                 Tool_Scheme);
+   Add (Schemes, "turn",                 Turn_Scheme);
+   Add (Schemes, "turns",                Turns_Scheme);
+   Add (Schemes, "tv",                   TV_Scheme);
+
+   Add (Schemes, "udp",                  UDP_Scheme);
+   Add (Schemes, "unreal",               Unreal_Scheme);
+   Add (Schemes, "urn",                  URN_Scheme);
+   Add (Schemes, "ut2004",               UT2004_Scheme);
+
+   Add (Schemes, "v-event",              V_Event_Scheme);
+   Add (Schemes, "vemmi",                VEMMI_Scheme);
+   Add (Schemes, "ventrilo",             Ventrilo_Scheme);
+   Add (Schemes, "videotex",             Videotex_Scheme);
+   Add (Schemes, "vnc",                  VNC_Scheme);
+   Add (Schemes, "view-source",          View_Source_Scheme);
+
+   Add (Schemes, "wais",                 Wais_Scheme);
+   Add (Schemes, "webcal",               Webcal_Scheme);
+   Add (Schemes, "wpid",                 Wpid_Scheme);
+   Add (Schemes, "ws",                   WS_Scheme);
+   Add (Schemes, "wss",                  WSS_Scheme);
+   Add (Schemes, "wtai",                 WTAI_Scheme);
+   Add (Schemes, "wyciwyg",              Wyciwyg_Scheme);
+
+   Add (Schemes, "xcon",                 Xcon_Scheme);
+   Add (Schemes, "xcon-userid",          Xcon_Userid_Scheme);
+   Add (Schemes, "xfire",                Xfire_Scheme);
+   Add (Schemes, "xmlrpc.beep",          XMLRPC_Beep_Scheme);
+   Add (Schemes, "xmlrpc.beeps",         XMLRPC_Beeps_Scheme);
+   Add (Schemes, "xmpp",                 XMPP_Scheme);
+   Add (Schemes, "xri",                  XRI_Scheme);
+
+   Add (Schemes, "ymsgr",                YMSGR_Scheme);
+
+   Add (Schemes, "z39.50",               Z39_50_Scheme);
+   Add (Schemes, "z39.50r",              Z39_50r_Scheme);
+   Add (Schemes, "z39.50s",              Z39_50s_Scheme);
 
 end GNAT.Sockets.Connection_State_Machine.HTTP_Server;

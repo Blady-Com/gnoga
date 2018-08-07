@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  21:11 16 Apr 2017  --
+--                                Last revision :  14:10 30 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -224,7 +224,7 @@ package body GNAT.Sockets.Server is
       Client.Client          := True;
       Client.Connect_No      := 0;
       Client.Max_Connect_No  := Max_Connect_No;
-      Client.Listener        := Listener'Unchecked_Access;
+      Client.Socket_Listener := Listener'Unchecked_Access;
       Client.Overlapped_Read := Stream_Element_Count'Min
                                 (  Overlapped,
                                    Client.Output_Size
@@ -273,6 +273,18 @@ package body GNAT.Sockets.Server is
       return null;
    end Create;
 
+   procedure Create_Socket
+             (  Listener : in out Connections_Server;
+                Socket   : in out Socket_Type;
+                Address  : Sock_Addr_Type
+             )  is
+   begin
+      Create_Socket (Socket);
+      Set_Socket_Option (Socket, Socket_Level, (Reuse_Address, True));
+      Bind_Socket (Socket, Address);
+      Listen_Socket (Socket);
+   end Create_Socket;
+
    function Create_Transport
             (  Factory  : access Connections_Factory;
                Listener : access Connections_Server'Class;
@@ -292,8 +304,8 @@ package body GNAT.Sockets.Server is
       end if;
       Client.Transport :=
          Create_Transport
-         (  Client.Listener.Factory,
-            Client.Listener,
+         (  Client.Socket_Listener.Factory,
+            Client.Socket_Listener,
             Client'Unchecked_Access
          );
       if Client.Transport = null then
@@ -305,9 +317,9 @@ package body GNAT.Sockets.Server is
       Client.Session := Session_Handshaking;
       if Client.Client then
          Append
-         (  Client.Listener.Postponed,
+         (  Client.Socket_Listener.Postponed,
             Client'Unchecked_Access,
-            Client.Listener.Postponed_Count
+            Client.Socket_Listener.Postponed_Count
          );
       end if;
    end Create_Transport;
@@ -554,7 +566,7 @@ package body GNAT.Sockets.Server is
    function Get_Connections_Server (Client : Connection)
       return Connections_Server_Ptr is
    begin
-      return Client.Listener;
+      return Client.Socket_Listener;
    end Get_Connections_Server;
 
    function Get_IO_Timeout (Factory : Connections_Factory)
@@ -957,20 +969,20 @@ package body GNAT.Sockets.Server is
              )  is
    begin
       if Client.Transport = null then
-         Send_Socket (Client.Listener.all, Client, Data, Last);
+         Send_Socket (Client.Socket_Listener.all, Client, Data, Last);
       else
          Encode (Client.Transport.all, Client, Data, Last);
       end if;
       if Last + 1 /= Data'First then
          Client.Data_Sent := True;
          if (  0
-            /= (  Client.Listener.Factory.Trace_Flags
+            /= (  Client.Socket_Listener.Factory.Trace_Flags
                and
                   Trace_Decoded_Sent
             )  )
          then
             Trace_Sent
-            (  Factory => Client.Listener.Factory.all,
+            (  Factory => Client.Socket_Listener.Factory.all,
                Client  => Client,
                Data    => Data,
                From    => Data'First,
@@ -1155,29 +1167,13 @@ package body GNAT.Sockets.Server is
          Buffer.Read (Free_To_Read..Last),
          Last
       );
-      if Client.Transport = null then
-         if 0 /= (Factory.Trace_Flags and Trace_Decoded_Received) then
-            Trace_Received
-            (  Factory => Factory,
-               Client  => Client,
-               Data    => Buffer.Read,
-               From    => Free_To_Read,
-               To      => Last,
-               Encoded => False
-            );
-         end if;
-      else
-         if 0 /= (Factory.Trace_Flags and Trace_Encoded_Received) then
-            Trace_Received
-            (  Factory => Factory,
-               Client  => Client,
-               Data    => Buffer.Read,
-               From    => Free_To_Read,
-               To      => Last,
-               Encoded => True
-            );
-         end if;
-      end if;
+      Received
+      (  Factory,
+         Client,
+         Buffer.Read,
+         Buffer.Free_To_Read,
+         Last
+      );
       if Last = Free_To_Read - 1 then -- Nothing read
          raise Connection_Error;
       end if;
@@ -1201,6 +1197,39 @@ package body GNAT.Sockets.Server is
    begin
       Receive_Socket (Client.Socket, Data, Last);
    end Receive_Socket;
+
+   procedure Received
+             (  Factory : in out Connections_Factory;
+                Client  : in out Connection'Class;
+                Data    : Stream_Element_Array;
+                From    : Stream_Element_Offset;
+                To      : Stream_Element_Offset
+             )  is
+   begin
+      if Client.Transport = null then
+         if 0 /= (Factory.Trace_Flags and Trace_Decoded_Received) then
+            Trace_Received
+            (  Factory => Connections_Factory'Class (Factory),
+               Client  => Client,
+               Data    => Data,
+               From    => From,
+               To      => To,
+               Encoded => False
+            );
+         end if;
+      else
+         if 0 /= (Factory.Trace_Flags and Trace_Encoded_Received) then
+            Trace_Received
+            (  Factory => Connections_Factory'Class (Factory),
+               Client  => Client,
+               Data    => Data,
+               From    => From,
+               To      => To,
+               Encoded => True
+            );
+         end if;
+      end if;
+   end Received;
 
    procedure Received
              (  Client  : in out Connection;
@@ -1279,7 +1308,7 @@ package body GNAT.Sockets.Server is
                       Load (Buffer.Free_To_Write'Unrestricted_Access);
       begin
          if Free_To_Write /= First_Written then
-            Unblock_Send (Client.Listener.all, Client);
+            Unblock_Send (Client.Socket_Listener.all, Client);
          end if;
       end;
    end Send;
@@ -1314,7 +1343,7 @@ package body GNAT.Sockets.Server is
          Store (Buffer.Free_To_Write'Unchecked_Access, Free_To_Write);
       end loop;
       if Free_To_Write /= First_Written then
-         Unblock_Send (Client.Listener.all, Client);
+         Unblock_Send (Client.Socket_Listener.all, Client);
       end if;
    end Send;
 
@@ -1344,7 +1373,7 @@ package body GNAT.Sockets.Server is
       );
       Store (Buffer.Free_To_Write'Unchecked_Access, Next);
       if Free_To_Write /= First_Written then
-         Unblock_Send (Client.Listener.all, Client);
+         Unblock_Send (Client.Socket_Listener.all, Client);
       end if;
    end Send;
 
@@ -1377,7 +1406,7 @@ package body GNAT.Sockets.Server is
       Free_To_Write := Next;
       Store (Buffer.Free_To_Write'Unchecked_Access, Free_To_Write);
       if Free_To_Write /= First_Written then
-         Unblock_Send (Client.Listener.all, Client);
+         Unblock_Send (Client.Socket_Listener.all, Client);
       end if;
    end Send;
 
@@ -1493,7 +1522,7 @@ package body GNAT.Sockets.Server is
          End_Of_Stream := False;
       end if;
       if Free_To_Write /= First_Written then
-         Unblock_Send (Client.Listener.all, Client);
+         Unblock_Send (Client.Socket_Listener.all, Client);
       end if;
    end Send;
 
@@ -1592,7 +1621,7 @@ package body GNAT.Sockets.Server is
          End_Of_Stream := False;
       end if;
       if Free_To_Write /= First_Written then
-         Unblock_Send (Client.Listener.all, Client);
+         Unblock_Send (Client.Socket_Listener.all, Client);
       end if;
    end Send;
 
@@ -1646,14 +1675,14 @@ package body GNAT.Sockets.Server is
                 Listener : Connections_Server_Ptr
              )  is
    begin
-      if Client.Listener /= null then
+      if Client.Socket_Listener /= null then
          Raise_Exception
          (  Constraint_Error'Identity,
             "The client has a connections server set"
          );
       end if;
       Client.Client_Address := Address;
-      Client.Listener       := Listener;
+      Client.Socket_Listener       := Listener;
    end Set_Client_Data;
 
    procedure Set_Expected_Count
@@ -1721,16 +1750,16 @@ package body GNAT.Sockets.Server is
    procedure Shutdown (Client : in out Connection) is
    begin
       if Client.Session /= Session_Down then
-         if Client.Listener = null then
+         if Client.Socket_Listener = null then
             Client.Session := Session_Down;
          else
             Client.Failed := True;
             Client.Shutdown_Request := True;
-            Client.Listener.Shutdown_Request := True;
-            if Client.Listener.Doer /= null then
-               Abort_Selector (Client.Listener.Selector);
+            Client.Socket_Listener.Shutdown_Request := True;
+            if Client.Socket_Listener.Doer /= null then
+               Abort_Selector (Client.Socket_Listener.Selector);
             end if;
-            Shutdown (Client.Listener.all, Client);
+            Shutdown (Client.Socket_Listener.all, Client);
          end if;
       end if;
    end Shutdown;
@@ -1920,7 +1949,7 @@ package body GNAT.Sockets.Server is
              )  is
    begin
       Trace
-      (  Factory,
+      (  Connections_Factory'Class (Factory),
          Context & ": " & Exception_Information (Occurrence)
       );
    end Trace_Error;
@@ -2016,7 +2045,7 @@ package body GNAT.Sockets.Server is
    begin
       if Encoded then
          Trace
-         (  Factory,
+         (  Connections_Factory'Class (Factory),
             (  Image (Get_Client_Address (Client))
             &  " encoded> |"
             &  Image (Data (From..To))
@@ -2027,7 +2056,7 @@ package body GNAT.Sockets.Server is
          )  );
       else
          Trace
-         (  Factory,
+         (  Connections_Factory'Class (Factory),
             (  Image (Get_Client_Address (Client))
             &  " > |"
             &  Image (Data (From..To))
@@ -2048,14 +2077,14 @@ package body GNAT.Sockets.Server is
    begin
       if Enabled then
          Trace
-         (  Factory,
+         (  Connections_Factory'Class (Factory),
             (  Image (Get_Client_Address (Client))
             &  " < +++ Resume polling"
             &  Reason
          )  );
       else
          Trace
-         (  Factory,
+         (  Connections_Factory'Class (Factory),
             (  Image (Get_Client_Address (Client))
             &  " < --- Stop polling"
             &  Reason
@@ -2074,7 +2103,7 @@ package body GNAT.Sockets.Server is
    begin
       if Encoded then
          Trace
-         (  Factory,
+         (  Connections_Factory'Class (Factory),
             (  Image (Get_Client_Address (Client))
             &  " <encoded |"
             &  Image (Data (From..To))
@@ -2085,7 +2114,7 @@ package body GNAT.Sockets.Server is
          )  );
       else
          Trace
-         (  Factory,
+         (  Connections_Factory'Class (Factory),
             (  Image (Get_Client_Address (Client))
             &  " < |"
             &  Image (Data (From..To))
@@ -2114,7 +2143,7 @@ package body GNAT.Sockets.Server is
 
    procedure Unblock_Send (Client : in out Connection) is
    begin
-      Unblock_Send (Client.Listener.all, Client);
+      Unblock_Send (Client.Socket_Listener.all, Client);
    end Unblock_Send;
 
    function Used (Buffer : Input_Buffer) return Stream_Element_Count is
@@ -2174,7 +2203,7 @@ package body GNAT.Sockets.Server is
                --
                if Client.Transport = null then
                   Send_Socket
-                  (  Client.Listener.all,
+                  (  Client.Socket_Listener.all,
                      Client,
                      Buffer.Written
                      (  First_Written
@@ -2240,7 +2269,7 @@ package body GNAT.Sockets.Server is
                --
                if Client.Transport = null then
                   Send_Socket
-                  (  Client.Listener.all,
+                  (  Client.Socket_Listener.all,
                      Client,
                      Buffer.Written
                      (  First_Written
@@ -2442,16 +2471,14 @@ package body GNAT.Sockets.Server is
             end if;
          end loop;
       end Unblock;
+
+      Exit_Error : exception;
    begin
       if Address.Port /= 0 then
-         Create_Socket (Server_Socket);
-         Set_Socket_Option
-         (  Server_Socket,
-            Socket_Level,
-            (Reuse_Address, True)
-         );
-         Bind_Socket (Server_Socket, Address);
-         Listen_Socket (Server_Socket);
+         Create_Socket (Listener.all, Server_Socket, Address);
+         if Server_Socket = No_Socket then
+            raise Exit_Error;
+         end if;
          Set (Listener.Read_Sockets, Server_Socket);
       end if;
       Listener.Request.Activate;
@@ -2516,7 +2543,7 @@ package body GNAT.Sockets.Server is
                            This.Client_Address := Address;
                            This.Socket         := Client_Socket;
                            Clear (This);
-                           This.Listener :=
+                           This.Socket_Listener :=
                               Listener.all'Unchecked_Access;
                            Set (Listener.Read_Sockets,  Client_Socket);
                            Set (Listener.Write_Sockets, Client_Socket);
@@ -2757,11 +2784,11 @@ package body GNAT.Sockets.Server is
                            then
                               Client.Written.Send_Blocked := True;
                               Set
-                              (  Client.Listener.Blocked_Sockets,
+                              (  Client.Socket_Listener.Blocked_Sockets,
                                  Client.Socket
                               );
                               Clear
-                              (  Client.Listener.Write_Sockets,
+                              (  Client.Socket_Listener.Write_Sockets,
                                  Client.Socket
                               );
                               if (  0
@@ -2836,7 +2863,10 @@ package body GNAT.Sockets.Server is
       Close (Server_Socket);
       Trace (Listener.Factory.all, "Worker task exiting");
    exception
+      when Exit_Error =>
+         Trace (Listener.Factory.all, "Worker task exiting");
       when Error : others =>
+         Close (Server_Socket);
          Trace_Error (Listener.Factory.all, "Worker task", Error);
    end Worker;
 
@@ -2846,7 +2876,7 @@ package body GNAT.Sockets.Server is
       begin
          if Client /= null then
             Pending := Client;
-            Client.Listener.Connect_Request := True;
+            Client.Socket_Listener.Connect_Request := True;
             Abort_Selector (Listener.Selector);
          end if;
       end Connect;
@@ -2863,7 +2893,7 @@ package body GNAT.Sockets.Server is
          else
             Client  := Pending;
             Pending := null;
-            Client.Listener.Connect_Request := False;
+            Client.Socket_Listener.Connect_Request := False;
          end if;
       end Get;
    end Box;

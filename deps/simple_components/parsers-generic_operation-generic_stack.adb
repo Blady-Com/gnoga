@@ -3,7 +3,7 @@
 --     Parsers.Generic_Operation.                  Luebeck            --
 --        Generic_Stack                            Winter, 2004       --
 --  Interface                                                         --
---                                Last revision :  09:37 03 Sep 2017  --
+--                                Last revision :  23:10 20 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -140,7 +140,8 @@ package body Parsers.Generic_Operation.Generic_Stack is
 --
 -- Exceptions :
 --
---    Association_Error - Incompatible operator on the left
+--    Association_Error    - Incompatible operator on the left
+--    Unexpected_Operation - Operation is unexpected
 --
    procedure Unload
              (  Container : in out Stack'Class;

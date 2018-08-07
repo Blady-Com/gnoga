@@ -3,7 +3,7 @@
 --     Test_SQLite_Benchmark                       Luebeck            --
 --  Benchmark SQLite vs B-trees                    Autumn, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  19:15 09 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -104,7 +104,7 @@ begin
             "CREATE TABLE test_table (key TEXT PRIMARY KEY, value TEXT)"
          );
          declare
-            Command : Statement :=
+            Command : constant Statement :=
                       Prepare
                       (  DB,
                          "INSERT INTO test_table VALUES (?, ?)"
@@ -157,8 +157,9 @@ begin
             Start := Clock;
             for Index in 1..Count loop
                declare
-                  Key   : aliased String := Create_Key (Index);
-                  Value : aliased String := Create_Value (Index);
+                  Key   : aliased constant String := Create_Key (Index);
+                  Value : aliased constant String :=
+                                           Create_Value (Index);
                begin
                   Add (Tree, Key, Value);
                   Commit (Pool);
@@ -187,7 +188,7 @@ begin
          DB := Open ("sqlite_benchmark.db", READWRITE or FULLMUTEX);
          Exec (DB, "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL");
          declare
-            Command : Statement :=
+            Command : constant Statement :=
                       Prepare
                       (  DB,
                          "SELECT value FROM test_table WHERE key=?"
@@ -285,7 +286,7 @@ begin
          DB := Open ("sqlite_benchmark.db", READWRITE or FULLMUTEX);
          Exec (DB, "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL");
          declare
-            Command : Statement :=
+            Command : constant Statement :=
                       Prepare
                       (  DB,
                          "UPDATE test_table SET value=? WHERE key=?"
@@ -366,7 +367,7 @@ begin
          DB := Open ("sqlite_benchmark.db", READWRITE or FULLMUTEX);
          Exec (DB, "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL");
          declare
-            Command : Statement :=
+            Command : constant Statement :=
                       Prepare
                       (  DB,
                          "DELETE FROM test_table WHERE key=?"
@@ -419,7 +420,7 @@ begin
             Start := Clock;
             for Index in 1..Count / 2 loop
                declare
-                  Key   : aliased String := Create_Key (Index);
+                  Key   : aliased constant String := Create_Key (Index);
                   Value : aliased String := Create_Value (Index);
                begin
                   Remove (Tree, Key);

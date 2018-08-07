@@ -3,7 +3,7 @@
 --     Stack_Storage.Mark_And_Release              Luebeck            --
 --  Implementation                                 Winter, 2003       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  19:15 09 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

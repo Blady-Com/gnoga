@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:09 10 Mar 2013  --
+--                                Last revision :  22:26 24 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -53,7 +53,6 @@ package body Test_Data_Servers is
                 Client  : in out State_Machine'Class;
                 State   : in out Stream_Element_Offset
              )  is
-      use Interfaces;
       use Big_Endian.Integers;
       Length : constant Integer_16 := Value (Item.Parent.Len);
    begin

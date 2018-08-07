@@ -3,7 +3,7 @@
 --  HTTPS client test                              Luebeck            --
 --                                                 String, 2015       --
 --                                                                    --
---                                Last revision :  22:48 24 May 2015  --
+--                                Last revision :  00:04 22 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,7 +43,13 @@ with GNAT.Sockets.Server.Secure.X509;
 procedure Test_HTTPS_Client is
    use GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled;
 
-   Tasks : constant := 5;
+--    Address : constant String := "httpbin.org";
+--    Path    : constant String := "get";
+--    Port    : constant := 443;
+
+   Address : constant String := "prod.idrix.eu";
+   Path    : constant String := "secure";
+   Port    : constant := 443;
 begin
 -- Trace_On (Every_Raise);
    GNUTLS.Set_TLS_Debug (5);
@@ -64,17 +70,17 @@ begin
                         );
    begin
       Add_System_Trust (Factory);
+   --
+   -- The following certificate is taken from:
+   --
+   --    http://fm4dd.com/openssl/certexamples.htm
+   --
       Add_Key_From_PEM_File
       (  Factory          => Factory,
-         Certificate_File => "test.cert.pem",
-         Key_File         => "test.key.pem"
+         Certificate_File => "1024b-rsa-example-cert.pem",
+         Key_File         => "1024b-rsa-example-keypair.pem"
       );
-      Add_Key_From_PEM_File
-      (  Factory          => Factory,
-         Certificate_File => "test.cert.pem",
-         Key_File         => "test.key.pem"
-      );
-      Generate_Diffie_Hellman_Parameters (Factory);
+   -- Generate_Diffie_Hellman_Parameters (Factory); -- No more needed
       Trace_On
       (  Factory  => Factory,
          Received => GNAT.Sockets.Server.Trace_Any,
@@ -96,7 +102,7 @@ begin
                              Connections_Server (Factory'Access, 0);
          Reference : GNAT.Sockets.Server.Handles.Handle;
       begin
-         Put_Line ("HTTP server started");
+         Put_Line ("HTTP client started");
          Set
          (  Reference,
             new HTTP_Session_Signaled
@@ -109,10 +115,10 @@ begin
             Client : HTTP_Session_Signaled renames
                      HTTP_Session_Signaled (Ptr (Reference).all);
          begin
-            Connect (Client, "httpbin.org", 443);
+            Connect (Client, Address, Port);
             Get
             (  Client,
-               "https://httpbin.org/get",
+               "https://" & Address & "/" & Path,
                Message'Unchecked_Access
             );
             Wait (Client, False);
@@ -125,7 +131,7 @@ begin
             Put_Line (Get (Message));
             Put_Line ("<<<<<<<<<<<<<<<<<<<< Message");
          end;
-         Put_Line ("HTTP server stopping");
+         Put_Line ("HTTP client stopping");
       end;
    end;
 exception

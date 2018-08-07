@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  20:01 04 Apr 2016  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -42,7 +42,7 @@ package Generic_FIFO is
    type FIFO (Size : Positive) is
       new Ada.Finalization.Limited_Controlled with private;
 --
--- Delete -- An number of elements from the queue
+-- Delete -- A number of elements from the queue
 --
 --    Queue - The queue
 --    Count - The number of elements to delete

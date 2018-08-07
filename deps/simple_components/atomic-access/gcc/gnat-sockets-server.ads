@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  21:11 16 Apr 2017  --
+--                                Last revision :  14:10 30 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -266,6 +266,23 @@ package GNAT.Sockets.Server is
                Listener : access Connections_Server'Class;
                From     : Sock_Addr_Type
             )  return Connection_Ptr;
+--
+-- Create_Socket -- Listener socket creation
+--
+--    Listener - The server object
+--    Socket   - The socket to create
+--    Address  - The address to bind the socket to
+--
+-- This procedure  is called to create the socket the server will listen
+-- to.  The default implementation creates the socket, sets socket reuse
+-- option, binds the socket to Address, listens to the socket. If Socket
+-- remains No_Socket the worker task of connection server will ends.
+--
+   procedure Create_Socket
+             (  Listener : in out Connections_Server;
+                Socket   : in out Socket_Type;
+                Address  : Sock_Addr_Type
+             );
 --
 -- Create_Transport -- Client connection object
 --
@@ -758,6 +775,25 @@ package GNAT.Sockets.Server is
              (  Client  : in out Connection;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset
+             );
+--
+-- Received -- Data received notification
+--
+--    Factory - The factory object
+--    Client  - The client connection object
+--    Data    - The data received
+--    From    - The first received element in Data
+--    To      - The las received element in Data
+--
+-- This  procedure  is called  when  a portion  of data is read from the
+-- socket. The default implementation traces the input.
+--
+   procedure Received
+             (  Factory : in out Connections_Factory;
+                Client  : in out Connection'Class;
+                Data    : Stream_Element_Array;
+                From    : Stream_Element_Offset;
+                To      : Stream_Element_Offset
              );
 --
 -- Receive_Error -- Data receive error
@@ -1391,7 +1427,7 @@ private
       Max_Connect_No   : Natural := Natural'Last;
       Predecessor      : Connection_Ptr;
       Successor        : Connection_Ptr;
-      Listener         : Connections_Server_Ptr;
+      Socket_Listener  : Connections_Server_Ptr;
       Transport        : Encoder_Ptr;
       Last_Error       : Exception_Occurrence;
       Client_Address   : Sock_Addr_Type;

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  09:44 08 Oct 2016  --
+--                                Last revision :  16:11 08 Jan 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -2116,11 +2116,54 @@ package body GNAT.Sockets.MQTT is
              (  Pier    : in out MQTT_Pier;
                 Message : String
              )  is
+      use Strings_Edit;
+      Length : Natural := 0;
    begin
-      Trace
-      (  Pier.Listener.Factory.all,
-         Image (Get_Client_Address (Pier)) & ' ' & Message
-      );
+      for Index in Message'Range loop
+         case Message (Index) is
+            when '!'..'$' | '&'..'~' =>
+               Length := Length + 1;
+            when others =>
+               Length := Length + 3;
+         end case;
+      end loop;
+      if Length = Message'Length then -- Show as-is
+         Trace
+         (  Pier.Listener.Factory.all,
+            Image (Get_Client_Address (Pier)) & ' ' & Message
+         );
+      else -- Recode to %-escaped
+         declare
+            Prefix  : constant String :=
+                               Image (Get_Client_Address (Pier));
+            Text    : String (1..Prefix'Length + 1 + Length);
+            Pointer : Integer := 1;
+         begin
+            Put (Text, Pointer, Prefix);
+            Text (Pointer) := ' ';
+            Pointer := Pointer + 1;
+            for Index in Message'Range loop
+               case Message (Index) is
+                  when '!'..'$' | '&'..'~' =>
+                     Text (Pointer) := Message (Index);
+                     Pointer := Pointer + 1;
+                  when others =>
+                     Text (Pointer) := '%';
+                     Pointer := Pointer + 1;
+                     Strings_Edit.Integers.Put
+                     (  Destination => Text,
+                        Pointer     => Pointer,
+                        Value       => Character'Pos (Message (Index)),
+                        Base        => 16,
+                        Field       => 2,
+                        Justify     => Right,
+                        Fill        => '0'
+                     );
+               end case;
+            end loop;
+            Trace (Pier.Listener.Factory.all, Text);
+         end;
+      end if;
    end Trace;
 
    function "+" (Left, Right : QoS_Level) return QoS_Level is

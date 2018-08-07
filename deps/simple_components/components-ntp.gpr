@@ -1,0 +1,16 @@
+with "components.gpr";
+
+project Components.NTP is
+
+   for Source_Files use
+       (  "gnat-sockets-ntp.ads",
+          "gnat-sockets-ntp.adb"
+       );
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.NTP;

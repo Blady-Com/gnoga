@@ -3,7 +3,7 @@
 --  Test program                                   Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of  the  GNU  Library  General  Public  --

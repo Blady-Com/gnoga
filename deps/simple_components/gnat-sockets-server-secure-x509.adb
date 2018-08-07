@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.X509             Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  09:54 04 Feb 2017  --
+--                                Last revision :  17:44 21 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -440,6 +440,11 @@ package body GNAT.Sockets.Server.Secure.X509 is
          (  Factory.Parameters,
             Bits
          );
+      else
+         DH_Params_Generate2
+         (  Factory.Parameters,
+            1024
+         );
       end if;
       Certificate_Set_DH_Params
       (  Factory.Credentials,
@@ -466,12 +471,18 @@ package body GNAT.Sockets.Server.Secure.X509 is
          Initialize (Factory.Cache, Default_Priorities);
       end if;
       Priority_Set (Session, Factory.Cache);
+--    No more needed in GNUTLS 3.6
       if not Factory.DH_Generated then
          Bits := Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY);
          if Bits > 0 then
             DH_Params_Generate2
             (  Factory.Parameters,
                Bits
+            );
+         else
+            DH_Params_Generate2
+            (  Factory.Parameters,
+               1024
             );
          end if;
          Certificate_Set_DH_Params

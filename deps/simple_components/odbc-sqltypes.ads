@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2012       --
 --                                                                    --
---                                Last revision :  11:46 20 Oct 2012  --
+--                                Last revision :  21:18 26 Jan 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -37,6 +37,7 @@ with Ada.Calendar;  use Ada.Calendar;
 
 with Interfaces.C;
 with ODBC.Architecture_Dependent;
+with Strings_Edit.Integer_Edit;
 with System;
 
 pragma Elaborate_All (ODBC.Architecture_Dependent);
@@ -1470,6 +1471,9 @@ package ODBC.SQLTypes is
    type SQL_U is new SQLUINTEGER;
    SQL_U_UNION     : constant SQL_U := 16#1#;
    SQL_U_UNION_ALL : constant SQL_U := 16#2#;
+
+   package SQLINTEGER_Edit is
+      new Strings_Edit.Integer_Edit (SQLINTEGER);
 
 private
    pragma Inline ("<", "<=", ">=", ">");

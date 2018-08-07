@@ -1,17 +1,54 @@
 project Strings_Edit is
 
+   type Legacy_Type is ("Ada95", "Ada2005", "Ada2012");
+   Legacy : Legacy_Type := external ("Legacy", "Ada2012");
+
    type Development_Type is ("Debug", "Release");
    Development : Development_Type := external ("Development", "Debug");
    
-   type Legacy_Type is ("Ada95", "Ada2005", "Ada2012");
-   Legacy : Legacy_Type := external ("Legacy", "Ada2005");
+   type OS_Type is ("Windows", "Windows_NT", "Linux", "UNIX", "OSX", "FreeBSD");
+   OS : OS_Type := external ("OS", "Windows");
+
+   type Arch_Type is ("x86_64", "i686", "armhf");
+   Arch : Arch_Type := external ("arch", "x86_64");
+
+   type Object_Dir_Scheme_Type is (".", "nested");
+   Object_Dir_Scheme : Object_Dir_Scheme_Type :=
+        external ("Object_Dir", ".");
 
    for Source_Dirs use (".");
-   for Object_Dir use ".";
+
+   Object_Dir_Path := "";
+   case Object_Dir_Scheme is
+      when "." =>
+         Object_Dir_Path := ".";
+      when "nested" =>
+         case OS is
+            when "Windows" | "Windows_NT" =>
+               Object_Dir_Path :=
+                  "./obj/windows/" & arch & "/" & Development;
+            when"Linux" | "UNIX" =>
+               Object_Dir_Path :=
+                  "./obj/linux/" & arch & "/" & Development;
+            when"OSX" =>
+               Object_Dir_Path :=
+                  "./obj/osx/" & arch & "/" & Development;
+            when"FreeBSD" =>
+               Object_Dir_Path :=
+                  "./obj/freebsd/" & arch & "/" & Development;
+         end case;
+   end case;
+   for Object_Dir use Object_Dir_Path;
 
    for Source_Files use
        (  "strings_edit-base64.adb",
           "strings_edit-base64.ads",
+          "strings_edit-chacha20.adb",
+          "strings_edit-chacha20.ads",
+          "strings_edit-chacha20-aead.adb",
+          "strings_edit-chacha20-aead.ads",
+          "strings_edit-chacha20-poly1305.adb",
+          "strings_edit-chacha20-poly1305.ads",
           "strings_edit-fields.adb",
           "strings_edit-fields.ads",
           "strings_edit-floats.ads",
@@ -73,6 +110,40 @@ project Strings_Edit is
           "strings_edit.ads"
        );
 
+   GNAT_XX := "";
+
+   case Legacy is
+      when "Ada95" =>
+         GNAT_XX := "-gnat95";
+      when "Ada2005" =>
+         GNAT_XX := "-gnat2005";
+      when "Ada2012" =>
+         GNAT_XX := "-gnat2012";
+   end case;
+
+   package Compiler is
+      case Development is
+         when "Debug" =>
+            for Default_Switches ("ada") use
+                (  "-gnatwcikmoprvz.c.p.t.w.x",
+                   "-gnato",
+                   "-gnatVa",
+                   "-gnatf",
+                   "-g",
+                   "-fstack-check"
+                )  & GNAT_XX;
+         when "Release" =>
+            for Default_Switches ("ada") use
+                (  "-gnatwcikmoprvz.c.p.t.w.x",
+                   "-gnatp",
+                   "-gnatVa",
+                   "-gnatf",
+                   "-O2",
+                   "-gnatn"
+                )  & GNAT_XX;
+      end case;
+   end Compiler;
+
    package Binder is
       case Development is
          when "Debug" =>
@@ -90,35 +161,6 @@ project Strings_Edit is
             for Default_Switches ("ada") use ("-s");
       end case;
    end Builder;
-
-   package Compiler is
-      case Development is
-         when "Debug" =>
-            case Legacy is
-               when "Ada2012" =>
-                  for Default_Switches ("ada") use
-                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat12");
-               when "Ada2005" =>
-                  for Default_Switches ("ada") use
-                     ("-gnatwcikmoprvZ.c.p.t.w.x", "-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat05");
-               when "Ada95" =>
-                  for Default_Switches ("ada") use
-                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnato", "-gnatVa", "-gnatf", "-g", "-fstack-check", "-gnat95");
-            end case;
-         when "Release" =>
-            case Legacy is
-               when "Ada2012" =>
-                  for Default_Switches ("ada") use
-                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnatp", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat12");
-               when "Ada2005" =>
-                  for Default_Switches ("ada") use
-                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnatp", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat05");
-               when "Ada95" =>
-                  for Default_Switches ("ada") use
-                     ("-gnatwcikmoprvz.c.p.t.w.x", "-gnatp", "-gnatVa", "-gnatf", "-O2", "-gnatn", "-gnat95");
-            end case;
-      end case;
-   end Compiler;
 
    package Linker is
       case Development is

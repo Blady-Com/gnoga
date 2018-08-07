@@ -8,9 +8,10 @@ project Components.Connections_Server.SMTP is
           "gnat-sockets-smtp.ads",
           "gnat-sockets-smtp-client.adb",
           "gnat-sockets-smtp-client.ads",
-		  "gnat-sockets-smtp-client-synchronous.adb",
-		  "gnat-sockets-smtp-client-synchronous.ads"
+          "gnat-sockets-smtp-client-synchronous.adb",
+          "gnat-sockets-smtp-client-synchronous.ads"
        );
+   for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

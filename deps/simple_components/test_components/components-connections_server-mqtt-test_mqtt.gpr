@@ -1,7 +1,8 @@
+with "../components.gpr";
 with "../components-connections_server-mqtt.gpr";
 
 project Components.Connections_Server.MQTT.Test_MQTT is
-   for Exec_Dir use ".";
+
    for Source_Files use
        (  "test_mqtt_client.adb",
           "test_mqtt_clients.adb",
@@ -14,5 +15,7 @@ project Components.Connections_Server.MQTT.Test_MQTT is
        (  "test_mqtt_client.adb",
           "test_mqtt_server.adb"
        );
+   for Object_Dir use Components.Object_Dir_Path;
+
 end Components.Connections_Server.MQTT.Test_MQTT;
 

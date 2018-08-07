@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --        HTTP server.SQLite_Browser               Winter, 2014       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  11:52 30 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -235,9 +235,9 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
    end Get;
 
    function Get (Content : access Schema_Content) return String is
-      use type Interfaces.C.int;
       function Item return String is
          function Can_NULL return String is
+            use Interfaces.C;
          begin
             if Interfaces.C.int'(Column (Content.List, 4)) = 0 then
                return "no";
@@ -246,6 +246,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
             end if;
          end Can_NULL;
          function Is_Primary return String is
+            use Interfaces.C;
          begin
             if Interfaces.C.int'(Column (Content.List, 6)) = 0 then
                return "no";

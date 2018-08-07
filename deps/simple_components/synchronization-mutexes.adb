@@ -3,7 +3,7 @@
 --      Synchronization.Mutexes                    Luebeck            --
 --  Inmplementation                                Spring, 2008       --
 --                                                                    --
---                                Last revision :  18:59 21 Mar 2016  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,6 +26,7 @@
 --____________________________________________________________________--
 
 package body Synchronization.Mutexes is
+
    procedure Finalize (Object : in out Holder) is
    begin
       Object.Resource.Release;

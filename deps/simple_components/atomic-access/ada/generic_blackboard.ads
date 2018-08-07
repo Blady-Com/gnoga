@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  10:25 26 Dec 2009  --
+--                                Last revision :  17:44 21 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -120,6 +120,16 @@ package Generic_Blackboard is
    function Get (Storage : Blackboard; Pointer : Reference)
       return Element_Type;
 --
+-- Image -- String representation of a reference
+--
+--    Pointer - A reference to an item in Storage
+--
+-- Returns :
+--
+--    Text representation of Pointer
+--
+   function Image (Pointer : Reference) return String;
+--
 -- Is_Valid -- Validity check
 --
 --    Storage - The blackboard
@@ -187,7 +197,7 @@ package Generic_Blackboard is
 --
 -- This  procedure  puts Element into Storage and returns a reference to
 -- it. The operation overrides the most outdated items in the blackboard
--- except  for  ones  indicated  by Preserve or anz later. The parameter
+-- except  for  ones  indicated  by Preserve or any later. The parameter
 -- Success is True when Element was put into the blackboard. It is False
 -- when putting Element there would require removing items references by
 -- Preserve.
@@ -227,7 +237,7 @@ package Generic_Blackboard is
 --
 -- When the blackboard is compared to  reference,  it  is  less  than  a
 -- reference if the latter refer to a not  yet  written  object.  It  is
--- greter than a reference if the object is already lost (overwritten).
+-- greater than a reference if the object is already lost (overwritten).
 --
 -- Returns :
 --

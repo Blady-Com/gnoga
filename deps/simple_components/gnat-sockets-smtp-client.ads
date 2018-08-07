@@ -3,7 +3,7 @@
 --     GNAT.Sockets.SMTP.Client                    Luebeck            --
 --  Interface                                      Summer, 2016       --
 --                                                                    --
---                                Last revision :  09:54 04 Feb 2017  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -534,7 +534,7 @@ package GNAT.Sockets.SMTP.Client is
 --
    function Get_Password (Client : SMTP_Client) return String;
 --
--- Get_TLS -- Get TLS support
+-- Get_TLS -- Get TLS support when offered
 --
 --    Client - The client
 --
@@ -545,6 +545,18 @@ package GNAT.Sockets.SMTP.Client is
 --    True if TLS offer is accepted
 --
    function Get_TLS (Client : SMTP_Client) return Boolean;
+--
+-- Get_TLS_Always -- Get TLS support when not offered
+--
+--    Client - The client
+--
+-- Note that TLS is not engaged when the factory does not support it.
+--
+-- Returns :
+--
+--    True if TLS is engaged even when not offerred
+--
+   function Get_TLS_Always (Client : SMTP_Client) return Boolean;
 --
 -- Get_User -- Get user name used to login
 --
@@ -696,10 +708,12 @@ package GNAT.Sockets.SMTP.Client is
 --
 --    Client - The client
 --    Enable - True to engage TLS if the server offers it
+--    Force  - True to engage TLS even if the server does not offer it
 --
    procedure Set_TLS
              (  Client : in out SMTP_Client;
-                Enable : Boolean
+                Enable : Boolean;
+                Always : Boolean := False
              );
 
 private
@@ -902,6 +916,7 @@ private
       ESMTP          : Boolean;
       Offered_TLS    : Boolean := False;
       Accept_TLS     : Boolean := True;
+      Force_TLS      : Boolean := False;
       Force_ESMTP    : Boolean := False;
       Attachment     : Attachment_Object_Ptr;
       User           : String_Ptr;

@@ -3,7 +3,7 @@
 --     Synchronization.Events                      Luebeck            --
 --  Interface                                      Spring, 2008       --
 --                                                                    --
---                                Last revision :  16:09 11 May 2008  --
+--                                Last revision :  19:18 30 Apr 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -55,7 +55,7 @@ package Synchronization.Events is
    --
       entry Wait;
    --
-   -- Wait -- For the event reset
+   -- Wait_For_Reset -- For the event reset
    --
       entry Wait_For_Reset;
 

@@ -3,7 +3,7 @@
 --  HTTP client test                               Luebeck            --
 --                                                 Spring, 2015       --
 --                                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  18:49 10 Apr 2017  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -2431,7 +2431,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
          case Session.Expecting is
             when Nothing => -- Unsolicited data
                Trace
-               (  Session,
+               (  HTTP_Session'Class (Session),
                   (  "Unsolicited data |"
                   &  Image (Data (Pointer..Data'Last))
                   &  "|"
@@ -2447,7 +2447,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
                         Session.Data_Length - Data'Last + Pointer - 1;
                      if Session.Trace_Message then
                         Trace
-                        (  Session,
+                        (  HTTP_Session'Class (Session),
                            (  "Append data "
                            &  Done (Data (Data'First..Pointer - 1))
                            &  "|"
@@ -2462,7 +2462,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
                   else
                      if Session.Trace_Message then
                         Trace
-                        (  Session,
+                        (  HTTP_Session'Class (Session),
                            (  "Append data "
                            &  Done (Data (Data'First..Pointer - 1))
                            &  "|"

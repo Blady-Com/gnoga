@@ -1,9 +1,10 @@
+with "../components.gpr";
 with "../components-connections_server.gpr";
 with "../components-connections_server-mqtt.gpr";
 with "../components-connections_server-http_server.gpr";
 
 project Components.Connections_Server.Test_WebSockets_MQTT is
-   for Exec_Dir use ".";
+
    for Source_Files use
        (  "test_http_mqtt_servers.adb",
           "test_http_mqtt_servers.ads",
@@ -14,4 +15,6 @@ project Components.Connections_Server.Test_WebSockets_MQTT is
    for Main use
        (  "test_mqtt_webserver.adb"
        );
+   for Object_Dir use Components.Object_Dir_Path;
+
 end Components.Connections_Server.Test_WebSockets_MQTT;

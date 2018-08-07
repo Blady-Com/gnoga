@@ -10,6 +10,12 @@
 ./readme_strings_edit.txt
 ./strings_edit-base64.adb
 ./strings_edit-base64.ads
+./strings_edit-chacha20-aead.adb
+./strings_edit-chacha20-aead.ads
+./strings_edit-chacha20-poly1305.adb
+./strings_edit-chacha20-poly1305.ads
+./strings_edit-chacha20.adb
+./strings_edit-chacha20.ads
 ./strings_edit-fields.adb
 ./strings_edit-fields.ads
 ./strings_edit-floats.ads
@@ -77,6 +83,7 @@
 ./test_strings_edit/strings_edit-utf8-categorization_generator.adb
 ./test_strings_edit/strings_edit-utf8-mapping_generator.adb
 ./test_strings_edit/test_base64.adb
+./test_strings_edit/test_chacha20.adb
 ./test_strings_edit/test_strings_edit.adb
 ./test_strings_edit/test_string_streams.adb
 ./test_strings_edit/UnicodeData.txt

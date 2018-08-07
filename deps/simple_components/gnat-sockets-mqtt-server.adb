@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Server                    Luebeck            --
 --  Implementation                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  18:49 10 Apr 2017  --
+--                                Last revision :  23:22 29 Sep 2017  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -104,7 +104,7 @@ package body GNAT.Sockets.MQTT.Server is
                   if Is_Tracing_On (Client.Server.all, Trace_Pubishing)
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         Session.Name & " > Publishing the last will of "
                      );
                   end if;
@@ -134,7 +134,7 @@ package body GNAT.Sockets.MQTT.Server is
                   if Is_Tracing_On (Client.Server.all, Trace_Sessions)
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         Session.Name & " Deleting anonymous session"
                      );
                   end if;
@@ -147,7 +147,7 @@ package body GNAT.Sockets.MQTT.Server is
                   if Is_Tracing_On (Client.Server.all, Trace_Sessions)
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         Session.Name & " Deleting session"
                      );
                   end if;
@@ -530,7 +530,7 @@ package body GNAT.Sockets.MQTT.Server is
                      )
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         (  Session.Name
                         &  " > Unsolicited PUBACK for packet "
                         &  Image (Integer (Packet))
@@ -543,7 +543,7 @@ package body GNAT.Sockets.MQTT.Server is
                      )
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         (  Session.Name
                         &  " > PUBACK for packet "
                         &  Image (Integer (Packet))
@@ -557,7 +557,7 @@ package body GNAT.Sockets.MQTT.Server is
                   )
                then
                   Trace
-                  (  Client,
+                  (  MQTT_Connection'Class (Client),
                      (  Session.Name
                      &  " > PUBACK for unknown packet "
                      &  Image (Integer (Packet))
@@ -581,7 +581,7 @@ package body GNAT.Sockets.MQTT.Server is
                      )
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         (  Session.Name
                         &  " > Unsolicited PUBREC for packet "
                         &  Image (Integer (Packet))
@@ -594,7 +594,7 @@ package body GNAT.Sockets.MQTT.Server is
                      )
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         (  Session.Name
                         &  " > PUBREC for packet "
                         &  Image (Integer (Packet))
@@ -613,7 +613,7 @@ package body GNAT.Sockets.MQTT.Server is
                   )
                then
                   Trace
-                  (  Client,
+                  (  MQTT_Connection'Class (Client),
                      (  Session.Name
                      &  " > PUBREC for unknown packet "
                      &  Image (Integer (Packet))
@@ -637,7 +637,7 @@ package body GNAT.Sockets.MQTT.Server is
                      )
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         (  Session.Name
                         &  " > Unsolicited PUBREL for packet "
                         &  Image (Integer (Packet))
@@ -650,7 +650,7 @@ package body GNAT.Sockets.MQTT.Server is
                      )
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         (  Session.Name
                         &  " > PUBREL for packet "
                         &  Image (Integer (Packet))
@@ -669,7 +669,7 @@ package body GNAT.Sockets.MQTT.Server is
                   )
                then
                   Trace
-                  (  Client,
+                  (  MQTT_Connection'Class (Client),
                      (  Session.Name
                      &  " > PUBREL for unknown packet "
                      &  Image (Integer (Packet))
@@ -796,7 +796,7 @@ package body GNAT.Sockets.MQTT.Server is
       if Reject then
          if Is_Tracing_On (Server, Trace_Sessions) then
             Trace
-            (  Client,
+            (  MQTT_Connection'Class (Client),
                Image & " [Rejected: " & Image (Response) & "]"
             );
          end if;
@@ -840,7 +840,7 @@ package body GNAT.Sockets.MQTT.Server is
                         Response := Server_Unavailable;
                         if Is_Tracing_On (Server, Trace_Sessions) then
                            Trace
-                           (  Client,
+                           (  MQTT_Connection'Class (Client),
                               (  Image
                               &  " [Rejected: "
                               &  Image (Response)
@@ -868,9 +868,15 @@ package body GNAT.Sockets.MQTT.Server is
          Session.Used    := Session.Used + 1;
          if Is_Tracing_On (Server, Trace_Sessions) then
             if Session.Persistent then
-               Trace (Client, Image & " [Accepted persistent session]");
+               Trace
+               (  MQTT_Connection'Class (Client),
+                  Image & " [Accepted persistent session]"
+               );
             else
-               Trace (Client, Image & " [Accepted new session]");
+               Trace
+               (  MQTT_Connection'Class (Client),
+                  Image & " [Accepted new session]"
+               );
             end if;
          end if;
          Send_Connect_Accepted (Client);
@@ -881,7 +887,10 @@ package body GNAT.Sockets.MQTT.Server is
    begin
       if Is_Valid (Client.Session) then
          if Is_Tracing_On (Client.Server.all, Trace_Sessions) then
-            Trace (Client, Ptr (Client.Session).Name & " > Disconnect");
+            Trace
+            (  MQTT_Connection'Class (Client),
+               Ptr (Client.Session).Name & " > Disconnect"
+            );
          end if;
          Ptr (Client.Session).Disconnected := True;
       end if;
@@ -896,13 +905,19 @@ package body GNAT.Sockets.MQTT.Server is
                       Ptr (Client.Session).all;
          begin
             if Is_Tracing_On (Client.Server.all, Trace_Ping) then
-               Trace (Client, Session.Name & " > Ping");
+               Trace
+               (  MQTT_Connection'Class (Client),
+                  Session.Name & " > Ping"
+               );
             end if;
             if Session.Timeout > 0.0 then
                Session.Last := Clock;
             end if;
             if Is_Tracing_On (Client.Server.all, Trace_Ping) then
-               Trace (Client, Session.Name & " < Ping response");
+               Trace
+               (  MQTT_Connection'Class (Client),
+                  Session.Name & " < Ping response"
+               );
             end if;
             Send_Ping_Response (Client);
          end;
@@ -918,7 +933,10 @@ package body GNAT.Sockets.MQTT.Server is
                       Ptr (Client.Session).all;
          begin
             if Is_Tracing_On (Client.Server.all, Trace_Ping) then
-               Trace (Client, Session.Name & " > Ping response");
+               Trace
+               (  MQTT_Connection'Class (Client),
+                  Session.Name & " > Ping response"
+               );
             end if;
             if Session.Timeout > 0.0 then
                Session.Last := Clock;
@@ -961,7 +979,7 @@ package body GNAT.Sockets.MQTT.Server is
             if Is_Tracing_On (Client.Server.all, Trace_Pubishing) then
                if Packet.QoS = At_Most_Once then
                   Trace
-                  (  Client,
+                  (  MQTT_Connection'Class (Client),
                      (  Session.Name
                      &  " > Publish "
                      &  Image_Topic (Topic, Message)
@@ -973,7 +991,7 @@ package body GNAT.Sockets.MQTT.Server is
                   )  );
                else
                   Trace
-                  (  Client,
+                  (  MQTT_Connection'Class (Client),
                      (  Session.Name
                      &  " > Publish "
                      &  Image_Topic (Topic, Message)
@@ -1048,7 +1066,7 @@ package body GNAT.Sockets.MQTT.Server is
             if Is_Tracing_On (Client.Server.all, Trace_Subscriptions)
             then
                Trace
-               (  Client,
+               (  MQTT_Connection'Class (Client),
                   (  Session.Name
                   &  " > Subscribing to "
                   &  Image (Integer (Topics_Number))
@@ -1095,7 +1113,7 @@ package body GNAT.Sockets.MQTT.Server is
                         )
                      then
                         Trace
-                        (  Client,
+                        (  MQTT_Connection'Class (Client),
                            (  Session.Name
                            &  " Subscribed to "
                            &  Topic
@@ -1113,7 +1131,7 @@ package body GNAT.Sockets.MQTT.Server is
                )
             then
                Trace
-               (  Client,
+               (  MQTT_Connection'Class (Client),
                   (  Session.Name
                   &  " < SUBACK for packet "
                   &  Image (Integer (Packet))
@@ -1155,7 +1173,7 @@ package body GNAT.Sockets.MQTT.Server is
             if Is_Tracing_On (Client.Server.all, Trace_Subscriptions)
             then
                Trace
-               (  Client,
+               (  MQTT_Connection'Class (Client),
                   (  Session.Name
                   &  " > Unsubscribing from "
                   &  Image (Integer (Topics_Number))
@@ -1190,7 +1208,7 @@ package body GNAT.Sockets.MQTT.Server is
                      )
                   then
                      Trace
-                     (  Client,
+                     (  MQTT_Connection'Class (Client),
                         (  Session.Name
                         &  " Unsubscribed from "
                         &  Topic
@@ -1682,7 +1700,7 @@ package body GNAT.Sockets.MQTT.Server is
    begin
       if Is_Tracing_On (Client.Server.all, Trace_Acknowledgement) then
          Trace
-         (  Client,
+         (  MQTT_Connection'Class (Client),
             (  Ptr (Client.Session).Name
             &  " < "
             &  Image (Request)

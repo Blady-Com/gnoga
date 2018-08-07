@@ -6,9 +6,10 @@ project Components.Connections_Server.ELV_MAX_Cube is
    for Source_Files use
        (  "gnat-sockets-connection_state_machine-elv_max_cube_client.adb",
           "gnat-sockets-connection_state_machine-elv_max_cube_client.ads",
-		  "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.adb",
-		  "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads"
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.adb",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads"
        );
+   for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

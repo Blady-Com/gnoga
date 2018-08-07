@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  09:54 04 Feb 2017  --
+--                                Last revision :  00:04 22 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,6 +27,7 @@
 
 with Ada.IO_Exceptions;     use Ada.IO_Exceptions;
 with Interfaces.C.Strings;  use Interfaces.C.Strings;
+with System_Errno;          use System_Errno;
 
 with Ada.Text_IO;
 with Ada.Unchecked_Conversion;
@@ -36,9 +37,6 @@ with System.Storage_Elements;
 
 package body GNUTLS is
    use System;
-
-   EIO    : constant := 5;
-   EAGAIN : constant := 11;
 
    type ssize_t is new ptrdiff_t;
    function To_Unsigned is new Ada.Unchecked_Conversion (int, unsigned);

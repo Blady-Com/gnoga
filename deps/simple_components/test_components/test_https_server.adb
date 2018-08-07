@@ -3,7 +3,7 @@
 --  HTTPS server test                              Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  18:25 16 Jan 2015  --
+--                                Last revision :  00:04 22 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -59,27 +59,27 @@ begin
                            Max_Connections => 100
                         );
    begin
-      Add_System_Trust (Factory);
-      Add_Key_From_PEM_File
-      (  Factory          => Factory,
-         Certificate_File => "test.cert.pem",
-         Key_File         => "test.key.pem"
-      );
-      Add_Key_From_PEM_File
-      (  Factory          => Factory,
-         Certificate_File => "test.cert.pem",
-         Key_File         => "test.key.pem"
-      );
-      Generate_Diffie_Hellman_Parameters (Factory);
-      Trace_On
-      (  Factory  => Factory,
-         Received => GNAT.Sockets.Server.Trace_Any,
-         Sent     => GNAT.Sockets.Server.Trace_Any
-      );
       Set_TLS_Tracing
       (  Factory => Factory,
          Session => True,
          Decoded => True
+      );
+      Add_System_Trust (Factory);
+   --
+   -- The following certificate is taken from:
+   --
+   --    http://fm4dd.com/openssl/certexamples.htm
+   --
+      Add_Key_From_PEM_File
+      (  Factory          => Factory,
+         Certificate_File => "1024b-rsa-example-cert.pem",
+         Key_File         => "1024b-rsa-example-keypair.pem"
+      );
+   -- Generate_Diffie_Hellman_Parameters (Factory); -- No more needed
+      Trace_On
+      (  Factory  => Factory,
+         Received => GNAT.Sockets.Server.Trace_Any,
+         Sent     => GNAT.Sockets.Server.Trace_Any
       );
       declare
 --           Server  : GNAT.Sockets.Server.Pooled.Pooled_Server

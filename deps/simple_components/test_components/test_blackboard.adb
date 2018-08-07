@@ -3,7 +3,7 @@
 --     Test_Blackboard                             Luebeck            --
 --  Test                                           Autumn, 2006       --
 --                                                                    --
---                                Last revision :  21:31 21 Dec 2011  --
+--                                Last revision :  17:45 21 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -85,16 +85,34 @@ begin
                &  Text
                &  "' /= '"
                &  Get (Board, Item)
-               &  "'"
+               &  "', "
+               &  Image (Item)
+               &  " ["
+               &  Image (First (Board))
+               &  ".."
+               &  Image (Upper (Board))
+               &  "["
             )  );
          end if;
          if Item /= Pointer then
             Next (Board, Pointer, Sequent);
-            if Item /= Pointer or else not Sequent then
+            if not Sequent then
                Raise_Exception
                (  Constraint_Error'Identity,
-                  "Error in string black board Next '" & Text & '''
-               );
+                  (  "Error in string black board Next '"
+                  &  Text
+                  &  "' Pointer "
+                  &  Image (Pointer)
+                  &  ", Sequent "
+                  &  Boolean'Image (Sequent)
+                  &  ", "
+                  &  Image (Item)
+                  &  " ["
+                  &  Image (First (Board))
+                  &  ".."
+                  &  Image (Upper (Board))
+                  &  "["
+               )  );
             end if;
          end if;
       end Check;
@@ -133,8 +151,16 @@ begin
       if Count /= 1 then
          Raise_Exception
          (  Constraint_Error'Identity,
-            "Error in 1x-bytes test Count" & Integer'Image (Count)
-         );
+            (  "Error in 1x-bytes test Count"
+            &  Integer'Image (Count)
+            &  ", "
+            &  Image (Pointer)
+            &  " ["
+            &  Image (First (Board))
+            &  ".."
+            &  Image (Upper (Board))
+            &  "["
+         )  );
       end if;
    exception
       when Error : Storage_Error =>
@@ -172,8 +198,16 @@ begin
       if Count /= 2 then
          Raise_Exception
          (  Constraint_Error'Identity,
-            "Error in 2x-bytes test"
-         );
+            (  "Error in 2x-bytes test Count"
+            &  Integer'Image (Count)
+            &  ", "
+            &  Image (Pointer)
+            &  " ["
+            &  Image (First (Board))
+            &  ".."
+            &  Image (Upper (Board))
+            &  "["
+         )  );
       end if;
    exception
       when Error : Storage_Error =>
@@ -213,8 +247,16 @@ begin
       if Count /= 1 then
          Raise_Exception
          (  Constraint_Error'Identity,
-            "Error in 1.5x-bytes test"
-         );
+            (  "Error in 1.5x-bytes test Count"
+            &  Integer'Image (Count)
+            &  ", "
+            &  Image (Pointer)
+            &  " ["
+            &  Image (First (Board))
+            &  ".."
+            &  Image (Upper (Board))
+            &  "["
+         )  );
       end if;
    exception
       when Error : Storage_Error =>

@@ -3,7 +3,7 @@
 --  Test echo client                               Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  12:25 15 May 2015  --
+--                                Last revision :  22:26 24 Jul 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -75,7 +75,7 @@ package body Test_Echo_Clients is
    end Received;
 
    procedure Sent (Client : in out Echo_Connection) is
-      Text    : String := Random;
+      Text    : constant String := Random;
       Pointer : Integer := Text'First;
    begin
       if Client.Messages_Count > 0 then

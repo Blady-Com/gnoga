@@ -46,9 +46,10 @@ project Components.Connections_Server is
       "gnat-sockets-server.ads",
       "gnat-sockets-server.adb",
       "gnat-sockets-server-handles.ads",
-	  "gnat-sockets-server-pooled.adb",
+      "gnat-sockets-server-pooled.adb",
       "gnat-sockets-server-pooled.ads"
    );
+   for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

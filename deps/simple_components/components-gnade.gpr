@@ -1,5 +1,5 @@
-with "gnade-odbc.gpr";
 with "components.gpr";
+with "gnade-odbc.gpr";
 
 project Components.GNADE is
 
@@ -22,6 +22,7 @@ project Components.GNADE is
       "persistent-odbc-text_io.adb",
       "persistent-odbc-text_io.ads"
    );
+   for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

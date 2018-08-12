@@ -1,7 +1,46 @@
-20171031 - Gnoga V1.3a:
+20180812 - Gnoga V1.4-alpha:
 
+- Add detection for server port already in use, it raises the following exception and stop.
+- Upgrade to Simple Components 4.30.
+- Makefile: add gnoga-config target for standalone compilation without installation needed.
+- Improve on sane shutdown.
+- Log accessing and invalid path.
+- Added gnoga version status.
+- Add support to JSTree javascript library.
+- Fix issues reported by Jeremiah Breeden.
+- Enhancement from David Trudgett which adds a protected object in GnogaBoard from Gnoga user guide example.
+- PIXI: add new sprite effects for events:
+  . Inside_Event_Effect is sent when sprite is inside frame or angles limits and resets when fired.
+  . Outside_Event_Effect is sent when sprite is outside frame or angles limits and resets when fired.
+- PIXI: add Angle_Limit API for Sprites (it sets sprite angle limit for rotation with special effect: null, bounce or loop).
+- PIXI: add Frame_Limit API for Sprites (it sets sprite frame limit with special effect: null, bounce or loop).
+- New demo: Logo interpreter with with both ACE / Console_IO (for instruction) and PIXI (for the famous turtle).
+- Connect Four: make Title and HTML_On_Close to be localized at window creation time.
+- Upgrade to Zanyblue 1.4.0b-r3144.
+- Pixi: add Move_Rel for distance, Rotate_To and Rotate_Rel for rotation.
+- Add support to Console_IO, an emulation of Text_IO with ACE plugin.
+- Add an exception log in singleton applications for not handled exceptions.
+- All components may now install with a custom INSTALL_DIR.
+- Remove copy of plugins sources with help of new project plugins.gpr.
+- Remove copy of "gnoga-application.adb" with help of separate and naming scheme.
+
+
+20180711 - Gnoga V1.3a:
+
+- TIPS: updated.
+- INSTALL: rework the wording.
+- Makefile:
+  . Add gnoga-config target which creates a script with gnoga compilation options
+  . Add GPS launch command for Windows user.
+  . Fix some regression using XMLAda and SQLite3.
+  . Fix some issues with Zanyblue and Windows.
+  . Fix GPR_PROJECT_PATH separator issue for Windows users.
+  . Take care of spaces in paths.
+  . Set "inst_folder" for default installation directory.
+  . Fix issues reported by Jeremiah Breeden.
 - Fix Documentation_Dir obsolescence.
 - Update TODO, HISTORY and TIPS.
+
 
 20171022 - Gnoga V1.3-beta:
 
@@ -9,6 +48,7 @@
 - Fix some audio time types to float instead of integer and fix Ready_To_Play.
 - Enhancement from Miguel Ángel Oliván which changes this reassignation by using Ada.Strings.Unbounded.Append to solve the issue making time lag.
 - Upgrade and adapt to Simple Components 4.23.
+
 
 20170723 - Gnoga V1.2b:
 
@@ -18,6 +58,7 @@
 - Added Gnoga in JavaFX, a contribution from Jeremiah Breeden.
 - Added tutorial for forms.
 - Added TIPS.
+
 
 20170716 - Gnoga V1.3-alpha:
 

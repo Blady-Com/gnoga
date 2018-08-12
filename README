@@ -91,6 +91,8 @@ Here is an overview of Gnoga's framework:
       Gnoga.Gui.Plugin.Messages_Boxes - dialog message boxes
       Gnoga.Gui.Plugin.MNMenu - menu construction based on list
       Gnoga.Gui.Plugin.PIXI - dynamic randering graphic elements such as sprites
+      Gnoga.Gui.Plugin.JSTree - tree construction based on list
+      Gnoga.Gui.Plugin.Ace_Editor.Console_IO - console emulation based on ACE
 
 9. Native Desktop and Mobile Application Support coming:
       Gnoga.Server.Application.Gtk_Window - Native GTK front end

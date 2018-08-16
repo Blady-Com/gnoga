@@ -4,6 +4,7 @@ library project Lib_PragmARC is
    for Library_Name use "pragmarc";
    for Object_Dir  use "obj";
    for Library_Dir use "lib";
+   for Excluded_Source_Files use ("compile_all.adb");
 
    package Compiler is
       for Default_Switches ("Ada") use ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVa", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF");

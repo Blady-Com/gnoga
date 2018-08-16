@@ -240,14 +240,14 @@ mine_detector:
 	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 chattanooga:
-	$(COPY) demo/chattanooga/glass.ogg html
+	$(COPY) demo$(PATHSEP)chattanooga$(PATHSEP)glass.ogg html
 	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 adaedit:
 	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 adablog:
-	$(COPY) demo/adablog/adablog.css css
+	$(COPY) demo$(PATHSEP)adablog$(PATHSEP)adablog.css css
 	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 connect_four: zanyblue
@@ -271,8 +271,8 @@ tic_tac_toe:
 	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 leaves:
-	$(COPY) demo/leaves/img/*.png img
-	$(COPY) demo/leaves/img/*.jpg img
+	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.png img
+	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.jpg img
 	cd demo/leaves && $(BUILDER) -Pleaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 db_maker:
@@ -376,7 +376,7 @@ clean_tests:
 	cd test/tickets/019 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 rm-docs: gnoga
-	gnatdoc -P src/gnoga.gpr --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}
+	gnatdoc -P src/gnoga.gpr --enable-build --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}
 
 html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown user_guide.md > html/user_guide.html

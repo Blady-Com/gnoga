@@ -32,10 +32,10 @@ To do 1.x:
 6. Expanded support for Gtk and Gnome
 7. Provide more enumerations for various properties in Gnoga.Gui.Element
 8. Lots and lots more Gnoga specific elements as modules and JS bindigns as plugins to be placed in Marketplace
-9. Complete Ace Editor plugin
+PARTIAL 9. Complete Ace Editor plugin
 10. Complete MacGap support for menus
 11. Add coding style rules documentation
-12. Add Pixi Sprite new features (bounce on walls, event on position, event on collision, turtle à la Logo)
+PARTIAL 12. Add Pixi Sprite new features (bounce on walls, event on position, event on collision, turtle à la Logo)
 
 
 Some other ideas:
@@ -116,8 +116,8 @@ DONE 19. Internationalisation with language translation of displayed text.
 30. Use Wide_Strings type for Gnoga APIs strings and keep UTF-8 support
 DONE 31. Add AdaOthello port to Gnoga.
 32. Support games with http://phaser.io/.
-33. Instrument Gnoga tasks with a Ada.Task_Termination handler.
-34. Simplified Gnoga built with plugins copied files and GPR project files with GPS
+DONE 33. Instrument Gnoga tasks with a Ada.Task_Termination handler.
+DONE 34. Simplified Gnoga built with plugins copied files and GPR project files with GPS
 35. Make a Scrabble with Gnoga
 36. Add a higher level "animated canvas" as a component that provided the double buffering
 37. Add mouse scrolling wheel support
@@ -130,7 +130,7 @@ DONE 31. Add AdaOthello port to Gnoga.
    note: read http://gafferongames.com/networking-for-game-programmers/udp-vs-tcp/ for a
    more in depth explanation.
 40. Adapt to Gnoga Chess game: http://adachess.com
-41. Add an exception handler for singleton apps (main procedure would have an
+DONE 41. Add an exception handler for singleton apps (main procedure would have an
 exception handler and call End_Application if it handles an exception.)
 42. Enhancement for logging API à la Python
 

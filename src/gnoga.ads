@@ -40,10 +40,10 @@ with Ada.Exceptions;
 with Ada.Task_Identification;
 
 package Gnoga is
-   Version        : constant String := "1.4-beta";
+   Version        : constant String := "1.4a";
    Version_High   : constant        := 1;
    Version_Low    : constant        := 4;
-   Version_Status : constant String := "beta";
+   Version_Status : constant String := "a";
 
    HTTP_Server_Name : constant String := "gnoga/" & Version;
 

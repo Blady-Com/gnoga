@@ -745,6 +745,25 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                          Radius'Img & ");");
    end Arc_To;
 
+   ----------------
+   -- Polygon_To --
+   ----------------
+
+   procedure Polygon_To
+     (Context : in out Context_2D_Type;
+      Points  : in     Gnoga.Types.Point_Array_Type)
+   is
+      Script : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      for Point of Points loop
+         Ada.Strings.Unbounded.Append (Script, "gnoga['" &
+                                         Context.ID & "'].lineTo(" &
+                                         Point.X'Img & "," & Point.Y'Img & ");");
+      end loop;
+      Gnoga.Server.Connection.Execute_Script
+        (Context.Connection_ID, Ada.Strings.Unbounded.To_String (Script));
+   end Polygon_To;
+
    ----------------------
    -- Is_Point_In_Path --
    ----------------------

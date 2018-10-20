@@ -330,6 +330,11 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
       Radius             : in Integer);
    --  Creates an arc / curve between two tangents
 
+   procedure Polygon_To
+     (Context : in out Context_2D_Type;
+      Points  : in     Gnoga.Types.Point_Array_Type);
+   --  Creates a serie of lines led by a point array from the current point
+
    function Is_Point_In_Path (Context : Context_2D_Type; X, Y : Integer)
                               return Boolean;
    --  Returns true if the specified point is in the current path, otherwise

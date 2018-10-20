@@ -311,13 +311,28 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
    end Axes;
 
    procedure Graph (Plot  : in out Plot_Info;
-          List  : in     Point_List;
-          Color : in     Gnoga.Types.RGBA_Type := Black)
+                    List  : in     Point_List;
+                    Color : in     Gnoga.Types.RGBA_Type := Black)
    is
+      Dummy_Context : Context_2D_Type;
+      function Scale (List : Point_List) return Gnoga.Types.Point_Array_Type;
+      function Scale (List : Point_List) return Gnoga.Types.Point_Array_Type is
+         Scaled_List : Gnoga.Types.Point_Array_Type (List'Range);
+      begin
+         for Ind in List'Range loop
+            Scaled_List (Ind) := (Plot.Scale_X (List (Ind).X), Plot.Scale_Y (List (Ind).Y));
+         end loop;
+         return Scaled_List;
+      end Scale;
    begin -- Graph
-      All_Points : for I in List'First .. List'Last - 1 loop
-         Plot.Line (From => List (I), To => List (I + 1), Color => Color);
-      end loop All_Points;
+      Dummy_Context.Get_Drawing_Context_2D (Canvas => Plot);
+      Dummy_Context.Begin_Path;
+      Dummy_Context.Stroke_Color (Value => Color);
+      if List'Length > 0 then
+         Dummy_Context.Move_To (X => Plot.Scale_X (List (List'First).X), Y => Plot.Scale_Y (List (List'First).Y));
+         Dummy_Context.Polygon_To (Scale (List (List'First + 1 .. List'Last)));
+      end if;
+      Dummy_Context.Stroke;
    end Graph;
 
    procedure Graph (Plot  : in out Plot_Info;

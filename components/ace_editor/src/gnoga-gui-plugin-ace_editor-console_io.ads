@@ -148,25 +148,33 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Class   : in     String := "";
       ID      : in     String := "");
 
-private
-   Ring_Size : constant := 100;
-   type Ring_Index is mod Ring_Size;
-   type Ring_Buffer is array (Ring_Index) of Character;
+   procedure Fire_On_Get_Line
+     (Console : in out Console_IO_Type;
+      Line    : in     String);
+   --  Handle get_line event
 
-   protected type Ring_Char is
-      entry Write (Ch : in Character);
+   overriding procedure On_Message
+     (Object  : in out Console_IO_Type;
+      Event   : in     String;
+      Message : in     String);
+   --  Called on receiving any message or event from browser.
+
+private
+   protected type Text_Buffer is
+      procedure Write (Line : in String);
+      entry Read (Line : out String; Last : out Natural);
+      entry Read (Line : out Ada.Strings.Unbounded.Unbounded_String);
       entry Read (Ch : out Character);
       procedure Get (Ch : out Character; Available : out Boolean);
       procedure Look (Ch : out Character; Available : out Boolean);
    private
-      Buffer                  : Ring_Buffer;
-      Read_Index, Write_Index : Ring_Index                   := 0;
-      Count                   : Natural range 0 .. Ring_Size := 0;
-   end Ring_Char;
+      Buffer : Ada.Strings.Unbounded.Unbounded_String;
+      NL     : Boolean := False;
+   end Text_Buffer;
 
    type Console_IO_Type is new Ace_Editor_Type with record
       Anchor : Anchor_Type;
-      Ring   : Ring_Char;
+      Text   : Text_Buffer;
    end record;
 
 end Gnoga.Gui.Plugin.Ace_Editor.Console_IO;

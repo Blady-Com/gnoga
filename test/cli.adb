@@ -41,6 +41,7 @@ procedure CLI is
       App.CLI.Show_Invisibles;
       App.CLI.Word_Wrap;
       App.CLI.Wrap_Limit (40);
+      App.CLI.Editor_Execute ("focus()");
 
       loop
          App.CLI.Put ("Enter: ");

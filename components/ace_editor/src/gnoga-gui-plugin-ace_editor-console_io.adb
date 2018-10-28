@@ -36,190 +36,68 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Characters.Conversions;
 with Ada.Characters.Latin_1;
-
-with Gnoga.Types.Key_Codes;
+with Ada.Strings.Fixed;
 
 package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
+   use Ada.Strings.Unbounded;
 
-   --------------------------
-   -- Key input bufferring --
-   --------------------------
-
-   protected body Ring_Char is
-      entry Write (Ch : in Character) when Count < Ring_Size is
+   protected body Text_Buffer is
+      procedure Write (Line : in String) is
       begin
-         Buffer (Write_Index) := Ch;
-         Write_Index          := Write_Index + 1;
-         Count                := Count + 1;
+         Append (Buffer, Line);
+         Append (Buffer, Ada.Characters.Latin_1.CR);
+         NL := True;
       end Write;
 
-      entry Read (Ch : out Character) when Count > 0 is
+      entry Read (Line : out String; Last : out Natural) when NL is
+         Ind : constant Natural := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) - 1;
       begin
-         Ch         := Buffer (Read_Index);
-         Read_Index := Read_Index + 1;
-         Count      := Count - 1;
+         if Line'Length < Ind then
+            Last := Line'First + Line'Length - 1;
+            Line (Line'First .. Last) := Slice (Buffer, 1, Line'Length);
+            Delete (Buffer, 1, Line'Length);
+         else
+            Last := Line'First + Ind - 1;
+            Line (Line'First .. Last) := Slice (Buffer, 1, Ind);
+            Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
+         end if;
+         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
+      end Read;
+
+      entry Read (Line : out Ada.Strings.Unbounded.Unbounded_String) when NL is
+         Ind : constant Natural := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) - 1;
+      begin
+         Line := Unbounded_Slice (Buffer, 1, Ind);
+         Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
+         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
+      end Read;
+
+      entry Read (Ch : out Character) when Length (Buffer) > 0 is
+      begin
+         Ch := Element (Buffer, 1);
+         Delete (Buffer, 1, 1);
+         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
       end Read;
 
       procedure Get (Ch : out Character; Available : out Boolean) is
       begin
-         Available := Count /= 0;
+         Available := Length (Buffer) > 0;
          if Available then
-            Ch         := Buffer (Read_Index);
-            Read_Index := Read_Index + 1;
-            Count      := Count - 1;
+            Ch := Element (Buffer, 1);
+            Delete (Buffer, 1, 1);
          end if;
+         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
       end Get;
 
       procedure Look (Ch : out Character; Available : out Boolean) is
       begin
-         Available := Count /= 0;
-         Ch        := Buffer (Read_Index);
+         Available := Length (Buffer) > 0;
+         if Available then
+            Ch := Element (Buffer, 1);
+         end if;
       end Look;
-   end Ring_Char;
-
-   procedure On_Key_Press_Handler
-     (Object         : in out Gnoga.Gui.Base.Base_Type'Class;
-      Keyboard_Event : in     Gnoga.Gui.Base.Keyboard_Event_Record);
-
-   procedure On_Key_Press_Handler
-     (Object         : in out Gnoga.Gui.Base.Base_Type'Class;
-      Keyboard_Event : in     Gnoga.Gui.Base.Keyboard_Event_Record)
-   is
-      Ch : constant Character :=
-        Ada.Characters.Conversions.To_Character (Keyboard_Event.Key_Char);
-      use type Gnoga.Gui.Base.Keyboard_Message_Type;
-   begin
---        Gnoga.Log
---          (Keyboard_Event.Key_Code'Img & ',' & Keyboard_Event.Key_Char'Img);
-      --  ASCII Character
-      if Ch not in Ada.Characters.Latin_1.NUL | Ada.Characters.Latin_1.CR | Ada.Characters.Latin_1.ESC then
-         Console_IO_Type (Object).Ring.Write (Ch);
-         return;
-      end if;
-      --  Other special keys
-      if Keyboard_Event.Message = Gnoga.Gui.Base.Key_Down then
-         case Keyboard_Event.Key_Code is
-            when Gnoga.Types.Key_Codes.Key_BackSpace =>
-               Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.BS);
-            when Gnoga.Types.Key_Codes.Key_Tab =>
-               Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.HT);
-            when Gnoga.Types.Key_Codes.Key_Enter =>
-               Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.CR);
-            when Gnoga.Types.Key_Codes.Key_Esc =>
-               Console_IO_Type (Object).Ring.Write (Ada.Characters.Latin_1.ESC);
-            when
-                Gnoga.Types.Key_Codes.Key_F1 ..
-                  Gnoga.Types.Key_Codes.Key_F10 =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               --  Alt modifier
-               if Keyboard_Event.Alt then
-                  Console_IO_Type (Object).Ring.Write
-                    (Character'Val
-                       (Keyboard_Event.Key_Code -
-                        Gnoga.Types.Key_Codes.Key_F1 +
-                        104));
-               --  Control modifier
-               elsif Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write
-                    (Character'Val
-                       (Keyboard_Event.Key_Code -
-                        Gnoga.Types.Key_Codes.Key_F1 +
-                        94));
-               --  Shift modifier
-               elsif Keyboard_Event.Shift then
-                  Console_IO_Type (Object).Ring.Write
-                    (Character'Val
-                       (Keyboard_Event.Key_Code -
-                        Gnoga.Types.Key_Codes.Key_F1 +
-                        84));
-               --  No modifier
-               else
-                  Console_IO_Type (Object).Ring.Write
-                    (Character'Val
-                       (Keyboard_Event.Key_Code -
-                        Gnoga.Types.Key_Codes.Key_F1 +
-                        59));
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Home =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write ('w');
-               else
-                  Console_IO_Type (Object).Ring.Write ('G');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Left =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write ('s');
-               else
-                  Console_IO_Type (Object).Ring.Write ('K');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Up =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write (Character'Val (141));
-               else
-                  Console_IO_Type (Object).Ring.Write ('H');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Right =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write ('t');
-               else
-                  Console_IO_Type (Object).Ring.Write ('M');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Down =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write (Character'Val (145));
-               else
-                  Console_IO_Type (Object).Ring.Write ('P');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Page_Up =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write (Character'Val (132));
-               else
-                  Console_IO_Type (Object).Ring.Write ('I');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Page_Down =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write ('v');
-               else
-                  Console_IO_Type (Object).Ring.Write ('Q');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_End =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write ('u');
-               else
-                  Console_IO_Type (Object).Ring.Write ('O');
-               end if;
-            when Gnoga.Types.Key_Codes.Key_Delete =>
-               Console_IO_Type (Object).Ring.Write
-                 (Ada.Characters.Latin_1.NUL);
-               if Keyboard_Event.Control then
-                  Console_IO_Type (Object).Ring.Write (Character'Val (147));
-               else
-                  Console_IO_Type (Object).Ring.Write ('S');
-               end if;
-            when others =>
-               null;
-         end case;
-      end if;
-   end On_Key_Press_Handler;
+   end Text_Buffer;
 
    ------------
    -- Create --
@@ -232,17 +110,52 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    is
    begin
       Ace_Editor_Type (Console).Create (Parent, ID);
-      Console.Read_Only;
       Console.Show_Gutter (False);
       Console.Set_Highlight_Active_Line (False);
       Console.Set_Show_Print_Margin (False);
       Console.Anchor.Create (Console, 0, 0);
-      --  Deactivate ACE key handler
+      Console.Editor_Execute ("gnoga_prompt=0;");
       Console.Editor_Execute
-      ("keyBinding.addKeyboardHandler(function() {return {passEvent: true, command: 'null' }})");
-      Console.On_Key_Press_Handler (On_Key_Press_Handler'Access);
-      --  Needed for Safari special keys
-      Console.On_Key_Down_Handler (On_Key_Press_Handler'Access);
+        ("sendEvent = function (e, m) {ws.send ('" &
+           Ada.Strings.Fixed.Trim (Console.Unique_ID'Img, Ada.Strings.Both) &
+           "|' + e + '|' + m);}");
+      Console.Editor_Execute
+        ("commands.on('exec', function(e) {" &
+         "    if (e.command.readOnly) return;" & "    var editableRow = " &
+         Console.Editor_Var & ".session.getLength() - 1;" &
+         "    var deletesLeft = e.command.name == 'backspace' || e.command.name == 'removewordleft';" &
+         "    var notEditable = " & Console.Editor_Var &
+         ".selection.getAllRanges().some(function(r) {" &
+         "        if (deletesLeft && r.start.column <= " & Console.Editor_Var &
+         ".gnoga_prompt && r.end.column <= " & Console.Editor_Var &
+         ".gnoga_prompt) return true;" &
+         "        if (deletesLeft && (r.start.column < " & Console.Editor_Var &
+         ".gnoga_prompt || r.end.column < " & Console.Editor_Var &
+         ".gnoga_prompt)) return true;" &
+         "        if (r.start.column < " & Console.Editor_Var &
+         ".gnoga_prompt && r.end.column < " & Console.Editor_Var &
+         ".gnoga_prompt) return true;" &
+         "        return r.start.row != editableRow || r.end.row != editableRow; " &
+         "    });" & "    if (notEditable)" & "        e.preventDefault();" &
+         "});");
+      Console.Editor_Execute
+        ("commands.bindKeys({" &
+         "    'Shift-Return|Ctrl-Return|Alt-Return': function(cmdLine) {}," &
+         "    'Esc|Shift-Esc': function(cmdLine){" &
+         "        cmdLine.session.remove(" &
+         "          {start:{row:cmdLine.session.getLength()-1," &
+         "                  column: cmdLine.gnoga_prompt}," &
+         "           end: {row:cmdLine.session.getLength()-1," &
+         "                 column:cmdLine.session.getDocumentLastRowColumn(cmdLine.session.getLength()-1,0)}});}," &
+         "    'Return': function(cmdLine){" &
+         "        cmdLine.sendEvent ('get_line'," & "          cmdLine.session.getTextRange(" &
+         "            {start:{row:cmdLine.session.getLength()-1," &
+         "                    column: cmdLine.gnoga_prompt}," &
+         "             end: {row:cmdLine.session.getLength()-1," &
+         "                   column:cmdLine.session.getDocumentLastRowColumn(cmdLine.session.getLength()-1,0)}}));" &
+         "        cmdLine.navigateFileEnd();" &
+         "        cmdLine.insert('\n');}" &
+         "});");
    end Create;
 
    ---------------------
@@ -305,6 +218,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       for I in 1 .. Spacing loop
          Console.Anchor.Insert_New_Line_At_Anchor;
       end loop;
+      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
    end New_Line;
 
    ---------------
@@ -319,7 +233,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    begin
       for Line in 1 .. Spacing loop
          loop
-            Console.Ring.Read (Ch);
+            Console.Text.Read (Ch);
             exit when Ch = Ada.Characters.Latin_1.CR;
          end loop;
       end loop;
@@ -425,7 +339,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
    procedure Get (Console : in out Console_IO_Type; Item : out Character) is
    begin
-      Console.Ring.Read (Item);
+      Console.Text.Read (Item);
    end Get;
 
    ---------
@@ -435,6 +349,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    procedure Put (Console : in out Console_IO_Type; Item : Character) is
    begin
       Console.Anchor.Insert_Text_At_Anchor ((1 => Item));
+      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
    end Put;
 
    ----------------
@@ -448,7 +363,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    is
       Available : Boolean;
    begin
-      Console.Ring.Look (Item, Available);
+      Console.Text.Look (Item, Available);
       End_Of_Line := Available and Item = Ada.Characters.Latin_1.CR;
    end Look_Ahead;
 
@@ -462,7 +377,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    is
       Available : Boolean;
    begin
-      Console.Ring.Get (Item, Available);
+      Console.Text.Get (Item, Available);
       if not Available then
          raise End_Error;
       end if;
@@ -478,7 +393,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Available :    out Boolean)
    is
    begin
-      Console.Ring.Get (Item, Available);
+      Console.Text.Get (Item, Available);
    end Get_Immediate;
 
    ---------
@@ -488,7 +403,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    procedure Get (Console : in out Console_IO_Type; Item : out String) is
    begin
       for Ch of Item loop
-         Console.Ring.Read (Ch);
+         Console.Text.Read (Ch);
       end loop;
    end Get;
 
@@ -504,6 +419,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       pragma Unreferenced (Class, ID);
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);
+      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
    end Put;
 
    --------------
@@ -515,11 +431,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Item    :    out String;
       Last    :    out Natural)
    is
-      Line : constant String := Console.Get_Line;
    begin
-      Last := Item'First + Natural'Min (Item'Length, Line'Length) - 1;
-      Item (Item'First .. Last) :=
-        Line (Line'First .. Line'First + Last - Item'First);
+      Console.Text.Read (Item, Last);
    end Get_Line;
 
    --------------
@@ -527,88 +440,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    --------------
 
    function Get_Line (Console : in out Console_IO_Type) return String is
-      Pos          : Position_Type    := Console.Anchor.Position;
-      Start_Row    : constant Natural := Pos.Row;
-      Start_Column : constant Natural := Pos.Column;
-      End_Column   : Natural          := Start_Column;
-      CC           : Natural;
-      Ch           : Character;
+      Line : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      Console.Navigate_To (Start_Row, Start_Column);
-      loop
---           Gnoga.Log (Pos.Row'Img & ',' & Pos.Column'Img);
-         Console.Ring.Read (Ch);
-         Pos := Console.Anchor.Position;
-         CC  := Console.Current_Column;
-         if CC /= Pos.Column
-           and then Console.Current_Line = Start_Row
-           and then CC in Start_Column .. End_Column
-         then
-            Console.Anchor.Position ((Start_Row, CC));
-         else
-            CC := Pos.Column;
-         end if;
---           Gnoga.Log (Ch'Img);
-         case Ch is
-            when Ada.Characters.Latin_1.NUL =>
-               Console.Ring.Read (Ch);
---                 Gnoga.Log (Ch'Img);
-               case Ch is
-                  when 'G' =>  -- Home
-                     Console.Navigate_To (Start_Row, Start_Column);
-                     Console.Anchor.Position ((Start_Row, Start_Column));
-                  when 'K' =>  -- Left
-                     if Pos.Column > Start_Column then
-                        Pos.Column := Pos.Column - 1;
-                        Console.Navigate_To (Pos.Row, Pos.Column);
-                        Console.Anchor.Position (Pos);
-                     end if;
-                  when 'H' =>  -- Up
-                     null;
-                  when 'M' =>  -- Right
-                     if Pos.Column < End_Column then
-                        Pos.Column := Pos.Column + 1;
-                        Console.Navigate_To (Pos.Row, Pos.Column);
-                        Console.Anchor.Position (Pos);
-                     end if;
-                  when 'P' =>  -- Down
-                     null;
-                  when 'O' =>  -- End
-                     Console.Navigate_To (Start_Row, End_Column);
-                     Console.Anchor.Position ((Start_Row, End_Column));
-                  when 'S' =>  -- Delete
-                     Console.Navigate_To (Pos.Row, Pos.Column);
-                     if Pos.Column < End_Column then
-                        Console.Delete;
-                        End_Column := End_Column - 1;
-                     end if;
-                  when others =>
-                     null;
-               end case;
-            when Ada.Characters.Latin_1.BS => -- BackSpace
-               Console.Navigate_To (Pos.Row, Pos.Column);
-               if Pos.Column > Start_Column then
-                  Console.Backspace;
-                  End_Column := End_Column - 1;
-               end if;
-            when Ada.Characters.Latin_1.ESC => -- Escape
-               Console.Remove_In_Line (Start_Row, Start_Column, End_Column);
-               Console.Navigate_To (Start_Row, Start_Column);
-               Console.Anchor.Position ((Start_Row, Start_Column));
-               End_Column := Start_Column;
-            when Ada.Characters.Latin_1.CR => -- Carriage Return
-               Console.Navigate_To (Start_Row, End_Column);
-               Console.Anchor.Position ((Start_Row, End_Column));
-               Console.Anchor.Insert_New_Line_At_Anchor;
-               exit; -- Exit loop
-            when others => -- Regular characters
-               Console.Anchor.Insert_Text_At_Anchor ((1 => Ch));
-               Console.Navigate_To (Pos.Row, CC + 1);
-               End_Column := End_Column + 1;
-         end case;
-      end loop;
-      return Console.Text_Range
-        ((Start_Row, Start_Column), (Start_Row, End_Column));
+      Console.Text.Read (Line);
+      return Ada.Strings.Unbounded.To_String (Line);
    end Get_Line;
 
    --------------
@@ -624,6 +459,37 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);
       Console.Anchor.Insert_New_Line_At_Anchor;
+      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
    end Put_Line;
+
+   ----------------------
+   -- Fire_On_Get_Line --
+   ----------------------
+
+   procedure Fire_On_Get_Line
+     (Console : in out Console_IO_Type;
+      Line    : in     String)
+   is
+   begin
+      Console.Text.Write (Line);
+   end Fire_On_Get_Line;
+
+   ----------------
+   -- On_Message --
+   ----------------
+
+   overriding procedure On_Message
+     (Object  : in out Console_IO_Type;
+      Event   : in     String;
+      Message : in     String)
+   is
+   begin
+      -- Get_Line Event --
+      if Event = "get_line" then
+         Object.Fire_On_Get_Line (Message);
+      else
+         Gnoga.Gui.Base.Base_Type (Object).On_Message (Event, Message);
+      end if;
+   end On_Message;
 
 end Gnoga.Gui.Plugin.Ace_Editor.Console_IO;

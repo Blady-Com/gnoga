@@ -60,6 +60,8 @@ with Strings_Edit.UTF8.Handling;
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
 
+   Substitution_Character : constant Character := '?';
+
    On_Connect_Event      : Connect_Event      := null;
    On_Post_Event         : Post_Event         := null;
    On_Post_Request_Event : Post_Request_Event := null;
@@ -648,8 +650,10 @@ package body Gnoga.Server.Connection is
    begin
       if On_Post_Event /= null and Status.Kind = File then
          for i in 1 .. Client.Get_CGI_Size loop
-            Parameters.Insert (Client.Get_CGI_Key (i),
-                               Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Value (i)));
+            Parameters.Insert (Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Key (i),
+                                 Substitution_Character),
+                               Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Value (i),
+                                 Substitution_Character));
          end loop;
 
          On_Post_Event (Status.File & Status.Query, Parameters);
@@ -668,7 +672,7 @@ package body Gnoga.Server.Connection is
 
       Status : Status_Line renames Get_Status_Line (Client);
 
-      Param_List : Ada.Strings.Unbounded.Unbounded_String;
+      Param_List : Unbounded_String;
 
       Content_Type : constant String :=
         Client.Get_Header (Content_Type_Header);
@@ -680,7 +684,7 @@ package body Gnoga.Server.Connection is
       end if;
 
       if Content_Type = "application/x-www-form-urlencoded" then
-         Client.Receive_Body (Ada.Strings.Unbounded.To_String (Param_List));
+         Client.Receive_Body (Strings_Edit.UTF8.Handling.To_UTF8 (To_String (Param_List)));
       end if;
 
       if Index (Content_Type, "multipart/form-data") = Content_Type'First then
@@ -699,7 +703,7 @@ package body Gnoga.Server.Connection is
                      Field_Name : constant String := Disposition
                        (n + Field_ID'Length .. Eq - 1);
                   begin
-                     if Index (To_String (Param_List), Field_Name) > 0 then
+                     if Index (Strings_Edit.UTF8.Handling.To_UTF8 (To_String (Param_List)), Field_Name) > 0 then
                         if f /= 0 then
                            declare
                               Eq : constant Natural := Index
@@ -1640,7 +1644,8 @@ package body Gnoga.Server.Connection is
          return;
       end if;
 
-      Dispatch_Message (Full_Message);
+      Dispatch_Message (Strings_Edit.UTF8.Handling.To_String (Full_Message,
+                        Substitution_Character));
 
    exception
       when E : others =>
@@ -2050,7 +2055,7 @@ package body Gnoga.Server.Connection is
             end;
 
             declare
-               Result : constant String := Strings_Edit.UTF8.Handling.To_String (Script_Holder.Result);
+               Result : constant String := Script_Holder.Result;
             begin
                Script_Manager.Delete_Script_Holder (Script_ID);
 

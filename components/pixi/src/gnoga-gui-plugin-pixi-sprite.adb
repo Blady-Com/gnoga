@@ -875,9 +875,6 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
       --  Discriminant: V**2 - 4 * (A/2) * (-D)
       --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
-      Azimut : constant Integer :=
-        To_Degree
-          (Arctan (Float (Row - Sprite.Row), Float (Column - Sprite.Column)));
       Distance : constant Float :=
         Sqrt (Float (Row - Sprite.Row)**2 + Float (Column - Sprite.Column)**2);
       Discriminant : constant Float :=
@@ -887,12 +884,14 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Root2 : constant Float :=
         (-Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
       TFin : Natural;
+      Norm_Row : constant Float := (if Distance > 0.0 then Float (Row - Sprite.Row) / Distance else 0.0);
+      Norm_Col : constant Float := (if Distance > 0.0 then Float (Column - Sprite.Column) / Distance else 0.0);
    begin
       Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
       TFin       := Natural (Frame_Rate * Spent_Time);
       if TFin > 0 then
-         Sprite.Motion (Radial_Velocity, Azimut);
-         Sprite.Acceleration (Radial_Acceleration, Azimut);
+         Sprite.Motion (Radial_Velocity * Norm_Row, Radial_Velocity * Norm_Col);
+         Sprite.Acceleration (Radial_Acceleration * Norm_Row, Radial_Acceleration * Norm_Col);
          Sprite.Loop_Times (0, TFin);
       end if;
    end Move_To;
@@ -1123,7 +1122,6 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    ----------------
 
    procedure Delete_All (Parent : in out Container_Type'Class) is
-
    begin
       Gnoga.Server.Connection.Execute_Script
         (Parent.Connection_ID,

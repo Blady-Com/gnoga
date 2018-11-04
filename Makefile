@@ -3,13 +3,21 @@ TARGET=$(shell gcc -dumpmachine)
 CWD=$(CURDIR)
 PREFIX=$(CWD)/inst_folder
 
-ATOMIC_ACCESS=GCC-long-offsets
+# Specify build mode "Debug", "Release" or "Profile"
+BUILD_MODE=Debug
+
+ATOMIC_ACCESS=Pragma-atomic
+# If using GNAT which supports pragma Atomic for 64-bit scalar variables for GNAT hosted on a 64-bit OS.
+# You can set this to:
+# ATOMIC_ACCESS=Pragma-atomic
+# If the target is 32-bit. "GCC-long-offsets" is a workaround of the GNAT bug on,
+# that for a 32-bit target pragma Atomic does not support 64-bit scalars even though the processor
+# has corresponding quad-words instructions.
+# You need change this to:
+# ATOMIC_ACCESS=GCC-long-offsets
 # If using GNAT GPL prior to 2014 or earlier on a 32bit host (Windows or Linux)
 # You need to change this to:
 # ATOMIC_ACCESS=GCC-built-ins
-# If using GNAT which supports pragma Atomic for 64-bit scalar variables for GNAT hosted on a 64-bit OS.
-# You can change this to:
-# ATOMIC_ACCESS=Pragma-atomic
 
 ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
 	BUILDER=gprbuild -p --target=${TARGET}
@@ -65,25 +73,20 @@ ifeq ($(BUILD_OS),Windows)
 	MKDIR=mkdir
 	RM=del
 	RMS=del /S /Q
-	PATHSEP2=\\
+	PATHSEP=\\
 	BUILD_SQLITE3=sqlite3
+	GPR_PROJECT_PATH_SEP=;
 else
 	COPY=cp -p
 	MOVE=mv
 	MKDIR=mkdir -p
 	RM=rm -f
 	RMS=rm -rf
-	PATHSEP2=/
+	PATHSEP=/
 	BUILD_SQLITE3=
-endif
-
-PATHSEP=$(strip $(PATHSEP2))
-
-ifeq ($(BUILD_OS),Windows)
-	GPR_PROJECT_PATH_SEP=;
-else
 	GPR_PROJECT_PATH_SEP=:
 endif
+
 export GPR_PROJECT_PATH=$(CWD)/build/share/gpr$(GPR_PROJECT_PATH_SEP)$(CWD)/build/lib/gnat
 # If Simple Components, Zanyblue or PragmArc libs are already existing in your environnement
 # Put their location in GPR_PROJECT_PATH and comment the previous line
@@ -94,10 +97,8 @@ help :
 	@echo "-- make <entry>                                                            --"
 	@echo "--                                                                         --"
 	@echo "-- <entry> ::= help        -- print this message                           --"
-	@echo "--         | all           -- build gnoga and all dependencies (debug mode)--"
-	@echo "--         | release       -- build gnoga in release mode                  --"
-	@echo "--         | install       -- install gnoga release mode                   --"
-	@echo "--         | install_debug -- install gnoga debug mode                     --"
+	@echo "--         | all           -- build gnoga with demos and all dependencies  --"
+	@echo "--         | install       -- install gnoga                                --"
 	@echo "--         | uninstall     -- uninstall gnoga                              --"
 	@echo "--         | demo          -- build all demos                              --"
 	@echo "--         | tutorials     -- build all tutorials                          --"
@@ -119,6 +120,7 @@ help :
 	@echo "--         BUILDER          = $(BUILDER)                                   --"
 	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)                                --"
 	@echo "--         BUILD_OS         = $(BUILD_OS)                                  --"
+	@echo "--         BUILD_MODE       = $(BUILD_MODE)                                --"
 	@echo "--                                                                         --"
 	@echo "-----------------------------------------------------------------------------"
 
@@ -131,22 +133,19 @@ basic_components:
 deps : simple_components
 
 simple_components:
-	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
+	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
 	$(INSTALLER) --prefix="$(CWD)/build" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
 
-lib/libsqlite3.a:
+sqlite3:
 	- $(MKDIR) lib
 	cd deps/simple_components/sqlite-sources && gcc -s -c -O2 -o sqlite3.o sqlite3.c
 	cd deps/simple_components/sqlite-sources && ar rcs libsqlite3.a sqlite3.o
 	cd deps/simple_components/sqlite-sources && $(MOVE) libsqlite3.a ..$(PATHSEP)..$(PATHSEP)..$(PATHSEP)lib
 	cd deps/simple_components/sqlite-sources && $(RM) sqlite3.o
 
-sqlite3: lib/libsqlite3.a
-
-# Zanyblue with DEBUG on
 zanyblue:
-	- cd deps/zanyblue/src && "$(MAKE)" BUILD=Debug APPDIRS="zbmcompile zbinfo"
-	- cd deps/zanyblue/src && "$(MAKE)" INSTALL_DIR="$(CWD)/build" APPDIRS="zbmcompile zbinfo" install
+	- cd deps/zanyblue/src && "$(MAKE)" BUILD=$(subst Release,Production,${BUILD_MODE}) APPDIRS="zbmcompile zbinfo"
+	- cd deps/zanyblue/src && "$(MAKE)" BUILD=$(subst Release,Production,${BUILD_MODE}) INSTALL_DIR="$(CWD)/build" APPDIRS="zbmcompile zbinfo" install
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
@@ -184,42 +183,27 @@ bin/multimarkdown:
 	$(MKDIR) bin
 	$(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 
-# Gnoga with DEBUG on by default
 gnoga:
-	$(BUILDER) -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_secure:
-	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_BUILD=${BUILD_MODE -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_tools:
-	$(BUILDER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P tools/tools.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
-# Gnoga build with DEBUG off
-release: deps $(BUILD_SQLITE3) basic_components
-	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
-
-# Install Gnoga and deps with DEBUG off
-install: release gnoga_tools
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
+# Install Gnoga and deps
+install: deps $(BUILD_SQLITE3) gnoga gnoga_tools zanyblue pragmarc
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
-	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" install
+	- $(MAKE) -C deps/zanyblue/src BUILD=$(subst Release,Production,${BUILD_MODE}) INSTALL_DIR="$(PREFIX)" install
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=Release -XPRJ_TARGET=${PRJ_TARGET}
+	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
-# Install Gnoga and deps with DEBUG on
-install_debug:
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
-	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
-	- $(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" BUILD=Debug install
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
-
-# Install Gnoga alone with DEBUG on
-install_gnoga_debug:
+# Install Gnoga without deps
+install_gnoga:
 	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
@@ -234,73 +218,73 @@ uninstall:
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker logo
 
 snake:
-	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 mine_detector:
-	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 chattanooga:
 	$(COPY) demo$(PATHSEP)chattanooga$(PATHSEP)glass.ogg html
-	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adaedit:
-	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adablog:
 	$(COPY) demo$(PATHSEP)adablog$(PATHSEP)adablog.css css
-	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 connect_four: zanyblue
 	- cd demo/connect_four && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings connectfour_messages connectfour
-	- cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 linxtris:
-	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
 
 password_gen: pragmarc
-	cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 random_int:
-	cd demo/random_int && $(BUILDER) -Prandom_int.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/random_int && $(BUILDER) -Prandom_int.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adaothello:
-	cd demo/adaothello && $(BUILDER) -Padaothello.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/adaothello && $(BUILDER) -Padaothello.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tic_tac_toe:
-	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 leaves:
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.png img
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.jpg img
-	cd demo/leaves && $(BUILDER) -Pleaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/leaves && $(BUILDER) -Pleaves.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 db_maker:
-	cd demo/db_maker && $(BUILDER) -Pdb_maker.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd demo/db_maker && $(BUILDER) -Pdb_maker.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 logo: zanyblue
 	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
 	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
-	cd demo$(PATHSEP)logo && $(BUILDER) -Plogo.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	- cd demo$(PATHSEP)logo && $(BUILDER) -Plogo.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
-	cd test && $(BUILDER) -k -Ptest.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test && $(BUILDER) -k -Ptest.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tests_ssl: gnoga_secure
-	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tutorials:
-	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-03 && $(BUILDER) -Ptutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-04 && $(BUILDER) -Ptutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-05 && $(BUILDER) -Ptutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-06 && $(BUILDER) -Ptutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-03 && $(BUILDER) -Ptutorial_03.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-04 && $(BUILDER) -Ptutorial_04.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-05 && $(BUILDER) -Ptutorial_05.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-06 && $(BUILDER) -Ptutorial_06.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 .IGNORE: clean_all
 clean_all: clean clean_deps

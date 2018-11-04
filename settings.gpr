@@ -1,6 +1,6 @@
 abstract project Settings is
 
-   type Build_Type is ("Debug", "Release");
+   type Build_Type is ("Debug", "Release", "Profile");
    Build : Build_Type := external ("PRJ_BUILD", "Debug");
 
    type Target_Type is ("OSX", "Windows", "FreeBSD", "Linux", "UNIX");
@@ -11,29 +11,22 @@ abstract project Settings is
    --------------
 
    Common_Options := ("-gnaty3abcefhiklM120nOprsStu", "-gnat2012", "-gnatW8");
-   --  Common options used for the Debug and Release modes
+   --  Common options used for the build modes
 
    Debug_Options := ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVaep", "-gnato",
                      "-fstack-check", "-gnatf", "-gnateA", "-gnateE", "-gnateF",
                      "-gnatec=" & Settings'Project_Dir & "pragma_debug.adc");
 
-   Release_Options := ("-O2");
+   Release_Options := ("-O2", "-gnatp", "-gnatn");
 
    package Compiler is
       case Build is
          when "Debug" =>
             for Default_Switches ("Ada") use Common_Options & Debug_Options;
-
          when "Release" =>
             for Default_Switches ("Ada") use Common_Options & Release_Options;
-      end case;
-
-      case Build_Target is
-         when "OSX" =>
-            for Default_Switches ("Ada")
-              use Compiler'Default_Switches ("Ada") & ("-fno-common");
-         when others =>
-            null;
+         when "Profile" =>
+            for Default_Switches ("Ada") use Common_Options & ("-g", "-pg");
       end case;
    end Compiler;
 
@@ -50,9 +43,18 @@ abstract project Settings is
    ------------
 
    package Linker is
+       case Build is
+         when "Debug" =>
+            for Default_Switches ("Ada") use ("-g");
+         when "Profile" =>
+            for Default_Switches ("Ada") use ("-g", "-pg");
+         when others =>
+            null;
+     end case;
       case Build_Target is
          when "OSX" =>
-            for Default_Switches ("Ada") use ("-Wl,-no_pie");
+            for Default_Switches ("Ada")
+              use Linker'Default_Switches ("Ada") & ("-Wl,-no_pie");
          when others =>
             null;
       end case;
@@ -65,5 +67,22 @@ abstract project Settings is
    package Pretty_Printer is
       for Default_Switches ("Ada") use ("-M120", "-W8", "--par_threshold=1");
    end Pretty_Printer;
+
+   -------------
+   -- Builder --
+   -------------
+
+   package Builder is
+      for Switches ("ada") use ("-j0");
+   end Builder;
+
+   ---------
+   -- IDE --
+   ---------
+
+   package IDE is
+      for Default_Switches ("adacontrol") use ("-f", "rules/gnoga.aru", "-s", "--", "-Tobj");
+      for VCS_Kind use "git";
+   end IDE;
 
 end Settings;

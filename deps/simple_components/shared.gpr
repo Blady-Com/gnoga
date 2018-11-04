@@ -3,7 +3,7 @@ abstract project Shared is
    type Legacy_Type is ("Ada95", "Ada2005", "Ada2012");
    Legacy : Legacy_Type := external ("Legacy", "Ada2012");
 
-   type Development_Type is ("Debug", "Release");
+   type Development_Type is ("Debug", "Release", "Profile");
    Development : Development_Type := external ("Development", "Debug");
 
    type Library_Kinds is ("relocatable", "static");
@@ -43,6 +43,11 @@ abstract project Shared is
                    "-O2",
                    "-gnatn"
                 )  & GNAT_XX;
+         when "Profile" =>
+            for Default_Switches ("ada") use
+                (  "-g",
+                   "-pg"
+                )  & GNAT_XX;
       end case;
    end Compiler;
 
@@ -52,6 +57,8 @@ abstract project Shared is
             for Default_Switches ("ada") use ("-E");
          when "Release" =>
             for Default_Switches ("ada") use ();
+         when others =>
+            null;
       end case;
    end Binder;
 
@@ -61,6 +68,8 @@ abstract project Shared is
             for Default_Switches ("ada") use ("-g");
          when "Release" =>
             for Default_Switches ("ada") use ("-s");
+         when others =>
+            null;
       end case;
    end Builder;
 
@@ -70,6 +79,8 @@ abstract project Shared is
             for Default_Switches ("ada") use ("-g");
          when "Release" =>
             for Default_Switches ("ada") use ("-O2", "-s");
+         when "Profile" =>
+            for Default_Switches ("ada") use ("-g", "-pg");
       end case;
    end Linker;
 

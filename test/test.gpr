@@ -18,7 +18,6 @@ project Test is
 
    package Builder is
       for Executable ("demo.adb") use "gnoga-demo";
-      for Switches ("ada") use ("-j0");
    end Builder;
 
    package Compiler is

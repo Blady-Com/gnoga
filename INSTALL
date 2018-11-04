@@ -1,10 +1,9 @@
-Gnoga can be installed as a Gnat standard library on many platforms and
+Gnoga can be installed as a GNAT standard library on many platforms and
 can always be used from its own directory.
 
 1) To install release version in "inst_folder" directory:
 
-$ make release
-$ make install
+$ make BUILD_MODE=Release install
 
 gnoga_make will also be installed in to the bin directory. Make sure to
 check the permission on the gnoga_make executable as some versions of gprinstall
@@ -21,29 +20,17 @@ set GPR_PROJECT_PATH=/path/to/gnoga/inst_folder/share/gpr;/path/to/gnoga/inst_fo
 
 Tips: "make help" will give your actual GPR_PROJECT_PATH.
 
-To install also Zanyblue and Pragmarc, you can do before:
-$ make zanyblue
-$ make pragmarc
-
 I you don't have Sqlite3, you can do before (automatic for Windows):
 $ make sqlite3
 
+The HTML files and Javascript plugins are in /path/to/gnoga/inst_folder/share/gnoga.
 
-2) To install debug version (to play with Gnoga source code, demos, tutorials or even tests) in "inst_folder" directory:
 
-$ make all
-$ make install_debug
+2) To install debug version in "inst_folder" directory:
 
-In your gpr file use:
-with "gnoga"
+$ make install
 
-and add this option to your grpbuild: -aP/path/to/gnoga/inst_folder/share/gpr -aP/path/to/gnoga/inst_folder/lib/gnat
-or for Unix like
-export GPR_PROJECT_PATH=/path/to/gnoga/inst_folder/share/gpr:/path/to/gnoga/inst_folder/lib/gnat
-or for Windows
-export GPR_PROJECT_PATH=/path/to/gnoga/inst_folder/share/gpr;/path/to/gnoga/inst_folder/lib/gnat
-
-Tips: "make help" will give your actual GPR_PROJECT_PATH.
+Usage is same as release install.
 
 
 3) Installation directory:
@@ -52,8 +39,6 @@ By default Gnoga and dependent libraries are installed in /path/to/gnoga/inst_fo
 Installation is customizable with PREFIX, as for instance:
 
 sudo make PREFIX=/path/to/install install
-or
-sudo make PREFIX=/path/to/install install_debug
 
 In your gpr file use:
 with "gnoga"
@@ -67,13 +52,10 @@ set GPR_PROJECT_PATH=/path/to/install/share/gpr;/path/to/install/lib/gnat
 NB: Zanyblue installation doesn't support paths including space character.
 
 
-4) Using from Gnoga's own directory without installing:
+4) Using from Gnoga's own directory without installing in debug build mode:
+(to play with Gnoga source code, demos, tutorials or even tests)
 
-make release
-or
 make all
-
-gnoga_make is found in the bin directory.
 
 In your own gpr file use:
 with "/path/to/gnoga/src/gnoga.gpr" (instead of with "gnoga") and with "/path/to/gnoga/settings.gpr".

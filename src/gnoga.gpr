@@ -25,13 +25,9 @@ project Gnoga is
 
    package Binder renames Settings.Binder;
 
-   package Builder is
-      for Switches ("ada") use ("-j0");
-   end Builder;
+   package Builder renames Settings.Builder;
 
-   package Ide is
-      for Default_Switches ("adacontrol") use ("-f", "../rules/gnoga.aru", "-s", "--", "-T../obj");
-   end Ide;
+   package IDE renames Settings.IDE;
 
    package Install is
       for Artifacts ("share/gnoga/doc") use ("../docs/html/*.html", "../docs/*.txt", "../docs/user_guide");

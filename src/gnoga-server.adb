@@ -75,7 +75,7 @@ package body Gnoga.Server is
 
    function Directory_Separator return String is
    begin
-      return GNAT.OS_Lib.Directory_Separator & "";
+      return (1 => GNAT.OS_Lib.Directory_Separator);
    end Directory_Separator;
 
    ---------------------------

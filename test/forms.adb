@@ -120,6 +120,7 @@ procedure Forms is
          Form2   : Form.Form_Type;
          F_Input : Form.Form_Element_Type;
          H_Input : Form.Hidden_Type;
+         E_Input : Form.Form_Element_Type;
          S       : Form.Submit_Button_Type;
       begin
          Form2.Create (Parent => App.Console,
@@ -133,6 +134,10 @@ procedure Forms is
          H_Input.Create (Form  => Form2,
                          Value => "test",
                          Name  => "Some_Text");
+         E_Input.Create_Element (Form => Form2,
+                                 Input_Type => "text",
+                                 Name => "Some_Text2");
+
 
          S.Create (Form2, "Submit File");
       end;
@@ -167,12 +172,20 @@ procedure Forms is
                                   Main_Window.Form_Parameter ("Some_Text"));
       end if;
 
-      --  If wa post was stored in On_Post
+      --  If a post was stored in On_Post
       if Last_Parameters.Contains ("Some_Text") then
          Console.Put_Line ("Some_Text   => " &
                              Last_Parameters.Element ("Some_Text"));
       else
          Console.Put_Line ("Some_Text   => No value sent");
+      end if;
+
+      --  If an another post was stored in On_Post
+      if Last_Parameters.Contains ("Some_Text") then
+         Console.Put_Line ("Some_Text2  => " &
+                             Last_Parameters.Element ("Some_Text2"));
+      else
+         Console.Put_Line ("Some_Text2  => No value sent");
       end if;
 
       if Last_Parameters.Contains ("file_name") then
@@ -196,7 +209,7 @@ procedure Forms is
       pragma Unreferenced (URI);
    begin
       Accepted_Parameters :=
-        Ada.Strings.Unbounded.To_Unbounded_String ("Some_Text,fspec");
+        Ada.Strings.Unbounded.To_Unbounded_String ("Some_Text,fspec,Some_Text2");
    end On_Post_Request;
 
    procedure On_Post (URI        : String;
@@ -207,8 +220,9 @@ procedure Forms is
    is
       pragma Unreferenced (URI);
    begin
-      Last_Parameters := Parameters;
       for C in Parameters.Iterate loop
+         Last_Parameters.Include (Gnoga.Types.Data_Maps.Key (C),
+                                  Gnoga.Types.Data_Maps.Element (C));
          Gnoga.Log (Gnoga.Types.Data_Maps.Key (C) & " = " &
                       Gnoga.Types.Data_Maps.Element (C));
       end loop;

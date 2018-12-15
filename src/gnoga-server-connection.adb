@@ -56,6 +56,8 @@ with Gnoga.Server.Connection.Common; use Gnoga.Server.Connection.Common;
 with Gnoga.Server.Template_Parser.Simple;
 
 with Strings_Edit.UTF8.Handling;
+with Strings_Edit.Streams;
+with Ada.Streams;
 
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
@@ -137,6 +139,7 @@ package body Gnoga.Server.Connection is
          Input_Overflow  : String_Buffer;
          Buffer          : String_Buffer;
          Finalized       : Boolean := False;
+         Text            : aliased Strings_Edit.Streams.String_Stream (500);
       end record;
 
    overriding
@@ -207,6 +210,10 @@ package body Gnoga.Server.Connection is
    overriding
    procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
                              Content : in out CGI_Keys.Table'Class);
+
+   overriding
+   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
+                             Content : in out Ada.Streams.Root_Stream_Type'Class);
 
    overriding
    procedure Do_Body (Client : in out Gnoga_HTTP_Client);
@@ -660,6 +667,32 @@ package body Gnoga.Server.Connection is
       end if;
    end Body_Received;
 
+   -------------------
+   -- Body_Received --
+   -------------------
+
+   overriding
+   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
+                             Content : in out Ada.Streams.Root_Stream_Type'Class)
+   is
+      pragma Unreferenced (Content);
+      Status       : Status_Line renames Get_Status_Line (Client);
+      Disposition  : constant String := Client.Get_Multipart_Header (Content_Disposition_Header);
+      Field_ID     : constant String := "name=""";
+      n            : constant Natural := Ada.Strings.Fixed.Index (Disposition, Field_ID);
+      Eq           : constant Natural := Ada.Strings.Fixed.Index (Disposition, """", n + Field_ID'Length);
+      Field_Name   : constant String := Disposition (n + Field_ID'Length .. Eq - 1);
+      Content_Type : constant String :=
+        Client.Get_Multipart_Header (Content_Type_Header);
+
+      Parameters : Gnoga.Types.Data_Map_Type;
+   begin
+      if On_Post_Event /= null and Status.Kind = File and Content_Type = "" then
+         Parameters.Insert (Field_Name, Client.Content.Text.Get);
+         On_Post_Event (Status.File & Status.Query, Parameters);
+      end if;
+   end Body_Received;
+
    -------------
    -- Do_Post --
    -------------
@@ -733,6 +766,9 @@ package body Gnoga.Server.Connection is
                                                      File_Name & ".tmp");
                               end if;
                            end;
+                        else
+                           Client.Content.Text.Rewind;
+                           Client.Receive_Body (Client.Content.Text'Access);
                         end if;
                      end if;
                   end;

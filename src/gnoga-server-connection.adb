@@ -515,15 +515,19 @@ package body Gnoga.Server.Connection is
       end Adjust_Name;
 
    begin
-      if Verbose_Output then
-         Gnoga.Log ("Kind: " & Status.Kind'Img & ", File: " & Status.File & ", Query: " & Status.Query);
-      end if;
       case Status.Kind is
          when None =>
-            Gnoga.Log ("File kind none requested");
+            if Verbose_Output then
+               Gnoga.Log ("Requested: Kind: " & Status.Kind'Img & ", Query: " & Status.Query);
+               Gnoga.Log ("Reply: Not found");
+            end if;
 
             Reply_Text (Client, 404, "Not found", "Not found");
          when File =>
+            if Verbose_Output then
+               Gnoga.Log ("Requested: Kind: " & Status.Kind'Img & ", File: " & Status.File
+                          & ", Query: " & Status.Query);
+            end if;
             Client.Content.Connection_Path :=
               To_Unbounded_String (Status.File);
 
@@ -606,10 +610,26 @@ package body Gnoga.Server.Connection is
                      end;
                   end if;
                end if;
+               if Verbose_Output then
+                  Gnoga.Log ("Reply: " & F & " (" & M & ')');
+               end if;
+            exception
+               when Ada.Text_IO.Name_Error =>
+                  if Verbose_Output then
+                     Gnoga.Log ("Reply: Not found");
+                  end if;
+                  Reply_Text (Client,
+                              404,
+                              "Not found",
+                              "No file " & Quote (Status.File) & " found");
             end;
 
          when URI =>
-            Gnoga.Log ("File kind URI requested - " & Status.Path);
+            if Verbose_Output then
+               Gnoga.Log ("Requested: Kind: " & Status.Kind'Img & ", Path: " & Status.Path
+                          & ", Query: " & Status.Query);
+               Gnoga.Log ("Reply: Not found");
+            end if;
 
             Reply_Text (Client,
                         404,

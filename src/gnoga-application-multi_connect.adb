@@ -74,6 +74,8 @@ package body Gnoga.Application.Multi_Connect is
          Path : constant String := Right_Trim_Slashes (Server.Connection.Connection_Path (ID));
       begin
          if Path_Map.Contains (Path) then
+            Log ("Sending to path: " & Path);
+
             Path_Map.Element (Path) (Main_Window, Connection);
 
             Server.Connection.Flush_Buffer (ID);
@@ -81,16 +83,16 @@ package body Gnoga.Application.Multi_Connect is
             Connection.Hold;
             --  If connection was already released this will not block.
          elsif Path_Map.Contains ("default") then
-            Path_Map.Element ("default") (Main_Window, Connection);
-
             Log ("Sending to default route.");
+
+            Path_Map.Element ("default") (Main_Window, Connection);
 
             Server.Connection.Flush_Buffer (ID);
 
             Connection.Hold;
             --  If connection was already released this will not block.
          else
-            Log ("No route to path - " & Path);
+            Log ("No route to path: " & Path);
 
             Server.Connection.HTML_On_Close (ID, "No route to path.");
          end if;

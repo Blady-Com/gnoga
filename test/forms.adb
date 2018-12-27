@@ -181,7 +181,7 @@ procedure Forms is
       end if;
 
       --  If an another post was stored in On_Post
-      if Last_Parameters.Contains ("Some_Text") then
+      if Last_Parameters.Contains ("Some_Text2") then
          Console.Put_Line ("Some_Text2  => " &
                              Last_Parameters.Element ("Some_Text2"));
       else

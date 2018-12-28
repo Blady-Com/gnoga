@@ -46,6 +46,8 @@ package body Gnoga.Application is
 
    HTML_For_On_Close : Ada.Strings.Unbounded.Unbounded_String;
 
+   Favicon_URL : Ada.Strings.Unbounded.Unbounded_String;
+
    ----------------------
    -- Application_Name --
    ----------------------
@@ -93,5 +95,19 @@ package body Gnoga.Application is
         (Program_Name => Args (Args'First).all,
          Args         => Args (Args'First + 1 .. Args'Last));
    end Open_URL;
+
+   -------------------
+   -- Favicon --
+   -------------------
+
+   procedure Favicon (URL : String) is
+   begin
+      Favicon_URL := Ada.Strings.Unbounded.To_Unbounded_String (URL);
+   end Favicon;
+
+   function Favicon return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (Favicon_URL);
+   end Favicon;
 
 end Gnoga.Application;

@@ -65,4 +65,9 @@ package Gnoga.Application is
    --  if it identifies Gnoga is being compiled on Mac OS X or Windows
    --  it will switch to use the appropriate procedure.
 
+   procedure Favicon (URL : String);
+   function Favicon return String;
+   --  Set the URL of the displayed HTML page on the client browser.
+   --  By defaut the URL is set to "favicon.ico".
+
 end Gnoga.Application;

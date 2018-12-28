@@ -44,6 +44,7 @@ with Ada.Exceptions;
 with Ada.Containers.Ordered_Maps;
 
 with Gnoga.Server.Mime;
+with Gnoga.Application;
 
 with Strings_Edit.Quoted;
 with GNAT.Sockets.Server; use GNAT.Sockets.Server;
@@ -569,6 +570,14 @@ package body Gnoga.Server.Connection is
                           (Gnoga.Server.Template_Parser.Simple.Load_View
                              (Adjust_Name));
                      begin
+                        if Gnoga.Application.Favicon /= Null_Unbounded_String and
+                          Index (F, "<meta name=""generator"" content=""Gnoga"" />") > 0 and
+                          Index (F, "favicon.ico") > 0
+                        then
+                           String_Replace (Source      => F,
+                                           Pattern     => "favicon.ico",
+                                           Replacement => Gnoga.Application.Favicon);
+                        end if;
                         if Index (F, "/js/ajax.js") > 0 then
                            Client.Content.Connection_Type := Long_Polling;
                            Client.Content.Buffer.Add (To_String (F));

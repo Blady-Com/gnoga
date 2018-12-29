@@ -2248,6 +2248,25 @@ package body Gnoga.Server.Connection is
          return "";
    end Connection_Path;
 
+   -------------------------------
+   -- Connection_Client_Address --
+   -------------------------------
+
+   function Connection_Client_Address (ID : Gnoga.Types.Connection_ID)
+                                       return String
+   is
+      Socket : constant Socket_Type :=
+        Connection_Manager.Connection_Socket (ID);
+      Client_Address : constant GNAT.Sockets.Sock_Addr_Type := Get_Client_Address (Socket.all);
+   begin
+      return GNAT.Sockets.Image (Client_Address);
+   exception
+      when E : Connection_Error =>
+         Log ("Error Connection_Client_Address -" & ID'Img);
+         Log (Ada.Exceptions.Exception_Information (E));
+         return "";
+   end Connection_Client_Address;
+
    ------------------------
    -- Active_Connections --
    ------------------------

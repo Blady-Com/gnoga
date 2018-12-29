@@ -38,6 +38,8 @@
 with Ada.Containers.Indefinite_Ordered_Maps;
 with Ada.Exceptions;
 
+with Gnoga.Gui.Navigator;
+
 with Gnoga.Types;
 
 package body Gnoga.Application.Multi_Connect is
@@ -74,7 +76,10 @@ package body Gnoga.Application.Multi_Connect is
          Path : constant String := Right_Trim_Slashes (Server.Connection.Connection_Path (ID));
       begin
          if Path_Map.Contains (Path) then
-            Log ("Sending to path: " & Path);
+            Log ("Sending to path: " & Path &
+                   " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
+                   " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
+                   " from " & Gnoga.Server.Connection.Connection_Client_Address (ID));
 
             Path_Map.Element (Path) (Main_Window, Connection);
 
@@ -83,7 +88,10 @@ package body Gnoga.Application.Multi_Connect is
             Connection.Hold;
             --  If connection was already released this will not block.
          elsif Path_Map.Contains ("default") then
-            Log ("Sending to default route.");
+            Log ("Sending to default route" &
+                   " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
+                   " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
+                   " from " & Gnoga.Server.Connection.Connection_Client_Address (ID));
 
             Path_Map.Element ("default") (Main_Window, Connection);
 
@@ -92,7 +100,10 @@ package body Gnoga.Application.Multi_Connect is
             Connection.Hold;
             --  If connection was already released this will not block.
          else
-            Log ("No route to path: " & Path);
+            Log ("No route to path: " & Path &
+                   " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
+                   " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
+                   " from " & Gnoga.Server.Connection.Connection_Client_Address (ID));
 
             Server.Connection.HTML_On_Close (ID, "No route to path.");
          end if;

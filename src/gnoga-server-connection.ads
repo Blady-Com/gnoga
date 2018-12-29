@@ -125,6 +125,11 @@ package Gnoga.Server.Connection is
    --  specific path used for ID (e.g. not the WebSocket URL). Returns "" if
    --  ID is invalid.
 
+   function Connection_Client_Address (ID : Gnoga.Types.Connection_ID)
+                             return String;
+   --  Returns the client address and port with the form nnn.nnn.nnn.nnn:ppppp
+   --  Returns "" if ID is invalid.
+
    function Active_Connections return Natural;
    --  Returns the number of active connections
 

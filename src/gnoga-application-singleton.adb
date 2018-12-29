@@ -39,6 +39,7 @@ with Ada.Task_Identification;
 
 with Gnoga.Server.Connection;
 with Gnoga.Types;
+with Gnoga.Gui.Navigator;
 
 package body Gnoga.Application.Singleton is
    Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
@@ -129,6 +130,12 @@ package body Gnoga.Application.Singleton is
       Gnoga.Server.Connection.HTML_On_Close (Connection_ID, HTML_On_Close);
 
       Main_Window.Document.Title (Title);
+
+      Log ("Sending to single route" &
+             " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
+             " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
+             " from " & Gnoga.Server.Connection.Connection_Client_Address (Connection_ID));
+
    end Initialize;
 
    ------------------

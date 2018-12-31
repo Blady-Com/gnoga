@@ -872,22 +872,32 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Spent_Time          :    out Duration)
    is
       --  Distance: Sqrt ((Row - Sprite.Row)**2 + (Column - Sprite.Column)**2)
-      --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
-      --  Discriminant: V**2 - 4 * (A/2) * (-D)
-      --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
       Distance : constant Float :=
         Sqrt (Float (Row - Sprite.Row)**2 + Float (Column - Sprite.Column)**2);
-      Discriminant : constant Float :=
-        Radial_Velocity**2 + 2.0 * Distance * Radial_Acceleration;
-      Root1 : constant Float :=
-        (Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
-      Root2 : constant Float :=
-        (-Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
       TFin : Natural;
       Norm_Row : constant Float := (if Distance > 0.0 then Float (Row - Sprite.Row) / Distance else 0.0);
       Norm_Col : constant Float := (if Distance > 0.0 then Float (Column - Sprite.Column) / Distance else 0.0);
    begin
-      Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+      Spent_Time := 0.0;
+      if abs Radial_Acceleration > 0.0 then
+         declare
+            --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
+            --  Discriminant: V**2 - 4 * (A/2) * (-D)
+            --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
+            Discriminant : constant Float :=
+              Radial_Velocity**2 + 2.0 * Distance * Radial_Acceleration;
+            Root1 : constant Float :=
+              (Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
+            Root2 : constant Float :=
+              (-Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
+         begin
+            Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+         end;
+      elsif abs Radial_Velocity > 0.0 then
+         Spent_Time := Duration (Distance / Radial_Velocity);
+      elsif Distance > 0.0 then
+         raise Constraint_Error with "Move to another point but no velocity nor acceleration";
+      end if;
       TFin       := Natural (Frame_Rate * Spent_Time);
       if TFin > 0 then
          Sprite.Motion (Radial_Velocity * Norm_Row, Radial_Velocity * Norm_Col);
@@ -925,18 +935,28 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Acceleration : in     Acceleration_Type;
       Spent_Time   :    out Duration)
    is
-      --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
-      --  Discriminant: V**2 - 4 * (A/2) * (-D)
-      --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
-      Discriminant : constant Float :=
-        Velocity**2 + 2.0 * Float (Distance) * Acceleration;
-      Root1 : constant Float :=
-        (Sqrt (Discriminant) - Velocity) / Acceleration;
-      Root2 : constant Float :=
-        (-Sqrt (Discriminant) - Velocity) / Acceleration;
       TFin : Natural;
    begin
-      Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+      Spent_Time := 0.0;
+      if abs Acceleration > 0.0 then
+         declare
+            --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
+            --  Discriminant: V**2 - 4 * (A/2) * (-D)
+            --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
+            Discriminant : constant Float :=
+              Velocity**2 + 2.0 * Float (Distance) * Acceleration;
+            Root1 : constant Float :=
+              (Sqrt (Discriminant) - Velocity) / Acceleration;
+            Root2 : constant Float :=
+              (-Sqrt (Discriminant) - Velocity) / Acceleration;
+         begin
+            Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+         end;
+      elsif abs Velocity > 0.0 then
+         Spent_Time := Duration (Float (Distance) / Velocity);
+      elsif abs Distance > 0 then
+         raise Constraint_Error with "Move to another point but no velocity nor acceleration";
+      end if;
       TFin       := Natural (Frame_Rate * Spent_Time);
       if TFin > 0 then
          Sprite.Motion (Velocity, Sprite.Rotation);
@@ -976,18 +996,28 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Acceleration : in     Acceleration_Type;
       Spent_Time   :    out Duration)
    is
-      --  Quadratic time equation: A/2 * t**2 + V * t - RA = 0
-      --  Discriminant: V**2 - 4 * (A/2) * (-RA)
-      --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-RA))) / 2 (A/2)
-      Discriminant : constant Float :=
-        Velocity**2 + 2.0 * Float (Rel_Angle) * Acceleration;
-      Root1 : constant Float :=
-        (Sqrt (Discriminant) - Velocity) / Acceleration;
-      Root2 : constant Float :=
-        (-Sqrt (Discriminant) - Velocity) / Acceleration;
       TFin : Natural;
    begin
-      Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+      Spent_Time := 0.0;
+      if abs Acceleration > 0.0 then
+         declare
+            --  Quadratic time equation: A/2 * t**2 + V * t - RA = 0
+            --  Discriminant: V**2 - 4 * (A/2) * (-RA)
+            --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-RA))) / 2 (A/2)
+            Discriminant : constant Float :=
+              Velocity**2 + 2.0 * Float (Rel_Angle) * Acceleration;
+            Root1 : constant Float :=
+              (Sqrt (Discriminant) - Velocity) / Acceleration;
+            Root2 : constant Float :=
+              (-Sqrt (Discriminant) - Velocity) / Acceleration;
+         begin
+            Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
+         end;
+      elsif abs Velocity > 0.0 then
+         Spent_Time := Duration (Float (Rel_Angle) / Velocity);
+      elsif abs Rel_Angle > 0 then
+         raise Constraint_Error with "Rotate to another point but no velocity nor acceleration";
+      end if;
       TFin       := Natural (Frame_Rate * Spent_Time);
       if TFin > 0 then
          Sprite.Rotation_Velocity (Velocity);

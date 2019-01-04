@@ -56,7 +56,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Gnoga.Server.Connection.Execute_Script
         (Graphics.Connection_ID,
          "gnoga['" & Graphics_ID & "'] = new PIXI.Graphics();");
-      Parent.Add_Child (Graphics);
+      Graphics.Parent (Parent);
    end Create;
 
    -----------

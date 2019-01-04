@@ -71,7 +71,7 @@ package Gnoga.Gui.Plugin.Pixi is
 
    procedure Create
      (Renderer : in out Renderer_Type;
-      Canvas   : in     Gnoga.Gui.Element.Canvas.Canvas_Type'Class);
+      Canvas   : in out Gnoga.Gui.Element.Canvas.Canvas_Type'Class);
    --  Create renderer associated to the canvas
 
    -------------------------------------------------------------------------
@@ -470,7 +470,21 @@ private
    --  Standard value for most browsers (FPS)
 
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with null record;
-   type Container_Type is new Gnoga.Gui.Base.Base_Type with null record;
+   overriding
+   procedure On_Child_Removed (Renderer : in out Renderer_Type;
+                               Child    : in out Gnoga.Gui.Base.Base_Type'Class);
+   type Container_Type is new Gnoga.Gui.Base.Base_Type with
+      record
+         Child_Array : Gnoga.Gui.Base.Base_Type_Array;
+      end record;
+   overriding
+   procedure On_Child_Added (Container : in out Container_Type;
+                             Child     : in out Gnoga.Gui.Base.Base_Type'Class);
+   overriding
+   procedure On_Child_Removed (Container : in out Container_Type;
+                               Child     : in out Gnoga.Gui.Base.Base_Type'Class);
+   overriding
+   procedure Finalize (Container : in out Container_Type);
    type Texture_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Style_Type is new Gnoga.Gui.Base.Base_Type with null record;
 end Gnoga.Gui.Plugin.Pixi;

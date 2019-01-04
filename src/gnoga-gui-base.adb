@@ -300,6 +300,7 @@ package body Gnoga.Gui.Base is
                end;
             end if;
             Object.Connection_ID := Gnoga.Types.No_Connection;
+            --  Cannot call Object.Parent (null); because the parent may be finalized
             Object.Parent_Object := null;
          end if;
       end if;
@@ -314,12 +315,12 @@ package body Gnoga.Gui.Base is
    ----------
 
    procedure Free (Object : in out Base_Type) is
-      P : Pointer_To_Base_Class := Object'Unchecked_Access;
+      Dummy_P : Pointer_To_Base_Class := Object'Unchecked_Access;
       procedure Free_Object is
         new Ada.Unchecked_Deallocation (Base_Type'Class,
                                         Pointer_To_Base_Class);
    begin
-      Free_Object (P);
+      Free_Object (Dummy_P);
    end Free;
 
    -------------------------------------------------------------------------
@@ -512,7 +513,15 @@ package body Gnoga.Gui.Base is
                      Value  : in Pointer_To_Base_Class)
    is
    begin
-      Object.Parent (Value.all);
+      if Object.Parent_Object /= null then
+         Object.Parent_Object.On_Child_Removed (Object);
+      end if;
+
+      Object.Parent_Object := Value;
+
+      if Value /= null then
+         Value.On_Child_Added (Object);
+      end if;
    end Parent;
 
    ------------

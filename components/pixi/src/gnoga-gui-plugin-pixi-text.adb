@@ -62,7 +62,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       Text.Acceleration (0.0, 0.0);
       Text.Rotation_Velocity (0.0);
       Text.Rotation_Acceleration (0.0);
-      Parent.Add_Child (Text);
+      Text.Parent (Parent);
    end Create;
 
    ------------

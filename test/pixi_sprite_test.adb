@@ -289,10 +289,6 @@ procedure Pixi_Sprite_Test is
       end loop;
 
       delay 10.0;
-      Gnoga.Gui.Plugin.Pixi.Sprite.Delete_All (C);
-      R.Auto_Rendering (C, False);
-
-      Connection.Hold;
    end On_Connect;
 
 begin

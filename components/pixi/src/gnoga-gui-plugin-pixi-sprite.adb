@@ -90,7 +90,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Loop_Times (0, 0);
       Sprite.Frame_Limit (0, 0, 0, 0, Null_Effect);
       Sprite.Angle_Limit (0, 0, Null_Effect);
-      Parent.Add_Child (Sprite);
+      Sprite.Parent (Parent);
    end Create;
 
    ------------
@@ -130,7 +130,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Rotation_Acceleration (0.0);
       Sprite.Frame_Limit (0, 0, 0, 0, Null_Effect);
       Sprite.Angle_Limit (0, 0, Null_Effect);
-      Parent.Add_Child (Sprite);
+      Sprite.Parent (Parent);
    end Create;
 
    ------------
@@ -1143,7 +1143,6 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Parent : in out Container_Type'Class)
    is
    begin
-      Parent.Remove_Child (Sprite);
       Sprite.Finalize;
    end Delete;
 

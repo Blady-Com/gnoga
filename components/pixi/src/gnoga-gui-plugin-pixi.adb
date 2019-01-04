@@ -59,7 +59,7 @@ package body Gnoga.Gui.Plugin.Pixi is
 
    procedure Create
      (Renderer : in out Renderer_Type;
-      Canvas   : in     Gnoga.Gui.Element.Canvas.Canvas_Type'Class)
+      Canvas   : in out Gnoga.Gui.Element.Canvas.Canvas_Type'Class)
    is
       Renderer_ID : constant String := Gnoga.Server.Connection.New_GID;
    begin
@@ -80,7 +80,23 @@ package body Gnoga.Gui.Plugin.Pixi is
          Canvas.ID &
          "')});");
       Renderer.Property ("gnoga_autoRendering", False);
+      Renderer.Parent (Canvas);
    end Create;
+
+   ----------------------
+   -- On_Child_Removed --
+   ----------------------
+
+   overriding
+   procedure On_Child_Removed (Renderer : in out Renderer_Type;
+                               Child    : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+   begin
+      Renderer.Auto_Rendering (Container_Type (Child), False);
+      delay 0.1;
+      Renderer.Render (Container_Type (Child));
+      Gnoga.Gui.Base.Base_Type (Renderer).On_Child_Removed (Child);
+   end On_Child_Removed;
 
    ------------
    -- Render --
@@ -264,6 +280,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Gnoga.Server.Connection.Execute_Script
         (Container.Connection_ID,
          "gnoga['" & Container_ID & "'] = new PIXI.Container();");
+      Container.Parent (Renderer);
    end Create;
 
    ------------
@@ -283,7 +300,52 @@ package body Gnoga.Gui.Plugin.Pixi is
       Gnoga.Server.Connection.Execute_Script
         (Container.Connection_ID,
          "gnoga['" & Container_ID & "'] = new PIXI.Container();");
+      Container.Parent (Parent);
    end Create;
+
+   --------------------
+   -- On_Child_Added --
+   --------------------
+
+   overriding
+   procedure On_Child_Added (Container  : in out Container_Type;
+                             Child      : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+   begin
+      Container.Add_Child (Container_Type'Class (Child));
+      Container.Child_Array.Append (Child'Unchecked_Access);
+      Gnoga.Gui.Base.Base_Type (Container).On_Child_Added (Child);
+   end On_Child_Added;
+
+   ----------------------
+   -- On_Child_Removed --
+   ----------------------
+
+   overriding
+   procedure On_Child_Removed (Container : in out Container_Type;
+                               Child     : in out Gnoga.Gui.Base.Base_Type'Class)
+   is
+   begin
+      Container.Remove_Child (Container_Type'Class (Child));
+      if Container.Child_Array.Contains (Child'Unchecked_Access) then
+         Container.Child_Array.Delete (Container.Child_Array.Find_Index (Child'Unchecked_Access));
+      end if;
+      Gnoga.Gui.Base.Base_Type (Container).On_Child_Removed (Child);
+   end On_Child_Removed;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   overriding
+   procedure Finalize (Container : in out Container_Type) is
+   begin
+      while not Container.Child_Array.Is_Empty loop
+         Container.Child_Array.First_Element.Finalize;
+      end loop;
+      Container.Parent (null);
+      Gnoga.Gui.Base.Base_Type (Container).Finalize;
+   end Finalize;
 
    ---------------
    -- Add_Child --

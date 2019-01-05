@@ -66,19 +66,138 @@ package body Gnoga.Gui.Plugin.Pixi is
       Renderer.ID (Renderer_ID, Gnoga.Types.Gnoga_ID);
       Renderer.Connection_ID (Canvas.Connection_ID);
       Renderer.Attach_Using_Parent
-      (Parent => Canvas, ID => Renderer_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+        (Parent => Canvas, ID => Renderer_ID, ID_Type => Gnoga.Types.Gnoga_ID);
 
       Gnoga.Server.Connection.Execute_Script
         (Renderer.Connection_ID,
          "gnoga['" &
-         Renderer_ID &
-         "'] = new PIXI.CanvasRenderer(" &
-         Canvas.Width'Img &
-         ", " &
-         Canvas.Height'Img &
-         ", {view : document.getElementById('" &
-         Canvas.ID &
-         "')});");
+           Renderer_ID &
+           "'] = new PIXI.CanvasRenderer(" &
+           Canvas.Width'Img &
+           ", " &
+           Canvas.Height'Img &
+           ", {view : document.getElementById('" &
+           Canvas.ID &
+           "')});");
+      Gnoga.Server.Connection.Execute_Script
+        (Renderer.Connection_ID,
+         "gnoga['" &
+           Renderer.ID &
+           "'].gnoga_update=function game_update(object) {" &
+           " for (var gnoga_sprite of object.children) " &
+           "   if (gnoga_sprite instanceof PIXI.Sprite) {" &
+
+           " gnoga_sprite.gnoga_vx += gnoga_sprite.gnoga_ax; gnoga_sprite.gnoga_vy += gnoga_sprite.gnoga_ay;" &
+           " gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
+           " gnoga_sprite.gnoga_vr += gnoga_sprite.gnoga_ar;" &
+           " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;" &
+           " gnoga_sprite.rotation %= 2 * Math.PI;" &
+
+           " if (gnoga_sprite.gnoga_frame_effect == 1){" &
+           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max)" &
+           "     {gnoga_sprite.gnoga_vx = -gnoga_sprite.gnoga_vx};" &
+           "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
+           "     {gnoga_sprite.gnoga_vy = -gnoga_sprite.gnoga_vy};};" &
+
+           " if (gnoga_sprite.gnoga_frame_effect == 2){" &
+           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min && gnoga_sprite.gnoga_vy == 0)" &
+           "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_max};" &
+           "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max && gnoga_sprite.gnoga_vy == 0)" &
+           "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_min};" &
+
+           "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min && gnoga_sprite.gnoga_vx == 0)" &
+           "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_max};" &
+           "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max && gnoga_sprite.gnoga_vx == 0)" &
+           "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
+
+           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min){" &
+           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+           "     let y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
+           "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
+           "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
+           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
+           "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
+           "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
+           "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
+           "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
+
+           "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max){" &
+           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+           "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b;" &
+           "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
+           "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
+           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
+           "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
+           "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
+           "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
+           "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
+
+           "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min){" &
+           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+           "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
+           "     let x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
+           "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
+           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
+           "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
+           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
+           "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
+           "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
+
+           "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max){" &
+           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+           "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
+           "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a;" &
+           "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
+           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
+           "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
+           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
+           "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
+           "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};};};" &
+
+           " if (gnoga_sprite.gnoga_frame_effect == 3){" &
+           "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_min && gnoga_sprite.x < gnoga_sprite.gnoga_col_max &&" &
+           "       gnoga_sprite.y > gnoga_sprite.gnoga_row_min && gnoga_sprite.y < gnoga_sprite.gnoga_row_max)" &
+           "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('inside_frame')};};" &
+
+           " if (gnoga_sprite.gnoga_frame_effect == 4){" &
+           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max  ||" &
+           "       gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
+           "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('outside_frame')};};" &
+
+           " if (gnoga_sprite.gnoga_angle_effect == 1){" &
+           "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
+           "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+           "     gnoga_sprite.gnoga_vr = -gnoga_sprite.gnoga_vr;};" &
+
+           " if (gnoga_sprite.gnoga_angle_effect == 2){" &
+           "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min)" &
+           "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_max;" &
+           "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+           "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_min;};" &
+
+           " if (gnoga_sprite.gnoga_angle_effect == 3){" &
+           "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_min &&" &
+           "       gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_max)" &
+           "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('inside_angle');}};" &
+
+           " if (gnoga_sprite.gnoga_angle_effect == 4){" &
+           "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
+           "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+           "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('outside_angle');}};" &
+
+           " if (gnoga_sprite.gnoga_tfin > 0)" &
+           "   {gnoga_sprite.gnoga_tcur += 1;" &
+           "   if (gnoga_sprite.gnoga_tcur > gnoga_sprite.gnoga_tfin)" &
+           "     {gnoga_sprite.gnoga_tcur = 0; gnoga_sprite.gnoga_tfin = 0;" &
+           "      gnoga_sprite.gnoga_vx = 0; gnoga_sprite.gnoga_vy = 0;" &
+           "      gnoga_sprite.gnoga_ax = 0; gnoga_sprite.gnoga_ay = 0;" &
+           "      gnoga_sprite.gnoga_vr = 0; gnoga_sprite.gnoga_ar = 0;}}" &
+
+           " gnoga['" & Renderer.ID &
+           "'].gnoga_update(gnoga_sprite);" &
+
+           "};" &
+           "};");
       Renderer.Property ("gnoga_autoRendering", False);
       Renderer.Parent (Canvas);
    end Create;
@@ -125,128 +244,22 @@ package body Gnoga.Gui.Plugin.Pixi is
          Gnoga.Server.Connection.Execute_Script
            (Renderer.Connection_ID,
             "gnoga['" &
-            Renderer.ID &
-            "'].gnoga_animate=function gnoga_gameLoop() {" &
-            " if (gnoga['" &
-            Renderer.ID &
-            "'].gnoga_autoRendering) {requestAnimationFrame(gnoga_gameLoop);}" &
-            " for (var gnoga_sprite of gnoga['" &
-            Container.ID &
-            "'].children) if (gnoga_sprite instanceof PIXI.Sprite) {" &
+              Renderer.ID &
+              "'].gnoga_animate=function gnoga_gameLoop() {" &
+              " if (gnoga['" &
+              Renderer.ID &
+              "'].gnoga_autoRendering) {requestAnimationFrame(gnoga_gameLoop);}" &
 
-            " gnoga_sprite.gnoga_vx += gnoga_sprite.gnoga_ax; gnoga_sprite.gnoga_vy += gnoga_sprite.gnoga_ay;" &
-            " gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
-            " gnoga_sprite.gnoga_vr += gnoga_sprite.gnoga_ar;" &
-            " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;" &
-            " gnoga_sprite.rotation %= 2 * Math.PI;" &
+              " gnoga['" & Renderer.ID &
+              "'].gnoga_update(gnoga['" &
+              Container.ID &
+              "']);" &
 
-            " if (gnoga_sprite.gnoga_frame_effect == 1){" &
-            "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max)" &
-            "     {gnoga_sprite.gnoga_vx = -gnoga_sprite.gnoga_vx};" &
-            "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
-            "     {gnoga_sprite.gnoga_vy = -gnoga_sprite.gnoga_vy};};" &
-
-            " if (gnoga_sprite.gnoga_frame_effect == 2){" &
-            "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min && gnoga_sprite.gnoga_vy == 0)" &
-            "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_max};" &
-            "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max && gnoga_sprite.gnoga_vy == 0)" &
-            "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_min};" &
-
-            "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min && gnoga_sprite.gnoga_vx == 0)" &
-            "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_max};" &
-            "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max && gnoga_sprite.gnoga_vx == 0)" &
-            "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
-
-            "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min){" &
-            "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-            "     let y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
-            "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
-            "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
-            "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
-            "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
-            "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
-            "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
-            "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
-
-            "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max){" &
-            "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-            "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b;" &
-            "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
-            "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
-            "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
-            "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
-            "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
-            "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
-            "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
-
-            "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min){" &
-            "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-            "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
-            "     let x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
-            "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
-            "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
-            "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
-            "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
-            "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
-            "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
-
-            "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max){" &
-            "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-            "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
-            "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a;" &
-            "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
-            "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
-            "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
-            "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
-            "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
-            "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};};};" &
-
-            " if (gnoga_sprite.gnoga_frame_effect == 3){" &
-            "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_min && gnoga_sprite.x < gnoga_sprite.gnoga_col_max &&" &
-            "       gnoga_sprite.y > gnoga_sprite.gnoga_row_min && gnoga_sprite.y < gnoga_sprite.gnoga_row_max)" &
-            "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('inside_frame')};};" &
-
-            " if (gnoga_sprite.gnoga_frame_effect == 4){" &
-            "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max  ||" &
-            "       gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
-            "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('outside_frame')};};" &
-
-            " if (gnoga_sprite.gnoga_angle_effect == 1){" &
-            "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
-            "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
-            "     gnoga_sprite.gnoga_vr = -gnoga_sprite.gnoga_vr;};" &
-
-            " if (gnoga_sprite.gnoga_angle_effect == 2){" &
-            "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min)" &
-            "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_max;" &
-            "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
-            "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_min;};" &
-
-            " if (gnoga_sprite.gnoga_angle_effect == 3){" &
-            "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_min &&" &
-            "       gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_max)" &
-            "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('inside_angle');}};" &
-
-            " if (gnoga_sprite.gnoga_angle_effect == 4){" &
-            "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
-            "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
-            "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('outside_angle');}};" &
-
-            " if (gnoga_sprite.gnoga_tfin > 0)" &
-            "   {gnoga_sprite.gnoga_tcur += 1;" &
-            "   if (gnoga_sprite.gnoga_tcur > gnoga_sprite.gnoga_tfin)" &
-            "     {gnoga_sprite.gnoga_tcur = 0; gnoga_sprite.gnoga_tfin = 0;" &
-            "      gnoga_sprite.gnoga_vx = 0; gnoga_sprite.gnoga_vy = 0;" &
-            "      gnoga_sprite.gnoga_ax = 0; gnoga_sprite.gnoga_ay = 0;" &
-            "      gnoga_sprite.gnoga_vr = 0; gnoga_sprite.gnoga_ar = 0;}}" &
-
-            "};" &
-
-            "gnoga['" &
-            Renderer.ID &
-            "'].render(gnoga['" &
-            Container.ID &
-            "']);};");
+              "gnoga['" &
+              Renderer.ID &
+              "'].render(gnoga['" &
+              Container.ID &
+              "']);};");
          Renderer.Execute ("gnoga_animate();");
       end if;
    end Auto_Rendering;

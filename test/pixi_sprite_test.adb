@@ -85,10 +85,11 @@ procedure Pixi_Sprite_Test is
       Connection  :        access Gnoga.Application.Multi_Connect
         .Connection_Holder_Type)
    is
+      pragma Unreferenced (Connection);
       App        : constant App_Access := new App_Data;
       R          : Plugin.Pixi.Renderer_Type;
       C          : Plugin.Pixi.Container_Type;
-      G, B       : Plugin.Pixi.Graphics.Graphics_Type;
+      G, B, L    : Plugin.Pixi.Graphics.Graphics_Type;
       T          : Plugin.Pixi.Texture_Type;
       S1, S2     : Plugin.Pixi.Style_Type;
       M0, M1, M2 : Plugin.Pixi.Text.Text_Type;
@@ -288,7 +289,33 @@ procedure Pixi_Sprite_Test is
             Gnoga.Gui.Plugin.Pixi.Sprite.Distance (App.SP1, App.SP2)'Img);
       end loop;
 
-      delay 10.0;
+      C.Finalize;
+
+      C.Create (R);
+      M1.Create (C, "Gnoga Native System", 10, 10);
+      M1.Set_Style (S2);
+      App.SP1.Create (C, "", 200, 300);
+      G.Create (App.SP1);
+      G.Begin_Fill (Gnoga.Types.Colors.Yellow);
+      G.Draw_Circle (0, 0, 50);
+      G.End_Fill;
+      App.SP2.Create (App.SP1, "", 0, 150);
+      B.Create (App.SP2);
+      B.Begin_Fill (Gnoga.Types.Colors.Blue);
+      B.Draw_Circle (0, 0, 10);
+      B.End_Fill;
+      App.SP3.Create (App.SP2, "", 0, 25);
+      L.Create (App.SP3);
+      L.Begin_Fill (Gnoga.Types.Colors.Brown);
+      L.Draw_Circle (0, 0, 2);
+      L.End_Fill;
+
+      App.SP1.Rotation_Velocity (5.0);
+      App.SP2.Rotation_Velocity (-20.0);
+
+      R.Auto_Rendering (C, True);
+
+      delay 60.0;
    end On_Connect;
 
 begin

@@ -244,7 +244,7 @@ procedure Pixi_Sprite_Test is
       delay 3.0;
       Gnoga.Log ("Distance: " & App.SP1.Distance (100, 100)'Img);
       Gnoga.Log ("Rotation: " & App.SP1.Rotation'Img);
-      App.SP1.Delete (C);
+      App.SP1.Finalize;
 
       App.SP1.Create (C, "img/E11a.png", 250, 10);
       App.SP2.Create (C, "img/E17a.png", 250, 100);
@@ -316,6 +316,10 @@ procedure Pixi_Sprite_Test is
       R.Auto_Rendering (C, True);
 
       delay 60.0;
+
+      App.SP1.Finalize;
+
+      delay 10.0;
    end On_Connect;
 
 begin

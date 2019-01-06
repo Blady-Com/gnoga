@@ -375,7 +375,9 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Delete
      (Sprite : in out Sprite_Type;
       Parent : in out Container_Type'Class);
-   procedure Delete_All (Parent : in out Container_Type'Class);
+   pragma Obsolescent (Delete, "use Finalize instead");
+   procedure Delete_All (Parent : in out Container_Type'Class) is null;
+   pragma Obsolescent (Delete_All, "use Finalize on parent instead");
    --  Deletes sprites
 
    overriding procedure On_Message

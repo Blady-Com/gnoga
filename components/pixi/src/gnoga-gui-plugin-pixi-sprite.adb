@@ -1142,26 +1142,9 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
      (Sprite : in out Sprite_Type;
       Parent : in out Container_Type'Class)
    is
+      pragma Unreferenced (Parent);
    begin
       Sprite.Finalize;
    end Delete;
-
-   ----------------
-   -- Delete_All --
-   ----------------
-
-   procedure Delete_All (Parent : in out Container_Type'Class) is
-   begin
-      Gnoga.Server.Connection.Execute_Script
-        (Parent.Connection_ID,
-         "var gnoga_list = [];" &
-         " for (var gnoga_sprite of gnoga['" &
-         Parent.ID &
-         "'].children) if (gnoga_sprite instanceof PIXI.Sprite) gnoga_list.push(gnoga_sprite);" &
-         " for (var gnoga_sprite of gnoga_list)" &
-         " gnoga['" &
-         Parent.ID &
-         "'].removeChild(gnoga_sprite);");
-   end Delete_All;
 
 end Gnoga.Gui.Plugin.Pixi.Sprite;

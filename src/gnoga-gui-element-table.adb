@@ -152,7 +152,7 @@ package body Gnoga.Gui.Element.Table is
       ID      : in     String  := "")
    is
    begin
-      TBody.Create_From_HTML (Table, "<thead />", ID);
+      TBody.Create_From_HTML (Table, "<tbody />", ID);
    end Create;
 
    ------------

@@ -1,0 +1,15 @@
+with "settings.gpr";
+
+aggregate project Test_Agg is
+
+   for Project_Path use ("deps/simple_components");
+   for Project_Files use ("test/test.gpr",
+                            "test/tickets/001/test.gpr",
+                            "test/tickets/002/test.gpr",
+                            "test/tickets/005/test.gpr",
+                            "test/tickets/007/test.gpr",
+                            "test/tickets/011/test.gpr",
+                            "test/tickets/019/test.gpr");
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
+
+end Test_Agg;

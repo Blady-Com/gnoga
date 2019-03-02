@@ -7,8 +7,6 @@ Source_Dirs := (
 "../components/jstree/src",
 "../components/pixi/src",
 "../components/bootstrap/src",
-"../components/message_boxes/src",
-""
-);
+"../components/message_boxes/src");
 
 end Plugins;

@@ -1,21 +1,19 @@
-with "../../src/gnoga.gpr";
-with "../../settings.gpr";
+with "settings.gpr";
+with "gnoga_agg.gpr";
 
 project AdaOthello is
-   for Languages use ("Ada");
-   for Source_Dirs use (".");
-   for Object_Dir use "../../obj";
-   for Exec_Dir use "../../bin";
-   for Main use ("othello_game.adb");
 
-   package Binder is
-      for Default_Switches ("ada") use ("-E");
-   end Binder;
+   for Object_Dir use Settings.Obj_Dir;
+   for Exec_Dir use Settings.Exe_Dir;
+   for Main use ("othello_game.adb");
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
    package Builder is
       for Executable ("othello_game.adb") use "othello";
    end Builder;
 
+   package Compiler renames Settings.Compiler;
+   package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
 
 end AdaOthello;

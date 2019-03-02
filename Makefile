@@ -75,7 +75,6 @@ ifeq ($(BUILD_OS),Windows)
 	RMS=del /S /Q
 	PATHSEP=\\
 	BUILD_SQLITE3=sqlite3
-	GPR_PROJECT_PATH_SEP=;
 else
 	COPY=cp -p
 	MOVE=mv
@@ -84,12 +83,7 @@ else
 	RMS=rm -rf
 	PATHSEP=/
 	BUILD_SQLITE3=
-	GPR_PROJECT_PATH_SEP=:
 endif
-
-export GPR_PROJECT_PATH=$(CWD)/build/share/gpr$(GPR_PROJECT_PATH_SEP)$(CWD)/build/lib/gnat
-# If Simple Components, Zanyblue or PragmArc libs are already existing in your environnement
-# Put their location in GPR_PROJECT_PATH and comment the previous line
 
 help :
 	@echo "-----------------------------------------------------------------------------"
@@ -124,17 +118,16 @@ help :
 	@echo "--                                                                         --"
 	@echo "-----------------------------------------------------------------------------"
 
-all: gnoga-config deps $(BUILD_SQLITE3) basic_components gnoga gnoga_tools demo tutorials
+all: deps $(BUILD_SQLITE3) basic_components gnoga gnoga_tools demo tutorials
 
 basic_components:
 	$(MAKE) -C components
 
-# Mandatory dependances
-deps : simple_components
+# Mandatory dependances for Gnoga and demos
+deps : simple_components zanyblue pragmarc
 
 simple_components:
 	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
-	$(INSTALLER) --prefix="$(CWD)/build" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET}
 
 sqlite3:
 	- $(MKDIR) lib
@@ -145,11 +138,9 @@ sqlite3:
 
 zanyblue:
 	- cd deps/zanyblue/src && "$(MAKE)" BUILD=$(subst Release,Production,${BUILD_MODE}) APPDIRS="zbmcompile zbinfo"
-	- cd deps/zanyblue/src && "$(MAKE)" BUILD=$(subst Release,Production,${BUILD_MODE}) INSTALL_DIR="$(CWD)/build" APPDIRS="zbmcompile zbinfo" install
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
-	$(INSTALLER) --prefix="$(CWD)/build" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
@@ -184,107 +175,97 @@ bin/multimarkdown:
 	$(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 
 gnoga:
-	$(BUILDER) -P src/gnoga.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P gnoga_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_secure:
-	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_BUILD=${BUILD_MODE -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_tools:
 	$(BUILDER) -P tools/tools.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 # Install Gnoga and deps
-install: deps $(BUILD_SQLITE3) gnoga gnoga_tools zanyblue pragmarc
+install: install_deps install_gnoga
+
+# Install deps
+install_deps: deps $(BUILD_SQLITE3) zanyblue pragmarc
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
 	- $(MAKE) -C deps/zanyblue/src BUILD=$(subst Release,Production,${BUILD_MODE}) INSTALL_DIR="$(PREFIX)" install
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
-	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 # Install Gnoga without deps
-install_gnoga:
-	cd src && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+install_gnoga: gnoga gnoga_tools
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 .IGNORE: uninstall
 uninstall:
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components --uninstall lib_components.gpr
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc --uninstall pragmarc.gpr
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga.gpr
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga_agg.gpr
 	$(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" uninstall
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker logo
 
 snake:
-	cd demo/snake && $(BUILDER) -Psnake.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 mine_detector:
-	cd demo/mine_detector && $(BUILDER) -Pmine_detector.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 chattanooga:
 	$(COPY) demo$(PATHSEP)chattanooga$(PATHSEP)glass.ogg html
-	cd demo/chattanooga && $(BUILDER) -Pchattanooga.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adaedit:
-	- cd demo/adaedit && $(BUILDER) -Padaedit.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adablog:
 	$(COPY) demo$(PATHSEP)adablog$(PATHSEP)adablog.css css
-	- cd demo/adablog && $(BUILDER) -Padablog.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 connect_four: zanyblue
 	- cd demo/connect_four && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings connectfour_messages connectfour
-	- cd demo/connect_four && $(BUILDER) -Pconnect_four.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 linxtris:
-	cd demo/linxtris && $(BUILDER) -Plinxtris.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
 
 password_gen: pragmarc
-	cd demo/password_gen && $(BUILDER) -Ppassword_gen.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 random_int:
-	cd demo/random_int && $(BUILDER) -Prandom_int.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adaothello:
-	cd demo/adaothello && $(BUILDER) -Padaothello.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr othello_game -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tic_tac_toe:
-	cd demo/tic_tac_toe && $(BUILDER) -Ptic_tac_toe.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 leaves:
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.png img
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.jpg img
-	cd demo/leaves && $(BUILDER) -Pleaves.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@_main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 db_maker:
-	cd demo/db_maker && $(BUILDER) -Pdb_maker.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr movies -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 logo: zanyblue
 	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
 	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
-	- cd demo$(PATHSEP)logo && $(BUILDER) -Plogo.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
-	cd test && $(BUILDER) -k -Ptest.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	-$(BUILDER) -k -P test/test.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tests_ssl: gnoga_secure
-	cd test_ssl && $(BUILDER) -Ptest_ssl.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	-$(BUILDER) -P test_ssl/test_ssl.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tutorials:
-	cd tutorial/tutorial-01 && $(BUILDER) -Ptutorial_01.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-02 && $(BUILDER) -Ptutorial_02.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-03 && $(BUILDER) -Ptutorial_03.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-04 && $(BUILDER) -Ptutorial_04.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-05 && $(BUILDER) -Ptutorial_05.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-06 && $(BUILDER) -Ptutorial_06.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-07 && $(BUILDER) -Ptutorial_07.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-08 && $(BUILDER) -Ptutorial_08.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-09 && $(BUILDER) -Ptutorial_09.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-10 && $(BUILDER) -Ptutorial_10.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
-	- cd tutorial/tutorial-11 && $(BUILDER) -Ptutorial_11.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P tutorial_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 .IGNORE: clean_all
 clean_all: clean clean_deps
@@ -302,7 +283,6 @@ clean_deps:
 	$(CLEANER) -P deps/simple_components/lib_components.gpr
 	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
 	cd deps/zanyblue && "$(MAKE)" -C src clean
-	$(RMS) build
 	$(RMS) deps$(PATHSEP)MultiMarkdown-4
 	$(RMS) deps$(PATHSEP)electron-quick-start
 	$(RM) bin$(PATHSEP)multimarkdown
@@ -310,54 +290,24 @@ clean_deps:
 
 .IGNORE: clean
 clean: clean_demo clean_tutorials clean_tests
-	cd src && $(CLEANER) -Pgnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd ssl && $(CLEANER) -Pgnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tools && $(CLEANER) -Ptools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(RM) bin$(PATHSEP)*.db
 	$(RM) bin$(PATHSEP)temp.txt
 	$(RM) obj$(PATHSEP)gnoga_gtk_window.o
 
 .IGNORE: clean_demo
 clean_demo:
-	cd demo/snake && $(CLEANER) -P snake.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/mine_detector && $(CLEANER) -P mine_detector.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/chattanooga && $(CLEANER) -P chattanooga.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/adaedit && $(CLEANER) -P adaedit.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/adablog && $(CLEANER) -P adablog.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/connect_four && $(CLEANER) -P connect_four.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/connect_four && $(RM) connectfour_messages*.*
-	cd demo/linxtris && $(CLEANER) -P linxtris.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/password_gen && $(CLEANER) -P password_gen.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/random_int && $(CLEANER) -P random_int.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/adaothello && $(CLEANER) -P adaothello.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/tic_tac_toe && $(CLEANER) -P tic_tac_toe.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/leaves && $(CLEANER) -P leaves.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd demo/db_maker && $(CLEANER) -P db_maker.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P demo_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 .IGNORE: clean_tutorials
 clean_tutorials:
-	cd tutorial/tutorial-01 && $(CLEANER) -P tutorial_01.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-02 && $(CLEANER) -P tutorial_02.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-03 && $(CLEANER) -P tutorial_03.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-04 && $(CLEANER) -P tutorial_04.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-05 && $(CLEANER) -P tutorial_05.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-06 && $(CLEANER) -P tutorial_06.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-07 && $(CLEANER) -P tutorial_07.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-08 && $(CLEANER) -P tutorial_08.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-09 && $(CLEANER) -P tutorial_09.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-10 && $(CLEANER) -P tutorial_10.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd tutorial/tutorial-11 && $(CLEANER) -P tutorial_11.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P tutorial_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 .IGNORE: clean_tests
 clean_tests:
-	cd test && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd test_ssl && $(CLEANER) -P test_ssl.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd test/tickets/001 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd test/tickets/002 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd test/tickets/005 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd test/tickets/007 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd test/tickets/011 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	cd test/tickets/019 && $(CLEANER) -P test.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P test_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 rm-docs: gnoga
 	gnatdoc -P src/gnoga.gpr --enable-build --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}
@@ -384,10 +334,10 @@ check_rules:
 
 gnoga-config:
 ifeq ($(BUILD_OS),Windows)
-	-$(MKDIR) build$(PATHSEP)bin
-	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > build$(PATHSEP)bin$(PATHSEP)gnoga-config.cmd
+	-$(MKDIR) bin
+	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > bin$(PATHSEP)gnoga-config.cmd
 else
-	-$(MKDIR) build$(PATHSEP)bin
-	echo echo -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > build$(PATHSEP)bin$(PATHSEP)gnoga-config
-	chmod +x build$(PATHSEP)bin$(PATHSEP)gnoga-config
+	-$(MKDIR) bin
+	echo echo -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > bin$(PATHSEP)gnoga-config
+	chmod +x bin$(PATHSEP)gnoga-config
 endif

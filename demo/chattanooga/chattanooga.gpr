@@ -1,21 +1,22 @@
-with "../../src/gnoga.gpr";
-with "../../settings.gpr";
+with "settings.gpr";
+with "gnoga_agg.gpr";
 
 project Chattanooga is
-   for Languages use ("Ada");
-   for Source_Dirs use (".");
-   for Object_Dir use "../../obj";
-   for Exec_Dir use "../../bin";
-   for Main use ("chattanooga-program.adb");
 
-   package Compiler is
-      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
-   end Compiler;
+   for Object_Dir use Settings.Obj_Dir;
+   for Exec_Dir use Settings.Exe_Dir;
+   for Main use ("chattanooga-program.adb");
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
    package Builder is
       for Executable ("chattanooga-program.adb") use "chattanooga";
    end Builder;
 
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
+
 end Chattanooga;

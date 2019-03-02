@@ -1,6 +1,7 @@
 /obj/
 /bin/
 /lib/
+/lib_agg/
 /build/
 /css/
 /html/
@@ -19,8 +20,9 @@
 /deps/zanyblue/bin/
 /deps/zanyblue/src/obj/
 /deps/zanyblue/src/bin
-gnatinspect.db
+gnatinspect.*
 gpsauto.cgpr
+*-loc.xml
 /inst_folder/
 demo/connect_four/connectfour_messages-connectfour_strings.adb
 demo/connect_four/connectfour_messages-connectfour_strings.ads

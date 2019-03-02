@@ -1,20 +1,18 @@
-with "../src/gnoga.gpr";
-with "../settings.gpr";
+with "settings.gpr";
+with "gnoga_agg.gpr";
 
 project Test is
 
-   for Languages use ("Ada");
-   for Source_Dirs use (".");
-   for Object_Dir use "../obj";
-   for Exec_Dir use "../bin";
+   for Object_Dir use Settings.Obj_Dir;
+   for Exec_Dir use Settings.Exe_Dir;
    for Main use ("layouts.adb", "boot_strap_demo.adb", "multiuser.adb", "pixi_sprite_test.adb",
                  "popups.adb", "forms.adb", "canvas_test.adb", "sprite_test.adb", "cli.adb",
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb", "menu.adb",
                  "jdemo.adb", "svg_demo.adb", "align.adb", "pack.adb", "ding.adb",
                  "message_boxes.adb", "tree.adb", "plot_test.adb", "test_modal_dialog.adb",
-                 "demo.adb", "db_sqlite.adb", "db_active.adb", -- "db_mysql.adb",
---                 "singleton.adb", "mac_test.adb", "pragma_sqlite.adb");
-                 "mac_test.adb", "pragma_sqlite.adb");
+                 "demo.adb", "db_sqlite.adb", "db_active.adb", "db_mysql.adb",
+                 "singleton.adb", "mac_test.adb", "pragma_sqlite.adb");
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
    package Builder is
       for Executable ("demo.adb") use "gnoga-demo";

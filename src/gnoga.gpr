@@ -1,14 +1,15 @@
-with "../settings";
+with "settings.gpr";
 with "lib_components.gpr";
 with "../components/plugins.gpr";
 
-project Gnoga is
+library project Gnoga is
 
-   for Object_Dir use "../obj";
    for Source_Dirs use (".") & Plugins.Source_Dirs;
+   for Object_Dir use Settings.Obj_Dir;
    for Library_Name use "gnoga";
-   for Library_Dir use "../lib";
+   for Library_Dir use Settings.Lib_Dir;
    for Library_Kind use "static";
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
    package Naming is
       case Settings.Build_Target is

@@ -6,6 +6,12 @@ abstract project Settings is
    type Target_Type is ("OSX", "Windows", "FreeBSD", "Linux", "UNIX");
    Build_Target : Target_Type := external ("PRJ_TARGET", "UNIX");
 
+   Obj_Dir := Settings'Project_Dir & "obj";
+   Exe_Dir := Settings'Project_Dir & "bin";
+   Lib_Dir := Settings'Project_Dir & "lib";
+
+   for Create_Missing_Dirs use "True";
+
    --------------
    -- Compiler --
    --------------

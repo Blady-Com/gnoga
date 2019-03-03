@@ -3,17 +3,17 @@ with "settings.gpr";
 aggregate project Tutorial_Agg_Ext is
 
    for Project_Path use (external("PREFIX") & "/share/gpr");
-   for Project_Files use ("tutorial/tutorial-01/tutorial_01.gpr",
-                            "tutorial/tutorial-02/tutorial_02.gpr",
-                            "tutorial/tutorial-03/tutorial_03.gpr",
-                            "tutorial/tutorial-04/tutorial_04.gpr",
-                            "tutorial/tutorial-05/tutorial_05.gpr",
-                            "tutorial/tutorial-06/tutorial_06.gpr",
-                            "tutorial/tutorial-07/tutorial_07.gpr",
-                            "tutorial/tutorial-08/tutorial_08.gpr",
-                            "tutorial/tutorial-09/tutorial_09.gpr",
-                            "tutorial/tutorial-10/tutorial_10.gpr",
-                            "tutorial/tutorial-11/tutorial_11.gpr");
+   for Project_Files use ("tutorial-01/tutorial_01.gpr",
+                            "tutorial-02/tutorial_02.gpr",
+                            "tutorial-03/tutorial_03.gpr",
+                            "tutorial-04/tutorial_04.gpr",
+                            "tutorial-05/tutorial_05.gpr",
+                            "tutorial-06/tutorial_06.gpr",
+                            "tutorial-07/tutorial_07.gpr",
+                            "tutorial-08/tutorial_08.gpr",
+                            "tutorial-09/tutorial_09.gpr",
+                            "tutorial-10/tutorial_10.gpr",
+                            "tutorial-11/tutorial_11.gpr");
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
 end Tutorial_Agg_Ext;

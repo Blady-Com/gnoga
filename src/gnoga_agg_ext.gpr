@@ -2,8 +2,8 @@ with "settings.gpr";
 
 aggregate library project Gnoga_Agg_Ext is
 
-   for Project_Path use (".", external("PREFIX") & "/share/gpr");
-   for Project_Files use ("src/gnoga.gpr");
+   for Project_Path use (external("PREFIX") & "/share/gpr");
+   for Project_Files use ("gnoga.gpr");
    for Library_Name use "gnoga_agg";
    for Library_Dir use Settings.Lib_Dir & "_agg";
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;

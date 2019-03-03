@@ -3,20 +3,20 @@ with "settings.gpr";
 aggregate project Demo_Agg_Ext is
 
    for Project_Path use (external("PREFIX") & "/share/gpr");
-   for Project_Files use ("demo/snake/snake.gpr",
-                            "demo/mine_detector/mine_detector.gpr",
-                            "demo/connect_four/connect_four.gpr",
-                            "demo/chattanooga/chattanooga.gpr",
-                            "demo/adaedit/adaedit.gpr",
-                            "demo/adablog/adablog.gpr",
-                            "demo/password_gen/password_gen.gpr",
-                            "demo/linxtris/linxtris.gpr",
-                            "demo/random_int/random_int.gpr",
-                            "demo/adaothello/adaothello.gpr",
-                            "demo/tic_tac_toe/tic_tac_toe.gpr",
-                            "demo/leaves/leaves.gpr",
-                            "demo/db_maker/db_maker.gpr",
-                            "demo/logo/logo.gpr");
+   for Project_Files use ("snake/snake.gpr",
+                            "mine_detector/mine_detector.gpr",
+                            "connect_four/connect_four.gpr",
+                            "chattanooga/chattanooga.gpr",
+                            "adaedit/adaedit.gpr",
+                            "adablog/adablog.gpr",
+                            "password_gen/password_gen.gpr",
+                            "linxtris/linxtris.gpr",
+                            "random_int/random_int.gpr",
+                            "adaothello/adaothello.gpr",
+                            "tic_tac_toe/tic_tac_toe.gpr",
+                            "leaves/leaves.gpr",
+                            "db_maker/db_maker.gpr",
+                            "logo/logo.gpr");
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
 end Demo_Agg_Ext;

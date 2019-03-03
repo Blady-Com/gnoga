@@ -1,0 +1,9 @@
+with "settings.gpr";
+
+aggregate project Tools_Agg is
+
+   for Project_Path use ("../src", "../deps/simple_components");
+   for Project_Files use ("tools.gpr");
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
+
+end Tools_Agg;

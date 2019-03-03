@@ -1,0 +1,9 @@
+with "settings.gpr";
+
+aggregate project Tools_Agg_Ext is
+
+   for Project_Path use (external("PREFIX") & "/share/gpr");
+   for Project_Files use ("tools.gpr");
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
+
+end Tools_Agg_Ext;

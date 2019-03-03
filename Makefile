@@ -175,13 +175,13 @@ bin/multimarkdown:
 	$(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 
 gnoga:
-	$(BUILDER) -P gnoga_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P src/gnoga_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_secure:
 	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 gnoga_tools:
-	$(BUILDER) -P tools/tools.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P tools/tools_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 # Install Gnoga and deps
 install: install_deps install_gnoga
@@ -195,8 +195,8 @@ install_deps: deps $(BUILD_SQLITE3) zanyblue pragmarc
 
 # Install Gnoga without deps
 install_gnoga: gnoga gnoga_tools
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga src/gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 .IGNORE: uninstall
@@ -209,63 +209,63 @@ uninstall:
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker logo
 
 snake:
-	$(BUILDER) -P demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 mine_detector:
-	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 chattanooga:
 	$(COPY) demo$(PATHSEP)chattanooga$(PATHSEP)glass.ogg html
-	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adaedit:
-	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adablog:
 	$(COPY) demo$(PATHSEP)adablog$(PATHSEP)adablog.css css
-	$(BUILDER) -P demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 connect_four: zanyblue
 	- cd demo/connect_four && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings connectfour_messages connectfour
-	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 linxtris:
-	$(BUILDER) -P demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
 
 password_gen: pragmarc
-	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 random_int:
-	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 adaothello:
-	$(BUILDER) -P demo_agg.gpr othello_game -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr othello_game -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tic_tac_toe:
-	$(BUILDER) -P demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 leaves:
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.png img
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.jpg img
-	$(BUILDER) -P demo_agg.gpr $@_main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@_main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 db_maker:
-	$(BUILDER) -P demo_agg.gpr movies -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr movies -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 logo: zanyblue
 	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
 	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
-	$(BUILDER) -P demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tests:
-	-$(BUILDER) -k -P test/test.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	-$(BUILDER) -k -P test/test_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tests_ssl: gnoga_secure
 	-$(BUILDER) -P test_ssl/test_ssl.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 tutorials:
-	$(BUILDER) -P tutorial_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P tutorial/tutorial_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
 
 .IGNORE: clean_all
 clean_all: clean clean_deps
@@ -290,7 +290,7 @@ clean_deps:
 
 .IGNORE: clean
 clean: clean_demo clean_tutorials clean_tests
-	$(CLEANER) -P gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P src/gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(CLEANER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(CLEANER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
 	$(RM) bin$(PATHSEP)*.db
@@ -299,15 +299,15 @@ clean: clean_demo clean_tutorials clean_tests
 
 .IGNORE: clean_demo
 clean_demo:
-	$(CLEANER) -P demo_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P demo/demo_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 .IGNORE: clean_tutorials
 clean_tutorials:
-	$(CLEANER) -P tutorial_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P tutorial/tutorial_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 .IGNORE: clean_tests
 clean_tests:
-	$(CLEANER) -P test_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P test/test_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
 
 rm-docs: gnoga
 	gnatdoc -P src/gnoga.gpr --enable-build --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}

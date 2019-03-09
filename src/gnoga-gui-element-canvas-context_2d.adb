@@ -916,6 +916,18 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
                          X'Img & "," & Y'Img & ")");
    end Draw_Image;
 
+   procedure Draw_Image (Context : in out Context_2D_Type'Class;
+                         Image   : in out Element_Type'Class;
+                         X, Y    : in     Integer;
+                         Width   : in     Natural;
+                         Height  : in     Natural)
+   is
+   begin
+      Context.Execute ("drawImage (" & Image.jQuery & ".get(0)," &
+                         X'Img & "," & Y'Img & ","
+                       & Width'Img & "," & Height'Img & ")");
+   end Draw_Image;
+
    -----------------------
    -- Create_Image_Data --
    -----------------------

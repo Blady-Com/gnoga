@@ -397,6 +397,15 @@ package Gnoga.Gui.Element.Canvas.Context_2D is
    --  Gnoga.Element.Common.IMG_Type, Canvas_Type or a
    --  Gnoga.Multimedia.Video_Type
 
+   procedure Draw_Image (Context : in out Context_2D_Type'Class;
+                         Image   : in out Element_Type'Class;
+                         X, Y    : in     Integer;
+                         Width   : in     Natural;
+                         Height  : in     Natural);
+   --  Draw Image at point X, Y, with the given Width and height.
+   --  Image can be a Gnoga.Element.Common.IMG_Type, Canvas_Type or a
+   --  Gnoga.Multimedia.Video_Type
+
    --  Image Data
 
    function Pixel (Context : Context_2D_Type; X, Y : Integer)

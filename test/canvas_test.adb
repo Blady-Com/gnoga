@@ -40,6 +40,7 @@ procedure Canvas_Test is
          Alternative_Text => "GNU GPL 3");
 
       C.Draw_Image (Img, 100, 10);
+      C.Draw_Image (Img, 300, 10, 40, 40);
    end On_Click;
 
    procedure On_Connect

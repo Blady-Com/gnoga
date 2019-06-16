@@ -2,8 +2,8 @@
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Interface                                      Winter, 2015       --
---                                                           --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                                                    --
+--                                Last revision :  10:32 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  14:10 30 Jul 2018  --
+--                                Last revision :  23:07 29 Dec 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -449,6 +449,23 @@ package GNAT.Sockets.Server is
    function Get_Client_Address (Client : Connection)
       return Sock_Addr_Type;
 --
+-- Get_Client_Name -- Get the name of the client
+--
+--    Factory - The factory object
+--    Client  - The client connection object
+--
+-- The default implementation  uses IP address  returned by the function
+-- Get_Client_Address for the client name.
+--
+-- Returns :
+--
+--    The client's name used in tracing
+--
+   function Get_Client_Name
+            (  Factory : Connections_Factory;
+               Client  : Connection'Class
+            )  return String;
+--
 -- Get_Connections_Server -- Get client's connections server
 --
 --    Client - The client connection object
@@ -809,6 +826,18 @@ package GNAT.Sockets.Server is
                 Occurrence : Exception_Occurrence
              );
 --
+-- Reconnect -- Drop current connection and try to reconnect
+--
+--    Client - The client connection object
+--
+-- Exception :
+--
+--    Mode_Error   - A server or permanent connection
+--    Status_Error - The client is down
+--    Use_Error    - Never connected before
+--
+   procedure Reconnect (Client : in out Connection);
+--
 -- Released -- Notification
 --
 --    Client - The connection client
@@ -1045,6 +1074,10 @@ package GNAT.Sockets.Server is
 -- This  procedure is called when client requests shutdown.  The default
 -- implementation does nothing.
 --
+-- Exceptions :
+--
+--    Mode_Error - The connection is permanent
+--
    procedure Shutdown
              (  Listener : in out Connections_Server;
                 Client   : in out Connection'Class
@@ -1165,7 +1198,7 @@ package GNAT.Sockets.Server is
 --    To      - The last element sent in the buffer
 --    Encoded - True if Data is encoded/ciphered
 --
--- This procedure is called when tracing outgoing data is active. The
+-- This procedure is called  when tracing  outgoing data is active.  The
 -- default implementation calls to Trace.
 --
    procedure Trace_Sent
@@ -1175,6 +1208,31 @@ package GNAT.Sockets.Server is
                 From    : Stream_Element_Offset;
                 To      : Stream_Element_Offset;
                 Encoded : Boolean := False
+             );
+--
+-- Service_Loop_Stage -- Phases of servicing connections
+--
+   type Service_Loop_Stage is
+        (  Service_Loop_Begin,      -- Begin of the service loop
+           Service_Loop_Reading,    -- Reading from ready sockets
+           Service_Loop_Unblocking, -- Unblocking sockets with data
+           Service_Loop_Writing,    -- Writing to ready sockets
+           Service_Loop_Postponed   -- Servicing postponed requests
+        );
+--
+-- Trace_Service_Loop -- Tracing facility
+--
+--    Factory - The factory object
+--    Stage   - The service loop stage
+--    Server  - The connections server
+--
+-- This procedure is called at different stages of the service loop. The
+-- default implementation does nothing.
+--
+   procedure Trace_Service_Loop
+             (  Factory : in out Connections_Factory;
+                Stage   : Service_Loop_Stage;
+                Server  : in out Connections_Server'Class
              );
 --
 -- To_String -- Conversion to string
@@ -1253,6 +1311,37 @@ package GNAT.Sockets.Server is
    procedure Read
              (  Client  : in out Connection;
                 Factory : in out Connections_Factory'Class
+             );
+--
+-- Receive_Socket -- Read data from the client's socket
+--
+--    Listener - The connections server
+--    Client   - The client
+--    Data     - To send
+--    Last     - The last element sent, can be less than Data'Last
+--
+-- The default implementation calls socket's Read_Socket.
+--
+   procedure Receive_Socket
+             (  Listener : in out Connections_Server;
+                Client   : in out Connection'Class;
+                Data     : in out Stream_Element_Array;
+                Last     : out Stream_Element_Offset
+             );
+--
+-- Request_Disconnect -- Engage disconnection
+--
+--    Listener  - The connections server
+--    Client    - The client
+--    Reconnect - True if reconnect again, else shutdown
+--
+-- This procedure implements object connection's operations Shutdown and
+-- Reconnect. The default implementation of these call this procedure.
+--
+   procedure Request_Disconnect
+             (  Listener  : in out Connections_Server;
+                Client    : in out Connection'Class;
+                Reconnect : Boolean
              );
 --
 -- Send_Socket -- Send data over client's socket
@@ -1408,21 +1497,26 @@ private
 --
    function Used (Buffer : Output_Buffer) return Stream_Element_Count;
 ------------------------------------------------------------------------
+   type Connection_Action_Type is
+        (  Keep_Connection,
+           Reconnect_Connection,
+           Shutdown_Connection
+        );
    type Connection
         (  Input_Size  : Buffer_Length;
            Output_Size : Buffer_Length
         )  is abstract new Object.Entity with
    record
-      Socket           : Socket_Type := No_Socket;
-      Overlapped_Read  : Stream_Element_Count := 0;
-      Session          : Session_State := Session_Down;
+      Socket           : Socket_Type            := No_Socket;
+      Overlapped_Read  : Stream_Element_Count   := 0;
+      Session          : Session_State          := Session_Down;
+      Action_Request   : Connection_Action_Type := Keep_Connection;
       Failed           : Boolean := False;
-      Shutdown_Request : Boolean := False;
       External_Action  : Boolean := False;
       Data_Sent        : Boolean := False;
       Dont_Block       : Boolean := False;
       Client           : Boolean := False;
-      Reconnect        : Boolean := True;
+      Try_To_Reconnect : Boolean := True;
       Connect_No       : Natural := 0;
       Max_Connect_No   : Natural := Natural'Last;
       Predecessor      : Connection_Ptr;
@@ -1437,9 +1531,9 @@ private
       pragma Atomic (Connect_No);
       pragma Atomic (Failed);
       pragma Atomic (Dont_Block);
-      pragma Atomic (Reconnect);
+      pragma Atomic (Try_To_Reconnect);
       pragma Atomic (Session);
-      pragma Atomic (Shutdown_Request);
+      pragma Atomic (Action_Request);
    end record;
 --
 -- On_Connected -- Start servicing a client socket

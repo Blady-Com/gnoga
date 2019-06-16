@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  11:41 17 Dec 2017  --
+--                                Last revision :  21:14 23 Nov 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -816,6 +816,21 @@ package GNAT.Sockets.MQTT is
                 Packet        : Packet_Identifier;
                 Topics_Number : Positive
              );
+--
+-- Trace -- Higher level tracing
+--
+--    Pier    - The MQTT connection object
+--    Session - The session name
+--    Message - The message
+--    Kind_Of - The type of the message
+--
+   type Trace_Message_Type is (Received, Sent, Action);
+   procedure Trace
+             (  Pier    : in out MQTT_Pier;
+                Session : String;
+                Message : String;
+                Kind_Of : Trace_Message_Type
+             );
 private
    Max_Message_Size : constant := 1024; -- Default
 
@@ -928,10 +943,6 @@ private
    procedure Send
              (  Pier : in out MQTT_Pier;
                 Data : Stream_Element_Array
-             );
-   procedure Trace
-             (  Pier    : in out MQTT_Pier;
-                Message : String
              );
 
    function String_Name

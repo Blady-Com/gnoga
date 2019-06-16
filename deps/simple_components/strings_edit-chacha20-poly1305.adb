@@ -3,7 +3,7 @@
 --     Strings_Edit.ChaCha20.Poly1305              Luebeck            --
 --  Implementation                                 Summer, 2018       --
 --                                                                    --
---                                Last revision :  11:20 04 Aug 2018  --
+--                                Last revision :  12:27 04 Nov 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -281,9 +281,6 @@ package body Strings_Edit.ChaCha20.Poly1305 is
          Double (Result);
          if Bit (Left, Index) then
             Result (Result'Last) := Result (Result'Last) or 1;
-         else
-            Result (Result'Last) :=
-               Result (Result'Last) and Unsigned_32'Last;
          end if;
          Sub (Result, Right); -- If greater
       end loop;

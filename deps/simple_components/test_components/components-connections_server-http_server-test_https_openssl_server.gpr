@@ -1,0 +1,22 @@
+with "components.gpr";
+with "components-connections_server-http_server.gpr";
+with "components-connections_server-openssl.gpr";
+with "components-openssl.gpr";
+
+project Components.Connections_Server.HTTP_Server.Test_HTTPS_OpenSSL_Server is
+
+   for Source_Files use
+       (  "test_https_openssl_client.adb",
+    	  "test_https_openssl_server.adb",
+    	  "test_http_servers.adb",
+    	  "test_http_servers.ads",
+    	  "test_http_servers-openssl.adb",
+    	  "test_http_servers-openssl.ads"
+	   );
+   for Main use
+       (  "test_https_openssl_client.adb",
+          "test_https_openssl_server.adb"
+       );
+   for Object_Dir use Components.Object_Dir_Path;
+
+end Components.Connections_Server.HTTP_Server.Test_HTTPS_OpenSSL_Server;

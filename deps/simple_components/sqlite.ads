@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  09:07 27 Jun 2015  --
+--                                Last revision :  21:14 23 Nov 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -47,6 +47,9 @@ package SQLite is
    CREATE         : constant Open_Flags := 16#00004#;
    DELETEONCLOSE  : constant Open_Flags := 16#00008#;
    EXCLUSIVE      : constant Open_Flags := 16#00010#;
+   AUTOPROXY      : constant Open_Flags := 16#00020#;
+   URI            : constant Open_Flags := 16#00040#;
+   MEMORY         : constant Open_Flags := 16#00080#;
    MAIN_DB        : constant Open_Flags := 16#00100#;
    TEMP_DB        : constant Open_Flags := 16#00200#;
    TRANSIENT_DB   : constant Open_Flags := 16#00400#;
@@ -58,6 +61,7 @@ package SQLite is
    FULLMUTEX      : constant Open_Flags := 16#10000#;
    SHAREDCACHE    : constant Open_Flags := 16#20000#;
    PRIVATECACHE   : constant Open_Flags := 16#40000#;
+   WAL            : constant Open_Flags := 16#80000#;
 
    type Datatype is new int range 1..5;
    SQLITE_INTEGER : constant Datatype := 1;
@@ -377,6 +381,15 @@ package SQLite is
             (  Base : Data_Base;
                Name : String
             )  return Boolean;
+--
+-- Version -- The library version
+--
+-- Returns :
+--
+--    The library version, e.g. 3.25.3
+--
+   function Version return String;
+
 private
    pragma Inline (Bind);
    pragma Inline (Column);

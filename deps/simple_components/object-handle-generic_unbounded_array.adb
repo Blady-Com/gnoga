@@ -3,7 +3,7 @@
 --     Object.Handle.Unbounded_Array               Luebeck            --
 --  Implementation                                 Spring, 2003       --
 --                                                                    --
---                                Last revision :  20:41 21 Jul 2017  --
+--                                Last revision :  10:33 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -174,9 +174,9 @@ package body Object.Handle.Generic_Unbounded_Array is
                then
                   return;
                end if;
+               Increment_Count (Element.all);
                Release (Data.Vector (Index));
                Data.Vector (Index) := Element;
-               Increment_Count (Element.all);
             end if;
          else
             if Element /= null then

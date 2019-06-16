@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure                  Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  21:52 09 Jul 2018  --
+--                                Last revision :  10:32 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -130,7 +130,7 @@ package body GNAT.Sockets.Server.Secure is
       );
       if Last + 1 /= Buffer.Free_To_Read then -- Some data read
          Got_It := True;
-         if 0 /= (Factory.Trace_Flags and Trace_Decoded_Received) then
+         if Is_Trace_Received_On (Factory, Trace_Decoded) then
             Trace_Received
             (  Factory => Factory,
                Client  => Client,
@@ -169,12 +169,7 @@ package body GNAT.Sockets.Server.Secure is
                 Session : in out Session_Type
              )  is
    begin
-      Client.Session := Session_Connected;
-      if Is_Opportunistic (Client) then
-         Elevated (Client);
-      else
-         Connected (Client);
-      end if;
+      null;
    end Handshake_Completed;
 
    function Is_TLS_Capable
@@ -238,7 +233,7 @@ package body GNAT.Sockets.Server.Secure is
                         end if;
                         Trace_Error
                         (  Factory,
-                           "Handshake completion",
+                           "TLS handshake completion",
                            Error
                         );
                         raise  Connection_Error;
@@ -261,6 +256,23 @@ package body GNAT.Sockets.Server.Secure is
                         )  );
                      end if;
                   end if;
+                  declare
+                     Saved : constant Session_State := Client.Session;
+                  begin
+                     Client.Session := Session_Connected;
+                     if Is_Opportunistic (Client) then
+                        Elevated (Client);
+                     else
+                        Connected (Client);
+                     end if;
+                     Connected (Listener, Client);
+                  exception
+                     when others =>
+                        if Client.Session = Session_Connected then
+                           Client.Session := Saved;
+                        end if;
+                       raise;
+                  end;
                end;
                Data_Left := Has_Data (Client);
             end if;
@@ -326,10 +338,10 @@ package body GNAT.Sockets.Server.Secure is
       );
       if (  Last >= Pointer
          and then
-            Is_Trace_Received_On
+            Is_Trace_Sent_On
             (  Client.Socket_Listener.Factory.all,
                Trace_Encoded
-         )   )
+         )  )
       then
          Trace_Sent
          (  Factory => Client.Socket_Listener.Factory.all,
@@ -346,7 +358,7 @@ package body GNAT.Sockets.Server.Secure is
       end if;
    exception
       when Error : Socket_Error =>
-         Receive_Error (Client, Error);
+         Send_Error (Client, Error);
          raise;
       when Error : others =>
          Trace_Error

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  07:53 21 Jul 2016  --
+--                                Last revision :  21:46 10 Dec 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -846,7 +846,7 @@ package body Persistent.SQLite is
       Put
       (  Text,
          Pointer,
-         Integer (Second / 3_600.0),
+         Integer (Second) / 3_600,
          Field   => 2,
          Justify => Right,
          Fill    => '0'
@@ -855,7 +855,7 @@ package body Persistent.SQLite is
       Put
       (  Text,
          Pointer,
-         Integer (Second / 60.0) mod 60,
+         (Integer (Second) / 60) mod 60,
          Field   => 2,
          Justify => Right,
          Fill    => '0'

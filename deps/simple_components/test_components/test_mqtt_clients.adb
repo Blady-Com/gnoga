@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  14:04 26 Dec 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,7 +29,27 @@ with Ada.Text_IO;            use Ada.Text_IO;
 with GNAT.Sockets.Server;    use GNAT.Sockets.Server;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
 
+with Ada.Unchecked_Deallocation;
+
 package body Test_MQTT_Clients is
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation (String, String_Ptr);
+
+   procedure Finalize (Client : in out Test_Client) is
+   begin
+      Finalize (MQTT_Pier (Client));
+      Free (Client.Name);
+   end Finalize;
+
+   function Get_Name (Client : Test_Client) return String is
+   begin
+      if Client.Name = null then
+         return GNAT.Sockets.Image (Get_Client_Address (Client));
+      else
+         return Client.Name.all;
+      end if;
+   end Get_Name;
 
    procedure On_Connect_Accepted
              (  Pier            : in out Test_Client;
@@ -37,6 +57,7 @@ package body Test_MQTT_Clients is
              )  is
    begin
       Put_Line ("Connect accepted");
+      Pier.Action.Signal;
    end On_Connect_Accepted;
 
    procedure On_Connect_Rejected
@@ -45,6 +66,7 @@ package body Test_MQTT_Clients is
              )  is
    begin
       Put_Line ("Connect rejected " & Image (Response));
+      Pier.Action.Signal;
    end On_Connect_Rejected;
 
    procedure On_Ping_Response (Pier : in out Test_Client) is
@@ -70,6 +92,7 @@ package body Test_MQTT_Clients is
          Duplicate,
          Retain
       );
+      Pier.Action.Signal;
    end On_Publish;
 
    procedure On_Subscribe_Acknowledgement
@@ -90,6 +113,27 @@ package body Test_MQTT_Clients is
          end if;
       end loop;
       New_Line;
+      Pier.Action.Signal;
    end On_Subscribe_Acknowledgement;
+
+   procedure Reset_Event (Pier : in out Test_Client) is
+   begin
+      Pier.Action.Reset;
+   end Reset_Event;
+
+   procedure Wait_For_Event (Pier : in out Test_Client) is
+   begin
+       select
+          Pier.Action.Wait;
+       or delay 5.0;
+          raise Data_Error;
+       end select;
+   end Wait_For_Event;
+
+   procedure Set_Name (Pier : in out Test_Client; Name : String) is
+   begin
+      Free (Pier.Name);
+      Pier.Name := new String'(Name);
+   end Set_Name;
 
 end Test_MQTT_Clients;

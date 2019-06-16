@@ -1,5 +1,5 @@
-This directory contains the sources of SQLite (so called amalgation)  as
-distributed at the download page: 
+This  directory contains  the sources of SQLite (so called amalgamation)
+as distributed at the download page: 
 
    http://www.sqlite.org/download.html
 

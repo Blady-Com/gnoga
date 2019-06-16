@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  07:53 21 Jul 2016  --
+--                                Last revision :  21:14 23 Nov 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -63,6 +63,8 @@ package body SQLite is
    SQLITE_FORMAT     : constant := 24;
    SQLITE_RANGE      : constant := 25;
    SQLITE_NOTADB     : constant := 26;
+   SQLITE_NOTICE     : constant := 27;
+   SQLITE_WARNING    : constant := 28;
    SQLITE_ROW        : constant := 100;
    SQLITE_DONE       : constant := 101;
       -- Extended return codes
@@ -83,6 +85,20 @@ package body SQLite is
    SQLITE_IOERR_LOCK              : constant := SQLITE_IOERR  + 15*256;
    SQLITE_IOERR_CLOSE             : constant := SQLITE_IOERR  + 16*256;
    SQLITE_IOERR_DIR_CLOSE         : constant := SQLITE_IOERR  + 17*256;
+   SQLITE_IOERR_SHMOPEN           : constant := SQLITE_IOERR  + 18*256;
+   SQLITE_IOERR_SHMSIZE           : constant := SQLITE_IOERR  + 19*256;
+   SQLITE_IOERR_SHMLOCK           : constant := SQLITE_IOERR  + 20*256;
+   SQLITE_IOERR_SHMMAP            : constant := SQLITE_IOERR  + 21*256;
+   SQLITE_IOERR_SEEK              : constant := SQLITE_IOERR  + 22*256;
+   SQLITE_IOERR_DELETE_NOENT      : constant := SQLITE_IOERR  + 23*256;
+   SQLITE_IOERR_MMAP              : constant := SQLITE_IOERR  + 24*256;
+   SQLITE_IOERR_GETTEMPPATH       : constant := SQLITE_IOERR  + 25*256;
+   SQLITE_IOERR_CONVPATH          : constant := SQLITE_IOERR  + 26*256;
+   SQLITE_IOERR_VNODE             : constant := SQLITE_IOERR  + 27*256;
+   SQLITE_IOERR_AUTH              : constant := SQLITE_IOERR  + 28*256;
+   SQLITE_IOERR_BEGIN_ATOMIC      : constant := SQLITE_IOERR  + 29*256;
+   SQLITE_IOERR_COMMIT_ATOMIC     : constant := SQLITE_IOERR  + 30*256;
+   SQLITE_IOERR_ROLLBACK_ATOMIC   : constant := SQLITE_IOERR  + 31*256;
    SQLITE_LOCKED_SHAREDCACHE      : constant := SQLITE_LOCKED +  1*256;
 
    type Raw_Address is mod 2**Standard'Address_Size;
@@ -740,5 +756,17 @@ package body SQLite is
       when End_Error =>
          return False;
    end Table_Exists;
+
+   function Version return String is
+      function Internal return chars_ptr;
+      pragma Import (C, Internal, "sqlite3_libversion");
+      Text : constant chars_ptr := Internal;
+   begin
+      if Text = Null_Ptr then
+         return "";
+      else
+         return Value (Text);
+      end if;
+   end Version;
 
 end SQLite;

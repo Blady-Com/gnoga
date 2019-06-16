@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  14:39 07 Jan 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -3014,8 +3014,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
    begin
       Trace
       (  Session.Listener.Factory.all,
-         Image (Get_Client_Address (Session)) & ' ' & Message
-      );
+         (  Get_Client_Name (Session.Listener.Factory.all, Session)
+         &  ' '
+         &  Message
+      )  );
    end Trace;
 
    function Value (Text : String) return Header_Value is

@@ -1,0 +1,15 @@
+with "components.gpr";
+
+project Components.OpenSSL is
+
+   for Source_Files use
+       (  "openssl.adb",
+          "openssl.ads"
+       );
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Linker is
+      for Linker_Options use ("-lssl" , "-lcrypto");
+   end Linker;
+   
+end Components.OpenSSL;

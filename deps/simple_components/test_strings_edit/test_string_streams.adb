@@ -26,13 +26,17 @@
 with Ada.Exceptions;        use Ada.Exceptions;
 with Ada.Streams;           use type Ada.Streams.Stream_Element_Offset;
 with Ada.Text_IO;           use Ada.Text_IO;
+with Strings_Edit.Quoted;   use Strings_Edit.Quoted;
 with Strings_Edit.Streams;  use Strings_Edit.Streams;
 
+with Ada.Characters.Latin_1;
 with Interfaces;
 with Strings_Edit.Integers;
 with Strings_Edit.Streams.Integers;
 with Strings_Edit.Streams.Naturals;
 with Strings_Edit.Streams.Unsigneds_32;
+with Strings_Edit.UTF8.Handling;
+with Strings_Edit.UTF8.Recoding_Streams;
 
 procedure Test_String_Streams is
 begin
@@ -244,6 +248,43 @@ begin
       String'Write (S'Access, "23456");
       if S.Data /= "123456" or else Get (S) /= "123456" then
          Raise_Exception (Constraint_Error'Identity, "Write error");
+      end if;
+   end;
+------------------------------------------------------------------------
+   declare
+      use Ada.Characters.Latin_1;
+      use Strings_Edit.UTF8.Handling;
+      use Strings_Edit.UTF8.Recoding_Streams;
+      Encoded : aliased String_Stream (1024);
+      Decoded : aliased Recoding_Stream
+                        (  Encoded'Access,
+                           Windows_1252,
+                           Character'Pos ('?'),
+                           '?'
+                        );
+      Text_1 : constant String := "L" & LC_U_Diaeresis & "beck";
+      Text_2 : String (1..7);
+   begin
+      String'Write (Decoded'Access, To_UTF8 (Text_1));
+      if Get (Encoded) /= Text_1 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            (  "Recoding write error: "
+            &  Quote (Get (Encoded))
+            &  ", written "
+            &  Quote (Text_1)
+         )  );
+      end if;
+      Rewind (Encoded);
+      String'Read (Decoded'Access, Text_2);
+      if To_UTF8 (Text_1) /= Text_2 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            (  "Recoding read error: "
+            &  Quote (Text_1)
+            &  ", read "
+            &  Quote (Text_2)
+         )  );
       end if;
    end;
    Put_Line ("... Done");

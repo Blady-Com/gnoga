@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  10:33 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -430,6 +430,7 @@ package body Test_HTTP_Servers is
                &  "</form><br>"
                &  "<a href=""test_forms.htm"">test forms</a><br>"
                &  "<a href=""test_forms_2.htm"">another test forms</a>"
+               &  ", "
                &  "<a href=""test_forms_4.htm"">yet another one</a>"
                &  "</body></html>"
                );

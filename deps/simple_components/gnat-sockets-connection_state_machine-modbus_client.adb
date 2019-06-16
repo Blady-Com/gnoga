@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client                               Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  14:04 26 Dec 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -976,8 +976,10 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
    begin
       Trace
       (  Client.Listener.Factory.all,
-         Image (Get_Client_Address (Client)) & ' ' & Message
-      );
+         (  Get_Client_Name (Client.Listener.Factory.all, Client)
+         &  ' '
+         &  Message
+      )  );
    end Trace;
 
 end GNAT.Sockets.Connection_State_Machine.MODBUS_Client;

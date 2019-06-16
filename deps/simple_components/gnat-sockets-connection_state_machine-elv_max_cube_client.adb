@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  20:28 27 May 2018  --
+--                                Last revision :  23:23 12 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,9 +27,14 @@
 
 with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
 with Strings_Edit;           use Strings_Edit;
-with Strings_Edit.Floats;    use Strings_Edit.Floats;
 with Strings_Edit.Base64;    use Strings_Edit.Base64;
+with Strings_Edit.Floats;    use Strings_Edit.Floats;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
+with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
+
+with Ada.Calendar.Formatting;
+with Ada.Calendar.Time_Zones;
+with Ada.Characters.Handling;
 
 package body GNAT.Sockets.Connection_State_Machine.
              ELV_MAX_Cube_Client is
@@ -37,7 +42,94 @@ package body GNAT.Sockets.Connection_State_Machine.
    use Device_Handles;
    use Room_Handles;
 
+   Epoch : constant Time :=
+                    Ada.Calendar.Formatting.Time_Of (2000, 01, 01);
+
+--     procedure Dump (Topology : Devices_Configuration; Prefix : String) is
+--        use Ada.Text_IO;
+--
+--        function Image (Room : Room_ID) return String is
+--        begin
+--           return "#" & Image (Integer (Room));
+--        end Image;
+--
+--        function Image (Key : Device_Key) return String is
+--        begin
+--           return Image (Key.Room) & "." & Image (Key.Index);
+--        end Image;
+--
+--        function Image (Room : Room_Handles.Handle) return String is
+--        begin
+--           if Is_Valid (Room) then
+--              return Image (Ptr (Room).ID);
+--           else
+--              return "null";
+--           end if;
+--        end Image;
+--      begin
+--        Put_Line (Prefix & "Rooms " & Image (Get_Size (Topology.Rooms)));
+--        for Index in 1..Get_Size (Topology.Rooms) loop
+--           declare
+--              This : Room_Descriptor'Class renames
+--                     Ptr (Get (Topology.Rooms, Index)).all;
+--           begin
+--              Put_Line
+--              (  Prefix
+--              &  "  "
+--              &  Image (Get_Key (Topology.Rooms, Index))
+--              &  "->"
+--              &  Image (This.ID)
+--              &  " "
+--              &  Image (This.Master)
+--              &  " "
+--              &  Quote (This.Name)
+--              &  " count "
+--              &  Image (This.Count)
+--              );
+--           end;
+--        end loop;
+--        Put_Line
+--        (  Prefix
+--        &  "Devices "
+--        &  Image (Get_Size (Topology.Devices))
+--        );
+--        for Index in 1..Get_Size (Topology.Devices) loop
+--           declare
+--              This : Device_Descriptor'Class renames
+--                     Ptr (Get (Topology.Devices, Index)).all;
+--           begin
+--              Put_Line
+--              (  Prefix
+--              &  "  "
+--              &  Image (Get_Key (Topology.Devices, Index))
+--              &  "->"
+--              &  Image (This.Data.Address)
+--              &  " "
+--              &  Image (This.Kind_Of)
+--              &  " "
+--              &  Quote (This.Data.Name)
+--              &  " in "
+--              &  Image (This.Data.Room)
+--              &  "->"
+--              &  Image (This.Room)
+--              );
+--           end;
+--        end loop;
+--        Put_Line (Prefix & "RF " & Image (Get_Size (Topology.RF)));
+--        for Index in 1..Get_Size (Topology.RF) loop
+--           Put_Line
+--           (  Prefix
+--           &  "  "
+--           &  Image (Get_Key (Topology.RF, Index))
+--           &  "->"
+--           &  Image (Get (Topology.RF, Index))
+--           );
+--        end loop;
+--     end Dump;
+
    CRLF : constant String := Character'Val (13) & Character'Val (10);
+   Five_Minutes : constant := 60 * 5;
+   Chunk_Size   : constant := 1_900 * 3 / 4; -- Metadata block size
 --
 -- 16#XX# Room modes
 --    00 All rooms
@@ -55,113 +147,944 @@ package body GNAT.Sockets.Connection_State_Machine.
 --    44 Set To Eco Temperature
 --    82 Set Display Actual Temperature (wall thermostat only)
 
-   S_Head : constant String := (  Character'Val (16#00#)
-                               &  Character'Val (16#04#) -- Room mode
-                               &  Character'Val (16#40#) -- Command mode
-                               &  Character'Val (16#00#)
-                               &  Character'Val (16#00#)
-                               &  Character'Val (16#00#)
-                               );
-   S_Add  : constant String := (  Character'Val (16#00#)
-                               &  Character'Val (16#00#) -- Room mode
-                               &  Character'Val (16#20#) -- Command mode
-                               &  Character'Val (16#00#)
-                               &  Character'Val (16#00#)
-                               &  Character'Val (16#00#)
-                               );
-   S_Rem  : constant String := (  Character'Val (16#00#)
-                               &  Character'Val (16#00#) -- Room mode
-                               &  Character'Val (16#21#) -- Command mode
-                               &  Character'Val (16#00#)
-                               &  Character'Val (16#00#)
-                               &  Character'Val (16#00#)
-                               );
+   subtype Command_Head is String (1..6);
+   S_Head : constant Command_Head :=
+                     (  Character'Val (16#00#)
+                     &  Character'Val (16#04#) -- Room mode
+                     &  Character'Val (16#40#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     );
+   S_Group : constant Command_Head :=
+                     (  Character'Val (16#00#)
+                     &  Character'Val (16#00#) -- Room mode
+                     &  Character'Val (16#22#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     );
+   S_Ungroup : constant Command_Head :=
+                     (  Character'Val (16#00#)
+                     &  Character'Val (16#04#) -- Room mode
+                     &  Character'Val (16#23#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     );
+   S_Mode : constant Command_Head :=
+                     (  Character'Val (16#00#)
+                     &  Character'Val (16#04#) -- Room mode
+                     &  Character'Val (16#82#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     );
+   type Command_Array is array (Boolean) of Command_Head;
+   S_Link : constant Command_Array :=
+                  (  (  Character'Val (16#00#)
+                     &  Character'Val (16#00#) -- Room mode
+                     &  Character'Val (16#20#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     ),
+                     (  Character'Val (16#00#)
+                     &  Character'Val (16#04#) -- Room mode
+                     &  Character'Val (16#20#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                  )  );
+   S_Unlink : constant Command_Array :=
+                  (  (  Character'Val (16#00#)
+                     &  Character'Val (16#00#) -- Room mode
+                     &  Character'Val (16#21#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     ),
+                     (  Character'Val (16#00#)
+                     &  Character'Val (16#04#) -- Room mode
+                     &  Character'Val (16#21#) -- Command mode
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                     &  Character'Val (16#00#)
+                  )  );
+
    function Encode (Temperature : Centigrade) return Unsigned_8;
    function Encode (Day : Week_Day) return Integer;
    function Encode (Address : RF_Address) return String;
    function Encode (Date : Time) return String;
    function Encode (Mode : Operating_Mode) return Character;
+   function Encode (Kind_Of : Partner_Device_Type) return Character;
+   function Encode (Room : Room_ID) return Character;
 
---     procedure Add_New_Device
---               (  Client  : in out ELV_MAX_Cube_Client;
---                  Index   : Positive;
---                  Device  : Partner_Device_Type;
---                  Address : RF_Address
---               )  is
---        Lock : Holder (Client.Topology.Lock'Access);
---        Room : Room_Descriptor'Class renames
---                  Ptr (Get (Client.Topology.Rooms, Index)).all;
---     begin
---        Add_New_Device_Unchecked
---        (  Client  => Client,
---           Room    => Room,
---           Device  => Device,
---           Address => Address
---        );
---     end Add_New_Device;
---
---     procedure Add_New_Device
---               (  Client  : in out ELV_MAX_Cube_Client;
---                  ID      : Room_ID;
---                  Device  : Partner_Device_Type;
---                  Address : RF_Address
---               )  is
---        Lock : Holder (Client.Topology.Lock'Access);
---        Room : Room_Descriptor'Class renames
---                  Ptr
---                  (  Get
---                     (  Client.Topology.Rooms,
---                        Find_Room_Unchecked (Client, ID)
---                  )  ) .all;
---     begin
---        Add_New_Device_Unchecked
---        (  Client  => Client,
---           Room    => Room,
---           Device  => Device,
---           Address => Address
---        );
---     end Add_New_Device;
---
---     procedure Add_New_Device_Unchecked
---               (  Client  : in out ELV_MAX_Cube_Client;
---                  Room    : Room_Descriptor'Class;
---                  Device  : Partner_Device_Type;
---                  Address : RF_Address
---               )  is
---        function From_Type (Device : Partner_Device_Type)
---           return Character is
---        begin
---           case Device is
---              when Radiator_Thermostat =>
---                 return Character'Val (1);
---              when Radiator_Thermostat_Plus =>
---                 return Character'Val (2);
---              when Wall_Thermostat =>
---                 return Character'Val (3);
---              when Shutter_Contact =>
---                 return Character'Val (4);
---           end case;
---        end From_Type;
---     begin
---        if Is_In (Client.Topology.RF, Address) then
---           Raise_Exception
---           (  Constraint_Error'Identity,
---              "A device " & Image (Address) & " already exists"
---           );
---        end if;
---        Send
---        (  Client,
---           (  "s:"
---           &  To_Base64
---              (  S_Add
---              &  Encode (Room.Master)
---              &  Character'Val (Room.ID)
---              &  Encode (Address)
---              &  From_Type (Device)
---              )
---           &  CRLF
---        )  );
---     end Add_New_Device_Unchecked;
+   procedure Free is
+      new Ada.Unchecked_Deallocation
+          (  String_Buffer,
+             String_Buffer_Ptr
+          );
+   generic
+      with procedure Flush_Buffer (Buffer : String);
+   procedure Get_Metadata_Unchecked
+             (  Client  : ELV_MAX_Cube_Client'Class;
+                Data    : in out String;
+                Exclude : RF_Address := 0
+             );
+
+   function "&" (Left, Right : Device_Type) return Boolean is
+   begin
+      case Left is
+         when Cube | Unknown =>
+            return False;
+         when Radiator_Thermostat | Radiator_Thermostat_Plus =>
+            return Right in Wall_Thermostat..Shutter_Contact;
+         when Wall_Thermostat =>
+            case Right is
+               when Radiator_Thermostat      |
+                    Radiator_Thermostat_Plus |
+                    Shutter_Contact          =>
+                  return True;
+               when others =>
+                  return False;
+            end case;
+         when Shutter_Contact =>
+            return Right in Radiator_Thermostat..Wall_Thermostat;
+         when Eco_Button =>
+            return False;
+      end case;
+   end "&";
+
+   function Image2 (Value : Integer) return String is
+      Result  : String (1..2);
+      Pointer : Integer := 1;
+   begin
+      Put
+      (  Destination => Result,
+         Pointer     => Pointer,
+         Value       => Value,
+         Field       => 2,
+         Justify     => Right,
+         Fill        => '0'
+      );
+      return Result;
+   end Image2;
+
+   procedure Get_Metadata_Unchecked
+             (  Client  : ELV_MAX_Cube_Client'Class;
+                Data    : in out String;
+                Exclude : RF_Address := 0
+             )  is
+      Topology : Devices_Configuration renames Client.Topology;
+      Pointer  : Integer := Data'First;
+      Count    : Natural := 0;
+      Location : Room_ID := No_Room; -- Excluded device's room
+
+      procedure Flush is
+      begin
+         if Pointer > Data'First then
+            Flush_Buffer (Data (Data'First..Pointer - 1));
+            Count   := Count + 1;
+            Pointer := Data'First;
+         end if;
+      end Flush;
+
+      procedure Put (Value : Character) is
+      begin
+         if Pointer >= Data'Last then
+            Flush;
+         end if;
+         Data (Pointer) := Value;
+         Pointer := Pointer + 1;
+      end Put;
+
+      procedure Put (Value : RF_Address) is
+      begin
+         if Pointer + 2 >= Data'Last then
+            Flush;
+         end if;
+         Data (Pointer    ) := Character'Val (Value / 2**16);
+         Data (Pointer + 1) := Character'Val ((Value / 2**8) mod 256);
+         Data (Pointer + 2) := Character'Val (Value mod 256);
+         Pointer := Pointer + 3;
+      end Put;
+
+      procedure Put (Value : String) is
+      begin
+         if Pointer + Value'Length - 1 >= Data'Last then
+            Flush;
+         end if;
+         Data (Pointer..Pointer + Value'Length - 1) := Value;
+         Pointer := Pointer + Value'Length;
+      end Put;
+   begin
+      if Exclude /= 0 then
+         declare
+            Index : Integer := Find (Topology.RF, Exclude);
+         begin
+            if Index > 0 then
+               Location :=
+                  Ptr
+                  (  Get
+                     (  Topology.Devices,
+                        Get (Topology.RF, Index)
+                  )  ) .Data.Room;
+               Index := Find (Topology.Rooms, Location);
+               if (  Index = 0
+                 or else
+                     Ptr (Get (Topology.Rooms, Index)).Count > 1
+                  )  then
+                  Location := No_Room; -- Keep the room
+               end if;
+            end if;
+         end;
+      end if;
+
+      Put ('V');
+      Put (Character'Val (2));
+      Put (Character'Val (Get_Size (Topology.Rooms)));
+      for Index in 1..Get_Size (Topology.Rooms) loop
+         declare
+            Room : Room_Descriptor'Class renames
+                   Ptr (Get (Topology.Rooms, Index)).all;
+         begin
+            if Room.Count > 1 or else Room.ID /= Location then
+               Put (Character'Val (Room.ID));
+               Put (Character'Val (Room.Name_Length));
+               Put (Room.Name);
+               Put (Room.Master);
+            end if;
+         end;
+      end loop;
+      Put (Character'Val (Get_Size (Topology.Devices)));
+      for Index in 1..Get_Size (Topology.Devices) loop
+         declare
+            Device : Device_Descriptor'Class renames
+                     Ptr (Get (Topology.Devices, Index)).all;
+            Parameters : Device_Parameters renames Device.Data;
+         begin
+            if Device.Data.Address /= Exclude then
+               Put (Character'Val (Device_Type'Pos (Device.Kind_Of)));
+               Put (Parameters.Address);
+               Put (Parameters.Serial_No);
+               Put (Character'Val (Parameters.Name_Length));
+               Put (Parameters.Name);
+               Put (Character'Val (Parameters.Room));
+            end if;
+         end;
+      end loop;
+      Put (Character'Val (1));
+      Flush;
+   end Get_Metadata_Unchecked;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room_Name   : String;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                ID          : in out Room_ID;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      S_Commands := 0;
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Room_Name   => Room_Name,
+         Kind_Of     => Kind_Of,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         ID          => ID,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room_Name   : String;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                ID          : in out Room_ID;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Room_Name   => Room_Name,
+         Kind_Of     => Kind_Of,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         ID          => ID,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      S_Commands := 0;
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+      Lock       : Topology_Holder (Client'Access);
+   begin
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+      Room : Room_Descriptor'Class renames
+             Ptr (Get (Client.Topology.Rooms, Index)).all;
+   begin
+      S_Commands := 0;
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Room        => Room.ID,
+         Master      => Room.Master,
+         Kind_Of     => Kind_Of,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+      Lock       : Topology_Holder (Client'Access);
+      Room       : Room_Descriptor'Class renames
+                   Ptr (Get (Client.Topology.Rooms, Index)).all;
+   begin
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Room        => Room.ID,
+         Master      => Room.Master,
+         Kind_Of     => Kind_Of,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                ID          : Room_ID;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+      Room : Room_Descriptor'Class renames
+             Ptr
+             (  Get
+                (  Client.Topology.Rooms,
+                   Find_Room_Unchecked (Client, ID)
+             )  ) .all;
+   begin
+      S_Commands := 0;
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Room        => Room.ID,
+         Master      => Room.Master,
+         Kind_Of     => Kind_Of,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                ID          : Room_ID;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+      Lock       : Topology_Holder (Client'Access);
+      Room       : Room_Descriptor'Class renames
+                   Ptr
+                   (  Get
+                      (  Client.Topology.Rooms,
+                         Find_Room_Unchecked (Client, ID)
+                   )  ) .all;
+   begin
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Room        => Room.ID,
+         Master      => Room.Master,
+         Kind_Of     => Kind_Of,
+         Device_Name => Device_Name,
+         Serial_No   => Serial_No,
+         Address     => Address,
+         S_Commands  => S_Commands,
+         Mode        => Mode
+      );
+   end Add_New_Device;
+
+   procedure Add_New_Device_Unchecked
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room        : Room_ID;
+                Master      : RF_Address;
+                Kind_Of     : Partner_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : in out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      Devices : Device_Maps.Map  renames Client.Topology.Devices;
+      Rooms   : Rooms_Maps.Map   renames Client.Topology.Rooms;
+      Index   : constant Integer := Find (Rooms, Room);
+      Device  : Device_Handles.Handle;
+   begin
+      if Is_In (Client.Topology.RF, Address) then
+         Raise_Exception
+         (  Name_Error'Identity,
+            "A device " & Image (Address) & " already exists"
+         );
+      elsif Device_Name'Length > 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The device name is longer than 255 characters"
+         );
+      end if;
+      if 0 /= (Mode and S_Command) then
+         if Index > 0 then
+            declare
+               Location : Room_Descriptor'Class renames
+                          Get (Rooms, Index).Ptr.all;
+            begin
+               if Location.Count >= 255 then
+                  Raise_Exception
+                  (  Constraint_Error'Identity,
+                     "The number of devices in a room cannot exceed 255"
+                  );
+               end if;
+               Link_Unchecked -- The room already exists
+               (  Client,
+                  Kind_Of,
+                  Address,
+                  Location,
+                  Is_New_Master (Client, Kind_Of, Location),
+                  S_Commands
+               );
+            end;
+         end if;
+         Send
+         (  Client,  -- Set group address for the new device
+            (  "s:"
+            &  To_Base64
+               (  S_Group
+               &  Encode (Address)
+               &  Character'Val (0)
+               &  Encode (Room)
+               )
+            &  CRLF
+         )  );
+         S_Commands := S_Commands + 1;
+      end if;
+      if 0 /= (Mode and S_Response) then
+         if Index <= 0 then
+            Raise_Exception
+            (  Constraint_Error'Identity,
+               "The room " & Image (Integer (Room)) & " does not exist"
+            );
+         end if;
+         Set
+         (  Device,
+            new Device_Descriptor (Kind_Of, Device_Name'Length)
+         );
+         declare
+            Location   : Room_Descriptor'Class renames
+                         Get (Rooms, Index).Ptr.all;
+            Descriptor : Device_Descriptor'Class renames
+                         Ptr (Device).all;
+         begin
+            Descriptor.Room           := Get (Rooms, Index);
+            Descriptor.Data.Room      := Room;
+            Descriptor.Data.Address   := Address;
+            Descriptor.Data.Serial_No := Serial_No;
+            Descriptor.Data.Name      := Device_Name;
+            Location.Count := Location.Count + 1;
+            Add (Devices, (Location.ID, Location.Count), Device);
+            if Is_New_Master (Client, Kind_Of, Location) then
+               Location.Master := Address;
+            end if;
+         end;
+         Build_Reference (Client.Topology);
+         Send
+         (  Client,  -- Request the device configuration
+            "c:" & Image (Address) & CRLF
+         );
+         Set_Metadata_Unchecked (Client);
+      end if;
+   end Add_New_Device_Unchecked;
+
+   procedure Add_New_Device_Unchecked
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room_Name   : String;
+                Kind_Of     : Partner_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                ID          : in out Room_ID;
+                S_Commands  : in out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      Room : Room_Handles.Handle;
+   begin
+      if Is_In (Client.Topology.RF, Address) then
+         Raise_Exception
+         (  Name_Error'Identity,
+            "A device " & Image (Address) & " already exists"
+         );
+      elsif Device_Name'Length > 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The device name is longer than 255 characters"
+         );
+      elsif Room_Name'Length > 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The room name is longer than 255 characters"
+         );
+      end if;
+      if 0 /= (Mode and S_Command) then -- Create room
+         declare
+            Topology : Devices_Configuration renames Client.Topology;
+            Used_IDs : array (1..Room_ID'Last) of Boolean :=
+                          (others => False);
+         begin
+            for Index in 1..Get_Size (Topology.Rooms) loop
+               declare
+                  This : Room_Descriptor'Class renames
+                         Ptr (Get (Topology.Rooms, Index)).all;
+               begin
+                  if This.Name = Room_Name then -- Here is a room with
+                     ID := This.ID;             -- this name
+                     Add_New_Device_Unchecked
+                     (  Client      => Client,
+                        Room        => This.ID,
+                        Master      => This.Master,
+                        Kind_Of     => Kind_Of,
+                        Serial_No   => Serial_No,
+                        Device_Name => Device_Name,
+                        Address     => Address,
+                        S_Commands  => S_Commands,
+                        Mode        => Mode
+                     );
+                     return;
+                  end if;
+                  Used_IDs (This.ID) := True;
+               end;
+            end loop;
+            ID := 0;
+            for Index in Used_IDs'Range loop
+               if not Used_IDs (Index) then
+                  ID := Index;
+                  exit;
+               end if;
+            end loop;
+            if ID = 0 then
+               Raise_Exception
+               (  Constraint_Error'Identity,
+                  (  "The cube cannot have more than "
+                  &  Image (Integer (Room_ID'Last))
+                  &  " rooms"
+               )  );
+            end if;
+         end;
+      end if;
+      if 0 /= (Mode and S_Response) then
+         declare
+            Index : constant Integer :=
+                             Find (Client.Topology.Rooms, ID);
+         begin
+            if Index <= 0 then -- A room created with the ID
+               Set (Room, new Room_Descriptor (Room_Name'Length));
+               declare
+                  Descriptor : Room_Descriptor'Class renames
+                               Ptr (Room).all;
+               begin
+                  Descriptor.ID    := ID;
+                  Descriptor.Count := 0;
+                  Descriptor.Name  := Room_Name;
+                  if Kind_Of in Radiator_Thermostat
+                             .. Wall_Thermostat then
+                     Descriptor.Master := Address;
+                  else
+                     Descriptor.Master := 0;
+                  end if;
+               end;
+               Add (Client.Topology.Rooms, ID, Room);
+            end if;
+         end;
+      end if;
+      Add_New_Device_Unchecked
+      (  Client      => Client,
+         Room        => ID,
+         Master      => Address,
+         Kind_Of     => Kind_Of,
+         Serial_No   => Serial_No,
+         Device_Name => Device_Name,
+         Address     => Address,
+         Mode        => Mode,
+         S_Commands  => S_Commands
+      );
+   end Add_New_Device_Unchecked;
+
+   procedure Add_New_Device_Unchecked
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : in out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             )  is
+      Device : Device_Handles.Handle;
+   begin
+      if Is_In (Client.Topology.RF, Address) then
+         Raise_Exception
+         (  Name_Error'Identity,
+            "A device " & Image (Address) & " already exists"
+         );
+      elsif Device_Name'Length > 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The device name is longer than 255 characters"
+         );
+      elsif Client.Roomless >= 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The number of roomless devices cannot exceed 255"
+         );
+      end if;
+      if 0 /= (Mode and S_Response) then
+         Set
+         (  Device,
+            new Device_Descriptor (Eco_Button, Device_Name'Length)
+         );
+         declare
+            Descriptor : Device_Descriptor'Class renames
+                         Ptr (Device).all;
+         begin
+            Descriptor.Data.Room      := No_Room;
+            Descriptor.Data.Address   := Address;
+            Descriptor.Data.Serial_No := Serial_No;
+            Descriptor.Data.Name      := Device_Name;
+         end;
+         Client.Roomless := Client.Roomless + 1;
+         Add
+         (  Client.Topology.Devices,
+            (No_Room, Client.Roomless),
+            Device
+         );
+         Build_Reference (Client.Topology);
+         Send  -- Request the device configuration
+         (  Client,
+            "c:" & Image (Address) & CRLF
+         );
+         Set_Metadata_Unchecked (Client);
+      end if;
+   end Add_New_Device_Unchecked;
+
+   procedure Attach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                Index      : Positive;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      S_Commands := 0;
+      Attach_Device_Unchecked
+      (  Client,
+         Device,
+         Get (Client.Topology.Rooms, Index),
+         S_Commands,
+         Mode
+      );
+   end Attach_Device;
+
+   procedure Attach_Device
+             (  Client : in out ELV_MAX_Cube_Client;
+                Device : RF_Address;
+                Index  : Positive;
+                Mode   : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+      Lock       : Topology_Holder (Client'Access);
+   begin
+      Attach_Device_Unchecked
+      (  Client,
+         Device,
+         Get (Client.Topology.Rooms, Index),
+         S_Commands,
+         Mode
+      );
+   end Attach_Device;
+
+   procedure Attach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                ID         : Room_ID;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      S_Commands := 0;
+      Attach_Device_Unchecked
+      (  Client,
+         Device,
+         Get (Client.Topology.Rooms, Find_Room_Unchecked (Client, ID)),
+         S_Commands,
+         Mode
+      );
+   end Attach_Device;
+
+   procedure Attach_Device
+             (  Client : in out ELV_MAX_Cube_Client;
+                Device : RF_Address;
+                ID     : Room_ID;
+                Mode   : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+      Lock       : Topology_Holder (Client'Access);
+   begin
+      Attach_Device_Unchecked
+      (  Client,
+         Device,
+         Get (Client.Topology.Rooms, Find_Room_Unchecked (Client, ID)),
+         S_Commands,
+         Mode
+      );
+   end Attach_Device;
+
+   procedure Attach_Device
+             (  Client : in out ELV_MAX_Cube_Client;
+                Device : RF_Address;
+                Name   : String;
+                Mode   : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+   begin
+      Attach_Device (Client, Device, Name, S_Commands, Mode);
+   end Attach_Device;
+
+   procedure Attach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                Name       : String;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock  : Topology_Holder (Client'Access);
+      Rooms : Rooms_Maps.Map renames Client.Topology.Rooms;
+   begin
+      S_Commands := 0;
+      for Index in 1..Get_Size (Rooms) loop
+         if Ptr (Get (Rooms, Index)).Name = Name then -- The room exists
+            Attach_Device_Unchecked
+            (  Client     => Client,
+               Address    => Device,
+               To         => Get (Rooms, Index),
+               S_Commands => S_Commands,
+               Mode       => Mode
+            );
+            return;
+         end if;
+      end loop;
+      declare
+         Index : constant Integer :=
+                          Find (Client.Topology.Detached, Device);
+      begin
+         if Index <= 0 then
+            Raise_Exception
+            (  End_Error'Identity,
+               "There is no detached device " & Image (Device)
+            );
+         end if;
+         declare
+            Item : constant Device_Handles.Handle :=
+                            Get (Client.Topology.Detached, Index);
+            This : Device_Descriptor'Class renames Ptr (Item).all;
+         begin
+            Add_New_Device_Unchecked
+            (  Client      => Client,
+               Room_Name   => Name,
+               Kind_Of     => This.Kind_Of,
+               Serial_No   => This.Data.Serial_No,
+               Device_Name => This.Data.Name,
+               Address     => Device,
+               ID          => This.Data.Room,
+               S_Commands  => S_Commands,
+               Mode        => Mode
+            );
+         end;
+         if 0 /= (S_Response and Mode) then
+            Remove (Client.Topology.Detached, Index);
+         end if;
+      end;
+   end Attach_Device;
+
+   procedure Attach_Device_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Address    : RF_Address;
+                To         : Room_Handles.Handle;
+                S_Commands : in out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Devices : Device_Maps.Map renames Client.Topology.Devices;
+      Index   : constant Integer :=
+                         Find (Client.Topology.Detached, Address);
+      Room    : Room_Descriptor'Class renames Ptr (To).all;
+   begin
+      if Index <= 0 then
+         Raise_Exception
+         (  End_Error'Identity,
+            "There is no detached device " & Image (Address)
+         );
+      elsif Room.Count >= 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The number of devices in a room cannot exceed 255"
+         );
+      end if;
+      declare
+         Item   : constant Device_Handles.Handle :=
+                           Get (Client.Topology.Detached, Index);
+         Device : Device_Descriptor'Class renames Ptr (Item).all;
+      begin
+         if 0 /= (S_Command and Mode) then
+            Link_Unchecked
+            (  Client,
+               Ptr (Get (Client.Topology.Detached, Index)).Kind_Of,
+               Address,
+               Room,
+               Is_New_Master (Client, Device.Kind_Of, Room),
+               S_Commands
+            );
+            Send
+            (  Client,  -- Change group address for the moved device
+               (  "s:"
+               &  To_Base64
+                  (  S_Group
+                  &  Encode (Address)
+                  &  Character'Val (0)
+                  &  Encode (Room.ID)
+                  )
+               &  CRLF
+            )  );
+            S_Commands := S_Commands + 1;
+         end if;
+         if 0 /= (S_Response and Mode) then
+            Room.Count := Room.Count + 1;
+            Add (Devices, (Room.ID, Room.Count), Item);
+            if Is_New_Master (Client, Device.Kind_Of, Room) then
+               Room.Master := Address;
+            end if;
+            Device.Room := To;
+            Device.Data.Room := Room.ID;
+            Remove (Client.Topology.Detached, Index);
+            Build_Reference (Client.Topology);
+            Set_Metadata_Unchecked (Client);
+         end if;
+      end;
+   end Attach_Device_Unchecked;
+
+   procedure Build_Reference
+             (  Topology : in out Devices_Configuration
+             )  is
+      RF     : Address_Maps.Map renames Topology.RF;
+      Devices : Device_Maps.Map renames Topology.Devices;
+   begin
+      Erase (RF);
+      for Index in 1..Get_Size (Devices) loop
+         Add
+         (  RF,
+            Ptr (Get (Devices, Index)).Data.Address,
+            Index
+         );
+      end loop;
+   end Build_Reference;
+
+   procedure Cancel_Pairing
+             (  Client  : in out ELV_MAX_Cube_Client
+             )  is
+   begin
+      Send (Client, "x:" & CRLF);
+   end Cancel_Pairing;
 
    procedure Get_Duration
              (  Line    : String;
@@ -173,17 +1096,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Pointer : in out Integer;
                 Value   : out Centigrade
              );
-   procedure Get_Type
-             (  Line    : String;
-                Pointer : in out Integer;
-                Kind_Of : out Device_Type
-             );
 
    procedure Clean_Up
              (  Client : in out ELV_MAX_Cube_Client'Class;
                 Full   : Boolean := True
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       if Full then
          Client.Ready := 0;
@@ -201,14 +1119,16 @@ package body GNAT.Sockets.Connection_State_Machine.
      use Servers_List;
    begin
       case Update.Kind_Of is
-         when Cube_Update | Topology_Update |
+         when Cube_Update              |
+              Topology_Update          |
+              Detached_Device_Update   |
               Device_Parameters_Update =>
             null;
          when NTP_Servers_List_Update =>
             for Index in 1..Get_Size (Update.NTP_Servers_List) loop
                Trace
                (  ELV_MAX_Cube_Client'Class (Client),
-                  (  "> NTP server "
+                  (  "NTP server "
                   &  Image (Index)
                   &  "/"
                   &  Image (Get_Size (Update.NTP_Servers_List))
@@ -219,7 +1139,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          when Device_Discovery_Update =>
             Trace
             (  ELV_MAX_Cube_Client'Class (Client),
-               (  "> Device found: "
+               (  "Device found: "
                &  Image (Update.Device)
                &  " "
                &  Image (Update.Address)
@@ -229,7 +1149,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          when End_Discovery_Update =>
             Trace
             (  ELV_MAX_Cube_Client'Class (Client),
-               "> Device discovery finished"
+               "Device discovery finished"
             );
       end case;
    end Configuration_Updated;
@@ -261,7 +1181,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Data   : Device_Data
              )  is
    begin
-      Trace (ELV_MAX_Cube_Client'Class (Client), "> " & Image (Data));
+      Trace (ELV_MAX_Cube_Client'Class (Client), Image (Data));
    end Data_Received;
 
    function Decode (Value : Natural) return Week_Day is
@@ -276,6 +1196,316 @@ package body GNAT.Sockets.Connection_State_Machine.
          when others => return Fr;
       end case;
    end Decode;
+
+   procedure Delete
+             (  Client     : in out ELV_MAX_Cube_Client;
+                List       : RF_Address_Array;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock      : Topology_Holder (Client'Access);
+      Device    : Device_Handles.Handle;
+      Addresses : constant RF_Address_Array :=
+                           Sort_Unchecked (Client, List);
+      Chain     : String (1..Addresses'Length * 3);
+      RF        : Address_Maps.Map renames Client.Topology.RF;
+   begin
+      S_Commands := 0;
+      if Addresses'Length = 0  then
+         return;
+      end if;
+      declare
+         Pointer : Integer := 1;
+      begin
+         for Index in Addresses'Range loop
+            Chain (Pointer..Pointer + 2) := Encode (Addresses (Index));
+            Pointer := Pointer + 3;
+         end loop;
+      end;
+      --
+      -- Deleting devices
+      --
+      for Index in Addresses'Range loop
+         Detach_Device_Unchecked
+         (  Client,
+            Addresses (Index),
+            False,
+            Device,
+            S_Commands,
+            Mode
+         );
+      end loop;
+      if 0 /= (Mode and S_Command) then
+         Send
+         (  Client,
+            (  "t:"
+            &  Image2 (Addresses'Length)
+            &  ",1,"
+            &  To_Base64 (Chain)
+            &  CRLF
+         )  );
+      end if;
+      if 0 /= (Mode and S_Response) then
+         Build_Reference (Client.Topology);
+         Set_Metadata (Client);
+      end if;
+   end Delete;
+
+   procedure Delete
+             (  Client : in out ELV_MAX_Cube_Client;
+                List   : RF_Address_Array;
+                Mode   : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Command : Natural;
+   begin
+      Delete (Client, List, S_Command, Mode);
+   end Delete;
+
+   procedure Delete_Device
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Address : RF_Address;
+                Mode    : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural;
+      Lock       : Topology_Holder (Client'Access);
+      Index      : constant Positive :=
+                           Get_Device_Unchecked (Client, Address);
+   begin
+      Delete (Client, (1 => Address), S_Commands, Mode);
+   end Delete_Device;
+
+   procedure Delete_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Address    : RF_Address;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock  : Topology_Holder (Client'Access);
+      Index : constant Positive :=
+                       Get_Device_Unchecked (Client, Address);
+   begin
+      Delete (Client, (1 => Address), S_Commands, Mode);
+   end Delete_Device;
+
+   procedure Delete_Room
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Index      : Positive;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock       : Topology_Holder (Client'Access);
+      Room       : constant Room_Handles.Handle :=
+                            Get (Client.Topology.Rooms, Index);
+      Descriptor : Room_Descriptor'Class renames Ptr (Room).all;
+      Devices    : Device_Maps.Map renames Client.Topology.Devices;
+      List       : RF_Address_Array (1..Descriptor.Count);
+   begin
+      for Index in List'Range loop
+         List (Index) :=
+            Ptr (Get (Devices, (Descriptor.ID, Index))).Data.Address;
+      end loop;
+      Delete (Client, List, S_Commands, Mode);
+   end Delete_Room;
+
+   procedure Delete_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                Index  : Positive;
+                Mode   : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural;
+   begin
+      Delete_Room (Client, Index, S_Commands, Mode);
+   end Delete_Room;
+
+   procedure Delete_Room
+             (  Client     : in out ELV_MAX_Cube_Client;
+                ID         : Room_ID;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Delete_Room
+      (  Client     => Client,
+         Index      => Find_Room_Unchecked (Client, ID),
+         S_Commands => S_Commands,
+         Mode       => Mode
+      );
+   end Delete_Room;
+
+   procedure Delete_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                ID     : Room_ID;
+                Mode   : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Delete_Room (Client, Find_Room_Unchecked (Client, ID), Mode);
+   end Delete_Room;
+
+   procedure Detach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      Lock     : Topology_Holder (Client'Access);
+      Index    : constant Integer := Find (Client.Topology.RF, Device);
+      Detached : Device_Handles.Handle;
+   begin
+      if Index <= 0 then
+         Raise_Exception
+         (  End_Error'Identity,
+            "There is no device " & Image (Device)
+         );
+      elsif (  Ptr (Get (Client.Topology.Devices, Index)).Data.Room
+            =  No_Room
+            )  then
+         Raise_Exception
+         (  Status_Error'Identity,
+            "The " & Image (Device) & " is not located in any room"
+         );
+      end if;
+      S_Commands := 0;
+      Detach_Device_Unchecked
+      (  Client,
+         Device,
+         True,
+         Detached,
+         S_Commands,
+         Mode
+      );
+      if Is_Valid (Detached) then
+         Replace (Client.Topology.Detached, Device, Detached);
+      end if;
+   end Detach_Device;
+
+   procedure Detach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                Mode       : Setting_Mode := S_Command or S_Response
+             )  is
+      S_Commands : Natural := 0;
+   begin
+      Detach_Device (Client, Device, S_Commands, Mode);
+   end Detach_Device;
+
+   procedure Detach_Device_Unchecked
+             (  Client       : in out ELV_MAX_Cube_Client;
+                Address      : RF_Address;
+                Set_Metadata : Boolean;
+                Device       : out Device_Handles.Handle;
+                S_Commands   : in out Natural;
+                Mode         : Setting_Mode := S_Command or S_Response
+             )  is
+      Devices      : Device_Maps.Map  renames Client.Topology.Devices;
+      Rooms        : Rooms_Maps.Map   renames Client.Topology.Rooms;
+      RF           : Address_Maps.Map renames Client.Topology.RF;
+      Kind_Of      : Device_Type;
+      RF_Index     : constant Integer := Find (RF, Address);
+      Device_Index : Integer;
+      Room         : Room_Handles.Handle;
+   --
+   -- Delete_From_Devices -- Delete the device from the devices maps
+   --
+   --    Room - The room ID (No_Room if outside)
+   --
+      procedure Delete_From_Devices (Room : Room_ID) is
+         This : Device_Handles.Handle;
+         Key  : Device_Key;
+      begin
+            -- Delete from devices
+         Remove (Devices, Device_Index);
+            -- Fixing the keys with the higher positions
+         for Next in Device_Index..Get_Size (Devices) loop
+            Key := Get_Key (Devices, Next);
+            exit when Key.Room /= Room;
+            Key.Index := Key.Index - 1;
+            This := Get (Devices, Next);
+            Remove (Devices, Next);
+            Replace (Devices, Key, This);
+         end loop;
+            -- Fixing the address map
+         for Index in reverse 1..Get_Size (RF) loop
+            declare
+               Position : constant Integer := Get (RF, Index);
+            begin
+               if Position = Device_Index then -- Removed device
+                  Remove (RF, Index);
+               elsif Position > Device_Index then -- Moved device
+                  Replace (RF, Index, Position - 1);
+               end if;
+            end;
+         end loop;
+      end Delete_From_Devices;
+   begin
+      if RF_Index <= 0 then
+          return;
+      end if;
+      Device_Index := Get (RF, RF_Index);
+      Device       := Get (Devices, Device_Index);
+      declare
+         This : Device_Descriptor'Class renames Ptr (Device).all;
+      begin
+         Kind_Of := This.Kind_Of;
+         Room    := This.Room;
+      end;
+      if 0 /= (Mode and S_Command) then
+         if Is_Valid (Room) then
+            declare
+               Location : Room_Descriptor'Class renames Ptr (Room).all;
+            begin
+               Wake_Up_Unchecked (Client, Location.ID);
+               Send
+               (  Client,  -- Remove the group address for the device
+                  (  "s:"
+                  &  To_Base64
+                     (  S_Ungroup
+                     &  Encode (Address)
+                     &  Character'Val (0)
+                     &  Encode (Location.ID)
+                     )
+                  &  CRLF
+               )  );
+               S_Commands := S_Commands + 1;
+               Unlink_Unchecked
+               (  Client,
+                  Kind_Of,
+                  Address,
+                  Location,
+                  S_Commands
+               );
+            end;
+         end if;
+      end if;
+      if 0 /= (Mode and S_Response) then
+         if Is_Valid (Room) then
+            declare
+               Location : Room_Descriptor'Class renames Ptr (Room).all;
+            begin
+               Delete_From_Devices (Location.ID);
+               if Location.Count > 1 then
+                  Location.Count := Location.Count - 1;
+                  if Location.Master = Address then
+                     --
+                     -- It was the master device
+                     --
+                     Location.Master := 0;
+                  end if;
+               else -- Delete the room
+                  Remove (Rooms, Location.ID);
+               end if;
+            end;
+         else
+            Delete_From_Devices (No_Room);
+            Client.Roomless := Client.Roomless - 1;
+         end if;
+         if Set_Metadata then
+            Build_Reference (Client.Topology);
+            Set_Metadata_Unchecked (Client, Address);
+         end if;
+      end if;
+   end Detach_Device_Unchecked;
 
    procedure Disconnected (Client : in out ELV_MAX_Cube_Client) is
    begin
@@ -336,7 +1566,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       end Image;
       Data      : Stream_Element_Array  (1..100);
       Result    : Cube_Descriptor_Array (1..255);
-      Count     : Natural  := 0;
+      Count     : Natural           := 0;
       Step      : constant Duration := Timeout / Attempts;
       Start     : constant Time     := Clock;
       Last      : Stream_Element_Offset;
@@ -362,6 +1592,11 @@ package body GNAT.Sockets.Connection_State_Machine.
          Socket_Level,
          (Receive_Timeout, Step)
       );
+      Set_Socket_Option
+      (  Socket,
+         Socket_Level,
+         (Send_Timeout, Step)
+      );
       if Host = "" then
          Action := Getting_Host_By_Name;
          Address.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
@@ -377,7 +1612,12 @@ package body GNAT.Sockets.Connection_State_Machine.
       for Try in 1..Attempts loop
          exit when Count = Result'Last;
          Action := Sending_Socket;
-         Send_Socket (Socket, Announce, Last, Address'Access);
+         begin
+            Send_Socket (Socket, Announce, Last, Address'Access);
+         exception
+            when Socket_Error =>
+               goto Receive_End;
+         end;
          while (Clock - Start) < Try * Step loop
             begin
                Action := Receiving_From_Socket;
@@ -410,6 +1650,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                   null;
             end;
          end loop;
+         <<Receive_End>> null;
       end loop;
       Action := Closing_Socket;
       Close_Socket (Socket);
@@ -480,9 +1721,9 @@ package body GNAT.Sockets.Connection_State_Machine.
    function Encode (Address : RF_Address) return String is
    begin
       return
-      (  Character'Val (Address / 2**16)
+      (  Character'Val ( Address / 2**16         )
       &  Character'Val ((Address / 2**8) mod 2**8)
-      &  Character'Val (Address mod 2**8)
+      &  Character'Val ( Address         mod 2**8)
       );
    end Encode;
 
@@ -496,7 +1737,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       Split (Date, Year, Month, Day, Seconds);
       Result (1) := Character'Val ((Month / 2) * 2**5 + Day);
       Result (2) := Character'Val ((Month mod 2) * 2**7 + Year - 2000);
-      Result (3) := Character'Val (Integer (Seconds / (30.0 * 60.0)));
+      Result (3) := Character'Val (Integer (Seconds) / (30 * 60));
       return Result;
    end Encode;
 
@@ -525,11 +1766,94 @@ package body GNAT.Sockets.Connection_State_Machine.
       return Character'Val (Value);
    end Encode;
 
+   function Encode (Kind_Of : Partner_Device_Type) return Character is
+   begin
+      case Kind_Of is
+         when Radiator_Thermostat =>
+            return Character'Val (1);
+         when Radiator_Thermostat_Plus =>
+            return Character'Val (2);
+         when Wall_Thermostat =>
+            return Character'Val (3);
+         when Shutter_Contact =>
+            return Character'Val (4);
+         when Eco_Button =>
+            return Character'Val (5);
+      end case;
+   end Encode;
+
+   function Encode (Room : Room_ID) return Character is
+   begin
+      return Character'Val (Room);
+   end Encode;
+
+   procedure Faulty_Device_Received
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Length      : Natural;
+                Error       : Boolean;
+                Initialized : Boolean;
+                Orphaned    : Boolean
+             )  is
+      function Is_Initialized return String is
+      begin
+         if not Initialized then
+            return ", uninitialized";
+         else
+            return "";
+         end if;
+      end Is_Initialized;
+
+      function Is_Error return String is
+      begin
+         if Error then
+            return ", error";
+         else
+            return "";
+         end if;
+      end Is_Error;
+
+      function Is_Orphaned return String is
+      begin
+         if Orphaned then
+            return ", orphaned";
+         else
+            return "";
+         end if;
+      end Is_Orphaned;
+
+   begin
+      Trace
+      (  ELV_MAX_Cube_Client'Class (Client),
+         (  "Faulty device "
+         &  Image (Address)
+         &  ", data length "
+         &  Image (Length)
+         &  Is_Error
+         &  Is_Initialized
+         &  Is_Orphaned
+      )  );
+   end Faulty_Device_Received;
+
+   procedure Finalize (Lock : in out Topology_Holder) is
+   begin
+      if not Lock.Released then
+         Lock.Released := True;
+         Lock.Client.Topology.Self.Lock.Release;
+      end if;
+   end Finalize;
+
+   procedure Finalize (Client : in out ELV_MAX_Cube_Client) is
+   begin
+      Free (Client.Metadata);
+      Finalize (State_Machine (Client));
+   end Finalize;
+
    function Find_Room
             (  Client : ELV_MAX_Cube_Client;
                ID     : Room_ID
             )  return Positive is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Find_Room_Unchecked (Client, ID);
    end Find_Room;
@@ -555,7 +1879,6 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Line   : String
              )  is
    begin
-      Clean_Up (Client, False);
       begin
          Configuration_Updated (Client, (Kind_Of => Topology_Update));
       exception
@@ -696,9 +2019,13 @@ package body GNAT.Sockets.Connection_State_Machine.
          end loop;
       end Get_Wall_Thermostat_Data;
 
+      Update  : Update_Type;
       Pointer : Integer := Line'First;
       Address : RF_Address;
    begin
+      if Pointer > Line'Last then -- Empty C-response
+         return;
+      end if;
       begin
          Get
          (  Source  => Line,
@@ -752,49 +2079,72 @@ package body GNAT.Sockets.Connection_State_Machine.
          ID := Character'Pos (Data (Pointer));
          Pointer := Pointer + 1 + 1 + 1 + 10;
          declare
-            Lock  : Holder (Client.Topology.Lock'Access);
+            Lock  : Topology_Holder (Client'Access);
             Index : constant Integer :=
-                    Find (Client.Topology.RF, Address);
+                             Find (Client.Topology.RF, Address);
          begin
             if Index <= 0 then
-               return;
+               Update := Detached_Device_Update;
+            else
+               Update := Device_Parameters_Update;
+               declare
+                  Device : Device_Descriptor'Class renames
+                           Ptr
+                           (  Get
+                              (  Client.Topology.Devices,
+                                 Get (Client.Topology.RF, Index)
+                              )
+                           ) .all;
+               begin
+                  if Kind_Of /= Device.Kind_Of then
+                     Raise_Exception
+                     (  Data_Error'Identity,
+                        (  "Invalid C-response, wrong device type "
+                        &  Device_Type'Image (Kind_Of)
+                        &  ", expected "
+                        &  Device_Type'Image (Device.Kind_Of)
+                     )  );
+                  end if;
+                  case Kind_Of is
+                     when Cube            |
+                          Shutter_Contact |
+                          Eco_Button      |
+                          Unknown         =>
+                        null;
+                     when Wall_Thermostat =>
+                        Get_Wall_Thermostat_Data
+                        (  Data,
+                           Pointer,
+                           Device
+                        );
+                     when Radiator_Thermostat |
+                          Radiator_Thermostat_Plus =>
+                        Get_Thermostat_Data (Data, Pointer, Device);
+                  end case;
+                  Device.Init := Device.Init or Have_Settings;
+               end;
             end if;
-            declare
-               Device : Device_Descriptor'Class renames
-                        Ptr
-                        (  Get
-                           (  Client.Topology.Devices,
-                              Get (Client.Topology.RF, Index)
-                           )
-                        ) .all;
-            begin
-               if Kind_Of /= Device.Kind_Of then
-                  Raise_Exception
-                  (  Data_Error'Identity,
-                     (  "Invalid C-response, wrong device type "
-                     &  Device_Type'Image (Kind_Of)
-                     &  ", expected "
-                     &  Device_Type'Image (Device.Kind_Of)
+         end;
+         begin
+            if Update = Detached_Device_Update then
+               if Kind_Of in Radiator_Thermostat..Eco_Button then
+                  Configuration_Updated
+                  (  Client,
+                     (  Kind_Of   => Detached_Device_Update,
+                        Device    => Kind_Of,
+                        Address   => Address,
+                        Serial_No => Data (Pointer - 10..Pointer - 1)
                   )  );
                end if;
-               case Kind_Of is
-                  when Cube | Shutter_Contact | Eco_Button | Unknown =>
-                     null;
-                  when Wall_Thermostat =>
-                     Get_Wall_Thermostat_Data (Data, Pointer, Device);
-                  when Radiator_Thermostat | Radiator_Thermostat_Plus =>
-                     Get_Thermostat_Data (Data, Pointer, Device);
-               end case;
-            end;
-         end;
-         Client.Ready := Client.Ready or Got_C;
-         begin
-            Configuration_Updated
-            (  Client,
-               (  Kind_Of => Device_Parameters_Update,
-                  Device  => Kind_Of,
-                  Address => Address
-            )  );
+            else
+               Client.Ready := Client.Ready or Got_C;
+               Configuration_Updated
+               (  Client,
+                  (  Kind_Of => Device_Parameters_Update,
+                     Device  => Kind_Of,
+                     Address => Address
+               )  );
+            end if;
          exception
             when others =>
                null;
@@ -834,7 +2184,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return Positive is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Get_Device_Unchecked (Client, Address);
    end Get_Device;
@@ -844,7 +2194,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                Index  : Positive;
                Device : Positive
             )  return Positive is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Find
              (  Client.Topology.Devices,
@@ -857,7 +2207,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                ID     : Room_ID;
                Device : Positive
             )  return Positive is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Find (Client.Topology.Devices, (ID, Device));
    end Get_Device;
@@ -866,11 +2216,11 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return Device_Data is
-      Lock   : Holder (Client.Topology.Self.Lock'Access);
+      Lock   : Topology_Holder (Client'Access);
       Device : Device_Descriptor'Class renames
                Ptr (Get (Client.Topology.Devices, Index)).all;
    begin
-      if Device.Init then
+      if 0 /= (Device.Init and Have_Data) then
          return Device.Last;
       else
          Raise_Exception
@@ -886,7 +2236,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return Device_Data is
-      Lock   : Holder (Client.Topology.Self.Lock'Access);
+      Lock   : Topology_Holder (Client'Access);
       Device : Device_Descriptor'Class renames
                Ptr
                (  Get
@@ -894,7 +2244,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                      Get_Device_Unchecked (Client, Address)
                )  ) .all;
    begin
-      if Device.Init then
+      if 0 /= (Device.Init and Have_Data) then
          return Device.Last;
       else
          Raise_Exception
@@ -910,7 +2260,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return String is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Devices, Index)).Data.Name;
    end Get_Device_Name;
@@ -919,7 +2269,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return String is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get
@@ -932,7 +2282,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return Device_Parameters is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Devices, Index)).Data;
    end Get_Device_Parameters;
@@ -941,7 +2291,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return Device_Parameters is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get
@@ -954,7 +2304,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return Room_ID is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Devices, Index)).Data.Room;
    end Get_Device_Room;
@@ -963,7 +2313,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return Room_ID is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get
@@ -976,7 +2326,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return RF_Address is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Devices, Index)).Data.Address;
    end Get_Device_RF_Address;
@@ -985,7 +2335,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return String is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Devices, Index)).Data.Serial_No;
    end Get_Device_Serial_No;
@@ -994,7 +2344,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return String is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get (Client.Topology.Devices,
@@ -1006,7 +2356,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return Device_Type is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Devices, Index)).Kind_Of;
    end Get_Device_Type;
@@ -1015,7 +2365,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return Device_Type is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get
@@ -1038,6 +2388,19 @@ package body GNAT.Sockets.Connection_State_Machine.
          );
    end Get_Device_Unchecked;
 
+   function Get_Device_Unchecked_Unsafe
+            (  Client  : ELV_MAX_Cube_Client;
+               Address : RF_Address
+            )  return Natural is
+      Index : constant Integer := Find (Client.Topology.RF, Address);
+   begin
+      if Index > 0 then
+         return Get (Client.Topology.RF, Index);
+      else
+         return 0;
+      end if;
+   end Get_Device_Unchecked_Unsafe;
+
    procedure Get_Duration
              (  Line    : String;
                 Pointer : in out Integer;
@@ -1050,12 +2413,17 @@ package body GNAT.Sockets.Connection_State_Machine.
             "Invalid response, missing duration"
          );
       end if;
-      Value := Duration (Character'Pos (Line (Pointer))) * 60.0;
+      Value := Duration (Character'Pos (Line (Pointer)) * Five_Minutes);
       if Value > Day_Duration'Last then
          Value := Day_Duration'Last;
       end if;
       Pointer := Pointer + 1;
    end Get_Duration;
+
+   function Get_Duty (Client : ELV_MAX_Cube_Client) return Ratio is
+   begin
+      return Client.Duty;
+   end Get_Duty;
 
    function Get_Error (Client : ELV_MAX_Cube_Client) return Boolean is
    begin
@@ -1151,6 +2519,33 @@ package body GNAT.Sockets.Connection_State_Machine.
       Get_Field (Line, Pointer, From, To); -- Unknown field
       Get_Field (Line, Pointer, From, To); -- HTTP Connection ID
       Get_Field (Line, Pointer, From, To); -- Duty Cycle
+      if To - From /= 1 then
+         Raise_Exception
+         (  Data_Error'Identity,
+            "Invalid H-response, wrong duty cycle"
+         );
+      else
+         declare
+            Last  : constant := 100;
+            Index : Integer  := From;
+            Value : Integer;
+         begin
+            Get (Line, Index, Value, Base => 16);
+            if Value <= 0 then
+               Client.Duty := Ratio'First;
+            elsif Value >= Last then
+               Client.Duty := Ratio'Last;
+            else
+               Client.Duty := Ratio (Float (Value) / Float (Last));
+            end if;
+         exception
+            when others =>
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Invalid H-response, wrong duty cycle"
+              );
+         end;
+      end if;
       Get_Field (Line, Pointer, From, To); -- Free Memory slots
       declare
          Date : Integer;
@@ -1218,11 +2613,12 @@ package body GNAT.Sockets.Connection_State_Machine.
       Data        : constant String := From_Base64 (Line);
       Pointer     : Integer := Data'First;
       Length      : Integer := 0;
+      RF_Index    : Integer;
       Next        : Integer := Data'First;
       Address     : RF_Address;
       Answer      : Boolean;
       Error       : Boolean;
-      Valid       : Boolean;
+      Uptodate    : Boolean;
       Initialized : Boolean;
 
       procedure Get_Eco_Button_Status (Last : in out Device_Data) is
@@ -1385,13 +2781,10 @@ package body GNAT.Sockets.Connection_State_Machine.
       end Get_Wall_Thermostat_Status;
 
       function Get_Data return Device_Data is
-         Lock   : Holder (Client.Topology.Lock'Access);
+         Index  : constant Integer :=
+                           Get (Client.Topology.RF, RF_Index);
          Device : Device_Descriptor'Class renames
-                  Ptr
-                  (  Get
-                     (  Client.Topology.Devices,
-                        Get_Device_Unchecked (Client, Address)
-                  )  ) .all;
+                  Ptr (Get (Client.Topology.Devices, Index)).all;
       begin
          case Device.Kind_Of is
             when Cube | Unknown =>
@@ -1445,11 +2838,13 @@ package body GNAT.Sockets.Connection_State_Machine.
                end if;
                Get_Thermostat_Status (Device.Last);
          end case;
+         Device.Last.Address     := Address;
          Device.Last.Error       := Error;
          Device.Last.Initialized := Initialized;
-         Device.Init             := True;
+         Device.Init             := Device.Init or Have_Data;
          return Device.Last;
       end Get_Data;
+
    begin
       while Pointer <= Data'Last loop
          Length  := Character'Pos (Data (Pointer));
@@ -1464,64 +2859,41 @@ package body GNAT.Sockets.Connection_State_Machine.
          Get_Address (Data, Pointer, Address);
          Pointer := Pointer + 1;
          declare
-            Byte : constant Unsigned_8 := Character'Pos (Data (Pointer));
+            Byte : constant Unsigned_8 :=
+                            Character'Pos (Data (Pointer));
          begin
-            Valid       := 0 /= (Byte and 2**4);
+            Uptodate    := 0 /= (Byte and 2**4);
             Error       := 0 /= (Byte and 2**3);
             Answer      := 0 /= (Byte and 2**2);
             Initialized := 0 /= (Byte and 2**1);
          end;
-         Pointer := Pointer + 1;
-         if not Valid or else not Is_In (Client.Topology.RF, Address)
-         then
-            declare
-               function Is_Valid return String is
-               begin
-                  if not Valid then
-                     return ", invalid";
-                  else
-                     return "";
-                  end if;
-               end Is_Valid;
-
-               function Is_Initialized return String is
-               begin
-                  if not Initialized then
-                     return ", uninitialized";
-                  else
-                     return "";
-                  end if;
-               end Is_Initialized;
-
-               function Is_Error return String is
-               begin
-                  if Error then
-                     return ", error";
-                  else
-                     return "";
-                  end if;
-               end Is_Error;
-            begin
-               Trace
+         declare
+            Lock : Topology_Holder (Client'Access);
+         begin
+            RF_Index := Find (Client.Topology.RF, Address);
+            Pointer  := Pointer + 1;
+            if RF_Index <= 0 then
+               Release (Lock);
+               Faulty_Device_Received
                (  Client,
-                  (  "> Faulty device "
-                  &  Image (Address)
-                  &  ", data length "
-                  &  Image (Length)
-                  &  Is_Error
-                  &  Is_Initialized
-                  &  Is_Valid
-               )  );
-            end;
-         else
-            declare
-               Data : constant Device_Data := Get_Data;
-            begin
-               if Data.Kind_Of in Radiator_Thermostat..Eco_Button then
-                  Data_Received (Client, Data);
-               end if;
-            end;
-         end if;
+                  Address,
+                  Length,
+                  Error,
+                  Initialized,
+                  True
+               );
+            else
+               declare
+                  Data : constant Device_Data := Get_Data;
+               begin
+                  Release (Lock);
+                  if Data.Kind_Of in Radiator_Thermostat..Eco_Button
+                  then
+                     Data_Received (Client, Data);
+                  end if;
+               end;
+            end if;
+         end;
          Pointer := Next;
       end loop;
       Client.Ready := Client.Ready or Got_L;
@@ -1546,6 +2918,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                   &  Image (From_String (Data (Pointer..Next - 1)))
                   &  " ] "
                   &  Image (From_String (Data (Next..Data'Last)))
+                  &  " ("
+                  &  Exception_Message (Error)
+                  &  ")"
                )  );
             else
                Trace
@@ -1555,6 +2930,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                   &  " Pointer=" & Image (Pointer)
                   &  " Length="  & Image (Length)
                   &  " Next="    & Image (Next)
+                  &  " ("
+                  &  Exception_Message (Error)
+                  &  ")"
                )  );
             end if;
          end;
@@ -1567,227 +2945,177 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Client : in out ELV_MAX_Cube_Client'Class;
                 Line   : String
              )  is
-      procedure Get_Device
-                (  Data    : String;
-                   Pointer : in out Integer;
-                   No      : Positive
-                )  is
-         Kind_Of : Device_Type;
-         Name    : Integer;
-         Serial   : Integer;
-         Length  : Natural;
-         Address : RF_Address;
-         ID      : Room_ID;
-         Index   : Integer;
+      procedure Append (Data : String) is
+         Unused : constant Natural :=
+                  Client.Metadata.Size - Client.Metadata.Length;
       begin
-         Get_Type (Data, Pointer, Kind_Of);
-         Get_Address (Data, Pointer, Address);
-         if Pointer + 9 > Data'Last then
-            Raise_Exception
-            (  Data_Error'Identity,
-               (  "Invalid M-response, missing device serial number "
-               &  "(device "
-               &  Image (No)
-               &  ')'
-            )  );
+         if Unused < Data'Length then
+            declare
+               Ptr : constant String_Buffer_Ptr :=
+                     new String_Buffer
+                         (  Client.Metadata.Size + Data'Length - Unused
+                         );
+            begin
+               Ptr.Length := Client.Metadata.Length;
+               Ptr.Count  := Client.Metadata.Count;
+               Ptr.Data (1..Ptr.Length) :=
+                  Client.Metadata.Data (1..Ptr.Length);
+               Free (Client.Metadata);
+               Client.Metadata := Ptr;
+            end;
          end if;
-         Serial  := Pointer;
-         Pointer := Pointer + 10;
-         Length  := Character'Pos (Data (Pointer));
-         Pointer := Pointer + 1;
-         Name    := Pointer;
-         Pointer := Pointer + Length;
-         if Pointer - 1 > Data'Last then
-            Raise_Exception
-            (  Data_Error'Identity,
-               (  "Invalid M-response, wrong name length (device "
-               &  Image (No)
-               &  ')'
-            )  );
-         end if;
-         if Pointer > Data'Last then
-            Raise_Exception
-            (  Data_Error'Identity,
-               (  "Invalid M-response, missing room ID (device "
-               &  Image (No)
-               &  ')'
-            )  );
-         end if;
-         ID := Character'Pos (Data (Pointer));
-         Pointer := Pointer + 1;
-         Index := Find (Client.Topology.Rooms, ID);
-         declare
-            Object : constant Device_Descriptor_Ptr :=
-                     new Device_Descriptor (Kind_Of, Length);
-            Device : Device_Handles.Handle;
-         begin
-            Set (Device, Object);
-            Object.Last.Address   := Address;
-            Object.Data.Address   := Address;
-            Object.Data.Serial_No := Data (Serial..Serial + 9);
-            Object.Data.Name      := Data (Name..Name + Length - 1);
-            if Index > 0 then -- Valid room ID
-               Object.Data.Room := ID;
-               Object.Room := Get (Client.Topology.Rooms, Index);
-               Ptr (Object.Room).Count := Ptr (Object.Room).Count + 1;
-               Add
-               (  Client.Topology.Devices,
-                  (ID, Ptr (Object.Room).Count),
-                  Device
-               );
-            else
-               Object.Data.Room := No_Room;
-               Client.Roomless := Client.Roomless + 1;
-               Add
-               (  Client.Topology.Devices,
-                  (ID, Client.Roomless),
-                  Device
-               );
-            end if;
-         end;
-      end Get_Device;
-
-      procedure Get_Room
-                (  Data    : String;
-                   Pointer : in out Integer;
-                   No      : Positive
-                )  is
-         ID      : Room_ID;
-         Name    : Integer;
-         Length  : Natural;
-         Address : RF_Address;
-      begin
-         if Pointer > Data'Last then
-            Raise_Exception
-            (  Data_Error'Identity,
-               (  "Invalid M-response, missing room ID (room "
-               &  Image (No)
-               &  ')'
-            )  );
-         end if;
-         ID := Character'Pos (Data (Pointer));
-         Pointer := Pointer + 1;
-         if Is_In (Client.Topology.Rooms, ID) then
-            Raise_Exception
-            (  Data_Error'Identity,
-               (  "Invalid M-response, duplicated room ID "
-               &  Image (Integer (ID))
-            )  );
-         end if;
-         if Pointer > Data'Last then
-            Raise_Exception
-            (  Data_Error'Identity,
-               (  "Invalid M-response, missing room name length (room "
-               &  Image (No)
-               &  ')'
-            )  );
-         end if;
-         Length  := Character'Pos (Data (Pointer));
-         Pointer := Pointer + 1;
-         Name    := Pointer;
-         Pointer := Pointer + Length;
-         if Pointer - 1 > Data'Last then
-            Raise_Exception
-            (  Data_Error'Identity,
-               (  "Invalid M-response, wrong name length (room "
-               &  Image (No)
-               &  ')'
-            )  );
-         end if;
-         Get_Address (Data, Pointer, Address);
-         declare
-            Object : constant Room_Descriptor_Ptr :=
-                     new Room_Descriptor (Length);
-            Room   : Room_Handles.Handle;
-         begin
-            Set (Room, Object);
-            Object.ID     := ID;
-            Object.Count  := 0;
-            Object.Master := Address;
-            Object.Name   := Data (Name..Name + Length - 1);
-            Add (Client.Topology.Rooms, ID, Room);
-         end;
-      end Get_Room;
+         Client.Metadata.Data
+         (  Client.Metadata.Length + 1
+         .. Client.Metadata.Length + Data'Length
+         )  := Data;
+         Client.Metadata.Length := Client.Metadata.Length + Data'Length;
+         Client.Metadata.Count  := Client.Metadata.Count + 1;
+      end Append;
 
       Pointer : Integer := Line'First;
       I, J    : Integer;
+      Lock    : Topology_Holder (Client'Access);
    begin
+      if Pointer > Line'Last then -- Unconfigured cude
+         Trace
+         (  Client,
+            (  "Cube "
+            &  Image (Client.Address)
+            &  " "
+            &  Client.Serial_No
+            &  " is not configured"
+         )  );
+         Client.Ready := Client.Ready or Got_M;
+         return;
+      end if;
       begin
-         Get (Line, Pointer, I);
+         Get (Line, Pointer, I, First => 0);
       exception
-         when others =>
+         when End_Error =>
             Raise_Exception
             (  Data_Error'Identity,
                "Invalid M-response, missing first field"
             );
+         when others =>
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Invalid M-response, wrong first field"
+            );
       end;
+      if I = 0 then
+         if Client.Metadata /= null then
+            Client.Metadata.Length := 0;
+            Client.Metadata.Count  := 0;
+         end if;
+      else
+         if Client.Metadata = null then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Invalid M-response, wrong first field "
+               &  Image (I)
+               &  ", expected 0"
+            )  );
+         elsif Client.Metadata.Count /= I then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Invalid M-response, wrong first field "
+               &  Image (I)
+               &  ", expected "
+               &  Image (Client.Metadata.Count)
+            )  );
+         end if;
+      end if;
       Get_Comma (Line, Pointer);
       begin
-         Get (Line, Pointer, J);
+         Get (Line, Pointer, J, First => 0, Last => I + 1);
       exception
-         when others =>
+         when End_Error =>
             Raise_Exception
             (  Data_Error'Identity,
                "Invalid M-response, missing second field"
             );
+         when others =>
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Invalid M-response, wrong second field, expected 1.."
+               &  Image (I + 1)
+            )  );
       end;
       Get_Comma (Line, Pointer);
       declare
-         Lock : Holder (Client.Topology.Lock'Access);
+         Data : constant String :=
+                         From_Base64 (Line (Pointer..Line'Last));
       begin
-         declare
-            Data    : constant String :=
-                      From_Base64 (Line (Pointer..Line'Last));
-            Pointer : Integer := Data'First;
-            Count   : Integer;
-         begin
-            if (  Data (Pointer) /= 'V'
-               or else
-                  Data (Pointer + 1) /= Character'Val (2)
-               )
-            then
-               Raise_Exception
-               (  Data_Error'Identity,
-                  "Invalid M-response, malformed data header"
-               );
-            end if;
-            Pointer := Pointer + 2;
-            if Pointer <= Data'Last then
-               Count   := Character'Pos (Data (Pointer ));
-               Pointer := Pointer + 1;
-               for Room in 1..Count loop
-                  Get_Room (Data, Pointer, Room);
-               end loop;
-               if Pointer <= Data'Last then
-                  Count   := Character'Pos (Data (Pointer));
-                  Pointer := Pointer + 1;
-                  for Device in 1..Count loop
-                     Get_Device (Data, Pointer, Device);
-                  end loop;
+         if I + 1 < J then -- Accumulating responses
+            if I = 0 then  -- The first in the sequence
+               if Client.Metadata = null then
+                  Client.Metadata :=
+                     new String_Buffer (1_900 * Natural'Min (J, 4));
                end if;
             end if;
-         end;
-         for Index in 1..Get_Size (Client.Topology.Devices) loop
-            declare
-               Device : Device_Descriptor'Class renames
-                        Ptr (Get (Client.Topology.Devices, Index)).all;
-            begin
-               Replace
-               (  Client.Topology.RF,
-                  Device.Data.Address,
-                  Index
+            Append (Data);
+         else -- Last response
+            if I = 0 then -- Single response
+               Set_From_Metadata_Unchecked
+               (  Client,
+                  Lock,  -- Release the lock upon notification
+                  Data,
+                  True
                );
-            end;
-         end loop;
+            else
+               Append (Data);
+               Set_From_Metadata_Unchecked
+               (  Client,
+                  Lock,  -- Release the lock upon notification
+                  Client.Metadata.Data
+                  (  1
+                  .. Client.Metadata.Length
+                  ),
+                  True
+               );
+            end if;
+         end if;
       end;
-      Client.Ready := Client.Ready or Got_M;
-      begin
-         Configuration_Updated (Client, (Kind_Of => Topology_Update));
-      exception
-         when others =>
-            null;
-      end;
+   exception
+      when Error : Data_Error =>
+         Clean_Up (Client, False);
+         Client.Ready := Client.Ready or Got_M;
+         Trace
+         (  Client,
+            "Malconfigured cube: " & Exception_Message (Error)
+         );
    end Get_M;
+
+   function Get_Metadata
+            (  Client : ELV_MAX_Cube_Client
+            )  return String is
+      Length : Natural := 0;
+      Buffer : String (1..1024 * 2);
+      Lock   : Topology_Holder (Client'Access);
+   begin
+      declare
+         procedure Count (Chunk : String) is
+         begin
+            Length := Length + Chunk'Length;
+         end Count;
+         procedure Count_Length is new Get_Metadata_Unchecked (Count);
+      begin
+         Count_Length (Client, Buffer);
+      end;
+      declare
+         Result  : String (1..Length);
+         Pointer : Integer := 1;
+         procedure Store_Chunk (Chunk : String) is
+         begin
+            Result (Pointer..Pointer + Chunk'Length - 1) := Chunk;
+            Pointer := Pointer + Chunk'Length;
+         end Store_Chunk;
+         procedure Store is new Get_Metadata_Unchecked (Store_Chunk);
+      begin
+         Store (Client, Buffer);
+         return Result (1..Pointer - 1);
+      end;
+   end Get_Metadata;
 
    procedure Get_N
              (  Client : in out ELV_MAX_Cube_Client'Class;
@@ -1833,9 +3161,10 @@ package body GNAT.Sockets.Connection_State_Machine.
       end if;
    end Get_N;
 
-   function Get_Number_Of_Devices (Client : ELV_MAX_Cube_Client)
-      return Natural is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+   function Get_Number_Of_Devices
+            (  Client : ELV_MAX_Cube_Client
+            )  return Natural is
+      Lock : Topology_Holder (Client'Access);
    begin
       return Get_Size (Client.Topology.Devices);
    end Get_Number_Of_Devices;
@@ -1844,7 +3173,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return Natural is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Rooms, Index)).Count;
    end Get_Number_Of_Devices;
@@ -1853,7 +3182,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                ID     : Room_ID
             )  return Natural is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get
@@ -1862,17 +3191,20 @@ package body GNAT.Sockets.Connection_State_Machine.
              )  ).Count;
    end Get_Number_Of_Devices;
 
-   function Get_Number_Of_Rooms (Client : ELV_MAX_Cube_Client)
-      return Natural is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+   function Get_Number_Of_Rooms
+            (  Client : ELV_MAX_Cube_Client
+            )  return Natural is
+      Lock : Topology_Holder (Client'Access);
    begin
       return Get_Size (Client.Topology.Rooms);
    end Get_Number_Of_Rooms;
 
-   function Get_RF_Address (Client : ELV_MAX_Cube_Client)
-      return RF_Address is
+   function Get_RF_Address
+            (  Client    : ELV_MAX_Cube_Client;
+               Unchecked : Boolean := False
+            )  return RF_Address is
    begin
-      if 0 /= (Client.Ready and Got_H) then
+      if Unchecked or else 0 /= (Client.Ready and Got_H) then
          return Client.Address;
       else
          Raise_Exception
@@ -1886,7 +3218,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return Room_ID is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Rooms, Index)).ID;
    end Get_Room_ID;
@@ -1895,7 +3227,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return String is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Rooms, Index)).Name;
    end Get_Room_Name;
@@ -1904,7 +3236,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                ID     : Room_ID
             )  return String is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get
@@ -1917,7 +3249,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return RF_Address is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr (Get (Client.Topology.Rooms, Index)).Master;
    end Get_Room_RF_Address;
@@ -1926,7 +3258,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             (  Client : ELV_MAX_Cube_Client;
                ID     : Room_ID
             )  return RF_Address is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       return Ptr
              (  Get
@@ -2057,22 +3389,58 @@ package body GNAT.Sockets.Connection_State_Machine.
       end if;
    end Get_Version;
 
+   procedure Handshake_Received (Client : in out ELV_MAX_Cube_Client) is
+   begin
+      null;
+   end Handshake_Received;
+
+   function Has_Device_Configuration
+            (  Client : ELV_MAX_Cube_Client;
+               Index  : Positive
+            )  return Boolean is
+      Lock   : Topology_Holder (Client'Access);
+      Device : Device_Descriptor'Class renames
+               Ptr (Get (Client.Topology.Devices, Index)).all;
+   begin
+      return 0 /= (Device.Init and Have_Settings);
+   end Has_Device_Configuration;
+
+   function Has_Device_Configuration
+            (  Client  : ELV_MAX_Cube_Client;
+               Address : RF_Address
+            )  return Boolean is
+      Lock  : Topology_Holder (Client'Access);
+      Index : constant Natural :=
+                       Get_Device_Unchecked_Unsafe (Client, Address);
+   begin
+      if Index > 0 then
+         declare
+            Device : Device_Descriptor'Class renames
+                     Ptr (Get (Client.Topology.Devices, Index)).all;
+         begin
+            return 0 /= (Device.Init and Have_Settings);
+         end;
+      else
+         return False;
+      end if;
+   end Has_Device_Configuration;
+
    function Has_Device_Data
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive
             )  return Boolean is
-      Lock   : Holder (Client.Topology.Self.Lock'Access);
+      Lock   : Topology_Holder (Client'Access);
       Device : Device_Descriptor'Class renames
                Ptr (Get (Client.Topology.Devices, Index)).all;
    begin
-      return Device.Init;
+      return 0 /= (Device.Init and Have_Data);
    end Has_Device_Data;
 
    function Has_Device_Data
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return Boolean is
-      Lock   : Holder (Client.Topology.Self.Lock'Access);
+      Lock   : Topology_Holder (Client'Access);
       Device : Device_Descriptor'Class renames
                Ptr
                (  Get
@@ -2080,7 +3448,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                      Get_Device_Unchecked (Client, Address)
                )  ) .all;
    begin
-      return Device.Init;
+      return 0 /= (Device.Init and Have_Data);
    end Has_Device_Data;
 
    function Image (Data : Device_Data) return String is
@@ -2278,18 +3646,75 @@ package body GNAT.Sockets.Connection_State_Machine.
       return Image (Time.Day, Short) & ' ' & Minutes (Time.Time);
    end Image;
 
+   function Image_Metadata (Data : String) return String is
+      Size : Natural := 1024;
+   begin
+      loop
+         declare
+            Result  : String (1..Size);
+            Pointer : Integer := 1;
+         begin
+            Put_Metadata (Result, Pointer, Data);
+            return Result (1..Pointer - 1);
+         exception
+            when Layout_Error =>
+               Size := Size * 2;
+         end;
+      end loop;
+   end Image_Metadata;
+
+   procedure Initialize (Lock : in out Topology_Holder) is
+   begin
+      Lock.Client.Topology.Self.Lock.Seize;
+   end Initialize;
+
    procedure Initialize (Client : in out ELV_MAX_Cube_Client) is
    begin
       Client.LF.Value (1) := Stream_Element'Val (10);
       Initialize (State_Machine (Client));
    end Initialize;
 
+   function Is_Configured
+            (  Client : ELV_MAX_Cube_Client
+            )  return Boolean is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      if 0 = (Client.Ready and Got_H) then
+         return False;
+      end if;
+      for Index in 1..Get_Size (Client.Topology.Devices) loop
+         declare
+            Device : Device_Descriptor'Class renames
+                     Ptr (Get (Client.Topology.Devices, Index)).all;
+         begin
+            case Device.Kind_Of is
+               when Cube | Eco_Button | Unknown =>
+                  null;
+               when Radiator_Thermostat..Shutter_Contact =>
+                  if 0 = (Device.Init and Have_Settings) then
+                     return False;
+                  end if;
+            end case;
+         end;
+      end loop;
+      return True;
+   end Is_Configured;
+
+   function Is_In
+            (  Client : ELV_MAX_Cube_Client;
+               Device : RF_Address
+            )  return Boolean is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      return Find (Client.Topology.RF, Device) > 0;
+   end Is_In;
+
    function Is_In
             (  Client : ELV_MAX_Cube_Client;
                Index  : Positive;
                Device : Positive
             )  return Boolean is
-      Lock : Holder (Client.Topology.Self.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
       if Index > Get_Size (Client.Topology.Rooms) then
          return False;
@@ -2308,7 +3733,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                ID     : Room_ID;
                Device : Positive
             )  return Boolean is
-      Lock  : Holder (Client.Topology.Self.Lock'Access);
+      Lock  : Topology_Holder (Client'Access);
       Index : constant Integer := Find (Client.Topology.Rooms, ID);
    begin
       if Index <= 0 then
@@ -2322,6 +3747,120 @@ package body GNAT.Sockets.Connection_State_Machine.
          );
       end if;
    end Is_In;
+
+   function Is_New_Master
+            (  Client  : ELV_MAX_Cube_Client;
+               Kind_Of : Device_Type;
+               Room    : Room_Descriptor'Class
+            )  return Boolean is
+   begin
+      case Kind_Of is
+         when Radiator_Thermostat | Radiator_Thermostat_Plus =>
+            return Room.Master = 0;
+         when Wall_Thermostat =>
+            if Room.Master = 0 then
+               return True;
+            else
+               declare
+                  Index : constant Integer :=
+                          Find (Client.Topology.RF, Room.Master);
+               begin
+                  return
+                  (  Index <= 0
+                  or else
+                     (  Ptr
+                        (  Get
+                           (  Client.Topology.Devices,
+                              Index
+                        )  ) .Kind_Of
+                     /= Wall_Thermostat
+                  )  );
+               end;
+            end if;
+         when others =>
+            return False;
+      end case;
+   end Is_New_Master;
+
+   procedure Link_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Kind_Of    : Partner_Device_Type;
+                Address    : RF_Address;
+                To         : Room_Descriptor'Class;
+                New_Master : Boolean;
+                S_Commands : in out Natural
+             )  is
+      procedure Link (Data : Device_Parameters) is
+      begin
+         Send -- Link backward
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Link (Data.Address = To.Master)
+               &  Encode (Data.Address)
+               &  Encode (Data.Room)
+               &  Encode (Address)
+               &  Encode (Kind_Of)
+               )
+            &  CRLF
+         )  );
+         Send -- Link forward
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Link (False) -- New_Master)
+               &  Encode (Address)
+               &  Encode (Data.Room)
+               &  Encode (Data.Address)
+               &  Encode (Kind_Of)
+               )
+            &  CRLF
+         )  );
+         S_Commands := S_Commands + 2;
+      end Link;
+   begin
+      for Index in 1..To.Count loop -- Devices in the room
+         declare
+            Device : Device_Descriptor'Class renames
+                     Ptr
+                     (  Get (Client.Topology.Devices, (To.ID, Index))
+                     ) .all;
+         begin
+            if Device.Data.Address /= Address then
+               case Device.Kind_Of is
+                  when Radiator_Thermostat | Radiator_Thermostat_Plus =>
+                     case Kind_Of is -- Anything but radiator thermostat
+                        when Wall_Thermostat |
+                             Shutter_Contact |
+                             Eco_Button      =>
+                           Link (Device.Data);
+                        when others =>
+                           null;
+                     end case;
+                  when Wall_Thermostat =>
+                     case Kind_Of is -- Anything but wall thermostat
+                        when Radiator_Thermostat      |
+                             Radiator_Thermostat_Plus |
+                             Shutter_Contact          |
+                             Eco_Button               =>
+                           Link (Device.Data);
+                        when others =>
+                           null;
+                     end case;
+                  when Shutter_Contact | Eco_Button =>
+                     case Kind_Of is -- Any thermostat
+                        when Radiator_Thermostat..Wall_Thermostat =>
+                           Link (Device.Data);
+                        when others =>
+                           null;
+                     end case;
+                  when others =>
+                     null;
+               end case;
+            end if;
+         end;
+      end loop;
+   end Link_Unchecked;
 
    function Minutes (Time : Day_Duration) return String is
       Minutes : constant Integer := Integer (Time) / 60;
@@ -2400,6 +3939,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             Get_F (Client, Line (Line'First + 2..Last));
          when 'H' =>
             Get_H (Client, Line (Line'First + 2..Last));
+            Handshake_Received (ELV_MAX_Cube_Client'Class (Client));
          when 'L' =>
             Get_L (Client, Line (Line'First + 2..Last));
          when 'M' =>
@@ -2416,6 +3956,177 @@ package body GNAT.Sockets.Connection_State_Machine.
       end case;
    end Process_Packet;
 
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Client      : ELV_MAX_Cube_Client
+             )  is
+      Index : Integer := Pointer;
+      Lock  : Topology_Holder (Client'Access);
+
+      procedure Store_Chunk (Chunk : String) is
+      begin
+         if Destination'Last - Index + 1 < Chunk'Length  then
+            raise Layout_Error;
+         end if;
+         Index := Index + Chunk'Length;
+      end Store_Chunk;
+      procedure Store is new Get_Metadata_Unchecked (Store_Chunk);
+   begin
+      if (  Pointer < Destination'First
+         or else
+            (  Pointer > Destination'Last
+            and then
+               Pointer - 1 > Destination'Last
+         )  )  then
+         raise Layout_Error;
+      end if;
+      Store (Client, Destination (Index..Destination'Last));
+      Pointer := Index;
+   end Put;
+
+   procedure Put_Metadata
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Data        : String
+             )  is
+      Output : Integer := Pointer;
+      First  : Boolean := True;
+
+      procedure Put (Text : String) is
+      begin
+         Put (Destination, Output, Text);
+      end Put;
+
+      procedure Get_Device
+                (  Data    : String;
+                   Pointer : in out Integer;
+                   No      : Positive
+                )  is
+         Kind_Of : Device_Type;
+         Name    : Integer;
+         Serial   : Integer;
+         Length  : Natural;
+         Address : RF_Address;
+         ID      : Room_ID;
+      begin
+         Get_Type (Data, Pointer, Kind_Of);
+         Get_Address (Data, Pointer, Address);
+         if Pointer + 9 > Data'Last then
+            raise Data_Error with
+                  "missing device serial number (device " &
+                  Image (No) &
+                  ')';
+         end if;
+         Serial  := Pointer;
+         Pointer := Pointer + 10;
+         Length  := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         Name    := Pointer;
+         Pointer := Pointer + Length;
+         if Pointer - 1 > Data'Last then
+            raise Data_Error with
+                  "wrong name length (device " & Image (No) & ')';
+         end if;
+         if Pointer > Data'Last then
+            raise Data_Error with
+                  "missing room ID (device " & Image (No) & ')';
+         end if;
+         ID := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         Put ("(Name=" & Quote (Data (Name..Name + Length - 1)));
+         Put (", Address=" & Image (Address));
+         Put (", Serial=" & Data (Serial..Serial + 9));
+         Put (", Type=" & Image (Kind_Of));
+         if ID /= No_Room then
+            Put (", Room=" & Image (Integer (ID)));
+         end if;
+         Put (")");
+      end Get_Device;
+
+      procedure Get_Room
+                (  Data    : String;
+                   Pointer : in out Integer;
+                   No      : Positive
+                )  is
+         ID      : Room_ID;
+         Name    : Integer;
+         Length  : Natural;
+         Address : RF_Address;
+      begin
+         if Pointer > Data'Last then
+            raise Data_Error with
+                  "missing room ID (room " & Image (No) & ')';
+         end if;
+         ID := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         if Pointer > Data'Last then
+            raise Data_Error with
+                  "missing room name length (room " & Image (No) & ')';
+         end if;
+         Length  := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         Name    := Pointer;
+         Pointer := Pointer + Length;
+         if Pointer - 1 > Data'Last then
+            raise Data_Error with
+                  "wrong name length (room " & Image (No) & ')';
+         end if;
+         Get_Address (Data, Pointer, Address);
+         Put ("(Name=" & Quote (Data (Name..Name + Length - 1)));
+         Put (", Address=" & Image (Address));
+         Put (", ID=" & Image (Integer (ID)) & ")");
+      end Get_Room;
+
+      Input : Integer := Data'First;
+      Count : Integer;
+   begin
+      if (  Data (Input) /= 'V'
+         or else
+            Data (Input + 1) /= Character'Val (2)
+         )  then
+         raise Data_Error with "malformed data header";
+      end if;
+      Input := Input + 2;
+      if Input <= Data'Last then
+         Count := Character'Pos (Data (Input));
+         Input := Input + 1;
+         Put ("Rooms=(");
+         for Room in 1..Count loop
+            if First then
+               First := False;
+            else
+               Put (", ");
+            end if;
+            Get_Room (Data, Input, Room);
+         end loop;
+         Put ("), Devices=(");
+         if Input <= Data'Last then
+            Count := Character'Pos (Data (Input));
+            Input := Input + 1;
+            First := True;
+            for Device in 1..Count loop
+               if First then
+                  First := False;
+               else
+                  Put (", ");
+               end if;
+               Get_Device (Data, Input, Device);
+            end loop;
+         end if;
+         Put (")");
+      end if;
+      Pointer := Output;
+   end Put_Metadata;
+
+   procedure Query_Device_Configuration
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Address : RF_Address
+             )  is
+   begin
+      Send (Client, "c:" & Image (Address) & CRLF);
+   end Query_Device_Configuration;
+
    procedure Query_Devices (Client : in out ELV_MAX_Cube_Client) is
    begin
       Send (Client, "l:" & CRLF);
@@ -2426,15 +4137,261 @@ package body GNAT.Sockets.Connection_State_Machine.
       Send (Client, "f:" & CRLF);
    end Query_NTP_Servers;
 
-   procedure Reset_Devices (Client : in out ELV_MAX_Cube_Client) is
+   procedure Query_Unconfigured_Devices
+             (  Client : in out ELV_MAX_Cube_Client
+             )  is
+      Lock : Topology_Holder (Client'Access);
    begin
+      for Index in 1..Get_Size (Client.Topology.Devices) loop
+         declare
+            Device : Device_Descriptor'Class renames
+                     Ptr (Get (Client.Topology.Devices, Index)).all;
+         begin
+            case Device.Kind_Of is
+               when Cube | Eco_Button | Unknown =>
+                  null;
+               when Radiator_Thermostat..Shutter_Contact =>
+                  if 0 = (Device.Init and Have_Settings) then
+                     Send
+                     (  Client,
+                        "c:" & Image (Device.Data.Address) & CRLF
+                     );
+                  end if;
+            end case;
+         end;
+      end loop;
+   end Query_Unconfigured_Devices;
+
+   procedure Release (Lock : in out Topology_Holder) is
+   begin
+      if not Lock.Released then
+         Lock.Released := True;
+         Lock.Client.Topology.Self.Lock.Release;
+      end if;
+   end Release;
+
+   procedure Rename_Device
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Address : RF_Address;
+                Name    : String
+             )  is
+      procedure Copy
+                (  From : Device_Parameters;
+                   To   : in out Device_Parameters
+                )  is
+      begin
+         To.Room      := From.Room;
+         To.Address   := From.Address;
+         To.Serial_No := From.Serial_No;
+         case To.Kind_Of is
+            when Cube | Shutter_Contact | Eco_Button | Unknown =>
+               null;
+            when Radiator_Thermostat..Wall_Thermostat =>
+               To.Comfort  := From.Comfort;
+               To.Eco      := From.Eco;
+               To.Max      := From.Max;
+               To.Min      := From.Min;
+               To.Offset   := From.Offset;
+               To.Schedule := From.Schedule;
+               case To.Kind_Of is
+                  when Radiator_Thermostat | Radiator_Thermostat_Plus =>
+                     To.Window_Open     := From.Window_Open;
+                     To.Window_Time     := From.Window_Time;
+                     To.Boost_Time      := From.Boost_Time;
+                     To.Boost_Valve     := From.Boost_Valve;
+                     To.Decalcification := From.Decalcification;
+                     To.Max_Valve       := From.Max_Valve;
+                     To.Valve_Offset    := From.Valve_Offset;
+                  when others =>
+                     null;
+               end case;
+         end case;
+      end Copy;
+      Lock  : Topology_Holder (Client'Access);
+      Index : constant Positive :=
+                       Get_Device_Unchecked (Client, Address);
+   begin
+      if Name'Length > 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The device name is longer than 255 characters"
+         );
+      end if;
+      declare
+         Old_Handle     : constant Device_Handles.Handle :=
+                                   Get (Client.Topology.Devices, Index);
+         Old_Descriptor : Device_Descriptor'Class renames
+                          Ptr (Old_Handle).all;
+      begin
+         if Old_Descriptor.Data.Name /= Name then
+            if Old_Descriptor.Data.Name_Length = Name'Length then
+               Old_Descriptor.Data.Name := Name;
+            else
+               declare
+                  New_Handle : Device_Handles.Handle;
+               begin
+                  Set
+                  (  New_Handle,
+                     new Device_Descriptor
+                         (  Kind_Of     => Old_Descriptor.Kind_Of,
+                            Name_Length => Name'Length
+                  )      );
+                  declare
+                     New_Descriptor : Device_Descriptor'Class renames
+                                      Ptr (New_Handle).all;
+                  begin
+                     New_Descriptor.Init := Old_Descriptor.Init;
+                     New_Descriptor.Room := Old_Descriptor.Room;
+                     New_Descriptor.Last := Old_Descriptor.Last;
+                     New_Descriptor.Data.Name := Name;
+                     Copy (Old_Descriptor.Data, New_Descriptor.Data);
+                  end;
+                  Replace (Client.Topology.Devices, Index, New_Handle);
+               end;
+            end if;
+            Set_Metadata_Unchecked (Client);
+         end if;
+      end;
+   end Rename_Device;
+
+   procedure Rename_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                Index  : Positive;
+                Name   : String
+             )  is
+      Lock       : Topology_Holder (Client'Access);
+      Old_Handle : constant Room_Handles.Handle :=
+                            Get (Client.Topology.Rooms, Index);
+   begin
+      if Name'Length > 255 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "The room name is longer than 255 characters"
+         );
+      end if;
+      declare
+         Old_Descriptor : Room_Descriptor'Class renames
+                          Ptr (Old_Handle).all;
+      begin
+         if Old_Descriptor.Name /= Name then
+            if Old_Descriptor.Name_Length = Name'Length then
+               Old_Descriptor.Name := Name;
+            else
+               declare
+                  New_Handle : Room_Handles.Handle;
+               begin
+                  Set (New_Handle, new Room_Descriptor (Name'Length));
+                  declare
+                     New_Descriptor : Room_Descriptor'Class renames
+                                      Ptr (New_Handle).all;
+                  begin
+                     New_Descriptor.ID     := Old_Descriptor.ID;
+                     New_Descriptor.Master := Old_Descriptor.Master;
+                     New_Descriptor.Count  := Old_Descriptor.Count;
+                     New_Descriptor.Name   := Name;
+                  end;
+                  Replace (Client.Topology.Rooms, Index, New_Handle);
+               end;
+            end if;
+            Set_Metadata_Unchecked (Client);
+         end if;
+      end;
+   end Rename_Room;
+
+   procedure Rename_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                ID     : Room_ID;
+                Name   : String
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Rename_Room
+      (  Client,
+         Find_Room_Unchecked (Client, ID),
+         Name
+      );
+   end Rename_Room;
+
+   procedure Reset_Devices (Client : in out ELV_MAX_Cube_Client) is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Clean_Up (Client, False);
       Send (Client, "a:" & CRLF);
+      Set_Metadata_Unchecked (Client);
    end Reset_Devices;
 
    procedure Reset_Error (Client : in out ELV_MAX_Cube_Client) is
    begin
       Send (Client, "r:" & CRLF);
    end Reset_Error;
+
+   procedure Reset_Metadata
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Data       : String;
+                S_Commands : out Natural
+             )  is
+      Devices : Device_Maps.Map renames Client.Topology.Devices;
+      Rooms   : Rooms_Maps.Map  renames Client.Topology.Rooms;
+      Pointer : Integer := Data'First;
+   begin
+      S_Commands := 0;
+      Clean_Up (Client, False);
+--    Send (Client, "a:" & CRLF); -- Delete everything
+      declare
+         Lock : Topology_Holder (Client'Access);
+      begin
+         Set_From_Metadata_Unchecked (Client, Lock, Data, False);
+      end;
+      declare
+         Lock : Topology_Holder (Client'Access);
+      begin
+         for Index in 1..Get_Size (Rooms) loop -- The rooms
+            declare
+               Location : Room_Descriptor'Class renames
+                          Ptr (Get (Rooms, Index)).all;
+            begin
+               for Member in 1..Location.Count loop -- Room's devices
+                  Wake_Up_Unchecked (Client, Location.ID);
+                  declare
+                     Device : Device_Descriptor'Class renames
+                        Ptr (Get (Devices, (Location.ID, Member))).all;
+                  begin
+                     Link_Unchecked
+                     (  Client,
+                        Device.Kind_Of,
+                        Device.Data.Address,
+                        Location,
+                        Is_New_Master (Client, Device.Kind_Of, Location),
+                        S_Commands
+                     );
+                     Send
+                     (  Client,  -- Set group address for the device
+                        (  "s:"
+                        &  To_Base64
+                           (  S_Group
+                           &  Encode (Device.Data.Address)
+                           &  Character'Val (0)
+                           &  Encode (Location.ID)
+                           )
+                        &  CRLF
+                     )  );
+                     S_Commands := S_Commands + 1;
+                  end;
+               end loop;
+            end;
+         end loop;
+         Set_Metadata_Unchecked (Client);
+      end;
+   end Reset_Metadata;
+
+   procedure Reset_Metadata
+             (  Client : in out ELV_MAX_Cube_Client;
+                Data   : String
+             )  is
+      S_Commands : Natural := 0;
+   begin
+      Reset_Metadata (Client, Data, S_Commands);
+   end Reset_Metadata;
 
    procedure Send
              (  Client : in out ELV_MAX_Cube_Client;
@@ -2451,6 +4408,249 @@ package body GNAT.Sockets.Connection_State_Machine.
          Send (Client, Data, Pointer);
       end if;
    end Send;
+
+   procedure Set_From_Metadata_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Lock       : in out Topology_Holder'Class;
+                Data       : String;
+                M_Response : Boolean
+             )  is
+      procedure Get_Device
+                (  Data    : String;
+                   Pointer : in out Integer;
+                   No      : Positive
+                )  is
+         Kind_Of : Device_Type;
+         Name    : Integer;
+         Serial   : Integer;
+         Length  : Natural;
+         Address : RF_Address;
+         ID      : Room_ID;
+         Index   : Integer;
+      begin
+         Get_Type (Data, Pointer, Kind_Of);
+         Get_Address (Data, Pointer, Address);
+         if Pointer + 9 > Data'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "missing device serial number (device "
+               &  Image (No)
+               &  ')'
+            )  );
+         end if;
+         Serial  := Pointer;
+         Pointer := Pointer + 10;
+         Length  := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         Name    := Pointer;
+         Pointer := Pointer + Length;
+         if Pointer - 1 > Data'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "wrong name length (device "
+               &  Image (No)
+               &  ')'
+            )  );
+         end if;
+         if Pointer > Data'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "missing room ID (device "
+               &  Image (No)
+               &  ')'
+            )  );
+         end if;
+         ID := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         Index := Find (Client.Topology.Rooms, ID);
+         declare
+            Object : constant Device_Descriptor_Ptr :=
+                     new Device_Descriptor (Kind_Of, Length);
+            Device : Device_Handles.Handle;
+         begin
+            Set (Device, Object);
+            Object.Last.Address   := Address;
+            Object.Data.Address   := Address;
+            Object.Data.Serial_No := Data (Serial..Serial + 9);
+            Object.Data.Name      := Data (Name..Name + Length - 1);
+            if Index > 0 then -- Valid room ID
+               Object.Data.Room := ID;
+               Object.Room := Get (Client.Topology.Rooms, Index);
+               Ptr (Object.Room).Count := Ptr (Object.Room).Count + 1;
+               Add
+               (  Client.Topology.Devices,
+                  (ID, Ptr (Object.Room).Count),
+                  Device
+               );
+            else
+               Object.Data.Room := No_Room;
+               Client.Roomless := Client.Roomless + 1;
+               Add
+               (  Client.Topology.Devices,
+                  (No_Room, Client.Roomless),
+                  Device
+               );
+            end if;
+         end;
+      end Get_Device;
+
+      procedure Get_Room
+                (  Data    : String;
+                   Pointer : in out Integer;
+                   No      : Positive
+                )  is
+         ID      : Room_ID;
+         Name    : Integer;
+         Length  : Natural;
+         Address : RF_Address;
+      begin
+         if Pointer > Data'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "missing room ID (room "
+               &  Image (No)
+               &  ')'
+            )  );
+         end if;
+         ID := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         if Is_In (Client.Topology.Rooms, ID) then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "duplicated room ID "
+               &  Image (Integer (ID))
+            )  );
+         end if;
+         if Pointer > Data'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "missing room name length (room "
+               &  Image (No)
+               &  ')'
+            )  );
+         end if;
+         Length  := Character'Pos (Data (Pointer));
+         Pointer := Pointer + 1;
+         Name    := Pointer;
+         Pointer := Pointer + Length;
+         if Pointer - 1 > Data'Last then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "wrong name length (room "
+               &  Image (No)
+               &  ')'
+            )  );
+         end if;
+         Get_Address (Data, Pointer, Address);
+         declare
+            Object : constant Room_Descriptor_Ptr :=
+                     new Room_Descriptor (Length);
+            Room   : Room_Handles.Handle;
+         begin
+            Set (Room, Object);
+            Object.ID     := ID;
+            Object.Count  := 0;
+            Object.Master := Address;
+            Object.Name   := Data (Name..Name + Length - 1);
+            Add (Client.Topology.Rooms, ID, Room);
+         end;
+      end Get_Room;
+
+      Pointer : Integer := Data'First;
+      Count   : Integer;
+   begin
+      if (  Data (Pointer) /= 'V'
+        or else
+            Data (Pointer + 1) /= Character'Val (2)
+         )
+      then
+         Raise_Exception
+         (  Data_Error'Identity,
+            "malformed data header"
+         );
+      end if;
+      Pointer := Pointer + 2;
+      if Pointer <= Data'Last then
+         Count   := Character'Pos (Data (Pointer ));
+         Pointer := Pointer + 1;
+         for Room in 1..Count loop
+            Get_Room (Data, Pointer, Room);
+         end loop;
+         if Pointer <= Data'Last then
+            Count   := Character'Pos (Data (Pointer));
+            Pointer := Pointer + 1;
+            for Device in 1..Count loop
+               Get_Device (Data, Pointer, Device);
+            end loop;
+         end if;
+      end if;
+      for Index in 1..Get_Size (Client.Topology.Devices) loop
+        declare
+           Device : Device_Descriptor'Class renames
+                    Ptr (Get (Client.Topology.Devices, Index)).all;
+        begin
+           Replace
+           (  Client.Topology.RF,
+              Device.Data.Address,
+              Index
+           );
+        end;
+      end loop;
+      if M_Response then
+         Client.Ready := Client.Ready or Got_M;
+      end if;
+      begin
+         Release (Lock);
+         Configuration_Updated
+         (  ELV_MAX_Cube_Client'Class (Client),
+            (Kind_Of => Topology_Update)
+         );
+      exception
+         when others =>
+            null;
+      end;
+   exception
+      when Error : Data_Error =>
+         if M_Response then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Invalid M-response, " & Exception_Message (Error)
+            );
+         else
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Invalid metadata, " & Exception_Message (Error)
+            );
+         end if;
+   end Set_From_Metadata_Unchecked;
+
+   procedure Set_Metadata (Client : in out ELV_MAX_Cube_Client) is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Set_Metadata_Unchecked (Client);
+   end Set_Metadata;
+
+   procedure Set_Metadata_Unchecked
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Exclude : RF_Address := 0
+             )  is
+      Count : Natural := 0;
+
+      procedure Send_Chunk (Chunk : String) is
+      begin
+         Send
+         (  Client,
+            "m:" & Image2 (Count) & "," & To_Base64 (Chunk) & CRLF
+         );
+         Count := Count + 1;
+      end Send_Chunk;
+      procedure Send_Metadata is
+         new Get_Metadata_Unchecked (Send_Chunk);
+
+      Data : String (1..Chunk_Size); -- Base64 encoding source
+   begin
+      Send_Metadata (Client, Data, Exclude);
+   end Set_Metadata_Unchecked;
 
    procedure Set_NTP_Servers
              (  Client : in out ELV_MAX_Cube_Client;
@@ -2502,7 +4702,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       end;
    end Set_NTP_Servers;
 
-   procedure Set_Thermostat_Automatic
+   procedure Set_Thermostat_Automatic_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : Device_Descriptor'Class;
                 Temperature : Centigrade
@@ -2541,16 +4741,16 @@ package body GNAT.Sockets.Connection_State_Machine.
             &  CRLF
          )  );
       end if;
-   end Set_Thermostat_Automatic;
+   end Set_Thermostat_Automatic_Unchecked;
 
    procedure Set_Thermostat_Automatic
              (  Client      : in out ELV_MAX_Cube_Client;
                 Index       : Positive;
                 Temperature : Centigrade := Centigrade'First
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Automatic
+      Set_Thermostat_Automatic_Unchecked
       (  Client,
          Ptr (Get (Client.Topology.Devices, Index)).all,
          Temperature
@@ -2562,9 +4762,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Address     : RF_Address;
                 Temperature : Centigrade := Centigrade'First
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Automatic
+      Set_Thermostat_Automatic_Unchecked
       (  Client,
          Ptr
          (  Get
@@ -2575,7 +4775,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       );
    end Set_Thermostat_Automatic;
 
-   procedure Set_Thermostat_Boost
+   procedure Set_Thermostat_Boost_Unchecked
              (  Client : in out ELV_MAX_Cube_Client;
                 Device : Device_Descriptor'Class
              )  is
@@ -2599,15 +4799,15 @@ package body GNAT.Sockets.Connection_State_Machine.
             )
          &  CRLF
       )  );
-   end Set_Thermostat_Boost;
+   end Set_Thermostat_Boost_Unchecked;
 
    procedure Set_Thermostat_Boost
              (  Client : in out ELV_MAX_Cube_Client;
                 Index  : Positive
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Boost
+      Set_Thermostat_Boost_Unchecked
       (  Client,
          Ptr (Get (Client.Topology.Devices, Index)).all
       );
@@ -2617,9 +4817,9 @@ package body GNAT.Sockets.Connection_State_Machine.
              (  Client  : in out ELV_MAX_Cube_Client;
                 Address : RF_Address
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Boost
+      Set_Thermostat_Boost_Unchecked
       (  Client,
          Ptr
          (  Get
@@ -2629,7 +4829,81 @@ package body GNAT.Sockets.Connection_State_Machine.
       );
    end Set_Thermostat_Boost;
 
-   procedure Set_Thermostat_Parameters
+   procedure Set_Thermostat_Display
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Device      : Device_Descriptor'Class;
+                Temperature : Display_Mode
+             )  is
+   begin
+      if Device.Kind_Of /= Wall_Thermostat then
+         Raise_Exception
+         (  Mode_Error'Identity,
+            (  "The device "
+            &  Image (Device.Data.Address)
+            &  " is not a wall thermostat"
+         )  );
+      end if;
+      case Temperature is
+         when Display_Is_Temperature =>
+            Send
+            (  Client,
+               (  "s:"
+               &  To_Base64
+                  (  S_Mode
+                  &  Encode (Device.Data.Address)
+                  &  Character'Val (Ptr (Device.Room).ID)
+                  &  Character'Val (4)
+                  )
+               &  CRLF
+            )  );
+         when Display_Set_Temperature =>
+            Send
+            (  Client,
+               (  "s:"
+               &  To_Base64
+                  (  S_Mode
+                  &  Encode (Device.Data.Address)
+                  &  Character'Val (Ptr (Device.Room).ID)
+                  &  Character'Val (0)
+                  )
+               &  CRLF
+            )  );
+      end case;
+   end Set_Thermostat_Display;
+
+   procedure Set_Thermostat_Display
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Temperature : Display_Mode
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Set_Thermostat_Display
+      (  Client,
+         Ptr (Get (Client.Topology.Devices, Index)).all,
+         Temperature
+      );
+   end Set_Thermostat_Display;
+
+   procedure Set_Thermostat_Display
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Temperature : Display_Mode
+             )  is
+      Lock : Topology_Holder (Client'Access);
+   begin
+      Set_Thermostat_Display
+      (  Client,
+         Ptr
+         (  Get
+            (  Client.Topology.Devices,
+               Get_Device_Unchecked (Client, Address)
+         )  ) .all,
+         Temperature
+      );
+   end Set_Thermostat_Display;
+
+   procedure Set_Thermostat_Parameters_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
                 Comfort     : Centigrade;
@@ -2641,7 +4915,13 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Window_Time : Day_Duration;
                 Mode        : Setting_Mode
              )  is
-      Minutes : constant Integer := Integer (Window_Time / 60.0);
+      Airing : constant Float :=
+               Float'Max
+               (  0.0,
+                  Float'Min
+                  (  Float (Window_Time) / Float (Five_Minutes),
+                     255.0
+               )  );
    begin
       if Device.Kind_Of not in Radiator_Thermostat
                             .. Radiator_Thermostat_Plus then
@@ -2671,7 +4951,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                &  Character'Val (Encode (Min))
                &  Character'Val (Encode (Offset + 3.5))
                &  Character'Val (Encode (Window_Open))
-               &  Character'Val (Minutes)
+               &  Character'Val (Integer (Float'Ceiling (Airing)))
                )
             &  CRLF
          )  );
@@ -2685,7 +4965,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Device.Data.Window_Open := Window_Open;
          Device.Data.Window_Time := Window_Time;
       end if;
-   end Set_Thermostat_Parameters;
+   end Set_Thermostat_Parameters_Unchecked;
 
    procedure Set_Thermostat_Parameters
              (  Client      : in out ELV_MAX_Cube_Client;
@@ -2699,9 +4979,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Window_Time : Day_Duration;
                 Mode        : Setting_Mode := S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Parameters
+      Set_Thermostat_Parameters_Unchecked
       (  Client      => Client,
          Device      => Ptr (Get (Client.Topology.Devices, Index)).all,
          Comfort     => Comfort,
@@ -2727,9 +5007,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Window_Time : Day_Duration;
                 Mode        : Setting_Mode := S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Parameters
+      Set_Thermostat_Parameters_Unchecked
       (  Client      => Client,
          Device      => Ptr
                         (  Get
@@ -2747,13 +5027,14 @@ package body GNAT.Sockets.Connection_State_Machine.
       );
    end Set_Thermostat_Parameters;
 
-   procedure Set_Thermostat_Parameters
+   procedure Set_Thermostat_Parameters_Unchecked
              (  Client  : in out ELV_MAX_Cube_Client;
                 Device  : in out Device_Descriptor'Class;
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
                 Min     : Centigrade;
+                Offset  : Centigrade;
                 Mode    : Setting_Mode
              )  is
    begin
@@ -2782,7 +5063,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                &  Character'Val (Encode (Eco))
                &  Character'Val (Encode (Max))
                &  Character'Val (Encode (Min))
-               &  Character'Val (0)
+               &  Character'Val (Encode (Offset + 3.5))
                &  Character'Val (0)
                &  Character'Val (0)
                )
@@ -2794,8 +5075,9 @@ package body GNAT.Sockets.Connection_State_Machine.
          Device.Data.Eco     := Eco;
          Device.Data.Min     := Min;
          Device.Data.Max     := Max;
+         Device.Data.Offset  := Offset;
       end if;
-   end Set_Thermostat_Parameters;
+   end Set_Thermostat_Parameters_Unchecked;
 
    procedure Set_Thermostat_Parameters
              (  Client  : in out ELV_MAX_Cube_Client;
@@ -2804,17 +5086,19 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Eco     : Centigrade;
                 Max     : Centigrade;
                 Min     : Centigrade;
+                Offset  : Centigrade;
                 Mode    : Setting_Mode := S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Parameters
+      Set_Thermostat_Parameters_Unchecked
       (  Client  => Client,
          Device  => Ptr (Get (Client.Topology.Devices, Index)).all,
          Comfort => Comfort,
          Eco     => Eco,
          Max     => Max,
          Min     => Min,
+         Offset  => Offset,
          Mode    => Mode
       );
    end Set_Thermostat_Parameters;
@@ -2826,11 +5110,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Eco     : Centigrade;
                 Max     : Centigrade;
                 Min     : Centigrade;
+                Offset  : Centigrade;
                 Mode    : Setting_Mode := S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Parameters
+      Set_Thermostat_Parameters_Unchecked
       (  Client  => Client,
          Device  => Ptr
                     (  Get
@@ -2841,11 +5126,12 @@ package body GNAT.Sockets.Connection_State_Machine.
          Eco     => Eco,
          Max     => Max,
          Min     => Min,
+         Offset  => Offset,
          Mode    => Mode
       );
    end Set_Thermostat_Parameters;
 
-   procedure Set_Thermostat_Schedule
+   procedure Set_Thermostat_Schedule_Unchecked
              (  Client   : in out ELV_MAX_Cube_Client;
                 Device   : in out Device_Descriptor'Class;
                 Day      : Week_Day;
@@ -2945,7 +5231,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       if 0 /= (S_Response and Mode) then
          Device.Data.Schedule (Day) := (Schedule'Length, Schedule);
       end if;
-   end Set_Thermostat_Schedule;
+   end Set_Thermostat_Schedule_Unchecked;
 
    procedure Set_Thermostat_Schedule
              (  Client   : in out ELV_MAX_Cube_Client;
@@ -2954,9 +5240,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Schedule : Points_List;
                 Mode     : Setting_Mode := S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Schedule
+      Set_Thermostat_Schedule_Unchecked
       (  Client,
          Ptr (Get (Client.Topology.Devices, Index)).all,
          Day,
@@ -2972,9 +5258,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Schedule : Points_List;
                 Mode     : Setting_Mode := S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Schedule
+      Set_Thermostat_Schedule_Unchecked
       (  Client,
          Ptr
          (  Get
@@ -2987,7 +5273,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       );
    end Set_Thermostat_Schedule;
 
-   procedure Set_Thermostat_Temperature
+   procedure Set_Thermostat_Temperature_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
                 Temperature : Centigrade;
@@ -3028,7 +5314,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             &  CRLF
          )  );
       end if;
-   end Set_Thermostat_Temperature;
+   end Set_Thermostat_Temperature_Unchecked;
 
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
@@ -3036,9 +5322,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Temperature : Centigrade;
                 Manual      : Boolean := True
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Temperature
+      Set_Thermostat_Temperature_Unchecked
       (  Client,
          Ptr (Get (Client.Topology.Devices, Index)).all,
          Temperature,
@@ -3052,9 +5338,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Temperature : Centigrade;
                 Manual      : Boolean := True
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Temperature
+      Set_Thermostat_Temperature_Unchecked
       (  Client,
          Ptr
          (  Get
@@ -3066,7 +5352,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       );
    end Set_Thermostat_Temperature;
 
-   procedure Set_Thermostat_Temperature
+   procedure Set_Thermostat_Temperature_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
                 Temperature : Centigrade;
@@ -3094,7 +5380,7 @@ package body GNAT.Sockets.Connection_State_Machine.
             )
          &  CRLF
       )  );
-   end Set_Thermostat_Temperature;
+   end Set_Thermostat_Temperature_Unchecked;
 
    procedure Set_Thermostat_Temperature
              (  Client      : in out ELV_MAX_Cube_Client;
@@ -3102,9 +5388,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Temperature : Centigrade;
                 Up_Until    : Time
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Temperature
+      Set_Thermostat_Temperature_Unchecked
       (  Client,
          Ptr (Get (Client.Topology.Devices, Index)).all,
          Temperature,
@@ -3118,9 +5404,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Temperature : Centigrade;
                 Up_Until    : Time
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Temperature
+      Set_Thermostat_Temperature_Unchecked
       (  Client,
          Ptr
          (  Get
@@ -3132,7 +5418,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       );
    end Set_Thermostat_Temperature;
 
-   procedure Set_Thermostat_Valve
+   procedure Set_Thermostat_Valve_Unchecked
              (  Client          : in out ELV_MAX_Cube_Client;
                 Device          : in out Device_Descriptor'Class;
                 Boost_Time      : Duration;
@@ -3183,7 +5469,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Device.Data.Max_Valve       := Max_Valve;
          Device.Data.Valve_Offset    := Valve_Offset;
       end if;
-   end Set_Thermostat_Valve;
+   end Set_Thermostat_Valve_Unchecked;
 
    procedure Set_Thermostat_Valve
              (  Client          : in out ELV_MAX_Cube_Client;
@@ -3193,11 +5479,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Decalcification : Week_Time := (Mo, 12.0 * 3600.0);
                 Max_Valve       : Ratio     := 1.0;
                 Valve_Offset    : Ratio     := 0.0;
-                Mode         : Setting_Mode := S_Command or S_Response
+                Mode            : Setting_Mode :=
+                                               S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Valve
+      Set_Thermostat_Valve_Unchecked
       (  Client => Client,
          Device => Ptr (Get (Client.Topology.Devices, Index)).all,
          Boost_Time      => Boost_Time,
@@ -3217,11 +5504,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Decalcification : Week_Time := (Mo, 12.0 * 3600.0);
                 Max_Valve       : Ratio     := 1.0;
                 Valve_Offset    : Ratio     := 0.0;
-                Mode         : Setting_Mode := S_Command or S_Response
+                Mode            : Setting_Mode :=
+                                               S_Command or S_Response
              )  is
-      Lock : Holder (Client.Topology.Lock'Access);
+      Lock : Topology_Holder (Client'Access);
    begin
-      Set_Thermostat_Valve
+      Set_Thermostat_Valve_Unchecked
       (  Client => Client,
          Device => Ptr
                    (  Get
@@ -3236,6 +5524,168 @@ package body GNAT.Sockets.Connection_State_Machine.
          Mode            => Mode
       );
    end Set_Thermostat_Valve;
+
+   procedure Set_Time
+             (  Client : in out ELV_MAX_Cube_Client;
+                Winter : Zone_Data := CET;
+                Summer : Zone_Data := CEST
+             )  is
+      use Ada.Calendar.Time_Zones;
+      use Ada.Characters.Handling;
+
+      function Image (Value : Time_Zone_Offset) return String is
+         Seconds : Unsigned_32;
+      begin
+         if Value >= 0.0 then
+            Seconds := Unsigned_32 (Value);
+         else
+            Seconds := 16#FFFF_FFFF# - Unsigned_32 (1.0 - Value);
+         end if;
+         return
+         (  4 => Character'Val (             Seconds      and 16#FF#),
+            3 => Character'Val (Shift_Right (Seconds,  8) and 16#FF#),
+            2 => Character'Val (Shift_Right (Seconds, 16) and 16#FF#),
+            1 => Character'Val (Shift_Right (Seconds, 24)           )
+         );
+      end Image;
+      Zone : String (1..24) := (others => Character'Val (0));
+   begin
+      Zone (1..Winter.Name'Length)       := Winter.Name;
+      Zone (12..11 + Summer.Name'Length) := Summer.Name;
+      Zone ( 6) := Character'Val (Winter.Start);
+      Zone ( 7) := Character'Val (Day_Of_Week'Pos (Winter.Day));
+      Zone ( 9) := Character'Val (Integer (Winter.Hour));
+      Zone (18) := Character'Val (Summer.Start);
+      Zone (19) := Character'Val (Day_Of_Week'Pos (Summer.Day));
+      Zone (20) := Character'Val (Integer (Summer.Hour));
+      if Winter.Start = Summer.Start then
+         if Winter.Start < 6 then
+            Zone (18) := Character'Val (Winter.Start + 6);
+         else
+            Zone (18) := Character'Val (Summer.Start - 6);
+         end if;
+      end if;
+      Zone ( 8) := Character'Val (3);
+      Zone (20) := Character'Val (2);
+      Zone ( 9..12) := Image (Winter.Offset);
+      Zone (21..24) := Image (Summer.Offset);
+      declare
+         Now  : constant Time := Clock;
+      begin
+         Send
+         (  Client,
+            (  "v:"
+            &  To_Base64 (Zone)
+            &  ","
+            &  To_Lower
+               (  Image
+                  (  Integer
+                     (  Now
+--                  -  Duration (UTC_Time_Offset (Now)) * 60.0
+                     -  Epoch
+                     ),
+                     Base => 16
+               )  )
+            &  CRLF
+         )  );
+      end;
+   end Set_Time;
+
+   function Sort_Unchecked
+            (  Client : ELV_MAX_Cube_Client;
+               Data   : RF_Address_Array
+            )  return RF_Address_Array is
+      RF      : Address_Maps.Map renames Client.Topology.RF;
+      Devices : Device_Maps.Map  renames Client.Topology.Devices;
+      Rooms   : Rooms_Maps.Map   renames Client.Topology.Rooms;
+      Result  : RF_Address_Array (1..Data'Length);
+      Size    : Natural := 0;
+
+      function Less (Left, Right : RF_Address) return Boolean is
+         Index : Integer;
+      begin
+         if Left = Right then
+            return False;
+         end if;
+         Index := Find (RF, Left);
+         if Index <= 0 then               -- Orphaned Left
+            if Find (RF, Right) <= 0 then -- Orphaned Right
+               return Left < Right;       -- Ordered orphaned by address
+            else
+               return True;               -- Orphaned left is less
+            end if;
+         end if;
+         declare
+            Left_Key : constant Device_Key := Get_Key (Devices, Index);
+         begin
+            Index := Find (RF, Right);
+            if Index <= 0 then            -- Orphaned right
+               return False;              -- Orphaned right is less
+            end if;
+            declare
+               Right_Key : constant Device_Key :=
+                                    Get_Key (Devices, Index);
+            begin
+               if Left_Key.Room /= Right_Key.Room then    -- Ordered by
+                  return Left_Key.Room < Right_Key.Room;  -- room number
+               end if;
+               declare
+                  Master : constant RF_Address :=
+                           Ptr (Get (Rooms, Left_Key.Room)).Master;
+               begin
+                  if Right = Master then
+                     return True;  -- Right room master is greater
+                  elsif Left = Master then
+                     return False; -- Left room master is greater
+                  else             -- Compare by reverse number
+                     return Left_Key.Index > Right_Key.Index;
+                  end if;
+               end;
+            end;
+         end;
+      end Less;
+
+      function Find (Item : RF_Address) return Integer is
+         From : Natural := 0;
+         To   : Natural := Size + 1;
+         This : Natural;
+      begin
+         if Size = 0 then
+            return -1;
+         end if;
+         loop
+            This := (From + To) / 2;
+            if Item = Result (This) then
+               return This;
+            elsif Less (Item, Result (This)) then
+               if This - From <= 1 then
+                  return -This;
+               end if;
+               To := This;
+            else
+               if To - This <= 1 then
+                  return - This - 1;
+               end if;
+               From := This;
+            end if;
+         end loop;
+      end Find;
+
+   begin
+      for Index in Data'Range loop
+         declare
+            Where : Integer := Find (Data (Index));
+         begin
+            if Where < 0 then
+               Where := -Where;
+               Result (Where + 1..Size + 1) := Result (Where..Size);
+               Result (Where)               := Data (Index);
+               Size := Size + 1;
+            end if;
+         end;
+      end loop;
+      return Result (1..Size);
+   end Sort_Unchecked;
 
    procedure Status_Received
              (  Client : in out ELV_MAX_Cube_Client;
@@ -3255,7 +5705,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       Put (Text, Pointer, " free");
       Trace
       (  ELV_MAX_Cube_Client'Class (Client),
-         "> " & Text (1..Pointer - 1)
+         Text (1..Pointer - 1)
       );
    end Status_Received;
 
@@ -3266,9 +5716,165 @@ package body GNAT.Sockets.Connection_State_Machine.
    begin
       Trace
       (  Client.Listener.Factory.all,
-         Image (Get_Client_Address (Client)) & ' ' & Message
-      );
+         (  Get_Client_Name (Client.Listener.Factory.all, Client)
+         &  ' '
+         &  Message
+      )  );
    end Trace;
+
+   procedure Unlink_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Kind_Of    : Partner_Device_Type;
+                Address    : RF_Address;
+                From       : Room_Descriptor'Class;
+                S_Commands : in out Natural
+             )  is
+      procedure Unlink (Data : Device_Parameters) is
+      begin
+         Send -- Unlink forward
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Unlink (False)
+               &  Encode (Address)
+               &  Encode (Data.Room)
+               &  Encode (Data.Address)
+               &  Encode (Data.Kind_Of)
+               )
+            &  CRLF
+         )  );
+         Send -- Unlink backward
+         (  Client,
+            (  "s:"
+            &  To_Base64
+               (  S_Unlink (Data.Address = From.Master)
+               &  Encode (Data.Address)
+               &  Encode (Data.Room)
+               &  Encode (Address)
+               &  Encode (Kind_Of)
+               )
+            &  CRLF
+         )  );
+         S_Commands := S_Commands + 2;
+      end Unlink;
+   begin
+      for Index in 1..From.Count loop -- Devices in the room
+         declare
+            Device : Device_Descriptor'Class renames
+                     Ptr
+                     (  Get (Client.Topology.Devices, (From.ID, Index))
+                     ) .all;
+         begin
+            if Device.Data.Address /= Address then
+               case Device.Kind_Of is
+                  when Radiator_Thermostat | Radiator_Thermostat_Plus =>
+                     case Kind_Of is -- Anything but radiator thermostat
+                        when Wall_Thermostat | Shutter_Contact | Eco_Button =>
+                           Unlink (Device.Data);
+                        when others =>
+                           null;
+                     end case;
+                  when Wall_Thermostat =>
+                     case Kind_Of is -- Anything but wall thermostat
+                        when Radiator_Thermostat      |
+                             Radiator_Thermostat_Plus |
+                             Shutter_Contact          |
+                             Eco_Button               =>
+                           Unlink (Device.Data);
+                        when others =>
+                           null;
+                     end case;
+                  when Shutter_Contact | Eco_Button =>
+                     case Kind_Of is -- Any thermostat
+                        when Radiator_Thermostat..Wall_Thermostat =>
+                           Unlink (Device.Data);
+                        when others =>
+                           null;
+                     end case;
+                  when others =>
+                     null;
+               end case;
+            end if;
+         end;
+      end loop;
+   end Unlink_Unchecked;
+
+   procedure Wake_Up
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Address  : RF_Address;
+                Interval : Duration := 30.0
+             )  is
+   begin
+      if Is_In (Client, Address) then
+--         Send (Client, "r:D," & Image (Address) & CRLF);
+--         Send (Client, "r:" & CRLF);
+         Send
+         (  Client,
+            (  "z:"
+            &  Image (Integer (Float'Ceiling (Float (Interval))))
+            &  ",D,"
+            &  Image (Address)
+            &  CRLF
+         )  );
+      else
+         Raise_Exception
+         (  End_Error'Identity,
+            "No device with the address " & Image (Address) & " exists"
+         );
+      end if;
+   end Wake_Up;
+
+   procedure Wake_Up
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Room     : Room_ID;
+                Interval : Duration := 30.0
+             )  is
+      Index : Integer;
+   begin
+      declare
+         Lock : Topology_Holder (Client'Access);
+      begin
+         Index := Find (Client.Topology.Rooms, Room);
+      end;
+      if Index > 0 then
+         Wake_Up_Unchecked (Client, Room, Interval);
+      else
+         Raise_Exception
+         (  End_Error'Identity,
+            "No room " & Image (Integer (Room)) & " exists"
+         );
+      end if;
+   end Wake_Up;
+
+   procedure Wake_Up
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Interval : Duration := 30.0
+             )  is
+   begin
+      Send
+      (  Client,
+         (  "z:"
+         &  Image (Integer (Float'Ceiling (Float (Interval))))
+         &  ",A"
+         &  CRLF
+      )  );
+   end Wake_Up;
+
+   procedure Wake_Up_Unchecked
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Room     : Room_ID;
+                Interval : Duration := 30.0
+             )  is
+   begin
+      Send
+      (  Client,
+         (  "z:"
+         &  Image (Integer (Float'Ceiling (Float (Interval))))
+         &  ",G,"
+         &  Image (Integer (Room))
+         &  CRLF
+      )  );
+   end Wake_Up_Unchecked;
 
    procedure Write
              (  Stream : access Root_Stream_Type'Class;

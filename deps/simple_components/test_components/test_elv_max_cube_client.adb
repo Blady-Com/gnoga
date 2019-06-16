@@ -3,7 +3,7 @@
 --     Test_ELV_MAX_Cube_Client                    Luebeck            --
 --  ELV MAX! Cube client test                      Summer, 2015       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  10:33 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,10 +35,13 @@ with Interfaces;                   use Interfaces;
 with Strings_Edit;                 use Strings_Edit;
 with Strings_Edit.Floats;          use Strings_Edit.Floats;
 with Strings_Edit.Integers;        use Strings_Edit.Integers;
+with Strings_Edit.Quoted;          use Strings_Edit.Quoted;
 with Strings_Edit.Streams;         use Strings_Edit.Streams;
+with Test_ELV_MAX_Cube_Clients;    use Test_ELV_MAX_Cube_Clients;
 
 with GNAT.Sockets.Connection_State_Machine.
      ELV_MAX_Cube_Client.Stream_IO;
+with System.Exception_Traces;
 
 procedure Test_ELV_MAX_Cube_Client is
    Timeout : constant Duration := 3.0;
@@ -54,17 +57,9 @@ procedure Test_ELV_MAX_Cube_Client is
          Received => GNAT.Sockets.Server.Trace_Decoded,
          Sent     => GNAT.Sockets.Server.Trace_Decoded
       );
-      Set
-      (  Reference,
-         new ELV_MAX_Cube_Client
-             (  Listener    => Server'Unchecked_Access,
-                Line_Length => 1024,
-                Input_Size  => 80,
-                Output_Size => 200
-      )      );
+      Set (Reference, new Test_Client (Server'Unchecked_Access));
       declare
-         Client : ELV_MAX_Cube_Client renames
-                  ELV_MAX_Cube_Client (Ptr (Reference).all);
+         Client : Test_Client renames Test_Client (Ptr (Reference).all);
       begin
          Connect
          (  Server,
@@ -106,7 +101,11 @@ procedure Test_ELV_MAX_Cube_Client is
                      Image (Get_Room_RF_Address (Client, Index))
                );
                Put (Line, Pointer, " ");
-               Put (Line, Pointer, Get_Room_Name (Client, Index));
+               Put
+               (  Line,
+                  Pointer,
+                  Quote (Get_Room_Name (Client, Index), ''')
+               );
                Put (Line, Pointer, " ");
                Put
                (  Line,
@@ -147,7 +146,11 @@ procedure Test_ELV_MAX_Cube_Client is
                   Get_Device_Serial_No (Client, Index)
                );
                Put (Line, Pointer, " ");
-               Put (Line, Pointer, Get_Device_Name (Client, Index));
+               Put
+               (  Line,
+                  Pointer,
+                  Quote (Get_Device_Name (Client, Index), ''')
+               );
                Room := Get_Device_Room (Client, Index);
                Put (Line, Pointer, " in the room ");
                Put (Line, Pointer, Integer (Room));
@@ -404,9 +407,37 @@ if false then
          delay Timeout;
 end if;
 if false then
+         Client.Test_Mode := Device_Pairing;
          Put_Line ("Device pairing ----------------------------------");
          Pair (Client, 50.0);
          delay 60.0;
+end if;
+if False then
+         Put_Line ("Device renaming ---------------------------------");
+         Rename_Device (Client, 16#12F4E0#, "Basic thermostat");
+         delay 2.0;
+end if;
+if False then
+         Put_Line ("Room renaming -----------------------------------");
+         Rename_Room (Client, Room_ID'(1), "Room 1");
+         delay 2.0;
+end if;
+if False then
+         Client.Test_Mode := Delete_Device;
+         Put_Line ("Device removing ---------------------------------");
+         Delete (Client, (1 => 16#12F4E0#));
+         delay 2.0;
+end if;
+if False then
+         Client.Test_Mode := Device_Pair_And_Add;
+         Put_Line ("Device pairing and adding -----------------------");
+         Pair (Client, 20.0);
+         delay 23.0;
+end if;
+if False then
+         Put_Line ("Room removing -----------------------------------");
+         Delete_Room (Client, Room_ID'(1));
+         delay 2.0;
 end if;
 --           Put_Line ("Add device 050F6D");
 --           Add_New_Device
@@ -420,6 +451,9 @@ end if;
    end Test_Asynchronous;
 
 begin
+   System.Exception_Traces.Trace_On
+   (  System.Exception_Traces.Every_Raise
+   );
    declare
       use GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client;
       use Stream_IO;

@@ -1,0 +1,24 @@
+with "../components/components.gpr";
+with "../components/components-connections_server.gpr";
+with "../components/components-connections_server-mqtt.gpr";
+
+project Components.Connections_Server.Test_MQTT_Serial is
+
+   for Source_Files use
+       (  "test_mqtt_servers.adb",
+          "test_mqtt_servers.ads",
+          "test_mqtt_clients.adb",
+          "test_mqtt_clients.ads",
+          "test_mqtt_serials.adb",
+          "test_mqtt_serials.ads",
+          "test_mqtt_serial.adb"
+       );
+   for Main use ("test_mqtt_serial.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Connections_Server.Test_MQTT_Serial;

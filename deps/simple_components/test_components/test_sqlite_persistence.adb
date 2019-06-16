@@ -3,7 +3,7 @@
 --     Test_SQLite_Persistence                     Luebeck            --
 --  Implementation                                 Winter, 2010       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  21:14 23 Nov 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,10 +33,13 @@ with Persistent.SQLite;       use Persistent.SQLite;
 with Test_Persistent_Object;  use Test_Persistent_Object;
 with Test_Persistent_Tree;    use Test_Persistent_Tree;
 
+with SQLite;
+
 procedure Test_SQLite_Persistence is
    Object_Name : constant String := "The tree";
    Folder_Name : constant String := "Folder";
 begin
+   Put_Line ("SQLite v" & SQLite.Version);
    Put_Line ("Session 1");
    declare
       DB   : Storage_Handle := Create ("sqlite.db", True);

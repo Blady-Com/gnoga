@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  14:04 26 Dec 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,9 +28,13 @@
 with Ada.Streams;        use Ada.Streams;
 with GNAT.Sockets.MQTT;  use GNAT.Sockets.MQTT;
 
+with Synchronization.Events;
+
 package Test_MQTT_Clients is
 
    type Test_Client is new MQTT_Pier with private;
+   procedure Finalize (Client : in out Test_Client);
+   function Get_Name (Client : Test_Client) return String;
    procedure On_Connect_Accepted
              (  Pier            : in out Test_Client;
                 Session_Present : Boolean
@@ -53,7 +57,16 @@ package Test_MQTT_Clients is
                 Packet : Packet_Identifier;
                 Codes  : Return_Code_List
              );
+   procedure Set_Name (Pier : in out Test_Client; Name : String);
+   procedure Reset_Event (Pier : in out Test_Client);
+   procedure Wait_For_Event (Pier : in out Test_Client);
 private
-   type Test_Client is new MQTT_Pier with null record;
+   use Synchronization.Events;
+
+   type String_Ptr is access String;
+   type Test_Client is new MQTT_Pier with record
+      Name   : String_Ptr;
+      Action : Event; -- Connected/subscribed
+   end record;
 
 end Test_MQTT_Clients;

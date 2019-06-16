@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  20:28 27 May 2018  --
+--                                Last revision :  10:32 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -3600,8 +3600,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       Trace
       (  Client.Listener.Factory.all,
-         Image (Get_Client_Address (Client)) & ' ' & Message
-      );
+         (  Get_Client_Name (Client.Listener.Factory.all, Client)
+         &  ' '
+         &  Message
+      )  );
    end Trace;
 
    function Validate_Key

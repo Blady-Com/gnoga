@@ -4,14 +4,14 @@
 <link REL="SHORTCUT ICON" href="http://www.dmitry-kazakov.de/favicon.ico">
   <TITLE>String processing for Ada</TITLE>
   <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <META name="keywords" content="String, Edit, Parse, Format, Formatted, Ada, Ada 95, Ada 2005, Ada programming, Roman number, Roman numeral, subscript number, superscript number, UTF-8, Unicode, UTF8, wildcard, wildcard matching, wildcard pattern, upper case, lower case, uppercase, lowercase, code point, character map">
+  <META name="keywords" content="String, Edit, Parse, Format, Formatted, Ada, Ada 95, Ada 2005, Ada programming, Roman number, Roman numeral, subscript number, superscript number, UTF-8, Unicode, UTF8, wildcard, wildcard matching, wildcard pattern, upper case, lower case, uppercase, lowercase, code point, character map, ChaCha20, Poly1305, KOI8, RADIX-50, Windows-1250, Windows-1251, Windows-1252, ISO/IEC 8859, MacOS Roman">
   <META name="Author" content="Dmitry Kazakov">
   <META name="Description" content="Strings edit">
 </HEAD>
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800000">
 <P align="center">
 <BIG><BIG><BIG><B>STRINGS EDIT</B></BIG></BIG><BR>
-<EM>version 3.3</EM><BR>
+<EM>version 3.4</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a>
@@ -55,7 +55,7 @@ are supported by the package:
     Base64 encoding;<LI>
 	<a href="https://tools.ietf.org/html/rfc8439">RFC 8439</a> (ChaCha20 cipher, 
 	Poly1305 digest, AEAD);<LI>
-    UTF-8 encoded strings;<LI>
+    UTF-8 encoded strings and conversions to older encoding standards;<LI>
     Unicode maps and sets;<LI>
     Wildcard pattern matching.
 </UL>
@@ -177,12 +177,12 @@ can be here.</p>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-<a href="http://www.dmitry-kazakov.de/ada/strings_3_3.tgz">strings_3_3.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
+<a href="http://www.dmitry-kazakov.de/ada/strings_3_4.tgz">strings_3_4.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/strings_3_3.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/strings_3_4.tgz">
  <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -2240,6 +2240,1229 @@ the following maps:<blockquote>
 	<P><tt>Lower_Case_Map : <font color="#0000FF">constant</font> 
 	Unicode_Mapping;<br>
 	Upper_Case_Map : <font color="#0000FF">constant</font> Unicode_Mapping;</tt></blockquote>
+<h3><a name="7.10"></a>7.10. 8-bit encodings</h3>
+<h4><span style="font-weight: 400">The following packages provide means to 
+recode into and from UTF-8 the legacy encodings which use 8-bit octet as an 
+encoding element. Note that the encoding of Ada Character is also 8-bit ISO/IEC 8859-1. 
+For Ada Character and String the conversions to and from UTF-8 are provided in the package
+<a href="#Strings_Edit.UTF8.Handling">Strings_Edit.UTF8.Handling</a>.</span></h4>
+<h4><a name="7.10.1"></a>7.10.1. Windows-1250</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1250"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1250">Strings_Edit.UTF8.Windows_1250</a> 
+subprograms for dealing with Windows-1250 encoding (Central Europe).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1250<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1250<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1250<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1250 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (129<sub>10</sub>, 131<sub>10</sub>, 136<sub>10</sub>, 144<sub>10</sub>, 152<sub>10</sub>). The variants with the parameter <b>
+Substitute</b> do not raise exception and use the code point specified by the 
+parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1250<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1250<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1250<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1250 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If omitted Constraint_Error is propagated when an 
+unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.2"></a>7.10.2. Windows-1251</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1251"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1251">Strings_Edit.UTF8.Windows_1251</a> 
+subprograms for dealing with Windows-1251 encoding. The encoding provides 
+Cyrillic characters used in Eastern European languages.<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1251<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1251<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1251<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1251 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+the invalid code (152<sub>10</sub>). The variants with the parameter <b>
+Substitute</b> do not raise exception and use the code point specified by the 
+parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1251<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1251<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1251<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1251 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.3"></a>7.10.3. Windows-1252</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1252"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1252">Strings_Edit.UTF8.Windows_1252</a> 
+subprograms for dealing with Windows-1252 encoding. The encoding is largely 
+Latin-1 except for some code positions, so it is different for Ada's Character 
+encoding.<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1252<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1252<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1252<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1252 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (129<sub>10</sub>, 141<sub>10</sub>, 143<sub>10</sub>, 144<sub>10</sub>, 157<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1252<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1252<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1252<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1252 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.4"></a>7.10.4. Windows-1253</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1253"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1253">Strings_Edit.UTF8.Windows_1253</a> 
+subprograms for dealing with Windows-1253 encoding (Greek language).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1253<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1253<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1253<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1253 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (129<sub>10</sub>, 136<sub>10</sub>, 138<sub>10</sub>, 
+140<sub>10</sub>.. 144<sub>10</sub>, 152<sub>10</sub>, 154<sub>10</sub>, 156<sub>10</sub>.. 
+159<sub>10</sub>, 170<sub>10</sub>, 210<sub>10</sub>, 255<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1253<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1253<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1253<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1253 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.5"></a>7.10.5. Windows-1254</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1254"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1254">Strings_Edit.UTF8.Windows_1254</a> 
+subprograms for dealing with Windows-1254 encoding (Turkish language).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1254<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1254<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1254<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1254 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (129<sub>10</sub>, 141<sub>10</sub>..146<sub>10</sub>, 157<sub>10</sub>,158<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1254<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1254<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1254<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1254 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.6"></a>7.10.6. Windows-1255</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1255"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1255">Strings_Edit.UTF8.Windows_1255</a> 
+subprograms for dealing with Windows-1255 encoding (Hebrew language).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1255<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1255<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1255<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1255 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (129<sub>10</sub>, 138<sub>10</sub>, 140<sub>10</sub>..144<sub>10</sub>, 154<sub>10</sub>, 156<sub>10</sub>..159<sub>10</sub>, 
+217<sub>10</sub>..223<sub>10</sub>, 251<sub>10</sub>, 252<sub>10</sub>, 255<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1255<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1255<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1255<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1255 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.7"></a>7.10.7. Windows-1256</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1256"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1256">Strings_Edit.UTF8.Windows_1256</a> 
+subprograms for dealing with Windows-1256 encoding (Arabic script).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1256 (<b>Value</b> : 
+	Character) <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1256 (<b>Value</b> : 
+	String&nbsp;&nbsp; ) <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1256 (<b>Value</b>&nbsp;: 
+	String&nbsp;&nbsp; ) <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1256 to 
+a code point, UTF-8 or Wide_String.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1256<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1256<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1256<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1256 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.8"></a>7.10.8. Windows-1257</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1257"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1257">Strings_Edit.UTF8.Windows_1257</a> 
+subprograms for dealing with Windows-1257 encoding (Baltic languages).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1257<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1257<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1257<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1257 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (129<sub>10</sub>, 131<sub>10</sub>, 136<sub>10</sub>, 138<sub>10</sub>, 140<sub>10</sub>, 144<sub>10</sub>, 150<sub>10</sub>, 152<sub>10</sub>, 154<sub>10</sub>, 160<sub>10</sub>, 161<sub>10</sub>, 165<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1257<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1257<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1257<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1257 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with String <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.9"></a>7.10.9. Windows-1258</h4>
+<P><a name="Strings_Edit.UTF8.Windows_1258"></a>The package
+<a href="#Strings_Edit.UTF8.Windows_1258">Strings_Edit.UTF8.Windows_1258</a> 
+subprograms for dealing with Windows-1258 encoding (Vietnamese script).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_Windows_1258<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_Windows_1258<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_Windows_1258<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Windows-1258 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (129<sub>10</sub>, 138<sub>10</sub>, 141<sub>10</sub>..144<sub>10</sub>, 
+154<sub>10</sub>, 157<sub>10</sub>, 158<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_Windows_1258<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_Windows_1258<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_Windows_1258<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Windows-1258 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with String <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.10"></a>7.10.10. KOI8</h4>
+<P><a name="Strings_Edit.UTF8.KOI8"></a>The package
+<a href="#Strings_Edit.UTF8.KOI8">Strings_Edit.UTF8.KOI8</a> 
+subprograms for dealing with KIO8 encoding (<a class="external mw-magiclink-rfc" rel="nofollow" href="https://tools.ietf.org/html/rfc1489">RFC 
+1489</a>). KOI8 was the most used encoding for Latin/Cyrillic alphabet intermix 
+prior to Unicode.<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_KOI8 (<b>Value</b> 
+	: Character) <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_KOI8 (<b>Value</b> : String&nbsp;&nbsp; 
+	) <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_KOI8 (<b>Value</b> : String&nbsp;&nbsp; 
+	) <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in KOI8 to 
+a code point, UTF-8 or Wide_String.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_KOI8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_KOI8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_KOI8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to KOI8 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.11"></a>7.10.11. ISO/IEC 8859-2</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_2"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_2">Strings_Edit.UTF8.ISO_8859_2</a> 
+subprograms for dealing with ISO/IEC 8859-2 encoding (Central European 
+languages).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-2 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-2 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.12"></a>7.10.12. ISO/IEC 8859-3</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_3"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_3">Strings_Edit.UTF8.ISO_8859_3</a> 
+subprograms for dealing with ISO/IEC 8859-2 encoding (Southern European 
+languages).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-3 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>, 164<sub>10</sub>, 174<sub>10</sub>, 190<sub>10</sub>, 195<sub>10</sub>, 208<sub>10</sub>, 
+225<sub>10</sub>, 240<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-3 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.13"></a>7.10.13. ISO/IEC 8859-4</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_4"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_4">Strings_Edit.UTF8.ISO_8859_4</a> 
+subprograms for dealing with ISO/IEC 8859-4 encoding (Northern European 
+languages).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-4 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-4 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.14"></a>7.10.14. ISO/IEC 8859-5</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_5"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_5">Strings_Edit.UTF8.ISO_8859_5</a> 
+subprograms for dealing with ISO/IEC 8859-5 encoding (languages using Cyrillic 
+alphabets).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-5 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-5 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes invalid 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.15"></a>7.10.15. ISO/IEC 8859-6</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_6"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_6">Strings_Edit.UTF8.ISO_8859_6</a> 
+subprograms for dealing with ISO/IEC 8859-6 encoding (Arabic 
+language).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-6 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>, 174<sub>10</sub>..186<sub>10</sub>, 188<sub>10</sub>..190<sub>10</sub>, 192<sub>10</sub>, 219<sub>10</sub>..223<sub>10</sub>, 243<sub>10</sub>..255<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-6 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.16"></a>7.10.16. ISO/IEC 8859-7</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_7"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_7">Strings_Edit.UTF8.ISO_8859_7</a> 
+subprograms for dealing with ISO/IEC 8859-7 encoding (Greek 
+language).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-7 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>, 174<sub>10</sub>, 210<sub>10</sub>, 255<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-7 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes invalid 
+code points in <b>Value</b>. If omitted Constraint_Error is propagated when an 
+unsupported code point appears in <b>Value</b>. The variant with String <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.17"></a>7.10.17. ISO/IEC 8859-8</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_8"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_8">Strings_Edit.UTF8.ISO_8859_8</a> 
+subprograms for dealing with ISO/IEC 8859-8 encoding (Hebrew 
+language).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-8 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>, 161<sub>10</sub>, 191<sub>10</sub>..222<sub>10</sub>, 
+251<sub>10</sub>, 252<sub>10</sub>, 255<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-8 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.18"></a>7.10.18. ISO/IEC 8859-9</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_9"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_9">Strings_Edit.UTF8.ISO_8859_9</a> 
+subprograms for dealing with ISO/IEC 8859-5 encoding (Turkish 
+languages).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_9<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_9<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_9<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-9 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_9<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_9<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_9<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-9 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If omitted Constraint_Error is propagated when an 
+unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.19"></a>7.10.19. ISO/IEC 8859-10</h4>
+<P><a name="Strings_Edit.UTF8.ISO_8859_10"></a>The package
+<a href="#Strings_Edit.UTF8.ISO_8859_10">Strings_Edit.UTF8.ISO_8859_10</a> 
+subprograms for dealing with ISO/IEC 8859-10 encoding (Nordic 
+languages).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ISO_8859_10<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_10<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Code_Point ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ISO_8859_10<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Wide_Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in ISO/IEC 8859-10 to 
+a code point, UTF-8 or Wide_String. Constraint_Error is propagated when <b>Value</b> contains 
+an invalid code (128<sub>10</sub>..159<sub>10</sub>). The variants 
+with the parameter <b>Substitute</b> do not raise exception and use the code 
+point specified by the parameter instead.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ISO_8859_10<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_10<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ISO_8859_10<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to ISO/IEC 8859-10 encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If <b>Value</b> is omitted Constraint_Error is propagated when 
+an unsupported 
+code point appears in <b>Value</b>. The variant with string <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h4><a name="7.10.20"></a>7.10.20. Mac OS Roman</h4>
+<P><a name="Strings_Edit.UTF8.MacOS_Roman"></a>The package
+<a href="#Strings_Edit.UTF8.MacOS_Roman">Strings_Edit.UTF8.MacOS_Roman</a> 
+subprograms for dealing with Mac OS Roman encoding.<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_MacOS_Roman (<b>Value</b> : 
+	Character) <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_MacOS_Roman (<b>Value</b> : 
+	String&nbsp;&nbsp; ) <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_MacOS_Roman (<b>Value</b> : 
+	String&nbsp;&nbsp; ) <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in Mac OS Roman to 
+a code point, UTF-8 or Wide_String.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_MacOS_Roman<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_MacOS_Roman<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_MacOS_Roman<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to Mac OS Roman encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If omitted Constraint_Error is propagated when an 
+unsupported code point appears in <b>Value</b>. The variant with String <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
+<h3><a name="7.11"></a>7.11. 16-bit encodings</h3>
+<h4><a name="7.11.1"></a>7.11.1. RADIX-50</h4>
+<P><a name="Strings_Edit.UTF8.RADIX50"></a>The package
+<a href="#Strings_Edit.UTF8.RADIX50">Strings_Edit.UTF8.RADIX50</a> 
+subprograms for dealing with DEC RADIX-50 encoding used mainly in the FILES-11 file 
+system. The valid code points of the 
+encoding include capital letters A..Z, digits 0..9, space, dollar ($), point (.) 
+and percent (%).<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_RADIX50 (<b>Value</b> 
+	: Wide_Character) <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>This function converts the parameter <b>Value</b> from RADIX-50. The source is 
+a sequence of 
+16-bit elements (words) represented by Wide_Character. Each word (Wide_Character) contains 3 
+RADIX-50 characters.</p>
+<blockquote>
+  <P><tt>
+	<font color="#0000FF">function</font> To_RADIX50<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert <b>Value</b> to a sequence of RADIX-50 words. The parameter <b>Substitute</b> 
+specifies the character that substitutes invalid code points in <b>Value</b>. 
+Missing 1 or 2 characters in the source are padded with spaces.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <tr>
+    <TD>Constraint_Error</TD>
+    <TD> Invalid code points appear in <b>Value</b> and no <b>Substitute</b> 
+	given</TD>
+  </tr>
+  <tr>
+    <TD>  Data_Error</TD>
+    <TD>Illegal UTF-8 string <b>Value</b></TD>
+  </tr>
+  <TR>
+    <TD>  Use_Error</TD>
+    <TD><b>Substitute</b> is not one of '<tt>A</tt>'..'<tt>Z</tt>', '<tt>0</tt>'..'<tt>9</tt>', '<tt>$</tt>', '<tt>.</tt>', '<tt>%</tt>'</TD>
+  </TR>
+</TABLE>
+
 <hr>
 
 <P align="right">
@@ -2431,6 +3654,9 @@ stream is used as follows:<ul>
 	<a href="#Strings_Edit.Streams.Get">Get</a> is called to extract it from the 
 	stream as a string. End_Error is propagated upon writing outside the stream 
 	buffer.</li>
+	<li><i>Input/output scenario</i>: The stream is written. Then
+	<a href="#Strings_Edit.Streams.Rewind">Rewind</a> is called. After that the 
+	written data can be read back.</li>
 	</ul>
 	<blockquote>
 		<P><tt><font color="#0000FF"><a name="Strings_Edit.Streams.Get"></a>function</font> Get (<b>Stream</b> : 
@@ -2728,6 +3954,62 @@ The following instances of the package are provided:<br>
   </tr>
 </TABLE>
 
+<h3><a name="10.4"></a>10.4. Recoding UTF-8 streams</h3>
+<P><a name="Strings_Edit.UTF8.Recoding_Streams"></a>The package
+<a href="#Strings_Edit.UTF8.Recoding_Streams">Strings_Edit.UTF8.Recoding_Streams</a> provides 
+a stream that can be used to recode the original stream into and from UTF-8:<blockquote>
+<p><tt><font color="#0000FF">type</font> Encoding_Type <font color="#0000FF">is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; ISO_8859_1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_4,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_5,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_6,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_7,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_8,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_9,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISO_8859_10,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1250,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1251,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1252,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1253,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1254,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1255,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1256,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1257,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Windows_1258,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; KOI8,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MacOS_Roman<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This enumeration data type specifies the encoding of the original stream.</p>
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Recoding_Stream<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Encoded&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">access</font> Root_Stream_Type'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Encoding_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Decoding_Default : Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Encoding_Default : Character<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
+Root_Stream_Type <font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p><u><i>Reading</i></u>. Reading from the stream causes reading from the 
+encoded stream specified by the discriminant <b>Encoded</b>. The obtained octets 
+are decoded according to the encoding specified by the discriminant <b>Method</b> 
+and then recoded into an UTF-8 stream. The result delivered to the reader of the 
+stream.<br>
+<br>
+<u><i>Writing</i></u>. Written stream elements are considered UTF-8 octets. The 
+corresponding code points are recoded according to the encoding <b>Method</b> used by the 
+stream <b>Encoded</b> and then are written into it. Data_Error is propagated if the written UTF-8 sequence 
+is invalid.</p>
+<p>The discriminant <b>Decoding_Default</b> specifies the code point to be used 
+when an 
+element in the <b>Encoded</b> stream is illegal according to <b>
+Method</b>. The discrimiant <b>Encoding_Default</b> is the character used to 
+represent code points which have no correspondence in the encoding <b>Method</b>.</p>
+
 <hr>
 
 <P align="right">
@@ -2782,8 +4064,7 @@ in Base64. The text can be padded using = and ==. Data_Error is propagated on
 decoding errors.</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> To_Base64 (<b>Text</b> : 
 	String) <font color="#0000FF">return</font> String;</tt></blockquote>
-<P>This function encodes <b>Text</b> in Base64.</p><blockquote>
-	<P>&nbsp;</blockquote>
+<P>This function encodes <b>Text</b> in Base64.</p>
 <hr>
 <p align="right">
 <a name="13"></a><a href="#12"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#17"><IMG src="index.gif"
@@ -3048,7 +4329,7 @@ without setting another key-nonce pair into the cipher.</p>
 <a name="14"></a><a href="#13"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#17"><IMG src="index.gif"
  alt="[TOC]" width="29" height="29"></A><a href="#15"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H2>14. Packages</H2>
-<TABLE border="5" cellpadding="3" cellspacing="0">
+<TABLE border="5" cellpadding="3" cellspacing="0" style="border-left-width: 0px">
   <TR>
     <TD bgcolor="#008080" colspan="6"><FONT color="#FFFFFF"><B>Package</B></FONT></TD>
     <TD bgcolor="#008080"><FONT color="#FFFFFF"><B>Provides</B></FONT></TD>
@@ -3058,7 +4339,7 @@ without setting another key-nonce pair into the cipher.</p>
     <TD>The basic string I/O</TD>
   </tr>
 	<tr>
-    <TD rowspan="39" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;&nbsp;&nbsp;&nbsp;<p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <TD rowspan="61" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;&nbsp;&nbsp;&nbsp;<p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
 	&nbsp;&nbsp;&nbsp;&nbsp;</TD>
     <TD colspan="5" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.Base64">Base64</a></TD>
     <TD>RFC 4648 implementation</TD>
@@ -3181,7 +4462,7 @@ without setting another key-nonce pair into the cipher.</p>
       characters</TD>
   </TR>
   <TR>
-    <TD rowspan="13" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
+    <TD rowspan="35" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
     <TD colspan="4" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.UTF8.Blocks">Blocks</a></TD>
     <TD>Ranges of code points defined by the Unicode standard</TD>
   </TR>
@@ -3199,6 +4480,61 @@ without setting another key-nonce pair into the cipher.</p>
       standard ASCII digits</TD>
   </TR>
   <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_2">ISO_8859_2</a></TD>
+    <TD>ISO/IEC 8859-2 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_3">ISO_8859_3</a></TD>
+    <TD>ISO/IEC 8859-3 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_4">ISO_8859_4</a></TD>
+    <TD>ISO/IEC 8859-4 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_5">ISO_8859_5</a></TD>
+    <TD>ISO/IEC 8859-5 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_6">ISO_8859_6</a></TD>
+    <TD>ISO/IEC 8859-6 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_7">ISO_8859_7</a></TD>
+    <TD>ISO/IEC 8859-7 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_8">ISO_8859_8</a></TD>
+    <TD>ISO/IEC 8859-8 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_9">ISO_8859_9</a></TD>
+    <TD>ISO/IEC 8859-9 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ISO_8859_10">ISO_8859_10</a></TD>
+    <TD>ISO/IEC 8859-10 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.KOI8">KOI8</a></TD>
+    <TD>KOI8 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.MacOS_Roman">MacOS_Roman</a></TD>
+    <TD>Mac OS Roman encoding conversions</TD>
+  </TR>
+  <TR>
     <TD colspan="4" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.UTF8.Maps">Maps</a></TD>
     <TD>Maps and Sets of Unicode code points</TD>
   </TR>
@@ -3210,6 +4546,16 @@ without setting another key-nonce pair into the cipher.</p>
   <TR>
     <TD colspan="4" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.UTF8.Mapping">Mapping</a></TD>
     <TD>Unicode case mapping</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.RADIX50">RADIX50</a></TD>
+    <TD>DEC RADIX-50 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.Recoding_Streams">Recoding_Streams</a></TD>
+    <TD>Recoding UTF-8 streams</TD>
   </TR>
   <TR>
     <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">Subscript</TD>
@@ -3235,13 +4581,58 @@ without setting another key-nonce pair into the cipher.</p>
     <TD>Wildcard matching of UTF-8 encoded strings</TD>
   </TR>
   <TR>
-    <TD style="border-left-style: none; border-left-width: medium; border-right-style:solid; border-right-width:1px" colspan="2" bgcolor="#C0C0C0">
+    <TD style="border-left-style: none; border-left-width: medium" colspan="2" bgcolor="#C0C0C0">
 	&nbsp;</TD>
     <TD style="border-left-style: solid; border-left-width: 1px" colspan="2">
 	<a href="#Strings_Edit.UTF8.Wildcards.Case_Insensitive">Case_Insensitive</a></TD>
     <TD>Case-insensitive wildcard matching</TD>
   </TR>
-</TABLE>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1250">Windows_1250</a></TD>
+    <TD>Windows-1250 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1251">Windows_1251</a></TD>
+    <TD>Windows-1251 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1252">Windows_1252</a></TD>
+    <TD>Windows-1252 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1253">Windows_1253</a></TD>
+    <TD>Windows-1253 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1254">Windows_1254</a></TD>
+    <TD>Windows-1254 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1255">Windows_1255</a></TD>
+    <TD>Windows-1255 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1256">Windows_1256</a></TD>
+    <TD>Windows-1256 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1257">Windows_1257</a></TD>
+    <TD>Windows-1257 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD style="border-left-style: solid; border-left-width: 1px" colspan="4">
+	<a href="#Strings_Edit.UTF8.Windows_1258">Windows_1258</a></TD>
+    <TD>Windows-1258 encoding conversions</TD>
+  </TR>
+  </TABLE>
 <hr>
 <p align="right">
 <a name="15"></a><a href="#14"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><a href="#17"><IMG src="index.gif"
@@ -3269,6 +4660,34 @@ packages, see the links on the top of the page.</p>
 	&quot;strings_edit.gpr&quot;;</tt> </TD>
   </TR>
   </TABLE>
+<p><u><b><a name="GNAT-project-scenario-variables"></a>GNAT project scenario 
+variables</b></u>.</p>
+<p><i>Arch_Type</i> specifies the architecture. It can be used in combination 
+with <i>Object_Dir</i> when compiled for multiple architectures:</p>
+<ul>
+	<li><i>x86_64</i></li>
+	<li><i>i686</i></li>
+	<li><i>armhf</i></li>
+</ul>
+<p><i>Development</i> controls debugging information and optimization level:<ul>
+	<li><i>Debug</i></li>
+	<li><i>Release</i></li>
+	</ul>
+	<p><i>Legacy</i> controls Ada language version:<ul>
+		<li><i>Ada95</i></li>
+		<li><i>Ada2005</i></li>
+		<li><i>Ada2012</i></li>
+		</ul>
+		<p><i>Object_Dir</i> controls the location of object files:<ul>
+	<li>. (dot) causes object files to be created in the project's directory;</li>
+	<li><i>nested</i> uses paths like ./obj/linux/i686/Debug.</li>
+	</ul>
+	<p><i>OS</i> controls choice of bindings to the low-level OS primitives 
+	(when apply):<ul>
+	<li><i>Windows</i> or <i>Windows_NT</i> are used for MS-Windows;</li>
+	<li><i>Linux </i> or <i>UNIX </i>are used for Linux;</li>
+	<li><i>OSX</i> or <i>FreeBSD</i> are used for UNIX-like systems.</li>
+	</ul>
 <hr>
 <P align="right">
 <A name="16"></A><a href="#15"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#17"><IMG src="index.gif" alt="[TOC]" width="29" height="29"><IMG src="next.gif" alt="[Next]" width="29" height="29"></A><H2>16.
@@ -3281,6 +4700,53 @@ The following versions were tested with the compilers:</i><ul>
   <li>
 <i>GNAT 8</i></li>
   </ul>
+<p>Changes (6 Nov 2018) to the version 3.3:</p>
+<ul>
+  <li>The package Strings_Edit.UTF8.Windows_1250 provides Windows-1250 encoding 
+	conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1251 provides Windows-1251 encoding 
+	conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1252 provides Windows-1252 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1253 provides Windows-1253 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1254 provides Windows-1254 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1255 provides Windows-1255 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1256 provides Windows-1256 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1257 provides Windows-1257 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.Windows_1258 provides Windows-1258 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_2 provides ISO/IEC 8859-2 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_3 provides ISO/IEC 8859-3 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_4 provides ISO/IEC 8859-4 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_5 provides ISO/IEC 8859-5 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_6 provides ISO/IEC 8859-6 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_7 provides ISO/IEC 8859-7 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_8 provides ISO/IEC 8859-8 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_9 provides ISO/IEC 8859-9 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.ISO_8859_10 provides ISO/IEC 8859-10 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.KOI8 provides KOI8 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.MacOS_Roman provides Mac OS Roman 
+	encoding conversions;</li>
+	<li>The package Strings_Edit.UTF8.RADIX50 provides DEC RADIX-50 encoding 
+	conversions;</li>
+	<li>The package Strings_Edit.UTF8.Recoding_Streams provides streams recoding 
+	into/from UTF-8.</li>
+</ul>
 <p>Changes (5 Aug 2018) to the version 3.2:</p>
 <ul>
   <li>Switched to GNAT Community 2018;</li>
@@ -3448,14 +4914,39 @@ The reason was to reuse a preinstantiated version of Integer_Edit within Float_E
 &nbsp;&nbsp;&nbsp; <A href="#7.9">7.9. Sets and maps</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.9.1">7.9.1. Sets</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.9.2">7.9.2. Maps</A><BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.9.3">7.9.3. Constants</A></td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.9.3">7.9.3. Constants</A><BR>
+&nbsp;&nbsp;&nbsp; <A href="#7.10">7.10. 8-bit encodings</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.1">7.10.1. Windows-1250</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.2">7.10.2. Windows-1251</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.3">7.10.3. Windows-1252</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.4">7.10.4. Windows-1253</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.5">7.10.5. Windows-1254</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.6">7.10.6. Windows-1255</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.7">7.10.7. Windows-1256</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.8">7.10.8. Windows-1257</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.9">7.10.9. Windows-1258</A><BR>
+</td>
 <td valign="top">
-<b><big><big>8</big></big></b>&nbsp;<A href="#8"><big>Fields</big></A><hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.10">7.10.10. KOI8</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.11">7.10.11. ISO/IEC 8859-2</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.12">7.10.12. ISO/IEC 8859-3</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.13">7.10.13. ISO/IEC 8859-4</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.14">7.10.14. ISO/IEC 8859-5</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.15">7.10.15. ISO/IEC 8859-6</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.16">7.10.16. ISO/IEC 8859-7</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.17">7.10.17. ISO/IEC 8859-8</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.18">7.10.18. ISO/IEC 8859-9</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.19">7.10.19. ISO/IEC 8859-10</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.20">7.10.20. Mac OS Roman</A><BR>
+&nbsp;&nbsp;&nbsp; <A href="#7.11">7.11. 16-bit encodings</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.11.1">7.11.1. RADIX-50</A><hr>
+<b><big><big>8</big></big></b>&nbsp;<A href="#8"><big>Fields</big></A><HR>
 <b><big><big>9</big></big></b>&nbsp;<A href="#9"><big>Generic axis scales</big></A><hr>
 <b><big><big>10</big></big></b>&nbsp;<A href="#10"><big>String streams</big></A><br>
 &nbsp;&nbsp;&nbsp; <A href="#10.1">10.1. Signed integers stream I/O</A><BR>
 &nbsp;&nbsp;&nbsp; <A href="#10.2">10.2. Unsigned integers stream I/O</A><br>
-&nbsp;&nbsp;&nbsp; <A href="#10.3">10.3. Modular numbers stream I/O</A><HR>
+&nbsp;&nbsp;&nbsp; <A href="#10.3">10.3. Modular numbers stream I/O</A><br>
+&nbsp;&nbsp;&nbsp; <A href="#10.4">10.4. Recoding UTF-8 streams</A><HR>
 <b><big><big>11</big></big></b> <A href="#11"><big>Lexicographical comparisons</big></A><hr>
 <b><big><big>12</big></big></b> <A href="#12"><big>Base64 encoding</big></A><hr>
 <b><big><big>13</big></big></b> <big><A href="#13">ChaCha20 cipher</A></big><br>

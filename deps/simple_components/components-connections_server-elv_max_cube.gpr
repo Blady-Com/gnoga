@@ -7,7 +7,10 @@ project Components.Connections_Server.ELV_MAX_Cube is
        (  "gnat-sockets-connection_state_machine-elv_max_cube_client.adb",
           "gnat-sockets-connection_state_machine-elv_max_cube_client.ads",
           "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.adb",
-          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads"
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-time_zones.ads",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.adb",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.ads"
        );
    for Object_Dir use Components.Object_Dir_Path;
 

@@ -1,0 +1,12 @@
+with "../../components.gpr";
+with "../../components-julia.gpr";
+
+project Function_Call is
+
+   for Source_Dirs use (".");
+   for Main use ("function_call.adb");
+   for Source_Files use ("function_call.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+end Function_Call;
+

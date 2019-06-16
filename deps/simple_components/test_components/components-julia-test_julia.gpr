@@ -1,0 +1,10 @@
+with "../components.gpr";
+with "../components-julia.gpr";
+
+project Components.Julia.Test_Julia is
+
+   for Source_Files use ("test_julia.adb");
+   for Main use ("test_julia.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+end Components.Julia.Test_Julia;

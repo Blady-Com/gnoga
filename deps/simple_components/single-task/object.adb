@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2002       --
 --  Single tasking version                                            --
---                                Last revision :  10:25 26 Dec 2009  --
+--                                Last revision :  10:33 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -81,7 +81,10 @@ package body Object is
       end if;
    end Less;
 
-   procedure Decrement_Count (Object : in out Entity) is
+   procedure Decrement_Count
+             (  Object    : in out Entity;
+                Use_Count : out Natural
+             )  is
    begin
       if Object.Use_Count = 0 then
          Raise_Exception
@@ -91,6 +94,7 @@ package body Object is
          )  );
       else
          Object.Use_Count := Object.Use_Count - 1;
+         Use_Count        := Object.Use_Count;
       end if;
    end Decrement_Count;
 
@@ -106,9 +110,10 @@ package body Object is
       if Ptr /= null then
          declare
             Object : Entity'Class renames Ptr.all;
+            Count  : Natural;
          begin
-            Decrement_Count (Object);
-            if Object.Use_Count > 0 then
+            Decrement_Count (Object, Count);
+            if Count > 0 then
                return;
             end if;
          end;

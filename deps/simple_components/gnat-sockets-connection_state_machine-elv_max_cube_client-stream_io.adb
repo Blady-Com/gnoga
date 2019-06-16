@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Stream_IO               Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  17:44 24 Nov 2017  --
+--                                Last revision :  14:20 16 Nov 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -196,6 +196,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
                Result.Eco      := Read (Stream);
                Result.Max      := Read (Stream);
                Result.Min      := Read (Stream);
+               Result.Offset   := Read (Stream);
                Result.Schedule := Read (Stream);
             when Radiator_Thermostat | Radiator_Thermostat_Plus =>
                Result.Comfort         := Read (Stream);
@@ -371,6 +372,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
             Write (Stream, Parameters.Eco);
             Write (Stream, Parameters.Max);
             Write (Stream, Parameters.Min);
+            Write (Stream, Parameters.Offset);
             Write (Stream, Parameters.Schedule);
          when Radiator_Thermostat | Radiator_Thermostat_Plus =>
             Write (Stream, Parameters.Comfort);

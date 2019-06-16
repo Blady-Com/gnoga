@@ -4,11 +4,13 @@ with "../components-connections_server-elv_max_cube.gpr";
 project Components.Connections_Server.ELV_MAX_Cube.Test_ELV_MAX_Cube_Client is
 
    for Source_Files use
-       (  "test_elv_max_cube_client.adb"
-	   );
+       (  "test_elv_max_cube_client.adb",
+          "test_elv_max_cube_clients.adb",
+          "test_elv_max_cube_clients.ads"
+       );
    for Main use
        (  "test_elv_max_cube_client.adb"
-	   );
+       );
    for Object_Dir use Components.Object_Dir_Path;
 
    package Compiler is

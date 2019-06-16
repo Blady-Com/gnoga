@@ -3,7 +3,7 @@
 --     Strings_Edit.Time_Conversions               Luebeck            --
 --  Implementation                                 Summer, 2016       --
 --                                                                    --
---                                Last revision :  12:47 19 Jun 2016  --
+--                                Last revision :  12:28 04 Nov 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -155,9 +155,9 @@ package body Strings_Edit.Time_Conversions is
       begin
          Get (Date, Pointer, Value);
          if Expand then
-            if Year < 50 then
+            if Value < 50 then
                Year := Year_Number (Value + 2000);
-            elsif Year < 100 then
+            elsif Value < 100 then
                Year := Year_Number (Value + 1900);
             end if;
          else
@@ -336,33 +336,44 @@ package body Strings_Edit.Time_Conversions is
    end To_Time;
 
 begin
-   Add (Week_Days, "Mon",       Monday);
-   Add (Week_Days, "Monday",    Monday);
-   Add (Week_Days, "Tue",       Tuesday);
-   Add (Week_Days, "Tuesday",   Tuesday);
-   Add (Week_Days, "Wed",       Wednesday);
-   Add (Week_Days, "Wednesday", Wednesday);
-   Add (Week_Days, "Thu",       Thursday);
-   Add (Week_Days, "Thursday",  Thursday);
    Add (Week_Days, "Fri",       Friday);
    Add (Week_Days, "Friday",    Friday);
+   Add (Week_Days, "Mon",       Monday);
+   Add (Week_Days, "Monday",    Monday);
    Add (Week_Days, "Sat",       Saturday);
    Add (Week_Days, "Saturday",  Saturday);
    Add (Week_Days, "Sun",       Sunday);
    Add (Week_Days, "Sunday",    Sunday);
+   Add (Week_Days, "Thu",       Thursday);
+   Add (Week_Days, "Thursday",  Thursday);
+   Add (Week_Days, "Tue",       Tuesday);
+   Add (Week_Days, "Tuesday",   Tuesday);
+   Add (Week_Days, "Wed",       Wednesday);
+   Add (Week_Days, "Wednesday", Wednesday);
 
-   Add (Months, "Jan", 1);
-   Add (Months, "Feb", 2);
-   Add (Months, "Mar", 3);
-   Add (Months, "Apr", 4);
-   Add (Months, "May", 5);
-   Add (Months, "Jun", 6);
-   Add (Months, "Jul", 7);
-   Add (Months, "Aug", 8);
-   Add (Months, "Sep", 9);
-   Add (Months, "Oct", 10);
-   Add (Months, "Nov", 11);
-   Add (Months, "Dec", 12);
+   Add (Months, "Apr",       4);
+   Add (Months, "April",     4);
+   Add (Months, "Aug",       8);
+   Add (Months, "August",    8);
+   Add (Months, "Dec",      12);
+   Add (Months, "December", 12);
+   Add (Months, "Feb",       2);
+   Add (Months, "February",  2);
+   Add (Months, "Jan",       1);
+   Add (Months, "January",   1);
+   Add (Months, "Jul",       7);
+   Add (Months, "July",      7);
+   Add (Months, "Jun",       6);
+   Add (Months, "June",      6);
+   Add (Months, "Mar",       3);
+   Add (Months, "March",     3);
+   Add (Months, "May",       5);
+   Add (Months, "Nov",      11);
+   Add (Months, "November", 11);
+   Add (Months, "Oct",      10);
+   Add (Months, "October",  10);
+   Add (Months, "Sep",       9);
+   Add (Months, "September", 9);
 
    Add (Zones, "UT",   0);
    Add (Zones, "GMT",  0);

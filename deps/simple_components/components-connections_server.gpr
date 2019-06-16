@@ -45,6 +45,8 @@ project Components.Connections_Server is
       "gnat-sockets-connection_state_machine-variable_length_strings.ads",
       "gnat-sockets-server.ads",
       "gnat-sockets-server.adb",
+      "gnat-sockets-server-blocking.adb",
+      "gnat-sockets-server-blocking.ads",
       "gnat-sockets-server-handles.ads",
       "gnat-sockets-server-pooled.adb",
       "gnat-sockets-server-pooled.ads"

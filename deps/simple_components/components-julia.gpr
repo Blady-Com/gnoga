@@ -1,0 +1,32 @@
+with "components.gpr";
+
+project Components.Julia is
+
+   case Components.OS is
+      when "Windows" | "Windows_NT" =>
+         for Source_Dirs use (".", "os/windows");
+      when"Linux" | "UNIX" | "OSX" | "FreeBSD" =>
+         for Source_Dirs use (".", "os/linux");
+   end case;   
+
+   for Source_Files use
+       (  "julia.adb",
+          "julia.ads",
+          "julia-generic_1d_array.adb",
+          "julia-generic_1d_array.ads",
+          "julia-generic_2d_array.adb",
+          "julia-generic_2d_array.ads",
+          "julia-generic_3d_array.adb",
+          "julia-generic_3d_array.ads",
+          "julia-load_julia_library.adb",
+          "julia-load_julia_library.ads"
+       );
+
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+        
+end Components.Julia;

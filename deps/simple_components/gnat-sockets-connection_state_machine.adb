@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine       Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  21:18 26 Jan 2018  --
+--                                Last revision :  10:32 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

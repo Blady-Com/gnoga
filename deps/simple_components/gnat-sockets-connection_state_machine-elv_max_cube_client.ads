@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Interface                                                         --
---                                Last revision :  10:25 19 Feb 2017  --
+--                                Last revision :  23:23 12 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,9 +25,8 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;             use Ada.Calendar;
-with Ada.Exceptions;           use Ada.Exceptions;
-with Synchronization.Mutexes;  use Synchronization.Mutexes;
+with Ada.Calendar;    use Ada.Calendar;
+with Ada.Exceptions;  use Ada.Exceptions;
 
 with GNAT.Sockets.Connection_State_Machine.Expected_Sequence;
 with GNAT.Sockets.Connection_State_Machine.Terminated_Strings;
@@ -35,6 +34,7 @@ with GNAT.Sockets.Connection_State_Machine.Terminated_Strings;
 with Generic_Indefinite_Set;
 with Generic_Map;
 with Object.Handle;
+with Synchronization.Mutexes;
 
 package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
@@ -59,6 +59,7 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
    type RF_Address is range 0..2**24-1;
    function Image (Value : RF_Address) return String;
+   type RF_Address_Array is array (Positive range <>) of RF_Address;
 --
 -- Device_Type -- The types of devices
 --
@@ -72,6 +73,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
            Unknown
         );
    subtype Partner_Device_Type is Device_Type
+      range Radiator_Thermostat..Eco_Button;
+   subtype Room_Device_Type is Device_Type
       range Radiator_Thermostat..Shutter_Contact;
 
    function Image (Kind_Of : Device_Type) return String;
@@ -156,17 +159,18 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
             Eco      : Centigrade := 18.0;
             Max      : Centigrade := 18.0;
             Min      : Centigrade := 18.0;
-            Schedule : Week_Schedule;
+            Offset   : Centigrade := 0.0;
+            Schedule : Week_Schedule :=
+                          (others => (0, (others => (0.0, 19.0))));
             case Kind_Of is
                when Radiator_Thermostat | Radiator_Thermostat_Plus =>
-                  Offset          : Centigrade := 0.0;
                   Window_Open     : Centigrade := 18.0;
                   Window_Time     : Duration   := 10.0;
                   Boost_Time      : Duration   := 1.0;
                   Boost_Valve     : Ratio      := 0.5;
-                  Decalcification : Week_Time;
-                  Max_Valve       : Ratio;
-                  Valve_Offset    : Ratio;
+                  Decalcification : Week_Time  := (Su, 12.0 * 3_600.0);
+                  Max_Valve       : Ratio      := 0.8;
+                  Valve_Offset    : Ratio      := 0.0;
                when others =>
                   null;
             end case;
@@ -178,6 +182,16 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
    type Setting_Mode is mod 4;
    S_Command  : constant Setting_Mode := 1;
    S_Response : constant Setting_Mode := 2;
+--
+-- Display_Mode -- The wall thermostat display mode
+--
+--   Display_Set_Temperature - Indicate the set temperature
+--   Display_Is_Temperature  - Indicate the measured temperature
+--
+   type Display_Mode is
+        (  Display_Set_Temperature,
+           Display_Is_Temperature
+        );
 --
 -- ELV_MAX_Cube_Client -- An object implementing ELV MAX! Cube client
 --
@@ -196,32 +210,194 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
            Input_Size  : Buffer_Length;
            Output_Size : Buffer_Length
         )  is new State_Machine with private;
---  --
---  -- Add_New_Device -- Room RF address
---  --
---  --    Client     - The connection object
---  --    Index / ID - The room number 1..Get_Number_Of_Rooms
---  --    Device     - The type of the new device to add
---  --    Address    - The RF address of the device
---  --
---  -- Exceptions :
---  --
---  --    Constraint_Error - Wrong room number or wrong device type
---  --    Socket_Error     - I/O error
---  --    Use_Error        - The device is busy
---  --
---     procedure Add_New_Device
---               (  Client  : in out ELV_MAX_Cube_Client;
---                  Index   : Positive;
---                  Device  : Partner_Device_Type;
---                  Address : RF_Address
---               );
---     procedure Add_New_Device
---               (  Client  : in out ELV_MAX_Cube_Client;
---                  ID      : Room_ID;
---                  Device  : Partner_Device_Type;
---                  Address : RF_Address
---               );
+--
+-- Add_New_Device -- Add new device
+--
+--    Client                   - The connection object
+--  [ Index / ID / Room_Name ] - The room number 1..Get_Number_Of_Rooms
+--  [ Kind_Of  ]               - The type of the new device to add
+--    Serial_No                - The device serial number
+--    Device_Name              - The device name
+--    Address                  - The RF address of the device
+--    ID                       - The new room ID
+--  [ S_Commands ]             - The number of commands issued
+--    Mode                     - Execution mode
+--
+-- The device is added to the specified room,  if the room is specified.
+-- Otherwise the device  is added outside any room. This must be an eco-
+-- button.  When  the room  is specified  using  a name,  a new room  is
+-- created  with this  name.  The  parameter  Mode  specifies  execution
+-- method. When S_Command is specified the device is linked to the cube.
+-- When S_Response  is specified the device is added in the local cache.
+-- The default is both sending to the cube and updating the local cache.
+-- If there is a danger that  the cube may reject the command it must be
+-- called first as S_Command and second as S_Response after confirmation
+-- to update the cache. For a newly created room S_Command set ID to the
+-- new room ID. It must be passed to the S_Respose call.
+--
+-- Exceptions :
+--
+--    Constraint_Error - Wrong room number, device type, illegal name
+--    End_Error        - There is no such room
+--    Name_Error       - A device with this address already exists
+--    Socket_Error     - I/O error
+--    Use_Error        - The device is busy
+--
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room_Name   : String;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                ID          : in out Room_ID;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room_Name   : String;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                ID          : in out Room_ID;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                ID          : Room_ID;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                ID          : Room_ID;
+                Kind_Of     : Room_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+--
+-- Attach_Device -- Add a detached device to another room
+--
+--    Client            - The connection object
+--    Address           - The device RF-address
+--    Index / ID / Name - The room index, ID or name
+--  [ S_Commands ]      - The number of issued S-commands
+--    Mode              - Execution mode
+--
+-- This  procedure  attaches previously detached device to another room.
+-- It is two separate operations because the cube cannot move  a  device
+-- in one single step. When room is specified by Name it can  be  a  new
+-- room to create or an existing  room.  The  parameter  Mode  specifies
+-- execution  method.  When  S_Command is specified the device is moved.
+-- When S_Response is specified the topology is updated. The default  is
+-- both  sending to the cube and updating. If there is a danger that the
+-- cube may reject the command it must be called first as S_Command  and
+-- second  as  S_Response  after  confirmation  to update the cache. The
+-- parameter S_Commands returns the number of issued s-commands.
+--
+-- Exceptions :
+--
+--    Constraint_Error - Invalid room number
+--    End_Error        - No such room ID or detached device
+--    Socket_Error     - I/O error
+--    Use_Error        - The device is busy
+--
+   procedure Attach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                Index      : Positive;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Attach_Device
+             (  Client : in out ELV_MAX_Cube_Client;
+                Device : RF_Address;
+                Index  : Positive;
+                Mode   : Setting_Mode := S_Command or S_Response
+             );
+   procedure Attach_Device
+             (  Client : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                ID         : Room_ID;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Attach_Device
+             (  Client : in out ELV_MAX_Cube_Client;
+                Device : RF_Address;
+                ID     : Room_ID;
+                Mode   : Setting_Mode := S_Command or S_Response
+             );
+   procedure Attach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                Name       : String;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Attach_Device
+             (  Client : in out ELV_MAX_Cube_Client;
+                Device : RF_Address;
+                Name   : String;
+                Mode   : Setting_Mode := S_Command or S_Response
+             );
+--
+-- Cancel_Pairing -- Leave pairing mode
+--
+--    Client  - The connection object
+--
+-- The command terminates pairing.
+--
+-- Exceptions :
+--
+--    Socket_Error - I/O error
+--    Use_Error    - The device is busy
+--
+   procedure Cancel_Pairing
+             (  Client : in out ELV_MAX_Cube_Client
+             );
 --
 -- Servers_List -- List of names
 --
@@ -237,6 +413,7 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
    type Update_Type is
         (  Cube_Update,
            Topology_Update,
+           Detached_Device_Update,
            Device_Parameters_Update,
            Device_Discovery_Update,
            End_Discovery_Update,
@@ -244,13 +421,17 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
         );
    type Update_Data (Kind_Of : Update_Type) is record
       case Kind_Of is
-         when Cube_Update | Topology_Update | End_Discovery_Update =>
+         when Cube_Update          |
+              Topology_Update      |
+              End_Discovery_Update =>
             null;
-         when Device_Parameters_Update | Device_Discovery_Update =>
+         when Detached_Device_Update   |
+              Device_Parameters_Update |
+              Device_Discovery_Update  =>
             Device  : Device_Type; -- The device type
             Address : RF_Address;  -- Of the device updated
             case Kind_Of is
-               when Device_Discovery_Update =>
+               when Device_Discovery_Update | Detached_Device_Update =>
                   Serial_No : String (1..10);
                when others =>
                   null;
@@ -280,6 +461,142 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Data   : Device_Data
              );
 --
+-- Delete -- Devices and/or rooms
+--
+--    Client       - The connection object
+--    List         - The list of devices and/or rooms to remove
+--  [ S_Commands ] - The number of issued S-commands
+--    Mode         - Execution mode
+--
+-- This procedure  deletes devices and rooms that lose all devices.  The
+-- parameter   Mode  specifies  execution  method.   When  S_Command  is
+-- specified  the devices are deleted from the cube.  When S_Response is
+-- specified the  device and the rooms  are deleted in  the local cache.
+-- The default is both sending to the cube and updating the local cache.
+-- If there is a danger that  the cube may reject the command it must be
+-- called first as S_Command and second as S_Response after confirmation
+-- to update the cache.
+--
+-- Exceptions :
+--
+--    Socket_Error - I/O error
+--    Use_Error    - The device is busy
+--
+   procedure Delete
+             (  Client     : in out ELV_MAX_Cube_Client;
+                List       : RF_Address_Array;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Delete
+             (  Client : in out ELV_MAX_Cube_Client;
+                List   : RF_Address_Array;
+                Mode   : Setting_Mode := S_Command or S_Response
+             );
+--
+-- Delete_Device -- By its RF address
+--
+--    Client       - The connection object
+--    Address      - The device RF address
+--    Name         - The new name
+--  [ S_Commands ] - The number of issued S-commands
+--    Mode         - Execution mode
+--
+-- This procedure deletes a device  and the room it contained  if it was
+-- the single device in that room.
+--
+-- Exceptions :
+--
+--    End_Error    - No such device
+--    Socket_Error - I/O error
+--    Use_Error    - The device is busy
+--
+   procedure Delete_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Address    : RF_Address;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Delete_Device
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Address : RF_Address;
+                Mode    : Setting_Mode := S_Command or S_Response
+             );
+--
+-- Delete_Room -- By its ID or index
+--
+--    Client       - The connection object
+--    Index / ID   - The room number 1..Get_Number_Of_Rooms
+--    Name         - The new name
+--  [ S_Commands ] - The number of issued S-commands
+--    Mode         - Execution mode
+--
+-- These procedures delete a room and all devices in it.
+--
+-- Exceptions :
+--
+--    End_Error    - No such room
+--    Socket_Error - I/O error
+--    Use_Error    - The device is busy
+--
+   procedure Delete_Room
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Index      : Positive;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Delete_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                Index  : Positive;
+                Mode   : Setting_Mode := S_Command or S_Response
+             );
+   procedure Delete_Room
+             (  Client     : in out ELV_MAX_Cube_Client;
+                ID         : Room_ID;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Delete_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                ID     : Room_ID;
+                Mode   : Setting_Mode := S_Command or S_Response
+             );
+--
+-- Detach_Device -- Remove device from its room
+--
+--    Client       - The connection object
+--    Address      - The device RF-address
+--  [ S_Commands ] - The number of issued S-commands
+--    Mode         - Execution mode
+--
+-- A detached device must be then attached to another room.  It  is  two
+-- separate operations because the cube cannot  move  a  device  in  one
+-- single step. The parameter  Mode  specifies  execution  method.  When
+-- S_Command  is specified the device is unlinked from the room devices.
+-- When S_Response is specified the topology is updated.  The default is
+-- both  sending to the cube and updating the local cache. If there is a
+-- danger  that  the cube may reject the command it must be called first
+-- as  S_Command and second as S_Response after confirmation.
+--
+-- Exceptions :
+--
+--    End_Error    - No such device
+--    Socket_Error - I/O error
+--    Status_Error - The device has no room
+--    Use_Error    - The device is busy
+--
+   procedure Detach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                S_Commands : out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Detach_Device
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Device     : RF_Address;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+--
 -- Disconnected -- Connection loss notification
 --
 --    Client - The connection object
@@ -288,6 +605,36 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 -- implementation.
 --
    procedure Disconnected (Client : in out ELV_MAX_Cube_Client);
+--
+-- Faulty_Device_Received -- Unconfigured or faulty device notification
+--
+--    Client      - The connection object
+--    Address     - The device RF-Address
+--    Length      - The data length
+--    Error       - The device error
+--    Initialized - The device initialization
+--    Orphaned    - The device is not configured
+--
+-- This procedure is called to notify about faulty devices.  The default
+-- implementation does tracing.
+--
+   procedure Faulty_Device_Received
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Length      : Natural;
+                Error       : Boolean;
+                Initialized : Boolean;
+                Orphaned    : Boolean
+             );
+--
+-- Finalize -- Object desstruction
+--
+--    Client - The connection object
+--
+-- When overridden this procedure  must always be  called   from the new
+-- implementation.
+--
+   procedure Finalize (Client : in out ELV_MAX_Cube_Client);
 --
 -- Find_Room -- Find a room by its ID
 --
@@ -373,7 +720,7 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
 -- Get_Device_Data -- The device data
 --
---    Client         - The connection object
+--    Client          - The connection object
 --    Index / Address - The device index 1..Get_Number_Of_Devices
 --
 -- Returns :
@@ -531,6 +878,16 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                Address : RF_Address
             )  return Device_Type;
 --
+-- Get_Duty -- The device duty cycle
+--
+--    Client - The connection object
+--
+-- Returns :
+--
+--    The current duty cycle value
+--
+   function Get_Duty (Client : ELV_MAX_Cube_Client) return Ratio;
+--
 -- Get_Error -- The cube's last error response
 --
 --    Client - The connection object
@@ -540,6 +897,16 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --    True if the last 's' command was rejected by the cube
 --
    function Get_Error (Client : ELV_MAX_Cube_Client) return Boolean;
+--
+-- Get_Metadata -- The data describing the topology of devices
+--
+--    Client - The connection object
+--
+-- Returns :
+--
+--    The metadata in the format used by the cube
+--
+   function Get_Metadata (Client : ELV_MAX_Cube_Client) return String;
 --
 -- Get_Number_Of_Devices -- Number of devices
 --
@@ -583,9 +950,11 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
 -- Get_RF_Address -- The cube radio frequency address
 --
---    Client - The connection object
+--    Client    - The connection object
+--    Unchecked - If True the address can be 0 or wrong
 --
--- The cube announces its frequency once connected to
+-- The cube announces its frequency once connected to. When Unckecked is
+-- True the last know address is returned. It can be 0 if unknown.
 --
 -- Returns :
 --
@@ -595,8 +964,10 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
 --    Status_Error -- No handshake yet
 --
-   function Get_RF_Address (Client : ELV_MAX_Cube_Client)
-      return RF_Address;
+   function Get_RF_Address
+            (  Client    : ELV_MAX_Cube_Client;
+               Unchecked : Boolean := False
+            )  return RF_Address;
 --
 -- Get_Room_ID -- Room ID
 --
@@ -692,6 +1063,42 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
    function Get_Version (Client : ELV_MAX_Cube_Client) return String;
 --
+-- Handshake_Received -- Notification of handshake completion
+--
+--    Client - The connection object
+--
+-- This  procedure  is  called  when  connection  to the cube  has  been
+-- established  after receving and processinf  the handshake packet from
+-- the cube. The default implementation does nothing.
+--
+   procedure Handshake_Received (Client : in out ELV_MAX_Cube_Client);
+--
+-- Has_Device_Configuration -- The device configuration
+--
+--    Client         - The connection object
+--    Index / Address - The device index 1..Get_Number_Of_Devices
+--
+-- The device announced  during  handshake  has  no configuration  known
+-- until  the cube  sends it.  This function  is used  to check  if that
+-- happened.
+--
+-- Returns :
+--
+--    True if the device and its configuration are known
+--
+-- Exceptions :
+--
+--    Constraint_Error - Wrong device number
+--
+   function Has_Device_Configuration
+            (  Client : ELV_MAX_Cube_Client;
+               Index  : Positive
+            )  return Boolean;
+   function Has_Device_Configuration
+            (  Client  : ELV_MAX_Cube_Client;
+               Address : RF_Address
+            )  return Boolean;
+--
 -- Has_Device_Data -- The device data
 --
 --    Client         - The connection object
@@ -723,6 +1130,30 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 -- implementation.
 --
    procedure Initialize (Client : in out ELV_MAX_Cube_Client);
+--
+-- Is_Configured -- Check if all devices of the cube have settings
+--
+--    Client - The connection object
+--
+-- Returns :
+--
+--    True if all devices have defined settings
+--
+   function Is_Configured (Client : ELV_MAX_Cube_Client) return Boolean;
+--
+-- Is_In -- Check if the device is attached to the cube
+--
+--    Client - The connection object
+--    Device - The device address
+--
+-- Returns :
+--
+--    True if Device is attached to the device
+--
+   function Is_In
+            (  Client : ELV_MAX_Cube_Client;
+               Device : RF_Address
+            )  return Boolean;
 --
 -- Is_In -- Check if the device is attached to the room
 --
@@ -756,7 +1187,9 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 -- The command makes  the cube to search for new devices  to pair  with.
 -- The parameter Timeout specifies how long the cube should do it.  When
 -- a device  is found  Configuration_Updated is called.  Note  that  the
--- device  in order to be  paired must be set into the pairing mode.
+-- device to be paired must be set into the pairing mode.  Once detected
+-- it remains paired with the cube. In order to unpair it Delete must be
+-- called.
 --
 -- Exceptions :
 --
@@ -767,6 +1200,37 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
    procedure Pair
              (  Client  : in out ELV_MAX_Cube_Client;
                 Timeout : Duration := 60.0
+             );
+--
+-- Put -- The data describing the topology of devices
+--
+--    Destination - The buffer to store the metadata into
+--    Pointer     - The position to start, advanced after the output
+--    Client      - The connection object
+--
+-- Exceptions:
+--
+--    Layout_Error - Invalid pointer or no room for output
+--
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Client      : ELV_MAX_Cube_Client
+             );
+--
+-- Query_Device_Configuration -- Query device configuration
+--
+--    Client  - The connection object
+--    Address - The device RF address
+--
+-- Exceptions :
+--
+--    Socket_Error - I/O error
+--    Use_Error    - The device is busy
+--
+   procedure Query_Device_Configuration
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Address : RF_Address
              );
 --
 -- Query_Devices -- Devices status
@@ -797,6 +1261,65 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
              (  Client : in out ELV_MAX_Cube_Client
              );
 --
+-- Query_Unconfigured_Devices -- Query device configurations
+--
+--    Client - The connection object
+--
+-- This procedure  queries configurations  of all devices  for which the
+-- cube does not yet have a configuration.
+--
+-- Exceptions :
+--
+--    Socket_Error - I/O error
+--    Use_Error    - The device is busy
+--
+   procedure Query_Unconfigured_Devices
+             (  Client : in out ELV_MAX_Cube_Client
+             );
+--
+-- Rename_Device -- By its RF address
+--
+--    Client  - The connection object
+--    Address - The device RF address
+--    Name    - The new name
+--
+-- Exceptions :
+--
+--    Constraint_Error - The name is too long
+--    End_Error        - No such device
+--    Socket_Error     - I/O error
+--    Use_Error        - The device is busy
+--
+   procedure Rename_Device
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Address : RF_Address;
+                Name    : String
+             );
+--
+-- Rename_Room -- By its ID or index
+--
+--    Client     - The connection object
+--    Index / ID - The room number 1..Get_Number_Of_Rooms
+--    Name       - The new name
+--
+-- Exceptions :
+--
+--    Constraint_Error - The name is too long
+--    End_Error        - No such room
+--    Socket_Error     - I/O error
+--    Use_Error        - The device is busy
+--
+   procedure Rename_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                Index  : Positive;
+                Name   : String
+             );
+   procedure Rename_Room
+             (  Client : in out ELV_MAX_Cube_Client;
+                ID     : Room_ID;
+                Name   : String
+             );
+--
 -- Reset_Devices -- Reset the cube
 --
 --    Client - The connection object
@@ -820,6 +1343,50 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --    Use_Error    - The device is busy
 --
    procedure Reset_Error (Client : in out ELV_MAX_Cube_Client);
+--
+-- Reset_Metadata -- Reset the cube topology
+--
+--    Client       - The connection object
+--    Data         - The metadata
+--  [ S_Commands ] - The number of issued S-commands
+--
+-- The command  overwrites  the cube's metadata describing the rooms and
+-- devices.  The data are same as reported in Get_Metadata.  It  removes
+-- all existing devices  and rooms  replacing  them from  the  ones from
+-- Data. The devices are linked again.  The number of  issued S-commands
+-- is returned  via parameter S_Commands.  In addition one  A-command is
+-- issued to store new metadata into the cube.
+--
+-- Exceptions :
+--
+--    Constraint_Error - The block is longer than 1900 characters
+--    Socket_Error     - I/O error
+--    Use_Error        - The device is busy
+--
+   procedure Reset_Metadata
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Data       : String
+             );
+   procedure Reset_Metadata
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Data       : String;
+                S_Commands : out Natural
+             );
+--
+-- Set_Metadata -- Set the cube topology
+--
+--    Client - The connection object
+--
+-- The command  overwrites  the cube's metadata describing the rooms and
+-- devices.  The metadata are taken  from  the actual  configuration  as
+-- known to the client.
+--
+-- Exceptions :
+--
+--    Socket_Error - I/O error
+--    Use_Error    - The device is busy
+--
+   procedure Set_Metadata (Client : in out ELV_MAX_Cube_Client);
 --
 -- Set_NTP_Servers -- Set list of NTP servers of the cube
 --
@@ -892,6 +1459,33 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Address : RF_Address
              );
 --
+-- Set_Thermostat_Display -- Set device display
+--
+--    Client          - The connection object
+--    Index / Address - The device index 1..Get_Number_Of_Devices
+--    Temperature     - The temperature to indicate
+--
+-- In the automatic mode the device run the scheduled program
+--
+-- Exceptions :
+--
+--    Constraint_Error - Wrong device number
+--    End_Error        - No device with the given address
+--    Mode_Error       - The device is not a wall thermostat
+--    Socket_Error     - I/O error
+--    Use_Error        - The device is busy
+--
+   procedure Set_Thermostat_Display
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Temperature : Display_Mode
+             );
+   procedure Set_Thermostat_Display
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Temperature : Display_Mode
+             );
+--
 -- Set_Thermostat_Parameters -- Set device schedule
 --
 --    Client          - The connection object
@@ -900,8 +1494,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --    Eco             - When in eco mode
 --    Max             - Temperature
 --    Min             - Temperature
---  [ Offset          - Between the set and actual temperatures
---    Window_Open     - When associated window is open
+--    Offset          - Between the set and actual temperatures
+--  [ Window_Open     - When associated window is open
 --    Window_Time ]   - Before engaging window mode
 --    Mode            - Execution mode
 --
@@ -952,6 +1546,7 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Eco     : Centigrade;
                 Max     : Centigrade;
                 Min     : Centigrade;
+                Offset  : Centigrade;
                 Mode    : Setting_Mode := S_Command or S_Response
              );
    procedure Set_Thermostat_Parameters
@@ -961,6 +1556,7 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Eco     : Centigrade;
                 Max     : Centigrade;
                 Min     : Centigrade;
+                Offset  : Centigrade;
                 Mode    : Setting_Mode := S_Command or S_Response
              );
 --
@@ -977,7 +1573,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 -- object assumes  that it was and updates  the schedule  cached  in the
 -- memory.  The actual schedule will be read only upon a new connection.
 -- The parameter  Mode specifies  execution method  of schedule setting.
--- See Set_Thermostat_Parameters
+-- See  Set_Thermostat_Parameters.  Note that  this  procedure  uses two
+-- s-commands to set the schedule.
 --
 -- Exceptions :
 --
@@ -1088,6 +1685,46 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Mode         : Setting_Mode := S_Command or S_Response
              );
 --
+-- Time_Zone -- Description of a time zone
+--
+   subtype Time_Zone_Offset is Duration range -12.0 * 3_600.0
+                                           ..  13.0 * 3_600.0;
+   subtype Time_Zone_Name_Count is Natural range 0..5;
+   type Day_Of_Week is (Su, Mo, Tu, We, Th, Fr, Sa);
+   type Hour_Number is range 0..23;
+   type Zone_Data (Length : Time_Zone_Name_Count := 0) is record
+      Start  : Month_Number;       -- The month when it start to apply
+      Day    : Day_Of_Week;        -- The day of week
+      Hour   : Hour_Number;        -- The hour
+      Offset : Time_Zone_Offset;   -- The UTC offset
+      Name   : String (1..Length); -- The abbreviated name
+   end record;
+
+   GMT  : constant Zone_Data := (3, 10, Su, 3, 0.0 * 3600.0, "GMT" );
+   CET  : constant Zone_Data := (3, 10, Su, 3, 1.0 * 3600.0, "CET" );
+   CEST : constant Zone_Data := (4,  3, Su, 2, 2.0 * 3600.0, "CEST");
+--
+-- Set_Time -- Set time and time zone
+--
+--    Client - The connection object
+--    Winter - Winter time
+--    Summer - Summer time
+--
+-- This procedure set the cube clock using the current time and the time
+-- zones for the winter and summer time
+--
+-- Exceptions :
+--
+--    Constraint_Error - Wrong device number
+--    Socket_Error     - I/O error
+--    Use_Error        - The device is busy
+--
+   procedure Set_Time
+             (  Client : in out ELV_MAX_Cube_Client;
+                Winter : Zone_Data := CET;
+                Summer : Zone_Data := CEST
+             );
+--
 -- Status_Received -- Status reception callback
 --
 --    Client - The connection object
@@ -1104,6 +1741,40 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Error  : Boolean;
                 Duty   : Ratio;
                 Slots  : Natural
+             );
+--
+-- Trace -- Higher level tracing of received data
+--
+   procedure Trace
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Message : String
+             );
+--
+-- Wake_Up -- Wake up device, room, all devices
+--
+--    Client           - The connection object
+--  [ Address / Room ] - The device or room to wake up
+--    Interval         - Wakeup time
+--
+-- Exceptions :
+--
+--    Constraint_Error - Invalid time interval
+--    End_Error        - No room or no device with the given address
+--    Socket_Error     - I/O error
+--
+   procedure Wake_Up
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Address  : RF_Address;
+                Interval : Duration := 30.0
+             );
+   procedure Wake_Up
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Room     : Room_ID;
+                Interval : Duration := 30.0
+             );
+   procedure Wake_Up
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Interval : Duration := 30.0
              );
 ------------------------------------------------------------------------
    type Cube_Descriptor is record
@@ -1136,15 +1807,67 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                Host     : String    := "";
                Port     : Port_Type := 23272
             )  return Cube_Descriptor_Array;
+------------------------------------------------------------------------
+--
+-- Topology_Holder -- Topology lock
+--
+-- The object holds a lock on the client topology when created. The lock
+-- is released upon finalization
+--
+   type Topology_Holder
+        (  Client : access constant ELV_MAX_Cube_Client'Class
+        )  is new Ada.Finalization.Limited_Controlled with private;
+   procedure Finalize   (Lock : in out Topology_Holder);
+   procedure Initialize (Lock : in out Topology_Holder);
+------------------------------------------------------------------------
+--
+-- Image_Metadata -- Metadata in a human-readable format
+--
+--    Data - The metadata
+--
+-- Returns :
+--
+--    The result
+--
+-- Exceptions :
+--
+--    Data_Error - Wrong metadata
+--
+   function Image_Metadata (Data : String) return String;
+--
+-- Put_Metadata -- Put metadata in a human-readable format
+--
+--    Destination - The destination string
+--    Pointer     - The position in the string to start, advanced
+--    Data        - The metadata
+--
+-- Exceptions :
+--
+--    Data_Error   - Wrong metadata
+--    Layout_Error - No room for output or Pointer outside Destination
+--
+   procedure Put_Metadata
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Data        : String
+             );
 private
    use GNAT.Sockets.Connection_State_Machine.Expected_Sequence;
    use GNAT.Sockets.Connection_State_Machine.Terminated_Strings;
 
    pragma Assert (Stream_Element'Size = 8);
 
+   type Topology_Holder
+        (  Client : access constant ELV_MAX_Cube_Client'Class
+        )  is new Ada.Finalization.Limited_Controlled with
+   record
+      Released : Boolean := False;
+   end record;
+   procedure Release (Lock : in out Topology_Holder);
+
    type Device_Key is record
       Room  : Room_ID;
-      Index : Positive;
+      Index : Positive; -- The device number in the room
    end record;
    function "<" (Left, Right : Device_Key) return Boolean;
 
@@ -1166,12 +1889,15 @@ private
           );
    use Rooms_Maps;
 
+   type Device_Status is mod 2**2;
+   Have_Settings : constant Device_Status := 2**0;
+   Have_Data     : constant Device_Status := 2**1;
    type Device_Descriptor
         (  Kind_Of     : Device_Type;
            Name_Length : Natural
         )  is new Object.Entity with
    record
-      Init : Boolean := False; -- Has actual data
+      Init : Device_Status := 0;
       Room : Room_Handles.Handle;
       Data : Device_Parameters (Kind_Of, Name_Length);
       Last : Device_Data (Kind_Of);
@@ -1185,6 +1911,13 @@ private
              Object_Type => Device_Handles.Handle
           );
    use Device_Maps;
+
+   package Device_Lists is
+      new Generic_Map
+          (  Key_Type    => RF_Address,
+             Object_Type => Device_Handles.Handle
+          );
+   use Device_Lists;
 
    package Address_Maps is
       new Generic_Map
@@ -1202,19 +1935,27 @@ private
    type Devices_Configuration;
    type Devices_Configuration_Ptr is access all Devices_Configuration;
    type Devices_Configuration is limited record
-      Self    : Devices_Configuration_Ptr :=
-                   Devices_Configuration'Unchecked_Access;
-      Lock    : aliased Mutex;
-      RF      : Address_Maps.Map; -- Map address -> device descriptor
-      Devices : Device_Maps.Map;  -- Map device key -> device descriptor
-      Rooms   : Rooms_Maps.Map;   -- Map room ID -> room descriptor
+      Self     : Devices_Configuration_Ptr :=
+                    Devices_Configuration'Unchecked_Access;
+      Lock     : aliased Synchronization.Mutexes.Mutex;
+      RF       : Address_Maps.Map; -- Address -> device descriptor
+      Devices  : Device_Maps.Map;  -- Device key -> device descriptor
+      Rooms    : Rooms_Maps.Map;   -- Room ID -> room descriptor
+      Detached : Device_Lists.Map; -- Detached devices
    end record;
+   procedure Build_Reference (Topology : in out Devices_Configuration);
    procedure Write
              (  Stream : access Root_Stream_Type'Class;
                 Item   : Devices_Configuration
              );
    for Devices_Configuration'Write use Write;
 
+   type String_Buffer (Size : Natural) is record
+      Length : Natural := 0;
+      Count  : Natural := 0;
+      Data   : String (1..Size);
+   end record;
+   type String_Buffer_Ptr is access String_Buffer;
    type ELV_MAX_Cube_Client
         (  Listener    : access Connections_Server'Class;
            Line_Length : Positive;
@@ -1232,6 +1973,7 @@ private
       Topology   : Devices_Configuration;
       Version    : String (1..6)  := (' ', '1', '.', '0', '.', '0');
       Serial_No  : String (1..10) := (others => ' ');
+      Metadata   : String_Buffer_Ptr;
          -- Response fields
       Line : String_Data_Item (Line_Length, Character'Val (13));
       LF   : Expected_Item (1);
@@ -1240,12 +1982,51 @@ private
       pragma Atomic (Slots);
    end record;
 
---     procedure Add_New_Device_Unchecked
---               (  Client  : in out ELV_MAX_Cube_Client;
---                  Room    : Room_Descriptor'Class;
---                  Device  : Partner_Device_Type;
---                  Address : RF_Address
---               );
+   procedure Add_New_Device_Unchecked
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room        : Room_ID;
+                Master      : RF_Address;
+                Kind_Of     : Partner_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : in out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device_Unchecked
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Room_Name   : String;
+                Kind_Of     : Partner_Device_Type;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                ID          : in out Room_ID;
+                S_Commands  : in out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Add_New_Device_Unchecked
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Serial_No   : String;
+                Device_Name : String;
+                Address     : RF_Address;
+                S_Commands  : in out Natural;
+                Mode        : Setting_Mode := S_Command or S_Response
+             );
+   procedure Attach_Device_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Address    : RF_Address;
+                To         : Room_Handles.Handle;
+                S_Commands : in out Natural;
+                Mode       : Setting_Mode := S_Command or S_Response
+             );
+   procedure Detach_Device_Unchecked
+             (  Client       : in out ELV_MAX_Cube_Client;
+                Address      : RF_Address;
+                Set_Metadata : Boolean;
+                Device       : out Device_Handles.Handle;
+                S_Commands   : in out Natural;
+                Mode         : Setting_Mode := S_Command or S_Response
+             );
    function Find_Room_Unchecked
             (  Client : ELV_MAX_Cube_Client;
                ID     : Room_ID
@@ -1254,16 +2035,44 @@ private
             (  Client  : ELV_MAX_Cube_Client;
                Address : RF_Address
             )  return Positive;
-   procedure Set_Thermostat_Automatic
+   function Get_Device_Unchecked_Unsafe
+            (  Client  : ELV_MAX_Cube_Client;
+               Address : RF_Address
+            )  return Natural;
+   function Is_New_Master
+            (  Client  : ELV_MAX_Cube_Client;
+               Kind_Of : Device_Type;
+               Room    : Room_Descriptor'Class
+            )  return Boolean;
+   procedure Link_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Kind_Of    : Partner_Device_Type;
+                Address    : RF_Address;
+                To         : Room_Descriptor'Class;
+                New_Master : Boolean;
+                S_Commands : in out Natural
+             );
+   procedure Process_Packet (Client : in out ELV_MAX_Cube_Client);
+   procedure Set_From_Metadata_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Lock       : in out Topology_Holder'Class;
+                Data       : String;
+                M_Response : Boolean
+             );
+   procedure Set_Metadata_Unchecked
+             (  Client  : in out ELV_MAX_Cube_Client;
+                Exclude : RF_Address := 0
+             );
+   procedure Set_Thermostat_Automatic_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : Device_Descriptor'Class;
                 Temperature : Centigrade
              );
-   procedure Set_Thermostat_Boost
+   procedure Set_Thermostat_Boost_Unchecked
              (  Client : in out ELV_MAX_Cube_Client;
                 Device : Device_Descriptor'Class
              );
-   procedure Set_Thermostat_Parameters
+   procedure Set_Thermostat_Parameters_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
                 Comfort     : Centigrade;
@@ -1275,35 +2084,36 @@ private
                 Window_Time : Day_Duration;
                 Mode        : Setting_Mode
              );
-   procedure Set_Thermostat_Parameters
+   procedure Set_Thermostat_Parameters_Unchecked
              (  Client  : in out ELV_MAX_Cube_Client;
                 Device  : in out Device_Descriptor'Class;
                 Comfort : Centigrade;
                 Eco     : Centigrade;
                 Max     : Centigrade;
                 Min     : Centigrade;
+                Offset  : Centigrade;
                 Mode    : Setting_Mode
              );
-   procedure Set_Thermostat_Schedule
+   procedure Set_Thermostat_Schedule_Unchecked
              (  Client   : in out ELV_MAX_Cube_Client;
                 Device   : in out Device_Descriptor'Class;
                 Day      : Week_Day;
                 Schedule : Points_List;
                 Mode     : Setting_Mode
              );
-   procedure Set_Thermostat_Temperature
+   procedure Set_Thermostat_Temperature_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
                 Temperature : Centigrade;
                 Manual      : Boolean
              );
-   procedure Set_Thermostat_Temperature
+   procedure Set_Thermostat_Temperature_Unchecked
              (  Client      : in out ELV_MAX_Cube_Client;
                 Device      : in out Device_Descriptor'Class;
                 Temperature : Centigrade;
                 Up_Until    : Time
              );
-   procedure Set_Thermostat_Valve
+   procedure Set_Thermostat_Valve_Unchecked
              (  Client          : in out ELV_MAX_Cube_Client;
                 Device          : in out Device_Descriptor'Class;
                 Boost_Time      : Duration;
@@ -1313,23 +2123,42 @@ private
                 Valve_Offset    : Ratio;
                 Mode            : Setting_Mode
              );
-
-   procedure Process_Packet (Client : in out ELV_MAX_Cube_Client);
-
    procedure Send
              (  Client : in out ELV_MAX_Cube_Client;
                 Data   : String
              );
-   procedure Trace
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Message : String
+   function Sort_Unchecked
+            (  Client : ELV_MAX_Cube_Client;
+               Data   : RF_Address_Array
+            )  return RF_Address_Array;
+   procedure Unlink_Unchecked
+             (  Client     : in out ELV_MAX_Cube_Client;
+                Kind_Of    : Partner_Device_Type;
+                Address    : RF_Address;
+                From       : Room_Descriptor'Class;
+                S_Commands : in out Natural
+             );
+   procedure Wake_Up_Unchecked
+             (  Client   : in out ELV_MAX_Cube_Client;
+                Room     : Room_ID;
+                Interval : Duration := 30.0
              );
 
    No_Room : constant Room_ID := 0;
 
+   procedure Get_Address
+             (  Line    : String;
+                Pointer : in out Integer;
+                Address : out RF_Address
+             );
    procedure Get_Comma
              (  Line    : String;
                 Pointer : in out Integer
+             );
+   procedure Get_Type
+             (  Line    : String;
+                Pointer : in out Integer;
+                Kind_Of : out Device_Type
              );
 
 end GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client;

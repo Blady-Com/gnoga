@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --  Multiple tasking version                                          --
---                                Last revision :  10:25 26 Dec 2009  --
+--                                Last revision :  10:33 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,27 +36,34 @@ package body Object is
    Decrement_Error : exception;
 
    protected Lock is
-      procedure Increment (Count : in out Natural);
-      procedure Decrement (Count : in out Natural);
+      procedure Decrement
+                (  Object    : in out Entity'Class;
+                   New_Value : out Natural
+                );
+      procedure Increment (Object : in out Entity'Class);
    private
-      pragma Inline (Increment);
       pragma Inline (Decrement);
+      pragma Inline (Increment);
    end Lock;
 
    protected body Lock is
-      procedure Increment (Count : in out Natural) is
+      procedure Decrement
+                (  Object    : in out Entity'Class;
+                   New_Value : out Natural
+                )  is
       begin
-         Count := Count + 1;
-      end Increment;
-
-      procedure Decrement (Count : in out Natural) is
-      begin
-         if Count = 0 then
+         if Object.Use_Count = 0 then
             raise Decrement_Error;
          else
-            Count := Count - 1;
+            Object.Use_Count := Object.Use_Count - 1;
+            New_Value        := Object.Use_Count;
          end if;
       end Decrement;
+
+      procedure Increment (Object : in out Entity'Class) is
+      begin
+         Object.Use_Count := Object.Use_Count + 1;
+      end Increment;
    end Lock;
 
    function Equal
@@ -83,9 +90,12 @@ package body Object is
       end if;
    end Finalize;
 
-   procedure Decrement_Count (Object : in out Entity) is
+   procedure Decrement_Count
+             (  Object    : in out Entity;
+                Use_Count : out Natural
+             )  is
    begin
-      Lock.Decrement (Object.Use_Count);
+      Lock.Decrement (Object, Use_Count);
    exception
       when Decrement_Error =>
          Raise_Exception
@@ -97,7 +107,7 @@ package body Object is
 
    procedure Increment_Count (Object : in out Entity) is
    begin
-      Lock.Increment (Object.Use_Count);
+      Lock.Increment (Object);
    end Increment_Count;
 
    procedure Initialize (Object : in out Entity) is
@@ -133,9 +143,10 @@ package body Object is
       if Ptr /= null then
          declare
             Object : Entity'Class renames Ptr.all;
+            Count  : Natural;
          begin
-            Decrement_Count (Object);
-            if Object.Use_Count > 0 then
+            Decrement_Count (Object, Count);
+            if Count > 0 then
                return;
             end if;
          end;

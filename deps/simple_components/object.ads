@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  10:25 26 Dec 2009  --
+--                                Last revision :  10:32 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -45,7 +45,8 @@ package Object is
 --
 -- Decrement_Count -- Decrement object's use count
 --
---    Object - The object
+--    Object    - The object
+--    Use_Count - The new use count value
 --
 -- This procedure can be  overridden  in  order  to  provide  additional
 -- semantics of decrementing object reference count.
@@ -54,7 +55,10 @@ package Object is
 --
 --    Program_Error - Use count is zero
 --
-   procedure Decrement_Count (Object : in out Entity);
+   procedure Decrement_Count
+             (  Object    : in out Entity;
+                Use_Count : out Natural
+             );
 --
 -- Equal, Less -- Comparisons
 --

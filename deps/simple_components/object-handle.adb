@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  20:41 21 Jul 2017  --
+--                                Last revision :  10:33 11 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -90,6 +90,7 @@ package body Object.Handle is
       if Reference.Ptr /= Thing then
          if Reference.Ptr /= null then
             Release (Reference.Ptr);
+            Reference.Ptr := null;
          end if;
          if Thing /= null then
             Increment_Count (Thing.all);

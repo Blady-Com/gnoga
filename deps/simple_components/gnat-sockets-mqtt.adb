@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  16:11 08 Jan 2018  --
+--                                Last revision :  14:04 26 Dec 2018  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -2114,37 +2114,73 @@ package body GNAT.Sockets.MQTT is
 
    procedure Trace
              (  Pier    : in out MQTT_Pier;
-                Message : String
+                Session : String;
+                Message : String;
+                Kind_Of : Trace_Message_Type
              )  is
       use Strings_Edit;
       Length : Natural := 0;
    begin
       for Index in Message'Range loop
          case Message (Index) is
-            when '!'..'$' | '&'..'~' =>
+            when ' '..'$' | '&'..'~' =>
                Length := Length + 1;
             when others =>
                Length := Length + 3;
          end case;
       end loop;
       if Length = Message'Length then -- Show as-is
-         Trace
-         (  Pier.Listener.Factory.all,
-            Image (Get_Client_Address (Pier)) & ' ' & Message
-         );
+         case Kind_Of is
+            when Received =>
+               Trace
+               (  Pier.Listener.Factory.all,
+                  (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+                  &  " "
+                  &  Session
+                  &  " > "
+                  &  Message
+               )  );
+            when Sent =>
+               Trace
+               (  Pier.Listener.Factory.all,
+                  (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+                  &  " "
+                  &  Session
+                  &  " < "
+                  &  Message
+               )  );
+            when Action =>
+               Trace
+               (  Pier.Listener.Factory.all,
+                  (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+                  &  " "
+                  &  Session
+                  &  " ! "
+                  &  Message
+               )  );
+         end case;
       else -- Recode to %-escaped
          declare
             Prefix  : constant String :=
-                               Image (Get_Client_Address (Pier));
-            Text    : String (1..Prefix'Length + 1 + Length);
+               (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+               &  " "
+               &  Session
+               );
+            Text    : String (1..Prefix'Length + 3 + Length);
             Pointer : Integer := 1;
          begin
             Put (Text, Pointer, Prefix);
-            Text (Pointer) := ' ';
-            Pointer := Pointer + 1;
+            case Kind_Of is
+               when Received =>
+                  Put (Text, Pointer, " > ");
+               when Sent =>
+                  Put (Text, Pointer, " < ");
+               when Action =>
+                  Put (Text, Pointer, " ! ");
+            end case;
             for Index in Message'Range loop
                case Message (Index) is
-                  when '!'..'$' | '&'..'~' =>
+                  when ' '..'$' | '&'..'~' =>
                      Text (Pointer) := Message (Index);
                      Pointer := Pointer + 1;
                   when others =>
@@ -2161,7 +2197,10 @@ package body GNAT.Sockets.MQTT is
                      );
                end case;
             end loop;
-            Trace (Pier.Listener.Factory.all, Text);
+            Trace
+            (  Pier.Listener.Factory.all,
+               Text (1..Pointer - 1)
+            );
          end;
       end if;
    end Trace;

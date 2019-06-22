@@ -36,7 +36,7 @@ PARTIAL 9. Complete Ace Editor plugin
 10. Complete MacGap support for menus
 11. Add coding style rules documentation
 PARTIAL 12. Add Pixi Sprite new features (bounce on walls, event on position, event on collision, turtle à la Logo)
-
+13. Add a Propagate_Events property in Gnoga.Gui.Base
 
 Some other ideas:
 

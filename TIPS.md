@@ -140,4 +140,8 @@ Example:
 1. If sqlite is not provided by your system, just do:
 make sqlite3
 
+1. Static web contents (HTML pages, images) are served 
+regardless of the existence of a "formal" connection processed by 
+On_Connect as for instance with http://127.0.0.1:8080/toto.html or with a HTML URL embedded in HTML code. Gnoga is an HTTP server at first. Files are searched in html folder, if not existent then default boot file is served. Files may be located in img, css or js folders but folder names have to be explicitly present in the URL as for instance http://127.0.0.1:8080/img/E4a.png.
+
 1. next tip...

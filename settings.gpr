@@ -79,7 +79,7 @@ abstract project Settings is
    -------------
 
    package Builder is
-      for Switches ("ada") use ("-j0");
+      for Switches ("ada") use ("-j0", "-k");
    end Builder;
 
    ---------

@@ -89,7 +89,7 @@ endif
 help :
 	@echo "-----------------------------------------------------------------------------"
 	@echo "--                                                                         --"
-	@echo "-- make <entry>                                                            --"
+	@echo "-- Usage: make <entry>                                                     --"
 	@echo "--                                                                         --"
 	@echo "-- <entry> ::= help        -- print this message                           --"
 	@echo "--         | all           -- build gnoga with demos and all dependencies  --"
@@ -107,14 +107,15 @@ help :
 	@echo "--         | check_rules   -- check gnoga with AdaControl                  --"
 	@echo "--         | gnoga-config  -- create script with gnoga compilation options --"
 	@echo "--                                                                         --"
-	@echo "--         PREFIX           = $(PREFIX)                                    --"
-	@echo "--         GPRCHECK         = $(GPRCHECK)                                  --"
-	@echo "--         TARGET           = $(TARGET)                                    --"
-	@echo "--         ATOMIC_ACCESS    = $(ATOMIC_ACCESS)                             --"
-	@echo "--         BUILDER          = $(BUILDER)                                   --"
-	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)                                --"
-	@echo "--         BUILD_OS         = $(BUILD_OS)                                  --"
-	@echo "--         BUILD_MODE       = $(BUILD_MODE)                                --"
+	@echo "-- Configurable variables:                                                 --"
+	@echo "--                                                                         --"
+	@echo "--         PREFIX           = $(PREFIX)"
+	@echo "--         GPRCHECK         = $(GPRCHECK)"
+	@echo "--         TARGET           = $(TARGET)"
+	@echo "--         BUILDER          = $(BUILDER)"
+	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)"
+	@echo "--         BUILD_OS         = $(BUILD_OS)"
+	@echo "--         BUILD_MODE       = $(BUILD_MODE)"
 	@echo "--                                                                         --"
 	@echo "-----------------------------------------------------------------------------"
 
@@ -204,14 +205,15 @@ install_deps: deps $(BUILD_SQLITE3)
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 
 # Install Gnoga without deps
-install_gnoga: gnoga gnoga_tools
+install_gnoga: basic_components gnoga gnoga_tools
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga src/gnoga.gpr $(GN_OPTIONS)
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg.gpr $(GN_OPTIONS)
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 # Build and install Gnoga standalone with deps already installed in PREFIX
-install_gnoga_sa:
+install_gnoga_sa: html-docs
 	$(BUILDER) -P gpr_sa/gnoga.gpr $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
+	gnatdoc -P sa/gnoga.gpr --enable-build --no-subprojects $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gpr_sa/gnoga.gpr $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
 	$(BUILDER) -P tools/tools_agg_ext.gpr $(GN_OPTIONS) -XPREFIX="$(PREFIX)"
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg_ext.gpr $(GN_OPTIONS) -XPREFIX="$(PREFIX)"
@@ -241,7 +243,7 @@ adaedit:
 
 adablog:
 	$(COPY) demo$(PATHSEP)adablog$(PATHSEP)adablog.css css
-	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS)
+	- $(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS)
 
 connect_four: zanyblue
 	- cd demo/connect_four && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings connectfour_messages connectfour
@@ -277,13 +279,13 @@ logo: zanyblue
 	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
 
 tests:
-	-$(BUILDER) -k -P test/test_agg.gpr $(GN_OPTIONS)
+	- $(BUILDER) -k -P test/test_agg.gpr $(GN_OPTIONS)
 
 tests_ssl: gnoga_secure
-	-$(BUILDER) -P test_ssl/test_ssl.gpr $(GN_OPTIONS)
+	- $(BUILDER) -P test_ssl/test_ssl.gpr $(GN_OPTIONS)
 
 tutorials:
-	$(BUILDER) -P tutorial/tutorial_agg.gpr $(GN_OPTIONS)
+	- $(BUILDER) -P tutorial/tutorial_agg.gpr $(GN_OPTIONS)
 
 .IGNORE: clean_all
 clean_all: clean clean_deps
@@ -310,7 +312,7 @@ clean_deps:
 clean: clean_demo clean_tutorials clean_tests
 	$(CLEANER) -P src/gnoga.gpr
 	$(CLEANER) -P ssl/gnoga_secure.gpr
-	$(CLEANER) -P tools/tools.gpr
+	$(CLEANER) -P tools/tools_agg.gpr
 	$(RM) bin$(PATHSEP)*.db
 	$(RM) bin$(PATHSEP)temp.txt
 	$(RM) obj$(PATHSEP)gnoga_gtk_window.o
@@ -352,10 +354,10 @@ check_rules:
 
 gnoga-config:
 ifeq ($(BUILD_OS),Windows)
-	-$(MKDIR) bin
+	- $(MKDIR) bin
 	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)PragmARC > bin$(PATHSEP)gnoga-config.cmd
 else
-	-$(MKDIR) bin
+	- $(MKDIR) bin
 	echo echo $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)PragmARC > bin$(PATHSEP)gnoga-config
 	chmod +x bin$(PATHSEP)gnoga-config
 endif

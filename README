@@ -18,7 +18,7 @@ http://www.gnoga.com or use git to get the latest development version:
 ```
 git clone git://git.code.sf.net/p/gnoga/code gnoga-code
 cd gnoga-code
-make help # for all options
+make help # for all options and configuration values
 make all
 ```
 
@@ -27,6 +27,11 @@ Open a web browser with URL like: "http://127.0.0.1:8080".
 
 See INSTALL for more information about installing Gnoga as a standard gcc/ada
 library if desired.
+
+GNAT Programming Studio (GPS) is available with 'make gps' which launch GPS with the
+actual values of compiler switches for gnoga.gpr project.
+For the demos: open in GPS the demo/demo_agg.gpr project.
+For the tests: open in GPS the test/test_agg.gpr project.
 
 See docs/html/user_guide.html to get started (make html-docs).
 See docs/html/gnoga_rm/index.html for reference manual (make rm-docs).

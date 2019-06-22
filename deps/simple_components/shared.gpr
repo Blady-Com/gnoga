@@ -14,6 +14,9 @@ abstract project Shared is
 
    GNAT_XX := "";
 
+   type OS_Type is ("Windows", "Windows_NT", "Linux", "UNIX", "OSX", "FreeBSD");
+   SC_OS : OS_Type := external ("SC_OS", "UNIX");
+
    case Legacy is
       when "Ada95" =>
          GNAT_XX := "-gnat95";
@@ -54,7 +57,7 @@ abstract project Shared is
    package Binder is
       case Development is
          when "Debug" =>
-            for Default_Switches ("ada") use ("-E");
+            for Default_Switches ("ada") use ("-Es");
          when "Release" =>
             for Default_Switches ("ada") use ();
          when others =>
@@ -81,6 +84,13 @@ abstract project Shared is
             for Default_Switches ("ada") use ("-O2", "-s");
          when "Profile" =>
             for Default_Switches ("ada") use ("-g", "-pg");
+      end case;
+      case SC_OS is
+         when "OSX" =>
+            for Default_Switches ("Ada")
+              use Linker'Default_Switches ("Ada") & ("-Wl,-no_pie");
+         when others =>
+            null;
       end case;
    end Linker;
 

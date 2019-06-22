@@ -127,7 +127,7 @@ basic_components:
 deps : simple_components zanyblue pragmarc
 
 simple_components:
-	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
+	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XSC_OS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
 
 sqlite3:
 	- $(MKDIR) lib
@@ -188,7 +188,7 @@ install: install_deps install_gnoga
 
 # Install deps
 install_deps: deps $(BUILD_SQLITE3) zanyblue pragmarc
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XOS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XSC_OS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
 	- $(MAKE) -C deps/zanyblue/src BUILD=$(subst Release,Production,${BUILD_MODE}) INSTALL_DIR="$(PREFIX)" install
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr

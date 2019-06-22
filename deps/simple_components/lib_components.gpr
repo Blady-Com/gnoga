@@ -2,7 +2,7 @@ with "shared";
 
 library project Lib_Components is
 
-   Version     := "4.30";
+   Version     := "4.40";
 
    type Object_Tracing_Mode is ("Off", "On");
    Object_Tracing : Object_Tracing_Mode := external ("Traced_objects", "Off");
@@ -16,9 +16,6 @@ library project Lib_Components is
            "GCC-long-offsets"
         );
    Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "Pragma-atomic");
-
-   type OS_Type is ("Windows", "Windows_NT", "Linux", "UNIX", "OSX", "FreeBSD");
-   OS : OS_Type := external ("OS", "Windows");
 
    Dir_List := ();
 
@@ -47,7 +44,7 @@ library project Lib_Components is
          Dir_List := Dir_List & "atomic-access/gcc-long-offsets";
    end case;
 
-   case OS is
+   case Shared.SC_OS is
       when "Windows" | "Windows_NT" =>
          for Languages use ("Ada");
          Dir_List := Dir_List & "os/windows";
@@ -112,13 +109,39 @@ library project Lib_Components is
           "strings_edit-utf8-categorization.adb",
           "strings_edit-utf8-categorization.ads",
           "strings_edit-utf8-blocks.ads",
+          "strings_edit-utf8-integer_edit.adb",
+          "strings_edit-utf8-integer_edit.ads",
+          "strings_edit-utf8-iso_8859_2.adb",
+          "strings_edit-utf8-iso_8859_2.ads",
+          "strings_edit-utf8-iso_8859_3.adb",
+          "strings_edit-utf8-iso_8859_3.ads",
+          "strings_edit-utf8-iso_8859_4.adb",
+          "strings_edit-utf8-iso_8859_4.ads",
+          "strings_edit-utf8-iso_8859_5.adb",
+          "strings_edit-utf8-iso_8859_5.ads",
+          "strings_edit-utf8-iso_8859_6.adb",
+          "strings_edit-utf8-iso_8859_6.ads",
+          "strings_edit-utf8-iso_8859_7.adb",
+          "strings_edit-utf8-iso_8859_7.ads",
+          "strings_edit-utf8-iso_8859_8.adb",
+          "strings_edit-utf8-iso_8859_8.ads",
+          "strings_edit-utf8-iso_8859_9.adb",
+          "strings_edit-utf8-iso_8859_9.ads",
+          "strings_edit-utf8-iso_8859_10.adb",
+          "strings_edit-utf8-iso_8859_10.ads",
+          "strings_edit-utf8-koi8.adb",
+          "strings_edit-utf8-koi8.ads",
+          "strings_edit-utf8-macos_roman.adb",
+          "strings_edit-utf8-macos_roman.ads",
           "strings_edit-utf8-maps.adb",
           "strings_edit-utf8-maps.ads",
           "strings_edit-utf8-maps-constants.ads",
           "strings_edit-utf8-mapping.adb",
           "strings_edit-utf8-mapping.ads",
-          "strings_edit-utf8-integer_edit.adb",
-          "strings_edit-utf8-integer_edit.ads",
+          "strings_edit-utf8-radix50.adb",
+          "strings_edit-utf8-radix50.ads",
+          "strings_edit-utf8-recoding_streams.adb",
+          "strings_edit-utf8-recoding_streams.ads",
           "strings_edit-utf8-subscript-integer_edit.ads",
           "strings_edit-utf8-subscript.adb",
           "strings_edit-utf8-subscript.ads",
@@ -129,6 +152,24 @@ library project Lib_Components is
           "strings_edit-utf8-wildcards.ads",
           "strings_edit-utf8-wildcards-case_insensitive.adb",
           "strings_edit-utf8-wildcards-case_insensitive.ads",
+          "strings_edit-utf8-windows_1250.adb",
+          "strings_edit-utf8-windows_1250.ads",
+          "strings_edit-utf8-windows_1251.adb",
+          "strings_edit-utf8-windows_1251.ads",
+          "strings_edit-utf8-windows_1252.adb",
+          "strings_edit-utf8-windows_1252.ads",
+          "strings_edit-utf8-windows_1253.adb",
+          "strings_edit-utf8-windows_1253.ads",
+          "strings_edit-utf8-windows_1254.adb",
+          "strings_edit-utf8-windows_1254.ads",
+          "strings_edit-utf8-windows_1255.adb",
+          "strings_edit-utf8-windows_1255.ads",
+          "strings_edit-utf8-windows_1256.adb",
+          "strings_edit-utf8-windows_1256.ads",
+          "strings_edit-utf8-windows_1257.adb",
+          "strings_edit-utf8-windows_1257.ads",
+          "strings_edit-utf8-windows_1258.adb",
+          "strings_edit-utf8-windows_1258.ads",
           "strings_edit-utf8.adb",
           "strings_edit-utf8.ads",
           "strings_edit.adb",
@@ -452,6 +493,8 @@ library project Lib_Components is
       "gnat-sockets-connection_state_machine-variable_length_strings.ads",
       "gnat-sockets-server.ads",
       "gnat-sockets-server.adb",
+      "gnat-sockets-server-blocking.adb",
+      "gnat-sockets-server-blocking.ads",
       "gnat-sockets-server-handles.ads",
       "gnat-sockets-server-pooled.adb",
       "gnat-sockets-server-pooled.ads"
@@ -504,7 +547,14 @@ library project Lib_Components is
        (  "gnat-sockets-connection_state_machine-elv_max_cube_client.adb",
           "gnat-sockets-connection_state_machine-elv_max_cube_client.ads",
           "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.adb",
-          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads"
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-stream_io.ads",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-time_zones.ads",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.adb",
+          "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.ads"
+       );
+   Components_Connections_Server_OpenSSL_Source_Files :=
+       (  "gnat-sockets-server-openssl.adb",
+          "gnat-sockets-server-openssl.ads"
        );
    Components_Sqlite_Source_Files :=
    (  "persistent-sqlite_keys-arrays.ads",
@@ -533,6 +583,22 @@ library project Lib_Components is
        (  "gnat-sockets-ntp.ads",
           "gnat-sockets-ntp.adb"
        );
+   Components_Julia_Source_Files :=
+       (  "julia.adb",
+          "julia.ads",
+          "julia-generic_1d_array.adb",
+          "julia-generic_1d_array.ads",
+          "julia-generic_2d_array.adb",
+          "julia-generic_2d_array.ads",
+          "julia-generic_3d_array.adb",
+          "julia-generic_3d_array.ads",
+          "julia-load_julia_library.adb",
+          "julia-load_julia_library.ads"
+       );
+   Components_OpenSSL_Source_Files :=
+       (  "openssl.adb",
+          "openssl.ads"
+       );
    Files_List :=
       String_Edit_Source_Files &
       Tables_Source_Files &
@@ -545,12 +611,15 @@ library project Lib_Components is
       Components_Connections_Server_HTTP_Server_Source_Files &
       Components_Connections_Server_HTTP_Server_Sqlite_Browser_Source_Files &
       Components_Connections_Server_ELV_Max_Cube_Source_Files &
+      Components_Connections_Server_OpenSSL_Source_Files &
       Components_Sqlite_Source_Files &
       XPM_Parser_Source_Files &
       GNUTLS_Source_Files &
-      Components_NTP_Source_Files;
+      Components_NTP_Source_Files &
+      Components_Julia_Source_Files &
+      Components_OpenSSL_Source_Files;
 
-   case OS is
+   case Shared.SC_OS is
       when "Windows" | "Windows_NT" =>
          for Source_Files use
              Files_List & (  "synchronization-windows.adb",

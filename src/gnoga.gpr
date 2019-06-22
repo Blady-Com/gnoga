@@ -1,5 +1,5 @@
-with "settings.gpr";
-with "lib_components.gpr";
+with "../settings.gpr";
+with "../deps/simple_components/lib_components.gpr";
 with "../components/plugins.gpr";
 
 library project Gnoga is
@@ -32,7 +32,8 @@ library project Gnoga is
 
    package Install is
       for Artifacts ("share/gnoga/doc") use ("../docs/html/*.html", "../docs/*.txt", "../docs/user_guide");
-      for Artifacts ("share/gnoga/gnoga_rm") use (Project'Object_Dir & "/gnatdoc/*");
+--      for Artifacts ("share/gnoga/gnoga_rm") use (Project'Object_Dir & "/gnatdoc/*"); -- absolute paths aren't processed well
+      for Artifacts ("share/gnoga/gnoga_rm") use ("../obj/gnatdoc/*");
    end Install;
 
    package Pretty_Printer renames Settings.Pretty_Printer;

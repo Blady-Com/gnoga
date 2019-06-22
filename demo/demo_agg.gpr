@@ -1,8 +1,8 @@
-with "settings.gpr";
+with "../settings.gpr";
 
 aggregate project Demo_Agg is
 
-   for Project_Path use ("../src", "../deps/simple_components", "../deps/zanyblue/src", "../deps/PragmARC");
+   for Project_Path use ("..", "../src", "../deps/simple_components", "../deps/zanyblue/src", "../deps/PragmARC");
    for Project_Files use ("snake/snake.gpr",
                             "mine_detector/mine_detector.gpr",
                             "connect_four/connect_four.gpr",

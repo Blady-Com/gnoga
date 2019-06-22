@@ -1,8 +1,8 @@
-with "settings.gpr";
+with "../settings.gpr";
 
 aggregate library project Gnoga_Agg is
 
-   for Project_Path use ("../deps/simple_components");
+   for Project_Path use ("..", "../deps/simple_components");
    for Project_Files use ("gnoga.gpr");
    for Library_Name use "gnoga_agg";
    for Library_Dir use Settings.Lib_Dir & "_agg";

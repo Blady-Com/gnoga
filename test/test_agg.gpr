@@ -1,8 +1,8 @@
-with "settings.gpr";
+with "../settings.gpr";
 
 aggregate project Test_Agg is
 
-   for Project_Path use ("../src", "../deps/simple_components");
+   for Project_Path use ("..", "../src", "../deps/simple_components");
    for Project_Files use ("test.gpr",
                             "tickets/001/test.gpr",
                             "tickets/002/test.gpr",

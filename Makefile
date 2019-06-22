@@ -62,9 +62,9 @@ endif
 endif
 
 ifeq ($(shell echo "check_quotes"),"check_quotes")
-   BUILD_OS := Windows
+	BUILD_OS := Windows
 else
-   BUILD_OS := UnixLike
+	BUILD_OS := UnixLike
 endif
 
 ifeq ($(BUILD_OS),Windows)
@@ -118,6 +118,16 @@ help :
 	@echo "--                                                                         --"
 	@echo "-----------------------------------------------------------------------------"
 
+SC_OPTIONS=-XAtomic_Access=${ATOMIC_ACCESS} -XSC_OS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
+GN_OPTIONS=-XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET} ${SC_OPTIONS}
+ifeq ($(PRJ_TARGET),Windows)
+	ZB_MAKE=BUILD=$(subst Release,Production,${BUILD_MODE}) OS=Windows_NT
+	ZB_OPTIONS=BUILD=-X$(subst Release,Production,${BUILD_MODE}) -XOS=Windows_NT
+else
+	ZB_MAKE=BUILD=$(subst Release,Production,${BUILD_MODE}) OS=unix
+	ZB_OPTIONS=-XBUILD=$(subst Release,Production,${BUILD_MODE}) -XOS=unix
+endif
+
 all: deps $(BUILD_SQLITE3) basic_components gnoga gnoga_tools demo tutorials
 
 basic_components:
@@ -127,7 +137,7 @@ basic_components:
 deps : simple_components zanyblue pragmarc
 
 simple_components:
-	$(BUILDER) -P deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XSC_OS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
+	$(BUILDER) -P deps/simple_components/lib_components.gpr $(SC_OPTIONS)
 
 sqlite3:
 	- $(MKDIR) lib
@@ -137,7 +147,7 @@ sqlite3:
 	cd deps/simple_components/sqlite-sources && $(RM) sqlite3.o
 
 zanyblue:
-	- cd deps/zanyblue/src && "$(MAKE)" BUILD=$(subst Release,Production,${BUILD_MODE}) APPDIRS="zbmcompile zbinfo"
+	- cd deps/zanyblue/src && "$(MAKE)" $(ZB_MAKE) APPDIRS="zbmcompile zbinfo"
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
@@ -175,97 +185,97 @@ bin/multimarkdown:
 	$(MOVE) deps/MultiMarkdown-4/multimarkdown bin/
 
 gnoga:
-	$(BUILDER) -P src/gnoga_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P src/gnoga.gpr $(GN_OPTIONS)
 
 gnoga_secure:
-	$(BUILDER) -P ssl/gnoga_secure.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P ssl/gnoga_secure.gpr $(GN_OPTIONS)
 
 gnoga_tools:
-	$(BUILDER) -P tools/tools_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P tools/tools_agg.gpr $(GN_OPTIONS)
 
 # Install Gnoga and deps
 install: install_deps install_gnoga
 
 # Install deps
-install_deps: deps $(BUILD_SQLITE3) zanyblue pragmarc
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr -XAtomic_Access=${ATOMIC_ACCESS} -XSC_OS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
+install_deps: deps $(BUILD_SQLITE3)
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr $(SC_OPTIONS)
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
-	- $(MAKE) -C deps/zanyblue/src BUILD=$(subst Release,Production,${BUILD_MODE}) INSTALL_DIR="$(PREFIX)" install
+	- $(MAKE) -C deps/zanyblue/src $(ZB_MAKE) INSTALL_DIR="$(PREFIX)" install
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 
 # Install Gnoga without deps
 install_gnoga: gnoga gnoga_tools
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga src/gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga src/gnoga.gpr $(GN_OPTIONS)
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg.gpr $(GN_OPTIONS)
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 .IGNORE: uninstall
 uninstall:
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components --uninstall lib_components.gpr
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc --uninstall pragmarc.gpr
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga_agg.gpr
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga.gpr
 	$(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" uninstall
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker logo
 
 snake:
-	$(BUILDER) -P demo/demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS)
 
 mine_detector:
-	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ $(GN_OPTIONS)
 
 chattanooga:
 	$(COPY) demo$(PATHSEP)chattanooga$(PATHSEP)glass.ogg html
-	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
 
 adaedit:
-	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ $(GN_OPTIONS)
 
 adablog:
 	$(COPY) demo$(PATHSEP)adablog$(PATHSEP)adablog.css css
-	$(BUILDER) -P demo/demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS)
 
 connect_four: zanyblue
 	- cd demo/connect_four && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings connectfour_messages connectfour
-	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ $(GN_OPTIONS) $(ZB_OPTIONS)
 
 linxtris:
-	$(BUILDER) -P demo/demo_agg.gpr $@ -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@ $(GN_OPTIONS)
 	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
 
 password_gen: pragmarc
-	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
 
 random_int:
-	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
 
 adaothello:
-	$(BUILDER) -P demo/demo_agg.gpr othello_game -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr othello_game $(GN_OPTIONS)
 
 tic_tac_toe:
-	$(BUILDER) -P demo/demo_agg.gpr $@-program -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
 
 leaves:
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.png img
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.jpg img
-	$(BUILDER) -P demo/demo_agg.gpr $@_main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@_main $(GN_OPTIONS)
 
 db_maker:
-	$(BUILDER) -P demo/demo_agg.gpr movies -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr movies $(GN_OPTIONS)
 
 logo: zanyblue
 	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
 	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
-	$(BUILDER) -P demo/demo_agg.gpr $@-main -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
 
 tests:
-	-$(BUILDER) -k -P test/test_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	-$(BUILDER) -k -P test/test_agg.gpr $(GN_OPTIONS)
 
 tests_ssl: gnoga_secure
-	-$(BUILDER) -P test_ssl/test_ssl.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	-$(BUILDER) -P test_ssl/test_ssl.gpr $(GN_OPTIONS)
 
 tutorials:
-	$(BUILDER) -P tutorial/tutorial_agg.gpr -XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -P tutorial/tutorial_agg.gpr $(GN_OPTIONS)
 
 .IGNORE: clean_all
 clean_all: clean clean_deps
@@ -290,27 +300,27 @@ clean_deps:
 
 .IGNORE: clean
 clean: clean_demo clean_tutorials clean_tests
-	$(CLEANER) -P src/gnoga_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(CLEANER) -P ssl/gnoga_secure.gpr -XPRJ_TARGET=${PRJ_TARGET}
-	$(CLEANER) -P tools/tools.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P src/gnoga_agg.gpr
+	$(CLEANER) -P ssl/gnoga_secure.gpr
+	$(CLEANER) -P tools/tools.gpr
 	$(RM) bin$(PATHSEP)*.db
 	$(RM) bin$(PATHSEP)temp.txt
 	$(RM) obj$(PATHSEP)gnoga_gtk_window.o
 
 .IGNORE: clean_demo
 clean_demo:
-	$(CLEANER) -P demo/demo_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P demo/demo_agg.gpr
 
 .IGNORE: clean_tutorials
 clean_tutorials:
-	$(CLEANER) -P tutorial/tutorial_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P tutorial/tutorial_agg.gpr
 
 .IGNORE: clean_tests
 clean_tests:
-	$(CLEANER) -P test/test_agg.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	$(CLEANER) -P test/test_agg.gpr
 
 rm-docs: gnoga
-	gnatdoc -P src/gnoga.gpr --enable-build --no-subprojects -XPRJ_TARGET=${PRJ_TARGET}
+	gnatdoc -P src/gnoga.gpr --enable-build --no-subprojects $(GN_OPTIONS)
 
 html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown user_guide.md > html/user_guide.html
@@ -320,24 +330,24 @@ html-docs: bin/multimarkdown
 
 gps:
 ifeq ($(BUILD_OS),Windows)
-	cmd /C start /B gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET}
+	cmd /C start /B gps -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS)
 else
-	gps -P src/gnoga.gpr -XPRJ_TARGET=${PRJ_TARGET} &
+	gps -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS) &
 endif
 
 # Use AdaControl to check rules/gnoga.aru
 # Make sure AdaControl utilities are in your PATH
 # https://sourceforge.net/projects/adacontrol
 check_rules:
-	$(BUILDER) -c -f -P src/gnoga.gpr -gnatct -XPRJ_TARGET=${PRJ_TARGET}
+	$(BUILDER) -c -f -P src/gnoga.gpr -gnatct $(GN_OPTIONS)
 	adactl -f rules/gnoga.aru -p src/gnoga.gpr src/*.ads -- -Tobj
 
 gnoga-config:
 ifeq ($(BUILD_OS),Windows)
 	-$(MKDIR) bin
-	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > bin$(PATHSEP)gnoga-config.cmd
+	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)/src > bin$(PATHSEP)gnoga-config.cmd
 else
 	-$(MKDIR) bin
-	echo echo -XPRJ_TARGET=${PRJ_TARGET} -aP$(GPR_PROJECT_PATH)$(GPR_PROJECT_PATH_SEP)$(CWD)/src > bin$(PATHSEP)gnoga-config
+	echo echo $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)/src > bin$(PATHSEP)gnoga-config
 	chmod +x bin$(PATHSEP)gnoga-config
 endif

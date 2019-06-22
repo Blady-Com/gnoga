@@ -1,8 +1,8 @@
-with "settings.gpr";
+with "../settings.gpr";
 
 aggregate project Tutorial_Agg is
 
-   for Project_Path use ("../src", "../deps/simple_components");
+   for Project_Path use ("..", "../src", "../deps/simple_components");
    for Project_Files use ("tutorial-01/tutorial_01.gpr",
                             "tutorial-02/tutorial_02.gpr",
                             "tutorial-03/tutorial_03.gpr",

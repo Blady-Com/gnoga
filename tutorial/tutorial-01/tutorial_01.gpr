@@ -1,5 +1,5 @@
 with "settings.gpr";
-with "gnoga_agg.gpr";
+with "gnoga.gpr";
 
 project Tutorial_01 is
 

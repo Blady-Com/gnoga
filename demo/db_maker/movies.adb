@@ -18,6 +18,9 @@ procedure Movies is
       Female_Lead : Strng;
    end record;
 
+   function "=" (Left : Movie_Info; Right : Movie_Info) return Boolean is
+      (Left.Title = Right.Title and Left.Year = Right.Year and Left.Director = Right.Director);
+
    function "<" (Left : Movie_Info; Right : Movie_Info) return Boolean is
       -- Empty
    begin -- "<"
@@ -31,9 +34,6 @@ procedure Movies is
 
       return Left.Director < Right.Director;
    end "<";
-
-   function "=" (Left : Movie_Info; Right : Movie_Info) return Boolean is
-      (Left.Title = Right.Title and Left.Year = Right.Year and Left.Director = Right.Director);
 
    subtype Field_Number is Integer range 1 .. 6;
 

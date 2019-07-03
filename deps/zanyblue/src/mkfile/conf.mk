@@ -111,7 +111,7 @@ SBINDIR=$(SRCDIR)/bin
 STAGEDIR=$(TOP)/stage
 ADMINDIR=$(SRCDIR)/admin
 DISTRIBUTION=$(TOP)/$(TARNAME)
-ZBDEV=$(TOP)/src/bin/zbdev
+ZBDEV=echo
 
 # The choices for BUILD are "Debug", for a debug build, "Production" for an
 # optimized production build, and  "Coverage" for a coverage enable build via

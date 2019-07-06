@@ -122,7 +122,7 @@ SC_OPTIONS=-XAtomic_Access=${ATOMIC_ACCESS} -XSC_OS=${PRJ_TARGET} -XDevelopment=
 GN_OPTIONS=-XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET} ${SC_OPTIONS}
 ifeq ($(PRJ_TARGET),Windows)
 	ZB_MAKE=BUILD=$(subst Release,Production,${BUILD_MODE}) OS=Windows_NT
-	ZB_OPTIONS=BUILD=-X$(subst Release,Production,${BUILD_MODE}) -XOS=Windows_NT
+	ZB_OPTIONS=-XBUILD=$(subst Release,Production,${BUILD_MODE}) -XOS=Windows_NT
 else
 	ZB_MAKE=BUILD=$(subst Release,Production,${BUILD_MODE}) OS=unix
 	ZB_OPTIONS=-XBUILD=$(subst Release,Production,${BUILD_MODE}) -XOS=unix

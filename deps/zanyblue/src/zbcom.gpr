@@ -61,8 +61,10 @@ project zbcom is
       when "Debug" =>
          Compile_Switches := Compile_Switches & ("-g",
                                                  "-gnatf",
+                                                 "-gnatU",
                                                  "-gnato",
-                                                 "-fstack-check");
+                                                 "-fstack-check",
+                                                 "-Wall");
       when "Coverage" =>
          Compile_Switches := Compile_Switches & ("-g",
                                                  "-fprofile-arcs",

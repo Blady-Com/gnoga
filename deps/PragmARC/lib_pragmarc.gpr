@@ -7,7 +7,7 @@ library project Lib_PragmARC is
    for Excluded_Source_Files use ("compile_all.adb");
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVa", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF");
+      for Default_Switches ("Ada") use ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVa", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-gnatU", "-Wall");
    end Compiler;
 
    package Binder is

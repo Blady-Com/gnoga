@@ -34,8 +34,10 @@ abstract project Shared is
                    "-gnato",
                    "-gnatVa",
                    "-gnatf",
+                   "-gnatU",
                    "-g",
-                   "-fstack-check"
+                   "-fstack-check",
+                   "-Wall"
                 )  & GNAT_XX;
          when "Release" =>
             for Default_Switches ("ada") use
@@ -43,6 +45,7 @@ abstract project Shared is
                    "-gnatp",
                    "-gnatVa",
                    "-gnatf",
+                   "-gnatU",
                    "-O2",
                    "-gnatn"
                 )  & GNAT_XX;

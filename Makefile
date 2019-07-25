@@ -109,7 +109,6 @@ help :
 	@echo "--         PREFIX           = $(PREFIX)                                    --"
 	@echo "--         GPRCHECK         = $(GPRCHECK)                                  --"
 	@echo "--         TARGET           = $(TARGET)                                    --"
-	@echo "--         GPR_PROJECT_PATH = $(GPR_PROJECT_PATH)                          --"
 	@echo "--         ATOMIC_ACCESS    = $(ATOMIC_ACCESS)                             --"
 	@echo "--         BUILDER          = $(BUILDER)                                   --"
 	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)                                --"
@@ -207,6 +206,14 @@ install_deps: deps $(BUILD_SQLITE3)
 install_gnoga: gnoga gnoga_tools
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga src/gnoga.gpr $(GN_OPTIONS)
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg.gpr $(GN_OPTIONS)
+	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
+
+# Build and install Gnoga standalone with deps already installed in PREFIX
+install_gnoga_sa:
+	$(BUILDER) -P gpr_sa/gnoga.gpr $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gpr_sa/gnoga.gpr $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
+	$(BUILDER) -P tools/tools_agg_ext.gpr $(GN_OPTIONS) -XPREFIX="$(PREFIX)"
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg_ext.gpr $(GN_OPTIONS) -XPREFIX="$(PREFIX)"
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 .IGNORE: uninstall
@@ -345,9 +352,9 @@ check_rules:
 gnoga-config:
 ifeq ($(BUILD_OS),Windows)
 	-$(MKDIR) bin
-	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)/src > bin$(PATHSEP)gnoga-config.cmd
+	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)PragmARC > bin$(PATHSEP)gnoga-config.cmd
 else
 	-$(MKDIR) bin
-	echo echo $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)/src > bin$(PATHSEP)gnoga-config
+	echo echo $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)PragmARC > bin$(PATHSEP)gnoga-config
 	chmod +x bin$(PATHSEP)gnoga-config
 endif

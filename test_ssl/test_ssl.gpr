@@ -1,5 +1,5 @@
 with "settings.gpr";
-with "gnoga.gpr";
+with "../src/gnoga.gpr";
 with "../ssl/gnoga_secure.gpr";
 
 project Test_SSL is

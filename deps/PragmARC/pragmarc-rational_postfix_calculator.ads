@@ -1,37 +1,15 @@
 -- PragmAda Reusable Component (PragmARC)
--- Copyright (C) 2018 by PragmAda Software Engineering.  All rights reserved.
+-- Copyright (C) 2017 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
--- Functions for integers.
+-- Provides a postfix (reverse Polish notation) calculator capable of handling very small and very large values
 --
 -- History:
--- 2018 Aug 01     J. Carter          V1.2--Cleanup compiler warnings
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2006 Mar 01     J. Carter          V1.0--Integer functions moved here
+-- 2017 Apr 15     J. Carter          V1.0--Initial version
 --
-package body PragmARC.Math.Integer_Functions is
-   function GCD (Left : Natural; Right : Natural) return Natural is
-      Min       : Natural := Integer'Min (Left, Right);
-      Max       : Natural := Integer'Max (Left, Right);
-      Remainder : Natural;
-   begin -- GCD
-      Reduce : loop
-         if Min = 0 then
-            return Max;
-         end if;
+with PragmARC.Rational_Numbers;
 
-         Remainder := Max rem Min;
-         Max := Min;
-         Min := Remainder;
-      end loop Reduce;
-   end GCD;
-
-   function LCM (Left : Natural; Right : Natural) return Natural is
-      -- Empty
-   begin -- LCM
-      return (Left * Right) / GCD (Left, Right);
-   end LCM;
-end PragmARC.Math.Integer_Functions;
+function PragmARC.Rational_Postfix_Calculator return PragmARC.Rational_Numbers.Rational;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software
@@ -48,4 +26,3 @@ end PragmARC.Math.Integer_Functions;
 -- covered by the GNU General Public License. This exception does not
 -- however invalidate any other reasons why the executable file might be
 -- covered by the GNU Public License.
-

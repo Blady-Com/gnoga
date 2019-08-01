@@ -2,36 +2,35 @@
 -- Copyright (C) 2018 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
--- Functions for integers.
+-- Provides missing operations for converting vectors to and from their fixed equivalents
+-- (equivalent to To_String and To_Unbounded_String for unbounded strings)
 --
--- History:
--- 2018 Aug 01     J. Carter          V1.2--Cleanup compiler warnings
--- 2016 Jun 01     J. Carter          V1.1--Changed comment for empty declarative part
--- 2006 Mar 01     J. Carter          V1.0--Integer functions moved here
+-- History
+-- 2018 Jun 01     J. Carter          V1.0--Initial release
 --
-package body PragmARC.Math.Integer_Functions is
-   function GCD (Left : Natural; Right : Natural) return Natural is
-      Min       : Natural := Integer'Min (Left, Right);
-      Max       : Natural := Integer'Max (Left, Right);
-      Remainder : Natural;
-   begin -- GCD
-      Reduce : loop
-         if Min = 0 then
-            return Max;
-         end if;
+package body PragmARC.Vector_Conversions is
+   function To_Fixed (Vector : Vectors.Vector) return Fixed is
+      Result : Fixed (Index'First .. Vector.Last_Index);
+   begin -- To_Fixed
+      All_Elements : for I in Result'Range loop
+         Result (I) := Vector.Element (I);
+      end loop All_Elements;
 
-         Remainder := Max rem Min;
-         Max := Min;
-         Min := Remainder;
-      end loop Reduce;
-   end GCD;
+      return Result;
+   end To_Fixed;
 
-   function LCM (Left : Natural; Right : Natural) return Natural is
-      -- Empty
-   begin -- LCM
-      return (Left * Right) / GCD (Left, Right);
-   end LCM;
-end PragmARC.Math.Integer_Functions;
+   function To_Vector (List : Fixed) return Vectors.Vector is
+      Result : Vectors.Vector;
+   begin -- To_Vector
+      Result.Reserve_Capacity (Capacity => List'Length);
+
+      All_Elements : for I in List'Range loop
+         Result.Append (New_Item => List (I) );
+      end loop All_Elements;
+
+      return Result;
+   end To_Vector;
+end PragmaRC.Vector_Conversions;
 --
 -- This is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free Software
@@ -48,4 +47,3 @@ end PragmARC.Math.Integer_Functions;
 -- covered by the GNU General Public License. This exception does not
 -- however invalidate any other reasons why the executable file might be
 -- covered by the GNU Public License.
-

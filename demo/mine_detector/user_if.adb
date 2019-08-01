@@ -109,7 +109,7 @@ package body User_IF is
 
    use type Field.Operations.Game_State_ID;
 
-   Button_Size : constant := 25;
+   Button_Size : constant := 30;
 
    procedure Display (App_Data : in App_Ptr; Cell : in Field.Cell_Location; Text : in Cell_String; Stepped : in Boolean) is
       -- null;
@@ -125,7 +125,7 @@ package body User_IF is
          else
             App_Data.Button (Cell.Row, Cell.Column).Background_Color (RGBA => Gray);
          end if;
-         
+
          App_Data.Button (Cell.Row, Cell.Column).Shadow
             (Horizontal_Position => "1px", Vertical_Position => "1px", Inset_Shadow => True);
       end if;
@@ -366,7 +366,7 @@ package body User_IF is
       Add_Options : for I in Levels'range loop
          App_Data.Level.Add_Option (Value => Levels (I).Name, Text => Levels (I).Name);
       end loop Add_Options;
-      
+
       App_Data.Level.Selected (Index => Default_Level);
    end Create_Level_Option_Menu;
 

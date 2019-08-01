@@ -1,16 +1,14 @@
 -- Password_Gen: a password-generator program
--- Copyright (C) 2016 by PragmAda Software Engineering.  All rights reserved.
+-- Copyright (C) 2017 by PragmAda Software Engineering.  All rights reserved.
 -- **************************************************************************
 --
 -- User Interface
 --
+-- V1.2  2017 Nov 15     Move password-generation logic into a package
 -- V1.1  2016 Jun 01     Correct handling when no digit
 -- V1.0  2016 Jan 15     Initial version
 --
-with Ada.Characters.Handling;
 with Ada.Exceptions;
-
-with GNAT.SHA512;
 
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
@@ -20,19 +18,9 @@ with Gnoga.Types;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Window;
 
-with PragmARC.Unbounded_Integers;
+with Password_Generation;
 
 package body Password_Gen.UI is
-   subtype Digit is Character range '0' .. '9';
-   subtype Lower is Character range 'a' .. 'z';
-   subtype Upper is Character range 'A' .. 'Z';
-
-   subtype Symbol_Range is Natural range 0 .. 9;
-
-   type Symbol_List is array (Symbol_Range) of Character;
-
-   Symbol_Set : constant Symbol_List := "!@#$%^&*/?";
-
    type App_Info is new Gnoga.Types.Connection_Data_Type with record
       Window       : Gnoga.Gui.Window.Pointer_To_Window_Class;
       View         : Gnoga.Gui.View.View_Type;
@@ -46,6 +34,8 @@ package body Password_Gen.UI is
       Length_Img   : Gnoga.Gui.Element.Form.Text_Type;
       Symbol       : Gnoga.Gui.Element.Form.Selection_Type;
       Symbol_Label : Gnoga.Gui.Element.Form.Label_Type;
+      Hash_Symbol  : Gnoga.Gui.Element.Form.Check_Box_Type;
+      Hash_Lable   : Gnoga.Gui.Element.Form.Label_Type;
       Result       : Gnoga.Gui.Element.Form.Text_Type;
       Generate     : Gnoga.Gui.Element.Form.Submit_Button_Type;
       Quit         : Gnoga.Gui.Element.Common.Button_Type;
@@ -62,118 +52,14 @@ package body Password_Gen.UI is
       Gnoga.Log (Message => "On_Length_Change: " & Ada.Exceptions.Exception_Information (E) );
    end On_Length_Change;
 
-   No_Symbol   : constant String := "None";
-   Auto_Symbol : constant String := "Auto";
-
    procedure On_Generate (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      function Digest (Source : String) return String;
-      -- Perform an SHA512 digest on Source and convert the result to base 36
-
-      function Digest (Source : String) return String is
-         -- Empty
-      begin -- Digest
-         return PragmARC.Unbounded_Integers.Image (PragmARC.Unbounded_Integers.Value ("16#" & Gnat.SHA512.Digest (Source) & '#'),
-                                                   Base => 36);
-      end Digest;
-
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
-
-      Domain : constant String := Ada.Characters.Handling.To_Lower (App.Domain.Value);
-
-      Salted_Input : constant String := ':' & Domain & ':' & App.Master.Value & ':';
-
-      Digit_1_Index : Natural := 0;
-      Digit_1       : Natural := 0;
-      Digit_1_Rem   : Natural;
-      Length        : Positive := App.Length.Value; -- The requested password length, 8 .. 16
-      Letter_Count  : Natural  := 0;
-      Has_Lower     : Boolean  := False;
-      Has_Upper     : Boolean  := False;
-      Symbol        : String (1 .. 1);
-      Result        : String := Digest (Salted_Input & Integer'Image (Length) & ':');
    begin -- On_Generate
-      App.Domain.Value (Value => Domain);
-
-      if App.Symbol.Value /= No_Symbol then
-         Length := Length - 1;
-      end if;
-      -- Length is now the number of characters from Result to include in the password, 7 .. 16
-
-      Find_Digit_1 : for I in 1 .. Length loop
-         if Result (I) in Digit then
-            Digit_1_Index := I;
-            Digit_1 := Integer'Value (Result (I .. I) );
-
-            exit Find_Digit_1;
-         end if;
-      end loop Find_Digit_1;
-
-      if Digit_1_Index = 0 then -- Needs a digit
-         Digit_1_Index := 1;
-         Digit_1 := 0;
-         Result (1) := '0';
-      end if;
-
-      Digit_1_Rem := Digit_1 rem 2;
-
-      Lower_Some   : for I in 1 .. Length loop
-         if Result (I) in Upper then
-            Letter_Count := Letter_Count + 1;
-
-            if Letter_Count rem 2 = Digit_1_Rem then
-               Result (I) := Ada.Characters.Handling.To_Lower (Result (I) );
-            end if;
-         end if;
-      end loop Lower_Some;
-
-      Check_Letters : for I in 1 .. Length loop
-         if Result (I) in Lower then
-            Has_Lower := True;
-         end if;
-
-         if Result (I) in Upper then
-            Has_Upper := True;
-         end if;
-      end loop Check_Letters;
-
-      -- Length >= 7, so if not Has_Lower, then Result (1 .. Length) has at most 1 letter, which was not lowered by Lower_Some
-      -- if not Has_Upper, then Result (1 .. Length) has at most 1 letter, which was lowered by Lower_Some
-      -- if both not Has_Lower and not Has_Upper, then Result (1 .. Length) is all digits
-      -- In all of these cases, there are digits afer Digit_1_Index that can be replaced by the desired kind of letter
-
-      if not Has_Lower then -- Needs a lower-case letter
-         Find_Digit_Lower : for I in Digit_1_Index + 1 .. Length loop
-            if Result (I) in Digit then
-               Result (I) := 'a';
-
-               exit Find_Digit_Lower;
-            end if;
-         end loop Find_Digit_Lower;
-      end if;
-
-      if not Has_Upper then -- Needs an upper-case letter
-         Find_Digit_Upper : for I in Digit_1_Index + 1 .. Length loop
-            if Result (I) in Digit then
-               Result (I) := 'A';
-
-               exit Find_Digit_Upper;
-            end if;
-         end loop Find_Digit_Upper;
-      end if;
-
-      if App.Symbol.Value = No_Symbol then
-         App.Result.Value (Value => Result (1 .. Length) );
-
-         return;
-      end if;
-
-      if App.Symbol.Value = Auto_Symbol then
-         Symbol (1) := Symbol_Set (Digit_1);
-      else
-         Symbol := App.Symbol.Value;
-      end if;
-
-      App.Result.Value (Value => Result (1 .. Integer'Min (Digit_1, Length) ) & Symbol & Result (Digit_1 + 1 .. Length) );
+      App.Result.Value (Value => Password_Generation.Generate (App.Domain.Value,
+                                                               App.Master.Value,
+                                                               App.Length.Value,
+                                                               App.Symbol.Value,
+                                                               App.Hash_Symbol.Checked) );
    exception -- On_Generate
    when E : others =>
       Gnoga.Log (Message => "On_Generate: " & Ada.Exceptions.Exception_Information (E) );
@@ -199,7 +85,7 @@ package body Password_Gen.UI is
    procedure On_Connect (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
                          Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Ptr := new App_Info;
+      App : constant App_Ptr := new App_Info;
    begin -- On_Connect
       Main_Window.Connection_Data (Data => App);
       App.Window := Main_Window'Unchecked_Access;
@@ -225,13 +111,17 @@ package body Password_Gen.UI is
       App.Input.New_Line;
       App.Symbol.Create (Form => App.Input);
       App.Symbol_Label.Create (Form => App.Input, Label_For => App.Symbol, Content => "Symbol:");
-      App.Symbol.Add_Option (Value => No_Symbol, Text => No_Symbol);
-      App.Symbol.Add_Option (Value => Auto_Symbol, Text => Auto_Symbol, Selected => True);
+      App.Symbol.Add_Option (Value => Password_Generation.No_Symbol, Text => Password_Generation.No_Symbol);
+      App.Symbol.Add_Option (Value => Password_Generation.Auto_Symbol, Text => Password_Generation.Auto_Symbol, Selected => True);
 
-      All_Symbols : for I in Symbol_Set'Range loop
-         App.Symbol.Add_Option (Value => (1 => Symbol_Set (I) ), Text => (1 => Symbol_Set (I) ) );
+      All_Symbols : for I in Password_Generation.Symbol_Set'Range loop
+         App.Symbol.Add_Option
+            (Value => (1 => Password_Generation.Symbol_Set (I) ), Text => (1 => Password_Generation.Symbol_Set (I) ) );
       end loop All_Symbols;
 
+      App.Hash_Symbol.Create (Form => App.Input, Checked => True);
+      App.Hash_Lable.Create
+         (Form => App.Input, Label_For => App.Hash_Symbol, Content => "Include Symbol in hash", Auto_Place => False);
       App.Input.New_Line;
       App.Result.Create (Form => App.Input);
       App.Result.Font (Family => "monospace");

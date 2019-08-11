@@ -1,12 +1,8 @@
 with "components.gpr";
 with "odbc/odbc.gpr";
+with "tables.gpr";
 
 project Components.ODBC is
-
-   type ODBC_Driver_Type is ("ODBC32", "unixODBC");
-   ODBC_Driver : ODBC_Driver_Type := external ("odbc", "ODBC32");
-   type Arch_Type is ("x86_64", "i686", "armhf");
-   Arch : Arch_Type := external ("arch", "x86_64");
 
    for Object_Dir use Components.Object_Dir_Path;
 
@@ -34,18 +30,19 @@ project Components.ODBC is
           "persistent-native_odbc-text_io.adb",
           "persistent-native_odbc-text_io.ads"
       );
-   case ODBC_Driver is
+
+   case ODBC.ODBC_Driver is
       when "ODBC32" =>
-         case Arch is
-            when "x86_64" =>
+         case Tables.Arch is
+            when "x86_64" | "aarch64" | "auto" =>
                for Source_Dirs use (".", "./odbc", "./odbc/odbc32", "./odbc/odbc32/x86_64");
             when "i686" | "armhf" =>
                for Source_Dirs use (".", "./odbc", "./odbc/odbc32", "./odbc/odbc32/i686");
          end case;
          for Source_Files use Common_Files;
-      when "unixODBC" =>
-         case Arch is
-            when "x86_64" =>
+      when "unixODBC" | "auto" =>
+         case Tables.Arch is
+            when "x86_64" | "aarch64" | "auto" =>
                for Source_Dirs use (".", "./odbc", "./odbc/unixodbc", "./odbc/unixodbc/x86_64");
             when "i686" | "armhf" =>
                for Source_Dirs use (".", "./odbc", "./odbc/unixodbc", "./odbc/unixodbc/i686");

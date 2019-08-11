@@ -3,7 +3,7 @@
 --     Test_HTTPS_OpenSSL_Server                   Luebeck            --
 --  HTTPS OpenSSL server test                      Winter, 2019       --
 --                                                                    --
---                                Last revision :  10:33 11 May 2019  --
+--                                Last revision :  16:05 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -55,6 +55,8 @@ begin
       RAND_Bytes (Salt);
       PKCS5_PBKDF2_HMAC_SHA1 ("My password", Salt, 1_000, Buffer);
       Put_Line ("Hash: " & Image (Buffer));
+      PKCS5_PBKDF2_HMAC ("My password", Salt, 1_000, SHA512, Buffer);
+      Put_Line ("Hash SHA512: " & Image (Buffer));
    end;
    declare
       Factory : aliased HTTPS_OpenSSL_Factory

@@ -5,9 +5,9 @@ project Components.Connections_Server.Test_Data_Server is
 
    for Source_Files use
        (  "test_data_server.adb",
-	      "test_data_servers.adb",
-	      "test_data_servers.ads"
-	   );
+          "test_data_servers.adb",
+          "test_data_servers.ads"
+       );
    for Main use ("test_data_server.adb");
    for Object_Dir use Components.Object_Dir_Path;
 

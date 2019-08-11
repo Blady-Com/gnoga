@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Chain_Code.Generic_Integer                  Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  09:27 06 Nov 2016  --
+--                                Last revision :  16:04 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -144,10 +144,7 @@ package body GNAT.Sockets.Connection_State_Machine.Chain_Code.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;
       if Pointer <= Data'Last then
          This    := Data (Pointer);
@@ -206,11 +203,13 @@ package body GNAT.Sockets.Connection_State_Machine.Chain_Code.
              )  is
       Item : Number := Value;
    begin
-      if Pointer not in Data'Range then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+      if (  Pointer < Data'First
+         or else
+            (  Pointer > Data'Last
+            and then
+               Pointer > Data'Last + 1
+         )  )  then
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;
       if Item >= 0 then
          Item := Value;
@@ -236,7 +235,7 @@ package body GNAT.Sockets.Connection_State_Machine.Chain_Code.
          end if;
          Pointer := Pointer + 1;
       end loop;
-      Raise_Exception (Layout_Error'Identity, "No room for output");
+      Raise_Exception (End_Error'Identity, No_Room);
    end Put;
 
 end GNAT.Sockets.Connection_State_Machine.Chain_Code.Generic_Integer;

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Blocking                Luebeck            --
 --  Implementation                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  20:40 07 Jan 2019  --
+--                                Last revision :  13:37 23 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -78,7 +78,7 @@ package body GNAT.Sockets.Server.Blocking is
             &  Image (Client.Client_Address)
             &  " is already in use"
          )  );
-      elsif Is_Valid (Listener.Pier) or Listener.Writer /= null then
+      elsif Is_Valid (Listener.Peer) or Listener.Writer /= null then
          Raise_Exception
          (  Use_Error'Identity,
             "One connection is already handled by the server"
@@ -93,7 +93,7 @@ package body GNAT.Sockets.Server.Blocking is
                                 (  Overlapped,
                                    Client.Output_Size
                                 );
-      Set (Listener.Pier, Client);
+      Set (Listener.Peer, Client);
       Listener.Clients := Listener.Clients + 1;
       Listener.Writer :=
          new Writer
@@ -127,25 +127,25 @@ package body GNAT.Sockets.Server.Blocking is
          end loop;
          Free (Listener.Writer);
       end if;
-      Invalidate (Listener.Pier);
+      Invalidate (Listener.Peer);
       Finalize (Connections_Server (Listener));
    end Finalize;
 
    function Get_Clients_Count (Listener : Blocking_Server)
       return Natural is
    begin
-      if Is_Valid (Listener.Pier) then
+      if Is_Valid (Listener.Peer) then
          return 1;
       else
          return 0;
       end if;
    end Get_Clients_Count;
 
-   function Get_Pier (Listener : Blocking_Server)
+   function Get_Peer (Listener : Blocking_Server)
       return GNAT.Sockets.Server.Handles.Handle is
    begin
-      return Listener.Pier;
-   end Get_Pier;
+      return Listener.Peer;
+   end Get_Peer;
 
    function Get_Server_Address
             (  Listener : Blocking_Server

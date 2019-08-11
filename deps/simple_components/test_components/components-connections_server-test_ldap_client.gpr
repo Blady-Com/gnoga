@@ -1,0 +1,27 @@
+with "../components.gpr";
+with "../components-connections_server.gpr";
+with "../components-connections_server-ldap.gpr";
+
+project Components.Connections_Server.Test_LDAP_Client is
+
+   for Source_Files use ("test_ldap_client.adb");
+   for Main use ("test_ldap_client.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler is
+      for Default_Switches ("ada") use Components.Connections_Server.Compiler'Default_Switches ("ada");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use Components.Connections_Server.Binder'Default_Switches ("ada");
+   end Binder;
+
+   package Builder is
+      for Default_Switches ("ada") use Components.Connections_Server.Builder'Default_Switches ("ada");
+   end Builder;
+
+   package Linker is
+      for Default_Switches ("ada") use Components.Connections_Server.Linker'Default_Switches ("ada");
+   end Linker;
+   
+end Components.Connections_Server.Test_LDAP_Client;

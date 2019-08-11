@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  21:14 23 Nov 2018  --
+--                                Last revision :  13:37 23 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -540,7 +540,6 @@ package body SQLite is
       when others =>
          Object.Handle := null;
          Finalize (Entity (Object));
-         raise;
    end Finalize;
 
    procedure Finalize (Object : in out Statement_Object) is
@@ -556,7 +555,6 @@ package body SQLite is
       when others =>
          Object.Handle := null;
          Finalize (Entity (Object));
-         raise;
    end Finalize;
 
    function Is_Null

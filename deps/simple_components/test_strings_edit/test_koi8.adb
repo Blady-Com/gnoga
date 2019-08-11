@@ -1,9 +1,9 @@
 --                                                                    --
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
---     Test_KOI8                           Luebeck            --
+--     Test_KOI8                                   Luebeck            --
 --  Test                                           Autumn, 2018       --
 --                                                                    --
---                                Last revision :  12:27 04 Nov 2018  --
+--                                Last revision :  18:40 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

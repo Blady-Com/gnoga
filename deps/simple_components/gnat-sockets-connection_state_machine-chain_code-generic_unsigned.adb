@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Chain_Code.Generic_Unsigned                 Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  09:27 06 Nov 2016  --
+--                                Last revision :  16:04 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -81,10 +81,7 @@ package body GNAT.Sockets.Connection_State_Machine.Chain_Code.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;
       while Pointer <= Data'Last loop
          begin
@@ -118,11 +115,13 @@ package body GNAT.Sockets.Connection_State_Machine.Chain_Code.
              )  is
       Item : Number := Value;
    begin
-      if Pointer not in Data'Range then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+      if (  Pointer < Data'First
+         or else
+            (  Pointer > Data'Last
+            and then
+               Pointer > Data'Last + 1
+         )  )  then
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       elsif Item < 0 then
          Raise_Exception
          (  Constraint_Error'Identity,

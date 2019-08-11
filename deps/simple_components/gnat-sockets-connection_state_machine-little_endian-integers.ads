@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Little_Endian.Integers                      Winter, 2012       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  12:18 18 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,7 +31,7 @@ package GNAT.Sockets.Connection_State_Machine.Little_Endian.Integers is
    use Interfaces;
 --
 -- Integer_{8|16|32|64}_Data_Item -- Little endian-encoded Integer
---                                    number
+--                                   number
 --
    type Integer_8_Data_Item  is new Data_Item with private;
    type Integer_16_Data_Item is new Data_Item with private;

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Variable_Length_Arrays                      Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  09:27 06 Nov 2016  --
+--                                Last revision :  16:04 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -64,10 +64,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       elsif Data'Last - Pointer > Value'Length - 1  then
          Raise_Exception (End_Error'Identity, "End of data");
       end if;
@@ -88,15 +85,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       elsif Data'Last - Pointer < Value'Length - 1 then
-         Raise_Exception
-         (  End_Error'Identity,
-            "No room for output"
-         );
+         Raise_Exception (End_Error'Identity, No_Room);
       end if;
       Data (Pointer..Pointer + (Value'Length - 1)) := Value;
       Pointer := Pointer + Value'Length;

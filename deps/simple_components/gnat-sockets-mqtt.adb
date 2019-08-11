@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  14:04 26 Dec 2018  --
+--                                Last revision :  13:37 23 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -178,12 +178,12 @@ package body GNAT.Sockets.MQTT is
              Stream_Element_Array_Ptr
           );
 
-   procedure Finalize (Pier : in out MQTT_Pier) is
+   procedure Finalize (Peer : in out MQTT_Peer) is
    begin
-      Finalize (Connection (Pier));
-      Free (Pier.Data);
-      Free (Pier.Secondary);
-      Free (Pier.Secondary);
+      Finalize (Connection (Peer));
+      Free (Peer.Data);
+      Free (Peer.Secondary);
+      Free (Peer.Secondary);
    end Finalize;
 
    function Get_Length
@@ -211,27 +211,27 @@ package body GNAT.Sockets.MQTT is
       return List'Length;
    end Get_Length;
 
-   function Get_Max_Message_Size (Pier : MQTT_Pier)
+   function Get_Max_Message_Size (Peer : MQTT_Peer)
       return Stream_Element_Count is
    begin
-      return Pier.Data'Length;
+      return Peer.Data'Length;
    end Get_Max_Message_Size;
 
    function Get_Max_Secondary_Buffer_Size
-            (  Pier : MQTT_Pier
+            (  Peer : MQTT_Peer
             )  return Stream_Element_Count is
    begin
-      return Pier.Max_Size;
+      return Peer.Max_Size;
    end Get_Max_Secondary_Buffer_Size;
 
    function Get_Message
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return Stream_Element_Array is
       This : MQTT_String_Ptr;
    begin
-      if Pier.List_Length <= Index then
-         This := Get (Pier.List, Index);
+      if Peer.List_Length <= Index then
+         This := Get (Peer.List, Index);
          if This /= null then
             return This.Data (1..This.Length);
          end if;
@@ -253,20 +253,20 @@ package body GNAT.Sockets.MQTT is
    end Get_Message;
 
    function Get_QoS
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return QoS_Level is
       This : MQTT_String_Ptr;
    begin
-      case Pier.Header is
+      case Peer.Header is
          when SUBSCRIBE_Request =>
-            if Index > Pier.List_Length then
+            if Index > Peer.List_Length then
                Raise_Exception
                (  Constraint_Error'Identity,
                   "There is no token " & Image (Index)
                );
             end if;
-            This := Get (Pier.List, Index);
+            This := Get (Peer.List, Index);
             if This = null then
                Raise_Exception
                (  Constraint_Error'Identity,
@@ -284,13 +284,13 @@ package body GNAT.Sockets.MQTT is
    end Get_QoS;
 
    function Get_String
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return String is
       This : MQTT_String_Ptr;
    begin
-      if Pier.List_Length >= Index then
-         This := Get (Pier.List, Index);
+      if Peer.List_Length >= Index then
+         This := Get (Peer.List, Index);
          if This /= null then
             declare
                Data : Stream_Element_Array renames This.Data;
@@ -313,19 +313,19 @@ package body GNAT.Sockets.MQTT is
    end Get_String;
 
    function Get_Topic
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return String is
    begin
-      case Pier.Header is
+      case Peer.Header is
          when SUBSCRIBE_Request | UNSUBSCRIBE_Request =>
-            if Index > Pier.List_Length then
+            if Index > Peer.List_Length then
                Raise_Exception
                (  Constraint_Error'Identity,
                   "There is no token " & Image (Index)
                );
             else
-               return Get_String (Pier, Index);
+               return Get_String (Peer, Index);
             end if;
          when others =>
             Raise_Exception
@@ -360,13 +360,13 @@ package body GNAT.Sockets.MQTT is
    end Get_Topic;
 
    function Get_Secondary_Buffer_Size
-            (  Pier : MQTT_Pier
+            (  Peer : MQTT_Peer
             )  return Stream_Element_Count is
    begin
-      if Pier.Secondary = null then
+      if Peer.Secondary = null then
          return 0;
       else
-         return Pier.Secondary.Size;
+         return Peer.Secondary.Size;
       end if;
    end Get_Secondary_Buffer_Size;
 
@@ -531,7 +531,7 @@ package body GNAT.Sockets.MQTT is
    end Match_Topic;
 
    procedure On_Acknowledge
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Request : Acknowledge_Type;
                 Packet  : Packet_Identifier
              )  is
@@ -540,9 +540,9 @@ package body GNAT.Sockets.MQTT is
          when Publish_Level_1 =>
             null;
          when Publish_Level_2_Received =>
-            Send_Acknowledge (Pier, Publish_Level_2_Release, Packet);
+            Send_Acknowledge (Peer, Publish_Level_2_Release, Packet);
          when Publish_Level_2_Release =>
-            Send_Acknowledge (Pier, Publish_Level_2_Complete, Packet);
+            Send_Acknowledge (Peer, Publish_Level_2_Complete, Packet);
          when Publish_Level_2_Complete =>
             null;
          when Unsubscribed =>
@@ -551,7 +551,7 @@ package body GNAT.Sockets.MQTT is
    end On_Acknowledge;
 
    procedure On_Connect
-             (  Pier         : in out MQTT_Pier;
+             (  Peer         : in out MQTT_Peer;
                 Client       : String;
                 Clean        : Boolean;
                 Will_Topic   : String;
@@ -563,12 +563,12 @@ package body GNAT.Sockets.MQTT is
                 Keep_Alive   : Duration
              )  is
    begin
-      Send_Connect_Rejected (Pier, Server_Unavailable);
-      Shutdown (Pier);
+      Send_Connect_Rejected (Peer, Server_Unavailable);
+      Shutdown (Peer);
    end On_Connect;
 
    procedure On_Connect_Accepted
-             (  Pier            : in out MQTT_Pier;
+             (  Peer            : in out MQTT_Peer;
                 Session_Present : Boolean
              )  is
    begin
@@ -576,30 +576,30 @@ package body GNAT.Sockets.MQTT is
    end On_Connect_Accepted;
 
    procedure On_Connect_Rejected
-             (  Pier     : in out MQTT_Pier;
+             (  Peer     : in out MQTT_Peer;
                 Response : Connect_Response
              )  is
    begin
       null;
    end On_Connect_Rejected;
 
-   procedure On_Disconnect (Pier : in out MQTT_Pier) is
+   procedure On_Disconnect (Peer : in out MQTT_Peer) is
    begin
       null;
    end On_Disconnect;
 
-   procedure On_Ping (Pier : in out MQTT_Pier) is
+   procedure On_Ping (Peer : in out MQTT_Peer) is
    begin
-      Send_Ping_Response (Pier);
+      Send_Ping_Response (Peer);
    end On_Ping;
 
-   procedure On_Ping_Response (Pier : in out MQTT_Pier) is
+   procedure On_Ping_Response (Peer : in out MQTT_Peer) is
    begin
       null;
    end On_Ping_Response;
 
    procedure On_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Topic     : String;
                 Message   : Stream_Element_Array;
                 Packet    : Packet_Identification;
@@ -611,10 +611,10 @@ package body GNAT.Sockets.MQTT is
          when At_Most_Once =>
             null;
          when At_Least_Once =>
-            Send_Acknowledge (Pier, Publish_Level_1, Packet.ID);
+            Send_Acknowledge (Peer, Publish_Level_1, Packet.ID);
          when Exactly_Once =>
             Send_Acknowledge
-            (  Pier,
+            (  Peer,
                Publish_Level_2_Received,
                Packet.ID
             );
@@ -622,20 +622,20 @@ package body GNAT.Sockets.MQTT is
    end On_Publish;
 
    procedure On_Subscribe
-             (  Pier          : in out MQTT_Pier;
+             (  Peer          : in out MQTT_Peer;
                 Packet        : Packet_Identifier;
                 Topics_Number : Positive
              )  is
    begin
       On_Subscribe_Acknowledgement
-      (  Pier,
+      (  Peer,
          Packet,
          (1..Topics_Number => (Success => False))
       );
    end On_Subscribe;
 
    procedure On_Subscribe_Acknowledgement
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Codes  : Return_Code_List
              )  is
@@ -644,12 +644,12 @@ package body GNAT.Sockets.MQTT is
    end On_Subscribe_Acknowledgement;
 
    procedure On_Unsubscribe
-             (  Pier          : in out MQTT_Pier;
+             (  Peer          : in out MQTT_Peer;
                 Packet        : Packet_Identifier;
                 Topics_Number : Positive
              )  is
    begin
-      Send_Acknowledge (Pier, Unsubscribed, Packet);
+      Send_Acknowledge (Peer, Unsubscribed, Packet);
    end On_Unsubscribe;
 
    procedure Put_Length
@@ -737,44 +737,44 @@ package body GNAT.Sockets.MQTT is
    end Put_String;
 
    procedure Received
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset
              )  is
       procedure Do_On_Publish is
          Packet : Packet_Identification;
       begin
-         case Pier.QoS is
+         case Peer.QoS is
             when At_Most_Once =>
                Packet := (QoS => At_Most_Once);
             when At_Least_Once =>
-               Packet := (At_Least_Once, Pier.Packet_ID);
+               Packet := (At_Least_Once, Peer.Packet_ID);
             when Exactly_Once =>
-               Packet := (Exactly_Once, Pier.Packet_ID);
+               Packet := (Exactly_Once, Peer.Packet_ID);
          end case;
          On_Publish
-         (  Pier    => MQTT_Pier'Class (Pier),
-            Topic   => Get_String (Pier, Topic_Name),
-            Message => Pier.Data (1..Pier.Length),
+         (  Peer    => MQTT_Peer'Class (Peer),
+            Topic   => Get_String (Peer, Topic_Name),
+            Message => Peer.Data (1..Peer.Length),
             Packet    => Packet,
-            Retain    => 0 /= (Pier.Header and 2#0000_0001#),
-            Duplicate => 0 /= (Pier.Header and 2#0000_1000#)
+            Retain    => 0 /= (Peer.Header and 2#0000_0001#),
+            Duplicate => 0 /= (Peer.Header and 2#0000_1000#)
          );
       end Do_On_Publish;
 
       procedure Data_Received is
          pragma Inline (Data_Received);
       begin
-         case Pier.Header is
+         case Peer.Header is
             when PUBLISH_Request_1..PUBLISH_Request_2 =>
                Do_On_Publish;
-               Pier.State := MQTT_Header;
+               Peer.State := MQTT_Header;
             when others =>
                Raise_Exception
                (  Data_Error'Identity,
                   "MQTT internal error, unexpected " &
                   "Data_Received for header " &
-                  Header_Image (Pier.Header)
+                  Header_Image (Peer.Header)
                );
          end case;
       end Data_Received;
@@ -782,163 +782,163 @@ package body GNAT.Sockets.MQTT is
       procedure Packet_ID_Received is
          pragma Inline (Packet_ID_Received);
       begin
-         case Pier.Header is
+         case Peer.Header is
             when PUBLISH_Request_1..PUBLISH_Request_2 =>
-               Pier.Length := Pier.Length - 2;
-               if Pier.Length = 0 then
+               Peer.Length := Peer.Length - 2;
+               if Peer.Length = 0 then
                   Do_On_Publish;
-                  Pier.State := MQTT_Header;
+                  Peer.State := MQTT_Header;
                else
-                  Pier.Count := 0;
-                  Pier.State := MQTT_Data;
+                  Peer.Count := 0;
+                  Peer.State := MQTT_Data;
                end if;
             when PUBACK_Request =>
                On_Acknowledge
-               (  MQTT_Pier'Class (Pier),
+               (  MQTT_Peer'Class (Peer),
                   Publish_Level_1,
-                  Pier.Packet_ID
+                  Peer.Packet_ID
                );
-               Pier.State := MQTT_Header;
+               Peer.State := MQTT_Header;
             when PUBREC_Request =>
                On_Acknowledge
-               (  MQTT_Pier'Class (Pier),
+               (  MQTT_Peer'Class (Peer),
                   Publish_Level_2_Received,
-                  Pier.Packet_ID
+                  Peer.Packet_ID
                );
-               Pier.State := MQTT_Header;
+               Peer.State := MQTT_Header;
             when PUBREL_Request =>
                On_Acknowledge
-               (  MQTT_Pier'Class (Pier),
+               (  MQTT_Peer'Class (Peer),
                   Publish_Level_2_Release,
-                  Pier.Packet_ID
+                  Peer.Packet_ID
                );
-               Pier.State := MQTT_Header;
+               Peer.State := MQTT_Header;
             when PUBCOMP_Request =>
                On_Acknowledge
-               (  MQTT_Pier'Class (Pier),
+               (  MQTT_Peer'Class (Peer),
                   Publish_Level_2_Complete,
-                  Pier.Packet_ID
+                  Peer.Packet_ID
                );
-               Pier.State := MQTT_Header;
+               Peer.State := MQTT_Header;
             when SUBSCRIBE_Request =>
-               Pier.Length := Pier.Length - 2;
-               if Pier.Length < 3 then
+               Peer.Length := Peer.Length - 2;
+               if Peer.Length < 3 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT SUBSCRIBE request does not " &
                      "contain topics list"
                   );
                end if;
-               Pier.State := MQTT_String_Length_MSB;
+               Peer.State := MQTT_String_Length_MSB;
             when SUBACK_Request =>
-               Pier.Length := Pier.Length - 2;
-               if Pier.Length < 1 then
+               Peer.Length := Peer.Length - 2;
+               if Peer.Length < 1 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT SUBACK request does not " &
                      "contain return codes"
                   );
                end if;
-               Pier.State := MQTT_Return_Code;
+               Peer.State := MQTT_Return_Code;
             when UNSUBSCRIBE_Request =>
-               Pier.Length := Pier.Length - 2;
-               if Pier.Length < 2 then
+               Peer.Length := Peer.Length - 2;
+               if Peer.Length < 2 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT UNSUBSCRIBE request is shorter then 2 octets"
                   );
                end if;
-               Pier.State := MQTT_String_Length_MSB;
+               Peer.State := MQTT_String_Length_MSB;
             when UNSUBACK_Request =>
                On_Acknowledge
-               (  MQTT_Pier'Class (Pier),
+               (  MQTT_Peer'Class (Peer),
                   Unsubscribed,
-                  Pier.Packet_ID
+                  Peer.Packet_ID
                );
-               Pier.State := MQTT_Header;
+               Peer.State := MQTT_Header;
             when others =>
                Raise_Exception
                (  Data_Error'Identity,
                   "MQTT internal error, unexpected " &
                   "Packet_ID_Received for header " &
-                  Header_Image (Pier.Header)
+                  Header_Image (Peer.Header)
                );
          end case;
       end Packet_ID_Received;
 
       procedure String_Received is
       begin
-         case Pier.Header is
+         case Peer.Header is
             when CONNECT_Request =>
-               case Pier.List_Length is
+               case Peer.List_Length is
                   when Protocol =>
-                     Pier.State := MQTT_Connect_Version;
+                     Peer.State := MQTT_Connect_Version;
                   when Client_Identifier =>
-                     if 0 = (Pier.Flags and 2#0000_0100#) then
-                        Reset_String (Pier, Will_Topic);
-                        Reset_String (Pier, Will_Message);
-                        Pier.List_Length := Pier.List_Length + 2;
+                     if 0 = (Peer.Flags and 2#0000_0100#) then
+                        Reset_String (Peer, Will_Topic);
+                        Reset_String (Peer, Will_Message);
+                        Peer.List_Length := Peer.List_Length + 2;
                         String_Received;
                      else
-                        if Pier.Length < 4 then
+                        if Peer.Length < 4 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT connect does not have will " &
                               "topic and message values"
                            );
                         end if;
-                        Pier.State := MQTT_String_Length_MSB;
+                        Peer.State := MQTT_String_Length_MSB;
                      end if;
                   when Will_Topic =>
-                     if Pier.Length < 2 then
+                     if Peer.Length < 2 then
                         Raise_Exception
                         (  Data_Error'Identity,
                            "MQTT connect does not have will " &
                            "message value"
                         );
                      end if;
-                     Pier.State := MQTT_String_Length_MSB;
+                     Peer.State := MQTT_String_Length_MSB;
                   when Will_Message =>
-                     if 0 = (Pier.Flags and 2#1000_0000#) then
-                        Reset_String (Pier, User_Name);
-                        Pier.List_Length := Pier.List_Length + 1;
+                     if 0 = (Peer.Flags and 2#1000_0000#) then
+                        Reset_String (Peer, User_Name);
+                        Peer.List_Length := Peer.List_Length + 1;
                         String_Received;
                      else
-                        if Pier.Length < 2 then
+                        if Peer.Length < 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT connect does not have " &
                               "user name value"
                            );
                         end if;
-                        Pier.State := MQTT_String_Length_MSB;
+                        Peer.State := MQTT_String_Length_MSB;
                      end if;
                   when User_Name =>
-                     if 0 = (Pier.Flags and 2#0100_0000#) then
-                        Reset_String (Pier, Password);
-                        Pier.List_Length := Pier.List_Length + 1;
+                     if 0 = (Peer.Flags and 2#0100_0000#) then
+                        Reset_String (Peer, Password);
+                        Peer.List_Length := Peer.List_Length + 1;
                         String_Received;
                      else
-                        if Pier.Length < 2 then
+                        if Peer.Length < 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT connect does not have " &
                               "password value"
                            );
                         end if;
-                        Pier.State := MQTT_String_Length_MSB;
+                        Peer.State := MQTT_String_Length_MSB;
                      end if;
                   when Password =>
-                     if Pier.Length /= 0 then
+                     if Peer.Length /= 0 then
                         Raise_Exception
                         (  Data_Error'Identity,
                            "MQTT connect contains unrecognized data"
                         );
                      end if;
-                     case (Pier.Flags and 2#0001_1000#) / 8 is
-                        when 0 => Pier.QoS := At_Most_Once;
-                        when 1 => Pier.QoS := At_Least_Once;
-                        when 2 => Pier.QoS := Exactly_Once;
+                     case (Peer.Flags and 2#0001_1000#) / 8 is
+                        when 0 => Peer.QoS := At_Most_Once;
+                        when 1 => Peer.QoS := At_Least_Once;
+                        when 2 => Peer.QoS := Exactly_Once;
                         when others =>
                            Raise_Exception
                            (  Data_Error'Identity,
@@ -946,57 +946,57 @@ package body GNAT.Sockets.MQTT is
                            );
                      end case;
                      On_Connect
-                     (  Pier =>
-                           MQTT_Pier'Class (Pier),
+                     (  Peer =>
+                           MQTT_Peer'Class (Peer),
                         Client =>
-                           Get_String (Pier, Client_Identifier),
+                           Get_String (Peer, Client_Identifier),
                         Will_Topic =>
-                           Get_String (Pier, Will_Topic),
+                           Get_String (Peer, Will_Topic),
                         Will_Message =>
-                           Get_Message (Pier, Will_Message),
+                           Get_Message (Peer, Will_Message),
                         Will_QoS =>
-                           Pier.QoS,
+                           Peer.QoS,
                         User_Name =>
-                           Get_String (Pier, User_Name),
+                           Get_String (Peer, User_Name),
                         Password =>
-                           Get_String (Pier, Password),
+                           Get_String (Peer, Password),
                         Will_Retain =>
-                           0 /= (Pier.Flags and 2#0010_0000#),
+                           0 /= (Peer.Flags and 2#0010_0000#),
                         Clean =>
-                           0 /= (Pier.Flags and 2#0000_0010#),
+                           0 /= (Peer.Flags and 2#0000_0010#),
                         Keep_Alive =>
-                           Pier.Keep_Alive
+                           Peer.Keep_Alive
                      );
-                     Pier.State := MQTT_Header;
+                     Peer.State := MQTT_Header;
                   when others =>
                      Raise_Exception
                      (  Data_Error'Identity,
                         "MQTT internal error, invalid connect " &
                         "string index " &
-                        Image (Pier.List_Length)
+                        Image (Peer.List_Length)
                      );
                end case;
             when PUBLISH_Request_1..PUBLISH_Request_2 =>
-               case Pier.List_Length is
+               case Peer.List_Length is
                   when Topic_Name =>
-                     case Pier.QoS is
+                     case Peer.QoS is
                         when At_Most_Once =>
-                           if Pier.Length = 0 then
+                           if Peer.Length = 0 then
                               Do_On_Publish;
-                              Pier.State := MQTT_Header;
+                              Peer.State := MQTT_Header;
                            else
-                              Pier.Count := 0;
-                              Pier.State := MQTT_Data;
+                              Peer.Count := 0;
+                              Peer.State := MQTT_Data;
                            end if;
                         when At_Least_Once | Exactly_Once =>
-                           if Pier.Length < 2 then
+                           if Peer.Length < 2 then
                               Raise_Exception
                               (  Data_Error'Identity,
                                  "MQTT publish request does not " &
                                  "contain packet identifier"
                               );
                            end if;
-                           Pier.State := MQTT_Packet_ID_MSB;
+                           Peer.State := MQTT_Packet_ID_MSB;
                      end case;
                   when others =>
                      Raise_Exception
@@ -1006,44 +1006,44 @@ package body GNAT.Sockets.MQTT is
                      );
                end case;
             when SUBSCRIBE_Request =>
-               if Pier.Length < 1 then
+               if Peer.Length < 1 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT SUBSCRIBE request does not " &
                      "contain QoS"
                   );
                end if;
-               Pier.State := MQTT_QoS;
+               Peer.State := MQTT_QoS;
             when UNSUBSCRIBE_Request =>
-               if Pier.Length = 0 then
+               if Peer.Length = 0 then
                   On_Unsubscribe
-                  (  Pier          => MQTT_Pier'Class (Pier),
-                     Packet        => Pier.Packet_ID,
-                     Topics_Number => Pier.List_Length
+                  (  Peer          => MQTT_Peer'Class (Peer),
+                     Packet        => Peer.Packet_ID,
+                     Topics_Number => Peer.List_Length
                   );
-                  Pier.State := MQTT_Header;
-               elsif Pier.Length < 2 then
+                  Peer.State := MQTT_Header;
+               elsif Peer.Length < 2 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT UNSUBSCRIBE request topic " &
-                     Image (Pier.List_Length + 1) &
+                     Image (Peer.List_Length + 1) &
                      " is shorter than 2 octets"
                   );
-               elsif Pier.List_Length >= Pier.Max_Subscribe_Topics then
+               elsif Peer.List_Length >= Peer.Max_Subscribe_Topics then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT UNSUBSCRIBE request topics number exceeds " &
-                     Image (Pier.Max_Subscribe_Topics)
+                     Image (Peer.Max_Subscribe_Topics)
                   );
                else
-                  Pier.State := MQTT_String_Length_MSB;
+                  Peer.State := MQTT_String_Length_MSB;
                end if;
             when others =>
                Raise_Exception
                (  Data_Error'Identity,
                   "MQTT internal error, unexpected String_Received " &
                   "for header " &
-                  Header_Image (Pier.Header)
+                  Header_Image (Peer.Header)
                );
          end case;
       end String_Received;
@@ -1051,178 +1051,178 @@ package body GNAT.Sockets.MQTT is
    begin
       Pointer := Data'First;
       while Pointer <= Data'Last loop
-         case Pier.State is
+         case Peer.State is
             when MQTT_Header => -- Get header
---                 if (  Pier.Secondary /= null
+--                 if (  Peer.Secondary /= null
 --                    and then
---                       Pier.Secondary.Last > 0
+--                       Peer.Secondary.Last > 0
 --                    )  then -- Have unsent  data in the secondary buffer,
 --                    return; -- stop processing input until buffer emptied
 --                 end if;
-               Pier.Header      := Data (Pointer);
-               Pier.List_Length := 0;
-               Pier.Length      := 0;
-               Pier.Count       := 1;
+               Peer.Header      := Data (Pointer);
+               Peer.List_Length := 0;
+               Peer.Length      := 0;
+               Peer.Count       := 1;
                Pointer          := Pointer + 1;
-               Pier.State       := MQTT_Length;
+               Peer.State       := MQTT_Length;
             when MQTT_Length => -- Get length
-               Pier.Length :=
-                  (  Pier.Length
+               Peer.Length :=
+                  (  Peer.Length
                   +  Stream_Element_Count
                      (  Data (Pointer) and 2#0111_1111#
                      )
-                  *  Pier.Count
+                  *  Peer.Count
                   );
                if 0 = (Data (Pointer) and 2#1000_0000#) then
                   Pointer := Pointer + 1;
-                  case Pier.Header is
+                  case Peer.Header is
                      when CONNECT_Request =>
-                        if Pier.Length < 12 then
+                        if Peer.Length < 12 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT CONNECT request length is less " &
                               "than 12 octets"
                            );
                         end if;
-                        Pier.Count  := 1;
-                        Pier.State  := MQTT_String_Length_MSB;
+                        Peer.Count  := 1;
+                        Peer.State  := MQTT_String_Length_MSB;
                      when CONNACK_Request =>
-                        if Pier.Length /= 2 then
+                        if Peer.Length /= 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT CONNACK request length is not 2"
                            );
                         end if;
-                        Pier.State := MQTT_Connect_Acknowledge_Flags;
+                        Peer.State := MQTT_Connect_Acknowledge_Flags;
                      when PUBLISH_Request_1..PUBLISH_Request_2 =>
-                        case (Pier.Header and 2#0000_0110#) / 2 is
-                           when 0 => Pier.QoS := At_Most_Once;
-                           when 1 => Pier.QoS := At_Least_Once;
-                           when 2 => Pier.QoS := Exactly_Once;
+                        case (Peer.Header and 2#0000_0110#) / 2 is
+                           when 0 => Peer.QoS := At_Most_Once;
+                           when 1 => Peer.QoS := At_Least_Once;
+                           when 2 => Peer.QoS := Exactly_Once;
                            when others =>
                               Raise_Exception
                               (  Data_Error'Identity,
                                  "MQTT invalid PUBLISH QoS"
                               );
                         end case;
-                        if Pier.Length < 2 then
+                        if Peer.Length < 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT PUBLISH request length " &
                               "is less than 2 octets"
                            );
                         end if;
-                        Pier.State := MQTT_String_Length_MSB;
+                        Peer.State := MQTT_String_Length_MSB;
                      when PUBACK_Request =>
-                        if Pier.Length /= 2 then
+                        if Peer.Length /= 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT PUBACK request length is " &
                               "not 2 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when PUBREC_Request =>
-                        if Pier.Length /= 2 then
+                        if Peer.Length /= 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT PUBREC request length is " &
                               "not 2 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when PUBREL_Request =>
-                        if Pier.Length /= 2 then
+                        if Peer.Length /= 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT PUBREL request length is " &
                               "not 2 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when PUBCOMP_Request => -- PubComp
-                        if Pier.Length /= 2 then
+                        if Peer.Length /= 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT PUBCOMP request length is " &
                               "not 2 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when SUBSCRIBE_Request =>
-                        if Pier.Length < 5 then
+                        if Peer.Length < 5 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT SUBSCRIBE request length is less " &
                               "than 5 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when SUBACK_Request =>
-                        if Pier.Length < 3 then
+                        if Peer.Length < 3 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT SUBACK requeste length is " &
                               "less than 3 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when UNSUBSCRIBE_Request =>
-                        if Pier.Length <= 4 then
+                        if Peer.Length <= 4 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT UNSUBSCRIBE request length is " &
                               "less than 4 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when UNSUBACK_Request =>
-                        if Pier.Length < 2 then
+                        if Peer.Length < 2 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT UNSUBACK request length " &
                               "is less than 2 octets"
                            );
                         end if;
-                        Pier.State := MQTT_Packet_ID_MSB;
+                        Peer.State := MQTT_Packet_ID_MSB;
                      when PINGREQ_Request =>
-                        if Pier.Length /= 0 then
+                        if Peer.Length /= 0 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT PINGREQ request length is not null"
                            );
                         end if;
-                        On_Ping (MQTT_Pier'Class (Pier));
-                        Pier.State := MQTT_Header;
+                        On_Ping (MQTT_Peer'Class (Peer));
+                        Peer.State := MQTT_Header;
                      when PINGRESP_Request =>
-                        if Pier.Length /= 0 then
+                        if Peer.Length /= 0 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT PINGRESP request length is not null"
                            );
                         end if;
-                        On_Ping_Response (MQTT_Pier'Class (Pier));
-                        Pier.State := MQTT_Header;
+                        On_Ping_Response (MQTT_Peer'Class (Peer));
+                        Peer.State := MQTT_Header;
                      when DISCONNECT_Request =>
-                        if Pier.Length /= 0 then
+                        if Peer.Length /= 0 then
                            Raise_Exception
                            (  Data_Error'Identity,
                               "MQTT DISCONNECT request length is " &
                               "not null"
                            );
                         end if;
-                        On_Disconnect (MQTT_Pier'Class (Pier));
-                        Pier.State := MQTT_Header;
+                        On_Disconnect (MQTT_Peer'Class (Peer));
+                        Peer.State := MQTT_Header;
                      when others =>
                         Raise_Exception
                         (  Data_Error'Identity,
                            "Invalid MQTT header: " &
-                           Header_Image (Pier.Header)
+                           Header_Image (Peer.Header)
                         );
                   end case;
-               elsif Pier.Count < 128 * 128 * 128 then
+               elsif Peer.Count < 128 * 128 * 128 then
                   Pointer    := Pointer + 1;
-                  Pier.Count := Pier.Count * 128;
+                  Peer.Count := Peer.Count * 128;
                else
                   Raise_Exception
                   (  Data_Error'Identity,
@@ -1230,147 +1230,147 @@ package body GNAT.Sockets.MQTT is
                   );
                end if;
             when MQTT_Packet_ID_MSB =>
-               Pier.Packet_ID :=
+               Peer.Packet_ID :=
                   Packet_Identifier (Data (Pointer)) * 256;
                Pointer    := Pointer + 1;
-               Pier.State := MQTT_Packet_ID_LSB;
+               Peer.State := MQTT_Packet_ID_LSB;
             when MQTT_Packet_ID_LSB =>
-               Pier.Packet_ID :=
-                  Pier.Packet_ID + Packet_Identifier (Data (Pointer));
+               Peer.Packet_ID :=
+                  Peer.Packet_ID + Packet_Identifier (Data (Pointer));
                Pointer := Pointer + 1;
                Packet_ID_Received;
             when MQTT_Connect_Version =>
-               Pier.Version := Data (Pointer);
-               Pier.Length  := Pier.Length - 1;
-               if Pier.Length < 1 then
+               Peer.Version := Data (Pointer);
+               Peer.Length  := Peer.Length - 1;
+               if Peer.Length < 1 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT CONNECT request does not contain flags"
                   );
                end if;
                Pointer := Pointer + 1;
-               Pier.State := MQTT_Connect_Flags;
+               Peer.State := MQTT_Connect_Flags;
             when MQTT_Connect_Acknowledge_Flags =>
-               Pier.Flags := Data (Pointer);
-               if 0 /= (Pier.Flags and 2#1111_1110#) then
+               Peer.Flags := Data (Pointer);
+               if 0 /= (Peer.Flags and 2#1111_1110#) then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT invalid CONNACK request flags"
                   );
                end if;
                Pointer    := Pointer + 1;
-               Pier.State := MQTT_Connect_Return;
+               Peer.State := MQTT_Connect_Return;
             when MQTT_Connect_Return =>
                Pointer := Pointer + 1;
                if Data (Pointer - 1) = 0 then
                   On_Connect_Accepted
-                  (  Pier =>
-                        MQTT_Pier'Class (Pier),
+                  (  Peer =>
+                        MQTT_Peer'Class (Peer),
                      Session_Present =>
-                        0 /= (Pier.Flags and 2#0000_0001#)
+                        0 /= (Peer.Flags and 2#0000_0001#)
                   );
                else
                   On_Connect_Rejected
-                  (  Pier =>
-                        MQTT_Pier'Class (Pier),
+                  (  Peer =>
+                        MQTT_Peer'Class (Peer),
                      Response =>
                         Connect_Response (Data (Pointer - 1))
                   );
                end if;
-               Pier.State := MQTT_Header;
+               Peer.State := MQTT_Header;
             when MQTT_Connect_Flags =>
-               Pier.Flags := Data (Pointer);
-               if 0 /= (Pier.Flags and 2#0000_0001#) then
+               Peer.Flags := Data (Pointer);
+               if 0 /= (Peer.Flags and 2#0000_0001#) then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT invalid CONNECT request flags"
                   );
                end if;
-               Pier.Length := Pier.Length - 1;
+               Peer.Length := Peer.Length - 1;
                Pointer     := Pointer + 1;
-               Pier.State  := MQTT_Connect_Duration_MSB;
-               if Pier.Length < 2 then
+               Peer.State  := MQTT_Connect_Duration_MSB;
+               if Peer.Length < 2 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT CONNECT request does not keep alive duration"
                   );
                end if;
             when MQTT_Connect_Duration_MSB =>
-               Pier.Keep_Alive :=
+               Peer.Keep_Alive :=
                   Duration (Integer (Data (Pointer)) * 256);
                Pointer    := Pointer + 1;
-               Pier.State := MQTT_Connect_Duration_LSB;
+               Peer.State := MQTT_Connect_Duration_LSB;
             when MQTT_Connect_Duration_LSB =>
-               Pier.Keep_Alive :=
-                  Pier.Keep_Alive + Duration (Integer (Data (Pointer)));
+               Peer.Keep_Alive :=
+                  Peer.Keep_Alive + Duration (Integer (Data (Pointer)));
                Pointer     := Pointer + 1;
-               Pier.Length := Pier.Length - 2;
-               Pier.State  := MQTT_String_Length_MSB; -- Client ID next
-               if Pier.Length < 2 then
+               Peer.Length := Peer.Length - 2;
+               Peer.State  := MQTT_String_Length_MSB; -- Client ID next
+               if Peer.Length < 2 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT CONNECT request does not client ID"
                   );
                end if;
             when MQTT_String_Length_MSB =>
-               Pier.Count :=
+               Peer.Count :=
                   Stream_Element_Count (Data (Pointer)) * 256;
                Pointer    := Pointer + 1;
-               Pier.State := MQTT_String_Length_LSB;
+               Peer.State := MQTT_String_Length_LSB;
             when MQTT_String_Length_LSB =>
-               Pier.Count :=
-                  Pier.Count + Stream_Element_Count (Data (Pointer));
+               Peer.Count :=
+                  Peer.Count + Stream_Element_Count (Data (Pointer));
                Pointer     := Pointer + 1;
-               Pier.Length := Pier.Length - 2;
-               Pier.List_Length := Pier.List_Length + 1;
-               if Pier.Length < Pier.Count then
+               Peer.Length := Peer.Length - 2;
+               Peer.List_Length := Peer.List_Length + 1;
+               if Peer.Length < Peer.Count then
                   Raise_Exception
                   (  Data_Error'Identity,
                      (  "MQTT string "
-                     &  String_Name (Pier.Header, Pier.List_Length)
+                     &  String_Name (Peer.Header, Peer.List_Length)
                      &  " has length "
-                     &  Image (Pier.Count)
+                     &  Image (Peer.Count)
                      &  " exceeding remaining payload data "
-                     &  Image (Pier.Length)
+                     &  Image (Peer.Length)
                   )  );
                end if;
                declare
                   This : MQTT_String_Ptr :=
-                         Get (Pier.List, Pier.List_Length);
+                         Get (Peer.List, Peer.List_Length);
                begin
-                  if This = null or else This.Size < Pier.Count then
+                  if This = null or else This.Size < Peer.Count then
                      Put
-                     (  Pier.List,
-                        Pier.List_Length,
-                        new MQTT_String (Pier.Count)
+                     (  Peer.List,
+                        Peer.List_Length,
+                        new MQTT_String (Peer.Count)
                      );
-                     This := Get (Pier.List, Pier.List_Length);
+                     This := Get (Peer.List, Peer.List_Length);
                   end if;
-                  This.Length := Pier.Count;
-                  Pier.Length := Pier.Length - Pier.Count;
+                  This.Length := Peer.Count;
+                  Peer.Length := Peer.Length - Peer.Count;
                   if This.Length = 0 then
                      String_Received;
                   else
-                     Pier.Count  := 0;
-                     Pier.State := MQTT_String_Body;
+                     Peer.Count  := 0;
+                     Peer.State := MQTT_String_Body;
                   end if;
                end;
             when MQTT_String_Body =>
                declare
                   This   : MQTT_String renames
-                           Get (Pier.List, Pier.List_Length).all;
+                           Get (Peer.List, Peer.List_Length).all;
                   Length : Stream_Element_Offset;
                begin
                   Length :=
                      Stream_Element_Offset'Min
                      (  Data'Last + 1 - Pointer,
-                        Stream_Element_Offset (This.Length) - Pier.Count
+                        Stream_Element_Offset (This.Length) - Peer.Count
                      );
-                  This.Data (Pier.Count + 1..Pier.Count + Length) :=
+                  This.Data (Peer.Count + 1..Peer.Count + Length) :=
                      Data (Pointer..Pointer + Length - 1);
                   Pointer    := Pointer + Length;
-                  Pier.Count := Pier.Count + Length;
-                  if Pier.Count >= Stream_Element_Offset (This.Length)
+                  Peer.Count := Peer.Count + Length;
+                  if Peer.Count >= Stream_Element_Offset (This.Length)
                   then -- The string has been received
                      String_Received;
                   end if;
@@ -1382,78 +1382,78 @@ package body GNAT.Sockets.MQTT is
                   Length :=
                      Stream_Element_Offset'Min
                      (  Data'Last + 1 - Pointer,
-                        Pier.Length - Pier.Count
+                        Peer.Length - Peer.Count
                      );
-                  Pier.Data (Pier.Count + 1..Pier.Count + Length) :=
+                  Peer.Data (Peer.Count + 1..Peer.Count + Length) :=
                      Data (Pointer..Pointer + Length - 1);
-                  Pier.Count := Pier.Count + Length;
+                  Peer.Count := Peer.Count + Length;
                   Pointer    := Pointer + Length;
                end;
-               if Pier.Count >= Pier.Length then
+               if Peer.Count >= Peer.Length then
                   Data_Received;
-                  Pier.State := MQTT_Header;
+                  Peer.State := MQTT_Header;
                end if;
             when MQTT_QoS =>
                case Data (Pointer) is
-                  when 0 => Pier.QoS := At_Most_Once;
-                  when 1 => Pier.QoS := At_Least_Once;
-                  when 2 => Pier.QoS := Exactly_Once;
+                  when 0 => Peer.QoS := At_Most_Once;
+                  when 1 => Peer.QoS := At_Least_Once;
+                  when 2 => Peer.QoS := Exactly_Once;
                   when others =>
                      Raise_Exception
                      (  Data_Error'Identity,
                         "MQTT invalid subscribe QoS for " &
-                        Get_String (Pier, Pier.List_Length)
+                        Get_String (Peer, Peer.List_Length)
                      );
                end case;
                Pointer := Pointer + 1;
-               Get (Pier.List, Pier.List_Length).QoS := Pier.QoS;
-               Pier.Length := Pier.Length - 1;
-               if Pier.Length = 0 then
+               Get (Peer.List, Peer.List_Length).QoS := Peer.QoS;
+               Peer.Length := Peer.Length - 1;
+               if Peer.Length = 0 then
                   On_Subscribe
-                  (  Pier          => MQTT_Pier'Class (Pier),
-                     Packet        => Pier.Packet_ID,
-                     Topics_Number => Pier.List_Length
+                  (  Peer          => MQTT_Peer'Class (Peer),
+                     Packet        => Peer.Packet_ID,
+                     Topics_Number => Peer.List_Length
                   );
-                  Pier.State := MQTT_Header;
-               elsif Pier.Length < 3 then
+                  Peer.State := MQTT_Header;
+               elsif Peer.Length < 3 then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT subscribe token " &
-                     Image (Pier.List_Length) &
+                     Image (Peer.List_Length) &
                      " is shorter than 3 octets"
                   );
                else
-                  if Pier.List_Length = Pier.Max_Subscribe_Topics then
+                  if Peer.List_Length = Peer.Max_Subscribe_Topics then
                      Raise_Exception
                      (  Data_Error'Identity,
                         "MQTT number of subscribe topics exceeds " &
-                        Image (Pier.Max_Subscribe_Topics)
+                        Image (Peer.Max_Subscribe_Topics)
                      );
                   end if;
-                  Pier.State := MQTT_String_Length_MSB;
+                  Peer.State := MQTT_String_Length_MSB;
                end if;
             when MQTT_Return_Code =>
-               if Pier.List_Length = Pier.Max_Subscribe_Topics then
+               if Peer.List_Length = Peer.Max_Subscribe_Topics then
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT number of subscribe topics exceeds " &
-                     Image (Pier.Max_Subscribe_Topics) &
+                     Image (Peer.Max_Subscribe_Topics) &
                      " (in subscribe acknowledgement)"
                   );
                end if;
-               Pier.List_Length := Pier.List_Length + 1;
-               Pier.Length      := Pier.Length - 1;
+               Peer.List_Length := Peer.List_Length + 1;
+               Peer.Length      := Peer.Length - 1;
                declare
                   This : MQTT_String_Ptr :=
-                         Get (Pier.List, Pier.List_Length);
+                         Get (Peer.List, Peer.List_Length);
                begin
                   if This = null then
                      Put
-                     (  Pier.List,
-                        Pier.List_Length,
+                     (  Peer.List,
+                        Peer.List_Length,
                         new MQTT_String (0)
                      );
-                     This := Get (Pier.List, Pier.List_Length);
+                     This := Get (Peer.List, Peer.List_Length);
                   end if;
                   case Data (Pointer) is
                      when 16#00# =>
@@ -1472,19 +1472,19 @@ package body GNAT.Sockets.MQTT is
                         (  Data_Error'Identity,
                            "MQTT invalid SUBACK request " &
                            "return code " &
-                           Image (Pier.List_Length)
+                           Image (Peer.List_Length)
                         );
                   end case;
                   Pointer := Pointer + 1;
                end;
-               if Pier.Length = 0 then
+               if Peer.Length = 0 then
                   declare
-                     Codes : Return_Code_List (1..Pier.List_Length);
+                     Codes : Return_Code_List (1..Peer.List_Length);
                   begin
-                     for Index in 1..Pier.List_Length loop
+                     for Index in 1..Peer.List_Length loop
                         declare
                            This : MQTT_String renames
-                                  Get (Pier.List, Index).all;
+                                  Get (Peer.List, Index).all;
                         begin
                            if This.Failure then
                               Codes (Index) := (Success => False);
@@ -1494,12 +1494,12 @@ package body GNAT.Sockets.MQTT is
                         end;
                      end loop;
                      On_Subscribe_Acknowledgement
-                     (  Pier   => MQTT_Pier'Class (Pier),
-                        Packet => Pier.Packet_ID,
+                     (  Peer   => MQTT_Peer'Class (Peer),
+                        Packet => Peer.Packet_ID,
                         Codes  => Codes
                      );
                   end;
-                  Pier.State := MQTT_Header;
+                  Peer.State := MQTT_Header;
                end if;
          end case;
       end loop;
@@ -1523,13 +1523,13 @@ package body GNAT.Sockets.MQTT is
    end Ref;
 
    procedure Reset_String
-             (  Pier  : in out MQTT_Pier;
+             (  Peer  : in out MQTT_Peer;
                 Index : Positive
              )  is
       This : MQTT_String_Ptr;
    begin
-      if Pier.List_Length <= Index then
-         This := Get (Pier.List, Index);
+      if Peer.List_Length <= Index then
+         This := Get (Peer.List, Index);
          if This /= null then
             This.Length := 0;
          end if;
@@ -1537,13 +1537,13 @@ package body GNAT.Sockets.MQTT is
    end Reset_String;
 
    procedure Send
-             (  Pier : in out MQTT_Pier;
+             (  Peer : in out MQTT_Peer;
                 Data : Stream_Element_Array
              )  is
       Pointer : Stream_Element_Offset := Data'First;
    begin
-      if Pier.Secondary = null then
-         Send (Pier, Data, Pointer);
+      if Peer.Secondary = null then
+         Send (Peer, Data, Pointer);
          if Pointer > Data'Last then
             return; -- All data sent
          end if;
@@ -1552,19 +1552,19 @@ package body GNAT.Sockets.MQTT is
          Count : constant Stream_Element_Count :=
                           Data'Last - Pointer + 1;
       begin
-         if Pier.Secondary = null then -- Allocate secondary buffer
-            if Pier.Max_Size /= 0 and then Pier.Max_Size < Count then
+         if Peer.Secondary = null then -- Allocate secondary buffer
+            if Peer.Max_Size /= 0 and then Peer.Max_Size < Count then
                Raise_Exception
                (  Data_Error'Identity,
                   (  "Output buffer overflow, "
-                  &  Image (Pier.Max_Size)
+                  &  Image (Peer.Max_Size)
                   &  " items of secondary buffer exhausted"
                )  );
             end if;
-            Pier.Secondary := new Output_Buffer (Count);
-         elsif Pier.Secondary.Size - Pier.Secondary.Last < Count then
+            Peer.Secondary := new Output_Buffer (Count);
+         elsif Peer.Secondary.Size - Peer.Secondary.Last < Count then
             declare -- No place at the buffer end
-               Old  : Output_Buffer renames Pier.Secondary.all;
+               Old  : Output_Buffer renames Peer.Secondary.all;
                Used : constant Stream_Element_Count :=
                                Old.Last - Old.First + 1;
             begin
@@ -1573,15 +1573,15 @@ package body GNAT.Sockets.MQTT is
                   Old.Last  := Used;
                   Old.First := 1;
                else -- Allocate larger buffer
-                  if (  Pier.Max_Size /= 0
+                  if (  Peer.Max_Size /= 0
                      and then
-                        Pier.Max_Size < Count + Used
+                        Peer.Max_Size < Count + Used
                      )
                   then
                      Raise_Exception
                      (  Data_Error'Identity,
                         (  "Output buffer overflow, "
-                        &  Image (Pier.Max_Size)
+                        &  Image (Peer.Max_Size)
                         &  " items of secondary buffer exhausted"
                      )  );
                   end if;
@@ -1590,7 +1590,7 @@ package body GNAT.Sockets.MQTT is
                                      Stream_Element_Count'Max
                                      (  Count + Used,
                                         Stream_Element_Count'Min
-                                        (  Pier.Max_Size,
+                                        (  Peer.Max_Size,
                                            Old.Size * 2
                                      )  );
                      Ptr  : constant Output_Buffer_Ptr :=
@@ -1600,14 +1600,14 @@ package body GNAT.Sockets.MQTT is
                         Old.Data (Old.First..Old.Last);
                      Ptr.First := 1;
                      Ptr.Last  := Used;
-                     Free (Pier.Secondary);
-                     Pier.Secondary := Ptr;
+                     Free (Peer.Secondary);
+                     Peer.Secondary := Ptr;
                   end;
                end if;
             end;
          end if;
          declare -- Append remaining data to the buffer end
-            Buffer : Output_Buffer renames Pier.Secondary.all;
+            Buffer : Output_Buffer renames Peer.Secondary.all;
          begin
             Buffer.Data (Buffer.Last + 1..Buffer.Last + Count) :=
                Data (Pointer..Data'Last);
@@ -1617,7 +1617,7 @@ package body GNAT.Sockets.MQTT is
    end Send;
 
    procedure Send_Acknowledge
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Request : Acknowledge_Type;
                 Packet  : Packet_Identifier
              )  is
@@ -1638,11 +1638,11 @@ package body GNAT.Sockets.MQTT is
       Frame (2) := 2;
       Frame (3) := Stream_Element (Packet / 256);
       Frame (4) := Stream_Element (Packet mod 256);
-      Send (MQTT_Pier'Class (Pier), Frame);
+      Send (MQTT_Peer'Class (Peer), Frame);
    end Send_Acknowledge;
 
    procedure Send_Connect
-             (  Pier         : in out MQTT_Pier;
+             (  Peer         : in out MQTT_Peer;
                 Client       : String;
                 Clean        : Boolean              := True;
                 Will_Topic   : String               := "";
@@ -1717,50 +1717,50 @@ package body GNAT.Sockets.MQTT is
                Put_String (Data, Pointer, Password);
             end if;
          end;
-         Send (MQTT_Pier'Class (Pier), Data);
+         Send (MQTT_Peer'Class (Peer), Data);
       end;
    end Send_Connect;
 
    procedure Send_Connect_Accepted
-             (  Pier            : in out MQTT_Pier;
+             (  Peer            : in out MQTT_Peer;
                 Session_Present : Boolean := False
              )  is
    begin
       if Session_Present then
-         Send (MQTT_Pier'Class (Pier), (CONNACK_Request, 2, 1, 0));
+         Send (MQTT_Peer'Class (Peer), (CONNACK_Request, 2, 1, 0));
       else
-         Send (MQTT_Pier'Class (Pier), (CONNACK_Request, 2, 0, 0));
+         Send (MQTT_Peer'Class (Peer), (CONNACK_Request, 2, 0, 0));
       end if;
    end Send_Connect_Accepted;
 
    procedure Send_Connect_Rejected
-             (  Pier     : in out MQTT_Pier;
+             (  Peer     : in out MQTT_Peer;
                 Response : Connect_Response
              )  is
    begin
       Send
-      (  MQTT_Pier'Class (Pier),
+      (  MQTT_Peer'Class (Peer),
          (CONNACK_Request, 2, 0, Stream_Element (Response))
       );
    end Send_Connect_Rejected;
 
-   procedure Send_Disconnect (Pier : in out MQTT_Pier) is
+   procedure Send_Disconnect (Peer : in out MQTT_Peer) is
    begin
-      Send (MQTT_Pier'Class (Pier), (DISCONNECT_Request, 0));
+      Send (MQTT_Peer'Class (Peer), (DISCONNECT_Request, 0));
    end Send_Disconnect;
 
-   procedure Send_Ping (Pier : in out MQTT_Pier) is
+   procedure Send_Ping (Peer : in out MQTT_Peer) is
    begin
-      Send (MQTT_Pier'Class (Pier), (PINGREQ_Request, 0));
+      Send (MQTT_Peer'Class (Peer), (PINGREQ_Request, 0));
    end Send_Ping;
 
-   procedure Send_Ping_Response (Pier : in out MQTT_Pier) is
+   procedure Send_Ping_Response (Peer : in out MQTT_Peer) is
    begin
-      Send (MQTT_Pier'Class (Pier), (PINGRESP_Request, 0));
+      Send (MQTT_Peer'Class (Peer), (PINGRESP_Request, 0));
    end Send_Ping_Response;
 
    procedure Send_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Topic     : String;
                 Message   : Stream_Element_Array;
                 Packet    : Packet_Identification;
@@ -1801,12 +1801,12 @@ package body GNAT.Sockets.MQTT is
             Put (Data, Pointer, Unsigned_16 (Packet.ID));
          end if;
          Data (Pointer..Pointer + Message'Length - 1) := Message;
-         Send (MQTT_Pier'Class (Pier), Data);
+         Send (MQTT_Peer'Class (Peer), Data);
       end;
    end Send_Publish;
 
    procedure Send_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Topic     : String;
                 Message   : String;
                 Packet    : Packet_Identification;
@@ -1815,7 +1815,7 @@ package body GNAT.Sockets.MQTT is
              )  is
    begin
       Send_Publish
-      (  Pier,
+      (  Peer,
          Topic,
          From_String (Message),
          Packet,
@@ -1825,7 +1825,7 @@ package body GNAT.Sockets.MQTT is
    end Send_Publish;
 
    procedure Send_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Message   : MQTT_Message'Class;
                 Packet    : Packet_Identification;
                 Duplicate : Boolean := False;
@@ -1834,7 +1834,7 @@ package body GNAT.Sockets.MQTT is
       This : Message_Object'Class renames Ptr (Message.Reference).all;
    begin
       Send_Publish
-      (  Pier,
+      (  Peer,
          This.Topic,
          This.Content (1..This.Count),
          Packet,
@@ -1844,17 +1844,17 @@ package body GNAT.Sockets.MQTT is
    end Send_Publish;
 
    procedure Send_Subscribe
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Topic  : String;
                 QoS    : QoS_Level
              )  is
    begin
-      Send_Subscribe (Pier, Packet, +Topic, (1 => QoS));
+      Send_Subscribe (Peer, Packet, +Topic, (1 => QoS));
    end Send_Subscribe;
 
    procedure Send_Subscribe
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Topics : Topics_List;
                 QoS    : QoS_Level_Array
@@ -1890,12 +1890,12 @@ package body GNAT.Sockets.MQTT is
             end case;
             Pointer := Pointer + 1;
          end loop;
-         Send (MQTT_Pier'Class (Pier), Data);
+         Send (MQTT_Peer'Class (Peer), Data);
       end;
    end Send_Subscribe;
 
    procedure Send_Subscribe_Acknowledgement
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Codes  : Return_Code_List
              )  is
@@ -1920,12 +1920,12 @@ package body GNAT.Sockets.MQTT is
             end if;
             Pointer := Pointer + 1;
          end loop;
-         Send (MQTT_Pier'Class (Pier), Data);
+         Send (MQTT_Peer'Class (Peer), Data);
       end;
    end Send_Subscribe_Acknowledgement;
 
    procedure Send_Unsubscribe
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Topics : Topics_List
              )  is
@@ -1951,19 +1951,19 @@ package body GNAT.Sockets.MQTT is
          for Index in Topics'Range loop
             Put_String (Data, Pointer, Ptr (Topics (Index)).Topic);
          end loop;
-         Send (MQTT_Pier'Class (Pier), Data);
+         Send (MQTT_Peer'Class (Peer), Data);
       end;
    end Send_Unsubscribe;
 
-   procedure Sent (Pier : in out MQTT_Pier) is
+   procedure Sent (Peer : in out MQTT_Peer) is
    begin
-      if Pier.Secondary /= null then
+      if Peer.Secondary /= null then
          declare
-            Buffer : Output_Buffer renames Pier.Secondary.all;
+            Buffer : Output_Buffer renames Peer.Secondary.all;
          begin
             if Buffer.Last > 0 then
                Send
-               (  Pier,
+               (  Peer,
                   Buffer.Data (Buffer.First..Buffer.Last),
                   Buffer.First
                );
@@ -1977,22 +1977,22 @@ package body GNAT.Sockets.MQTT is
    end Sent;
 
    procedure Set_Max_Message_Size
-             (  Pier : in out MQTT_Pier;
+             (  Peer : in out MQTT_Peer;
                 Size : Stream_Element_Count
              )  is
       Ptr : constant Stream_Element_Array_Ptr :=
                      new Stream_Element_Array (1..Size);
    begin
-      Free (Pier.Data);
-      Pier.Data := Ptr;
+      Free (Peer.Data);
+      Peer.Data := Ptr;
    end Set_Max_Message_Size;
 
    procedure Set_Max_Secondary_Buffer_Size
-             (  Pier : in out MQTT_Pier;
+             (  Peer : in out MQTT_Peer;
                 Size : Stream_Element_Count := 0
              )  is
    begin
-      Pier.Max_Size := Size;
+      Peer.Max_Size := Size;
    end Set_Max_Secondary_Buffer_Size;
 
    procedure Set_Message
@@ -2113,7 +2113,7 @@ package body GNAT.Sockets.MQTT is
    end String_Name;
 
    procedure Trace
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Session : String;
                 Message : String;
                 Kind_Of : Trace_Message_Type
@@ -2133,8 +2133,8 @@ package body GNAT.Sockets.MQTT is
          case Kind_Of is
             when Received =>
                Trace
-               (  Pier.Listener.Factory.all,
-                  (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+               (  Peer.Listener.Factory.all,
+                  (  Get_Client_Name (Peer.Listener.Factory.all, Peer)
                   &  " "
                   &  Session
                   &  " > "
@@ -2142,8 +2142,8 @@ package body GNAT.Sockets.MQTT is
                )  );
             when Sent =>
                Trace
-               (  Pier.Listener.Factory.all,
-                  (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+               (  Peer.Listener.Factory.all,
+                  (  Get_Client_Name (Peer.Listener.Factory.all, Peer)
                   &  " "
                   &  Session
                   &  " < "
@@ -2151,8 +2151,8 @@ package body GNAT.Sockets.MQTT is
                )  );
             when Action =>
                Trace
-               (  Pier.Listener.Factory.all,
-                  (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+               (  Peer.Listener.Factory.all,
+                  (  Get_Client_Name (Peer.Listener.Factory.all, Peer)
                   &  " "
                   &  Session
                   &  " ! "
@@ -2162,7 +2162,7 @@ package body GNAT.Sockets.MQTT is
       else -- Recode to %-escaped
          declare
             Prefix  : constant String :=
-               (  Get_Client_Name (Pier.Listener.Factory.all, Pier)
+               (  Get_Client_Name (Peer.Listener.Factory.all, Peer)
                &  " "
                &  Session
                );
@@ -2198,7 +2198,7 @@ package body GNAT.Sockets.MQTT is
                end case;
             end loop;
             Trace
-            (  Pier.Listener.Factory.all,
+            (  Peer.Listener.Factory.all,
                Text (1..Pointer - 1)
             );
          end;

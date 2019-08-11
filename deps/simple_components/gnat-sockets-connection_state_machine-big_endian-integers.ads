@@ -3,7 +3,7 @@
 --     Connection_State_Machine.                   Luebeck            --
 --     Big_Endian.Integers                         Winter, 2012       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  12:18 18 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -135,9 +135,8 @@ package GNAT.Sockets.Connection_State_Machine.Big_Endian.Integers is
                 Pointer : in out Stream_Element_Offset;
                 Value   : Integer_64
              );
-
 --
--- Value -- String from stream element array
+-- Value -- Content of an item
 --
 --    Item - The string data item
 --
@@ -145,7 +144,7 @@ package GNAT.Sockets.Connection_State_Machine.Big_Endian.Integers is
 --
 --    The value contained by Item
 --
-   function Value (Item : Integer_8_Data_Item)  return Integer_8;
+   function Value (Item : Integer_8_Data_Item ) return Integer_8;
    function Value (Item : Integer_16_Data_Item) return Integer_16;
    function Value (Item : Integer_32_Data_Item) return Integer_32;
    function Value (Item : Integer_64_Data_Item) return Integer_64;

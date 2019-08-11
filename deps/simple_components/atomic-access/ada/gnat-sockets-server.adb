@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  10:33 11 May 2019  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -195,7 +195,7 @@ package body GNAT.Sockets.Server is
                 Client   : in out Connection'Class
              )  is
    begin
-      Client.Session := Session_Connected;
+      Client.Session := Session_Active;
    end Connected;
 
    function Create
@@ -594,48 +594,79 @@ package body GNAT.Sockets.Server is
       return Result;
    end Image;
 
-   function Image (Data : Stream_Element_Array) return String is
-      Length : Natural := 0;
+   function Image
+            (  Data        : Stream_Element_Array;
+               Hexadecimal : Boolean := False
+            )  return String is
    begin
-      for Index in Data'Range loop
-         case Data (Index) is
-            when 32..36 | 38..126 =>
-               Length := Length + 1;
-            when others =>
-               Length := Length + 3;
-         end case;
-      end loop;
-      declare
-         Result  : String (1..Length);
-         Pointer : Integer := 1;
-      begin
-         for Index in Data'Range loop
-            case Data (Index) is
-               when 32..36 | 38..126 =>
-                  Put
-                  (  Destination => Result,
-                     Pointer     => Pointer,
-                     Value       => Character'Val (Data (Index))
-                  );
-               when others =>
-                  Put
-                  (  Destination => Result,
-                     Pointer     => Pointer,
-                     Value       => '%'
-                  );
-                  Put
-                  (  Destination => Result,
-                     Pointer     => Pointer,
-                     Value       => Integer (Data (Index)),
-                     Base        => 16,
-                     Field       => 2,
-                     Fill        => '0',
-                     Justify     => Right
-                  );
-            end case;
-         end loop;
-         return Result;
-      end;
+      if Hexadecimal then
+         declare
+            Result  : String (1..Data'Length * 3);
+            Pointer : Integer := 1;
+         begin
+            for Index in Data'Range loop
+               Put
+               (  Destination => Result,
+                  Pointer     => Pointer,
+                  Value       => Integer (Data (Index)),
+                  Base        => 16,
+                  Field       => 2,
+                  Fill        => '0',
+                  Justify     => Right
+               );
+               Put
+               (  Destination => Result,
+                  Pointer     => Pointer,
+                  Value       => " "
+               );
+            end loop;
+            return Result;
+         end;
+      else
+         declare
+            Length : Natural := 0;
+         begin
+            for Index in Data'Range loop
+               case Data (Index) is
+                  when 32..36 | 38..126 =>
+                     Length := Length + 1;
+                  when others =>
+                     Length := Length + 3;
+               end case;
+            end loop;
+            declare
+               Result  : String (1..Length);
+               Pointer : Integer := 1;
+            begin
+               for Index in Data'Range loop
+                  case Data (Index) is
+                     when 32..36 | 38..126 =>
+                        Put
+                        (  Destination => Result,
+                           Pointer     => Pointer,
+                           Value       => Character'Val (Data (Index))
+                        );
+                     when others =>
+                        Put
+                        (  Destination => Result,
+                           Pointer     => Pointer,
+                           Value       => '%'
+                        );
+                        Put
+                        (  Destination => Result,
+                           Pointer     => Pointer,
+                           Value       => Integer (Data (Index)),
+                           Base        => 16,
+                           Field       => 2,
+                           Fill        => '0',
+                           Justify     => Right
+                        );
+                  end case;
+               end loop;
+               return Result;
+            end;
+         end;
+      end if;
    end Image;
 
    procedure Initialize (Listener : in out Connections_Server) is
@@ -649,7 +680,7 @@ package body GNAT.Sockets.Server is
 
    function Is_Connected (Client : Connection) return Boolean is
    begin
-      return Client.Session in Session_Connected..Session_Busy;
+      return Client.Session in Session_Active..Session_Busy;
    end Is_Connected;
 
    function Is_Down (Client : Connection) return Boolean is
@@ -739,6 +770,7 @@ package body GNAT.Sockets.Server is
             Client.Session := Session_Connected;
             Connected (Client);
             Connected (Listener, Client);
+            Client.Session := Session_Active;
          exception
             when others =>
                if Client.Session = Session_Connected then
@@ -2474,6 +2506,7 @@ package body GNAT.Sockets.Server is
                               This.Session := Session_Connected;
                               Connected (This);
                               Connected (Listener.all, This);
+                              This.Session := Session_Active;
                            else
                               This.Session := Session_Handshaking;
                            end if;

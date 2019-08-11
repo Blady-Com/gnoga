@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Big_Endian.Unsigneds                        Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  09:27 06 Nov 2016  --
+--                                Last revision :  16:04 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -155,10 +155,7 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;
       Value   := Unsigned_8 (Data (Pointer));
       Pointer := Pointer + 1;
@@ -177,10 +174,7 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       elsif Pointer + 1 > Data'Last then
          Raise_Exception (End_Error'Identity, "End of data");
       end if;
@@ -205,10 +199,7 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       elsif Pointer + 3 > Data'Last then
          Raise_Exception (End_Error'Identity, "End of data");
       end if;
@@ -235,10 +226,7 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
                Pointer - 1 > Data'Last
          )  )
       then
-         Raise_Exception
-         (  Layout_Error'Identity,
-            "Pointer is out of bounds"
-         );
+         Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       elsif Pointer + 7 > Data'Last then
          Raise_Exception (End_Error'Identity, "End of data");
       end if;
@@ -263,15 +251,9 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
    begin
       if Pointer < Data'First or else Data'Last - Pointer < 0 then
          if Pointer >= Data'First and then Pointer - 1 <= Data'Last then
-            Raise_Exception
-            (  End_Error'Identity,
-               "No room for output"
-            );
+            Raise_Exception (End_Error'Identity, No_Room);
          else
-            Raise_Exception
-            (  Layout_Error'Identity,
-               "Invalid pointer"
-            );
+            Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
          end if;
       end if;
       Data (Pointer) := Stream_Element (Value);
@@ -286,15 +268,9 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
    begin
       if Pointer < Data'First or else Data'Last - Pointer < 1 then
          if Pointer >= Data'First and then Pointer - 1 <= Data'Last then
-            Raise_Exception
-            (  End_Error'Identity,
-               "No room for output"
-            );
+            Raise_Exception (End_Error'Identity, No_Room);
          else
-            Raise_Exception
-            (  Layout_Error'Identity,
-               "Invalid pointer"
-            );
+            Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
          end if;
       end if;
       Data (Pointer)     := Stream_Element (Shift_Right (Value, 8));
@@ -311,15 +287,9 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
    begin
       if Pointer < Data'First or else Data'Last - Pointer < 3 then
          if Pointer >= Data'First and then Pointer - 1 <= Data'Last then
-            Raise_Exception
-            (  End_Error'Identity,
-               "No room for output"
-            );
+            Raise_Exception (End_Error'Identity, No_Room);
          else
-            Raise_Exception
-            (  Layout_Error'Identity,
-               "Invalid pointer"
-            );
+            Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
          end if;
       end if;
       for Byte in reverse Stream_Element_Offset range 0..3 loop
@@ -338,15 +308,9 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
    begin
       if Pointer < Data'First or else Data'Last - Pointer < 7 then
          if Pointer >= Data'First and then Pointer - 1 <= Data'Last then
-            Raise_Exception
-            (  End_Error'Identity,
-               "No room for output"
-            );
+            Raise_Exception (End_Error'Identity, No_Room);
          else
-            Raise_Exception
-            (  Layout_Error'Identity,
-               "Invalid pointer"
-            );
+            Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
          end if;
       end if;
       for Byte in reverse Stream_Element_Offset range 0..7 loop

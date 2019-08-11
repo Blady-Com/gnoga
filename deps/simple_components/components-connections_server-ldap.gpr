@@ -1,0 +1,21 @@
+with "components.gpr";
+with "components-connections_server.gpr";
+
+project Components.Connections_Server.LDAP is
+
+   for Source_Files use
+       (  "gnat-sockets-connection_state_machine-ldap.adb",
+          "gnat-sockets-connection_state_machine-ldap.ads",
+          "gnat-sockets-connection_state_machine-ldap-client.adb",
+          "gnat-sockets-connection_state_machine-ldap-client.ads",
+          "gnat-sockets-connection_state_machine-ldap-server.adb",
+          "gnat-sockets-connection_state_machine-ldap-server.ads"
+       );
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Connections_Server.LDAP;

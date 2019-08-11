@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client.Signaled                        Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,6 +27,7 @@
 
 with Ada.Exceptions;     use Ada.Exceptions;
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
+with Synchronization;    use Synchronization;
 
 package body GNAT.Sockets.Connection_State_Machine.
              HTTP_Client.Signaled is
@@ -171,7 +172,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                   Connected := False;
                end if;
             when Session_Disconnected | Session_Connecting |
-                 Session_Handshaking  | Session_Busy =>
+                 Session_Handshaking  | Session_Busy       =>
                Ready := False;
                Down  := False;
                if Event_Type.Cancel'Count > 0 then
@@ -179,7 +180,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                else
                   requeue Wait with abort;
                end if;
-            when Session_Connected =>
+            when Session_Active | Session_Connected =>
                Ready     := True;
                Down      := False;
                Connected := True;
@@ -193,10 +194,10 @@ package body GNAT.Sockets.Connection_State_Machine.
                Ready := False;
                Down  := True;
             when Session_Disconnected | Session_Connecting |
-                 Session_Handshaking  | Session_Busy =>
+                 Session_Handshaking  | Session_Busy       =>
                Ready := False;
                Down  := False;
-            when Session_Connected =>
+            when Session_Active | Session_Connected =>
                Ready := True;
                Down  := False;
          end case;

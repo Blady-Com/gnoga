@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine       Luebeck            --
 --  Interface                                      Winter, 2012       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,12 +36,14 @@
 --     Enumeration of the fields (introspection) is  based on Ada stream
 --  attributes. See ARM 13.13.2(9) for the legality of the approach.
 --
-with Ada.Finalization;     use Ada.Finalization;
-with Ada.Streams;          use Ada.Streams;
-with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
+with Ada.Finalization;         use Ada.Finalization;
+with Ada.Streams;              use Ada.Streams;
+with GNAT.Sockets.Server;      use GNAT.Sockets.Server;
+with System.Storage_Elements;  use System.Storage_Elements;
 
 with Generic_Unbounded_Array;
 with Interfaces;
+with System.Storage_Pools;
 
 package GNAT.Sockets.Connection_State_Machine is
 --
@@ -91,12 +93,19 @@ package GNAT.Sockets.Connection_State_Machine is
 --
    type Data_Item is abstract
       new Ada.Finalization.Limited_Controlled with null record;
+   type Data_Item_Ptr is access all Data_Item'Class;
+   type Data_Item_Offset is new Integer;
+   subtype Data_Item_Address is
+      Data_Item_Offset range 1..Data_Item_Offset'Last;
+   type Data_Item_Ptr_Array is
+      array (Data_Item_Address range <>) of Data_Item_Ptr;
 --
 -- Feed -- Incoming data
 --
 --    Item    - The data item
 --    Data    - The array of stream elements containing incoming data
 --    Pointer - The first element in the array
+--    Client  - The connection client
 --    State   - Of the data item processing
 --
 -- This procedure  is called  when data  become  available  to  get item
@@ -116,15 +125,63 @@ package GNAT.Sockets.Connection_State_Machine is
                 State   : in out Stream_Element_Offset
              )  is abstract;
 --
+-- Freed -- Deallocation notification
+--
+--    Item - The data item
+--
+-- This procedure is  called  when  the shared  data item  is  about  to
+-- deallocate  items allocated  there.  See External_String_Buffer.  The
+-- default implementation does nothing.
+--
+   procedure Freed (Item : in out Data_Item);
+--
+-- Get_Children -- Get list of immediate children
+--
+--    Item - The data item
+--
+-- Returns :
+--
+--    The list of immediate children (nested) data items
+--
+-- Exceptions :
+--
+--    Use_Error - The data item is not initialized
+--
+   function Get_Children (Item : Data_Item) return Data_Item_Ptr_Array;
+--
 -- Get_Size -- Size of the data item in data items
 --
 --    Item - The data item
 --
 -- Returns :
 --
---    The default implementation is returns 1
+--    The default implementation returns 1
 --
-   function Get_Size (Item : Data_Item) return Positive;
+   function Get_Size (Item : Data_Item) return Natural;
+--
+-- End_Of_Subsequence -- Completion of a subsequence
+--
+--    Item    - The data item
+--    Data    - The array of stream elements containing incoming data
+--    Pointer - The first element in the array (can be Data'Last + 1)
+--    Client  - The connection client
+--    State   - Of the data item processing
+--
+-- This procedure is called  when a subsequence  of data items  has been
+-- processed.  Item is  the data item which was active prior to sequence
+-- start.  It is called only if the data  item was  not completed,  i.e.
+-- State is not 0. When the implementation changes State to 0 processing
+-- of the data  item completes  and the next item is fetched.  Note that
+-- differently to Feed Pointer may point  beyond Data when all available
+-- input has been processed. The default implementation does nothing.
+--
+   procedure End_Of_Subsequence
+             (  Item    : in out Data_Item;
+                Data    : Stream_Element_Array;
+                Pointer : Stream_Element_Offset;
+                Client  : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             );
 --
 -- Enumerate -- Fake stream I/O procedure
 --
@@ -138,6 +195,46 @@ package GNAT.Sockets.Connection_State_Machine is
                 Item   : Data_Item
              );
    for Data_Item'Write use Enumerate;
+   type Shared_Data_Item;
+   type Shared_Data_Item_Ptr is access all Shared_Data_Item'Class;
+--
+-- External_Initialize
+--
+--    Item   - The data item
+--    Shared - The shared items stack to use
+--
+-- This procedure  is  used  to initialize  an object  when  it  is used
+-- outside an instance of State_Machine.
+--
+   procedure External_Initialize
+             (  Item   : Data_Item'Class;
+                Shared : Shared_Data_Item_Ptr := null
+             );
+--
+-- Shared_Data_Item -- Base type for shared items
+--
+   type Shared_Data_Item is abstract new Data_Item with record
+      Initialized : Boolean := False;
+      Previous    : Shared_Data_Item_Ptr; -- Stacked items
+   end record;
+--
+-- Enumerate -- Fake stream I/O procedure
+--
+   procedure Enumerate
+             (  Stream : access Root_Stream_Type'Class;
+                Item   : Shared_Data_Item
+             );
+   for Shared_Data_Item'Write use Enumerate;
+--
+-- Feed -- Implementation, makes the shared item active
+--
+   procedure Feed
+             (  Item    : in out Shared_Data_Item;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Client  : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             );
 ------------------------------------------------------------------------
 -- Data_Block -- Base type  of  a sequence  of data items.  Derived data
 --               types contain fields derived from Data_Item.
@@ -170,6 +267,10 @@ package GNAT.Sockets.Connection_State_Machine is
 --
    procedure Finalize (Item : in out Data_Block);
 --
+-- Get_Children -- Overriding
+--
+   function Get_Children (Item : Data_Block) return Data_Item_Ptr_Array;
+--
 -- Get_Length -- The number of items contained by the block item
 --
 --    Item - The block item
@@ -182,7 +283,7 @@ package GNAT.Sockets.Connection_State_Machine is
 --
 -- Get_Size -- Overriding
 --
-   function Get_Size (Item : Data_Block) return Positive;
+   function Get_Size (Item : Data_Block) return Natural;
 ------------------------------------------------------------------------
 -- Data_Null -- No data item, used where a data item is required
 --
@@ -252,6 +353,12 @@ package GNAT.Sockets.Connection_State_Machine is
    function Get_Alternatives_Number (Item : Data_Selector)
       return Positive;
 --
+-- Get_Children -- Overriding
+--
+   function Get_Children
+            (  Item : Data_Selector
+            )  return Data_Item_Ptr_Array;
+--
 -- Enumerate -- Fake stream I/O procedure
 --
    procedure Enumerate
@@ -277,16 +384,172 @@ package GNAT.Sockets.Connection_State_Machine is
 --
 -- Get_Size -- Overriding
 --
-   function Get_Size (Item : Data_Selector) return Positive;
+   function Get_Size (Item : Data_Selector) return Natural;
+------------------------------------------------------------------------
+--
+-- External_String_Buffer -- The arena buffer to  keep bodies of strings
+--                           and  dynamically allocated  elements.  This
+-- buffer can be shared by multiple instances of Data_Item. For example:
+--
+--    type Alternatives_Record is new Choice_Data_Item with record
+--       Text_1 : Implicit_External_String_Data_Item;
+--       Text_2 : Implicit_External_String_Data_Item;
+--       Text_3 : Implicit_External_String_Data_Item;
+--    end record;
+--    type Packet is new State_Machine ... with record
+--       Buffer : External_String_Buffer (1024); -- Shared buffer
+--       Choice : Alternatives_Record;
+--    end record;
+--
+-- When several buffers  appear the  nearest  one before  the  data item
+-- object is used.
+--
+   type External_String_Buffer;
+   type External_String_Buffer_Ptr is
+      access all External_String_Buffer'Class;
+--
+-- Arena_Pool -- The pool component  of the  External_String_Buffer that
+--               allocates memory as substrings in the buffer.
+--
+--    Parent - The buffer to take memory from
+--
+   type Arena_Pool
+        (  Parent : access External_String_Buffer'Class
+        )  is new System.Storage_Pools.Root_Storage_Pool with
+              null record;
+--
+-- Allocate -- Allocate memory
+--
+-- The memory is allocated in the string buffer as a string.
+--
+   procedure Allocate
+             (  Pool      : in out Arena_Pool;
+                Address   : out System.Address;
+                Size      : Storage_Count;
+                Alignment : Storage_Count
+             );
+--
+-- Deallocate -- Free memory
+--
+-- This a null operation. The memory is freed by Erase
+--
+   procedure Deallocate
+             (  Pool      : in out Arena_Pool;
+                Address   : System.Address;
+                Size      : Storage_Count;
+                Alignment : Storage_Count
+             );
+   function Storage_Size
+            (  Pool : Arena_Pool
+            )  return Storage_Count;
+
+   procedure Enumerate
+             (  Stream : access Root_Stream_Type'Class;
+                Pool   : Arena_Pool
+             );
+   for Arena_Pool'Write use Enumerate;
+--
+-- Allocator_Data -- The  allocator's  list.   The  users  of  the  pool
+--                   register themselves  in order to  get notifications
+-- upon erasing the buffer.  They should finalize  all objects then have
+-- allocated in the pool.
+--
+   type Allocator_Data;
+   type Allocator_Data_Ptr is access all Allocator_Data;
+   type Allocator_Data (Allocator : access Data_Item'Class) is record
+      Previous : Allocator_Data_Ptr; -- List of allocators
+   end record;
+   type External_String_Buffer (Size : Natural) is
+      new Shared_Data_Item with
+   record
+      Pool       : Arena_Pool (External_String_Buffer'Access);
+      Length     : Natural := 0;
+      Count      : Natural := 0;       -- Allocatied items
+      Allocators : Allocator_Data_Ptr; -- List of objects using the pool
+      Buffer     : String (1..Size);
+   end record;
+--
+-- Erase -- Deallocate all elements and all strings
+--
+--    Buffer - The buffer
+--
+-- The implementation walks  the list of allocators  to notify them that
+-- the allocated  items  will be freed.  The callee  must  finalize  its
+-- elements if necessary.
+--
+   procedure Erase (Buffer : in out External_String_Buffer);
+--
+-- Feed -- Implementation of the feed operation
+--
+-- The implementation erases the buffer.
+--
+   procedure Feed
+             (  Item    : in out External_String_Buffer;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Client  : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             );
+--
+-- Fnalize -- Destruction
+--
+--    Buffer - The buffer
+--
+-- The derived type must call this if it overrides it.
+--
+   procedure Finalize (Buffer : in out External_String_Buffer);
+------------------------------------------------------------------------
+   generic
+      with procedure Put (Text : String) is <>;
+      with procedure Put_Line (Line : String) is <>;
+   package Generic_Dump is
+   --
+   -- Put -- Allocator list
+   --
+   --    Buffer - The external string buffer
+   --    Prefix - Of the output lines
+   --
+      procedure Put
+                (  Buffer : in out External_String_Buffer;
+                   Prefix : String
+                );
+   --
+   -- Put -- List item structure recursively
+   --
+   --    Item   - The data item
+   --    Prefix - Of the output lines
+   --
+      procedure Put
+                (  Item   : Data_Item'Class;
+                   Prefix : String := ""
+                );
+   --
+   -- Put_Call_Stack -- List the call stack of the state machine
+   --
+   --    Client - The state machine
+   --    Prefix - Of the output lines
+   --
+      procedure Put_Call_Stack
+                (  Client : State_Machine'Class;
+                   Prefix : String := ""
+                );
+   --
+   -- Put_Stream -- Stream and dump the result list
+   --
+   --    Item   - The data item
+   --    Prefix - Of the output lines
+   --
+      procedure Put_Stream
+                (  Item   : Data_Item'Class;
+                   Prefix : String := ""
+                );
+   end Generic_Dump;
 private
    use Interfaces;
 
-   type Data_Item_Ptr is access all Data_Item'Class;
-   type Data_Item_Offset is new Integer;
-   subtype Data_Item_Address is
-      Data_Item_Offset range 1..Data_Item_Offset'Last;
-   type Data_Item_Ptr_Array is
-      array (Data_Item_Address range <>) of Data_Item_Ptr;
+   Out_Of_Bounds : constant String := "Pointer is out of bounds";
+   No_Room       : constant String := "No room for output";
+
    package Data_Item_Arrays is
       new Generic_Unbounded_Array
           (  Index_Type        => Data_Item_Address,
@@ -295,27 +558,50 @@ private
              Null_Element      => null
           );
    use Data_Item_Arrays;
+   type Data_Item_Ptr_Array_Ptr is access Data_Item_Ptr_Array;
+   procedure Free is
+      new Ada.Unchecked_Deallocation
+          (  Data_Item_Ptr_Array,
+             Data_Item_Ptr_Array_Ptr
+          );
 
    type Sequence;
    type Sequence_Ptr is access all Sequence;
    type Sequence (Length : Data_Item_Address) is record
       Caller  : Sequence_Ptr;
-      Current : Data_Item_Offset := 1;
+      State   : Stream_Element_Offset := 0; -- Saved caller's state
+      Current : Data_Item_Offset      := 1;
       List    : Data_Item_Ptr_Array (1..Length);
    end record;
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Sequence, Sequence_Ptr);
 
+   type State_Type is (Feeding, Packet_Processing);
    type State_Machine is abstract new Connection with record
-      State : Stream_Element_Offset := 0;
-      Data  : Sequence_Ptr;
+      State  : Stream_Element_Offset := 0;
+      Start  : Stream_Element_Offset := 0; -- Saved pointer
+      Fed    : Unsigned_64 := 0;  -- Running count of octets processed
+      Data   : Sequence_Ptr;
    end record;
-   procedure Call (Client : in out State_Machine; Data : Sequence_Ptr);
-
+   procedure Call
+             (  Client  : in out State_Machine;
+                Pointer : Stream_Element_Offset;
+                Data    : Sequence_Ptr;
+                State   : Stream_Element_Offset := 0
+             );
+   type Shared_Data_Item_Ptr_Ptr is access all Shared_Data_Item_Ptr;
    type Initialization_Stream is new Root_Stream_Type with record
+      Shared : aliased Shared_Data_Item_Ptr; -- The latest shared item
+      Parent : Shared_Data_Item_Ptr_Ptr;
       Count  : Data_Item_Offset := 0;
       Ignore : Data_Item_Offset := 0;
       Data   : Unbounded_Array;
    end record;
-
+   procedure Add
+             (  Stream : in out Initialization_Stream;
+                Item   : Data_Item'Class;
+                Nested : Data_Item_Offset := 0
+             );
    procedure Read
              (  Stream : in out Initialization_Stream;
                 Item   : out Stream_Element_Array;
@@ -326,14 +612,23 @@ private
              (  Stream : in out Initialization_Stream;
                 Item   : Stream_Element_Array
              );
+   function Get_Prefix (Stream : Root_Stream_Type'Class) return String;
+   procedure Set_Prefix
+             (  Stream : Root_Stream_Type'Class;
+                Prefix : Natural
+             );
+   procedure Check_Initialization_Stream
+             (  Item   : Data_Item'Class;
+                Stream : Root_Stream_Type'Class
+             );
 
-   function To_Integer (Value : Unsigned_8)  return Integer_8;
+   function To_Integer (Value : Unsigned_8 ) return Integer_8;
    function To_Integer (Value : Unsigned_16) return Integer_16;
    function To_Integer (Value : Unsigned_32) return Integer_32;
    function To_Integer (Value : Unsigned_64) return Integer_64;
    pragma Inline (To_Integer);
 
-   function To_Unsigned (Value : Integer_8)  return Unsigned_8;
+   function To_Unsigned (Value : Integer_8 ) return Unsigned_8;
    function To_Unsigned (Value : Integer_16) return Unsigned_16;
    function To_Unsigned (Value : Integer_32) return Unsigned_32;
    function To_Unsigned (Value : Integer_64) return Unsigned_64;
@@ -361,5 +656,14 @@ private
       Initialized  : Boolean  := False;
    end record;
    function Self (Item : Data_Selector'Class) return Data_Selector_Ptr;
+   function Self (Item : Shared_Data_Item'Class)
+      return Shared_Data_Item_Ptr;
+
+   generic
+      with procedure Put_Line (Line : String) is <>;
+   procedure Generic_Dump_Stream
+             (  Stream : Initialization_Stream'Class;
+                Prefix : String := ""
+             );
 
 end GNAT.Sockets.Connection_State_Machine;

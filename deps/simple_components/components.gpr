@@ -12,12 +12,10 @@ project Components is
    type Atomic_Access_Mode is
         (  "Pragma-atomic",
            "GCC-built-ins",
-           "GCC-long-offsets"
+           "GCC-long-offsets",
+           "auto"
         );
-   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "Pragma-atomic");
-
-   type OS_Type is ("Windows", "Windows_NT", "Linux", "UNIX", "OSX", "FreeBSD");
-   OS : OS_Type := external ("OS", "Windows");
+   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "auto");
 
    Dir_List := ();
    
@@ -37,20 +35,11 @@ project Components is
 
    Dir_List := Dir_List & ".";
 
-   case Atomic_Access is
-      when "Pragma-atomic" =>
-         Dir_List := Dir_List & "atomic-access/ada";
-      when "GCC-built-ins" =>
-         Dir_List := Dir_List & "atomic-access/gcc";
-      when "GCC-long-offsets" =>
-         Dir_List := Dir_List & "atomic-access/gcc-long-offsets";
-   end case;
-
-   case OS is
+   case Tables.OS is
       when "Windows" | "Windows_NT" =>
          for Languages use ("Ada");
          Dir_List := Dir_List & "os/windows";
-      when "Linux" | "UNIX" =>
+      when "Linux" | "UNIX" | "auto" =>
          for Languages use ("Ada", "C");
          Dir_List := Dir_List & "os/linux";
       when "OSX" =>
@@ -60,6 +49,27 @@ project Components is
          for Languages use ("Ada");
          Dir_List := Dir_List & "os/pthreads";
          for Library_Options use ("-lpthread");
+   end case;
+
+   case Atomic_Access is
+      when "auto" =>
+         case Tables.Arch is
+            when "x86_64" | "aarch64" =>
+               Atomic_Access := "Pragma-atomic";
+            when "i686" | "armhf" | "auto" =>
+               Atomic_Access := "GCC-long-offsets";
+         end case;
+      when others =>
+         null;
+   end case;         
+
+   case Atomic_Access is
+      when "Pragma-atomic" =>
+         Dir_List := Dir_List & "atomic-access/ada";
+      when "GCC-built-ins" =>
+         Dir_List := Dir_List & "atomic-access/gcc";
+      when "GCC-long-offsets" | "auto" =>
+         Dir_List := Dir_List & "atomic-access/gcc-long-offsets";
    end case;
 
    Object_Dir_Path := Strings_Edit.Object_Dir_Path;
@@ -337,13 +347,13 @@ project Components is
       "tables-utf8_names.adb",
       "tables-utf8_names.ads"
    );
-   case OS is
+   case Tables.OS is
       when "Windows" | "Windows_NT" =>
          for Source_Files use
              Files_List & (  "synchronization-windows.adb",
                              "synchronization-windows.ads"
                           );
-      when "Linux" | "UNIX" =>
+      when "Linux" | "UNIX" | "auto" =>
          for Source_Files use
              Files_List & (  "synchronization_linux.c",
                              "synchronization-linux.adb",

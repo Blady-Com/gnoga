@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  14:39 07 Jan 2019  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -440,15 +440,18 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
       Result : constant Session_State :=
                Get_Session_State (State_Machine (Session));
    begin
-      if Result = Session_Connected then
-         if Session.Expecting = Nothing then
-            return Result;
-         else
+      case Result is
+         when Session_Connected =>
             return Session_Busy;
-         end if;
-      else
-         return Result;
-      end if;
+         when Session_Active =>
+            if Session.Expecting = Nothing then
+               return Result;
+            else
+               return Session_Busy;
+            end if;
+         when others =>
+            return Result;
+      end case;
    end Get_Session_State;
 
    function Get_Suffix
@@ -2314,8 +2317,10 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
                 Pointer : in out Stream_Element_Offset;
                 Handler : Action
              )  is
+      Start : Stream_Element_Offset;
    begin
       Get_Header_Line : loop
+         Start := Pointer;
          Feed
          (  Session.Data.List (Session.Data.Current).all,
             Data,
@@ -2323,6 +2328,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
             Session,
             Session.State
          );
+         Session.Fed := Session.Fed + Unsigned_64 (Pointer - Start);
          if Session.State = 0 then -- Done with this item
             Session.Data.Current := Session.Data.Current + 1;
             while Session.Data.Current > Session.Data.Length loop

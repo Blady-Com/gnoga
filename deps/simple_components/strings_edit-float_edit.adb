@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --  Strings_Edit.Float_Edit                        Spring, 2000       --
 --                                                                    --
---                                Last revision :  22:44 07 Apr 2016  --
+--                                Last revision :  18:40 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -458,7 +458,7 @@ package body Strings_Edit.Float_Edit is
                --
                -- Format X.XXXXXeYYY
                --
-	         Put
+               Put
                (  Destination,
 	            Pointer,
                   (  Sign (Value, PutPlus)
@@ -469,7 +469,7 @@ package body Strings_Edit.Float_Edit is
                      .. MantissaPart'Last
                      )
                   &  ExponentPart
-		      ),
+                  ),
                   Field,
                   Justify,
                   Fill
@@ -528,7 +528,7 @@ package body Strings_Edit.Float_Edit is
       else
          --
          -- Zero
-	   --
+         --
          Put (Destination, Pointer, "0", Field, Justify, Fill);
       end if;
    end Put;

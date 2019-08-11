@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client.Synchronous                   Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,9 +30,7 @@ with Ada.Task_Identification;  use Ada.Task_Identification;
 package GNAT.Sockets.Connection_State_Machine.
         MODBUS_Client.Synchronous is
 
-   MODBUS_Error  : exception;
-   Timeout_Error : exception;
-   Cancel_Error  : exception;
+   MODBUS_Error : exception;
 --
 -- MODBUS_Synchronous_Client -- A synchronous MODBUS client
 --

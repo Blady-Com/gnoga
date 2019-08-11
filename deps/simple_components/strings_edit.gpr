@@ -5,40 +5,23 @@ project Strings_Edit is
 
    type Development_Type is ("Debug", "Release");
    Development : Development_Type := external ("Development", "Debug");
-   
-   type OS_Type is ("Windows", "Windows_NT", "Linux", "UNIX", "OSX", "FreeBSD");
+
+   type OS_Type is
+        (  "Windows", "Windows_NT",
+           "Linux",
+           "UNIX",
+           "OSX",
+           "FreeBSD",
+           "auto"
+        );
    OS : OS_Type := external ("OS", "Windows");
 
-   type Arch_Type is ("x86_64", "i686", "armhf");
+   type Arch_Type is ("x86_64", "i686", "armhf", "aarch64", "auto");
    Arch : Arch_Type := external ("arch", "x86_64");
 
    type Object_Dir_Scheme_Type is (".", "nested");
    Object_Dir_Scheme : Object_Dir_Scheme_Type :=
-        external ("Object_Dir", ".");
-
-   for Source_Dirs use (".");
-
-   Object_Dir_Path := "";
-   case Object_Dir_Scheme is
-      when "." =>
-         Object_Dir_Path := ".";
-      when "nested" =>
-         case OS is
-            when "Windows" | "Windows_NT" =>
-               Object_Dir_Path :=
-                  "./obj/windows/" & arch & "/" & Development;
-            when"Linux" | "UNIX" =>
-               Object_Dir_Path :=
-                  "./obj/linux/" & arch & "/" & Development;
-            when"OSX" =>
-               Object_Dir_Path :=
-                  "./obj/osx/" & arch & "/" & Development;
-            when"FreeBSD" =>
-               Object_Dir_Path :=
-                  "./obj/freebsd/" & arch & "/" & Development;
-         end case;
-   end case;
-   for Object_Dir use Object_Dir_Path;
+      external ("Object_Dir", ".");
 
    for Source_Files use
        (  "strings_edit-base64.adb",
@@ -49,6 +32,8 @@ project Strings_Edit is
           "strings_edit-chacha20-aead.ads",
           "strings_edit-chacha20-poly1305.adb",
           "strings_edit-chacha20-poly1305.ads",
+          "strings_edit-distinguished_names.adb",
+          "strings_edit-distinguished_names.ads",
           "strings_edit-fields.adb",
           "strings_edit-fields.ads",
           "strings_edit-floats.ads",
@@ -61,8 +46,13 @@ project Strings_Edit is
           "strings_edit-integers.ads",
           "strings_edit-integer_edit.adb",
           "strings_edit-integer_edit.ads",
+          "strings_edit-iso_8601.adb",
+          "strings_edit-iso_8601.ads",
           "strings_edit-lexicographical_order.adb",
           "strings_edit-lexicographical_order.ads",
+          "strings_edit-long_floats.ads",
+          "strings_edit-object_identifiers.adb",
+          "strings_edit-object_identifiers.ads",
           "strings_edit-quoted.adb",
           "strings_edit-quoted.ads",
           "strings_edit-roman_edit.adb",
@@ -107,6 +97,8 @@ project Strings_Edit is
           "strings_edit-utf8-iso_8859_9.ads",
           "strings_edit-utf8-iso_8859_10.adb",
           "strings_edit-utf8-iso_8859_10.ads",
+          "strings_edit-utf8-itu_t61.adb",
+          "strings_edit-utf8-itu_t61.ads",
           "strings_edit-utf8-koi8.adb",
           "strings_edit-utf8-koi8.ads",
           "strings_edit-utf8-macos_roman.adb",
@@ -153,6 +145,131 @@ project Strings_Edit is
           "strings_edit.adb",
           "strings_edit.ads"
        );
+
+   Target_Triplet := Project'Target;
+
+   case Arch is
+      when "auto" =>
+         case Target_Triplet is
+            when "aarch64-linux-gnu" =>
+               Arch := "aarch64";
+            when "arm-linux"           |
+                 "arm-linux-gnueabi"   |
+                 "arm-linux-gnueabihf" =>
+               Arch := "armhf";
+            when "x86_64-apple-darwin" |
+                 "x86_64-darwin"       |
+                 "x86_64-freebsd"      |
+                 "x86_64-linux"        |
+                 "x86_64-linux-gnu"    |
+                 "x86_64-pc-cygwin"    |
+                 "x86_64-redhat-linux" |
+                 "x86_64-suse-linux"   |
+                 "x86_64-w64-mingw32"  |
+                 "x86_64-windows"      |
+                 "x86-darwin"          |
+                 "x86-linux"           |
+                 "x86-suse-linux"      |
+                 "x86-windows"         =>
+               Arch := "x86_64";
+            when "i686-freebsd"        |
+                 "i686-linux-gnu"      |
+                 "i686-pc-cygwin"      |
+                 "i686-pc-mingw32"     |
+                 "i686-redhat-linux"   |
+                 "i686-suse-linux"     |
+                 "i686-w64-mingw32"    =>
+               Arch := "i686";
+            when "" =>
+               for Source_Files use
+                   (  "target is undefined, "
+                   &  "scenario auto cannot be used"
+                   );
+            when others =>
+               for Source_Files use
+                   (  "target "
+                   &  Target_Triplet
+                   &  " is unknown, scenario auto cannot be used"
+                   );
+         end case;
+      when others =>
+         null;
+   end case;
+
+   case OS is
+      when "auto" =>
+         case Target_Triplet is
+            when "aarch64-linux-gnu"   |
+                 "arm-linux"           |
+                 "arm-linux-gnueabi"   |
+                 "arm-linux-gnueabihf" |
+                 "x86_64-linux"        |
+                 "x86_64-linux-gnu"    |
+                 "x86_64-redhat-linux" |
+                 "x86_64-suse-linux"   |
+                 "x86-linux"           |
+                 "x86-suse-linux"      |
+                 "i686-linux-gnu"      |
+                 "i686-redhat-linux"   |
+                 "i686-suse-linux"     =>
+               OS := "Linux";
+            when "x86_64-apple-darwin" |
+                 "x86_64-darwin"       |
+                 "x86-darwin"          =>
+               OS := "OSX";
+            when "x86_64-freebsd"      |
+                 "i686-freebsd"        =>
+               OS := "FreeBSD";
+            when "x86_64-pc-cygwin"    |
+                 "x86_64-w64-mingw32"  |
+                 "x86_64-windows"      |
+                 "x86-windows"         |
+                 "i686-pc-cygwin"      |
+                 "i686-pc-mingw32"     |
+                 "i686-w64-mingw32"    =>
+               OS := "Windows";
+            when "" =>
+               for Source_Files use
+                   (  "target is undefined, "
+                   &  "scenario auto cannot be used"
+                   );
+            when others =>
+               for Source_Files use
+                   (  "target "
+                   &  Target_Triplet
+                   &  " is unknown, scenario auto cannot be used"
+                   );
+         end case;
+      when others =>
+         null;
+   end case;
+
+   for Source_Dirs use (".");
+
+   Object_Dir_Path := "";
+   case Object_Dir_Scheme is
+      when "." =>
+         Object_Dir_Path := ".";
+      when "nested" =>
+         case OS is
+            when "Windows" | "Windows_NT" =>
+               Object_Dir_Path :=
+                  "./obj/windows/" & arch & "/" & Development;
+            when "Linux" | "UNIX" =>
+               Object_Dir_Path :=
+                  "./obj/linux/" & arch & "/" & Development;
+            when "OSX" =>
+               Object_Dir_Path :=
+                  "./obj/osx/" & arch & "/" & Development;
+            when "FreeBSD" =>
+               Object_Dir_Path :=
+                  "./obj/freebsd/" & arch & "/" & Development;
+            when "auto" =>
+               Object_Dir_Path :=
+                  "./obj/unknown/" & arch & "/" & Development;
+         end case;
+   end case;
+   for Object_Dir use Object_Dir_Path;
 
    GNAT_XX := "";
 
@@ -216,4 +333,3 @@ project Strings_Edit is
    end Linker;
 
 end Strings_Edit;
-

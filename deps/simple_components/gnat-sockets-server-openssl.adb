@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.OpenSSL                 Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  10:32 11 May 2019  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1029,6 +1029,7 @@ package body GNAT.Sockets.Server.OpenSSL is
                      Connected (Client);
                   end if;
                   Connected (Listener, Client);
+                  Client.Session := Session_Active;
                exception
                   when others =>
                      if Client.Session = Session_Connected then

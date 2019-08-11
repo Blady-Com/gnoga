@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Server                    Luebeck            --
 --  Interface                                      Spring, 2016       --
 --                                                                    --
---                                Last revision :  20:01 04 Apr 2016  --
+--                                Last revision :  13:37 23 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -85,7 +85,7 @@ package GNAT.Sockets.MQTT.Server is
             Input_Size           : Buffer_Length;
             Output_Size          : Buffer_Length;
             Max_Subscribe_Topics : Positive
-         )  is new MQTT_Pier with private;
+         )  is new MQTT_Peer with private;
 --
 -- Drop -- Session
 --
@@ -531,7 +531,7 @@ private
            Input_Size           : Buffer_Length;
            Output_Size          : Buffer_Length;
            Max_Subscribe_Topics : Positive
-        )  is new MQTT_Pier
+        )  is new MQTT_Peer
                   (  Listener             => Listener,
                      Input_Size           => Input_Size,
                      Output_Size          => Output_Size,

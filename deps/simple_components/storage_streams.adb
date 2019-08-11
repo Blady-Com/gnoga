@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2011       --
 --                                                                    --
---                                Last revision :  19:18 30 Apr 2018  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -58,7 +58,7 @@ package body Storage_Streams is
       Rest  : Stream_Element_Count;
       This  : Doubly_Linked.Item := Doubly_Linked.Item (Stream.First);
    begin
-      if This = null then
+      if This = null or else Count = 0 then
          Last := Item'First - 1;
          return;
       end if;
@@ -120,14 +120,16 @@ package body Storage_Streams is
             Space : constant Stream_Element_Count :=
                              This'Length - Stream.In_Count;
          begin
-            exit when Space >= Count;
-            This (This'First + Stream.In_Count..This'Last) :=
-               Item
-               (  Item'Last - (Count - 1)
-               .. Item'Last - (Count - Space)
-               );
-            Count := Count - Space;
-            Stream.Size := Stream.Size + Space;
+            if Space > 0 then
+               exit when Space >= Count;
+               This (This'First + Stream.In_Count..This'Last) :=
+                  Item
+                  (  Item'Last - (Count - 1)
+                  .. Item'Last - (Count - Space)
+                  );
+               Count := Count - Space;
+               Stream.Size := Stream.Size + Space;
+            end if;
          end;
          This  := null;
       end loop;

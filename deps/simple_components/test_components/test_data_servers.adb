@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  22:26 24 Jul 2018  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -46,6 +46,39 @@ package body Test_Data_Servers is
       return Result;
    end Create;
 
+   function Create
+            (  Set : access Integer_Set
+            )  return ASN1.Abstract_ASN1_Data_Item_Ptr is
+      use GNAT.Sockets.Connection_State_Machine.ASN1.Integers_32;
+      type Ptr is access Integer_Data_Item;
+      for Ptr'Storage_Pool use Get_Container (Set.all).Pool;
+      This : constant Ptr := new Integer_Data_Item;
+   begin
+      return This.all'Unchecked_Access;
+   end Create;
+
+   function Create
+            (  Reference : access Integer_Reference
+            )  return ASN1.Abstract_ASN1_Data_Item_Ptr is
+      use GNAT.Sockets.Connection_State_Machine.ASN1.Integers_32;
+      type Ptr is access Integer_Data_Item;
+      for Ptr'Storage_Pool use Get_Container (Reference.all).Pool;
+      This : constant Ptr := new Integer_Data_Item;
+   begin
+      return This.all'Unchecked_Access;
+   end Create;
+
+   procedure Enumerate
+             (  Stream : access Root_Stream_Type'Class;
+                Item   : Integer_Data_Array
+             )  is
+      use GNAT.Sockets.Connection_State_Machine.ASN1.Integers_32;
+   begin
+      for Index in Item'Range loop
+         Integer_Data_Item'Write (Stream, Item (Index));
+      end loop;
+   end Enumerate;
+
    procedure Feed
              (  Item    : in out String_Length_Setter;
                 Data    : Stream_Element_Array;
@@ -72,11 +105,153 @@ package body Test_Data_Servers is
       );
    end Feed;
 
+   procedure Feed
+             (  Client : in out Null_Machine;
+                Title  : String;
+                Data   : Stream_Element_Array
+             )  is
+      Old     : Stream_Element_Offset := Data'First;
+      Pointer : Stream_Element_Offset := Data'First;
+   begin
+      Put_Line ("--------" & Title & " feeding |" & Image (Data) & "|");
+      while Pointer <= Data'Last loop
+         Client.Completed := False;
+         Old := Pointer;
+         Received
+         (  Client  => Client,
+            Data    => Data (Pointer..Pointer),
+            Pointer => Pointer
+         );
+         if Pointer /= Old + 1 then
+            Raise_Exception
+            (  Status_Error'Identity,
+               (  Title
+               &  " Feed overrun Pointer"
+               &  Stream_Element_Offset'Image (Pointer)
+               &  " /="
+               &  Stream_Element_Offset'Image (Old + 1)
+               &  " (expected) Last"
+               &  Stream_Element_Offset'Image (Old + 1)
+            )  );
+         end if;
+      end loop;
+      if not Client.Completed then
+         Raise_Exception
+         (  Status_Error'Identity,
+            Title & " not completed at the source end"
+         );
+      end if;
+   end Feed;
+
+   procedure Feed_Flat
+             (  Client : in out Null_Machine;
+                Title  : String;
+                Data   : Stream_Element_Array
+             )  is
+      Pointer : Stream_Element_Offset := Data'First;
+   begin
+      Put_Line ("--------" & Title & " feeding |" & Image (Data) & "|");
+      Client.Completed := False;
+      Received
+      (  Client  => Client,
+         Data    => Data,
+         Pointer => Pointer
+      );
+      if Pointer /= Data'Last + 1 then
+         Raise_Exception
+         (  Status_Error'Identity,
+            (  Title
+            &  " Feed overrun Pointer"
+            &  Stream_Element_Offset'Image (Pointer)
+            &  " /="
+            &  Stream_Element_Offset'Image (Data'Last + 1)
+            &  " (expected) Last"
+            &  Stream_Element_Offset'Image (Data'Last + 1)
+         )  );
+      end if;
+      if not Client.Completed then
+         Raise_Exception
+         (  Status_Error'Identity,
+            Title & " not completed at the source end"
+         );
+      end if;
+   end Feed_Flat;
+
    procedure Finalize (Client : in out Data_Connection) is
    begin
       Put_Line ("Disconnected client " & Image (Client.From));
       Finalize (Connection (Client));
    end Finalize;
+
+   function Get (Item : Sequence_Of_Integers) return Integer_32_Array is
+      use GNAT.Sockets.Connection_State_Machine.ASN1.Sequences;
+      Result : Integer_32_Array (1..Item.Length);
+   begin
+      for Index in 1..Item.Length loop
+         Result (Index) := Item.Values (Index).Value;
+      end loop;
+      return Result;
+   end Get;
+
+   function Get (Set : Integer_Set) return Integer_32_Array is
+      Result : Integer_32_Array (1..Get_Length (Set));
+   begin
+      for Index in Result'Range loop
+         Result (Index) := Get (Set, Index);
+      end loop;
+      return Result;
+   end Get;
+
+   function Get
+            (  Set   : Integer_Set;
+               Index : Positive
+            )  return Interfaces.Integer_32 is
+      use GNAT.Sockets.Connection_State_Machine.ASN1.Integers_32;
+      This : constant ASN1.Abstract_ASN1_Data_Item_Ptr :=
+                      Get (Set, Index);
+   begin
+      return Implicit_Integer_Data_Item (This.all).Value;
+   end Get;
+
+   function Get
+            (  Reference : Integer_Reference
+            )  return Interfaces.Integer_32 is
+      use GNAT.Sockets.Connection_State_Machine.ASN1.Integers_32;
+      This : constant ASN1.Abstract_ASN1_Data_Item_Ptr :=
+                      Get (Reference);
+   begin
+      return Integer_Data_Item (This.all).Value;
+   end Get;
+
+   function Image (Value : Integer_32_Array) return String is
+      use Strings_Edit;
+      Size : Natural := 1024 * 8;
+   begin
+      loop
+         declare
+            Result  : String (1..Size);
+            Pointer : Integer := 1;
+         begin
+            for Index in Value'Range loop
+               Put (Result, Pointer, Integer_32'Image (Value (Index)));
+            end loop;
+            return Result (1..Pointer - 1);
+         exception
+            when Layout_Error =>
+               Size := (Size * 3) / 2;
+         end;
+      end loop;
+   end Image;
+
+   procedure Initialize (Client : in out Null_Machine) is
+   begin
+      Connected (Client);
+   end Initialize;
+
+   procedure Process_Packet (Client : in out Null_Machine) is
+   begin
+      Client.Completed := True;
+   end Process_Packet;
 
    procedure Process_Packet (Client : in out Data_Connection) is
       Packet  : Stream_Element_Array (1..200);

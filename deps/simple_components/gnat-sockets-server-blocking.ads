@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Blocking                Luebeck            --
 --  Interface                                      Winter, 2018       --
 --                                                                    --
---                                Last revision :  23:07 29 Dec 2018  --
+--                                Last revision :  13:37 23 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -109,7 +109,7 @@ package GNAT.Sockets.Server.Blocking is
    function Get_Clients_Count (Listener : Blocking_Server)
       return Natural;
 --
--- Get_Pier -- The connection object
+-- Get_Peer -- The connection object
 --
 --    Listener - The server object
 --
@@ -117,7 +117,7 @@ package GNAT.Sockets.Server.Blocking is
 --
 --    A handle to the connection object
 --
-   function Get_Pier (Listener : Blocking_Server)
+   function Get_Peer (Listener : Blocking_Server)
       return GNAT.Sockets.Server.Handles.Handle;
 --
 -- Get_Server_Address -- Get the server socket address
@@ -174,7 +174,7 @@ private
                      Port    => No_Port
                   )  with
    record
-      Pier   : GNAT.Sockets.Server.Handles.Handle;
+      Peer   : GNAT.Sockets.Server.Handles.Handle;
       Writer : Writer_Ptr;
       Event  : IO_Buffer_Event;
       Input  : Stream_FIFO.FIFO (Input_Size);

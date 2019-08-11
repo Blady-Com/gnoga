@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  23:07 29 Dec 2018  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -56,6 +56,7 @@ package GNAT.Sockets.Server is
            Session_Connecting,   -- Pending connection to a remote host
            Session_Handshaking,  -- Pending handshake
            Session_Connected,    -- Connected
+           Session_Active,       -- Connected and operating
            Session_Busy          -- Pending modal operation
         );
 --
@@ -591,13 +592,25 @@ package GNAT.Sockets.Server is
 --
 -- Image -- Printable representation of stream array
 --
---    Data - To convert
+--    Data        - To convert
+--    Hexadecimal - If true HH HH HH form is used intead of cc%hhc%hh
+--
+-- The default output looks like:
+--
+--    source line%0D%0A
+--
+-- The hexadecimal output of the same data is
+--
+--    73 6F 75 72 63 65 20 6C 69 6E 65 0D 0A
 --
 -- Returns :
 --
 --    Printable representation of
 --
-   function Image (Data : Stream_Element_Array) return String;
+   function Image
+            (  Data        : Stream_Element_Array;
+               Hexadecimal : Boolean := False
+            )  return String;
 --
 -- Initialize -- Construction
 --

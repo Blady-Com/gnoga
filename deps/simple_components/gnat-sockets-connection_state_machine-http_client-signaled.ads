@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client.Signaled                        Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  22:35 24 May 2015  --
+--                                Last revision :  18:41 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,11 +26,6 @@
 --____________________________________________________________________--
 
 package GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled is
---
--- Timeout_Error -- Timeout expired
---
-   Timeout_Error : exception;
-   Cancel_Error  : exception;
 --
 -- HTTP_Session_Signaled -- An object with event
 --

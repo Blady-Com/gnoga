@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Server                    Luebeck            --
 --  Implementation                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  10:32 11 May 2019  --
+--                                Last revision :  13:37 23 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1483,7 +1483,7 @@ package body GNAT.Sockets.MQTT.Server is
                      );
                   end if;
                   Send_Publish
-                  (  Pier      => Session.Client.all,
+                  (  Peer      => Session.Client.all,
                      Topic     => This.Topic,
                      Message   => This.Content (1..This.Count),
                      Retain    => 0 /= (Element.Flags and Retain),
@@ -1516,7 +1516,7 @@ package body GNAT.Sockets.MQTT.Server is
                      );
                   end if;
                   Send_Publish
-                  (  Pier      => Session.Client.all,
+                  (  Peer      => Session.Client.all,
                      Topic     => This.Topic,
                      Message   => This.Content (1..This.Count),
                      Retain    => 0 /= (Element.Flags and Retain),
@@ -1546,7 +1546,7 @@ package body GNAT.Sockets.MQTT.Server is
                      );
                   end if;
                   Send_Publish
-                  (  Pier      => Session.Client.all,
+                  (  Peer      => Session.Client.all,
                      Topic     => This.Topic,
                      Message   => This.Content (1..This.Count),
                      Retain    => 0 /= (Element.Flags and Retain),
@@ -1749,7 +1749,7 @@ package body GNAT.Sockets.MQTT.Server is
              )  is
       Lock : Holder (Client.Server.Lock'Unchecked_Access);
    begin
-      Send (MQTT_Pier (Client), Data);
+      Send (MQTT_Peer (Client), Data);
    end Send;
 
    procedure Send_Acknowledge
@@ -1769,7 +1769,7 @@ package body GNAT.Sockets.MQTT.Server is
             Sent
          );
       end if;
-      Send_Acknowledge (MQTT_Pier (Client), Request, Packet);
+      Send_Acknowledge (MQTT_Peer (Client), Request, Packet);
    end Send_Acknowledge;
 
    procedure Sent (Client : in out MQTT_Connection) is
@@ -1780,7 +1780,7 @@ package body GNAT.Sockets.MQTT.Server is
       Total     : constant Natural := Named + Anonymous;
       Last      : Positive renames Server.Last;
    begin
-      Sent (MQTT_Pier (Client));
+      Sent (MQTT_Peer (Client));
       for Count in 1..Total loop
          Last := Last + 1;
          if Last > Total then

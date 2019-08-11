@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --  Strings_Edit.Text_Edit                         Spring, 2000       --
 --                                                                    --
---                                Last revision :  22:44 07 Apr 2016  --
+--                                Last revision :  18:40 01 Aug 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

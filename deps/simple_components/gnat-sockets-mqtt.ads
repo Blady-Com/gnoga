@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  21:14 23 Nov 2018  --
+--                                Last revision :  13:37 23 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -237,7 +237,7 @@ package GNAT.Sockets.MQTT is
                 Topic   : String
              );
 ------------------------------------------------------------------------
--- MQTT_Pier -- Server or client of MQTT protocol
+-- MQTT_Peer -- Server or client of MQTT protocol
 --
 --    Listener             - The connections server object
 --    Max_Subscribe_Topics - In a single subscribe request
@@ -249,7 +249,7 @@ package GNAT.Sockets.MQTT is
 -- capable of  maintaining the hierachy  of topics  subscription and QoS
 -- protocol.
 --
-   type MQTT_Pier
+   type MQTT_Peer
         (  Listener             : access Connections_Server'Class;
            Max_Subscribe_Topics : Positive;
            Input_Size           : Buffer_Length;
@@ -258,12 +258,12 @@ package GNAT.Sockets.MQTT is
 --
 -- Finalize -- Overrides GNAT.Sockets.Server...
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- This  procedure  must  be  called  from  the  new  implementation  if
 -- overridden
 --
-   procedure Finalize (Pier : in out MQTT_Pier);
+   procedure Finalize (Peer : in out MQTT_Peer);
 --
 -- Check_Topic -- Check topic for validity
 --
@@ -281,30 +281,30 @@ package GNAT.Sockets.MQTT is
 --
 -- Get_Max_Message_Size -- Get maximum message data size
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- Returns :
 --
 --    The maximum size of a message
 --
-   function Get_Max_Message_Size (Pier : MQTT_Pier)
+   function Get_Max_Message_Size (Peer : MQTT_Peer)
       return Stream_Element_Count;
 --
 -- Get_Max_Secondary_Buffer_Size -- The secondary buffer size limit
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- Returns :
 --
 --    The maximum buffer size, zero if not limited
 --
    function Get_Max_Secondary_Buffer_Size
-            (  Pier : MQTT_Pier
+            (  Peer : MQTT_Peer
             )  return Stream_Element_Count;
 --
 -- Get_QoS -- Get topic QoS
 --
---    Pier  - The MQTT connection object
+--    Peer  - The MQTT connection object
 --    Index - The topic number 1..Topics_Number
 --
 -- Returns :
@@ -317,25 +317,25 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - The lates response has no topics
 --
    function Get_QoS
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return QoS_Level;
 --
 -- Get_Secondary_Buffer_Size -- Get size of the secondary buffer
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- Returns :
 --
 --    The actual size of the secondary buffer
 --
    function Get_Secondary_Buffer_Size
-            (  Pier : MQTT_Pier
+            (  Peer : MQTT_Peer
             )  return Stream_Element_Count;
 --
 -- Get_Topic -- Get topic
 --
---    Pier  - The MQTT connection object
+--    Peer  - The MQTT connection object
 --    Index - The topic number 1..Topics_Number
 --
 -- Returns :
@@ -348,7 +348,7 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - The lates response has no topics
 --
    function Get_Topic
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return String;
 --
@@ -376,45 +376,45 @@ package GNAT.Sockets.MQTT is
 -- Received -- Overrides GNAT.Sockets.Server...
 --
    procedure Received
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset
              );
 --
 -- Sent -- Overrides GNAT.Sockets.Server...
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- This  procedure  must  be  called  from  the  new  implementation  if
 -- overridden
 --
-   procedure Sent (Pier : in out MQTT_Pier);
+   procedure Sent (Peer : in out MQTT_Peer);
 --
 -- Set_Max_Data_Size -- Set maximum message size
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --    Size - The maximum message size
 --
    procedure Set_Max_Message_Size
-             (  Pier : in out MQTT_Pier;
+             (  Peer : in out MQTT_Peer;
                 Size : Stream_Element_Count
              );
 --
 -- Set_Max_Secondary_Buffer_Size -- Set maximum secodary buffer size
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --    Size - The maximum secondary buffer size
 --
    procedure Set_Max_Secondary_Buffer_Size
-             (  Pier : in out MQTT_Pier;
+             (  Peer : in out MQTT_Peer;
                 Size : Stream_Element_Count := 0
              );
 ------------------------------------------------------------------------
--- Requests and responses sent to a pier
+-- Requests and responses sent to a Peer
 --
 -- Send_Acknowledge -- Acknowledge publish or unsubscribe request
 --
---    Pier    - The MQTT connection object
+--    Peer    - The MQTT connection object
 --    Request - The request being acknowledged
 --    Packet  - The packet identifier
 --
@@ -424,14 +424,14 @@ package GNAT.Sockets.MQTT is
 --    Use_Error  - Not connected
 --
    procedure Send_Acknowledge
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Request : Acknowledge_Type;
                 Packet  : Packet_Identifier
              );
 --
 -- Send_Connect -- Connection initiation
 --
---    Pier         - The MQTT connection object
+--    Peer         - The MQTT connection object
 --    Client       - The client identification
 --    Clean        - Resume the current session when false
 --    Will_Topic   - The topic published at the session end
@@ -451,7 +451,7 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - Not connected
 --
    procedure Send_Connect
-             (  Pier         : in out MQTT_Pier;
+             (  Peer         : in out MQTT_Peer;
                 Client       : String;
                 Clean        : Boolean              := True;
                 Will_Topic   : String               := "";
@@ -465,7 +465,7 @@ package GNAT.Sockets.MQTT is
 --
 -- Send_Connect_Accepted -- Send connection acknowledge response
 --
---    Pier            - The MQTT connection object
+--    Peer            - The MQTT connection object
 --    Session_Present - The old session is present
 --
 -- Exceptions :
@@ -474,13 +474,13 @@ package GNAT.Sockets.MQTT is
 --    Use_Error  - Not connected
 --
    procedure Send_Connect_Accepted
-             (  Pier            : in out MQTT_Pier;
+             (  Peer            : in out MQTT_Peer;
                 Session_Present : Boolean := False
              );
 --
 -- Send_Connect_Rejected -- Send connection rejection response
 --
---    Pier     - The MQTT connection object
+--    Peer     - The MQTT connection object
 --    Response - Connect return code
 --
 -- Exceptions :
@@ -489,13 +489,13 @@ package GNAT.Sockets.MQTT is
 --    Use_Error  - Not connected
 --
    procedure Send_Connect_Rejected
-             (  Pier     : in out MQTT_Pier;
+             (  Peer     : in out MQTT_Peer;
                 Response : Connect_Response
              );
 --
 -- Send_Disconnect -- Send disconnect
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- The final packet sent to the server.
 --
@@ -504,33 +504,33 @@ package GNAT.Sockets.MQTT is
 --    Data_Error - Secondary buffer overflow, if limited
 --    Use_Error  - Not connected
 --
-   procedure Send_Disconnect (Pier : in out MQTT_Pier);
+   procedure Send_Disconnect (Peer : in out MQTT_Peer);
 --
 -- Send_Ping -- Send ping request
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- Exceptions :
 --
 --    Data_Error - Secondary buffer overflow, if limited
 --    Use_Error  - Not connected
 --
-   procedure Send_Ping (Pier : in out MQTT_Pier);
+   procedure Send_Ping (Peer : in out MQTT_Peer);
 --
 -- Send_Ping_Response -- Send response to a ping request
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- Exceptions :
 --
 --    Data_Error - Secondary buffer overflow, if limited
 --    Use_Error  - Not connected
 --
-   procedure Send_Ping_Response (Pier : in out MQTT_Pier);
+   procedure Send_Ping_Response (Peer : in out MQTT_Peer);
 --
 -- Send_Publish -- Publish message
 --
---    Pier      - The MQTT connection object
+--    Peer      - The MQTT connection object
 --    Topic     - The topic published
 --    Message   - The message
 --    Packet    - The packet identification
@@ -544,7 +544,7 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - Not connected
 --
    procedure Send_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Topic     : String;
                 Message   : Stream_Element_Array;
                 Packet    : Packet_Identification;
@@ -552,7 +552,7 @@ package GNAT.Sockets.MQTT is
                 Retain    : Boolean := False
              );
    procedure Send_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Topic     : String;
                 Message   : String;
                 Packet    : Packet_Identification;
@@ -562,7 +562,7 @@ package GNAT.Sockets.MQTT is
 --
 -- Send_Publish -- Publish message
 --
---    Pier      - The MQTT connection object
+--    Peer      - The MQTT connection object
 --    Message   - The message as a composite object
 --    Packet    - The packet identification
 --    Duplicate - True if this is not the first attempt
@@ -575,7 +575,7 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - Not connected
 --
    procedure Send_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Message   : MQTT_Message'Class;
                 Packet    : Packet_Identification;
                 Duplicate : Boolean := False;
@@ -584,7 +584,7 @@ package GNAT.Sockets.MQTT is
 --
 -- Send_Subscribe -- Subscribe to a list of topics
 --
---    Pier   - The MQTT connection object
+--    Peer   - The MQTT connection object
 --    Packet - The packet identifier
 --    Topics - The list of topics to subscribe
 --    QoS    - The list of correponding QoS
@@ -596,13 +596,13 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - Not connected
 --
    procedure Send_Subscribe
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Topics : Topics_List;
                 QoS    : QoS_Level_Array
              );
    procedure Send_Subscribe
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Topic  : String;
                 QoS    : QoS_Level
@@ -610,7 +610,7 @@ package GNAT.Sockets.MQTT is
 --
 -- Send_Subscribe_Acknowledgement -- Send subscribe acknowledgement
 --
---    Pier   - The MQTT connection object
+--    Peer   - The MQTT connection object
 --    Packet - The packet identifier
 --    Codes  - The list topic's return codes
 --
@@ -621,14 +621,14 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - Not connected
 --
    procedure Send_Subscribe_Acknowledgement
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Codes  : Return_Code_List
              );
 --
 -- Send_Unsubscribe -- Send subscribe acknowledgement
 --
---    Pier   - The MQTT connection object
+--    Peer   - The MQTT connection object
 --    Packet - The packet identifier
 --    Topics - The list of topics
 --
@@ -639,7 +639,7 @@ package GNAT.Sockets.MQTT is
 --    Use_Error        - Not connected
 --
    procedure Send_Unsubscribe
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Topics : Topics_List
              );
@@ -648,7 +648,7 @@ package GNAT.Sockets.MQTT is
 --
 -- On_Acknowledge -- Acknowledge notification
 --
---    Pier    - The MQTT connection object
+--    Peer    - The MQTT connection object
 --    Request - The request being acknowledged
 --    Packet  - The packet identifier
 --
@@ -665,14 +665,14 @@ package GNAT.Sockets.MQTT is
 -- this one.
 --
    procedure On_Acknowledge
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Request : Acknowledge_Type;
                 Packet  : Packet_Identifier
              );
 --
 -- On_Connect -- Connect notification
 --
---    Pier         - The MQTT connection object
+--    Peer         - The MQTT connection object
 --    Client       - The client identification
 --    Clean        - Start a new session if the old one persists
 --    Will_Topic   - The topic published if the client exits prematurely
@@ -686,7 +686,7 @@ package GNAT.Sockets.MQTT is
 -- The default implementation rejects all connections.
 --
    procedure On_Connect
-             (  Pier         : in out MQTT_Pier;
+             (  Peer         : in out MQTT_Peer;
                 Client       : String;
                 Clean        : Boolean;
                 Will_Topic   : String;
@@ -700,58 +700,58 @@ package GNAT.Sockets.MQTT is
 --
 -- On_Connect_Accepted -- Connect acknowledgement notification
 --
---    Pier            - The MQTT connection object
+--    Peer            - The MQTT connection object
 --    Session_Present - The old session is present
 --
 -- This  procedure is called when  the server  accepts  connection.  The
 -- default implementation does nothing.
 --
    procedure On_Connect_Accepted
-             (  Pier            : in out MQTT_Pier;
+             (  Peer            : in out MQTT_Peer;
                 Session_Present : Boolean
              );
 --
 -- On_Connect_Rejected -- Connect acknowledgement notification
 --
---    Pier     - The MQTT connection object
+--    Peer     - The MQTT connection object
 --    Response - The error
 --
 -- This  procedure is called when  the server  rejects  connection.  The
 -- default implementation does nothing.
 --
    procedure On_Connect_Rejected
-             (  Pier     : in out MQTT_Pier;
+             (  Peer     : in out MQTT_Peer;
                 Response : Connect_Response
              );
 --
 -- On_Disconnect -- Disconnect notification from the client
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- When received,  the last will message  is not published.  The default
 -- implementation does nothing.
 --
-   procedure On_Disconnect (Pier : in out MQTT_Pier);
+   procedure On_Disconnect (Peer : in out MQTT_Peer);
 --
 -- On_Ping -- Ping request notification
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- The default implementation responds with a ping reponse.
 --
-   procedure On_Ping (Pier : in out MQTT_Pier);
+   procedure On_Ping (Peer : in out MQTT_Peer);
 --
 -- On_Ping_Response -- Ping response notification
 --
---    Pier - The MQTT connection object
+--    Peer - The MQTT connection object
 --
 -- The default implementation does nothing.
 --
-   procedure On_Ping_Response (Pier : in out MQTT_Pier);
+   procedure On_Ping_Response (Peer : in out MQTT_Peer);
 --
 -- On_Publish -- Incoming message
 --
---    Pier      - The MQTT connection object
+--    Peer      - The MQTT connection object
 --    Topic     - The message token
 --    Message   - The message
 --    Packet    - The packet identifier and QoS
@@ -763,7 +763,7 @@ package GNAT.Sockets.MQTT is
 -- implementation should call the parent's one.
 --
    procedure On_Publish
-             (  Pier      : in out MQTT_Pier;
+             (  Peer      : in out MQTT_Peer;
                 Topic     : String;
                 Message   : Stream_Element_Array;
                 Packet    : Packet_Identification;
@@ -773,7 +773,7 @@ package GNAT.Sockets.MQTT is
 --
 -- On_Subscribe -- Subscription request
 --
---    Pier          - The MQTT connection object
+--    Peer          - The MQTT connection object
 --    Packet        - The packet identifier
 --    Topics_Number - Number of topics
 --
@@ -782,28 +782,28 @@ package GNAT.Sockets.MQTT is
 -- Get_QoS calls. The default implementation rejects all topics.
 --
    procedure On_Subscribe
-             (  Pier          : in out MQTT_Pier;
+             (  Peer          : in out MQTT_Peer;
                 Packet        : Packet_Identifier;
                 Topics_Number : Positive
              );
 --
 -- On_Subscribe_Acknowledgement -- Confirmation of subscription
 --
---    Pier   - The MQTT connection object
+--    Peer   - The MQTT connection object
 --    Packet - The subscription request packet identifier
 --    Codes  - The list of confirmed QoS of subscribed topics
 --
 -- The default implementation does nothing.
 --
    procedure On_Subscribe_Acknowledgement
-             (  Pier   : in out MQTT_Pier;
+             (  Peer   : in out MQTT_Peer;
                 Packet : Packet_Identifier;
                 Codes  : Return_Code_List
              );
 --
 -- On_Unsubscribe -- Unsubscription acknowledgement
 --
---    Pier          - The MQTT connection object
+--    Peer          - The MQTT connection object
 --    Packet        - The packet identifier
 --    Topics_Number - Number of topics
 --
@@ -812,21 +812,21 @@ package GNAT.Sockets.MQTT is
 -- acknowledges the request.
 --
    procedure On_Unsubscribe
-             (  Pier          : in out MQTT_Pier;
+             (  Peer          : in out MQTT_Peer;
                 Packet        : Packet_Identifier;
                 Topics_Number : Positive
              );
 --
 -- Trace -- Higher level tracing
 --
---    Pier    - The MQTT connection object
+--    Peer    - The MQTT connection object
 --    Session - The session name
 --    Message - The message
 --    Kind_Of - The type of the message
 --
    type Trace_Message_Type is (Received, Sent, Action);
    procedure Trace
-             (  Pier    : in out MQTT_Pier;
+             (  Peer    : in out MQTT_Peer;
                 Session : String;
                 Message : String;
                 Kind_Of : Trace_Message_Type
@@ -880,7 +880,7 @@ private
           );
    use MQTT_String_Cache;
    type Stream_Element_Array_Ptr is access Stream_Element_Array;
-   type MQTT_Pier
+   type MQTT_Peer
         (  Listener             : access Connections_Server'Class;
            Max_Subscribe_Topics : Positive;
            Input_Size           : Buffer_Length;
@@ -908,11 +908,11 @@ private
    end record;
 
    function Get_Message
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return Stream_Element_Array;
    function Get_String
-            (  Pier  : MQTT_Pier;
+            (  Peer  : MQTT_Peer;
                Index : Positive
             )  return String;
    function Get_Length
@@ -937,11 +937,11 @@ private
                 Value   : Stream_Element_Array
              );
    procedure Reset_String
-             (  Pier  : in out MQTT_Pier;
+             (  Peer  : in out MQTT_Peer;
                 Index : Positive
              );
    procedure Send
-             (  Pier : in out MQTT_Pier;
+             (  Peer : in out MQTT_Peer;
                 Data : Stream_Element_Array
              );
 

@@ -3,7 +3,7 @@
 --  Test data client                               Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  18:58 17 Jul 2018  --
+--                                Last revision :  12:18 18 May 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -133,7 +133,7 @@ begin
          &  Unsigned_8'Image  (N5)
          &  Unsigned_16'Image (N6)
          &  Unsigned_32'Image (N7)
-         &  Unsigned_64'Image  (N8)
+         &  Unsigned_64'Image (N8)
          &  " " & Image (F1)
          &  " " & Image (Float (D1))
          &  " " & Image (F1)
@@ -446,7 +446,7 @@ begin
       end;
    end loop;
    Shutdown_Socket (Socket);
-   Close_Socket (Socket);
+   Close_Socket    (Socket);
 exception
    when Error : others =>
       Put_Line ("Error: " & Exception_Information (Error));

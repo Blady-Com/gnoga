@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  10:32 11 May 2019  --
+--                                Last revision :  16:04 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -103,6 +103,7 @@ package OpenSSL is
    BIO_CTRL_SET_FILENAME : constant BIO_CTRL := 30;
 
    type BIO        is private;
+   type EVP_MD     is private;
    type SSL        is private;
    type SSL_CTX    is private;
    type SSL_METHOD is private;
@@ -889,6 +890,48 @@ package OpenSSL is
    function TLS_client_method return SSL_METHOD;
    function TLS_method        return SSL_METHOD;
    function TLS_server_method return SSL_METHOD;
+
+   function MD_Null    return EVP_MD;
+   function MD2        return EVP_MD;
+   function MD5        return EVP_MD;
+   function SHA1       return EVP_MD;
+   function MDC2       return EVP_MD;
+   function RIPEMD160  return EVP_MD;
+   function Blake2b512 return EVP_MD;
+   function Blake2s256 return EVP_MD;
+   function SHA224     return EVP_MD;
+   function SHA256     return EVP_MD;
+   function SHA384     return EVP_MD;
+   function SHA512     return EVP_MD;
+
+   function Get_Digest_By_Name (Name : String) return EVP_MD;
+   function Get_Digest_By_NID (ID : int) return EVP_MD;
+--
+-- PKCS5_PBKDF2_HMAC -- Key derivation
+--
+--    Password   - The password
+--  [ Salt ]     - The salt (e.g. 4 octets)
+--    Iterations - At least 1_000
+--    Digest     - The digest method
+--    Output     - The result (e.g. 20 octets)
+--
+-- Exceptions :
+--
+--    Constraint_Error - Error
+--
+   procedure PKCS5_PBKDF2_HMAC
+             (  Password   : String;
+                Salt       : Stream_Element_Array;
+                Iterations : Positive;
+                Digest     : EVP_MD;
+                Output     : out Stream_Element_Array
+             );
+   procedure PKCS5_PBKDF2_HMAC
+             (  Password   : String;
+                Iterations : Positive;
+                Digest     : EVP_MD;
+                Output     : out Stream_Element_Array
+             );
 --
 -- PKCS5_PBKDF2_HMAC_SHA1 -- Key derivation
 --
@@ -944,6 +987,7 @@ package OpenSSL is
    procedure Check_Error (ID : Exception_ID);
 private
    type BIO           is new System.Address;
+   type EVP_MD        is new System.Address;
    type OPENSSL_STACK is new System.Address;
    type SSL           is new System.Address;
    type SSL_CIPHER    is new System.Address;
@@ -967,6 +1011,20 @@ private
    pragma Import (C, BIO_s_mem,              "BIO_s_mem");
    pragma Import (C, BIO_write,              "BIO_write");
    pragma Import (C, BIO_write_ex,           "BIO_write_ex");
+
+   pragma Import (C, MD_Null,           "EVP_md_null");
+   pragma Import (C, MD2,               "EVP_md2");
+   pragma Import (C, MD5,               "EVP_md5");
+   pragma Import (C, SHA1,              "EVP_sha1");
+   pragma Import (C, MDC2,              "EVP_mdc2");
+   pragma Import (C, RIPEMD160,         "EVP_ripemd160");
+   pragma Import (C, Blake2b512,        "EVP_blake2b512");
+   pragma Import (C, Blake2s256,        "EVP_blake2s256");
+   pragma Import (C, SHA224,            "EVP_sha224");
+   pragma Import (C, SHA256,            "EVP_sha256");
+   pragma Import (C, SHA384,            "EVP_sha384");
+   pragma Import (C, SHA512,            "EVP_sha512");
+   pragma Import (C, Get_Digest_By_NID, "EVP_get_digestbynid");
 
    pragma Import (C, ERR_clear_error,        "ERR_clear_error");
    pragma Import (C, ERR_error_string_n,     "ERR_error_string_n");

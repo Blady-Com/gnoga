@@ -11,7 +11,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800000">
 <P align="center">
 <BIG><BIG><BIG><B>STRINGS EDIT</B></BIG></BIG><BR>
-<EM>version 3.4</EM><BR>
+<EM>version 3.5</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a>
@@ -44,6 +44,7 @@ are supported by the package:
   <LI>
     Integer sub- and superscript numbers;
   <LI>
+    ISO 8601 representations of time and duration;<LI>
     Floating-point numbers (generic, package
     <A href="#Float_Edit">Float_Edit</A>);
   <LI>
@@ -53,6 +54,7 @@ are supported by the package:
   <LI>
     Ada-style quoted strings;<LI>
     Base64 encoding;<LI>
+    Object identifiers and distinguished names;<LI>
 	<a href="https://tools.ietf.org/html/rfc8439">RFC 8439</a> (ChaCha20 cipher, 
 	Poly1305 digest, AEAD);<LI>
     UTF-8 encoded strings and conversions to older encoding standards;<LI>
@@ -177,12 +179,12 @@ can be here.</p>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-<a href="http://www.dmitry-kazakov.de/ada/strings_3_4.tgz">strings_3_4.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
+<a href="http://www.dmitry-kazakov.de/ada/strings_3_5.tgz">strings_3_5.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/strings_3_4.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/strings_3_5.tgz">
  <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -898,6 +900,10 @@ parameters see <A href="#Float-Put">Put</A>.
 <a name="Strings_Edit.Floats"></a>
 The package <a href="#Strings_Edit.Floats"> Strings_Edit.Floats</a> is an instance of
 <A href="#Float_Edit">Strings_Edit.Float_Edit</A> with Float as
+the parameter.
+<a name="Strings_Edit.Long_Floats"></a>The package 
+<a href="#Strings_Edit.Long_Floats">Strings_Edit.Long_Floats</a> is an instance of
+<A href="#Float_Edit">Strings_Edit.Float_Edit</A> with Long_Float as
 the parameter.
 <hr>
 
@@ -3416,6 +3422,50 @@ code points in <b>Value</b>. If omitted Constraint_Error is propagated when an
 unsupported code point appears in <b>Value</b>. The variant with String <b>Value</b> uses 
 UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
 string.</p>
+<h4><a name="7.10.21"></a>7.10.21. ITU T.61</h4>
+<P><a name="Strings_Edit.UTF8.ITU_T61"></a>The package
+<a href="#Strings_Edit.UTF8.ITU_T61">Strings_Edit.UTF8.ITU_T61</a> 
+subprograms for dealing with ITU-T T.61 character set encoding.<blockquote>
+  <P><tt><font color="#0000FF">function</font> From_ITU_T61 (<b>Value</b> : 
+	Character) <font color="#0000FF">
+	return</font> Code_Point;<br>
+	<font color="#0000FF">function</font> From_ITU_T61 (<b>Value</b> : 
+	String&nbsp;&nbsp; ) <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> From_ITU_T61 (<b>Value</b> : 
+	String&nbsp;&nbsp; ) <font color="#0000FF">
+	return</font> Wide_String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> encoded in T.61 to 
+a code point, UTF-8 or Wide_String.</p>
+<blockquote>
+  <P><tt><font color="#0000FF">function</font> To_ITU_T61<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> Character;<br>
+	<font color="#0000FF">function</font> To_ITU_T61<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;<br>
+	<font color="#0000FF">function</font> To_ITU_T61<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Wide_String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
+	: Character ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></blockquote>
+<p>These functions convert the parameter <b>Value</b> to T.61encoding. 
+The parameter <b>Substitute</b> specifies the character that substitutes 
+unsupported 
+code points in <b>Value</b>. If omitted Constraint_Error is propagated when an 
+unsupported code point appears in <b>Value</b>. The variant with String <b>Value</b> uses 
+UTF-8 encoding. Data_Error is propagated when <b>Value</b> is an invalid UTF-8 
+string.</p>
 <h3><a name="7.11"></a>7.11. 16-bit encodings</h3>
 <h4><a name="7.11.1"></a>7.11.1. RADIX-50</h4>
 <P><a name="Strings_Edit.UTF8.RADIX50"></a>The package
@@ -4023,11 +4073,13 @@ Lexicographical comparisons</H2>
 <a href="#Strings_Edit.Lexicographical_Order">Strings_Edit.Lexicographical_Order</a> provides 
 comparisons of strings using lexicographical order. The package provides the 
 following types:</p><blockquote>
-	<P><tt><font color="#0000FF">type</font> Precedence <font color="#0000FF">is</font> 
+	<P><tt><font color="#0000FF">
+	<a name="Strings_Edit.Lexicographical_Order.Precedence"></a>type</font> Precedence <font color="#0000FF">is</font> 
 	(Less, Equal, Greater);</tt></blockquote>
 <P>and the following operations:</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> Compare_Textually (<b>Left</b>,
-	<b>Right</b> : String) <font color="#0000FF">return</font> Precedence;</tt></blockquote>
+	<b>Right</b> : String) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.Lexicographical_Order.Precedence">Precedence</a>;</tt></blockquote>
 <P>This function compares two strings as texts. If strings contain chains of 
 digits. These are logically replaced by single symbol considered 
 lexicographically greater than a non-numeric character. Thus strings <i>ab123</i> 
@@ -4039,7 +4091,8 @@ On the basis of this function Boolean-valued comparisons are defined:</p><blockq
 	Right</b> : String) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>Another operation:<blockquote>
 	<P><tt><font color="#0000FF">function</font> Compare_Lexicographically (<b>Left</b>,
-	<b>Right</b> : String) <font color="#0000FF">return</font> Precedence;</tt></blockquote>
+	<b>Right</b> : String) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.Lexicographical_Order.Precedence">Precedence</a>;</tt></blockquote>
 <P>This function compares two strings lexicographically. Chains of digits are 
 compared numerically, as decimal numbers. This the string <i>ab44</i> precedes <i>ab0123</i>. 
 On the basis of this function Boolean-valued comparisons are defined:</p><blockquote>
@@ -4051,7 +4104,9 @@ On the basis of this function Boolean-valued comparisons are defined:</p><blockq
 <p align="right">
 <a name="12"></a><a href="#11"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#17"><IMG src="index.gif"
  alt="[TOC]" width="29" height="29"></A><a href="#13"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H2>12. Base64 encoding</H2>
+<H2>12. Standard encodings</H2>
+<P>This section describes packages implementing standard encodings.</p>
+<h3><a name="12.1"></a>12.1. Base64 encoding</h3>
 <P><a name="Strings_Edit.Base64"></a>The package
 <a href="#Strings_Edit.Base64">Strings_Edit.Base64</a> provides 
 an implementation of <a href="http://tools.ietf.org/html/rfc4648">RFC 4648</a> 
@@ -4065,6 +4120,951 @@ decoding errors.</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> To_Base64 (<b>Text</b> : 
 	String) <font color="#0000FF">return</font> String;</tt></blockquote>
 <P>This function encodes <b>Text</b> in Base64.</p>
+<h4><a name="12.1.1"></a>12.1.1. Encoding stream</h4>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Strings_Edit.Base64.Base64_Encoder"></a>type</font> 
+Base64_Encoder<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Size : Stream_Element_Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
+Root_Stream_Type <font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The type provides an encoding stream. When written the input is encoded so 
+that the content read from the stream is Base64 encoded. The discriminant <i>
+Size</i> determines the maximum number of stored encoded octets - 1. Upon 
+writing Status_Error is propagated when the stream object has no room to store 
+encoded characters. The encoding state remains intact and the stream can be read 
+from in order to free space. After that the writing operation can be repeated. Use_Error is propagated when the stream object would have no room even if it 
+were empty.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font><b> Flush (Stream</b> :
+<font color="#0000FF">in out</font>
+<a href="#Strings_Edit.Base64.Base64_Encoder">Base64_Encoder</a>);</tt></p>
+</blockquote>
+<p>This procedure is called at the end of encoding after the last stream element 
+has been written. Status_Error is propagated when the stream presently has no 
+space available. The operation can be repeated after reading from the stream. 
+Use_Error is propagated when the stream object would have no room even if it 
+were empty.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Free (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Encoder">Base64_Encoder</a>)
+<font color="#0000FF">return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>This function returns the number of stream elements that can be safely 
+written into the stream. Note that free written elements are kept in encoded 
+form an thus use more space than the original elements.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Empty (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Encoder">Base64_Encoder</a>)
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if the stream 
+is empty.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Full (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Encoder">Base64_Encoder</a>)
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if the stream 
+is full, i.e. there is no room to write a single stream element.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font><b> Reset (Stream</b> :
+<font color="#0000FF">in out</font>
+<a href="#Strings_Edit.Base64.Base64_Encoder">Base64_Encoder</a>);</tt></p>
+</blockquote>
+<p>This procedure is called to reset the stream into empty state.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Used (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Encoder">Base64_Encoder</a>)
+<font color="#0000FF">return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>This function returns the number of ready stream elements that can be read 
+from it.</p>
+<h4><a name="12.1.2"></a>12.1.2. Decoding stream</h4>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Strings_Edit.Base64.Base64_Decoder"></a>type</font> 
+Base64_Decoder<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Size : Stream_Element_Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
+Root_Stream_Type <font color="#0000FF">with private</font>;</tt></p>
+</blockquote>
+<p>The type provides a decoding stream. When written the input is decoded from 
+Base64 so 
+that the content read from the stream is decoded. The discriminant <i>
+Size</i> determines the maximum number of stored decoded octets - 1. Upon 
+writing Status_Error is propagated when the stream object has no room to store 
+decoded stream elements. The decoding state remains intact and the stream can be read 
+from in order to free space. After that the writing operation can be repeated. Use_Error is propagated when the stream object would have no room even if it 
+were empty.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Free (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Decoder">Base64_Decoder</a>)
+<font color="#0000FF">return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>This function returns the number of stream elements that can be safely 
+written into the stream. Note that free written elements are kept in decoded 
+form an thus use less space than the original elements.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Empty (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Decoder">Base64_Decoder</a>)
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if the stream 
+is empty.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Full (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Decoder">Base64_Decoder</a>)
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if the stream 
+is full, i.e. there is no room to write a single stream element.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font><b> Reset (Stream</b> :
+<font color="#0000FF">in out</font>
+<a href="#Strings_Edit.Base64.Base64_Decoder">Base64_Decoder</a>);</tt></p>
+</blockquote>
+<p>This procedure is called to reset the stream into empty state.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Used (<b>Stream</b> :
+<a href="#Strings_Edit.Base64.Base64_Decoder">Base64_Decoder</a>)
+<font color="#0000FF">return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>This function returns the number of ready stream elements that can be read 
+from it.</p>
+<h3><a name="12.2"></a>12.2. Object identifiers</h3>
+<P><a name="Strings_Edit.Object_Identifiers"></a>The package
+<a href="#Strings_Edit.Object_Identifiers">Strings_Edit.Object_Identifiers</a> provides 
+an implementation of <a href="http://tools.ietf.org/html/rfc3061">RFC 3061</a> 
+object identifiers (OID). The package defines the object identifier type:</p>
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Subindentifier_Type
+<font color="#0000FF">is new</font> Natural;<br>
+<font color="#0000FF">
+<a name="Strings_Edit.Object_Identifiers.Object_Identifier"></a>type</font> 
+Object_Identifier <font color="#0000FF">is<br>
+&nbsp;&nbsp; array </font>(Positive <font color="#0000FF">range</font> &lt;&gt;)
+<font color="#0000FF">of</font> Subindentifier_Type;</tt></p>
+</blockquote>
+<p>The package provides the following subprograms:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot;&nbsp; 
+(<b>Left</b>, <b>Right</b> : 
+<a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>) <font color="#0000FF">return</font> 
+Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>The object identifiers are ordered per components. E.g. 1.231.4 precedes 2.1.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Compare (<b>Left</b>, <b>Right</b> 
+: <a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>)
+<font color="#0000FF">return</font>
+<a href="#Strings_Edit.Lexicographical_Order.Precedence">Precedence</a>;</tt></p>
+</blockquote>
+<p>This function returns comparison result.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Strings_Edit.Object_Identifiers.Get"></a>procedure</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Value</b>&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+<a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Last</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">out</font> Integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure gets a value of object identifier from <b>Source</b> starting at <b>
+Source</b> (<b>Pointer</b>).
+<b>Pointer</b> is advanced beyond the input value. After successful completion
+<b>Last</b> points to the last component of the identifier stored in <b>Value</b>.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The object identifier is too large to store in <b>Value</b></TD>
+  </TR>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Syntax error, there is no number following a dot</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No object identifier found</TD>
+  </TR>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1</TD>
+  </tr>
+</TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; : 
+String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pointer</b> 
+: <font color="#0000FF">access</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>;</tt></p>
+</blockquote>
+<p>This function is a variant of procedure
+<a href="#Strings_Edit.Object_Identifiers.Get">Get</a> that returns object 
+identifier as the result.
+<b>Pointer</b> is advanced beyond the input value.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Syntax error, there is no number following a dot</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No object identifier found</TD>
+  </TR>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1</TD>
+  </tr>
+</TABLE>
+
+<BLOCKQUOTE>
+  <tt><font color="#0000FF">function</FONT> Image (<b>Value</b>&nbsp;: 
+	<a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>)&nbsp;<font color="#0000FF">return</FONT> String;</tt></BLOCKQUOTE>
+<P>This procedure converts the parameter <b>Value</b> to String.<BLOCKQUOTE>
+  <tt><font color="#0000FF">procedure</FONT> Put<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;(
+  &nbsp;<b>Destination</b> : <font color="#0000FF">in
+  out</FONT> String;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Pointer</b>&nbsp; &nbsp;&nbsp; : <font color="#0000FF">in
+  out</FONT> Integer;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : 
+	<a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Field</b>&nbsp; &nbsp;&nbsp; &nbsp; : Natural &nbsp; &nbsp;:= <FONT color="#800000">0</FONT>;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Justify</b> &nbsp; &nbsp;&nbsp;: Alignment&nbsp; := Left;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Fill</b> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;: Character &nbsp;:= ' '<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;);</tt></BLOCKQUOTE>
+<P>
+This procedure places the object identifier specified by the parameter
+<b>Value</b> into the output string <b>Destination</b>.
+The string is written starting from <b>Destination (Pointer)</b>. The exception Layout_Error is propagated when <b>Pointer</b> is not in
+<b>Destination</b>'Range or there is no room for the output.<BLOCKQUOTE>
+  <tt><font color="#0000FF">function</FONT> Value&nbsp;(<b>Source</b> &nbsp;: String) <font color="#0000FF">return</FONT> 
+	<a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a>;</tt></BLOCKQUOTE>
+<P>
+This function gets an object identifier number from the string
+<b>Source</b>. It can be surrounded by spaces and tabs.
+The whole string <b>Source</b> should be matched. Otherwise the
+exception Data_Error is propagated. Also Data_Error indicates a syntax error
+in the number.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Not all string matched</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No object identifier found</TD>
+  </TR>
+  </TABLE>
+
+<h3><a name="12.3"></a>12.3. Distinguished names</h3>
+<P><a name="Strings_Edit.Distinguished_Names"></a>The package
+<a href="#Strings_Edit.Object_Identifiers">Strings_Edit.Distinguished_Names</a> provides 
+an implementation of <a href="http://tools.ietf.org/html/rfc4514">RFC 4514</a> 
+distinguished names (DN). A distinguished name is a sequence of components. Each 
+component is a set of attributes. Each attribute is a pair key-value. A key can 
+be either text or object identifier (OID). The package defines the distinguished name type:</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Strings_Edit.Distinguished_Names.Distinguished_Name"></a>type</font> 
+Distinguished_Name (&lt;&gt;) <font color="#0000FF">is private</font>;</tt></p>
+</blockquote>
+<p>The following additional types are defined:</p>
+<blockquote>
+<p><tt><font color="#0000FF">type</font> Attribute_Mode <font color="#0000FF">is</font> 
+(OID_Keyed, Text_Keyed);</tt></p>
+</blockquote>
+<p>The attribute's key can be either an object identifier or a name starting 
+with a letter and containing letters, digits and minus (<tt>-</tt>):</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Strings_Edit.Distinguished_Names.Attribute_Key"></a>type</font> 
+Attribute_Key<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Mode&nbsp;&nbsp; : Attribute_Mode;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Length : Natural<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
+record<br>
+&nbsp;&nbsp; case </font>Mode<font color="#0000FF"> is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>OID_Keyed =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Identifier : 
+<a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a> 
+(<font color="#800000">1</font>..Length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> Text_Keyed =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Text : String (<font color="#800000">1</font>..Length);<br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>The keys are compared case insensitive:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">=</font>&quot;&nbsp; 
+(<b>Left</b>, <b>Right</b> : 
+<a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a>) <font color="#0000FF">return</font> 
+Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a>) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>Equivalence of textual names and object identifiers is not considered. E.g. 
+the name <i>cn</i> and 2.5.4.3 are considered different. For correspondence of 
+names and object identifiers refer to the <a href="https://oidref.com/">OID 
+repository</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Strings_Edit.Distinguished_Names.Name_Attribute"></a>type</font> 
+Name_Attribute<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Attribute_Mode;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Key_Length&nbsp;&nbsp; : Natural;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value_Length : Natural<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
+record</font><br>
+&nbsp;&nbsp; Key&nbsp;&nbsp; : 
+<a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a> (Mode, Key_Length);<br>
+&nbsp;&nbsp; Value : String (<font color="#800000">1</font>..Value_Length);<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>The pair key - value is represented by the type
+<a href="#Strings_Edit.Distinguished_Names.Name_Attribute">Name_Attribute</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Find_Attribute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Component</b> 
+: Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Attribute</b> 
+: <a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Integer;</tt></p>
+</blockquote>
+<p>This function finds an attribute by its key. The parameter <b>Name</b> is the 
+distinguished name object. <b>Component</b> is the component number 1..<a href="#Strings_Edit.Distinguished_Names.Get_Length">Get_Length</a>.
+<b>Attribute</b> is the key of the attribute to search for within the specified 
+component of the name. When <b>Component</b> is outside the range 
+Constraint_Error is propagated. The result is positive when the attribute is 
+found. It can be accessed using
+<a href="#Strings_Edit.Distinguished_Names.Get_Attribute">Get_Attribute</a>.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Strings_Edit.Distinguished_Names.Get"></a>function</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; : 
+String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pointer</b> 
+: <font color="#0000FF">access</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;</tt></p>
+</blockquote>
+<p>This function gets a distinguished name from <b>Source</b> starting at <b>
+Source</b> (<b>Pointer</b>).
+<b>Pointer</b> is advanced beyond the input value. The sequence of components is 
+delimited by commas (<tt>,</tt>). Attributes in a component are separated by 
+plus (<tt>+</tt>). The key-value pairs are bound using equality (<tt>=</tt>). 
+Comma, equality and plus can be surrounded by spaces. The key and value formats 
+are:</p>
+<ul>
+	<li>A key can contain letters, digits, (<tt>-</tt>)&nbsp; and 
+must start with a letter;</li>
+	<li>The value in the textual form is UTF-8 encoded. The characters minus (<tt>-</tt>), 
+plus (<tt>+</tt>), equality (<tt>=</tt>), comma (<tt>,</tt>), semicolon (<tt>;</tt>), 
+quotation marks (<tt>&quot;</tt>), less (<tt>&lt;</tt>), greater (<tt>&gt;</tt>), sharp (<tt>#</tt>), 
+backslash (<tt>\</tt>) must be escaped, e.g. using backslash (<tt>\</tt>). Space 
+	is allowed within the value but must be escaped if appear at the ends. All octets 
+can be escaped using the form with a hexadecimal pair <tt>\hh</tt>;</li>
+	<li>The value in the hexadecimal form begins with sharp (<tt>#</tt>) and contains two hexadecimal digits 
+per octet.</li>
+</ul>
+<p>Here is a list of distinguished name examples:</p>
+
+<blockquote>
+<p><tt>CN=#41636566<br>
+CN=Lu\C4\8Di\C4\87<br>
+OU=Sales+CN=J. Smith,DC=example,DC=net<br>
+CN=James \&quot;Jim\&quot; Smith\, III,DC=example,DC=net<br>
+UID=jsmith,DC=example,DC=net<br>
+1.2.234=jsmith,4.56.9=example,1.1.1.2.777.0=net</tt></p>
+</blockquote>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Syntax error</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No distinguished name found</TD>
+  </TR>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1</TD>
+  </tr>
+</TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Strings_Edit.Distinguished_Names.Get_Attribute"></a>function</font> 
+Get_Attribute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Component</b> 
+: Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Attribute</b> 
+: Positive := <font color="#800000">1</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Name_Attribute">Name_Attribute</a>;</tt></p>
+</blockquote>
+<p>This function returns an attribute. The parameter <b>Name</b> is the 
+distinguished name object. <b>Component</b> is the component number 1..<a href="#Strings_Edit.Distinguished_Names.Get_Length">Get_Length</a>.
+<b>Attribute</b> is the attribute position within the component 1..<a href="#Strings_Edit.Distinguished_Names.Get_Component_Length">Get_Component_Length</a>. 
+Attributes are positioned in ascending order. Constraint_Error is propagated 
+when either <b>Component</b> or <b>Attribute</b> is out of range.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Strings_Edit.Distinguished_Names.Get_Component_Length"></a>function</font> 
+Get_Component_Length<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Component</b> 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> Positive;</tt></p>
+</blockquote>
+<p>This function returns the number of components of the distinguished name 
+object specified by the parameter <b>Name</b>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Component</b> 
+: Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Attribute</b> 
+: Positive := <font color="#800000">1</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Attribute_Key">Attribute_Key</a>;</tt></p>
+</blockquote>
+<p>This function returns an attribute's key. The parameter <b>Name</b> is the 
+distinguished name object. <b>Component</b> is the component number 1..<a href="#Strings_Edit.Distinguished_Names.Get_Length">Get_Length</a>.
+<b>Attribute</b> is the attribute position within the component 1..<a href="#Strings_Edit.Distinguished_Names.Get_Component_Length">Get_Component_Length</a>. 
+Attributes are positioned in ascending order. Constraint_Error is propagated 
+when either <b>Component</b> or <b>Attribute</b> is out of range.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Strings_Edit.Distinguished_Names.Get_Length"></a>function</font> 
+Get_Length (<b>Name</b> : 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>) <font color="#0000FF">return</font> 
+Natural;</tt></p>
+</blockquote>
+<p>This function returns the number of components of the distinguished name 
+object specified by the parameter <b>Name</b>. </p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Component</b> 
+: Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Attribute</b> 
+: Positive := <font color="#800000">1</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> String;</tt></p>
+</blockquote>
+<p>This function returns an attribute's value. The parameter <b>Name</b> is the 
+distinguished name object. <b>Component</b> is the component number 1..<a href="#Strings_Edit.Distinguished_Names.Get_Length">Get_Length</a>.
+<b>Attribute</b> is the attribute position within the component 1..<a href="#Strings_Edit.Distinguished_Names.Get_Component_Length">Get_Component_Length</a>. 
+Attributes are positioned in ascending order. Constraint_Error is propagated 
+when either <b>Component</b> or <b>Attribute</b> is out of range.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image (<b>Name</b> : 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>) <font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns an attribute's value. The parameter <b>Name</b> is the 
+distinguished name object. <b>Component</b> is the component number 1..<a href="#Strings_Edit.Distinguished_Names.Get_Length">Get_Length</a>.
+<b>Attribute</b> is the attribute position within the component 1..<a href="#Strings_Edit.Distinguished_Names.Get_Component_Length">Get_Component_Length</a>. 
+Attributes are positioned in ascending order. Constraint_Error is propagated 
+when either <b>Component</b> or <b>Attribute</b> is out of range.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Destination</b> 
+: <font color="#0000FF">in out</font> String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Field</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Natural&nbsp;&nbsp; :=
+<font color="#800000">0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Justify</b>&nbsp;&nbsp;&nbsp;&nbsp; : Alignment := Left;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Fill</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Character := ' '<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<P>
+This procedure places the distinguished name specified by the parameter <b>Name</b> into the
+output string <b>Destination</b>. The string is written starting
+from the <b>Destination (Pointer)</b>. The exception Layout_Error
+is propagated if the value of <b>Pointer</b> is not in
+<b>Destination</b>'Range or there is no room for the output.<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Skip<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Destination</b> 
+: <font color="#0000FF">in out</font> String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+Integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is similar to <a href="#Strings_Edit.Distinguished_Names.Get">
+Get</a> except that it does not return the distinguished name and only skips it.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Syntax error</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No distinguished name found</TD>
+  </TR>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1</TD>
+  </tr>
+</TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Subname<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Name</b> : 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>From</b> : 
+Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>To</b>&nbsp;&nbsp; 
+: Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;</tt></p>
+</blockquote>
+<P>
+This function returns relative distinguished name starting from the component <b>
+From</b> and ending with <b>To</b>. Constraint_Error is propagated when the 
+range is empty or else is not in 1..<a href="#Strings_Edit.Distinguished_Names.Get_Length">Get_Length</a>.<blockquote>
+<p><tt><font color="#0000FF">function</font> Value (<b>Source</b> : String)
+<font color="#0000FF">return</font> 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;</tt></p>
+</blockquote>
+<P>
+This function gets a distinguished name from the string
+<b>Source</b>. It can be surrounded by spaces and tabs.
+The whole string <b>Source</b> should be matched. Otherwise the
+exception Data_Error is propagated. Also Data_Error indicates a syntax error
+in the number.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Not all string matched</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No object identifier found</TD>
+  </TR>
+  </TABLE>
+
+<p>Distinguished names are ordered in the order of components and then by 
+attributes in the component, first by the key, second by the value:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">=</font>&quot;&nbsp; 
+(<b>Left</b>, <b>Right</b> : 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>) <font color="#0000FF">return</font> 
+Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>Equivalence of textual names and object identifiers is not considered. E.g. 
+the name <i>cn</i> and 2.5.4.3 are seen as different.</p>
+<h4><a name="12.3.1"></a>12.3.1. Construction of distinguished names</h4>
+<P>The following operations are used to construct a distinguished name:<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">=</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Key</b>&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a> / String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Value</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">=</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Key</b>&nbsp;&nbsp; 
+: <a href="#Strings_Edit.Object_Identifiers.Object_Identifier">Object_Identifier</a> / String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Value</b> 
+: String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Name_Attribute">Name_Attribute</a>;</tt></p>
+</blockquote>
+<p>These functions create an attribute or a distinguished name of single 
+component from a key and a value.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">and</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Left</b>&nbsp; : 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Right</b> 
+: <a href="#Strings_Edit.Distinguished_Names.Name_Attribute">Name_Attribute</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;</tt></p>
+</blockquote>
+<p>This function adds a new component to the distinguished name.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">or</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Left</b>&nbsp; : 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Right</b> 
+: <a href="#Strings_Edit.Distinguished_Names.Name_Attribute">Name_Attribute</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;</tt></p>
+</blockquote>
+<p>This function adds an attribute to the last component of the distinguished 
+name.</p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>The name is empty</TD>
+  </TR>
+  <TR>
+    <TD>  Name_Error</TD>
+    <TD>The attribute's key is already in use</TD>
+  </TR>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">&amp;</font>&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Left</b>&nbsp; : 
+<a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Right</b> 
+: <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+return</font> <a href="#Strings_Edit.Distinguished_Names.Distinguished_Name">Distinguished_Name</a>;</tt></p>
+</blockquote>
+<p>This function concatenates two distinguished names.</p>
+<P>
+The following example illustrates creation of a name: 
+<blockquote>
+<p><tt>(&quot;<font color="#FF0000">OU</font>&quot;=&quot;<font color="#FF0000">Sales</font>&quot;
+<font color="#0000FF">or</font> &quot;<font color="#FF0000">CN</font>&quot;=&quot;<font color="#FF0000">J. 
+Smith</font>&quot;) <font color="#0000FF">and</font> &quot;<font color="#FF0000">DC</font>&quot;=&quot;<font color="#FF0000">example</font>&quot;
+<font color="#0000FF">and</font> &quot;<font color="#FF0000">DC</font>&quot;=&quot;<font color="#FF0000">net</font>&quot;</tt></p>
+</blockquote>
+
+<h3><a name="12.4"></a>12.4. ISO 8601 time and duration</h3>
+<P><a name="Strings_Edit.ISO_8601"></a>The package
+<a href="#Strings_Edit.ISO_8601">Strings_Edit.ISO_8601</a> provides ISO 8601 
+representations of time and duration:</p>
+<P><u><b>ISO 8601 time</b></u></p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Value</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure gets time in ISO 8601 format from <b>Source</b> starting at <b>
+Source</b> (<b>Pointer</b>).
+<b>Pointer</b> is advanced beyond the input value. The result is stored in <b>
+Value</b>. ISO 8601 formats are supported:</p>
+<ul>
+	<li>Standard time notation <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>hh</i>:<i>mm</i>:<i>ss</i>, e.g. <tt>2007-04-06T00:00</tt><font face="Times New Roman">;</font></li>
+	<li>Week number and day of week notation <i>YYYY</i>-W<i>ww</i>-<i>D</i>T<i>hh</i>:<i>mm</i>:<i>ss</i>, e.g. 
+	<tt>2009-W01-1</tt><font face="Times New Roman">;</font></li>
+	<li>Day of year notation <i>YYYY</i>-<i>DDD</i>T<i>hh</i>:<i>mm</i>:<i>ss</i>, e.g. <tt>2019-010T10:30Z</tt><font face="Times New Roman">.</font></li>
+</ul>
+<p>Fractions of second as well as time zone <font face="Times New Roman">±<i>hh</i>:<i>mm</i> 
+are supported. D</font>ecimal point can be denoted as comma.<font face="Times New Roman"> Shortened forms like </font> <tt>20070406T0000</tt><font face="Times New Roman"> 
+are recognized. The special case of time specification </font><tt>24:00</tt><font face="Times New Roman"> 
+is legal.</font></p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>Some of the components are too large to be supported by Ada types</TD>
+  </TR>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Syntax error</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No time found in the source</TD>
+  </TR>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1</TD>
+  </tr>
+  <tr>
+    <TD>Time_Error</TD>
+    <TD> Time conversion error</TD>
+  </tr>
+  <tr>
+    <TD>Unknown_Zone_Error</TD>
+    <TD> Time zone error</TD>
+  </tr>
+</TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Value</b>&nbsp;&nbsp;&nbsp; : 
+Time;<b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Fraction</b>&nbsp;: Second_Fraction := <font color="#800000">0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Local</b>&nbsp;&nbsp;&nbsp; : Boolean&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= False<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> String;</tt></p>
+</blockquote>
+<P>
+This function returns <b>Value</b> in ISO 8601 format. <b>Fraction</b> 0..6 
+specifies for many digits after decimal point to use for seconds. <b>Local</b> 
+when <font color="#800000"><i>true</i></font> specifies if the local time format 
+should be used. Otherwise it is the UTC format.<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <tr>
+    <TD>Time_Error</TD>
+    <TD> Time conversion error</TD>
+  </tr>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Destination</b> 
+: <font color="#0000FF">in out</font> String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Time;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Fraction</b>&nbsp;&nbsp;&nbsp; : Second_Fraction := <font color="#800000">0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Local</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Boolean&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Field</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Natural&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :=
+<font color="#800000">0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Justify</b>&nbsp;&nbsp;&nbsp;&nbsp; : Alignment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := Left;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Fill</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Character&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := ' '<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<P>
+This procedure places time <b>Value</b> into the
+output string <b>Destination</b> in ISO 8601 format. The string is written starting
+from the <b>Destination (Pointer)</b>. The exception Layout_Error
+is propagated if the value of <b>Pointer</b> is not in
+<b>Destination</b>'Range or there is no room for the output. <b>Fraction</b> 
+0..6 specifies for many digits after decimal point to use for seconds. <b>Local</b> 
+when <font color="#800000"><i>true</i></font> specifies if the local time format 
+should be used. Otherwise it is the UTC format.<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1 or 
+	there is no room for output</TD>
+  </tr>
+  <tr>
+    <TD>Time_Error</TD>
+    <TD> Time conversion error</TD>
+  </tr>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Value (<b>Source</b> : String)
+<font color="#0000FF">return</font> 
+Time;</tt></p>
+</blockquote>
+<P>
+This function gets ISO 8601 time from the string
+<b>Source</b>. It can be surrounded by spaces and tabs.
+The whole string <b>Source</b> should be matched. Otherwise the
+exception Data_Error is propagated. Also Data_Error indicates a syntax error
+in the number.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>Some of the components are too large to be supported by Ada types</TD>
+  </TR>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Syntax error or not all string is matched</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No time found in the source</TD>
+  </TR>
+  <tr>
+    <TD>Time_Error</TD>
+    <TD> Time conversion error</TD>
+  </tr>
+  <tr>
+    <TD>Unknown_Zone_Error</TD>
+    <TD> Time zone error</TD>
+  </tr>
+  </TABLE>
+
+<P><u><b>ISO 8601 duration</b></u></p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Value</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure gets duration in ISO 8601 format from <b>Source</b> starting at <b>
+Source</b> (<b>Pointer</b>).
+<b>Pointer</b> is advanced beyond the input value. The result is stored in <b>
+Value</b>. ISO 8601 format P<i>years</i>Y<i>months</i>M<i>weeks</i>W<i>days</i>DT<i>hours</i>H<i>minutes</i>M<i>seconds</i>S. 
+Any field can be absent. For example: <tt>P1W</tt> denotes one week duration. Fractional values are allowed<font face="Times New Roman">. 
+Furthermore, </font>decimal point can be denoted as comma.<font face="Times New Roman"> 
+Note that T must appear before the first field indicating day duration. For 
+instance: </font><tt>PT1.5S</tt> denotes one and half second duration.</p>
+
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <TR>
+    <TD>  Constraint_Error</TD>
+    <TD>Some of the components are too large to be supported by Ada types</TD>
+  </TR>
+  <TR>
+    <TD>  Data_Error</TD>
+    <TD>Syntax error</TD>
+  </TR>
+  <TR>
+    <TD>  End_Error</TD>
+    <TD>No time found in the source</TD>
+  </TR>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1</TD>
+  </tr>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Image<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Value</b>&nbsp;&nbsp;&nbsp; : 
+Time;<b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Fraction</b>&nbsp;: Second_Fraction := <font color="#800000">0</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> String;</tt></p>
+</blockquote>
+<P>
+This function returns <b>Value</b> in ISO 8601 format. <b>Fraction</b> 0..6 
+specifies for many digits after decimal point to use for seconds.<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Destination</b> 
+: <font color="#0000FF">in out</font> String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Time;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Fraction</b>&nbsp;&nbsp;&nbsp; : Second_Fraction := <font color="#800000">0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Local</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Boolean&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+:= False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Field</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Natural&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :=
+<font color="#800000">0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Justify</b>&nbsp;&nbsp;&nbsp;&nbsp; : Alignment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := Left;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Fill</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Character&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := ' '<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<P>
+This procedure places time <b>Value</b> into the
+output string <b>Destination</b> in ISO 8601 format. The string is written starting
+from the <b>Destination (Pointer)</b>. The exception Layout_Error
+is propagated if the value of <b>Pointer</b> is not in
+<b>Destination</b>'Range or there is no room for the output. <b>Fraction</b> 
+0..6 specifies for many digits after decimal point to use for seconds.<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I>
+  </CAPTION>
+  <tr>
+    <TD>Layout_Error</TD>
+    <TD> <b>Pointer</b> is not in <b>Source</b>'First..<b>Source</b>'Last + 1 or 
+	there is no room for output</TD>
+  </tr>
+  </TABLE>
+
 <hr>
 <p align="right">
 <a name="13"></a><a href="#12"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#17"><IMG src="index.gif"
@@ -4339,24 +5339,30 @@ without setting another key-nonce pair into the cipher.</p>
     <TD>The basic string I/O</TD>
   </tr>
 	<tr>
-    <TD rowspan="61" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;&nbsp;&nbsp;&nbsp;<p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <TD rowspan="66" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium">&nbsp;&nbsp;&nbsp;&nbsp;<p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
 	&nbsp;&nbsp;&nbsp;&nbsp;</TD>
     <TD colspan="5" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.Base64">Base64</a></TD>
-    <TD>RFC 4648 implementation</TD>
+    <TD><a href="https://tools.ietf.org/html/rfc4648">RFC 4648</a> implementation</TD>
   </tr>
 	<tr>
     <TD colspan="5" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.ChaCha20">ChaCha20</a></TD>
-    <TD>RFC 8439 implementation</TD>
+    <TD><a href="https://tools.ietf.org/html/rfc8439">RFC 8439</a> implementation</TD>
   </tr>
 	<tr>
     <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
     <TD colspan="4"><a href="#Strings_Edit.ChaCha20.AEAD">AEAD</a></TD>
-    <TD>RFC 8439 implementation of authenticated encryption with additional data</TD>
+    <TD><a href="https://tools.ietf.org/html/rfc8439">RFC 8439</a> implementation of authenticated encryption with additional data</TD>
   </tr>
 	<tr>
     <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
     <TD colspan="4"><a href="#Strings_Edit.ChaCha20.Poly1305">Poly1305</a></TD>
-    <TD>RFC 8439 Poly1305 digests implementation</TD>
+    <TD><a href="https://tools.ietf.org/html/rfc8439">RFC 8439</a> Poly1305 digests implementation</TD>
+  </tr>
+	<tr>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.Object_Identifiers">Distinguished_Names</a></TD>
+    <TD><a href="http://tools.ietf.org/html/rfc4514">RFC 4514</a> 
+distinguished names (DN)</TD>
   </tr>
 	<tr>
     <TD colspan="5" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.Fields">Fields</a></TD>
@@ -4392,8 +5398,24 @@ without setting another key-nonce pair into the cipher.</p>
     <TD>I/O of standard Integer using UTF-8 superscript characters</TD>
   </tr>
 	<tr>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.ISO_8601">ISO_8601</a></TD>
+    <TD>ISO 8601 time and duration</TD>
+  </tr>
+	<tr>
     <TD colspan="5" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.Lexicographical_Order">Lexicographical_Order</a></TD>
     <TD>Lexicographical comparisons of strings</TD>
+  </tr>
+	<tr>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.Floats">Long_Floats</a></TD>
+    <TD>I/O of standard Long_Float (instantiation of <a href="#Float_Edit">Float_Edit</a>)</TD>
+  </tr>
+	<tr>
+    <TD colspan="5" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.Object_Identifiers">Object_Identifiers</a></TD>
+    <TD><a href="http://tools.ietf.org/html/rfc3061">RFC 3061</a> 
+object identifiers (OID)</TD>
   </tr>
 	<tr>
     <TD colspan="5" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.Quoted">Quoted</a></TD>
@@ -4462,7 +5484,7 @@ without setting another key-nonce pair into the cipher.</p>
       characters</TD>
   </TR>
   <TR>
-    <TD rowspan="35" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
+    <TD rowspan="36" bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium">&nbsp;</TD>
     <TD colspan="4" style="border-left-style: solid; border-left-width: 1px"><a href="#Strings_Edit.UTF8.Blocks">Blocks</a></TD>
     <TD>Ranges of code points defined by the Unicode standard</TD>
   </TR>
@@ -4523,6 +5545,11 @@ without setting another key-nonce pair into the cipher.</p>
     <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
 	<a href="#Strings_Edit.UTF8.ISO_8859_10">ISO_8859_10</a></TD>
     <TD>ISO/IEC 8859-10 encoding conversions</TD>
+  </TR>
+  <TR>
+    <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Strings_Edit.UTF8.ITU_T61">ITU_T61</a></TD>
+    <TD>ITU-T T.61 encoding conversions</TD>
   </TR>
   <TR>
     <TD colspan="4" style="border-left-style: solid; border-left-width: 1px">
@@ -4699,8 +5726,32 @@ The following versions were tested with the compilers:</i><ul>
 <i>GNAT Community 2018 (20180523-73)</i></li>
   <li>
 <i>GNAT 8</i></li>
+	<li>
+<i>GNAT 9</i></li>
   </ul>
-<p>Changes (6 Nov 2018) to the version 3.3:</p>
+<p>Changes (4 August 2019) to the version 3.4:</p>
+<ul>
+  <li>Added the package Strings_Edit.Long_Floats, an instance of 
+	String_Edit.Floats with Long_Float;</li>
+	<li>The package Strings_Edit.UTF8.ITU_T61 provides ITU T.61 encoding 
+	conversions;</li>
+	<li>The package Strings_Edit.Object_Identifiers provides implementation of RFC 3061 object identifiers (OID);</li>
+	<li>The package Strings_Edit.Distinguished_Names provides implementation of RFC 4514 
+	distinguished names (DN);</li>
+	<li>The package Strings_Edit.ISO_8601 provides ISO 8601 representations of 
+	time and duration;</li>
+	<li>Encoding and decoding Base64 streams were added to the package 
+	Strings_Edit.Base64.</li>
+</ul>
+<P>
+<i>
+The following versions were tested with the compilers:</i><ul>
+  <li>
+<i>GNAT Community 2018 (20180523-73)</i></li>
+  <li>
+<i>GNAT 8</i></li>
+  </ul>
+<p>Changes (6 Nov 2019) to the version 3.3:</p>
 <ul>
   <li>The package Strings_Edit.UTF8.Windows_1250 provides Windows-1250 encoding 
 	conversions;</li>
@@ -4925,19 +5976,20 @@ The reason was to reuse a preinstantiated version of Integer_Edit within Float_E
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.7">7.10.7. Windows-1256</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.8">7.10.8. Windows-1257</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.9">7.10.9. Windows-1258</A><BR>
-</td>
-<td valign="top">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.10">7.10.10. KOI8</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.11">7.10.11. ISO/IEC 8859-2</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.12">7.10.12. ISO/IEC 8859-3</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.13">7.10.13. ISO/IEC 8859-4</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.14">7.10.14. ISO/IEC 8859-5</A><BR>
+</td>
+<td valign="top">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.15">7.10.15. ISO/IEC 8859-6</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.16">7.10.16. ISO/IEC 8859-7</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.17">7.10.17. ISO/IEC 8859-8</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.18">7.10.18. ISO/IEC 8859-9</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.19">7.10.19. ISO/IEC 8859-10</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.20">7.10.20. Mac OS Roman</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.10.21">7.10.21. ITU T.61</A><BR>
 &nbsp;&nbsp;&nbsp; <A href="#7.11">7.11. 16-bit encodings</A><BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#7.11.1">7.11.1. RADIX-50</A><hr>
 <b><big><big>8</big></big></b>&nbsp;<A href="#8"><big>Fields</big></A><HR>
@@ -4948,7 +6000,14 @@ The reason was to reuse a preinstantiated version of Integer_Edit within Float_E
 &nbsp;&nbsp;&nbsp; <A href="#10.3">10.3. Modular numbers stream I/O</A><br>
 &nbsp;&nbsp;&nbsp; <A href="#10.4">10.4. Recoding UTF-8 streams</A><HR>
 <b><big><big>11</big></big></b> <A href="#11"><big>Lexicographical comparisons</big></A><hr>
-<b><big><big>12</big></big></b> <A href="#12"><big>Base64 encoding</big></A><hr>
+<b><big><big>12</big></big></b> <big><A href="#12">Standard encodings</A></big><br>
+&nbsp;&nbsp;&nbsp; <a href="#12.1">12.1. Base64 encoding</a><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.1.1">12.1.1. Encoding stream</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#12.1.2">12.1.2. Decoding stream</A><BR>
+&nbsp;&nbsp;&nbsp; <a href="#12.2">12.2. Object identifiers</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#12.3">12.3. Distinguished names</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#12.3.1">12.3.1. Construction of distinguished names</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#12.4">12.4. ISO 8601 time and duration</a><hr>
 <b><big><big>13</big></big></b> <big><A href="#13">ChaCha20 cipher</A></big><br>
 &nbsp;&nbsp;&nbsp; <a href="#13.1">13.1. ChaCha20 ciphering streams</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#13.2">13.2. Poly1305 digests</a><br>

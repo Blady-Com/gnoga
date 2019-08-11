@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  10:33 11 May 2019  --
+--                                Last revision :  16:04 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -46,6 +46,82 @@ package body OpenSSL is
          end;
       end if;
    end Check_Error;
+
+   function Get_Digest_By_Name (Name : String) return EVP_MD is
+      function Internal (Name : char_array) return EVP_MD;
+      pragma Import (C, Internal, "EVP_get_digestbyname");
+   begin
+      return Internal (To_C (Name));
+   end Get_Digest_By_Name;
+
+   procedure PKCS5_PBKDF2_HMAC
+             (  Password   : String;
+                Salt       : Stream_Element_Array;
+                Iterations : Positive;
+                Digest     : EVP_MD;
+                Output     : out Stream_Element_Array
+             )  is
+      function Internal
+               (  Pass    : System.Address;
+                  Passlen : int;
+                  Salt    : System.Address;
+                  Saltlen : int;
+                  Iter    : int;
+                  Digest  : EVP_MD;
+                  Keylen  : int;
+                  Output  : System.Address
+               )  return int;
+      pragma Import (C, Internal, "PKCS5_PBKDF2_HMAC");
+   begin
+      if 1 /= Internal
+              (  Pass    => Password (Password'First)'Address,
+                 Passlen => Password'Length,
+                 Salt    => Salt (Salt'First)'Address,
+                 Saltlen => Salt'Length,
+                 Iter    => int (Iterations),
+                 Digest  => Digest,
+                 Keylen  => Output'Length,
+                 Output  => Output (Output'First)'Address
+              )  then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "PKCS5_PBKDF2_HMAC fault"
+         );
+      end if;
+   end PKCS5_PBKDF2_HMAC;
+
+   procedure PKCS5_PBKDF2_HMAC
+             (  Password   : String;
+                Iterations : Positive;
+                Digest     : EVP_MD;
+                Output     : out Stream_Element_Array
+             )  is
+      function Internal
+               (  Pass    : System.Address;
+                  Passlen : int;
+                  Salt    : System.Address := System.Null_Address;
+                  Saltlen : int            := 0;
+                  Iter    : int;
+                  Digest  : EVP_MD;
+                  Keylen  : int;
+                  Output  : System.Address
+               )  return int;
+      pragma Import (C, Internal, "PKCS5_PBKDF2_HMAC");
+   begin
+      if 1 /= Internal
+              (  Pass    => Password (Password'First)'Address,
+                 Passlen => Password'Length,
+                 Iter    => int (Iterations),
+                 Digest  => Digest,
+                 Keylen  => Output'Length,
+                 Output  => Output (Output'First)'Address
+              )  then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "PKCS5_PBKDF2_HMAC fault"
+         );
+      end if;
+   end PKCS5_PBKDF2_HMAC;
 
    procedure PKCS5_PBKDF2_HMAC_SHA1
              (  Password   : String;

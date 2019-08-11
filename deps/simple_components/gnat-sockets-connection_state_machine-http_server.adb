@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  10:32 11 May 2019  --
+--                                Last revision :  16:04 08 Jun 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -2781,6 +2781,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
              )  is
    begin
       Get_Header_Line : loop
+         Client.Start := Pointer;
          Feed
          (  Client.Data.List (Client.Data.Current).all,
             Data,
@@ -2788,6 +2789,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
             Client,
             Client.State
          );
+         Client.Fed :=
+            Client.Fed + Unsigned_64 (Pointer - Client.Start);
          if Client.State = 0 then -- Done with this item
             Client.Data.Current := Client.Data.Current + 1;
             while Client.Data.Current > Client.Data.Length loop
@@ -2796,7 +2799,18 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   Handler (Client);
                   exit Get_Header_Line;
                end if;
-               Client.Data := Client.Data.Caller;
+               Client.State := Client.Data.State; -- Restore state
+               Client.Data  := Client.Data.Caller;
+               if Client.State /= 0 then
+                  End_Of_Subsequence
+                  (  Client.Data.List (Client.Data.Current).all,
+                     Data,
+                     Pointer,
+                     Client,
+                     Client.State
+                  );
+                  exit when Client.State /= 0;
+               end if;
                Client.Data.Current := Client.Data.Current + 1;
             end loop;
          else
@@ -2833,6 +2847,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   Client,
                   Client.State
                );
+               Client.Fed := Client.Fed + Unsigned_64 (Pointer - Start);
                Client.Data_Length :=
                   Client.Data_Length - Pointer + Start;
             end;
@@ -2850,6 +2865,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
                   Client,
                   Client.State
                );
+               Client.Fed := Client.Fed + Unsigned_64 (Pointer - Start);
                Client.Data_Length :=
                   Client.Data_Length - Pointer + Start;
             end;

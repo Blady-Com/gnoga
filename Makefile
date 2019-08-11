@@ -6,23 +6,10 @@ PREFIX=$(CWD)/inst_folder
 # Specify build mode "Debug", "Release" or "Profile"
 BUILD_MODE=Debug
 
-ATOMIC_ACCESS=Pragma-atomic
-# If using GNAT which supports pragma Atomic for 64-bit scalar variables for GNAT hosted on a 64-bit OS.
-# You can set this to:
-# ATOMIC_ACCESS=Pragma-atomic
-# If the target is 32-bit. "GCC-long-offsets" is a workaround of the GNAT bug on,
-# that for a 32-bit target pragma Atomic does not support 64-bit scalars even though the processor
-# has corresponding quad-words instructions.
-# You need change this to:
-# ATOMIC_ACCESS=GCC-long-offsets
-# If using GNAT GPL prior to 2014 or earlier on a 32bit host (Windows or Linux)
-# You need to change this to:
-# ATOMIC_ACCESS=GCC-built-ins
-
 ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
-	BUILDER=gprbuild -p --target=${TARGET}
-	INSTALLER=gprinstall -p -f --target=${TARGET}
-	CLEANER=gprclean --target=${TARGET}
+	BUILDER=gprbuild -p
+	INSTALLER=gprinstall -p -f
+	CLEANER=gprclean
 else
 	BUILDER=gnatmake -p
 	INSTALLER=gprinstall -p -f
@@ -48,6 +35,9 @@ else
 ifeq ($(strip $(findstring cygwin, $(TARGET))),cygwin)
 	PRJ_TARGET=Windows
 else
+ifeq ($(strip $(findstring windows, $(TARGET))),windows)
+	PRJ_TARGET=Windows
+else
 ifeq ($(strip $(findstring freebsd, $(TARGET))),freebsd)
 	PRJ_TARGET=FreeBSD
 else
@@ -58,6 +48,17 @@ else
 endif
 endif
 endif
+endif
+endif
+endif
+
+ifeq ($(strip $(findstring x86, $(TARGET))),x86)
+	PRJ_ARCH=x86_64
+else
+ifeq ($(strip $(findstring i686, $(TARGET))),i686)
+	PRJ_ARCH=i686
+else
+	PRJ_ARCH=auto
 endif
 endif
 
@@ -117,7 +118,7 @@ help :
 	@echo "--                                                                         --"
 	@echo "-----------------------------------------------------------------------------"
 
-SC_OPTIONS=-XAtomic_Access=${ATOMIC_ACCESS} -XSC_OS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
+SC_OPTIONS=-Xarch=${PRJ_ARCH} -XSC_OS=${PRJ_TARGET} -XDevelopment=${BUILD_MODE}
 GN_OPTIONS=-XPRJ_BUILD=${BUILD_MODE} -XPRJ_TARGET=${PRJ_TARGET} ${SC_OPTIONS}
 ifeq ($(PRJ_TARGET),Windows)
 	ZB_MAKE=BUILD=$(subst Release,Production,${BUILD_MODE}) OS=Windows_NT

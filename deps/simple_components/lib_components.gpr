@@ -2,7 +2,7 @@ with "shared";
 
 library project Lib_Components is
 
-   Version     := "4.40";
+   Version     := "4.41";
 
    type Object_Tracing_Mode is ("Off", "On");
    Object_Tracing : Object_Tracing_Mode := external ("Traced_objects", "Off");
@@ -10,12 +10,16 @@ library project Lib_Components is
    type Tasking_Mode is ("Multiple", "Single");
    Tasking : Tasking_Mode := external ("Tasking", "Multiple");
 
+   type Library_Type_Type is ("relocatable", "static", "static-pic");
+   Library_Type : Library_Type_Type := External ("LIBRARY_TYPE", "static");
+
    type Atomic_Access_Mode is
         (  "Pragma-atomic",
            "GCC-built-ins",
-           "GCC-long-offsets"
+           "GCC-long-offsets",
+           "auto"
         );
-   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "Pragma-atomic");
+   Atomic_Access : Atomic_Access_Mode := external ("Atomic_Access", "auto");
 
    Dir_List := ();
 
@@ -35,20 +39,11 @@ library project Lib_Components is
 
    Dir_List := Dir_List & ".";
 
-   case Atomic_Access is
-      when "Pragma-atomic" =>
-         Dir_List := Dir_List & "atomic-access/ada";
-      when "GCC-built-ins" =>
-         Dir_List := Dir_List & "atomic-access/gcc";
-      when "GCC-long-offsets" =>
-         Dir_List := Dir_List & "atomic-access/gcc-long-offsets";
-   end case;
-
    case Shared.SC_OS is
       when "Windows" | "Windows_NT" =>
          for Languages use ("Ada");
          Dir_List := Dir_List & "os/windows";
-      when "Linux" | "UNIX" =>
+      when "Linux" | "UNIX" | "auto" =>
          for Languages use ("Ada", "C");
          Dir_List := Dir_List & "os/linux";
       when "OSX" =>
@@ -58,6 +53,27 @@ library project Lib_Components is
          for Languages use ("Ada");
          Dir_List := Dir_List & "os/pthreads";
          for Library_Options use ("-lpthread");
+   end case;
+
+   case Atomic_Access is
+      when "auto" =>
+         case Shared.Arch is
+            when "x86_64" | "aarch64" =>
+               Atomic_Access := "Pragma-atomic";
+            when "i686" | "armhf" | "auto" =>
+               Atomic_Access := "GCC-long-offsets";
+         end case;
+      when others =>
+         null;
+   end case;
+
+   case Atomic_Access is
+      when "Pragma-atomic" =>
+         Dir_List := Dir_List & "atomic-access/ada";
+      when "GCC-built-ins" =>
+         Dir_List := Dir_List & "atomic-access/gcc";
+      when "GCC-long-offsets" | "auto" =>
+         Dir_List := Dir_List & "atomic-access/gcc-long-offsets";
    end case;
 
    for Source_Dirs use Dir_List & "xpm";
@@ -71,6 +87,8 @@ library project Lib_Components is
           "strings_edit-chacha20-aead.ads",
           "strings_edit-chacha20-poly1305.adb",
           "strings_edit-chacha20-poly1305.ads",
+          "strings_edit-distinguished_names.adb",
+          "strings_edit-distinguished_names.ads",
           "strings_edit-fields.adb",
           "strings_edit-fields.ads",
           "strings_edit-floats.ads",
@@ -83,8 +101,13 @@ library project Lib_Components is
           "strings_edit-integers.ads",
           "strings_edit-integer_edit.adb",
           "strings_edit-integer_edit.ads",
+          "strings_edit-iso_8601.adb",
+          "strings_edit-iso_8601.ads",
           "strings_edit-lexicographical_order.adb",
           "strings_edit-lexicographical_order.ads",
+          "strings_edit-long_floats.ads",
+          "strings_edit-object_identifiers.adb",
+          "strings_edit-object_identifiers.ads",
           "strings_edit-quoted.adb",
           "strings_edit-quoted.ads",
           "strings_edit-roman_edit.adb",
@@ -129,6 +152,8 @@ library project Lib_Components is
           "strings_edit-utf8-iso_8859_9.ads",
           "strings_edit-utf8-iso_8859_10.adb",
           "strings_edit-utf8-iso_8859_10.ads",
+          "strings_edit-utf8-itu_t61.adb",
+          "strings_edit-utf8-itu_t61.ads",
           "strings_edit-utf8-koi8.adb",
           "strings_edit-utf8-koi8.ads",
           "strings_edit-utf8-macos_roman.adb",
@@ -454,6 +479,89 @@ library project Lib_Components is
    Components_Connections_Server_Source_Files :=
    (  "gnat-sockets-connection_state_machine.adb",
       "gnat-sockets-connection_state_machine.ads",
+      "gnat-sockets-connection_state_machine-asn1.adb",
+      "gnat-sockets-connection_state_machine-asn1.ads",
+      "gnat-sockets-connection_state_machine-asn1-bit_strings.adb",
+      "gnat-sockets-connection_state_machine-asn1-bit_strings.ads",
+      "gnat-sockets-connection_state_machine-asn1-bit_strings-explicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-bit_strings-explicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-bit_strings-implicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-bit_strings-implicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-booleans.ads",
+      "gnat-sockets-connection_state_machine-asn1-booleans.adb",
+      "gnat-sockets-connection_state_machine-asn1-choices.adb",
+      "gnat-sockets-connection_state_machine-asn1-choices.ads",
+      "gnat-sockets-connection_state_machine-asn1-dates.adb",
+      "gnat-sockets-connection_state_machine-asn1-dates.ads",
+      "gnat-sockets-connection_state_machine-asn1-distinguished_names.adb",
+      "gnat-sockets-connection_state_machine-asn1-distinguished_names.ads",
+      "gnat-sockets-connection_state_machine-asn1-generic_enumeration.adb",
+      "gnat-sockets-connection_state_machine-asn1-generic_enumeration.ads",
+      "gnat-sockets-connection_state_machine-asn1-generic_integer.adb",
+      "gnat-sockets-connection_state_machine-asn1-generic_integer.ads",
+      "gnat-sockets-connection_state_machine-asn1-generic_real.adb",
+      "gnat-sockets-connection_state_machine-asn1-generic_real.ads",
+      "gnat-sockets-connection_state_machine-asn1-generic_unsigned.adb",
+      "gnat-sockets-connection_state_machine-asn1-generic_unsigned.ads",
+      "gnat-sockets-connection_state_machine-asn1-floats.ads",
+      "gnat-sockets-connection_state_machine-asn1-indefinite_unsigneds.adb",
+      "gnat-sockets-connection_state_machine-asn1-indefinite_unsigneds.ads",
+      "gnat-sockets-connection_state_machine-asn1-integers.ads",
+      "gnat-sockets-connection_state_machine-asn1-integers_8.adb",
+      "gnat-sockets-connection_state_machine-asn1-integers_8.ads",
+      "gnat-sockets-connection_state_machine-asn1-integers_16.ads",
+      "gnat-sockets-connection_state_machine-asn1-integers_32.ads",
+      "gnat-sockets-connection_state_machine-asn1-integers_64.ads",
+      "gnat-sockets-connection_state_machine-asn1-lengths.ads",
+      "gnat-sockets-connection_state_machine-asn1-lengths.adb",
+      "gnat-sockets-connection_state_machine-asn1-long_floats.ads",
+      "gnat-sockets-connection_state_machine-asn1-nulls.adb",
+      "gnat-sockets-connection_state_machine-asn1-nulls.ads",
+      "gnat-sockets-connection_state_machine-asn1-object_identifiers.adb",
+      "gnat-sockets-connection_state_machine-asn1-object_identifiers.ads",
+      "gnat-sockets-connection_state_machine-asn1-objects.adb",
+      "gnat-sockets-connection_state_machine-asn1-objects.ads",
+      "gnat-sockets-connection_state_machine-asn1-sequences.adb",
+      "gnat-sockets-connection_state_machine-asn1-sequences.ads",
+      "gnat-sockets-connection_state_machine-asn1-sequences-explicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-sequences-explicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-sequences-implicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-sequences-implicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-sequences-generic_sequence_of.adb",
+      "gnat-sockets-connection_state_machine-asn1-sequences-generic_sequence_of.ads",
+      "gnat-sockets-connection_state_machine-asn1-sets.adb",
+      "gnat-sockets-connection_state_machine-asn1-sets.ads",
+      "gnat-sockets-connection_state_machine-asn1-sets-explicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-sets-explicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-sets-implicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-sets-implicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-sets-generic_set_of.adb",
+      "gnat-sockets-connection_state_machine-asn1-sets-generic_set_of.ads",
+      "gnat-sockets-connection_state_machine-asn1-sets-generic_reference.adb",
+      "gnat-sockets-connection_state_machine-asn1-sets-generic_reference.ads",
+      "gnat-sockets-connection_state_machine-asn1-strings.adb",
+      "gnat-sockets-connection_state_machine-asn1-strings.ads",
+      "gnat-sockets-connection_state_machine-asn1-strings-explicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-strings-explicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-strings-explicit-constrained.adb",
+      "gnat-sockets-connection_state_machine-asn1-strings-explicit-constrained.ads",
+      "gnat-sockets-connection_state_machine-asn1-strings-implicit.adb",
+      "gnat-sockets-connection_state_machine-asn1-strings-implicit.ads",
+      "gnat-sockets-connection_state_machine-asn1-strings-implicit-constrained.adb",
+      "gnat-sockets-connection_state_machine-asn1-strings-implicit-constrained.ads",
+      "gnat-sockets-connection_state_machine-asn1-tagged_values.adb",
+      "gnat-sockets-connection_state_machine-asn1-tagged_values.ads",
+      "gnat-sockets-connection_state_machine-asn1-text_io.adb",
+      "gnat-sockets-connection_state_machine-asn1-text_io.ads",
+      "gnat-sockets-connection_state_machine-asn1-unsigneds_8.adb",
+      "gnat-sockets-connection_state_machine-asn1-unsigneds_8.ads",
+      "gnat-sockets-connection_state_machine-asn1-unsigneds_16.ads",
+      "gnat-sockets-connection_state_machine-asn1-unsigneds_32.ads",
+      "gnat-sockets-connection_state_machine-asn1-unsigneds_64.ads",
+      "gnat-sockets-connection_state_machine-asn1-x509_certificates.adb",
+      "gnat-sockets-connection_state_machine-asn1-x509_certificates.ads",
+      "gnat-sockets-connection_state_machine-asn1-x509_certificates-stream_io.adb",
+      "gnat-sockets-connection_state_machine-asn1-x509_certificates-stream_io.ads",
       "gnat-sockets-connection_state_machine-big_endian.ads",
       "gnat-sockets-connection_state_machine-big_endian-generic_double_precision_ieee_754.ads",
       "gnat-sockets-connection_state_machine-big_endian-generic_double_precision_ieee_754.adb",
@@ -552,6 +660,14 @@ library project Lib_Components is
           "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.adb",
           "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.ads"
        );
+   Components_Connections_State_Machine_LDAP_Source_Files :=
+       (  "gnat-sockets-connection_state_machine-ldap.adb",
+          "gnat-sockets-connection_state_machine-ldap.ads",
+          "gnat-sockets-connection_state_machine-ldap-client.adb",
+          "gnat-sockets-connection_state_machine-ldap-client.ads",
+          "gnat-sockets-connection_state_machine-ldap-server.adb",
+          "gnat-sockets-connection_state_machine-ldap-server.ads"
+       );
    Components_Connections_Server_OpenSSL_Source_Files :=
        (  "gnat-sockets-server-openssl.adb",
           "gnat-sockets-server-openssl.ads"
@@ -611,6 +727,7 @@ library project Lib_Components is
       Components_Connections_Server_HTTP_Server_Source_Files &
       Components_Connections_Server_HTTP_Server_Sqlite_Browser_Source_Files &
       Components_Connections_Server_ELV_Max_Cube_Source_Files &
+      Components_Connections_State_Machine_LDAP_Source_Files &
       Components_Connections_Server_OpenSSL_Source_Files &
       Components_Sqlite_Source_Files &
       XPM_Parser_Source_Files &
@@ -625,7 +742,7 @@ library project Lib_Components is
              Files_List & (  "synchronization-windows.adb",
                              "synchronization-windows.ads"
                           );
-      when "Linux" | "UNIX" =>
+      when "Linux" | "UNIX" | "auto" =>
          for Source_Files use
              Files_List & (  "synchronization_linux.c",
                              "synchronization-linux.adb",
@@ -638,12 +755,22 @@ library project Lib_Components is
                           );
    end case;
 
-   for Library_Kind use Shared.Library_Kind;
+   So_Ext := "";
+   case Shared.SC_OS is
+      when "Windows" =>
+         So_Ext := ".dll";
+      when "OSX" =>
+         So_Ext := ".dylib";
+      when others =>
+         So_Ext := ".so";
+   end case;
+
+   for Library_Kind use Library_Type;
    for Library_Name use "components";
-   for Object_Dir  use "obj/" & Project'Library_Name & "/" & Project'Library_Kind;
-   for Library_Dir use "lib/" & Project'Library_Name & "/" & Project'Library_Kind;
+   for Object_Dir   use "obj/" & Project'Library_Name & "/" & Project'Library_Kind;
+   for Library_Dir  use "lib/" & Project'Library_Name & "/" & Project'Library_Kind;
    for Library_Version use
-      "lib" & Project'Library_Name & Shared.DyLib_Ext & "." & Version;
+      "lib" & Project'Library_Name & So_Ext & "." & Version;
 
    package Builder  renames Shared.Builder;
    package Compiler renames Shared.Compiler;

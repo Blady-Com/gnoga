@@ -384,10 +384,11 @@ package body Gnoga.Server.Connection is
                                 return GNAT.Sockets.Sock_Addr_Type
    is
       use GNAT.Sockets;
+      use type Ada.Strings.Unbounded.Unbounded_String;
 
       Address : Sock_Addr_Type;
       Host    : constant String :=
-        Ada.Strings.Unbounded.To_String (Server_Host);
+        (if Server_Host = "localhost" then "127.0.0.1" else Ada.Strings.Unbounded.To_String (Server_Host));
    begin
       if Host = "" then
          Address.Addr := Any_Inet_Addr;

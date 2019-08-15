@@ -1,10 +1,37 @@
+2019xxxx - Gnoga V1.5-beta:
+
+- xxx
+
+
+20190824 - Gnoga V1.5-alpha:
+
+- Fix to avoid SYSTEM.ASSERTIONS.ASSERT_FAILURE : Position cursor of Next is bad
+- Add support for localhost in Initialize for singleton and multi-connect app according to code comments.
+- Upgrade to Simple Components 4.41
+- Update Jeff Carter's Pragmarc and demos from Github
+- Upgrade to Simple Components 4.40
+- Canvas: add additional binding to drawImage
+- PIXI.Sprite: recursive rendering of sprite's children.
+- PIXI.Sprite: modification for finalizing children
+- Add log of user agent and platform client browser in case of suspicious connections
+- Make favicon customization available by the application.
+- Add an exception handler when a requested file is non existent on the server side
+- Support multi-part bodies for POST forms
+- Add Profile build mode and tidy some GPR project files.
+- Fix POST UTF-8 key, UTF-8 to Latin-1 translation, UTF8 incoming message.
+- Console_IO: improve responsiveness of Get_Line
+- Canvas_2D: add Polygon_To; Plotting_2D: use Polygon_To
+
+
 20181013 - Gnoga V1.4a:
 
 - Update TODO, HISTORY.
 
+
 20180816 - Gnoga V1.4-beta:
 
 - Miscellaneous changes on build files.
+
 
 20180812 - Gnoga V1.4-alpha:
 

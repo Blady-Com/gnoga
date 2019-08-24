@@ -1012,6 +1012,7 @@ package body Gnoga.Server.Connection is
       Connection_Data_Map   : Connection_Data_Maps.Map;
       Event_Task_Map        : Event_Task_Maps.Map;
       Socket_Map            : Socket_Maps.Map;
+      Shadow_Socket_Map     : Socket_Maps.Map;
       Current_Socket        : Socket_Maps.Cursor := Socket_Maps.No_Element;
    end Connection_Manager;
 
@@ -1141,7 +1142,8 @@ package body Gnoga.Server.Connection is
       procedure First (ID : out Gnoga.Types.Connection_ID) is
          use type Socket_Maps.Cursor;
       begin
-         Current_Socket := Socket_Map.First;
+         Shadow_Socket_Map := Socket_Map;
+         Current_Socket := Shadow_Socket_Map.First;
          if Current_Socket /= Socket_Maps.No_Element then
             ID := Socket_Maps.Key (Current_Socket);
          else

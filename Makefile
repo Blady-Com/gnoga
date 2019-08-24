@@ -348,7 +348,7 @@ endif
 # https://sourceforge.net/projects/adacontrol
 check_rules:
 	$(BUILDER) -c -f -P src/gnoga.gpr -gnatct $(GN_OPTIONS)
-	adactl -f rules/gnoga.aru -p src/gnoga.gpr src/*.ads -- -Tobj
+	adactl -f rules/gnoga.aru -p src/gnoga.gpr @rules/gnoga.txt -S 3 -- -FT -Tobj
 
 gnoga-config:
 ifeq ($(BUILD_OS),Windows)

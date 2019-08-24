@@ -87,7 +87,7 @@ abstract project Settings is
    ---------
 
    package IDE is
-      for Default_Switches ("adacontrol") use ("-f", "rules/gnoga.aru", "-s", "--", "-Tobj");
+      for Default_Switches ("adacontrol") use ("-f", Settings'Project_Dir & "rules/gnoga.aru", "-S", "1");
       for VCS_Kind use "git";
    end IDE;
 

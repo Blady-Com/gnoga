@@ -308,7 +308,7 @@ clean_deps:
 
 .IGNORE: clean
 clean: clean_demo clean_tutorials clean_tests
-	$(CLEANER) -P src/gnoga_agg.gpr
+	$(CLEANER) -P src/gnoga.gpr
 	$(CLEANER) -P ssl/gnoga_secure.gpr
 	$(CLEANER) -P tools/tools.gpr
 	$(RM) bin$(PATHSEP)*.db
@@ -348,7 +348,7 @@ endif
 # https://sourceforge.net/projects/adacontrol
 check_rules:
 	$(BUILDER) -c -f -P src/gnoga.gpr -gnatct $(GN_OPTIONS)
-	adactl -f rules/gnoga.aru -p src/gnoga.gpr @rules/gnoga.txt -S 3 -- -FT -Tobj
+	adactl -f rules/gnoga.aru -p src/gnoga.gpr @rules/gnoga.txt -s -S 3 -- -FT -Tobj
 
 gnoga-config:
 ifeq ($(BUILD_OS),Windows)

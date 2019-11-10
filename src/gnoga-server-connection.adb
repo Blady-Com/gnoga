@@ -117,7 +117,9 @@ package body Gnoga.Server.Connection is
       entry Stop;
    end Watchdog_Type;
 
-   Watchdog : access Watchdog_Type := null;
+   type Watchdog_Access is access Watchdog_Type;
+
+   Watchdog : Watchdog_Access := null;
 
    --  Keep alive and check connection status
 
@@ -278,7 +280,9 @@ package body Gnoga.Server.Connection is
       entry Stop;
    end Gnoga_HTTP_Server_Type;
 
-   Gnoga_HTTP_Server : access Gnoga_HTTP_Server_Type := null;
+   type Gnoga_HTTP_Server_Access is access Gnoga_HTTP_Server_Type;
+
+   Gnoga_HTTP_Server : Gnoga_HTTP_Server_Access := null;
 
    task body Gnoga_HTTP_Server_Type is
    begin
@@ -2436,6 +2440,8 @@ package body Gnoga.Server.Connection is
 
    procedure Stop is
       ID : Gnoga.Types.Connection_ID;
+      procedure Free is new Ada.Unchecked_Deallocation (Watchdog_Type, Watchdog_Access);
+      procedure Free is new Ada.Unchecked_Deallocation (Gnoga_HTTP_Server_Type, Gnoga_HTTP_Server_Access);
    begin
       if not Exit_Application_Requested and
         Watchdog /= null and
@@ -2443,7 +2449,7 @@ package body Gnoga.Server.Connection is
       then
          Exit_Application_Requested := True;
          Watchdog.Stop;
-         Watchdog := null;
+         Free (Watchdog);
 
          Connection_Manager.First (ID);
          while ID /= 0 loop
@@ -2459,7 +2465,7 @@ package body Gnoga.Server.Connection is
          Connection_Manager.Delete_All_Connections;
 
          Gnoga_HTTP_Server.Stop;
-         Gnoga_HTTP_Server := null;
+         Free (Gnoga_HTTP_Server);
       end if;
    end Stop;
 

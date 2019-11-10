@@ -124,6 +124,7 @@ package body Gnoga.Gui.Window is
       if Object.Free_Connection_Data then
          Free_Data (P);
          Object.Connection_Data (null);
+         Log ("Connection_Data freed " & Object.Connection_ID'Image);
       end if;
    exception
       when E : others =>

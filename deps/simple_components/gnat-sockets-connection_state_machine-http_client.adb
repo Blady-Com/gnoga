@@ -273,6 +273,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Client is
 
    procedure Finalize (Session : in out HTTP_Session) is
    begin
+      Cleanup (Session);
       for Index in Session.Request_Headers'Range loop
          Free (Session.Request_Headers (Index));
       end loop;

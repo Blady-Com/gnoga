@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Task_Identification;
+with Ada.Unchecked_Deallocation;
 
 with Gnoga.Server.Connection;
 with Gnoga.Types;
@@ -56,31 +57,6 @@ package body Gnoga.Application.Singleton is
       Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
    --  Connection On_Connect handler
 
-   ----------------
-   -- On_Connect --
-   ----------------
-
-   procedure On_Connect
-     (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Server.Connection.Connection_Holder_Type)
-   is
-   begin
-      if Connection_ID = Gnoga.Types.No_Connection then
-         Connection_ID := ID;
-
-         Application_Holder.Release;
-
-         Connection.Hold;
-
-         Connection_Holder.Release;
-
-         Gnoga.Server.Connection.Stop;
-      else
-         Gnoga.Server.Connection.Execute_Script
-           (ID, "document.writeln ('Only one connection permitted.');");
-      end if;
-   end On_Connect;
-
    ---------------------
    -- Web_Server_Task --
    ---------------------
@@ -97,6 +73,33 @@ package body Gnoga.Application.Singleton is
       accept Start;
       Gnoga.Server.Connection.Run;
    end Web_Server_Task;
+
+   ----------------
+   -- On_Connect --
+   ----------------
+
+   procedure On_Connect
+     (ID         : in     Gnoga.Types.Connection_ID;
+      Connection : access Gnoga.Server.Connection.Connection_Holder_Type)
+   is
+      procedure Free is new Ada.Unchecked_Deallocation (Web_Server_Task, Web_Server_Task_Access);
+   begin
+      if Connection_ID = Gnoga.Types.No_Connection then
+         Connection_ID := ID;
+
+         Application_Holder.Release;
+
+         Connection.Hold;
+
+         Connection_Holder.Release;
+
+         Gnoga.Server.Connection.Stop;
+         Free (Web_Server);
+      else
+         Gnoga.Server.Connection.Execute_Script
+           (ID, "document.writeln ('Only one connection permitted.');");
+      end if;
+   end On_Connect;
 
    ----------------
    -- Initialize --

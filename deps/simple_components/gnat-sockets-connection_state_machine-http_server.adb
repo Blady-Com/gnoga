@@ -25,6 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
+--  with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
 with Ada.Characters.Handling;  use Ada.Characters.Handling;
 with Ada.Tags;                 use Ada.Tags;
 with GNAT.SHA1;                use GNAT.SHA1;
@@ -671,7 +672,7 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
          end if;
       end;
    exception
-      when Error : others =>
+      when others =>
          WebSocket_Cleanup (Client);
          raise;
    end Do_WebSocket;
@@ -680,6 +681,15 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
    begin
       WebSocket_Cleanup (Client);
       Finalize (State_Machine (Client));
+      Deallocate_All (Client.Pool);
+      Client.Expecting   := Request_Line;
+      Client.Data_Length := 0;
+      Client.Status      := null;
+      Client.Part_Mark   := null;
+      Client.Chain       := null;
+      Client.Boundary    := null;
+      Client.Destination := null;
+      Client.Source      := null;
    end Finalize;
 
    function From_Escaped

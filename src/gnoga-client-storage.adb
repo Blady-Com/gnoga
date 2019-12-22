@@ -4,7 +4,7 @@
 --                                                                          --
 --                   G N O G A . C L I E N T . S T O R A G E                --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --

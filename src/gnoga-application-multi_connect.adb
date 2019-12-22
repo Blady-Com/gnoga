@@ -4,7 +4,7 @@
 --                                                                          --
 --       G N O G A . A P P L I C A T I O N . M U L T _ C O N N E C T        --
 --                                                                          --
---                                 S p e c                                  --
+--                                 B o d y                                  --
 --                                                                          --
 --                                                                          --
 --                     Copyright (C) 2014 David Botton                      --

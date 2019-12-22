@@ -1,6 +1,18 @@
-2019xxxx - Gnoga V1.5-beta:
+20191222 - Gnoga V1.6-alpha:
 
-- xxx
+- ...
+
+
+20191222 - Gnoga V1.5a:
+
+- Update Makefile, TODO, README, TIPS and more.
+
+
+20191111 - Gnoga V1.5-beta:
+
+- Avoid some memory leaks.
+- Fix exception in CLI test
+- Check only specifications with AdaControl.
 
 
 20190824 - Gnoga V1.5-alpha:

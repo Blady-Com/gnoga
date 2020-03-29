@@ -16,7 +16,8 @@ aggregate project Demo_Agg is
                             "tic_tac_toe/tic_tac_toe.gpr",
                             "leaves/leaves.gpr",
                             "db_maker/db_maker.gpr",
-                            "logo/logo.gpr");
+                            "logo/logo.gpr",
+                            "localize/localize.gpr");
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
 end Demo_Agg;

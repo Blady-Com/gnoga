@@ -278,6 +278,11 @@ logo: zanyblue
 	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
 	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
 
+localize: zanyblue
+#	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
+#	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
+	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
+
 tests:
 	- $(BUILDER) -k -P test/test_agg.gpr $(GN_OPTIONS)
 

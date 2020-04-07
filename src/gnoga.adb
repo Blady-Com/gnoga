@@ -43,6 +43,8 @@ with Ada.Integer_Text_IO;
 with Ada.Strings.UTF_Encoding.Strings;
 with Ada.Task_Termination;
 
+with Strings_Edit.UTF8.Handling;
+
 package body Gnoga is
 
    Use_File : Boolean := False;
@@ -201,8 +203,8 @@ package body Gnoga is
       end loop;
 
       if Encoding = "UTF-8" then
-         return Ada.Strings.UTF_Encoding.Strings.Decode
-           (Ada.Strings.Unbounded.To_String (R));
+         return Strings_Edit.UTF8.Handling.To_String
+           (Ada.Strings.Unbounded.To_String (R), Substitution_Character);
       else
          return Ada.Strings.Unbounded.To_String (R);
       end if;

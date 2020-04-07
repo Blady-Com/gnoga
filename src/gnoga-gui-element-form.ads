@@ -1002,6 +1002,52 @@ package Gnoga.Gui.Element.Form is
    function Label (Element : Option_Group_Type)
                    return String;
 
+   -------------------------------------------------------------------------
+   --  File_Types
+   -------------------------------------------------------------------------
+
+   type File_Type is new Form_Element_Type with private;
+   type File_Access is access all File_Type;
+   type Pointer_To_File_Class is access all File_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  File_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out File_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "");
+
+   -------------------------------------------------------------------------
+   --  File_Type - Properties
+   -------------------------------------------------------------------------
+
+   function File_Name (Element : File_Type) return String;
+   function File_Size (Element : File_Type) return Natural;
+   function File_Format (Element : File_Type) return String;
+   function File_Time (Element : File_Type) return Natural;
+   --  Return the file last modification time in milliseconds
+
+   -------------------------------------------------------------------------
+   --  Tel_Types
+   -------------------------------------------------------------------------
+
+   type Tel_Type is new Form_Element_Type with private;
+   type Tel_Access is access all Tel_Type;
+   type Pointer_To_Tel_Class is access all Tel_Type'Class;
+
+   -------------------------------------------------------------------------
+   --  Tel_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Tel_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "");
+
 private
    type Form_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Form_Element_Type is
@@ -1034,4 +1080,6 @@ private
    type Option_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Option_Group_Type is
      new Gnoga.Gui.Element.Element_Type with null record;
+   type File_Type is new Form_Element_Type with null record;
+   type Tel_Type is new Form_Element_Type with null record;
 end Gnoga.Gui.Element.Form;

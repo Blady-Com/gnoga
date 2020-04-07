@@ -1732,4 +1732,77 @@ package body Gnoga.Gui.Element.Form is
    begin
       return Element.Property ("disabled");
    end Disabled;
+
+   -------------------------------------------------------------------------
+   --  File_Type
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out File_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create_Element (Form       => Form,
+                              Input_Type => "file",
+                              Value      => Value,
+                              Name       => Name,
+                              ID         => ID);
+   end Create;
+
+   function File_Name (Element : File_Type) return String is
+   begin
+      if Element.Value /= "" then
+         return Element.jQuery_Execute ("prop ('files')[0].name;");
+      else
+         return "";
+      end if;
+   end File_Name;
+
+   function File_Size (Element : File_Type) return Natural is
+   begin
+      if Element.Value /= "" then
+         return Element.jQuery_Execute ("prop ('files')[0].size;");
+      else
+         return 0;
+      end if;
+   end File_Size;
+
+   function File_Format (Element : File_Type) return String is
+   begin
+      if Element.Value /= "" then
+         return Element.jQuery_Execute ("prop ('files')[0].type;");
+      else
+         return "";
+      end if;
+   end File_Format;
+
+   function File_Time (Element : File_Type) return Natural is
+   begin
+      if Element.Value /= "" then
+         return Element.jQuery_Execute ("prop ('files')[0].lastModified;");
+      else
+         return 0;
+      end if;
+   end File_Time;
+
+   -------------------------------------------------------------------------
+   --  Tel_Type
+   -------------------------------------------------------------------------
+
+   procedure Create (Element    : in out Tel_Type;
+                     Form       : in out Form_Type'Class;
+                     Value      : in     String := "";
+                     Name       : in     String := "";
+                     ID         : in     String := "")
+   is
+   begin
+      Element.Create_Element (Form       => Form,
+                              Input_Type => "tel",
+                              Value      => Value,
+                              Name       => Name,
+                              ID         => ID);
+   end Create;
+
 end Gnoga.Gui.Element.Form;

@@ -63,8 +63,6 @@ with Ada.Streams;
 package body Gnoga.Server.Connection is
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
 
-   Substitution_Character : constant Character := '?';
-
    On_Connect_Event      : Connect_Event      := null;
    On_Post_Event         : Post_Event         := null;
    On_Post_Request_Event : Post_Request_Event := null;
@@ -722,7 +720,8 @@ package body Gnoga.Server.Connection is
       Parameters : Gnoga.Types.Data_Map_Type;
    begin
       if On_Post_Event /= null and Status.Kind = File and Content_Type = "" then
-         Parameters.Insert (Field_Name, Client.Content.Text.Get);
+         Parameters.Insert (Strings_Edit.UTF8.Handling.To_String (Field_Name, Substitution_Character),
+                            Strings_Edit.UTF8.Handling.To_String (Client.Content.Text.Get, Substitution_Character));
          On_Post_Event (Status.File & Status.Query, Parameters);
       end if;
    end Body_Received;
@@ -746,6 +745,7 @@ package body Gnoga.Server.Connection is
       Disposition  : constant String := Client.Get_Multipart_Header
         (Content_Disposition_Header);
    begin
+      --  Gnoga.Log ("Content_Type: " & Content_Type & ", Disposition: " & Disposition);
       if On_Post_Request_Event /= null then
          On_Post_Request_Event (Status.File & Status.Query, Param_List);
       end if;
@@ -779,7 +779,7 @@ package body Gnoga.Server.Connection is
                                 (f + File_ID'Length .. Eq - 1);
                            begin
                               if On_Post_File_Event = null then
-                                 Gnoga.Log ("Attempt to upload file with out" &
+                                 Gnoga.Log ("Attempt to upload file without" &
                                               " an On_Post_File_Event set");
                               else
                                  if Is_Open (Client.Content.FS) then
@@ -796,8 +796,10 @@ package body Gnoga.Server.Connection is
                                    (Client, Stream (Client.Content.FS));
 
                                  On_Post_File_Event (Status.File & Status.Query,
-                                                     File_Name,
-                                                     File_Name & ".tmp");
+                                                     Strings_Edit.UTF8.Handling.To_String
+                                                       (File_Name, Substitution_Character),
+                                                     Strings_Edit.UTF8.Handling.To_String
+                                                       (File_Name, Substitution_Character) & ".tmp");
                               end if;
                            end;
                         else

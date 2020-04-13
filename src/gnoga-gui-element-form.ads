@@ -1016,19 +1016,56 @@ package Gnoga.Gui.Element.Form is
 
    procedure Create (Element    : in out File_Type;
                      Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "");
+                     Multiple   : in     Boolean := False;
+                     Name       : in     String  := "";
+                     ID         : in     String  := "");
 
    -------------------------------------------------------------------------
    --  File_Type - Properties
    -------------------------------------------------------------------------
 
-   function File_Name (Element : File_Type) return String;
-   function File_Size (Element : File_Type) return Natural;
-   function File_Format (Element : File_Type) return String;
-   function File_Time (Element : File_Type) return Natural;
-   --  Return the file last modification time in milliseconds
+   procedure Accept_List (Element : in out File_Type;
+                          Value   : in     String);
+   function Accept_List (Element : File_Type)
+                         return String;
+   --  One or more unique file type specifiers describing file types to allow
+
+   procedure Capture (Element : in out File_Type;
+                      Value   : in     String);
+   function Capture (Element : File_Type)
+                     return String;
+   --  What source to use for capturing image or video data
+
+   procedure Multiple (Element : in out File_Type;
+                       Value   : in     Boolean := True);
+   function Multiple (Element : File_Type)
+                      return Boolean;
+   --  A Boolean which, if present, indicates that the user may choose more than one file
+
+   procedure WebkitDirectory (Element : in out File_Type;
+                              Value   : in     Boolean := True);
+   function WebkitDirectory (Element : File_Type)
+                             return Boolean;
+   --  A Boolean indicating whether or not to only allow the user to choose a directory
+   --  (or directories, if multiple is also present)
+
+   function File_Count (Element : File_Type) return Natural;
+   --  Return the number of selected files
+
+   function File_Name (Element : File_Type; Index : Positive := 1) return String;
+   --  Return the name of the specified file by its index
+
+   function File_Size (Element : File_Type; Index : Positive := 1) return Natural;
+   --  Return the size of the specified file by its index
+
+   function File_MIME_Type (Element : File_Type; Index : Positive := 1) return String;
+   --  Return the MIME type of the specified file by its index
+
+   function File_Last_Modified (Element : File_Type; Index : Positive := 1) return Natural;
+   --  Return the last modification time in millisecond of the specified file by its index
+
+   function File_WebkitRelativePath (Element : File_Type; Index : Positive := 1) return String;
+   --  Return the path of the file is relative to.
 
    -------------------------------------------------------------------------
    --  Tel_Types

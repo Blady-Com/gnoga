@@ -1739,53 +1739,122 @@ package body Gnoga.Gui.Element.Form is
 
    procedure Create (Element    : in out File_Type;
                      Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+                     Multiple   : in     Boolean := False;
+                     Name       : in     String  := "";
+                     ID         : in     String  := "")
    is
    begin
       Element.Create_Element (Form       => Form,
                               Input_Type => "file",
-                              Value      => Value,
                               Name       => Name,
                               ID         => ID);
+      Element.Multiple (Multiple);
    end Create;
 
-   function File_Name (Element : File_Type) return String is
+   procedure Accept_List (Element : in out File_Type;
+                          Value    : in     String)
+   is
+   begin
+      Element.Property ("accept", Value);
+   end Accept_List;
+
+   function Accept_List (Element : File_Type) return String is
+   begin
+      return Element.Property ("accept");
+   end Accept_List;
+
+   procedure Capture (Element : in out File_Type;
+                      Value   : in     String)
+   is
+   begin
+      Element.Property ("capture", Value);
+   end Capture;
+
+   function Capture (Element : File_Type) return String is
+   begin
+      return Element.Property ("capture");
+   end Capture;
+
+   procedure Multiple (Element : in out File_Type;
+                       Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("multiple", Value);
+   end Multiple;
+
+   function Multiple (Element : File_Type) return Boolean
+   is
+   begin
+      return Element.Property ("multiple");
+   end Multiple;
+
+   procedure WebkitDirectory (Element : in out File_Type;
+                              Value   : in     Boolean := True)
+   is
+   begin
+      Element.Property ("webkitdirectory", Value);
+   end WebkitDirectory;
+
+   function WebkitDirectory (Element : File_Type) return Boolean
+   is
+   begin
+      return Element.Property ("webkitdirectory");
+   end WebkitDirectory;
+
+   function File_Count (Element : File_Type) return Natural is
+   begin
+      return Element.jQuery_Execute ("prop ('files').length");
+   end File_Count;
+
+   function File_Name (Element : File_Type; Index : Positive := 1) return String is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[0].name;");
+         return Element.jQuery_Execute ("prop ('files')[" &
+                                          Natural'Image (Index - 1) & "].name");
       else
          return "";
       end if;
    end File_Name;
 
-   function File_Size (Element : File_Type) return Natural is
+   function File_Size (Element : File_Type; Index : Positive := 1) return Natural is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[0].size;");
+         return Element.jQuery_Execute ("prop ('files')[" &
+                                          Natural'Image (Index - 1) & "].size");
       else
          return 0;
       end if;
    end File_Size;
 
-   function File_Format (Element : File_Type) return String is
+   function File_MIME_Type (Element : File_Type; Index : Positive := 1) return String is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[0].type;");
+         return Element.jQuery_Execute ("prop ('files')[" &
+                                          Natural'Image (Index - 1) & "].type");
       else
          return "";
       end if;
-   end File_Format;
+   end File_MIME_Type;
 
-   function File_Time (Element : File_Type) return Natural is
+   function File_Last_Modified (Element : File_Type; Index : Positive := 1) return Natural is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[0].lastModified;");
+         return Element.jQuery_Execute ("prop ('files')[" &
+                                          Natural'Image (Index - 1) & "].lastModified");
       else
          return 0;
       end if;
-   end File_Time;
+   end File_Last_Modified;
+
+   function File_WebkitRelativePath (Element : File_Type; Index : Positive := 1) return String is
+   begin
+      if Element.Value /= "" then
+         return Element.jQuery_Execute ("prop ('files')[" &
+                                          Natural'Image (Index - 1) & "].webkitRelativePath");
+      else
+         return "";
+      end if;
+   end File_WebkitRelativePath;
 
    -------------------------------------------------------------------------
    --  Tel_Type

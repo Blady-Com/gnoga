@@ -19,6 +19,7 @@ procedure Files_Ops is
       Mon_Bouton_RAZ   : Gnoga.Gui.Element.Form.Reset_Button_Type;
       Mon_Fichier      : Gnoga.Gui.Element.Form.File_Type;
       Reader           : Gnoga.Client.Files.File_Reader_Type;
+      Mon_Fichier_Mult : Gnoga.Gui.Element.Form.File_Type;
    end record;
    type App_Access is access all App_Data;
 
@@ -42,11 +43,27 @@ procedure Files_Ops is
       App.Main_View.Put_Line ("Reader Error = " & App.Reader.Error_Name);
    end On_Submit;
 
+   procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      App : constant App_Access := App_Access (Object.Connection_Data);
+   begin
+      App.Main_View.Put_Line
+        ("Files count = " & App.Mon_Fichier_Mult.File_Count'Image);
+      for I in 1 .. App.Mon_Fichier_Mult.File_Count loop
+         App.Main_View.Put_Line
+           ("File (" & I'image & ") = " &
+            App.Mon_Fichier_Mult.File_Name (Index => I));
+         App.Main_View.Put_Line
+           ("File (" & I'image & ") = " &
+            App.Mon_Fichier_Mult.File_WebkitRelativePath (Index => I));
+      end loop;
+   end On_Change;
+
    procedure Formulaires (App : App_Access) is
    begin
       Main_Window.Connection_Data (App);
       App.Main_View.Create (Main_Window);
       App.Mon_Formulaire.Create (App.Main_View);
+      App.Mon_Formulaire.Put_Line ("Single file selection:");
       App.Mon_Fichier.Create (App.Mon_Formulaire);
       App.Mon_Formulaire.New_Line;
       App.Mon_Formulaire.On_Submit_Handler (On_Submit'Unrestricted_Access);
@@ -57,6 +74,12 @@ procedure Files_Ops is
         (App.Mon_Formulaire, 40, 8, Value => "Text...");
       App.Reader.Create (Main_Window);
       App.Reader.On_Load_Handler (On_Load'Unrestricted_Access);
+      App.Mon_Formulaire.New_Line;
+      App.Mon_Formulaire.Put_Line ("Multiple file and folder selection:");
+      App.Mon_Fichier_Mult.Create (App.Mon_Formulaire);
+      App.Mon_Fichier_Mult.Multiple;
+      App.Mon_Fichier_Mult.WebkitDirectory;
+      App.Mon_Fichier_Mult.On_Change_Handler (On_Change'Unrestricted_Access);
    end Formulaires;
 
 begin

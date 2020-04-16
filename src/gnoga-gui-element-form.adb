@@ -1554,6 +1554,12 @@ package body Gnoga.Gui.Element.Form is
       Element.Execute ("remove (" & JS_Index'Img & ")");
    end Remove_Option;
 
+   procedure Empty_Options (Element  : in out Selection_Type)
+   is
+   begin
+      Element.jQuery_Execute ("empty()");
+   end Empty_Options;
+
    -------------------------------------------------------------------------
    --  Option_Type
    -------------------------------------------------------------------------

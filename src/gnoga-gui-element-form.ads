@@ -910,6 +910,8 @@ package Gnoga.Gui.Element.Form is
    procedure Remove_Option (Element  : in out Selection_Type;
                             Index    : in     Positive);
 
+   procedure Empty_Options (Element  : in out Selection_Type);
+
    -------------------------------------------------------------------------
    --  Option_Type
    -------------------------------------------------------------------------

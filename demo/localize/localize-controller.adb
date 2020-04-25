@@ -33,12 +33,14 @@ package body Localize.Controller is
    procedure On_Delete (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Rename (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   function Modified (Key : String) return Character is
-     (if Localize.Parser.Locale_Modified (Key) then '*' else ' ');
-   function Only_Master (Key : String) return Character is
-     (if Localize.Parser.Locale_Contains (Key) then ' ' else '#');
-   function Only_Locale (Key : String) return Character is
-     (if Localize.Parser.Master_Contains (Key) then ' ' else '@');
+   function Modified
+     (Properties : Localize.Parser.Property_List; Key : String)
+      return Character is
+     (if Localize.Parser.Modified (Properties, Key) then '*' else ' ');
+   function Not_In
+     (Properties : Localize.Parser.Property_List; Key : String;
+      Tag        : Character) return Character is
+     (if not Localize.Parser.Contains (Properties, Key) then Tag else ' ');
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       View : constant Localize.View.Default_View_Access :=
@@ -70,10 +72,10 @@ package body Localize.Controller is
    begin
       View.Error_Label.Text ("No error.");
       View.Key_Input.Value (Key);
-      View.Master_Text.Value (Localize.Parser.Master_Text (Key));
-      View.Master_Comment.Value (Localize.Parser.Master_Comment (Key));
-      View.Locale_Text.Value (Localize.Parser.Locale_Text (Key));
-      View.Locale_Comment.Value (Localize.Parser.Locale_Comment (Key));
+      View.Master_Text.Value (Localize.Parser.Text (View.Master, Key));
+      View.Master_Comment.Value (Localize.Parser.Comment (View.Master, Key));
+      View.Locale_Text.Value (Localize.Parser.Text (View.Locale, Key));
+      View.Locale_Comment.Value (Localize.Parser.Comment (View.Locale, Key));
       View.Old_Key_Index := View.Key_List.Selected_Index;
    exception
       when others =>
@@ -88,11 +90,12 @@ package body Localize.Controller is
         (if Key_Index > 0 then View.Key_List.Value (Key_Index) else "");
    begin
       View.Error_Label.Text ("No error.");
-      Localize.Parser.Locale_Text (Key, View.Locale_Text.Value);
-      if Localize.Parser.Locale_Modified (Key) then
+      Localize.Parser.Text (View.Locale, Key, View.Locale_Text.Value);
+      if Localize.Parser.Modified (View.Locale, Key) then
          View.Key_List.Text
            (Key_Index,
-            Only_Master (Key) & Only_Locale (Key) & Modified (Key) & Key);
+            Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') &
+            Modified (View.Locale, Key) & Key);
       end if;
    exception
       when others =>
@@ -108,11 +111,12 @@ package body Localize.Controller is
         (if Key_Index > 0 then View.Key_List.Value (Key_Index) else "");
    begin
       View.Error_Label.Text ("No error.");
-      Localize.Parser.Locale_Comment (Key, View.Locale_Comment.Value);
-      if Localize.Parser.Locale_Modified (Key) then
+      Localize.Parser.Comment (View.Locale, Key, View.Locale_Comment.Value);
+      if Localize.Parser.Modified (View.Locale, Key) then
          View.Key_List.Text
            (Key_Index,
-            Only_Master (Key) & Only_Locale (Key) & Modified (Key) & Key);
+            Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') &
+            Modified (View.Locale, Key) & Key);
       end if;
    exception
       when others =>
@@ -124,8 +128,8 @@ package body Localize.Controller is
         Localize.View.Default_View_Access (Object.Parent.Parent.Parent);
    begin
       View.Error_Label.Text ("No error.");
-      Localize.Parser.Parse_Master (View.Master_Path.Value);
-      Localize.Parser.Parse_Locale (View.Locale_Path.Value);
+      Localize.Parser.Read (View.Master, View.Master_Path.Value);
+      Localize.Parser.Read (View.Locale, View.Locale_Path.Value);
       On_Select (Object);
    exception
       when others =>
@@ -138,8 +142,8 @@ package body Localize.Controller is
       Key : constant String := View.Key_List.Value;
    begin
       View.Error_Label.Text ("No error.");
-      Localize.Parser.Write_Locale (View.Locale_Path.Value);
-      Localize.Parser.Reset_Locale_Modified_Indicators;
+      Localize.Parser.Write (View.Locale, View.Locale_Path.Value);
+      Localize.Parser.Reset_Modified_Indicators (View.Locale);
       On_Select (Object);
    exception
       when others =>
@@ -154,9 +158,13 @@ package body Localize.Controller is
       View.Error_Label.Text ("No error.");
       View.Old_Key_Index := 0;
       View.Key_List.Empty_Options;
-      for Key of Localize.Parser.Selected_Keys (View.Select_Pattern.Value) loop
+      for Key of Localize.Parser.Selected_Keys
+        (View.Master, View.Locale, View.Select_Pattern.Value)
+      loop
          View.Key_List.Add_Option
-           (Key, Only_Master (Key) & Only_Locale (Key) & Modified (Key) & Key);
+           (Key,
+            Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') &
+            Modified (View.Locale, Key) & Key);
          if Key = Old_Key then
             View.Key_List.Selected (View.Key_List.Length);
          end if;
@@ -181,12 +189,14 @@ package body Localize.Controller is
    begin
       if Key /= "" then
          View.Error_Label.Text ("No error.");
-         Localize.Parser.Insert_Locale (Key);
-         Localize.Parser.Locale_Text (Key, Localize.Parser.Master_Text (Key));
-         Localize.Parser.Locale_Comment
-           (Key, Localize.Parser.Master_Comment (Key));
-         View.Locale_Text.Value (Localize.Parser.Master_Text (Key));
-         View.Locale_Comment.Value (Localize.Parser.Master_Comment (Key));
+         Localize.Parser.Insert (View.Locale, Key);
+         Localize.Parser.Text
+           (View.Locale, Key, Localize.Parser.Text (View.Master, Key));
+         Localize.Parser.Comment
+           (View.Locale, Key, Localize.Parser.Comment (View.Master, Key));
+         View.Locale_Text.Value (Localize.Parser.Text (View.Master, Key));
+         View.Locale_Comment.Value
+           (Localize.Parser.Comment (View.Master, Key));
          On_Select (Object);
       else
          View.Error_Label.Text ("Empty key.");
@@ -203,7 +213,7 @@ package body Localize.Controller is
    begin
       if Key /= "" then
          View.Error_Label.Text ("No error.");
-         Localize.Parser.Insert_Locale (Key);
+         Localize.Parser.Insert (View.Locale, Key);
          On_Select (Object);
       else
          View.Error_Label.Text ("Empty key.");
@@ -220,7 +230,7 @@ package body Localize.Controller is
    begin
       if Key /= "" then
          View.Error_Label.Text ("No error.");
-         Localize.Parser.Delete_Locale (Key);
+         Localize.Parser.Delete (View.Locale, Key);
          On_Select (Object);
       else
          View.Error_Label.Text ("Empty key.");
@@ -238,7 +248,7 @@ package body Localize.Controller is
    begin
       if From /= "" and To /= "" then
          View.Error_Label.Text ("No error.");
-         Localize.Parser.Rename_Locale (From, To);
+         Localize.Parser.Rename (View.Locale, From, To);
          On_Select (Object);
       else
          View.Error_Label.Text ("Empty key.");

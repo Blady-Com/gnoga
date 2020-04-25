@@ -15,6 +15,8 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Window;
 
+with Localize.Parser;
+
 package Localize.View is
 
    type Default_View_Type is new Gnoga.Gui.View.Grid.Grid_View_Type with record
@@ -44,6 +46,7 @@ package Localize.View is
       Exit_Button      : Gnoga.Gui.Element.Form.Input_Button_Type;
       Quit_Button      : Gnoga.Gui.Element.Form.Input_Button_Type;
       Old_Key_Index    : Natural;
+      Master, Locale   : Localize.Parser.Property_List;
    end record;
    type Default_View_Access is access all Default_View_Type;
    type Pointer_to_Default_View_Class is access all Default_View_Type'Class;

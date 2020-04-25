@@ -9,38 +9,24 @@
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with Ada.Containers.Ordered_Maps;
 with Ada.Containers.Vectors;
 with Ada.Direct_IO;
 with Ada.Integer_Text_IO;
 with Ada.Characters.Conversions;
 with Ada.Characters.Latin_1;
 with Ada.Characters.Wide_Latin_1;
-with Ada.Strings.Wide_Unbounded;
 with Ada.Strings.Fixed;
 
 package body Localize.Parser is
 
    use Ada.Strings.Wide_Unbounded;
    use Ada.Characters.Conversions;
+   use type Content_Maps.Cursor;
 
    Substitution_Character : constant Character := '?';
 
-   type Content_Type is record
-      Comment  : Unbounded_Wide_String;
-      Text     : Unbounded_Wide_String;
-      Modified : Boolean;
-   end record;
-
-   package Content_Maps is new Ada.Containers.Ordered_Maps
-     (Unbounded_Wide_String, Content_Type);
-   subtype Content_Map_Type is Content_Maps.Map;
-   use type Content_Maps.Cursor;
-
-   Master_Content, Locale_Content : Content_Map_Type;
-
    procedure Parse_Strings_File
-     (File_Name : String; Content : out Content_Map_Type)
+     (File_Name : String; Content : out Property_List)
    is
       package Strings_IO is new Ada.Direct_IO (Wide_Character);
       package File_Text is new Ada.Containers.Vectors (Positive,
@@ -122,8 +108,7 @@ package body Localize.Parser is
       end loop;
    end Parse_Strings_File;
 
-   procedure Write_Strings_File
-     (File_Name : String; Content : Content_Map_Type)
+   procedure Write_Strings_File (File_Name : String; Content : Property_List)
    is
       package Strings_IO is new Ada.Direct_IO (Wide_Character);
 
@@ -167,7 +152,7 @@ package body Localize.Parser is
    end Write_Strings_File;
 
    procedure Parse_Properties_File
-     (File_Name : String; Content : out Content_Map_Type)
+     (File_Name : String; Content : out Property_List)
    is
       package Strings_IO is new Ada.Direct_IO (Character);
       package File_Text is new Ada.Containers.Vectors (Positive, Character);
@@ -281,7 +266,7 @@ package body Localize.Parser is
    end Parse_Properties_File;
 
    procedure Write_Properties_File
-     (File_Name : String; Content : Content_Map_Type)
+     (File_Name : String; Content : Property_List)
    is
       package Strings_IO is new Ada.Direct_IO (Character);
 
@@ -359,239 +344,164 @@ package body Localize.Parser is
       Strings_IO.Close (Raw_File);
    end Write_Properties_File;
 
-   procedure Parse_Master (File_Name : String) is
+   procedure Read (Properties : out Property_List; File_Name : String) is
    begin
       if Ada.Strings.Fixed.Tail (File_Name, 8, ' ') = ".strings" then
-         Parse_Strings_File (File_Name, Master_Content);
+         Parse_Strings_File (File_Name, Properties);
       end if;
       if Ada.Strings.Fixed.Tail (File_Name, 11, ' ') = ".properties" then
-         Parse_Properties_File (File_Name, Master_Content);
+         Parse_Properties_File (File_Name, Properties);
       end if;
    exception
       when others =>
-         Master_Content.Clear;
-   end Parse_Master;
+         Properties.Clear;
+   end Read;
 
-   function Master_Keys return List_Type is
+   procedure Write (Properties : Property_List; File_Name : String) is
    begin
-      return Keys : List_Type do
-         for Index in Master_Content.Iterate loop
-            Keys.Append
+      if Ada.Strings.Fixed.Tail (File_Name, 8, ' ') = ".strings" then
+         Write_Strings_File (File_Name, Properties);
+      end if;
+      if Ada.Strings.Fixed.Tail (File_Name, 11, ' ') = ".properties" then
+         Write_Properties_File (File_Name, Properties);
+      end if;
+   end Write;
+
+   function Keys (Properties : Property_List) return Key_List is
+   begin
+      return Result_Key_List : Key_List do
+         for Index in Properties.Iterate loop
+            Result_Key_List.Append
               (To_String
                  (To_Wide_String (Content_Maps.Key (Index)),
                   Substitution_Character));
          end loop;
       end return;
-   end Master_Keys;
+   end Keys;
 
-   function Master_Contains (Key : String) return Boolean is
-     (Master_Content.Contains
-        (To_Unbounded_Wide_String (To_Wide_String (Key))));
+   function Contains
+     (Properties : Property_List; Key : String) return Boolean is
+     (Properties.Contains (To_Unbounded_Wide_String (To_Wide_String (Key))));
 
-   function Master_Text (Key : String) return String is
-      UWS_Key : constant Unbounded_Wide_String :=
-        To_Unbounded_Wide_String (To_Wide_String (Key));
+   procedure Insert (Properties : in out Property_List; Key : String) is
    begin
-      if Master_Content.Find (UWS_Key) = Content_Maps.No_Element then
-         return "";
-      else
-         return To_String
-             (To_Wide_String
-                (Master_Content.Element
-                   (To_Unbounded_Wide_String (To_Wide_String (Key)))
-                   .Text),
-              Substitution_Character);
-      end if;
-   end Master_Text;
-
-   procedure Master_Text (Key : String; Value : String) is
-      UWS_Key : constant Unbounded_Wide_String :=
-        To_Unbounded_Wide_String (To_Wide_String (Key));
-      Cursor  : constant Content_Maps.Cursor := Master_Content.Find (UWS_Key);
-      Element : Content_Type                 := Content_Maps.Element (Cursor);
-   begin
-      Element.Text := To_Unbounded_Wide_String (To_Wide_String (Value));
-      Master_Content.Replace_Element (Cursor, Element);
-   end Master_Text;
-
-   function Master_Comment (Key : String) return String is
-      UWS_Key : constant Unbounded_Wide_String :=
-        To_Unbounded_Wide_String (To_Wide_String (Key));
-   begin
-      if Master_Content.Find (UWS_Key) = Content_Maps.No_Element then
-         return "";
-      else
-         return To_String
-             (To_Wide_String
-                (Master_Content.Element
-                   (To_Unbounded_Wide_String (To_Wide_String (Key)))
-                   .Comment),
-              Substitution_Character);
-      end if;
-   end Master_Comment;
-
-   procedure Master_Comment (Key : String; Value : String) is
-      UWS_Key : constant Unbounded_Wide_String :=
-        To_Unbounded_Wide_String (To_Wide_String (Key));
-      Cursor  : constant Content_Maps.Cursor := Master_Content.Find (UWS_Key);
-      Element : Content_Type                 := Content_Maps.Element (Cursor);
-   begin
-      Element.Comment := To_Unbounded_Wide_String (To_Wide_String (Value));
-      Master_Content.Replace_Element (Cursor, Element);
-   end Master_Comment;
-
-   procedure Parse_Locale (File_Name : String) is
-   begin
-      if Ada.Strings.Fixed.Tail (File_Name, 8, ' ') = ".strings" then
-         Parse_Strings_File (File_Name, Locale_Content);
-      end if;
-      if Ada.Strings.Fixed.Tail (File_Name, 11, ' ') = ".properties" then
-         Parse_Properties_File (File_Name, Locale_Content);
-      end if;
-   exception
-      when others =>
-         Locale_Content.Clear;
-   end Parse_Locale;
-
-   procedure Write_Locale (File_Name : String) is
-   begin
-      if Ada.Strings.Fixed.Tail (File_Name, 8, ' ') = ".strings" then
-         Write_Strings_File (File_Name, Locale_Content);
-      end if;
-      if Ada.Strings.Fixed.Tail (File_Name, 11, ' ') = ".properties" then
-         Write_Properties_File (File_Name, Locale_Content);
-      end if;
-   end Write_Locale;
-
-   function Locale_Keys return List_Type is
-   begin
-      return Key_List : List_Type do
-         for Index in Locale_Content.Iterate loop
-            Key_List.Append
-              (To_String
-                 (To_Wide_String (Content_Maps.Key (Index)),
-                  Substitution_Character));
-         end loop;
-      end return;
-   end Locale_Keys;
-
-   function Locale_Contains (Key : String) return Boolean is
-     (Locale_Content.Contains
-        (To_Unbounded_Wide_String (To_Wide_String (Key))));
-
-   procedure Insert_Locale (Key : String) is
-   begin
-      Locale_Content.Include
+      Properties.Include
         (To_Unbounded_Wide_String (To_Wide_String (Key)),
          (Null_Unbounded_Wide_String, Null_Unbounded_Wide_String, False));
-   end Insert_Locale;
+   end Insert;
 
-   procedure Delete_Locale (Key : String) is
+   procedure Delete (Properties : in out Property_List; Key : String) is
       UWS_Key : constant Unbounded_Wide_String :=
         To_Unbounded_Wide_String (To_Wide_String (Key));
    begin
-      if Locale_Content.Find (UWS_Key) /= Content_Maps.No_Element then
-         Locale_Content.Delete
-           (To_Unbounded_Wide_String (To_Wide_String (Key)));
+      if Properties.Find (UWS_Key) /= Content_Maps.No_Element then
+         Properties.Delete (To_Unbounded_Wide_String (To_Wide_String (Key)));
       end if;
-   end Delete_Locale;
+   end Delete;
 
-   procedure Rename_Locale (From, To : String) is
+   procedure Rename (Properties : in out Property_List; From, To : String) is
    begin
-      Locale_Content.Include
+      Properties.Include
         (To_Unbounded_Wide_String (To_Wide_String (To)),
-         Locale_Content.Element
+         Properties.Element
            (To_Unbounded_Wide_String (To_Wide_String (From))));
-      Locale_Content.Delete (To_Unbounded_Wide_String (To_Wide_String (From)));
-   end Rename_Locale;
+      Properties.Delete (To_Unbounded_Wide_String (To_Wide_String (From)));
+   end Rename;
 
-   function Locale_Text (Key : String) return String is
+   function Text (Properties : Property_List; Key : String) return String is
       UWS_Key : constant Unbounded_Wide_String :=
         To_Unbounded_Wide_String (To_Wide_String (Key));
    begin
-      if Locale_Content.Find (UWS_Key) = Content_Maps.No_Element then
+      if Properties.Find (UWS_Key) = Content_Maps.No_Element then
          return "";
       else
          return To_String
              (To_Wide_String
-                (Locale_Content.Element
+                (Properties.Element
                    (To_Unbounded_Wide_String (To_Wide_String (Key)))
                    .Text),
               Substitution_Character);
       end if;
-   end Locale_Text;
+   end Text;
 
-   procedure Locale_Text (Key : String; Value : String) is
+   procedure Text
+     (Properties : in out Property_List; Key : String; Value : String)
+   is
       UWS_Key : constant Unbounded_Wide_String :=
         To_Unbounded_Wide_String (To_Wide_String (Key));
-      Cursor  : constant Content_Maps.Cursor := Locale_Content.Find (UWS_Key);
-      Element : Content_Type;
+      Cursor  : constant Content_Maps.Cursor := Properties.Find (UWS_Key);
+      Element : Property_Type;
    begin
       if Cursor /= Content_Maps.No_Element then
          Element      := Content_Maps.Element (Cursor);
          Element.Text := To_Unbounded_Wide_String (To_Wide_String (Value));
          if Element.Text /= Content_Maps.Element (Cursor).Text then
             Element.Modified := True;
-            Locale_Content.Replace_Element (Cursor, Element);
+            Properties.Replace_Element (Cursor, Element);
          end if;
       end if;
-   end Locale_Text;
+   end Text;
 
-   function Locale_Comment (Key : String) return String is
+   function Comment (Properties : Property_List; Key : String) return String is
       UWS_Key : constant Unbounded_Wide_String :=
         To_Unbounded_Wide_String (To_Wide_String (Key));
    begin
-      if Locale_Content.Find (UWS_Key) = Content_Maps.No_Element then
+      if Properties.Find (UWS_Key) = Content_Maps.No_Element then
          return "";
       else
          return To_String
-             (To_Wide_String (Locale_Content.Element (UWS_Key).Comment),
+             (To_Wide_String (Properties.Element (UWS_Key).Comment),
               Substitution_Character);
       end if;
-   end Locale_Comment;
+   end Comment;
 
-   procedure Locale_Comment (Key : String; Value : String) is
+   procedure Comment
+     (Properties : in out Property_List; Key : String; Value : String)
+   is
       UWS_Key : constant Unbounded_Wide_String :=
         To_Unbounded_Wide_String (To_Wide_String (Key));
-      Cursor  : constant Content_Maps.Cursor := Locale_Content.Find (UWS_Key);
-      Element : Content_Type;
+      Cursor  : constant Content_Maps.Cursor := Properties.Find (UWS_Key);
+      Element : Property_Type;
    begin
       if Cursor /= Content_Maps.No_Element then
          Element         := Content_Maps.Element (Cursor);
          Element.Comment := To_Unbounded_Wide_String (To_Wide_String (Value));
          if Element.Comment /= Content_Maps.Element (Cursor).Comment then
             Element.Modified := True;
-            Locale_Content.Replace_Element (Cursor, Element);
+            Properties.Replace_Element (Cursor, Element);
          end if;
       end if;
-   end Locale_Comment;
+   end Comment;
 
-   function Locale_Modified (Key : String) return Boolean is
+   function Modified (Properties : Property_List; Key : String) return Boolean
+   is
       UWS_Key : constant Unbounded_Wide_String :=
         To_Unbounded_Wide_String (To_Wide_String (Key));
    begin
-      if Locale_Content.Find (UWS_Key) = Content_Maps.No_Element then
+      if Properties.Find (UWS_Key) = Content_Maps.No_Element then
          return False;
       else
-         return Locale_Content.Element
+         return Properties.Element
              (To_Unbounded_Wide_String (To_Wide_String (Key)))
              .Modified;
       end if;
-   end Locale_Modified;
+   end Modified;
 
-   procedure Reset_Locale_Modified_Indicators is
+   procedure Reset_Modified_Indicators (Properties : in out Property_List) is
    begin
-      for Element of Locale_Content loop
+      for Element of Properties loop
          Element.Modified := False;
       end loop;
-   end Reset_Locale_Modified_Indicators;
+   end Reset_Modified_Indicators;
 
-   function Selected_Keys (Pattern : String) return List_Type is
+   function Selected_Keys
+     (Master, Locale : Property_List; Pattern : String) return Key_List
+   is
       package Keys_Sorting is new Lists.Generic_Sorting;
    begin
       if Pattern /= "" then
-         return Keys : List_Type do
-            for Cursor in Master_Content.Iterate loop
+         return Result_Key_List : Key_List do
+            for Cursor in Master.Iterate loop
                if
                  (Index (Content_Maps.Key (Cursor), To_Wide_String (Pattern)) >
                   0 or
@@ -603,18 +513,18 @@ package body Localize.Parser is
                       (Content_Maps.Element (Cursor).Comment,
                        To_Wide_String (Pattern)) >
                     0) and
-                 not Keys.Contains
+                 not Result_Key_List.Contains
                    (To_String
                       (To_Wide_String (Content_Maps.Key (Cursor)),
                        Substitution_Character))
                then
-                  Keys.Append
+                  Result_Key_List.Append
                     (To_String
                        (To_Wide_String (Content_Maps.Key (Cursor)),
                         Substitution_Character));
                end if;
             end loop;
-            for Cursor in Locale_Content.Iterate loop
+            for Cursor in Locale.Iterate loop
                if
                  (Index (Content_Maps.Key (Cursor), To_Wide_String (Pattern)) >
                   0 or
@@ -626,12 +536,12 @@ package body Localize.Parser is
                       (Content_Maps.Element (Cursor).Comment,
                        To_Wide_String (Pattern)) >
                     0) and
-                 not Keys.Contains
+                 not Result_Key_List.Contains
                    (To_String
                       (To_Wide_String (Content_Maps.Key (Cursor)),
                        Substitution_Character))
                then
-                  Keys.Append
+                  Result_Key_List.Append
                     (To_String
                        (To_Wide_String (Content_Maps.Key (Cursor)),
                         Substitution_Character));
@@ -639,20 +549,20 @@ package body Localize.Parser is
             end loop;
          end return;
       else
-         return Keys : List_Type := Master_Keys do
-            for Cursor in Locale_Content.Iterate loop
-               if not Keys.Contains
+         return Result_Key_List : Key_List := Keys (Master) do
+            for Cursor in Locale.Iterate loop
+               if not Result_Key_List.Contains
                    (To_String
                       (To_Wide_String (Content_Maps.Key (Cursor)),
                        Substitution_Character))
                then
-                  Keys.Append
+                  Result_Key_List.Append
                     (To_String
                        (To_Wide_String (Content_Maps.Key (Cursor)),
                         Substitution_Character));
                end if;
             end loop;
-            Keys_Sorting.Sort (Keys);
+            Keys_Sorting.Sort (Result_Key_List);
          end return;
       end if;
    end Selected_Keys;

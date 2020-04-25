@@ -19,11 +19,9 @@ Specific notes for properties files with Zanyblue:
 - simple quote must be written twice
 
 Todo:
-- fix: key contents are shared by connections -> create key contents for each connecion
 - add support of escaped characters in strings files
 - fix: content is cleared when inserting an existing key
 - fix: content is cleared when renaming to an existing key
 - add more tooltips
 
 Pascal Pignard, April 2020.
-

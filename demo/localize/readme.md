@@ -12,14 +12,16 @@ General notes:
 - the keys in written files are in alphabetic order with = separator and LF line terminator
 
 Specific notes for strings files:
-- escaped characters are not processed and written as it is, so escaped double quotes is mandatory in typed text
+- processed escaped sequences: \t, \n, \LF, \", \\,
+  others escaped characters are not processed and written as it is
 
 Specific notes for properties files with Zanyblue:
 - only characters valid for Ada identifiers are valid for keys
 - simple quote must be written twice
+- processed escaped sequences: \t, \n, \LF, \u, \ , \:, \=, \#, \!, \\,
+  others escaped characters are not processed and written as it is
 
 Todo:
-- add support of escaped characters in strings files
 - fix: content is cleared when inserting an existing key
 - fix: content is cleared when renaming to an existing key
 - add more tooltips

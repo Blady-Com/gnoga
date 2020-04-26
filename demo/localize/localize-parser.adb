@@ -45,6 +45,20 @@ package body Localize.Parser is
       Key      : Unbounded_Wide_String;
       Value    : Unbounded_Wide_String;
 
+      procedure Append (C : Wide_Character) is
+      begin
+         case State is
+            when In_Comment =>
+               Append (Comment, C);
+            when In_Key =>
+               Append (Key, C);
+            when In_Value =>
+               Append (Value, C);
+            when others =>
+               null;
+         end case;
+      end Append;
+
    begin
       Strings_IO.Open (Raw_File, Strings_IO.In_File, File_Name);
       while not Strings_IO.End_Of_File (Raw_File) loop
@@ -58,18 +72,18 @@ package body Localize.Parser is
       while I /= File_Text.No_Element loop
          if Text (I) = '\' then
             File_Text.Next (I);
-            case State is
-               when In_Comment =>
-                  Append (Comment, '\');
-                  Append (Comment, Text (I));
-               when In_Key =>
-                  Append (Key, '\');
-                  Append (Key, Text (I));
-               when In_Value =>
-                  Append (Value, '\');
-                  Append (Value, Text (I));
-               when others =>
+            case Text (I) is
+               when 't' =>
+                  Append (Ada.Characters.Wide_Latin_1.HT);
+               when 'n' =>
+                  Append (Ada.Characters.Wide_Latin_1.LF);
+               when Ada.Characters.Wide_Latin_1.LF =>
                   null;
+               when '"' | '\' =>
+                  Append (Text (I));
+               when others =>
+                  Append ('\');
+                  Append (Text (I));
             end case;
          elsif Text (I) = '/' and State = None then
             File_Text.Next (I);
@@ -116,6 +130,24 @@ package body Localize.Parser is
 
       Raw_File : Strings_IO.File_Type;
 
+      procedure Escaped_Write (Str : Unbounded_Wide_String) is
+      begin
+         for I in 1 .. Length (Str) loop
+            if Element (Str, I) = Ada.Characters.Wide_Latin_1.HT then
+               Strings_IO.Write (Raw_File, '\');
+               Strings_IO.Write (Raw_File, 't');
+            elsif Element (Str, I) = Ada.Characters.Wide_Latin_1.LF then
+               Strings_IO.Write (Raw_File, '\');
+               Strings_IO.Write (Raw_File, 'n');
+            elsif Element (Str, I) in '"' | '\' then
+               Strings_IO.Write (Raw_File, '\');
+               Strings_IO.Write (Raw_File, Element (Str, I));
+            else
+               Strings_IO.Write (Raw_File, Element (Str, I));
+            end if;
+         end loop;
+      end Escaped_Write;
+
    begin
       Strings_IO.Create (Raw_File, Strings_IO.Out_File, File_Name);
       Strings_IO.Write (Raw_File, BOM_LE);
@@ -123,27 +155,19 @@ package body Localize.Parser is
          if Content_Maps.Element (C).Comment /= Null_Unbounded_Wide_String then
             Strings_IO.Write (Raw_File, '/');
             Strings_IO.Write (Raw_File, '*');
-            for I in 1 .. Length (Content_Maps.Element (C).Comment) loop
-               Strings_IO.Write
-                 (Raw_File, Element (Content_Maps.Element (C).Comment, I));
-            end loop;
+            Escaped_Write (Content_Maps.Element (C).Comment);
             Strings_IO.Write (Raw_File, '*');
             Strings_IO.Write (Raw_File, '/');
             Strings_IO.Write (Raw_File, Ada.Characters.Wide_Latin_1.LF);
          end if;
          Strings_IO.Write (Raw_File, '"');
-         for I in 1 .. Length (Content_Maps.Key (C)) loop
-            Strings_IO.Write (Raw_File, Element (Content_Maps.Key (C), I));
-         end loop;
+         Escaped_Write (Content_Maps.Key (C));
          Strings_IO.Write (Raw_File, '"');
          Strings_IO.Write (Raw_File, ' ');
          Strings_IO.Write (Raw_File, '=');
          Strings_IO.Write (Raw_File, ' ');
          Strings_IO.Write (Raw_File, '"');
-         for I in 1 .. Length (Content_Maps.Element (C).Text) loop
-            Strings_IO.Write
-              (Raw_File, Element (Content_Maps.Element (C).Text, I));
-         end loop;
+         Escaped_Write (Content_Maps.Element (C).Text);
          Strings_IO.Write (Raw_File, '"');
          Strings_IO.Write (Raw_File, ';');
          Strings_IO.Write (Raw_File, Ada.Characters.Wide_Latin_1.LF);
@@ -210,7 +234,7 @@ package body Localize.Parser is
                   end loop;
                   Append
                     (Wide_Character'Val (Natural'Value ("16#" & Hex4 & '#')));
-               when ' ' | ':' | '=' | '#' | '!' =>
+               when ' ' | ':' | '=' | '#' | '!' | '\' =>
                   Append (To_Wide_Character (Text (I)));
                when 't' =>
                   Append (Ada.Characters.Wide_Latin_1.HT);
@@ -288,7 +312,7 @@ package body Localize.Parser is
                Strings_IO.Write (Raw_File, '\');
                Strings_IO.Write (Raw_File, 'n');
                Space := False;
-            elsif Element (Str, I) in '=' | ':' | '#' | '!' and
+            elsif Element (Str, I) in '=' | ':' | '#' | '!' | '\' and
               Escape_Space /= No
             then
                Strings_IO.Write (Raw_File, '\');

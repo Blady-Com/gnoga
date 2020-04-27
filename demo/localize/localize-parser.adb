@@ -97,6 +97,7 @@ package body Localize.Parser is
             if Text (I) = '/' then
                State := None;
             else
+               Append (Comment, '*');
                Append (Comment, Text (I));
             end if;
          elsif Text (I) = '"' and State = None then
@@ -130,15 +131,21 @@ package body Localize.Parser is
 
       Raw_File : Strings_IO.File_Type;
 
-      procedure Escaped_Write (Str : Unbounded_Wide_String) is
+      procedure Escaped_Write
+        (Str : Unbounded_Wide_String; Multi_Comment : Boolean := False)
+      is
       begin
          for I in 1 .. Length (Str) loop
             if Element (Str, I) = Ada.Characters.Wide_Latin_1.HT then
                Strings_IO.Write (Raw_File, '\');
                Strings_IO.Write (Raw_File, 't');
             elsif Element (Str, I) = Ada.Characters.Wide_Latin_1.LF then
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, 'n');
+               if Multi_Comment then
+                  Strings_IO.Write (Raw_File, Ada.Characters.Wide_Latin_1.LF);
+               else
+                  Strings_IO.Write (Raw_File, '\');
+                  Strings_IO.Write (Raw_File, 'n');
+               end if;
             elsif Element (Str, I) in '"' | '\' then
                Strings_IO.Write (Raw_File, '\');
                Strings_IO.Write (Raw_File, Element (Str, I));
@@ -155,7 +162,7 @@ package body Localize.Parser is
          if Content_Maps.Element (C).Comment /= Null_Unbounded_Wide_String then
             Strings_IO.Write (Raw_File, '/');
             Strings_IO.Write (Raw_File, '*');
-            Escaped_Write (Content_Maps.Element (C).Comment);
+            Escaped_Write (Content_Maps.Element (C).Comment, True);
             Strings_IO.Write (Raw_File, '*');
             Strings_IO.Write (Raw_File, '/');
             Strings_IO.Write (Raw_File, Ada.Characters.Wide_Latin_1.LF);
@@ -253,22 +260,25 @@ package body Localize.Parser is
          elsif Text (I) = Ada.Characters.Latin_1.LF and
            State in In_Value | Equal | In_Key
          then
-            Content.Insert (Key, (Comment, Value, False));
+            Content.Include (Key, (Comment, Value, False));
             Comment := Null_Unbounded_Wide_String;
             Key     := Null_Unbounded_Wide_String;
             Value   := Null_Unbounded_Wide_String;
             State   := None;
          elsif Text (I) in '#' | '!' and State = None then
             State := In_Comment;
+            if Comment /= Null_Unbounded_Wide_String then
+               Append (Ada.Characters.Wide_Latin_1.LF);
+            end if;
          elsif Text (I) in '=' | ':' and State = In_Key then
             State := Equal;
          elsif Text (I) not in Ada.Characters.Latin_1.HT |
-               Ada.Characters.Latin_1.FF                 | ' ' and
+               Ada.Characters.Latin_1.LF | Ada.Characters.Latin_1.FF | ' ' and
            State in In_Key
          then
             Append (Key, To_Wide_Character (Text (I)));
          elsif Text (I) not in Ada.Characters.Latin_1.HT |
-               Ada.Characters.Latin_1.FF                 | ' ' and
+               Ada.Characters.Latin_1.LF | Ada.Characters.Latin_1.FF | ' ' and
            State in None
          then
             State := In_Key;
@@ -299,7 +309,8 @@ package body Localize.Parser is
       type Escape_Space_Type is (No, Start, Full);
 
       procedure Escaped_Write
-        (Str : Unbounded_Wide_String; Escape_Space : Escape_Space_Type)
+        (Str : Unbounded_Wide_String; Escape_Space : Escape_Space_Type;
+         Multi_Comment : Boolean := False)
       is
          Space : Boolean := Escape_Space = Start;
       begin
@@ -309,8 +320,13 @@ package body Localize.Parser is
                Strings_IO.Write (Raw_File, 't');
                Space := False;
             elsif Element (Str, I) = Ada.Characters.Wide_Latin_1.LF then
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, 'n');
+               if Multi_Comment then
+                  Strings_IO.Write (Raw_File, Ada.Characters.Latin_1.LF);
+                  Strings_IO.Write (Raw_File, '#');
+               else
+                  Strings_IO.Write (Raw_File, '\');
+                  Strings_IO.Write (Raw_File, 'n');
+               end if;
                Space := False;
             elsif Element (Str, I) in '=' | ':' | '#' | '!' | '\' and
               Escape_Space /= No
@@ -322,6 +338,7 @@ package body Localize.Parser is
             then
                Strings_IO.Write (Raw_File, '\');
                Strings_IO.Write (Raw_File, ' ');
+               Space := False;
             elsif Element (Str, I) < Ada.Characters.Wide_Latin_1.DEL then
                Strings_IO.Write (Raw_File, To_Character (Element (Str, I)));
                Space := False;
@@ -357,7 +374,7 @@ package body Localize.Parser is
       for C in Content.Iterate loop
          if Content_Maps.Element (C).Comment /= Null_Unbounded_Wide_String then
             Strings_IO.Write (Raw_File, '#');
-            Escaped_Write (Content_Maps.Element (C).Comment, No);
+            Escaped_Write (Content_Maps.Element (C).Comment, No, True);
             Strings_IO.Write (Raw_File, Ada.Characters.Latin_1.LF);
          end if;
          Escaped_Write (Content_Maps.Key (C), Full);
@@ -376,9 +393,6 @@ package body Localize.Parser is
       if Ada.Strings.Fixed.Tail (File_Name, 11, ' ') = ".properties" then
          Parse_Properties_File (File_Name, Properties);
       end if;
-   exception
-      when others =>
-         Properties.Clear;
    end Read;
 
    procedure Write (Properties : Property_List; File_Name : String) is
@@ -409,7 +423,7 @@ package body Localize.Parser is
 
    procedure Insert (Properties : in out Property_List; Key : String) is
    begin
-      Properties.Include
+      Properties.Insert
         (To_Unbounded_Wide_String (To_Wide_String (Key)),
          (Null_Unbounded_Wide_String, Null_Unbounded_Wide_String, False));
    end Insert;
@@ -425,7 +439,7 @@ package body Localize.Parser is
 
    procedure Rename (Properties : in out Property_List; From, To : String) is
    begin
-      Properties.Include
+      Properties.Insert
         (To_Unbounded_Wide_String (To_Wide_String (To)),
          Properties.Element
            (To_Unbounded_Wide_String (To_Wide_String (From))));

@@ -189,7 +189,6 @@ package body Localize.Controller is
    begin
       if Key /= "" then
          View.Error_Label.Text ("No error.");
-         Localize.Parser.Insert (View.Locale, Key);
          Localize.Parser.Text
            (View.Locale, Key, Localize.Parser.Text (View.Master, Key));
          Localize.Parser.Comment
@@ -275,6 +274,7 @@ package body Localize.Controller is
       View.On_Submit_Handler (On_Enter'Access);
       View.Load_Button.On_Click_Handler (On_Load'Access);
       View.Key_List.On_Change_Handler (On_Change_Key'Access);
+      View.Key_List.On_Click_Handler (On_Change_Key'Access);
       View.Save_Button.On_Click_Handler (On_Save'Access);
       View.Exit_Button.On_Click_Handler (On_Exit'Access);
       View.Quit_Button.On_Click_Handler (On_Quit'Access);

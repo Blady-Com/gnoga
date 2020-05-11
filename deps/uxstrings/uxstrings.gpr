@@ -1,0 +1,25 @@
+project UXStrings is
+   for Languages use ("Ada");
+   for Source_Dirs use ("src", "tests");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+   for Main use ("test_uxstrings.adb");
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-gnatW8", "-gnatU", "-gnatf", "-gnatVaep", "-gnatw.eDH.Y",
+                                        "-fstack-check", "-g", "-gnato", "-gnata", "-gnateA",
+                                        "-gnateE", "-gnateF", "-Wall");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("Ada") use ("-Es");
+   end Binder;
+
+   package Linker is
+      for Default_Switches ("ada") use ("-Wl,-no_pie");
+   end Linker;
+
+   package Pretty_Printer is
+      for Default_Switches ("ada") use ("-M120", "-W8");
+   end Pretty_Printer;
+end UXStrings;

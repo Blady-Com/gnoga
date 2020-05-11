@@ -1,0 +1,21 @@
+library project Lib_UXStrings is
+
+   for Library_Kind use "static";
+   for Library_Name use "uxstrings";
+   for Object_Dir  use "obj";
+   for Library_Dir use "lib";
+
+   package Compiler is
+      for Default_Switches ("Ada") use ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVa", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-gnatU", "-Wall");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("Ada") use ("-Es");
+   end Binder;
+
+   package Install is
+      for Install_Name use "uxstrings";
+      for Artifacts ("share/doc/uxstrings_rm") use (Project'Object_Dir & "/gnatdoc/*");
+   end Install;
+
+end Lib_UXStrings;

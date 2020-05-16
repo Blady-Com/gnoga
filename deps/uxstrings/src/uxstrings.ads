@@ -3,6 +3,8 @@ with Ada.Strings.Maps; use Ada.Strings.Maps;
 
 package UXStrings is
 
+   type Encoding_Scheme is (Latin_1, UTF_8, UTF_16BE, UTF_16LE);
+
    -- ISO/IEC 8859-1
    subtype Latin_1_Character is Character;
    subtype Latin_1_Character_Array is String;
@@ -20,7 +22,7 @@ package UXStrings is
    type UTF_8_Character is new Character;
    type UTF_8_Character_Array is array (Positive range <>) of UTF_8_Character;
 
-   type Encoding_Scheme is (UTF_16BE, UTF_16LE);
+   subtype UTF_16_Encoding_Scheme is Encoding_Scheme range UTF_16BE .. UTF_16LE;
    type UTF_16_Character is new Wide_Character;
    type UTF_16_Character_Array is array (Positive range <>) of UTF_16_Character;
 
@@ -78,8 +80,9 @@ package UXStrings is
    function From_UTF8 (Str : UTF_8_Character_Array) return UXString;
 
    function To_UTF_16
-     (Source : UXString; Output_Scheme : Encoding_Scheme; Output_BOM : Boolean := False) return UTF_16_Character_Array;
-   function From_UTF_16 (Str : UTF_16_Character_Array; Input_Scheme : Encoding_Scheme) return UXString;
+     (Source : UXString; Output_Scheme : UTF_16_Encoding_Scheme; Output_BOM : Boolean := False)
+      return UTF_16_Character_Array;
+   function From_UTF_16 (Str : UTF_16_Character_Array; Input_Scheme : UTF_16_Encoding_Scheme) return UXString;
 
    -- Possible ambigous uses with literal expressions
    procedure Set (Target : out UXString; Latin_1_Source : Latin_1_Character_Array);

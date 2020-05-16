@@ -19,7 +19,7 @@ Using Unbounded\_Wide\_String is quite being in the middle of the river might as
 
 Third possibility is to make no choice between Latin-1, Wide and Wide\_Wide characters. The object shall adapt its inner implementation to the actual content.
 For instance with English language the most often use case will be Latin-1 inner implementation, for French language the most often will be Latin-1 with some exceptions with BMP (Unicode Basic Multilingual Plane) implementation such as in "cœur", for Greek language the most often will be BMP implementation.
-The programer won't make any representation choice when for example receiving UTF-8 messages:
+The programmer won't make any representation choice when for example receiving UTF-8 messages:
 
 ``` ada
    S2 : UXString;

@@ -2,7 +2,7 @@ with "shared";
 
 library project Lib_Components is
 
-   Version     := "4.41";
+   Version     := "4.49";
 
    type Object_Tracing_Mode is ("Off", "On");
    Object_Tracing : Object_Tracing_Mode := external ("Traced_objects", "Off");
@@ -219,6 +219,10 @@ library project Lib_Components is
       "generic_blackboard.ads",
       "generic_blackboard-generic_task_safe.adb",
       "generic_blackboard-generic_task_safe.ads",
+      "generic_bounded_map.adb",
+      "generic_bounded_map.ads",
+      "generic_bounded_indefinite_map.adb",
+      "generic_bounded_indefinite_map.ads",
       "generic_b_tree.adb",
       "generic_b_tree.ads",
       "generic_chebyshev_polynomials.adb",
@@ -715,6 +719,14 @@ library project Lib_Components is
        (  "openssl.adb",
           "openssl.ads"
        );
+   Components_JSON_Source_Files :=
+       (  "parsers-json.adb",
+          "parsers-json.ads",
+          "parsers-json-generic_parser.adb",
+          "parsers-json-generic_parser.ads",
+          "parsers-json-multiline_source.ads",
+          "parsers-json-string_source.ads"
+       );
    Files_List :=
       String_Edit_Source_Files &
       Tables_Source_Files &
@@ -734,7 +746,8 @@ library project Lib_Components is
       GNUTLS_Source_Files &
       Components_NTP_Source_Files &
       Components_Julia_Source_Files &
-      Components_OpenSSL_Source_Files;
+      Components_OpenSSL_Source_Files &
+      Components_JSON_Source_Files;
 
    case Shared.SC_OS is
       when "Windows" | "Windows_NT" =>

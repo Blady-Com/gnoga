@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  13:37 23 Jun 2019  --
+--                                Last revision :  14:47 31 Oct 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,10 +28,13 @@
 with Ada.Exceptions;         use Ada.Exceptions;
 with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
+with System;                 use System;
 
 with Ada.Unchecked_Conversion;
+with System.Address_To_Access_Conversions;
 
 package body SQLite is
+   use Backup_Handles;
    use Data_Base_Handles;
    use Object;
    use Statement_Handles;
@@ -101,11 +104,16 @@ package body SQLite is
    SQLITE_IOERR_ROLLBACK_ATOMIC   : constant := SQLITE_IOERR  + 31*256;
    SQLITE_LOCKED_SHAREDCACHE      : constant := SQLITE_LOCKED +  1*256;
 
+   SQLITE_TRACE_STMT    : constant := 16#01#;
+   SQLITE_TRACE_PROFILE : constant := 16#02#;
+   SQLITE_TRACE_ROW     : constant := 16#04#;
+   SQLITE_TRACE_CLOSE   : constant := 16#08#;
+
    type Raw_Address is mod 2**Standard'Address_Size;
    SQLITE_TRANSIENT : constant Raw_Address := Raw_Address'Last; -- (-1)
 
-   function To_Address is
-      new Ada.Unchecked_Conversion (Raw_Address, Address);
+   function From_Address is
+      new Ada.Unchecked_Conversion (Address, Data_Base_Object_Ptr);
 
    function Message (Result : int) return String;
 
@@ -519,6 +527,18 @@ package body SQLite is
       return Datatype (Internal (Handle, Index));
    end Column_Type;
 
+   procedure Copy
+             (  Base      : Data_Base;
+                Name      : String := "main";
+                File_Name : String
+             )  is
+      Destination : constant Data_Base := Open (File_Name);
+      Object      : constant Backup :=
+                             Init (Destination, Name, Base, Name);
+   begin
+      Step (Object);
+   end Copy;
+
    procedure Exec (Base : Data_Base; Command : String) is
       Operation : constant Statement := Prepare (Base, Command);
    begin
@@ -527,10 +547,36 @@ package body SQLite is
       end loop;
    end Exec;
 
+   function Filename
+            (  Base : Data_Base;
+               Name : String := "main"
+            )  return String is
+      function Internal
+               (  sqlite3 : SQLite_Handle;
+                  Name    : char_array
+               )  return chars_ptr;
+      pragma Import (C, Internal, "sqlite3_db_filename");
+      Object : Data_Base_Object'Class renames Ptr (Base.Handle).all;
+      Result : chars_ptr;
+   begin
+      if Object.Handle = null then
+         raise Constraint_Error;
+      end if;
+      Result := Internal (Object.Handle, To_C (Name));
+      if Result = Null_Ptr then
+         return "";
+      else
+         return Value (Result);
+      end if;
+   end Filename;
+
    procedure Finalize (Object : in out Data_Base_Object) is
       function Internal (sqlite3 : SQLite_Handle) return int;
       pragma Import (C, Internal, "sqlite3_close");
    begin
+      if Object.User_Data /= null then
+         Release (Object.User_Data);
+      end if;
       if Object.Handle /= null then
          Check (Object.Handle, Internal (Object.Handle));
          Object.Handle := null;
@@ -556,6 +602,62 @@ package body SQLite is
          Object.Handle := null;
          Finalize (Entity (Object));
    end Finalize;
+
+   procedure Finalize (Object : in out Backup_Object) is
+      function Internal (Object : SQLite_Backup_Handle) return int;
+      pragma Import (C, Internal, "sqlite3_backup_finish");
+      Result : int;
+   begin
+      if Object.Handle /= null then
+         Result := Internal (Object.Handle);
+         Object.Handle := null;
+      end if;
+      Finalize (Entity (Object));
+   exception
+      when others =>
+         Object.Handle := null;
+         Finalize (Entity (Object));
+   end Finalize;
+
+   procedure Finalize (Object : in out Immutable_Statement_Object) is
+   begin
+      Finalize (Entity (Object));
+   end Finalize;
+
+   function Get_User_Data (Base : Data_Base) return Object.Entity_Ptr is
+   begin
+      return Ptr (Base.Handle).User_Data;
+   end Get_User_Data;
+
+   function Init
+            (  Destination      : Data_Base'Class;
+               Destination_Name : String := "main";
+               Source           : Data_Base'Class;
+               Source_Name      : String := "main"
+            )  return Backup is
+      function Internal
+               (  Destination      : SQLite_Handle;
+                  Destination_Name : char_array;
+                  Source           : SQLite_Handle;
+                  Source_Source    : char_array
+               )  return SQLite_Backup_Handle;
+      pragma Import (C, Internal, "sqlite3_backup_init");
+      From : constant SQLite_Handle := Ptr (Source.Handle).Handle;
+      To   : constant SQLite_Handle := Ptr (Destination.Handle).Handle;
+      This : constant Backup_Handles.Handle := Ref (new Backup_Object);
+   begin
+      Ptr (This).Handle :=
+         Internal
+         (  To,
+            To_C (Destination_Name),
+            From,
+            To_C (Source_Name)
+         );
+      if Ptr (This).Handle = null then
+         Check (To, Errcode (To));
+      end if;
+      return (Handle => This);
+   end Init;
 
    function Is_Null
             (  Command  : Statement;
@@ -674,6 +776,13 @@ package body SQLite is
       return Result;
    end Open;
 
+   function Pagecount (Object : Backup) return int is
+      function Internal (Object : SQLite_Backup_Handle) return int;
+      pragma Import (C, Internal, "sqlite3_backup_pagecount");
+   begin
+      return Internal (Ptr (Object.Handle).Handle);
+   end Pagecount;
+
    function Prepare
             (  Base    : Data_Base'Class;
                Command : String
@@ -705,6 +814,13 @@ package body SQLite is
       return Result;
    end Prepare;
 
+   function Remaining (Object : Backup) return int is
+      function Internal (Object : SQLite_Backup_Handle) return int;
+      pragma Import (C, Internal, "sqlite3_backup_remaining");
+   begin
+      return Internal (Ptr (Object.Handle).Handle);
+   end Remaining;
+
    procedure Reset (Command : Statement) is
       function Internal (pStmt : SQLite_Handle) return int;
       pragma Import (C, Internal, "sqlite3_reset");
@@ -712,6 +828,228 @@ package body SQLite is
    begin             -- repeat the last execution fault
       Result := Internal (Ptr (Command.Handle).Handle);
    end Reset;
+
+   procedure Set_User_Data
+             (  Base : Data_Base;
+                Data : Object.Entity_Ptr
+             )  is
+      Object : Data_Base_Object'Class renames Ptr (Base.Handle).all;
+   begin
+      if Object.User_Data /= Data then
+         if Object.User_Data /= null then
+            Release (Object.User_Data);
+         end if;
+         if Data /= null then
+            Increment_Count (Data.all);
+            Object.User_Data := Data;
+         end if;
+      end if;
+   end Set_User_Data;
+
+   type Trace_Callbak_Ptr is access function
+        (  T : unsigned;
+           C : Address;
+           P : Address;
+           X : Address
+        )  return int;
+   pragma Convention (C, Trace_Callbak_Ptr);
+
+   function Trace_Callbak
+            (  T : unsigned;
+               C : Address;
+               P : Address;
+               X : Address
+            )  return int;
+   pragma Convention (C, Trace_Callbak);
+
+   function Trace_Callbak
+            (  T : unsigned;
+               C : Address;
+               P : Address;
+               X : Address
+            )  return int is
+      package As_Integer is
+         new System.Address_To_Access_Conversions (Integer_64);
+      package As_Statement is
+         new System.Address_To_Access_Conversions (SQLite_Object);
+      function "+" is new Ada.Unchecked_Conversion (Address, chars_ptr);
+      This    : constant Data_Base_Object_Ptr := From_Address (C);
+      Base    : Data_Base;
+      Command : Statement;
+      procedure Create_Statement is
+      begin
+         Set (Command.Handle, new Immutable_Statement_Object);
+         declare
+            Object : Statement_Object'Class renames
+                     Ptr (Command.Handle).all;
+         begin
+            Object.Base := Base.Handle;
+            Object.Handle :=
+               As_Statement.To_Pointer (P).all'Unchecked_Access;
+         end;
+      end Create_Statement;
+   begin
+      if This.Use_Count = 0 then
+         return 0;
+      end if;
+      begin
+         case T is
+            when SQLITE_TRACE_STMT =>
+               if This.Do_Statement /= null then
+                  Set (Base.Handle, This);
+                  declare
+                     Query : constant String := Value (+X);
+                  begin
+                     Create_Statement;
+                     This.Do_Statement (Command, Query, This.User_Data);
+                  end;
+               end if;
+            when SQLITE_TRACE_PROFILE =>
+               if This.Do_Profile /= null then
+                  Set (Base.Handle, This);
+                  Create_Statement;
+                  This.Do_Profile
+                  (  Command,
+                     Duration
+                     (  Long_Float (As_Integer.To_Pointer (X).all)
+                     *  0.000_000_001
+                     ),
+                     This.User_Data
+                  );
+               end if;
+            when SQLITE_TRACE_ROW =>
+               if This.Do_Row /= null then
+                  Set (Base.Handle, This);
+                  Create_Statement;
+                  This.Do_Row (Command, This.User_Data);
+               end if;
+            when SQLITE_TRACE_CLOSE =>
+               if This.Do_Close /= null then
+                  Set (Base.Handle, This);
+                  This.Do_Close (This.User_Data);
+               end if;
+            when others =>
+               null;
+         end case;
+      exception
+         when others =>
+            null;
+      end;
+      return 0;
+   end Trace_Callbak;
+--
+-- The sqlite3_trace_v2 fallback for older versions of SQLite with no
+-- tracing support.
+--
+   function SQLite_Trace_Fallback
+            (  db       : SQLite_Handle;
+               Mask     : unsigned;
+               Callback : Trace_Callbak_Ptr;
+               Context  : Address
+            )  return int;
+   pragma External (C, SQLite_Trace_Fallback, "sqlite3_trace_v2");
+   pragma Weak_External (SQLite_Trace_Fallback);
+
+   function SQLite_Trace_Fallback
+            (  db       : SQLite_Handle;
+               Mask     : unsigned;
+               Callback : Trace_Callbak_Ptr;
+               Context  : Address
+            )  return int is
+   begin
+      return SQLITE_OK;
+   end SQLite_Trace_Fallback;
+
+   procedure Set_Trace (Base : in out Data_Base_Object'Class) is
+      function Internal
+               (  db       : SQLite_Handle;
+                  Mask     : unsigned;
+                  Callback : Trace_Callbak_Ptr;
+                  Context  : Address
+               )  return int;
+      pragma Import (C, Internal, "sqlite3_trace_v2");
+      Mask : unsigned := 0;
+   begin
+      if (  Base.Do_Statement = null
+         and then
+            Base.Do_Profile = null
+         and then
+            Base.Do_Row = null
+         and then
+            Base.Do_Close = null
+         )  then
+         Check
+         (  Base.Handle,
+            Internal
+            (  Base.Handle,
+               0,
+               null,
+               Null_Address
+         )  );
+      else
+         if Base.Do_Statement /= null then
+            Mask := Mask or SQLITE_TRACE_STMT;
+         end if;
+         if Base.Do_Profile /= null then
+            Mask := Mask or SQLITE_TRACE_PROFILE;
+         end if;
+         if Base.Do_Row /= null then
+            Mask := Mask or SQLITE_TRACE_ROW;
+         end if;
+         if Base.Do_Close /= null then
+            Mask := Mask or SQLITE_TRACE_CLOSE;
+         end if;
+         Check
+         (  Base.Handle,
+            Internal
+            (  Base.Handle,
+               Mask,
+               Trace_Callbak'Access,
+               Base'Address
+         )  );
+      end if;
+   end Set_Trace;
+
+   procedure Set_Trace (Base : Data_Base; Tracer : On_Close) is
+      Object : Data_Base_Object'Class renames Ptr (Base.Handle).all;
+   begin
+      Object.Do_Close := Tracer;
+      Set_Trace (Object);
+   end Set_Trace;
+
+   procedure Set_Trace (Base : Data_Base; Tracer : On_Statement) is
+      Object : Data_Base_Object'Class renames Ptr (Base.Handle).all;
+   begin
+      Object.Do_Statement := Tracer;
+      Set_Trace (Object);
+   end Set_Trace;
+
+   procedure Set_Trace (Base : Data_Base; Tracer : On_Profile) is
+      Object : Data_Base_Object'Class renames Ptr (Base.Handle).all;
+   begin
+      Object.Do_Profile := Tracer;
+      Set_Trace (Object);
+   end Set_Trace;
+
+   procedure Set_Trace (Base : Data_Base; Tracer : On_Row) is
+      Object : Data_Base_Object'Class renames Ptr (Base.Handle).all;
+   begin
+      Object.Do_Row := Tracer;
+      Set_Trace (Object);
+   end Set_Trace;
+
+   function SQL (Command : Statement) return String is
+      function Internal (pStmt : SQLite_Handle) return chars_ptr;
+      pragma Import (C, Internal, "sqlite3_sql");
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
+      Result : chars_ptr := Internal (Object.Handle);
+   begin
+      if Result = Null_Ptr then
+         return "";
+      else
+         return Value (Result);
+      end if;
+   end SQL;
 
    function Step (Command : Statement) return Boolean is
       function Internal (pStmt : SQLite_Handle) return int;
@@ -735,6 +1073,17 @@ package body SQLite is
       if Step (Command) then
          null;
       end if;
+   end Step;
+
+   procedure Step (Object : Backup; Pages : int := -1) is
+      function Internal
+               (  Object : SQLite_Backup_Handle;
+                  Pages  : int
+               )  return int;
+      pragma Import (C, Internal, "sqlite3_backup_step");
+      Result : int;
+   begin
+      Result := Internal (Ptr (Object.Handle).Handle, Pages);
    end Step;
 
    function Table_Exists

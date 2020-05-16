@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  19:28 01 Aug 2019  --
+--                                Last revision :  14:53 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -114,6 +114,16 @@ package GNAT.Sockets.Server is
            Port    : Port_Type
         )  is new Ada.Finalization.Limited_Controlled with private;
    type Connections_Server_Ptr is access all Connections_Server'Class;
+--
+-- Activated -- Session activation notification
+--
+--    Client - The client connection object
+--
+-- This procedure  is  called  when  the session  becomes  active  after
+-- handshake  completion.   From here  a server or  client  can initiate
+-- communication with the pier. The default implementation does nothing.
+--
+   procedure Activated (Client : in out Connection);
 --
 -- Available_To_Process -- Stream elements available to process
 --
@@ -746,6 +756,15 @@ package GNAT.Sockets.Server is
 -- content to send is about to come.
 --
    procedure Keep_On_Sending (Client : in out Connection);
+--
+-- On_Worker_Start -- Worker task notification start
+--
+--    Listener - The server object
+--
+-- This procedure  is called when  the worker  task starts.  The default
+-- implementation does nothing.
+--
+   procedure On_Worker_Start (Listener : in out Connections_Server);
 --
 -- Process -- Encoded data processing
 --

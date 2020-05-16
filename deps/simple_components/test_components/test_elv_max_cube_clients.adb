@@ -3,7 +3,7 @@
 --     Test_ELV_MAX_Cube_Clients                   Luebeck            --
 --  ELV MAX! Cube test client                      Summer, 2015       --
 --                                                                    --
---                                Last revision :  10:33 11 May 2019  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,9 +31,12 @@ package body Test_ELV_MAX_Cube_Clients is
              (  Client : in out Test_Client;
                 Update : Update_Data
              )  is
+      Dum_ID : Room_ID := No_Room;
    begin
       case Update.Kind_Of is
          when Cube_Update =>
+            null;
+         when Detached_Device_Update =>
             null;
          when Topology_Update =>
             null;
@@ -55,7 +58,8 @@ package body Test_ELV_MAX_Cube_Clients is
                   Kind_Of     => Update.Device,
                   Device_Name => "Thermostat",
                   Serial_No   => Update.Serial_No,
-                  Address     => Update.Address
+                  Address     => Update.Address,
+                  ID          => Dum_ID
                );
             end if;
          when End_Discovery_Update =>

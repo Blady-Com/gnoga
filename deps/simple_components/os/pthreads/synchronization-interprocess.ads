@@ -271,6 +271,20 @@ package Synchronization.Interprocess is
 --    The signature
 --
    function Get_Signature (Data : String) return Unsigned_16;
+--
+-- Process_ID -- The process ID
+--
+   subtype Process_ID is Synchronization.Pthreads.pid_t;
+   Null_Process : constant Process_ID := 0;
+--
+-- Get_Process_ID -- Get process ID
+--
+-- Returns :
+--
+--    The process ID
+--
+   function Get_Process_ID return Process_ID
+      renames Synchronization.Pthreads.getpid;
 
 private
    use Interfaces.C;

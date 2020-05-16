@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  18:49 10 Apr 2017  --
+--                                Last revision :  14:40 03 Apr 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -874,13 +874,6 @@ private
    type Action is access
       procedure (Session : in out HTTP_Session'Class);
 
---     type Data_Pool is new Stack_Storage.Pool with null record;
---     procedure Write
---               (  Stream : access Root_Stream_Type'Class;
---                  Item   : Data_Pool
---               );
---     for Data_Pool'Write use Write;
-
    type String_Data (Size : Natural) is record
       Length : Natural := 0;
       Text   : String (1..Size);
@@ -973,14 +966,16 @@ private
 -- Request_Line_Type -- Types of request lines/processing states
 --
    type Response_Line_Type is
-        (  Nothing,         -- No request active
+        (  Handshaking,     -- Performing handshake
            Response_Line,   -- Response status line
            Header_Line,     -- Response header field line
            Response_Data,   -- Response data
            Chunk_Header,    -- Chunk header
            Chunk_Data,      -- Chunk data
            Chunk_Data_CRLF, -- CRLF
-           Chunk_Footer     -- Chunk footer
+           Chunk_Footer,    -- Chunk footer
+           Nothing          -- No request active
+
         );
 
    subtype Specific_Header is Response_Header
@@ -994,7 +989,7 @@ private
            Output_Size     : Buffer_Length
         )  is new State_Machine (Input_Size, Output_Size) with
    record
-      Expecting        : Response_Line_Type   := Nothing;
+      Expecting        : Response_Line_Type   := Handshaking;
       Data_Length      : Stream_Element_Count := 0;
       Version          : HTTP_Version         := 1.1;
       Code             : Positive             := 200;

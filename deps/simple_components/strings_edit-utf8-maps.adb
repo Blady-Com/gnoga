@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Maps                      Luebeck            --
 --  Implementation                                 Spring, 2008       --
 --                                                                    --
---                                Last revision :  22:44 07 Apr 2016  --
+--                                Last revision :  13:11 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -92,17 +92,17 @@ package body Strings_Edit.UTF8.Maps is
             List := new Code_Points_List (Increment);
          end if;
       else
-         if List.Use_Count > Use_Count then
+         if List.Use_Count > Use_Count or else Increment > 0 then
             declare
                Ranges : Code_Points_Ranges renames List.Ranges;
                Length : constant Natural := List.Length;
-               Old    : constant Code_Points_List_Ptr := List;
+               Old    : Code_Points_List_Ptr := List;
             begin
                List := new Code_Points_List (Length + Increment);
                List.Length := Length;
                List.Indicator := Old.Indicator;
                List.Ranges (1..Length) := Ranges (1..Length);
-               Release (List);
+               Release (Old);
             end;
          end if;
       end if;
@@ -528,7 +528,6 @@ package body Strings_Edit.UTF8.Maps is
          Unchecked_Insert (List, 1, Span, Use_Count, Increment);
          return;
       end if;
-      Clone (List, 1, Increment);
       declare
          Ranges : Code_Points_Ranges renames List.Ranges;
          Low    : Integer := Find (List.all, Span.Low);
@@ -558,6 +557,7 @@ package body Strings_Edit.UTF8.Maps is
                --   [////////////////////////////]
                --
                Ranges (Low).High := Ranges (High).High;
+               Clone (List, Use_Count, 0);
                Remove (List.all, Low + 1, High);
             else
                High := -High;
@@ -568,6 +568,7 @@ package body Strings_Edit.UTF8.Maps is
                --   [//////////////////////////]  [/////]
                --
                Ranges (Low).High := Span.High;
+               Clone (List, Use_Count, 0);
                Remove (List.all, Low + 1, High - 1);
             end if;
          else
@@ -580,6 +581,7 @@ package body Strings_Edit.UTF8.Maps is
                --  [//] [///////////////////////////]
                --
                Ranges (Low) := (Span.Low, Ranges (High).High);
+               Clone (List, Use_Count, 0);
                Remove (List.all, Low + 1, High);
             else
                High := -High;
@@ -605,6 +607,7 @@ package body Strings_Edit.UTF8.Maps is
                   --  [//] [//////////////////////////]  [/////]
                   --
                   Ranges (Low) := Span;
+                  Clone (List, Use_Count, 0);
                   Remove (List.all, Low + 1, High - 1);
                end if;
             end if;

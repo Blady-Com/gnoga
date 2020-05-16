@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess.               Luebeck            --
 --     Generic_Process_Call_Service                Spring, 2018       --
 --  Implementation                                                    --
---                                Last revision :  16:12 15 Jul 2018  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -718,6 +718,15 @@ package body Synchronization.Interprocess.Process_Call_Service is
       end if;
    end Get_ID;
 
+   function Get_Process_ID (Service : Call_Service) return Process_ID is
+   begin
+      if Service.Data = null then
+         Raise_Exception (Status_Error'Identity, Service_Init);
+      else
+         return Service.Data.Process;
+      end if;
+   end Get_Process_ID;
+
    function Get_Service
             (  Method : Abstract_Method;
                ID     : Call_Service_ID
@@ -941,6 +950,7 @@ package body Synchronization.Interprocess.Process_Call_Service is
                   )  )  )
                then
                   Object.Server_ID    := Server_ID;
+                  Object.Data.Process := Get_Process_ID;
                   Object.Data.Service := Object'Unchecked_Access;
                else
                   Raise_Exception
@@ -971,6 +981,11 @@ package body Synchronization.Interprocess.Process_Call_Service is
    begin
       null;
    end Map;
+
+   procedure On_Start (Service : in out Call_Service) is
+   begin
+      null;
+   end On_Start;
 
    procedure Read
              (  Stream  : access Root_Stream_Type'Class;
@@ -1036,7 +1051,7 @@ package body Synchronization.Interprocess.Process_Call_Service is
       case Object.Mode is
          when Server_Mode =>
             Object.Server :=
-                new Call_Server (Object'Unchecked_Access);
+               new Call_Server (Object'Unchecked_Access);
          when Client_Mode =>
             null;
       end case;
@@ -1083,6 +1098,7 @@ package body Synchronization.Interprocess.Process_Call_Service is
          then
             null;
          end if;
+         This.Data.Process := Null_Process;
          Free (This.Server);
          Free (This.Methods);
          Free (This.Servers);
@@ -1264,6 +1280,7 @@ package body Synchronization.Interprocess.Process_Call_Service is
       Stock   : Null_Stream;
       Empty   : Boolean;
    begin
+      On_Start (Service.all);
       while Is_Callable (Main) loop
          select
             accept Quit;

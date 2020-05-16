@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client                               Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  17:58 10 Mar 2017  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,10 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;  use Ada.Exceptions;
+with Ada.Real_Time;  use Ada.Real_Time;
 
 with GNAT.Sockets.Connection_State_Machine.Big_Endian.Unsigneds;
-with GNAT.Sockets.Connection_State_Machine.Variable_Length_Arrays;
 
 package GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
    use Interfaces;
@@ -216,6 +215,30 @@ package GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                Code   : Function_Code;
                Count  : Natural := 0
             )  return Stream_Element_Count;
+--
+-- Get_RTU_Checksum_Mode -- Get current checksum mode
+--
+--    Client - The MODBUS client
+--
+-- Returns :
+--
+--    True if the MODBUS RTU checksum is used
+--
+   function Get_RTU_Checksum_Mode
+            (  Client : MODBUS_Client
+            )  return Boolean;
+--
+-- Get_RTU_Silence_Time -- Get RTU silience time
+--
+--    Client - The MODBUS client
+--
+-- Returns :
+--
+--    The time to wait before next sending, e.g. 3.5 character send time
+--
+   function Get_RTU_Silence_Time
+            (  Client : MODBUS_Client
+            )  return Duration;
 --
 -- Send_FC1 -- Read Coils
 --
@@ -478,6 +501,51 @@ package GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                 Unit      : Unit_No := 255
              );
 --
+-- Sent -- Overriding primitive GNAT.Sockets.Server...
+--
+   procedure Sent (Client : in out MODBUS_Client);
+--
+-- Set_RTU_Checksum_Mode -- Control RTU checksum use
+--
+--    Client - The MODBUS client
+--    Enable - True to enable using RTU checkum
+--
+-- When checksum  is enabled it is added to  at the end  of each  MODBUS
+-- command. For incoming MODBUS responses the checksum is verified.  The
+-- checksum is 2 octets long.
+--
+   procedure Set_RTU_Checksum_Mode
+             (  Client : in out MODBUS_Client;
+                Enable : Boolean
+             );
+--
+-- Set_RTU_Silence_Time -- Set RTU silience time
+--
+--    Client  - The MODBUS client
+--    Silence - The silence time interval
+--
+   procedure Set_RTU_Silence_Time
+             (  Client  : in out MODBUS_Client;
+                Silence : Duration
+             );
+--
+-- Wait_RTU_Silence_Time -- Wait over the RTU silence time
+--
+--    Client  - The MODBUS client
+--    Timeout - The timeout
+--
+-- This procedure awaits the mandated RTU silence  time since  the  last
+-- packet was sent.
+--
+-- Exceptions :
+--
+--    Timeout_Error - Timeout expired
+--
+   procedure Wait_RTU_Silence_Time
+             (  Client  : in out MODBUS_Client;
+                Timeout : Duration := Duration'Last
+             );
+--
 -- Words_Read -- Completion notification
 --
 --    Client    - The MODBUS client
@@ -544,17 +612,138 @@ package GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
 --    The corresponding error text
 --
    function Error_Text (Code : Exception_Code) return String;
+------------------------------------------------------------------------
+--
+-- MODBUS RTU checksum
+--
+   type MODBUS_Checksum is private;
+--
+-- Accumulate -- Calculate checksum
+--
+--    CRC  - The checksum
+--    Data - To calculate checksum over
+--
+   procedure Accumulate
+             (  CRC  : in out MODBUS_Checksum;
+                Data : Stream_Element_Array
+             );
+   procedure Accumulate
+             (  CRC  : in out MODBUS_Checksum;
+                Data : Unsigned_8
+             );
+--
+-- Get -- The accumulated checksum
+--
+--    CRC - The checksum
+--
+-- Returns :
+--
+--    The checksum octets
+--
+   function Get (CRC : MODBUS_Checksum) return Stream_Element_Array;
+--
+-- Reset -- The checksum for a new calculation
+--
+--    CRC - The checksum
+--
+   procedure Reset (CRC : in out MODBUS_Checksum);
 
 private
    use GNAT.Sockets.Connection_State_Machine.Big_Endian.Unsigneds;
-   use GNAT.Sockets.Connection_State_Machine.Variable_Length_Arrays;
 
    pragma Assert (Stream_Element'Size = 8);
 
-   type Set_Data_Length (Client : access MODBUS_Client'Class) is
+   function "abs" (Timeout : Duration) return Time;
+
+   type Payload_Item (Size : Stream_Element_Count) is
+      new Data_Item with
+   record
+      Offset : Stream_Element_Offset := 0;
+      Last   : Stream_Element_Offset := 0;
+      Value  : Stream_Element_Array (1..Size);
+   end record;
+   procedure Feed
+             (  Item    : in out Payload_Item;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Client  : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             );
+--
+-- TCP_Head -- The head of MODBUS TCP packet, it is empty for MODBUS RTU
+--
+   type TCP_Head;
+
+   type Set_TCP_Data_Length (Head : access TCP_Head'Class) is
       new Data_Item with null record;
    procedure Feed
-             (  Item    : in out Set_Data_Length;
+             (  Item    : in out Set_TCP_Data_Length;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Machine : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             );
+
+   type TCP_Head (Client : access MODBUS_Client'Class) is
+      new Data_Block with
+   record
+      Transaction_ID : Unsigned_16_Data_Item;
+      Protocol_ID    : Unsigned_16_Data_Item;
+      Length_Field   : Unsigned_16_Data_Item;
+      Data_Length    : Set_TCP_Data_Length (TCP_Head'Unchecked_Access);
+   end record;
+   procedure Feed
+             (  Item    : in out TCP_Head;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Machine : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             );
+--
+-- RTU_Length -- The byte count of MODBUS RTU packet.  It  is a  part of
+--               the payload.  For  MODBUS  TCP  it  is ignored  because
+-- already in the payload. For MODBUS  RTU it  sets  the payload  length
+-- including itself.
+--
+   type RTU_Length (Client : access MODBUS_Client'Class) is
+      new Data_Item with null record;
+   procedure Feed
+             (  Item    : in out RTU_Length;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Machine : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             );
+--
+-- RTU_Checksum -- The checksum duplet. It is empty for MODBUS TCP
+--
+   type RTU_Checksum;
+   protected type Silence_Event (Parent : access RTU_Checksum) is
+      function Get return Time_Span;
+      function Get_Next return Time;
+      procedure Set (Silence_Time : Time_Span);
+      procedure Set_Last (Last_Time : Time);
+      entry Wait_For_Empty_Queue;
+   private
+      Empty   : Boolean   := True;
+      Last    : Time      := Time_First;
+      Silence : Time_Span := Time_Span_Zero;
+   end Silence_Event;
+   procedure Write
+             (  Stream : access Root_Stream_Type'Class;
+                Item   : Silence_Event
+             );
+   for Silence_Event'Write use Write;
+
+   type RTU_Checksum (Client : access MODBUS_Client'Class) is
+      new Data_Item with
+   record
+      Enable : Boolean := False;
+      Event  : Silence_Event (RTU_Checksum'Unchecked_Access);
+      Data   : Stream_Element_Array (1..2);
+   end record;
+   procedure Feed
+             (  Item    : in out RTU_Checksum;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Machine : in out State_Machine'Class;
@@ -566,13 +755,12 @@ private
         )  is new State_Machine (256 + 16, Output_Size) with
    record
          -- Response fields
-      Transaction_ID : Unsigned_16_Data_Item;
-      Protocol_ID    : Unsigned_16_Data_Item;
-      Length_Field   : Unsigned_16_Data_Item;
-      Data_Length    : Set_Data_Length (MODBUS_Client'Unchecked_Access);
-      Unit_ID        : Unsigned_8_Data_Item;
-      Function_Code  : Unsigned_8_Data_Item;
-      Payload_Data   : Array_Data_Item (256);
+      Head          : TCP_Head     (MODBUS_Client'Unchecked_Access);
+      Unit_ID       : Unsigned_8_Data_Item;
+      Function_Code : Unsigned_8_Data_Item;
+      Length        : RTU_Length   (MODBUS_Client'Unchecked_Access);
+      Payload_Data  : Payload_Item (256);
+      CRC           : RTU_Checksum (MODBUS_Client'Unchecked_Access);
    end record;
 
    procedure Prepare_To_Send
@@ -580,5 +768,15 @@ private
                 Length : Stream_Element_Count
              );
    procedure Process_Packet (Client : in out MODBUS_Client);
+   procedure Wait_Until_RTU_Silence_Time
+             (  Client   : in out MODBUS_Client;
+                Deadline : Time
+             );
+
+   type MODBUS_Checksum is record
+      Value : Unsigned_16 := 16#FFFF#;
+   end record;
+
+   Expired_Text : constant String := "I/O timeout expired";
 
 end GNAT.Sockets.Connection_State_Machine.MODBUS_Client;

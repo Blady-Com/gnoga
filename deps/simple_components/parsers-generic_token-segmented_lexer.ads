@@ -4,7 +4,7 @@
 --        Segmented_Lexer                          Winter, 2004       --
 --  Interface                                                         --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  09:20 06 Oct 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -84,6 +84,8 @@ generic
    Operation_Minimal_Size      : Positive := 64;
    Operation_Increment         : Natural  := 50;
 package Parsers.Generic_Token.Segmented_Lexer is
+   subtype Lexer_Source_Type is Source_Type;
+
    package Lexical_Arguments is
       new Arguments.Segmented_Stack
           (  Frame_Segment_Size => Argument_Frame_Segment_Size,

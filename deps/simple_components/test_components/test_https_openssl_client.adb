@@ -3,7 +3,7 @@
 --     Test_HTTPS_OpenSSL_Client                   Luebeck            --
 --  HTTPS OpenSSL client test                      Winter, 2019       --
 --                                                                    --
---                                Last revision :  10:33 11 May 2019  --
+--                                Last revision :  14:41 03 Apr 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -48,6 +48,7 @@ procedure Test_HTTPS_OpenSSL_Client is
 
    Address : constant String := "prod.idrix.eu";
    Path    : constant String := "secure";
+
    Port    : constant := 443;
 begin
 -- Trace_On (Every_Raise);

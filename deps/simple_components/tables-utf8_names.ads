@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2008       --
 --                                                                    --
---                                Last revision :  22:06 23 Jul 2014  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -51,7 +51,7 @@ generic
    with function Check_Matched (Source : String; Pointer : Integer)
       return Boolean is <>;
    Blanks  : Unicode_Set := -- Tabulator and spaces
-      To_Set (16#09#) or Strings_Edit.UTF8.Maps.Constants.Space_Set;
+      Strings_Edit.UTF8.Maps.Constants.Blanks_Set;
    Ignored : Unicode_Set := -- Hyphen and others
       Strings_Edit.UTF8.Maps.Constants.Other_Format_Set;
 package Tables.UTF8_Names is
@@ -111,6 +111,13 @@ package Tables.UTF8_Names is
                 Pointer : in out Integer;
                 Folder  : Dictionary;
                 Data    : out Tag
+             );
+   procedure Get
+             (  Source  : String;
+                Pointer : in out Integer;
+                Folder  : Dictionary;
+                Data    : out Tag;
+                Got_It  : out Boolean
              );
 --
 -- IsIn -- Overrides Tables...

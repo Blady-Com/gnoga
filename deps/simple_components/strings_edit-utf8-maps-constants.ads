@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Maps.Constants            Luebeck            --
 --  Interface                                      Spring, 2008       --
 --                                                                    --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  13:11 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,6 +33,7 @@ use  Strings_Edit.UTF8.Categorization;
 package Strings_Edit.UTF8.Maps.Constants is
 
    Alphanumeric_Set      : constant Unicode_Set;
+   Blanks_Set            : constant Unicode_Set;
    Control_Set           : constant Unicode_Set;
    Digit_Set             : constant Unicode_Set;
    Identifier_Extend_Set : constant Unicode_Set;
@@ -57,6 +58,7 @@ private
    Lower_Set   : constant Unicode_Set := To_Set (Is_Lower'Access);
    Upper_Set   : constant Unicode_Set := To_Set (Is_Upper'Access);
    Space_Set   : constant Unicode_Set := To_Set (Is_Space'Access);
+   Blanks_Set  : constant Unicode_Set := To_Set (16#09#) or Space_Set;
    Title_Set   : constant Unicode_Set := To_Set (Is_Title'Access);
    ISO_646_Set : constant Unicode_Set := To_Set (Is_ISO_646'Access);
 

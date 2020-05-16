@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  19:28 01 Aug 2019  --
+--                                Last revision :  22:41 09 Mar 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -53,6 +53,11 @@ package body GNAT.Sockets.Server is
 
    procedure Free is
       new Ada.Unchecked_Deallocation (Encoder'Class, Encoder_Ptr);
+
+   procedure Activated (Client : in out Connection) is
+   begin
+      null;
+   end Activated;
 
    procedure Append
              (  List  : in out Connection_Ptr;
@@ -771,9 +776,12 @@ package body GNAT.Sockets.Server is
             Connected (Client);
             Connected (Listener, Client);
             Client.Session := Session_Active;
+            Activated (Client);
          exception
             when others =>
-               if Client.Session = Session_Connected then
+               if Client.Session in Session_Connected
+                                 .. Session_Active
+               then
                   Client.Session := Saved;
                end if;
                raise;
@@ -787,6 +795,11 @@ package body GNAT.Sockets.Server is
          );
       end if;
    end On_Connected;
+
+   procedure On_Worker_Start (Listener : in out Connections_Server) is
+   begin
+      null;
+   end On_Worker_Start;
 
    procedure Process
              (  Buffer    : in out Input_Buffer;
@@ -2404,6 +2417,7 @@ package body GNAT.Sockets.Server is
 
       Exit_Error : exception;
    begin
+      On_Worker_Start (Listener.all);
       if Address.Port /= 0 then
          Create_Socket (Listener.all, Server_Socket, Address);
          if Server_Socket = No_Socket then
@@ -2507,6 +2521,7 @@ package body GNAT.Sockets.Server is
                               Connected (This);
                               Connected (Listener.all, This);
                               This.Session := Session_Active;
+                              Activated (This);
                            else
                               This.Session := Session_Handshaking;
                            end if;

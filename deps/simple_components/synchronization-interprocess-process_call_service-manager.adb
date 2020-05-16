@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess.               Luebeck            --
 --     Process_Call_Service.Manager                Spring, 2018       --
 --  Implementation                                                    --
---                                Last revision :  19:18 30 Apr 2018  --
+--                                Last revision :  22:08 06 Jan 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -96,6 +96,63 @@ package body Synchronization.Interprocess.Process_Call_Service.
       else
          return Manager.Services (ID);
       end if;
+   end Get_Service;
+
+   function Get_Service
+            (  Manager : Call_Service_Manager;
+               ID      : Process_ID
+            )  return Call_Service_Ptr is
+      use Process_Maps;
+      Result : Call_Service_Ptr;
+   begin
+      if Manager.Server = 0 then
+         Raise_Exception (Status_Error'Identity, Manager_Init);
+      end if;
+      declare
+         Self : Call_Service_Manager'Class renames
+                Call_Service_Manager'Class (Manager.Self.all);
+         Lock : Synchronization.Mutexes.Holder (Self.Lock'Access);
+      begin
+         declare
+            Offset : constant Integer := Find (Manager.Processes, ID);
+         begin
+            if Offset > 0 then
+               declare
+                  Index : constant Call_Service_ID :=
+                                   Get (Manager.Processes, Offset);
+               begin
+                  if (  Index in Manager.Services'Range
+                     and then
+                        Manager.Services (Index).Data /= null
+                     )  then
+                     return Manager.Services (Index);
+                  end if;
+               end;
+            end if;
+         end;
+         for Index in Manager.Services'Range loop
+            if Manager.Services (Index).Data /= null then
+               declare
+                  That : constant Process_ID :=
+                         Get_Process_ID (Manager.Services (Index).all);
+               begin
+                  if That /= Null_Process then
+                     if That = ID then
+                        Result := Manager.Services (Index);
+                     end if;
+                     Replace (Self.Processes, That, Index);
+                  end if;
+               end;
+            end if;
+         end loop;
+      end;
+      if Result = null then
+         Raise_Exception
+         (  Status_Error'Identity,
+            "Process" & Process_ID'Image (ID) & " is not serviced"
+         );
+      end if;
+      return Result;
    end Get_Service;
 
    procedure Finalize (Manager : in out Call_Service_Manager) is
@@ -197,7 +254,7 @@ package body Synchronization.Interprocess.Process_Call_Service.
                      &  " is not ready"
                   )  );
                end if;
-               delay 1.0;
+               delay 0.01;
             end loop;
          end;
       end loop;

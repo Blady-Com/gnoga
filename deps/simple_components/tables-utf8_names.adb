@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2008       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -381,7 +381,8 @@ package body Tables.UTF8_Names is
              (  Source  : String;
                 Pointer : in out Integer;
                 Folder  : Dictionary;
-                Data    : out Tag
+                Data    : out Tag;
+                Got_It  : out Boolean
              )  is
       Found : Integer := 0;
       Low   : Integer := 0;
@@ -437,17 +438,34 @@ package body Tables.UTF8_Names is
          end case;
       end loop;
       if Found = 0 then
-         raise End_Error;
+         Got_It := False;
+         return;
       end if;
       if (  Next <= Source'Last
          and then
             not Check_Matched (Source, Next)
          )
       then
-         raise End_Error;
+         Got_It := False;
+         return;
       end if;
       Pointer := Next;
-      Data := Folder.List (Found).Data;
+      Data    := Folder.List (Found).Data;
+      Got_It  := True;
+   end Get;
+
+   procedure Get
+             (  Source  : String;
+                Pointer : in out Integer;
+                Folder  : Dictionary;
+                Data    : out Tag
+             )  is
+      Got_It : Boolean;
+   begin
+      Get (Source, Pointer, Folder, Data, Got_It);
+      if not Got_It then
+         raise End_Error;
+      end if;
    end Get;
 
    procedure Replace

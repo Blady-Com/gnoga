@@ -11,7 +11,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800000">
 <P align="center">
 <BIG><BIG><BIG><B>STRINGS EDIT</B></BIG></BIG><BR>
-<EM>version 3.5</EM><BR>
+<EM>version 3.6</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a>
@@ -179,12 +179,12 @@ can be here.</p>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-<a href="http://www.dmitry-kazakov.de/ada/strings_3_5.tgz">strings_3_5.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
+<a href="http://www.dmitry-kazakov.de/ada/strings_3_6.tgz">strings_3_6.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/strings_3_5.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/strings_3_6.tgz">
  <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -484,10 +484,10 @@ is propagated if there is no   room   for   output   or <b>  Pointer</b>  is  no
     height="29"></A><A href="#5"><IMG
     src="next.gif" alt="[Next]" width="29" height="29"></A><H2>4. Roman I/O</H2>
 <P>
-<A name="Roman_Edit"></A>The child package Roman_Edit provides I/O routines for roman numbers.
-The type Roman is defined there as follows:</p>
+<A name="Roman_Edit"></A>The child package <a href="#Roman_Edit">Roman_Edit</a> provides I/O routines for roman numbers.
+The type <a href="#Roman_Edit.Roman">Roman</a> is defined there as follows:</p>
 <BLOCKQUOTE>
-  <tt><font color="#0000FF">type
+  <tt><font color="#0000FF"><a name="Roman_Edit.Roman"></a>type
   </FONT>Roman<FONT
       color="#0000FF"> is range
   </FONT><FONT color="#800000">1</FONT>..<FONT color="#800000">3999</FONT>;</tt>
@@ -498,7 +498,8 @@ The type Roman is defined there as follows:</p>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;( &nbsp;<b>Source</b> &nbsp;: <font color="#0000FF">in</FONT> String;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<b>Pointer</b> : <font color="#0000FF">in
   out</FONT> Integer;<BR>
-  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;: <font color="#0000FF">out</FONT> Roman;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;: <font color="#0000FF">out</FONT> 
+	<a href="#Roman_Edit.Roman">Roman</a>;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<b>First</b>&nbsp; &nbsp;: Roman &nbsp; := Roman'First;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<b>Last</b>&nbsp; &nbsp;
   : Roman &nbsp; := Roman'Last;<BR>
@@ -519,9 +520,9 @@ description of <A href="#Gets">get procedures</A>.</p>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   (&nbsp;&nbsp;<b>Source</b>&nbsp;&nbsp;: String;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  <b>First</b>&nbsp;&nbsp; : Roman &nbsp; := Roman'First;<BR>
+  <b>First</b>&nbsp;&nbsp; : Roman &nbsp; := <a href="#Roman_Edit.Roman">Roman</a>'First;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  <b>Last</b>&nbsp;&nbsp; &nbsp;: Roman &nbsp; := Roman'Last;<BR>
+  <b>Last</b>&nbsp;&nbsp; &nbsp;: Roman &nbsp; := <a href="#Roman_Edit.Roman">Roman</a>'Last;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <b>ToFirst</b>
   : Boolean := False;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
@@ -544,7 +545,8 @@ exception Constraint_Error is propagated if the number is not in the range
   &nbsp;<b>Pointer</b>&nbsp; &nbsp; &nbsp;: <font color="#0000FF">in
   out</FONT> Integer;<BR>
   &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;<b>Value</b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;: Roman;<BR>
+  &nbsp;&nbsp;<b>Value</b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;: 
+	<a href="#Roman_Edit.Roman">Roman</a>;<BR>
   &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;<b>LowerCase</b>&nbsp; &nbsp;: Boolean &nbsp; := False;<BR>
   &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
@@ -566,7 +568,8 @@ there is no room for the output.</p>
 <BLOCKQUOTE>
   <tt><font color="#0000FF">function</FONT> Image<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  (&nbsp;&nbsp;<b>Value</b>&nbsp;&nbsp; &nbsp;&nbsp;: Roman;<BR>
+  (&nbsp;&nbsp;<b>Value</b>&nbsp;&nbsp; &nbsp;&nbsp;: 
+	<a href="#Roman_Edit.Roman">Roman</a>;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   <b>LowerCase</b> : Boolean := False<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; )
@@ -583,15 +586,18 @@ shall be used.
     height="29"></A><A href="#6"><IMG
     src="next.gif" alt="[Next]" width="29" height="29"></A><H2>5. Integer I/O</H2>
 <P>
-<A name="Integer_Edit"></A>The package Strings_Edit has a generic child package Integer_Edit:<blockquote>
+<A name="Integer_Edit"></A>The package <a href="#Strings_Edit">Strings_Edit</a> has a generic child package 
+<a href="#Integer_Edit">Integer_Edit</a>:<blockquote>
   <P><tt><font color="#0000FF">generic</font><br>
-  <font color="#0000FF">&nbsp;&nbsp; type</font> Number <font color="#0000FF">is 
+  <font color="#0000FF">&nbsp;&nbsp; <a name="Strings_Edit.Integer_Edit.Number">
+	</a>type</font> Number <font color="#0000FF">is 
   range</font> &lt;&gt;;<br>
-  <font color="#0000FF">package</font> Strings_Edit.Integer_Edit
+  <font color="#0000FF">package</font> <a href="#Strings_Edit">Strings_Edit</a>.<a href="#Integer_Edit">Integer_Edit</a>
   <font color="#0000FF">is</font> ...</tt></blockquote>
 <P>
 It is parameterized by an integer type.
-There is also package Strings_Edit.Integers which is an instantiation of Integer_Edit
+There is also package <a href="#Strings_Edit.Integers">Strings_Edit.Integers</a> which is an instance of
+<a href="#Integer_Edit">Integer_Edit</a>
 with the type Integer as the parameter.
 The generic package has the following subprograms:</p>
 <BLOCKQUOTE>
@@ -602,13 +608,17 @@ The generic package has the following subprograms:</p>
   &nbsp;<b>Pointer</b> : <font color="#0000FF">in
   out</FONT> Integer;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;<b>Value</b> &nbsp;&nbsp;: <font color="#0000FF">out</FONT> Number'Base;<BR>
+  &nbsp;<b>Value</b> &nbsp;&nbsp;: <font color="#0000FF">out</FONT> 
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   &nbsp;<b>Base</b> &nbsp;&nbsp; : NumberBase&nbsp; := <FONT color="#800000">10</FONT>;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;<b>First</b>&nbsp;&nbsp; : Number'Base := Number'First;<BR>
+  &nbsp;<b>First</b>&nbsp;&nbsp; : <a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'First;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;<b>Last</b>&nbsp;&nbsp; &nbsp;: Number'Base := Number'Last;<BR>
+  &nbsp;<b>Last</b>&nbsp;&nbsp; &nbsp;: 
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Last;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   &nbsp;<b>ToFirst</b> : Boolean &nbsp; &nbsp; := False;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
@@ -631,14 +641,17 @@ no number was detected. Layout_Error is propagated when
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>Base</b>
   &nbsp; &nbsp;: NumberBase &nbsp;:= <FONT color="#800000">10</FONT>;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>First</b>
-  &nbsp; : Number'Base := Number'First;<BR>
+  &nbsp; : <a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'First;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>Last</b>
-  &nbsp; &nbsp;: Number'Base := Number'Last;<BR>
+  &nbsp; &nbsp;: <a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Last;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>ToFirst</b>
   : Boolean &nbsp; &nbsp; := False;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>ToLast</b>
   &nbsp;: Boolean &nbsp; &nbsp; := False<BR>
-  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;)&nbsp; <font color="#0000FF">return</FONT>  Number'Base;</tt></BLOCKQUOTE>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;)&nbsp; <font color="#0000FF">return</FONT>  
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base;</tt></BLOCKQUOTE>
 <P>
 This function gets an integer number from the string <b>Source</b>.
 The number can be surrounded by spaces and tabs. The whole string
@@ -656,7 +669,8 @@ number was detected.</p>
   &nbsp;&nbsp;<b>Pointer</b>&nbsp; &nbsp;&nbsp; : <font color="#0000FF">in
   out</FONT> Integer;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : Number'Base;<BR>
+  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : 
+	<a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   &nbsp;&nbsp;<b>Base</b>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; : NumberBase := 
   <FONT color="#800000">10</FONT>;<BR>
@@ -721,7 +735,7 @@ Text:</p>
 <BLOCKQUOTE>
   <tt><font color="#0000FF">function</FONT> Image<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;( &nbsp;<b>Value</b>
-  &nbsp;&nbsp;: Number'Base;<BR>
+  &nbsp;&nbsp;: <a href="#Strings_Edit.Integer_Edit.Number">Number</a>'Base;<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;<b>Base</b>
   &nbsp;&nbsp; : NumberBase := <FONT color="#800000">10</FONT>;<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
@@ -735,7 +749,8 @@ base itself does not appear in the output. The parameter
 <b>PutPlus</b> indicates whether the plus sign should be placed
 if the number is positive.
 <P>
-<a name="Strings_Edit.Integers"></a>The package <a href="#Strings_Edit.Integers"> Strings_Edit.Integers</a> is an instance of
+<a name="Strings_Edit.Integers"></a>The package <a href="#Strings_Edit.Integers"> 
+Strings_Edit.Integers</a> is an instance of
 <A href="#Integer_Edit">Strings_Edit.Integer_Edit</A> with
 the type Integer as the parameter.
 <hr>
@@ -746,15 +761,18 @@ the type Integer as the parameter.
     height="29"></A><A href="#7"><IMG
     src="next.gif" alt="[Next]" width="29" height="29"></A><H2>6. Floating-point I/O</H2>
 <P>
-<A name="Float_Edit"></A>The package Strings_Edit has a generic child package Float_Edit:<blockquote>
+<A name="Float_Edit"></A>The package <a href="#Strings_Edit">Strings_Edit</a> has a generic child package 
+<a href="#Float_Edit">Float_Edit</a>:<blockquote>
   <P><tt><font color="#0000FF">generic</font><br>
-  <font color="#0000FF">&nbsp;&nbsp; type</font> Number <font color="#0000FF">is 
+  <font color="#0000FF">&nbsp;&nbsp; <a name="Strings_Edit.Float_Edit.Number">
+	</a>type</font> Number <font color="#0000FF">is 
   digits</font> &lt;&gt;; <br>
-  <font color="#0000FF">package</font> Strings_Edit.Float_Edit
+  <font color="#0000FF">package</font> <a href="#Strings_Edit">Strings_Edit</a>.<a href="#Float_Edit">Float_Edit</a>
   <font color="#0000FF">is</font> ...</tt></blockquote>
 <P>
 The package is parametrized by a floating-point type.
-There is also package Strings_Edit.Floats which is an instantiation of Float_Edit
+There is also package <a href="#Strings_Edit.Floats">Strings_Edit.Floats</a> which is an instance of
+<a href="#Float_Edit">Float_Edit</a>
 with the type Float as the parameter.
 The package defines the following subprograms:</p>
 <BLOCKQUOTE>
@@ -765,13 +783,17 @@ The package defines the following subprograms:</p>
   &nbsp;<b>Pointer</b> : <font color="#0000FF">in
   out</FONT> Integer;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;<b>Value</b> &nbsp;&nbsp;: <font color="#0000FF">out</FONT> Number'Base;<BR>
+  &nbsp;<b>Value</b> &nbsp;&nbsp;: <font color="#0000FF">out</FONT> 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   &nbsp;<b>Base</b> &nbsp;&nbsp; : NumberBase &nbsp;:= <FONT color="#800000">10</FONT>;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;<b>First</b>&nbsp;&nbsp; : Number'Base := Number'First;<BR>
+  &nbsp;<b>First</b>&nbsp;&nbsp; : <a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'First;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;<b>Last</b>&nbsp;&nbsp; &nbsp;: Number'Base := Number'Last;<BR>
+  &nbsp;<b>Last</b>&nbsp;&nbsp; &nbsp;: 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'Last;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   &nbsp;<b>ToFirst</b> : Boolean &nbsp; &nbsp; := False;<BR>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
@@ -799,15 +821,19 @@ description of <A href="#Gets">get procedures</A>.</p>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;( &nbsp;<b>Source</b> &nbsp;: String;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>Base</b>
   &nbsp; &nbsp;: NumberBase &nbsp;:= <FONT color="#800000">10</FONT>;<BR>
-  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>First</b>
-  &nbsp; : Number'Base := Number'First;<BR>
-  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>Last</b>
-  &nbsp; &nbsp;: Number'Base := Number'Last;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;<b>First</b>&nbsp;&nbsp; : <a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'First;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;<b>Last</b>&nbsp;&nbsp; &nbsp;: 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'Last;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>ToFirst</b>
   : Boolean &nbsp; &nbsp; := False;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>ToLast</b>
   &nbsp;: Boolean &nbsp; &nbsp; := False<BR>
-  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;)&nbsp; <font color="#0000FF">return</FONT> Number'Base;</tt></BLOCKQUOTE>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;)&nbsp; <font color="#0000FF">return</FONT> 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base;</tt></BLOCKQUOTE>
 <P>
 This function gets a floating-point number from the string
 <b>Source</b>. The number can be surrounded by spaces and tabs.
@@ -825,7 +851,8 @@ is raised when no number was detected.</p>
   &nbsp;&nbsp;<b>Pointer</b>&nbsp; &nbsp;&nbsp; : <font color="#0000FF">in
   out</FONT> Integer;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : Number'Base;<BR>
+  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : 
+	<a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   &nbsp;&nbsp;<b>Base</b>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; : NumberBase := <FONT color="#800000">10</FONT>;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
@@ -878,7 +905,7 @@ Layout_Error is propagated when <b>Pointer</b> is not in
 <BLOCKQUOTE>
   <tt><font color="#0000FF">function</FONT> Image<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;( &nbsp;<b>Value</b> &nbsp;
-  &nbsp;: Number'Base;<BR>
+  &nbsp;: <a href="#Strings_Edit.Float_Edit.Number">Number</a>'Base;<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;<b>Base</b>
   &nbsp;&nbsp; &nbsp;: NumberBase := <FONT color="#800000">10</FONT>;<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
@@ -936,9 +963,10 @@ is important to note:
 <P>The package defines the type UTF8_Code_Point that represents the Unicode
 code space:
 <blockquote>
-<P><tt><font color="#0000FF">   type</font> Code_Point <font color="#0000FF"> is mod</font>
+<P><tt><font color="#0000FF">   <a name="Strings_Edit.UTF8.Code_Point"></a>type</font> Code_Point <font color="#0000FF"> is mod</font>
 <font color="#800000">2</font>**<font color="#800000">32</font>;<br>
-<font color="#0000FF">   subtype</font> UTF8_Code_Point <font color="#0000FF"> is</font> Code_Point
+<font color="#0000FF">   <a name="Strings_Edit.UTF8.UTF8_Code_Point"></a>subtype</font> UTF8_Code_Point <font color="#0000FF"> is</font> 
+<a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>
 <font color="#0000FF"> range</font> <font color="#800000">0</font>..<font color="#800000">16#10FFFF#</font>;</tt>
 </blockquote>
 <P>The
@@ -950,7 +978,8 @@ following subroutines are provided by the package:
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pointer</b> :
   <font color="#0000FF"> in out</font> Integer;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Value</b>&nbsp;&nbsp;
-  : <font color="#0000FF"> out</font> UTF8_Code_Point<br>
+  : <font color="#0000FF"> out</font> 
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a><br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt>
 </blockquote>
 <P>This  procedure  decodes one UTF-8 code point from the string <b>Source</b>. It starts at
@@ -982,7 +1011,8 @@ following subroutines are provided by the package:
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pointer</b> :
   <font color="#0000FF"> in out</font> Integer;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Value</b>&nbsp;&nbsp;
-  : <font color="#0000FF"> out</font> UTF8_Code_Point<br>
+  : <font color="#0000FF"> out</font> 
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a><br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt>
 </blockquote>
 <P>This  procedure  decodes one UTF-8 code point from the string <b>Source</b> 
@@ -1013,7 +1043,7 @@ of&nbsp; the input.  The  result  is returned through the parameter
 <BLOCKQUOTE>
   <p>
   <tt><font color="#0000FF">function</FONT> Image (<b>Value</b>
-  : UTF8_Code_Point)&nbsp;<font color="#0000FF">return</FONT> String;</tt></p>
+  : <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>)&nbsp;<font color="#0000FF">return</FONT> String;</tt></p>
 </BLOCKQUOTE>
 <P>
 This function is a simplified version of the procedure <a href="#Strings_Edit.UTF8.Put">Put</a>.
@@ -1031,8 +1061,8 @@ propagated when <b>Source</b> is not a valid UTF-8 string.
   <font color="#0000FF"> in out</font> String;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp;
   : <font color="#0000FF"> in out</font> Integer;<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  : UTF8_Code_Point<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a><br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt>
 </blockquote>
 <P>This  procedure  puts  one  UTF-8  code  point into the string <b> Source</b> starting from the position
@@ -1076,7 +1106,8 @@ sequence.</p>
 
 <BLOCKQUOTE>
   <p><tt><font color="#0000FF">function</FONT> Value (<b>Source</b> :
-  String) <font color="#0000FF">return</FONT> UTF8_Code_Point;</tt></p>
+  String) <font color="#0000FF">return</FONT> 
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;</tt></p>
 </BLOCKQUOTE>
 <P>
 This function decodes one UFT-8 code point stored in <b>Source</b>.
@@ -1084,18 +1115,21 @@ The whole string <b>Source</b> should be matched. Otherwise the
 exception Data_Error is propagated. It is also propagated when Source is not a
 legal UTF-8 string.</p>
 <blockquote>
-<P><tt><font color="#0000FF">   type</font> Code_Points_Range
+<P><tt><font color="#0000FF">   <a name="Strings_Edit.UTF8.Code_Points_Range">
+</a>type</font> Code_Points_Range
 <font color="#0000FF">is record</font><br>
-&nbsp;&nbsp; Low&nbsp; : UTF8_Code_Point;<br>
-&nbsp;&nbsp; High : UTF8_Code_Point;<br>
+&nbsp;&nbsp; Low&nbsp; : <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;<br>
+&nbsp;&nbsp; High : <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;<br>
 <font color="#0000FF">end record</font>;</tt></blockquote>
 <P>This type represents a range of code points Low..High:<blockquote>
-<P><tt>Full_Range : <font color="#0000FF">constant</font> Code_Points_Range;</tt></blockquote>
+<P><tt>Full_Range : <font color="#0000FF">constant</font> 
+<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>;</tt></blockquote>
 <P>A range that contains all code points.<blockquote>
-<P><tt><font color="#0000FF">   type</font> Code_Points_Ranges
+<P><tt><font color="#0000FF">   <a name="Strings_Edit.UTF8.Code_Points_Ranges">
+</a>type</font> Code_Points_Ranges
 <font color="#0000FF">is<br>
 &nbsp;&nbsp; array</font> (Positive range &lt;&gt;) <font color="#0000FF">of</font> 
-Code_Points_Range;</tt></blockquote>
+<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>;</tt></blockquote>
 <P>An array of code points ranges.<h3><a name="7.1"></a>7.1. Handling UTF-8 strings</h3>
 <P><a name="Strings_Edit.UTF8.Handling"></a>The package <a href="#Strings_Edit.UTF8.Handling">Strings_Edit.UTF8.Handling</a>
 provides the following conversion functions between UTF-8 encoded strings and
@@ -1181,7 +1215,8 @@ provides integer I/O for special encodings of digits, such as subscript and
 superscript.
 <blockquote>
   <P><tt><font color="#0000FF">generic</font><br>
-  &nbsp;&nbsp; <font color="#0000FF">type</font> Number <font color="#0000FF"> is range</font> &lt;&gt;;<br>
+  &nbsp;&nbsp; <font color="#0000FF">
+	<a name="Strings_Edit.UTF8.Integer_Edit.Number"></a>type</font> Number <font color="#0000FF"> is range</font> &lt;&gt;;<br>
   &nbsp;&nbsp; <font color="#0000FF">with procedure</font> Get_Digit<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   (&nbsp; Source&nbsp; : String;<br>
@@ -1218,27 +1253,27 @@ superscript.
   Sign_Of&nbsp;&nbsp;&nbsp;&nbsp; : Sign<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   )&nbsp; <font color="#0000FF">is</font> &lt;&gt;;<br>
-  <font color="#0000FF">package</font> Strings_Edit.UTF8.Integer_Edit <font color="#0000FF"> is</font><br>
+  <font color="#0000FF">package</font> <a href="#Strings_Edit">Strings_Edit</a>.<a href="#Strings_Edit.UTF8">UTF8</a>.Integer_Edit <font color="#0000FF"> is</font><br>
   &nbsp;&nbsp; ...</tt>
 </blockquote>
 <P>The generic parameters of the package are:</p>
 
 <ul>
-  <li>Number is the integer type to use;</li>
-  <li>Get_Digit is the procedure to get one UTF-8 encoded digit from the string <b>Source</b>.
+  <li><i>Number</i> is the integer type to use;</li>
+  <li><i>Get_Digit</i> is the procedure to get one UTF-8 encoded digit from the string <b>Source</b>.
     The result is greater than 9 if the no digit was detected. Otherwise <b>Pointer</b>
     is advanced to the first character following the input in <b>Source</b>.
-    Get_Digit can but is not obliged to check whether <b>Pointer</b> is in <b>Source</b>'Range.</li>
-  <li>Get_Sign gets UTF-8 encoded sign from the string <b>Source</b>. <b>Pointer</b>
+    <i>Get_Digit</i> can but is not obliged to check whether <b>Pointer</b> is in <b>Source</b>'Range.</li>
+  <li><i>Get_Sign</i> gets UTF-8 encoded sign from the string <b>Source</b>. <b>Pointer</b>
     is advanced to the first character following the input in <b>Source</b>.
-    Same as Get_Digit it is not obliged to check whether <b>Pointer</b> is in <b>Source</b>'Range.</li>
-  <li>Put_Digit places one UTF-8 encoded digit into the string <b>Destination</b>.
+    Same as <i>Get_Digit</i> it is not obliged to check whether <b>Pointer</b> is in <b>Source</b>'Range.</li>
+  <li><i>Put_Digit</i> places one UTF-8 encoded digit into the string <b>Destination</b>.
     The character <b>Destination</b> (<b>Pointer</b>) is the last character of
     the output. <b>Pointer</b> is moved back to the character preceding the
     first character of the output. Layout_Error is propagated when <b>Destination</b>
     has no room for output.</li>
-  <li>Get_Sign places UTF-8 encoded sign into <b>Destination</b>. It works
-    similar to Put_Digit.</li>
+  <li><i>Get_Sign</i> places UTF-8 encoded sign into <b>Destination</b>. It works
+    similar to <i>Put_Digit</i>.</li>
 </ul>
 <P>The package provides the following procedures and functions:</p>
 
@@ -1249,13 +1284,16 @@ superscript.
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pointer</b> :
   <font color="#0000FF"> in out</font> Integer;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Value</b>&nbsp;&nbsp;
-  : <font color="#0000FF"> out</font> Number'Base;<br>
+  : <font color="#0000FF"> out</font> 
+	<a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Base</b>&nbsp;&nbsp;&nbsp;
   : Script_Base := <font color="#800000">10</font>;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>First</b>&nbsp;&nbsp;
-  : Number'Base := Number'First;<br>
+  : <a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'First;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Last</b>&nbsp;&nbsp;&nbsp;
-  : Number'Base := Number'Last;<br>
+  : <a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Last;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ToFirst</b> : Boolean&nbsp;&nbsp;&nbsp;&nbsp;
   := False;<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>ToLast</b>&nbsp;
@@ -1267,15 +1305,17 @@ superscript.
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>Base</b>
   &nbsp; &nbsp;: Script_Base := <FONT color="#800000">10</FONT>;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>First</b>
-  &nbsp; : Number'Base := Number'First;<BR>
+  &nbsp; : <a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'First;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>Last</b>
-  &nbsp; &nbsp;: Number'Base := Number'Last;<BR>
+  &nbsp; &nbsp;: <a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base := 
+	<a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Last;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>ToFirst</b>
   : Boolean &nbsp; &nbsp; := False;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>ToLast</b>
   &nbsp;: Boolean &nbsp; &nbsp; := False<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;)&nbsp; <font color="#0000FF">return</FONT>  
-  Number'Base;</tt>
+  <a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base;</tt>
   <p>
   <tt><font color="#0000FF">procedure</FONT> Put<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;(
@@ -1285,7 +1325,8 @@ superscript.
   &nbsp;&nbsp;<b>Pointer</b>&nbsp; &nbsp;&nbsp; : <font color="#0000FF">in
   out</FONT> Integer;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : Number'Base;<BR>
+  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : 
+	<a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base;<BR>
   &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
   &nbsp;&nbsp;<b>Base</b>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; : Script_Base := 
   <FONT color="#800000">10</FONT>;<BR>
@@ -1295,7 +1336,7 @@ superscript.
   <p>
   <tt><font color="#0000FF">function</FONT> Image<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;( &nbsp;<b>Value</b>
-  &nbsp;&nbsp;: Number'Base;<BR>
+  &nbsp;&nbsp;: <a href="#Strings_Edit.UTF8.Integer_Edit.Number">Number</a>'Base;<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;<b>Base</b>
   &nbsp;&nbsp; : Script_Base := <FONT color="#800000">10</FONT>;<BR>
   &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
@@ -1314,7 +1355,7 @@ for integer I/O of subscript numbers.
 <blockquote>
   <P><tt><font color="#0000FF">generic</font><br>
   &nbsp;&nbsp; <font color="#0000FF">type</font> Number <font color="#0000FF"> is range</font> &lt;&gt;;<br>
-  <font color="#0000FF">package</font> Strings_Edit.UTF8.Subscript.Integer_Edit <font color="#0000FF"> is</font><br>
+  <font color="#0000FF">package</font> <a href="#Strings_Edit">Strings_Edit</a>.<a href="#Strings_Edit.UTF8">UTF8</a>.Subscript.Integer_Edit <font color="#0000FF"> is</font><br>
   &nbsp;&nbsp; ...</tt>
 </blockquote>
 <P>The package provides the subroutines described in <a href="#Strings_Edit.UTF8.Integer_Edit">Strings_Edit.UTF8.Integer_Edit</a>.</p>
@@ -1340,7 +1381,7 @@ for integer I/O of superscript numbers.
 <blockquote>
   <P><tt><font color="#0000FF">generic</font><br>
   &nbsp;&nbsp; <font color="#0000FF">   type</font> Number <font color="#0000FF"> is range</font> &lt;&gt;;<br>
-  <font color="#0000FF">package</font> Strings_Edit.UTF8.Superscript.Integer_Edit <font color="#0000FF"> is</font><br>
+  <font color="#0000FF">package</font> <a href="#Strings_Edit">Strings_Edit</a>.<a href="#Strings_Edit.UTF8">UTF8</a>.Superscript.Integer_Edit <font color="#0000FF"> is</font><br>
   &nbsp;&nbsp; ...</tt>
 </blockquote>
 <P>The package provides the subroutines described in <a href="#Strings_Edit.UTF8.Integer_Edit">Strings_Edit.UTF8.Integer_Edit</a>.</p>
@@ -1431,7 +1472,7 @@ is provides the function<blockquote>
 <a href="http://www.unicode.org">
 		Unicode</a> mapping of code points and UTF-8 encoded strings. It provides the following subprograms:<blockquote>
   <P><tt><font color="#0000FF">function </font>Has_Case (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if the code 
 point <b>Value</b> has upper or lower case equivalents different from <b>
 Value</b>. For all <i>x</i>, Has_Case (<i>x</i>) = 
@@ -1445,17 +1486,17 @@ points different from either of the equivalents. I.e. <i>x</i> /= To_Lower (<i>x
 <blockquote>
   <P><tt><font color="#0000FF"><a name="Strings_Edit.UTF8.Mapping.Is_Lowercase">
 	</a>function </font>Is_Lowercase (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if the code 
 point <b>Value</b> is lower case.</p><blockquote>
   <P><tt><font color="#0000FF"><a name="Strings_Edit.UTF8.Mapping.Is_Uppercase">
 	</a>function </font>Is_Uppercase (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if the code 
 point <b>Value</b> is upper case.</p><blockquote>
   <P><tt><font color="#0000FF">function </font>To_Lowercase (<b>Value</b> : 
-	UTF8_Code_Point)<font color="#0000FF"><br>
-&nbsp;&nbsp; return </font>UTF8_Code_Point;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>)<font color="#0000FF"><br>
+&nbsp;&nbsp; return </font><a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;</tt></blockquote>
 <P>The function returns a lowercase equivalent of <b>Value</b>. The result is <b>
 Value</b> if no equivalent exists.</p>
 <blockquote>
@@ -1464,8 +1505,8 @@ Value</b> if no equivalent exists.</p>
 <P>The function converts its argument to lower case. Constraint_Error is 
 propagated when <b>Value</b> is an illegal UTF-8 string.</p><blockquote>
   <P><tt><font color="#0000FF">function </font>To_Uppercase (<b>Value</b> : 
-	UTF8_Code_Point)<font color="#0000FF"><br>
-&nbsp;&nbsp; return </font>UTF8_Code_Point;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>)<font color="#0000FF"><br>
+&nbsp;&nbsp; return </font><a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;</tt></blockquote>
 <P>The function returns an uppercase equivalent of <b>Value</b>. The result is 
 <b>Value</b> if no equivalent exists.</p>
 <blockquote>
@@ -1641,28 +1682,28 @@ the categories:<blockquote>
 	Cc..Cn;</tt></blockquote>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Category (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> General_Category;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> General_Category;</tt></blockquote>
 <P>The function returns the category of <b>Value</b>.</p>
 <P>Additionally the package defines the following indicator functions for 
 commonly used sets of code points:</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Alphanumeric (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a letter (Lu...Lo) or else a decimal digit (Nd) code point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Control (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a control code (Cc) point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Digit (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a decimal digit (Nd) code point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Identifier_Extend (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is represents a character valid in the body of an Ada 2005 identifier 
 additionally to 
@@ -1670,57 +1711,57 @@ the characters valid at the identifier beginning (<a href="http://www.adaic.com/
 2.3(3.1/2)</a>).</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Identifier_Start (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is represents a character valid at the beginning of an Ada 2005 identifier (<a href="http://www.adaic.com/standards/05rm/html/RM-2-3.html#S0003">ARM 
 2.3(3/2)</a>).</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_ISO_646 (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is represents an ASCII character (ISO 646, 7-bit).</p>
 <blockquote>
   <P><tt><font color="#0000FF">
 	<a name="Strings_Edit.UTF8.Categorization.Is_Letter"></a>function</font> Is_Letter (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a letter (Lu..Lo) code point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Lower (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a lowercase letter (Ll) code point. This function is equivalent to
 <a href="#Strings_Edit.UTF8.Mapping.Is_Lowercase">Is_Lowercase</a>.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Other_Format (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a format (Cf) code point. Such code points are usually ignored when strings 
 are compared as words. For example, soft hyphen (AD<sub>16</sub>) has this 
 category.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Space (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a space (Zs) code point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Subscript_Digit (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a subscript decimal digit code point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Superscript_Digit (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a superscript decimal digit code point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Title (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is a title case letter (Lt) code point.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Upper (<b>Value</b> : 
-	UTF8_Code_Point) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <P>The function returns <i><font color="#800000">true</font></i> if <b>Value</b> 
 is an uppercase letter (Lu) code point. This function is equivalent to
 <a href="#Strings_Edit.UTF8.Mapping.Is_Uppercase">Is_Uppercase</a>.</p>
@@ -1779,64 +1820,105 @@ order to reduce required space by conjunction (<font color="#0000FF">and</font>)
 supported. One by a sorted array and another by a function. Reference counting 
 is used to provide efficient assignments of sets and maps.<h4><a name="7.9.1"></a>7.9.1. Sets</h4>
 <P>The type Unicode_Set represents sets of code points.<blockquote>
-  <P><tt><font color="#0000FF">type</font> Unicode_Set <font color="#0000FF">is 
+  <P><tt><font color="#0000FF"><a name="Strings_Edit.UTF8.Maps.Unicode_Set"></a>type</font> Unicode_Set <font color="#0000FF">is 
 	private</font>;</tt></blockquote>
 <P>The following type defines an access to indicator function of a code points 
 set.:</p>
 <blockquote>
-  <P><tt><font color="#0000FF">type</font> Unicode_Indicator_Function
+  <P><tt><font color="#0000FF">
+	<a name="Strings_Edit.UTF8.Maps.Unicode_Indicator_Function"></a>type</font> Unicode_Indicator_Function
 	<font color="#0000FF">is<br>
-&nbsp;&nbsp; access function </font>(<b>Value</b> : UTF8_Code_Point)
+&nbsp;&nbsp; access function </font>(<b>Value</b> : 
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>)
 	<font color="#0000FF">return</font> Boolean;</tt></blockquote>
-<p>The type Unicode_Set has the following operations defined:</p>
+<p>The type <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a> has the following operations defined:</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">not</font>&quot; 
-	(<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<font color="#0000FF"><br>
+	(<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<font color="#0000FF"><br>
 &nbsp;&nbsp; function</font> &quot;<font color="#FF0000">not</font>&quot; 
-	(<b>Right</b> : String) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Right</b> : String) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">not</font>&quot; 
-	(<b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> 
-	Unicode_Set;<br>
+	(<b>Right</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">and</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">and</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">and</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">and</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">and</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">or</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">or</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">or</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">or</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">or</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">xor</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">xor</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">xor</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">xor</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">xor</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">-</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">-</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">-</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">-</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String) <font color="#0000FF">return</font> Unicode_Set;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">-</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;</tt></blockquote>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;</tt></blockquote>
 <p>These functions provide set-theoretic operations on two sets or a set and a 
 range of points or else an UTF-8 encoded string. When one of the arguments is a 
 string then it is treated as a set consisting of the code points found in the 
@@ -1846,56 +1928,76 @@ range of points is considered empty if its lower bound is higher than the upper
 bound.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">=</font>&quot; 
-	(<b>Left</b>, <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> 
+	(<b>Left</b>, <b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
 	Boolean;<br>
 	<font color="#0000FF">&nbsp;&nbsp; function</font> &quot;<font color="#FF0000">=</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range)<font color="#0000FF"> return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>)<font color="#0000FF"> return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">=</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">&nbsp;&nbsp; function</font> &quot;<font color="#FF0000">=</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">=</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">&nbsp;&nbsp; function</font> &quot;<font color="#FF0000">&lt;</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">&nbsp;&nbsp; function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">&nbsp;&nbsp; function</font> &quot;<font color="#FF0000">&gt;</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; (<b>Left</b>,
-	<b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
+	<b>Right</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : Code_Points_Range) <font color="#0000FF">return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; 
-	(<b>Left</b> : Code_Points_Range; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;<font color="#0000FF"><br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Code_Points_Range">
+	Code_Points_Range</a>; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<font color="#0000FF"><br>
 	&nbsp;&nbsp; function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; 
-	(<b>Left</b> : Unicode_Set; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
+	(<b>Left</b> : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>; <b>Right</b> : String)<font color="#0000FF"> return</font> Boolean;<br>
 &nbsp;&nbsp; <font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; 
-	(<b>Left</b> : String; <b>Right</b> : Unicode_Set) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
+	(<b>Left</b> : String; <b>Right</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <p>These functions provide relational operations on two sets or a set and a 
 range of points or else an UTF-8 encoded string. When one of the arguments is a 
 string then it is treated as a set consisting of the code points found in the 
@@ -1904,16 +2006,16 @@ string. The operations &lt; and &lt;= are defined in the sense &sub; and &sube;
 correspondingly.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Cardinality (<b>Set</b> 
-	: Unicode_Set) <font color="#0000FF">
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">
 	return</font> Natural;</tt></blockquote>
 <p>This function returns the number of elements in <b>Set</b>.</p><blockquote>
   <P><tt><font color="#0000FF"><a name="Strings_Edit.UTF8.Maps.Choose"></a>function</font> Choose<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set;<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Indicator</b> 
-	: Unicode_Indicator_Function<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Indicator_Function">Unicode_Indicator_Function</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Unicode_Set;</tt></blockquote>
+	return</font> <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;</tt></blockquote>
 <P>This function returns a set consisting of the elements of <b>Set</b> chosen 
 by the function <b>Indicator</b>. When <b>Indicator</b> is <font color="#0000FF">
 null</font> the result is <b>Set</b>. When this function creates a new set, its 
@@ -1925,7 +2027,7 @@ This should be only be used for compact sets.</p><blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Blanks</b>&nbsp; : Unicode_Set<br>
+	Blanks</b>&nbsp; : <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></blockquote>
 <P>This procedure skips all code points from the set <b>Blank</b> starting from
 <b>Source</b> (<b>Pointer</b>). After completion <b>Pointer</b> is either <b>
@@ -1935,12 +2037,15 @@ propagated when Pointer is not in the range <b>Source</b>'First..<b>Source</b>'L
 + 1.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Empty (<b>Set</b> : 
-	Unicode_Set) <font color="#0000FF">return</font> Boolean;<br>
-	<font color="#0000FF">function</font> Is_Range (<b>Set</b> : Unicode_Set)
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> Boolean;<br>
+	<font color="#0000FF">function</font> Is_Range (<b>Set</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>)
 	<font color="#0000FF">return</font> Boolean;<br>
-	<font color="#0000FF">function</font> Is_Singleton (<b>Set</b> : Unicode_Set)
+	<font color="#0000FF">function</font> Is_Singleton (<b>Set</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>)
 	<font color="#0000FF">return</font> Boolean;<br>
-	<font color="#0000FF">function</font> Is_Universal (<b>Set</b> : Unicode_Set)
+	<font color="#0000FF">function</font> Is_Universal (<b>Set</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>)
 	<font color="#0000FF">return</font> Boolean;</tt></blockquote>
 <p>These functions test a set for being empty, a range, a singleton or a full 
 set of code points.</p>
@@ -1949,21 +2054,21 @@ set of code points.</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Element</b> : 
 	Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean;<br>
 	<font color="#0000FF">function</font> Is_In<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Element</b> : 
 	Wide_Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean;<br>
 	<font color="#0000FF">function</font> Is_In<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Element</b> : 
-	UTF8_Code_Point;<br>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean;</tt></blockquote>
 <p>These functions provide membership tests. The first parameter can be a code 
@@ -1971,30 +2076,30 @@ point, a Latin-1 character or a wide character.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> Is_Subset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Elements</b> : 
-	Code_Points_Range;<br>
+	<a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean <font color="#0000FF">renames</font> &quot;<font color="#FF0000">&lt;=</font>&quot;;<br>
 	<font color="#0000FF">function</font> Is_Subset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Elements</b> : 
-	Code_Points_Ranges;<br>
+	<a href="#Strings_Edit.UTF8.Code_Points_Ranges">Code_Points_Ranges</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean;<br>
 	<font color="#0000FF">function</font> Is_Subset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Elements</b> : 
 	String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean <font color="#0000FF">renames</font> &quot;<font color="#FF0000">&lt;=</font>&quot;;<br>
 	<font color="#0000FF">function</font> Is_Subset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Elements</b> : 
-	Unicode_Set;<br>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Set</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Unicode_Set<br>
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean <font color="#0000FF">renames</font> &quot;<font color="#FF0000">&lt;=</font>&quot;;</tt></blockquote>
 <p>These functions provide subset tests. The first parameter can be a code 
@@ -2004,30 +2109,36 @@ if all code points of the string belong to the set. Data_Error is propagated
 when it is not a valid UTF-8 string.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Ranges (<b>Set</b> : 
-	Unicode_Set) <font color="#0000FF">return</font> Code_Points_Ranges;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Code_Points_Ranges">Code_Points_Ranges</a>;</tt></blockquote>
 <p>This function returns an array of disjoint ascending ranges representing the 
 set. The result is an empty array if the parameter is an empty set.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Set (<b>Singleton</b> : 
-	UTF8_Code_Point) <font color="#0000FF">&nbsp;&nbsp; return</font> 
-	Unicode_Set;<br>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">&nbsp;&nbsp; return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> To_Set (<b>Singleton</b> : Character)
 	<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	return</font> Unicode_Set;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> To_Set (<b>Singleton</b> : 
 	Wide_Character) <font color="#0000FF">&nbsp;&nbsp;&nbsp; return</font> 
-	Unicode_Set;<br>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF"><a name="Strings_Edit.UTF8.Maps.To_Set_range"></a>function</font> To_Set (<b>Span</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Points_Range) <font color="#0000FF">&nbsp;return</font> Unicode_Set;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Points_Range">Code_Points_Range</a>) <font color="#0000FF">&nbsp;return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> To_Set (<b>Ranges</b>&nbsp;&nbsp;&nbsp; 
-	: Code_Points_Ranges) <font color="#0000FF">return</font> Unicode_Set;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Points_Ranges">Code_Points_Ranges</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> To_Set (<b>Low, High</b> 
-	: UTF8_Code_Point) <font color="#0000FF">&nbsp;&nbsp; return</font> Unicode_Set;<br>
+	: <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>) <font color="#0000FF">&nbsp;&nbsp; return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	<font color="#0000FF">function</font> To_Set (<b>Sequence</b>&nbsp; : 
 	String) <font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	return</font> Unicode_Set;<font color="#0000FF"><br>
-	function</font> To_Set (<b>Indicator</b> : Unicode_Indicator_Function)<br>
-	<font color="#0000FF">&nbsp;&nbsp;&nbsp;return</font> Unicode_Set;</tt></blockquote>
+	return</font> <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<font color="#0000FF"><br>
+	function</font> To_Set (<b>Indicator</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Indicator_Function">Unicode_Indicator_Function</a>)<br>
+	<font color="#0000FF">&nbsp;&nbsp;&nbsp;return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;</tt></blockquote>
 <p>These functions convert</p>
 <ul>
 	<li>a code point;</li>
@@ -2049,7 +2160,8 @@ Differently to <a href="#Strings_Edit.UTF8.Maps.Choose">Choose</a> the result
 refers to <b>Indicator</b>.</p>
 <blockquote>
   <P><tt>
-	<font color="#0000FF">function</font> To_Sequence (<b>Set</b> : Unicode_Set)
+	<font color="#0000FF">function</font> To_Sequence (<b>Set</b> : 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>)
 	<font color="#0000FF">return</font> String;</tt></blockquote>
 <p>This function returns an UTF-8 encoded string corresponding to the code 
 points of the set. Each code point of <b>Set</b> is represented in the string. 
@@ -2058,7 +2170,7 @@ They are ordered in ascending order. The following relation holds To_Set (To_Seq
 large to be represented as a string.</p><BLOCKQUOTE>
   <tt><font color="#0000FF"><a name="Strings_Edit.UTF8.Maps.Trim"></a>function</font> Trim 
 	(<b>Source</b> : String; <b>Blanks</b> 
-	: Unicode_Set) <font color="#0000FF">
+	: <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">
 	return</font> String;</tt></BLOCKQUOTE>
 <P>
 This function returns the content of <b>Source</b> with the characters 
@@ -2066,25 +2178,28 @@ representing UTF-8 code points from the
 set <b>Blanks</b> removed from both ends of it. Data_Error is propagated when 
 Source is not a valid UTF-8 string.<blockquote>
   <P><tt><font color="#0000FF">generic<br>
-&nbsp;&nbsp; with function </font>Indicator (Value : UTF8_Code_Point)
+&nbsp;&nbsp; with function </font>Indicator (Value : 
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>)
 	<font color="#0000FF">return</font> Boolean;<br>
 	<font color="#0000FF">function</font> Generic_Choose (<b>Set</b> : 
-	Unicode_Set) <font color="#0000FF">return</font> Unicode_Set;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>) <font color="#0000FF">return</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;</tt></blockquote>
 <P>This is a generic variant of the function
 <a href="#Strings_Edit.UTF8.Maps.Choose">Choose</a>.</p>
 <blockquote>
   <P><tt>Null_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
-	Unicode_Set;<br>
-	Universal_Set : <font color="#0000FF">constant</font> Unicode_Set;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
+	Universal_Set : <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;</tt></blockquote>
 <p>The empty and the universal set constants.</p>
-<p>To use Unicode_Set effectively one should consider its implementation. A set 
+<p>To use <a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a> effectively one should consider its implementation. A set 
 code points is represented by a conjunction of a sorted array of ranges and an 
 indicator function. A code point belongs to the set when both the indicator 
 function returns <font color="#800000"><i>true</i></font> and it is in the 
 array. Such set can be constructed for example like:</p>
 <blockquote>
   <P><tt>Cyrillic_Letters : <font color="#0000FF">constant</font> 
-	Unicode_Set :=<br>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a> :=<br>
 &nbsp;&nbsp; To_Set (Is_Letter'Access) <font color="#0000FF">and</font> Cyrillic;</tt></blockquote>
 <p>Here <a href="#Strings_Edit.UTF8.Categorization.Is_Letter">Is_Letter</a> is 
 an indicator function, which selects only letters. Cyrillic is a range of code 
@@ -2100,7 +2215,7 @@ declared at the library level, for example. For the example above set of
 Cyrillic letters could be obtained represented by an array of ranges:</p>
 <blockquote>
   <P><tt>Cyrillic_Letters : <font color="#0000FF">constant</font> 
-	Unicode_Set :=<br>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a> :=<br>
 &nbsp;&nbsp; Choose (To_Set (Cyrillic), Is_Letter'Access);</tt></blockquote>
 <h4><a name="7.9.2"></a>7.9.2. 
 Maps</h4>
@@ -2113,9 +2228,10 @@ Maps</h4>
 <blockquote>
   <P><tt><font color="#0000FF">type</font> Unicode_Mapping_Function
 	<font color="#0000FF">is<br>
-&nbsp;&nbsp; access function </font>(Value : UTF8_Code_Point)<br>
+&nbsp;&nbsp; access function </font>(Value : 
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">return</font> 
-	UTF8_Code_Point;</tt></blockquote>
+	<a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;</tt></blockquote>
 <P>It has the following operations defined on Unicode_Mapping:</p><BLOCKQUOTE>
   <tt><font color="#0000FF">function</font> Is_Prefix<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Prefix</b> : String;<b><br>
@@ -2153,21 +2269,21 @@ strings.<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Element</b> : 
 	Character<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> UTF8_Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;<br>
 	<font color="#0000FF">function</font> Value<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Map</b>&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Unicode_Mapping;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Element</b> 
 	: Wide_Character<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> UTF8_Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;<br>
 	<font color="#0000FF">function</font> Value<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Map</b>&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Unicode_Mapping;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Element</b> 
-	: UTF8_Code_Point<br>
+	: <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> UTF8_Code_Point;</tt></blockquote>
+	return</font> <a href="#Strings_Edit.UTF8.UTF8_Code_Point">UTF8_Code_Point</a>;</tt></blockquote>
 <p>These functions return the code point corresponding to the parameter <b>
 Element</b> in the mapping <b>Map</b>. The parameter can be a code point, 
 Latin-1 or wide character.</p>
@@ -2215,30 +2331,44 @@ Constants</h4>
 <a href="#Strings_Edit.UTF8.Maps.Constants">Strings_Edit.UTF8.Maps.Constants</a> 
 defines some commonly used sets:<blockquote>
 	<P><tt>Alphanumeric_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-	<font color="#0000FF">constant</font> Unicode_Set;<br>
+	<font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
+	<a name="Strings_Edit.UTF8.Maps.Constants.Blanks_Set"></a>Blanks_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; :
+	<font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Control_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-	<font color="#0000FF">constant</font> Unicode_Set;<br>
+	<font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Digit_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: <font color="#0000FF">constant</font> Unicode_Set;<br>
-	Identifier_Extend_Set : <font color="#0000FF">constant</font> Unicode_Set;<br>
+	: <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
+	Identifier_Extend_Set : <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Identifier_Start_Set&nbsp; : <font color="#0000FF">constant</font> 
-	Unicode_Set;<br>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	ISO_646_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-	<font color="#0000FF">constant</font> Unicode_Set;<br>
+	<font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Letter_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: <font color="#0000FF">constant</font> Unicode_Set;<br>
+	: <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Lower_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: <font color="#0000FF">constant</font> Unicode_Set;<br>
-	Other_Format_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <font color="#0000FF">constant</font> Unicode_Set;<br>
+	: <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
+	Other_Format_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Space_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
-	Unicode_Set;<br>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Subscript_Digit_Set&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
-	Unicode_Set;<br>
-	Superscript_Digit_Set : <font color="#0000FF">constant</font> Unicode_Set;<br>
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
+	Superscript_Digit_Set : <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Title_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: <font color="#0000FF">constant</font> Unicode_Set;<br>
+	: <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;<br>
 	Upper_Set&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: <font color="#0000FF">constant</font> Unicode_Set;</tt></blockquote>
+	: <font color="#0000FF">constant</font> 
+	<a href="#Strings_Edit.UTF8.Maps.Unicode_Set">Unicode_Set</a>;</tt></blockquote>
 <P>See
 <a href="#Strings_Edit.UTF8.Categorization">Strings_Edit.UTF8.Categorization</a> 
 for information about the code points contained by the sets. The package defines 
@@ -2260,14 +2390,14 @@ subprograms for dealing with Windows-1250 encoding (Central Europe).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1250<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1250<br>
@@ -2285,7 +2415,7 @@ parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1250<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2321,14 +2451,14 @@ Cyrillic characters used in Eastern European languages.<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1251<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1251<br>
@@ -2346,7 +2476,7 @@ parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1251<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2383,14 +2513,14 @@ encoding.<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1252<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1252<br>
@@ -2408,7 +2538,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1252<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2443,14 +2573,14 @@ subprograms for dealing with Windows-1253 encoding (Greek language).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1253<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1253<br>
@@ -2470,7 +2600,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1253<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2505,14 +2635,14 @@ subprograms for dealing with Windows-1254 encoding (Turkish language).<blockquot
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1254<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1254<br>
@@ -2530,7 +2660,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1254<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2565,14 +2695,14 @@ subprograms for dealing with Windows-1255 encoding (Hebrew language).<blockquote
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1255<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1255<br>
@@ -2591,7 +2721,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1255<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2624,7 +2754,7 @@ string.</p>
 subprograms for dealing with Windows-1256 encoding (Arabic script).<blockquote>
   <P><tt><font color="#0000FF">function</font> From_Windows_1256 (<b>Value</b> : 
 	Character) <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1256 (<b>Value</b> : 
 	String&nbsp;&nbsp; ) <font color="#0000FF">
 	return</font> String;<br>
@@ -2636,7 +2766,7 @@ a code point, UTF-8 or Wide_String.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1256<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2671,14 +2801,14 @@ subprograms for dealing with Windows-1257 encoding (Baltic languages).<blockquot
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1257<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1257<br>
@@ -2696,7 +2826,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1257<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2731,14 +2861,14 @@ subprograms for dealing with Windows-1258 encoding (Vietnamese script).<blockquo
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_Windows_1258<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_Windows_1258<br>
@@ -2757,7 +2887,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_Windows_1258<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2792,7 +2922,7 @@ subprograms for dealing with KIO8 encoding (<a class="external mw-magiclink-rfc"
 prior to Unicode.<blockquote>
   <P><tt><font color="#0000FF">function</font> From_KOI8 (<b>Value</b> 
 	: Character) <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_KOI8 (<b>Value</b> : String&nbsp;&nbsp; 
 	) <font color="#0000FF">
 	return</font> String;<br>
@@ -2804,7 +2934,7 @@ a code point, UTF-8 or Wide_String.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_KOI8<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2840,14 +2970,14 @@ languages).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_2<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_2<br>
@@ -2865,7 +2995,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_2<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2901,14 +3031,14 @@ languages).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_3<br>
@@ -2927,7 +3057,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -2963,14 +3093,14 @@ languages).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_4<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_4<br>
@@ -2988,7 +3118,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_4<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3024,14 +3154,14 @@ alphabets).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_5<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_5<br>
@@ -3049,7 +3179,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_5<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3084,14 +3214,14 @@ language).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_6<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_6<br>
@@ -3109,7 +3239,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_6<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3145,14 +3275,14 @@ language).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_7<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_7<br>
@@ -3170,7 +3300,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_7<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3204,14 +3334,14 @@ language).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_8<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_8<br>
@@ -3230,7 +3360,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_8<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3265,14 +3395,14 @@ languages).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_9<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_9<br>
@@ -3290,7 +3420,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_9<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3326,14 +3456,14 @@ languages).<blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: Character;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_10<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
-	: Code_Point ]<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> String;<br>
 	<font color="#0000FF">function</font> From_ISO_8859_10<br>
@@ -3351,7 +3481,7 @@ point specified by the parameter instead.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ISO_8859_10<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3384,7 +3514,7 @@ string.</p>
 subprograms for dealing with Mac OS Roman encoding.<blockquote>
   <P><tt><font color="#0000FF">function</font> From_MacOS_Roman (<b>Value</b> : 
 	Character) <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_MacOS_Roman (<b>Value</b> : 
 	String&nbsp;&nbsp; ) <font color="#0000FF">
 	return</font> String;<br>
@@ -3396,7 +3526,7 @@ a code point, UTF-8 or Wide_String.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_MacOS_Roman<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3428,7 +3558,7 @@ string.</p>
 subprograms for dealing with ITU-T T.61 character set encoding.<blockquote>
   <P><tt><font color="#0000FF">function</font> From_ITU_T61 (<b>Value</b> : 
 	Character) <font color="#0000FF">
-	return</font> Code_Point;<br>
+	return</font> <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 	<font color="#0000FF">function</font> From_ITU_T61 (<b>Value</b> : 
 	String&nbsp;&nbsp; ) <font color="#0000FF">
 	return</font> String;<br>
@@ -3440,7 +3570,7 @@ a code point, UTF-8 or Wide_String.</p>
 <blockquote>
   <P><tt><font color="#0000FF">function</font> To_ITU_T61<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Code_Point;<br>
+	: <a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Substitute</b> 
 	: Character ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -3576,7 +3706,7 @@ be used to ease implementation of such plotters:</p>
 <blockquote>
 	<P><tt><font color="#0000FF">generic<br>
 &nbsp;&nbsp; type </font>Value <font color="#0000FF">is digits </font>&lt;&gt;;<br>
-	<font color="#0000FF">package</font> Strings_Edit.Generic_Scale
+	<font color="#0000FF">package</font> <a href="#Strings_Edit">Strings_Edit</a>.Generic_Scale
 	<font color="#0000FF">is</font> ...</tt></blockquote>
 <P>Its formal parameter is the type of the axis values. The package provides the type 
 Scale:<blockquote>
@@ -3750,7 +3880,7 @@ variable length. Lesser absolute values require shorter sequences of stream
 elements to encode.<blockquote>
 <p><tt><font color="#0000FF">generic<br>
 &nbsp;&nbsp; type </font>Number<font color="#0000FF"> is range</font> &lt;&gt;;<font color="#0000FF"><br>
-package </font>Strings_Edit.Streams.Generic_Integer<font color="#0000FF"> 
+package </font><a href="#Strings_Edit">Strings_Edit</a>.Streams.Generic_Integer<font color="#0000FF"> 
 is</font> ...</tt></p>
 </blockquote>
 <p>The integer number is encoded as follows. The value is first converted to a 
@@ -3847,7 +3977,7 @@ is variable length. Lesser absolute values require shorter sequences of stream
 elements to encode:<blockquote>
 <p><tt><font color="#0000FF">generic<br>
 &nbsp;&nbsp; type </font>Number<font color="#0000FF"> is range</font> &lt;&gt;;<font color="#0000FF"><br>
-package </font>Strings_Edit.Streams.Generic_Unsigned<font color="#0000FF"> 
+package </font><a href="#Strings_Edit">Strings_Edit</a>.Streams.Generic_Unsigned<font color="#0000FF"> 
 is</font> ...</tt></p>
 </blockquote>
 <p>The unsigned integer number is encoded as follows. The value is first 
@@ -3933,7 +4063,7 @@ as described for
 The package specification is:<blockquote>
 <p><tt><font color="#0000FF">generic<br>
 &nbsp;&nbsp; type </font>Number<font color="#0000FF"> is mod</font> &lt;&gt;;<font color="#0000FF"><br>
-package </font>Strings_Edit.Streams.Generic_Unsigned<font color="#0000FF"> 
+package </font><a href="#Strings_Edit">Strings_Edit</a>.Streams.Generic_Unsigned<font color="#0000FF"> 
 is</font> ...</tt></p>
 </blockquote>
 <p>&nbsp;The package provides the following subprograms:</p>
@@ -4039,7 +4169,8 @@ a stream that can be used to recode the original stream into and from UTF-8:<blo
 : <font color="#0000FF">access</font> Root_Stream_Type'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 : Encoding_Type;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Decoding_Default : Code_Point;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Decoding_Default : 
+<a href="#Strings_Edit.UTF8.Code_Point">Code_Point</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Encoding_Default : Character<br>
 &nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
 Root_Stream_Type <font color="#0000FF">with private</font>;</tt></p>
@@ -5078,9 +5209,9 @@ in the package:</p>
 <blockquote>
 	<P><tt>ChaCha20_Block_Size : <font color="#0000FF">constant</font> :=
 	<font color="#800000">16</font> * <font color="#800000">4</font>;<br>
-	<font color="#0000FF">subtype</font> ChaCha20_Key <font color="#0000FF">&nbsp; 
+	<font color="#0000FF"><a name="Strings_Edit.ChaCha20.ChaCha20_Key"></a>subtype</font> ChaCha20_Key <font color="#0000FF">&nbsp; 
 	is</font> Stream_Element_Array (<font color="#800000">1</font>..<font color="#800000">32</font>);<br>
-	<font color="#0000FF">subtype</font> ChaCha20_Nonce <font color="#0000FF">is</font> 
+	<font color="#0000FF"><a name="Strings_Edit.ChaCha20.ChaCha20_Nonce"></a>subtype</font> ChaCha20_Nonce <font color="#0000FF">is</font> 
 	Stream_Element_Array (<font color="#800000">1</font>..<font color="#800000">12</font>);</tt></blockquote>
 <P>The cipher key is 256-bits long, the cipher nonce is 96-bits long.</p><blockquote>
 	<P><tt><font color="#0000FF">
@@ -5091,7 +5222,8 @@ in the package:</p>
 state. The following primitive operations are defined:</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> Decrypt | Encrypt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b> :
-	<font color="#0000FF">access</font> ChaCha20_Cipher;<br>
+	<font color="#0000FF">access</font> 
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Input</b>&nbsp; 
 	: Stream_Element_Array | String<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -5103,7 +5235,8 @@ its state, so it is safe to call these procedures with input arrays of any size
 consequently.</p><blockquote>
 	<P><tt><font color="#0000FF">procedure</font> Decrypt | Encrypt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b> :
-	<font color="#0000FF">in out</font> ChaCha20_Cipher;<br>
+	<font color="#0000FF">in out</font> 
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Input</b>&nbsp; : Stream_Element_Array | String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -5115,19 +5248,21 @@ parameters are any combination of Stream_Element_Array and String. <b>Input</b> 
 Since ChaCha20 is a stream cipher Encrypt and Decrypt are identical.</p><blockquote>
 	<P><tt><font color="#0000FF">procedure</font> Decrypt | Encrypt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b> :
-	<font color="#0000FF">in out</font> ChaCha20_Cipher;<br>
+	<font color="#0000FF">in out</font> 
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data&nbsp;
 	</b>&nbsp;: <font color="#0000FF">in out</font> Stream_Element_Array | 
 	String<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></blockquote>
 <P>These procedures are in-place variants for encryption or decryption.</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> Get_Count (<b>Cipher</b> : 
-	ChaCha20_Cipher) <font color="#0000FF">return</font> Unsigned_32;</tt></blockquote>
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>) <font color="#0000FF">return</font> Unsigned_32;</tt></blockquote>
 <P>This function returns the current cipher block count. When the count nears 
 2**32 the key and nonce should be changed.</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> Get_Key_Stream<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b> :
-	<font color="#0000FF">access</font> ChaCha20_Cipher;<br>
+	<font color="#0000FF">access</font> 
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Full</b>&nbsp;&nbsp; 
 	: Boolean := False<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -5139,11 +5274,11 @@ cipher state. When <b>Full</b> is <font color="#800000"><i>true</i></font>, a
 new block is generated and the result is 64 elements long.</p><blockquote>
 	<P><tt><font color="#0000FF">procedure </font>Set_Key<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b> :<font color="#0000FF"> 
-	in out</font> ChaCha20_Cipher;<br>
+	in out</font> <a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Key</b>&nbsp;&nbsp;&nbsp; 
-	: ChaCha20_Key;<br>
+	: <a href="#Strings_Edit.ChaCha20.ChaCha20_Key">ChaCha20_Key</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Nonce</b>&nbsp; : ChaCha20_Nonce := (<font color="#0000FF">others</font> =&gt;
+	Nonce</b>&nbsp; : <a href="#Strings_Edit.ChaCha20.ChaCha20_Nonce">ChaCha20_Nonce</a> := (<font color="#0000FF">others</font> =&gt;
 	<font color="#800000">0</font>);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Count</b>&nbsp; : Unsigned_32&nbsp;&nbsp;&nbsp; := <font color="#800000">0</font><br>
@@ -5155,7 +5290,8 @@ or decrypted data.</p>
 <p>The package
 <a href="#Strings_Edit.ChaCha20">Strings_Edit.ChaCha20</a> also provides a 
 ciphering stream:</p><blockquote>
-	<P><tt><font color="#0000FF">type </font>ChaCha20_Stream<br>
+	<P><tt><font color="#0000FF">
+	<a name="Strings_Edit.ChaCha20.ChaCha20_Stream"></a>type </font>ChaCha20_Stream<br>
 &nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Transport :<font color="#0000FF"> access</font> 
 	Root_Stream_Type'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
@@ -5170,12 +5306,13 @@ discriminant <i>Size</i> determines the output block size. When written the
 output is encrypted by chunks of <i>Size</i> if the output is larger than <i>
 Size</i>.</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> Get_Count (<b>Cipher</b> : 
-	ChaCha20_Stream) <font color="#0000FF">return</font> Unsigned_32;</tt></blockquote>
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Stream">ChaCha20_Stream</a>) <font color="#0000FF">return</font> Unsigned_32;</tt></blockquote>
 <P>This function returns the current cipher block count. When the count nears 
 2**32 the key and nonce should be changed.</p><blockquote>
 	<P><tt><font color="#0000FF">function</font> Get_Key_Stream<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b> :
-	<font color="#0000FF">access</font> ChaCha20_Stream;<br>
+	<font color="#0000FF">access</font> 
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Stream">ChaCha20_Stream</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Full</b>&nbsp;&nbsp; 
 	: Boolean := False<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -5187,11 +5324,11 @@ cipher state. When <b>Full</b> is <font color="#800000"><i>true</i></font>, a
 new block is generated and the result is 64 elements long.</p><blockquote>
 	<P><tt><font color="#0000FF">procedure </font>Set_Key<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b> :<font color="#0000FF"> 
-	in out</font> ChaCha20_Stream;<br>
+	in out</font> <a href="#Strings_Edit.ChaCha20.ChaCha20_Stream">ChaCha20_Stream</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Key</b>&nbsp;&nbsp;&nbsp; 
-	: ChaCha20_Key;<br>
+	: <a href="#Strings_Edit.ChaCha20.ChaCha20_Key">ChaCha20_Key</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Nonce</b>&nbsp; : ChaCha20_Nonce := (<font color="#0000FF">others</font> =&gt;
+	Nonce</b>&nbsp; : <a href="#Strings_Edit.ChaCha20.ChaCha20_Nonce">ChaCha20_Nonce</a> := (<font color="#0000FF">others</font> =&gt;
 	<font color="#800000">0</font>);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Count</b>&nbsp; : Unsigned_32&nbsp;&nbsp;&nbsp; := <font color="#800000">0</font><br>
@@ -5213,9 +5350,9 @@ possible. The package declares the digest subtype as an array of 16 elements:</p
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Message</b> : 
 	Stream_Element_Array | String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Key</b>&nbsp;&nbsp;&nbsp;&nbsp; 
-	: ChaCha20_Key;<br>
+	: <a href="#Strings_Edit.ChaCha20.ChaCha20_Key">ChaCha20_Key</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Nonce</b>&nbsp;&nbsp; 
-	: ChaCha20_Nonce ]<br>
+	: <a href="#Strings_Edit.ChaCha20.ChaCha20_Nonce">ChaCha20_Nonce</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
 	ChaCha20_Tag;</tt></blockquote>
 <P>These functions calculate the digest of the parameter <b>Message</b> which can be 
@@ -5254,9 +5391,9 @@ The process starts when the following procedure is called:</p><blockquote>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b> :<font color="#0000FF"> 
 	in out</font> Poly1305_Stream;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Key</b>&nbsp;&nbsp;&nbsp; 
-	: ChaCha20_Key;<br>
+	: <a href="#Strings_Edit.ChaCha20.ChaCha20_Key">ChaCha20_Key</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Nonce</b>&nbsp; 
-	: ChaCha20_Nonce ]<br>
+	: <a href="#Strings_Edit.ChaCha20.ChaCha20_Nonce">ChaCha20_Nonce</a> ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></blockquote>
 <P>This procedure sets the key and initiates evaluation of the digest. The 
 variant with both <b>Key</b> and <b>Nonce</b> generates a one-time key as 
@@ -5289,7 +5426,8 @@ be fixed.</p>
 <blockquote>
 	<P><tt><font color="#0000FF">procedure</font> Encrypt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b>&nbsp; 
-	: <font color="#0000FF">in out</font> ChaCha20_Cipher;<br>
+	: <font color="#0000FF">in out</font> 
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Text</b>&nbsp;&nbsp;&nbsp; 
 	: Stream_Element_Array | String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
@@ -5307,7 +5445,8 @@ another key-nonce pair into the cipher.</p>
 <blockquote>
 	<P><tt><font color="#0000FF">procedure</font> Decrypt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Cipher</b>&nbsp; 
-	: <font color="#0000FF">in out</font> ChaCha20_Cipher;<br>
+	: <font color="#0000FF">in out</font> 
+	<a href="#Strings_Edit.ChaCha20.ChaCha20_Cipher">ChaCha20_Cipher</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Message</b> : Stream_Element_Array;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp;&nbsp; 
@@ -5709,7 +5848,7 @@ with <i>Object_Dir</i> when compiled for multiple architectures:</p>
 	<li>. (dot) causes object files to be created in the project's directory;</li>
 	<li><i>nested</i> uses paths like ./obj/linux/i686/Debug.</li>
 	</ul>
-	<p><i>OS</i> controls choice of bindings to the low-level OS primitives 
+	<p><i>Target_OS</i> controls choice of bindings to the low-level OS primitives 
 	(when apply):<ul>
 	<li><i>Windows</i> or <i>Windows_NT</i> are used for MS-Windows;</li>
 	<li><i>Linux </i> or <i>UNIX </i>are used for Linux;</li>
@@ -5729,10 +5868,14 @@ The following versions were tested with the compilers:</i><ul>
 	<li>
 <i>GNAT 9</i></li>
   </ul>
+<p>Changes (17 September 2019) to the version 3.4:</p>
+<ul>
+  <li>Added a variant of procedure Get of Tables.UTF8_Names that does not raise 
+	exception.</li>
+</ul>
 <p>Changes (4 August 2019) to the version 3.4:</p>
 <ul>
-  <li>Added the package Strings_Edit.Long_Floats, an instance of 
-	String_Edit.Floats with Long_Float;</li>
+  <li>Added the package Strings_Edit.Long_Floats, an instance of String_Edit.Floats with Long_Float;</li>
 	<li>The package Strings_Edit.UTF8.ITU_T61 provides ITU T.61 encoding 
 	conversions;</li>
 	<li>The package Strings_Edit.Object_Identifiers provides implementation of RFC 3061 object identifiers (OID);</li>

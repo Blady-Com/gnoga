@@ -3,7 +3,7 @@
 --     Strings_Edit.Integer_Edit                   Luebeck            --
 --  Interface                                      Spring, 2000       --
 --                                                                    --
---                                Last revision :  19:10 06 Jun 2014  --
+--                                Last revision :  17:36 02 Jan 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -163,4 +163,4 @@ package Strings_Edit.Integer_Edit is
                PutPlus : in Boolean := False
             )  return String;
 
-end Strings_Edit.Integer_Edit ;
+end Strings_Edit.Integer_Edit;

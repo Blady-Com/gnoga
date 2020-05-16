@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.Get_Blank            Luebeck            --
 --  Implementation                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,7 +35,7 @@ procedure Parsers.Generic_Source.Get_Blank
              Got_It : out Boolean
           )  is 
    To_Skip : constant Character_Set :=
-                         To_Set (' ' & HT & CR & LF & VT & FF);
+                      To_Set (' ' & HT & CR & LF & VT & FF);
    Buffer  : Line_Ptr_Type;
    Pointer : Integer;
    Last    : Integer;

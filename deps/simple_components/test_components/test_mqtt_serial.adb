@@ -3,7 +3,7 @@
 --  Test server and client                         Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  14:04 26 Dec 2018  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -83,7 +83,7 @@ begin
              Output_Size          => 100,
              Max_Subscribe_Topics => 100
    )      );
-   Set_Name (Test_Server'Class (Ptr (Get_Pier (Server)).all), Port_1);
+   Set_Name (Test_Server'Class (Ptr (Get_Peer (Server)).all), Port_1);
    Put_Line ("Connecting the client");
    Connect
    (  Client,
@@ -93,34 +93,34 @@ begin
              Output_Size          => 100,
              Max_Subscribe_Topics => 100
    )      );
-   Set_Name (Test_Client'Class (Ptr (Get_Pier (Client)).all), Port_2);
+   Set_Name (Test_Client'Class (Ptr (Get_Peer (Client)).all), Port_2);
    delay 0.1;
    declare
-      This   : constant Handle := Get_Pier (Client);
+      This   : constant Handle := Get_Peer (Client);
       Master : Test_Client'Class renames
                Test_Client'Class (Ptr (This).all);
    begin
       Put_Line ("Connect");
       Send_Connect
-      (  Pier   => Master,
+      (  Peer   => Master,
          Client => "test"
       );
       Put_Line ("Wait for connection...");
-      Wait_For_Event (Pier => Master);
+      Wait_For_Event (Peer => Master);
 
       Put_Line ("Subscribing to ""chat""");
-      Reset_Event (Pier => Master);
+      Reset_Event (Peer => Master);
       Send_Subscribe
-      (  Pier   => Master,
+      (  Peer   => Master,
          Packet => 10,
          Topic  => "chat",
          QoS    => At_Most_Once
       );
       Put_Line ("Wait for subscribtion response...");
-      Wait_For_Event (Pier => Master);
+      Wait_For_Event (Peer => Master);
 
       Put_Line ("Publishing chat=Hello!");
-      Reset_Event (Pier => Master);
+      Reset_Event (Peer => Master);
       Publish
       (  Server  => Factory.Server,
          Topic   => "chat",
@@ -128,10 +128,10 @@ begin
          Policy  => Updated
       );
       Put_Line ("Wait for publisher...");
-      Wait_For_Event (Pier => Master);
+      Wait_For_Event (Peer => Master);
 
       Put_Line ("Publishing chat=Hello again");
-      Reset_Event (Pier => Master);
+      Reset_Event (Peer => Master);
       Publish
       (  Server  => Factory.Server,
          Topic   => "chat",
@@ -139,10 +139,10 @@ begin
          Policy  => Updated
       );
       Put_Line ("Wait for publisher...");
-      Wait_For_Event (Pier => Master);
+      Wait_For_Event (Peer => Master);
 
       Put_Line ("Publishing chat=Going to sleep...");
-      Reset_Event (Pier => Master);
+      Reset_Event (Peer => Master);
       Publish
       (  Server  => Factory.Server,
          Topic   => "chat",
@@ -150,10 +150,10 @@ begin
          Policy  => Updated
       );
       Put_Line ("Wait for publisher...");
-      Wait_For_Event (Pier => Master);
+      Wait_For_Event (Peer => Master);
 
       Put_Line ("Publishing chat=Bye!");
-      Reset_Event (Pier => Master);
+      Reset_Event (Peer => Master);
       Publish
       (  Server  => Factory.Server,
          Topic   => "chat",
@@ -161,14 +161,14 @@ begin
          Policy  => Updated
       );
       Put_Line ("Wait for publisher...");
-      Wait_For_Event (Pier => Master);
+      Wait_For_Event (Peer => Master);
 
       Send_Unsubscribe
-      (  Pier   => Master,
+      (  Peer   => Master,
          Packet => 11,
          Topics => +"chat"
       );
-      Send_Disconnect (Pier => Master);
+      Send_Disconnect (Peer => Master);
       delay 2.0;
    end;
 exception

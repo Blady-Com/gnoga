@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  13:37 23 Jun 2019  --
+--                                Last revision :  14:07 11 Nov 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,6 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;       use Ada.Exceptions;
 with Ada.Streams;          use Ada.Streams;
 with GNAT.Sockets.Server;  use GNAT.Sockets.Server;
 with Interfaces;           use Interfaces;

@@ -8,7 +8,7 @@ project Components.Connections_Server.HTTP_Server.SQLite_Browser is
        (  "gnat-sockets-connection_state_machine-http_server-sqlite_browser.adb",
           "gnat-sockets-connection_state_machine-http_server-sqlite_browser.ads"
        );
-   for Object_Dir use Components.Object_Dir_Path;
+   for Object_Dir use Components'Object_Dir;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

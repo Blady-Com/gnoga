@@ -12,7 +12,7 @@ project Components.Connections_Server.ELV_MAX_Cube is
           "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.adb",
           "gnat-sockets-connection_state_machine-elv_max_cube_client-topology.ads"
        );
-   for Object_Dir use Components.Object_Dir_Path;
+   for Object_Dir use Components'Object_Dir;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

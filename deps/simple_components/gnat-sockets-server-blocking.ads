@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Blocking                Luebeck            --
 --  Interface                                      Winter, 2018       --
 --                                                                    --
---                                Last revision :  13:37 23 Jun 2019  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -140,6 +140,24 @@ package GNAT.Sockets.Server.Blocking is
 -- when it replaces it.
 --
    procedure Initialize (Listener : in out Blocking_Server);
+--
+-- On_Reader_Start -- Reader task start
+--
+--    Listener - The server object
+--
+-- This procedure  is  called  once when  the reader  task  starts.  The
+-- default implementation does nothing.
+--
+   procedure On_Reader_Start  (Listener : in out Blocking_Server);
+--
+-- On_Writer_Start -- Writer task start
+--
+--    Listener - The server object
+--
+-- This procedure  is  called  once when  the writer  task  starts.  The
+-- default implementation does nothing.
+--
+   procedure On_Writer_Start  (Listener : in out Blocking_Server);
 
 private
    task type Writer

@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess                Luebeck            --
 --  Interface                                      Spring, 2018       --
 --                                                                    --
---                                Last revision :  01:09 01 May 2018  --
+--                                Last revision :  22:08 06 Jan 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -265,6 +265,20 @@ package Synchronization.Interprocess is
 --    The signature
 --
    function Get_Signature (Data : String) return Unsigned_16;
+--
+-- Process_ID -- The process ID
+--
+   subtype Process_ID is Synchronization.Windows.DWORD;
+   Null_Process : constant Process_ID := 0;
+--
+-- Get_Process_ID -- Get process ID
+--
+-- Returns :
+--
+--    The process ID
+--
+   function Get_Process_ID return Process_ID
+      renames Synchronization.Windows.GetCurrentProcessId;
 
 private
    use Interfaces.C;
@@ -313,7 +327,7 @@ private
       Owner  : Boolean   := False;    -- Created here
       Name   : chars_ptr := Null_Ptr; -- File mapping name
       Map    : Head_Ptr;              -- Address of the memory
-      First  : Abstract_Shared_Object_Ptr; -- THe first object inside
+      First  : Abstract_Shared_Object_Ptr; -- The first object inside
    end record;
    procedure Write
              (  Stream      : access Root_Stream_Type'Class;

@@ -3,7 +3,7 @@
 --     Julia.Load_Julia_Library                    Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,16 +36,20 @@ with Interfaces;
 
 package body Julia.Load_Julia_Library is
 
-   LOAD_WITH_ALTERED_SEARCH_PATH       : constant := 16#00000008#;
-   LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR    : constant := 16#00000100#;
-   LOAD_LIBRARY_SEARCH_APPLICATION_DIR : constant := 16#00000200#;
-   LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : constant := 16#00001000#;
+   LOAD_WITH_ALTERED_SEARCH_PATH       : constant := 16#0000_0008#;
+   LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR    : constant := 16#0000_0100#;
+   LOAD_LIBRARY_SEARCH_APPLICATION_DIR : constant := 16#0000_0200#;
+   LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : constant := 16#0000_1000#;
 
-   ERROR_PROC_NOT_FOUND : constant := 127;
-   ERROR_BAD_EXE_FORMAT : constant := 193;
+   ERROR_PROC_NOT_FOUND   : constant := 127;
+   ERROR_BAD_EXE_FORMAT   : constant := 193;
+   ERROR_ENVVAR_NOT_FOUND : constant := 203;
 
    type BOOL  is new int;
    type DWORD is new unsigned_long;
+
+   INVALID_FILE_ATTRIBUTES  : constant DWORD := 16#FFFF_FFFF#;
+   FILE_ATTRIBUTE_DIRECTORY : constant DWORD := 16#0000_0010#;
 
    function LoadLibrary
             (  Name  : wchar_array;
@@ -63,6 +67,12 @@ package body Julia.Load_Julia_Library is
           (  Stdcall,
              GetEnvironmentVariable,
              "GetEnvironmentVariableW"
+          );
+   function GetFileAttributes (Name : wchar_array) return DWORD;
+   pragma Import
+          (  Stdcall,
+             GetFileAttributes,
+             "GetFileAttributesW"
           );
 
    function GetProcAddress
@@ -545,6 +555,85 @@ package body Julia.Load_Julia_Library is
       end;
    end GetErrorText;
 
+   function Is_In (List, Dir : wchar_array) return Boolean is
+   begin
+      for Index in List'Range loop
+         exit when List'Last - Index + 1 < Dir'Length;
+         if (  (  Index = List'First
+               or else
+                  List (Index - 1) = ';'
+               )
+            and then
+               (  Index + Dir'Length > List'Last
+               or else
+                  List (Index + Dir'Length) = ';'
+               )
+            and then
+               List (Index..Index + Dir'Length - 1) = Dir
+            )  then
+            return True;
+         end if;
+      end loop;
+      return False;
+   end Is_In;
+
+   procedure Modify_Path (Name : String) is
+      Result : BOOL;
+   begin
+      for Index in reverse Name'Range loop
+         case Name (Index) is
+            when '\' =>
+               declare
+                  Dir  : constant wchar_array :=
+                                  To_C
+                                  (  To_Wide_String
+                                     (  Name (Name'First..Index - 1)
+                                  )  );
+                  Key  : constant wchar_array := "PATH" & wide_nul;
+                  Size : DWORD;
+                  Data : wchar_array (1..0);
+               begin
+                  Size := GetFileAttributes (Dir);
+                  exit when (  Size = INVALID_FILE_ATTRIBUTES
+                            or else
+                               0 = (Size and FILE_ATTRIBUTE_DIRECTORY)
+                            );
+                  Size := GetEnvironmentVariable (Key, Data, 0);
+                  if Size = 0 then
+                     exit when ERROR_ENVVAR_NOT_FOUND /= GetLastError;
+                     Result := SetEnvironmentVariable (Key, Dir);
+                  else
+                     declare
+                        Old_Path : wchar_array (1..size_t (Size));
+                     begin
+                        Size := GetEnvironmentVariable
+                                (  Key,
+                                   Old_Path,
+                                   Size
+                                );
+                        exit when Size = 0;
+                        if not Is_In
+                               (  Old_Path,
+                                  Dir (Dir'First..Dir'Last - 1)
+                               )  then
+                           Result :=
+                              SetEnvironmentVariable
+                              (  Key,
+                                 (  Dir (Dir'First..Dir'Last - 1)
+                                 &  ';'
+                                 &  Old_Path
+                              )  );
+                        end if;
+                     end;
+                  end if;
+               end;
+               exit;
+            when others =>
+               null;
+         end case;
+      end loop;
+   end Modify_Path;
+
    procedure Raise_From_LastError
              (  ID     : Exception_ID;
                 Prefix : String := "";
@@ -573,7 +662,7 @@ package body Julia.Load_Julia_Library is
          return;
       end if;
       declare
-         Name  : constant String := Get_Library_Path;
+         Name : constant String := Get_Library_Path;
       begin
          if Library = Null_Address then
             Library := LoadLibrary (To_C (To_Wide_String (Name)));
@@ -765,50 +854,7 @@ package body Julia.Load_Julia_Library is
             GetProcAddress (Library, "jl_uniontype_type" & Nul);
 
          Check_Links (Name);
-         for Index in reverse Name'Range loop
-            case Name (Index) is
-               when '\' =>
-                  declare
-                     Key  : constant wchar_array := "PATH" & wide_nul;
-                     Size : DWORD;
-                     Data : wchar_array (1..0);
-                  begin
-                     Size := GetEnvironmentVariable (Key, Data, 0);
-                     exit when Size = 0;
-                     declare
-                        Result   : BOOL;
-                        Old_Path : wchar_array (1..size_t (Size));
-                     begin
-                        Size := GetEnvironmentVariable
-                                (  Key,
-                                   Old_Path,
-                                   Size
-                                );
-                        exit when Size = 0;
-                        declare
-                           New_Path : constant wchar_array :=
-                              (  To_C
-                                 (  To_Wide_String
-                                    (  Name (Name'First..Index - 1)
-                                    ),
-                                    False
-                                 )
-                              &  ';'
-                              &  Old_Path
-                                 (  Old_Path'First
-                                 .. Old_Path'First + size_t (Size) - 1
-                              )  );
-                        begin
-                           Result :=
-                              SetEnvironmentVariable (Key, New_Path);
-                        end;
-                     end;
-                  end;
-                  exit;
-               when others =>
-                  null;
-            end case;
-         end loop;
+         Modify_Path (Name);
       end;
       Loaded := True;
    end Load;

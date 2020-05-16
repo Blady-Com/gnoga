@@ -30,9 +30,10 @@ with Interfaces.C;  use Interfaces.C;
 with Julia;         use Julia;
 
 procedure Ada_Call is
+   Bin : constant String := "D:\Julia-1.2.0\bin";
 begin
-   Load ("D:\Julia-1.0.3\bin\libjulia.dll");  -- Load library
-   Init_With_Image ("D:\Julia-1.0.3\bin");    -- Initialize environment
+   Load (Bin & "\libjulia.dll");  -- Load library
+   Init_With_Image (Bin);    -- Initialize environment
 
    declare
       function Increment (X : Double) return Double;

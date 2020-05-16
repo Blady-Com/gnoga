@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2003       --
 --                                                                    --
---                                Last revision :  19:03 27 May 2009  --
+--                                Last revision :  13:11 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -83,6 +83,13 @@ package Tables.Names is
                 Pointer : in out Integer;
                 Folder  : Dictionary;
                 Data    : out Tag
+             );
+   procedure Get
+             (  Source  : String;
+                Pointer : in out Integer;
+                Folder  : Dictionary;
+                Data    : out Tag;
+                Got_It  : out Boolean
              );
 --
 -- IsIn -- Overrides Tables...

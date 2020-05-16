@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2003       --
 --                                                                    --
---                                Last revision :  12:25 15 May 2015  --
+--                                Last revision :  09:21 06 Oct 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,6 +24,8 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
+
+with Ada.Exceptions;  use Ada.Exceptions;
 
 with Ada.Unchecked_Deallocation;
 
@@ -93,10 +95,13 @@ package body Stack_Storage is
          else
             Stack.Current := Stack.Current + 1;
          end if;
-     end loop;
+      end loop;
    exception
-     when others =>
-         raise Storage_Error;
+      when Error : others =>
+         Raise_Exception
+         (  Storage_Error'Identity,
+            Exception_Message (Error)
+         );
    end Allocate;
 
    procedure Deallocate

@@ -8,7 +8,7 @@ project xpm_parser is
          "parsers-generic_source-xpm.ads",
          "parsers-multiline_source-xpm.ads"
       );
-   for Object_Dir use Components.Object_Dir_Path;
+   for Object_Dir use Components'Object_Dir;
 
 end xpm_parser;
 

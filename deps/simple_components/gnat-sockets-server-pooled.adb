@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Pooled                  Luebeck            --
 --  Implementation                                 Winter, 2013       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,8 +24,6 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
-
-with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 
 with Ada.Unchecked_Deallocation;
 
@@ -104,6 +102,11 @@ package body GNAT.Sockets.Server.Pooled is
       end loop;
    end Initialize;
 
+   procedure On_Pooled_Server_Start (Listener : in out Pooled_Server) is
+   begin
+      null;
+   end On_Pooled_Server_Start;
+
    procedure Process
              (  Listener  : in out Pooled_Server;
                 Client    : Connection_Ptr;
@@ -141,6 +144,7 @@ package body GNAT.Sockets.Server.Pooled is
       Data_Left : Boolean;
       Client    : Connection_Ptr;
    begin
+      On_Pooled_Server_Start (Listener.all);
       loop
          Listener.Active.Dequeue (Client);
          declare

@@ -3,7 +3,7 @@
 --  MODBUS client test                             Luebeck            --
 --                                                 Spring, 2015       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  14:53 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,6 +35,8 @@ with Strings_Edit.Integers;        use Strings_Edit.Integers;
 with Strings_Edit.Streams;         use Strings_Edit.Streams;
 
 with GNAT.Sockets.Connection_State_Machine.MODBUS_Client.Synchronous;
+with GNAT.Serial_Communications;
+with GNAT.Sockets.Server.Blocking;
 
 procedure Test_MODBUS_Client is
    Timeout : constant Duration := 1.0;
@@ -108,7 +110,7 @@ procedure Test_MODBUS_Client is
          Connect
          (  Server,
             Client'Unchecked_Access,
-            "192.168.2.100", -- "127.0.0.1",
+            "127.0.0.1", -- "192.168.2.100", -- "127.0.0.1",
             MODBUS_Port
          );
          while not Is_Connected (Client) loop -- Busy waiting
@@ -140,6 +142,94 @@ procedure Test_MODBUS_Client is
          delay Timeout;
       end;
    end Test_Asynchronous;
+
+   procedure Test_RTU (COM_Port : String) is
+      use GNAT.Sockets.Connection_State_Machine.MODBUS_Client;
+      use Synchronous;
+      use GNAT.Serial_Communications;
+      Factory   : aliased Connections_Factory;
+      Port      : aliased Serial_Port;
+      Reference : Handle;
+   begin
+      Open (Port, Port_Name (COM_Port));
+      Set
+      (  Port    => Port,
+         Block   => False,
+         Flow    => RTS_CTS,
+         Timeout => 2.0
+      );
+      Trace_On
+      (  Factory  => Factory,
+         Received => GNAT.Sockets.Server.Trace_Decoded,
+         Sent     => GNAT.Sockets.Server.Trace_Decoded
+      );
+      declare
+         Server : aliased GNAT.Sockets.Server.Blocking.Blocking_Server
+                          (  Factory'Access,
+                             Port'Unchecked_Access,
+                             Port'Unchecked_Access,
+                             80
+                          );
+      begin
+         Set
+         (  Reference,
+            new MODBUS_Synchronous_Client
+                (  Server'Unchecked_Access
+         )      );
+         declare
+            Client : MODBUS_Synchronous_Client renames
+                     MODBUS_Synchronous_Client (Ptr (Reference).all);
+         begin
+            Set_RTU_Checksum_Mode (Client, True); -- Activate checksum
+            Set_RTU_Silence_Time (Client, 0.01);  -- 10ms silence time
+            GNAT.Sockets.Server.Blocking.Connect
+            (  Server,
+               Client'Unchecked_Access
+            );
+            while not Is_Connected (Client) loop -- Busy waiting
+               delay Timeout;
+            end loop;
+            Put_Line ("MODBUS client connected");
+            FC5 (Client, 100, 1, True, 1);
+            Put_Line ("FC1 > OK");
+            FC15 (Client, 101, (5..15=>True, 16=>False, 17=>True), 1);
+            Put_Line ("FC15 > OK");
+            Put_Line
+            (  "FC1 > "
+            &  Image
+               (  FC1 (Client'Access, 102, 1, 3, 1)
+            )  );
+            Put_Line
+            (  "FC2 > "
+            &  Image
+               (  FC2 (Client'Access, 103, 10, 20, 1)
+            )  );
+            FC6 (Client, 104, 0, 16#100#, 1);
+            Put_Line ("FC6 > OK");
+            FC16 (Client, 105, (2=>16#101#,3=>16#102#,4=>16#103#), 1);
+            Put_Line
+            (  "FC23 > "
+            &  Image
+               (  FC23
+                  (  Client'Access,
+                     105,
+                     0, 4,
+                     (5=>16#201#,6=>16#202#,7=>16#203#),
+                     1,
+                     3.0
+            )  )  );
+            Put_Line
+            (  "FC24 > "
+            &  Image (FC24 (Client'Access, 106, 16#6000#, 1, 5.0))
+            );
+            Put_Line
+            (  "FC7 > " & Unsigned_8'Image (FC7 (Client'Access, 106, 1))
+            );
+            delay 3.0;
+            Close (Port);
+         end;
+      end;
+   end Test_RTU;
 
    procedure Test_Synchronous is
       use GNAT.Sockets.Connection_State_Machine.
@@ -192,7 +282,8 @@ procedure Test_MODBUS_Client is
    end Test_Synchronous;
 begin
 --   Test_Asynchronous;
-   Test_Synchronous;
+   Test_RTU ("\\.\COM5");
+--   Test_Synchronous;
 exception
    when Error : others =>
       Put_Line ("Error: " & Exception_Information (Error));

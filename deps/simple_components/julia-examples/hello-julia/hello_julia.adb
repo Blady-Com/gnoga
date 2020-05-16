@@ -28,9 +28,10 @@
 with Julia;  use Julia;
 
 procedure Hello_Julia is 
+   Bin : constant String := "D:\Julia-1.2.0\bin";
 begin
-   Load ("D:\Julia-1.0.3\bin\libjulia.dll");  -- Load library
-   Init_With_Image ("D:\Julia-1.0.3\bin");    -- Initialize environment
+   Load (Bin & "\libjulia.dll");  -- Load library
+   Init_With_Image (Bin);         -- Initialize environment
 
    Eval_String ("println(""Hello Julia!"")");
 

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  16:04 08 Jun 2019  --
+--                                Last revision :  14:07 11 Nov 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
---  with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
+with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
 with Ada.Characters.Handling;  use Ada.Characters.Handling;
 with Ada.Tags;                 use Ada.Tags;
 with GNAT.SHA1;                use GNAT.SHA1;

@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess.               Luebeck            --
 --     Generic_Process_Call_Service                Spring, 2018       --
 --  Interface                                                         --
---                                Last revision :  16:12 15 Jul 2018  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -110,6 +110,20 @@ package Synchronization.Interprocess.Process_Call_Service is
 --
    function Get_ID (Service : Call_Service) return Call_Service_ID;
 --
+-- Get_Process_ID -- Of the service
+--
+--    Service - The service
+--
+-- Returns :
+--
+--    The process ID
+--
+-- Exceptions :
+--
+--    Status_Error - The service is not initialized
+--
+   function Get_Process_ID (Service : Call_Service) return Process_ID;
+--
 -- Is_Server -- Check the service mode
 --
 --    Service - The service
@@ -119,6 +133,15 @@ package Synchronization.Interprocess.Process_Call_Service is
 --    True if the service is in the server mode
 --
    function Is_Server (Service : Call_Service) return Boolean;
+--
+-- On_Start -- Service task start notification
+--
+--    Service - The service
+--
+-- This procedure  is called when  the service task starts.  The default
+-- implementation does nothing.
+--
+   procedure On_Start (Service : in out Call_Service);
 --
 -- Set_Server -- Set the service mode
 --
@@ -438,7 +461,8 @@ private
    type Call_Service_Array_Ptr is access Call_Service_Array;
 
    type Service_Data is record
-      Service : Call_Service_Ptr; -- Valid when in Server_Mode
+      Service : Call_Service_Ptr;       -- Valid when in Server_Mode
+      Process : Process_ID := Null_Process;   -- The process ID
       Index   : aliased Call_Service_ID := 0; -- Index of the server
    end record;
    type Service_Data_Ptr is access all Service_Data;

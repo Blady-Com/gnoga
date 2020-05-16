@@ -6,7 +6,7 @@ project Components.OpenSSL is
        (  "openssl.adb",
           "openssl.ads"
        );
-   for Object_Dir use Components.Object_Dir_Path;
+   for Object_Dir use Components'Object_Dir;
 
    package Linker is
       for Linker_Options use ("-lssl" , "-lcrypto");

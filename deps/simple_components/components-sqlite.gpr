@@ -1,4 +1,5 @@
 with "components.gpr";
+with "strings_edit.gpr";
 
 project Components.SQLite is
 
@@ -21,9 +22,28 @@ project Components.SQLite is
       "sqlite3.h",
       "sqlite3.c"
    );
-   for Object_Dir use Components.Object_Dir_Path;
-
-   package Compiler renames Components.Compiler;
+   package Compiler is
+      for Default_Switches ("ada") use
+         Components.Compiler'Default_Switches ("ada");
+      case Strings_Edit.Development is
+         when "Debug" =>
+            for Default_Switches ("C") use
+                (  "-g",
+                   "-fstack-check",
+                   "-Wall"
+                );
+         when "Release" =>
+            for Default_Switches ("C") use
+                (  "-O2"
+                );
+         when "Profile" =>
+            for Default_Switches ("C") use
+                (  "-g",
+                   "-pg"
+                );
+      end case;
+   end Compiler;
+   
    package Binder   renames Components.Binder;
    package Builder  renames Components.Builder;
    package Linker   renames Components.Linker;

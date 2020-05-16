@@ -30,9 +30,11 @@ with Interfaces.C;  use Interfaces.C;
 with Julia;         use Julia;
 
 procedure Ada_Wrapper is
+   Bin : constant String := "D:\Julia-1.2.0\bin";
 begin
-   Load ("D:\Julia-1.0.3\bin\libjulia.dll");  -- Load library
-   Init_With_Image ("D:\Julia-1.0.3\bin");    -- Initialize environment
+   Load (Bin & "\libjulia.dll");  -- Load library
+   Init;
+-- Init_With_Image (Bin);         -- Initialize environment
 
    declare
       function Increment (X : Double) return Double;
@@ -56,5 +58,5 @@ begin
       Eval_String ("println(x)");
    end;
 
-   AtExit_Hook;                               -- Finalize environment
+   AtExit_Hook;                   -- Finalize environment
 end Ada_Wrapper;

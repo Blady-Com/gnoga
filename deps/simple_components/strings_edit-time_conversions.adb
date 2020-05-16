@@ -3,7 +3,7 @@
 --     Strings_Edit.Time_Conversions               Luebeck            --
 --  Implementation                                 Summer, 2016       --
 --                                                                    --
---                                Last revision :  12:28 04 Nov 2018  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -148,6 +148,7 @@ package body Strings_Edit.Time_Conversions is
       Minute   : Minute_Number;
       Second   : Second_Number;
       Zone     : Time_Zones.Time_Offset;
+      Got_It   : Boolean;
       Pointer  : Integer := Date'First;
 
       procedure Get_Year (Expand : Boolean) is
@@ -184,13 +185,13 @@ package body Strings_Edit.Time_Conversions is
 
       procedure Get_Month is
       begin
-         Get (Date, Pointer, Months, Month);
-      exception
-         when End_Error =>
+         Get (Date, Pointer, Months, Month, Got_It);
+         if not Got_It then
             Raise_Exception
             (  Data_Error'Identity,
                "Wrong or missing month name"
             );
+         end if;
       end Get_Month;
 
       procedure Get_Time is
@@ -253,9 +254,8 @@ package body Strings_Edit.Time_Conversions is
                );
          end Get_Offset;
       begin
-         Get (Date, Pointer, Zones, Zone);
-      exception
-         when End_Error =>
+         Get (Date, Pointer, Zones, Zone, Got_It);
+         if not Got_It then
             if Pointer + 4 < Date'Last then
                Raise_Exception
                (  Data_Error'Identity,
@@ -271,52 +271,50 @@ package body Strings_Edit.Time_Conversions is
                   "Missing sign of time zone offset"
                );
             end if;
+         end if;
       end Get_Zone;
 
    begin
-      begin
-         Get (Date, Pointer, Week_Days, Week_Day);
-      exception
-         when End_Error =>
-            Raise_Exception
-            (  Data_Error'Identity,
-               "Wrong or missing week day: " & Date (Pointer..Date'Last)
-            );
-      end;
+      Get (Date, Pointer, Week_Days, Week_Day, Got_It);
+      if not Got_It then
+         Raise_Exception
+         (  Data_Error'Identity,
+            "Wrong or missing week day: " & Date (Pointer..Date'Last)
+         );
+      end if;
       if Date (Pointer) = ',' then
          Pointer := Pointer + 1;
       end if;
       Get (Date, Pointer);
-      begin
-         Get (Date, Pointer, Months, Month); -- Dec 31 23:59:59 1999
+      Get (Date, Pointer, Months, Month, Got_It); -- Dec 31 23:59:59
+      if Got_It then
          Get (Date, Pointer);
          Get_Day;
-      exception
-         when End_Error => -- No month
-            Get_Day;
-            if Date (Pointer) = '-' then -- 31-Dec-99 23:59:59 GMT
+      else -- No month
+         Get_Day;
+         if Date (Pointer) = '-' then -- 31-Dec-99 23:59:59 GMT
+            Pointer := Pointer + 1;
+            Get_Month;
+            if Date (Pointer) = '-' then
                Pointer := Pointer + 1;
-               Get_Month;
-               if Date (Pointer) = '-' then
-                  Pointer := Pointer + 1;
-               else
-                  Raise_Exception
-                  (  Data_Error'Identity,
-                     "Hyphen is expected after the month name"
-                  );
-               end if;
-               Get_Year (True);
-            else                         -- 31 Dec 1999 23:59:59 GMT
-               Get (Date, Pointer);
-               Get_Month;
-               Get (Date, Pointer);
-               Get_Year (False);
+            else
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Hyphen is expected after the month name"
+               );
             end if;
+            Get_Year (True);
+         else                         -- 31 Dec 1999 23:59:59 GMT
             Get (Date, Pointer);
-            Get_Time;
+            Get_Month;
             Get (Date, Pointer);
-            Get_Zone;
-      end;
+            Get_Year (False);
+         end if;
+         Get (Date, Pointer);
+         Get_Time;
+         Get (Date, Pointer);
+         Get_Zone;
+      end if;
       return
          Time_Of
          (  Year      => Year,

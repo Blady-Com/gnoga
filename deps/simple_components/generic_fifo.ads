@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  19:18 30 Apr 2018  --
+--                                Last revision :  08:25 05 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -55,6 +55,16 @@ package Generic_FIFO is
              (  Queue : in out FIFO;
                 Count : Natural := 1
              );
+--
+-- Free_Space -- Unused space in the queue
+--
+--    Queue - The queue
+--
+-- Returns :
+--
+--    The number of unused FIFO elements
+--
+   function Free_Space (Queue : FIFO) return Natural;
 --
 -- Get -- An element from the queue
 --

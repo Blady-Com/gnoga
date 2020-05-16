@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  13:12 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -41,7 +41,6 @@ with System;                use System;
 
 with Ada.Finalization;
 with Generic_Map;
-with Interfaces.C.Pointers;
 with Tables;
 with System.Storage_Elements;
 

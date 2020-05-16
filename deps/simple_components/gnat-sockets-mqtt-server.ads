@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Server                    Luebeck            --
 --  Interface                                      Spring, 2016       --
 --                                                                    --
---                                Last revision :  13:37 23 Jun 2019  --
+--                                Last revision :  14:07 11 Nov 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,7 +30,6 @@ with Synchronization.Mutexes;  use Synchronization.Mutexes;
 
 with Ada.Finalization;
 with Generic_FIFO;
-with Generic_Indefinite_Map;
 with Generic_Map;
 with Generic_Set;
 with GNAT.Sockets.Server.Handles;

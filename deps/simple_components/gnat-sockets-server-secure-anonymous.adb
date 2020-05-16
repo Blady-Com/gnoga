@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Secure.Anonymous        Luebeck            --
 --  Implementation                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  20:28 27 May 2018  --
+--                                Last revision :  08:25 05 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -41,12 +41,21 @@ package body GNAT.Sockets.Server.Secure.Anonymous is
    procedure Initialize
              (  Factory : in out Anonymous_Authentication_Factory
              )  is
+      Bits : Natural;
    begin
       Initialize (Abstract_GNUTLS_Factory (Factory));
-      DH_Params_Generate2
-      (  Factory.Parameters,
-         Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY)
-      );
+      Bits := Sec_Param_To_PK_Bits (PK_DH, SEC_PARAM_LEGACY);
+      if Bits > 0 then
+         DH_Params_Generate2
+         (  Factory.Parameters,
+            Bits
+         );
+      else
+         DH_Params_Generate2
+         (  Factory.Parameters,
+            1024
+         );
+      end if;
    end Initialize;
 
    procedure Prepare

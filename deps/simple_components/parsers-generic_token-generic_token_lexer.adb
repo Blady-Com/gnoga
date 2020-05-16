@@ -3,7 +3,7 @@
 --     Parsers.Generic_Token.                      Luebeck            --
 --        Generic_Token_Lexer                      Winter, 2004       --
 --  Implementation                                                    --
---                                Last revision :  15:35 29 Apr 2012  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,8 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;     use Ada.Exceptions;
-with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
+with Ada.Exceptions;  use Ada.Exceptions;
 
 package body Parsers.Generic_Token.Generic_Token_Lexer is
    use Implementation;
@@ -128,14 +127,13 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
       (  Line (Line'First..Last),
          Pointer,
          Context.Infixes.all,
-         Result
+         Result,
+         Got_It
       );
-      Sources.Set_Pointer (Code, Pointer);
-      Token  := Get_Token (Code, Result);
-      Got_It := True;
-   exception
-      when End_Error =>
-         Got_It := False;
+      if Got_It then
+         Sources.Set_Pointer (Code, Pointer);
+         Token  := Get_Token (Code, Result);
+      end if;
    end Get_Infix;
 
    procedure Get_Postfix
@@ -154,14 +152,13 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
       (  Line (Line'First..Last),
          Pointer,
          Context.Postfixes.all,
-         Result
+         Result,
+         Got_It
       );
-      Sources.Set_Pointer (Code, Pointer);
-      Token  := Get_Token (Code, Result);
-      Got_It := True;
-   exception
-      when End_Error =>
-         Got_It := False;
+      if Got_It then
+         Sources.Set_Pointer (Code, Pointer);
+         Token  := Get_Token (Code, Result);
+      end if;
    end Get_Postfix;
 
    procedure Get_Prefix
@@ -180,14 +177,13 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
       (  Line (Line'First..Last),
          Pointer,
          Context.Prefixes.all,
-         Result
+         Result,
+         Got_It
       );
-      Sources.Set_Pointer (Code, Pointer);
-      Token  := Get_Token (Code, Result);
-      Got_It := True;
-   exception
-      when End_Error =>
-         Got_It := False;
+      if Got_It then
+         Sources.Set_Pointer (Code, Pointer);
+         Token  := Get_Token (Code, Result);
+      end if;
    end Get_Prefix;
 
    procedure On_Association_Error

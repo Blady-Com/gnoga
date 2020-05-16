@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  16:04 08 Jun 2019  --
+--                                Last revision :  13:12 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1039,7 +1039,8 @@ private
    pragma Import (C, SSL_CIPHER_get_name,    "SSL_CIPHER_get_name");
    pragma Import (C, SSL_CIPHER_standard_name,
                                             "SSL_CIPHER_standard_name");
-   pragma Import (C, SSL_CTX_check_private_key, "SSL_CTX_check_private_key");
+   pragma Import (C, SSL_CTX_check_private_key,
+                                           "SSL_CTX_check_private_key");
    pragma Import (C, SSL_CTX_clear_options,  "SSL_CTX_clear_options");
    pragma Import (C, SSL_CTX_ctrl,           "SSL_CTX_ctrl");
    pragma Import (C, SSL_CTX_free,           "SSL_CTX_free");

@@ -32,6 +32,8 @@ with Julia;         use Julia;
 with Julia.Generic_1D_Array;
 
 procedure Array_1D is
+   Bin : constant String := "D:\Julia-1.2.0\bin";
+
    type Words_Array is
       array (Positive range <>) of Interfaces.Integer_16;
    package Words_Arrays is
@@ -42,8 +44,8 @@ procedure Array_1D is
              Julia_Type         => Int16_Type
           );
 begin
-   Load ("D:\Julia-1.0.3\bin\libjulia.dll");  -- Load library
-   Init_With_Image ("D:\Julia-1.0.3\bin");    -- Initialize environment
+   Load (Bin & "\libjulia.dll");  -- Load library
+   Init_With_Image (Bin);         -- Initialize environment
 
    declare
       use Words_Arrays;
@@ -59,5 +61,5 @@ begin
       Eval_String ("println(a)");
    end;
 
-   AtExit_Hook;                               -- Finalize environment
+   AtExit_Hook;                   -- Finalize environment
 end Array_1D;

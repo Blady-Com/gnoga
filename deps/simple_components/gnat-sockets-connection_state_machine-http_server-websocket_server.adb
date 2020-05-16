@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server.WebSocket_Server                Spring, 2017       --
 --  Implementation                                                    --
---                                Last revision :  21:11 16 Apr 2017  --
+--                                Last revision :  14:07 11 Nov 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,6 +24,8 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
+
+with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 
 package body GNAT.Sockets.Connection_State_Machine.HTTP_Server.
              WebSocket_Server is

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client                               Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  14:04 26 Dec 2018  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,11 +25,63 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
+with Ada.Exceptions;         use Ada.Exceptions;
 with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
+with Synchronization;        use Synchronization;
 
 package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
    use Stream_Element_Offset_Edit;
+
+   function "abs" (Timeout : Duration) return Time is
+   begin
+      if Timeout = Duration'Last then
+         return Time_Last;
+      elsif Timeout <= 0.0 then
+         return Clock;
+      else
+         return Clock + To_Time_Span (Timeout);
+      end if;
+   exception
+      when Constraint_Error =>
+         return Time_Last;
+   end "abs";
+
+   procedure Accumulate
+             (  CRC  : in out MODBUS_Checksum;
+                Data : Stream_Element_Array
+             )  is
+      Value : Unsigned_16 := CRC.Value;
+   begin
+      for Index in Data'Range loop
+         Value := Value xor Unsigned_16 (Data (Index));
+         for Bit in 1..8 loop
+            if (Value and 1) /= 0 then
+               Value := Shift_Right (Value, 1) xor 16#A001#;
+            else
+               Value := Shift_Right (Value, 1);
+            end if;
+         end loop;
+      end loop;
+      CRC.Value := Value;
+   end Accumulate;
+
+   procedure Accumulate
+             (  CRC  : in out MODBUS_Checksum;
+                Data : Unsigned_8
+             )  is
+      Value : Unsigned_16 := CRC.Value;
+   begin
+      Value := Value xor Unsigned_16 (Data);
+      for Bit in 1..8 loop
+         if (Value and 1) /= 0 then
+            Value := Shift_Right (Value, 1) xor 16#A001#;
+         else
+            Value := Shift_Right (Value, 1);
+         end if;
+      end loop;
+      CRC.Value := Value;
+   end Accumulate;
 
    procedure Bits_Read
              (  Client    : in out MODBUS_Client;
@@ -108,39 +160,39 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
    begin
       case Code is
          when 1 =>
-            return "Function code received in the query is " &
-                   "not recognized or allowed by slave";
+            return "Function code received in the query is not "     &
+                   "recognized or allowed by slave";
          when 2 =>
-            return "Data address of some or all the required " &
+            return "Data address of some or all the required "       &
                    "entities are not allowed or do not exist in slave";
          when 3 =>
             return "Value is not accepted by slave";
          when 4 =>
-            return "Unrecoverable error occurred while slave was " &
+            return "Unrecoverable error occurred while slave was "   &
                    "attempting to perform requested action";
          when 5 =>
-            return "Slave has accepted request and is processing " &
-                   "it, but a long duration of time is required. " &
+            return "Slave has accepted request and is processing "   &
+                   "it, but a long duration of time is required. "   &
                    "This response is returned to prevent a timeout " &
                    "error from occurring in the master. Master can " &
-                   "next issue a Poll Program Complete message to " &
+                   "next issue a Poll Program Complete message to "  &
                    "determine if processing is completed";
          when 6 =>
             return "Slave is engaged in processing a long-duration " &
                    "command. Master should retry later";
          when 7 =>
-            return "Slave cannot perform the programming " &
+            return "Slave cannot perform the programming "           &
                    "functions. Master should request diagnostic or " &
                    "error information from slave";
          when 8 =>
-            return "Slave detected a parity error in memory. " &
-                   "Master can retry the request, but service may " &
+            return "Slave detected a parity error in memory. "       &
+                   "Master can retry the request, but service may "  &
                    "be required on the slave device";
          when 10 =>
-            return "Specialized for Modbus gateways. Indicates " &
+            return "Specialized for Modbus gateways. Indicates "     &
                    "a misconfigured gateway";
          when 11 =>
-            return "Specialized for Modbus gateways. Sent when " &
+            return "Specialized for Modbus gateways. Sent when "     &
                    "slave fails to respond";
          when others =>
             return "Unknown exception code " & Image (Integer (Code));
@@ -186,15 +238,123 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
    end Failed;
 
    procedure Feed
-             (  Item    : in out Set_Data_Length;
+             (  Item    : in out Payload_Item;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Client  : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             )  is
+   begin
+      if State = 0 then
+         State     := Item.Last;
+         Item.Last := Item.Offset;
+      end if;
+      while Pointer <= Data'Last and then State > 0 loop
+         Item.Last := Item.Last + 1;
+         State     := State - 1;
+         Item.Value (Item.Last) := Data (Pointer);
+         Pointer := Pointer + 1;
+      end loop;
+   end Feed;
+
+   procedure Feed
+             (  Item    : in out RTU_Length;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
                 Machine : in out State_Machine'Class;
                 State   : in out Stream_Element_Offset
              )  is
-      Client : MODBUS_Client'Class renames Item.Client.all;
+   begin
+      if Item.Client.CRC.Enable then
+         declare
+            Client  : MODBUS_Client'Class renames Item.Client.all;
+            Payload : Payload_Item renames Client.Payload_Data;
+         begin
+            case Client.Function_Code.Value is
+               when 1 | 2 | 3 | 4 | 23 => -- Bits or words read
+                  declare
+                     Length : constant Stream_Element_Offset :=
+                        Stream_Element_Offset (Data (Pointer)) + 1;
+                  begin
+                     if Length <= 0 then
+                        Payload.Last := 0;
+                     else
+                        Payload.Last := Length;
+                     end if;
+                  end;
+               when 5 | 6 | 15 | 16 => -- Bits or words written
+                  Payload.Last := 4;
+               when 7 | 128..255 => -- Exception status
+                  Payload.Last := 1;
+               when 22 => -- Word masked
+                  Payload.Last := 6;
+               when 24 => -- Words from FIFO read
+                  loop
+                     if State = 0 then
+                        Payload.Value (1) := Data (Pointer);
+                        Payload.Last :=
+                           Stream_Element_Offset (Data (Pointer)) * 256;
+                        State   := 1;
+                        Pointer := Pointer + 1;
+                        exit when Pointer > Data'Last;
+                     else
+                        Payload.Value (2) := Data (Pointer);
+                        Payload.Last :=
+                           (  Payload.Last
+                           +  Stream_Element_Offset (Data (Pointer))
+                           );
+                        State   := 0;
+                        Pointer := Pointer + 1;
+                        exit;
+                     end if;
+                  end loop;
+                  Payload.Last := Payload.Last + 2;
+                  if Payload.Last > Payload.Size then
+                     Raise_Exception
+                     (  Data_Error'Identity,
+                        (  "The frame payload data exceeds "
+                        &  Image (Payload.Size)
+                        &  " bytes"
+                     )  );
+                  end if;
+               when others =>
+                  Raise_Exception
+                  (  Data_Error'Identity,
+                     (  "Unsupported function code "
+                     &  Image (Integer (Client.Function_Code.Value))
+                  )  );
+            end case;
+         end;
+      else
+         State := 0;
+      end if;
+   end Feed;
+
+   procedure Feed
+             (  Item    : in out TCP_Head;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Machine : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             )  is
+   begin
+      if Item.Client.CRC.Enable then
+         State := 0;
+      else
+         Feed (Data_Block (Item), Data, Pointer, Machine, State);
+      end if;
+   end Feed;
+
+   procedure Feed
+             (  Item    : in out Set_TCP_Data_Length;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Machine : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             )  is
+      Client : MODBUS_Client'Class renames Item.Head.Client.all;
       Length : constant Stream_Element_Offset :=
-               Stream_Element_Offset (Client.Length_Field.Value) - 2;
+               Stream_Element_Offset (Item.Head.Length_Field.Value) - 2;
    begin
       if Length > Client.Payload_Data.Size then
          Raise_Exception
@@ -209,6 +369,41 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
          Client.Payload_Data.Last := Length;
       end if;
    end Feed;
+
+   procedure Feed
+             (  Item    : in out RTU_Checksum;
+                Data    : Stream_Element_Array;
+                Pointer : in out Stream_Element_Offset;
+                Machine : in out State_Machine'Class;
+                State   : in out Stream_Element_Offset
+             )  is
+   begin
+      if State = 0 then
+         if Item.Enable then
+            if Pointer < Data'Last then
+               Item.Data := Data (Pointer..Pointer + 1);
+               Pointer   := Pointer + 2;
+               State := 0;
+            else
+               Item.Data (1) := Data (Pointer);
+               Pointer       := Pointer + 1;
+               State         := 1;
+            end if;
+         end if;
+      else
+         Item.Data (2) := Data (Pointer);
+         Pointer       := Pointer + 1;
+         State         := 0;
+      end if;
+   end Feed;
+
+   function Get (CRC : MODBUS_Checksum) return Stream_Element_Array is
+   begin
+      return
+      (  Stream_Element (CRC.Value and 16#FF#),
+         Stream_Element (Shift_Right (CRC.Value, 8) and 16#FF#)
+      );
+   end Get;
 
    function Get_Request_Length
             (  Client : MODBUS_Client;
@@ -239,6 +434,20 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       end case;
    end Get_Request_Length;
 
+   function Get_RTU_Checksum_Mode
+            (  Client : MODBUS_Client
+            )  return Boolean is
+   begin
+      return Client.CRC.Enable;
+   end Get_RTU_Checksum_Mode;
+
+   function Get_RTU_Silence_Time
+            (  Client : MODBUS_Client
+            )  return Duration is
+   begin
+      return To_Duration (Client.CRC.Event.Get);
+   end Get_RTU_Silence_Time;
+
    procedure Prepare_To_Send
              (  Client : in out MODBUS_Client;
                 Length : Stream_Element_Count
@@ -246,14 +455,51 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
    begin
       if not Is_Connected (Client) then
          Raise_Exception (Use_Error'Identity, "Not connected");
-      elsif Available_To_Send (Client) < Length then
+      end if;
+      if Client.CRC.Enable then
+         if Available_To_Send (Client) >= Length - 4 then
+            if Client.CRC.Event.Get > Time_Span_Zero then
+               if Queued_To_Send (Client) > 0 then
+                  Raise_Exception
+                  (  Data_Error'Identity,
+                     (  "Silence time violation, "
+                     &  Image (Queued_To_Send (Client))
+                     &  " elements still queued to send when"
+                     &  " sending new request"
+                  )  );
+               elsif Clock < Client.CRC.Event.Get_Next then
+                  Raise_Exception
+                  (  Data_Error'Identity,
+                     (  "Silence time violation, "
+                     &  Image (Queued_To_Send (Client))
+                     &  " sending new request before silence time"
+                     &  " expired"
+                  )  );
+               end if;
+            end if;
+            return;
+         end if;
+         Raise_Exception
+         (  Data_Error'Identity,
+            (  "Output buffer overrun, "
+            &  Image (Queued_To_Send (Client))
+            &  " elements queued, space for at least more "
+            &  Image (Length - 4)
+            &  " required (available "
+            &  Image (Available_To_Send (Client))
+            &  ")"
+         )  );
+      else
+         if Available_To_Send (Client) >= Length then
+            return;
+         end if;
          Raise_Exception
          (  Data_Error'Identity,
             (  "Output buffer overrun, "
             &  Image (Queued_To_Send (Client))
             &  " elements queued, space for at least more "
             &  Image (Length)
-            &  " requred (available "
+            &  " required (available "
             &  Image (Available_To_Send (Client))
             &  ")"
          )  );
@@ -264,6 +510,29 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       Data : Stream_Element_Array  renames Client.Payload_Data.Value;
       Last : Stream_Element_Offset renames Client.Payload_Data.Last;
    begin
+      if Client.CRC.Enable then -- Calculate CRC
+         declare
+            CRC : MODBUS_Checksum;
+         begin
+            Accumulate (CRC, Client.Unit_ID.Value);
+            Accumulate (CRC, Client.Function_Code.Value);
+            Accumulate (CRC, Data (Data'First..Last));
+            declare
+               Sum : constant Stream_Element_Array := Get (CRC);
+            begin
+               if Sum /= Client.CRC.Data then
+                  Raise_Exception
+                  (  Data_Error'Identity,
+                     (  "Invalid checksum "
+                     &  Image (Client.CRC.Data)
+                     &  " (calculated was "
+                     &  Image (Sum)
+                     &  ")"
+                  )  );
+               end if;
+            end;
+         end;
+      end if;
       case Client.Function_Code.Value is
          when 1 | 2 => -- Bits read
             if (  Last < 1
@@ -297,7 +566,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                end loop;
                Bits_Read
                (  MODBUS_Client'Class (Client), -- Dispatching call
-                  Reference_ID (Client.Transaction_ID.Value),
+                  Reference_ID (Client.Head.Transaction_ID.Value),
                   Values,
                   Function_Code (Client.Function_Code.Value),
                   Unit_No (Client.Unit_ID.Value)
@@ -323,7 +592,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                end loop;
                Words_Read
                (  MODBUS_Client'Class (Client), -- Dispatching call
-                  Reference_ID (Client.Transaction_ID.Value),
+                  Reference_ID (Client.Head.Transaction_ID.Value),
                   Values,
                   Function_Code (Client.Function_Code.Value),
                   Unit_No (Client.Unit_ID.Value)
@@ -343,7 +612,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                Get (Data, Pointer, Address);
                Bits_Written
                (  MODBUS_Client'Class (Client), -- Dispatching call
-                  Reference_ID (Client.Transaction_ID.Value),
+                  Reference_ID (Client.Head.Transaction_ID.Value),
                   Bit_Address (Address),
                   Bit_Address (Address),
                   Function_Code (Client.Function_Code.Value),
@@ -364,7 +633,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                Get (Data, Pointer, Address);
                Words_Written
                (  MODBUS_Client'Class (Client), -- Dispatching call
-                  Reference_ID (Client.Transaction_ID.Value),
+                  Reference_ID (Client.Head.Transaction_ID.Value),
                   Word_Address (Address),
                   Word_Address (Address),
                   Function_Code (Client.Function_Code.Value),
@@ -380,7 +649,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
             end if;
             Exception_Status_Received
             (  MODBUS_Client'Class (Client), -- Dispatching call
-               Reference_ID (Client.Transaction_ID.Value),
+               Reference_ID (Client.Head.Transaction_ID.Value),
                Unsigned_8 (Client.Payload_Data.Value (1)),
                Unit_No (Client.Unit_ID.Value)
             );
@@ -400,7 +669,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                Get (Data, Pointer, To);
                Bits_Written
                (  MODBUS_Client'Class (Client), -- Dispatching call
-                  Reference_ID (Client.Transaction_ID.Value),
+                  Reference_ID (Client.Head.Transaction_ID.Value),
                   Bit_Address (From),
                   Bit_Address (From + To - 1),
                   Function_Code (Client.Function_Code.Value),
@@ -423,7 +692,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                Get (Data, Pointer, To);
                Words_Written
                (  MODBUS_Client'Class (Client), -- Dispatching call
-                  Reference_ID (Client.Transaction_ID.Value),
+                  Reference_ID (Client.Head.Transaction_ID.Value),
                   Word_Address (From),
                   Word_Address (From + To - 1),
                   Function_Code (Client.Function_Code.Value),
@@ -444,7 +713,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                Get (Data, Pointer, Address);
                Words_Written
                (  MODBUS_Client'Class (Client), -- Dispatching call
-                  Reference_ID (Client.Transaction_ID.Value),
+                  Reference_ID (Client.Head.Transaction_ID.Value),
                   Word_Address (Address),
                   Word_Address (Address),
                   Function_Code (Client.Function_Code.Value),
@@ -485,7 +754,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                   end loop;
                   Words_Read
                   (  MODBUS_Client'Class (Client), -- Dispatching call
-                     Reference_ID (Client.Transaction_ID.Value),
+                     Reference_ID (Client.Head.Transaction_ID.Value),
                      Values,
                      Function_Code (Client.Function_Code.Value),
                      Unit_No (Client.Unit_ID.Value)
@@ -501,7 +770,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
             end if;
             Failed
             (  MODBUS_Client'Class (Client), -- Dispatching call
-               Reference_ID (Client.Transaction_ID.Value),
+               Reference_ID (Client.Head.Transaction_ID.Value),
                Exception_Code (Client.Payload_Data.Value (1)),
                Function_Code (Client.Function_Code.Value - 128),
                Unit_No (Client.Unit_ID.Value)
@@ -514,6 +783,11 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
             )  );
       end case;
    end Process_Packet;
+
+   procedure Reset (CRC : in out MODBUS_Checksum) is
+   begin
+      CRC.Value := 16#FFFF#;
+   end Reset;
 
    procedure Send
              (  Client    : in out MODBUS_Client'Class;
@@ -536,13 +810,40 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       Header (Pointer + 1) := Code;
       Pointer := Pointer + 2;
       Put (Header, Pointer, Address);
-      Pointer := Header'First;
-      Send (Client, Header, Pointer);
-      if Pointer > Header'Last then
-         Pointer := Data'First;
-         Send (Client, Data, Pointer);
-         if Pointer > Data'Last then
-            return;
+      if Client.CRC.Enable then
+         Client.Head.Transaction_ID.Value := Unsigned_16 (Reference);
+         Pointer := Header'First + 6;
+         Send (Client, Header, Pointer);
+         if Pointer > Header'Last then
+            declare
+               CRC : MODBUS_Checksum;
+            begin
+               Accumulate (CRC, Header (Header'First + 6..Header'Last));
+               Pointer := Data'First;
+               Send (Client, Data, Pointer);
+               if Pointer > Data'Last then
+                  Accumulate (CRC, Data);
+                  declare
+                     Sum : constant Stream_Element_Array := Get (CRC);
+                  begin
+                     Pointer := Sum'First;
+                     Send (Client, Sum, Pointer);
+                     if Pointer > Sum'Last then
+                        return;
+                     end if;
+                  end;
+               end if;
+            end;
+         end if;
+      else
+         Pointer := Header'First;
+         Send (Client, Header, Pointer);
+         if Pointer > Header'Last then
+            Pointer := Data'First;
+            Send (Client, Data, Pointer);
+            if Pointer > Data'Last then
+               return;
+            end if;
          end if;
       end if;
       Raise_Exception
@@ -570,12 +871,34 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       Prepare_To_Send (Client, Header'Length);
       Put (Header, Pointer, Unsigned_16 (Reference));
       Header (3..8) := (0, 0, 0, 4, Stream_Element (Unit), Code);
-      Pointer := 8;
+      Pointer := 9;
       Put (Header, Pointer, Address);
-      Pointer := Header'First;
-      Send (Client, Header, Pointer);
-      if Pointer > Header'Last then
-         return;
+      if Client.CRC.Enable then
+         Client.Head.Transaction_ID.Value := Unsigned_16 (Reference);
+         Pointer := Header'First + 6;
+         Send (Client, Header, Pointer);
+         if Pointer > Header'Last then
+            declare
+               CRC : MODBUS_Checksum;
+            begin
+               Accumulate (CRC, Header (Header'First + 6..Header'Last));
+               declare
+                  Sum : constant Stream_Element_Array := Get (CRC);
+               begin
+                  Pointer := Sum'First;
+                  Send (Client, Sum, Pointer);
+                  if Pointer > Sum'Last then
+                     return;
+                  end if;
+               end;
+            end;
+         end if;
+      else
+         Pointer := Header'First;
+         Send (Client, Header, Pointer);
+         if Pointer > Header'Last then
+            return;
+         end if;
       end if;
       Raise_Exception
       (  Data_Error'Identity,
@@ -603,8 +926,31 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       Header (3..8) := (0, 0, 0, 4, Stream_Element (Unit), Code);
       Pointer := Header'First;
       Send (Client, Header, Pointer);
-      if Pointer > Header'Last then
-         return;
+      if Client.CRC.Enable then
+         Client.Head.Transaction_ID.Value := Unsigned_16 (Reference);
+         Pointer := Header'First + 6;
+         Send (Client, Header, Pointer);
+         if Pointer > Header'Last then
+            declare
+               CRC : MODBUS_Checksum;
+            begin
+               Accumulate (CRC, Header (Header'First + 6..Header'Last));
+               declare
+                  Sum : constant Stream_Element_Array := Get (CRC);
+               begin
+                  Pointer := Sum'First;
+                  Send (Client, Sum, Pointer);
+                  if Pointer > Sum'Last then
+                     return;
+                  end if;
+               end;
+            end;
+         end if;
+      else
+         Send (Client, Header, Pointer);
+         if Pointer > Header'Last then
+            return;
+         end if;
       end if;
       Raise_Exception
       (  Data_Error'Identity,
@@ -725,8 +1071,7 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
                 Value     : Boolean;
                 Unit      : Unit_No := 255
              )  is
-      Data    : Stream_Element_Array (1..2) := (0, 0);
-      Pointer : Stream_Element_Offset := Data'First;
+      Data : Stream_Element_Array (1..2) := (0, 0);
    begin
       if Value then
          Data (1) := 16#FF#;
@@ -905,6 +1250,77 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       Send (Client, Reference, Unit, 24, Unsigned_16 (Address));
    end Send_FC24;
 
+   procedure Sent (Client : in out MODBUS_Client) is
+   begin
+      if Queued_To_Send (Client) = 0 then
+         Client.CRC.Event.Set_Last (Clock);
+      end if;
+      Sent (State_Machine (Client));
+   end Sent;
+
+   procedure Set_RTU_Checksum_Mode
+             (  Client : in out MODBUS_Client;
+                Enable : Boolean
+             )  is
+   begin
+      Client.CRC.Enable := Enable;
+   end Set_RTU_Checksum_Mode;
+
+   procedure Set_RTU_Silence_Time
+             (  Client  : in out MODBUS_Client;
+                Silence : Duration
+             )  is
+   begin
+      if Silence <= 0.0 then
+         Client.CRC.Event.Set (Time_Span_Zero);
+      else
+         Client.CRC.Event.Set (To_Time_Span (Silence));
+      end if;
+   end Set_RTU_Silence_Time;
+
+   procedure Wait_RTU_Silence_Time
+             (  Client  : in out MODBUS_Client;
+                Timeout : Duration := Duration'Last
+             )  is
+   begin
+      Wait_Until_RTU_Silence_Time (Client, abs Timeout);
+   end Wait_RTU_Silence_Time;
+
+   procedure Wait_Until_RTU_Silence_Time
+             (  Client   : in out MODBUS_Client;
+                Deadline : Time
+             )  is
+      CRC : RTU_Checksum renames Client.CRC;
+   begin
+      if CRC.Enable and then CRC.Event.Get > Time_Span_Zero then
+         if Queued_To_Send (Client) > 0 then
+            select
+               Client.CRC.Event.Wait_For_Empty_Queue;
+            or delay until Deadline;
+               Raise_Exception (Timeout_Error'Identity, Expired_Text);
+            end select;
+         end if;
+         begin
+            declare
+               Next : constant Time := CRC.Event.Get_Next;
+            begin
+               if Next > Deadline then
+                  Raise_Exception
+                  (  Timeout_Error'Identity,
+                     Expired_Text
+                  );
+               end if;
+               if Clock < Next then
+                  delay until Next;
+               end if;
+            end;
+         exception
+            when Constraint_Error =>
+               Raise_Exception (Timeout_Error'Identity, Expired_Text);
+         end;
+      end if;
+   end Wait_Until_RTU_Silence_Time;
+
    procedure Words_Read
              (  Client    : in out MODBUS_Client;
                 Reference : Reference_ID;
@@ -969,6 +1385,14 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
       )  );
    end Words_Written;
 
+   procedure Write
+             (  Stream : access Root_Stream_Type'Class;
+                Item   : Silence_Event
+             )  is
+   begin
+      null;
+   end Write;
+
    procedure Trace
              (  Client  : in out MODBUS_Client;
                 Message : String
@@ -981,5 +1405,38 @@ package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client is
          &  Message
       )  );
    end Trace;
+
+   protected body Silence_Event is
+
+      function Get return Time_Span is
+      begin
+         return Silence;
+      end Get;
+
+      function Get_Next return Time is
+      begin
+         return Last + Silence;
+      end Get_Next;
+
+      procedure Set (Silence_Time : Time_Span) is
+      begin
+         Silence := Silence_Time;
+      end Set;
+
+      procedure Set_Last (Last_Time : Time) is
+      begin
+         Empty := Queued_To_Send (Parent.Client.all) = 0;
+         Last  := Last_Time;
+      end Set_Last;
+
+      entry Wait_For_Empty_Queue when Empty is
+      begin
+         if Queued_To_Send (Parent.Client.all) > 0 then
+            Empty := False;
+            requeue Wait_For_Empty_Queue with abort;
+         end if;
+      end Wait_For_Empty_Queue;
+
+   end Silence_Event;
 
 end GNAT.Sockets.Connection_State_Machine.MODBUS_Client;

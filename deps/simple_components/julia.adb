@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1406,8 +1406,6 @@ package body Julia is
    end To_Julia;
 
    function To_Julia (Value : Tuple) return value_t is
-      use Tuple_Tables;
-      use Tuple_Maps;
       use Strings_Edit;
       Tuple_Type : datatype_t;
       Result     : value_t;

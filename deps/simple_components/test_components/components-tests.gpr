@@ -11,6 +11,7 @@ project Components.Tests is
           "test_blackboard_performance.adb",
           "test_blocking_files.adb",
           "test_block_streams.adb",
+          "test_bounded_maps.ads",
 	  "test_b_trees.adb",
           "test_call_services.adb",
           "test_call_services.ads",

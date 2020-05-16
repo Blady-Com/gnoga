@@ -11,11 +11,11 @@ project ODBC is
            "FreeBSD",
            "auto"
         );
-   OS : OS_Type := external ("OS", "auto");
+   Target_OS : OS_Type := external ("Target_OS", "auto");
  
    Target_Triplet := Project'Target;
 
-   case OS is
+   case Target_OS is
       when "auto" =>
          case Target_Triplet is
             when "aarch64-linux-gnu"   |
@@ -31,14 +31,14 @@ project ODBC is
                  "i686-linux-gnu"      |
                  "i686-redhat-linux"   |
                  "i686-suse-linux"     =>
-               OS := "Linux";
+               Target_OS := "Linux";
             when "x86_64-apple-darwin" |
                  "x86_64-darwin"       |
                  "x86-darwin"          =>
-               OS := "OSX";
+               Target_OS := "OSX";
             when "x86_64-freebsd"      |
                  "i686-freebsd"        =>
-               OS := "FreeBSD";
+               Target_OS := "FreeBSD";
             when "x86_64-pc-cygwin"    |
                  "x86_64-w64-mingw32"  |
                  "x86_64-windows"      |
@@ -46,7 +46,7 @@ project ODBC is
                  "i686-pc-cygwin"      |
                  "i686-pc-mingw32"     |
                  "i686-w64-mingw32"    =>
-               OS := "Windows";
+               Target_OS := "Windows";
             when "" =>
                for Source_Files use
                    (  "target is undefined, "
@@ -65,7 +65,7 @@ project ODBC is
 
    case ODBC_Driver is
       when "auto" =>
-         case OS is
+         case Target_OS is
             when "Linux" | "OSX" | "FreeBSD" | "UNIX" =>
                ODBC_Driver := "unixODBC";
             when "Windows" | "Windows_NT" =>

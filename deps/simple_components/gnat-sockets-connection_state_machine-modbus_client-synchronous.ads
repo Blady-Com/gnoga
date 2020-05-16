@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client.Synchronous                   Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  18:41 01 Aug 2019  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -407,6 +407,54 @@ package GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Word_Array;
+--
+-- Get_RTU_Checksum_Mode -- Get current checksum mode
+--
+--    Client - The MODBUS client
+--
+-- Returns :
+--
+--    True if the MODBUS RTU checksum is used
+--
+   function Get_RTU_Checksum_Mode
+            (  Client : MODBUS_Synchronous_Client
+            )  return Boolean;
+--
+-- Get_RTU_Silence_Time -- Get RTU silience time
+--
+--    Client - The MODBUS client
+--
+-- Returns :
+--
+--    The time to wait before next sending, e.g. 3.5 character send time
+--
+   function Get_RTU_Silence_Time
+            (  Client : MODBUS_Synchronous_Client
+            )  return Duration;
+--
+-- Set_RTU_Checksum_Mode -- Control RTU checksum use
+--
+--    Client - The MODBUS client
+--    Enable - True to enable using RTU checkum
+--
+-- When checksum  is enabled it is added to  at the end  of each  MODBUS
+-- command. For incoming MODBUS responses the checksum is verified.  The
+-- checksum is 2 octets long.
+--
+   procedure Set_RTU_Checksum_Mode
+             (  Client : in out MODBUS_Synchronous_Client;
+                Enable : Boolean
+             );
+--
+-- Set_RTU_Silence_Time -- Set RTU silience time
+--
+--    Client  - The MODBUS client
+--    Silence - The silence time interval
+--
+   procedure Set_RTU_Silence_Time
+             (  Client  : in out MODBUS_Synchronous_Client;
+                Silence : Duration
+             );
 private
    type Bits_Result is record
       Length : Bit_Address := 0;
@@ -509,7 +557,7 @@ private
    procedure Wait
              (  Client   : in out MODBUS_Synchronous_Client;
                 Expected : Result_Mode;
-                Timeout  : Duration
+                Deadline : Time
              );
    procedure Words_Read
              (  Client    : in out MODBUS_Synchronous_Client;

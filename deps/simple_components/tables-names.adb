@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2003       --
 --                                                                    --
---                                Last revision :  22:44 07 Apr 2016  --
+--                                Last revision :  13:11 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -215,6 +215,24 @@ package body Tables.Names is
          raise End_Error;
       else
          Data := Folder.List (Index).Data;
+      end if;
+   end Get;
+
+   procedure Get
+             (  Source  : String;
+                Pointer : in out Integer;
+                Folder  : Dictionary;
+                Data    : out Tag;
+                Got_It  : out Boolean
+             )  is
+      Index : Natural;
+   begin
+      Locate (Source, Pointer, Folder, Index);
+      if Index = 0 then
+         Got_It := False;
+      else
+         Got_It := True;
+         Data   := Folder.List (Index).Data;
       end if;
    end Get;
 

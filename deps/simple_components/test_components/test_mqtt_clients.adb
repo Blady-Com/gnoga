@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  14:04 26 Dec 2018  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -38,7 +38,7 @@ package body Test_MQTT_Clients is
 
    procedure Finalize (Client : in out Test_Client) is
    begin
-      Finalize (MQTT_Pier (Client));
+      Finalize (MQTT_Peer (Client));
       Free (Client.Name);
    end Finalize;
 
@@ -52,30 +52,30 @@ package body Test_MQTT_Clients is
    end Get_Name;
 
    procedure On_Connect_Accepted
-             (  Pier            : in out Test_Client;
+             (  Peer            : in out Test_Client;
                 Session_Present : Boolean
              )  is
    begin
       Put_Line ("Connect accepted");
-      Pier.Action.Signal;
+      Peer.Action.Signal;
    end On_Connect_Accepted;
 
    procedure On_Connect_Rejected
-             (  Pier     : in out Test_Client;
+             (  Peer     : in out Test_Client;
                 Response : Connect_Response
              )  is
    begin
       Put_Line ("Connect rejected " & Image (Response));
-      Pier.Action.Signal;
+      Peer.Action.Signal;
    end On_Connect_Rejected;
 
-   procedure On_Ping_Response (Pier : in out Test_Client) is
+   procedure On_Ping_Response (Peer : in out Test_Client) is
    begin
       Put_Line ("Ping response");
    end On_Ping_Response;
 
    procedure On_Publish
-             (  Pier      : in out Test_Client;
+             (  Peer      : in out Test_Client;
                 Topic     : String;
                 Message   : Stream_Element_Array;
                 Packet    : Packet_Identification;
@@ -85,18 +85,18 @@ package body Test_MQTT_Clients is
    begin
       Put_Line ("Message " & Topic & "=" & Image (Message));
       On_Publish
-      (  MQTT_Pier (Pier),
+      (  MQTT_Peer (Peer),
          Topic,
          Message,
          Packet,
          Duplicate,
          Retain
       );
-      Pier.Action.Signal;
+      Peer.Action.Signal;
    end On_Publish;
 
    procedure On_Subscribe_Acknowledgement
-             (  Pier   : in out Test_Client;
+             (  Peer   : in out Test_Client;
                 Packet : Packet_Identifier;
                 Codes  : Return_Code_List
              )  is
@@ -113,27 +113,27 @@ package body Test_MQTT_Clients is
          end if;
       end loop;
       New_Line;
-      Pier.Action.Signal;
+      Peer.Action.Signal;
    end On_Subscribe_Acknowledgement;
 
-   procedure Reset_Event (Pier : in out Test_Client) is
+   procedure Reset_Event (Peer : in out Test_Client) is
    begin
-      Pier.Action.Reset;
+      Peer.Action.Reset;
    end Reset_Event;
 
-   procedure Wait_For_Event (Pier : in out Test_Client) is
+   procedure Wait_For_Event (Peer : in out Test_Client) is
    begin
        select
-          Pier.Action.Wait;
+          Peer.Action.Wait;
        or delay 5.0;
           raise Data_Error;
        end select;
    end Wait_For_Event;
 
-   procedure Set_Name (Pier : in out Test_Client; Name : String) is
+   procedure Set_Name (Peer : in out Test_Client; Name : String) is
    begin
-      Free (Pier.Name);
-      Pier.Name := new String'(Name);
+      Free (Peer.Name);
+      Peer.Name := new String'(Name);
    end Set_Name;
 
 end Test_MQTT_Clients;

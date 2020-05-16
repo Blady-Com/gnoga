@@ -35,7 +35,7 @@ project Components is
 
    Dir_List := Dir_List & ".";
 
-   case Tables.OS is
+   case Tables.Target_OS is
       when "Windows" | "Windows_NT" =>
          for Languages use ("Ada");
          Dir_List := Dir_List & "os/windows";
@@ -90,6 +90,10 @@ project Components is
       "generic_blackboard.ads",
       "generic_blackboard-generic_task_safe.adb",
       "generic_blackboard-generic_task_safe.ads",
+      "generic_bounded_map.adb",
+      "generic_bounded_map.ads",
+      "generic_bounded_indefinite_map.adb",
+      "generic_bounded_indefinite_map.ads",
       "generic_b_tree.adb",
       "generic_b_tree.ads",
       "generic_chebyshev_polynomials.adb",
@@ -347,28 +351,44 @@ project Components is
       "tables-utf8_names.adb",
       "tables-utf8_names.ads"
    );
-   case Tables.OS is
+   case Tables.Target_OS is
       when "Windows" | "Windows_NT" =>
          for Source_Files use
-             Files_List & (  "synchronization-windows.adb",
-                             "synchronization-windows.ads"
-                          );
+            Files_List & (  "synchronization-windows.adb",
+                            "synchronization-windows.ads"
+                         );
       when "Linux" | "UNIX" | "auto" =>
          for Source_Files use
-             Files_List & (  "synchronization_linux.c",
-                             "synchronization-linux.adb",
-                             "synchronization-linux.ads"
-                          );
+            Files_List & (  "synchronization_linux.c",
+                            "synchronization-linux.adb",
+                            "synchronization-linux.ads"
+                         );
       when "OSX" | "FreeBSD" =>
          for Source_Files use
-             Files_List & (  "synchronization-pthreads.adb",
-                             "synchronization-pthreads.ads"
-                          );
+            Files_List & (  "synchronization-pthreads.adb",
+                            "synchronization-pthreads.ads"
+                         );
    end case;
 
    package Compiler renames Strings_Edit.Compiler;
    package Binder   renames Strings_Edit.Binder;
    package Builder  renames Strings_Edit.Builder;
-   package Linker   renames Strings_Edit.Linker;
+   package Linker is
+      case Tables.Target_OS is
+         when "Linux" =>
+            case Atomic_Access is
+               when "GCC-long-offsets" | "GCC-built-ins" =>
+                  for Default_Switches ("Ada") use
+                     Strings_Edit.Linker'Default_Switches ("Ada") &
+                     "-latomic";
+               when others =>
+                  for Default_Switches ("Ada") use
+                     Strings_Edit.Linker'Default_Switches ("Ada");
+            end case;
+         when others =>
+            for Default_Switches ("Ada") use
+               Strings_Edit.Linker'Default_Switches ("Ada");
+      end case;
+   end Linker;
 
 end Components;

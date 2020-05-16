@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Pooled                  Luebeck            --
 --  Interface                                      Winter, 2013       --
 --                                                                    --
---                                Last revision :  08:20 11 Jan 2015  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -68,6 +68,15 @@ package GNAT.Sockets.Server.Pooled is
 -- when it replaces it.
 --
    procedure Initialize (Listener : in out Pooled_Server);
+--
+-- On_Pooled_Server_Start -- Server task start notification
+--
+--    Listener - The server object
+--
+-- This procedure  is called  when the server  task starts.  The default
+-- implementation does nothing.
+--
+   procedure On_Pooled_Server_Start (Listener : in out Pooled_Server);
 
 private
    Pending_Finalization : exception;

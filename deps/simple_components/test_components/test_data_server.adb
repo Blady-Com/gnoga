@@ -3,7 +3,7 @@
 --  Test server                                    Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:37 03 Aug 2019  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -4300,7 +4300,6 @@ begin
       Write (Stream (File).all, Data);
       Close (File);
    end;
-return;
    declare
       Factory : aliased Data_Factory;
       Server  : Connections_Server (Factory'Access, Port);

@@ -11,7 +11,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><B>TABLES</B></BIG></BIG><BR>
-<EM>version 1.14</EM><BR>
+<EM>version 1.15</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -119,12 +119,12 @@ can be here.</p>
 	<tr>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
-		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2"><a href="http://www.dmitry-kazakov.de/ada/tables_1_14.tgz">tables_1_14.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
+		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2"><a href="http://www.dmitry-kazakov.de/ada/tables_1_15.tgz">tables_1_15.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/tables_1_14.tgz"><img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
+		<a href="http://www.dmitry-kazakov.de/ada/tables_1_15.tgz"><img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
 	</tr>
@@ -137,7 +137,7 @@ can be here.</p>
     height="29"></A><A href="#2"><IMG src="next.gif" alt="[Next]" width="29"
     height="29"></A>
 <H2>1. Tables</H2>
-<P>The generic package Tables provides tables searched using string keys. The binary
+<P><a name="Tables"></a>The generic package <a href="#Tables">Tables</a> provides tables searched using string keys. The binary
 search is used for names of known length (see <A href="#Find">Find</A>). It is also possible to search a
 table for names of unknown length, i.e. to parse a string using the table (<A href="#Get">Get</A>).
 In this case the search time is near to logarithmic, but in the worst case can
@@ -151,7 +151,7 @@ assignment makes deep copy.<blockquote>
 <tt><font color="#0000FF">generic<br>
 &nbsp;&nbsp; type </font>Tag <font color="#0000FF">is private</font>;<br>
 <font color="#0000FF">package</font> Tables <font color="#0000FF">is<br>
-&nbsp;&nbsp; type </font>Table <font color="#0000FF">is new</font> 
+&nbsp;&nbsp; <a name="Tables.Table"></a>type </font>Table <font color="#0000FF">is new</font> 
 Ada.Finalization.Controlled <font color="#0000FF">with private</font>;</tt></blockquote>
 <P>
 The following subroutines are provided by the package:</p>
@@ -218,7 +218,7 @@ The following subroutines are provided by the package:</p>
   </FONT>Add<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   (<b>&nbsp; Folder</b> : <font color="#0000FF">in
-  out</FONT> Table;<br>
+  out</FONT> <a href="#Tables.Table">Table</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <b>Name</b>&nbsp;&nbsp; : String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag<br>
@@ -227,7 +227,7 @@ The following subroutines are provided by the package:</p>
   </FONT>Add<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   (<b>&nbsp; Folder</b> : <font color="#0000FF">in
-  out</FONT> Table;<br>
+  out</FONT> <a href="#Tables.Table">Table</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <b>Name</b>&nbsp;&nbsp; : String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag;<br>
@@ -247,7 +247,7 @@ offsets starting from 1. Items are alphabetically ordered. See also
   <A name="Delete"></A><tt><font color="#0000FF">procedure
   </FONT>Delete
   (<b>Folder</b> : <font color="#0000FF">in
-  out</FONT> Table;
+  out</FONT> <a href="#Tables.Table">Table</a>;
   <b>Name</b> : String);</tt></BLOCKQUOTE>
 <P>
 The procedure Delete removes the item <b>Name</b> from the table
@@ -257,7 +257,7 @@ name. See also <A href="#Replace">Replace</A>.</p>
   <p><tt><font color="#0000FF">procedure
   </FONT>Delete
   (<b>Folder</b> : <font color="#0000FF">in
-  out</FONT> Table;
+  out</FONT> <a href="#Tables.Table">Table</a>;
   <b>Offset</b> : Positive);</tt></p>
 </BLOCKQUOTE>
 <P>
@@ -266,11 +266,12 @@ is no item with such offset.</p>
 <BLOCKQUOTE>
   <tt><font color="#0000FF"><a name="Erase"></a>procedure
   </FONT>Erase (<b>Folder</b> : <font color="#0000FF">in
-  out</FONT>  Table);</tt></BLOCKQUOTE>
+  out</FONT>  <a href="#Tables.Table">Table</a>);</tt></BLOCKQUOTE>
 <P>
 The procedure Erase removes all items from the table <b>Folder</b>.</p>
 <BLOCKQUOTE>
-  <A name="Find"></A><tt><font color="#0000FF">function</FONT> Find (<b>Folder </b>: Table; <b>Name</b> : String) <font color="#0000FF">return</FONT> Tag;</tt></BLOCKQUOTE>
+  <A name="Find"></A><tt><font color="#0000FF">function</FONT> Find (<b>Folder </b>: 
+	<a href="#Tables.Table">Table</a>; <b>Name</b> : String) <font color="#0000FF">return</FONT> Tag;</tt></BLOCKQUOTE>
 <P>
 The function <A href="#Find">Find</A> returns the data associated with the
 item <b>Name</b> of the table <b>Folder</b>. The exception
@@ -287,12 +288,13 @@ End_Error is propagated when there no such item in the table. See also
   out</FONT> Integer;<BR>
   &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;
-  &nbsp;<b>Folder</b> &nbsp;: Table;<BR>
+  &nbsp;<b>Folder</b> &nbsp;: <a href="#Tables.Table">Table</a>;<BR>
   &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;
-  &nbsp;<b>Data</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">out</FONT> Tag<BR>
-  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;);</tt>
+  &nbsp;<b>Data</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">out</FONT> Tag;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Got_It</b>&nbsp; 
+	: <font color="#0000FF">out</font> Boolean ]<BR>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;);</tt>
 </BLOCKQUOTE>
 <P>
 The procedure <A href="#Get">Get</A> is used to parse the string specified
@@ -306,12 +308,15 @@ name of the found item. I.e. <b>Source</b>
 item. Note that unlike <A href="#Find">Find</A> that searches tables in
 logarithmic time, <A href="#Get">Get</A> could require linear time in some
 pathological cases. The exception End_Error is propagated when no table item
-matches the string. The exception Layout_Error is propagated when the value
+matches the string. The variant with Boolean output parameter <b>Got_It</b> does 
+not propagate End_Error and sets <b>Got_It</b> to <font color="#800000"><i>false</i></font> 
+when no table item was matched and <i><font color="#800000">true</font></i> 
+otherwise. The exception Layout_Error is propagated when the value
 of <b>Pointer</b> is not in the range
 <b>Source</b>'First..<b>Source</b>'Last+1.</p>
 <BLOCKQUOTE>
   <A name="GetName"></A><tt><font color="#0000FF">function</FONT> GetName (<b>Folder</b>
-  : Table; <b>Offset</b> : Positive) <font color="#0000FF">return</FONT> String;</tt></BLOCKQUOTE>
+  : <a href="#Tables.Table">Table</a>; <b>Offset</b> : Positive) <font color="#0000FF">return</FONT> String;</tt></BLOCKQUOTE>
 <P>
 The function <A href="#GetName">GetName</A> returns the name of a table item.
 The parameter <b>Offset</b> specifies the item offset. All items
@@ -321,13 +326,13 @@ such offset. See also <A href="#GetSize">GetSize</A> and
 <A href="#GetTag">GetTag</A>.</p>
 <BLOCKQUOTE>
   <A name="GetSize"></A><tt><font color="#0000FF">function</FONT> GetSize (<b>Folder</b>
-  : Table) <font color="#0000FF">return</FONT> Natural;</tt></BLOCKQUOTE>
+  : <a href="#Tables.Table">Table</a>) <font color="#0000FF">return</FONT> Natural;</tt></BLOCKQUOTE>
 <P>
 The function <A href="#GetSize">GetSize</A> returns the number of items in
 the table <b>Folder</b>.</p>
 <BLOCKQUOTE>
   <A name="GetTag"></A><tt><font color="#0000FF">function</FONT> GetTag (<b>Folder</b>
-  : Table; <b>Offset</b> : Positive) <font color="#0000FF">return</FONT> Tag;</tt></BLOCKQUOTE>
+  : <a href="#Tables.Table">Table</a>; <b>Offset</b> : Positive) <font color="#0000FF">return</FONT> Tag;</tt></BLOCKQUOTE>
 <P>
 The function <A href="#GetTag">GetTag</A> returns the data associated with
 a table item. The parameter <b>Offset</b> specifies the item offset.
@@ -336,13 +341,15 @@ has the offset 1. The exception End_Error is propagated when there is no
 item with such offset. See also <A href="#GetSize">GetSize</A> and
 <A href="#GetName">GetName</A>.</p>
 <BLOCKQUOTE>
-  <tt><font color="#0000FF"><a name="IsIn"></a>function</FONT>  IsIn (<b>Folder </b>: Table; <b>Name</b> : String) <font color="#0000FF">return</FONT> 
+  <tt><font color="#0000FF"><a name="IsIn"></a>function</FONT>  IsIn (<b>Folder </b>: 
+	<a href="#Tables.Table">Table</a>; <b>Name</b> : String) <font color="#0000FF">return</FONT> 
   Boolean;</tt></BLOCKQUOTE>
 <P>
 The function <a href="#IsIn">IsIn</a> returns <i><font color="#800000">true</font></i>
 if <b>Folder</b> contains an item under the name <b>Name</b>.</p>
 <BLOCKQUOTE>
-  <A name="Locate"></A><tt><font color="#0000FF">function</FONT> Locate (<b>Folder </b>: Table; <b>Name</b> : String) <font color="#0000FF">return</FONT> 
+  <A name="Locate"></A><tt><font color="#0000FF">function</FONT> Locate (<b>Folder </b>: 
+	<a href="#Tables.Table">Table</a>; <b>Name</b> : String) <font color="#0000FF">return</FONT> 
 	Natural;</tt></BLOCKQUOTE>
 <P>
 The function <a href="#Locate">Locate</a> returns the positive offset to
@@ -356,7 +363,7 @@ GetTag</a>. Note that the offset indicates the item no longer Folder is updated.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Folder</b>&nbsp; : Table;<br>
+	Folder</b>&nbsp; : <a href="#Tables.Table">Table</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Offset</b>&nbsp; : <font color="#0000FF">out</font> Natural<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></BLOCKQUOTE>
@@ -371,7 +378,7 @@ of <b>Pointer</b> is not in the range
   </FONT>Replace<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   (<b>&nbsp; Folder</b> : <font color="#0000FF">in
-  out</FONT> Table;<br>
+  out</FONT> <a href="#Tables.Table">Table</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <b>Name</b>&nbsp;&nbsp; : String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag<br>
@@ -379,7 +386,7 @@ of <b>Pointer</b> is not in the range
   </FONT>Replace<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   (<b>&nbsp; Folder</b> : <font color="#0000FF">in
-  out</FONT> Table;<br>
+  out</FONT> <a href="#Tables.Table">Table</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <b>Name</b>&nbsp;&nbsp; : String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag;<br>
@@ -396,7 +403,7 @@ Offset</b> will be set to the offset of the item. See also
   </FONT>Replace<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   (<b>&nbsp; Folder</b> : <font color="#0000FF">in
-  out</FONT> Table;<br>
+  out</FONT> <a href="#Tables.Table">Table</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <b>Offset</b> : Positive;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Data</b>&nbsp;&nbsp; : Tag<br>
@@ -426,11 +433,14 @@ Pointer : Integer)<br>
 <font color="#0000FF">is</font> &lt;&gt;;<br>
 &nbsp;&nbsp; Blanks : Ada.Strings.Maps.Character_Set :=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ada.Strings.Maps.To_Set ('  ' &amp; Ada.Characters.Latin_1.HT);&nbsp;<font color="#0000FF"><br>
-package</font> Tables.Names <font color="#0000FF">is<br>
-&nbsp;&nbsp; type </font>Dictionary <font color="#0000FF">is new</font> Table <font color="#0000FF">with private</font>;</tt></blockquote>
+package</font> <a href="#Tables">Tables</a>.Names <font color="#0000FF">is<br>
+&nbsp;&nbsp; <a name="Tables.Names.Dictionary"></a>type </font>Dictionary <font color="#0000FF">is new</font> 
+<a href="#Tables.Table">Table</a> <font color="#0000FF">with private</font>;</tt></blockquote>
 <P>
-provides the type Dictionary, a descendant of Table. An instance of Dictionary 
-has the same primitive operations (methods) as Table. The difference is that it 
+provides the type <a href="#Tables.Names.Dictionary">Dictionary</a>, a descendant of
+<a href="#Tables.Table">Table</a>. An instance of 
+<a href="#Tables.Names.Dictionary">Dictionary</a> 
+has the same primitive operations (methods) as <a href="#Tables.Table">Table</a>. The difference is that it 
 is intended for dealing with case-insensitive names. So only one of &quot;name&quot;, &quot;Name&quot;, 
 &quot;namE&quot; can be put into Dictionary. When matched by <a href="#Find">Find</a> or
 <a href="#Get">Get</a> the case of a token plays no role. However, the original 
@@ -442,7 +452,8 @@ non-empty chains of characters from <b>Blanks</b>  are considered equivalent
 when matched and compared. The original appearance of names
 containing blank characters is preserved by the table. By default <b>Blanks</b>
 contains space and horizontal tabulator.<P>
-The spelling of a name is checked before it is placed into a Dictionary. For 
+The spelling of a name is checked before it is placed into a 
+<a href="#Tables.Names.Dictionary">Dictionary</a>. For 
 this the procedure Check_Spelling is called. It may raise Constraint_Error to 
 indicate a wrong spelling, which will then propagate out of <a href="#Add">Add</a> or <a href="#Replace">Replace</a>. 
 The procedure <a href="#Replace">Replace</a> does not change the spelling of the 
@@ -489,16 +500,17 @@ Pointer : Integer)<br>
 <font color="#0000FF">is</font> &lt;&gt;;<br>
 &nbsp;&nbsp; Blanks : Unicode_Set := <font color="#008000">&nbsp;-- Tabulator 
 and spaces</font><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To_Set (<font color="#800000">16#09#</font>)
-<font color="#0000FF">or</font> Strings_Edit.UTF8.Maps.Constants.Space_Set;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Strings_Edit.UTF8.Maps.Constants.Blanks_Set;<br>
 &nbsp;&nbsp; Ignored : Unicode_Set := <font color="#008000">-- Hyphen and others</font><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 Strings_Edit.UTF8.Maps.Constants.Other_Format_Set;<font color="#0000FF"><br>
 package</font> Tables.UTF8_Names <font color="#0000FF">is<br>
-&nbsp;&nbsp; type </font>Dictionary <font color="#0000FF">is new</font> Table <font color="#0000FF">with private</font>;</tt></blockquote>
+&nbsp;&nbsp; <a name="Tables.UTF8_Names.Dictionary"></a>type </font>Dictionary <font color="#0000FF">is new</font> 
+<a href="#Tables.Table">Table</a> <font color="#0000FF">with private</font>;</tt></blockquote>
 <P>
-provides the type Dictionary, a descendant of Table. An instance of Dictionary 
-has the same primitive operations (methods) as Table. The difference is that it 
+provides the type <a href="#Tables.UTF8_Names.Dictionary">Dictionary</a>, a descendant of
+<a href="#Tables.Table">Table</a>. An instance of Dictionary 
+has the same primitive operations (methods) as <a href="#Tables.Table">Table</a>. The difference is that it 
 is intended for dealing with case-insensitive UTF-8 encoded names. The case as 
 defined by the 
 <a href="http://www.unicode.org">
@@ -516,7 +528,8 @@ of code points which are ignored upon matching. They are also removed when a
 name is stored in the table. The default value of Ignored is the set of <a href="http://www.unicode.org">
 		Unicode</a> other format code points, which contains soft hyphen, for 
 example.<P>
-The spelling of a name is checked before it is placed into a Dictionary. For 
+The spelling of a name is checked before it is placed into a 
+<a href="#Tables.UTF8_Names.Dictionary">Dictionary</a>. For 
 this the procedure Check_Spelling is called. It may raise Constraint_Error to 
 indicate a wrong spelling, which will then propagate out of <a href="#Add">Add</a> or <a href="#Replace">Replace</a>. 
 The procedure <a href="#Replace">Replace</a> does not change the spelling of the 
@@ -789,6 +802,11 @@ The following versions were tested with the compilers:</i>
 	<li>
 <i>GNAT 8</i></li>
   </ul>
+<p>Changes (16 September 2019) to the version 1.14:</p>
+<ul>
+  <li>A variant of the procedure Get was added. It uses a return code instead of raising exception 
+	when nothing has been matched.</li>
+</ul>
 <p>Changes (5 Aug 2018) to the version 1.13:</p>
 <ul>
   <li>Switched to GNAT Community 2018.</li>

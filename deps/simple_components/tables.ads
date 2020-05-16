@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2000       --
 --                                                                    --
---                                Last revision :  19:03 27 May 2009  --
+--                                Last revision :  13:11 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -138,10 +138,11 @@ package Tables is
 --
 -- Get -- Parse
 --
---    Source  - The source string to be parsed
---    Pointer - The current string position
---    Folder  - To be searched
---    Data    - The tag associated with the found item
+--    Source   - The source string to be parsed
+--    Pointer  - The current string position
+--    Folder   - To be searched
+--    Data     - The tag associated with the found item
+--  [ Got_It ] - True an item was matched
 --
 -- This procedure is used to parse the string specified by the parameter
 -- Source using the table Folder. The procedure tries to find  the  item
@@ -162,6 +163,13 @@ package Tables is
                 Pointer : in out Integer;
                 Folder  : Table;
                 Data    : out Tag
+             );
+   procedure Get
+             (  Source  : String;
+                Pointer : in out Integer;
+                Folder  : Table;
+                Data    : out Tag;
+                Got_It  : out Boolean
              );
 --
 -- GetName -- Get item name

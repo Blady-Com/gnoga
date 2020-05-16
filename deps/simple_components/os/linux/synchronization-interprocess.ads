@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess                Luebeck            --
 --  Interface                                      Spring, 2018       --
 --                                                                    --
---                                Last revision :  00:07 15 Jul 2018  --
+--                                Last revision :  22:08 06 Jan 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -271,6 +271,20 @@ package Synchronization.Interprocess is
 --    The signature
 --
    function Get_Signature (Data : String) return Unsigned_16;
+--
+-- Process_ID -- The process ID
+--
+   subtype Process_ID is Synchronization.Linux.pid_t;
+   Null_Process : constant Process_ID := 0;
+--
+-- Get_Process_ID -- Get process ID
+--
+-- Returns :
+--
+--    The process ID
+--
+   function Get_Process_ID return Process_ID
+      renames Synchronization.Linux.getpid;
 
 private
    use Interfaces.C;

@@ -4,8 +4,6 @@ with "tables.gpr";
 
 project Components.ODBC is
 
-   for Object_Dir use Components.Object_Dir_Path;
-
    Common_Files :=
        (  "odbc.ads",
           "odbc-api.adb",
@@ -49,6 +47,8 @@ project Components.ODBC is
          end case;
          for Source_Files use Common_Files;
    end case;
+
+   for Object_Dir use Components'Object_Dir;
 
    package Compiler renames Components.Compiler;
    package Binder   renames Components.Binder;

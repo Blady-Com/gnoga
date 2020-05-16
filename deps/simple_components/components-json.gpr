@@ -1,0 +1,21 @@
+with "components.gpr";
+
+project Components.JSON is
+
+   for Source_Files use
+       (  "parsers-json.adb",
+          "parsers-json.ads",
+          "parsers-json-generic_parser.adb",
+          "parsers-json-generic_parser.ads",
+          "parsers-json-multiline_source.ads",
+          "parsers-json-string_source.ads"
+       );
+
+   for Object_Dir use Components'Object_Dir;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+        
+end Components.JSON;

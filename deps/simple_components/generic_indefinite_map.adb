@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  22:41 09 Mar 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -151,7 +151,7 @@ package body Generic_Indefinite_Map is
          begin
             for Item in Vector'First..Last loop
                Index := Find (Container, Vector (Item).Key.all);
-               if Index < 0 then
+               if Index <= 0 then
                   Insert
                   (  Container => Container,
                      Index     => -Index,
@@ -171,7 +171,7 @@ package body Generic_Indefinite_Map is
              )  is
       Index : constant Integer := Find (Container, Key);
    begin
-      if Index < 0 then
+      if Index <= 0 then
          Insert
          (  Container => Container,
             Index     => -Index,

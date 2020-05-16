@@ -3,7 +3,7 @@
 --     Synchronization.Windows                     Luebeck            --
 --  Interface                                      Spring, 2018       --
 --                                                           --
---                                Last revision :  11:33 15 Jul 2018  --
+--                                Last revision :  22:08 06 Jan 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

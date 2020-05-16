@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  19:18 30 Apr 2018  --
+--                                Last revision :  08:25 05 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -52,6 +52,16 @@ package body Generic_FIFO is
          end;
       end if;
    end Delete;
+
+   function Free_Space (Queue : FIFO) return Natural is
+      Count : constant Integer := Queue.First - Queue.Free;
+   begin
+      if Count <= 0 then
+         return Queue.Size + Count - 1;
+      else
+         return Count - 1;
+      end if;
+   end Free_Space;
 
    procedure Get
              (  Queue   : in out FIFO;

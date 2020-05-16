@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     Big_Endian.Unsigneds                        Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  16:04 08 Jun 2019  --
+--                                Last revision :  14:07 11 Nov 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -190,7 +190,6 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Unsigned_32
              )  is
-      Result : Unsigned_32 := 0;
    begin
       if (  Pointer < Data'First
          or else
@@ -217,7 +216,6 @@ package body GNAT.Sockets.Connection_State_Machine.Big_Endian.
                 Pointer : in out Stream_Element_Offset;
                 Value   : out Unsigned_64
              )  is
-      Result : Unsigned_32 := 0;
    begin
       if (  Pointer < Data'First
          or else

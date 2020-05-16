@@ -2,11 +2,13 @@ with "components.gpr";
 with "components-connections_server-http_server.gpr";
 with "components-connections_server-openssl.gpr";
 with "components-openssl.gpr";
+with "components-json.gpr";
 
 project Components.Connections_Server.HTTP_Server.Test_HTTPS_OpenSSL_Server is
 
    for Source_Files use
        (  "test_https_openssl_client.adb",
+          "test_https_openssl_json_client.adb",
     	  "test_https_openssl_server.adb",
     	  "test_http_servers.adb",
     	  "test_http_servers.ads",
@@ -15,6 +17,7 @@ project Components.Connections_Server.HTTP_Server.Test_HTTPS_OpenSSL_Server is
 	   );
    for Main use
        (  "test_https_openssl_client.adb",
+          "test_https_openssl_json_client.adb",
           "test_https_openssl_server.adb"
        );
    for Object_Dir use Components.Object_Dir_Path;

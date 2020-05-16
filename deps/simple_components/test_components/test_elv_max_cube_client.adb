@@ -3,7 +3,7 @@
 --     Test_ELV_MAX_Cube_Client                    Luebeck            --
 --  ELV MAX! Cube client test                      Summer, 2015       --
 --                                                                    --
---                                Last revision :  10:33 11 May 2019  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,10 +28,8 @@
 with Ada.Calendar;                 use Ada.Calendar;
 with Ada.Exceptions;               use Ada.Exceptions;
 with Ada.Text_IO;                  use Ada.Text_IO;
-with Ada.Text_IO.Text_Streams;     use Ada.Text_IO.Text_Streams;
 with GNAT.Sockets.Server;          use GNAT.Sockets.Server;
 with GNAT.Sockets.Server.Handles;  use GNAT.Sockets.Server.Handles;
-with Interfaces;                   use Interfaces;
 with Strings_Edit;                 use Strings_Edit;
 with Strings_Edit.Floats;          use Strings_Edit.Floats;
 with Strings_Edit.Integers;        use Strings_Edit.Integers;

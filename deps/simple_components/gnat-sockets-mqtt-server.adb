@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Server                    Luebeck            --
 --  Implementation                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  13:37 23 Jun 2019  --
+--                                Last revision :  18:33 02 Dec 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,11 +25,10 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
+with Ada.Exceptions;         use Ada.Exceptions;
 with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
 with Strings_Edit.Floats;    use Strings_Edit.Floats;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
-with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
-with Strings_Edit.UTF8;      use Strings_Edit.UTF8;
 
 package body GNAT.Sockets.MQTT.Server is
    use GNAT.Sockets.Server.Handles;
@@ -828,6 +827,7 @@ package body GNAT.Sockets.MQTT.Server is
       end if;
       declare
          Session : MQTT_Session'Class renames Ptr (Client.Session).all;
+         Last    : Integer := 0;
       begin
          Session.Disconnected := False;
          Session.Client := Client'Unchecked_Access;
@@ -848,7 +848,7 @@ package body GNAT.Sockets.MQTT.Server is
                            and
                              (Exactly_Once or At_Least_Once)
                      )  )  )
-                  then -- Resent the message
+                  then -- Resend the message
                      Element.Flags := Element.Flags or Duplicate;
                      Put
                      (  Session.Output,
@@ -858,35 +858,67 @@ package body GNAT.Sockets.MQTT.Server is
                         ),
                         Full
                      );
-                     if Full then
-                        Response := Server_Unavailable;
-                        if Is_Tracing_On (Server, Trace_Sessions) then
-                           Trace
-                           (  MQTT_Connection'Class (Client),
-                              Get_Name,
-                              (  Image
-                              &  " [Rejected: "
-                              &  Image (Response)
-                              &  "] Cannot queue pending messages, "
-                              &  Strings_Edit.Integers.Image
-                                 (  Session.Queue_Size
-                                 )
-                              &  " elements queue is too short"
-                              ),
-                              Received
-                           );
-                        end if;
-                        Send_Connect_Rejected (Client, Response);
-                        Shutdown (Client);
-                        return;
-                     end if;
+                     exit when Full;
+                     Last := Index;
+--                       if Full then
+--                          Response := Server_Unavailable;
+--                          if Is_Tracing_On (Server, Trace_Sessions) then
+--                             Trace
+--                             (  MQTT_Connection'Class (Client),
+--                                Get_Name,
+--                                (  Image
+--                                &  " [Rejected: "
+--                                &  Image (Response)
+--                                &  "] Cannot queue pending messages, "
+--                                &  Strings_Edit.Integers.Image
+--                                   (  Session.Queue_Size
+--                                   )
+--                                &  " elements queue is too short"
+--                                ),
+--                                Received
+--                             );
+--                          end if;
+--                          Send_Connect_Rejected (Client, Response);
+--                          Shutdown (Client);
+--                          return;
+--                       end if;
                   end if;
                end;
             end loop;
-            for Index in 1..Get_Size (Session.Input) loop
-               Release (Get (Session.Input, Index).Message);
-            end loop;
-            Erase (Session.Input);
+            if Last = Get_Size (Session.Input) then
+               for Index in 1..Last loop
+                  Release (Get (Session.Input, Index).Message);
+               end loop;
+               Erase (Session.Input);
+            else
+               for Index in 1..Last loop
+                  Release (Get (Session.Input, Positive'(1)).Message);
+                  Remove (Session.Input, Positive'(1));
+               end loop;
+               Last := 1;
+               while Last <= Get_Size (Session.Input) loop
+                  declare -- Processing remaining messages
+                     Element : Message_Response_Item :=
+                               Get (Session.Input, Last);
+                  begin
+                     if (  0 = (Incoming and Element.Flags)
+                        and then
+                           (  0
+                           /= (  Element.Flags
+                              and
+                                 (Exactly_Once or At_Least_Once)
+                        )  )  )  then
+                        if 0 = (Element.Flags or Duplicate) then
+                           Element.Flags := Element.Flags or Duplicate;
+                           Replace (Session.Input, Last, Element);
+                        end if;
+                        Last := Last + 1;
+                     else
+                        Remove (Session.Input, Last);
+                     end if;
+                  end;
+               end loop;
+            end if;
          end if;
          Session.Timeout := Keep_Alive * 1.5;
          Session.Last    := Clock;

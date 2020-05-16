@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Blocking                Luebeck            --
 --  Implementation                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  13:37 23 Jun 2019  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -164,6 +164,16 @@ package body GNAT.Sockets.Server.Blocking is
          Get_Polling_Timeout (Listener.Factory.all);
    end Initialize;
 
+   procedure On_Reader_Start  (Listener : in out Blocking_Server) is
+   begin
+      null;
+   end On_Reader_Start;
+
+   procedure On_Writer_Start  (Listener : in out Blocking_Server) is
+   begin
+      null;
+   end On_Writer_Start;
+
    procedure Receive_Socket
              (  Listener : in out Blocking_Server;
                 Client   : in out Connection'Class;
@@ -265,6 +275,7 @@ package body GNAT.Sockets.Server.Blocking is
          Last   : Stream_Element_Offset;
       begin
          Trace ("Reader task starting");
+         On_Reader_Start (Listener.all);
          while not (  Listener.Finalizing
                    or else
                       Listener.Shutdown_Request
@@ -296,6 +307,7 @@ package body GNAT.Sockets.Server.Blocking is
       Data_Left : Boolean := False;
    begin
       Trace ("Writer task starting");
+      On_Writer_Start (Listener.all);
       On_Connected (Listener.all, Client.all);
       loop
          Trace_Service_Loop

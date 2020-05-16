@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client.Synchronous                   Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  18:41 01 Aug 2019  --
+--                                Last revision :  14:52 29 Feb 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,12 +25,13 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;       use Ada.Calendar;
+with Ada.Exceptions;     use Ada.Exceptions;
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
+with Ada.Real_Time;      use Ada.Real_Time;
 with Synchronization;    use Synchronization;
 
-package body GNAT.Sockets.Connection_State_Machine.
-        MODBUS_Client.Synchronous is
+package body GNAT.Sockets.Connection_State_Machine.MODBUS_Client.
+             Synchronous is
 
    procedure Bits_Read
              (  Client    : in out MODBUS_Synchronous_Client;
@@ -79,10 +80,9 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Timeout        : Duration  := Duration'Last
              )  is
       Lock     : Holder (Client'Unchecked_Access);
-      Deadline : Time;
+      Deadline : constant Time := abs Timeout;
    begin
       Shutdown (Client);
-      Deadline := Clock + Timeout;
       select
          Client.Event.Wait_For_Release;
       or delay until Deadline;
@@ -106,17 +106,6 @@ package body GNAT.Sockets.Connection_State_Machine.
             "Connection timeout expired"
          );
       end select;
-   exception
-      when Time_Error =>
-         Client.Event.Wait_For_Release;
-         Connect
-         (  Client.Listener.all,
-            Client'Unchecked_Access,
-            Host,
-            Port,
-            Max_Connect_No
-         );
-         Client.Event.Wait_For_Connection;
    end Connect;
 
    procedure Connected (Client : in out MODBUS_Synchronous_Client) is
@@ -156,12 +145,14 @@ package body GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Bit_Array is
-      Lock   : Holder (Client);
-      Result : aliased Bits_Result;
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client);
+      Result   : aliased Bits_Result;
    begin
       Client.Result := (Bits, Result'Unchecked_Access);
+      Wait_Until_RTU_Silence_Time (Client.all, Deadline);
       Send_FC1 (Client.all, Reference, From, To, Unit);
-      Wait (Client.all, Bits, Timeout);
+      Wait (Client.all, Bits, Deadline);
       return Result.Data (1..Result.Length);
    end FC1;
 
@@ -173,12 +164,14 @@ package body GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Bit_Array is
-      Lock   : Holder (Client);
-      Result : aliased Bits_Result;
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client);
+      Result   : aliased Bits_Result;
    begin
       Client.Result := (Bits, Result'Unchecked_Access);
+      Wait_Until_RTU_Silence_Time (Client.all, Deadline);
       Send_FC2 (Client.all, Reference, From, To, Unit);
-      Wait (Client.all, Bits, Timeout);
+      Wait (Client.all, Bits, Deadline);
       return Result.Data (1..Result.Length);
    end FC2;
 
@@ -190,12 +183,14 @@ package body GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Word_Array is
-      Lock   : Holder (Client);
-      Result : aliased Words_Result;
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client);
+      Result   : aliased Words_Result;
    begin
       Client.Result := (Words, Result'Unchecked_Access);
+      Wait_Until_RTU_Silence_Time (Client.all, Deadline);
       Send_FC3 (Client.all, Reference, From, To, Unit);
-      Wait (Client.all, Words, Timeout);
+      Wait (Client.all, Words, Deadline);
       return Result.Data (1..Result.Length);
    end FC3;
 
@@ -207,12 +202,14 @@ package body GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Word_Array is
-      Lock   : Holder (Client);
-      Result : aliased Words_Result;
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client);
+      Result   : aliased Words_Result;
    begin
       Client.Result := (Words, Result'Unchecked_Access);
+      Wait_Until_RTU_Silence_Time (Client.all, Deadline);
       Send_FC4 (Client.all, Reference, From, To, Unit);
-      Wait (Client.all, Words, Timeout);
+      Wait (Client.all, Words, Deadline);
       return Result.Data (1..Result.Length);
    end FC4;
 
@@ -224,10 +221,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Unit      : Unit_No  := 255;
                 Timeout   : Duration := Duration'Last
              )  is
-      Lock : Holder (Client'Unchecked_Access);
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client'Unchecked_Access);
    begin
+      Wait_Until_RTU_Silence_Time (Client, Deadline);
       Send_FC5 (Client, Reference, Address, Value, Unit);
-      Wait (Client, None, Timeout);
+      Wait (Client, None, Deadline);
    end FC5;
 
    procedure FC6
@@ -238,10 +237,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Unit      : Unit_No  := 255;
                 Timeout   : Duration := Duration'Last
              )  is
-      Lock : Holder (Client'Unchecked_Access);
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client'Unchecked_Access);
    begin
+      Wait_Until_RTU_Silence_Time (Client, Deadline);
       Send_FC6 (Client, Reference, Address, Value, Unit);
-      Wait (Client, None, Timeout);
+      Wait (Client, None, Deadline);
    end FC6;
 
    function FC7
@@ -250,10 +251,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Unsigned_8 is
-      Lock : Holder (Client);
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client);
    begin
+      Wait_Until_RTU_Silence_Time (Client.all, Deadline);
       Send_FC7 (Client.all, Reference, Unit);
-      Wait (Client.all, Exception_Status, Timeout);
+      Wait (Client.all, Exception_Status, Deadline);
       return Client.Result.Status;
    end FC7;
 
@@ -264,10 +267,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Unit      : Unit_No  := 255;
                 Timeout   : Duration := Duration'Last
              )  is
-      Lock : Holder (Client'Unchecked_Access);
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client'Unchecked_Access);
    begin
+      Wait_Until_RTU_Silence_Time (Client, Deadline);
       Send_FC15 (Client, Reference, Values, Unit);
-      Wait (Client, None, Timeout);
+      Wait (Client, None, Deadline);
    end FC15;
 
    procedure FC16
@@ -277,10 +282,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Unit      : Unit_No  := 255;
                 Timeout   : Duration := Duration'Last
              )  is
-      Lock : Holder (Client'Unchecked_Access);
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client'Unchecked_Access);
    begin
+      Wait_Until_RTU_Silence_Time (Client, Deadline);
       Send_FC16 (Client, Reference, Values, Unit);
-      Wait (Client, None, Timeout);
+      Wait (Client, None, Deadline);
    end FC16;
 
    procedure FC22
@@ -292,10 +299,12 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Unit      : Unit_No  := 255;
                 Timeout   : Duration := Duration'Last
              )  is
-      Lock : Holder (Client'Unchecked_Access);
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client'Unchecked_Access);
    begin
+      Wait_Until_RTU_Silence_Time (Client, Deadline);
       Send_FC22 (Client, Reference, Address, And_Mask, Or_Mask, Unit);
-      Wait (Client, None, Timeout);
+      Wait (Client, None, Deadline);
    end FC22;
 
    function FC23
@@ -307,12 +316,14 @@ package body GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Word_Array is
-      Lock   : Holder (Client);
-      Result : aliased Words_Result;
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client);
+      Result   : aliased Words_Result;
    begin
       Client.Result := (Words, Result'Unchecked_Access);
+      Wait_Until_RTU_Silence_Time (Client.all, Deadline);
       Send_FC23 (Client.all, Reference, From, To, Values, Unit);
-      Wait (Client.all, Words, Timeout);
+      Wait (Client.all, Words, Deadline);
       return Result.Data (1..Result.Length);
    end FC23;
 
@@ -323,12 +334,14 @@ package body GNAT.Sockets.Connection_State_Machine.
                Unit      : Unit_No  := 255;
                Timeout   : Duration := Duration'Last
             )  return Word_Array is
-      Lock   : Holder (Client);
-      Result : aliased Words_Result;
+      Deadline : constant Time := abs Timeout;
+      Lock     : Holder (Client);
+      Result   : aliased Words_Result;
    begin
       Client.Result := (Words, Result'Unchecked_Access);
+      Wait_Until_RTU_Silence_Time (Client.all, Deadline);
       Send_FC24 (Client.all, Reference, Address, Unit);
-      Wait (Client.all, Words, Timeout);
+      Wait (Client.all, Words, Deadline);
       return Result.Data (1..Result.Length);
    end FC24;
 
@@ -336,6 +349,20 @@ package body GNAT.Sockets.Connection_State_Machine.
    begin
       Object.Client.Event.Release;
    end Finalize;
+
+   function Get_RTU_Checksum_Mode
+            (  Client : MODBUS_Synchronous_Client
+            )  return Boolean is
+   begin
+      return Get_RTU_Checksum_Mode (MODBUS_Client (Client));
+   end Get_RTU_Checksum_Mode;
+
+   function Get_RTU_Silence_Time
+            (  Client : MODBUS_Synchronous_Client
+            )  return Duration is
+   begin
+      return Get_RTU_Silence_Time (MODBUS_Client (Client));
+   end Get_RTU_Silence_Time;
 
    procedure Initialize (Object : in out Holder) is
    begin
@@ -348,27 +375,33 @@ package body GNAT.Sockets.Connection_State_Machine.
       Client.Event.Set;
    end Released;
 
+   procedure Set_RTU_Checksum_Mode
+             (  Client : in out MODBUS_Synchronous_Client;
+                Enable : Boolean
+             )  is
+   begin
+      Set_RTU_Checksum_Mode (MODBUS_Client (Client), Enable);
+   end Set_RTU_Checksum_Mode;
+
+   procedure Set_RTU_Silence_Time
+             (  Client  : in out MODBUS_Synchronous_Client;
+                Silence : Duration
+             )  is
+   begin
+      Set_RTU_Silence_Time (MODBUS_Client (Client), Silence);
+   end Set_RTU_Silence_Time;
+
    procedure Wait
              (  Client   : in out MODBUS_Synchronous_Client;
                 Expected : Result_Mode;
-                Timeout  : Duration
+                Deadline : Time
              )  is
-      Deadline : Time;
    begin
-      begin
-         Deadline := Clock + Timeout;
-         select
-            Client.Event.Wait_For_Completion;
-         or delay until Deadline;
-            Raise_Exception
-            (  Timeout_Error'Identity,
-               "I/O timeout expired"
-            );
-         end select;
-      exception
-         when Time_Error =>
-            Client.Event.Wait_For_Completion;
-      end;
+      select
+         Client.Event.Wait_For_Completion;
+      or delay until Deadline;
+         Raise_Exception (Timeout_Error'Identity, Expired_Text);
+      end select;
       if Client.Result.Mode /= Expected then
          if Client.Result.Mode = Failure then
             Raise_Exception

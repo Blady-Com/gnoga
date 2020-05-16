@@ -3,7 +3,7 @@
 --     Parsers.Generic_Token.                      Luebeck            --
 --        Generic_Token_Lexer                      Winter, 2004       --
 --  Interface                                                         --
---                                Last revision :  15:35 29 Apr 2012  --
+--                                Last revision :  09:20 06 Oct 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -216,4 +216,5 @@ private
            Infixes   : access Vocabulary.Table'Class;
            Postfixes : access Vocabulary.Table'Class
         )  is abstract new Implementation.Lexer with null record;
+
 end Parsers.Generic_Token.Generic_Token_Lexer;

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Streams                   Luebeck            --
 --  Implementation                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  18:49 10 Apr 2017  --
+--                                Last revision :  23:08 18 Nov 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
+with Ada.Exceptions;  use Ada.Exceptions;
 
 package body GNAT.Sockets.MQTT.Streams is
 

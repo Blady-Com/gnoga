@@ -3,7 +3,7 @@ project Strings_Edit is
    type Legacy_Type is ("Ada95", "Ada2005", "Ada2012");
    Legacy : Legacy_Type := external ("Legacy", "Ada2012");
 
-   type Development_Type is ("Debug", "Release");
+   type Development_Type is ("Debug", "Release", "Profile");
    Development : Development_Type := external ("Development", "Debug");
 
    type OS_Type is
@@ -14,7 +14,7 @@ project Strings_Edit is
            "FreeBSD",
            "auto"
         );
-   OS : OS_Type := external ("OS", "Windows");
+   Target_OS : OS_Type := external ("Target_OS", "Windows");
 
    type Arch_Type is ("x86_64", "i686", "armhf", "aarch64", "auto");
    Arch : Arch_Type := external ("arch", "x86_64");
@@ -196,7 +196,7 @@ project Strings_Edit is
          null;
    end case;
 
-   case OS is
+   case Target_OS is
       when "auto" =>
          case Target_Triplet is
             when "aarch64-linux-gnu"   |
@@ -212,14 +212,14 @@ project Strings_Edit is
                  "i686-linux-gnu"      |
                  "i686-redhat-linux"   |
                  "i686-suse-linux"     =>
-               OS := "Linux";
+               Target_OS := "Linux";
             when "x86_64-apple-darwin" |
                  "x86_64-darwin"       |
                  "x86-darwin"          =>
-               OS := "OSX";
+               Target_OS := "OSX";
             when "x86_64-freebsd"      |
                  "i686-freebsd"        =>
-               OS := "FreeBSD";
+               Target_OS := "FreeBSD";
             when "x86_64-pc-cygwin"    |
                  "x86_64-w64-mingw32"  |
                  "x86_64-windows"      |
@@ -227,7 +227,7 @@ project Strings_Edit is
                  "i686-pc-cygwin"      |
                  "i686-pc-mingw32"     |
                  "i686-w64-mingw32"    =>
-               OS := "Windows";
+               Target_OS := "Windows";
             when "" =>
                for Source_Files use
                    (  "target is undefined, "
@@ -251,22 +251,22 @@ project Strings_Edit is
       when "." =>
          Object_Dir_Path := ".";
       when "nested" =>
-         case OS is
+         case Target_OS is
             when "Windows" | "Windows_NT" =>
                Object_Dir_Path :=
-                  "./obj/windows/" & arch & "/" & Development;
+                  "obj/windows/" & arch & "/" & Development;
             when "Linux" | "UNIX" =>
                Object_Dir_Path :=
-                  "./obj/linux/" & arch & "/" & Development;
+                  "obj/linux/" & arch & "/" & Development;
             when "OSX" =>
                Object_Dir_Path :=
-                  "./obj/osx/" & arch & "/" & Development;
+                  "obj/osx/" & arch & "/" & Development;
             when "FreeBSD" =>
                Object_Dir_Path :=
-                  "./obj/freebsd/" & arch & "/" & Development;
+                  "obj/freebsd/" & arch & "/" & Development;
             when "auto" =>
                Object_Dir_Path :=
-                  "./obj/unknown/" & arch & "/" & Development;
+                  "obj/unknown/" & arch & "/" & Development;
          end case;
    end case;
    for Object_Dir use Object_Dir_Path;
@@ -288,19 +288,27 @@ project Strings_Edit is
             for Default_Switches ("ada") use
                 (  "-gnatwcikmoprvz.c.p.t.w.x",
                    "-gnato",
-                   "-gnatVa",
+                   "-gnatVaep",
                    "-gnatf",
+                   "-gnatU",
                    "-g",
-                   "-fstack-check"
+                   "-fstack-check",
+                   "-Wall"
                 )  & GNAT_XX;
          when "Release" =>
             for Default_Switches ("ada") use
                 (  "-gnatwcikmoprvz.c.p.t.w.x",
                    "-gnatp",
-                   "-gnatVa",
+                   "-gnatVaep",
                    "-gnatf",
+                   "-gnatU",
                    "-O2",
                    "-gnatn"
+                )  & GNAT_XX;
+         when "Profile" =>
+            for Default_Switches ("ada") use
+                (  "-g",
+                   "-pg"
                 )  & GNAT_XX;
       end case;
    end Compiler;
@@ -308,9 +316,11 @@ project Strings_Edit is
    package Binder is
       case Development is
          when "Debug" =>
-            for Default_Switches ("ada") use ("-E");
+            for Default_Switches ("ada") use ("-Es");
          when "Release" =>
             for Default_Switches ("ada") use ();
+         when others =>
+            null;
       end case;
    end Binder;
 
@@ -320,6 +330,8 @@ project Strings_Edit is
             for Default_Switches ("ada") use ("-g");
          when "Release" =>
             for Default_Switches ("ada") use ("-s");
+         when others =>
+            null;
       end case;
    end Builder;
 
@@ -329,6 +341,15 @@ project Strings_Edit is
             for Default_Switches ("ada") use ("-g");
          when "Release" =>
             for Default_Switches ("ada") use ("-O2", "-s");
+         when "Profile" =>
+            for Default_Switches ("ada") use ("-g", "-pg");
+      end case;
+      case Target_OS is
+         when "OSX" =>
+            for Default_Switches ("Ada")
+              use Linker'Default_Switches ("Ada") & ("-Wl,-no_pie");
+         when others =>
+            null;
       end case;
    end Linker;
 

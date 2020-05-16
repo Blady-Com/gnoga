@@ -1,0 +1,10 @@
+with "../components.gpr";
+with "../components-json.gpr";
+
+project Components.JSON.Test_JSON is
+
+   for Source_Files use ("test_json.adb");
+   for Main use ("test_json.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+end Components.JSON.Test_JSON;

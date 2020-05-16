@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine       Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  18:41 01 Aug 2019  --
+--                                Last revision :  13:13 14 Sep 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -87,7 +87,6 @@ package body GNAT.Sockets.Connection_State_Machine is
                 (  Item   : Data_Item'Class;
                    Prefix : String := ""
                 )  is
-         use Strings_Edit;
       begin
          Put_Line
          (  Prefix

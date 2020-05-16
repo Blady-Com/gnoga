@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Topology                Spring, 2019       --
 --  Implementation                                                    --
---                                Last revision :  23:23 12 May 2019  --
+--                                Last revision :  14:07 11 Nov 2019  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -252,7 +252,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
                      Free (Device);
                   end if;
                exception
-                  when e:others =>
+                  when others =>
                      Free (Device);
                      raise;
                end;
@@ -312,7 +312,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
             return Result;
          end;
       exception
-         when e:others =>
+         when others =>
             for Index in 1..Get_Size (Rooms) loop
                declare
                   Room : Room_Topology_Data_Ptr :=

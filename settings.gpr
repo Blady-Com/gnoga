@@ -20,7 +20,7 @@ abstract project Settings is
    --  Common options used for the build modes
 
    Debug_Options := ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVaep", "-gnato",
-                     "-fstack-check", "-gnatf", "-gnateA", "-gnateE", "-gnateF", "-Wall",
+                     "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-Wall",
                      "-gnatec=" & Settings'Project_Dir & "pragma_debug.adc");
 
    Release_Options := ("-O2", "-gnatp", "-gnatn");

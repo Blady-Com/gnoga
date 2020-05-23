@@ -114,7 +114,7 @@ package body Gnoga.Gui.View.Docker is
                        Dock : access View_Base_Type'Class)
    is
    begin
-      View.Element_Map.Include ("top", Dock);
+      View.Element_Map.Include ("top", Gnoga.Gui.Element.Pointer_To_Element_Class (Dock));
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
       Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
@@ -139,7 +139,7 @@ package body Gnoga.Gui.View.Docker is
                           Dock : access View_Base_Type'Class)
    is
    begin
-      View.Element_Map.Include ("bottom", Dock);
+      View.Element_Map.Include ("bottom", Gnoga.Gui.Element.Pointer_To_Element_Class (Dock));
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
       Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
@@ -165,7 +165,7 @@ package body Gnoga.Gui.View.Docker is
                         Dock : access View_Base_Type'Class)
    is
    begin
-      View.Element_Map.Include ("fill", Dock);
+      View.Element_Map.Include ("fill", Gnoga.Gui.Element.Pointer_To_Element_Class (Dock));
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
       Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
@@ -190,7 +190,7 @@ package body Gnoga.Gui.View.Docker is
                         Dock : access View_Base_Type'Class)
    is
    begin
-      View.Element_Map.Include ("left", Dock);
+      View.Element_Map.Include ("left", Gnoga.Gui.Element.Pointer_To_Element_Class (Dock));
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
       Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;
@@ -215,7 +215,7 @@ package body Gnoga.Gui.View.Docker is
                          Dock : access View_Base_Type'Class)
    is
    begin
-      View.Element_Map.Include ("right", Dock);
+      View.Element_Map.Include ("right", Gnoga.Gui.Element.Pointer_To_Element_Class (Dock));
       Dock.Box_Sizing (Gnoga.Gui.Element.Border_Box);
       Dock.Position (Gnoga.Gui.Element.Absolute);
       View.Update_Dock;

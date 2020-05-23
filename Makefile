@@ -10,10 +10,12 @@ ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
 	BUILDER=gprbuild -p
 	INSTALLER=gprinstall -p -f
 	CLEANER=gprclean
+	STUDIO=gnatstudio
 else
 	BUILDER=gnatmake -p
 	INSTALLER=gprinstall -p -f
 	CLEANER=gnatclean
+	STUDIO=gnatstudio
 endif
 
 # If using MinGW on Cygwin32 or 64 you can use the following:
@@ -103,7 +105,7 @@ help :
 	@echo "--         | clean_all     -- clean build files and deps                   --"
 	@echo "--         | rm-docs       -- build reference manual                       --"
 	@echo "--         | html-docs     -- build html docs                              --"
-	@echo "--         | gps           -- launch GPS with gnoga environnement          --"
+	@echo "--         | studio        -- launch GNAT Studio with gnoga environnement  --"
 	@echo "--         | check_rules   -- check gnoga with AdaControl                  --"
 	@echo "--         | gnoga-config  -- create script with gnoga compilation options --"
 	@echo "--                                                                         --"
@@ -343,11 +345,11 @@ html-docs: bin/multimarkdown
 	cd docs && ../bin/multimarkdown native_mac_apps.md > html/native_mac_apps.html
 	cd docs && ../bin/multimarkdown native_gtk_apps.md > html/native_gtk_apps.html
 
-gps:
+studio:
 ifeq ($(BUILD_OS),Windows)
-	cmd /C start /B gps -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS)
+	cmd /C start /B $(STUDIO) -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS)
 else
-	gps -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS) &
+	$(STUDIO) -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS) &
 endif
 
 # Use AdaControl to check rules/gnoga.aru

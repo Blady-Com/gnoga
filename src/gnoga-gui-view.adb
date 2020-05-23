@@ -270,7 +270,7 @@ package body Gnoga.Gui.View is
    is
    begin
       View.Element_Map.Include (Key      => Name,
-                                New_Item => Element);
+                                New_Item => Gnoga.Gui.Element.Pointer_To_Element_Class (Element));
    end Add_Element;
 
    -----------------

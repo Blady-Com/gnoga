@@ -954,7 +954,7 @@ private
    record
       Topic : String (1..Length);
    end record;
-   type Topic_Item_Data_Ptr is access Topic_Item_Data'Class;
+   type Topic_Item_Data_Ptr is access all Topic_Item_Data'Class;
 
    package Topic_Item_Handles is
       new Object.Handle (Topic_Item_Data, Topic_Item_Data_Ptr);

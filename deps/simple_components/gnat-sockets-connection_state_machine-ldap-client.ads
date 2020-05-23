@@ -708,7 +708,7 @@ private
       Name       : Distinguished_Name_Ptr;
       Attributes : Attributes_List (Count);
    end record;
-   type Search_Entry_Ptr is access Search_Entry'Class;
+   type Search_Entry_Ptr is access all Search_Entry'Class;
    procedure Finalize (Item : in out Search_Entry);
    package Search_Entry_Handles is
       new Object.Handle (Search_Entry, Search_Entry_Ptr);

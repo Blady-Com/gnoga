@@ -83,7 +83,7 @@ package Object.Archived is
 -- reference counting and store / restore protocol for archiving.
 --
    type Deposit is abstract new Entity with private;
-   type Deposit_Ptr is access Deposit'Class;
+   type Deposit_Ptr is access all Deposit'Class;
 --
 -- Backward_Link -- To an object
 --
@@ -96,7 +96,7 @@ package Object.Archived is
 -- delete it.
 --
    type Backward_Link is abstract new Entity with private;
-   type Backward_Link_Ptr is access Backward_Link'Class;
+   type Backward_Link_Ptr is access all Backward_Link'Class;
 --
 -- Deposit_Container -- A set of objects
 --

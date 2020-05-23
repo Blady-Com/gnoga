@@ -1879,7 +1879,7 @@ private
       Count  : Natural;
       Name   : String (1..Name_Length);
    end record;
-   type Room_Descriptor_Ptr is access Room_Descriptor'Class;
+   type Room_Descriptor_Ptr is access all Room_Descriptor'Class;
    package Room_Handles is
       new Object.Handle (Room_Descriptor, Room_Descriptor_Ptr);
    package Rooms_Maps is
@@ -1902,7 +1902,7 @@ private
       Data : Device_Parameters (Kind_Of, Name_Length);
       Last : Device_Data (Kind_Of);
    end record;
-   type Device_Descriptor_Ptr is access Device_Descriptor'Class;
+   type Device_Descriptor_Ptr is access all Device_Descriptor'Class;
    package Device_Handles is
       new Object.Handle (Device_Descriptor, Device_Descriptor_Ptr);
    package Device_Maps is

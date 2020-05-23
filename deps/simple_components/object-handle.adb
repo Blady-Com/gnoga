@@ -151,7 +151,7 @@ package body Object.Handle is
       return
       (  Left.Ptr /= null
       and then
-         Left.Ptr.all'Unchecked_Access = Right
+         Left.Ptr.all'Unchecked_Access = Object_Type_Ptr (Right)
       );
    end "=";
 
@@ -161,7 +161,7 @@ package body Object.Handle is
       return
       (  Right.Ptr /= null
       and then
-         Right.Ptr.all'Unchecked_Access = Left
+         Right.Ptr.all'Unchecked_Access = Object_Type_Ptr (Left)
       );
    end "=";
 

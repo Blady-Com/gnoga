@@ -282,7 +282,7 @@ private
    record
       Text : String (1..Length);
    end record;
-   type String_Object_Ptr is access String_Object'Class;
+   type String_Object_Ptr is access all String_Object'Class;
    package String_Handles is
       new Object.Handle (String_Object, String_Object_Ptr);
    use String_Handles;

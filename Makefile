@@ -264,7 +264,7 @@ random_int:
 adaothello:
 	$(BUILDER) -P demo/demo_agg.gpr othello_game $(GN_OPTIONS)
 
-tic_tac_toe:
+tic_tac_toe: pragmarc
 	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
 
 leaves:
@@ -272,7 +272,7 @@ leaves:
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.jpg img
 	$(BUILDER) -P demo/demo_agg.gpr $@_main $(GN_OPTIONS)
 
-db_maker:
+db_maker: pragmarc
 	$(BUILDER) -P demo/demo_agg.gpr movies $(GN_OPTIONS)
 
 logo: zanyblue

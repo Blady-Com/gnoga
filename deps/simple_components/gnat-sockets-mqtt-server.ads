@@ -499,7 +499,7 @@ private
       Output        : FIFO (Queue_Size); -- To be send
       Name          : String (1..Length);
    end record;
-   type MQTT_Session_Ptr is access all MQTT_Session'Class;
+   type MQTT_Session_Ptr is access MQTT_Session'Class;
 
    procedure Erase (Session : in out MQTT_Session);
    procedure Finalize (Session : in out MQTT_Session);

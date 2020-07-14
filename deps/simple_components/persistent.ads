@@ -62,7 +62,7 @@ package Persistent is
 -- Storage_Object -- Represents a persistent storage interface
 --
    type Storage_Object is abstract new Object.Entity with private;
-   type Storage_Object_Ptr is access all Storage_Object'Class;
+   type Storage_Object_Ptr is access Storage_Object'Class;
    for Storage_Object_Ptr'Storage_Pool
       use Object.Entity_Ptr'Storage_Pool;
    subtype Deposit_Handle is Deposit_Handles.Handle;

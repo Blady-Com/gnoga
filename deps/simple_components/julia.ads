@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  13:12 14 Sep 2019  --
+--                                Last revision :  11:33 10 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -946,6 +946,10 @@ private
    type GC_Total_Bytes_Ptr is access function return Integer_64;
    pragma Convention (C, GC_Total_Bytes_Ptr);
 
+   type GC_Get_Total_Bytes_Ptr is access
+      procedure (Bytes : access Integer_64);
+   pragma Convention (C, GC_Get_Total_Bytes_Ptr);
+
    type GC_Queue_Root_Ptr is access procedure (Parent : value_t);
    pragma Convention (C, GC_Queue_Root_Ptr);
 
@@ -998,7 +1002,7 @@ private
 
    type New_StructV_Ptr is access function
         (  Type_Of : datatype_t;
-           Values  : access value_t;
+           Values  : access constant value_t;
            Length  : Unsigned_32
         )  return value_t;
    pragma Convention (C, New_StructV_Ptr);
@@ -1203,6 +1207,7 @@ private
       GC_Is_Enabled         : GC_Is_Enabled_Ptr;
       GC_Queue_Root         : GC_Queue_Root_Ptr;
       GC_Total_Bytes        : GC_Total_Bytes_Ptr;
+      GC_Get_Total_Bytes    : GC_Get_Total_Bytes_Ptr;
       Get_Field             : Get_Field_Ptr;
       Get_Global            : Get_Global_Ptr;
       Get_Nth_Field_Checked : Get_Nth_Field_Checked_Ptr;

@@ -631,7 +631,7 @@ private
       Do_Profile   : On_Profile   := null;
       Do_Row       : On_Row       := null;
    end record;
-   type Data_Base_Object_Ptr is access all Data_Base_Object'Class;
+   type Data_Base_Object_Ptr is access Data_Base_Object'Class;
 --
 -- Finalize -- Overrides Object...
 --
@@ -647,7 +647,7 @@ private
       Handle : aliased SQLite_Handle;
       Base   : Data_Base_Handles.Handle;
    end record;
-   type Statement_Object_Ptr is access all Statement_Object'Class;
+   type Statement_Object_Ptr is access Statement_Object'Class;
 --
 -- Finalize -- Overrides Object...
 --
@@ -671,7 +671,7 @@ private
    type Backup_Object is new Object.Entity with record
       Handle : aliased SQLite_Backup_Handle;
    end record;
-   type Backup_Object_Ptr is access all Backup_Object'Class;
+   type Backup_Object_Ptr is access Backup_Object'Class;
 --
 -- Finalize -- Overrides Object...
 --

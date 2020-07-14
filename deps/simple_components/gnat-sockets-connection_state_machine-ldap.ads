@@ -1833,7 +1833,7 @@ package GNAT.Sockets.Connection_State_Machine.LDAP is
 private
    type Abstract_Node is abstract new Object.Entity with null record;
    function Get_Size (Node : Abstract_Node) return Natural;
-   type Abstract_Node_Ptr is access all Abstract_Node'Class;
+   type Abstract_Node_Ptr is access Abstract_Node'Class;
 
    package Node_Handles is
       new Object.Handle (Abstract_Node, Abstract_Node_Ptr);
@@ -1918,7 +1918,7 @@ private
    record
       Value : String (1..Length);
    end record;
-   type Attribute_Value_Ptr is access all Attribute_Value'Class;
+   type Attribute_Value_Ptr is access Attribute_Value'Class;
 
    package Value_Handles is
       new Object.Handle (Attribute_Value, Attribute_Value_Ptr);
@@ -1939,7 +1939,7 @@ private
       Description : String (1..Length);
       List        : Values_Array (1..Size);
    end record;
-   type Attribute_Data_Ptr is access all Attribute_Data'Class;
+   type Attribute_Data_Ptr is access Attribute_Data'Class;
 
    package Attribute_Data_Handles is
       new Object.Handle (Attribute_Data, Attribute_Data_Ptr);

@@ -3,7 +3,7 @@
 --     Persistent.Single_File                      Luebeck            --
 --  Interface                                      Autumn, 2014       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,7 +31,6 @@
 with Ada.Streams;                  use Ada.Streams;
 with Ada.Strings.Unbounded;        use Ada.Strings.Unbounded;
 with Ada.Task_Identification;      use Ada.Task_Identification;
-with Interfaces;                   use Interfaces;
 with Object.Archived.Sets;         use Object.Archived.Sets;
 with Persistent.Blocking_Files;    use Persistent.Blocking_Files;
 with Persistent.Data_Bank;         use Persistent.Data_Bank;
@@ -39,19 +38,14 @@ with Persistent.Handle;            use Persistent.Handle;
 with Persistent.Memory_Pools;      use Persistent.Memory_Pools;
 with Persistent.Single_File_Keys;  use Persistent.Single_File_Keys;
 
-with Ada.Finalization;
 with Ada.Unchecked_Deallocation;
-with Generic_Unbounded_Array;
 with Persistent.Blocking_Files.Transactional;
 with Persistent.Data_Bank.Indexed;
 with Persistent.Memory_Pools.Streams.External_B_Tree;
 with Persistent.Memory_Pools.Streams.Generic_External_Ptr_B_Tree;
 with Persistent.Single_File_Keys.Arrays;
-with Persistent.Single_File_Keys.Sets;
-with Strings_Edit.Streams.Unsigneds_64;
 
 package Persistent.Single_File is
-   use Strings_Edit.Streams.Unsigneds_64;
 --
 -- Create -- A single file persistent storage interface object
 --

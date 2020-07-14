@@ -3,7 +3,7 @@
 --     Persistent.Single_File                      Luebeck            --
 --  Implementation                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,21 +25,22 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Characters.Handling;  use Ada.Characters.Handling;
-with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
-with Strings_Edit.Quoted;      use Strings_Edit.Quoted;
+with Ada.IO_Exceptions;    use Ada.IO_Exceptions;
+with Interfaces;           use Interfaces;
+with Strings_Edit.Quoted;  use Strings_Edit.Quoted;
 
-with Persistent.Blocking_Files.Text_IO;
 with Persistent.Memory_Pools.Streams;
+with Persistent.Single_File_Keys.Sets;
 with Strings_Edit.Streams.Naturals;
+with Strings_Edit.Streams.Unsigneds_64;
 
 package body Persistent.Single_File is
    use ID_To_Object_Maps;
    use Name_To_ID_Maps;
-   use Persistent.Blocking_Files.Text_IO;
    use Persistent.Memory_Pools.Streams;
    use Persistent.Single_File_Keys.Sets;
    use Strings_Edit.Streams.Naturals;
+   use Strings_Edit.Streams.Unsigneds_64;
 
    procedure Check_Existent
              (  Storage : in out Data_Base_Object;

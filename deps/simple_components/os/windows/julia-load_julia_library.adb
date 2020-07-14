@@ -3,7 +3,7 @@
 --     Julia.Load_Julia_Library                    Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  13:13 14 Sep 2019  --
+--                                Last revision :  11:34 10 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -235,6 +235,10 @@ package body Julia.Load_Julia_Library is
             (  Module : Address;
                Name   : char_array := "jl_gc_total_bytes" & Nul
             )  return GC_Total_Bytes_Ptr;
+   function GetProcAddress
+            (  Module : Address;
+               Name   : char_array := "jl_gc_get_total_bytes" & Nul
+            )  return GC_Get_Total_Bytes_Ptr;
    function GetProcAddress
             (  Module : Address;
                Name   : char_array := "jl_get_field" & Nul
@@ -754,6 +758,7 @@ package body Julia.Load_Julia_Library is
          Links.GC_Is_Enabled         := GetProcAddress (Library);
          Links.GC_Queue_Root         := GetProcAddress (Library);
          Links.GC_Total_Bytes        := GetProcAddress (Library);
+         Links.GC_Get_Total_Bytes    := GetProcAddress (Library);
          Links.Get_Field             := GetProcAddress (Library);
          Links.Get_Global            := GetProcAddress (Library);
          Links.Get_Nth_Field         := GetProcAddress (Library);

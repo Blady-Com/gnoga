@@ -8,6 +8,8 @@ project Components.Connections_Server.Test_WebSockets_MQTT is
    for Source_Files use
        (  "test_http_mqtt_servers.adb",
           "test_http_mqtt_servers.ads",
+          "test_mqtt_clients.adb",
+          "test_mqtt_clients.ads",
           "test_mqtt_webserver.adb",
           "test_mqtt_servers.adb",
           "test_mqtt_servers.ads"

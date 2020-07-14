@@ -3,7 +3,7 @@
 --     Test_Call_Service_Example                   Luebeck            --
 --  Helper test package                            Spring, 2018       --
 --                                                                    --
---                                Last revision :  19:18 30 Apr 2018  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,7 +24,9 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
-
+--
+--  The test requires 3 instances to start
+--
 with Ada.Exceptions;                use Ada.Exceptions;
 with Ada.Text_IO;                   use Ada.Text_IO;
 with Strings_Edit.Integers;         use Strings_Edit.Integers;
@@ -42,6 +44,9 @@ procedure Test_Call_Service_Instance is
    use Synchronization.Interprocess.Process_Call_Service.Manager;
 begin
    GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Every_Raise);
+   Put_Line
+   (  "Starting call service instance. There should be 3 of them ..."
+   );
    Set (Data.Add,      Add'Access);  -- Set handler
    Set (Data.Divide,   Divide'Access);
    Set (Data.Greeting, Greet'Access);

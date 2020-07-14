@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2007       --
 --                                                                    --
---                                Last revision :  09:25 07 Aug 2009  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,7 +33,6 @@ with Object.Archived;    use Object.Archived;
 with Persistent.Handle;  use Persistent.Handle;
 
 with Ada.Unchecked_Conversion;
-with Object.Handle;
 
 package Persistent.Directory is
    pragma Elaborate_Body (Persistent.Directory);

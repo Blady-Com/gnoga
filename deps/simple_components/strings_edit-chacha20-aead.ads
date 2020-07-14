@@ -3,7 +3,7 @@
 --     Strings_Edit.ChaCha20.AEAD                  Luebeck            --
 --  Interface                                      Summer, 2018       --
 --                                                                    --
---                                Last revision :  10:21 03 Aug 2018  --
+--                                Last revision :  11:26 29 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,8 +24,6 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
-
-with Strings_Edit.ChaCha20.Poly1305; use Strings_Edit.ChaCha20.Poly1305;
 
 package Strings_Edit.ChaCha20.AEAD is
 --

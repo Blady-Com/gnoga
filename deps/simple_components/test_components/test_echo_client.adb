@@ -3,7 +3,7 @@
 --  Test echo client                               Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,11 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Exceptions;         use Ada.Exceptions;
-with Ada.Text_IO;            use Ada.Text_IO;
-with GNAT.Sockets;           use GNAT.Sockets;
-with Strings_Edit;           use Strings_Edit;
-with Strings_Edit.Integers;  use Strings_Edit.Integers;
+with Ada.Exceptions;  use Ada.Exceptions;
+with Ada.Text_IO;     use Ada.Text_IO;
+with GNAT.Sockets;    use GNAT.Sockets;
 
 with Ada.Numerics.Discrete_Random;
 

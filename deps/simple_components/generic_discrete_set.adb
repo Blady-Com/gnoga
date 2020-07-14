@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,16 +26,16 @@
 --____________________________________________________________________--
 
 package body Generic_Discrete_Set is
-   use Range_Sets;
 
    procedure Add
              (  Container : in out Set;
                 Items     : Set
              )  is
+      use Range_Sets;
       This : Range_Type;
    begin
       for Index in 1..Get_Size (Items) loop
-         This := Get (Items, Index);
+         This := Get (Items.Ranges, Index);
          Add (Container, This.From, This.To);
       end loop;
    end Add;
@@ -44,7 +44,8 @@ package body Generic_Discrete_Set is
              (  Container : in out Set;
                 Item      : Object_Type
              )  is
-      Set   : Range_Sets.Set renames Range_Sets.Set (Container);
+      use Range_Sets;
+      Set   : Range_Sets.Set renames Container.Ranges;
       Index : Integer := Find (Container, Item);
    begin
       if Index < 0 then
@@ -91,7 +92,8 @@ package body Generic_Discrete_Set is
    end Add;
 
    procedure Add (Container : in out Set; From, To : Object_Type) is
-      Set : Range_Sets.Set renames Range_Sets.Set (Container);
+      use Range_Sets;
+      Set : Range_Sets.Set renames Container.Ranges;
    begin
       if From > To then
          if Object_Type'Pred (From) /= To then
@@ -146,13 +148,15 @@ package body Generic_Discrete_Set is
    end Create;
 
    function Create (Item : Object_Type) return Set is
+      use Range_Sets;
       Result : Set;
    begin
-      Add (Range_Sets.Set (Result), (Item, Item));
+      Add (Result.Ranges, (Item, Item));
       return Result;
    end Create;
 
    function Create (From, To : Object_Type) return Set is
+      use Range_Sets;
       Result : Set;
    begin
       if To < From then
@@ -160,32 +164,30 @@ package body Generic_Discrete_Set is
             raise Constraint_Error;
          end if;
       else
-         Add (Range_Sets.Set (Result), (From, To));
+         Add (Result.Ranges, (From, To));
       end if;
       return Result;
    end Create;
 
-   procedure Delete (Container : in out Set; Index : Positive) is
-   begin
-      Remove (Range_Sets.Set (Container), Index);
-   end Delete;
-
    procedure Erase (Container : in out Set) is
+      use Range_Sets;
    begin
-      Erase (Range_Sets.Set (Container));
+      Erase (Container.Ranges);
    end Erase;
 
    procedure Finalize (Container : in out Set) is
    begin
-      Finalize (Range_Sets.Set (Container));
+      null;
    end Finalize;
 
    function Find (Container : Set; Item : Object_Type) return Integer is
-      Index : constant Integer := abs Find (Container, (Item, Item));
+      use Range_Sets;
+      Set   : Range_Sets.Set renames Container.Ranges;
+      Index : constant Integer := abs Find (Set, (Item, Item));
    begin
-      if (  Index <= Get_Size (Container)
+      if (  Index <= Get_Size (Set)
          and then
-            Get (Container, Index).From <= Item
+            Get (Set, Index).From <= Item
          )
       then
          return Index;
@@ -196,16 +198,18 @@ package body Generic_Discrete_Set is
 
    function Find (Container : Set; From, To : Object_Type)
       return Integer is
+      use Range_Sets;
    begin
       if To < From then
          raise Constraint_Error;
       end if;
       declare
-         Index : constant Integer := abs Find (Container, (From, From));
+         Set   : Range_Sets.Set renames Container.Ranges;
+         Index : constant Integer := abs Find (Set, (From, From));
          This  : Range_Type;
       begin
-         if Index <= Get_Size (Container) then
-            This := Get (Container, Index);
+         if Index <= Get_Size (Set) then
+            This := Get (Set, Index);
             if From >= This.From and then To <= This.To then
                return Index;
             end if;
@@ -216,8 +220,9 @@ package body Generic_Discrete_Set is
 
    function From (Container : Set; Index : Positive)
       return Object_Type is
+      use Range_Sets;
    begin
-      return Get (Range_Sets.Set (Container), Index).From;
+      return Get (Container.Ranges, Index).From;
    end From;
 
    procedure Get
@@ -226,15 +231,17 @@ package body Generic_Discrete_Set is
                 From      : out Object_Type;
                 To        : out Object_Type
              )  is
-      This : constant Range_Type := Get (Container, Index);
+      use Range_Sets;
+      This : constant Range_Type := Get (Container.Ranges, Index);
    begin
       From := This.From;
       To   := This.To;
    end Get;
 
    function Get_Size (Container : Set) return Natural is
+      use Range_Sets;
    begin
-      return Get_Size (Range_Sets.Set (Container));
+      return Get_Size (Container.Ranges);
    end Get_Size;
 
    function Intersect (Left, Right : Range_Type) return Boolean is
@@ -243,34 +250,38 @@ package body Generic_Discrete_Set is
    end Intersect;
 
    function Is_Empty (Container : Set) return Boolean is
+      use Range_Sets;
    begin
-      return Is_Empty (Range_Sets.Set (Container));
+      return Is_Empty (Container.Ranges);
    end Is_Empty;
 
    function Is_In (Container : Set; Item : Object_Type)
       return Boolean is
+      use Range_Sets;
    begin
-      return Find (Container, (Item, Item)) > 0;
+      return Find (Container.Ranges, (Item, Item)) > 0;
    end Is_In;
 
    function Is_In (Container : Set; From, To : Object_Type)
       return Boolean is
+      use Range_Sets;
    begin
       if To < From then
          return False;
       else
-         return Find (Container, (From, To)) > 0;
+         return Find (Container.Ranges, (From, To)) > 0;
       end if;
    end Is_In;
 
    function Is_Not_In (Container : Set; From, To : Object_Type)
       return Boolean is
+      use Range_Sets;
    begin
       if To < From then
          return True;
       else
          declare
-            Index : Integer := Find (Container, (From, From));
+            Index : Integer := Find (Container.Ranges, (From, From));
          begin
             if Index > 0 then
                return False;
@@ -281,8 +292,10 @@ package body Generic_Discrete_Set is
                return
                (  Index > Get_Size (Container)
                or else
-                  not Intersect ((From, To), Get (Container, Index))
-               );
+                  not Intersect
+                      (  (From, To),
+                         Get (Container.Ranges, Index)
+               )      );
             end if;
          end;
       end if;
@@ -294,12 +307,14 @@ package body Generic_Discrete_Set is
    end Less;
 
    procedure Range_Remove (Container : in out Set; Index : Positive) is
+      use Range_Sets;
    begin
-      Remove (Range_Sets.Set (Container), Index);
+      Remove (Container.Ranges, Index);
    end;
 
    procedure Remove (Container : in out Set; Item : Object_Type) is
-      Set   : Range_Sets.Set renames Range_Sets.Set (Container);
+      use Range_Sets;
+      Set   : Range_Sets.Set renames Container.Ranges;
       Index : constant Integer := Find (Container, Item);
    begin
       if Index > 0 then
@@ -322,7 +337,8 @@ package body Generic_Discrete_Set is
    end Remove;
 
    procedure Remove (Container : in out Set; From, To : Object_Type) is
-      Set   : Range_Sets.Set renames Range_Sets.Set (Container);
+      use Range_Sets;
+      Set   : Range_Sets.Set renames Container.Ranges;
       Index : Integer;
       This  : Range_Type;
    begin
@@ -350,17 +366,20 @@ package body Generic_Discrete_Set is
    end Remove;
 
    procedure Remove (Container : in out Set; Items : Set) is
+      use Range_Sets;
+      Set  : Range_Sets.Set renames Container.Ranges;
       This : Range_Type;
    begin
-      for Index in reverse 1..Get_Size (Items) loop
-         This := Get (Range_Sets.Set (Items), Index);
+      for Index in reverse 1..Get_Size (Set) loop
+         This := Get (Set, Index);
          Remove (Container, This.From, This.To);
       end loop;
    end;
 
    function To (Container : Set; Index : Positive) return Object_Type is
+      use Range_Sets;
    begin
-      return Get (Range_Sets.Set (Container), Index).To;
+      return Get (Container.Ranges, Index).To;
    end To;
 
    function "and" (Left, Right : Set) return Set is
@@ -368,11 +387,12 @@ package body Generic_Discrete_Set is
          Result : Set := Left;
          From   : Object_Type;
          This   : Range_Type;
+         use Range_Sets;
       begin
          if Is_Empty (Right) then
             Erase (Result);
          else
-            This := Get (Range_Sets.Set (Right), 1);
+            This := Get (Right, 1);
             From := This.To;
             if This.From > Object_Type'First then
                Remove
@@ -382,7 +402,7 @@ package body Generic_Discrete_Set is
                );
             end if;
             for Index in 2..Get_Size (Left) loop
-               This := Get (Left, Index);
+               This := Get (Left.Ranges, Index);
                Remove
                (  Result,
                   Object_Type'Succ (From),
@@ -402,9 +422,9 @@ package body Generic_Discrete_Set is
       end Remove;
    begin
       if Get_Size (Left) < Get_Size (Right) then
-         return Remove (Right, Range_Sets.Set (Left));
+         return Remove (Right, Left.Ranges);
       else
-         return Remove (Left, Range_Sets.Set (Right));
+         return Remove (Left, Right.Ranges);
       end if;
    end "and";
 
@@ -412,27 +432,28 @@ package body Generic_Discrete_Set is
       From   : Object_Type;
       This   : Range_Type;
       Result : Set;
+      use Range_Sets;
    begin
       if Is_Empty (Left) then
          Add
-         (  Range_Sets.Set (Result),
+         (  Result.Ranges,
             (  Object_Type'First,
                Object_Type'Last
          )  );
       else
-         This := Get (Range_Sets.Set (Left), 1);
+         This := Get (Left.Ranges, 1);
          From := This.To;
          if This.From > Object_Type'First then
             Add
-            (  Range_Sets.Set (Result),
+            (  Result.Ranges,
                (  Object_Type'First,
                   Object_Type'Pred (This.From)
             )  );
          end if;
          for Index in 2..Get_Size (Left) loop
-            This := Get (Left, Index);
+            This := Get (Left.Ranges, Index);
             Add
-            (  Range_Sets.Set (Result),
+            (  Result.Ranges,
                (  Object_Type'Succ (From),
                   Object_Type'Pred (This.From)
             )  );
@@ -440,7 +461,7 @@ package body Generic_Discrete_Set is
          end loop;
          if From < Object_Type'Last then
             Add
-            (  Range_Sets.Set (Result),
+            (  Result.Ranges,
                (  Object_Type'Succ (From),
                   Object_Type'Last
             )  );
@@ -451,6 +472,7 @@ package body Generic_Discrete_Set is
 
    function "or" (Left, Right : Set) return Set is
       function Append (Left : Set; Right : Range_Sets.Set) return Set is
+         use Range_Sets;
          Result : Set := Left;
          This   : Range_Type;
       begin
@@ -462,9 +484,9 @@ package body Generic_Discrete_Set is
       end Append;
    begin
       if Get_Size (Left) < Get_Size (Right) then
-         return Append (Right, Range_Sets.Set (Left));
+         return Append (Right, Left.Ranges);
       else
-         return Append (Left, Range_Sets.Set (Right));
+         return Append (Left, Right.Ranges);
       end if;
    end "or";
 
@@ -481,8 +503,9 @@ package body Generic_Discrete_Set is
    end "-";
 
    function "=" (Left, Right : Set) return Boolean is
+      use Range_Sets;
    begin
-      return Range_Sets.Set (Left) = Range_Sets.Set (Right);
+      return Left.Ranges = Right.Ranges;
    end "=";
 
 end Generic_Discrete_Set;

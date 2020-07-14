@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Blocks                    Luebeck            --
 --  Interface                                      Spring, 2008       --
 --                                                                    --
---                                Last revision :  21:03 21 Apr 2009  --
+--                                Last revision :  11:26 29 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,8 +29,6 @@
 --  the  standard.  The  current  version  corresponds   to   the   file
 --  Blocks-5.0.0.txt Date: 2006-02-15, 15:40:00 [KW]
 --
-with Ada.Finalization;
-
 package Strings_Edit.UTF8.Blocks is
    Aegean_Numbers :
                  constant Code_Points_Range := (16#10100#,  16#1013F#);

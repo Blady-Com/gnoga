@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Maps                      Luebeck            --
 --  Implementation                                 Spring, 2008       --
 --                                                                    --
---                                Last revision :  13:11 14 Sep 2019  --
+--                                Last revision :  11:26 29 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -846,25 +846,25 @@ package body Strings_Edit.UTF8.Maps is
       end if;
    end Is_Subset;
 
-   function Is_Subset
-            (  Elements : Wide_String;
-               Set      : Unicode_Set
-            )  return Boolean is
-   begin
-      if Elements'Length = 0 then
-         return True;
-      elsif Set.Ptr = null then
-         return False;
-      else
-         for Index in Elements'Range loop
-            if not Is_In (Elements (Index), Set) then
-               return False;
-            end if;
-         end loop;
-         return True;
-      end if;
-   end Is_Subset;
-
+   --  function Is_Subset
+   --           (  Elements : Wide_String;
+   --              Set      : Unicode_Set
+   --           )  return Boolean is
+   --  begin
+   --     if Elements'Length = 0 then
+   --        return True;
+   --     elsif Set.Ptr = null then
+   --        return False;
+   --     else
+   --        for Index in Elements'Range loop
+   --           if not Is_In (Elements (Index), Set) then
+   --              return False;
+   --           end if;
+   --        end loop;
+   --        return True;
+   --     end if;
+   --  end Is_Subset;
+   --
    function Is_Singleton (Set : Unicode_Set) return Boolean is
    begin
       if Set.Ptr = null or else Set.Ptr.Length /= 1 then

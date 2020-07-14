@@ -30,7 +30,7 @@ with Object.Archived.Sets;       use Object.Archived.Sets;
 
 generic
    type Object_Type (<>) is abstract new Deposit with private;
-   type Object_Ptr_Type is access all Object_Type'Class;
+   type Object_Ptr_Type is access Object_Type'Class;
 package Object.Archived.Handle is
    pragma Elaborate_Body (Object.Archived.Handle);
    package Handles is new Object.Handle (Object_Type, Object_Ptr_Type);

@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -365,6 +365,8 @@ private
              Null_Element =>
                 (Object_Type'Base'Last, Object_Type'Base'First)
           );
-   type Set is new Range_Sets.Set with null record;
+   type Set is new Ada.Finalization.Controlled with record
+      Ranges : Range_Sets.Set;
+   end record;
 
 end Generic_Discrete_Set;

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Summer, 2019       --
 --                                                                    --
---                                Last revision :  18:40 01 Aug 2019  --
+--                                Last revision :  11:26 29 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -54,14 +54,14 @@ package body Strings_Edit.ISO_8601 is
          raise Data_Error;
    end Get_Minute;
 
-   function Get_Second (Source : String) return Integer is
-   begin
-      return Value (Source => Source, First => 0, Last => 59);
-   exception
-      when Constraint_Error | End_Error =>
-         raise Data_Error;
-   end Get_Second;
-
+--  function Get_Second (Source : String) return Integer is
+--  begin
+--     return Value (Source => Source, First => 0, Last => 59);
+--  exception
+--     when Constraint_Error | End_Error =>
+--        raise Data_Error;
+--  end Get_Second;
+  
    procedure Get_Second
              (  Source  : String;
                 Pointer : in out Integer;

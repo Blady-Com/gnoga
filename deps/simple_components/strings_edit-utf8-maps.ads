@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.Maps                      Luebeck            --
 --  Interface                                      Spring, 2008       --
 --                                                                    --
---                                Last revision :  13:11 14 Sep 2019  --
+--                                Last revision :  11:26 29 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -57,6 +57,7 @@ package Strings_Edit.UTF8.Maps is
 --
    function "not" (Right : Unicode_Set) return Unicode_Set;
    function "not" (Right : Code_Points_Range) return Unicode_Set;
+   function "not" (Right : String) return Unicode_Set;
    function "and" (Left, Right : Unicode_Set) return Unicode_Set;
    function "and" (Left : Unicode_Set; Right : Code_Points_Range)
       return Unicode_Set;

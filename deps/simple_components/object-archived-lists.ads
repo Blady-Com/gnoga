@@ -139,7 +139,7 @@ private
       Links      : Unbounded_Array;
       References : Map;
    end record;
-   type Dependency_List_Ptr is access all Dependency_List'Class;
+   type Dependency_List_Ptr is access Dependency_List'Class;
 
    package List_Handles is    -- Handles to list implementations
       new Handle

@@ -36,7 +36,7 @@
 --
 generic
    type Object_Type (<>) is abstract new Entity with private;
-   type Object_Type_Ptr is access all Object_Type'Class;
+   type Object_Type_Ptr is access Object_Type'Class;
 package Object.Handle is
    type Handle is new Ada.Finalization.Controlled with private;
    Null_Handle : constant Handle;

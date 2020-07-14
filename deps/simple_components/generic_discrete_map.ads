@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  14:26 27 May 2012  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -394,6 +394,8 @@ private
              "="          => Intersect,
              "<"          => Less
           );
-   type Map is new Range_Maps.Map with null record;
+   type Map is new Ada.Finalization.Controlled with record
+      Ranges : Range_Maps.Map;
+   end record;
 
 end Generic_Discrete_Map;

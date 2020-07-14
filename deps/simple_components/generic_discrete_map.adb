@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2012       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,7 +32,7 @@ package body Generic_Discrete_Map is
              (  Container : in out Map;
                 Items     : Map
              )  is
-      Other : Range_Maps.Map renames Range_Maps.Map (Items);
+      Other : Range_Maps.Map renames Items.Ranges;
       This  : Range_Type;
    begin
       for Index in 1..Get_Size (Other) loop
@@ -115,7 +115,7 @@ package body Generic_Discrete_Map is
                 From, To  : Key_Type;
                 Item      : Object_Type
              )  is
-      Map   : Range_Maps.Map renames Range_Maps.Map (Container);
+      Map   : Range_Maps.Map renames Container.Ranges;
       First : Integer;
       Last  : Integer;
       Keys  : Range_Type := (From, To);
@@ -145,7 +145,7 @@ package body Generic_Discrete_Map is
    function Create (Key : Key_Type; Item : Object_Type) return Map is
       Result : Map;
    begin
-      Add (Range_Maps.Map (Result), (Key, Key), Item);
+      Add (Result.Ranges, (Key, Key), Item);
       return Result;
    end Create;
 
@@ -156,26 +156,27 @@ package body Generic_Discrete_Map is
       if To < From then
          raise Constraint_Error;
       end if;
-      Add (Range_Maps.Map (Result), (From, To), Item);
+      Add (Result.Ranges, (From, To), Item);
       return Result;
    end Create;
 
    procedure Erase (Container : in out Map) is
    begin
-      Erase (Range_Maps.Map (Container));
+      Erase (Container.Ranges);
    end Erase;
 
    procedure Finalize (Container : in out Map) is
    begin
-      Finalize (Range_Maps.Map (Container));
+      Finalize (Container.Ranges);
    end Finalize;
 
    function Find (Container : Map; Key : Key_Type) return Integer is
-      Index : constant Integer := abs Find (Container, (Key, Key));
+      Map   : Range_Maps.Map renames Container.Ranges;
+      Index : constant Integer := abs Find (Map, (Key, Key));
    begin
-      if (  Index <= Get_Size (Container)
+      if (  Index <= Get_Size (Map)
          and then
-            Get_Key (Container, Index).From <= Key
+            Get_Key (Map, Index).From <= Key
          )
       then
          return Index;
@@ -191,11 +192,12 @@ package body Generic_Discrete_Map is
          raise Constraint_Error;
       end if;
       declare
-         Index : constant Integer := abs Find (Container, (From, From));
+         Map   : Range_Maps.Map renames Container.Ranges;
+         Index : constant Integer := abs Find (Map, (From, From));
          This  : Range_Type;
       begin
-         if Index <= Get_Size (Container) then
-            This := Get_Key (Container, Index);
+         if Index <= Get_Size (Map) then
+            This := Get_Key (Map, Index);
             if From >= This.From and then To <= This.To then
                return Index;
             end if;
@@ -206,12 +208,12 @@ package body Generic_Discrete_Map is
 
    function From (Container : Map; Index : Positive) return Key_Type is
    begin
-      return Get_Key (Range_Maps.Map (Container), Index).From;
+      return Get_Key (Container.Ranges, Index).From;
    end From;
 
    function Get (Container : Map; Key : Key_Type) return Object_Type is
    begin
-      return Get (Range_Maps.Map (Container), Find (Container, Key));
+      return Get (Container.Ranges, Find (Container, Key));
    end Get;
 
    procedure Get_Key
@@ -220,21 +222,15 @@ package body Generic_Discrete_Map is
                 From      : out Key_Type;
                 To        : out Key_Type
              )  is
-      This : constant Range_Type := Get_Key (Container, Index);
+      This : constant Range_Type := Get_Key (Container.Ranges, Index);
    begin
       From := This.From;
       To   := This.To;
    end Get_Key;
 
-   function Get_Range (Container : Map; Index : Positive)
-      return Object_Type is
-   begin
-      return Get (Range_Maps.Map (Container), Index);
-   end Get_Range;
-
    function Get_Size (Container : Map) return Natural is
    begin
-      return Get_Size (Range_Maps.Map (Container));
+      return Get_Size (Container.Ranges);
    end Get_Size;
 
    function Intersect (Left, Right : Range_Type) return Boolean is
@@ -244,13 +240,13 @@ package body Generic_Discrete_Map is
 
    function Is_Empty (Container : Map) return Boolean is
    begin
-      return Is_Empty (Range_Maps.Map (Container));
+      return Is_Empty (Container.Ranges);
    end Is_Empty;
 
    function Is_In (Container : Map; Key : Key_Type)
       return Boolean is
    begin
-      return Find (Container, (Key, Key)) > 0;
+      return Find (Container.Ranges, (Key, Key)) > 0;
    end Is_In;
 
    function Is_In (Container : Map; From, To : Key_Type)
@@ -259,7 +255,7 @@ package body Generic_Discrete_Map is
       if To < From then
          return False;
       else
-         return Find (Container, (From, To)) > 0;
+         return Find (Container.Ranges, (From, To)) > 0;
       end if;
    end Is_In;
 
@@ -270,7 +266,7 @@ package body Generic_Discrete_Map is
          return True;
       else
          declare
-            Index : Integer := Find (Container, (From, From));
+            Index : Integer := Find (Container.Ranges, (From, From));
          begin
             if Index > 0 then
                return False;
@@ -281,8 +277,10 @@ package body Generic_Discrete_Map is
                return
                (  Index > Get_Size (Container)
                or else
-                  not Intersect ((From, To), Get_Key (Container, Index))
-               );
+                  not Intersect
+                      (  (From, To),
+                         Get_Key (Container.Ranges, Index)
+               )      );
             end if;
          end;
       end if;
@@ -296,12 +294,12 @@ package body Generic_Discrete_Map is
    function Range_Get (Container : Map; Index : Positive)
       return Object_Type is
    begin
-      return Get (Range_Maps.Map (Container), Index);
+      return Get (Container.Ranges, Index);
    end Range_Get;
 
    procedure Range_Remove (Container : in out Map; Index : Positive) is
    begin
-      Remove (Range_Maps.Map (Container), Index);
+      Remove (Container.Ranges, Index);
    end Range_Remove;
 
    procedure Range_Replace
@@ -310,11 +308,11 @@ package body Generic_Discrete_Map is
                 Item      : Object_Type
              )  is
    begin
-      Replace (Range_Maps.Map (Container), Index, Item);
+      Replace (Container.Ranges, Index, Item);
    end Range_Replace;
 
    procedure Remove (Container : in out Map; Key : Key_Type) is
-      Map   : Range_Maps.Map renames Range_Maps.Map (Container);
+      Map   : Range_Maps.Map renames Container.Ranges;
       Index : constant Integer := Find (Container, Key);
    begin
       if Index > 0 then
@@ -338,7 +336,7 @@ package body Generic_Discrete_Map is
    end Remove;
 
    procedure Remove (Container : in out Map; From, To : Key_Type) is
-      Map   : Range_Maps.Map renames Range_Maps.Map (Container);
+      Map   : Range_Maps.Map renames Container.Ranges;
       Index : Integer;
    begin
       if To >= From then
@@ -369,7 +367,7 @@ package body Generic_Discrete_Map is
    end Remove;
 
    procedure Remove (Container : in out Map; Items : Map) is
-      Other : Range_Maps.Map renames Range_Maps.Map (Items);
+      Other : Range_Maps.Map renames Items.Ranges;
       This  : Range_Type;
    begin
       for Index in reverse 1..Get_Size (Other) loop
@@ -392,7 +390,7 @@ package body Generic_Discrete_Map is
                 From, To  : Key_Type;
                 Item      : Object_Type
              )  is
-      Map   : Range_Maps.Map renames Range_Maps.Map (Container);
+      Map   : Range_Maps.Map renames Container.Ranges;
       First : Integer;
       Last  : Integer;
       Keys  : Range_Type := (From, To);
@@ -456,7 +454,7 @@ package body Generic_Discrete_Map is
    end Replace;
 
    procedure Replace (Container : in out Map; Items : Map) is
-      Other : Range_Maps.Map renames Range_Maps.Map (Items);
+      Other : Range_Maps.Map renames Items.Ranges;
       This  : Range_Type;
    begin
       for Index in 1..Get_Size (Other) loop
@@ -467,12 +465,12 @@ package body Generic_Discrete_Map is
 
    function To (Container : Map; Index : Positive) return Key_Type is
    begin
-      return Get_Key (Range_Maps.Map (Container), Index).To;
+      return Get_Key (Container.Ranges, Index).To;
    end To;
 
    function "=" (Left, Right : Map) return Boolean is
    begin
-      return Range_Maps.Map (Left) = Range_Maps.Map (Right);
+      return Left.Ranges = Right.Ranges;
    end "=";
 
 end Generic_Discrete_Map;

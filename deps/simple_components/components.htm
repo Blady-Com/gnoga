@@ -5,14 +5,14 @@
 <TITLE>Simple components for Ada</TITLE>
 <meta http-equiv="Content-Style-Type" content="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
-<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client, MQTT, MQTT broker, WebSockets, WebSockets MQTT, ELV, eQ-3, MAX!, MAX! cube, SMTP, SMTP client, ASN.1, ASN.1 parser, LDAP, LDAP Client, X.509">
+<META name="keywords" content="smart pointer, garbage collection, container, unbounded array, parser, table-driven parsing, infix expression, parsing tree, map, set, stack, component, reusable component, storage pool, mark and release pool, list, doubly linked list, persistency, persistent storage, lock-free, FIFO, queue, blackboard, lock-free queue, lock-free blackboard, synchronization, event, pulse event, array of events, mutex, protected object, concurrency, tasking, parallel programming, concurrent programming, race condition, dining philosophers, deadlock, memory management, Chebyshev series, Chebyshev polynomials, graph, directed graph, weighted graph, tree, B-tree, single file database, transaction, spline, cubic spline, spline interpolation, Ada, Ada 95, Ada 2005, Ada programming,SQLite, SQLite3, SQLite bindings, odbc, odbc bindings, tcp, select, socket select, connection server, state machine, http server, http client, modbus client, MQTT, MQTT broker, WebSockets, WebSockets MQTT, ELV, eQ-3, MAX!, MAX! cube, SMTP, SMTP client, ASN.1, ASN.1 parser, LDAP, LDAP Client, X.509, Julia, Julia bindings">
 <META name="Author" content="Dmitry Kazakov">
 <META name="Description" content="Simple components for Ada">
 </HEAD>
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.49</EM><BR>
+<EM>version 4.50</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -255,13 +255,13 @@ MAX! client implementation</a></td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_49.tgz">components_4_49.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_50.tgz">components_4_50.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_49.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_50.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -8715,11 +8715,12 @@ ranges of keys. If this behaviour is undesirable,
 instead. The latter has a separate object for each key.</p>
 <h4><a name="3.2.4"></a>3.2.4. Bounded maps</h4>
 <p><a name="Generic_Bounded_Map"></a>The package
-<a href="#Generic_Bounded_Map">Generic_Bounded_Map</a> is provides 
+<a href="#Generic_Bounded_Map">Generic_Bounded_Map</a> provides 
 maps of fixed size. When a new item is added to the map and the map is full an 
 item from a map's end is removed to make place. The map is effective when items 
-added are almost ordered by ascending or descending keys. Then the map acts as a 
-LIFO.</p>
+added are almost ordered by ascending or descending keys. A good example is 
+time-stamped measurements with time stamp as the key. Then the map acts as a 
+LIFO searchable ring buffer.</p>
 <blockquote>
 <tt><font color="#0000FF">generic</font><br>
 &nbsp;&nbsp;&nbsp;<font color="#0000FF">type</font> Key_Type<font color="#0000FF"> 
@@ -30548,7 +30549,7 @@ Stream_Element_Array or String as appropriate.</p>
   <A name="16.9"></A><a href="#16.8"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
       src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.10"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>16.9. Interfacing with Julia language</H3>
+<H3>16.9. Interfacing Julia language</H3>
 
 <p><a name="Julia"></a>The package <a href="#Julia">Julia</a> provides interfacing 
 with the
@@ -30567,7 +30568,7 @@ bindings:</p>File <i>hello_julia.adb</i>:<TABLE border="1" cellpadding="15" cell
   Julia; <font color="#0000FF">use</font> Julia;<br>
 <br>
 <font color="#0000FF">procedure</font> Hello_Julia<font color="#0000FF"> is<br>
-&nbsp;&nbsp; </font>Bin : <font color="#0000FF"> constant</font> String := &quot;<font color="#FF0000">D:\Julia-1.1.1\bin</font>&quot;;<br>
+&nbsp;&nbsp; </font>Bin : <font color="#0000FF"> constant</font> String := &quot;<font color="#FF0000">D:\Julia-1.4.0\bin</font>&quot;;<br>
 <font color="#0000FF"> begin</font><br>
 &nbsp;&nbsp; Load (Bin &amp; &quot;<font color="#FF0000">\libjulia.dll</font>&quot;);
 <font color="#008000">-- Load library</font><br>
@@ -30582,7 +30583,7 @@ bindings:</p>File <i>hello_julia.adb</i>:<TABLE border="1" cellpadding="15" cell
   </TR>
 </TABLE>
 <p>In this example the procedure <a href="#Julia.Load">Load</a> loads the library located at
-<i>D:\Julia-1.0.3\bin\libjulia.dll</i>. The second call is initialization of
+<i>D:\Julia-1.4.0\bin\libjulia.dll</i>. The second call is initialization of
 <a href="https://docs.julialang.org">Julia</a>'s environment using 
 <a href="#Julia.Init_With_Image">Init_With_Image</a>. It specifies the path 
 where
@@ -58372,7 +58373,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="15"><b><font color="#FFFFFF">Secure 
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-right-style:solid; border-right-width:1px" colspan="15"><b><font color="#FFFFFF">Secure 
 	SSL/TSL connections servers, OpenSSL based</font></b></TD>
   </TR>
   <TR>
@@ -58383,7 +58384,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="14"><b><font color="#FFFFFF">SQLite3</font></b></TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-right-style:solid; border-right-width:1px" colspan="14"><b><font color="#FFFFFF">SQLite3</font></b></TD>
   </TR>
   <TR>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
@@ -58434,7 +58435,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" colspan="10" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px">
 	<font color="#FFFFFF"><b>OpenSSL</b></font></TD>
   </TR>
@@ -58451,7 +58452,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="9">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-right-style:solid; border-right-width:1px" colspan="9">
 	<font color="#FFFFFF"><b>LDAP</b></font></TD>
   </TR>
   <TR>
@@ -58468,7 +58469,7 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="8">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-right-style:solid; border-right-width:1px" colspan="8">
 	<font color="#FFFFFF"><b>MQTT</b></font></TD>
   </TR>
   <TR>
@@ -58504,9 +58505,9 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">
 	&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" colspan="6" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">
+    <TD valign="top" bgcolor="#008080" colspan="6" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px">
 	<b><font color="#FFFFFF">SMTP</font></b></TD>
   </TR>
   <TR>
@@ -58524,9 +58525,9 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium" colspan="5">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px" colspan="5">
 	<font color="#FFFFFF"><b>Julia language interface</b></font></TD>
   </TR>
   <TR>
@@ -58544,32 +58545,32 @@ during the installation.</p>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px">&nbsp;</TD>
     <TD valign="top" bgcolor="#008080" colspan="4" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium; border-left-style:solid; border-left-width:1px"><font color="#FFFFFF"><b>GNADE </b>
 	(depreciated)</font></TD>
   </TR>
   <TR>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
-    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium" colspan="3"><b><font color="#FFFFFF">
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-left-style: solid; border-left-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: none; border-top-width: medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD valign="top" bgcolor="#008080" style="border-top-style: solid; border-top-width: 1px; border-right-style:solid; border-right-width:1px; border-bottom-style:none; border-bottom-width:medium" colspan="3"><b><font color="#FFFFFF">
 	JSON parser</font></b></TD>
   </TR>
   <TR>
@@ -59163,7 +59164,7 @@ controls the method to use:</p>
 	<p><i>odbc</i> controls the ODBC driver. It is relevant only if ODBC is 
 	used:</p>
 <ul>
-	<li><i>ODBC32</i> for Windows IDBC driver;</li>
+	<li><i>ODBC32</i> for Windows ODBC driver;</li>
 	<li><i>unixODBC</i> for Linux ODBC driver.</li>
 </ul>
 	<p><i>Target_OS</i> controls choice of bindings to the low-level OS primitives:<ul>
@@ -59198,6 +59199,8 @@ controls the method to use:</p>
 The following versions were tested with the compilers:</i>
 <ul>
   <li>
+<i>GNAT Studio Community 2020 (20200427)</i></li>
+	<li>
 <i>GNAT Community 2019 (20190517-83)</i></li>
   <li>
 <i>GNAT Community 2018 (20180523-73)</i></li>
@@ -59209,7 +59212,29 @@ The following versions were tested with the compilers:</i>
 	<li><i>GtkAda 3.14.15</i></li>
 </ul>
 <P>
-Changes (7 Mayl 2020) to the version 4.48:<ul>
+Changes (31 May 2020) to the version 4.49:<ul>
+	<li>Julia bindings were adapted to the language version 1.4;</li>
+	<li>Generic_Discrete_Map and Generic_Discrete_Set reworked to support GNAT 
+	Studio Community 2020 (20200427);</li>
+	<li>Adapted to GNAT Studio Community 2020.</li>
+	</ul>
+<P>
+<i>
+The following versions were tested with the compilers:</i>
+<ul>
+  <li>
+<i>GNAT Community 2019 (20190517-83)</i></li>
+  <li>
+<i>GNAT Community 2018 (20180523-73)</i></li>
+	<li><i>GNAT 8</i></li>
+	<li><i>GNAT 9</i></li>
+  </ul>
+<P><i>and the GtkAda versions:</i></p>
+<ul>
+	<li><i>GtkAda 3.14.15</i></li>
+</ul>
+<P>
+Changes (7 May 2020) to the version 4.48:<ul>
 	<li>Bug fix in GNAT.Sockets.Connection_State_Machine.HTTP_Client.Signaled 
 	that prevented signaling successful connection;</li>
 	<li>Sample code Test_HTTPS_OpenSSL_JSON_Client added;</li>
@@ -60254,7 +60279,7 @@ usage of the operation stack</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.6">16.7.6. ODBC commands</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.7">16.7.7. Binding parameters</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#16.8">16.8. GNUTLS bindings</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#16.9">16.9. Interfacing with Julia language</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.9">16.9. Interfacing Julia language</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.1">16.9.1. Initialization and finalization</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.2">16.9.2. Data types</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.3">16.9.3. Correspondence between data types</a><br>

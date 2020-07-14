@@ -3,7 +3,7 @@
 --     Julia.Load_Julia_Library                    Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  11:34 10 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -223,6 +223,10 @@ package body Julia.Load_Julia_Library is
             (  Module : Address;
                Name   : char_array := "jl_gc_total_bytes" & Nul
             )  return GC_Total_Bytes_Ptr;
+   function dlsym
+            (  Module : Address;
+               Name   : char_array := "jl_gc_get_total_bytes" & Nul
+            )  return GC_Get_Total_Bytes_Ptr;
    function dlsym
             (  Module : Address;
                Name   : char_array := "jl_get_field" & Nul
@@ -474,6 +478,7 @@ package body Julia.Load_Julia_Library is
          Links.GC_Is_Enabled         := dlsym (Library);
          Links.GC_Queue_Root         := dlsym (Library);
          Links.GC_Total_Bytes        := dlsym (Library);
+         Links.GC_Get_Total_Bytes    := dlsym (Library);
          Links.Get_Field             := dlsym (Library);
          Links.Get_Global            := dlsym (Library);
          Links.Get_Nth_Field         := dlsym (Library);

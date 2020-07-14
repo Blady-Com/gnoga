@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  13:13 14 Sep 2019  --
+--                                Last revision :  11:34 10 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,7 +32,6 @@ with Ada.Unchecked_Conversion;
 with Julia.Load_Julia_Library;
 with Strings_Edit.UTF8.Categorization;
 with System.Address_To_Access_Conversions;
-
 package body Julia is
 
    package Integer_Address_Conversions is
@@ -78,14 +77,14 @@ package body Julia is
    procedure Check_Error
              (  Error : Exception_ID := Julia_Error'Identity
              )  is
-      function "+" (Value : chars_ptr) return String is
-      begin
-         if Value = Null_Ptr then
-            return "";
-         else
-            return Interfaces.C.Strings.Value (Value);
-         end if;
-      end "+";
+--        function "+" (Value : chars_ptr) return String is
+--        begin
+--           if Value = Null_Ptr then
+--              return "";
+--           else
+--              return Interfaces.C.Strings.Value (Value);
+--           end if;
+--        end "+";
       Result : constant value_t := Links.Exception_Occurred.all;
    begin
       if Result /= No_Value then
@@ -518,7 +517,16 @@ package body Julia is
 
    function GC_Total_Bytes return Integer_64 is
    begin
-      return Links.GC_Total_Bytes.all;
+      if Links.GC_Get_Total_Bytes = null then
+         return Links.GC_Total_Bytes.all;
+      else
+         declare
+            Result : aliased Integer_64;
+         begin
+            Links.GC_Get_Total_Bytes (Result'Unchecked_Access);
+            return Result;
+         end;
+      end if;
    end GC_Total_Bytes;
 
    procedure GC_WB (Parent, Child : value_t) is
@@ -1371,7 +1379,6 @@ package body Julia is
    function To_Julia (Value : values_array) return value_t is
       Types_Of   : datatypes_array (Value'Range);
       Tuple_Type : datatype_t;
-      Result     : value_t;
    begin
       for Index in Value'Range loop
          Check_Value (Value (Index));
@@ -1393,22 +1400,18 @@ package body Julia is
              (  Types_Of (Types_Of'First)'Unchecked_Access,
                 Types_Of'Length
              );
-         Result := Links.New_Struct_Uninit (Tuple_Type);
-         for Index in Value'Range loop
-            Links.Set_Nth_Field
-            (  Result,
-               size_t (Index - Value'First),
-               Value (Index)
-            );
-         end loop;
-         return Result;
+         return Links.New_StructV
+                (  Tuple_Type,
+                   Value (Value'First)'Unchecked_Access,
+                   Value'Length
+                );
       end if;
    end To_Julia;
 
    function To_Julia (Value : Tuple) return value_t is
       use Strings_Edit;
       Tuple_Type : datatype_t;
-      Result     : value_t;
+--      Result     : value_t;
       Size       : Natural := 512;
       Roots      : Holder (Length (Value));
    begin
@@ -1447,15 +1450,18 @@ package body Julia is
                Size := Size * 2;
          end;
       end loop;
-      Result := Links.New_Struct_Uninit (Tuple_Type);
-      for Index in 1..Length (Value) loop
-         Links.Set_Nth_Field
-         (  Result,
-            size_t (Index) - 1,
-            Get_Value (Value, Index)
-         );
-      end loop;
-      return Result;
+      declare
+         Members : values_array (1..Length (Value));
+      begin
+         for Index in 1..Length (Value) loop
+            Members (Index) := Get_Value (Value, Index);
+         end loop;
+         return Links.New_StructV
+                (  Tuple_Type,
+                   Members (Members'First)'Unchecked_Access,
+                   Members'Length
+                );
+      end;
    end To_Julia;
 
    procedure Load (Name : String := "") is
@@ -1575,8 +1581,9 @@ package body Julia is
          Error ("jl_gc_is_enabled");
       elsif Links.GC_Queue_Root = null then
          Error ("jl_gc_queue_root");
-      elsif Links.GC_Total_Bytes = null then
-         Error ("jl_gc_total_bytes");
+      elsif Links.GC_Get_Total_Bytes = null and then
+            Links.GC_Total_Bytes     = null     then
+         Error ("jl_gc_total_bytes or jl_gc_get_total_bytes");
       elsif Links.Get_Field = null then
          Error ("jl_get_field");
       elsif Links.Get_Global = null then

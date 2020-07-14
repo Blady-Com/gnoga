@@ -389,7 +389,7 @@ private
    type Token is new Object.Entity with record
       Object : Object_Ptr;
    end record;
-   type Token_Ptr is access all Token'Class;
+   type Token_Ptr is access Token'Class;
    procedure Finalize (Reference : in out Token);
 
    package Token_Handles is new Object.Handle (Token'Class, Token_Ptr);

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  10:33 11 May 2019  --
+--                                Last revision :  10:09 24 May 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,6 +24,8 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
+
+with System;  use System;
 
 package body Object.Handle is
 
@@ -151,7 +153,7 @@ package body Object.Handle is
       return
       (  Left.Ptr /= null
       and then
-         Left.Ptr.all'Unchecked_Access = Object_Type_Ptr (Right)
+         Left.Ptr.all'Address = Right.all'Address
       );
    end "=";
 
@@ -161,7 +163,7 @@ package body Object.Handle is
       return
       (  Right.Ptr /= null
       and then
-         Right.Ptr.all'Unchecked_Access = Object_Type_Ptr (Left)
+         Right.Ptr.all'Address = Left.all'Address
       );
    end "=";
 

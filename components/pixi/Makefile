@@ -19,5 +19,5 @@ install:
 	$(COPY) js$(PATHSEP)*.* $(INSTALL_DIR)$(PATHSEP)js
 
 uninstall:
-	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)pixi.js
-	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)pixi.js.map
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)pixi.min.js
+	- $(RM) $(INSTALL_DIR)$(PATHSEP)js$(PATHSEP)pixi.in.js.map

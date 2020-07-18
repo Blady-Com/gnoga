@@ -48,7 +48,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Window.Document.Head_Element.jQuery_Execute
       ("append('" &
        Escape_Quotes
-         ("<script src='/js/pixi.js'" &
+         ("<script src='/js/pixi.min.js'" &
           " type='text/javascript' charset='utf-8'></script>") &
        "')");
    end Load_PIXI;
@@ -58,27 +58,77 @@ package body Gnoga.Gui.Plugin.Pixi is
    ------------
 
    procedure Create
-     (Renderer : in out Renderer_Type;
-      Canvas   : in out Gnoga.Gui.Element.Canvas.Canvas_Type'Class)
+     (Application : in out Application_Type;
+      Window      : in out Gnoga.Gui.Window.Window_Type'Class;
+      Width       : in     Integer;
+      Height      : in     Integer)
+   is
+      Application_ID : constant String := Gnoga.Server.Connection.New_GID;
+   begin
+      Application.ID (Application_ID, Gnoga.Types.Gnoga_ID);
+      Application.Connection_ID (Window.Connection_ID);
+      Application.Attach_Using_Parent
+        (Parent => Window, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Gnoga.Server.Connection.Execute_Script
+        (Application.Connection_ID,
+         Application.Script_Accessor &
+           " = new PIXI.Application(" &
+           Width'Img &
+           ", " &
+           Height'Img & ");" &
+           "document.body.appendChild(" & Application.Script_Accessor & ".view)");
+      Application.Parent (Window);
+   end Create;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Application : in out Application_Type;
+      Canvas      : in out Gnoga.Gui.Element.Canvas.Canvas_Type'Class;
+      Width       : in     Integer;
+      Height      : in     Integer)
+   is
+      Application_ID : constant String := Gnoga.Server.Connection.New_GID;
+   begin
+      Application.ID (Application_ID, Gnoga.Types.Gnoga_ID);
+      Application.Connection_ID (Canvas.Connection_ID);
+      Application.Attach_Using_Parent
+        (Parent => Canvas, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Gnoga.Server.Connection.Execute_Script
+        (Application.Connection_ID,
+         "gnoga['" &
+           Application_ID &
+           "'] = new PIXI.Application({" &
+           "width:" & Width'Img &
+           ", height:" & Height'Img &
+           ", view: document.getElementById('" &
+           Canvas.ID &
+           "')})");
+      Application.Parent (Canvas);
+   end Create;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Renderer    : in out Renderer_Type;
+      Application : in out Application_Type'Class)
    is
       Renderer_ID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Renderer.ID (Renderer_ID, Gnoga.Types.Gnoga_ID);
-      Renderer.Connection_ID (Canvas.Connection_ID);
+      Renderer.Connection_ID (Application.Connection_ID);
       Renderer.Attach_Using_Parent
-        (Parent => Canvas, ID => Renderer_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+        (Parent => Application, ID => Renderer_ID, ID_Type => Gnoga.Types.Gnoga_ID);
 
       Gnoga.Server.Connection.Execute_Script
         (Renderer.Connection_ID,
          "gnoga['" &
            Renderer_ID &
-           "'] = new PIXI.CanvasRenderer(" &
-           Canvas.Width'Img &
-           ", " &
-           Canvas.Height'Img &
-           ", {view : document.getElementById('" &
-           Canvas.ID &
-           "')});");
+           "'] = gnoga['" & Application.ID & "'].renderer;");
       Gnoga.Server.Connection.Execute_Script
         (Renderer.Connection_ID,
          "gnoga['" &
@@ -199,7 +249,7 @@ package body Gnoga.Gui.Plugin.Pixi is
            "};" &
            "};");
       Renderer.Property ("gnoga_autoRendering", False);
-      Renderer.Parent (Canvas);
+      Renderer.Parent (Application);
    end Create;
 
    ----------------------
@@ -261,6 +311,8 @@ package body Gnoga.Gui.Plugin.Pixi is
               Container.ID &
               "']);};");
          Renderer.Execute ("gnoga_animate();");
+      else
+         delay 1.0; --  Let some time to pop all pending requests
       end if;
    end Auto_Rendering;
 
@@ -278,22 +330,35 @@ package body Gnoga.Gui.Plugin.Pixi is
    ------------
 
    procedure Create
-     (Container : in out Container_Type;
-      Renderer  : in out Renderer_Type'Class)
+     (Container   : in out Container_Type;
+      Application : in out Application_Type'Class)
    is
       Container_ID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Container.ID (Container_ID, Gnoga.Types.Gnoga_ID);
-      Container.Connection_ID (Renderer.Connection_ID);
+      Container.Connection_ID (Application.Connection_ID);
       Container.Attach_Using_Parent
       (Parent                  =>
-         Renderer, ID          =>
+         Application, ID          =>
          Container_ID, ID_Type =>
          Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Container.Connection_ID,
-         "gnoga['" & Container_ID & "'] = new PIXI.Container();");
-      Container.Parent (Renderer);
+         "gnoga['" & Container_ID & "'] = new PIXI.Container();" &
+         "gnoga['" & Application.ID & "'].stage.addChild(gnoga['" & Container_ID & "'])");
+      Container.Parent (Application);
+   end Create;
+
+   ------------
+   -- Create --
+   ------------
+
+   procedure Create
+     (Container : in out Container_Type;
+      Renderer  : in out Renderer_Type'Class)
+   is
+   begin
+      pragma Compile_Time_Warning (Standard.True, "Create from renderer is no more available.");
    end Create;
 
    ------------
@@ -596,7 +661,7 @@ package body Gnoga.Gui.Plugin.Pixi is
         (Texture.Connection_ID,
          "gnoga['" &
          Texture_ID &
-         "'] = new PIXI.Texture.fromImage('" &
+         "'] = new PIXI.Texture.from('" &
          Image_URL &
          "');");
    end Create;

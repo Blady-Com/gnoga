@@ -115,7 +115,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
         (Sprite.Connection_ID,
          "gnoga['" &
          Sprite_ID &
-         "'] = new PIXI.Sprite.fromImage('" &
+         "'] = new PIXI.Sprite.from('" &
          Image_Path &
          "');" &
          " gnoga['" &

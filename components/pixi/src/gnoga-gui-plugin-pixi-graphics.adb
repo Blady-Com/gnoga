@@ -112,7 +112,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Integer)
    is
    begin
-      Graphics.Property ("boundsPadding", Value);
+      pragma Compile_Time_Warning (Standard.True, "Bounds_Padding no more available.");
    end Bounds_Padding;
 
    --------------------
@@ -121,7 +121,8 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Bounds_Padding (Graphics : in Graphics_Type) return Integer is
    begin
-      return Graphics.Property ("boundsPadding");
+      pragma Compile_Time_Warning (Standard.True, "Bounds_Padding no more available.");
+      return 0;
    end Bounds_Padding;
 
    ----------------
@@ -133,7 +134,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Gnoga.Types.Alpha_Type)
    is
    begin
-      Graphics.Property ("fillAlpha", Float (Value));
+      pragma Compile_Time_Warning (Standard.True, "Fill_Alpha no more available.");
    end Fill_Alpha;
 
    ----------------
@@ -144,7 +145,8 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type
    is
    begin
-      return Gnoga.Types.Alpha_Type (Float'(Graphics.Property ("fillAlpha")));
+      pragma Compile_Time_Warning (Standard.True, "Fill_Alpha no more available.");
+      return 0.0;
    end Fill_Alpha;
 
    -----------
@@ -198,8 +200,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
-      Graphics.Property
-      ("lineColor", Gnoga.Types.To_Hex (Gnoga.Types.Colors.To_RGBA (Value)));
+      pragma Compile_Time_Warning (Standard.True, "Line_Color no more available.");
    end Line_Color;
 
    ----------------
@@ -209,13 +210,9 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    function Line_Color
      (Graphics : in out Graphics_Type) return Gnoga.Types.RGBA_Type
    is
-      Value : constant Natural := Graphics.Property ("lineColor");
    begin
-      return
-        (Red   => Gnoga.Types.Color_Type (Value / 256 / 256),
-         Green => Gnoga.Types.Color_Type ((Value / 256) mod 256),
-         Blue  => Gnoga.Types.Color_Type (Value / 256),
-         Alpha => 1.0);
+      pragma Compile_Time_Warning (Standard.True, "Line_Color no more available.");
+      return (0, 0, 0, 0.0);
    end Line_Color;
 
    ----------------
@@ -227,7 +224,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Integer)
    is
    begin
-      Graphics.Property ("lineWidth", Value);
+      pragma Compile_Time_Warning (Standard.True, "Line_Width no more available.");
    end Line_Width;
 
    ----------------
@@ -236,7 +233,8 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Line_Width (Graphics : in Graphics_Type) return Integer is
    begin
-      return Graphics.Property ("lineWidth");
+      pragma Compile_Time_Warning (Standard.True, "Line_Width no more available.");
+      return 0;
    end Line_Width;
 
    --------------
@@ -407,7 +405,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    procedure Add_Hole (Graphics : in out Graphics_Type) is
    begin
-      Graphics.Execute ("addHole();");
+      pragma Compile_Time_Warning (Standard.True, "Add_Hole no more available.");
    end Add_Hole;
 
    -----------------
@@ -680,17 +678,9 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in out Graphics_Type;
       Texture  :    out Texture_Type)
    is
-      Texture_ID : constant String := Gnoga.Server.Connection.New_GID;
+      pragma Unreferenced (Texture);
    begin
-      Texture.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
-      Texture.Connection_ID (Graphics.Connection_ID);
-      Gnoga.Server.Connection.Execute_Script
-        (Graphics.Connection_ID,
-         "gnoga['" &
-         Texture_ID &
-         "'] = gnoga['" &
-         Graphics.ID &
-         "'].generateCanvasTexture();");
+      pragma Compile_Time_Warning (Standard.True, "Generate_Canvas_Texture no more available.");
    end Generate_Canvas_Texture;
 
    ----------------

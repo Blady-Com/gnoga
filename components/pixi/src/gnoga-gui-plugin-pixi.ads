@@ -54,8 +54,12 @@ package Gnoga.Gui.Plugin.Pixi is
    --  Load PIXI code into Window
 
    -------------------------------------------------------------------------
-   --  Renderer_Type and Container_Type
+   --  Application_Type, Renderer_Type and Container_Type
    -------------------------------------------------------------------------
+
+   type Application_Type is new Gnoga.Gui.Element.Element_Type with private;
+   type Application_Access is access all Application_Type;
+   type Pointer_To_Application_Class is access all Application_Type'Class;
 
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with private;
    type Renderer_Access is access all Renderer_Type;
@@ -66,13 +70,31 @@ package Gnoga.Gui.Plugin.Pixi is
    type Pointer_To_Container_Class is access all Container_Type'Class;
 
    -------------------------------------------------------------------------
+   --  Application_Type - Creation Methods
+   -------------------------------------------------------------------------
+
+   procedure Create
+     (Application : in out Application_Type;
+      Window      : in out Gnoga.Gui.Window.Window_Type'Class;
+      Width       : in     Integer;
+      Height      : in     Integer);
+   --  Create PIXI application and place it in window document
+
+   procedure Create
+     (Application : in out Application_Type;
+      Canvas      : in out Gnoga.Gui.Element.Canvas.Canvas_Type'Class;
+      Width       : in     Integer;
+      Height      : in     Integer);
+   --  Create PIXI Application associated to the canvas
+
+   -------------------------------------------------------------------------
    --  Renderer_Type - Creation Methods
    -------------------------------------------------------------------------
 
    procedure Create
-     (Renderer : in out Renderer_Type;
-      Canvas   : in out Gnoga.Gui.Element.Canvas.Canvas_Type'Class);
-   --  Create renderer associated to the canvas
+     (Renderer    : in out Renderer_Type;
+      Application : in out Application_Type'Class);
+   --  Create renderer associated to the application
 
    -------------------------------------------------------------------------
    --  Renderer_Type - Methods
@@ -95,8 +117,13 @@ package Gnoga.Gui.Plugin.Pixi is
    -------------------------------------------------------------------------
 
    procedure Create
+     (Container    : in out Container_Type;
+      Application  : in out Application_Type'Class);
+
+   procedure Create
      (Container : in out Container_Type;
       Renderer  : in out Renderer_Type'Class);
+   pragma Obsolescent ("Use Create with Application instead");
 
    procedure Create
      (Container : in out Container_Type;
@@ -444,8 +471,25 @@ package Gnoga.Gui.Plugin.Pixi is
       HUE,
       SATURATION,
       COLOR,
-      LUMINOSITY);
+      LUMINOSITY,
+      NORMAL_NPM,
+      ADD_NPM,
+      SCREEN_NPM,
+      NONE,
+      SRC_IN,
+      SRC_OUT,
+      SRC_ATOP,
+      DST_OVER,
+      DST_IN,
+      DST_OUT,
+      DST_ATOP,
+      SUBTRACT,
+      XOR_BM);
+      SRC_OVER : constant Blend_Modes_Type := NORMAL;
+      ERASE    : constant Blend_Modes_Type := DST_OUT;
    --  Various blend modes supported by PIXI.
+   --  IMPORTANT - The WebGL renderer only supports the NORMAL, ADD, MULTIPLY and SCREEN blend modes.
+   --  Anything else will silently act like NORMAL.
 
    type Scale_Modes_Type is (LINEAR, NEAREST);
    --  The scale modes that are supported by pixi.
@@ -468,6 +512,8 @@ package Gnoga.Gui.Plugin.Pixi is
 private
    Frame_Rate : constant := 60.0;
    --  Standard value for most browsers (FPS)
+
+   type Application_Type is new Gnoga.Gui.Element.Element_Type with null record;
 
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with null record;
    overriding

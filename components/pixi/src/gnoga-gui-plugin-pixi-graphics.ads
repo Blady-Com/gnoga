@@ -76,14 +76,18 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    procedure Bounds_Padding
      (Graphics : in out Graphics_Type;
       Value    : in     Integer);
+   pragma Obsolescent ("Bounds_Padding no more available.");
    function Bounds_Padding (Graphics : in Graphics_Type) return Integer;
+   pragma Obsolescent ("Bounds_Padding no more available.");
    --  The bounds' padding used for bounds calculation.
 
    procedure Fill_Alpha
      (Graphics : in out Graphics_Type;
       Value    : in     Gnoga.Types.Alpha_Type);
+   pragma Obsolescent ("Fill_Alpha no more available.");
    function Fill_Alpha
      (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type;
+   pragma Obsolescent ("Fill_Alpha no more available.");
    --  The alpha value used when filling the Graphics object.
 
    overriding procedure Width
@@ -101,12 +105,16 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    procedure Line_Color
      (Graphics : in out Graphics_Type;
       Value    : in     Gnoga.Types.Colors.Color_Enumeration);
+   pragma Obsolescent ("Line_Color no more available.");
    function Line_Color
      (Graphics : in out Graphics_Type) return Gnoga.Types.RGBA_Type;
+   pragma Obsolescent ("Line_Color no more available.");
    --  The color of any lines drawn.
 
    procedure Line_Width (Graphics : in out Graphics_Type; Value : in Integer);
+   pragma Obsolescent ("Line_Width no more available.");
    function Line_Width (Graphics : in Graphics_Type) return Integer;
+   pragma Obsolescent ("Line_Width no more available.");
    --  The width (thickness) of any lines drawn.
 
    procedure Position (Graphics : in Graphics_Type; Row, Column : out Integer);
@@ -146,6 +154,7 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    -------------------------------------------------------------------------
 
    procedure Add_Hole (Graphics : in out Graphics_Type);
+   pragma Obsolescent ("Add_Hole no more available.");
    --  Adds a hole in the current path.
 
    procedure Arc_Radians
@@ -236,6 +245,7 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    procedure Generate_Canvas_Texture
      (Graphics : in out Graphics_Type;
       Texture  :    out Texture_Type);
+   pragma Obsolescent ("Generate_Canvas_Texture no more available.");
    --  Generates a canvas texture.
 
    procedure Line_Style

@@ -87,6 +87,7 @@ procedure Pixi_Sprite_Test is
    is
       pragma Unreferenced (Connection);
       App        : constant App_Access := new App_Data;
+      A          : Plugin.Pixi.Application_Type;
       R          : Plugin.Pixi.Renderer_Type;
       C          : Plugin.Pixi.Container_Type;
       G, B, L    : Plugin.Pixi.Graphics.Graphics_Type;
@@ -117,16 +118,17 @@ procedure Pixi_Sprite_Test is
       App.My_Canvas.Place_Inside_Bottom_Of
         (App.Main_Window.Document.Body_Element.all);
 
-      R.Create (App.My_Canvas);
-      C.Create (R);
+      A.Create (App.My_Canvas, 600, 400);
+      -- or directly inside the window (no need to create a canvas)
+      --        A.Create (Main_Window, 600, 400);
+      R.Create (A);
+      C.Create (A);
       G.Create (C);
 
 --        delay 30.1;
 
-      G.Line_Color (Gnoga.Types.Colors.Yellow);
-      G.Line_Width (8);
+      G.Line_Style (8, Gnoga.Types.Colors.Yellow);
       G.Draw_Rect (50, 10, 90, 40);
-      R.Render (C);
 
       S1.Create (G);
       S1.Font_Family ("Arial");
@@ -208,10 +210,9 @@ procedure Pixi_Sprite_Test is
       Gnoga.Log ("Waiting: 2 +" & Time_To_Wait'Img);
       delay Time_To_Wait + 2.0;
 
-      App.SP3.Create (C, "", 100, 100);
+      App.SP3.Create (C, "img/empty.png", 100, 100);
       B.Create (App.SP3);
-      B.Line_Color (Gnoga.Types.Colors.Yellow_Green);
-      B.Line_Width (8);
+      B.Line_Style (8, Gnoga.Types.Colors.Yellow_Green);
       B.Draw_Circle (0, 0, 10);
       App.SP3.Frame_Limit
         (50, 350, 50, 500, Gnoga.Gui.Plugin.Pixi.Sprite.Loop_Effect);
@@ -229,7 +230,7 @@ procedure Pixi_Sprite_Test is
       App.SP1.Motion (50.0, -145);
       App.SP1.Acceleration (10.0, 90);
       delay 5.0;
-      G.Line_Color (Gnoga.Types.Colors.Green);
+      G.Line_Style (8, Gnoga.Types.Colors.Green);
       G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
@@ -237,7 +238,7 @@ procedure Pixi_Sprite_Test is
       Gnoga.Log ("Rotation: " & App.SP1.Rotation'Img);
       App.SP1.Rotation_Acceleration (-10.0);
       delay 3.0;
-      G.Line_Color (Gnoga.Types.Colors.Grey);
+      G.Line_Style (8, Gnoga.Types.Colors.Grey);
       G.Move_To (100, 140);
       G.Line_To (App.SP1.Column, App.SP1.Row);
       R.Render (C);
@@ -289,22 +290,23 @@ procedure Pixi_Sprite_Test is
             Gnoga.Gui.Plugin.Pixi.Sprite.Distance (App.SP1, App.SP2)'Img);
       end loop;
 
+      R.Auto_Rendering (C, False);
       C.Finalize;
 
-      C.Create (R);
+      C.Create (A);
       M1.Create (C, "Gnoga Native System", 10, 10);
       M1.Set_Style (S2);
-      App.SP1.Create (C, "", 200, 300);
+      App.SP1.Create (C, "img/empty.png", 200, 300);
       G.Create (App.SP1);
       G.Begin_Fill (Gnoga.Types.Colors.Yellow);
       G.Draw_Circle (0, 0, 50);
       G.End_Fill;
-      App.SP2.Create (App.SP1, "", 0, 150);
+      App.SP2.Create (App.SP1, "img/empty.png", 0, 150);
       B.Create (App.SP2);
       B.Begin_Fill (Gnoga.Types.Colors.Blue);
       B.Draw_Circle (0, 0, 10);
       B.End_Fill;
-      App.SP3.Create (App.SP2, "", 0, 25);
+      App.SP3.Create (App.SP2, "img/empty.png", 0, 25);
       L.Create (App.SP3);
       L.Begin_Fill (Gnoga.Types.Colors.Brown);
       L.Draw_Circle (0, 0, 2);
@@ -317,6 +319,7 @@ procedure Pixi_Sprite_Test is
 
       delay 60.0;
 
+      R.Auto_Rendering (C, False);
       App.SP1.Finalize;
 
       delay 10.0;

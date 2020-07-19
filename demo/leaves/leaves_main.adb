@@ -77,6 +77,7 @@ procedure Leaves_main is
       Main_Window    : Window.Pointer_To_Window_Class;
       Background     : View_Type;
       My_Canvas      : aliased Canvas.Canvas_Type;
+      A              : Plugin.Pixi.Application_Type;
       C              : Plugin.Pixi.Container_Type;
       R              : Plugin.Pixi.Renderer_Type;
       My_Board       : Match_3.Board (1 .. columns, 1 .. rows);
@@ -163,8 +164,8 @@ procedure Leaves_main is
       App.My_Board (c1.x, c1.y) := App.My_Board (c2.x, c2.y);
       App.My_Board (c2.x, c2.y) := aux;
       --  Swap the sprites themselves (Delete & Re-Create)
-      App.Sprite (c1.x, c1.y).Delete (App.C);
-      App.Sprite (c2.x, c2.y).Delete (App.C);
+      App.Sprite (c1.x, c1.y).Finalize;
+      App.Sprite (c2.x, c2.y).Finalize;
       Create_tile_sprite (App, (c1.x, c1.y));
       Create_tile_sprite (App, (c2.x, c2.y));
    end Swap_tiles;
@@ -194,7 +195,7 @@ procedure Leaves_main is
          Game_log ("[--Delay--] Show matches");
          delay 0.41;
          for tch in ma'Range loop
-            fx (tch).Delete (App.C);
+            fx (tch).Finalize;
          end loop;
       end Show_matches;
       --
@@ -204,7 +205,7 @@ procedure Leaves_main is
          for x in 1 .. App.columns loop
             for y in 1 .. App.rows loop
                if App.My_Board (x, y) = empty then
-                  App.Sprite (x, y).Delete (App.C);
+                  App.Sprite (x, y).Finalize;
                end if;
             end loop;
          end loop;
@@ -229,7 +230,7 @@ procedure Leaves_main is
             dmax := 0.0;
             for g of gl loop
                if g.from.y > 0 then  --  On the board
-                  App.Sprite (g.from.x, g.from.y).Delete (App.C);
+                  App.Sprite (g.from.x, g.from.y).Finalize;
                end if;
                Create_tile_sprite (App, (g.to.x, g.to.y));
                App.Sprite (g.to.x, g.to.y).Locate (Row => Pix_ver_pos (g.from), Column => Pix_hor_pos (g.from));
@@ -286,7 +287,7 @@ procedure Leaves_main is
    begin
       App.My_Canvas.On_Mouse_Down_Handler (null);
       --  Un-display choice highlighter
-      App.Tile_choice.Delete (App.C);
+      App.Tile_choice.Finalize;
       Game_log ("Trying to swap: (" & swap_1.x'Img & swap_1.y'Img & ") and (" & swap_2.x'Img & swap_2.y'Img & ")");
       if swap_1.x in App.My_Board'Range (1) and then swap_1.y in App.My_Board'Range (2) and then
          swap_2.x in App.My_Board'Range (1) and then swap_2.y in App.My_Board'Range (2) and then
@@ -353,8 +354,13 @@ procedure Leaves_main is
       Fill (App.My_Board, level_probs);
       Unclick (App.all);
 
-      App.R.Create (App.My_Canvas);
-      App.C.Create (App.R);
+      App.A.Create (
+        App.My_Canvas,
+        grid_width + App.My_Board'Length (1) * cell_size_padded,
+        grid_width + App.My_Board'Length (2) * cell_size_padded
+      );
+      App.R.Create (App.A);
+      App.C.Create (App.A);
       G.Create (App.C);
 
       --  G.Fill_Color ("yellow");
@@ -396,7 +402,7 @@ procedure Leaves_main is
       App.Btn_Down_pix_y := Mouse_Event.Y;
       App.Btn_Down_pos := Locate_cell (App.Btn_Down_pix_x, App.Btn_Down_pix_y);
       --  Un-display previous choice highlighter
-      App.Tile_choice.Delete (App.C);
+      App.Tile_choice.Finalize;
       --  Highlight new choice
       if App.Btn_Down_pos.x in App.My_Board'Range (1) and then
          App.Btn_Down_pos.y in App.My_Board'Range (2)

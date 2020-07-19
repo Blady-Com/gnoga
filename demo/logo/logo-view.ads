@@ -25,6 +25,7 @@ package Logo.View is
       Label_Text   : Gnoga.Gui.View.View_Type;
       Click_Button : Gnoga.Gui.Element.Common.Button_Type;
       Canvas       : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Application  : Gnoga.Gui.Plugin.Pixi.Application_Type;
       Renderer     : Gnoga.Gui.Plugin.Pixi.Renderer_Type;
       Container    : Gnoga.Gui.Plugin.Pixi.Container_Type;
       Turtle       : Gnoga.Gui.Plugin.Pixi.Sprite.Sprite_Type;

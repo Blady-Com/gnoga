@@ -32,8 +32,9 @@ package body Logo.View is
       --        Grid.Label_Text.Create (Grid.Panel (1, 1).all);
       --  TODO: background light gray
       Grid.Canvas.Create (Grid.Panel (1, 1).all, 600, 400);
-      Grid.Renderer.Create (Grid.Canvas);
-      Grid.Container.Create (Grid.Renderer);
+      Grid.Application.Create (Grid.Canvas, 600, 400);
+      Grid.Renderer.Create (Grid.Application);
+      Grid.Container.Create (Grid.Application);
       Grid.Renderer.Auto_Rendering (Grid.Container, True);
       Grid.Turtle.Create (Grid.Container, "img/hector.png", 100, 100);
       delay 2.0; --  Wait for image full loaded

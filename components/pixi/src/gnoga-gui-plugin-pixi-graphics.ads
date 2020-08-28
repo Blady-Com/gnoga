@@ -87,7 +87,6 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    pragma Obsolescent ("Fill_Alpha no more available.");
    function Fill_Alpha
      (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type;
-   pragma Obsolescent ("Fill_Alpha no more available.");
    --  The alpha value used when filling the Graphics object.
 
    overriding procedure Width
@@ -105,16 +104,15 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    procedure Line_Color
      (Graphics : in out Graphics_Type;
       Value    : in     Gnoga.Types.Colors.Color_Enumeration);
-   pragma Obsolescent ("Line_Color no more available.");
+   procedure Line_Color
+     (Graphics : in out Graphics_Type;
+      Value    : in     Gnoga.Types.RGBA_Type);
    function Line_Color
      (Graphics : in out Graphics_Type) return Gnoga.Types.RGBA_Type;
-   pragma Obsolescent ("Line_Color no more available.");
    --  The color of any lines drawn.
 
    procedure Line_Width (Graphics : in out Graphics_Type; Value : in Integer);
-   pragma Obsolescent ("Line_Width no more available.");
    function Line_Width (Graphics : in Graphics_Type) return Integer;
-   pragma Obsolescent ("Line_Width no more available.");
    --  The width (thickness) of any lines drawn.
 
    procedure Position (Graphics : in Graphics_Type; Row, Column : out Integer);
@@ -191,7 +189,11 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in out Graphics_Type;
       Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
         Gnoga.Types.Colors.Black;
-      Alpha : Gnoga.Types.Alpha_Type := 1.0);
+      Alpha    : in     Gnoga.Types.Alpha_Type := 1.0);
+   procedure Begin_Fill
+     (Graphics : in out Graphics_Type;
+      Color    : in     Gnoga.Types.RGBA_Type;
+      Alpha    : in     Gnoga.Types.Alpha_Type := 1.0);
    --  Specifies a simple one-color fill that subsequent calls to other Graphics methods
    --  (such as lineTo() or drawCircle()) use when drawing.
 
@@ -252,6 +254,11 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics   : in out Graphics_Type;
       Line_Width : in     Natural;
       Color      : in     Gnoga.Types.Colors.Color_Enumeration;
+      Alpha      : in     Gnoga.Types.Alpha_Type := 1.0);
+   procedure Line_Style
+     (Graphics   : in out Graphics_Type;
+      Line_Width : in     Natural;
+      Color      : in     Gnoga.Types.RGBA_Type;
       Alpha      : in     Gnoga.Types.Alpha_Type := 1.0);
    --  Specifies the line style used for subsequent calls to Graphics methods
    --  such as the lineTo() method or the drawCircle() method.

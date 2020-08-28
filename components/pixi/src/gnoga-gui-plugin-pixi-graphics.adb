@@ -145,8 +145,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Fill_Alpha no more available.");
-      return 0.0;
+      return Gnoga.Types.Alpha_Type (Float'(Graphics.Property ("fill.alpha")));
    end Fill_Alpha;
 
    -----------
@@ -200,7 +199,15 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Line_Color no more available.");
+      Graphics.Line_Style (Graphics.Line_Width, Value);
+   end Line_Color;
+
+   procedure Line_Color
+     (Graphics : in out Graphics_Type;
+      Value    : in     Gnoga.Types.RGBA_Type)
+   is
+   begin
+      Graphics.Line_Style (Graphics.Line_Width, Value);
    end Line_Color;
 
    ----------------
@@ -210,9 +217,13 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    function Line_Color
      (Graphics : in out Graphics_Type) return Gnoga.Types.RGBA_Type
    is
+      Value : constant Natural := Graphics.Property ("line.color");
    begin
-      pragma Compile_Time_Warning (Standard.True, "Line_Color no more available.");
-      return (0, 0, 0, 0.0);
+      return
+        (Red   => Gnoga.Types.Color_Type (Value / 256 / 256),
+         Green => Gnoga.Types.Color_Type ((Value / 256) mod 256),
+         Blue  => Gnoga.Types.Color_Type (Value / 256),
+         Alpha => 1.0);
    end Line_Color;
 
    ----------------
@@ -224,7 +235,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Integer)
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Line_Width no more available.");
+      Graphics.Line_Style (Value, Graphics.Line_Color);
    end Line_Width;
 
    ----------------
@@ -233,8 +244,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Line_Width (Graphics : in Graphics_Type) return Integer is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Line_Width no more available.");
-      return 0;
+      return Graphics.Property ("line.width");
    end Line_Width;
 
    --------------
@@ -490,12 +500,21 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in out Graphics_Type;
       Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
         Gnoga.Types.Colors.Black;
-      Alpha : Gnoga.Types.Alpha_Type := 1.0)
+      Alpha :    in     Gnoga.Types.Alpha_Type := 1.0)
+   is
+   begin
+      Graphics.Begin_Fill (Gnoga.Types.Colors.To_RGBA (Color), Alpha);
+   end Begin_Fill;
+
+   procedure Begin_Fill
+     (Graphics : in out Graphics_Type;
+      Color    : in     Gnoga.Types.RGBA_Type;
+      Alpha    : in     Gnoga.Types.Alpha_Type := 1.0)
    is
    begin
       Graphics.Execute
       ("beginFill(" &
-       Gnoga.Types.To_Hex (Gnoga.Types.Colors.To_RGBA (Color)) &
+       Gnoga.Types.To_Hex (Color) &
        ", " &
        Alpha'Img &
        ");");
@@ -694,11 +713,21 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Alpha      : in     Gnoga.Types.Alpha_Type := 1.0)
    is
    begin
+      Graphics.Line_Style (Line_Width, Gnoga.Types.Colors.To_RGBA (Color));
+   end Line_Style;
+
+   procedure Line_Style
+     (Graphics   : in out Graphics_Type;
+      Line_Width : in     Natural;
+      Color      : in     Gnoga.Types.RGBA_Type;
+      Alpha      : in     Gnoga.Types.Alpha_Type := 1.0)
+   is
+   begin
       Graphics.Execute
       ("lineStyle(" &
        Line_Width'Img &
        ',' &
-       Gnoga.Types.To_Hex (Gnoga.Types.Colors.To_RGBA (Color)) &
+       Gnoga.Types.To_Hex (Color) &
        ',' &
        Alpha'Img &
        ");");

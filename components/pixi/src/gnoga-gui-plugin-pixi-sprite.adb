@@ -463,7 +463,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       return Gnoga.Types.Frational_Range_Type
-          (Float'(Sprite.Property ("anchor.y")));
+          (Float'(Sprite.Execute ("anchor.y")));
    end Row_Anchor;
 
    -------------------
@@ -475,7 +475,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       return Gnoga.Types.Frational_Range_Type
-          (Float'(Sprite.Property ("anchor.x")));
+          (Float'(Sprite.Execute ("anchor.x")));
    end Column_Anchor;
 
    ----------------
@@ -522,7 +522,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Row_Pivot (Sprite : in Sprite_Type) return Integer is
    begin
-      return Sprite.Property ("pivot.x");
+      return Sprite.Execute ("pivot.x");
    end Row_Pivot;
 
    ------------------
@@ -531,7 +531,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Column_Pivot (Sprite : in Sprite_Type) return Integer is
    begin
-      return Sprite.Property ("pivot.y");
+      return Sprite.Execute ("pivot.y");
    end Column_Pivot;
 
    --------------
@@ -671,7 +671,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Row_Scale (Sprite : in Sprite_Type) return Positive is
    begin
-      return Sprite.Property ("scale.y");
+      return Sprite.Execute ("scale.y");
    end Row_Scale;
 
    ------------------
@@ -680,7 +680,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Column_Scale (Sprite : in Sprite_Type) return Positive is
    begin
-      return Sprite.Property ("scale.x");
+      return Sprite.Execute ("scale.x");
    end Column_Scale;
 
    ----------
@@ -706,7 +706,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Row_Skew (Sprite : in Sprite_Type) return Positive is
    begin
-      return Sprite.Property ("skew.y");
+      return Sprite.Execute ("skew.y");
    end Row_Skew;
 
    -----------------
@@ -715,7 +715,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Column_Skew (Sprite : in Sprite_Type) return Positive is
    begin
-      return Sprite.Property ("skew.x");
+      return Sprite.Execute ("skew.x");
    end Column_Skew;
 
    -----------------

@@ -221,7 +221,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       return Gnoga.Types.Frational_Range_Type
-          (Float'(Text.Property ("anchor.y")));
+          (Float'(Text.Execute ("anchor.y")));
    end Row_Anchor;
 
    -------------------
@@ -233,7 +233,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       return Gnoga.Types.Frational_Range_Type
-          (Float'(Text.Property ("anchor.x")));
+          (Float'(Text.Execute ("anchor.x")));
    end Column_Anchor;
 
    ----------------
@@ -298,7 +298,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Row_Pivot (Text : in Text_Type) return Integer is
    begin
-      return Text.Property ("pivot.x");
+      return Text.Execute ("pivot.x");
    end Row_Pivot;
 
    ------------------
@@ -307,7 +307,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Column_Pivot (Text : in Text_Type) return Integer is
    begin
-      return Text.Property ("pivot.y");
+      return Text.Execute ("pivot.y");
    end Column_Pivot;
 
    --------------
@@ -440,7 +440,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Row_Scale (Text : in Text_Type) return Positive is
    begin
-      return Text.Property ("scale.y");
+      return Text.Execute ("scale.y");
    end Row_Scale;
 
    ------------------
@@ -449,7 +449,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Column_Scale (Text : in Text_Type) return Positive is
    begin
-      return Text.Property ("scale.x");
+      return Text.Execute ("scale.x");
    end Column_Scale;
 
    ----------
@@ -475,7 +475,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Row_Skew (Text : in Text_Type) return Positive is
    begin
-      return Text.Property ("skew.y");
+      return Text.Execute ("skew.y");
    end Row_Skew;
 
    -----------------
@@ -484,7 +484,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Column_Skew (Text : in Text_Type) return Positive is
    begin
-      return Text.Property ("skew.x");
+      return Text.Execute ("skew.x");
    end Column_Skew;
 
    ---------------

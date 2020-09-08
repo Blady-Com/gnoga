@@ -266,7 +266,18 @@ package Gnoga.Gui.Base is
 
    procedure Execute (Object : in out Base_Type; Method : in String);
    function Execute (Object : Base_Type; Method : in String) return String;
-   --  General access to execute a Method
+   --  General access to execute a Method and access to a Method as a String
+
+   function Execute (Object : Base_Type; Method : String) return Integer;
+   --  General access to a Method as an Integer
+   --  If Method returns a float value it will be converted in to an
+   --  Integer.
+
+   function Execute (Object : Base_Type; Method : String) return Float;
+   --  General access to a Method as a Float
+
+   function Execute (Object : Base_Type; Method : String) return Boolean;
+   --  General access to a Method as a Boolean
 
    -------------------------------------------------------------------------
    --  Base_Type - Event Handlers

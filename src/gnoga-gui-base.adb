@@ -661,6 +661,21 @@ package body Gnoga.Gui.Base is
       return Object.jQuery_Execute ("get(0)." & Method);
    end Execute;
 
+   function Execute (Object : Base_Type; Method : in String) return Integer is
+   begin
+      return Object.jQuery_Execute ("get(0)." & Method);
+   end Execute;
+
+   function Execute (Object : Base_Type; Method : in String) return Float is
+   begin
+      return Object.jQuery_Execute ("get(0)." & Method);
+   end Execute;
+
+   function Execute (Object : Base_Type; Method : in String) return Boolean is
+   begin
+      return Object.Execute (Method) = "true";
+   end Execute;
+
    -----------------------
    -- Buffer_Connection --
    -----------------------

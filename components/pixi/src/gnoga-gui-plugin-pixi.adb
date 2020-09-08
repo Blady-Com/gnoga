@@ -479,10 +479,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Container.Property ("getBounds().x;"),
-         Container.Property ("getBounds().y;"),
-         Container.Property ("getBounds().width;"),
-         Container.Property ("getBounds().height;"));
+        (Container.Execute ("getBounds().x;"),
+         Container.Execute ("getBounds().y;"),
+         Container.Execute ("getBounds().width;"),
+         Container.Execute ("getBounds().height;"));
    end Get_Bounds;
 
    ----------------
@@ -495,10 +495,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Rect :=
-        (Container.Property ("getBounds().x;"),
-         Container.Property ("getBounds().y;"),
-         Container.Property ("getBounds().width;"),
-         Container.Property ("getBounds().height;"));
+        (Container.Execute ("getBounds().x;"),
+         Container.Execute ("getBounds().y;"),
+         Container.Execute ("getBounds().width;"),
+         Container.Execute ("getBounds().height;"));
    end Get_Bounds;
 
    ----------------------
@@ -510,10 +510,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Container.Property ("getLocalBounds().x;"),
-         Container.Property ("getLocalBounds().y;"),
-         Container.Property ("getLocalBounds().width;"),
-         Container.Property ("getLocalBounds().height;"));
+        (Container.Execute ("getLocalBounds().x;"),
+         Container.Execute ("getLocalBounds().y;"),
+         Container.Execute ("getLocalBounds().width;"),
+         Container.Execute ("getLocalBounds().height;"));
    end Get_Local_Bounds;
 
    ----------------------
@@ -526,10 +526,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Rect :=
-        (Container.Property ("getLocalBounds().x;"),
-         Container.Property ("getLocalBounds().y;"),
-         Container.Property ("getLocalBounds().width;"),
-         Container.Property ("getLocalBounds().height;"));
+        (Container.Execute ("getLocalBounds().x;"),
+         Container.Execute ("getLocalBounds().y;"),
+         Container.Execute ("getLocalBounds().width;"),
+         Container.Execute ("getLocalBounds().height;"));
    end Get_Local_Bounds;
 
    ---------------
@@ -542,9 +542,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Container.Property
+        (Container.Execute
          ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Property
+         Container.Execute
          ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Global;
 
@@ -559,9 +559,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Point :=
-        (Container.Property
+        (Container.Execute
          ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Property
+         Container.Execute
          ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Global;
 
@@ -575,9 +575,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Container.Property
+        (Container.Execute
          ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Property
+         Container.Execute
          ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Local;
 
@@ -592,9 +592,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Point :=
-        (Container.Property
+        (Container.Execute
          ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Property
+         Container.Execute
          ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Local;
 
@@ -723,10 +723,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Texture.Property ("frame.x"),
-         Texture.Property ("frame.y"),
-         Texture.Property ("frame.width"),
-         Texture.Property ("frame.height"));
+        (Texture.Execute ("frame.x"),
+         Texture.Execute ("frame.y"),
+         Texture.Execute ("frame.width"),
+         Texture.Execute ("frame.height"));
    end Frame;
 
    -----------
@@ -804,10 +804,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Texture.Property ("orig.x"),
-         Texture.Property ("orig.y"),
-         Texture.Property ("orig.width"),
-         Texture.Property ("orig.height"));
+        (Texture.Execute ("orig.x"),
+         Texture.Execute ("orig.y"),
+         Texture.Execute ("orig.width"),
+         Texture.Execute ("orig.height"));
    end Orig;
 
    ----------
@@ -843,10 +843,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Texture.Property ("trim.x"),
-         Texture.Property ("trim.y"),
-         Texture.Property ("trim.width"),
-         Texture.Property ("trim.height"));
+        (Texture.Execute ("trim.x"),
+         Texture.Execute ("trim.y"),
+         Texture.Execute ("trim.width"),
+         Texture.Execute ("trim.height"));
    end Trim;
 
    ------------

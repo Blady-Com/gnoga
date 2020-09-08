@@ -145,7 +145,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type
    is
    begin
-      return Gnoga.Types.Alpha_Type (Float'(Graphics.Property ("fill.alpha")));
+      return Gnoga.Types.Alpha_Type (Float'(Graphics.Execute ("fill.alpha")));
    end Fill_Alpha;
 
    -----------
@@ -199,7 +199,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
-      Graphics.Line_Style (Graphics.Line_Width, Value);
+      Graphics.Line_Color (Gnoga.Types.Colors.To_RGBA (Value));
    end Line_Color;
 
    procedure Line_Color
@@ -217,12 +217,12 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    function Line_Color
      (Graphics : in out Graphics_Type) return Gnoga.Types.RGBA_Type
    is
-      Value : constant Natural := Graphics.Property ("line.color");
+      Value : constant Natural := Graphics.Execute ("line.color");
    begin
       return
         (Red   => Gnoga.Types.Color_Type (Value / 256 / 256),
          Green => Gnoga.Types.Color_Type ((Value / 256) mod 256),
-         Blue  => Gnoga.Types.Color_Type (Value / 256),
+         Blue  => Gnoga.Types.Color_Type (Value mod 256),
          Alpha => 1.0);
    end Line_Color;
 
@@ -244,7 +244,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Line_Width (Graphics : in Graphics_Type) return Integer is
    begin
-      return Graphics.Property ("line.width");
+      return Graphics.Execute ("line.width");
    end Line_Width;
 
    --------------
@@ -323,7 +323,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Row_Scale (Graphics : in Graphics_Type) return Positive is
    begin
-      return Graphics.Property ("scale.y");
+      return Graphics.Execute ("scale.y");
    end Row_Scale;
 
    ------------------
@@ -332,7 +332,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Column_Scale (Graphics : in Graphics_Type) return Positive is
    begin
-      return Graphics.Property ("scale.x");
+      return Graphics.Execute ("scale.x");
    end Column_Scale;
 
    ----------
@@ -361,7 +361,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Row_Skew (Graphics : in Graphics_Type) return Positive is
    begin
-      return Graphics.Property ("skew.y");
+      return Graphics.Execute ("skew.y");
    end Row_Skew;
 
    -----------------
@@ -370,7 +370,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Column_Skew (Graphics : in Graphics_Type) return Positive is
    begin
-      return Graphics.Property ("skew.x");
+      return Graphics.Execute ("skew.x");
    end Column_Skew;
 
    ----------

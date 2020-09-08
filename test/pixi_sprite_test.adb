@@ -127,7 +127,8 @@ procedure Pixi_Sprite_Test is
 
 --        delay 30.1;
 
-      G.Line_Style (8, Gnoga.Types.Colors.Yellow);
+      G.Line_Width (8); -- non zero width is mandatory to set a color
+      G.Line_Color (Gnoga.Types.Colors.Yellow);
       G.Draw_Rect (50, 10, 90, 40);
 
       S1.Create (G);
@@ -157,6 +158,8 @@ procedure Pixi_Sprite_Test is
       M2.Create (C, "PIXI", 150, 250);
       M2.Set_Style (S2);
       M2.Rotation_Velocity (-10.0);
+
+      Gnoga.Log ("Container width:" & C.Get_Bounds.Width'Image);
 
       R.Auto_Rendering (C, True);
 

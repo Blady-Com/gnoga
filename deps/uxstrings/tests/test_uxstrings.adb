@@ -18,6 +18,10 @@ begin
    S3 := From_Unicode ("une soirée passée à étudier les mathématiques ℕ⊂𝕂...");
    Send (To_UTF_8 (S1) & To_UTF_8 (S3));
    S2  := "Received: " & From_UTF8 (Receive);
+   S3 := S1 & "Sent ok";
+   S1 := "blah blah";
+   S2 := "une soirée passée à étudier la physique ω=Δθ/Δt...";
+   S3 := "une soirée passée à étudier les mathématiques ℕ⊂𝕂...";
    C   := S1 (3);
    WC  := S1 (2);
    WWC := S1 (1);
@@ -40,4 +44,11 @@ begin
    S1 (3) := WWC;
    S1 (2) := WC;
    S1 (1) := C;
+   if S1 = "test" then
+      S1 := Null_UXString;
+      S2 := 2 * 'z';
+      S3 := 4 * "po";
+   end if;
+   S1.Append ("roro");
+   S2.Append ('R');
 end Test_UXStrings;

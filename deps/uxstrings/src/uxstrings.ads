@@ -1,5 +1,5 @@
-with Ada.Strings;      use Ada.Strings;
-with Ada.Strings.Maps; use Ada.Strings.Maps;
+with Ada.Strings;                use Ada.Strings;
+with Ada.Strings.Wide_Wide_Maps; use Ada.Strings.Wide_Wide_Maps;
 
 package UXStrings is
 
@@ -29,10 +29,12 @@ package UXStrings is
    subtype Char_Type is Latin_1_Character;
    subtype Wide_Char_Type is BMP_Character;
    subtype Wide_Wide_Char_Type is Unicode_Character;
+
    type UXString is tagged private with
       Constant_Indexing => Element,
       Variable_Indexing => Reference,
-      Iterable          => (First => First, Next => Next, Has_Element => Has_Element, Element => Element);
+      Iterable          => (First => First, Next => Next, Has_Element => Has_Element, Element => Element),
+      String_Literal    => From_Unicode;
 
    Null_UXString : constant UXString;
 
@@ -42,7 +44,6 @@ package UXStrings is
    function Element (Source : UXString; Index : Positive) return Wide_Char_Type;
    function Element (Source : UXString; Index : Positive) return Wide_Wide_Char_Type;
 
-   -- Possible ambigous uses with literal expressions
    type Character_Reference (Char : not null access Char_Type) is limited private with
       Implicit_Dereference => Char;
    function Reference (Source : aliased in out UXString; Index : Positive) return Character_Reference;
@@ -84,100 +85,72 @@ package UXStrings is
       return UTF_16_Character_Array;
    function From_UTF_16 (Str : UTF_16_Character_Array; Input_Scheme : UTF_16_Encoding_Scheme) return UXString;
 
-   -- Possible ambigous uses with literal expressions
-   procedure Set (Target : out UXString; Latin_1_Source : Latin_1_Character_Array);
-   procedure Set (Target : out UXString; BMP_Source : BPM_Character_Array);
    procedure Set (Target : out UXString; Unicode_Source : Unicode_Character_Array);
 
    procedure Append (Source : in out UXString; New_Item : UXString);
-
-   procedure Append (Source : in out UXString; New_Latin_1_Item : Latin_1_Character_Array);
-   procedure Append (Source : in out UXString; New_BPM_Item : BPM_Character_Array);
-   procedure Append (Source : in out UXString; New_Unicode_Item : Unicode_Character_Array);
-
-   procedure Append (Source : in out UXString; New_Item : Latin_1_Character);
-   procedure Append (Source : in out UXString; New_Wide_Item : BMP_Character);
    procedure Append (Source : in out UXString; New_Wide_Wide_Item : Unicode_Character);
 
    function "&" (Left : UXString; Right : UXString) return UXString;
+   function "&" (Left : UXString; Right : Unicode_Character) return UXString;
+   function "&" (Left : Unicode_Character; Right : UXString) return UXString;
 
-   -- Only Latin-1 forms to avoid ambigous literal expressions
-   function "&" (Left : UXString; Right : Latin_1_Character_Array) return UXString;
-   function "&" (Left : Latin_1_Character_Array; Right : UXString) return UXString;
-   function "&" (Left : UXString; Right : Latin_1_Character) return UXString;
-   function "&" (Left : Latin_1_Character; Right : UXString) return UXString;
-
-   -- Possible ambigous uses with literal expressions
-   procedure Replace_Element (Source : in out UXString; Index : Positive; By : Latin_1_Character);
-   procedure Replace_Element (Source : in out UXString; Index : Positive; By : BMP_Character);
    procedure Replace_Element (Source : in out UXString; Index : Positive; By : Unicode_Character);
 
    function Slice (Source : UXString; Low : Positive; High : Natural) return UXString;
    procedure Slice (Source : UXString; Target : out UXString; Low : Positive; High : Natural);
 
-   -- Only Latin-1 forms to avoid ambigous literal expressions
    function "=" (Left : UXString; Right : UXString) return Boolean;
-   function "=" (Left : UXString; Right : Latin_1_Character_Array) return Boolean;
-   function "=" (Left : Latin_1_Character_Array; Right : UXString) return Boolean;
    function "<" (Left : UXString; Right : UXString) return Boolean;
-   function "<" (Left : UXString; Right : Latin_1_Character_Array) return Boolean;
-   function "<" (Left : Latin_1_Character_Array; Right : UXString) return Boolean;
    function "<=" (Left : UXString; Right : UXString) return Boolean;
-   function "<=" (Left : UXString; Right : Latin_1_Character_Array) return Boolean;
-   function "<=" (Left : Latin_1_Character_Array; Right : UXString) return Boolean;
    function ">" (Left : UXString; Right : UXString) return Boolean;
-   function ">" (Left : UXString; Right : Latin_1_Character_Array) return Boolean;
-   function ">" (Left : Latin_1_Character_Array; Right : UXString) return Boolean;
    function ">=" (Left : UXString; Right : UXString) return Boolean;
-   function ">=" (Left : UXString; Right : Latin_1_Character_Array) return Boolean;
-   function ">=" (Left : Latin_1_Character_Array; Right : UXString) return Boolean;
 
    ------------------------
    -- Search Subprograms --
    ------------------------
 
-   -- Could be defined also for Wide_Character_Mapping and Wide_Wide_Character_Mapping? Other smarter forms?
    function Index
      (Source  : UXString; Pattern : UXString; Going : Direction := Forward;
-      Mapping : Maps.Character_Mapping := Maps.Identity) return Natural;
+      Mapping : Wide_Wide_Character_Mapping := Identity) return Natural;
    function Index
-     (Source : UXString; Pattern : UXString; Going : Direction := Forward; Mapping : Maps.Character_Mapping_Function)
-      return Natural;
+     (Source  : UXString; Pattern : UXString; Going : Direction := Forward;
+      Mapping : Wide_Wide_Character_Mapping_Function) return Natural;
    function Index
-     (Source : UXString; Set : Maps.Character_Set; Test : Membership := Inside; Going : Direction := Forward)
+     (Source : UXString; Set : Wide_Wide_Character_Set; Test : Membership := Inside; Going : Direction := Forward)
       return Natural;
    function Index
      (Source  : UXString; Pattern : UXString; From : Positive; Going : Direction := Forward;
-      Mapping : Maps.Character_Mapping := Maps.Identity) return Natural;
+      Mapping : Wide_Wide_Character_Mapping := Identity) return Natural;
    function Index
      (Source  : UXString; Pattern : UXString; From : Positive; Going : Direction := Forward;
-      Mapping : Maps.Character_Mapping_Function) return Natural;
+      Mapping : Wide_Wide_Character_Mapping_Function) return Natural;
    function Index
-     (Source : UXString; Set : Maps.Character_Set; From : Positive; Test : Membership := Inside;
+     (Source : UXString; Set : Wide_Wide_Character_Set; From : Positive; Test : Membership := Inside;
       Going  : Direction := Forward) return Natural;
 
    function Index_Non_Blank (Source : UXString; Going : Direction := Forward) return Natural;
    function Index_Non_Blank (Source : UXString; From : Positive; Going : Direction := Forward) return Natural;
 
    function Count
-     (Source : UXString; Pattern : UXString; Mapping : Maps.Character_Mapping := Maps.Identity) return Natural;
-   function Count (Source : UXString; Pattern : UXString; Mapping : Maps.Character_Mapping_Function) return Natural;
-   function Count (Source : UXString; Set : Maps.Character_Set) return Natural;
+     (Source : UXString; Pattern : UXString; Mapping : Wide_Wide_Character_Mapping := Identity) return Natural;
+   function Count
+     (Source : UXString; Pattern : UXString; Mapping : Wide_Wide_Character_Mapping_Function) return Natural;
+   function Count (Source : UXString; Set : Wide_Wide_Character_Set) return Natural;
 
    procedure Find_Token
-     (Source :     UXString; Set : Maps.Character_Set; From : Positive; Test : Membership; First : out Positive;
+     (Source :     UXString; Set : Wide_Wide_Character_Set; From : Positive; Test : Membership; First : out Positive;
       Last   : out Natural);
    procedure Find_Token
-     (Source : UXString; Set : Maps.Character_Set; Test : Membership; First : out Positive; Last : out Natural);
+     (Source : UXString; Set : Wide_Wide_Character_Set; Test : Membership; First : out Positive; Last : out Natural);
 
    ------------------------------------
    -- String Translation Subprograms --
    ------------------------------------
 
-   function Translate (Source : UXString; Mapping : Maps.Character_Mapping) return UXString;
-   procedure Translate (Source : in out UXString; Mapping : Maps.Character_Mapping);
-   function Translate (Source : UXString; Mapping : Maps.Character_Mapping_Function) return UXString;
-   procedure Translate (Source : in out UXString; Mapping : Maps.Character_Mapping_Function);
+   function Translate (Source : UXString; Mapping : Wide_Wide_Character_Mapping) return UXString;
+   procedure Translate (Source : in out UXString; Mapping : Wide_Wide_Character_Mapping);
+   function Translate (Source : UXString; Mapping : Wide_Wide_Character_Mapping_Function) return UXString;
+   procedure Translate (Source : in out UXString; Mapping : Wide_Wide_Character_Mapping_Function);
 
    ---------------------------------------
    -- String Transformation Subprograms --
@@ -193,17 +166,15 @@ package UXStrings is
    procedure Delete (Source : in out UXString; From : Positive; Through : Natural);
    function Trim (Source : UXString; Side : Trim_End) return UXString;
    procedure Trim (Source : in out UXString; Side : Trim_End);
-   function Trim (Source : UXString; Left : Maps.Character_Set; Right : Maps.Character_Set) return UXString;
-   procedure Trim (Source : in out UXString; Left : Maps.Character_Set; Right : Maps.Character_Set);
-   function Head (Source : UXString; Count : Natural; Pad : Latin_1_Character := Space) return UXString;
-   procedure Head (Source : in out UXString; Count : Natural; Pad : Latin_1_Character := Space);
-   function Tail (Source : UXString; Count : Natural; Pad : Latin_1_Character := Space) return UXString;
-   procedure Tail (Source : in out UXString; Count : Natural; Pad : Latin_1_Character := Space);
+   function Trim (Source : UXString; Left : Wide_Wide_Character_Set; Right : Wide_Wide_Character_Set) return UXString;
+   procedure Trim (Source : in out UXString; Left : Wide_Wide_Character_Set; Right : Wide_Wide_Character_Set);
+   function Head (Source : UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space) return UXString;
+   procedure Head (Source : in out UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space);
+   function Tail (Source : UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space) return UXString;
+   procedure Tail (Source : in out UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space);
 
-   -- Only Latin-1 forms to avoid ambigous literal expressions
-   function "*" (Left : Natural; Right : Latin_1_Character) return UXString;
-   function "*" (Left : Natural; Right : Latin_1_Character_Array) return UXString;
    function "*" (Left : Natural; Right : UXString) return UXString;
+   function "*" (Left : Natural; Right : Unicode_Character) return UXString;
 
 private
    type Character_Reference (Char : not null access Char_Type) is null record;

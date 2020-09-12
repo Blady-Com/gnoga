@@ -20,6 +20,6 @@ project UXStrings is
    end Linker;
 
    package Pretty_Printer is
-      for Default_Switches ("ada") use ("-M120", "-W8");
+      for Default_Switches ("ada") use ("-M120", "-W8", "--comments-unchanged");
    end Pretty_Printer;
 end UXStrings;

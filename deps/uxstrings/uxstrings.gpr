@@ -1,3 +1,5 @@
+with "../simple_components/lib_components.gpr";
+
 project UXStrings is
    for Languages use ("Ada");
    for Source_Dirs use ("src", "tests");
@@ -7,7 +9,7 @@ project UXStrings is
 
    package Compiler is
       for Default_Switches ("ada") use ("-gnatW8", "-gnatU", "-gnatf", "-gnatVaep", "-gnatw.eDH.Y",
-                                        "-fstack-check", "-g", "-gnato", "-gnata", "-gnateA",
+                                        "-fstack-check", "-g", "-gnato", "-gnata",
                                         "-gnateE", "-gnateF", "-Wall");
    end Compiler;
 

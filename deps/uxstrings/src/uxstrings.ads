@@ -1,5 +1,6 @@
 with Ada.Strings;                use Ada.Strings;
 with Ada.Strings.Wide_Wide_Maps; use Ada.Strings.Wide_Wide_Maps;
+private with Ada.Finalization;
 
 package UXStrings is
 
@@ -19,11 +20,11 @@ package UXStrings is
    subtype Unicode_Character is Wide_Wide_Character;
    subtype Unicode_Character_Array is Wide_Wide_String;
 
-   type UTF_8_Character is new Character;
+   subtype UTF_8_Character is Character;
    type UTF_8_Character_Array is array (Positive range <>) of UTF_8_Character;
 
    subtype UTF_16_Encoding_Scheme is Encoding_Scheme range UTF_16BE .. UTF_16LE;
-   type UTF_16_Character is new Wide_Character;
+   subtype UTF_16_Character is Wide_Character;
    type UTF_16_Character_Array is array (Positive range <>) of UTF_16_Character;
 
    subtype Char_Type is Latin_1_Character;
@@ -181,7 +182,15 @@ private
    type Wide_Character_Reference (Wide_Char : not null access Wide_Char_Type) is null record;
    type Wide_Wide_Character_Reference (Wide_Wide_Char : not null access Wide_Wide_Char_Type) is null record;
 
-   type UXString is tagged null record;
-   Null_UXString : constant UXString := (others => <>);
+   type UTF_8_Characters_Access is access UTF_8_Character_Array;
+   type UXString is new Ada.Finalization.Controlled with record
+      Chars          : UTF_8_Characters_Access;
+      Char           : aliased Char_Type;
+      Wide_Char      : aliased Wide_Char_Type;
+      Wide_Wide_Char : aliased Wide_Wide_Char_Type;
+      Index          : Natural := 0;
+   end record;
 
+   Null_UXString : constant UXString :=
+     (Ada.Finalization.Controlled with Chars => new UTF_8_Character_Array (2 .. 1), others => <>);
 end UXStrings;

@@ -41,8 +41,8 @@ package UXStrings is
 
    function Length (Source : UXString) return Natural;
 
-   function Element (Source : UXString; Index : Positive) return Char_Type;
-   function Element (Source : UXString; Index : Positive) return Wide_Char_Type;
+   function Element (Source : UXString; Index : Positive; Substitute : in Char_Type := '¿') return Char_Type;
+   function Element (Source : UXString; Index : Positive; Substitute : in Wide_Char_Type := '¿') return Wide_Char_Type;
    function Element (Source : UXString; Index : Positive) return Wide_Wide_Char_Type;
 
    type Character_Reference (Char : not null access Char_Type) is limited private with
@@ -62,14 +62,14 @@ package UXStrings is
    function Is_Latin_1 (Source : UXString; Index : Positive) return Boolean;
    function Is_Latin_1 (Source : UXString) return Boolean;
    function To_Latin_1
-     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := ' ') return Latin_1_Character;
-   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := ' ') return Latin_1_Character_Array;
+     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := '¿') return Latin_1_Character;
+   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := '¿') return Latin_1_Character_Array;
    function From_Latin_1 (Str : Latin_1_Character_Array) return UXString;
 
    function Is_BMP (Source : UXString; Index : Positive) return Boolean;
    function Is_BMP (Source : UXString) return Boolean;
-   function To_BPM (Source : UXString; Index : Positive; Substitute : in BMP_Character := ' ') return BMP_Character;
-   function To_BPM (Source : UXString; Substitute : in BMP_Character := ' ') return BPM_Character_Array;
+   function To_BPM (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character;
+   function To_BPM (Source : UXString; Substitute : in BMP_Character := '¿') return BPM_Character_Array;
    function From_BMP (Str : BPM_Character_Array) return UXString;
 
    function Is_Unicode (Source : UXString; Index : Positive) return Boolean;

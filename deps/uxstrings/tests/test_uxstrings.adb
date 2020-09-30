@@ -28,7 +28,7 @@ begin
    WWC := S1 (1);
    Put_Line (Image(Character'pos (C), 16) & ',' & Image(Wide_Character'pos (WC), 16)  & ','& Image(Wide_Wide_Character'pos (WWC), 16));
    for I in S3 loop
-      F   := S3 (I) = Wide_Wide_Character'('é');
+      F   := S3 (I) = Character'('é');
       if F then
          S2 (I) := Character'('e');
       end if;

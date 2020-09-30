@@ -52,26 +52,35 @@ package body UXStrings is
    -- Element --
    -------------
 
-   function Element (Source : UXString; Index : Positive) return Char_Type is
-      CP : UTF8_Code_Point;
-      P  : Integer := 1;
+   function Element (Source : UXString; Index : Positive; Substitute : in Char_Type := '¿') return Char_Type is
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := 1;
    begin
-      Skip (String (Source.Chars.all), P, Index - 1);
-      Get (String (Source.Chars.all), P, CP);
-      return Char_Type'val (CP);
+      Skip (String (Source.Chars.all), Pointer, Index - 1);
+      Get (String (Source.Chars.all), Pointer, Item);
+      if Item > 16#FF# then
+         return Substitute;
+      else
+         return Char_Type'val (Item);
+      end if;
    end Element;
 
    -------------
    -- Element --
    -------------
 
-   function Element (Source : UXString; Index : Positive) return Wide_Char_Type is
-      CP : UTF8_Code_Point;
-      P  : Integer := 1;
+   function Element (Source : UXString; Index : Positive; Substitute : in Wide_Char_Type := '¿') return Wide_Char_Type
+   is
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := 1;
    begin
-      Skip (String (Source.Chars.all), P, Index - 1);
-      Get (String (Source.Chars.all), P, CP);
-      return Wide_Char_Type'val (CP);
+      Skip (String (Source.Chars.all), Pointer, Index - 1);
+      Get (String (Source.Chars.all), Pointer, Item);
+      if Item > 16#FFFF# then
+         return Substitute;
+      else
+         return Wide_Char_Type'val (Item);
+      end if;
    end Element;
 
    -------------
@@ -171,18 +180,17 @@ package body UXStrings is
    ----------------
 
    function To_Latin_1
-     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := ' ') return Latin_1_Character
+     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := '¿') return Latin_1_Character
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "To_Latin_1 unimplemented");
-      return raise Program_Error with "Unimplemented function To_Latin_1";
+      return Source (Index, Substitute);
    end To_Latin_1;
 
    ----------------
    -- To_Latin_1 --
    ----------------
 
-   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := ' ') return Latin_1_Character_Array is
+   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := '¿') return Latin_1_Character_Array is
    begin
       return To_String (String (Source.Chars.all), Substitute);
    end To_Latin_1;
@@ -222,17 +230,16 @@ package body UXStrings is
    -- To_BPM --
    ------------
 
-   function To_BPM (Source : UXString; Index : Positive; Substitute : in BMP_Character := ' ') return BMP_Character is
+   function To_BPM (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character is
    begin
-      pragma Compile_Time_Warning (Standard.True, "To_BPM unimplemented");
-      return raise Program_Error with "Unimplemented function To_BPM";
+      return Source (Index, Substitute);
    end To_BPM;
 
    ------------
    -- To_BPM --
    ------------
 
-   function To_BPM (Source : UXString; Substitute : in BMP_Character := ' ') return BPM_Character_Array is
+   function To_BPM (Source : UXString; Substitute : in BMP_Character := '¿') return BPM_Character_Array is
    begin
       return To_Wide_String (String (Source.Chars.all), Substitute);
    end To_BPM;
@@ -274,8 +281,7 @@ package body UXStrings is
 
    function To_Unicode (Source : UXString; Index : Positive) return Unicode_Character is
    begin
-      pragma Compile_Time_Warning (Standard.True, "To_Unicode unimplemented");
-      return raise Program_Error with "Unimplemented function To_Unicode";
+      return Source (Index);
    end To_Unicode;
 
    ----------------

@@ -1,6 +1,21 @@
+2020xxxx - Gnoga V1.6-beta:
+
+- xxx
+
+
 20191222 - Gnoga V1.6-alpha:
 
-- ...
+- Upgrade to PIXI 5.3.0.
+- Upgrade to ACE 1.4.12.
+- Upgrade to Simple Components 4.50.
+- Update Jeff Carter's Pragmarc from Github.
+- Gnoga: adaptation to GNAT Community 2020.
+- JQuery Javascript source upgrade version 3.5.0.
+- Add experimental package UXStrings (see readme).
+- Demo: add a simple localization tool (Localize) to help edition of localization files.
+- Form: add additional support for file input with multiple files. Change some API.
+- Add support for files upload (implementing Javascript FileReader).
+- Form: add support for file and tel field types. Fix UTF8 character conversions in form names.
 
 
 20191222 - Gnoga V1.5a:

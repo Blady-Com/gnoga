@@ -20,6 +20,9 @@
 /deps/zanyblue/bin/
 /deps/zanyblue/src/obj/
 /deps/zanyblue/src/bin
+/deps/uxstrings/obj/
+/deps/uxstrings/lib/
+/deps/uxstrings/bin/
 gnatinspect.*
 gpsauto.cgpr
 *-loc.xml

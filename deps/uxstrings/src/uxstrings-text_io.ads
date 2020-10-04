@@ -24,7 +24,7 @@ package UXStrings.Text_IO is
 
    function Mode (File : in File_Type) return File_Mode;
    function Name (File : in File_Type) return UXString;
-   function Form (File : in File_Type) return UXString;
+   function Scheme (File : in File_Type) return Encoding_Scheme;
 
    function Is_Open (File : in File_Type) return Boolean;
 
@@ -52,7 +52,7 @@ package UXStrings.Text_IO is
    function Current_Output return File_Access;
    function Current_Error return File_Access;
 
-   --Buffer control
+   -- Buffer control
 
    procedure Flush (File : in File_Type);
    procedure Flush;
@@ -109,24 +109,24 @@ package UXStrings.Text_IO is
    function Page (File : in File_Type) return Positive_Count;
    function Page return Positive_Count;
 
-   -- Character Input-Output
+   -- Unicode Character Input-Output
 
-   procedure Get (File : in File_Type; Item : out Character);
-   procedure Get (Item : out Character);
+   procedure Get (File : in File_Type; Item : out Unicode_Character);
+   procedure Get (Item : out Unicode_Character);
 
-   procedure Put (File : in File_Type; Item : in Character);
-   procedure Put (Item : in Character);
+   procedure Put (File : in File_Type; Item : in Unicode_Character);
+   procedure Put (Item : in Unicode_Character);
 
-   procedure Look_Ahead (File : in File_Type; Item : out Character; End_Of_Line : out Boolean);
-   procedure Look_Ahead (Item : out Character; End_Of_Line : out Boolean);
+   procedure Look_Ahead (File : in File_Type; Item : out Unicode_Character; End_Of_Line : out Boolean);
+   procedure Look_Ahead (Item : out Unicode_Character; End_Of_Line : out Boolean);
 
-   procedure Get_Immediate (File : in File_Type; Item : out Character);
-   procedure Get_Immediate (Item : out Character);
+   procedure Get_Immediate (File : in File_Type; Item : out Unicode_Character);
+   procedure Get_Immediate (Item : out Unicode_Character);
 
-   procedure Get_Immediate (File : in File_Type; Item : out Character; Available : out Boolean);
-   procedure Get_Immediate (Item : out Character; Available : out Boolean);
+   procedure Get_Immediate (File : in File_Type; Item : out Unicode_Character; Available : out Boolean);
+   procedure Get_Immediate (Item : out Unicode_Character; Available : out Boolean);
 
-   -- String Input-Output
+   -- Unicode String Input-Output
 
    procedure Get (File : in File_Type; Item : out UXString; Length : in Count);
    procedure Get (Item : out UXString; Length : in Count);

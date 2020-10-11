@@ -213,9 +213,8 @@ install_gnoga: basic_components gnoga gnoga_tools
 	$(MAKE) -C components INSTALL_DIR="$(PREFIX)"/share/gnoga
 
 # Build and install Gnoga standalone with deps already installed in PREFIX
-install_gnoga_sa: html-docs
+install_gnoga_sa:
 	$(BUILDER) -P gpr_sa/gnoga.gpr $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
-	gnatdoc -P sa/gnoga.gpr --enable-build --no-subprojects $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga gpr_sa/gnoga.gpr $(GN_OPTIONS) -aP "$(PREFIX)"/share/gpr
 	$(BUILDER) -P tools/tools_agg_ext.gpr $(GN_OPTIONS) -XPREFIX="$(PREFIX)"
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --mode=usage tools/tools_agg_ext.gpr $(GN_OPTIONS) -XPREFIX="$(PREFIX)"

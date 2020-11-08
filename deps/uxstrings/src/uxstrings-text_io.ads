@@ -1,21 +1,23 @@
-with Ada.Text_IO;
-
 package UXStrings.Text_IO is
 
    type File_Type is limited private;
-   subtype File_Mode is Ada.Text_IO.File_Mode;
-   use all type Ada.Text_IO.File_Mode;
+   type File_Access is access all File_Type;
 
-   subtype Count is Ada.Text_IO.Count;
-   subtype Positive_Count is Ada.Text_IO.Positive_Count;
+   type File_Mode is (In_File, Out_File, Append_File);
+
+   type Count is range 0 .. Natural'Last;
+   subtype Positive_Count is Count range 1 .. Count'Last;
+
+   type Line_Ending is (CR, LF, CRLF);
 
    -- File Management
 
    procedure Create
      (File   : in out File_Type; Mode : in File_Mode := Out_File; Name : in UXString := Null_UXString;
-      Scheme : in     Encoding_Scheme := Latin_1);
+      Scheme : in     Encoding_Scheme := Latin_1; Ending : Line_Ending := CRLF);
    procedure Open
-     (File : in out File_Type; Mode : in File_Mode; Name : in UXString; Scheme : in Encoding_Scheme := Latin_1);
+     (File   : in out File_Type; Mode : in File_Mode; Name : in UXString; Scheme : in Encoding_Scheme := Latin_1;
+      Ending :        Line_Ending := CRLF);
 
    procedure Close (File : in out File_Type);
    procedure Delete (File : in out File_Type);
@@ -25,6 +27,9 @@ package UXStrings.Text_IO is
    function Mode (File : in File_Type) return File_Mode;
    function Name (File : in File_Type) return UXString;
    function Scheme (File : in File_Type) return Encoding_Scheme;
+   procedure Scheme (File : in File_Access; Value : in Encoding_Scheme);
+   function Ending (File : in File_Type) return Line_Ending;
+   procedure Ending (File : in File_Access; Value : Line_Ending);
 
    function Is_Open (File : in File_Type) return Boolean;
 
@@ -41,8 +46,6 @@ package UXStrings.Text_IO is
    function Current_Input return File_Type;
    function Current_Output return File_Type;
    function Current_Error return File_Type;
-
-   type File_Access is access constant File_Type;
 
    function Standard_Input return File_Access;
    function Standard_Output return File_Access;
@@ -82,6 +85,9 @@ package UXStrings.Text_IO is
    function End_Of_Line (File : in File_Type) return Boolean;
    function End_Of_Line return Boolean;
 
+   function Line_Mark return UXString;
+   procedure Line_Mark (Ending : Line_Ending);
+
    procedure New_Page (File : in File_Type);
    procedure New_Page;
 
@@ -90,6 +96,8 @@ package UXStrings.Text_IO is
 
    function End_Of_Page (File : in File_Type) return Boolean;
    function End_Of_Page return Boolean;
+
+   function Page_Mark return UXString;
 
    function End_Of_File (File : in File_Type) return Boolean;
    function End_Of_File return Boolean;

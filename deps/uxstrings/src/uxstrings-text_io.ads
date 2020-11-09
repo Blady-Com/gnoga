@@ -1,3 +1,5 @@
+private with GNAT.OS_Lib;
+
 package UXStrings.Text_IO is
 
    type File_Type is limited private;
@@ -152,6 +154,12 @@ package UXStrings.Text_IO is
    procedure Put_Line (Item : in UXString);
 
 private
-   type File_Type is limited null record;
+   type File_Type is record
+      FD     : GNAT.OS_Lib.File_Descriptor := GNAT.OS_Lib.Invalid_FD;
+      Mode   : File_Mode;
+      Name   : UXString;
+      Scheme : Encoding_Scheme;
+      Ending : Line_Ending;
+   end record;
 
 end UXStrings.Text_IO;

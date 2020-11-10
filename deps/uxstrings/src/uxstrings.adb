@@ -88,12 +88,12 @@ package body UXStrings is
    -------------
 
    function Element (Source : UXString; Index : Positive) return Wide_Wide_Char_Type is
-      CP : UTF8_Code_Point;
-      P  : Integer := 1;
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := 1;
    begin
-      Skip (String (Source.Chars.all), P, Index - 1);
-      Get (String (Source.Chars.all), P, CP);
-      return Wide_Wide_Char_Type'Val (CP);
+      Skip (String (Source.Chars.all), Pointer, Index - 1);
+      Get (String (Source.Chars.all), Pointer, Item);
+      return Wide_Wide_Char_Type'Val (Item);
    end Element;
 
    ---------------
@@ -423,9 +423,15 @@ package body UXStrings is
    -----------
 
    function Slice (Source : UXString; Low : Positive; High : Natural) return UXString is
+      Pointer1 : Integer := 1;
+      Pointer2 : Integer := 1;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Slice unimplemented");
-      return raise Program_Error with "Unimplemented function Slice";
+      Skip (String (Source.Chars.all), Pointer1, Low - 1);
+      Pointer2 := Pointer1;
+      Skip (String (Source.Chars.all), Pointer2, Low - High + 1);
+      return UXS : UXString do
+         UXS.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (Source.Chars.all (Pointer1 .. Pointer2 - 1)));
+      end return;
    end Slice;
 
    -----------
@@ -433,9 +439,13 @@ package body UXStrings is
    -----------
 
    procedure Slice (Source : UXString; Target : out UXString; Low : Positive; High : Natural) is
+      Pointer1 : Integer := 1;
+      Pointer2 : Integer := 1;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Slice unimplemented");
-      raise Program_Error with "Unimplemented procedure Slice";
+      Skip (String (Source.Chars.all), Pointer1, Low - 1);
+      Pointer2 := Pointer1;
+      Skip (String (Source.Chars.all), Pointer2, High - Low + 1);
+      Target.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (Source.Chars.all (Pointer1 .. Pointer2 - 1)));
    end Slice;
 
    ---------
@@ -491,9 +501,19 @@ package body UXStrings is
      (Source  : UXString; Pattern : UXString; Going : Direction := Forward;
       Mapping : Wide_Wide_Character_Mapping := Identity) return Natural
    is
+      Ind     : Natural;
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := 1;
+      Count   : Natural := 0;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index unimplemented");
-      return raise Program_Error with "Unimplemented function Index";
+      if Source.Chars /= null and Pattern.Chars /= null then
+         Ind := Index (String (Source.Chars.all), String (Pattern.Chars.all));
+         while Pointer <= Ind loop
+            Get (String (Source.Chars.all), Pointer, Item);
+            Count := Count + 1;
+         end loop;
+      end if;
+      return Count;
    end Index;
 
    -----------
@@ -754,9 +774,14 @@ package body UXStrings is
    ------------
 
    procedure Delete (Source : in out UXString; From : Positive; Through : Natural) is
+      Pointer1 : Integer := 1;
+      Pointer2 : Integer := 1;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Delete unimplemented");
-      raise Program_Error with "Unimplemented procedure Delete";
+      Skip (String (Source.Chars.all), Pointer1, From - 1);
+      Pointer2 := Pointer1;
+      Skip (String (Source.Chars.all), Pointer2, Through - From + 1);
+      Source.Chars :=
+        new UTF_8_Character_Array'(UTF_8_Character_Array (Delete (String (Source.Chars.all), Pointer1, Pointer2 - 1)));
    end Delete;
 
    ----------

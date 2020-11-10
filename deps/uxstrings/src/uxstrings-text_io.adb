@@ -2,9 +2,9 @@ with GNAT.OS_Lib; use GNAT.OS_Lib;
 
 package body UXStrings.Text_IO is
 
-   Std_In  : aliased File_Type := (Standin, In_File, "sdtin", Latin_1, CRLF);
-   Std_Out : aliased File_Type := (Standout, Out_File, "sdtout", Latin_1, CRLF);
-   Std_Err : aliased File_Type := (Standerr, Out_File, "sdterr", Latin_1, CRLF);
+   Std_In  : aliased File_Type := (Standin, In_File, "sdtin", Latin_1, CRLF, others => <>);
+   Std_Out : aliased File_Type := (Standout, Out_File, "sdtout", Latin_1, CRLF, others => <>);
+   Std_Err : aliased File_Type := (Standerr, Out_File, "sdterr", Latin_1, CRLF, others => <>);
 
    Cur_In  : aliased File_Type := Std_In;
    Cur_Out : aliased File_Type := Std_Out;
@@ -17,6 +17,22 @@ package body UXStrings.Text_IO is
       pragma Compile_Time_Warning (Standard.True, "To_String unimplemented");
       return raise Program_Error with "Unimplemented function To_String";
    end To_String;
+
+   procedure Read_More (File : in out File_Type) is
+      Buffer : String (1 .. 200);
+      Last   : constant Integer := Read (File.FD, Buffer'Address, Buffer'Length);
+   begin
+      case File.Scheme is
+         when Latin_1 =>
+            File.Buffer := From_Latin_1 (Buffer (1 .. Last));
+         when UTF_8 =>
+            File.Buffer := From_UTF8 (UTF_8_Character_Array (Buffer (1 .. Last)));
+         when UTF_16BE =>
+            null;
+         when UTF_16LE =>
+            null;
+      end case;
+   end Read_More;
 
    ------------
    -- Create --
@@ -36,7 +52,7 @@ package body UXStrings.Text_IO is
          when Append_File =>
             FD := Open_Append (To_Latin_1 (Name), Binary);
       end case;
-      File := (FD, Mode, Name, Scheme, Ending);
+      File := (FD, Mode, Name, Scheme, Ending, others => <>);
    end Create;
 
    ----------
@@ -57,7 +73,7 @@ package body UXStrings.Text_IO is
          when Append_File =>
             FD := Open_Append (To_Latin_1 (Name), Binary);
       end case;
-      File := (FD, Mode, Name, Scheme, Ending);
+      File := (FD, Mode, Name, Scheme, Ending, others => <>);
    end Open;
 
    -----------
@@ -74,9 +90,9 @@ package body UXStrings.Text_IO is
    ------------
 
    procedure Delete (File : in out File_Type) is
-      Result : Boolean;
+      Dummy_Result : Boolean;
    begin
-      Delete_File (To_Latin_1 (File.Name), Result);
+      Delete_File (To_Latin_1 (File.Name), Dummy_Result);
    end Delete;
 
    -----------
@@ -664,10 +680,13 @@ package body UXStrings.Text_IO is
    -- Get --
    ---------
 
-   procedure Get (File : in File_Type; Item : out Unicode_Character) is
+   procedure Get (File : in out File_Type; Item : out Unicode_Character) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Get unimplemented");
-      raise Program_Error with "Unimplemented procedure Get";
+      if File.Buffer.Length = 0 then
+         Read_More (File);
+      end if;
+      Item := To_Unicode (File.Buffer, 1);
+      Delete (File.Buffer, 1, 1);
    end Get;
 
    ---------
@@ -689,9 +708,9 @@ package body UXStrings.Text_IO is
            when UTF_8                     => String (To_UTF_8 (From_Unicode ((1 => Item)))),
            when UTF_16BE => To_String (To_UTF_16 (From_Unicode ((1 => Item)), UTF_16BE, False), UTF_16BE),
            when UTF_16LE => To_String (To_UTF_16 (From_Unicode ((1 => Item)), UTF_16LE, False), UTF_16LE));
-      Result : Integer;
+      Dummy_Result : Integer;
    begin
-      Result := Write (File.FD, S'Address, S'Length);
+      Dummy_Result := Write (File.FD, S'Address, S'Length);
    end Put;
 
    ---------
@@ -764,10 +783,15 @@ package body UXStrings.Text_IO is
    -- Get --
    ---------
 
-   procedure Get (File : in File_Type; Item : out UXString; Length : in Count) is
+   procedure Get (File : in out File_Type; Item : out UXString; Length : in Count) is
+      Last : Natural;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Get unimplemented");
-      raise Program_Error with "Unimplemented procedure Get";
+      if File.Buffer.Length < Length then
+         Read_More (File);
+      end if;
+      Last := Natural'Min (File.Buffer.Length, Length);
+      Item := Slice (File.Buffer, 1, Last);
+      Delete (File.Buffer, 1, Last);
    end Get;
 
    ---------
@@ -788,9 +812,9 @@ package body UXStrings.Text_IO is
         (case File.Scheme is when Latin_1 => To_Latin_1 (Item), when UTF_8 => String (To_UTF_8 (Item)),
            when UTF_16BE                  => To_String (To_UTF_16 (Item, UTF_16BE, False), UTF_16BE),
            when UTF_16LE                  => To_String (To_UTF_16 (Item, UTF_16LE, False), UTF_16LE));
-      Result : Integer;
+      Dummy_Result : Integer;
    begin
-      Result := Write (File.FD, S'Address, S'Length);
+      Dummy_Result := Write (File.FD, S'Address, S'Length);
    end Put;
 
    ---------
@@ -799,17 +823,26 @@ package body UXStrings.Text_IO is
 
    procedure Put (Item : in UXString) is
    begin
-      Put (Std_Out, Item);
+      Put (Cur_Out, Item);
    end Put;
 
    --------------
    -- Get_Line --
    --------------
 
-   procedure Get_Line (File : in File_Type; Item : out UXString) is
+   procedure Get_Line (File : in out File_Type; Item : out UXString) is
+      LM : constant UXString :=
+        (case File.Ending is when CR => From_Latin_1 ((1 => Character'val (13))),
+           when LF                   => From_Latin_1 ((1 => Character'val (10))),
+           when CRLF                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
+      EOL : Natural := Index (File.Buffer, LM);
    begin
-      pragma Compile_Time_Warning (Standard.True, "Get_Line unimplemented");
-      raise Program_Error with "Unimplemented procedure Get_Line";
+      while EOL = 0 loop
+         Read_More (File);
+         EOL := Index (File.Buffer, LM);
+      end loop;
+      Slice (File.Buffer, Item, 1, EOL - 1);
+      Delete (File.Buffer, 1, EOL - 1 + LM.Length);
    end Get_Line;
 
    --------------
@@ -818,17 +851,18 @@ package body UXStrings.Text_IO is
 
    procedure Get_Line (Item : out UXString) is
    begin
-      Get_Line (Std_In, Item);
+      Get_Line (Cur_In, Item);
    end Get_Line;
 
    --------------
    -- Get_Line --
    --------------
 
-   function Get_Line (File : in File_Type) return UXString is
+   function Get_Line (File : in out File_Type) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Get_Line unimplemented");
-      return raise Program_Error with "Unimplemented function Get_Line";
+      return Line : UXString do
+         Get_Line (File, Line);
+      end return;
    end Get_Line;
 
    --------------

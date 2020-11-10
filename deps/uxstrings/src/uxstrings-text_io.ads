@@ -7,7 +7,7 @@ package UXStrings.Text_IO is
 
    type File_Mode is (In_File, Out_File, Append_File);
 
-   type Count is range 0 .. Natural'Last;
+   subtype Count is Natural range 0 .. Natural'Last;
    subtype Positive_Count is Count range 1 .. Count'Last;
 
    type Line_Ending is (CR, LF, CRLF);
@@ -121,7 +121,7 @@ package UXStrings.Text_IO is
 
    -- Unicode Character Input-Output
 
-   procedure Get (File : in File_Type; Item : out Unicode_Character);
+   procedure Get (File : in out File_Type; Item : out Unicode_Character);
    procedure Get (Item : out Unicode_Character);
 
    procedure Put (File : in File_Type; Item : in Unicode_Character);
@@ -138,16 +138,16 @@ package UXStrings.Text_IO is
 
    -- Unicode String Input-Output
 
-   procedure Get (File : in File_Type; Item : out UXString; Length : in Count);
+   procedure Get (File : in out File_Type; Item : out UXString; Length : in Count);
    procedure Get (Item : out UXString; Length : in Count);
 
    procedure Put (File : in File_Type; Item : in UXString);
    procedure Put (Item : in UXString);
 
-   procedure Get_Line (File : in File_Type; Item : out UXString);
+   procedure Get_Line (File : in out File_Type; Item : out UXString);
    procedure Get_Line (Item : out UXString);
 
-   function Get_Line (File : in File_Type) return UXString;
+   function Get_Line (File : in out File_Type) return UXString;
    function Get_Line return UXString;
 
    procedure Put_Line (File : in File_Type; Item : in UXString);
@@ -160,6 +160,7 @@ private
       Name   : UXString;
       Scheme : Encoding_Scheme;
       Ending : Line_Ending;
+      Buffer : UXString;
    end record;
 
 end UXStrings.Text_IO;

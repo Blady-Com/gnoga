@@ -1,7 +1,19 @@
+-------------------------------------------------------------------------------
+-- NAME (body)                  : uxstrings.adb
+-- AUTHOR                       : Pascal Pignard
+-- ROLE                         : UXString implementation.
+-- NOTES                        : Ada 202x
+--
+-- COPYRIGHT                    : (c) Pascal Pignard 2020
+-- LICENCE                      : CeCILL V2.1 (https://www.cecill.info)
+-- CONTACT                      : http://blady.pagesperso-orange.fr
+-------------------------------------------------------------------------------
+
 with Ada.Strings.UTF_Encoding;   use Ada.Strings.UTF_Encoding;
 with Ada.Strings.Fixed;          use Ada.Strings.Fixed;
 with Strings_Edit.UTF8;          use Strings_Edit.UTF8;
 with Strings_Edit.UTF8.Handling; use Strings_Edit.UTF8.Handling;
+with Ada.Unchecked_Deallocation;
 
 package body UXStrings is
 
@@ -38,6 +50,38 @@ package body UXStrings is
       end loop;
       return Result (1 .. To - 1);
    end To_Wide_Wide_String;
+
+   -- Memory management
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free is new Ada.Unchecked_Deallocation (UTF_8_Character_Array, UTF_8_Characters_Access);
+
+   ------------
+   -- Adjust --
+   ------------
+
+   procedure Adjust (Object : in out UXString) is
+   begin
+      if Object.Chars /= null then
+         Object.Chars := new UTF_8_Character_Array'(Object.Chars.all);
+      end if;
+   end Adjust;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   procedure Finalize (Object : in out UXString) is
+   begin
+      if Object.Chars /= null then
+         Free (Object.Chars);
+      end if;
+   end Finalize;
+
+   -- UXStrings API implementation
 
    ------------
    -- Length --
@@ -227,28 +271,28 @@ package body UXStrings is
    end Is_BMP;
 
    ------------
-   -- To_BPM --
+   -- To_BMP --
    ------------
 
-   function To_BPM (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character is
+   function To_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character is
    begin
       return Source (Index, Substitute);
-   end To_BPM;
+   end To_BMP;
 
    ------------
-   -- To_BPM --
+   -- To_BMP --
    ------------
 
-   function To_BPM (Source : UXString; Substitute : in BMP_Character := '¿') return BPM_Character_Array is
+   function To_BMP (Source : UXString; Substitute : in BMP_Character := '¿') return BMP_Character_Array is
    begin
       return To_Wide_String (String (Source.Chars.all), Substitute);
-   end To_BPM;
+   end To_BMP;
 
    --------------
    -- From_BMP --
    --------------
 
-   function From_BMP (Str : BPM_Character_Array) return UXString is
+   function From_BMP (Str : BMP_Character_Array) return UXString is
    begin
       return UXS : UXString do
          UXS.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (To_UTF8 (Str)));
@@ -361,19 +405,52 @@ package body UXStrings is
    ------------
 
    procedure Append (Source : in out UXString; New_Item : UXString) is
+      Saved_Access : UTF_8_Characters_Access := Source.Chars;
    begin
       Source.Chars := new UTF_8_Character_Array'(Source.Chars.all & New_Item.Chars.all);
+      if Saved_Access /= null then
+         Free (Saved_Access);
+      end if;
    end Append;
 
    ------------
    -- Append --
    ------------
 
-   procedure Append (Source : in out UXString; New_Wide_Wide_Item : Unicode_Character) is
+   procedure Append (Source : in out UXString; New_Item : Unicode_Character) is
+      Saved_Access : UTF_8_Characters_Access := Source.Chars;
    begin
-      Source.Chars :=
-        new UTF_8_Character_Array'(Source.Chars.all & UTF_8_Character_Array (To_UTF8 (New_Wide_Wide_Item)));
+      Source.Chars := new UTF_8_Character_Array'(Source.Chars.all & UTF_8_Character_Array (To_UTF8 (New_Item)));
+      if Saved_Access /= null then
+         Free (Saved_Access);
+      end if;
    end Append;
+
+   -------------
+   -- Prepend --
+   -------------
+
+   procedure Prepend (Source : in out UXString; New_Item : UXString) is
+      Saved_Access : UTF_8_Characters_Access := Source.Chars;
+   begin
+      Source.Chars := new UTF_8_Character_Array'(New_Item.Chars.all & Source.Chars.all);
+      if Saved_Access /= null then
+         Free (Saved_Access);
+      end if;
+   end Prepend;
+
+   -------------
+   -- Prepend --
+   -------------
+
+   procedure Prepend (Source : in out UXString; New_Item : Unicode_Character) is
+      Saved_Access : UTF_8_Characters_Access := Source.Chars;
+   begin
+      Source.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (To_UTF8 (New_Item)) & Source.Chars.all);
+      if Saved_Access /= null then
+         Free (Saved_Access);
+      end if;
+   end Prepend;
 
    ---------
    -- "&" --
@@ -445,6 +522,9 @@ package body UXStrings is
       Skip (String (Source.Chars.all), Pointer1, Low - 1);
       Pointer2 := Pointer1;
       Skip (String (Source.Chars.all), Pointer2, High - Low + 1);
+      if Target.Chars /= null then
+         Free (Target.Chars);
+      end if;
       Target.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (Source.Chars.all (Pointer1 .. Pointer2 - 1)));
    end Slice;
 
@@ -774,14 +854,18 @@ package body UXStrings is
    ------------
 
    procedure Delete (Source : in out UXString; From : Positive; Through : Natural) is
-      Pointer1 : Integer := 1;
-      Pointer2 : Integer := 1;
+      Pointer1     : Integer                 := 1;
+      Pointer2     : Integer                 := 1;
+      Saved_Access : UTF_8_Characters_Access := Source.Chars;
    begin
       Skip (String (Source.Chars.all), Pointer1, From - 1);
       Pointer2 := Pointer1;
       Skip (String (Source.Chars.all), Pointer2, Through - From + 1);
       Source.Chars :=
         new UTF_8_Character_Array'(UTF_8_Character_Array (Delete (String (Source.Chars.all), Pointer1, Pointer2 - 1)));
+      if Saved_Access /= null then
+         Free (Saved_Access);
+      end if;
    end Delete;
 
    ----------

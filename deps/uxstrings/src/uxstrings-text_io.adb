@@ -1,3 +1,14 @@
+-------------------------------------------------------------------------------
+-- NAME (body)                  : uxstrings-text_io.adb
+-- AUTHOR                       : Pascal Pignard
+-- ROLE                         : Text input / output implementation for UXString.
+-- NOTES                        : Ada 202x
+--
+-- COPYRIGHT                    : (c) Pascal Pignard 2020
+-- LICENCE                      : CeCILL V2.1 (https://www.cecill.info)
+-- CONTACT                      : http://blady.pagesperso-orange.fr
+-------------------------------------------------------------------------------
+
 with GNAT.OS_Lib; use GNAT.OS_Lib;
 
 package body UXStrings.Text_IO is

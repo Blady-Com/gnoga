@@ -6,6 +6,7 @@ project UXStrings is
    for Object_Dir use "obj";
    for Exec_Dir use "bin";
    for Main use ("test_uxstrings.adb", "test_uxstrings_text_io.adb");
+   for Create_Missing_Dirs use "True";
 
    package Compiler is
       for Default_Switches ("ada") use ("-gnatW8", "-gnatU", "-gnatf", "-gnatVaep", "-gnatw.eDH.Y",

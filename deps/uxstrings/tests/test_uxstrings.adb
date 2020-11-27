@@ -28,6 +28,7 @@ begin
    S1 := From_Latin_1 ("était blah blah");
    S2 := From_BMP ("une soirée passée à étudier la physique ω=Δθ/Δt...");
    S3 := From_Unicode ("une soirée passée à étudier les mathématiques ℕ⊂𝕂...");
+   Put_Line (S1 & Line_Mark & S2 & Line_Mark & S3);
    Send (To_UTF_8 (S1) & To_UTF_8 (S3));
    S2  := "Received: " & From_UTF8 (Receive);
    S3 := S1 & " - Sent ok";
@@ -61,6 +62,11 @@ begin
       S2 := 2 * 'z';
       S3 := 4 * "po";
    end if;
-   S1.Append ("roro");
-   S2.Append ('R');
+   S3 := "Riri";
+   S2 := "Loulou";
+   S1 := " et Fifi";
+   S2.Append (S1);
+   S1.Prepend(S3);
+   Put_Line (S1 & Line_Mark & S2 & Line_Mark & S3);
 end Test_UXStrings;
+

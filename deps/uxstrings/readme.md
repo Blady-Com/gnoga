@@ -1,15 +1,19 @@
 # Unicode Extended Strings (UXStrings)
 
-[Gnoga](https://sourceforge.net/projects/gnoga) internal character strings implementation is based on both Ada types String and Unbounded\_String.
+## Motivation
+
+Ada GUI library [Gnoga](https://sourceforge.net/projects/gnoga) internal character strings implementation is based on both Ada types String and Unbounded\_String.
 The native Ada String encoding is Latin-1 whereas transactions with the Javascript part are in UTF-8 encoding.
 
-Some drawbacks come up, for instance,  with internationalization of programs (see [Localize Gnoga demo](https://sourceforge.net/p/gnoga/code/ci/dev_1.6/tree/demo/localize)):
+Some drawbacks come up, for instance, with internationalization of programs (see [Localize Gnoga demo](https://sourceforge.net/p/gnoga/code/ci/dev_1.6/tree/demo/localize)):
 
 * several conversions between String and Unbounded\_String objects
 * it isn't usable out of Latin-1 character set, characters out of Latin-1 set are blanked
 * continuous conversions between Latin-1 and UTF-8, each sent and received transaction between Ada and Javascript parts
 
-Two ways of improvement: native dynamic length handling and Unicode support.
+Two ways of possible improvement for native Ada String: dynamic length handling and Unicode support.
+
+## Workarounds
 
 First possibility is using UTF-8 as internal implementation in Unbounded\_String objects.
 The simplest way but Gnoga uses many times character indexes to parse Javascript messages that is not easy to achieved with UTF-8 which may have several lengths to represent one character. String parsing will be time consuming. Some combinations may lead to incorrect UTF-8 representation.
@@ -29,13 +33,15 @@ The programmer won't make any representation choice when for example receiving U
 
 Automatically S2 will adapt its inner representation to the received characters.
 
-Package named UXStrings (Unicode Extended String) is containing :
+## UXStrings packages
 
-The first part contains renaming statements of Ada types.
-Ada String type is structurally an array of Latin-1 characters thus is renamed as Latin\_1\_Character\_Array.
+Package named UXStrings (Unicode Extended String) and its Text\_IO child package are proposed to bring String enhancements using some Ada 202x features.
+
+The first part of UXString package contains renaming statements of current Ada types.
+Ada current String type is structurally an array of Latin-1 characters thus is renamed as Latin\_1\_Character\_Array.
 And so on.
 
-The second part defines the USXString type as a tagged private type which has got aspects such as Constant\_Indexing, Variable\_Indexing and Iterable, so we can write:
+The second part defines the USXString type as a tagged private type which has got aspects such as Constant\_Indexing, Variable\_Indexing, Iterable and String_Literal, so we can write:
 
 ``` ada
    S1, S2, S3 : UXString;
@@ -43,12 +49,14 @@ The second part defines the USXString type as a tagged private type which has go
    WC         : Wide_Character;
    WWC        : Wide_Wide_Character;
    ...
+   S1 := "était blah blah";
    C   := S1 (3);
    WC  := S1 (2);
    WWC := S1 (1);
    S1 (3) := WWC;
    S1 (2) := WC;
    S1 (1) := C;
+   S3  := "une soirée passée à étudier les mathématiques ℕ⊂𝕂...";
    for I in S3 loop
       C   := S3 (I);
       WC  := S3 (I);
@@ -68,9 +76,42 @@ The third part defines conversion functions between UXString and various encodin
 
 The fourth part defines various API coming from Unbounded\_String such as Append, "&", Slice, "=", Index and so on.
 
-The private and implementation parts are not yet defined.
-One idea is to use the XStrings from [GNATColl](https://github.com/AdaCore/gnatcoll-core/blob/master/src/gnatcoll-strings_impl.ads).
+Note: Iterable is a GNAT specific aspect.
 
-Feel free to send feedback about UXStrings specification source code on [Gnoga mailing list](https://sourceforge.net/p/gnoga/mailman/gnoga-list).
+## UXStrings implementations
 
-Pascal Pignard, May 2020.
+### UXStrings
+
+A first POC implementation is provided. The source code files are ending with the number 1 as for instance "uxstrings.ads". A GNAT project file "uxstrings.gpr" is provided with some naming conventions for both packages UXStrings  and UXStrings.Text\_IO.
+
+#### Implementation choices
+
+UTF-8 encoding is chosen for internal representation. The [Strings_Edit library](http://www.dmitry-kazakov.de/ada/strings_edit.htm) is used for UTF-8 encoding management.
+[GNAT.OS_Lib](https://docs.adacore.com/gnat_rm-docs/html/gnat_rm/gnat_rm/the_gnat_library.html#gnat-os-lib-g-os-lib-ads) is chosen for input / output management.
+
+This implementation which is only for demonstrate the possible usages of UXString has many limitations.
+
+#### Limitations:
+
+- not thread safe
+- single character assignment is not implemented
+- only few API are implemented
+
+### Future implementations
+
+Here are some ideas:
+
+- Use memory management as implemented in XStrings from [GNATColl](https://github.com/AdaCore/gnatcoll-core/blob/master/src/gnatcoll-strings_impl.ads).
+- Use Unbounded\_Strings with UTF-8 encoding.
+- Use Unbounded\_Wide\_Wide\_Strings
+- Adapt the inner implementation to the actual content with 8 bits character encodings, 16 bits or 32 bits.
+
+## Tests
+
+One test program test\_uxstrings.adb is provided for UXStrings tests and an other test program test\_uxstrings\_text\_io.adb is provided for UXStrings.Text\_IO tests.
+
+## Feedbacks
+
+Feel free to send feedback about UXStrings specification source code on [Github](https://github.com/Blady-Com/UXStrings/issues) or [Gnoga mailing list](https://sourceforge.net/p/gnoga/mailman/gnoga-list).
+
+Pascal Pignard, November 2020.

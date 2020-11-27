@@ -13,7 +13,7 @@ package UXStrings is
    -- Unicode Basic Multilingual Plane
    -- Could be also named UCS_2_Character (Universal Coded Character Set)?
    subtype BMP_Character is Wide_Character;
-   subtype BPM_Character_Array is Wide_String;
+   subtype BMP_Character_Array is Wide_String;
 
    -- Unicode planes
    -- Could be also named UCS_4_Character?
@@ -68,9 +68,9 @@ package UXStrings is
 
    function Is_BMP (Source : UXString; Index : Positive) return Boolean;
    function Is_BMP (Source : UXString) return Boolean;
-   function To_BPM (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character;
-   function To_BPM (Source : UXString; Substitute : in BMP_Character := '¿') return BPM_Character_Array;
-   function From_BMP (Str : BPM_Character_Array) return UXString;
+   function To_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character;
+   function To_BMP (Source : UXString; Substitute : in BMP_Character := '¿') return BMP_Character_Array;
+   function From_BMP (Str : BMP_Character_Array) return UXString;
 
    function Is_Unicode (Source : UXString; Index : Positive) return Boolean;
    function Is_Unicode (Source : UXString) return Boolean;
@@ -89,7 +89,10 @@ package UXStrings is
    procedure Set (Target : out UXString; Unicode_Source : Unicode_Character_Array);
 
    procedure Append (Source : in out UXString; New_Item : UXString);
-   procedure Append (Source : in out UXString; New_Wide_Wide_Item : Unicode_Character);
+   procedure Append (Source : in out UXString; New_Item : Unicode_Character);
+
+   procedure Prepend (Source : in out UXString; New_Item : UXString);
+   procedure Prepend (Source : in out UXString; New_Item : Unicode_Character);
 
    function "&" (Left : UXString; Right : UXString) return UXString;
    function "&" (Left : UXString; Right : Unicode_Character) return UXString;
@@ -190,6 +193,9 @@ private
       Wide_Wide_Char : aliased Wide_Wide_Char_Type;
       Index          : Natural := 0;
    end record;
+
+   procedure Adjust     (Object : in out UXString);
+   procedure Finalize   (Object : in out UXString);
 
    Null_UXString : constant UXString :=
      (Ada.Finalization.Controlled with Chars => new UTF_8_Character_Array (2 .. 1), others => <>);

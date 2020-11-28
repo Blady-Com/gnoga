@@ -50,24 +50,33 @@ package Gnoga.Gui.Element.Common is
    --  A_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (A       : in out A_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Link    : in     String := "";
-                     Content : in     String := "";
-                     Target  : in     String := "_self";
-                     ID      : in     String := "");
+   procedure Create
+     (A       : in out A_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Link    : in     String := "";
+      Content : in     String := "";
+      Target  : in     String := "_self";
+      ID      : in     String := "");
    --  Create an Anchor link
 
    -------------------------------------------------------------------------
    --  A_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Link (A : in out A_Type; Value : String);
-   function Link (A : A_Type) return String;
+   procedure Link
+     (A     : in out A_Type;
+      Value :        String);
+   function Link
+     (A : A_Type)
+      return String;
    --  The HREF link of the Anchor
 
-   procedure Target (A : in out A_Type; Value : String);
-   function Target (A : A_Type) return String;
+   procedure Target
+     (A     : in out A_Type;
+      Value :        String);
+   function Target
+     (A : A_Type)
+      return String;
    --  Target of link, name of a frame or:
    --  _blank  = new window
    --  _top    = top most frame (full browser window)
@@ -86,10 +95,11 @@ package Gnoga.Gui.Element.Common is
    --  Button_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Button  : in out Button_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String := "";
-                     ID      : in     String := "");
+   procedure Create
+     (Button  : in out Button_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "");
    --  Create an HTML button. The content will be placed inside the button.
    --  For forms use Gnoga.Gui.Element.Form.Button instead.
    --  Button_Type's can contain other elements like images.
@@ -98,9 +108,12 @@ package Gnoga.Gui.Element.Common is
    --  Button_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Disabled (Button : in out Button_Type;
-                       Value  : in     Boolean := True);
-   function Disabled (Button : Button_Type) return Boolean;
+   procedure Disabled
+     (Button : in out Button_Type;
+      Value  : in     Boolean := True);
+   function Disabled
+     (Button : Button_Type)
+      return Boolean;
 
    -------------------------------------------------------------------------
    --  DIV_Types
@@ -115,10 +128,11 @@ package Gnoga.Gui.Element.Common is
    -------------------------------------------------------------------------
    --  Also note, that View_Base_Type.Put_Line also creates DIVs internally
 
-   procedure Create (DIV     : in out DIV_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String := "";
-                     ID      : in     String := "");
+   procedure Create
+     (DIV     : in out DIV_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "");
    --  Create a div container with optional HTML content
 
    -------------------------------------------------------------------------
@@ -133,10 +147,11 @@ package Gnoga.Gui.Element.Common is
    --  P_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (P       : in out P_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String := "";
-                     ID      : in     String := "");
+   procedure Create
+     (P       : in out P_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "");
 
    -------------------------------------------------------------------------
    --  IMG_Types
@@ -150,15 +165,18 @@ package Gnoga.Gui.Element.Common is
    --  IMG_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (IMG              : in out IMG_Type;
-                     Parent           : in out Gnoga.Gui.Base.Base_Type'Class;
-                     URL_Source       : in     String := "";
-                     Alternative_Text : in     String := "";
-                     ID               : in     String := "");
+   procedure Create
+     (IMG              : in out IMG_Type;
+      Parent           : in out Gnoga.Gui.Base.Base_Type'Class;
+      URL_Source       : in     String := "";
+      Alternative_Text : in     String := "";
+      ID               : in     String := "");
    --  Create an image element. Use width and height properties before
    --  placing image to constrain image size.
 
-   procedure URL_Source (IMG : in out IMG_Type; Value : in String);
+   procedure URL_Source
+     (IMG   : in out IMG_Type;
+      Value : in     String);
    --  Change URL Source for IMG
 
    -------------------------------------------------------------------------
@@ -173,9 +191,10 @@ package Gnoga.Gui.Element.Common is
    --  HR_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (HR     : in out HR_Type;
-                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-                     ID     : in     String := "");
+   procedure Create
+     (HR     : in out HR_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
    --  Create a horizontal rule
 
    -------------------------------------------------------------------------
@@ -190,9 +209,10 @@ package Gnoga.Gui.Element.Common is
    --  BR_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (BR     : in out BR_Type;
-                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-                     ID     : in     String := "");
+   procedure Create
+     (BR     : in out BR_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
 
    -------------------------------------------------------------------------
    --  Meter_Types
@@ -206,37 +226,62 @@ package Gnoga.Gui.Element.Common is
    --  Meter_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Meter   : in out Meter_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Value   : in     Integer := 0;
-                     High    : in     Integer := 100;
-                     Low     : in     Integer := 0;
-                     Maximum : in     Integer := 100;
-                     Minimum : in     Integer := 0;
-                     Optimum : in     Integer := 50;
-                     ID      : in     String := "");
+   procedure Create
+     (Meter   : in out Meter_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Value   : in     Integer := 0;
+      High    : in     Integer := 100;
+      Low     : in     Integer := 0;
+      Maximum : in     Integer := 100;
+      Minimum : in     Integer := 0;
+      Optimum : in     Integer := 50;
+      ID      : in     String  := "");
 
    -------------------------------------------------------------------------
    --  Meter_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Value (Meter : in out Meter_Type; Value : in Integer);
-   function Value (Meter : Meter_Type) return Integer;
+   procedure Value
+     (Meter : in out Meter_Type;
+      Value : in     Integer);
+   function Value
+     (Meter : Meter_Type)
+      return Integer;
 
-   procedure High (Meter : in out Meter_Type; Value : in Integer);
-   function High (Meter : Meter_Type) return Integer;
+   procedure High
+     (Meter : in out Meter_Type;
+      Value : in     Integer);
+   function High
+     (Meter : Meter_Type)
+      return Integer;
 
-   procedure Low (Meter : in out Meter_Type; Value : in Integer);
-   function Low (Meter : Meter_Type) return Integer;
+   procedure Low
+     (Meter : in out Meter_Type;
+      Value : in     Integer);
+   function Low
+     (Meter : Meter_Type)
+      return Integer;
 
-   procedure Maximum (Meter : in out Meter_Type; Value : in Integer);
-   function Maximum (Meter : Meter_Type) return Integer;
+   procedure Maximum
+     (Meter : in out Meter_Type;
+      Value : in     Integer);
+   function Maximum
+     (Meter : Meter_Type)
+      return Integer;
 
-   procedure Minimum (Meter : in out Meter_Type; Value : in Integer);
-   function Minimum (Meter : Meter_Type) return Integer;
+   procedure Minimum
+     (Meter : in out Meter_Type;
+      Value : in     Integer);
+   function Minimum
+     (Meter : Meter_Type)
+      return Integer;
 
-   procedure Optimum (Meter : in out Meter_Type; Value : in Integer);
-   function Optimum (Meter : Meter_Type) return Integer;
+   procedure Optimum
+     (Meter : in out Meter_Type;
+      Value : in     Integer);
+   function Optimum
+     (Meter : Meter_Type)
+      return Integer;
 
    -------------------------------------------------------------------------
    --  Progress_Bar_Types
@@ -250,23 +295,30 @@ package Gnoga.Gui.Element.Common is
    --  Progress_Bar_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Progress_Bar : in out Progress_Bar_Type;
-                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Value        : in     Integer := 0;
-                     Maximum      : in     Integer := 100;
-                     ID           : in     String := "");
+   procedure Create
+     (Progress_Bar : in out Progress_Bar_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Value        : in     Integer := 0;
+      Maximum      : in     Integer := 100;
+      ID           : in     String  := "");
 
    -------------------------------------------------------------------------
    --  Progress_Bar_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Value (Progress_Bar : in out Progress_Bar_Type;
-                    Value        : in     Integer);
-   function Value (Progress_Bar : Progress_Bar_Type) return Integer;
+   procedure Value
+     (Progress_Bar : in out Progress_Bar_Type;
+      Value        : in     Integer);
+   function Value
+     (Progress_Bar : Progress_Bar_Type)
+      return Integer;
 
-   procedure Maximum (Progress_Bar : in out Progress_Bar_Type;
-                      Value        : in     Integer);
-   function Maximum (Progress_Bar : Progress_Bar_Type) return Integer;
+   procedure Maximum
+     (Progress_Bar : in out Progress_Bar_Type;
+      Value        : in     Integer);
+   function Maximum
+     (Progress_Bar : Progress_Bar_Type)
+      return Integer;
 
    -------------------------------------------------------------------------
    --  Span_Types
@@ -281,10 +333,11 @@ package Gnoga.Gui.Element.Common is
    -------------------------------------------------------------------------
    --  The Spans are created automatically when using View_Base_Type.Put
 
-   procedure Create (Span    : in out Span_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String := "";
-                     ID      : in     String := "");
+   procedure Create
+     (Span    : in out Span_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "");
    --  Create a Span container
 
 private
@@ -296,7 +349,6 @@ private
    type HR_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type BR_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Meter_Type is new Gnoga.Gui.Element.Element_Type with null record;
-   type Progress_Bar_Type is
-     new Gnoga.Gui.Element.Element_Type with null record;
+   type Progress_Bar_Type is new Gnoga.Gui.Element.Element_Type with null record;
    type Span_Type is new Gnoga.Gui.View.View_Base_Type with null record;
 end Gnoga.Gui.Element.Common;

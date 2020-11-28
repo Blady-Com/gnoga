@@ -44,14 +44,13 @@ with Gnoga.Types;
 
 package body Gnoga.Application.Multi_Connect is
 
-   package Path_Maps is new Ada.Containers.Indefinite_Ordered_Maps
-     (String, Application_Connect_Event);
+   package Path_Maps is new Ada.Containers.Indefinite_Ordered_Maps (String, Application_Connect_Event);
 
    Path_Map : Path_Maps.Map;
 
    procedure On_Connect
-     (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
+     (ID         : in Gnoga.Types.Connection_ID;
+      Connection :    access Gnoga.Server.Connection.Connection_Holder_Type);
    --  Handle connections by creating Main_Window object and dispatching
    --  to correct On_Connect_Handler based on Path. It is not necessary
    --  to call Connection.Hold unless you wish to hold the connection and
@@ -63,8 +62,8 @@ package body Gnoga.Application.Multi_Connect is
    ----------------
 
    procedure On_Connect
-     (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Server.Connection.Connection_Holder_Type)
+     (ID         : in Gnoga.Types.Connection_ID;
+      Connection :    access Gnoga.Server.Connection.Connection_Holder_Type)
    is
       Main_Window : Gnoga.Gui.Window.Window_Type;
    begin
@@ -76,10 +75,10 @@ package body Gnoga.Application.Multi_Connect is
          Path : constant String := Right_Trim_Slashes (Server.Connection.Connection_Path (ID));
       begin
          if Path_Map.Contains (Path) then
-            Log ("Sending to path: " & Path &
-                   " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
-                   " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
-                   " from " & Gnoga.Server.Connection.Connection_Client_Address (ID));
+            Log
+              ("Sending to path: " & Path & " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) & " on " &
+               Gnoga.Gui.Navigator.Platform (Main_Window) & " from " &
+               Gnoga.Server.Connection.Connection_Client_Address (ID));
 
             Path_Map.Element (Path) (Main_Window, Connection);
 
@@ -88,10 +87,10 @@ package body Gnoga.Application.Multi_Connect is
             Connection.Hold;
             --  If connection was already released this will not block.
          elsif Path_Map.Contains ("default") then
-            Log ("Sending to default route" &
-                   " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
-                   " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
-                   " from " & Gnoga.Server.Connection.Connection_Client_Address (ID));
+            Log
+              ("Sending to default route" & " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) & " on " &
+               Gnoga.Gui.Navigator.Platform (Main_Window) & " from " &
+               Gnoga.Server.Connection.Connection_Client_Address (ID));
 
             Path_Map.Element ("default") (Main_Window, Connection);
 
@@ -100,10 +99,10 @@ package body Gnoga.Application.Multi_Connect is
             Connection.Hold;
             --  If connection was already released this will not block.
          else
-            Log ("No route to path: " & Path &
-                   " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
-                   " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
-                   " from " & Gnoga.Server.Connection.Connection_Client_Address (ID));
+            Log
+              ("No route to path: " & Path & " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) & " on " &
+               Gnoga.Gui.Navigator.Platform (Main_Window) & " from " &
+               Gnoga.Server.Connection.Connection_Client_Address (ID));
 
             Server.Connection.HTML_On_Close (ID, "No route to path.");
          end if;
@@ -128,7 +127,7 @@ package body Gnoga.Application.Multi_Connect is
    procedure Initialize
      (Event   : in Application_Connect_Event := null;
       Host    : in String                    := "";
-      Port    : in Integer                   := 8080;
+      Port    : in Integer                   := 8_080;
       Boot    : in String                    := "boot.html";
       Verbose : in Boolean                   := True)
    is
@@ -140,8 +139,7 @@ package body Gnoga.Application.Multi_Connect is
          Gnoga.Write_To_Console ("Press Ctrl-C to close server.");
       end if;
 
-      Gnoga.Server.Connection.On_Connect_Handler
-        (Event => On_Connect'Access);
+      Gnoga.Server.Connection.On_Connect_Handler (Event => On_Connect'Access);
 
       if Event /= null then
          On_Connect_Handler (Event);
@@ -152,8 +150,9 @@ package body Gnoga.Application.Multi_Connect is
    -- On_Connect_Handler --
    ------------------------
 
-   procedure On_Connect_Handler (Event : in Application_Connect_Event;
-                                 Path  : in String := "default")
+   procedure On_Connect_Handler
+     (Event : in Application_Connect_Event;
+      Path  : in String := "default")
    is
    begin
       Path_Map.Include (Right_Trim_Slashes (Left_Trim_Slashes (Path)), Event);

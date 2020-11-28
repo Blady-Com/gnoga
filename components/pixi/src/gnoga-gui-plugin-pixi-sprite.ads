@@ -89,18 +89,30 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    --  Sprite_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Locate (Sprite : in out Sprite_Type; Row, Column : in Integer);
+   procedure Locate
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Integer);
    --  Specifies the position of the upper left hand corner of a sprite
 
-   procedure Position (Sprite : in Sprite_Type; Row, Column : out Integer);
-   function Row (Sprite : in Sprite_Type) return Integer;
-   function Column (Sprite : in Sprite_Type) return Integer;
+   procedure Position
+     (Sprite      : in     Sprite_Type;
+      Row, Column :    out Integer);
+   function Row
+     (Sprite : in Sprite_Type)
+      return Integer;
+   function Column
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  Determines the position of a sprite
 
-   procedure Pattern (Sprite : in Sprite_Type; Image_Data : in String);
+   procedure Pattern
+     (Sprite     : in Sprite_Type;
+      Image_Data : in String);
    --  Specifies the image that defines a sprite
 
-   function Pattern (Sprite : in Sprite_Type) return String;
+   function Pattern
+     (Sprite : in Sprite_Type)
+      return String;
    --  Returns the image that defines a sprite
 
    procedure Motion
@@ -108,8 +120,12 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
       Row_Velocity, Column_Velocity : in     Velocity_Type);
    --  Specifies the motion of a sprite in cartesian coordinate
 
-   function Row_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
-   function Column_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
+   function Row_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type;
+   function Column_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type;
    --  Returns cartesian motion properties
 
    procedure Motion
@@ -129,8 +145,12 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
       To_Row, To_Column : in     Integer);
    --  Points the velocity vector to the specified point
 
-   function Radial_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
-   function Azimuth_Of_Velocity (Sprite : in Sprite_Type) return Integer;
+   function Radial_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type;
+   function Azimuth_Of_Velocity
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  Returns polar motion properties
 
    procedure Acceleration
@@ -139,9 +159,11 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    --  Specifies the acceleration of a sprite in cartesian coordinate
 
    function Row_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type;
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type;
    function Column_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type;
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type;
    --  Returns cartesian acceleration properties
 
    procedure Acceleration
@@ -162,23 +184,30 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    --  Points the acceleration vector to the specified point
 
    function Radial_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type;
-   function Azimuth_Of_Acceleration (Sprite : in Sprite_Type) return Integer;
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type;
+   function Azimuth_Of_Acceleration
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  Returns polar acceleration properties
 
    procedure Alpha
      (Sprite : in out Sprite_Type;
       Value  : in     Gnoga.Types.Alpha_Type);
-   function Alpha (Sprite : in Sprite_Type) return Gnoga.Types.Alpha_Type;
+   function Alpha
+     (Sprite : in Sprite_Type)
+      return Gnoga.Types.Alpha_Type;
    --  The opacity of the object.
 
    procedure Anchor
      (Sprite      : in out Sprite_Type;
       Row, Column : in     Gnoga.Types.Frational_Range_Type);
    function Row_Anchor
-     (Sprite : in Sprite_Type) return Gnoga.Types.Frational_Range_Type;
+     (Sprite : in Sprite_Type)
+      return Gnoga.Types.Frational_Range_Type;
    function Column_Anchor
-     (Sprite : in Sprite_Type) return Gnoga.Types.Frational_Range_Type;
+     (Sprite : in Sprite_Type)
+      return Gnoga.Types.Frational_Range_Type;
    --  The anchor sets the origin point of the texture.
    --  The default is 0,0 this means the texture's origin is the top left
    --  Setting the anchor to 0.5,0.5 means the texture's origin is centered
@@ -187,7 +216,9 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Blend_Mode
      (Sprite : in out Sprite_Type;
       Value  : in     Blend_Modes_Type);
-   function Blend_Mode (Sprite : in Sprite_Type) return Blend_Modes_Type;
+   function Blend_Mode
+     (Sprite : in Sprite_Type)
+      return Blend_Modes_Type;
    --  The blend mode to be applied to the sprite. Apply a value of PIXI.BLEND_MODES.NORMAL to reset the blend mode.
 
    --  mask PIXI.Graphics PIXI.Sprite
@@ -196,48 +227,77 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    --  PIXI.Graphics or a PIXI.Sprite object. This allows for much faster masking in canvas as it
    --  utilises shape clipping. To remove a mask, set this property to null.
 
-   procedure Pivot (Sprite : in out Sprite_Type; Row, Column : in Integer);
-   function Row_Pivot (Sprite : in Sprite_Type) return Integer;
-   function Column_Pivot (Sprite : in Sprite_Type) return Integer;
+   procedure Pivot
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Integer);
+   function Row_Pivot
+     (Sprite : in Sprite_Type)
+      return Integer;
+   function Column_Pivot
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  The pivot point of the displayObject that it rotates around
 
-   procedure Rotation (Sprite : in out Sprite_Type; Value : in Integer);
-   function Rotation (Sprite : in Sprite_Type) return Integer;
+   procedure Rotation
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer);
+   function Rotation
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  The rotation of the object in degrees.
 
    procedure Rotation_Velocity
      (Sprite : in out Sprite_Type;
       Value  :        Velocity_Type);
-   function Rotation_Velocity (Sprite : in Sprite_Type) return Velocity_Type;
+   function Rotation_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type;
    --  The rotation velocity
 
    procedure Rotation_Acceleration
      (Sprite : in out Sprite_Type;
       Value  :        Acceleration_Type);
    function Rotation_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type;
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type;
    --  The rotation acceleration
 
    overriding procedure Width
      (Sprite : in out Sprite_Type;
       Value  : in     Integer);
-   overriding function Width (Sprite : in Sprite_Type) return Integer;
+   overriding function Width
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  The width of the sprite, setting this will actually modify the scale to achieve the value set.
 
    overriding procedure Height
      (Sprite : in out Sprite_Type;
       Value  : in     Integer);
-   overriding function Height (Sprite : in Sprite_Type) return Integer;
+   overriding function Height
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  The height of the sprite, setting this will actually modify the scale to achieve the value set.
 
-   procedure Scale (Sprite : in out Sprite_Type; Row, Column : in Positive);
-   function Row_Scale (Sprite : in Sprite_Type) return Positive;
-   function Column_Scale (Sprite : in Sprite_Type) return Positive;
+   procedure Scale
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Positive);
+   function Row_Scale
+     (Sprite : in Sprite_Type)
+      return Positive;
+   function Column_Scale
+     (Sprite : in Sprite_Type)
+      return Positive;
    --  The scale factor of the object.
 
-   procedure Skew (Sprite : in out Sprite_Type; Row, Column : in Positive);
-   function Row_Skew (Sprite : in Sprite_Type) return Positive;
-   function Column_Skew (Sprite : in Sprite_Type) return Positive;
+   procedure Skew
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Positive);
+   function Row_Skew
+     (Sprite : in Sprite_Type)
+      return Positive;
+   function Column_Skew
+     (Sprite : in Sprite_Type)
+      return Positive;
    --  The skew factor for the object in radians.
 
    procedure Get_Texture
@@ -248,14 +308,22 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
       Value  : in     Texture_Type'Class);
    --  The texture that the sprite is using
 
-   procedure Tint (Sprite : in out Sprite_Type; Value : in Natural);
-   function Tint (Sprite : in Sprite_Type) return Natural;
+   procedure Tint
+     (Sprite : in out Sprite_Type;
+      Value  : in     Natural);
+   function Tint
+     (Sprite : in Sprite_Type)
+      return Natural;
    --  - tint number
    --  The tint applied to the sprite. This is a hex value. A value of
    --  0xFFFFFF will remove any tint effect.
 
-   procedure Visible (Sprite : in out Sprite_Type; Value : in Boolean);
-   function Visible (Sprite : in Sprite_Type) return Boolean;
+   procedure Visible
+     (Sprite : in out Sprite_Type;
+      Value  : in     Boolean);
+   function Visible
+     (Sprite : in Sprite_Type)
+      return Boolean;
    --  The visibility of the object. If false the object will not be drawn, and
    --  the updateTransform function will not be called.
    --  Only affects recursive calls from parent. You can ask for bounds or call updateTransform manually
@@ -266,24 +334,30 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Coincidence
      (Sprite1, Sprite2 : in Sprite_Type;
-      Tolerance        : in Natural) return Boolean;
+      Tolerance        : in Natural)
+      return Boolean;
    function Coincidence
      (Sprite      : in Sprite_Type;
       Row, Column : in Integer;
-      Tolerance   : in Natural) return Boolean;
+      Tolerance   : in Natural)
+      return Boolean;
    --  Determines if two sprites or a sprite and a point on the screen at or near the same location on the screen
    --  Tolerance is in the same unit as position
    --  Tolerance of 0 indicates the exact coincidence
 
    function Overlap_Point
      (Sprite      : in Sprite_Type;
-      Row, Column : in Integer) return Boolean;
+      Row, Column : in Integer)
+      return Boolean;
    --  Returns if specified point is within the sprite surface
 
-   function Distance (Sprite1, Sprite2 : in Sprite_Type) return Natural;
+   function Distance
+     (Sprite1, Sprite2 : in Sprite_Type)
+      return Natural;
    function Distance
      (Sprite      : in Sprite_Type;
-      Row, Column : in Integer) return Natural;
+      Row, Column : in Integer)
+      return Natural;
    --  Determines the distance between two sprites or a sprite and a location
    --  The result is the nearest integer from square root between the upper left hand corner of two sprites
    --  or between the upper left hand corner of a sprite and a location
@@ -351,7 +425,9 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Frame_Effect
      (Sprite : in out Sprite_Type;
       Effect : in     Effect_Type);
-   function Frame_Effect (Sprite : in Sprite_Type) return Effect_Type;
+   function Frame_Effect
+     (Sprite : in Sprite_Type)
+      return Effect_Type;
    --  The effect of frame limit
 
    procedure Angle_Limit
@@ -369,7 +445,9 @@ package Gnoga.Gui.Plugin.Pixi.Sprite is
    procedure Angle_Effect
      (Sprite : in out Sprite_Type;
       Effect : in     Effect_Type);
-   function Angle_Effect (Sprite : in Sprite_Type) return Effect_Type;
+   function Angle_Effect
+     (Sprite : in Sprite_Type)
+      return Effect_Type;
    --  The effect of angle limit
 
    procedure Delete

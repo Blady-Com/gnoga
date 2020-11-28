@@ -53,47 +53,60 @@ package Gnoga.Client.Storage is
    type Storage_Access is access all Storage_Type;
    type Pointer_To_Storage_Class is access all Storage_Type'Class;
 
-   function Length (Storage : Storage_Type) return Natural;
+   function Length
+     (Storage : Storage_Type)
+      return Natural;
    --  Number of entries in Storage
 
-   function Key (Storage : Storage_Type; Value : Positive) return String;
+   function Key
+     (Storage : Storage_Type;
+      Value   : Positive)
+      return String;
    --  Return the Key at Value
 
-   procedure Set (Storage : in out Storage_Type; Name, Value : String);
+   procedure Set
+     (Storage     : in out Storage_Type;
+      Name, Value :        String);
    --  Set Name=Value in Storage
 
-   function Get (Storage : Storage_Type; Name : String) return String;
+   function Get
+     (Storage : Storage_Type;
+      Name    : String)
+      return String;
    --  Get Value for Name in Storage. If Name does not exist returns "null"
 
-   function Script_Accessor (Storage : Storage_Type) return String;
+   function Script_Accessor
+     (Storage : Storage_Type)
+      return String;
 
    type Local_Storage_Type is new Storage_Type with private;
    type Local_Storage_Access is access all Local_Storage_Type;
    type Pointer_To_Local_Storage_Class is access all Local_Storage_Type'Class;
 
-   function Local_Storage (Object : Gnoga.Gui.Base.Base_Type'Class)
-                           return Local_Storage_Type;
+   function Local_Storage
+     (Object : Gnoga.Gui.Base.Base_Type'Class)
+      return Local_Storage_Type;
 
-   overriding
-   function Script_Accessor (Storage : Local_Storage_Type) return String;
+   overriding function Script_Accessor
+     (Storage : Local_Storage_Type)
+      return String;
 
    type Session_Storage_Type is new Storage_Type with private;
    type Session_Storage_Access is access all Session_Storage_Type;
-   type Pointer_To_Session_Storage_Class is
-     access all Session_Storage_Type'Class;
+   type Pointer_To_Session_Storage_Class is access all Session_Storage_Type'Class;
 
-   function Session_Storage (Object : Gnoga.Gui.Base.Base_Type'Class)
-                             return Session_Storage_Type;
+   function Session_Storage
+     (Object : Gnoga.Gui.Base.Base_Type'Class)
+      return Session_Storage_Type;
 
-   overriding
-   function Script_Accessor (Storage : Session_Storage_Type) return String;
+   overriding function Script_Accessor
+     (Storage : Session_Storage_Type)
+      return String;
 
 private
-   type Storage_Type is tagged
-      record
-         Connection_ID : Gnoga.Types.Connection_ID :=
-                           Gnoga.Types.No_Connection;
-      end record;
+   type Storage_Type is tagged record
+      Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+   end record;
 
    type Local_Storage_Type is new Storage_Type with null record;
    type Session_Storage_Type is new Storage_Type with null record;

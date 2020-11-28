@@ -57,10 +57,11 @@ package Gnoga.Gui.Element.SVG is
    --  SVG_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (SVG     : in out SVG_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String := "";
-                     ID      : in     String := "");
+   procedure Create
+     (SVG     : in out SVG_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "");
    --  Create a SVG container use Content for SVG XML if set.
    --  To create new SVG Elements use Element_Type.Create_XML_Element
    --  You can then use Element_Type.Style, Element_Type.Attribute

@@ -39,8 +39,7 @@ with Gnoga.Gui.Window;
 
 package Gnoga.Gui.Plugin.MacGap is
 
-   procedure Activate_Application
-     (Window : in out Gnoga.Gui.Window.Window_Type);
+   procedure Activate_Application (Window : in out Gnoga.Gui.Window.Window_Type);
 
    procedure Hide_Application (Window : in out Gnoga.Gui.Window.Window_Type);
 
@@ -50,83 +49,102 @@ package Gnoga.Gui.Plugin.MacGap is
 
    procedure Bounce_Dock_Icon (Window : in out Gnoga.Gui.Window.Window_Type);
 
-   procedure Launch_Application (Window : in out Gnoga.Gui.Window.Window_Type;
-                                 Name   : in     String);
+   procedure Launch_Application
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Name   : in     String);
    --  Launch application with Name or Name is a full path to executable, e.g.
    --    Launch_Application (Window, "TextEdit");
 
-   procedure Open_URL (Window : in out Gnoga.Gui.Window.Window_Type;
-                       URL    : in     String);
+   procedure Open_URL
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      URL    : in     String);
    --  Open URL in default browser
 
-   procedure Notify_User (Window  : in out Gnoga.Gui.Window.Window_Type;
-                          Title   : in     String;
-                          Message : in     String;
-                          Sound   : in     Boolean := True);
+   procedure Notify_User
+     (Window  : in out Gnoga.Gui.Window.Window_Type;
+      Title   : in     String;
+      Message : in     String;
+      Sound   : in     Boolean := True);
    --  Create a system user notification
 
-   procedure Display_Sheet (Window  : in out Gnoga.Gui.Window.Window_Type;
-                            Title   : in     String;
-                            Message : in     String;
-                            Sound   : in     Boolean := True);
+   procedure Display_Sheet
+     (Window  : in out Gnoga.Gui.Window.Window_Type;
+      Title   : in     String;
+      Message : in     String;
+      Sound   : in     Boolean := True);
    --  Display a "sheet" notification on window
 
-   function X_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer;
-   function Y_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer;
+   function X_Position
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return Integer;
+   function Y_Position
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return Integer;
    --  Position of window
 
-   function Is_Maximized (Window : Gnoga.Gui.Window.Window_Type)
-                          return Boolean;
+   function Is_Maximized
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return Boolean;
 
-   procedure Move (Window : in out Gnoga.Gui.Window.Window_Type;
-                   X, Y   : in     Integer);
+   procedure Move
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      X, Y   : in     Integer);
    --  Move window to position X, Y
 
-   procedure Resize (Window : in out Gnoga.Gui.Window.Window_Type;
-                     Width  : in     Integer;
-                     Height : in     Integer);
+   procedure Resize
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Width  : in     Integer;
+      Height : in     Integer);
 
-   procedure Title (Window : in out Gnoga.Gui.Window.Window_Type;
-                    Value  : in     String);
+   procedure Title
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Value  : in     String);
 
    procedure Maximize (Window : in out Gnoga.Gui.Window.Window_Type);
    procedure Minimize (Window : in out Gnoga.Gui.Window.Window_Type);
    procedure Restore (Window : in out Gnoga.Gui.Window.Window_Type);
    procedure Toggle_Full_Screen (Window : in out Gnoga.Gui.Window.Window_Type);
 
-   function Application_Path (Window : Gnoga.Gui.Window.Window_Type)
-                              return String;
+   function Application_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String;
    --  Path to Mac application
 
-   function Resource_Path (Window : Gnoga.Gui.Window.Window_Type)
-                           return String;
+   function Resource_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String;
    --  Path to Mac application's resource path
 
-   function Documents_Path (Window : Gnoga.Gui.Window.Window_Type)
-                            return String;
+   function Documents_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String;
    --  Path to user's documents directory
 
-   function Library_Path (Window : Gnoga.Gui.Window.Window_Type)
-                          return String;
+   function Library_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String;
    --  Path to applications library directory
 
-   function Home_Path (Window : Gnoga.Gui.Window.Window_Type)
-                       return String;
+   function Home_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String;
    --  Path to user's home directory or sandbox home directory
 
-   function Temp_Path (Window : Gnoga.Gui.Window.Window_Type)
-                       return String;
+   function Temp_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String;
    --  Path to applications temp directory
 
-   procedure Terminate_Application
-     (Window : in out Gnoga.Gui.Window.Window_Type);
+   procedure Terminate_Application (Window : in out Gnoga.Gui.Window.Window_Type);
    --  Closes Mac OS X application
 
-   procedure MacGap_Execute (Window : in out Gnoga.Gui.Window.Window_Type;
-                             Method : in     String);
-   function MacGap_Execute (Window : Gnoga.Gui.Window.Window_Type;
-                            Method : String)
-                            return String;
+   procedure MacGap_Execute
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Method : in     String);
+   function MacGap_Execute
+     (Window : Gnoga.Gui.Window.Window_Type;
+      Method : String)
+      return String;
    --  Execute a method on the MacGap object for Window
    --  Method is eval'd JavaScript (quotes have to be escaped if any).
 

@@ -53,8 +53,8 @@ package body Gnoga.Application.Singleton is
    --  Used to hold the single incoming connection
 
    procedure On_Connect
-     (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Server.Connection.Connection_Holder_Type);
+     (ID         : in Gnoga.Types.Connection_ID;
+      Connection :    access Gnoga.Server.Connection.Connection_Holder_Type);
    --  Connection On_Connect handler
 
    ---------------------
@@ -79,8 +79,8 @@ package body Gnoga.Application.Singleton is
    ----------------
 
    procedure On_Connect
-     (ID         : in     Gnoga.Types.Connection_ID;
-      Connection : access Gnoga.Server.Connection.Connection_Holder_Type)
+     (ID         : in Gnoga.Types.Connection_ID;
+      Connection :    access Gnoga.Server.Connection.Connection_Holder_Type)
    is
       procedure Free is new Ada.Unchecked_Deallocation (Web_Server_Task, Web_Server_Task_Access);
    begin
@@ -96,8 +96,7 @@ package body Gnoga.Application.Singleton is
          Gnoga.Server.Connection.Stop;
          Free (Web_Server);
       else
-         Gnoga.Server.Connection.Execute_Script
-           (ID, "document.writeln ('Only one connection permitted.');");
+         Gnoga.Server.Connection.Execute_Script (ID, "document.writeln ('Only one connection permitted.');");
       end if;
    end On_Connect;
 
@@ -108,7 +107,7 @@ package body Gnoga.Application.Singleton is
    procedure Initialize
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Host        : in     String  := "";
-      Port        : in     Integer := 8080;
+      Port        : in     Integer := 8_080;
       Boot        : in     String  := "boot.html";
       Verbose     : in     Boolean := True)
    is
@@ -121,8 +120,7 @@ package body Gnoga.Application.Singleton is
          Gnoga.Write_To_Console ("Press Ctrl-C to close server.");
       end if;
 
-      Gnoga.Server.Connection.On_Connect_Handler
-        (Event => On_Connect'Access);
+      Gnoga.Server.Connection.On_Connect_Handler (Event => On_Connect'Access);
 
       Web_Server := new Web_Server_Task;
       Web_Server.Start;
@@ -134,10 +132,10 @@ package body Gnoga.Application.Singleton is
 
       Main_Window.Document.Title (Title);
 
-      Log ("Sending to single route" &
-             " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) &
-             " on " & Gnoga.Gui.Navigator.Platform (Main_Window) &
-             " from " & Gnoga.Server.Connection.Connection_Client_Address (Connection_ID));
+      Log
+        ("Sending to single route" & " for " & Gnoga.Gui.Navigator.User_Agent (Main_Window) & " on " &
+         Gnoga.Gui.Navigator.Platform (Main_Window) & " from " &
+         Gnoga.Server.Connection.Connection_Client_Address (Connection_ID));
 
    end Initialize;
 

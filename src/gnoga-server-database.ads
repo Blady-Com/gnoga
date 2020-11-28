@@ -51,24 +51,35 @@ package Gnoga.Server.Database is
    procedure Disconnect (C : in out Connection) is abstract;
    --  Disconnect from server
 
-   procedure Execute_Query (C : in out Connection; SQL : String) is abstract;
+   procedure Execute_Query
+     (C   : in out Connection;
+      SQL :        String) is abstract;
    --  Execute an SQL Query with no result set
 
-   function Execute_Update (C : in out Connection; SQL : String)
-                            return Natural is abstract;
+   function Execute_Update
+     (C   : in out Connection;
+      SQL :        String)
+      return Natural is abstract;
    --  Executes and SQL Query and returns the number of affected rows
 
-   function Affected_Rows (C : Connection) return Natural is abstract;
+   function Affected_Rows
+     (C : Connection)
+      return Natural is abstract;
    --  Returns the number of rows affected by an Execute_Query
 
-   function Insert_ID (C : Connection) return Natural is abstract;
+   function Insert_ID
+     (C : Connection)
+      return Natural is abstract;
    --  Returns the last value assigned to an auto increment field upon insert
 
-   function Error_Message (C : Connection) return String is abstract;
+   function Error_Message
+     (C : Connection)
+      return String is abstract;
    --  Returns the last error message that has occurred on this connection
 
-   function List_Of_Tables (C : Connection)
-                            return Gnoga.Types.Data_Array_Type is abstract;
+   function List_Of_Tables
+     (C : Connection)
+      return Gnoga.Types.Data_Array_Type is abstract;
    --  Return an array of table names
 
    function List_Fields_Of_Table
@@ -84,32 +95,40 @@ package Gnoga.Server.Database is
       Default_Value : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
-   package Field_Description_Arrays is
-     new Ada.Containers.Indefinite_Vectors (Natural, Field_Description);
+   package Field_Description_Arrays is new Ada.Containers.Indefinite_Vectors (Natural, Field_Description);
    subtype Field_Description_Array_Type is Field_Description_Arrays.Vector;
 
    function Field_Descriptions
-     (C : Connection; Table_Name : String)
-     return Field_Description_Array_Type is abstract;
+     (C          : Connection;
+      Table_Name : String)
+      return Field_Description_Array_Type is abstract;
    --  Return an array of Field_Description records describe the fields of
    --  a table
 
-   function Field_Type (Field : Field_Description) return String;
+   function Field_Type
+     (Field : Field_Description)
+      return String;
    --  Returns the field type portion of a data type, for example:
    --  If the Field.Data_Type = Varchar(80) then will return Varchar
 
-   function Field_Size (Field : Field_Description) return Natural;
+   function Field_Size
+     (Field : Field_Description)
+      return Natural;
    --  Returns the field size portion of a data type, for example:
    --  If the Field.Data_Type = varchar(80) then will return 80
    --  If the Data_Type does not have a size portion will return 0
    --  If the Data_Type is a numeric with decimals, e.g. decimal(10,2)
    --  then it will return the non-decimal portion.
 
-   function Field_Decimals (Field : Field_Description) return Natural;
+   function Field_Decimals
+     (Field : Field_Description)
+      return Natural;
    --  Returns the decimal portion of a field size if it exists or 0
    --  for example: if the Data_Type = float(10,2) it will return 2
 
-   function Field_Options (Field : Field_Description) return String;
+   function Field_Options
+     (Field : Field_Description)
+      return String;
    --  Returns the field options portion of a data type, for example:
    --  If the Field.Data_Type = enum('N','Y') then will return 'N','Y'
    --  as this is described in the database in the same way as field
@@ -117,7 +136,9 @@ package Gnoga.Server.Database is
    --  as well. For example varchar(80) will return the string 80
    --  This is also used for descriptions like decimal(10,2), etc.
 
-   function ID_Field_String (C : Connection) return String is abstract;
+   function ID_Field_String
+     (C : Connection)
+      return String is abstract;
    --  Returns the propper type format for the ID field that should be part
    --  of every table used by GRAW.
    --  e.g. for SQLlite = "id INTEGER PRIMARY KEY AUTOINCREMENT"
@@ -126,9 +147,10 @@ package Gnoga.Server.Database is
    type Recordset is interface;
    type Recordset_Access is access all Recordset'Class;
 
-   function Query (C : Connection; SQL : String)
-                   return Recordset'Class
-                   is abstract;
+   function Query
+     (C   : Connection;
+      SQL : String)
+      return Recordset'Class is abstract;
    --  Execute query that returns Recordset
 
    procedure Close (RS : in out Recordset) is abstract;
@@ -137,73 +159,84 @@ package Gnoga.Server.Database is
    procedure Next (RS : in out Recordset) is abstract;
    --  Go to next row
 
-   function Next (RS : in out Recordset) return Boolean is abstract;
+   function Next
+     (RS : in out Recordset)
+      return Boolean is abstract;
    --  Go to next row and return true if not End of Recordset
 
    procedure Iterate
      (C       : in out Connection;
-      SQL     : in String;
-      Process : not null access procedure (RS : Recordset'Class))
-      is abstract;
+      SQL     : in     String;
+      Process :        not null access procedure (RS : Recordset'Class)) is abstract;
    --  Iterate through all rows in the result set of the query
 
    procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access procedure (RS : Recordset'Class))
-      is abstract;
+      Process :        not null access procedure (RS : Recordset'Class)) is abstract;
    --  Iterate through all rows in the recordset
 
    procedure Iterate
-     (C     : in out Connection;
-      SQL   : String;
-      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
-      is abstract;
+     (C       : in out Connection;
+      SQL     :        String;
+      Process :        not null access procedure (Row : Gnoga.Types.Data_Map_Type)) is abstract;
    --  Iterate through all rows in the result set of the query
 
    procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
-      is abstract;
+      Process :        not null access procedure (Row : Gnoga.Types.Data_Map_Type)) is abstract;
    --  Iterate through all rows in the recordset
 
-   function Number_Of_Rows (RS : Recordset) return Natural is abstract;
+   function Number_Of_Rows
+     (RS : Recordset)
+      return Natural is abstract;
    --  Return number of rows in recordset
    --  This function is not available in many implementations, check the
    --  database specific package before considering use.
 
-   function Number_Of_Fields (RS : Recordset) return Natural is abstract;
+   function Number_Of_Fields
+     (RS : Recordset)
+      return Natural is abstract;
    --  Return number of fields in recordset
 
-   function Field_Name (RS : Recordset; Field_Number : Natural) return String
-                        is abstract;
+   function Field_Name
+     (RS           : Recordset;
+      Field_Number : Natural)
+      return String is abstract;
    --  Return name of field
 
-   function Is_Null (RS : Recordset; Field_Number : Natural) return Boolean
-                     is abstract;
-   function Is_Null (RS : Recordset; Field_Name : String) return Boolean
-                     is abstract;
+   function Is_Null
+     (RS           : Recordset;
+      Field_Number : Natural)
+      return Boolean is abstract;
+   function Is_Null
+     (RS         : Recordset;
+      Field_Name : String)
+      return Boolean is abstract;
    --  return True if value of field is null
 
-   function Field_Value (RS           : Recordset;
-                         Field_Number : Natural;
-                         Handle_Nulls : Boolean := True)
-                         return String
-                         is abstract;
-   function Field_Value (RS           : Recordset;
-                         Field_Name   : String;
-                         Handle_Nulls : Boolean := True)
-                         return String
-                         is abstract;
+   function Field_Value
+     (RS           : Recordset;
+      Field_Number : Natural;
+      Handle_Nulls : Boolean := True)
+      return String is abstract;
+   function Field_Value
+     (RS           : Recordset;
+      Field_Name   : String;
+      Handle_Nulls : Boolean := True)
+      return String is abstract;
    --  return value of field, if Handle_Nulls is true, Null values will
    --  return as empty Strings
 
-   function Field_Values (RS : Recordset) return Gnoga.Types.Data_Map_Type
-                          is abstract;
+   function Field_Values
+     (RS : Recordset)
+      return Gnoga.Types.Data_Map_Type is abstract;
    --  return map of all values for current row, NULL values are set to
    --  an empty String
 
-   function Escape_String (C : Connection; S : String) return String
-                           is abstract;
+   function Escape_String
+     (C : Connection;
+      S : String)
+      return String is abstract;
    --  prepares a string for safe storage in a query
 
    Connection_Error : exception;
@@ -227,7 +260,7 @@ package Gnoga.Server.Database is
    End_Of_Recordset : exception;
    --  Attempt to go pass the last row in recordset
 
-   No_Such_Field    : exception;
+   No_Such_Field : exception;
    --  The value for a field name was requested that does not exits
 
    Null_Field : exception;

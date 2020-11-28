@@ -55,14 +55,14 @@ package Gnoga.Gui.Element.Phrase is
    -------------------------------------------------------------------------
 
    type Phrase_Description_Type is
-     (Abbr, Code, Strong, Em, Dfn, Samp, Kbd, Var, Marked, Del, Ins, S, Q,
-      Big, Small, Time, Tt, Cite, I, B, U, Sub, Sup);
+     (Abbr, Code, Strong, Em, Dfn, Samp, Kbd, Var, Marked, Del, Ins, S, Q, Big, Small, Time, Tt, Cite, I, B, U, Sub,
+      Sup);
 
    procedure Create
      (View   : in out Phrase_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       Phrase : in     Phrase_Description_Type;
-      ID     : in     String  := "");
+      ID     : in     String := "");
 
 private
    type Phrase_Type is new Gnoga.Gui.View.View_Base_Type with null record;

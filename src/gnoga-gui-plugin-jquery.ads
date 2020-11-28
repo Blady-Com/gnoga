@@ -51,19 +51,18 @@ package Gnoga.Gui.Plugin.jQuery is
    type jQuery_Access is access all jQuery_Type;
    type Pointer_To_jQuery_Class is access all jQuery_Type'Class;
 
-   overriding
-   procedure Initialize (Object : in out jQuery_Type);
+   overriding procedure Initialize (Object : in out jQuery_Type);
 
-   overriding
-   procedure Finalize (Object : in out jQuery_Type);
+   overriding procedure Finalize (Object : in out jQuery_Type);
 
    -------------------------------------------------------------------------
    --  jQuery_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure jQuery (Object : in out jQuery_Type;
-                     ID     : in     Gnoga.Types.Connection_ID;
-                     Query  : in     String);
+   procedure jQuery
+     (Object : in out jQuery_Type;
+      ID     : in     Gnoga.Types.Connection_ID;
+      Query  : in     String);
    --  Create a jQuery object based on Query and store results in Object
    --  Object = $(Query).
    --  Note: that most queries require adding quotes, for example:
@@ -71,18 +70,21 @@ package Gnoga.Gui.Plugin.jQuery is
    --  However, selecting the document, window or body or script var would not
    --     jQuery (Main_Window, "window");
 
-   procedure Execute (Object : in out jQuery_Type; Method : in String);
+   procedure Execute
+     (Object : in out jQuery_Type;
+      Method : in     String);
    --  Execute method on jQuery Object. Method should include () but not
    --  initial '.', Object.Some_Method(); in Ada would be:
    --  Object.Execute ("Some_Method()");
 
-   function Execute (Object : jQuery_Type; Method : String) return String;
+   function Execute
+     (Object : jQuery_Type;
+      Method : String)
+      return String;
    --  Return results of executing method on jQuery Object as a String
 private
-   type jQuery_Type is new Ada.Finalization.Limited_Controlled with
-      record
-         Unique_ID     : Gnoga.Types.Web_ID;
-         Connection_ID : Gnoga.Types.Connection_ID :=
-                           Gnoga.Types.No_Connection;
-      end record;
+   type jQuery_Type is new Ada.Finalization.Limited_Controlled with record
+      Unique_ID     : Gnoga.Types.Web_ID;
+      Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+   end record;
 end Gnoga.Gui.Plugin.jQuery;

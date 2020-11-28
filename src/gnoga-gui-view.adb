@@ -50,13 +50,10 @@ package body Gnoga.Gui.View is
    -- Finalize --
    --------------
 
-   overriding
-   procedure Finalize (Object : in out View_Base_Type) is
+   overriding procedure Finalize (Object : in out View_Base_Type) is
    begin
       if not Gnoga.Server.Connection.Shutting_Down then
-         for i in
-           Object.Child_Array.First_Index .. Object.Child_Array.Last_Index
-         loop
+         for i in Object.Child_Array.First_Index .. Object.Child_Array.Last_Index loop
             if Object.Child_Array.Element (i).Dynamic then
                Object.Child_Array.Element (i).Free;
             end if;
@@ -71,9 +68,9 @@ package body Gnoga.Gui.View is
    ------------
 
    procedure Create
-     (View    : in out View_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String := "")
+     (View   : in out View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       View.Create_From_HTML (Parent, "<div />", ID);
@@ -83,9 +80,9 @@ package body Gnoga.Gui.View is
    -- On_Child_Added --
    --------------------
 
-   overriding
-   procedure On_Child_Added (View  : in out View_Base_Type;
-                             Child : in out Gnoga.Gui.Base.Base_Type'Class)
+   overriding procedure On_Child_Added
+     (View  : in out View_Base_Type;
+      Child : in out Gnoga.Gui.Base.Base_Type'Class)
    is
       use Gnoga.Gui.Element;
    begin
@@ -119,10 +116,11 @@ package body Gnoga.Gui.View is
    -- Put_Line --
    --------------
 
-   procedure Put_Line (View    : in out View_Base_Type;
-                       Message : in     String;
-                       Class   : in     String := "";
-                       ID      : in     String := "")
+   procedure Put_Line
+     (View    : in out View_Base_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "")
    is
       D : Gnoga.Gui.Element.Common.DIV_Type;
    begin
@@ -136,10 +134,11 @@ package body Gnoga.Gui.View is
    -- Put --
    ---------
 
-   procedure Put (View    : in out View_Base_Type;
-                  Message : in     String;
-                  Class   : in     String := "";
-                  ID      : in     String := "")
+   procedure Put
+     (View    : in out View_Base_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "")
    is
       S : Gnoga.Gui.Element.Common.Span_Type;
    begin
@@ -153,10 +152,11 @@ package body Gnoga.Gui.View is
    -- Put_HTML --
    --------------
 
-   procedure Put_HTML (View  : in out View_Base_Type;
-                       HTML  : in     String;
-                       Class : in     String := "";
-                       ID    : in     String := "")
+   procedure Put_HTML
+     (View  : in out View_Base_Type;
+      HTML  : in     String;
+      Class : in     String := "";
+      ID    : in     String := "")
    is
       D : Gnoga.Gui.Element.Element_Type;
    begin
@@ -188,13 +188,13 @@ package body Gnoga.Gui.View is
    -- Load_File --
    ---------------
 
-   procedure Load_File (View      : in out View_Base_Type;
-                        File_Name : in     String;
-                        Class     : in     String := "";
-                        ID        : in     String := "")
+   procedure Load_File
+     (View      : in out View_Base_Type;
+      File_Name : in     String;
+      Class     : in     String := "";
+      ID        : in     String := "")
    is
-      S : constant String :=
-        Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+      S : constant String := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
    begin
       View.Put_Line (S, Class, ID);
    end Load_File;
@@ -203,25 +203,19 @@ package body Gnoga.Gui.View is
    -- Load_HTML --
    ---------------
 
-   procedure Load_HTML (View      : in out View_Base_Type;
-                        File_Name : in     String;
-                        Class     : in     String := "";
-                        ID        : in     String := "")
+   procedure Load_HTML
+     (View      : in out View_Base_Type;
+      File_Name : in     String;
+      Class     : in     String := "";
+      ID        : in     String := "")
    is
       use Ada.Strings.Fixed;
       use Ada.Strings.Maps.Constants;
 
-      S : constant String  :=
-        Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
-      B : constant Natural := Index (Source  => S,
-                            Pattern => "<body",
-                            Mapping => Lower_Case_Map);
-      T : constant Natural := Index (Source  => S,
-                            Pattern => ">",
-                            From    => B);
-      E : constant Natural := Index (Source  => S,
-                            Pattern => "</body",
-                            Mapping => Lower_Case_Map);
+      S : constant String  := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+      B : constant Natural := Index (Source => S, Pattern => "<body", Mapping => Lower_Case_Map);
+      T : constant Natural := Index (Source => S, Pattern => ">", From => B);
+      E : constant Natural := Index (Source => S, Pattern => "</body", Mapping => Lower_Case_Map);
    begin
       if B > 0 and E > 0 then
          View.Put_HTML (S (T + 1 .. E - 1), Class, ID);
@@ -232,31 +226,30 @@ package body Gnoga.Gui.View is
    -- Load_CSS --
    --------------
 
-   procedure Load_CSS (View : in out View_Base_Type;
-                       URL  : in     String)
+   procedure Load_CSS
+     (View : in out View_Base_Type;
+      URL  : in     String)
    is
       Document : Gnoga.Gui.Document.Document_Type;
    begin
       Document.Attach (View.Connection_ID);
-      Document.Head_Element.jQuery_Execute
-        ("append ('<link rel='stylesheet' href='" & Escape_Quotes (URL) & "' />')");
+      Document.Head_Element.jQuery_Execute ("append ('<link rel='stylesheet' href='" & Escape_Quotes (URL) & "' />')");
    end Load_CSS;
 
    -------------------
    -- Load_CSS_File --
    -------------------
 
-   procedure Load_CSS_File (View      : in out View_Base_Type;
-                            File_Name : in     String)
+   procedure Load_CSS_File
+     (View      : in out View_Base_Type;
+      File_Name : in     String)
    is
-      S : constant String :=
-        Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
+      S : constant String := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
 
       Document : Gnoga.Gui.Document.Document_Type;
    begin
       Document.Attach (View.Connection_ID);
-      Document.Head_Element.jQuery_Execute
-        ("append ('<style>" & Escape_Quotes (S) & "</style>'");
+      Document.Head_Element.jQuery_Execute ("append ('<style>" & Escape_Quotes (S) & "</style>'");
    end Load_CSS_File;
 
    -----------------
@@ -266,11 +259,10 @@ package body Gnoga.Gui.View is
    procedure Add_Element
      (View    : in out View_Base_Type;
       Name    : in     String;
-      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      Element :        access Gnoga.Gui.Element.Element_Type'Class)
    is
    begin
-      View.Element_Map.Include (Key      => Name,
-                                New_Item => Gnoga.Gui.Element.Pointer_To_Element_Class (Element));
+      View.Element_Map.Include (Key => Name, New_Item => Gnoga.Gui.Element.Pointer_To_Element_Class (Element));
    end Add_Element;
 
    -----------------
@@ -308,8 +300,10 @@ package body Gnoga.Gui.View is
    -- Element --
    -------------
 
-   function Element (View : View_Base_Type; Name : String)
-                     return Gnoga.Gui.Element.Pointer_To_Element_Class
+   function Element
+     (View : View_Base_Type;
+      Name : String)
+      return Gnoga.Gui.Element.Pointer_To_Element_Class
    is
    begin
       if View.Element_Map.Contains (Name) then
@@ -323,8 +317,9 @@ package body Gnoga.Gui.View is
    -- Element_Names --
    -------------------
 
-   function Element_Names (View : View_Base_Type)
-                           return Gnoga.Types.Data_Array_Type
+   function Element_Names
+     (View : View_Base_Type)
+      return Gnoga.Types.Data_Array_Type
    is
       Names : Gnoga.Types.Data_Array_Type;
 

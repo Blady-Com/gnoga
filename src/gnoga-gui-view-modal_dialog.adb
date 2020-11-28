@@ -38,19 +38,16 @@
 package body Gnoga.Gui.View.Modal_Dialog is
 
    procedure Create
-      (Object : in out Dialog_Type;
-       Parent : in out Gnoga.Gui.Window.Window_Type'Class;
-       ID     :        String := "")
+     (Object : in out Dialog_Type;
+      Parent : in out Gnoga.Gui.Window.Window_Type'Class;
+      ID     :        String := "")
    is
       use type Gnoga.Gui.Base.Pointer_To_Base_Class;
-      Old_View : constant Gnoga.Gui.Base.Pointer_To_Base_Class
-         := Parent.Get_View;
+      Old_View : constant Gnoga.Gui.Base.Pointer_To_Base_Class := Parent.Get_View;
    begin
 
       --  Create the Dialog Background view
-      Object.Modal_Background.Create
-         (Parent => Parent,
-          ID     => ID);
+      Object.Modal_Background.Create (Parent => Parent, ID => ID);
 
       --  Creating a view using a window as a parent sets the view as the
       --  window's main view.  This line sets it back to the original.
@@ -75,15 +72,13 @@ package body Gnoga.Gui.View.Modal_Dialog is
    end Create;
 
    procedure Create
-      (Object : in out Dialog_Type;
-       Parent : in out Gnoga.Gui.View.View_Base_Type'Class;
-       ID     :        String := "")
+     (Object : in out Dialog_Type;
+      Parent : in out Gnoga.Gui.View.View_Base_Type'Class;
+      ID     :        String := "")
    is
    begin
       --  Create the Dialog Background view
-      Object.Modal_Background.Create
-         (Parent => Parent,
-          ID     => ID);
+      Object.Modal_Background.Create (Parent => Parent, ID => ID);
 
       --  Want to place at the top of the parent's DOM tree
       Object.Modal_Background.Place_Inside_Top_Of (Parent);
@@ -105,9 +100,9 @@ package body Gnoga.Gui.View.Modal_Dialog is
    end Create;
 
    procedure Show
-      (Dialog : in out Dialog_Type;
-       Show   :        Boolean := True;
-       Center :        Boolean := True)
+     (Dialog : in out Dialog_Type;
+      Show   :        Boolean := True;
+      Center :        Boolean := True)
    is
    begin
       if Show then
@@ -130,12 +125,8 @@ package body Gnoga.Gui.View.Modal_Dialog is
    begin
 
       Dialog.Position (Gnoga.Gui.Element.Fixed);
-      Top_Offset
-         := (Dialog.Modal_Background.Height / 2
-             - Dialog.Height / 2);
-      Left_Offset
-         := (Dialog.Modal_Background.Width / 2
-             - Dialog.Width / 2);
+      Top_Offset  := (Dialog.Modal_Background.Height / 2 - Dialog.Height / 2);
+      Left_Offset := (Dialog.Modal_Background.Width / 2 - Dialog.Width / 2);
 
       --  Bound to top left corner
       if Top_Offset < 0 then
@@ -145,23 +136,21 @@ package body Gnoga.Gui.View.Modal_Dialog is
          Left_Offset := 0;
       end if;
 
-      Dialog.Top
-         (Dialog.Modal_Background.Offset_From_Top  + Top_Offset);
-      Dialog.Left
-         (Dialog.Modal_Background.Offset_From_Left + Left_Offset);
+      Dialog.Top (Dialog.Modal_Background.Offset_From_Top + Top_Offset);
+      Dialog.Left (Dialog.Modal_Background.Offset_From_Left + Left_Offset);
    end Center;
 
    procedure Modal_Background_Color
-      (Dialog : in out Dialog_Type;
-       Color  :        String)
+     (Dialog : in out Dialog_Type;
+      Color  :        String)
    is
    begin
       Dialog.Modal_Background.Background_Color (Color);
    end Modal_Background_Color;
 
    procedure Modal_Background_Color
-      (Dialog : in out Dialog_Type;
-       Color  :        Gnoga.Types.Colors.Color_Enumeration)
+     (Dialog : in out Dialog_Type;
+      Color  :        Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
       Dialog.Modal_Background.Background_Color (Color);
@@ -171,8 +160,7 @@ package body Gnoga.Gui.View.Modal_Dialog is
    --  Gnoga.Gui.View.View_Base_Type overrides
    ---------------------------------------------------------------------------
 
-   overriding
-   procedure Fill_Parent (View : in out Dialog_Type) is
+   overriding procedure Fill_Parent (View : in out Dialog_Type) is
    begin
       View.Modal_Background.Fill_Parent;
    end Fill_Parent;
@@ -181,56 +169,55 @@ package body Gnoga.Gui.View.Modal_Dialog is
    --  Gnoga.Gui.Element.Element_Type overrides
    ----------------------------------------------------------------------------
 
-   overriding
-   procedure Auto_Place (Element : in out Dialog_Type; Value : Boolean) is
+   overriding procedure Auto_Place
+     (Element : in out Dialog_Type;
+      Value   :        Boolean)
+   is
    begin
       Element.Modal_Background.Auto_Place (Value);
    end Auto_Place;
 
-   overriding
-   function Auto_Place (Element : Dialog_Type) return Boolean is
+   overriding function Auto_Place
+     (Element : Dialog_Type)
+      return Boolean
+   is
    begin
       return Element.Modal_Background.Auto_Place;
    end Auto_Place;
 
-   overriding
-   procedure Place_Inside_Top_Of
-      (Element : in out Dialog_Type;
-       Target  : in out Gnoga.Gui.Element.Element_Type'Class)
+   overriding procedure Place_Inside_Top_Of
+     (Element : in out Dialog_Type;
+      Target  : in out Gnoga.Gui.Element.Element_Type'Class)
    is
    begin
       Element.Modal_Background.Place_Inside_Top_Of (Target);
    end Place_Inside_Top_Of;
 
-   overriding
-   procedure Place_Inside_Bottom_Of
-      (Element : in out Dialog_Type;
-       Target  : in out Gnoga.Gui.Element.Element_Type'Class)
+   overriding procedure Place_Inside_Bottom_Of
+     (Element : in out Dialog_Type;
+      Target  : in out Gnoga.Gui.Element.Element_Type'Class)
    is
    begin
       Element.Modal_Background.Place_Inside_Bottom_Of (Target);
    end Place_Inside_Bottom_Of;
 
-   overriding
-   procedure Place_Before
-      (Element : in out Dialog_Type;
-       Target  : in out Gnoga.Gui.Element.Element_Type'Class)
+   overriding procedure Place_Before
+     (Element : in out Dialog_Type;
+      Target  : in out Gnoga.Gui.Element.Element_Type'Class)
    is
    begin
       Element.Modal_Background.Place_Before (Target);
    end Place_Before;
 
-   overriding
-   procedure Place_After
-      (Element : in out Dialog_Type;
-       Target  : in out Gnoga.Gui.Element.Element_Type'Class)
+   overriding procedure Place_After
+     (Element : in out Dialog_Type;
+      Target  : in out Gnoga.Gui.Element.Element_Type'Class)
    is
    begin
       Element.Modal_Background.Place_After (Target);
    end Place_After;
 
-   overriding
-   procedure Remove (Element : in out Dialog_Type) is
+   overriding procedure Remove (Element : in out Dialog_Type) is
    begin
       Gnoga.Gui.View.View_Type (Element).Remove;
       Element.Modal_Background.Remove;
@@ -240,28 +227,25 @@ package body Gnoga.Gui.View.Modal_Dialog is
    --  Gnoga.Gui.Base.Base_Type overrides
    ----------------------------------------------------------------------------
 
-   overriding
-   function Parent
-      (Object : Dialog_Type)
-       return Gnoga.Gui.Base.Pointer_To_Base_Class
+   overriding function Parent
+     (Object : Dialog_Type)
+      return Gnoga.Gui.Base.Pointer_To_Base_Class
    is
    begin
       return Object.Modal_Background.Parent;
    end Parent;
 
-   overriding
-   procedure Parent
-      (Object : in out Dialog_Type;
-       Value  : in out Gnoga.Gui.Base.Base_Type'Class)
+   overriding procedure Parent
+     (Object : in out Dialog_Type;
+      Value  : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
       Object.Modal_Background.Parent (Value);
    end Parent;
 
-   overriding
-   procedure Parent
-      (Object : in out Dialog_Type;
-       Value  :        Gnoga.Gui.Base.Pointer_To_Base_Class)
+   overriding procedure Parent
+     (Object : in out Dialog_Type;
+      Value  :        Gnoga.Gui.Base.Pointer_To_Base_Class)
    is
    begin
       Object.Modal_Background.Parent (Value);
@@ -271,31 +255,28 @@ package body Gnoga.Gui.View.Modal_Dialog is
    --  Unsupported functionality.  Do not use.
    ----------------------------------------------------------------------------
 
-   overriding
-   procedure Create_From_HTML
-      (Element : in out Dialog_Type;
-       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-       HTML    : in     String;
-       ID      : in     String := "")
+   overriding procedure Create_From_HTML
+     (Element : in out Dialog_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      HTML    : in     String;
+      ID      : in     String := "")
    is
    begin
       raise Use_Error;
    end Create_From_HTML;
 
-   overriding
-   procedure Create_XML_Element
-      (Element      : in out Dialog_Type;
-       Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-       Namespace    : in     String;
-       Element_Type : in     String;
-       ID           : in     String := "")
+   overriding procedure Create_XML_Element
+     (Element      : in out Dialog_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Namespace    : in     String;
+      Element_Type : in     String;
+      ID           : in     String := "")
    is
    begin
       raise Use_Error;
    end Create_XML_Element;
 
-   overriding
-   procedure Create_With_Script
+   overriding procedure Create_With_Script
      (Object        : in out Dialog_Type;
       Connection_ID : in     Gnoga.Types.Connection_ID;
       ID            : in     String;
@@ -306,19 +287,17 @@ package body Gnoga.Gui.View.Modal_Dialog is
       raise Use_Error;
    end Create_With_Script;
 
-   overriding
-   procedure Attach_Using_Parent
-     (Object   : in out Dialog_Type;
-      Parent   : in     Gnoga.Gui.Base.Base_Type'Class;
-      ID       : in     String;
-      ID_Type  : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
+   overriding procedure Attach_Using_Parent
+     (Object  : in out Dialog_Type;
+      Parent  : in     Gnoga.Gui.Base.Base_Type'Class;
+      ID      : in     String;
+      ID_Type : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
    is
    begin
       raise Use_Error;
    end Attach_Using_Parent;
 
-   overriding
-   procedure Attach
+   overriding procedure Attach
      (Object        : in out Dialog_Type;
       Connection_ID : in     Gnoga.Types.Connection_ID;
       ID            : in     String;

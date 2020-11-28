@@ -46,23 +46,24 @@ package body Gnoga.Gui.Element.IFrame is
       Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
       URL      : in     String;
       Seamless : in     Boolean := False;
-      ID       : in     String := "")
+      ID       : in     String  := "")
    is
    begin
-      IFrame.Create_From_HTML (Parent, Escape_Quotes ("<iframe src='" & URL & "' seamless=" &
-                                 Seamless'Img & "></iframe>"), ID);
+      IFrame.Create_From_HTML
+        (Parent, Escape_Quotes ("<iframe src='" & URL & "' seamless=" & Seamless'Img & "></iframe>"), ID);
 
-      IFrame.Frame.Attach (Connection_ID => Parent.Connection_ID,
-                           ID            => IFrame.Script_Accessor &
-                             ".prop('contentWindow')",
-                           ID_Type       => Gnoga.Types.Script);
+      IFrame.Frame.Attach
+        (Connection_ID => Parent.Connection_ID, ID => IFrame.Script_Accessor & ".prop('contentWindow')",
+         ID_Type       => Gnoga.Types.Script);
    end Create;
 
    ------------
    -- Window --
    ------------
 
-   function Window (IFrame : IFrame_Type) return Gnoga.Gui.Window.Window_Access
+   function Window
+     (IFrame : IFrame_Type)
+      return Gnoga.Gui.Window.Window_Access
    is
    begin
       return IFrame.Frame'Unrestricted_Access;

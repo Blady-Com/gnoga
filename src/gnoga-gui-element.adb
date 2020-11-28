@@ -50,10 +50,11 @@ package body Gnoga.Gui.Element is
    -- Create_From_HTML --
    ----------------------
 
-   procedure Create_From_HTML (Element : in out Element_Type;
-                               Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                               HTML    : in     String;
-                               ID      : in     String := "")
+   procedure Create_From_HTML
+     (Element : in out Element_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      HTML    : in     String;
+      ID      : in     String := "")
    is
       use Gnoga.Server.Connection;
 
@@ -70,14 +71,11 @@ package body Gnoga.Gui.Element is
 
       GID : constant String := Adjusted_ID;
    begin
-      if Gnoga.Server.Connection.Connection_Type (Parent.Connection_ID) =
-        Long_Polling
-      then
+      if Gnoga.Server.Connection.Connection_Type (Parent.Connection_ID) = Long_Polling then
          declare
             use Ada.Strings.Fixed;
 
-            P : Natural := Index (Source  => HTML,
-                                  Pattern => ">");
+            P : Natural := Index (Source => HTML, Pattern => ">");
          begin
             if P = 0 then
                Gnoga.Log ("Malformed HTML = " & HTML);
@@ -88,24 +86,17 @@ package body Gnoga.Gui.Element is
             end if;
 
             declare
-               S : constant String := HTML (HTML'First .. P - 1) &
-                 " id='" & GID & "'" &
-                 HTML (P .. HTML'Last);
+               S : constant String := HTML (HTML'First .. P - 1) & " id='" & GID & "'" & HTML (P .. HTML'Last);
             begin
-               Gnoga.Server.Connection.Buffer_Append
-                 (Parent.Connection_ID, Unescape_Quotes (S));
+               Gnoga.Server.Connection.Buffer_Append (Parent.Connection_ID, Unescape_Quotes (S));
 
-               Element.Attach_Using_Parent (Parent  => Parent,
-                                            ID      => GID,
-                                            ID_Type => Gnoga.Types.DOM_ID);
+               Element.Attach_Using_Parent (Parent => Parent, ID => GID, ID_Type => Gnoga.Types.DOM_ID);
             end;
          end;
       else
          Element.Create_With_Script
-           (Connection_ID => Parent.Connection_ID,
-            ID            => GID,
-            Script        => "gnoga['" & GID & "']=$('" & HTML &
-              "'); gnoga['" & GID & "'].first().prop('id','" & GID & "');",
+           (Connection_ID => Parent.Connection_ID, ID => GID,
+            Script => "gnoga['" & GID & "']=$('" & HTML & "'); gnoga['" & GID & "'].first().prop('id','" & GID & "');",
             ID_Type       => Gnoga.Types.Gnoga_ID);
       end if;
 
@@ -137,12 +128,10 @@ package body Gnoga.Gui.Element is
       GID : constant String := Adjusted_ID;
    begin
       Element.Create_With_Script
-        (Connection_ID => Parent.Connection_ID,
-         ID            => GID,
-         Script        => "gnoga['" & GID & "']=$(" &
-           "document.createElementNS('" & Namespace & "', '" &
-           Element_Type & "'));",
-         ID_Type       => Gnoga.Types.Gnoga_ID);
+        (Connection_ID => Parent.Connection_ID, ID => GID,
+         Script        =>
+           "gnoga['" & GID & "']=$(" & "document.createElementNS('" & Namespace & "', '" & Element_Type & "'));",
+         ID_Type => Gnoga.Types.Gnoga_ID);
       Element.Attribute ("id", GID);
 
       Element.Parent (Parent);
@@ -156,12 +145,18 @@ package body Gnoga.Gui.Element is
    -- Auto_Place --
    ----------------
 
-   procedure Auto_Place (Element : in out Element_Type; Value : Boolean) is
+   procedure Auto_Place
+     (Element : in out Element_Type;
+      Value   :        Boolean)
+   is
    begin
       Element.Auto_Place := Value;
    end Auto_Place;
 
-   function Auto_Place (Element : Element_Type) return Boolean is
+   function Auto_Place
+     (Element : Element_Type)
+      return Boolean
+   is
    begin
       return Element.Auto_Place;
    end Auto_Place;
@@ -170,29 +165,38 @@ package body Gnoga.Gui.Element is
    -- Style --
    -----------
 
-   procedure Style (Element : in out Element_Type;
-                    Name    : in String;
-                    Value   : in String)
+   procedure Style
+     (Element : in out Element_Type;
+      Name    : in     String;
+      Value   : in     String)
    is
    begin
-      Element.jQuery_Execute ("css ('" & Name & "', '" &
-                                Escape_Quotes (Value) & "');");
+      Element.jQuery_Execute ("css ('" & Name & "', '" & Escape_Quotes (Value) & "');");
    end Style;
 
-   procedure Style (Element : in out Element_Type;
-                    Name    : in String;
-                    Value   : in Integer)
+   procedure Style
+     (Element : in out Element_Type;
+      Name    : in     String;
+      Value   : in     Integer)
    is
    begin
       Element.jQuery_Execute ("css ('" & Name & "'," & Value'Img & ");");
    end Style;
 
-   function Style (Element : Element_Type; Name : String) return String is
+   function Style
+     (Element : Element_Type;
+      Name    : String)
+      return String
+   is
    begin
       return Element.jQuery_Execute ("css ('" & Name & "');");
    end Style;
 
-   function Style (Element : Element_Type; Name : String) return Integer is
+   function Style
+     (Element : Element_Type;
+      Name    : String)
+      return Integer
+   is
    begin
       return Integer'Value (Element.Style (Name));
    exception
@@ -206,16 +210,20 @@ package body Gnoga.Gui.Element is
    -- Attribute --
    ---------------
 
-   procedure Attribute (Element : in out Element_Type;
-                        Name    : in String;
-                        Value   : in String)
+   procedure Attribute
+     (Element : in out Element_Type;
+      Name    : in     String;
+      Value   : in     String)
    is
    begin
-      Element.jQuery_Execute ("attr ('" & Name & "','" &
-                                Escape_Quotes (Value) & "');");
+      Element.jQuery_Execute ("attr ('" & Name & "','" & Escape_Quotes (Value) & "');");
    end Attribute;
 
-   function Attribute (Element : Element_Type; Name : String) return String is
+   function Attribute
+     (Element : Element_Type;
+      Name    : String)
+      return String
+   is
    begin
       return Element.jQuery_Execute ("attr ('" & Name & "');");
    end Attribute;
@@ -224,12 +232,18 @@ package body Gnoga.Gui.Element is
    -- Access_Key --
    ----------------
 
-   procedure Access_Key (Element : in out Element_Type; Value : in String) is
+   procedure Access_Key
+     (Element : in out Element_Type;
+      Value   : in     String)
+   is
    begin
       Element.Property ("accessKey", Value);
    end Access_Key;
 
-   function Access_Key (Element : Element_Type) return String is
+   function Access_Key
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Property ("accessKey");
    end Access_Key;
@@ -238,14 +252,18 @@ package body Gnoga.Gui.Element is
    -- Advisory_Title --
    --------------------
 
-   procedure Advisory_Title (Element : in out Element_Type;
-                             Value   : in     String)
+   procedure Advisory_Title
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("title", Value);
    end Advisory_Title;
 
-   function Advisory_Title (Element : Element_Type) return String is
+   function Advisory_Title
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Property ("title");
    end Advisory_Title;
@@ -254,12 +272,18 @@ package body Gnoga.Gui.Element is
    -- Class_Name --
    ----------------
 
-   procedure Class_Name (Element : in out Element_Type; Value : in String) is
+   procedure Class_Name
+     (Element : in out Element_Type;
+      Value   : in     String)
+   is
    begin
       Element.Property ("className", Value);
    end Class_Name;
 
-   function Class_Name (Element : Element_Type) return String is
+   function Class_Name
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Property ("className");
    end Class_Name;
@@ -268,14 +292,18 @@ package body Gnoga.Gui.Element is
    -- Editable --
    --------------
 
-   procedure Editable (Element : in out Element_Type;
-                       Value   : in     Boolean := True)
+   procedure Editable
+     (Element : in out Element_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("contentEditable", Value);
    end Editable;
 
-   function Editable (Element : Element_Type) return Boolean is
+   function Editable
+     (Element : Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("isContentEditable");
    end Editable;
@@ -284,8 +312,9 @@ package body Gnoga.Gui.Element is
    -- Box_Sizing --
    ----------------
 
-   procedure Box_Sizing (Element : in out Element_Type;
-                         Value   : in     Box_Sizing_Type)
+   procedure Box_Sizing
+     (Element : in out Element_Type;
+      Value   : in     Box_Sizing_Type)
    is
    begin
       case Value is
@@ -296,7 +325,9 @@ package body Gnoga.Gui.Element is
       end case;
    end Box_Sizing;
 
-   function Box_Sizing (Element : Element_Type) return Box_Sizing_Type
+   function Box_Sizing
+     (Element : Element_Type)
+      return Box_Sizing_Type
    is
    begin
       if Element.Style ("box-sizing") = "border-box" then
@@ -310,8 +341,9 @@ package body Gnoga.Gui.Element is
    -- Clear_Side --
    ----------------
 
-   procedure Clear_Side (Element : in out Element_Type;
-                         Value   : in     Clear_Side_Type)
+   procedure Clear_Side
+     (Element : in out Element_Type;
+      Value   : in     Clear_Side_Type)
    is
    begin
       Element.Style ("clear", Value'Img);
@@ -321,8 +353,9 @@ package body Gnoga.Gui.Element is
    -- Layout_Float --
    ------------------
 
-   procedure Layout_Float (Element : in out Element_Type;
-                    Value   : in     Float_Type)
+   procedure Layout_Float
+     (Element : in out Element_Type;
+      Value   : in     Float_Type)
    is
    begin
       Element.Style ("float", Value'Img);
@@ -332,14 +365,17 @@ package body Gnoga.Gui.Element is
    -- Display --
    -------------
 
-   procedure Display (Element : in out Element_Type;
-                      Value   : in     String)
+   procedure Display
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("display", Value);
    end Display;
 
-   function Display (Element : Element_Type) return String
+   function Display
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("display");
@@ -349,20 +385,23 @@ package body Gnoga.Gui.Element is
    -- Overflow --
    --------------
 
-   procedure Overflow (Element : in out Element_Type;
-                       Value   : in     Overflow_Type)
+   procedure Overflow
+     (Element : in out Element_Type;
+      Value   : in     Overflow_Type)
    is
    begin
       Element.Style ("overflow", Value'Img);
    end Overflow;
 
-   function Overflow (Element : Element_Type) return Overflow_Type is
+   function Overflow
+     (Element : Element_Type)
+      return Overflow_Type
+   is
    begin
       return Overflow_Type'Value (Element.Style ("overflow"));
    exception
       when E : others =>
-         Log ("Error Overflow converting to Overflow_Type" &
-              " (forced to Visible).");
+         Log ("Error Overflow converting to Overflow_Type" & " (forced to Visible).");
          Log (Ada.Exceptions.Exception_Information (E));
          return Visible;
    end Overflow;
@@ -371,8 +410,9 @@ package body Gnoga.Gui.Element is
    -- Overflow_X --
    ----------------
 
-   procedure Overflow_X (Element : in out Element_Type;
-                         Value   : in     Overflow_Type)
+   procedure Overflow_X
+     (Element : in out Element_Type;
+      Value   : in     Overflow_Type)
    is
    begin
       Element.Style ("overflow-x", Value'Img);
@@ -382,8 +422,9 @@ package body Gnoga.Gui.Element is
    -- Overflow_Y --
    ----------------
 
-   procedure Overflow_Y (Element : in out Element_Type;
-                         Value   : in     Overflow_Type)
+   procedure Overflow_Y
+     (Element : in out Element_Type;
+      Value   : in     Overflow_Type)
    is
    begin
       Element.Style ("overflow-y", Value'Img);
@@ -393,8 +434,9 @@ package body Gnoga.Gui.Element is
    -- Z_Index --
    -------------
 
-   procedure Z_Index (Element : in out Element_Type;
-                      Value   : in     Integer)
+   procedure Z_Index
+     (Element : in out Element_Type;
+      Value   : in     Integer)
    is
    begin
       Element.Style ("z-index", Value'Img);
@@ -404,20 +446,23 @@ package body Gnoga.Gui.Element is
    -- Resizable --
    ---------------
 
-   procedure Resizable (Element : in out Element_Type;
-                        Value   : in     Resizable_Type)
+   procedure Resizable
+     (Element : in out Element_Type;
+      Value   : in     Resizable_Type)
    is
    begin
       Element.Style ("resize", Value'Img);
    end Resizable;
 
-   function Resizable (Element : Element_Type) return Resizable_Type is
+   function Resizable
+     (Element : Element_Type)
+      return Resizable_Type
+   is
    begin
       return Resizable_Type'Value (Element.Style ("resize"));
    exception
       when E : others =>
-         Log ("Error Resizable converting to Resizable_Type" &
-              " (forced to None).");
+         Log ("Error Resizable converting to Resizable_Type" & " (forced to None).");
          Log (Ada.Exceptions.Exception_Information (E));
          return None;
    end Resizable;
@@ -426,20 +471,23 @@ package body Gnoga.Gui.Element is
    -- Position --
    --------------
 
-   procedure Position (Element : in out Element_Type;
-                       Value   : in     Position_Type)
+   procedure Position
+     (Element : in out Element_Type;
+      Value   : in     Position_Type)
    is
    begin
       Element.Style ("position", Value'Img);
    end Position;
 
-   function Position (Element : Element_Type) return Position_Type is
+   function Position
+     (Element : Element_Type)
+      return Position_Type
+   is
    begin
       return Position_Type'Value (Element.Style ("position"));
    exception
       when E : others =>
-         Log ("Error Position converting to Position_Type" &
-              " (forced to Static).");
+         Log ("Error Position converting to Position_Type" & " (forced to Static).");
          Log (Ada.Exceptions.Exception_Information (E));
          return Static;
    end Position;
@@ -448,7 +496,10 @@ package body Gnoga.Gui.Element is
    -- Position_Top --
    ------------------
 
-   function Position_Top (Element : Element_Type) return Integer is
+   function Position_Top
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("position().top");
    end Position_Top;
@@ -457,7 +508,10 @@ package body Gnoga.Gui.Element is
    -- Position_Left --
    -------------------
 
-   function Position_Left (Element : Element_Type) return Integer is
+   function Position_Left
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("position().left");
    end Position_Left;
@@ -466,7 +520,10 @@ package body Gnoga.Gui.Element is
    -- Offset_From_Top --
    ---------------------
 
-   function Offset_From_Top (Element : Element_Type) return Integer is
+   function Offset_From_Top
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("offset().top");
    end Offset_From_Top;
@@ -475,7 +532,10 @@ package body Gnoga.Gui.Element is
    -- Offset_From_Left --
    ----------------------
 
-   function Offset_From_Left (Element : Element_Type) return Integer is
+   function Offset_From_Left
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("offset().left");
    end Offset_From_Left;
@@ -484,22 +544,26 @@ package body Gnoga.Gui.Element is
    -- Left --
    ----------
 
-   procedure Left (Element : in out Element_Type;
-                   Value   : in     Integer;
-                   Unit    : in     String := "px")
+   procedure Left
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("left", Left_Trim (Value'Img) & Unit);
    end Left;
 
-   procedure Left (Element : in out Element_Type;
-                   Value   : in     String)
+   procedure Left
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("left", Value);
    end Left;
 
-   function Left (Element : Element_Type) return String
+   function Left
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("left");
@@ -509,22 +573,26 @@ package body Gnoga.Gui.Element is
    -- Right --
    -----------
 
-   procedure Right (Element : in out Element_Type;
-                    Value   : in     Integer;
-                    Unit    : in     String := "px")
+   procedure Right
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("right", Left_Trim (Value'Img) & Unit);
    end Right;
 
-   procedure Right (Element : in out Element_Type;
-                    Value   : in     String)
+   procedure Right
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("right", Value);
    end Right;
 
-   function Right (Element : Element_Type) return String
+   function Right
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("right");
@@ -534,22 +602,26 @@ package body Gnoga.Gui.Element is
    -- Top --
    ---------
 
-   procedure Top (Element : in out Element_Type;
-                  Value   : in     Integer;
-                  Unit    : in     String := "px")
+   procedure Top
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("top", Left_Trim (Value'Img) & Unit);
    end Top;
 
-   procedure Top (Element : in out Element_Type;
-                  Value   : in     String)
+   procedure Top
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("top", Value);
    end Top;
 
-   function Top (Element : Element_Type) return String
+   function Top
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("top");
@@ -559,22 +631,26 @@ package body Gnoga.Gui.Element is
    -- Bottom --
    ------------
 
-   procedure Bottom (Element : in out Element_Type;
-                     Value   : in     Integer;
-                     Unit    : in     String := "px")
+   procedure Bottom
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("bottom", Left_Trim (Value'Img) & Unit);
    end Bottom;
 
-   procedure Bottom (Element : in out Element_Type;
-                     Value   : in     String)
+   procedure Bottom
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("bottom", Value);
    end Bottom;
 
-   function Bottom (Element : Element_Type) return String
+   function Bottom
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("bottom");
@@ -584,24 +660,28 @@ package body Gnoga.Gui.Element is
    -- Box_Height --
    ----------------
 
-   procedure Box_Height (Element : in out Element_Type;
-                         Value   : in     Integer;
-                         Unit    : in     String := "px")
+   procedure Box_Height
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("height", Left_Trim (Value'Img) & Unit);
       Element.On_Message ("resize", "");
    end Box_Height;
 
-   procedure Box_Height (Element : in out Element_Type;
-                         Value   : in     String)
+   procedure Box_Height
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("height", Value);
       Element.On_Message ("resize", "");
    end Box_Height;
 
-   function Box_Height (Element : Element_Type) return String
+   function Box_Height
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("height");
@@ -611,24 +691,28 @@ package body Gnoga.Gui.Element is
    -- Minimum_Height --
    --------------------
 
-   procedure Minimum_Height (Element : in out Element_Type;
-                             Value   : in     Integer;
-                             Unit    : in     String := "px")
+   procedure Minimum_Height
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("min-height", Left_Trim (Value'Img) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Height;
 
-   procedure Minimum_Height (Element : in out Element_Type;
-                             Value   : in     String)
+   procedure Minimum_Height
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("min-height", Value);
       Element.On_Message ("resize", "");
    end Minimum_Height;
 
-   function Minimum_Height (Element : Element_Type) return String
+   function Minimum_Height
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("min-height");
@@ -638,24 +722,28 @@ package body Gnoga.Gui.Element is
    -- Maximum_Height --
    --------------------
 
-   procedure Maximum_Height (Element : in out Element_Type;
-                             Value   : in     Integer;
-                             Unit    : in     String := "px")
+   procedure Maximum_Height
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("max-height", Left_Trim (Value'Img) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Height;
 
-   procedure Maximum_Height (Element : in out Element_Type;
-                             Value   : in     String)
+   procedure Maximum_Height
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("max-height", Value);
       Element.On_Message ("resize", "");
    end Maximum_Height;
 
-   function Maximum_Height (Element : Element_Type) return String
+   function Maximum_Height
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("max-height");
@@ -665,24 +753,28 @@ package body Gnoga.Gui.Element is
    -- Box_Width --
    ---------------
 
-   procedure Box_Width (Element : in out Element_Type;
-                        Value   : in     Integer;
-                        Unit    : in     String := "px")
+   procedure Box_Width
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("width", Left_Trim (Value'Img) & Unit);
       Element.On_Message ("resize", "");
    end Box_Width;
 
-   procedure Box_Width (Element : in out Element_Type;
-                        Value   : in     String)
+   procedure Box_Width
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("width", Value);
       Element.On_Message ("resize", "");
    end Box_Width;
 
-   function Box_Width (Element : Element_Type) return String
+   function Box_Width
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("width");
@@ -692,24 +784,28 @@ package body Gnoga.Gui.Element is
    -- Minimum_Width --
    -------------------
 
-   procedure Minimum_Width (Element : in out Element_Type;
-                            Value   : in     Integer;
-                            Unit    : in     String := "px")
+   procedure Minimum_Width
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("min-width", Left_Trim (Value'Img) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Width;
 
-   procedure Minimum_Width (Element : in out Element_Type;
-                            Value   : in     String)
+   procedure Minimum_Width
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("min-width", Value);
       Element.On_Message ("resize", "");
    end Minimum_Width;
 
-   function Minimum_Width (Element : Element_Type) return String
+   function Minimum_Width
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("min-width");
@@ -719,24 +815,28 @@ package body Gnoga.Gui.Element is
    -- Maximum_Width --
    -------------------
 
-   procedure Maximum_Width (Element : in out Element_Type;
-                            Value   : in     Integer;
-                            Unit    : in     String := "px")
+   procedure Maximum_Width
+     (Element : in out Element_Type;
+      Value   : in     Integer;
+      Unit    : in     String := "px")
    is
    begin
       Element.Style ("max-width", Left_Trim (Value'Img) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Width;
 
-   procedure Maximum_Width (Element : in out Element_Type;
-                            Value   : in     String)
+   procedure Maximum_Width
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("max-width", Value);
       Element.On_Message ("resize", "");
    end Maximum_Width;
 
-   function Maximum_Width (Element : Element_Type) return String
+   function Maximum_Width
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("max-width");
@@ -746,14 +846,18 @@ package body Gnoga.Gui.Element is
    -- Draggable --
    ---------------
 
-   procedure Draggable (Element    : in out Element_Type;
-                        Value      : in     Boolean := True)
+   procedure Draggable
+     (Element : in out Element_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("draggable", Value);
    end Draggable;
 
-   function Draggable (Element : Element_Type) return Boolean is
+   function Draggable
+     (Element : Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("draggable");
    end Draggable;
@@ -762,14 +866,18 @@ package body Gnoga.Gui.Element is
    -- Hidden --
    ------------
 
-   procedure Hidden (Element : in out Element_Type;
-                     Value   : in     Boolean := True)
+   procedure Hidden
+     (Element : in out Element_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("hidden", Value);
    end Hidden;
 
-   function Hidden (Element : Element_Type) return Boolean is
+   function Hidden
+     (Element : Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("hidden");
    end Hidden;
@@ -778,14 +886,18 @@ package body Gnoga.Gui.Element is
    -- Inner_HTML --
    ----------------
 
-   procedure Inner_HTML (Element : in out Element_Type;
-                         Value   : in     String)
+   procedure Inner_HTML
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.jQuery_Execute ("html ('" & Escape_Quotes (Value) & "');");
    end Inner_HTML;
 
-   function Inner_HTML (Element : Element_Type) return String is
+   function Inner_HTML
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.jQuery_Execute ("html();");
    end Inner_HTML;
@@ -794,7 +906,10 @@ package body Gnoga.Gui.Element is
    -- Outer_HTML --
    ----------------
 
-   function Outer_HTML (Element : Element_Type) return String is
+   function Outer_HTML
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Execute ("outerHTML");
    end Outer_HTML;
@@ -803,14 +918,18 @@ package body Gnoga.Gui.Element is
    -- Spell_Check --
    -----------------
 
-   procedure Spell_Check (Element : in out Element_Type;
-                          Value   : in     Boolean := True)
+   procedure Spell_Check
+     (Element : in out Element_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("spellcheck", Value);
    end Spell_Check;
 
-   function Spell_Check (Element : Element_Type) return Boolean is
+   function Spell_Check
+     (Element : Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("spellcheck");
    end Spell_Check;
@@ -819,13 +938,18 @@ package body Gnoga.Gui.Element is
    -- Tab_Index --
    ---------------
 
-   procedure Tab_Index (Element : in out Element_Type; Value : in Natural)
+   procedure Tab_Index
+     (Element : in out Element_Type;
+      Value   : in     Natural)
    is
    begin
       Element.Property ("tabIndex", Value);
    end Tab_Index;
 
-   function Tab_Index (Element : Element_Type) return Natural is
+   function Tab_Index
+     (Element : Element_Type)
+      return Natural
+   is
    begin
       return Element.Property ("tabIndex");
    end Tab_Index;
@@ -834,12 +958,18 @@ package body Gnoga.Gui.Element is
    -- Text --
    ----------
 
-   procedure Text (Element : in out Element_Type; Value : in String) is
+   procedure Text
+     (Element : in out Element_Type;
+      Value   : in     String)
+   is
    begin
       Element.jQuery_Execute ("text ('" & Escape_Quotes (Value) & "');");
    end Text;
 
-   function Text (Element : Element_Type) return String is
+   function Text
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.jQuery_Execute ("text();");
    end Text;
@@ -848,8 +978,9 @@ package body Gnoga.Gui.Element is
    -- Text_Direction --
    --------------------
 
-   procedure Text_Direction (Element : in out Element_Type;
-                             Value   : in     Text_Direction_Type)
+   procedure Text_Direction
+     (Element : in out Element_Type;
+      Value   : in     Text_Direction_Type)
    is
       function To_String return String;
 
@@ -865,7 +996,9 @@ package body Gnoga.Gui.Element is
       Element.Property ("dir", To_String);
    end Text_Direction;
 
-   function Text_Direction (Element : Element_Type) return Text_Direction_Type
+   function Text_Direction
+     (Element : Element_Type)
+      return Text_Direction_Type
    is
       function To_TDT return Text_Direction_Type;
 
@@ -885,14 +1018,18 @@ package body Gnoga.Gui.Element is
    -- Language_Code --
    -------------------
 
-   procedure Language_Code (Element : in out Element_Type;
-                            Value   : in     String)
+   procedure Language_Code
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("lang", Value);
    end Language_Code;
 
-   function Language_Code (Element : Element_Type) return String is
+   function Language_Code
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Property ("lang");
    end Language_Code;
@@ -901,8 +1038,9 @@ package body Gnoga.Gui.Element is
    -- Visible --
    -------------
 
-   procedure Visible (Element : in out Element_Type;
-                      Value   : in     Boolean := True)
+   procedure Visible
+     (Element : in out Element_Type;
+      Value   : in     Boolean := True)
    is
    begin
       if Value then
@@ -912,7 +1050,9 @@ package body Gnoga.Gui.Element is
       end if;
    end Visible;
 
-   function Visible (Element : Element_Type) return Boolean
+   function Visible
+     (Element : Element_Type)
+      return Boolean
    is
    begin
       return Element.Style ("visibility") = "visible";
@@ -922,14 +1062,19 @@ package body Gnoga.Gui.Element is
    -- Inner_Height --
    ------------------
 
-   procedure Inner_Height (Element : in out Element_Type; Value : in Integer)
+   procedure Inner_Height
+     (Element : in out Element_Type;
+      Value   : in     Integer)
    is
    begin
       Element.jQuery_Execute ("innerHeight(" & Left_Trim (Value'Img) & ");");
       Element.On_Message ("resize", "");
    end Inner_Height;
 
-   function Inner_Height (Element : Element_Type) return Integer is
+   function Inner_Height
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("innerHeight();");
    end Inner_Height;
@@ -938,13 +1083,19 @@ package body Gnoga.Gui.Element is
    -- Inner_Width --
    -----------------
 
-   procedure Inner_Width (Element : in out Element_Type; Value : in Integer) is
+   procedure Inner_Width
+     (Element : in out Element_Type;
+      Value   : in     Integer)
+   is
    begin
       Element.jQuery_Execute ("innerWidth(" & Left_Trim (Value'Img) & ");");
       Element.On_Message ("resize", "");
    end Inner_Width;
 
-   function Inner_Width (Element : Element_Type) return Integer is
+   function Inner_Width
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("innerWidth();");
    end Inner_Width;
@@ -953,7 +1104,10 @@ package body Gnoga.Gui.Element is
    -- Outer_Height --
    ------------------
 
-   function Outer_Height (Element : Element_Type) return Integer is
+   function Outer_Height
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("outerHeight();");
    end Outer_Height;
@@ -962,7 +1116,10 @@ package body Gnoga.Gui.Element is
    -- Outer_Width --
    -----------------
 
-   function Outer_Width (Element : Element_Type) return Integer is
+   function Outer_Width
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("outerWidth();");
    end Outer_Width;
@@ -971,7 +1128,10 @@ package body Gnoga.Gui.Element is
    -- Outer_Height_To_Margin --
    ----------------------------
 
-   function Outer_Height_To_Margin (Element : Element_Type) return Integer is
+   function Outer_Height_To_Margin
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("outerHeight(true);");
    end Outer_Height_To_Margin;
@@ -980,7 +1140,10 @@ package body Gnoga.Gui.Element is
    -- Outer_Width_To_Margin --
    ---------------------------
 
-   function Outer_Width_To_Margin (Element : Element_Type) return Integer is
+   function Outer_Width_To_Margin
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.jQuery_Execute ("outerWidth(true);");
    end Outer_Width_To_Margin;
@@ -989,7 +1152,10 @@ package body Gnoga.Gui.Element is
    -- Client_Height --
    -------------------
 
-   function Client_Height (Element : Element_Type) return Natural is
+   function Client_Height
+     (Element : Element_Type)
+      return Natural
+   is
    begin
       return Element.Property ("clientHeight");
    end Client_Height;
@@ -998,7 +1164,10 @@ package body Gnoga.Gui.Element is
    -- Client_Width --
    ------------------
 
-   function Client_Width (Element : Element_Type) return Natural is
+   function Client_Width
+     (Element : Element_Type)
+      return Natural
+   is
    begin
       return Element.Property ("clientWidth");
    end Client_Width;
@@ -1007,7 +1176,10 @@ package body Gnoga.Gui.Element is
    -- Client_Left --
    ------------------
 
-   function Client_Left (Element : Element_Type) return Natural is
+   function Client_Left
+     (Element : Element_Type)
+      return Natural
+   is
    begin
       return Element.Property ("clientLeft");
    end Client_Left;
@@ -1016,7 +1188,10 @@ package body Gnoga.Gui.Element is
    -- Client_Top --
    ------------------
 
-   function Client_Top (Element : Element_Type) return Natural is
+   function Client_Top
+     (Element : Element_Type)
+      return Natural
+   is
    begin
       return Element.Property ("clientTop");
    end Client_Top;
@@ -1025,7 +1200,10 @@ package body Gnoga.Gui.Element is
    -- Offset_Height --
    -------------------
 
-   function Offset_Height (Element : Element_Type) return Integer is
+   function Offset_Height
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("offsetHeight");
    end Offset_Height;
@@ -1034,7 +1212,10 @@ package body Gnoga.Gui.Element is
    -- Offset_Width --
    ------------------
 
-   function Offset_Width (Element : Element_Type) return Integer is
+   function Offset_Width
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("offsetWidth");
    end Offset_Width;
@@ -1043,7 +1224,10 @@ package body Gnoga.Gui.Element is
    -- Offset_Left --
    ------------------
 
-   function Offset_Left (Element : Element_Type) return Integer is
+   function Offset_Left
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("offsetLeft");
    end Offset_Left;
@@ -1052,7 +1236,10 @@ package body Gnoga.Gui.Element is
    -- Offset_Top --
    ------------------
 
-   function Offset_Top (Element : Element_Type) return Integer is
+   function Offset_Top
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("offsetTop");
    end Offset_Top;
@@ -1061,7 +1248,10 @@ package body Gnoga.Gui.Element is
    -- Scroll_Height --
    -------------------
 
-   function Scroll_Height (Element : Element_Type) return Natural is
+   function Scroll_Height
+     (Element : Element_Type)
+      return Natural
+   is
    begin
       return Element.Property ("scrollHeight");
    end Scroll_Height;
@@ -1070,7 +1260,10 @@ package body Gnoga.Gui.Element is
    -- Scroll_Width --
    ------------------
 
-   function Scroll_Width (Element : Element_Type) return Natural is
+   function Scroll_Width
+     (Element : Element_Type)
+      return Natural
+   is
    begin
       return Element.Property ("scrollWidth");
    end Scroll_Width;
@@ -1079,12 +1272,18 @@ package body Gnoga.Gui.Element is
    -- Scroll_Left --
    ------------------
 
-   procedure Scroll_Left (Element : in out Element_Type; Value : Integer) is
+   procedure Scroll_Left
+     (Element : in out Element_Type;
+      Value   :        Integer)
+   is
    begin
       Element.Property ("scrollLeft", Value);
    end Scroll_Left;
 
-   function Scroll_Left (Element : Element_Type) return Integer is
+   function Scroll_Left
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("scrollLeft");
    end Scroll_Left;
@@ -1093,12 +1292,18 @@ package body Gnoga.Gui.Element is
    -- Scroll_Top --
    ------------------
 
-   procedure Scroll_Top (Element : in out Element_Type; Value : Integer) is
+   procedure Scroll_Top
+     (Element : in out Element_Type;
+      Value   :        Integer)
+   is
    begin
       Element.Property ("scrollTop", Value);
    end Scroll_Top;
 
-   function Scroll_Top (Element : Element_Type) return Integer is
+   function Scroll_Top
+     (Element : Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("scrollTop");
    end Scroll_Top;
@@ -1107,26 +1312,34 @@ package body Gnoga.Gui.Element is
    -- Color --
    -----------
 
-   procedure Color (Element : in out Element_Type; Value : String) is
+   procedure Color
+     (Element : in out Element_Type;
+      Value   :        String)
+   is
    begin
       Element.Style ("color", Value);
    end Color;
 
-   procedure Color (Element : in out Element_Type;
-                    RGBA    : Gnoga.Types.RGBA_Type)
+   procedure Color
+     (Element : in out Element_Type;
+      RGBA    :        Gnoga.Types.RGBA_Type)
    is
    begin
       Element.Style ("color", Gnoga.Types.To_String (RGBA));
    end Color;
 
-   procedure Color (Element : in out Element_Type;
-                    Enum    : Gnoga.Types.Colors.Color_Enumeration)
+   procedure Color
+     (Element : in out Element_Type;
+      Enum    :        Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
       Element.Style ("color", Gnoga.Types.Colors.To_String (Enum));
    end Color;
 
-   function Color (Element : Element_Type) return Gnoga.Types.RGBA_Type is
+   function Color
+     (Element : Element_Type)
+      return Gnoga.Types.RGBA_Type
+   is
    begin
       return Gnoga.Types.To_RGBA (Element.Style ("color"));
    end Color;
@@ -1135,14 +1348,18 @@ package body Gnoga.Gui.Element is
    -- Opacity --
    -------------
 
-   procedure Opacity (Element : in out Element_Type;
-                      Alpha   : in     Gnoga.Types.Alpha_Type)
+   procedure Opacity
+     (Element : in out Element_Type;
+      Alpha   : in     Gnoga.Types.Alpha_Type)
    is
    begin
       Element.Style ("opacity", Alpha'Img);
    end Opacity;
 
-   function Opacity (Element : Element_Type) return Gnoga.Types.Alpha_Type is
+   function Opacity
+     (Element : Element_Type)
+      return Gnoga.Types.Alpha_Type
+   is
    begin
       return Gnoga.Types.Alpha_Type'Value (Element.Style ("opacity"));
    exception
@@ -1164,8 +1381,9 @@ package body Gnoga.Gui.Element is
       Element.Style ("background-attachment", Value'Img);
    end Background_Attachment;
 
-   function Background_Attachment (Element : Element_Type)
-                                   return Background_Attachment_Type
+   function Background_Attachment
+     (Element : Element_Type)
+      return Background_Attachment_Type
    is
       Value : constant String := Element.Style ("background-color");
    begin
@@ -1180,28 +1398,33 @@ package body Gnoga.Gui.Element is
    -- Background_Color --
    ----------------------
 
-   procedure Background_Color (Element : in out Element_Type; Value : String)
+   procedure Background_Color
+     (Element : in out Element_Type;
+      Value   :        String)
    is
    begin
       Element.Style ("background-color", Value);
    end Background_Color;
 
-   procedure Background_Color (Element : in out Element_Type;
-                               RGBA    : Gnoga.Types.RGBA_Type)
+   procedure Background_Color
+     (Element : in out Element_Type;
+      RGBA    :        Gnoga.Types.RGBA_Type)
    is
    begin
       Element.Style ("background-color", Gnoga.Types.To_String (RGBA));
    end Background_Color;
 
-   procedure Background_Color (Element : in out Element_Type;
-                               Enum    : Gnoga.Types.Colors.Color_Enumeration)
+   procedure Background_Color
+     (Element : in out Element_Type;
+      Enum    :        Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
       Element.Style ("background-color", Gnoga.Types.Colors.To_String (Enum));
    end Background_Color;
 
-   function Background_Color (Element : Element_Type)
-                              return Gnoga.Types.RGBA_Type
+   function Background_Color
+     (Element : Element_Type)
+      return Gnoga.Types.RGBA_Type
    is
    begin
       return Gnoga.Types.To_RGBA (Element.Style ("background-color"));
@@ -1211,8 +1434,9 @@ package body Gnoga.Gui.Element is
    -- Background_Image --
    ----------------------
 
-   procedure Background_Image (Element : in out Element_Type;
-                               Value   : in     String)
+   procedure Background_Image
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       if Value = "" then
@@ -1222,7 +1446,10 @@ package body Gnoga.Gui.Element is
       end if;
    end Background_Image;
 
-   function Background_Image (Element : Element_Type) return String is
+   function Background_Image
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Style ("background-image");
    end Background_Image;
@@ -1231,14 +1458,18 @@ package body Gnoga.Gui.Element is
    -- Background_Position --
    -------------------------
 
-   procedure Background_Position (Element : in out Element_Type;
-                                  Value   : in     String)
+   procedure Background_Position
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("background-position", Value);
    end Background_Position;
 
-   function Background_Position (Element : Element_Type) return String is
+   function Background_Position
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Style ("background-position");
    end Background_Position;
@@ -1247,14 +1478,18 @@ package body Gnoga.Gui.Element is
    -- Background_Origin --
    -----------------------
 
-   procedure Background_Origin (Element : in out Element_Type;
-                                Value   : in     String)
+   procedure Background_Origin
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("background-origin", Value);
    end Background_Origin;
 
-   function Background_Origin (Element : Element_Type) return String is
+   function Background_Origin
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Style ("background-origin");
    end Background_Origin;
@@ -1263,14 +1498,18 @@ package body Gnoga.Gui.Element is
    -- Background_Repeat --
    -----------------------
 
-   procedure Background_Repeat (Element : in out Element_Type;
-                                Value   : in     String)
+   procedure Background_Repeat
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("background-repeat", Value);
    end Background_Repeat;
 
-   function Background_Repeat (Element : Element_Type) return String is
+   function Background_Repeat
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Style ("background-repeat");
    end Background_Repeat;
@@ -1279,14 +1518,18 @@ package body Gnoga.Gui.Element is
    -- Background_Clip --
    ---------------------
 
-   procedure Background_Clip (Element : in out Element_Type;
-                              Value   : in     String)
+   procedure Background_Clip
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("background-clip", Value);
    end Background_Clip;
 
-   function Background_Clip (Element : Element_Type) return String is
+   function Background_Clip
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Style ("background-clip");
    end Background_Clip;
@@ -1295,14 +1538,18 @@ package body Gnoga.Gui.Element is
    -- Background_Size --
    ---------------------
 
-   procedure Background_Size (Element : in out Element_Type;
-                              Value   : in     String)
+   procedure Background_Size
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("background-size", Value);
    end Background_Size;
 
-   function Background_Size (Element : Element_Type) return String is
+   function Background_Size
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Style ("background-size");
    end Background_Size;
@@ -1311,23 +1558,23 @@ package body Gnoga.Gui.Element is
    -- Border --
    ------------
 
-   procedure Border (Element : in out Element_Type;
-                     Width   : in     String       := "medium";
-                     Style   : in     Border_Style := Solid;
-                     Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
-                       Gnoga.Types.Colors.Black)
+   procedure Border
+     (Element : in out Element_Type;
+      Width   : in     String                               := "medium";
+      Style   : in     Border_Style                         := Solid;
+      Color   : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Black)
    is
    begin
-      Element.Style ("border", Width & " " & Style'Img & " " &
-                       Gnoga.Types.Colors.To_String (Color));
+      Element.Style ("border", Width & " " & Style'Img & " " & Gnoga.Types.Colors.To_String (Color));
    end Border;
 
    -------------------
    -- Border_Radius --
    -------------------
 
-   procedure Border_Radius (Element : in out Element_Type;
-                            Radius  : in     String := "0")
+   procedure Border_Radius
+     (Element : in out Element_Type;
+      Radius  : in     String := "0")
    is
    begin
       Element.Style ("border-radius", Radius);
@@ -1337,14 +1584,14 @@ package body Gnoga.Gui.Element is
    -- Shadow --
    ------------
 
-   procedure Shadow (Element             : in out Element_Type;
-                     Horizontal_Position : in     String;
-                     Vertical_Position   : in     String;
-                     Blur                : in     String := "";
-                     Spread              : in     String := "";
-                     Color               : in     Gnoga.Types.Colors.
-                       Color_Enumeration := Gnoga.Types.Colors.Black;
-                     Inset_Shadow        : in     Boolean := False)
+   procedure Shadow
+     (Element             : in out Element_Type;
+      Horizontal_Position : in     String;
+      Vertical_Position   : in     String;
+      Blur                : in     String                               := "";
+      Spread              : in     String                               := "";
+      Color               : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Black;
+      Inset_Shadow        : in     Boolean                              := False)
    is
       function Inset return String;
 
@@ -1357,10 +1604,10 @@ package body Gnoga.Gui.Element is
          end if;
       end Inset;
    begin
-      Element.Style ("box-shadow", Horizontal_Position & " " &
-                       Vertical_Position & " " & Blur & " " & Spread &
-                       " " & Gnoga.Types.Colors.To_String (Color) &
-                       " " & Inset);
+      Element.Style
+        ("box-shadow",
+         Horizontal_Position & " " & Vertical_Position & " " & Blur & " " & Spread & " " &
+         Gnoga.Types.Colors.To_String (Color) & " " & Inset);
    end Shadow;
 
    -----------------
@@ -1376,10 +1623,11 @@ package body Gnoga.Gui.Element is
    -- Outline --
    -------------
 
-   procedure Outline (Element : in out Element_Type;
-                      Color   : in     String             := "invert";
-                      Style   : in     Outline_Style_Type := None;
-                      Width   : in     String             := "medium")
+   procedure Outline
+     (Element : in out Element_Type;
+      Color   : in     String             := "invert";
+      Style   : in     Outline_Style_Type := None;
+      Width   : in     String             := "medium")
    is
    begin
       Element.Style ("outline", Color & " " & Style'Img & " " & Width);
@@ -1389,11 +1637,12 @@ package body Gnoga.Gui.Element is
    -- Margin --
    ------------
 
-   procedure Margin (Element : in out Element_Type;
-                     Top     : in     String := "0";
-                     Right   : in     String := "0";
-                     Bottom  : in     String := "0";
-                     Left    : in     String := "0")
+   procedure Margin
+     (Element : in out Element_Type;
+      Top     : in     String := "0";
+      Right   : in     String := "0";
+      Bottom  : in     String := "0";
+      Left    : in     String := "0")
    is
    begin
       Element.Style ("margin", Top & " " & Right & " " & Bottom & " " & Left);
@@ -1403,11 +1652,12 @@ package body Gnoga.Gui.Element is
    -- Padding --
    -------------
 
-   procedure Padding (Element : in out Element_Type;
-                     Top     : in     String := "0";
-                     Right   : in     String := "0";
-                     Bottom  : in     String := "0";
-                     Left    : in     String := "0")
+   procedure Padding
+     (Element : in out Element_Type;
+      Top     : in     String := "0";
+      Right   : in     String := "0";
+      Bottom  : in     String := "0";
+      Left    : in     String := "0")
    is
    begin
       Element.Style ("padding", Top & " " & Right & " " & Bottom & " " & Left);
@@ -1417,14 +1667,17 @@ package body Gnoga.Gui.Element is
    -- Cursor --
    ------------
 
-   procedure Cursor (Element : in out Element_Type;
-                     Value   : in     String)
+   procedure Cursor
+     (Element : in out Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Style ("cursor", Value);
    end Cursor;
 
-   function Cursor (Element : Element_Type) return String
+   function Cursor
+     (Element : Element_Type)
+      return String
    is
    begin
       return Element.Style ("cursor");
@@ -1434,7 +1687,9 @@ package body Gnoga.Gui.Element is
    -- Image --
    -----------
 
-   function Image (Value : in Gnoga.Gui.Element.Font_Weight_Type) return String
+   function Image
+     (Value : in Gnoga.Gui.Element.Font_Weight_Type)
+      return String
    is
       W : constant String := Value'Img;
    begin
@@ -1445,7 +1700,9 @@ package body Gnoga.Gui.Element is
    -- Value --
    -----------
 
-   function Value (Value : in String) return Gnoga.Gui.Element.Font_Weight_Type
+   function Value
+     (Value : in String)
+      return Gnoga.Gui.Element.Font_Weight_Type
    is
    begin
       return Gnoga.Gui.Element.Font_Weight_Type'Value ("Weight_" & Value);
@@ -1455,22 +1712,23 @@ package body Gnoga.Gui.Element is
    -- Font --
    ----------
 
-   procedure Font (Element : in out Element_Type;
-                   Family  : in     String            := "sans-serif";
-                   Height  : in     String            := "medium";
-                   Style   : in     Font_Style_Type   := Normal;
-                   Weight  : in     Font_Weight_Type  := Weight_Normal;
-                   Variant : in     Font_Variant_Type := Normal)
+   procedure Font
+     (Element : in out Element_Type;
+      Family  : in     String            := "sans-serif";
+      Height  : in     String            := "medium";
+      Style   : in     Font_Style_Type   := Normal;
+      Weight  : in     Font_Weight_Type  := Weight_Normal;
+      Variant : in     Font_Variant_Type := Normal)
    is
       W : constant String := Weight'Img;
    begin
-      Element.Style ("font", Style'Img & " " & Variant'Img & " " &
-                       W (W'First + 7 .. W'Last) & " " & Height &
-                       " " & Family);
+      Element.Style
+        ("font", Style'Img & " " & Variant'Img & " " & W (W'First + 7 .. W'Last) & " " & Height & " " & Family);
    end Font;
 
-   procedure Font (Element     : in out Element_Type;
-                   System_Font : in     System_Font_Type)
+   procedure Font
+     (Element     : in out Element_Type;
+      System_Font : in     System_Font_Type)
    is
    begin
       case System_Font is
@@ -1489,8 +1747,9 @@ package body Gnoga.Gui.Element is
    -- Text_Alignment --
    --------------------
 
-   procedure Text_Alignment (Element : in out Element_Type;
-                             Value   : in     Alignment_Type)
+   procedure Text_Alignment
+     (Element : in out Element_Type;
+      Value   : in     Alignment_Type)
    is
       V : constant String := Value'Img;
    begin
@@ -1506,8 +1765,9 @@ package body Gnoga.Gui.Element is
    -- Vertical_Align --
    --------------------
 
-   procedure Vertical_Align (Element : in out Element_Type;
-                             Value   : in     Vertical_Align_Type)
+   procedure Vertical_Align
+     (Element : in out Element_Type;
+      Value   : in     Vertical_Align_Type)
    is
    begin
       if Value = Text_Top then
@@ -1523,35 +1783,38 @@ package body Gnoga.Gui.Element is
    -- First_Child --
    -----------------
 
-   procedure First_Child (Element : in out Element_Type;
-                          Child   : in out Element_Type'Class)
+   procedure First_Child
+     (Element : in out Element_Type;
+      Child   : in out Element_Type'Class)
    is
    begin
-      Child.Attach (Connection_ID => Element.Connection_ID,
-                    ID            => Element.jQuery_Execute
-                      ("children().first().attr('id');"),
-                    ID_Type       => Gnoga.Types.DOM_ID);
+      Child.Attach
+        (Connection_ID => Element.Connection_ID, ID => Element.jQuery_Execute ("children().first().attr('id');"),
+         ID_Type       => Gnoga.Types.DOM_ID);
    end First_Child;
 
    ------------------
    -- Next_Sibling --
    ------------------
 
-   procedure Next_Sibling (Element : in out Element_Type;
-                           Sibling : in out Element_Type'Class)
+   procedure Next_Sibling
+     (Element : in out Element_Type;
+      Sibling : in out Element_Type'Class)
    is
    begin
-      Sibling.Attach (Connection_ID => Element.Connection_ID,
-                      ID            => Element.jQuery_Execute
-                        ("next().attr('id');"),
-                      ID_Type       => Gnoga.Types.DOM_ID);
+      Sibling.Attach
+        (Connection_ID => Element.Connection_ID, ID => Element.jQuery_Execute ("next().attr('id');"),
+         ID_Type       => Gnoga.Types.DOM_ID);
    end Next_Sibling;
 
    --------------
    -- HTML_Tag --
    --------------
 
-   function HTML_Tag (Element : Element_Type) return String is
+   function HTML_Tag
+     (Element : Element_Type)
+      return String
+   is
    begin
       return Element.Property ("tagName");
    end HTML_Tag;
@@ -1560,56 +1823,61 @@ package body Gnoga.Gui.Element is
    --  Element_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Add_Class (Element : in out Element_Type; Class_Name : in String)
+   procedure Add_Class
+     (Element    : in out Element_Type;
+      Class_Name : in     String)
    is
    begin
-      Element.jQuery_Execute
-        ("addClass('" & Class_Name & "')");
+      Element.jQuery_Execute ("addClass('" & Class_Name & "')");
    end Add_Class;
 
-   procedure Remove_Class (Element    : in out Element_Type;
-                           Class_Name : in     String)
+   procedure Remove_Class
+     (Element    : in out Element_Type;
+      Class_Name : in     String)
    is
    begin
-      Element.jQuery_Execute
-        ("removeClass('" & Class_Name & "')");
+      Element.jQuery_Execute ("removeClass('" & Class_Name & "')");
    end Remove_Class;
 
-   procedure Toggle_Class (Element    : in out Element_Type;
-                           Class_Name : in     String)
+   procedure Toggle_Class
+     (Element    : in out Element_Type;
+      Class_Name : in     String)
    is
    begin
-      Element.jQuery_Execute
-        ("toggleClass('" & Class_Name & "')");
+      Element.jQuery_Execute ("toggleClass('" & Class_Name & "')");
    end Toggle_Class;
 
    -------------------------
    -- Place_Inside_Top_Of --
    -------------------------
 
-   procedure Place_Inside_Top_Of (Element : in out Element_Type;
-                                  Target  : in out Element_Type'Class)
+   procedure Place_Inside_Top_Of
+     (Element : in out Element_Type;
+      Target  : in out Element_Type'Class)
    is
    begin
       Target.jQuery_Execute ("prepend(" & Element.jQuery & ")");
    end Place_Inside_Top_Of;
 
-   procedure Place_Inside_Bottom_Of (Element : in out Element_Type;
-                                     Target  : in out Element_Type'Class)
+   procedure Place_Inside_Bottom_Of
+     (Element : in out Element_Type;
+      Target  : in out Element_Type'Class)
    is
    begin
       Target.jQuery_Execute ("append(" & Element.jQuery & ")");
    end Place_Inside_Bottom_Of;
 
-   procedure Place_Before (Element : in out Element_Type;
-                           Target  : in out Element_Type'Class)
+   procedure Place_Before
+     (Element : in out Element_Type;
+      Target  : in out Element_Type'Class)
    is
    begin
       Element.jQuery_Execute ("insertBefore(" & Target.jQuery & ")");
    end Place_Before;
 
-   procedure Place_After (Element : in out Element_Type;
-                          Target  : in out Element_Type'Class)
+   procedure Place_After
+     (Element : in out Element_Type;
+      Target  : in out Element_Type'Class)
    is
    begin
       Element.jQuery_Execute ("insertAfter(" & Target.jQuery & ")");

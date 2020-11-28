@@ -46,26 +46,27 @@ package body Gnoga.Gui.Element.Form is
    ------------
 
    procedure Create
-     (Form    : in out Form_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Action  : in     String           := "";
-      Method  : in     Form_Method_Type := Get;
-      Target  : in     String           := "_self";
-      ID      : in     String           := "")
+     (Form   : in out Form_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Action : in     String           := "";
+      Method : in     Form_Method_Type := Get;
+      Target : in     String           := "_self";
+      ID     : in     String           := "")
    is
    begin
-      Form.Create_From_HTML (Parent, Escape_Quotes ("<form action='" &
-                               Action &
-                               "' method='" & Method'Img &
-                               "' target='" & Target &
-                               "' />"), ID);
+      Form.Create_From_HTML
+        (Parent, Escape_Quotes ("<form action='" & Action & "' method='" & Method'Img & "' target='" & Target & "' />"),
+         ID);
    end Create;
 
    ------------
    -- Action --
    ------------
 
-   procedure Action (Form : in out Form_Type; Value : in String) is
+   procedure Action
+     (Form  : in out Form_Type;
+      Value : in     String)
+   is
    begin
       Form.Property ("action", Value);
    end Action;
@@ -74,7 +75,10 @@ package body Gnoga.Gui.Element.Form is
    -- Action --
    ------------
 
-   function Action (Form : Form_Type) return String is
+   function Action
+     (Form : Form_Type)
+      return String
+   is
    begin
       return Form.Property ("action");
    end Action;
@@ -83,7 +87,10 @@ package body Gnoga.Gui.Element.Form is
    -- Method --
    ------------
 
-   procedure Method (Form : in out Form_Type; Value : in Form_Method_Type) is
+   procedure Method
+     (Form  : in out Form_Type;
+      Value : in     Form_Method_Type)
+   is
    begin
       Form.Property ("method", Value'Img);
    end Method;
@@ -92,7 +99,10 @@ package body Gnoga.Gui.Element.Form is
    -- Method --
    ------------
 
-   function Method (Form : Form_Type) return Form_Method_Type is
+   function Method
+     (Form : Form_Type)
+      return Form_Method_Type
+   is
       Value : constant String := Form.Property ("method");
    begin
       if Value = "post" then
@@ -106,7 +116,10 @@ package body Gnoga.Gui.Element.Form is
    -- Encoding --
    --------------
 
-   procedure Encoding (Form : in out Form_Type; Value : in Encoding_Type) is
+   procedure Encoding
+     (Form  : in out Form_Type;
+      Value : in     Encoding_Type)
+   is
    begin
       if Value = URL_Encode then
          Form.Property ("enctype", "application/x-www-form-urlencoded");
@@ -121,7 +134,10 @@ package body Gnoga.Gui.Element.Form is
    -- Encoding --
    --------------
 
-   function Encoding (Form : Form_Type) return Encoding_Type is
+   function Encoding
+     (Form : Form_Type)
+      return Encoding_Type
+   is
       Value : constant String := Form.Property ("enctype");
    begin
       if Value = "text/plain" then
@@ -139,7 +155,7 @@ package body Gnoga.Gui.Element.Form is
 
    procedure Autocomplete
      (Form  : in out Form_Type;
-      Value : in  Boolean := True)
+      Value : in     Boolean := True)
    is
    begin
       if Value then
@@ -153,7 +169,10 @@ package body Gnoga.Gui.Element.Form is
    -- Autocomplete --
    ------------------
 
-   function Autocomplete (Form : Form_Type) return Boolean is
+   function Autocomplete
+     (Form : Form_Type)
+      return Boolean
+   is
    begin
       return Form.Property ("autocomplete") = "on";
    end Autocomplete;
@@ -164,7 +183,7 @@ package body Gnoga.Gui.Element.Form is
 
    procedure Validate_On_Submit
      (Form  : in out Form_Type;
-      Value : in  Boolean := True)
+      Value : in     Boolean := True)
    is
    begin
       Form.Property ("noValidate", not (Value));
@@ -174,7 +193,10 @@ package body Gnoga.Gui.Element.Form is
    -- Validate_On_Submit --
    ------------------------
 
-   function Validate_On_Submit (Form : Form_Type) return Boolean is
+   function Validate_On_Submit
+     (Form : Form_Type)
+      return Boolean
+   is
    begin
       return not (Form.Property ("noValidate"));
    end Validate_On_Submit;
@@ -183,7 +205,10 @@ package body Gnoga.Gui.Element.Form is
    -- Number_Of_Elements_In_Form --
    --------------------------------
 
-   function Number_Of_Elements_In_Form (Form : Form_Type) return Integer is
+   function Number_Of_Elements_In_Form
+     (Form : Form_Type)
+      return Integer
+   is
    begin
       return Form.Property ("length");
    end Number_Of_Elements_In_Form;
@@ -192,7 +217,10 @@ package body Gnoga.Gui.Element.Form is
    -- Target --
    ------------
 
-   procedure Target (Form : in out Form_Type; Value : in String) is
+   procedure Target
+     (Form  : in out Form_Type;
+      Value : in     String)
+   is
    begin
       Form.Property ("target", Value);
    end Target;
@@ -201,7 +229,10 @@ package body Gnoga.Gui.Element.Form is
    -- Target --
    ------------
 
-   function Target (Form : Form_Type) return String is
+   function Target
+     (Form : Form_Type)
+      return String
+   is
    begin
       return Form.Property ("target");
    end Target;
@@ -247,10 +278,11 @@ package body Gnoga.Gui.Element.Form is
          end if;
       end Is_Name;
    begin
-      Element.Create_From_HTML (Form, Escape_Quotes ("<input type='" & Input_Type & "' " &
-                                  "form='" & Form.ID & "' value='" &
-                                  Value & "' " &
-                                  Is_Name & "/>"), ID);
+      Element.Create_From_HTML
+        (Form,
+         Escape_Quotes
+           ("<input type='" & Input_Type & "' " & "form='" & Form.ID & "' value='" & Value & "' " & Is_Name & "/>"),
+         ID);
    end Create_Element;
 
    -------------------
@@ -273,7 +305,10 @@ package body Gnoga.Gui.Element.Form is
    -- Autocomplete --
    -------------------
 
-   function Autocomplete (Element : Form_Element_Type) return Boolean is
+   function Autocomplete
+     (Element : Form_Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("autocomplete") = "on";
    end Autocomplete;
@@ -294,7 +329,10 @@ package body Gnoga.Gui.Element.Form is
    -- Autofocus --
    ---------------
 
-   function Autofocus (Element : Form_Element_Type) return Boolean is
+   function Autofocus
+     (Element : Form_Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("autofocus");
    end Autofocus;
@@ -303,11 +341,12 @@ package body Gnoga.Gui.Element.Form is
    -- Data_List --
    ---------------
 
-   procedure Data_List (Element   : in out Form_Element_Type;
-                        Data_List : in out Data_List_Type'Class)
+   procedure Data_List
+     (Element   : in out Form_Element_Type;
+      Data_List : in out Data_List_Type'Class)
    is
    begin
-      Element.Attribute  ("list", Data_List.ID);
+      Element.Attribute ("list", Data_List.ID);
    end Data_List;
 
    --------------
@@ -326,7 +365,10 @@ package body Gnoga.Gui.Element.Form is
    -- Disabled --
    --------------
 
-   function Disabled (Element : Form_Element_Type) return Boolean is
+   function Disabled
+     (Element : Form_Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("disabled");
    end Disabled;
@@ -347,7 +389,10 @@ package body Gnoga.Gui.Element.Form is
    -- Read_Only --
    ---------------
 
-   function Read_Only (Element : Form_Element_Type) return Boolean is
+   function Read_Only
+     (Element : Form_Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("readonly");
    end Read_Only;
@@ -368,7 +413,10 @@ package body Gnoga.Gui.Element.Form is
    -- Validate_On_Submit --
    ------------------------
 
-   function Validate_On_Submit (Element : Form_Element_Type) return Boolean is
+   function Validate_On_Submit
+     (Element : Form_Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("noValidate");
    end Validate_On_Submit;
@@ -377,12 +425,18 @@ package body Gnoga.Gui.Element.Form is
    -- Name --
    ----------
 
-   procedure Name (Element : in out Form_Element_Type; Value : in String) is
+   procedure Name
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
+   is
    begin
       Element.Property ("name", Value);
    end Name;
 
-   function Name (Element : Form_Element_Type) return String is
+   function Name
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("name");
    end Name;
@@ -391,26 +445,34 @@ package body Gnoga.Gui.Element.Form is
    -- Default_Value --
    -------------------
 
-   procedure Default_Value (Element : in out Form_Element_Type;
-                            Value   : in     String)
+   procedure Default_Value
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("defaultValue", Value);
    end Default_Value;
 
-   procedure Default_Value (Element : in out Form_Element_Type;
-                            Value   : in     Integer)
+   procedure Default_Value
+     (Element : in out Form_Element_Type;
+      Value   : in     Integer)
    is
    begin
       Element.Property ("defaultValue", Value);
    end Default_Value;
 
-   function Default_Value (Element : Form_Element_Type) return String is
+   function Default_Value
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("defaultValue");
    end Default_Value;
 
-   function Default_Value (Element : Form_Element_Type) return Integer is
+   function Default_Value
+     (Element : Form_Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("defaultValue");
    end Default_Value;
@@ -419,22 +481,34 @@ package body Gnoga.Gui.Element.Form is
    -- Value --
    -----------
 
-   procedure Value (Element : in out Form_Element_Type; Value : in String) is
+   procedure Value
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
+   is
    begin
       Element.Property ("value", Value);
    end Value;
 
-   procedure Value (Element : in out Form_Element_Type; Value : in Integer) is
+   procedure Value
+     (Element : in out Form_Element_Type;
+      Value   : in     Integer)
+   is
    begin
       Element.Property ("value", Value);
    end Value;
 
-   function Value (Element : Form_Element_Type) return String is
+   function Value
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("value");
    end Value;
 
-   function Value (Element : Form_Element_Type) return Integer is
+   function Value
+     (Element : Form_Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("value");
    end Value;
@@ -443,14 +517,18 @@ package body Gnoga.Gui.Element.Form is
    -- Place_Holder --
    ------------------
 
-   procedure Place_Holder (Element : in out Form_Element_Type;
-                           Value   : in     String)
+   procedure Place_Holder
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("placeholder", Value);
    end Place_Holder;
 
-   function Place_Holder (Element : Form_Element_Type) return String is
+   function Place_Holder
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("placeholder");
    end Place_Holder;
@@ -459,12 +537,18 @@ package body Gnoga.Gui.Element.Form is
    -- Pattern --
    -------------
 
-   procedure Pattern (Element : in out Form_Element_Type; Value : in String) is
+   procedure Pattern
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
+   is
    begin
       Element.Property ("pattern", Value);
    end Pattern;
 
-   function Pattern (Element : Form_Element_Type) return String is
+   function Pattern
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("pattern");
    end Pattern;
@@ -473,14 +557,18 @@ package body Gnoga.Gui.Element.Form is
    -- Required --
    --------------
 
-   procedure Required (Element : in out Form_Element_Type;
-                       Value   : in     Boolean := True)
+   procedure Required
+     (Element : in out Form_Element_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("required", Value);
    end Required;
 
-   function Required (Element : Form_Element_Type) return Boolean is
+   function Required
+     (Element : Form_Element_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("required");
    end Required;
@@ -489,23 +577,34 @@ package body Gnoga.Gui.Element.Form is
    -- Minimum --
    -------------
 
-   procedure Minimum (Element : in out Form_Element_Type; Value : in String) is
-   begin
-      Element.Property ("min", Value);
-   end Minimum;
-
-   procedure Minimum (Element : in out Form_Element_Type; Value : in Integer)
+   procedure Minimum
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("min", Value);
    end Minimum;
 
-   function Minimum (Element : Form_Element_Type) return String is
+   procedure Minimum
+     (Element : in out Form_Element_Type;
+      Value   : in     Integer)
+   is
+   begin
+      Element.Property ("min", Value);
+   end Minimum;
+
+   function Minimum
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("min");
    end Minimum;
 
-   function Minimum (Element : Form_Element_Type) return Integer is
+   function Minimum
+     (Element : Form_Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("min");
    end Minimum;
@@ -513,23 +612,34 @@ package body Gnoga.Gui.Element.Form is
    -- Maximum --
    -------------
 
-   procedure Maximum (Element : in out Form_Element_Type; Value : in String) is
-   begin
-      Element.Property ("max", Value);
-   end Maximum;
-
-   procedure Maximum (Element : in out Form_Element_Type; Value : in Integer)
+   procedure Maximum
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("max", Value);
    end Maximum;
 
-   function Maximum (Element : Form_Element_Type) return String is
+   procedure Maximum
+     (Element : in out Form_Element_Type;
+      Value   : in     Integer)
+   is
+   begin
+      Element.Property ("max", Value);
+   end Maximum;
+
+   function Maximum
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("max");
    end Maximum;
 
-   function Maximum (Element : Form_Element_Type) return Integer is
+   function Maximum
+     (Element : Form_Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("max");
    end Maximum;
@@ -538,22 +648,34 @@ package body Gnoga.Gui.Element.Form is
    -- Step --
    ----------
 
-   procedure Step (Element : in out Form_Element_Type; Value : in String) is
+   procedure Step
+     (Element : in out Form_Element_Type;
+      Value   : in     String)
+   is
    begin
       Element.Property ("step", Value);
    end Step;
 
-   procedure Step (Element : in out Form_Element_Type; Value : in Integer) is
+   procedure Step
+     (Element : in out Form_Element_Type;
+      Value   : in     Integer)
+   is
    begin
       Element.Property ("step", Value);
    end Step;
 
-   function Step (Element : Form_Element_Type) return String is
+   function Step
+     (Element : Form_Element_Type)
+      return String
+   is
    begin
       return Element.Property ("step");
    end Step;
 
-   function Step (Element : Form_Element_Type) return Integer is
+   function Step
+     (Element : Form_Element_Type)
+      return Integer
+   is
    begin
       return Element.Property ("step");
    end Step;
@@ -575,35 +697,40 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Text_Area_Type;
-                     Form       : in out Form_Type'Class;
-                     Columns    : in     Natural := 20;
-                     Rows       : in     Natural := 2;
-                     Value      : in     String  := "";
-                     Name       : in     String  := "";
-                     ID         : in     String  := "")
+   procedure Create
+     (Element : in out Text_Area_Type;
+      Form    : in out Form_Type'Class;
+      Columns : in     Natural := 20;
+      Rows    : in     Natural := 2;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_From_HTML (Form, Escape_Quotes ("<textarea " &
-                                  "form='" & Form.ID & "' name='" &
-                                  Name & "' cols=" & Columns'Img &
-                                  " rows=" & Rows'Img & ">" &
-                                  Value &
-                                  "</textarea>"), ID);
+      Element.Create_From_HTML
+        (Form,
+         Escape_Quotes
+           ("<textarea " & "form='" & Form.ID & "' name='" & Name & "' cols=" & Columns'Img & " rows=" & Rows'Img &
+            ">" & Value & "</textarea>"),
+         ID);
    end Create;
 
    ---------------
    -- Word_Wrap --
    ---------------
 
-   procedure Word_Wrap (Element : in out Text_Area_Type;
-                        Value   : in      Boolean := True)
+   procedure Word_Wrap
+     (Element : in out Text_Area_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("wrap", Value);
    end Word_Wrap;
 
-   function Word_Wrap (Element : Text_Area_Type) return Boolean is
+   function Word_Wrap
+     (Element : Text_Area_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("wrap");
    end Word_Wrap;
@@ -612,14 +739,17 @@ package body Gnoga.Gui.Element.Form is
    -- Columns --
    -------------
 
-   procedure Columns (Element : in out Text_Area_Type;
-                      Value   : in     Integer)
+   procedure Columns
+     (Element : in out Text_Area_Type;
+      Value   : in     Integer)
    is
    begin
       Element.Property ("cols", Value);
    end Columns;
 
-   function Columns (Element : Text_Area_Type) return Integer
+   function Columns
+     (Element : Text_Area_Type)
+      return Integer
    is
    begin
       return Element.Property ("cols");
@@ -629,14 +759,18 @@ package body Gnoga.Gui.Element.Form is
    -- Rows --
    ----------
 
-   procedure Rows (Element : in out Text_Area_Type;
-                   Value   : in     Integer)
+   procedure Rows
+     (Element : in out Text_Area_Type;
+      Value   : in     Integer)
    is
    begin
       Element.Property ("rows", Value);
    end Rows;
 
-   function Rows (Element : Text_Area_Type) return Integer is
+   function Rows
+     (Element : Text_Area_Type)
+      return Integer
+   is
    begin
       return Element.Property ("rows");
    end Rows;
@@ -649,18 +783,15 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Hidden_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Hidden_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "hidden",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "hidden", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -671,75 +802,61 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Input_Button_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Input_Button_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "button",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "button", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
    --  Submit_Button_Type
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create (Element    : in out Submit_Button_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   overriding procedure Create
+     (Element : in out Submit_Button_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "submit",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "submit", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
    --  Reset_Button_Type
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create (Element    : in out Reset_Button_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   overriding procedure Create
+     (Element : in out Reset_Button_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "reset",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "reset", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
    --  Input_Image_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out Input_Image_Type;
-                     Form       : in out Form_Type'Class;
-                     Source     : in     String    := "";
-                     Value      : in     String    := "";
-                     Name       : in     String    := "";
-                     ID         : in     String    := "")
+   procedure Create
+     (Element : in out Input_Image_Type;
+      Form    : in out Form_Type'Class;
+      Source  : in     String := "";
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "image",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "image", Value => Value, Name => Name, ID => ID);
 
       if Source /= "" then
          Element.Source (Source);
@@ -750,12 +867,18 @@ package body Gnoga.Gui.Element.Form is
    -- Source --
    ------------
 
-   procedure Source (Element : in out Input_Image_Type; Value : String) is
+   procedure Source
+     (Element : in out Input_Image_Type;
+      Value   :        String)
+   is
    begin
       Element.Property ("src", Value);
    end Source;
 
-   function Source (Element : Input_Image_Type) return String is
+   function Source
+     (Element : Input_Image_Type)
+      return String
+   is
    begin
       return Element.Property ("src");
    end Source;
@@ -764,19 +887,16 @@ package body Gnoga.Gui.Element.Form is
    --  Text_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out Text_Type;
-                     Form       : in out Form_Type'Class;
-                     Size       : in     Integer   := 20;
-                     Value      : in     String    := "";
-                     Name       : in     String    := "";
-                     ID         : in     String    := "")
+   procedure Create
+     (Element : in out Text_Type;
+      Form    : in out Form_Type'Class;
+      Size    : in     Integer := 20;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "text",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "text", Value => Value, Name => Name, ID => ID);
       Element.Size (Size);
    end Create;
 
@@ -784,12 +904,18 @@ package body Gnoga.Gui.Element.Form is
    -- Size --
    ----------
 
-   procedure Size (Element : in out Text_Type; Value : Integer) is
+   procedure Size
+     (Element : in out Text_Type;
+      Value   :        Integer)
+   is
    begin
       Element.Property ("size", Value);
    end Size;
 
-   function Size (Element : Text_Type) return Integer is
+   function Size
+     (Element : Text_Type)
+      return Integer
+   is
    begin
       return Element.Property ("size");
    end Size;
@@ -798,12 +924,18 @@ package body Gnoga.Gui.Element.Form is
    -- Max_Size --
    --------------
 
-   procedure Max_Length (Element : in out Text_Type; Value : Integer) is
+   procedure Max_Length
+     (Element : in out Text_Type;
+      Value   :        Integer)
+   is
    begin
       Element.Property ("maxLength", Value);
    end Max_Length;
 
-   function Max_Length (Element : Text_Type) return Integer is
+   function Max_Length
+     (Element : Text_Type)
+      return Integer
+   is
    begin
       return Element.Property ("maxLength");
    end Max_Length;
@@ -812,31 +944,31 @@ package body Gnoga.Gui.Element.Form is
    --  Email_Type
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create (Element    : in out Email_Type;
-                     Form       : in out Form_Type'Class;
-                     Size       : in     Integer   := 20;
-                     Value      : in     String    := "";
-                     Name       : in     String    := "";
-                     ID         : in     String    := "")
+   overriding procedure Create
+     (Element : in out Email_Type;
+      Form    : in out Form_Type'Class;
+      Size    : in     Integer := 20;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "email",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "email", Value => Value, Name => Name, ID => ID);
       Element.Size (Size);
    end Create;
 
-   procedure Multiple_Emails (Element : in out Email_Type;
-                              Value   : in     Boolean := True)
+   procedure Multiple_Emails
+     (Element : in out Email_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("multiple", Value);
    end Multiple_Emails;
 
-   function Multiple_Emails (Element : Email_Type) return Boolean is
+   function Multiple_Emails
+     (Element : Email_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("multiple");
    end Multiple_Emails;
@@ -845,20 +977,16 @@ package body Gnoga.Gui.Element.Form is
    --  Password_Type
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create (Element    : in out Password_Type;
-                     Form       : in out Form_Type'Class;
-                     Size       : in     Integer   := 20;
-                     Value      : in     String    := "";
-                     Name       : in     String    := "";
-                     ID         : in     String    := "")
+   overriding procedure Create
+     (Element : in out Password_Type;
+      Form    : in out Form_Type'Class;
+      Size    : in     Integer := 20;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "password",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "password", Value => Value, Name => Name, ID => ID);
       Element.Size (Size);
    end Create;
 
@@ -866,20 +994,16 @@ package body Gnoga.Gui.Element.Form is
    --  Search_Type
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create (Element    : in out Search_Type;
-                     Form       : in out Form_Type'Class;
-                     Size       : in     Integer   := 20;
-                     Value      : in     String    := "";
-                     Name       : in     String    := "";
-                     ID         : in     String    := "")
+   overriding procedure Create
+     (Element : in out Search_Type;
+      Form    : in out Form_Type'Class;
+      Size    : in     Integer := 20;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "search",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "search", Value => Value, Name => Name, ID => ID);
       Element.Size (Size);
    end Create;
 
@@ -887,20 +1011,16 @@ package body Gnoga.Gui.Element.Form is
    --  URL_Type
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create (Element    : in out URL_Type;
-                     Form       : in out Form_Type'Class;
-                     Size       : in     Integer   := 20;
-                     Value      : in     String    := "";
-                     Name       : in     String    := "";
-                     ID         : in     String    := "")
+   overriding procedure Create
+     (Element : in out URL_Type;
+      Form    : in out Form_Type'Class;
+      Size    : in     Integer := 20;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "url",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "url", Value => Value, Name => Name, ID => ID);
       Element.Size (Size);
    end Create;
 
@@ -912,19 +1032,16 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Check_Box_Type;
-                     Form       : in out Form_Type'Class;
-                     Checked    : in     Boolean := False;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Check_Box_Type;
+      Form    : in out Form_Type'Class;
+      Checked : in     Boolean := False;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "checkbox",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "checkbox", Value => Value, Name => Name, ID => ID);
       Element.Checked (Checked);
    end Create;
 
@@ -936,14 +1053,18 @@ package body Gnoga.Gui.Element.Form is
    -- Checked --
    --------------
 
-   procedure Checked (Element : in out Check_Box_Type;
-                      Value   : in     Boolean := True)
+   procedure Checked
+     (Element : in out Check_Box_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("checked", Value);
    end Checked;
 
-   function Checked (Element : Check_Box_Type) return Boolean is
+   function Checked
+     (Element : Check_Box_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("checked");
    end Checked;
@@ -952,14 +1073,18 @@ package body Gnoga.Gui.Element.Form is
    -- Indeterminate --
    -------------------
 
-   procedure Indeterminate (Element : in out Check_Box_Type;
-                            Value   : in     Boolean := True)
+   procedure Indeterminate
+     (Element : in out Check_Box_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("indeterminate", Value);
    end Indeterminate;
 
-   function Indeterminate (Element : Check_Box_Type) return Boolean is
+   function Indeterminate
+     (Element : Check_Box_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("indeterminate");
    end Indeterminate;
@@ -972,19 +1097,16 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Radio_Button_Type;
-                     Form       : in out Form_Type'Class;
-                     Checked    : in     Boolean := False;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Radio_Button_Type;
+      Form    : in out Form_Type'Class;
+      Checked : in     Boolean := False;
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "radio",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "radio", Value => Value, Name => Name, ID => ID);
       Element.Checked (Checked);
    end Create;
 
@@ -996,14 +1118,18 @@ package body Gnoga.Gui.Element.Form is
    -- Checked --
    --------------
 
-   procedure Checked (Element : in out Radio_Button_Type;
-                      Value   : in     Boolean := True)
+   procedure Checked
+     (Element : in out Radio_Button_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("checked", Value);
    end Checked;
 
-   function Checked (Element : Radio_Button_Type) return Boolean is
+   function Checked
+     (Element : Radio_Button_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("checked");
    end Checked;
@@ -1016,44 +1142,37 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Color_Picker_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Color_Picker_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "color",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "color", Value => Value, Name => Name, ID => ID);
    end Create;
 
-   procedure Create (Element    : in out Color_Picker_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     Gnoga.Types.RGBA_Type;
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Color_Picker_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     Gnoga.Types.RGBA_Type;
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create (Form       => Form,
-                      Value      => Gnoga.Types.To_String (Value),
-                      Name       => Name,
-                      ID         => ID);
+      Element.Create (Form => Form, Value => Gnoga.Types.To_String (Value), Name => Name, ID => ID);
    end Create;
 
-   procedure Create (Element    : in out Color_Picker_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     Gnoga.Types.Colors.Color_Enumeration;
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Color_Picker_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     Gnoga.Types.Colors.Color_Enumeration;
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create (Form       => Form,
-                      Value      => Gnoga.Types.Colors.To_String (Value),
-                      Name       => Name,
-                      ID         => ID);
+      Element.Create (Form => Form, Value => Gnoga.Types.Colors.To_String (Value), Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -1064,32 +1183,34 @@ package body Gnoga.Gui.Element.Form is
    -- Value --
    -----------
 
-   overriding
-   procedure Color (Element : in out Color_Picker_Type;
-                    Value   : in     String)
+   overriding procedure Color
+     (Element : in out Color_Picker_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("value", Value);
    end Color;
 
-   overriding
-   procedure Color (Element : in out Color_Picker_Type;
-                    RGBA    : in     Gnoga.Types.RGBA_Type)
+   overriding procedure Color
+     (Element : in out Color_Picker_Type;
+      RGBA    : in     Gnoga.Types.RGBA_Type)
    is
    begin
       Element.Property ("value", Gnoga.Types.To_String (RGBA));
    end Color;
 
-   overriding
-   procedure Color (Element : in out Color_Picker_Type;
-                    Enum    : in     Gnoga.Types.Colors.Color_Enumeration)
+   overriding procedure Color
+     (Element : in out Color_Picker_Type;
+      Enum    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
       Element.Property ("value", Gnoga.Types.Colors.To_String (Enum));
    end Color;
 
-   overriding
-   function Color (Element : Color_Picker_Type) return Gnoga.Types.RGBA_Type is
+   overriding function Color
+     (Element : Color_Picker_Type)
+      return Gnoga.Types.RGBA_Type
+   is
    begin
       return Gnoga.Types.To_RGBA (Element.Property ("value"));
    end Color;
@@ -1102,18 +1223,15 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Date_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Date_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "date",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "date", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -1124,36 +1242,30 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Time_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Time_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "time",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "time", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
    --  Month_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out Month_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Month_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "month",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "month", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -1164,18 +1276,15 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Week_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Week_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "week",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "week", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -1186,18 +1295,15 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Date_Time_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Date_Time_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "datetime",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "datetime", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -1208,74 +1314,63 @@ package body Gnoga.Gui.Element.Form is
    -- Create --
    ------------
 
-   procedure Create (Element    : in out Date_Time_Local_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Date_Time_Local_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "datetime-local",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "datetime-local", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
    --  Number_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out Number_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Number_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "number",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "number", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
    --  Range_Type
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create (Element    : in out Range_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   overriding procedure Create
+     (Element : in out Range_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "range",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "range", Value => Value, Name => Name, ID => ID);
    end Create;
 
    -------------------------------------------------------------------------
    --  Label_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out Label_Type;
-                     Form       : in out Form_Type'Class;
-                     Label_For  : in out Element_Type'Class;
-                     Content    : in     String := "";
-                     Auto_Place : in     Boolean := True;
-                     ID         : in     String := "")
+   procedure Create
+     (Element    : in out Label_Type;
+      Form       : in out Form_Type'Class;
+      Label_For  : in out Element_Type'Class;
+      Content    : in     String  := "";
+      Auto_Place : in     Boolean := True;
+      ID         : in     String  := "")
    is
    begin
       Element.Create_From_HTML
         (Parent => Form,
-         HTML   => Escape_Quotes ("<label for='" & Label_For.ID &
-           "' form='" & Form.ID & "'>" &
-           Content & "</label>"),
+         HTML   => Escape_Quotes ("<label for='" & Label_For.ID & "' form='" & Form.ID & "'>" & Content & "</label>"),
          ID     => ID);
 
       if Auto_Place then
@@ -1292,9 +1387,9 @@ package body Gnoga.Gui.Element.Form is
    ------------
 
    procedure Create
-     (List          : in out Data_List_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "")
+     (List   : in out Data_List_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       List.Create_From_HTML (Parent, "<datalist />", ID);
@@ -1304,13 +1399,13 @@ package body Gnoga.Gui.Element.Form is
    -- Add_Option --
    ----------------
 
-   procedure Add_Option (List  : in out Data_List_Type;
-                         Value : in     String)
+   procedure Add_Option
+     (List  : in out Data_List_Type;
+      Value : in     String)
    is
       Dummy_D : Gnoga.Gui.Element.Element_Type;
    begin
-      Dummy_D.Create_From_HTML
-        (List, Escape_Quotes ("<option value='" & Value & "'>"));
+      Dummy_D.Create_From_HTML (List, Escape_Quotes ("<option value='" & Value & "'>"));
    end Add_Option;
 
    -------------------------------------------------------------------------
@@ -1348,23 +1443,28 @@ package body Gnoga.Gui.Element.Form is
    begin
       Element.Create_From_HTML
         (Parent => Form,
-         HTML   => Escape_Quotes ("<select size=" & Visible_Lines'Img &
-           Is_Multiple_Select & Is_Name & " form='" & Form.ID & "'/>"),
-         ID     => ID);
+         HTML   =>
+           Escape_Quotes
+             ("<select size=" & Visible_Lines'Img & Is_Multiple_Select & Is_Name & " form='" & Form.ID & "'/>"),
+         ID => ID);
    end Create;
 
    ---------------------
    -- Multiple_Select --
    ---------------------
 
-   procedure Multiple_Select (Element : in out Selection_Type;
-                              Value   : in    Boolean := True)
+   procedure Multiple_Select
+     (Element : in out Selection_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("multiple", Value);
    end Multiple_Select;
 
-   function Multiple_Select (Element : Selection_Type) return Boolean is
+   function Multiple_Select
+     (Element : Selection_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("multiple");
    end Multiple_Select;
@@ -1373,14 +1473,18 @@ package body Gnoga.Gui.Element.Form is
    -- Visible_Lines --
    -------------------
 
-   procedure Visible_Lines (Element : in out Selection_Type;
-                            Value   : in     Positive)
+   procedure Visible_Lines
+     (Element : in out Selection_Type;
+      Value   : in     Positive)
    is
    begin
       Element.Property ("size", Value);
    end Visible_Lines;
 
-   function Visible_Lines (Element : Selection_Type) return Positive is
+   function Visible_Lines
+     (Element : Selection_Type)
+      return Positive
+   is
    begin
       return Element.Property ("size");
    end Visible_Lines;
@@ -1389,7 +1493,10 @@ package body Gnoga.Gui.Element.Form is
    -- Selected_Index --
    --------------------
 
-   function Selected_Index (Element : Selection_Type) return Natural is
+   function Selected_Index
+     (Element : Selection_Type)
+      return Natural
+   is
    begin
       return Element.Property ("selectedIndex") + 1;
    end Selected_Index;
@@ -1398,102 +1505,110 @@ package body Gnoga.Gui.Element.Form is
    -- Value --
    -----------
 
-   overriding
-   function Value (Element : Selection_Type) return String is
+   overriding function Value
+     (Element : Selection_Type)
+      return String
+   is
    begin
       return Element.Property ("value");
    end Value;
 
-   function Length (Element : Selection_Type) return Natural is
+   function Length
+     (Element : Selection_Type)
+      return Natural
+   is
    begin
       return Element.Property ("length");
    end Length;
 
-   procedure Selected (Element : in out Selection_Type;
-                       Index   : in     Positive;
-                       Value   : in     Boolean := True)
+   procedure Selected
+     (Element : in out Selection_Type;
+      Index   : in     Positive;
+      Value   : in     Boolean := True)
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute
-        ("item(" & JS_Index'Img & ").selected = " & Value'Img);
+      Element.Execute ("item(" & JS_Index'Img & ").selected = " & Value'Img);
    end Selected;
 
-   function Selected (Element : Selection_Type; Index : Positive)
-                      return Boolean
+   function Selected
+     (Element : Selection_Type;
+      Index   : Positive)
+      return Boolean
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute
-        ("item(" & JS_Index'Img & ").selected") = "true";
+      return Element.Execute ("item(" & JS_Index'Img & ").selected") = "true";
    end Selected;
 
-   procedure Disabled (Element : in out Selection_Type;
-                       Index   : in     Positive;
-                       Value   : in     Boolean := True)
+   procedure Disabled
+     (Element : in out Selection_Type;
+      Index   : in     Positive;
+      Value   : in     Boolean := True)
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute
-        ("item(" & JS_Index'Img & ").disabled = " & Value'Img);
+      Element.Execute ("item(" & JS_Index'Img & ").disabled = " & Value'Img);
    end Disabled;
 
-   function Disabled (Element : Selection_Type; Index : Positive)
-                      return Boolean
+   function Disabled
+     (Element : Selection_Type;
+      Index   : Positive)
+      return Boolean
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute
-        ("item(" & JS_Index'Img & ").disabled") = "true";
+      return Element.Execute ("item(" & JS_Index'Img & ").disabled") = "true";
    end Disabled;
 
-   procedure Value (Element : in out Selection_Type;
-                    Index   : in     Positive;
-                    Value   : in     String)
+   procedure Value
+     (Element : in out Selection_Type;
+      Index   : in     Positive;
+      Value   : in     String)
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute
-        ("item(" & JS_Index'Img & ").value = '" &
-           Escape_Quotes (Value) & "'");
+      Element.Execute ("item(" & JS_Index'Img & ").value = '" & Escape_Quotes (Value) & "'");
    end Value;
 
-   function Value (Element : Selection_Type; Index : Positive)
-                   return String
+   function Value
+     (Element : Selection_Type;
+      Index   : Positive)
+      return String
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute
-        ("item(" & JS_Index'Img & ").value");
+      return Element.Execute ("item(" & JS_Index'Img & ").value");
    end Value;
 
-   procedure Text (Element : in out Selection_Type;
-                   Index   : in     Positive;
-                   Value   : in     String)
+   procedure Text
+     (Element : in out Selection_Type;
+      Index   : in     Positive;
+      Value   : in     String)
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute
-        ("item(" & JS_Index'Img & ").text = '" &
-           Escape_Quotes (Value) & "'");
+      Element.Execute ("item(" & JS_Index'Img & ").text = '" & Escape_Quotes (Value) & "'");
    end Text;
 
-   function Text (Element : Selection_Type; Index : Positive)
-                  return String
+   function Text
+     (Element : Selection_Type;
+      Index   : Positive)
+      return String
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute
-        ("item(" & JS_Index'Img & ").text");
+      return Element.Execute ("item(" & JS_Index'Img & ").text");
    end Text;
 
-   procedure Add_Option (Element  : in out Selection_Type;
-                         Value    : in     String;
-                         Text     : in     String;
-                         Index    : in     Natural := 0;
-                         Selected : in     Boolean := False;
-                         Disabled : in     Boolean := False;
-                         ID       : in     String  := "")
+   procedure Add_Option
+     (Element  : in out Selection_Type;
+      Value    : in     String;
+      Text     : in     String;
+      Index    : in     Natural := 0;
+      Selected : in     Boolean := False;
+      Disabled : in     Boolean := False;
+      ID       : in     String  := "")
    is
       function Is_Selected return String;
       function Is_Disabled return String;
@@ -1541,21 +1656,22 @@ package body Gnoga.Gui.Element.Form is
       end Last_Parameter;
    begin
       Element.Execute
-        ("add ($('" & Escape_Quotes ("<option value='" & Value &
-           "'" & Is_Selected & Is_Disabled & Has_ID & ">" & Text &
-           "</option>") & "').get(0)" & Last_Parameter & ")");
+        ("add ($('" &
+         Escape_Quotes
+           ("<option value='" & Value & "'" & Is_Selected & Is_Disabled & Has_ID & ">" & Text & "</option>") &
+         "').get(0)" & Last_Parameter & ")");
    end Add_Option;
 
-   procedure Remove_Option (Element  : in out Selection_Type;
-                            Index    : in     Positive)
+   procedure Remove_Option
+     (Element : in out Selection_Type;
+      Index   : in     Positive)
    is
       JS_Index : constant Natural := Index - 1;
    begin
       Element.Execute ("remove (" & JS_Index'Img & ")");
    end Remove_Option;
 
-   procedure Empty_Options (Element  : in out Selection_Type)
-   is
+   procedure Empty_Options (Element : in out Selection_Type) is
    begin
       Element.jQuery_Execute ("empty()");
    end Empty_Options;
@@ -1564,14 +1680,15 @@ package body Gnoga.Gui.Element.Form is
    --  Option_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element   : in out Option_Type;
-                     Form      : in out Form_Type'Class;
-                     Selection : in out Gnoga.Gui.Element.Element_Type'Class;
-                     Value     : in     String;
-                     Text      : in     String;
-                     Selected  : in     Boolean := False;
-                     Disabled  : in     Boolean := False;
-                     ID        : in     String := "")
+   procedure Create
+     (Element   : in out Option_Type;
+      Form      : in out Form_Type'Class;
+      Selection : in out Gnoga.Gui.Element.Element_Type'Class;
+      Value     : in     String;
+      Text      : in     String;
+      Selected  : in     Boolean := False;
+      Disabled  : in     Boolean := False;
+      ID        : in     String  := "")
    is
       function Is_Selected return String;
       function Is_Disabled return String;
@@ -1596,8 +1713,7 @@ package body Gnoga.Gui.Element.Form is
    begin
       Element.Create_From_HTML
         (Parent => Form,
-         HTML   => Escape_Quotes ("<option value='" & Value & "'>" &
-           Text & Is_Selected & Is_Disabled & "</option>"),
+         HTML   => Escape_Quotes ("<option value='" & Value & "'>" & Text & Is_Selected & Is_Disabled & "</option>"),
          ID     => ID);
 
       Element.Place_Inside_Bottom_Of (Selection);
@@ -1607,14 +1723,18 @@ package body Gnoga.Gui.Element.Form is
    -- Selected --
    --------------
 
-   procedure Selected (Element : in out Option_Type;
-                       Value   : in     Boolean := True)
+   procedure Selected
+     (Element : in out Option_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("selected", Value);
    end Selected;
 
-   function Selected (Element : Option_Type) return Boolean is
+   function Selected
+     (Element : Option_Type)
+      return Boolean
+   is
    begin
       return Element.Property ("selected");
    end Selected;
@@ -1623,15 +1743,17 @@ package body Gnoga.Gui.Element.Form is
    -- Disabled --
    --------------
 
-   procedure Disabled (Element : in out Option_Type;
-                       Value   : in     Boolean := True)
+   procedure Disabled
+     (Element : in out Option_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("disabled", Value);
    end Disabled;
 
-   function Disabled (Element : Option_Type)
-                      return Boolean
+   function Disabled
+     (Element : Option_Type)
+      return Boolean
    is
    begin
       return Element.Property ("disabled");
@@ -1641,14 +1763,18 @@ package body Gnoga.Gui.Element.Form is
    -- Value --
    -----------
 
-   procedure Value (Element : in out Option_Type;
-                    Value   : in     String)
+   procedure Value
+     (Element : in out Option_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("value", Value);
    end Value;
 
-   function Value (Element : Option_Type) return String is
+   function Value
+     (Element : Option_Type)
+      return String
+   is
    begin
       return Element.Property ("value");
    end Value;
@@ -1657,16 +1783,18 @@ package body Gnoga.Gui.Element.Form is
    -- Text --
    -----------
 
-   overriding
-   procedure Text (Element : in out Option_Type;
-                   Value    : in     String)
+   overriding procedure Text
+     (Element : in out Option_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("text", Value);
    end Text;
 
-   overriding
-   function Text (Element : Option_Type) return String is
+   overriding function Text
+     (Element : Option_Type)
+      return String
+   is
    begin
       return Element.Property ("text");
    end Text;
@@ -1675,12 +1803,13 @@ package body Gnoga.Gui.Element.Form is
    --  Option_Group_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element   : in out Option_Group_Type;
-                     Form      : in out Form_Type'Class;
-                     Selection : in out Selection_Type'Class;
-                     Label     : in     String;
-                     Disabled  : in     Boolean := False;
-                     ID        : in     String := "")
+   procedure Create
+     (Element   : in out Option_Group_Type;
+      Form      : in out Form_Type'Class;
+      Selection : in out Selection_Type'Class;
+      Label     : in     String;
+      Disabled  : in     Boolean := False;
+      ID        : in     String  := "")
    is
       function Is_Disabled return String;
 
@@ -1694,10 +1823,7 @@ package body Gnoga.Gui.Element.Form is
       end Is_Disabled;
    begin
       Element.Create_From_HTML
-        (Parent => Form,
-         HTML   => Escape_Quotes ("<optgroup label='" & Label & "'" &
-           Is_Disabled & "/>"),
-         ID     => ID);
+        (Parent => Form, HTML => Escape_Quotes ("<optgroup label='" & Label & "'" & Is_Disabled & "/>"), ID => ID);
 
       Element.Place_Inside_Bottom_Of (Selection);
    end Create;
@@ -1710,14 +1836,18 @@ package body Gnoga.Gui.Element.Form is
    -- Label --
    -----------
 
-   procedure Label (Element : in out Option_Group_Type;
-                   Value    : in     String)
+   procedure Label
+     (Element : in out Option_Group_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("label", Value);
    end Label;
 
-   function Label (Element : Option_Group_Type) return String is
+   function Label
+     (Element : Option_Group_Type)
+      return String
+   is
    begin
       return Element.Property ("label");
    end Label;
@@ -1726,14 +1856,17 @@ package body Gnoga.Gui.Element.Form is
    -- Disabled --
    --------------
 
-   procedure Disabled (Element : in out Option_Group_Type;
-                       Value   : in     Boolean := True)
+   procedure Disabled
+     (Element : in out Option_Group_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("disabled", Value);
    end Disabled;
 
-   function Disabled (Element : Option_Group_Type) return Boolean
+   function Disabled
+     (Element : Option_Group_Type)
+      return Boolean
    is
    begin
       return Element.Property ("disabled");
@@ -1743,120 +1876,150 @@ package body Gnoga.Gui.Element.Form is
    --  File_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out File_Type;
-                     Form       : in out Form_Type'Class;
-                     Multiple   : in     Boolean := False;
-                     Name       : in     String  := "";
-                     ID         : in     String  := "")
+   procedure Create
+     (Element  : in out File_Type;
+      Form     : in out Form_Type'Class;
+      Multiple : in     Boolean := False;
+      Name     : in     String  := "";
+      ID       : in     String  := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "file",
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "file", Name => Name, ID => ID);
       Element.Multiple (Multiple);
    end Create;
 
-   procedure Accept_List (Element : in out File_Type;
-                          Value    : in     String)
+   procedure Accept_List
+     (Element : in out File_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("accept", Value);
    end Accept_List;
 
-   function Accept_List (Element : File_Type) return String is
+   function Accept_List
+     (Element : File_Type)
+      return String
+   is
    begin
       return Element.Property ("accept");
    end Accept_List;
 
-   procedure Capture (Element : in out File_Type;
-                      Value   : in     String)
+   procedure Capture
+     (Element : in out File_Type;
+      Value   : in     String)
    is
    begin
       Element.Property ("capture", Value);
    end Capture;
 
-   function Capture (Element : File_Type) return String is
+   function Capture
+     (Element : File_Type)
+      return String
+   is
    begin
       return Element.Property ("capture");
    end Capture;
 
-   procedure Multiple (Element : in out File_Type;
-                       Value   : in     Boolean := True)
+   procedure Multiple
+     (Element : in out File_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("multiple", Value);
    end Multiple;
 
-   function Multiple (Element : File_Type) return Boolean
+   function Multiple
+     (Element : File_Type)
+      return Boolean
    is
    begin
       return Element.Property ("multiple");
    end Multiple;
 
-   procedure WebkitDirectory (Element : in out File_Type;
-                              Value   : in     Boolean := True)
+   procedure WebkitDirectory
+     (Element : in out File_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Property ("webkitdirectory", Value);
    end WebkitDirectory;
 
-   function WebkitDirectory (Element : File_Type) return Boolean
+   function WebkitDirectory
+     (Element : File_Type)
+      return Boolean
    is
    begin
       return Element.Property ("webkitdirectory");
    end WebkitDirectory;
 
-   function File_Count (Element : File_Type) return Natural is
+   function File_Count
+     (Element : File_Type)
+      return Natural
+   is
    begin
       return Element.jQuery_Execute ("prop ('files').length");
    end File_Count;
 
-   function File_Name (Element : File_Type; Index : Positive := 1) return String is
+   function File_Name
+     (Element : File_Type;
+      Index   : Positive := 1)
+      return String
+   is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" &
-                                          Natural'Image (Index - 1) & "].name");
+         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].name");
       else
          return "";
       end if;
    end File_Name;
 
-   function File_Size (Element : File_Type; Index : Positive := 1) return Natural is
+   function File_Size
+     (Element : File_Type;
+      Index   : Positive := 1)
+      return Natural
+   is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" &
-                                          Natural'Image (Index - 1) & "].size");
+         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].size");
       else
          return 0;
       end if;
    end File_Size;
 
-   function File_MIME_Type (Element : File_Type; Index : Positive := 1) return String is
+   function File_MIME_Type
+     (Element : File_Type;
+      Index   : Positive := 1)
+      return String
+   is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" &
-                                          Natural'Image (Index - 1) & "].type");
+         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].type");
       else
          return "";
       end if;
    end File_MIME_Type;
 
-   function File_Last_Modified (Element : File_Type; Index : Positive := 1) return Natural is
+   function File_Last_Modified
+     (Element : File_Type;
+      Index   : Positive := 1)
+      return Natural
+   is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" &
-                                          Natural'Image (Index - 1) & "].lastModified");
+         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].lastModified");
       else
          return 0;
       end if;
    end File_Last_Modified;
 
-   function File_WebkitRelativePath (Element : File_Type; Index : Positive := 1) return String is
+   function File_WebkitRelativePath
+     (Element : File_Type;
+      Index   : Positive := 1)
+      return String
+   is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" &
-                                          Natural'Image (Index - 1) & "].webkitRelativePath");
+         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].webkitRelativePath");
       else
          return "";
       end if;
@@ -1866,18 +2029,15 @@ package body Gnoga.Gui.Element.Form is
    --  Tel_Type
    -------------------------------------------------------------------------
 
-   procedure Create (Element    : in out Tel_Type;
-                     Form       : in out Form_Type'Class;
-                     Value      : in     String := "";
-                     Name       : in     String := "";
-                     ID         : in     String := "")
+   procedure Create
+     (Element : in out Tel_Type;
+      Form    : in out Form_Type'Class;
+      Value   : in     String := "";
+      Name    : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Element.Create_Element (Form       => Form,
-                              Input_Type => "tel",
-                              Value      => Value,
-                              Name       => Name,
-                              ID         => ID);
+      Element.Create_Element (Form => Form, Input_Type => "tel", Value => Value, Name => Name, ID => ID);
    end Create;
 
 end Gnoga.Gui.Element.Form;

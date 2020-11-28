@@ -56,8 +56,7 @@ package Gnoga.Gui.View is
    --  Note: In order for views to receive keyboard events the Tab_Index
    --        property should be set to any value.
 
-   overriding
-   procedure Finalize (Object : in out View_Base_Type);
+   overriding procedure Finalize (Object : in out View_Base_Type);
    --  Deallocate any child element that was marked Dynamic before
    --  being added to View. Child element's marked as Dynamic by calling
    --  Element_Type.Dynamic then created with a View as the parent should
@@ -76,19 +75,21 @@ package Gnoga.Gui.View is
    --     Position will be modified for View to either Absolute or Relative
    --     if Absolute positioning fails (i.e. on IE)
 
-   procedure Put_Line (View    : in out View_Base_Type;
-                       Message : in     String;
-                       Class   : in     String := "";
-                       ID      : in     String := "");
+   procedure Put_Line
+     (View    : in out View_Base_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "");
    --  Create a new DIV with Message and append to end of view.
    --  Use View.Overflow (Scroll) to allow scroll bars to view overflow
    --  of data added by Put_Line. Class is an optional CSS class and
    --  ID and option DOM ID.
 
-   procedure Put (View    : in out View_Base_Type;
-                  Message : in     String;
-                  Class   : in     String := "";
-                  ID      : in     String := "");
+   procedure Put
+     (View    : in out View_Base_Type;
+      Message : in     String;
+      Class   : in     String := "";
+      ID      : in     String := "");
    --  Create a new SPAN with Message and append to end of view.
    --  Spans are added inline unlike DIVs that are blocks taking up an
    --  an entire row.
@@ -99,39 +100,44 @@ package Gnoga.Gui.View is
    procedure Horizontal_Rule (View : in out View_Base_Type);
    --  Create a new <hr /> and append to end of View
 
-   procedure Put_HTML (View  : in out View_Base_Type;
-                       HTML  : in     String;
-                       Class : in     String := "";
-                       ID    : in     String := "");
+   procedure Put_HTML
+     (View  : in out View_Base_Type;
+      HTML  : in     String;
+      Class : in     String := "";
+      ID    : in     String := "");
    --  Place HTML directly in to view. The HTML will not be wrapped in a DIV
    --  or Span automatically, therefore HTML must be a complete block.
    --  e.g.  <p>I'm a block</p>  <br>One line<br>Two Lines</br>But not a block
    --  Use Put_Line or Put to wrap HTML.
 
-   procedure Load_File (View      : in out View_Base_Type;
-                        File_Name : in     String;
-                        Class     : in     String := "";
-                        ID        : in     String := "");
+   procedure Load_File
+     (View      : in out View_Base_Type;
+      File_Name : in     String;
+      Class     : in     String := "";
+      ID        : in     String := "");
    --  Load contents of _local_ File_Name in to a <div>.
    --  Unless path given uses Gnoga.Server.Templates_Directory
 
-   procedure Load_HTML (View      : in out View_Base_Type;
-                        File_Name : in     String;
-                        Class     : in     String := "";
-                        ID        : in     String := "");
+   procedure Load_HTML
+     (View      : in out View_Base_Type;
+      File_Name : in     String;
+      Class     : in     String := "";
+      ID        : in     String := "");
    --  Load contents of _local_ HTML file called File_Name
    --  All contents before <body> and after </body> will be discarded.
    --  <body></body> will be replaced with <div></div> and Class and ID
    --  set on them.
    --  Unless path given uses Gnoga.Server.Templates_Directory
 
-   procedure Load_CSS (View : in out View_Base_Type;
-                       URL  : in     String);
+   procedure Load_CSS
+     (View : in out View_Base_Type;
+      URL  : in     String);
    --  Appends <style src=URL> to document head
    --  Unless path given uses Gnoga.Server.Templates_Directory
 
-   procedure Load_CSS_File (View      : in out View_Base_Type;
-                            File_Name : in     String);
+   procedure Load_CSS_File
+     (View      : in out View_Base_Type;
+      File_Name : in     String);
    --  Load contents of local File_Name in to a <style> block and appends it
    --  to document head.
    --  Unless path given uses Gnoga.Server.Templates_Directory
@@ -139,7 +145,7 @@ package Gnoga.Gui.View is
    procedure Add_Element
      (View    : in out View_Base_Type;
       Name    : in     String;
-      Element : access Gnoga.Gui.Element.Element_Type'Class);
+      Element :        access Gnoga.Gui.Element.Element_Type'Class);
    --  Add Element to associative array of elements at Name and available using
    --  the View_Base_Type's Element property. This does not re-parent the
    --  Element to View if it was created with a different parent nor does it
@@ -173,13 +179,16 @@ package Gnoga.Gui.View is
    --  View_Base_Type - Properties
    -------------------------------------------------------------------------
 
-   function Element (View : View_Base_Type; Name : String)
-                     return Gnoga.Gui.Element.Pointer_To_Element_Class;
+   function Element
+     (View : View_Base_Type;
+      Name : String)
+      return Gnoga.Gui.Element.Pointer_To_Element_Class;
    --  Access elements added by Add_Element and New_Element
    --  returns null if Name not found.
 
-   function Element_Names (View : View_Base_Type)
-                           return Gnoga.Types.Data_Array_Type;
+   function Element_Names
+     (View : View_Base_Type)
+      return Gnoga.Types.Data_Array_Type;
    --  Return an array of all the names of elements in the view's element
    --  array
 
@@ -187,8 +196,7 @@ package Gnoga.Gui.View is
    --  View_Base_Type - Event Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure On_Child_Added
+   overriding procedure On_Child_Added
      (View  : in out View_Base_Type;
       Child : in out Gnoga.Gui.Base.Base_Type'Class);
    --  All children of views should be Element_Type'Class, if it is not
@@ -213,16 +221,15 @@ package Gnoga.Gui.View is
    procedure Create
      (View   : in out View_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String  := "");
+      ID     : in     String := "");
    --  If Parent is a Window_Type'Class will automatically set itself
    --  as the View on Parent if Attach is True.
 
 private
-   type View_Base_Type is new Gnoga.Gui.Element.Element_Type with
-      record
-         Child_Array : Gnoga.Gui.Base.Base_Type_Array;
-         Element_Map : Gnoga.Gui.Element.Element_Type_Map;
-      end record;
+   type View_Base_Type is new Gnoga.Gui.Element.Element_Type with record
+      Child_Array : Gnoga.Gui.Base.Base_Type_Array;
+      Element_Map : Gnoga.Gui.Element.Element_Type_Map;
+   end record;
 
    type View_Type is new View_Base_Type with null record;
 end Gnoga.Gui.View;

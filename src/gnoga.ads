@@ -47,27 +47,45 @@ package Gnoga is
 
    HTTP_Server_Name : constant String := "gnoga/" & Version;
 
-   function Escape_Quotes (S : String) return String;
+   function Escape_Quotes
+     (S : String)
+      return String;
    --  Escape quotes for JavaScript.
 
-   function Unescape_Quotes (S : String) return String;
+   function Unescape_Quotes
+     (S : String)
+      return String;
    --  Unescape a string quoted for JavaScript
 
    Substitution_Character : constant Character := '?';
    --  Character replacement if UTF-8 character is not existant in Latin-1
 
-   function URL_Encode (S : String; Encoding : String := "") return String;
-   function URL_Decode (S : String; Encoding : String := "") return String;
+   function URL_Encode
+     (S        : String;
+      Encoding : String := "")
+      return String;
+   function URL_Decode
+     (S        : String;
+      Encoding : String := "")
+      return String;
    --  Encode and decode form URL
    --  Supported encodings are ISO-8859-1 (default)
    --  and UTF-8 (typically from Input_Encoding function)
 
-   function Left_Trim (S : String) return String;
-   function Right_Trim (S : String) return String;
+   function Left_Trim
+     (S : String)
+      return String;
+   function Right_Trim
+     (S : String)
+      return String;
    --  Remove extra spaces and tabs
 
-   function Left_Trim_Slashes (S : String) return String;
-   function Right_Trim_Slashes (S : String) return String;
+   function Left_Trim_Slashes
+     (S : String)
+      return String;
+   function Right_Trim_Slashes
+     (S : String)
+      return String;
    --  Remove extra spaces, tabs and '/'s
 
    procedure String_Replace
@@ -79,8 +97,9 @@ package Gnoga is
    procedure Write_To_Console (Message : in String);
    --  Output message to console
 
-   procedure Log_To_File (File_Name  : in String;
-                          Flush_Auto : in Boolean := False);
+   procedure Log_To_File
+     (File_Name  : in String;
+      Flush_Auto : in Boolean := False);
    --  Redirect logging to File_Name instead of console with flushing if specified
 
    procedure Log (Message : in String);

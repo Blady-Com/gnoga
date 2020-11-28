@@ -73,15 +73,14 @@ package body Gnoga.Server.Migration is
    ----------------
 
    procedure Migrate_To
-     (Collection    : in out Migration_Collection;
-      Connection    : in out Gnoga.Server.Database.Connection'Class;
-      Level         : in     Natural)
+     (Collection : in out Migration_Collection;
+      Connection : in out Gnoga.Server.Database.Connection'Class;
+      Level      : in     Natural)
    is
-      package Migration_Model is new Gnoga.Server.Model.Table
-        ("gnogaparams", Connection'Access);
+      package Migration_Model is new Gnoga.Server.Model.Table ("gnogaparams", Connection'Access);
 
-      Actual_Level   : Natural := Level;
-      Current_Level  : Natural := 0;
+      Actual_Level         : Natural := Level;
+      Current_Level        : Natural := 0;
       Dummy_Migration_Info : Migration_Model.Active_Record;
    begin
       Dummy_Migration_Info.Find_Where ("name='migration_level'", Create_New => True);
@@ -89,7 +88,7 @@ package body Gnoga.Server.Migration is
       if Dummy_Migration_Info.Exists ("name") then
          Current_Level := Natural'Value (Dummy_Migration_Info.Value ("value"));
       else
-            Dummy_Migration_Info.Value ("value", "0");
+         Dummy_Migration_Info.Value ("value", "0");
       end if;
 
       Gnoga.Write_To_Console ("Current migration level =" & Current_Level'Img);
@@ -99,34 +98,29 @@ package body Gnoga.Server.Migration is
       end if;
 
       if Actual_Level > Current_Level then
-         Gnoga.Write_To_Console
-           ("Requested migration level up to" & Actual_Level'Img);
+         Gnoga.Write_To_Console ("Requested migration level up to" & Actual_Level'Img);
          for i in Current_Level + 1 .. Actual_Level loop
             Gnoga.Write_To_Console ("Migrating to level" & i'Img);
             Dummy_Migration_Info.Value ("value", i'Img);
 
-            Gnoga.Write_To_Console
-              ("Running : " & Collection.Migrations_Up.Element (i));
+            Gnoga.Write_To_Console ("Running : " & Collection.Migrations_Up.Element (i));
             Connection.Execute_Query (Collection.Migrations_Up.Element (i));
          end loop;
          Gnoga.Write_To_Console ("Done migration");
       end if;
 
       if Actual_Level < Current_Level then
-         Gnoga.Write_To_Console
-           ("Requested migration level down to" & Actual_Level'Img);
+         Gnoga.Write_To_Console ("Requested migration level down to" & Actual_Level'Img);
          for i in reverse Actual_Level + 1 .. Current_Level loop
             Gnoga.Write_To_Console ("Migrating from level" & i'Img);
             Dummy_Migration_Info.Value ("value", Integer'Image (i - 1));
-            Gnoga.Write_To_Console
-              ("Running : " & Collection.Migrations_Down.Element (i));
+            Gnoga.Write_To_Console ("Running : " & Collection.Migrations_Down.Element (i));
             Connection.Execute_Query (Collection.Migrations_Down.Element (i));
          end loop;
          Gnoga.Write_To_Console ("Done migration");
       end if;
 
-      Gnoga.Write_To_Console
-        ("Saving new migration_level = " & Dummy_Migration_Info.Value ("value"));
+      Gnoga.Write_To_Console ("Saving new migration_level = " & Dummy_Migration_Info.Value ("value"));
       Dummy_Migration_Info.Value ("name", "migration_level");
       Dummy_Migration_Info.Save;
    end Migrate_To;
@@ -136,15 +130,14 @@ package body Gnoga.Server.Migration is
    -----------
 
    procedure Setup
-     (Collection    : in out Migration_Collection;
-      Connection    : in out Gnoga.Server.Database.Connection'Class)
+     (Collection : in out Migration_Collection;
+      Connection : in out Gnoga.Server.Database.Connection'Class)
    is
    begin
-      Create_Param_Table : begin
+      Create_Param_Table :
+      begin
          Connection.Execute_Query
-           ("CREATE TABLE gnogaparams" &
-            " (" & Connection.ID_Field_String & "," &
-            "  name VARCHAR(80)," &
+           ("CREATE TABLE gnogaparams" & " (" & Connection.ID_Field_String & "," & "  name VARCHAR(80)," &
             "  value VARCHAR(80))");
          Gnoga.Write_To_Console ("gnogaparams table created");
       exception
@@ -162,9 +155,8 @@ package body Gnoga.Server.Migration is
    -------------------------------------
 
    function Migrations_Handled_Command_Line
-     (Connection          : in     Gnoga.Server.Database.Connection_Access;
-      Migration_Procedure : access procedure
-        (Collection : in out Migration_Collection))
+     (Connection          : in Gnoga.Server.Database.Connection_Access;
+      Migration_Procedure :    access procedure (Collection : in out Migration_Collection))
       return Boolean
    is
       use Ada.Command_Line;
@@ -175,8 +167,7 @@ package body Gnoga.Server.Migration is
    begin
       if Argument_Count > 0 then
          declare
-            Command : constant String :=
-              Translate (Argument (1), Lower_Case_Map);
+            Command : constant String := Translate (Argument (1), Lower_Case_Map);
          begin
             if Command = "setup" then
                Migration_Procedure (M);
@@ -184,8 +175,7 @@ package body Gnoga.Server.Migration is
                return True;
             elsif Command = "migrate" then
                Migration_Procedure (M);
-               M.Migrate_To (Connection.all,
-                             Natural'Value (Ada.Command_Line.Argument (2)));
+               M.Migrate_To (Connection.all, Natural'Value (Ada.Command_Line.Argument (2)));
                return True;
             end if;
          end;

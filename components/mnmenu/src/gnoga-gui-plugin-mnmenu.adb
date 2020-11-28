@@ -41,16 +41,14 @@ package body Gnoga.Gui.Plugin.MNMenu is
    -- Load_MNMenu --
    -----------------
 
-   procedure Load_MNMenu
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class)
-   is
+   procedure Load_MNMenu (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('" & Escape_Quotes ("<link href='/css/mnmenu.css'" &
-       " type='text/css' rel='stylesheet'>") & "')");
+        ("append('" & Escape_Quotes ("<link href='/css/mnmenu.css'" & " type='text/css' rel='stylesheet'>") & "')");
       Window.Document.Head_Element.jQuery_Execute
-      ("append('" & Escape_Quotes ("<script src='/js/jquery.mnmenu.js'" &
-       " type='text/javascript' charset='utf-8'></script>") & "')");
+        ("append('" &
+         Escape_Quotes ("<script src='/js/jquery.mnmenu.js'" & " type='text/javascript' charset='utf-8'></script>") &
+         "')");
    end Load_MNMenu;
 
    ------------------
@@ -78,9 +76,7 @@ package body Gnoga.Gui.Plugin.MNMenu is
       ID     : in     String := "")
    is
    begin
-      Menu :=
-        Gnoga.Gui.Plugin.MNMenu.MNMenu_Access
-          (View.New_Element (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Type));
+      Menu := Gnoga.Gui.Plugin.MNMenu.MNMenu_Access (View.New_Element (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Type));
       Menu.Create (Parent.all, ID);
       Menu.View := Gnoga.Gui.View.Pointer_To_View_Base_Class (View);
    end New_Menu_Bar;
@@ -112,8 +108,7 @@ package body Gnoga.Gui.Plugin.MNMenu is
    begin
       Item :=
         Gnoga.Gui.Plugin.MNMenu.MNMenu_Item_Access
-          (Menu.View.New_Element
-           (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Item_Type));
+          (Menu.View.New_Element (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Item_Type));
       Item.Create (Menu.all, Name, ID);
    end New_Item;
 
@@ -153,9 +148,7 @@ package body Gnoga.Gui.Plugin.MNMenu is
    -- Display_Menu --
    ------------------
 
-   procedure Display_Menu
-     (Menu : in out Gnoga.Gui.Plugin.MNMenu.MNMenu_Type)
-   is
+   procedure Display_Menu (Menu : in out Gnoga.Gui.Plugin.MNMenu.MNMenu_Type) is
    begin
       Menu.jQuery_Execute ("mnmenu()");
    end Display_Menu;
@@ -173,8 +166,7 @@ package body Gnoga.Gui.Plugin.MNMenu is
    begin
       Sub_Menu :=
         Gnoga.Gui.Plugin.MNMenu.MNMenu_Access
-          (Menu.View.New_Element
-           (Item.Text, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Type));
+          (Menu.View.New_Element (Item.Text, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Type));
       Sub_Menu.Create (Menu.all, ID);
       Sub_Menu.Place_Inside_Bottom_Of (Item.all);
       Sub_Menu.View := Menu.View;
@@ -194,13 +186,10 @@ package body Gnoga.Gui.Plugin.MNMenu is
    begin
       Item :=
         Gnoga.Gui.Plugin.MNMenu.MNMenu_Item_Access
-          (Menu.View.New_Element
-           (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Item_Type));
+          (Menu.View.New_Element (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Item_Type));
       Item.Create (Menu.all, Name, ID);
       Sub_Menu :=
-        Gnoga.Gui.Plugin.MNMenu.MNMenu_Access
-          (Menu.View.New_Element
-           (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Type));
+        Gnoga.Gui.Plugin.MNMenu.MNMenu_Access (Menu.View.New_Element (Name, new Gnoga.Gui.Plugin.MNMenu.MNMenu_Type));
       Sub_Menu.Create (Menu.all, ID);
       Sub_Menu.Place_Inside_Bottom_Of (Item.all);
       Sub_Menu.View := Menu.View;
@@ -210,9 +199,7 @@ package body Gnoga.Gui.Plugin.MNMenu is
    -- Display_Menu --
    ------------------
 
-   procedure Display_Menu
-     (Menu : in not null Gnoga.Gui.Plugin.MNMenu.MNMenu_Access)
-   is
+   procedure Display_Menu (Menu : in not null Gnoga.Gui.Plugin.MNMenu.MNMenu_Access) is
    begin
       Menu.jQuery_Execute ("mnmenu()");
    end Display_Menu;

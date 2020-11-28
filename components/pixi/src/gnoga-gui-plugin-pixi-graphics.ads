@@ -63,13 +63,17 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    procedure Alpha
      (Graphics : in out Graphics_Type;
       Value    : in     Gnoga.Types.Alpha_Type);
-   function Alpha (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type;
+   function Alpha
+     (Graphics : in Graphics_Type)
+      return Gnoga.Types.Alpha_Type;
    --  The opacity of the object.
 
    procedure Blend_Mode
      (Graphics : in out Graphics_Type;
       Value    : in     Blend_Modes_Type);
-   function Blend_Mode (Graphics : in Graphics_Type) return Blend_Modes_Type;
+   function Blend_Mode
+     (Graphics : in Graphics_Type)
+      return Blend_Modes_Type;
    --  The blend mode to be applied to the graphic shape.
    --  Apply a value of PIXI.BLEND_MODES.NORMAL to reset the blend mode.
 
@@ -77,7 +81,9 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in out Graphics_Type;
       Value    : in     Integer);
    pragma Obsolescent ("Bounds_Padding no more available.");
-   function Bounds_Padding (Graphics : in Graphics_Type) return Integer;
+   function Bounds_Padding
+     (Graphics : in Graphics_Type)
+      return Integer;
    pragma Obsolescent ("Bounds_Padding no more available.");
    --  The bounds' padding used for bounds calculation.
 
@@ -86,19 +92,24 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
       Value    : in     Gnoga.Types.Alpha_Type);
    pragma Obsolescent ("Fill_Alpha no more available.");
    function Fill_Alpha
-     (Graphics : in Graphics_Type) return Gnoga.Types.Alpha_Type;
+     (Graphics : in Graphics_Type)
+      return Gnoga.Types.Alpha_Type;
    --  The alpha value used when filling the Graphics object.
 
    overriding procedure Width
      (Graphics : in out Graphics_Type;
       Value    : in     Integer);
-   overriding function Width (Graphics : in Graphics_Type) return Integer;
+   overriding function Width
+     (Graphics : in Graphics_Type)
+      return Integer;
    --  The width of the Text, setting this will actually modify the scale to achieve the value set.
 
    overriding procedure Height
      (Graphics : in out Graphics_Type;
       Value    : in     Integer);
-   overriding function Height (Graphics : in Graphics_Type) return Integer;
+   overriding function Height
+     (Graphics : in Graphics_Type)
+      return Integer;
    --  The height of the Text, setting this will actually modify the scale to achieve the value set.
 
    procedure Line_Color
@@ -108,41 +119,74 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in out Graphics_Type;
       Value    : in     Gnoga.Types.RGBA_Type);
    function Line_Color
-     (Graphics : in out Graphics_Type) return Gnoga.Types.RGBA_Type;
+     (Graphics : in out Graphics_Type)
+      return Gnoga.Types.RGBA_Type;
    --  The color of any lines drawn.
 
-   procedure Line_Width (Graphics : in out Graphics_Type; Value : in Integer);
-   function Line_Width (Graphics : in Graphics_Type) return Integer;
+   procedure Line_Width
+     (Graphics : in out Graphics_Type;
+      Value    : in     Integer);
+   function Line_Width
+     (Graphics : in Graphics_Type)
+      return Integer;
    --  The width (thickness) of any lines drawn.
 
-   procedure Position (Graphics : in Graphics_Type; Row, Column : out Integer);
-   function Row (Graphics : in Graphics_Type) return Integer;
-   function Column (Graphics : in Graphics_Type) return Integer;
+   procedure Position
+     (Graphics    : in     Graphics_Type;
+      Row, Column :    out Integer);
+   function Row
+     (Graphics : in Graphics_Type)
+      return Integer;
+   function Column
+     (Graphics : in Graphics_Type)
+      return Integer;
    --  The coordinate of the object relative to the local coordinates of the parent.
 
-   procedure Rotation (Graphics : in out Graphics_Type; Value : in Integer);
-   function Rotation (Graphics : in Graphics_Type) return Integer;
+   procedure Rotation
+     (Graphics : in out Graphics_Type;
+      Value    : in     Integer);
+   function Rotation
+     (Graphics : in Graphics_Type)
+      return Integer;
    --  The rotation of the object in degrees.
 
    procedure Scale
      (Graphics    : in out Graphics_Type;
       Row, Column : in     Positive);
-   function Row_Scale (Graphics : in Graphics_Type) return Positive;
-   function Column_Scale (Graphics : in Graphics_Type) return Positive;
+   function Row_Scale
+     (Graphics : in Graphics_Type)
+      return Positive;
+   function Column_Scale
+     (Graphics : in Graphics_Type)
+      return Positive;
    --  The scale factor of the object.
 
-   procedure Skew (Graphics : in out Graphics_Type; Row, Column : in Positive);
-   function Row_Skew (Graphics : in Graphics_Type) return Positive;
-   function Column_Skew (Graphics : in Graphics_Type) return Positive;
+   procedure Skew
+     (Graphics    : in out Graphics_Type;
+      Row, Column : in     Positive);
+   function Row_Skew
+     (Graphics : in Graphics_Type)
+      return Positive;
+   function Column_Skew
+     (Graphics : in Graphics_Type)
+      return Positive;
    --  The skew factor for the object in radians.
 
-   procedure Tint (Graphics : in out Graphics_Type; Value : in Natural);
-   function Tint (Graphics : in Graphics_Type) return Natural;
+   procedure Tint
+     (Graphics : in out Graphics_Type;
+      Value    : in     Natural);
+   function Tint
+     (Graphics : in Graphics_Type)
+      return Natural;
    --  The tint applied to the graphic shape.
    --  This is a hex value. Apply a value of 0xFFFFFF to reset the tint.
 
-   procedure Visible (Graphics : in out Graphics_Type; Value : in Boolean);
-   function Visible (Graphics : in Graphics_Type) return Boolean;
+   procedure Visible
+     (Graphics : in out Graphics_Type;
+      Value    : in     Boolean);
+   function Visible
+     (Graphics : in Graphics_Type)
+      return Boolean;
    --  The visibility of the object. If false the object will not be drawn, and
    --  the updateTransform function will not be called.
    --  Only affects recursive calls from parent. You can ask for bounds or call updateTransform manually
@@ -174,8 +218,7 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
       X, Y                         : in     Integer;
       Radius                       : in     Integer;
       Starting_Angle, Ending_Angle : in     Float;
-      Counter_Clockwise            : in     Boolean := False) renames
-     Arc_Radians;
+      Counter_Clockwise            : in     Boolean := False) renames Arc_Radians;
    --  The arc method creates an arc/curve (used to create circles, or parts of circles).
    --  Angles in radians.
 
@@ -187,9 +230,8 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
 
    procedure Begin_Fill
      (Graphics : in out Graphics_Type;
-      Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.Black;
-      Alpha    : in     Gnoga.Types.Alpha_Type := 1.0);
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Black;
+      Alpha    : in     Gnoga.Types.Alpha_Type               := 1.0);
    procedure Begin_Fill
      (Graphics : in out Graphics_Type;
       Color    : in     Gnoga.Types.RGBA_Type;
@@ -214,7 +256,8 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
 
    function Contains_Point
      (Graphics    : in Graphics_Type;
-      Row, Column : in Integer) return Boolean;
+      Row, Column : in Integer)
+      return Boolean;
    --  Tests if a point is inside this graphics object
 
    procedure Draw_Circle
@@ -263,11 +306,15 @@ package Gnoga.Gui.Plugin.Pixi.Graphics is
    --  Specifies the line style used for subsequent calls to Graphics methods
    --  such as the lineTo() method or the drawCircle() method.
 
-   procedure Line_To (Graphics : in out Graphics_Type; X, Y : in Integer);
+   procedure Line_To
+     (Graphics : in out Graphics_Type;
+      X, Y     : in     Integer);
    --  Draws a line using the current line style from the current drawing position to (x, y);
    --  The current drawing position is then set to (x, y).
 
-   procedure Move_To (Graphics : in out Graphics_Type; X, Y : in Integer);
+   procedure Move_To
+     (Graphics : in out Graphics_Type;
+      X, Y     : in     Integer);
    --  Moves the current drawing position to x, y.
 
    procedure Quadratic_Curve_To

@@ -44,17 +44,16 @@ package body Gnoga.Gui.View.Card is
    ------------
 
    overriding procedure Create
-     (View          : in out Card_View_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "")
+     (View   : in out Card_View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       View_Type (View).Create (Parent, ID);
 
       View.Element_Map.Insert ("current", null);
 
-      View.Bind_Event (Event   => "resize",
-                       Message => "");
+      View.Bind_Event (Event => "resize", Message => "");
    end Create;
 
    ------------------
@@ -90,10 +89,11 @@ package body Gnoga.Gui.View.Card is
    -- Add_Card --
    --------------
 
-   procedure Add_Card (View : in out Card_View_Type;
-                       Name : in     String;
-                       Card : access View_Base_Type'Class := null;
-                       Show : in     Boolean              := False)
+   procedure Add_Card
+     (View : in out Card_View_Type;
+      Name : in     String;
+      Card :        access View_Base_Type'Class := null;
+      Show : in     Boolean                     := False)
    is
       use Gnoga.Gui.Element;
 
@@ -139,8 +139,7 @@ package body Gnoga.Gui.View.Card is
       Current := View.Card (Name);
 
       if Current /= null then
-         View.Element_Map.Include
-           ("current", Gnoga.Gui.Element.Pointer_To_Element_Class (Current));
+         View.Element_Map.Include ("current", Gnoga.Gui.Element.Pointer_To_Element_Class (Current));
 
          Current.Display ("block");
          Current.Box_Height (View.Height);
@@ -152,8 +151,7 @@ package body Gnoga.Gui.View.Card is
    -- On_Resize --
    ---------------
 
-   overriding
-   procedure On_Resize (View : in out Card_View_Type) is
+   overriding procedure On_Resize (View : in out Card_View_Type) is
    begin
       View.Show_Card ("current");
 
@@ -168,13 +166,10 @@ package body Gnoga.Gui.View.Card is
      (Tab          : in out Tab_Type;
       Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
       Card_View    : in out Card_View_Type'Class;
-      Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.White;
-      Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.Black;
-      Select_Color : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.Gray;
-      ID           : in     String  := "")
+      Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.White;
+      Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Black;
+      Select_Color : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Gray;
+      ID           : in     String                               := "")
    is
    begin
       Tab.Card_View    := Card_View'Unrestricted_Access;
@@ -185,21 +180,15 @@ package body Gnoga.Gui.View.Card is
 
       declare
 
-         Name  : constant String := Tab.ID;
+         Name        : constant String := Tab.ID;
          Dummy_Style : Gnoga.Gui.Element.Style_Block.Style_Type;
       begin
          Dummy_Style.Create
            (Parent,
-            "ul#" & Name & " {padding: 0;}" &
-              " ul#" & Name & " li {display: inline;}" &
-              " ul#" & Name &
-              "   li a {background-color: " &
-              Gnoga.Types.Colors.To_String (Tab_Color) & ";" &
-              "   color: " & Gnoga.Types.Colors.To_String (Text_Color) & ";" &
-              "   padding: 10px 20px;" &
-              "   margin: 3px;" &
-              "   text-decoration: none;" &
-              "   border-radius: 4px 4px 0 0;}");
+            "ul#" & Name & " {padding: 0;}" & " ul#" & Name & " li {display: inline;}" & " ul#" & Name &
+            "   li a {background-color: " & Gnoga.Types.Colors.To_String (Tab_Color) & ";" & "   color: " &
+            Gnoga.Types.Colors.To_String (Text_Color) & ";" & "   padding: 10px 20px;" & "   margin: 3px;" &
+            "   text-decoration: none;" & "   border-radius: 4px 4px 0 0;}");
       end;
    end Create;
 
@@ -209,8 +198,7 @@ package body Gnoga.Gui.View.Card is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Tab_Item_Type (Object).Tab_Select;
    end On_Click;
@@ -219,17 +207,16 @@ package body Gnoga.Gui.View.Card is
    -- Add_Tab --
    -------------
 
-   procedure Add_Tab (Tab      : in out Tab_Type;
-                      Card     : in     String;
-                      Label    : in     String;
-                      Selected : in     Boolean := False)
+   procedure Add_Tab
+     (Tab      : in out Tab_Type;
+      Card     : in     String;
+      Label    : in     String;
+      Selected : in     Boolean := False)
    is
       T : constant Tab_Item_Access := new Tab_Item_Type;
    begin
       T.Dynamic;
-      T.Create (Parent => Tab,
-                Card   => Card,
-                Label  => Label);
+      T.Create (Parent => Tab, Card => Card, Label => Label);
 
       if Selected then
          Tab.Select_Tab (Card);
@@ -240,13 +227,13 @@ package body Gnoga.Gui.View.Card is
    -- Select_Tab --
    ----------------
 
-   procedure Select_Tab (Tab  : in out Tab_Type;
-                         Card : in     String)
+   procedure Select_Tab
+     (Tab  : in out Tab_Type;
+      Card : in     String)
    is
       use type Gnoga.Gui.Element.Pointer_To_Element_Class;
 
-      P : constant Gnoga.Gui.Element.Pointer_To_Element_Class :=
-        Tab.Element (Card);
+      P : constant Gnoga.Gui.Element.Pointer_To_Element_Class := Tab.Element (Card);
    begin
       if P /= null then
          Tab_Item_Access (P).Tab_Select;
@@ -265,11 +252,8 @@ package body Gnoga.Gui.View.Card is
       ID     : in     String := "")
    is
    begin
-      Item.Create_From_HTML
-        (Parent, "<li />", ID);
-      Item.Inner_HTML ("<a id='" & Item.ID & "_a" &
-                         "' href='javascript:void(0)'>" &
-                         Label & "</a>");
+      Item.Create_From_HTML (Parent, "<li />", ID);
+      Item.Inner_HTML ("<a id='" & Item.ID & "_a" & "' href='javascript:void(0)'>" & Label & "</a>");
 
       Item.On_Click_Handler (On_Click'Access);
 
@@ -290,13 +274,11 @@ package body Gnoga.Gui.View.Card is
    -- Tab_Select --
    ----------------
 
-   procedure Tab_Select (Item  : in out Tab_Item_Type)
-   is
+   procedure Tab_Select (Item : in out Tab_Item_Type) is
       Dummy_Link : Gnoga.Gui.Element.Element_Type;
    begin
       declare
-         C : Gnoga.Gui.Element. Element_Access :=
-               new Gnoga.Gui.Element.Element_Type;
+         C : Gnoga.Gui.Element.Element_Access := new Gnoga.Gui.Element.Element_Type;
          N : Gnoga.Gui.Element.Element_Access;
       begin
          Gnoga.Gui.Element.Element_Access (Item.Parent).First_Child (C.all);
@@ -321,15 +303,16 @@ package body Gnoga.Gui.View.Card is
       Dummy_Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
       Dummy_Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
 
-      Tab_Access (Item.Parent).Card_View.Show_Card
-        (Ada.Strings.Unbounded.To_String (Item.Card_Name));
+      Tab_Access (Item.Parent).Card_View.Show_Card (Ada.Strings.Unbounded.To_String (Item.Card_Name));
    end Tab_Select;
 
    ------------------
    -- Tab_Selected --
    ------------------
 
-   function Tab_Selected (Item : Tab_Item_Type) return Boolean
+   function Tab_Selected
+     (Item : Tab_Item_Type)
+      return Boolean
    is
       use type Gnoga.Types.RGBA_Type;
 

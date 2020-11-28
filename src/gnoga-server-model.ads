@@ -44,44 +44,56 @@ with Gnoga.Types;
 with Gnoga.Server.Database;
 
 package Gnoga.Server.Model is
-   type Active_Record
-     (Table_Name : access constant String;
-      Connection : access          Gnoga.Server.Database.Connection'Class)
-     is new Ada.Finalization.Controlled with private;
+   type Active_Record (Table_Name : access constant String; Connection : access Gnoga.Server.Database.Connection'Class)
+   is
+     new Ada.Finalization.Controlled with private;
 
    overriding procedure Initialize (Object : in out Active_Record);
 
-   function Field_Names (A : Active_Record)
-                         return Gnoga.Types.Data_Array_Type;
+   function Field_Names
+     (A : Active_Record)
+      return Gnoga.Types.Data_Array_Type;
    --  Returns the Field Names supported by this Active_Record
 
-   procedure Values (A   : in out Active_Record;
-                     Map : in     Gnoga.Types.Data_Map_Type);
+   procedure Values
+     (A   : in out Active_Record;
+      Map : in     Gnoga.Types.Data_Map_Type);
    --  Set table values from Map ignoring any extra key/value pairs in Map
    --  not found in record schema
 
-   function Values (A : Active_Record) return Gnoga.Types.Data_Map_Type;
+   function Values
+     (A : Active_Record)
+      return Gnoga.Types.Data_Map_Type;
    --  Return all values in record
 
-   procedure Value (A          : in out Active_Record;
-                    Field_Name : in     String;
-                    Value      : in     String);
+   procedure Value
+     (A          : in out Active_Record;
+      Field_Name : in     String;
+      Value      : in     String);
    --  Set value for Field_Name
 
-   procedure Value (A             : in out Active_Record;
-                    Field_Name    : in     String;
-                    Integer_Value : in     Integer);
+   procedure Value
+     (A             : in out Active_Record;
+      Field_Name    : in     String;
+      Integer_Value : in     Integer);
    --  Set value for Field_Name
 
-   procedure Value (A          : in out Active_Record;
-                    Field_Name : in     String;
-                    Date_Value : in     Ada.Calendar.Time);
+   procedure Value
+     (A          : in out Active_Record;
+      Field_Name : in     String;
+      Date_Value : in     Ada.Calendar.Time);
    --  Set value for Field_Name
 
-   function Value (A : Active_Record; Field_Name : String) return String;
+   function Value
+     (A          : Active_Record;
+      Field_Name : String)
+      return String;
    --  Return value for field_name
 
-   function Exists (A : Active_Record; Field_Name : String) return Boolean;
+   function Exists
+     (A          : Active_Record;
+      Field_Name : String)
+      return Boolean;
    --  Checks for the presence of Field_Name in record
 
    procedure Save (A : in out Active_Record);
@@ -93,36 +105,39 @@ package Gnoga.Server.Model is
    procedure Clear (A : in out Active_Record);
    --  Clears the Active Record and mark as a new row
 
-   procedure Find (A : in out Active_Record; ID : in Positive);
+   procedure Find
+     (A  : in out Active_Record;
+      ID : in     Positive);
    --  Load row with ID
 
-   procedure Find (A : in out Active_Record; ID : in String);
+   procedure Find
+     (A  : in out Active_Record;
+      ID : in     String);
    --  Load row with ID, this version of Find accepts the ID as a string
    --  ID must be a valid integer
 
-   procedure Find_Where (A          : in out Active_Record;
-                         Where      : in     String;
-                         Create_New : in     Boolean := True);
+   procedure Find_Where
+     (A          : in out Active_Record;
+      Where      : in     String;
+      Create_New : in     Boolean := True);
    --  Load row based on where clause, note that only the first record
    --  returned will be loaded. Use Model.Queries.Find_All for
    --  return of multiple records. If Create_New is true then no exception
    --  is thrown if the record is not found. Checking if Value ("id")
    --  is empty, i.e. is a new record would confirm no results found.
 
-   procedure Find_Item (A          : in out Active_Record;
-                        Parent     : in     Active_Record'Class;
-                        Create_New : in     Boolean := True);
+   procedure Find_Item
+     (A          : in out Active_Record;
+      Parent     : in     Active_Record'Class;
+      Create_New : in     Boolean := True);
    --  Return first matching record in Child Table A where:
    --  Child_Table.PARENT_TABLE_NAME(with out s)_id = Child_Table.id
 private
 
-   type Active_Record
-     (Table_Name : access constant String;
-      Connection : access          Gnoga.Server.Database.Connection'Class)
-     is new Ada.Finalization.Controlled with
-      record
-         Is_New     : Boolean                               := True;
-         Fields     : Gnoga.Types.Data_Array_Type;
-         Values     : Gnoga.Types.Data_Map_Type;
-      end record;
+   type Active_Record (Table_Name : access constant String; Connection : access Gnoga.Server.Database.Connection'Class)
+   is new Ada.Finalization.Controlled with record
+      Is_New : Boolean := True;
+      Fields : Gnoga.Types.Data_Array_Type;
+      Values : Gnoga.Types.Data_Map_Type;
+   end record;
 end Gnoga.Server.Model;

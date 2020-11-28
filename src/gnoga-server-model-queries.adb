@@ -44,10 +44,10 @@ package body Gnoga.Server.Model.Queries is
    --------------
 
    function Find_All
-     (Name       : access String;
-      Connection : access Gnoga.Server.Database.Connection'Class;
-      Like       : in     String := "";
-      Order_By   : in     String := "")
+     (Name       :    access String;
+      Connection :    access Gnoga.Server.Database.Connection'Class;
+      Like       : in String := "";
+      Order_By   : in String := "")
       return Active_Record_Array.Vector
    is
       R : Active_Record (Name, Connection);
@@ -64,8 +64,7 @@ package body Gnoga.Server.Model.Queries is
       use Ada.Strings.Unbounded;
       use Ada.Strings;
 
-      SQL  : Unbounded_String :=
-        To_Unbounded_String ("select * from ") & Template.Table_Name.all;
+      SQL : Unbounded_String := To_Unbounded_String ("select * from ") & Template.Table_Name.all;
    begin
       if Like /= "" then
          SQL := SQL & " where " & Like;
@@ -76,8 +75,7 @@ package body Gnoga.Server.Model.Queries is
       end if;
 
       declare
-         RS   : Gnoga.Server.Database.Recordset'Class :=
-           Template.Connection.Query (To_String (SQL));
+         RS : Gnoga.Server.Database.Recordset'Class := Template.Connection.Query (To_String (SQL));
 
          Rows : Active_Record_Array.Vector;
          Row  : Active_Record (Template.Table_Name, Template.Connection);
@@ -98,43 +96,37 @@ package body Gnoga.Server.Model.Queries is
    -- Find_Items --
    ----------------
 
-   function Find_Items (Parent      : in     Active_Record'Class;
-                        Child_Table : access String;
-                        Like        : in      String := "";
-                        Order_By    : in     String := "")
-                        return Active_Record_Array.Vector
+   function Find_Items
+     (Parent      : in Active_Record'Class;
+      Child_Table :    access String;
+      Like        : in String := "";
+      Order_By    : in String := "")
+      return Active_Record_Array.Vector
    is
-      Remove_s : constant String := Parent.Table_Name.all;
-      Where_Clause : constant String :=
-        Remove_s (Remove_s'First .. Remove_s'Last - 1)
-        & "_id = " & Parent.Value ("id");
+      Remove_s     : constant String := Parent.Table_Name.all;
+      Where_Clause : constant String := Remove_s (Remove_s'First .. Remove_s'Last - 1) & "_id = " & Parent.Value ("id");
    begin
       if Like /= "" then
-         return Find_All (Child_Table, Parent.Connection,
-                          Where_Clause & " and " & Like, Order_By);
+         return Find_All (Child_Table, Parent.Connection, Where_Clause & " and " & Like, Order_By);
       else
-         return Find_All (Child_Table, Parent.Connection,
-                          Where_Clause, Order_By);
+         return Find_All (Child_Table, Parent.Connection, Where_Clause, Order_By);
       end if;
    end Find_Items;
 
-   function Find_Items (Parent         : Active_Record'Class;
-                        Child_Template : Active_Record'Class;
-                        Like           : String := "";
-                        Order_By       : String := "")
-                        return Active_Record_Array.Vector
+   function Find_Items
+     (Parent         : Active_Record'Class;
+      Child_Template : Active_Record'Class;
+      Like           : String := "";
+      Order_By       : String := "")
+      return Active_Record_Array.Vector
    is
-      Remove_s : constant String := Parent.Table_Name.all;
-      Where_Clause : constant String :=
-        Remove_s (Remove_s'First .. Remove_s'Last - 1)
-        & "_id = " & Parent.Value ("id");
+      Remove_s     : constant String := Parent.Table_Name.all;
+      Where_Clause : constant String := Remove_s (Remove_s'First .. Remove_s'Last - 1) & "_id = " & Parent.Value ("id");
    begin
       if Like /= "" then
-         return Find_All (Child_Template,
-                          Where_Clause & " and " & Like, Order_By);
+         return Find_All (Child_Template, Where_Clause & " and " & Like, Order_By);
       else
-         return Find_All (Child_Template,
-                          Where_Clause, Order_By);
+         return Find_All (Child_Template, Where_Clause, Order_By);
       end if;
    end Find_Items;
 end Gnoga.Server.Model.Queries;

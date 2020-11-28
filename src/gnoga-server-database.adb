@@ -43,9 +43,11 @@ package body Gnoga.Server.Database is
    -- Field_Type --
    ----------------
 
-   function Field_Type (Field : Field_Description) return String is
-      Data  : constant String  :=
-        Ada.Strings.Unbounded.To_String (Field.Data_Type);
+   function Field_Type
+     (Field : Field_Description)
+      return String
+   is
+      Data  : constant String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);
       Right : constant Natural := Ada.Strings.Fixed.Index (Data, "(");
    begin
       if Right = 0 then
@@ -55,7 +57,10 @@ package body Gnoga.Server.Database is
       end if;
    end Field_Type;
 
-   function Field_Size (Field : Field_Description) return Natural is
+   function Field_Size
+     (Field : Field_Description)
+      return Natural
+   is
       Option : constant String := Field_Options (Field);
    begin
       if Option = "" then
@@ -77,7 +82,10 @@ package body Gnoga.Server.Database is
    -- Field_Decimals --
    --------------------
 
-   function Field_Decimals (Field : Field_Description) return Natural is
+   function Field_Decimals
+     (Field : Field_Description)
+      return Natural
+   is
       Option : constant String  := Field_Options (Field);
       Comma  : constant Natural := Ada.Strings.Fixed.Index (Option, ",");
    begin
@@ -92,9 +100,11 @@ package body Gnoga.Server.Database is
    -- Field_Options --
    -------------------
 
-   function Field_Options (Field : Field_Description) return String is
-      Data  : constant String  :=
-        Ada.Strings.Unbounded.To_String (Field.Data_Type);
+   function Field_Options
+     (Field : Field_Description)
+      return String
+   is
+      Data  : constant String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);
       Right : constant Natural := Ada.Strings.Fixed.Index (Data, "(");
       Left  : constant Natural := Ada.Strings.Fixed.Index (Data, ")");
    begin

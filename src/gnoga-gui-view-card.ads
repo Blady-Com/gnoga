@@ -56,39 +56,43 @@ package Gnoga.Gui.View.Card is
    --  Card_View_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create
-     (View          : in out Card_View_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "");
+   overriding procedure Create
+     (View   : in out Card_View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
 
    -------------------------------------------------------------------------
    --  Card_View_Type - Properties
    -------------------------------------------------------------------------
 
-   function Current_Card (View : Card_View_Type)
-                          return Pointer_To_View_Base_Class;
+   function Current_Card
+     (View : Card_View_Type)
+      return Pointer_To_View_Base_Class;
    --  The currently shown card, null if no card has been added and shown
 
-   function Card (View : Card_View_Type; Name : String)
-                  return Pointer_To_View_Base_Class;
+   function Card
+     (View : Card_View_Type;
+      Name : String)
+      return Pointer_To_View_Base_Class;
    --  The Card with Name.
 
    -------------------------------------------------------------------------
    --  Card_View_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Add_Card (View : in out Card_View_Type;
-                       Name : in     String;
-                       Card : access View_Base_Type'Class := null;
-                       Show : in     Boolean              := False);
+   procedure Add_Card
+     (View : in out Card_View_Type;
+      Name : in     String;
+      Card :        access View_Base_Type'Class := null;
+      Show : in     Boolean                     := False);
    --  Adds a new Card (a View_Type) called Name and if Show true Show Card
    --
    --  Internally the card named "current" always points to the currently
    --  displayed card so that name is reserved.
 
-   procedure Show_Card (View : in out Card_View_Type;
-                        Name : in     String);
+   procedure Show_Card
+     (View : in out Card_View_Type;
+      Name : in     String);
    --  Show card named Name
    --  If Name does not exist, the current card will be hidden and no card
    --  will be displayed.
@@ -97,8 +101,7 @@ package Gnoga.Gui.View.Card is
    --  Card_View_Type - Event Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure On_Resize (View : in out Card_View_Type);
+   overriding procedure On_Resize (View : in out Card_View_Type);
    --  Handle layout of children
 
    -------------------------------------------------------------------------
@@ -107,8 +110,7 @@ package Gnoga.Gui.View.Card is
 
    type Tab_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Tab_Access is access all Tab_Type;
-   type Pointer_To_Tab_Class is
-     access all Tab_Type'Class;
+   type Pointer_To_Tab_Class is access all Tab_Type'Class;
 
    -------------------------------------------------------------------------
    --  Tab_Types - Creation Methods
@@ -118,29 +120,28 @@ package Gnoga.Gui.View.Card is
      (Tab          : in out Tab_Type;
       Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
       Card_View    : in out Card_View_Type'Class;
-      Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.White;
-      Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.Black;
-      Select_Color : in     Gnoga.Types.Colors.Color_Enumeration :=
-        Gnoga.Types.Colors.Gray;
-      ID           : in     String                := "");
+      Text_Color   : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.White;
+      Tab_Color    : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Black;
+      Select_Color : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Gray;
+      ID           : in     String                               := "");
 
    -------------------------------------------------------------------------
    --  Tab_Types - Methods
    -------------------------------------------------------------------------
 
-   procedure Add_Tab (Tab      : in out Tab_Type;
-                      Card     : in     String;
-                      Label    : in     String;
-                      Selected : in     Boolean := False);
+   procedure Add_Tab
+     (Tab      : in out Tab_Type;
+      Card     : in     String;
+      Label    : in     String;
+      Selected : in     Boolean := False);
    --  Tabs can also be added using Tab_Item_Types
    --  Tab's have two properties, the Card they are associated with and
    --  their Label displayed on the tab. By default the Show_Card is called
    --  on the associated Card_View with Card when the tab is clicked.
 
-   procedure Select_Tab (Tab  : in out Tab_Type;
-                         Card : in     String);
+   procedure Select_Tab
+     (Tab  : in out Tab_Type;
+      Card : in     String);
    --  Selects the Tab that is associated with Card
 
    -------------------------------------------------------------------------
@@ -155,11 +156,12 @@ package Gnoga.Gui.View.Card is
    --  Tab_Item_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Item   : in out Tab_Item_Type;
-                     Parent : in out Tab_Type'Class;
-                     Card   : in     String;
-                     Label  : in     String;
-                     ID     : in     String := "");
+   procedure Create
+     (Item   : in out Tab_Item_Type;
+      Parent : in out Tab_Type'Class;
+      Card   : in     String;
+      Label  : in     String;
+      ID     : in     String := "");
    --  Create a Tab Item with Text that when clicked will show Card on
    --  on associated Card View
    --
@@ -171,25 +173,25 @@ package Gnoga.Gui.View.Card is
    --  Tab_Item_Type - Properties
    -------------------------------------------------------------------------
 
-   function Tab_Selected (Item : Tab_Item_Type) return Boolean;
+   function Tab_Selected
+     (Item : Tab_Item_Type)
+      return Boolean;
 
    -------------------------------------------------------------------------
    --  Tab_Item_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Tab_Select (Item  : in out Tab_Item_Type);
+   procedure Tab_Select (Item : in out Tab_Item_Type);
 private
    type Card_View_Type is new View_Type with null record;
 
-   type Tab_Type is new Gnoga.Gui.View.View_Base_Type with
-      record
-         Card_View    : Pointer_To_Card_View_Class := null;
-         Select_Color : Gnoga.Types.RGBA_Type;
-         Tab_Color    : Gnoga.Types.RGBA_Type;
-      end record;
+   type Tab_Type is new Gnoga.Gui.View.View_Base_Type with record
+      Card_View    : Pointer_To_Card_View_Class := null;
+      Select_Color : Gnoga.Types.RGBA_Type;
+      Tab_Color    : Gnoga.Types.RGBA_Type;
+   end record;
 
-   type Tab_Item_Type is new Gnoga.Gui.Element.Element_Type with
-      record
-         Card_Name    : Ada.Strings.Unbounded.Unbounded_String;
-      end record;
+   type Tab_Item_Type is new Gnoga.Gui.Element.Element_Type with record
+      Card_Name : Ada.Strings.Unbounded.Unbounded_String;
+   end record;
 end Gnoga.Gui.View.Card;

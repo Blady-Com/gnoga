@@ -47,31 +47,29 @@ package body Gnoga.Gui.View.Grid is
    ------------
 
    procedure Create
-     (Grid          : in out Grid_View_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Layout        : in     Grid_Rows_Type;
-      Fill_Parent   : in     Boolean := True;
-      Set_Sizes     : in     Boolean := True;
-      ID            : in     String  := "")
+     (Grid        : in out Grid_View_Type;
+      Parent      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Layout      : in     Grid_Rows_Type;
+      Fill_Parent : in     Boolean := True;
+      Set_Sizes   : in     Boolean := True;
+      ID          : in     String  := "")
    is
       use Ada.Strings.Unbounded;
 
       C   : Unbounded_String;
-      CID : constant String           := Gnoga.Server.Connection.New_GID;
+      CID : constant String := Gnoga.Server.Connection.New_GID;
 
       N         : Natural;
       Span_Size : Natural;
       Column    : Positive;
 
-      P_Height : constant String :=
-        Left_Trim (Integer (100 / Layout'Length (1))'Img) & "%";
-      P_Width  : constant String :=
-        Left_Trim (Integer (100 / Layout'Length (2))'Img) & "%";
+      P_Height : constant String := Left_Trim (Integer (100 / Layout'Length (1))'Img) & "%";
+      P_Width  : constant String := Left_Trim (Integer (100 / Layout'Length (2))'Img) & "%";
 
       Column_Object : View_Base_Access := null;
 
       function TR_Height return String;
-      function TD_Width  return String;
+      function TD_Width return String;
 
       function TR_Height return String is
       begin
@@ -96,9 +94,7 @@ package body Gnoga.Gui.View.Grid is
          C := To_Unbounded_String ("<div style='position:relative'>");
       end if;
 
-      C := C & "<table style='" &
-        " position:relative;" &
-        " border-spacing: 0px; border-collapse: collapse;";
+      C := C & "<table style='" & " position:relative;" & " border-spacing: 0px; border-collapse: collapse;";
 
       if Fill_Parent then
          C := C & " width:100%; height:100%;'>";
@@ -110,17 +106,15 @@ package body Gnoga.Gui.View.Grid is
       for Row in Layout'Range (1) loop
          C := C & "<tr>";
 
-         Column := Layout'First (2);
+         Column    := Layout'First (2);
          Span_Size := 0;
 
          loop
             if Layout (Row, Column) = COL then
                N := N + 1;
-               C := C & "<td style='" &
-                 TD_Width &
-                 " position:relative;" &
-                 " padding:0; text-align: left; vertical-align: top;" &
-                 "' id='" & CID & "_" & Left_Trim (N'Img) & "'";
+               C :=
+                 C & "<td style='" & TD_Width & " position:relative;" &
+                 " padding:0; text-align: left; vertical-align: top;" & "' id='" & CID & "_" & Left_Trim (N'Img) & "'";
                Span_Size := 1;
             elsif Layout (Row, Column) = SPN then
                Span_Size := Span_Size + 1;
@@ -153,19 +147,18 @@ package body Gnoga.Gui.View.Grid is
 
       N := 0;
       for Row in Layout'Range (1) loop
-         Column := Layout'First (2);
+         Column    := Layout'First (2);
          Span_Size := 0;
 
          loop
             if Layout (Row, Column) = COL then
-               N := N + 1;
+               N         := N + 1;
                Span_Size := 1;
 
                Column_Object := new View_Base_Type;
                Column_Object.Auto_Place (False);
                Column_Object.Dynamic (True);
-               Column_Object.Attach_Using_Parent
-                 (Grid, CID & "_" & Left_Trim (N'Img));
+               Column_Object.Attach_Using_Parent (Grid, CID & "_" & Left_Trim (N'Img));
                Column_Object.Parent (Grid);
 
                if Column = Layout'First (2) and Row = Layout'First (1) then
@@ -176,8 +169,7 @@ package body Gnoga.Gui.View.Grid is
             end if;
 
             declare
-               Address : constant String := Left_Trim (Row'Img) & "_" &
-                 Left_Trim (Column'Img);
+               Address : constant String := Left_Trim (Row'Img) & "_" & Left_Trim (Column'Img);
             begin
                Grid.Add_Element (Address, Column_Object);
             end;
@@ -192,11 +184,12 @@ package body Gnoga.Gui.View.Grid is
    -- Panel --
    -----------
 
-   function Panel (Grid : Grid_View_Type; Row, Column : Positive)
-                   return Pointer_To_View_Base_Class
+   function Panel
+     (Grid        : Grid_View_Type;
+      Row, Column : Positive)
+      return Pointer_To_View_Base_Class
    is
-      Address : constant String :=
-        Left_Trim (Row'Img) & "_" & Left_Trim (Column'Img);
+      Address : constant String := Left_Trim (Row'Img) & "_" & Left_Trim (Column'Img);
    begin
       return Pointer_To_View_Base_Class (Grid.Element (Address));
    end Panel;

@@ -48,40 +48,42 @@ package body Gnoga.Gui.Base is
 
    Mouse_Event_Script : constant String :=
      "(e.clientX - e.target.getBoundingClientRect().left) + '|' + " &
-     "(e.clientY - e.target.getBoundingClientRect().top) + '|' + " &
-     "e.screenX + '|' + " &
-     "e.screenY + '|' + e.which + '|' + e.altKey + '|' + " &
-     "e.ctrlKey + '|' + e.shiftKey + '|' + e.metaKey + '|'";
+     "(e.clientY - e.target.getBoundingClientRect().top) + '|' + " & "e.screenX + '|' + " &
+     "e.screenY + '|' + e.which + '|' + e.altKey + '|' + " & "e.ctrlKey + '|' + e.shiftKey + '|' + e.metaKey + '|'";
    --  e.buttons would be better but not supported currently outside
    --  of firefox and would always return 0 on Mac so using e.which.
    --  The use of offsetLeft and offsetTop is to correct the X and Y
    --  to the actual X,Y of the target.
 
    Keyboard_Event_Script : constant String :=
-     "e.keyCode + '|' + e.charCode + '|' + e.altKey + '|' + e.ctrlKey + '|'" &
-     " + e.shiftKey + '|' + e.metaKey + '|'";
+     "e.keyCode + '|' + e.charCode + '|' + e.altKey + '|' + e.ctrlKey + '|'" & " + e.shiftKey + '|' + e.metaKey + '|'";
 
-   function Parse_Mouse_Event (Message       : String;
-                               Mouse_Message : Mouse_Message_Type)
-                               return Mouse_Event_Record;
+   function Parse_Mouse_Event
+     (Message       : String;
+      Mouse_Message : Mouse_Message_Type)
+      return Mouse_Event_Record;
    --  Parse event message in to Mouse_Event_Record
 
-   function Parse_Keyboard_Event (Message          : String;
-                                  Keyboard_Message : Keyboard_Message_Type)
-                                  return Keyboard_Event_Record;
+   function Parse_Keyboard_Event
+     (Message          : String;
+      Keyboard_Message : Keyboard_Message_Type)
+      return Keyboard_Event_Record;
    --  Parse event message in to Keyboard_Event_Record
 
-   function Parse_Drop_Event (X, Y : out Integer; Message : in String)
-                              return String;
+   function Parse_Drop_Event
+     (X, Y    :    out Integer;
+      Message : in     String)
+      return String;
    --  Parse on_drop event message
 
    -----------------------
    -- Parse_Mouse_Event --
    -----------------------
 
-   function Parse_Mouse_Event (Message       : String;
-                               Mouse_Message : Mouse_Message_Type)
-                               return Mouse_Event_Record
+   function Parse_Mouse_Event
+     (Message       : String;
+      Mouse_Message : Mouse_Message_Type)
+      return Mouse_Event_Record
    is
       use Ada.Strings.Fixed;
 
@@ -98,9 +100,7 @@ package body Gnoga.Gui.Base is
       function Split return String is
       begin
          S := F + 1;
-         F := Index (Source  => Message,
-                     Pattern => "|",
-                     From    => S);
+         F := Index (Source => Message, Pattern => "|", From => S);
          return Message (S .. (F - 1));
       end Split;
 
@@ -114,8 +114,7 @@ package body Gnoga.Gui.Base is
          end if;
       exception
          when E : others =>
-            Log ("Error Parse_Mouse_Event converting to Integer" &
-                   " (forced to 0).");
+            Log ("Error Parse_Mouse_Event converting to Integer" & " (forced to 0).");
             Log (Ada.Exceptions.Exception_Information (E));
             return 0;
       end Split;
@@ -130,21 +129,21 @@ package body Gnoga.Gui.Base is
       Middle_Button : constant := 2;
       Right_Button  : constant := 3;
    begin
-      Event.Message := Mouse_Message;
-      Event.X := Split;
-      Event.Y := Split;
+      Event.Message  := Mouse_Message;
+      Event.X        := Split;
+      Event.Y        := Split;
       Event.Screen_X := Split;
       Event.Screen_Y := Split;
 
-      Button := Split;
-      Event.Left_Button := Button = Left_Button;
+      Button              := Split;
+      Event.Left_Button   := Button = Left_Button;
       Event.Middle_Button := Button = Middle_Button;
-      Event.Right_Button := Button = Right_Button;
+      Event.Right_Button  := Button = Right_Button;
 
-      Event.Alt := Split;
+      Event.Alt     := Split;
       Event.Control := Split;
-      Event.Shift := Split;
-      Event.Meta := Split;
+      Event.Shift   := Split;
+      Event.Meta    := Split;
 
       return Event;
    end Parse_Mouse_Event;
@@ -153,15 +152,16 @@ package body Gnoga.Gui.Base is
    -- Parse_Keyboard_Event --
    --------------------------
 
-   function Parse_Keyboard_Event (Message          : String;
-                                  Keyboard_Message : Keyboard_Message_Type)
-                                  return Keyboard_Event_Record
+   function Parse_Keyboard_Event
+     (Message          : String;
+      Keyboard_Message : Keyboard_Message_Type)
+      return Keyboard_Event_Record
    is
       use Ada.Strings.Fixed;
 
-      Event  : Keyboard_Event_Record;
-      S      : Integer := Message'First;
-      F      : Integer := Message'First - 1;
+      Event : Keyboard_Event_Record;
+      S     : Integer := Message'First;
+      F     : Integer := Message'First - 1;
 
       function Split return String;
       function Split return Integer;
@@ -171,9 +171,7 @@ package body Gnoga.Gui.Base is
       function Split return String is
       begin
          S := F + 1;
-         F := Index (Source  => Message,
-                     Pattern => "|",
-                     From    => S);
+         F := Index (Source => Message, Pattern => "|", From => S);
          return Message (S .. (F - 1));
       end Split;
 
@@ -187,8 +185,7 @@ package body Gnoga.Gui.Base is
          end if;
       exception
          when E : others =>
-            Log ("Error Parse_Keyboard_Event converting to Integer" &
-                   " (forced to 0).");
+            Log ("Error Parse_Keyboard_Event converting to Integer" & " (forced to 0).");
             Log (Ada.Exceptions.Exception_Information (E));
             return 0;
       end Split;
@@ -203,13 +200,13 @@ package body Gnoga.Gui.Base is
          return Wide_Character'Val (Split);
       end Split;
    begin
-      Event.Message := Keyboard_Message;
+      Event.Message  := Keyboard_Message;
       Event.Key_Code := Split;
       Event.Key_Char := Split;
-      Event.Alt := Split;
-      Event.Control := Split;
-      Event.Shift := Split;
-      Event.Meta := Split;
+      Event.Alt      := Split;
+      Event.Control  := Split;
+      Event.Shift    := Split;
+      Event.Meta     := Split;
 
       return Event;
    end Parse_Keyboard_Event;
@@ -218,13 +215,15 @@ package body Gnoga.Gui.Base is
    -- Parse_Drop_Event --
    ----------------------
 
-   function Parse_Drop_Event (X, Y : out Integer; Message : in String)
-                              return String
+   function Parse_Drop_Event
+     (X, Y    :    out Integer;
+      Message : in     String)
+      return String
    is
       use Ada.Strings.Fixed;
 
-      S      : Integer := Message'First;
-      F      : Integer := Message'First - 1;
+      S : Integer := Message'First;
+      F : Integer := Message'First - 1;
 
       function Split return String;
       function Split return Integer;
@@ -232,9 +231,7 @@ package body Gnoga.Gui.Base is
       function Split return String is
       begin
          S := F + 1;
-         F := Index (Source  => Message,
-                     Pattern => "|",
-                     From    => S);
+         F := Index (Source => Message, Pattern => "|", From => S);
          return Message (S .. (F - 1));
       end Split;
 
@@ -248,8 +245,7 @@ package body Gnoga.Gui.Base is
          end if;
       exception
          when E : others =>
-            Log ("Error Parse_Drop_Event converting to Integer" &
-                   " (forced to 0).");
+            Log ("Error Parse_Drop_Event converting to Integer" & " (forced to 0).");
             Log (Ada.Exceptions.Exception_Information (E));
             return 0;
       end Split;
@@ -264,8 +260,7 @@ package body Gnoga.Gui.Base is
    -- Initialize --
    ----------------
 
-   overriding
-   procedure Initialize (Object : in out Base_Type) is
+   overriding procedure Initialize (Object : in out Base_Type) is
    begin
       Gnoga.Server.Connection.New_Unique_ID (Object.Unique_ID);
    end Initialize;
@@ -274,28 +269,22 @@ package body Gnoga.Gui.Base is
    -- Finalize --
    --------------
 
-   overriding
-   procedure Finalize (Object : in out Base_Type) is
+   overriding procedure Finalize (Object : in out Base_Type) is
       use type Gnoga.Types.ID_Enumeration;
    begin
       Object.On_Destroy;
       Object.Detach_From_Message_Queue;
 
-      if not Gnoga.Server.Connection.Shutting_Down and
-        Gnoga.Server.Connection.Valid (Object.Connection_ID)
-      then
+      if not Gnoga.Server.Connection.Shutting_Down and Gnoga.Server.Connection.Valid (Object.Connection_ID) then
          if Object.Connection_ID /= Gnoga.Types.No_Connection then
 
             if Object.ID_Type = Gnoga.Types.Gnoga_ID then
                begin
-                  Gnoga.Server.Connection.Execute_Script
-                    (Object.Connection_ID,
-                     "delete gnoga['" & Object.ID & "'];");
+                  Gnoga.Server.Connection.Execute_Script (Object.Connection_ID, "delete gnoga['" & Object.ID & "'];");
                exception
                   when E : Gnoga.Server.Connection.Connection_Error =>
                      --  Socket error to browser
-                     Log ("Error connection " & Object.ID &
-                            " socket error to browser.");
+                     Log ("Error connection " & Object.ID & " socket error to browser.");
                      Log (Ada.Exceptions.Exception_Information (E));
                end;
             end if;
@@ -316,9 +305,7 @@ package body Gnoga.Gui.Base is
 
    procedure Free (Object : in out Base_Type) is
       Dummy_P : Pointer_To_Base_Class := Object'Unchecked_Access;
-      procedure Free_Object is
-        new Ada.Unchecked_Deallocation (Base_Type'Class,
-                                        Pointer_To_Base_Class);
+      procedure Free_Object is new Ada.Unchecked_Deallocation (Base_Type'Class, Pointer_To_Base_Class);
    begin
       Free_Object (Dummy_P);
    end Free;
@@ -343,12 +330,9 @@ package body Gnoga.Gui.Base is
          raise Object_Already_Created;
       end if;
 
-      Gnoga.Server.Connection.Execute_Script (ID     => Connection_ID,
-                                              Script => Script);
+      Gnoga.Server.Connection.Execute_Script (ID => Connection_ID, Script => Script);
 
-      Object.Attach (Connection_ID => Connection_ID,
-                     ID            => ID,
-                     ID_Type       => ID_Type);
+      Object.Attach (Connection_ID => Connection_ID, ID => ID, ID_Type => ID_Type);
 
       Object.On_Create;
    end Create_With_Script;
@@ -358,15 +342,13 @@ package body Gnoga.Gui.Base is
    -------------------------
 
    procedure Attach_Using_Parent
-     (Object   : in out Base_Type;
-      Parent   : in     Gnoga.Gui.Base.Base_Type'Class;
-      ID       : in     String;
-      ID_Type  : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
+     (Object  : in out Base_Type;
+      Parent  : in     Gnoga.Gui.Base.Base_Type'Class;
+      ID      : in     String;
+      ID_Type : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
    is
    begin
-      Object.Attach (Connection_ID => Parent.Connection_ID,
-                     ID            => ID,
-                     ID_Type       => ID_Type);
+      Object.Attach (Connection_ID => Parent.Connection_ID, ID => ID, ID_Type => ID_Type);
    end Attach_Using_Parent;
    ------------
    -- Attach --
@@ -394,7 +376,10 @@ package body Gnoga.Gui.Base is
    -- Unique_ID --
    ---------------
 
-   function Unique_ID (Object : Base_Type) return Gnoga.Types.Unique_ID is
+   function Unique_ID
+     (Object : Base_Type)
+      return Gnoga.Types.Unique_ID
+   is
    begin
       return Object.Unique_ID;
    end Unique_ID;
@@ -403,15 +388,17 @@ package body Gnoga.Gui.Base is
    -- Connection_ID --
    -------------------
 
-   function Connection_ID (Object : Base_Type)
-                           return Gnoga.Types.Connection_ID
+   function Connection_ID
+     (Object : Base_Type)
+      return Gnoga.Types.Connection_ID
    is
    begin
       return Object.Connection_ID;
    end Connection_ID;
 
-   procedure Connection_ID (Object : in out Base_Type;
-                            Value  : in Gnoga.Types.Connection_ID)
+   procedure Connection_ID
+     (Object : in out Base_Type;
+      Value  : in     Gnoga.Types.Connection_ID)
    is
    begin
       Object.Connection_ID := Value;
@@ -421,7 +408,10 @@ package body Gnoga.Gui.Base is
    -- Valid --
    -----------
 
-   function Valid (Object : Base_Type) return Boolean is
+   function Valid
+     (Object : Base_Type)
+      return Boolean
+   is
    begin
       if Object.Connection_ID = Gnoga.Types.No_Connection then
          return False;
@@ -434,18 +424,21 @@ package body Gnoga.Gui.Base is
    -- ID --
    --------
 
-   function ID (Object : Base_Type) return String
+   function ID
+     (Object : Base_Type)
+      return String
    is
    begin
       return Ada.Strings.Unbounded.To_String (Object.Web_ID);
    end ID;
 
-   procedure ID (Object  : in out Base_Type;
-                 ID      : in     String;
-                 ID_Type : in     Gnoga.Types.ID_Enumeration)
+   procedure ID
+     (Object  : in out Base_Type;
+      ID      : in     String;
+      ID_Type : in     Gnoga.Types.ID_Enumeration)
    is
    begin
-      Object.Web_ID := Ada.Strings.Unbounded.To_Unbounded_String (ID);
+      Object.Web_ID  := Ada.Strings.Unbounded.To_Unbounded_String (ID);
       Object.ID_Type := ID_Type;
    end ID;
 
@@ -453,7 +446,9 @@ package body Gnoga.Gui.Base is
    -- ID_Type --
    -------------
 
-   function ID_Type (Object : Base_Type) return Gnoga.Types.ID_Enumeration
+   function ID_Type
+     (Object : Base_Type)
+      return Gnoga.Types.ID_Enumeration
    is
    begin
       return Object.ID_Type;
@@ -463,7 +458,10 @@ package body Gnoga.Gui.Base is
    -- DOM_Selector --
    ------------------
 
-   function DOM_Selector (Object : Base_Type) return String is
+   function DOM_Selector
+     (Object : Base_Type)
+      return String
+   is
       use Gnoga.Types;
    begin
       if Object.ID_Type = DOM_ID or Object.ID_Type = Gnoga_ID then
@@ -489,15 +487,17 @@ package body Gnoga.Gui.Base is
    -- Parent --
    ------------
 
-   function Parent (Object : Base_Type)
-                    return Pointer_To_Base_Class
+   function Parent
+     (Object : Base_Type)
+      return Pointer_To_Base_Class
    is
    begin
       return Object.Parent_Object;
    end Parent;
 
-   procedure Parent (Object : in out Base_Type;
-                     Value  : in out Base_Type'Class)
+   procedure Parent
+     (Object : in out Base_Type;
+      Value  : in out Base_Type'Class)
    is
    begin
       if Object.Parent_Object /= null then
@@ -509,8 +509,9 @@ package body Gnoga.Gui.Base is
       Value.On_Child_Added (Object);
    end Parent;
 
-   procedure Parent (Object : in out Base_Type;
-                     Value  : in Pointer_To_Base_Class)
+   procedure Parent
+     (Object : in out Base_Type;
+      Value  : in     Pointer_To_Base_Class)
    is
    begin
       if Object.Parent_Object /= null then
@@ -528,13 +529,19 @@ package body Gnoga.Gui.Base is
    -- Height --
    ------------
 
-   procedure Height (Object : in out Base_Type; Value : in Integer) is
+   procedure Height
+     (Object : in out Base_Type;
+      Value  : in     Integer)
+   is
    begin
       Object.jQuery_Execute ("height(" & Left_Trim (Value'Img) & ");");
       Object.On_Message ("resize", "");
    end Height;
 
-   function Height (Object : Base_Type) return Integer is
+   function Height
+     (Object : Base_Type)
+      return Integer
+   is
    begin
       return Object.jQuery_Execute ("height();");
    end Height;
@@ -543,13 +550,19 @@ package body Gnoga.Gui.Base is
    -- Width --
    -----------
 
-   procedure Width (Object : in out Base_Type; Value : in Integer) is
+   procedure Width
+     (Object : in out Base_Type;
+      Value  : in     Integer)
+   is
    begin
       Object.jQuery_Execute ("width(" & Left_Trim (Value'Img) & ");");
       Object.On_Message ("resize", "");
    end Width;
 
-   function Width (Object : Base_Type) return Integer is
+   function Width
+     (Object : Base_Type)
+      return Integer
+   is
    begin
       return Object.jQuery_Execute ("width();");
    end Width;
@@ -558,55 +571,74 @@ package body Gnoga.Gui.Base is
    -- Property --
    --------------
 
-   procedure Property (Object : in out Base_Type;
-                       Name   : in     String;
-                       Value  : in     String)
+   procedure Property
+     (Object : in out Base_Type;
+      Name   : in     String;
+      Value  : in     String)
    is
    begin
-      Object.jQuery_Execute ("prop ('" & Name & "','" &
-                               Escape_Quotes (Value) & "');");
+      Object.jQuery_Execute ("prop ('" & Name & "','" & Escape_Quotes (Value) & "');");
    end Property;
 
-   function Property (Object : Base_Type; Name : String) return String is
+   function Property
+     (Object : Base_Type;
+      Name   : String)
+      return String
+   is
    begin
       return Object.jQuery_Execute ("prop ('" & Name & "');");
    end Property;
 
-   procedure Property (Object : in out Base_Type;
-                       Name   : in     String;
-                       Value  : in     Integer)
+   procedure Property
+     (Object : in out Base_Type;
+      Name   : in     String;
+      Value  : in     Integer)
    is
    begin
       Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
    end Property;
 
-   function Property (Object : Base_Type; Name : String) return Integer is
+   function Property
+     (Object : Base_Type;
+      Name   : String)
+      return Integer
+   is
    begin
       return Object.jQuery_Execute ("prop ('" & Name & "');");
    end Property;
 
-   procedure Property (Object : in out Base_Type;
-                       Name   : in     String;
-                       Value  : in     Float)
+   procedure Property
+     (Object : in out Base_Type;
+      Name   : in     String;
+      Value  : in     Float)
    is
    begin
       Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
    end Property;
 
-   function Property (Object : Base_Type; Name : String) return Float is
+   function Property
+     (Object : Base_Type;
+      Name   : String)
+      return Float
+   is
    begin
       return Object.jQuery_Execute ("prop ('" & Name & "');");
    end Property;
 
-   procedure Property (Object : in out Base_Type;
-                       Name   : in     String;
-                       Value  : in     Boolean)
+   procedure Property
+     (Object : in out Base_Type;
+      Name   : in     String;
+      Value  : in     Boolean)
    is
    begin
       Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
    end Property;
 
-   function Property (Object : Base_Type; Name : String) return Boolean is
+   function Property
+     (Object : Base_Type;
+      Name   : String)
+      return Boolean
+   is
    begin
       return Object.Property (Name) = "true";
    end Property;
@@ -615,12 +647,18 @@ package body Gnoga.Gui.Base is
    -- Dynamic --
    -------------
 
-   procedure Dynamic (Object : in out Base_Type; Value : Boolean := True) is
+   procedure Dynamic
+     (Object : in out Base_Type;
+      Value  :        Boolean := True)
+   is
    begin
       Object.Is_Dynamic := Value;
    end Dynamic;
 
-   function Dynamic (Object : Base_Type) return Boolean is
+   function Dynamic
+     (Object : Base_Type)
+      return Boolean
+   is
    begin
       return Object.Is_Dynamic;
    end Dynamic;
@@ -651,27 +689,46 @@ package body Gnoga.Gui.Base is
    -- Execute--
    ------------
 
-   procedure Execute (Object : in out Base_Type; Method : in String) is
+   procedure Execute
+     (Object : in out Base_Type;
+      Method : in     String)
+   is
    begin
       Object.jQuery_Execute ("get(0)." & Method);
    end Execute;
 
-   function Execute (Object : Base_Type; Method : in String) return String is
+   function Execute
+     (Object :    Base_Type;
+      Method : in String)
+      return String
+   is
    begin
       return Object.jQuery_Execute ("get(0)." & Method);
    end Execute;
 
-   function Execute (Object : Base_Type; Method : in String) return Integer is
+   function Execute
+     (Object :    Base_Type;
+      Method : in String)
+      return Integer
+   is
    begin
       return Object.jQuery_Execute ("get(0)." & Method);
    end Execute;
 
-   function Execute (Object : Base_Type; Method : in String) return Float is
+   function Execute
+     (Object :    Base_Type;
+      Method : in String)
+      return Float
+   is
    begin
       return Object.jQuery_Execute ("get(0)." & Method);
    end Execute;
 
-   function Execute (Object : Base_Type; Method : in String) return Boolean is
+   function Execute
+     (Object :    Base_Type;
+      Method : in String)
+      return Boolean
+   is
    begin
       return Object.Execute (Method) = "true";
    end Execute;
@@ -680,13 +737,17 @@ package body Gnoga.Gui.Base is
    -- Buffer_Connection --
    -----------------------
 
-   function Buffer_Connection (Object : Base_Type) return Boolean is
+   function Buffer_Connection
+     (Object : Base_Type)
+      return Boolean
+   is
    begin
       return Gnoga.Server.Connection.Buffer_Connection (Object.Connection_ID);
    end Buffer_Connection;
 
-   procedure Buffer_Connection (Object : in out Base_Type;
-                                Value  : in     Boolean := True)
+   procedure Buffer_Connection
+     (Object : in out Base_Type;
+      Value  : in     Boolean := True)
    is
    begin
       Gnoga.Server.Connection.Buffer_Connection (Object.Connection_ID, Value);
@@ -709,15 +770,15 @@ package body Gnoga.Gui.Base is
    -- On_Resize --
    ---------------
 
-   procedure On_Resize_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+   procedure On_Resize_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       Object.On_Resize_Event := Handler;
    end On_Resize_Handler;
 
-   procedure Fire_On_Resize (Object : in out Base_Type)
-   is
+   procedure Fire_On_Resize (Object : in out Base_Type) is
    begin
       if Object.On_Resize_Event /= null then
          if not Object.In_Resize then
@@ -737,8 +798,9 @@ package body Gnoga.Gui.Base is
    -- On_Scroll --
    ---------------
 
-   procedure On_Scroll_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+   procedure On_Scroll_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Scroll_Event /= null then
@@ -748,13 +810,11 @@ package body Gnoga.Gui.Base is
       Object.On_Scroll_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "scroll",
-                            Message => "");
+         Object.Bind_Event (Event => "scroll", Message => "");
       end if;
    end On_Scroll_Handler;
 
-   procedure Fire_On_Scroll (Object : in out Base_Type)
-   is
+   procedure Fire_On_Scroll (Object : in out Base_Type) is
    begin
       if Object.On_Scroll_Event /= null then
          Object.On_Scroll_Event (Object);
@@ -765,8 +825,9 @@ package body Gnoga.Gui.Base is
    -- On_Focus --
    --------------
 
-   procedure On_Focus_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Focus_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Focus_Event /= null then
@@ -776,13 +837,11 @@ package body Gnoga.Gui.Base is
       Object.On_Focus_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "focus",
-                            Message => "");
+         Object.Bind_Event (Event => "focus", Message => "");
       end if;
    end On_Focus_Handler;
 
-   procedure Fire_On_Focus (Object : in out Base_Type)
-   is
+   procedure Fire_On_Focus (Object : in out Base_Type) is
    begin
       if Object.On_Focus_Event /= null then
          Object.On_Focus_Event (Object);
@@ -793,8 +852,9 @@ package body Gnoga.Gui.Base is
    -- On_Blur --
    -------------
 
-   procedure On_Blur_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Blur_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Blur_Event /= null then
@@ -804,13 +864,11 @@ package body Gnoga.Gui.Base is
       Object.On_Blur_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "blur",
-                            Message => "");
+         Object.Bind_Event (Event => "blur", Message => "");
       end if;
    end On_Blur_Handler;
 
-   procedure Fire_On_Blur (Object : in out Base_Type)
-   is
+   procedure Fire_On_Blur (Object : in out Base_Type) is
    begin
       if Object.On_Blur_Event /= null then
          Object.On_Blur_Event (Object);
@@ -821,8 +879,9 @@ package body Gnoga.Gui.Base is
    -- On_Change --
    ---------------
 
-   procedure On_Change_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+   procedure On_Change_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Change_Event /= null then
@@ -832,13 +891,11 @@ package body Gnoga.Gui.Base is
       Object.On_Change_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "change",
-                            Message => "");
+         Object.Bind_Event (Event => "change", Message => "");
       end if;
    end On_Change_Handler;
 
-   procedure Fire_On_Change (Object : in out Base_Type)
-   is
+   procedure Fire_On_Change (Object : in out Base_Type) is
    begin
       if Object.On_Change_Event /= null then
          Object.On_Change_Event (Object);
@@ -849,8 +906,9 @@ package body Gnoga.Gui.Base is
    -- On_Focus_In --
    -----------------
 
-   procedure On_Focus_In_Handler (Object  : in out Base_Type;
-                                  Handler : in     Action_Event)
+   procedure On_Focus_In_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Focus_In_Event /= null then
@@ -860,13 +918,11 @@ package body Gnoga.Gui.Base is
       Object.On_Focus_In_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "focusin",
-                            Message => "");
+         Object.Bind_Event (Event => "focusin", Message => "");
       end if;
    end On_Focus_In_Handler;
 
-   procedure Fire_On_Focus_In (Object : in out Base_Type)
-   is
+   procedure Fire_On_Focus_In (Object : in out Base_Type) is
    begin
       if Object.On_Focus_In_Event /= null then
          Object.On_Focus_In_Event (Object);
@@ -877,8 +933,9 @@ package body Gnoga.Gui.Base is
    -- On_Focus_Out --
    ------------------
 
-   procedure On_Focus_Out_Handler (Object  : in out Base_Type;
-                                   Handler : in     Action_Event)
+   procedure On_Focus_Out_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Focus_Out_Event /= null then
@@ -888,13 +945,11 @@ package body Gnoga.Gui.Base is
       Object.On_Focus_Out_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "focusout",
-                            Message => "");
+         Object.Bind_Event (Event => "focusout", Message => "");
       end if;
    end On_Focus_Out_Handler;
 
-   procedure Fire_On_Focus_Out (Object : in out Base_Type)
-   is
+   procedure Fire_On_Focus_Out (Object : in out Base_Type) is
    begin
       if Object.On_Focus_Out_Event /= null then
          Object.On_Focus_Out_Event (Object);
@@ -905,8 +960,9 @@ package body Gnoga.Gui.Base is
    -- On_Input --
    --------------
 
-   procedure On_Input_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Input_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Input_Event /= null then
@@ -916,13 +972,11 @@ package body Gnoga.Gui.Base is
       Object.On_Input_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "input",
-                            Message => "");
+         Object.Bind_Event (Event => "input", Message => "");
       end if;
    end On_Input_Handler;
 
-   procedure Fire_On_Input (Object : in out Base_Type)
-   is
+   procedure Fire_On_Input (Object : in out Base_Type) is
    begin
       if Object.On_Input_Event /= null then
          Object.On_Input_Event (Object);
@@ -933,8 +987,9 @@ package body Gnoga.Gui.Base is
    -- On_Reset --
    --------------
 
-   procedure On_Reset_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Reset_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Reset_Event /= null then
@@ -944,14 +999,11 @@ package body Gnoga.Gui.Base is
       Object.On_Reset_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "reset",
-                            Message => "",
-                            Cancel  => True);
+         Object.Bind_Event (Event => "reset", Message => "", Cancel => True);
       end if;
    end On_Reset_Handler;
 
-   procedure Fire_On_Reset (Object : in out Base_Type)
-   is
+   procedure Fire_On_Reset (Object : in out Base_Type) is
    begin
       if Object.On_Reset_Event /= null then
          Object.On_Reset_Event (Object);
@@ -962,8 +1014,9 @@ package body Gnoga.Gui.Base is
    -- On_Search --
    ---------------
 
-   procedure On_Search_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+   procedure On_Search_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Search_Event /= null then
@@ -973,13 +1026,11 @@ package body Gnoga.Gui.Base is
       Object.On_Search_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "search",
-                            Message => "");
+         Object.Bind_Event (Event => "search", Message => "");
       end if;
    end On_Search_Handler;
 
-   procedure Fire_On_Search (Object : in out Base_Type)
-   is
+   procedure Fire_On_Search (Object : in out Base_Type) is
    begin
       if Object.On_Search_Event /= null then
          Object.On_Search_Event (Object);
@@ -990,8 +1041,9 @@ package body Gnoga.Gui.Base is
    -- On_Select --
    ---------------
 
-   procedure On_Select_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+   procedure On_Select_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Select_Event /= null then
@@ -1001,13 +1053,11 @@ package body Gnoga.Gui.Base is
       Object.On_Select_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "select",
-                            Message => "");
+         Object.Bind_Event (Event => "select", Message => "");
       end if;
    end On_Select_Handler;
 
-   procedure Fire_On_Select (Object : in out Base_Type)
-   is
+   procedure Fire_On_Select (Object : in out Base_Type) is
    begin
       if Object.On_Select_Event /= null then
          Object.On_Select_Event (Object);
@@ -1018,8 +1068,9 @@ package body Gnoga.Gui.Base is
    -- On_Submit --
    ---------------
 
-   procedure On_Submit_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+   procedure On_Submit_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Submit_Event /= null then
@@ -1029,14 +1080,11 @@ package body Gnoga.Gui.Base is
       Object.On_Submit_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "submit",
-                            Message => "",
-                            Cancel  => True);
+         Object.Bind_Event (Event => "submit", Message => "", Cancel => True);
       end if;
    end On_Submit_Handler;
 
-   procedure Fire_On_Submit (Object : in out Base_Type)
-   is
+   procedure Fire_On_Submit (Object : in out Base_Type) is
    begin
       if Object.On_Submit_Event /= null then
          Object.On_Submit_Event (Object);
@@ -1047,28 +1095,23 @@ package body Gnoga.Gui.Base is
    -- On_Click --
    --------------
 
-   procedure On_Click_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Click_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
-      if
-        Object.On_Click_Event /= null and
-        Object.On_Mouse_Click_Event = null
-      then
+      if Object.On_Click_Event /= null and Object.On_Mouse_Click_Event = null then
          Object.Unbind_Event ("click");
       end if;
 
       Object.On_Click_Event := Handler;
 
       if Handler /= null and Object.On_Mouse_Click_Event = null then
-         Object.Bind_Event (Event   => "click",
-                            Message => "",
-                            Script  => Mouse_Event_Script);
+         Object.Bind_Event (Event => "click", Message => "", Script => Mouse_Event_Script);
       end if;
    end On_Click_Handler;
 
-   procedure Fire_On_Click (Object : in out Base_Type)
-   is
+   procedure Fire_On_Click (Object : in out Base_Type) is
    begin
       if Object.On_Click_Event /= null then
          Object.On_Click_Event (Object);
@@ -1079,28 +1122,25 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Click --
    --------------------
 
-   procedure On_Mouse_Click_Handler (Object  : in out Base_Type;
-                                     Handler : in     Mouse_Event)
+   procedure On_Mouse_Click_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Mouse_Event)
    is
    begin
-      if
-        Object.On_Click_Event = null and
-        Object.On_Mouse_Click_Event /= null
-      then
+      if Object.On_Click_Event = null and Object.On_Mouse_Click_Event /= null then
          Object.Unbind_Event ("click");
       end if;
 
       Object.On_Mouse_Click_Event := Handler;
 
       if Handler /= null and Object.On_Click_Event = null then
-         Object.Bind_Event (Event   => "click",
-                            Message => "",
-                            Script  => Mouse_Event_Script);
+         Object.Bind_Event (Event => "click", Message => "", Script => Mouse_Event_Script);
       end if;
    end On_Mouse_Click_Handler;
 
-   procedure Fire_On_Mouse_Click (Object   : in out Base_Type;
-                                  Event    : in     Mouse_Event_Record)
+   procedure Fire_On_Mouse_Click
+     (Object : in out Base_Type;
+      Event  : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Click_Event /= null then
@@ -1112,29 +1152,23 @@ package body Gnoga.Gui.Base is
    -- On_Context_Menu --
    ---------------------
 
-   procedure On_Context_Menu_Handler (Object  : in out Base_Type;
-                                      Handler : in     Action_Event)
+   procedure On_Context_Menu_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
-      if
-        Object.On_Mouse_Right_Click_Event = null and
-        Object.On_Context_Menu_Event /= null
-      then
+      if Object.On_Mouse_Right_Click_Event = null and Object.On_Context_Menu_Event /= null then
          Object.Unbind_Event ("contextmenu");
       end if;
 
       Object.On_Context_Menu_Event := Handler;
 
       if Handler /= null and Object.On_Mouse_Right_Click_Event = null then
-         Object.Bind_Event (Event   => "contextmenu",
-                            Message => "",
-                            Script  => Mouse_Event_Script,
-                            Cancel  => True);
+         Object.Bind_Event (Event => "contextmenu", Message => "", Script => Mouse_Event_Script, Cancel => True);
       end if;
    end On_Context_Menu_Handler;
 
-   procedure Fire_On_Context_Menu (Object : in out Base_Type)
-   is
+   procedure Fire_On_Context_Menu (Object : in out Base_Type) is
    begin
       if Object.On_Context_Menu_Event /= null then
          Object.On_Context_Menu_Event (Object);
@@ -1145,29 +1179,25 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Right_Click --
    --------------------------
 
-   procedure On_Mouse_Right_Click_Handler (Object  : in out Base_Type;
-                                           Handler : in     Mouse_Event)
+   procedure On_Mouse_Right_Click_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Mouse_Event)
    is
    begin
-      if
-        Object.On_Mouse_Right_Click_Event /= null and
-        Object.On_Context_Menu_Event = null
-      then
+      if Object.On_Mouse_Right_Click_Event /= null and Object.On_Context_Menu_Event = null then
          Object.Unbind_Event ("contextmenu");
       end if;
 
       Object.On_Mouse_Right_Click_Event := Handler;
 
       if Handler /= null and Object.On_Context_Menu_Event = null then
-         Object.Bind_Event (Event   => "contextmenu",
-                            Message => "",
-                            Script  => Mouse_Event_Script,
-                            Cancel  => True);
+         Object.Bind_Event (Event => "contextmenu", Message => "", Script => Mouse_Event_Script, Cancel => True);
       end if;
    end On_Mouse_Right_Click_Handler;
 
-   procedure Fire_On_Mouse_Right_Click (Object   : in out Base_Type;
-                                        Event    : in     Mouse_Event_Record)
+   procedure Fire_On_Mouse_Right_Click
+     (Object : in out Base_Type;
+      Event  : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Right_Click_Event /= null then
@@ -1179,28 +1209,23 @@ package body Gnoga.Gui.Base is
    -- On_Double_Click --
    ---------------------
 
-   procedure On_Double_Click_Handler (Object  : in out Base_Type;
-                                      Handler : in     Action_Event)
+   procedure On_Double_Click_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
-      if
-        Object.On_Double_Click_Event /= null and
-        Object.On_Mouse_Double_Click_Event = null
-      then
+      if Object.On_Double_Click_Event /= null and Object.On_Mouse_Double_Click_Event = null then
          Object.Unbind_Event ("dblclick");
       end if;
 
       Object.On_Double_Click_Event := Handler;
 
       if Handler /= null and Object.On_Mouse_Double_Click_Event = null then
-         Object.Bind_Event (Event   => "dblclick",
-                            Message => "",
-                            Script  => Mouse_Event_Script);
+         Object.Bind_Event (Event => "dblclick", Message => "", Script => Mouse_Event_Script);
       end if;
    end On_Double_Click_Handler;
 
-   procedure Fire_On_Double_Click (Object : in out Base_Type)
-   is
+   procedure Fire_On_Double_Click (Object : in out Base_Type) is
    begin
       if Object.On_Double_Click_Event /= null then
          Object.On_Double_Click_Event (Object);
@@ -1211,28 +1236,25 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Double_Click --
    ---------------------------
 
-   procedure On_Mouse_Double_Click_Handler (Object  : in out Base_Type;
-                                            Handler : in     Mouse_Event)
+   procedure On_Mouse_Double_Click_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Mouse_Event)
    is
    begin
-      if
-        Object.On_Double_Click_Event = null and
-        Object.On_Mouse_Double_Click_Event /= null
-      then
+      if Object.On_Double_Click_Event = null and Object.On_Mouse_Double_Click_Event /= null then
          Object.Unbind_Event ("dblclick");
       end if;
 
       Object.On_Mouse_Double_Click_Event := Handler;
 
       if Handler /= null and Object.On_Double_Click_Event = null then
-         Object.Bind_Event (Event   => "dblclick",
-                            Message => "",
-                            Script  => Mouse_Event_Script);
+         Object.Bind_Event (Event => "dblclick", Message => "", Script => Mouse_Event_Script);
       end if;
    end On_Mouse_Double_Click_Handler;
 
-   procedure Fire_On_Mouse_Double_Click (Object   : in out Base_Type;
-                                         Event    : in     Mouse_Event_Record)
+   procedure Fire_On_Mouse_Double_Click
+     (Object : in out Base_Type;
+      Event  : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Double_Click_Event /= null then
@@ -1244,8 +1266,9 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Enter --
    --------------------
 
-   procedure On_Mouse_Enter_Handler (Object  : in out Base_Type;
-                                     Handler : in     Action_Event)
+   procedure On_Mouse_Enter_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Mouse_Enter_Event /= null then
@@ -1255,13 +1278,11 @@ package body Gnoga.Gui.Base is
       Object.On_Mouse_Enter_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "mouseenter",
-                            Message => "");
+         Object.Bind_Event (Event => "mouseenter", Message => "");
       end if;
    end On_Mouse_Enter_Handler;
 
-   procedure Fire_On_Mouse_Enter (Object : in out Base_Type)
-   is
+   procedure Fire_On_Mouse_Enter (Object : in out Base_Type) is
    begin
       if Object.On_Mouse_Enter_Event /= null then
          Object.On_Mouse_Enter_Event (Object);
@@ -1272,8 +1293,9 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Leave --
    --------------------
 
-   procedure On_Mouse_Leave_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Mouse_Leave_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Mouse_Leave_Event /= null then
@@ -1283,13 +1305,11 @@ package body Gnoga.Gui.Base is
       Object.On_Mouse_Leave_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "mouseleave",
-                            Message => "");
+         Object.Bind_Event (Event => "mouseleave", Message => "");
       end if;
    end On_Mouse_Leave_Handler;
 
-   procedure Fire_On_Mouse_Leave (Object : in out Base_Type)
-   is
+   procedure Fire_On_Mouse_Leave (Object : in out Base_Type) is
    begin
       if Object.On_Mouse_Leave_Event /= null then
          Object.On_Mouse_Leave_Event (Object);
@@ -1300,8 +1320,9 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Over --
    --------------------
 
-   procedure On_Mouse_Over_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Mouse_Over_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Mouse_Over_Event /= null then
@@ -1311,13 +1332,11 @@ package body Gnoga.Gui.Base is
       Object.On_Mouse_Over_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "mouseover",
-                            Message => "");
+         Object.Bind_Event (Event => "mouseover", Message => "");
       end if;
    end On_Mouse_Over_Handler;
 
-   procedure Fire_On_Mouse_Over (Object : in out Base_Type)
-   is
+   procedure Fire_On_Mouse_Over (Object : in out Base_Type) is
    begin
       if Object.On_Mouse_Over_Event /= null then
          Object.On_Mouse_Over_Event (Object);
@@ -1328,8 +1347,9 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Out --
    ------------------
 
-   procedure On_Mouse_Out_Handler (Object  : in out Base_Type;
-                                   Handler : in     Action_Event)
+   procedure On_Mouse_Out_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Mouse_Out_Event /= null then
@@ -1339,13 +1359,11 @@ package body Gnoga.Gui.Base is
       Object.On_Mouse_Out_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "mouseout",
-                            Message => "");
+         Object.Bind_Event (Event => "mouseout", Message => "");
       end if;
    end On_Mouse_Out_Handler;
 
-   procedure Fire_On_Mouse_Out (Object : in out Base_Type)
-   is
+   procedure Fire_On_Mouse_Out (Object : in out Base_Type) is
    begin
       if Object.On_Mouse_Out_Event /= null then
          Object.On_Mouse_Out_Event (Object);
@@ -1356,8 +1374,9 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Down --
    -------------------
 
-   procedure On_Mouse_Down_Handler (Object  : in out Base_Type;
-                                    Handler : in     Mouse_Event)
+   procedure On_Mouse_Down_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Mouse_Event)
    is
    begin
       if Object.On_Mouse_Down_Event /= null then
@@ -1367,14 +1386,13 @@ package body Gnoga.Gui.Base is
       Object.On_Mouse_Down_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "mousedown",
-                            Message => "",
-                            Script  => Mouse_Event_Script);
+         Object.Bind_Event (Event => "mousedown", Message => "", Script => Mouse_Event_Script);
       end if;
    end On_Mouse_Down_Handler;
 
-   procedure Fire_On_Mouse_Down (Object   : in out Base_Type;
-                                 Event    : in     Mouse_Event_Record)
+   procedure Fire_On_Mouse_Down
+     (Object : in out Base_Type;
+      Event  : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Down_Event /= null then
@@ -1386,8 +1404,9 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Up --
    -----------------
 
-   procedure On_Mouse_Up_Handler (Object  : in out Base_Type;
-                                  Handler : in     Mouse_Event)
+   procedure On_Mouse_Up_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Mouse_Event)
    is
    begin
       if Object.On_Mouse_Up_Event /= null then
@@ -1397,14 +1416,13 @@ package body Gnoga.Gui.Base is
       Object.On_Mouse_Up_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "mouseup",
-                            Message => "",
-                            Script  => Mouse_Event_Script);
+         Object.Bind_Event (Event => "mouseup", Message => "", Script => Mouse_Event_Script);
       end if;
    end On_Mouse_Up_Handler;
 
-   procedure Fire_On_Mouse_Up (Object   : in out Base_Type;
-                               Event    : in     Mouse_Event_Record)
+   procedure Fire_On_Mouse_Up
+     (Object : in out Base_Type;
+      Event  : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Up_Event /= null then
@@ -1416,8 +1434,9 @@ package body Gnoga.Gui.Base is
    -- On_Mouse_Move --
    -------------------
 
-   procedure On_Mouse_Move_Handler (Object  : in out Base_Type;
-                                    Handler : in     Mouse_Event)
+   procedure On_Mouse_Move_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Mouse_Event)
    is
    begin
       if Object.On_Mouse_Move_Event /= null then
@@ -1427,14 +1446,13 @@ package body Gnoga.Gui.Base is
       Object.On_Mouse_Move_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "mousemove",
-                            Message => "",
-                            Script  => Mouse_Event_Script);
+         Object.Bind_Event (Event => "mousemove", Message => "", Script => Mouse_Event_Script);
       end if;
    end On_Mouse_Move_Handler;
 
-   procedure Fire_On_Mouse_Move (Object   : in out Base_Type;
-                                 Event    : in     Mouse_Event_Record)
+   procedure Fire_On_Mouse_Move
+     (Object : in out Base_Type;
+      Event  : in     Mouse_Event_Record)
    is
    begin
       if Object.On_Mouse_Move_Event /= null then
@@ -1442,10 +1460,11 @@ package body Gnoga.Gui.Base is
       end if;
    end Fire_On_Mouse_Move;
 
-   procedure On_Drag_Start_Handler (Object    : in out Base_Type;
-                                    Handler   : in     Action_Event;
-                                    Drag_Text : in     String;
-                                    Drag_Type : in     String := "text/plain")
+   procedure On_Drag_Start_Handler
+     (Object    : in out Base_Type;
+      Handler   : in     Action_Event;
+      Drag_Text : in     String;
+      Drag_Type : in     String := "text/plain")
    is
    begin
       if Object.On_Drag_Start_Event /= null then
@@ -1456,24 +1475,21 @@ package body Gnoga.Gui.Base is
 
       if Handler /= null then
          Object.Bind_Event
-           (Event   => "dragstart",
-            Message => "",
-            Eval  =>
-             "e.originalEvent.dataTransfer.setData('" & Drag_Type & "', '" &
-             Escape_Quotes (Drag_Text) & "');");
+           (Event => "dragstart", Message => "",
+            Eval  => "e.originalEvent.dataTransfer.setData('" & Drag_Type & "', '" & Escape_Quotes (Drag_Text) & "');");
       end if;
    end On_Drag_Start_Handler;
 
-   procedure Fire_On_Drag_Start (Object : in out Base_Type)
-   is
+   procedure Fire_On_Drag_Start (Object : in out Base_Type) is
    begin
       if Object.On_Drag_Start_Event /= null then
          Object.On_Drag_Start_Event (Object);
       end if;
    end Fire_On_Drag_Start;
 
-   procedure On_Drag_Handler (Object  : in out Base_Type;
-                              Handler : in     Action_Event)
+   procedure On_Drag_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Drag_Event /= null then
@@ -1483,21 +1499,20 @@ package body Gnoga.Gui.Base is
       Object.On_Drag_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "drag",
-                            Message => "");
+         Object.Bind_Event (Event => "drag", Message => "");
       end if;
    end On_Drag_Handler;
 
-   procedure Fire_On_Drag (Object : in out Base_Type)
-   is
+   procedure Fire_On_Drag (Object : in out Base_Type) is
    begin
       if Object.On_Drag_Event /= null then
          Object.On_Drag_Event (Object);
       end if;
    end Fire_On_Drag;
 
-   procedure On_Drag_End_Handler (Object  : in out Base_Type;
-                                  Handler : in     Action_Event)
+   procedure On_Drag_End_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Drag_End_Event /= null then
@@ -1507,21 +1522,20 @@ package body Gnoga.Gui.Base is
       Object.On_Drag_End_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "dragend",
-                            Message => "");
+         Object.Bind_Event (Event => "dragend", Message => "");
       end if;
    end On_Drag_End_Handler;
 
-   procedure Fire_On_Drag_End (Object : in out Base_Type)
-   is
+   procedure Fire_On_Drag_End (Object : in out Base_Type) is
    begin
       if Object.On_Drag_End_Event /= null then
          Object.On_Drag_End_Event (Object);
       end if;
    end Fire_On_Drag_End;
 
-   procedure On_Drag_Enter_Handler (Object  : in out Base_Type;
-                                    Handler : in     Action_Event)
+   procedure On_Drag_Enter_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Drag_Enter_Event /= null then
@@ -1531,21 +1545,20 @@ package body Gnoga.Gui.Base is
       Object.On_Drag_Enter_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "dragenter",
-                            Message => "");
+         Object.Bind_Event (Event => "dragenter", Message => "");
       end if;
    end On_Drag_Enter_Handler;
 
-   procedure Fire_On_Drag_Enter (Object : in out Base_Type)
-   is
+   procedure Fire_On_Drag_Enter (Object : in out Base_Type) is
    begin
       if Object.On_Drag_Enter_Event /= null then
          Object.On_Drag_Enter_Event (Object);
       end if;
    end Fire_On_Drag_Enter;
 
-   procedure On_Drag_Leave_Handler (Object  : in out Base_Type;
-                                    Handler : in     Action_Event)
+   procedure On_Drag_Leave_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Drag_Leave_Event /= null then
@@ -1555,22 +1568,21 @@ package body Gnoga.Gui.Base is
       Object.On_Drag_Leave_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "dragleave",
-                            Message => "");
+         Object.Bind_Event (Event => "dragleave", Message => "");
       end if;
    end On_Drag_Leave_Handler;
 
-   procedure Fire_On_Drag_Leave (Object : in out Base_Type)
-   is
+   procedure Fire_On_Drag_Leave (Object : in out Base_Type) is
    begin
       if Object.On_Drag_Leave_Event /= null then
          Object.On_Drag_Leave_Event (Object);
       end if;
    end Fire_On_Drag_Leave;
 
-   procedure On_Drop_Handler (Object    : in out Base_Type;
-                              Handler   : in     Drop_Event;
-                              Drag_Type : in     String := "text/plain")
+   procedure On_Drop_Handler
+     (Object    : in out Base_Type;
+      Handler   : in     Drop_Event;
+      Drag_Type : in     String := "text/plain")
    is
    begin
       if Object.On_Drop_Event /= null then
@@ -1581,26 +1593,20 @@ package body Gnoga.Gui.Base is
       Object.On_Drop_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "dragover",
-                            Message => "",
-                            Eval  => "e.preventDefault();");
+         Object.Bind_Event (Event => "dragover", Message => "", Eval => "e.preventDefault();");
          Object.Bind_Event
-           (Event   => "drop",
-            Message => "",
-            Eval    => "e.preventDefault();",
-            Script  =>
-              "(e.originalEvent.clientX - " &
-              "e.target.getBoundingClientRect().left) + '|' + " &
-              "(e.originalEvent.clientY - " &
-              "e.target.getBoundingClientRect().top)  + '|' + " &
-              "e.originalEvent.dataTransfer.getData('" &
-              Drag_Type & "') + '|'");
+           (Event  => "drop", Message => "", Eval => "e.preventDefault();",
+            Script =>
+              "(e.originalEvent.clientX - " & "e.target.getBoundingClientRect().left) + '|' + " &
+              "(e.originalEvent.clientY - " & "e.target.getBoundingClientRect().top)  + '|' + " &
+              "e.originalEvent.dataTransfer.getData('" & Drag_Type & "') + '|'");
       end if;
    end On_Drop_Handler;
 
-   procedure Fire_On_Drop (Object    : in out Base_Type;
-                           X, Y      : in     Integer;
-                           Drag_Text : in     String)
+   procedure Fire_On_Drop
+     (Object    : in out Base_Type;
+      X, Y      : in     Integer;
+      Drag_Text : in     String)
    is
    begin
       if Object.On_Drop_Event /= null then
@@ -1612,13 +1618,12 @@ package body Gnoga.Gui.Base is
    -- On_Character --
    ------------------
 
-   procedure On_Character_Handler (Object  : in out Base_Type;
-                                   Handler : in     Character_Event)
+   procedure On_Character_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Character_Event)
    is
    begin
-      if
-        Object.On_Character_Event /= null and
-        Object.On_Wide_Character_Event = null and
+      if Object.On_Character_Event /= null and Object.On_Wide_Character_Event = null and
         Object.On_Key_Press_Event = null
       then
          Object.Unbind_Event ("keypress");
@@ -1626,19 +1631,14 @@ package body Gnoga.Gui.Base is
 
       Object.On_Character_Event := Handler;
 
-      if
-        Handler /= null and
-        Object.On_Wide_Character_Event = null and
-        Object.On_Key_Press_Event = null
-      then
-         Object.Bind_Event (Event   => "keypress",
-                            Message => "",
-                            Script  => Keyboard_Event_Script);
+      if Handler /= null and Object.On_Wide_Character_Event = null and Object.On_Key_Press_Event = null then
+         Object.Bind_Event (Event => "keypress", Message => "", Script => Keyboard_Event_Script);
       end if;
    end On_Character_Handler;
 
-   procedure Fire_On_Character (Object : in out Base_Type;
-                                Key    : in     Character)
+   procedure Fire_On_Character
+     (Object : in out Base_Type;
+      Key    : in     Character)
    is
    begin
       if Object.On_Character_Event /= null then
@@ -1650,13 +1650,12 @@ package body Gnoga.Gui.Base is
    -- On_Wide_Character --
    -----------------------
 
-   procedure On_Wide_Character_Handler (Object  : in out Base_Type;
-                                        Handler : in     Wide_Character_Event)
+   procedure On_Wide_Character_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Wide_Character_Event)
    is
    begin
-      if
-        Object.On_Character_Event = null and
-        Object.On_Wide_Character_Event /= null and
+      if Object.On_Character_Event = null and Object.On_Wide_Character_Event /= null and
         Object.On_Key_Press_Event = null
       then
          Object.Unbind_Event ("keypress");
@@ -1664,19 +1663,14 @@ package body Gnoga.Gui.Base is
 
       Object.On_Wide_Character_Event := Handler;
 
-      if
-        Handler /= null and
-        Object.On_Character_Event = null and
-        Object.On_Key_Press_Event = null
-      then
-         Object.Bind_Event (Event   => "keypress",
-                            Message => "",
-                            Script  => Keyboard_Event_Script);
+      if Handler /= null and Object.On_Character_Event = null and Object.On_Key_Press_Event = null then
+         Object.Bind_Event (Event => "keypress", Message => "", Script => Keyboard_Event_Script);
       end if;
    end On_Wide_Character_Handler;
 
-   procedure Fire_On_Wide_Character (Object : in out Base_Type;
-                                     Key    : in     Wide_Character)
+   procedure Fire_On_Wide_Character
+     (Object : in out Base_Type;
+      Key    : in     Wide_Character)
    is
    begin
       if Object.On_Wide_Character_Event /= null then
@@ -1688,8 +1682,9 @@ package body Gnoga.Gui.Base is
    -- On_Key_Down --
    ------------------
 
-   procedure On_Key_Down_Handler (Object  : in out Base_Type;
-                                  Handler : in     Keyboard_Event)
+   procedure On_Key_Down_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Keyboard_Event)
    is
    begin
       if Object.On_Key_Down_Event /= null then
@@ -1699,14 +1694,13 @@ package body Gnoga.Gui.Base is
       Object.On_Key_Down_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "keydown",
-                            Message => "",
-                            Script  => Keyboard_Event_Script);
+         Object.Bind_Event (Event => "keydown", Message => "", Script => Keyboard_Event_Script);
       end if;
    end On_Key_Down_Handler;
 
-   procedure Fire_On_Key_Down (Object : in out Base_Type;
-                               Event  : in     Keyboard_Event_Record)
+   procedure Fire_On_Key_Down
+     (Object : in out Base_Type;
+      Event  : in     Keyboard_Event_Record)
    is
    begin
       if Object.On_Key_Down_Event /= null then
@@ -1718,8 +1712,9 @@ package body Gnoga.Gui.Base is
    -- On_Key_Up --
    ---------------
 
-   procedure On_Key_Up_Handler (Object  : in out Base_Type;
-                                Handler : in     Keyboard_Event)
+   procedure On_Key_Up_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Keyboard_Event)
    is
    begin
       if Object.On_Key_Up_Event /= null then
@@ -1729,14 +1724,13 @@ package body Gnoga.Gui.Base is
       Object.On_Key_Up_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "keyup",
-                            Message => "",
-                            Script  => Keyboard_Event_Script);
+         Object.Bind_Event (Event => "keyup", Message => "", Script => Keyboard_Event_Script);
       end if;
    end On_Key_Up_Handler;
 
-   procedure Fire_On_Key_Up (Object : in out Base_Type;
-                             Event  : in     Keyboard_Event_Record)
+   procedure Fire_On_Key_Up
+     (Object : in out Base_Type;
+      Event  : in     Keyboard_Event_Record)
    is
    begin
       if Object.On_Key_Up_Event /= null then
@@ -1748,13 +1742,12 @@ package body Gnoga.Gui.Base is
    -- On_Key_Press --
    ------------------
 
-   procedure On_Key_Press_Handler (Object  : in out Base_Type;
-                                  Handler : in     Keyboard_Event)
+   procedure On_Key_Press_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Keyboard_Event)
    is
    begin
-      if
-        Object.On_Character_Event = null and
-        Object.On_Wide_Character_Event = null and
+      if Object.On_Character_Event = null and Object.On_Wide_Character_Event = null and
         Object.On_Key_Press_Event /= null
       then
          Object.Unbind_Event ("keypress");
@@ -1762,19 +1755,14 @@ package body Gnoga.Gui.Base is
 
       Object.On_Key_Press_Event := Handler;
 
-      if
-        Handler /= null and
-        Object.On_Character_Event = null and
-        Object.On_Wide_Character_Event = null
-      then
-         Object.Bind_Event (Event   => "keypress",
-                            Message => "",
-                            Script  => Keyboard_Event_Script);
+      if Handler /= null and Object.On_Character_Event = null and Object.On_Wide_Character_Event = null then
+         Object.Bind_Event (Event => "keypress", Message => "", Script => Keyboard_Event_Script);
       end if;
    end On_Key_Press_Handler;
 
-   procedure Fire_On_Key_Press (Object : in out Base_Type;
-                               Event  : in     Keyboard_Event_Record)
+   procedure Fire_On_Key_Press
+     (Object : in out Base_Type;
+      Event  : in     Keyboard_Event_Record)
    is
    begin
       if Object.On_Key_Press_Event /= null then
@@ -1786,8 +1774,9 @@ package body Gnoga.Gui.Base is
    -- On_Copy --
    -------------
 
-   procedure On_Copy_Handler (Object  : in out Base_Type;
-                              Handler : in     Action_Event)
+   procedure On_Copy_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Copy_Event /= null then
@@ -1797,13 +1786,11 @@ package body Gnoga.Gui.Base is
       Object.On_Copy_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "copy",
-                            Message => "");
+         Object.Bind_Event (Event => "copy", Message => "");
       end if;
    end On_Copy_Handler;
 
-   procedure Fire_On_Copy (Object : in out Base_Type)
-   is
+   procedure Fire_On_Copy (Object : in out Base_Type) is
    begin
       if Object.On_Copy_Event /= null then
          Object.On_Copy_Event (Object);
@@ -1814,8 +1801,9 @@ package body Gnoga.Gui.Base is
    -- On_Cut --
    ------------
 
-   procedure On_Cut_Handler (Object  : in out Base_Type;
-                             Handler : in     Action_Event)
+   procedure On_Cut_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Cut_Event /= null then
@@ -1825,13 +1813,11 @@ package body Gnoga.Gui.Base is
       Object.On_Cut_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "cut",
-                            Message => "");
+         Object.Bind_Event (Event => "cut", Message => "");
       end if;
    end On_Cut_Handler;
 
-   procedure Fire_On_Cut (Object : in out Base_Type)
-   is
+   procedure Fire_On_Cut (Object : in out Base_Type) is
    begin
       if Object.On_Cut_Event /= null then
          Object.On_Cut_Event (Object);
@@ -1842,8 +1828,9 @@ package body Gnoga.Gui.Base is
    -- On_Paste --
    --------------
 
-   procedure On_Paste_Handler (Object  : in out Base_Type;
-                               Handler : in     Action_Event)
+   procedure On_Paste_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       if Object.On_Paste_Event /= null then
@@ -1853,13 +1840,11 @@ package body Gnoga.Gui.Base is
       Object.On_Paste_Event := Handler;
 
       if Handler /= null then
-         Object.Bind_Event (Event   => "paste",
-                            Message => "");
+         Object.Bind_Event (Event => "paste", Message => "");
       end if;
    end On_Paste_Handler;
 
-   procedure Fire_On_Paste (Object : in out Base_Type)
-   is
+   procedure Fire_On_Paste (Object : in out Base_Type) is
    begin
       if Object.On_Paste_Event /= null then
          Object.On_Paste_Event (Object);
@@ -1870,21 +1855,20 @@ package body Gnoga.Gui.Base is
    -- On_Create --
    ---------------
 
-   procedure On_Create (Object : in out Base_Type)
-   is
+   procedure On_Create (Object : in out Base_Type) is
    begin
       Object.Fire_On_Create;
    end On_Create;
 
-   procedure On_Create_Handler (Object  : in out Base_Type;
-                                Handler : in     Action_Event)
+   procedure On_Create_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       Object.On_Create_Event := Handler;
    end On_Create_Handler;
 
-   procedure Fire_On_Create (Object : in out Base_Type)
-   is
+   procedure Fire_On_Create (Object : in out Base_Type) is
    begin
       if Object.On_Create_Event /= null then
          Object.On_Create_Event (Object);
@@ -1895,21 +1879,20 @@ package body Gnoga.Gui.Base is
    -- On_Destroy --
    ----------------
 
-   procedure On_Destroy (Object : in out Base_Type)
-   is
+   procedure On_Destroy (Object : in out Base_Type) is
    begin
       Object.Fire_On_Destroy;
    end On_Destroy;
 
-   procedure On_Destroy_Handler (Object  : in out Base_Type;
-                                 Handler : in     Action_Event)
+   procedure On_Destroy_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Action_Event)
    is
    begin
       Object.On_Destroy_Event := Handler;
    end On_Destroy_Handler;
 
-   procedure Fire_On_Destroy (Object : in out Base_Type)
-   is
+   procedure Fire_On_Destroy (Object : in out Base_Type) is
    begin
       if Object.On_Destroy_Event /= null then
          Object.On_Destroy_Event (Object);
@@ -1920,22 +1903,25 @@ package body Gnoga.Gui.Base is
    -- On_Child_Added --
    --------------------
 
-   procedure On_Child_Added (Object : in out Base_Type;
-                             Child  : in out Base_Type'Class)
+   procedure On_Child_Added
+     (Object : in out Base_Type;
+      Child  : in out Base_Type'Class)
    is
    begin
       Object.Fire_On_Child_Added (Child);
    end On_Child_Added;
 
-   procedure On_Child_Added_Handler (Object  : in out Base_Type;
-                                     Handler : in     Child_Changed_Event)
+   procedure On_Child_Added_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Child_Changed_Event)
    is
    begin
       Object.On_Child_Added_Event := Handler;
    end On_Child_Added_Handler;
 
-   procedure Fire_On_Child_Added (Object : in out Base_Type;
-                                  Child  : in out Base_Type'Class)
+   procedure Fire_On_Child_Added
+     (Object : in out Base_Type;
+      Child  : in out Base_Type'Class)
    is
    begin
       if Object.On_Child_Added_Event /= null then
@@ -1947,22 +1933,25 @@ package body Gnoga.Gui.Base is
    -- On_Child_Removed --
    ----------------------
 
-   procedure On_Child_Removed (Object : in out Base_Type;
-                               Child  : in out Base_Type'Class)
+   procedure On_Child_Removed
+     (Object : in out Base_Type;
+      Child  : in out Base_Type'Class)
    is
    begin
       Object.Fire_On_Child_Removed (Child);
    end On_Child_Removed;
 
-   procedure On_Child_Removed_Handler (Object  : in out Base_Type;
-                                       Handler : in     Child_Changed_Event)
+   procedure On_Child_Removed_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Child_Changed_Event)
    is
    begin
       Object.On_Child_Removed_Event := Handler;
    end On_Child_Removed_Handler;
 
-   procedure Fire_On_Child_Removed (Object : in out Base_Type;
-                                    Child  : in out Base_Type'Class)
+   procedure Fire_On_Child_Removed
+     (Object : in out Base_Type;
+      Child  : in out Base_Type'Class)
    is
    begin
       if Object.On_Child_Removed_Event /= null then
@@ -1974,9 +1963,10 @@ package body Gnoga.Gui.Base is
    -- On_Message --
    ----------------
 
-   procedure On_Message (Object  : in out Base_Type;
-                         Event   : in     String;
-                         Message : in     String)
+   procedure On_Message
+     (Object  : in out Base_Type;
+      Event   : in     String;
+      Message : in     String)
    is
    begin
       -- Object Events --
@@ -2012,12 +2002,10 @@ package body Gnoga.Gui.Base is
          Object.Fire_On_Mouse_Click (Parse_Mouse_Event (Message, Click));
       elsif Event = "dblclick" then
          Object.Fire_On_Double_Click;
-         Object.Fire_On_Mouse_Double_Click
-           (Parse_Mouse_Event (Message, Double_Click));
+         Object.Fire_On_Mouse_Double_Click (Parse_Mouse_Event (Message, Double_Click));
       elsif Event = "contextmenu" then
          Object.Fire_On_Context_Menu;
-         Object.Fire_On_Mouse_Right_Click
-           (Parse_Mouse_Event (Message, Right_Click));
+         Object.Fire_On_Mouse_Right_Click (Parse_Mouse_Event (Message, Right_Click));
       elsif Event = "mouseenter" then
          Object.Fire_On_Mouse_Enter;
       elsif Event = "mouseleave" then
@@ -2061,10 +2049,8 @@ package body Gnoga.Gui.Base is
          Object.Fire_On_Key_Up (Parse_Keyboard_Event (Message, Key_Up));
       elsif Event = "keypress" then
          declare
-            E : constant Keyboard_Event_Record :=
-              Parse_Keyboard_Event (Message, Key_Press);
-            C : constant Character :=
-              Ada.Characters.Conversions.To_Character (E.Key_Char);
+            E : constant Keyboard_Event_Record := Parse_Keyboard_Event (Message, Key_Press);
+            C : constant Character             := Ada.Characters.Conversions.To_Character (E.Key_Char);
          begin
             Object.Fire_On_Key_Press (E);
             Object.Fire_On_Wide_Character (E.Key_Char);
@@ -2090,17 +2076,19 @@ package body Gnoga.Gui.Base is
       end if;
    end On_Message;
 
-   procedure On_Message_Handler (Object  : in out Base_Type;
-                                 Handler : in     Message_Event)
+   procedure On_Message_Handler
+     (Object  : in out Base_Type;
+      Handler : in     Message_Event)
    is
    begin
       Object.On_Message_Event := Handler;
    end On_Message_Handler;
 
-   procedure Fire_On_Message (Object   : in out Base_Type;
-                              Event    : in     String;
-                              Message  : in     String;
-                              Continue : out    Boolean)
+   procedure Fire_On_Message
+     (Object   : in out Base_Type;
+      Event    : in     String;
+      Message  : in     String;
+      Continue :    out Boolean)
    is
    begin
       Continue := True;
@@ -2118,17 +2106,17 @@ package body Gnoga.Gui.Base is
    -- Bind_Event --
    ----------------
 
-   procedure Bind_Event (Object  : in out Base_Type;
-                         Event   : in     String;
-                         Message : in     String;
-                         Eval    : in     String    := "";
-                         Script  : in     String    := "";
-                         Cancel  : in     Boolean   := False)
+   procedure Bind_Event
+     (Object  : in out Base_Type;
+      Event   : in     String;
+      Message : in     String;
+      Eval    : in     String  := "";
+      Script  : in     String  := "";
+      Cancel  : in     Boolean := False)
    is
       US : constant String := Object.Unique_ID'Img;
 
-      Full_Message : constant String := US (US'First + 1 .. US'Last) &
-        "|" & Event & "|" & Message;
+      Full_Message : constant String := US (US'First + 1 .. US'Last) & "|" & Event & "|" & Message;
 
       function If_Script return String;
       function Cancel_Event return String;
@@ -2151,32 +2139,31 @@ package body Gnoga.Gui.Base is
          end if;
       end Cancel_Event;
    begin
-      Bind_Event_Script (Object => Object,
-                         Event  => Event,
-                         Script => Eval & "ws.send ('" &
-                           Escape_Quotes (Full_Message) & "'" &
-                           If_Script & ");" & Cancel_Event);
+      Bind_Event_Script
+        (Object => Object, Event => Event,
+         Script => Eval & "ws.send ('" & Escape_Quotes (Full_Message) & "'" & If_Script & ");" & Cancel_Event);
    end Bind_Event;
 
    -----------------------
    -- Bind_Event_Script --
    -----------------------
 
-   procedure Bind_Event_Script (Object : in out Base_Type;
-                                Event  : in     String;
-                                Script : in     String)
+   procedure Bind_Event_Script
+     (Object : in out Base_Type;
+      Event  : in     String;
+      Script : in     String)
    is
    begin
-      Object.jQuery_Execute ("on ('" & Event & "', function (e, data) {" &
-                               Script & "});");
+      Object.jQuery_Execute ("on ('" & Event & "', function (e, data) {" & Script & "});");
    end Bind_Event_Script;
 
    ------------------
    -- Unbind_Event --
    ------------------
 
-   procedure Unbind_Event (Object : in out Base_Type;
-                           Event  : in     String)
+   procedure Unbind_Event
+     (Object : in out Base_Type;
+      Event  : in     String)
    is
    begin
       Object.jQuery_Execute ("off ('" & Event & "');");
@@ -2204,13 +2191,18 @@ package body Gnoga.Gui.Base is
    -- Script_Accessor --
    ---------------------
 
-   function Script_Accessor (Object : Base_Type) return String is
+   function Script_Accessor
+     (Object : Base_Type)
+      return String
+   is
    begin
       return Script_Accessor (Object.ID, Object.ID_Type);
    end Script_Accessor;
 
-   function Script_Accessor (ID : String; ID_Type : Gnoga.Types.ID_Enumeration)
-                             return String
+   function Script_Accessor
+     (ID      : String;
+      ID_Type : Gnoga.Types.ID_Enumeration)
+      return String
    is
       use Gnoga.Types;
    begin
@@ -2230,7 +2222,10 @@ package body Gnoga.Gui.Base is
    -- jQuery --
    ------------
 
-   function jQuery (Object : Base_Type) return String is
+   function jQuery
+     (Object : Base_Type)
+      return String
+   is
       use Gnoga.Types;
    begin
       case Object.ID_Type is
@@ -2247,26 +2242,29 @@ package body Gnoga.Gui.Base is
    -- jQuery_Execute --
    --------------------
 
-   procedure jQuery_Execute (Object : in out Base_Type; Method : String) is
-      Message_Script : constant String := jQuery (Object) & "." & Method;
-   begin
-      Gnoga.Server.Connection.Execute_Script
-        (ID     => Object.Connection_ID,
-         Script => Message_Script);
-   end jQuery_Execute;
-
-   function jQuery_Execute (Object : Base_Type; Method : String)
-                            return String
+   procedure jQuery_Execute
+     (Object : in out Base_Type;
+      Method :        String)
    is
       Message_Script : constant String := jQuery (Object) & "." & Method;
    begin
-      return Gnoga.Server.Connection.Execute_Script
-        (ID     => Object.Connection_ID,
-         Script => Message_Script);
+      Gnoga.Server.Connection.Execute_Script (ID => Object.Connection_ID, Script => Message_Script);
    end jQuery_Execute;
 
-   function jQuery_Execute (Object : Base_Type; Method : String)
-                            return Integer
+   function jQuery_Execute
+     (Object : Base_Type;
+      Method : String)
+      return String
+   is
+      Message_Script : constant String := jQuery (Object) & "." & Method;
+   begin
+      return Gnoga.Server.Connection.Execute_Script (ID => Object.Connection_ID, Script => Message_Script);
+   end jQuery_Execute;
+
+   function jQuery_Execute
+     (Object : Base_Type;
+      Method : String)
+      return Integer
    is
       use Ada.Strings.Fixed;
 
@@ -2284,8 +2282,10 @@ package body Gnoga.Gui.Base is
          return 0;
    end jQuery_Execute;
 
-   function jQuery_Execute (Object : Base_Type; Method : String)
-                            return Float
+   function jQuery_Execute
+     (Object : Base_Type;
+      Method : String)
+      return Float
    is
       R : constant String := Object.jQuery_Execute (Method);
    begin

@@ -37,7 +37,9 @@
 
 package Gnoga.Server.Mime is
 
-   function Mime_Type (File_Name : String) return String;
+   function Mime_Type
+     (File_Name : String)
+      return String;
    --  Returns a Mime_Type based on File_Name extension
 
 end Gnoga.Server.Mime;

@@ -47,19 +47,27 @@ with Strings_Edit.UTF8.Handling;
 
 package body Gnoga is
 
-   Use_File : Boolean := False;
+   Use_File        : Boolean := False;
    Automatic_Flush : Boolean := False;
-   Log_File : Ada.Text_IO.File_Type;
+   Log_File        : Ada.Text_IO.File_Type;
 
    -------------------
    -- Escape_Quotes --
    -------------------
 
-   function Escape_Quotes (S : String) return String is
+   function Escape_Quotes
+     (S : String)
+      return String
+   is
 
-      function Translate_Character (C : Character) return String;
+      function Translate_Character
+        (C : Character)
+         return String;
 
-      function Translate_Character (C : Character) return String is
+      function Translate_Character
+        (C : Character)
+         return String
+      is
       begin
          if C = '"' then
             return "\x22";
@@ -89,7 +97,10 @@ package body Gnoga is
    -- Unescape_Quotes --
    ---------------------
 
-   function Unescape_Quotes (S : String) return String is
+   function Unescape_Quotes
+     (S : String)
+      return String
+   is
 
       C : Integer := S'First;
 
@@ -103,8 +114,7 @@ package body Gnoga is
                return "\";
             elsif S (C .. C + 1) = "\x" then
                declare
-                  H : constant Integer := Integer'Value
-                    ("16#" & S (C + 2 .. C + 3) & "#");
+                  H : constant Integer := Integer'Value ("16#" & S (C + 2 .. C + 3) & "#");
                begin
                   C := C + 4;
 
@@ -135,14 +145,22 @@ package body Gnoga is
    -- URL_Encode --
    ----------------
 
-   function URL_Encode (S : String; Encoding : String := "") return String is
+   function URL_Encode
+     (S        : String;
+      Encoding : String := "")
+      return String
+   is
 
-      function Translate_Character (C : Character) return String;
+      function Translate_Character
+        (C : Character)
+         return String;
 
-      function Translate_Character (C : Character) return String is
+      function Translate_Character
+        (C : Character)
+         return String
+      is
       begin
-         if C in 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '*' | '_'
-         then
+         if C in 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '*' | '_' then
             return (1 => C);
          elsif C = ' ' then
             return "+";
@@ -159,9 +177,7 @@ package body Gnoga is
       R, T : Ada.Strings.Unbounded.Unbounded_String;
    begin
       if Encoding = "UTF-8" then
-         T :=
-           Ada.Strings.Unbounded.To_Unbounded_String
-             (Ada.Strings.UTF_Encoding.Strings.Encode (S));
+         T := Ada.Strings.Unbounded.To_Unbounded_String (Ada.Strings.UTF_Encoding.Strings.Encode (S));
       else
          T := Ada.Strings.Unbounded.To_Unbounded_String (S);
       end if;
@@ -177,7 +193,11 @@ package body Gnoga is
    -- URL_Decode --
    ----------------
 
-   function URL_Decode (S : String; Encoding : String := "") return String is
+   function URL_Decode
+     (S        : String;
+      Encoding : String := "")
+      return String
+   is
       C : Integer := S'First;
 
       function Translate_Character return Character;
@@ -188,8 +208,7 @@ package body Gnoga is
          if R = '+' then
             R := ' ';
          elsif R = '%' and C < S'Last - 1 then
-            R := Character'Val (Integer'Value ("16#" & S (C + 1 .. C + 2)
-                                & "#"));
+            R := Character'Val (Integer'Value ("16#" & S (C + 1 .. C + 2) & "#"));
             C := C + 2;
          end if;
          C := C + 1;
@@ -203,8 +222,7 @@ package body Gnoga is
       end loop;
 
       if Encoding = "UTF-8" then
-         return Strings_Edit.UTF8.Handling.To_String
-           (Ada.Strings.Unbounded.To_String (R), Substitution_Character);
+         return Strings_Edit.UTF8.Handling.To_String (Ada.Strings.Unbounded.To_String (R), Substitution_Character);
       else
          return Ada.Strings.Unbounded.To_String (R);
       end if;
@@ -214,7 +232,10 @@ package body Gnoga is
    -- Left_Trim --
    ---------------
 
-   function Left_Trim (S : String) return String is
+   function Left_Trim
+     (S : String)
+      return String
+   is
    begin
       if S'Length = 0 then
          return S;
@@ -231,7 +252,10 @@ package body Gnoga is
    -- Right_Trim --
    ----------------
 
-   function Right_Trim (S : String) return String is
+   function Right_Trim
+     (S : String)
+      return String
+   is
    begin
       if S'Length = 0 then
          return S;
@@ -248,17 +272,16 @@ package body Gnoga is
    -- Left_Trim_Slashes --
    -----------------------
 
-   function Left_Trim_Slashes (S : String) return String is
+   function Left_Trim_Slashes
+     (S : String)
+      return String
+   is
    begin
       if S'Length = 0 then
          return S;
       end if;
 
-      if
-        S (S'First) = ' ' or
-        S (S'First) = Character'Val (9) or
-        S (S'First) = '/'
-      then
+      if S (S'First) = ' ' or S (S'First) = Character'Val (9) or S (S'First) = '/' then
          return Left_Trim_Slashes (S ((S'First + 1) .. S'Last));
       else
          return S;
@@ -269,17 +292,16 @@ package body Gnoga is
    -- Right_Trim_Slashes --
    ------------------------
 
-   function Right_Trim_Slashes (S : String) return String is
+   function Right_Trim_Slashes
+     (S : String)
+      return String
+   is
    begin
       if S'Length = 0 then
          return S;
       end if;
 
-      if
-        S (S'Last) = ' ' or
-        S (S'Last) = Character'Val (9) or
-        S (S'Last) = '/'
-      then
+      if S (S'Last) = ' ' or S (S'Last) = Character'Val (9) or S (S'Last) = '/' then
          return Right_Trim_Slashes (S (S'First .. (S'Last - 1)));
       else
          return S;
@@ -304,10 +326,7 @@ package body Gnoga is
 
          exit when I = 0;
 
-         Replace_Slice (Source => Source,
-                        Low    => I,
-                        High   => I + Pattern'Length - 1,
-                        By     => Replacement);
+         Replace_Slice (Source => Source, Low => I, High => I + Pattern'Length - 1, By => Replacement);
       end loop;
    end String_Replace;
 
@@ -324,15 +343,15 @@ package body Gnoga is
    -- Log_To_File --
    -----------------
 
-   procedure Log_To_File (File_Name : in String;
-                          Flush_Auto : in Boolean := False) is
+   procedure Log_To_File
+     (File_Name  : in String;
+      Flush_Auto : in Boolean := False)
+   is
       use Ada.Text_IO;
    begin
-      Create (File => Log_File,
-              Mode => Append_File,
-              Name => File_Name);
+      Create (File => Log_File, Mode => Append_File, Name => File_Name);
 
-      Use_File := True;
+      Use_File        := True;
       Automatic_Flush := Flush_Auto;
    exception
       when E : others =>
@@ -345,12 +364,10 @@ package body Gnoga is
    ---------
 
    procedure Log (Message : in String) is
-      T : constant Ada.Calendar.Time := Ada.Calendar.Clock;
-      Date_Message : constant String := Ada.Calendar.Formatting.Image
-        (Date                  => T,
-         Include_Time_Fraction => True,
-         Time_Zone             =>
-           Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
+      T            : constant Ada.Calendar.Time := Ada.Calendar.Clock;
+      Date_Message : constant String            :=
+        Ada.Calendar.Formatting.Image
+          (Date => T, Include_Time_Fraction => True, Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
         " : " & Message;
    begin
       if Use_File then
@@ -372,7 +389,7 @@ package body Gnoga is
    -- Flush_Log --
    ---------------
 
-   procedure Flush_Log  is
+   procedure Flush_Log is
    begin
       Ada.Text_IO.Flush (Log_File);
    end Flush_Log;
@@ -382,15 +399,18 @@ package body Gnoga is
    --------------------------------
 
    protected Exception_Handler is
-      procedure Log (Cause      : in Ada.Task_Termination.Cause_Of_Termination;
-                     Id         : in Ada.Task_Identification.Task_Id;
-                     Occurrence : in Ada.Exceptions.Exception_Occurrence);
+      procedure Log
+        (Cause      : in Ada.Task_Termination.Cause_Of_Termination;
+         Id         : in Ada.Task_Identification.Task_Id;
+         Occurrence : in Ada.Exceptions.Exception_Occurrence);
    end Exception_Handler;
 
    protected body Exception_Handler is
-      procedure Log (Cause      : in Ada.Task_Termination.Cause_Of_Termination;
-                     Id         : in Ada.Task_Identification.Task_Id;
-                     Occurrence : in Ada.Exceptions.Exception_Occurrence) is
+      procedure Log
+        (Cause      : in Ada.Task_Termination.Cause_Of_Termination;
+         Id         : in Ada.Task_Identification.Task_Id;
+         Occurrence : in Ada.Exceptions.Exception_Occurrence)
+      is
          use all type Ada.Task_Termination.Cause_Of_Termination;
       begin
          case Cause is
@@ -405,7 +425,7 @@ package body Gnoga is
       end Log;
    end Exception_Handler;
 
-   procedure Activate_Exception_Handler  (Id : Ada.Task_Identification.Task_Id) is
+   procedure Activate_Exception_Handler (Id : Ada.Task_Identification.Task_Id) is
    begin
       Ada.Task_Termination.Set_Specific_Handler (Id, Exception_Handler.Log'Access);
    end Activate_Exception_Handler;

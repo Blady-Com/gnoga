@@ -47,7 +47,7 @@ package Gnoga.Application.Singleton is
    procedure Initialize
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Host        : in     String  := "";
-      Port        : in     Integer := 8080;
+      Port        : in     Integer := 8_080;
       Boot        : in     String  := "boot.html";
       Verbose     : in     Boolean := True);
    --  Initialize application for single connection is Boot for bootstrap html.

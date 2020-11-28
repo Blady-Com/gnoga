@@ -43,13 +43,13 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    use Ada.Numerics.Elementary_Functions;
 
    function To_Radian
-     (Angle : Integer) return Float is
-     (Float (Angle) * Ada.Numerics.Pi / 180.0);
+     (Angle : Integer)
+      return Float is (Float (Angle) * Ada.Numerics.Pi / 180.0);
    --  Converts integer angle in degree to radian.
 
    function To_Degree
-     (Angle : Float) return Integer is
-     (Integer (Angle * 180.0 / Ada.Numerics.Pi));
+     (Angle : Float)
+      return Integer is (Integer (Angle * 180.0 / Ada.Numerics.Pi));
    --  Converts integer angle in degree to radian.
 
    ------------
@@ -68,19 +68,11 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    begin
       Sprite.ID (Sprite_ID, Gnoga.Types.Gnoga_ID);
       Sprite.Connection_ID (Parent.Connection_ID);
-      Sprite.Attach_Using_Parent
-      (Parent => Parent, ID => Sprite_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Sprite.Attach_Using_Parent (Parent => Parent, ID => Sprite_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
-         "gnoga['" &
-         Sprite_ID &
-         "'] = new PIXI.Sprite(gnoga['" &
-         Texture.ID &
-         "']);" &
-         " gnoga['" &
-         Sprite_ID &
-         "'].sendEvent = function (e) {ws.send ('" &
-         Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
+         "gnoga['" & Sprite_ID & "'] = new PIXI.Sprite(gnoga['" & Texture.ID & "']);" & " gnoga['" & Sprite_ID &
+         "'].sendEvent = function (e) {ws.send ('" & Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
          "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
@@ -109,19 +101,11 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    begin
       Sprite.ID (Sprite_ID, Gnoga.Types.Gnoga_ID);
       Sprite.Connection_ID (Parent.Connection_ID);
-      Sprite.Attach_Using_Parent
-      (Parent => Parent, ID => Sprite_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Sprite.Attach_Using_Parent (Parent => Parent, ID => Sprite_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
-         "gnoga['" &
-         Sprite_ID &
-         "'] = new PIXI.Sprite.from('" &
-         Image_Path &
-         "');" &
-         " gnoga['" &
-         Sprite_ID &
-         "'].sendEvent = function (e) {ws.send ('" &
-         Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
+         "gnoga['" & Sprite_ID & "'] = new PIXI.Sprite.from('" & Image_Path & "');" & " gnoga['" & Sprite_ID &
+         "'].sendEvent = function (e) {ws.send ('" & Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
          "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
@@ -137,7 +121,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Locate --
    ------------
 
-   procedure Locate (Sprite : in out Sprite_Type; Row, Column : in Integer) is
+   procedure Locate
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Integer)
+   is
    begin
       Sprite.Property ("x", Column);
       Sprite.Property ("y", Row);
@@ -147,7 +134,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Position --
    --------------
 
-   procedure Position (Sprite : in Sprite_Type; Row, Column : out Integer) is
+   procedure Position
+     (Sprite      : in     Sprite_Type;
+      Row, Column :    out Integer)
+   is
    begin
       Row    := Sprite.Property ("y");
       Column := Sprite.Property ("x");
@@ -157,7 +147,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Row --
    ---------
 
-   function Row (Sprite : in Sprite_Type) return Integer is
+   function Row
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
       V : constant Float := Sprite.Property ("y");
    begin
       return Integer (V);
@@ -167,7 +160,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Column --
    ------------
 
-   function Column (Sprite : in Sprite_Type) return Integer is
+   function Column
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
       V : constant Float := Sprite.Property ("x");
    begin
       return Integer (V);
@@ -177,7 +173,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Pattern --
    -------------
 
-   procedure Pattern (Sprite : in Sprite_Type; Image_Data : in String) is
+   procedure Pattern
+     (Sprite     : in Sprite_Type;
+      Image_Data : in String)
+   is
    begin
       pragma Compile_Time_Warning (Standard.True, "Pattern unimplemented");
       null; -- TODO
@@ -187,7 +186,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Pattern --
    -------------
 
-   function Pattern (Sprite : in Sprite_Type) return String is
+   function Pattern
+     (Sprite : in Sprite_Type)
+      return String
+   is
    begin
       pragma Compile_Time_Warning (Standard.True, "Pattern unimplemented");
       return ""; -- TODO
@@ -210,7 +212,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Row_Velocity --
    ------------------
 
-   function Row_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
+   function Row_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type
+   is
    begin
       return Sprite.Property ("gnoga_vy") * Frame_Rate;
    end Row_Velocity;
@@ -219,7 +224,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Column_Velocity --
    ---------------------
 
-   function Column_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
+   function Column_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type
+   is
 
    begin
       return Sprite.Property ("gnoga_vx") * Frame_Rate;
@@ -236,9 +244,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Sprite.Motion
-      (Radial_Velocity *
-       Sin (To_Radian (Azimuth_Of_Velocity)), Radial_Velocity *
-       Cos (To_Radian (Azimuth_Of_Velocity)));
+        (Radial_Velocity * Sin (To_Radian (Azimuth_Of_Velocity)),
+         Radial_Velocity * Cos (To_Radian (Azimuth_Of_Velocity)));
    end Motion;
 
    ---------------------
@@ -274,18 +281,17 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       To_Row, To_Column : in     Integer)
    is
    begin
-      Sprite.Azimuth_Of_Velocity
-      (To_Degree
-         (Arctan
-            (Float (To_Row - Sprite.Row),
-             Float (To_Column - Sprite.Column))));
+      Sprite.Azimuth_Of_Velocity (To_Degree (Arctan (Float (To_Row - Sprite.Row), Float (To_Column - Sprite.Column))));
    end Orient_Velocity;
 
    ---------------------
    -- Radial_Velocity --
    ---------------------
 
-   function Radial_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
+   function Radial_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type
+   is
    begin
       return Sqrt (Sprite.Row_Velocity**2 + Sprite.Column_Velocity**2);
    end Radial_Velocity;
@@ -294,7 +300,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Azimuth_Of_Velocity --
    -------------------------
 
-   function Azimuth_Of_Velocity (Sprite : in Sprite_Type) return Integer is
+   function Azimuth_Of_Velocity
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
    begin
       return To_Degree (Arctan (Sprite.Row_Velocity, Sprite.Column_Velocity));
    end Azimuth_Of_Velocity;
@@ -308,8 +317,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Row_Acceleration, Column_Acceleration : in     Acceleration_Type)
    is
    begin
-      Sprite.Property
-      ("gnoga_ax", Column_Acceleration / Frame_Rate / Frame_Rate);
+      Sprite.Property ("gnoga_ax", Column_Acceleration / Frame_Rate / Frame_Rate);
       Sprite.Property ("gnoga_ay", Row_Acceleration / Frame_Rate / Frame_Rate);
    end Acceleration;
 
@@ -318,7 +326,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    ----------------------
 
    function Row_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type
    is
    begin
       return Sprite.Property ("gnoga_ay") * (Frame_Rate * Frame_Rate);
@@ -329,7 +338,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -------------------------
 
    function Column_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type
    is
 
    begin
@@ -347,9 +357,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Sprite.Acceleration
-      (Radial_Acceleration *
-       Sin (To_Radian (Azimuth_Of_Acceleration)), Radial_Acceleration *
-       Cos (To_Radian (Azimuth_Of_Acceleration)));
+        (Radial_Acceleration * Sin (To_Radian (Azimuth_Of_Acceleration)),
+         Radial_Acceleration * Cos (To_Radian (Azimuth_Of_Acceleration)));
    end Acceleration;
 
    -------------------------
@@ -386,10 +395,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Sprite.Azimuth_Of_Acceleration
-      (To_Degree
-         (Arctan
-            (Float (To_Row - Sprite.Row),
-             Float (To_Column - Sprite.Column))));
+        (To_Degree (Arctan (Float (To_Row - Sprite.Row), Float (To_Column - Sprite.Column))));
    end Orient_Acceleration;
 
    -------------------------
@@ -397,7 +403,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -------------------------
 
    function Radial_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type
    is
    begin
       return Sqrt (Sprite.Row_Acceleration**2 + Sprite.Column_Acceleration**2);
@@ -407,10 +414,12 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Azimuth_Of_Acceleration --
    -----------------------------
 
-   function Azimuth_Of_Acceleration (Sprite : in Sprite_Type) return Integer is
+   function Azimuth_Of_Acceleration
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
    begin
-      return To_Degree
-          (Arctan (Sprite.Row_Acceleration, Sprite.Column_Acceleration));
+      return To_Degree (Arctan (Sprite.Row_Acceleration, Sprite.Column_Acceleration));
    end Azimuth_Of_Acceleration;
 
    -----------
@@ -429,7 +438,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Alpha --
    -----------
 
-   function Alpha (Sprite : in Sprite_Type) return Gnoga.Types.Alpha_Type is
+   function Alpha
+     (Sprite : in Sprite_Type)
+      return Gnoga.Types.Alpha_Type
+   is
    begin
       return Gnoga.Types.Alpha_Type (Float'(Sprite.Property ("alpha")));
    end Alpha;
@@ -444,14 +456,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID,
-         "gnoga['" &
-         Sprite.ID &
-         "'].anchor = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].anchor = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Anchor;
 
    ----------------
@@ -459,11 +464,11 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    ----------------
 
    function Row_Anchor
-     (Sprite : in Sprite_Type) return Gnoga.Types.Frational_Range_Type
+     (Sprite : in Sprite_Type)
+      return Gnoga.Types.Frational_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type
-          (Float'(Sprite.Execute ("anchor.y")));
+      return Gnoga.Types.Frational_Range_Type (Float'(Sprite.Execute ("anchor.y")));
    end Row_Anchor;
 
    -------------------
@@ -471,11 +476,11 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -------------------
 
    function Column_Anchor
-     (Sprite : in Sprite_Type) return Gnoga.Types.Frational_Range_Type
+     (Sprite : in Sprite_Type)
+      return Gnoga.Types.Frational_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type
-          (Float'(Sprite.Execute ("anchor.x")));
+      return Gnoga.Types.Frational_Range_Type (Float'(Sprite.Execute ("anchor.x")));
    end Column_Anchor;
 
    ----------------
@@ -494,7 +499,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Blend_Mode --
    ----------------
 
-   function Blend_Mode (Sprite : in Sprite_Type) return Blend_Modes_Type is
+   function Blend_Mode
+     (Sprite : in Sprite_Type)
+      return Blend_Modes_Type
+   is
    begin
       return Blend_Modes_Type'Value (Sprite.Property ("blendMode"));
    end Blend_Mode;
@@ -503,24 +511,23 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Pivot --
    -----------
 
-   procedure Pivot (Sprite : in out Sprite_Type; Row, Column : in Integer) is
+   procedure Pivot
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Integer)
+   is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID,
-         "gnoga['" &
-         Sprite.ID &
-         "'].pivot = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].pivot = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Pivot;
 
    ---------------
    -- Row_Pivot --
    ---------------
 
-   function Row_Pivot (Sprite : in Sprite_Type) return Integer is
+   function Row_Pivot
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
    begin
       return Sprite.Execute ("pivot.x");
    end Row_Pivot;
@@ -529,7 +536,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Column_Pivot --
    ------------------
 
-   function Column_Pivot (Sprite : in Sprite_Type) return Integer is
+   function Column_Pivot
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
    begin
       return Sprite.Execute ("pivot.y");
    end Column_Pivot;
@@ -538,7 +548,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Rotation --
    --------------
 
-   procedure Rotation (Sprite : in out Sprite_Type; Value : in Integer) is
+   procedure Rotation
+     (Sprite : in out Sprite_Type;
+      Value  : in     Integer)
+   is
    begin
       Sprite.Property ("rotation", Float (Value) * Ada.Numerics.Pi / 180.0);
    end Rotation;
@@ -547,10 +560,12 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Rotation --
    --------------
 
-   function Rotation (Sprite : in Sprite_Type) return Integer is
-   begin
+   function Rotation
+     (Sprite : in Sprite_Type)
       return Integer
-          (Float'(Sprite.Property ("rotation")) * 180.0 / Ada.Numerics.Pi);
+   is
+   begin
+      return Integer (Float'(Sprite.Property ("rotation")) * 180.0 / Ada.Numerics.Pi);
    end Rotation;
 
    -----------------------
@@ -562,20 +577,19 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Value  :        Velocity_Type)
    is
    begin
-      Sprite.Property
-      ("gnoga_vr", Value / Frame_Rate * Ada.Numerics.Pi / 180.0);
+      Sprite.Property ("gnoga_vr", Value / Frame_Rate * Ada.Numerics.Pi / 180.0);
    end Rotation_Velocity;
 
    -----------------------
    -- Rotation_Velocity --
    -----------------------
 
-   function Rotation_Velocity (Sprite : in Sprite_Type) return Velocity_Type is
+   function Rotation_Velocity
+     (Sprite : in Sprite_Type)
+      return Velocity_Type
+   is
    begin
-      return Float'(Sprite.Property ("gnoga_vr")) *
-        Frame_Rate *
-        180.0 /
-        Ada.Numerics.Pi;
+      return Float'(Sprite.Property ("gnoga_vr")) * Frame_Rate * 180.0 / Ada.Numerics.Pi;
    end Rotation_Velocity;
 
    -----------------------
@@ -587,8 +601,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Value  :        Acceleration_Type)
    is
    begin
-      Sprite.Property
-      ("gnoga_ar", Value / Frame_Rate / Frame_Rate * Ada.Numerics.Pi / 180.0);
+      Sprite.Property ("gnoga_ar", Value / Frame_Rate / Frame_Rate * Ada.Numerics.Pi / 180.0);
    end Rotation_Acceleration;
 
    -----------------------
@@ -596,14 +609,11 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -----------------------
 
    function Rotation_Acceleration
-     (Sprite : in Sprite_Type) return Acceleration_Type
+     (Sprite : in Sprite_Type)
+      return Acceleration_Type
    is
    begin
-      return Float'(Sprite.Property ("gnoga_ar")) *
-        Frame_Rate *
-        Frame_Rate *
-        180.0 /
-        Ada.Numerics.Pi;
+      return Float'(Sprite.Property ("gnoga_ar")) * Frame_Rate * Frame_Rate * 180.0 / Ada.Numerics.Pi;
    end Rotation_Acceleration;
 
    -----------
@@ -622,7 +632,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Width --
    -----------
 
-   overriding function Width (Sprite : in Sprite_Type) return Integer is
+   overriding function Width
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
    begin
       return Sprite.Property ("width");
    end Width;
@@ -643,7 +656,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Height --
    ------------
 
-   overriding function Height (Sprite : in Sprite_Type) return Integer is
+   overriding function Height
+     (Sprite : in Sprite_Type)
+      return Integer
+   is
    begin
       return Sprite.Property ("height");
    end Height;
@@ -652,24 +668,23 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Scale --
    -----------
 
-   procedure Scale (Sprite : in out Sprite_Type; Row, Column : in Positive) is
+   procedure Scale
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Positive)
+   is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID,
-         "gnoga['" &
-         Sprite.ID &
-         "'].scale = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Scale;
 
    ---------------
    -- Row_Scale --
    ---------------
 
-   function Row_Scale (Sprite : in Sprite_Type) return Positive is
+   function Row_Scale
+     (Sprite : in Sprite_Type)
+      return Positive
+   is
    begin
       return Sprite.Execute ("scale.y");
    end Row_Scale;
@@ -678,7 +693,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Column_Scale --
    ------------------
 
-   function Column_Scale (Sprite : in Sprite_Type) return Positive is
+   function Column_Scale
+     (Sprite : in Sprite_Type)
+      return Positive
+   is
    begin
       return Sprite.Execute ("scale.x");
    end Column_Scale;
@@ -687,24 +705,23 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Skew --
    ----------
 
-   procedure Skew (Sprite : in out Sprite_Type; Row, Column : in Positive) is
+   procedure Skew
+     (Sprite      : in out Sprite_Type;
+      Row, Column : in     Positive)
+   is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID,
-         "gnoga['" &
-         Sprite.ID &
-         "'].skew = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Skew;
 
    --------------
    -- Row_Skew --
    --------------
 
-   function Row_Skew (Sprite : in Sprite_Type) return Positive is
+   function Row_Skew
+     (Sprite : in Sprite_Type)
+      return Positive
+   is
    begin
       return Sprite.Execute ("skew.y");
    end Row_Skew;
@@ -713,7 +730,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Column_Skew --
    -----------------
 
-   function Column_Skew (Sprite : in Sprite_Type) return Positive is
+   function Column_Skew
+     (Sprite : in Sprite_Type)
+      return Positive
+   is
    begin
       return Sprite.Execute ("skew.x");
    end Column_Skew;
@@ -731,8 +751,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Value.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
       Value.Connection_ID (Sprite.Connection_ID);
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID,
-         "gnoga['" & Texture_ID & "'] = gnoga['" & Sprite.ID & "'].texture;");
+        (Sprite.Connection_ID, "gnoga['" & Texture_ID & "'] = gnoga['" & Sprite.ID & "'].texture;");
    end Get_Texture;
 
    -----------------
@@ -745,15 +764,17 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID,
-         "gnoga['" & Sprite.ID & "'].texture = gnoga['" & Value.ID & "'];");
+        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].texture = gnoga['" & Value.ID & "'];");
    end Put_Texture;
 
    ----------
    -- Tint --
    ----------
 
-   procedure Tint (Sprite : in out Sprite_Type; Value : in Natural) is
+   procedure Tint
+     (Sprite : in out Sprite_Type;
+      Value  : in     Natural)
+   is
    begin
       Sprite.Property ("tint", Value);
    end Tint;
@@ -762,7 +783,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Tint --
    ----------
 
-   function Tint (Sprite : in Sprite_Type) return Natural is
+   function Tint
+     (Sprite : in Sprite_Type)
+      return Natural
+   is
    begin
       return Sprite.Property ("tint");
    end Tint;
@@ -771,7 +795,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Visible --
    -------------
 
-   procedure Visible (Sprite : in out Sprite_Type; Value : in Boolean) is
+   procedure Visible
+     (Sprite : in out Sprite_Type;
+      Value  : in     Boolean)
+   is
    begin
       Sprite.Property ("visible", Value);
    end Visible;
@@ -780,7 +807,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Visible --
    -------------
 
-   function Visible (Sprite : in Sprite_Type) return Boolean is
+   function Visible
+     (Sprite : in Sprite_Type)
+      return Boolean
+   is
    begin
       return Sprite.Property ("visible");
    end Visible;
@@ -791,7 +821,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Coincidence
      (Sprite1, Sprite2 : in Sprite_Type;
-      Tolerance        : in Natural) return Boolean
+      Tolerance        : in Natural)
+      return Boolean
    is
    begin
       return Distance (Sprite1, Sprite2) <= Tolerance;
@@ -804,7 +835,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    function Coincidence
      (Sprite      : in Sprite_Type;
       Row, Column : in Integer;
-      Tolerance   : in Natural) return Boolean
+      Tolerance   : in Natural)
+      return Boolean
    is
    begin
       return Distance (Sprite, Row, Column) <= Tolerance;
@@ -816,11 +848,12 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Overlap_Point
      (Sprite      : in Sprite_Type;
-      Row, Column : in Integer) return Boolean
+      Row, Column : in Integer)
+      return Boolean
    is
    begin
-      return Row in
-          Sprite.Row - Sprite.Height .. Sprite.Row + Sprite.Height and
+      return
+        Row in Sprite.Row - Sprite.Height .. Sprite.Row + Sprite.Height and
         Column in Sprite.Column - Sprite.Width .. Sprite.Column + Sprite.Width;
    end Overlap_Point;
 
@@ -828,12 +861,15 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    -- Distance --
    --------------
 
-   function Distance (Sprite1, Sprite2 : in Sprite_Type) return Natural is
-   begin
+   function Distance
+     (Sprite1, Sprite2 : in Sprite_Type)
       return Natural
+   is
+   begin
+      return
+        Natural
           (Ada.Numerics.Elementary_Functions.Sqrt
-             (Float (Sprite2.Row - Sprite1.Row)**2 +
-              Float (Sprite2.Column - Sprite1.Column)**2));
+             (Float (Sprite2.Row - Sprite1.Row)**2 + Float (Sprite2.Column - Sprite1.Column)**2));
    end Distance;
 
    --------------
@@ -842,13 +878,13 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Distance
      (Sprite      : in Sprite_Type;
-      Row, Column : in Integer) return Natural
+      Row, Column : in Integer)
+      return Natural
    is
    begin
-      return Natural
-          (Ada.Numerics.Elementary_Functions.Sqrt
-             (Float (Sprite.Row - Row)**2 +
-              Float (Sprite.Column - Column)**2));
+      return
+        Natural
+          (Ada.Numerics.Elementary_Functions.Sqrt (Float (Sprite.Row - Row)**2 + Float (Sprite.Column - Column)**2));
    end Distance;
 
    -------------
@@ -872,9 +908,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Spent_Time          :    out Duration)
    is
       --  Distance: Sqrt ((Row - Sprite.Row)**2 + (Column - Sprite.Column)**2)
-      Distance : constant Float :=
-        Sqrt (Float (Row - Sprite.Row)**2 + Float (Column - Sprite.Column)**2);
-      TFin : Natural;
+      Distance : constant Float := Sqrt (Float (Row - Sprite.Row)**2 + Float (Column - Sprite.Column)**2);
+      TFin     : Natural;
       Norm_Row : constant Float := (if Distance > 0.0 then Float (Row - Sprite.Row) / Distance else 0.0);
       Norm_Col : constant Float := (if Distance > 0.0 then Float (Column - Sprite.Column) / Distance else 0.0);
    begin
@@ -884,12 +919,9 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
             --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
             --  Discriminant: V**2 - 4 * (A/2) * (-D)
             --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
-            Discriminant : constant Float :=
-              Radial_Velocity**2 + 2.0 * Distance * Radial_Acceleration;
-            Root1 : constant Float :=
-              (Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
-            Root2 : constant Float :=
-              (-Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
+            Discriminant : constant Float := Radial_Velocity**2 + 2.0 * Distance * Radial_Acceleration;
+            Root1        : constant Float := (Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
+            Root2        : constant Float := (-Sqrt (Discriminant) - Radial_Velocity) / Radial_Acceleration;
          begin
             Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
          end;
@@ -898,7 +930,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       elsif Distance > 0.0 then
          raise Constraint_Error with "Move to another point but no velocity nor acceleration";
       end if;
-      TFin       := Natural (Frame_Rate * Spent_Time);
+      TFin := Natural (Frame_Rate * Spent_Time);
       if TFin > 0 then
          Sprite.Motion (Radial_Velocity * Norm_Row, Radial_Velocity * Norm_Col);
          Sprite.Acceleration (Radial_Acceleration * Norm_Row, Radial_Acceleration * Norm_Col);
@@ -918,10 +950,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Spent_Time          :    out Duration)
    is
    begin
-      Sprite.Move_To
-      (Sprite.Row +
-       Rel_Row, Sprite.Column +
-       Rel_Column, Velocity, Acceleration, Spent_Time);
+      Sprite.Move_To (Sprite.Row + Rel_Row, Sprite.Column + Rel_Column, Velocity, Acceleration, Spent_Time);
    end Move_Rel;
 
    --------------
@@ -943,12 +972,9 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
             --  Quadratic time equation: A/2 * t**2 + V * t - D = 0
             --  Discriminant: V**2 - 4 * (A/2) * (-D)
             --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-D))) / 2 (A/2)
-            Discriminant : constant Float :=
-              Velocity**2 + 2.0 * Float (Distance) * Acceleration;
-            Root1 : constant Float :=
-              (Sqrt (Discriminant) - Velocity) / Acceleration;
-            Root2 : constant Float :=
-              (-Sqrt (Discriminant) - Velocity) / Acceleration;
+            Discriminant : constant Float := Velocity**2 + 2.0 * Float (Distance) * Acceleration;
+            Root1        : constant Float := (Sqrt (Discriminant) - Velocity) / Acceleration;
+            Root2        : constant Float := (-Sqrt (Discriminant) - Velocity) / Acceleration;
          begin
             Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
          end;
@@ -957,7 +983,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       elsif abs Distance > 0 then
          raise Constraint_Error with "Move to another point but no velocity nor acceleration";
       end if;
-      TFin       := Natural (Frame_Rate * Spent_Time);
+      TFin := Natural (Frame_Rate * Spent_Time);
       if TFin > 0 then
          Sprite.Motion (Velocity, Sprite.Rotation);
          Sprite.Acceleration (Acceleration, Sprite.Rotation);
@@ -1004,12 +1030,9 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
             --  Quadratic time equation: A/2 * t**2 + V * t - RA = 0
             --  Discriminant: V**2 - 4 * (A/2) * (-RA)
             --  Roots: (-V +/- Sqrt(V**2 - 4 * (A/2) * (-RA))) / 2 (A/2)
-            Discriminant : constant Float :=
-              Velocity**2 + 2.0 * Float (Rel_Angle) * Acceleration;
-            Root1 : constant Float :=
-              (Sqrt (Discriminant) - Velocity) / Acceleration;
-            Root2 : constant Float :=
-              (-Sqrt (Discriminant) - Velocity) / Acceleration;
+            Discriminant : constant Float := Velocity**2 + 2.0 * Float (Rel_Angle) * Acceleration;
+            Root1        : constant Float := (Sqrt (Discriminant) - Velocity) / Acceleration;
+            Root2        : constant Float := (-Sqrt (Discriminant) - Velocity) / Acceleration;
          begin
             Spent_Time := Duration (if Root1 > Root2 then Root1 else Root2);
          end;
@@ -1018,7 +1041,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       elsif abs Rel_Angle > 0 then
          raise Constraint_Error with "Rotate to another point but no velocity nor acceleration";
       end if;
-      TFin       := Natural (Frame_Rate * Spent_Time);
+      TFin := Natural (Frame_Rate * Spent_Time);
       if TFin > 0 then
          Sprite.Rotation_Velocity (Velocity);
          Sprite.Rotation_Acceleration (Acceleration);
@@ -1053,7 +1076,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Property ("gnoga_frame_effect", Effect_Type'Pos (Effect));
    end Frame_Effect;
 
-   function Frame_Effect (Sprite : in Sprite_Type) return Effect_Type is
+   function Frame_Effect
+     (Sprite : in Sprite_Type)
+      return Effect_Type
+   is
    begin
       return Effect_Type'Val (Sprite.Property ("gnoga_frame_effect"));
    end Frame_Effect;
@@ -1079,10 +1105,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Handler              : in     Sprite_Event := null)
    is
    begin
-      Sprite.Property
-      ("gnoga_angle_min", Float (Angle_Min) * Ada.Numerics.Pi / 180.0);
-      Sprite.Property
-      ("gnoga_angle_max", Float (Angle_Max) * Ada.Numerics.Pi / 180.0);
+      Sprite.Property ("gnoga_angle_min", Float (Angle_Min) * Ada.Numerics.Pi / 180.0);
+      Sprite.Property ("gnoga_angle_max", Float (Angle_Max) * Ada.Numerics.Pi / 180.0);
       Sprite.Property ("gnoga_angle_effect", Effect_Type'Pos (Effect));
       Sprite.On_Angle_Event := Handler;
    end Angle_Limit;
@@ -1095,7 +1119,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Sprite.Property ("gnoga_angle_effect", Effect_Type'Pos (Effect));
    end Angle_Effect;
 
-   function Angle_Effect (Sprite : in Sprite_Type) return Effect_Type is
+   function Angle_Effect
+     (Sprite : in Sprite_Type)
+      return Effect_Type
+   is
    begin
       return Effect_Type'Val (Sprite.Property ("gnoga_angle_effect"));
    end Angle_Effect;

@@ -43,9 +43,7 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Activate_Application --
    --------------------------
 
-   procedure Activate_Application
-     (Window : in out Gnoga.Gui.Window.Window_Type)
-   is
+   procedure Activate_Application (Window : in out Gnoga.Gui.Window.Window_Type) is
    begin
       MacGap_Execute (Window, "activate()");
    end Activate_Application;
@@ -63,8 +61,7 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Unhide_Application --
    ------------------------
 
-   procedure Unhide_Application (Window : in out Gnoga.Gui.Window.Window_Type)
-   is
+   procedure Unhide_Application (Window : in out Gnoga.Gui.Window.Window_Type) is
    begin
       MacGap_Execute (Window, "unhide()");
    end Unhide_Application;
@@ -91,8 +88,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Launch_Application --
    ------------------------
 
-   procedure Launch_Application (Window : in out Gnoga.Gui.Window.Window_Type;
-                                 Name   : in     String)
+   procedure Launch_Application
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Name   : in     String)
    is
    begin
       MacGap_Execute (Window, "launch('" & Name & "')");
@@ -102,8 +100,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Open_URL --
    --------------
 
-   procedure Open_URL (Window : in out Gnoga.Gui.Window.Window_Type;
-                       URL    : in     String)
+   procedure Open_URL
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      URL    : in     String)
    is
    begin
       MacGap_Execute (Window, "openURL('" & Escape_Quotes (URL) & "')");
@@ -113,40 +112,43 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Notify_User --
    -----------------
 
-   procedure Notify_User (Window  : in out Gnoga.Gui.Window.Window_Type;
-                          Title   : in     String;
-                          Message : in     String;
-                          Sound   : in     Boolean := True)
+   procedure Notify_User
+     (Window  : in out Gnoga.Gui.Window.Window_Type;
+      Title   : in     String;
+      Message : in     String;
+      Sound   : in     Boolean := True)
    is
    begin
-      MacGap_Execute (Window,
-                      "notify({title: '" & Escape_Quotes (Title) & "', " &
-                        "content: '" & Escape_Quotes (Message) & "', " &
-                        "sound: " & Sound'Img & "})");
+      MacGap_Execute
+        (Window,
+         "notify({title: '" & Escape_Quotes (Title) & "', " & "content: '" & Escape_Quotes (Message) & "', " &
+         "sound: " & Sound'Img & "})");
    end Notify_User;
 
    -------------------
    -- Display_Sheet --
    -------------------
 
-   procedure Display_Sheet (Window  : in out Gnoga.Gui.Window.Window_Type;
-                            Title   : in     String;
-                            Message : in     String;
-                            Sound   : in     Boolean := True)
+   procedure Display_Sheet
+     (Window  : in out Gnoga.Gui.Window.Window_Type;
+      Title   : in     String;
+      Message : in     String;
+      Sound   : in     Boolean := True)
    is
    begin
-      MacGap_Execute (Window,
-                      "notify({type: 'sheet', " &
-                        "title: '" & Escape_Quotes (Title) & "', " &
-                        "content: '" & Escape_Quotes (Message) & "', " &
-                        "sound: " & Sound'Img & "})");
+      MacGap_Execute
+        (Window,
+         "notify({type: 'sheet', " & "title: '" & Escape_Quotes (Title) & "', " & "content: '" &
+         Escape_Quotes (Message) & "', " & "sound: " & Sound'Img & "})");
    end Display_Sheet;
 
    ----------------
    -- X_Position --
    ----------------
 
-   function X_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer
+   function X_Position
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return Integer
    is
    begin
       return Integer'Value (MacGap_Execute (Window, "Window.x"));
@@ -156,7 +158,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Y_Position --
    ----------------
 
-   function Y_Position (Window : Gnoga.Gui.Window.Window_Type) return Integer
+   function Y_Position
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return Integer
    is
    begin
       return Integer'Value (MacGap_Execute (Window, "Window.y"));
@@ -166,8 +170,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Is_Maximized --
    ------------------
 
-   function Is_Maximized (Window : Gnoga.Gui.Window.Window_Type)
-                          return Boolean
+   function Is_Maximized
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return Boolean
    is
    begin
       return MacGap_Execute (Window, "Window.isMaximized") = "true";
@@ -177,8 +182,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Move --
    ----------
 
-   procedure Move (Window : in out Gnoga.Gui.Window.Window_Type;
-                   X, Y   : in     Integer)
+   procedure Move
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      X, Y   : in     Integer)
    is
    begin
       MacGap_Execute (Window, "Window.move(" & X'Img & "," & Y'Img & ")");
@@ -188,21 +194,22 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Resize --
    ------------
 
-   procedure Resize (Window : in out Gnoga.Gui.Window.Window_Type;
-                     Width  : in     Integer;
-                     Height : in     Integer)
+   procedure Resize
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Width  : in     Integer;
+      Height : in     Integer)
    is
    begin
-      MacGap_Execute (Window,
-                      "Window.resize(" & Width'Img & "," & Height'Img & ")");
+      MacGap_Execute (Window, "Window.resize(" & Width'Img & "," & Height'Img & ")");
    end Resize;
 
    -----------
    -- Title --
    -----------
 
-   procedure Title (Window : in out Gnoga.Gui.Window.Window_Type;
-                    Value  : in     String)
+   procedure Title
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Value  : in     String)
    is
    begin
       MacGap_Execute (Window, "Window.title('" & Escape_Quotes (Value) & "')");
@@ -239,8 +246,7 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Toggle_Full_Screen --
    ------------------------
 
-   procedure Toggle_Full_Screen (Window : in out Gnoga.Gui.Window.Window_Type)
-   is
+   procedure Toggle_Full_Screen (Window : in out Gnoga.Gui.Window.Window_Type) is
    begin
       MacGap_Execute (Window, "Window.toggleFullscreen()");
    end Toggle_Full_Screen;
@@ -249,8 +255,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Application_Path --
    ----------------------
 
-   function Application_Path (Window : Gnoga.Gui.Window.Window_Type)
-                              return String
+   function Application_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String
    is
    begin
       return MacGap_Execute (Window, "applicationPath");
@@ -260,8 +267,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Resource_Path --
    -------------------
 
-   function Resource_Path (Window : Gnoga.Gui.Window.Window_Type)
-                           return String
+   function Resource_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String
    is
    begin
       return MacGap_Execute (Window, "resourcePath");
@@ -271,8 +279,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Documents_Path --
    --------------------
 
-   function Documents_Path (Window : Gnoga.Gui.Window.Window_Type)
-                            return String
+   function Documents_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String
    is
    begin
       return MacGap_Execute (Window, "documentsPath");
@@ -282,8 +291,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Library_Path --
    ------------------
 
-   function Library_Path (Window : Gnoga.Gui.Window.Window_Type)
-                          return String
+   function Library_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String
    is
    begin
       return MacGap_Execute (Window, "libraryPath");
@@ -293,8 +303,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Home_Path --
    ---------------
 
-   function Home_Path (Window : Gnoga.Gui.Window.Window_Type)
-                       return String
+   function Home_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String
    is
    begin
       return MacGap_Execute (Window, "homePath");
@@ -304,8 +315,9 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Temp_Path --
    ---------------
 
-   function Temp_Path (Window : Gnoga.Gui.Window.Window_Type)
-                       return String
+   function Temp_Path
+     (Window : Gnoga.Gui.Window.Window_Type)
+      return String
    is
    begin
       return MacGap_Execute (Window, "tempPath");
@@ -315,9 +327,7 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- Terminate_Application --
    ---------------------------
 
-   procedure Terminate_Application
-     (Window : in out Gnoga.Gui.Window.Window_Type)
-   is
+   procedure Terminate_Application (Window : in out Gnoga.Gui.Window.Window_Type) is
    begin
       MacGap_Execute (Window, "terminate()");
    end Terminate_Application;
@@ -326,21 +336,21 @@ package body Gnoga.Gui.Plugin.MacGap is
    -- MacGap_Execute --
    --------------------
 
-   procedure MacGap_Execute (Window : in out Gnoga.Gui.Window.Window_Type;
-                             Method : in     String)
+   procedure MacGap_Execute
+     (Window : in out Gnoga.Gui.Window.Window_Type;
+      Method : in     String)
    is
    begin
-      Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                              "MacGap." & Method);
+      Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "MacGap." & Method);
    end MacGap_Execute;
 
-   function MacGap_Execute (Window : Gnoga.Gui.Window.Window_Type;
-                            Method : String)
-                            return String
+   function MacGap_Execute
+     (Window : Gnoga.Gui.Window.Window_Type;
+      Method : String)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                                     "MacGap." & Method);
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "MacGap." & Method);
    end MacGap_Execute;
 
 end Gnoga.Gui.Plugin.MacGap;

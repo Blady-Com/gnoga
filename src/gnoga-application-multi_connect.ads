@@ -43,12 +43,11 @@ with Gnoga.Gui.Window;
 
 package Gnoga.Application.Multi_Connect is
 
-   subtype Connection_Holder_Type is
-     Gnoga.Server.Connection.Connection_Holder_Type;
+   subtype Connection_Holder_Type is Gnoga.Server.Connection.Connection_Holder_Type;
 
-   type Application_Connect_Event is access
-     procedure (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                Connection  : access Connection_Holder_Type);
+   type Application_Connect_Event is access procedure
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access Connection_Holder_Type);
    --  On each connection an Application_Connect_Event registered in
    --  On_Connect_Handler will be called. Main_Window will be attached
    --  to the window of the browser. Connection can optionally be used
@@ -62,7 +61,7 @@ package Gnoga.Application.Multi_Connect is
    procedure Initialize
      (Event   : in Application_Connect_Event := null;
       Host    : in String                    := "";
-      Port    : in Integer                   := 8080;
+      Port    : in Integer                   := 8_080;
       Boot    : in String                    := "boot.html";
       Verbose : in Boolean                   := True);
    --  Initialize an application for multiple connections using
@@ -70,8 +69,9 @@ package Gnoga.Application.Multi_Connect is
    --  If Host = "" then will listen on all network interfaces.
    --  Use Host = "localhost" to constrain to local use only.
 
-   procedure On_Connect_Handler (Event : in Application_Connect_Event;
-                                 Path  : in String := "default");
+   procedure On_Connect_Handler
+     (Event : in Application_Connect_Event;
+      Path  : in String := "default");
    --  Set an event handler for new application connections with Path. If
    --  Path = "default" then Event will be the default handler for any
    --  connection not matching another Path. Note that http://myapp:8080/abc

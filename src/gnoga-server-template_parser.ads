@@ -65,63 +65,70 @@ package Gnoga.Server.Template_Parser is
 
    overriding procedure Finalize (Object : in out View_Data);
 
-   procedure Variable_Name (Data : in out View_Data;
-                            Name : String);
+   procedure Variable_Name
+     (Data : in out View_Data;
+      Name :        String);
    --  Sets the variable name used for the passed data
    --  by default the Name is "data" and so in the views
    --  accessed as - $data[key] (or data['key'] in python, or
    --  @@data.key@@ in the Simple parser).
 
-   procedure Insert (Data  : in out View_Data;
-                     Key   : String;
-                     Value : Integer);
+   procedure Insert
+     (Data  : in out View_Data;
+      Key   :        String;
+      Value :        Integer);
    --  Add Key/Value pair to View Data
    --  accessed in view as - $data[key], data['key'] or @@data.key@@
 
-   procedure Insert (Data  : in out View_Data;
-                     Key   : String;
-                     Value : String);
+   procedure Insert
+     (Data  : in out View_Data;
+      Key   :        String;
+      Value :        String);
    --  Add Key/Value pair to View Data
    --  accessed in view as - $data[key], data['key'] or @@data.key@@
 
-   procedure Insert_Array (Data   : in out View_Data;
-                           Vector : Gnoga.Types.Data_Array_Type);
+   procedure Insert_Array
+     (Data   : in out View_Data;
+      Vector :        Gnoga.Types.Data_Array_Type);
    --  Add an entire Array from a Data_Vector.Vector to View_Data
    --  access in view as $data[Index], data[Index] or @@data.Index@@
 
-   procedure Insert_Array_Item (Data   : in out View_Data;
-                                Key    : String;
-                                Vector : Gnoga.Types.Data_Array_Type);
+   procedure Insert_Array_Item
+     (Data   : in out View_Data;
+      Key    :        String;
+      Vector :        Gnoga.Types.Data_Array_Type);
    --  Add an entire Array from a Data_Vector.Vector to View_Data
    --  as a single item.
    --  access in view as $data[Key][Array Index], data[Key][Index] or
    --  @@data.Key.Index@@
 
-   procedure Insert_Map (Data   : in out View_Data;
-                         Map    : Gnoga.Types.Data_Map_Type);
+   procedure Insert_Map
+     (Data : in out View_Data;
+      Map  :        Gnoga.Types.Data_Map_Type);
    --  Add an entire Map of Key/Value pairs from a Gnoga.Types.Data_Map_Type
    --  to View_Data each item will be accessed as - $data[key] where key is key
    --  in Map, or for Python and Simple parser data['key'] or @@data.key@@
 
-   procedure Insert_Map_Item (Data   : in out View_Data;
-                              Key    : String;
-                              Map    : Gnoga.Types.Data_Map_Type);
+   procedure Insert_Map_Item
+     (Data : in out View_Data;
+      Key  :        String;
+      Map  :        Gnoga.Types.Data_Map_Type);
    --  Add an entire Map of Key/Value pairs from a Gnoga.Types.Data_Map_Type
    --  to View_Data as a single item.
    --  access in view as $data[Key][Map's_Key], data['Key']['Map's_Key']
    --  or @@data.Key.Map's_Key@@
 
    procedure Insert_Record_Item
-     (Data   : in out View_Data;
-      Key    : String;
-      Row    : Gnoga.Server.Model.Active_Record'Class);
+     (Data : in out View_Data;
+      Key  :        String;
+      Row  :        Gnoga.Server.Model.Active_Record'Class);
    --  Add field values of an Active_Record to View Data as a single item.
    --  access in view as $data[Key][Row's Field Name],
    --  data['Key']['Row's Field Name'] or @@data.Key.Row's Field Name@@
 
    procedure Insert_Rows
-     (Data   : in out View_Data;
-      Row    : Gnoga.Server.Model.Queries.Active_Record_Array.Vector);
+     (Data : in out View_Data;
+      Row  :        Gnoga.Server.Model.Queries.Active_Record_Array.Vector);
    --  Add a vector of Active_Records to View_Data.
    --  Each Active_Record is keyed by row number
    --  access in view as $data[Row Number][Row's Field Name]
@@ -129,8 +136,8 @@ package Gnoga.Server.Template_Parser is
    --  @@data.Row Number.Row's Field Name@@
 
    procedure Insert_Recordset
-     (Data   : in out View_Data;
-      RS     : in out Gnoga.Server.Database.Recordset'Class);
+     (Data : in out View_Data;
+      RS   : in out Gnoga.Server.Database.Recordset'Class);
    --  Add a recordset to View_Data. Each record is keyed by row number
    --  access in view as $data[Row Number][Row's Field Name]
    --  data[Row Number]['Row's Field Name'] or
@@ -138,8 +145,8 @@ package Gnoga.Server.Template_Parser is
 
    procedure Insert_Query
      (Data  : in out View_Data;
-      C     : Gnoga.Server.Database.Connection'Class;
-      Query : String);
+      C     :        Gnoga.Server.Database.Connection'Class;
+      Query :        String);
    --  Inserts the results of a SQL Query. Each record is keyed by row number
 
    procedure Clear (Data : in out View_Data);
@@ -166,20 +173,22 @@ package Gnoga.Server.Template_Parser is
    --  Set the default extension for views. By default this is at
    --  Gnoga.Server.Templates_Directory
 
-   procedure Write_String_To_File (File_Name : String; Value : String);
+   procedure Write_String_To_File
+     (File_Name : String;
+      Value     : String);
    --  Name is file name (no path is prefixed) to write Value to.
    --  File will be overwritten if exists.
 
 private
-   type View_Data is new Ada.Finalization.Controlled with
-      record
-         Name          : Ada.Strings.Unbounded.Unbounded_String :=
-           Ada.Strings.Unbounded.To_Unbounded_String ("data");
-         String_Values : Gnoga.Types.Data_Map_Type;
-         Map_Values    : Gnoga.Types.Map_of_Data_Maps_Type;
-      end record;
+   type View_Data is new Ada.Finalization.Controlled with record
+      Name          : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("data");
+      String_Values : Gnoga.Types.Data_Map_Type;
+      Map_Values    : Gnoga.Types.Map_of_Data_Maps_Type;
+   end record;
 
-   function Parse_Name (Name : String) return String;
+   function Parse_Name
+     (Name : String)
+      return String;
    --  prefix path from Set_Template_Directory to Name
    --  unless Name contains a ':' (as in C:) or starts
    --  with the OS separator ('/' or '\' on Windows)

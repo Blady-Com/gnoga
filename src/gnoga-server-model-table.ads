@@ -39,15 +39,13 @@ with Gnoga.Server.Database;
 with Gnoga.Server.Model.Queries;
 
 generic
-   Name       : String;
+   Name : String;
    Connection : access Gnoga.Server.Database.Connection;
 package Gnoga.Server.Model.Table is
 
    Table_Name : aliased constant String := Name;
 
-   type Active_Record is new Gnoga.Server.Model.Active_Record
-     (Table_Name'Access, Connection)
-   with null record;
+   type Active_Record is new Gnoga.Server.Model.Active_Record (Table_Name'Access, Connection) with null record;
 
    function Find_All
      (Like     : String := "";
@@ -55,9 +53,9 @@ package Gnoga.Server.Model.Table is
       return Gnoga.Server.Model.Queries.Active_Record_Array.Vector;
 
    function Find_Items
-     (Parent         : Gnoga.Server.Model.Active_Record'Class;
-      Like           : String := "";
-      Order_By       : String := "")
+     (Parent   : Gnoga.Server.Model.Active_Record'Class;
+      Like     : String := "";
+      Order_By : String := "")
       return Gnoga.Server.Model.Queries.Active_Record_Array.Vector;
    --  Find all children in a one to many relationship with
    --  Parent. (keyed on parent(less the s)_id in child table)

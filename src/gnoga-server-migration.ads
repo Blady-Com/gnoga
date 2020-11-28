@@ -46,31 +46,32 @@ package Gnoga.Server.Migration is
 
    type Migration_Collection is tagged limited private;
 
-   procedure Add_Migration_Up (Collection : in out Migration_Collection;
-                               SQL        : in     String);
+   procedure Add_Migration_Up
+     (Collection : in out Migration_Collection;
+      SQL        : in     String);
    --  Add a SQL statement to migrate the schema one step up
 
-   procedure Add_Migration_Down (Collection : in out Migration_Collection;
-                                 SQL        : in     String);
+   procedure Add_Migration_Down
+     (Collection : in out Migration_Collection;
+      SQL        : in     String);
    --  Add a SQL statement to migrate the schema down one step
 
    procedure Migrate_To
-     (Collection    : in out Migration_Collection;
-      Connection    : in out Gnoga.Server.Database.Connection'Class;
-      Level         : in     Natural);
+     (Collection : in out Migration_Collection;
+      Connection : in out Gnoga.Server.Database.Connection'Class;
+      Level      : in     Natural);
    --  Migrate to level upgrading or degrading the schema as needed
 
    procedure Setup
-     (Collection    : in out Migration_Collection;
-      Connection    : in out Gnoga.Server.Database.Connection'Class);
+     (Collection : in out Migration_Collection;
+      Connection : in out Gnoga.Server.Database.Connection'Class);
    --  Determines state of the schema and if needed performs
    --  setup for migrations support. It will then Migrate_To
    --  the last added Migration_Up
 
    function Migrations_Handled_Command_Line
-     (Connection          : in     Gnoga.Server.Database.Connection_Access;
-      Migration_Procedure : access
-        procedure (Collection : in out Migration_Collection))
+     (Connection          : in Gnoga.Server.Database.Connection_Access;
+      Migration_Procedure :    access procedure (Collection : in out Migration_Collection))
       return Boolean;
    --  Provides command line support for migrations. Returns True if the
    --  command line was handled but this function.
@@ -82,9 +83,8 @@ package Gnoga.Server.Migration is
    --         migrate up or down to the specific migration level X
 
 private
-   type Migration_Collection is tagged limited
-      record
-         Migrations_Up   : Gnoga.Types.Data_Array_Type;
-         Migrations_Down : Gnoga.Types.Data_Array_Type;
-      end record;
+   type Migration_Collection is tagged limited record
+      Migrations_Up   : Gnoga.Types.Data_Array_Type;
+      Migrations_Down : Gnoga.Types.Data_Array_Type;
+   end record;
 end Gnoga.Server.Migration;

@@ -46,11 +46,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    procedure Load_PIXI (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('" &
-       Escape_Quotes
-         ("<script src='/js/pixi.min.js'" &
-          " type='text/javascript' charset='utf-8'></script>") &
-       "')");
+        ("append('" &
+         Escape_Quotes ("<script src='/js/pixi.min.js'" & " type='text/javascript' charset='utf-8'></script>") & "')");
    end Load_PIXI;
 
    ------------
@@ -67,16 +64,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Application.ID (Application_ID, Gnoga.Types.Gnoga_ID);
       Application.Connection_ID (Window.Connection_ID);
-      Application.Attach_Using_Parent
-        (Parent => Window, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Application.Attach_Using_Parent (Parent => Window, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Application.Connection_ID,
-         Application.Script_Accessor &
-           " = new PIXI.Application(" &
-           Width'Img &
-           ", " &
-           Height'Img & ");" &
-           "document.body.appendChild(" & Application.Script_Accessor & ".view)");
+         Application.Script_Accessor & " = new PIXI.Application(" & Width'Img & ", " & Height'Img & ");" &
+         "document.body.appendChild(" & Application.Script_Accessor & ".view)");
       Application.Parent (Window);
    end Create;
 
@@ -94,18 +86,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Application.ID (Application_ID, Gnoga.Types.Gnoga_ID);
       Application.Connection_ID (Canvas.Connection_ID);
-      Application.Attach_Using_Parent
-        (Parent => Canvas, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Application.Attach_Using_Parent (Parent => Canvas, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Application.Connection_ID,
-         "gnoga['" &
-           Application_ID &
-           "'] = new PIXI.Application({" &
-           "width:" & Width'Img &
-           ", height:" & Height'Img &
-           ", view: document.getElementById('" &
-           Canvas.ID &
-           "')})");
+         "gnoga['" & Application_ID & "'] = new PIXI.Application({" & "width:" & Width'Img & ", height:" & Height'Img &
+         ", view: document.getElementById('" & Canvas.ID & "')})");
       Application.Parent (Canvas);
    end Create;
 
@@ -121,133 +106,113 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Renderer.ID (Renderer_ID, Gnoga.Types.Gnoga_ID);
       Renderer.Connection_ID (Application.Connection_ID);
-      Renderer.Attach_Using_Parent
-        (Parent => Application, ID => Renderer_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Renderer.Attach_Using_Parent (Parent => Application, ID => Renderer_ID, ID_Type => Gnoga.Types.Gnoga_ID);
 
       Gnoga.Server.Connection.Execute_Script
-        (Renderer.Connection_ID,
-         "gnoga['" &
-           Renderer_ID &
-           "'] = gnoga['" & Application.ID & "'].renderer;");
+        (Renderer.Connection_ID, "gnoga['" & Renderer_ID & "'] = gnoga['" & Application.ID & "'].renderer;");
       Gnoga.Server.Connection.Execute_Script
         (Renderer.Connection_ID,
-         "gnoga['" &
-           Renderer.ID &
-           "'].gnoga_update=function game_update(object) {" &
-           " for (var gnoga_sprite of object.children) " &
-           "   if (gnoga_sprite instanceof PIXI.Sprite) {" &
+         "gnoga['" & Renderer.ID & "'].gnoga_update=function game_update(object) {" &
+         " for (var gnoga_sprite of object.children) " & "   if (gnoga_sprite instanceof PIXI.Sprite) {" &
 
-           " gnoga_sprite.gnoga_vx += gnoga_sprite.gnoga_ax; gnoga_sprite.gnoga_vy += gnoga_sprite.gnoga_ay;" &
-           " gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
-           " gnoga_sprite.gnoga_vr += gnoga_sprite.gnoga_ar;" &
-           " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;" &
-           " gnoga_sprite.rotation %= 2 * Math.PI;" &
+         " gnoga_sprite.gnoga_vx += gnoga_sprite.gnoga_ax; gnoga_sprite.gnoga_vy += gnoga_sprite.gnoga_ay;" &
+         " gnoga_sprite.x += gnoga_sprite.gnoga_vx; gnoga_sprite.y += gnoga_sprite.gnoga_vy;" &
+         " gnoga_sprite.gnoga_vr += gnoga_sprite.gnoga_ar;" & " gnoga_sprite.rotation += gnoga_sprite.gnoga_vr;" &
+         " gnoga_sprite.rotation %= 2 * Math.PI;" & " if (gnoga_sprite.gnoga_frame_effect == 1){" &
+         "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max)" &
+         "     {gnoga_sprite.gnoga_vx = -gnoga_sprite.gnoga_vx};" &
+         "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
+         "     {gnoga_sprite.gnoga_vy = -gnoga_sprite.gnoga_vy};};" & " if (gnoga_sprite.gnoga_frame_effect == 2){" &
+         "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min && gnoga_sprite.gnoga_vy == 0)" &
+         "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_max};" &
+         "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max && gnoga_sprite.gnoga_vy == 0)" &
+         "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_min};" &
 
-           " if (gnoga_sprite.gnoga_frame_effect == 1){" &
-           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max)" &
-           "     {gnoga_sprite.gnoga_vx = -gnoga_sprite.gnoga_vx};" &
-           "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
-           "     {gnoga_sprite.gnoga_vy = -gnoga_sprite.gnoga_vy};};" &
+         "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min && gnoga_sprite.gnoga_vx == 0)" &
+         "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_max};" &
+         "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max && gnoga_sprite.gnoga_vx == 0)" &
+         "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
 
-           " if (gnoga_sprite.gnoga_frame_effect == 2){" &
-           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min && gnoga_sprite.gnoga_vy == 0)" &
-           "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_max};" &
-           "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max && gnoga_sprite.gnoga_vy == 0)" &
-           "     {gnoga_sprite.x = gnoga_sprite.gnoga_col_min};" &
+         "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min){" &
+         "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+         "     let y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
+         "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
+         "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
+         "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
+         "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
+         "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
+         "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
+         "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
 
-           "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min && gnoga_sprite.gnoga_vx == 0)" &
-           "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_max};" &
-           "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max && gnoga_sprite.gnoga_vx == 0)" &
-           "     {gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
+         "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max){" &
+         "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+         "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b;" &
+         "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
+         "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
+         "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
+         "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
+         "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
+         "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
+         "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
 
-           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min){" &
-           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-           "     let y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
-           "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
-           "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
-           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
-           "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
-           "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
-           "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
-           "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
+         "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min){" &
+         "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+         "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
+         "     let x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
+         "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
+         "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
+         "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
+         "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
+         "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
+         "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
 
-           "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_max){" &
-           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-           "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b;" &
-           "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a, x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
-           "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
-           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
-           "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
-           "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};" &
-           "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
-           "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
+         "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max){" &
+         "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
+         "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
+         "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a;" &
+         "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
+         "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
+         "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
+         "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
+         "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
+         "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};};};" &
 
-           "   if (gnoga_sprite.y < gnoga_sprite.gnoga_row_min){" &
-           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-           "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
-           "     let x_row_max=(gnoga_sprite.gnoga_row_max-b)/a;" &
-           "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
-           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
-           "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
-           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
-           "     if (x_row_max >= gnoga_sprite.gnoga_col_min && x_row_max <= gnoga_sprite.gnoga_col_max)" &
-           "       {gnoga_sprite.x = x_row_max; gnoga_sprite.y = gnoga_sprite.gnoga_row_max};};" &
+         " if (gnoga_sprite.gnoga_frame_effect == 3){" &
+         "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_min && gnoga_sprite.x < gnoga_sprite.gnoga_col_max &&" &
+         "       gnoga_sprite.y > gnoga_sprite.gnoga_row_min && gnoga_sprite.y < gnoga_sprite.gnoga_row_max)" &
+         "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('inside_frame')};};" &
 
-           "   if (gnoga_sprite.y > gnoga_sprite.gnoga_row_max){" &
-           "     let a=gnoga_sprite.gnoga_vy/gnoga_sprite.gnoga_vx, b=gnoga_sprite.y-a*gnoga_sprite.x;" &
-           "     let y_col_min=a*gnoga_sprite.gnoga_col_min+b, y_col_max=a*gnoga_sprite.gnoga_col_max+b;" &
-           "     let x_row_min=(gnoga_sprite.gnoga_row_min-b)/a;" &
-           "     if (y_col_min >= gnoga_sprite.gnoga_row_min && y_col_min <= gnoga_sprite.gnoga_row_max)" &
-           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_min; gnoga_sprite.y = y_col_min};" &
-           "     if (y_col_max >= gnoga_sprite.gnoga_row_min && y_col_max <= gnoga_sprite.gnoga_row_max)" &
-           "       {gnoga_sprite.x = gnoga_sprite.gnoga_col_max; gnoga_sprite.y = y_col_max};" &
-           "     if (x_row_min >= gnoga_sprite.gnoga_col_min && x_row_min <= gnoga_sprite.gnoga_col_max)" &
-           "       {gnoga_sprite.x = x_row_min; gnoga_sprite.y = gnoga_sprite.gnoga_row_min};};};" &
+         " if (gnoga_sprite.gnoga_frame_effect == 4){" &
+         "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max  ||" &
+         "       gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
+         "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('outside_frame')};};" &
 
-           " if (gnoga_sprite.gnoga_frame_effect == 3){" &
-           "   if (gnoga_sprite.x > gnoga_sprite.gnoga_col_min && gnoga_sprite.x < gnoga_sprite.gnoga_col_max &&" &
-           "       gnoga_sprite.y > gnoga_sprite.gnoga_row_min && gnoga_sprite.y < gnoga_sprite.gnoga_row_max)" &
-           "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('inside_frame')};};" &
+         " if (gnoga_sprite.gnoga_angle_effect == 1){" &
+         "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
+         "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+         "     gnoga_sprite.gnoga_vr = -gnoga_sprite.gnoga_vr;};" & " if (gnoga_sprite.gnoga_angle_effect == 2){" &
+         "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min)" &
+         "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_max;" &
+         "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+         "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_min;};" &
 
-           " if (gnoga_sprite.gnoga_frame_effect == 4){" &
-           "   if (gnoga_sprite.x < gnoga_sprite.gnoga_col_min || gnoga_sprite.x > gnoga_sprite.gnoga_col_max  ||" &
-           "       gnoga_sprite.y < gnoga_sprite.gnoga_row_min || gnoga_sprite.y > gnoga_sprite.gnoga_row_max)" &
-           "     {gnoga_sprite.gnoga_frame_effect = 0; gnoga_sprite.sendEvent ('outside_frame')};};" &
+         " if (gnoga_sprite.gnoga_angle_effect == 3){" &
+         "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_min &&" &
+         "       gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_max)" &
+         "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('inside_angle');}};" &
 
-           " if (gnoga_sprite.gnoga_angle_effect == 1){" &
-           "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
-           "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
-           "     gnoga_sprite.gnoga_vr = -gnoga_sprite.gnoga_vr;};" &
+         " if (gnoga_sprite.gnoga_angle_effect == 4){" &
+         "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
+         "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
+         "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('outside_angle');}};" &
 
-           " if (gnoga_sprite.gnoga_angle_effect == 2){" &
-           "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min)" &
-           "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_max;" &
-           "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
-           "     gnoga_sprite.rotation = gnoga_sprite.gnoga_angle_min;};" &
-
-           " if (gnoga_sprite.gnoga_angle_effect == 3){" &
-           "   if (gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_min &&" &
-           "       gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_max)" &
-           "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('inside_angle');}};" &
-
-           " if (gnoga_sprite.gnoga_angle_effect == 4){" &
-           "   if (gnoga_sprite.rotation < gnoga_sprite.gnoga_angle_min ||" &
-           "       gnoga_sprite.rotation > gnoga_sprite.gnoga_angle_max)" &
-           "     {gnoga_sprite.gnoga_angle_effect = 0; gnoga_sprite.sendEvent ('outside_angle');}};" &
-
-           " if (gnoga_sprite.gnoga_tfin > 0)" &
-           "   {gnoga_sprite.gnoga_tcur += 1;" &
-           "   if (gnoga_sprite.gnoga_tcur > gnoga_sprite.gnoga_tfin)" &
-           "     {gnoga_sprite.gnoga_tcur = 0; gnoga_sprite.gnoga_tfin = 0;" &
-           "      gnoga_sprite.gnoga_vx = 0; gnoga_sprite.gnoga_vy = 0;" &
-           "      gnoga_sprite.gnoga_ax = 0; gnoga_sprite.gnoga_ay = 0;" &
-           "      gnoga_sprite.gnoga_vr = 0; gnoga_sprite.gnoga_ar = 0;}}" &
-
-           " gnoga['" & Renderer.ID &
-           "'].gnoga_update(gnoga_sprite);" &
-
-           "};" &
-           "};");
+         " if (gnoga_sprite.gnoga_tfin > 0)" & "   {gnoga_sprite.gnoga_tcur += 1;" &
+         "   if (gnoga_sprite.gnoga_tcur > gnoga_sprite.gnoga_tfin)" &
+         "     {gnoga_sprite.gnoga_tcur = 0; gnoga_sprite.gnoga_tfin = 0;" &
+         "      gnoga_sprite.gnoga_vx = 0; gnoga_sprite.gnoga_vy = 0;" &
+         "      gnoga_sprite.gnoga_ax = 0; gnoga_sprite.gnoga_ay = 0;" &
+         "      gnoga_sprite.gnoga_vr = 0; gnoga_sprite.gnoga_ar = 0;}}" & " gnoga['" & Renderer.ID &
+         "'].gnoga_update(gnoga_sprite);" & "};" & "};");
       Renderer.Property ("gnoga_autoRendering", False);
       Renderer.Parent (Application);
    end Create;
@@ -256,9 +221,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- On_Child_Removed --
    ----------------------
 
-   overriding
-   procedure On_Child_Removed (Renderer : in out Renderer_Type;
-                               Child    : in out Gnoga.Gui.Base.Base_Type'Class)
+   overriding procedure On_Child_Removed
+     (Renderer : in out Renderer_Type;
+      Child    : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
       Renderer.Auto_Rendering (Container_Type (Child), False);
@@ -293,23 +258,10 @@ package body Gnoga.Gui.Plugin.Pixi is
       if Enable then
          Gnoga.Server.Connection.Execute_Script
            (Renderer.Connection_ID,
-            "gnoga['" &
-              Renderer.ID &
-              "'].gnoga_animate=function gnoga_gameLoop() {" &
-              " if (gnoga['" &
-              Renderer.ID &
-              "'].gnoga_autoRendering) {requestAnimationFrame(gnoga_gameLoop);}" &
-
-              " gnoga['" & Renderer.ID &
-              "'].gnoga_update(gnoga['" &
-              Container.ID &
-              "']);" &
-
-              "gnoga['" &
-              Renderer.ID &
-              "'].render(gnoga['" &
-              Container.ID &
-              "']);};");
+            "gnoga['" & Renderer.ID & "'].gnoga_animate=function gnoga_gameLoop() {" & " if (gnoga['" & Renderer.ID &
+            "'].gnoga_autoRendering) {requestAnimationFrame(gnoga_gameLoop);}" & " gnoga['" & Renderer.ID &
+            "'].gnoga_update(gnoga['" & Container.ID & "']);" & "gnoga['" & Renderer.ID & "'].render(gnoga['" &
+            Container.ID & "']);};");
          Renderer.Execute ("gnoga_animate();");
       else
          delay 1.0; --  Let some time to pop all pending requests
@@ -320,7 +272,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Auto_Rendering --
    --------------------
 
-   function Auto_Rendering (Renderer : in out Renderer_Type) return Boolean is
+   function Auto_Rendering
+     (Renderer : in out Renderer_Type)
+      return Boolean
+   is
    begin
       return Renderer.Property ("gnoga_autoRendering");
    end Auto_Rendering;
@@ -337,15 +292,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Container.ID (Container_ID, Gnoga.Types.Gnoga_ID);
       Container.Connection_ID (Application.Connection_ID);
-      Container.Attach_Using_Parent
-      (Parent                  =>
-         Application, ID          =>
-         Container_ID, ID_Type =>
-         Gnoga.Types.Gnoga_ID);
+      Container.Attach_Using_Parent (Parent => Application, ID => Container_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Container.Connection_ID,
-         "gnoga['" & Container_ID & "'] = new PIXI.Container();" &
-         "gnoga['" & Application.ID & "'].stage.addChild(gnoga['" & Container_ID & "'])");
+         "gnoga['" & Container_ID & "'] = new PIXI.Container();" & "gnoga['" & Application.ID &
+         "'].stage.addChild(gnoga['" & Container_ID & "'])");
       Container.Parent (Application);
    end Create;
 
@@ -373,11 +324,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Container.ID (Container_ID, Gnoga.Types.Gnoga_ID);
       Container.Connection_ID (Parent.Connection_ID);
-      Container.Attach_Using_Parent
-      (Parent => Parent, ID => Container_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Container.Attach_Using_Parent (Parent => Parent, ID => Container_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
-        (Container.Connection_ID,
-         "gnoga['" & Container_ID & "'] = new PIXI.Container();");
+        (Container.Connection_ID, "gnoga['" & Container_ID & "'] = new PIXI.Container();");
       Container.Parent (Parent);
    end Create;
 
@@ -385,9 +334,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- On_Child_Added --
    --------------------
 
-   overriding
-   procedure On_Child_Added (Container  : in out Container_Type;
-                             Child      : in out Gnoga.Gui.Base.Base_Type'Class)
+   overriding procedure On_Child_Added
+     (Container : in out Container_Type;
+      Child     : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
       Container.Add_Child (Container_Type'Class (Child));
@@ -399,9 +348,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- On_Child_Removed --
    ----------------------
 
-   overriding
-   procedure On_Child_Removed (Container : in out Container_Type;
-                               Child     : in out Gnoga.Gui.Base.Base_Type'Class)
+   overriding procedure On_Child_Removed
+     (Container : in out Container_Type;
+      Child     : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
       Container.Remove_Child (Container_Type'Class (Child));
@@ -415,8 +364,7 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Finalize --
    --------------
 
-   overriding
-   procedure Finalize (Container : in out Container_Type) is
+   overriding procedure Finalize (Container : in out Container_Type) is
    begin
       while not Container.Child_Array.Is_Empty loop
          Container.Child_Array.First_Element.Finalize;
@@ -475,14 +423,13 @@ package body Gnoga.Gui.Plugin.Pixi is
    ----------------
 
    function Get_Bounds
-     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type
+     (Container : in Container_Type)
+      return Gnoga.Types.Rectangle_Type
    is
    begin
       return
-        (Container.Execute ("getBounds().x;"),
-         Container.Execute ("getBounds().y;"),
-         Container.Execute ("getBounds().width;"),
-         Container.Execute ("getBounds().height;"));
+        (Container.Execute ("getBounds().x;"), Container.Execute ("getBounds().y;"),
+         Container.Execute ("getBounds().width;"), Container.Execute ("getBounds().height;"));
    end Get_Bounds;
 
    ----------------
@@ -495,10 +442,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Rect :=
-        (Container.Execute ("getBounds().x;"),
-         Container.Execute ("getBounds().y;"),
-         Container.Execute ("getBounds().width;"),
-         Container.Execute ("getBounds().height;"));
+        (Container.Execute ("getBounds().x;"), Container.Execute ("getBounds().y;"),
+         Container.Execute ("getBounds().width;"), Container.Execute ("getBounds().height;"));
    end Get_Bounds;
 
    ----------------------
@@ -506,14 +451,13 @@ package body Gnoga.Gui.Plugin.Pixi is
    ----------------------
 
    function Get_Local_Bounds
-     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type
+     (Container : in Container_Type)
+      return Gnoga.Types.Rectangle_Type
    is
    begin
       return
-        (Container.Execute ("getLocalBounds().x;"),
-         Container.Execute ("getLocalBounds().y;"),
-         Container.Execute ("getLocalBounds().width;"),
-         Container.Execute ("getLocalBounds().height;"));
+        (Container.Execute ("getLocalBounds().x;"), Container.Execute ("getLocalBounds().y;"),
+         Container.Execute ("getLocalBounds().width;"), Container.Execute ("getLocalBounds().height;"));
    end Get_Local_Bounds;
 
    ----------------------
@@ -526,10 +470,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Rect :=
-        (Container.Execute ("getLocalBounds().x;"),
-         Container.Execute ("getLocalBounds().y;"),
-         Container.Execute ("getLocalBounds().width;"),
-         Container.Execute ("getLocalBounds().height;"));
+        (Container.Execute ("getLocalBounds().x;"), Container.Execute ("getLocalBounds().y;"),
+         Container.Execute ("getLocalBounds().width;"), Container.Execute ("getLocalBounds().height;"));
    end Get_Local_Bounds;
 
    ---------------
@@ -538,14 +480,13 @@ package body Gnoga.Gui.Plugin.Pixi is
 
    function To_Global
      (Container : in Container_Type;
-      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type
+      Position  :    Gnoga.Types.Point_Type)
+      return Gnoga.Types.Point_Type
    is
    begin
       return
-        (Container.Execute
-         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute
-         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Global;
 
    ---------------
@@ -559,10 +500,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Point :=
-        (Container.Execute
-         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute
-         ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Global;
 
    --------------
@@ -571,14 +510,13 @@ package body Gnoga.Gui.Plugin.Pixi is
 
    function To_Local
      (Container : in Container_Type;
-      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type
+      Position  :    Gnoga.Types.Point_Type)
+      return Gnoga.Types.Point_Type
    is
    begin
       return
-        (Container.Execute
-         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute
-         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Local;
 
    --------------
@@ -592,10 +530,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Point :=
-        (Container.Execute
-         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute
-         ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
+         Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
    end To_Local;
 
    -------------------
@@ -612,25 +548,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Container.Execute
-      ("setTransform(" &
-       x'Img &
-       ',' &
-       y'Img &
-       ',' &
-       scaleX'Img &
-       ',' &
-       scaleY'Img &
-       ',' &
-       rotation'Img &
-       ',' &
-       skewX'Img &
-       ',' &
-       skewY'Img &
-       ',' &
-       pivotX'Img &
-       ',' &
-       pivotY'Img &
-       ");");
+        ("setTransform(" & x'Img & ',' & y'Img & ',' & scaleX'Img & ',' & scaleY'Img & ',' & rotation'Img & ',' &
+         skewX'Img & ',' & skewY'Img & ',' & pivotX'Img & ',' & pivotY'Img & ");");
    end Set_Transform;
 
    ----------------------
@@ -655,15 +574,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Texture.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
       Texture.Connection_ID (Renderer.Connection_ID);
-      Texture.Attach_Using_Parent
-      (Parent => Renderer, ID => Texture_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Texture.Attach_Using_Parent (Parent => Renderer, ID => Texture_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
-        (Texture.Connection_ID,
-         "gnoga['" &
-         Texture_ID &
-         "'] = new PIXI.Texture.from('" &
-         Image_URL &
-         "');");
+        (Texture.Connection_ID, "gnoga['" & Texture_ID & "'] = new PIXI.Texture.from('" & Image_URL & "');");
    end Create;
 
    ------------
@@ -679,15 +592,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Texture.ID (Texture_ID, Gnoga.Types.Gnoga_ID);
       Texture.Connection_ID (Renderer.Connection_ID);
-      Texture.Attach_Using_Parent
-      (Parent => Renderer, ID => Texture_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Texture.Attach_Using_Parent (Parent => Renderer, ID => Texture_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
-         "gnoga['" &
-         Texture_ID &
-         "'] = new PIXI.Texture.fromCanvas(gnoga['" &
-         Canvas.ID &
-         "']);");
+         "gnoga['" & Texture_ID & "'] = new PIXI.Texture.fromCanvas(gnoga['" & Canvas.ID & "']);");
    end Create;
 
    -----------
@@ -701,17 +609,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
-         "gnoga['" &
-         Texture.ID &
-         "'].frame = new PIXI.Rectangle(" &
-         Value.X'Img &
-         ',' &
-         Value.Y'Img &
-         ',' &
-         Value.Width'Img &
-         ',' &
-         Value.Height'Img &
-         ");");
+         "gnoga['" & Texture.ID & "'].frame = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' &
+         Value.Width'Img & ',' & Value.Height'Img & ");");
    end Frame;
 
    -----------
@@ -719,13 +618,12 @@ package body Gnoga.Gui.Plugin.Pixi is
    -----------
 
    function Frame
-     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type
+     (Texture : in Texture_Type)
+      return Gnoga.Types.Rectangle_Type
    is
    begin
       return
-        (Texture.Execute ("frame.x"),
-         Texture.Execute ("frame.y"),
-         Texture.Execute ("frame.width"),
+        (Texture.Execute ("frame.x"), Texture.Execute ("frame.y"), Texture.Execute ("frame.width"),
          Texture.Execute ("frame.height"));
    end Frame;
 
@@ -745,7 +643,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Width --
    -----------
 
-   overriding function Width (Texture : in Texture_Type) return Integer is
+   overriding function Width
+     (Texture : in Texture_Type)
+      return Integer
+   is
    begin
       return Texture.Property ("width");
    end Width;
@@ -766,7 +667,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Height --
    ------------
 
-   overriding function Height (Texture : in Texture_Type) return Integer is
+   overriding function Height
+     (Texture : in Texture_Type)
+      return Integer
+   is
    begin
       return Texture.Property ("height");
    end Height;
@@ -782,17 +686,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
-         "gnoga['" &
-         Texture.ID &
-         "'].orig = new PIXI.Rectangle(" &
-         Value.X'Img &
-         ',' &
-         Value.Y'Img &
-         ',' &
-         Value.Width'Img &
-         ',' &
-         Value.Height'Img &
-         ");");
+         "gnoga['" & Texture.ID & "'].orig = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' &
+         Value.Width'Img & ',' & Value.Height'Img & ");");
    end Orig;
 
    ----------
@@ -800,13 +695,12 @@ package body Gnoga.Gui.Plugin.Pixi is
    ----------
 
    function Orig
-     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type
+     (Texture : in Texture_Type)
+      return Gnoga.Types.Rectangle_Type
    is
    begin
       return
-        (Texture.Execute ("orig.x"),
-         Texture.Execute ("orig.y"),
-         Texture.Execute ("orig.width"),
+        (Texture.Execute ("orig.x"), Texture.Execute ("orig.y"), Texture.Execute ("orig.width"),
          Texture.Execute ("orig.height"));
    end Orig;
 
@@ -821,17 +715,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
-         "gnoga['" &
-         Texture.ID &
-         "'].trim = new PIXI.Rectangle(" &
-         Value.X'Img &
-         ',' &
-         Value.Y'Img &
-         ',' &
-         Value.Width'Img &
-         ',' &
-         Value.Height'Img &
-         ");");
+         "gnoga['" & Texture.ID & "'].trim = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' &
+         Value.Width'Img & ',' & Value.Height'Img & ");");
    end Trim;
 
    ----------
@@ -839,13 +724,12 @@ package body Gnoga.Gui.Plugin.Pixi is
    ----------
 
    function Trim
-     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type
+     (Texture : in Texture_Type)
+      return Gnoga.Types.Rectangle_Type
    is
    begin
       return
-        (Texture.Execute ("trim.x"),
-         Texture.Execute ("trim.y"),
-         Texture.Execute ("trim.width"),
+        (Texture.Execute ("trim.x"), Texture.Execute ("trim.y"), Texture.Execute ("trim.width"),
          Texture.Execute ("trim.height"));
    end Trim;
 
@@ -861,11 +745,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Style.ID (Style_ID, Gnoga.Types.Gnoga_ID);
       Style.Connection_ID (Parent.Connection_ID);
-      Style.Attach_Using_Parent
-      (Parent => Parent, ID => Style_ID, ID_Type => Gnoga.Types.Gnoga_ID);
-      Gnoga.Server.Connection.Execute_Script
-        (Style.Connection_ID,
-         "gnoga['" & Style_ID & "'] = new PIXI.TextStyle();");
+      Style.Attach_Using_Parent (Parent => Parent, ID => Style_ID, ID_Type => Gnoga.Types.Gnoga_ID);
+      Gnoga.Server.Connection.Execute_Script (Style.Connection_ID, "gnoga['" & Style_ID & "'] = new PIXI.TextStyle();");
    end Create;
 
    -----------
@@ -885,7 +766,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    -----------
 
    function Align
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Alignment_Type
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Alignment_Type
    is
    begin
       return Gnoga.Gui.Element.Alignment_Type'Value (Style.Property ("align"));
@@ -895,7 +777,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Break_Words --
    -----------------
 
-   procedure Break_Words (Style : in out Style_Type; Value : in Boolean) is
+   procedure Break_Words
+     (Style : in out Style_Type;
+      Value : in     Boolean)
+   is
    begin
       Style.Property ("breakWords", Value);
    end Break_Words;
@@ -904,7 +789,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Break_Words --
    -----------------
 
-   function Break_Words (Style : in out Style_Type) return Boolean is
+   function Break_Words
+     (Style : in out Style_Type)
+      return Boolean
+   is
    begin
       return Style.Property ("breakWords");
    end Break_Words;
@@ -913,7 +801,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Drop_Shadow --
    -----------------
 
-   procedure Drop_Shadow (Style : in out Style_Type; Value : in Boolean) is
+   procedure Drop_Shadow
+     (Style : in out Style_Type;
+      Value : in     Boolean)
+   is
    begin
       Style.Property ("dropShadow", Value);
    end Drop_Shadow;
@@ -922,7 +813,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Drop_Shadow --
    -----------------
 
-   function Drop_Shadow (Style : in out Style_Type) return Boolean is
+   function Drop_Shadow
+     (Style : in out Style_Type)
+      return Boolean
+   is
    begin
       return Style.Property ("dropShadow");
    end Drop_Shadow;
@@ -944,11 +838,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    -----------------------
 
    function Drop_Shadow_Alpha
-     (Style : in out Style_Type) return Gnoga.Types.Alpha_Type
+     (Style : in out Style_Type)
+      return Gnoga.Types.Alpha_Type
    is
    begin
-      return Gnoga.Types.Alpha_Type
-          (Float'(Style.Property ("dropShadowAlpha")));
+      return Gnoga.Types.Alpha_Type (Float'(Style.Property ("dropShadowAlpha")));
    end Drop_Shadow_Alpha;
 
    -----------------------
@@ -967,7 +861,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Drop_Shadow_Angle --
    -----------------------
 
-   function Drop_Shadow_Angle (Style : in out Style_Type) return Integer is
+   function Drop_Shadow_Angle
+     (Style : in out Style_Type)
+      return Integer
+   is
    begin
       return Style.Property ("dropShadowAngle");
    end Drop_Shadow_Angle;
@@ -988,7 +885,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Drop_Shadow_Blur --
    ----------------------
 
-   function Drop_Shadow_Blur (Style : in out Style_Type) return Natural is
+   function Drop_Shadow_Blur
+     (Style : in out Style_Type)
+      return Natural
+   is
    begin
       return Style.Property ("dropShadowBlur");
    end Drop_Shadow_Blur;
@@ -1010,11 +910,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    -----------------------
 
    function Drop_Shadow_Color
-     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
+     (Style : in out Style_Type)
+      return Gnoga.Types.Colors.Color_Enumeration
    is
    begin
-      return Gnoga.Types.Colors.To_Color_Enumeration
-          (Style.Property ("dropShadowColor"));
+      return Gnoga.Types.Colors.To_Color_Enumeration (Style.Property ("dropShadowColor"));
    end Drop_Shadow_Color;
 
    --------------------------
@@ -1033,7 +933,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Drop_Shadow_Distance --
    --------------------------
 
-   function Drop_Shadow_Distance (Style : in out Style_Type) return Integer is
+   function Drop_Shadow_Distance
+     (Style : in out Style_Type)
+      return Integer
+   is
    begin
       return Style.Property ("dropShadowDistance");
    end Drop_Shadow_Distance;
@@ -1055,7 +958,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    ----------
 
    function Fill
-     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
+     (Style : in out Style_Type)
+      return Gnoga.Types.Colors.Color_Enumeration
    is
    begin
       return Gnoga.Types.Colors.To_Color_Enumeration (Style.Property ("fill"));
@@ -1065,7 +969,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Font_Family --
    -----------------
 
-   procedure Font_Family (Style : in out Style_Type; Value : in String) is
+   procedure Font_Family
+     (Style : in out Style_Type;
+      Value : in     String)
+   is
    begin
       Style.Property ("fontFamily", Value);
    end Font_Family;
@@ -1074,7 +981,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Font_Family --
    -----------------
 
-   function Font_Family (Style : in out Style_Type) return String is
+   function Font_Family
+     (Style : in out Style_Type)
+      return String
+   is
    begin
       return Style.Property ("fontFamily");
    end Font_Family;
@@ -1083,7 +993,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Font_Size --
    ---------------
 
-   procedure Font_Size (Style : in out Style_Type; Value : in String) is
+   procedure Font_Size
+     (Style : in out Style_Type;
+      Value : in     String)
+   is
    begin
       Style.Property ("fontSize", Value);
    end Font_Size;
@@ -1092,7 +1005,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Font_Size --
    ---------------
 
-   function Font_Size (Style : in out Style_Type) return String is
+   function Font_Size
+     (Style : in out Style_Type)
+      return String
+   is
    begin
       return Style.Property ("fontSize");
    end Font_Size;
@@ -1114,11 +1030,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    ----------------
 
    function Font_Style
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Style_Type
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Font_Style_Type
    is
    begin
-      return Gnoga.Gui.Element.Font_Style_Type'Value
-          (Style.Property ("fontStyle"));
+      return Gnoga.Gui.Element.Font_Style_Type'Value (Style.Property ("fontStyle"));
    end Font_Style;
 
    ------------------
@@ -1138,11 +1054,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    ------------------
 
    function Font_Variant
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Variant_Type
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Font_Variant_Type
    is
    begin
-      return Gnoga.Gui.Element.Font_Variant_Type'Value
-          (Style.Property ("fontVariant"));
+      return Gnoga.Gui.Element.Font_Variant_Type'Value (Style.Property ("fontVariant"));
    end Font_Variant;
 
    -----------------
@@ -1162,7 +1078,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    -----------------
 
    function Font_Weight
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Weight_Type
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Font_Weight_Type
    is
    begin
       return Gnoga.Gui.Element.Value (Style.Property ("fontWeight"));
@@ -1172,7 +1089,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Letter_Spacing --
    --------------------
 
-   procedure Letter_Spacing (Style : in out Style_Type; Value : in Natural) is
+   procedure Letter_Spacing
+     (Style : in out Style_Type;
+      Value : in     Natural)
+   is
    begin
       Style.Property ("letterSpacing", Value);
    end Letter_Spacing;
@@ -1181,7 +1101,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Letter_Spacing --
    --------------------
 
-   function Letter_Spacing (Style : in out Style_Type) return Natural is
+   function Letter_Spacing
+     (Style : in out Style_Type)
+      return Natural
+   is
    begin
       return Style.Property ("letterSpacing");
    end Letter_Spacing;
@@ -1190,7 +1113,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Line_Height --
    -----------------
 
-   procedure Line_Height (Style : in out Style_Type; Value : in Natural) is
+   procedure Line_Height
+     (Style : in out Style_Type;
+      Value : in     Natural)
+   is
    begin
       Style.Property ("lineHeight", Value);
    end Line_Height;
@@ -1199,7 +1125,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Line_Height --
    -----------------
 
-   function Line_Height (Style : in out Style_Type) return Natural is
+   function Line_Height
+     (Style : in out Style_Type)
+      return Natural
+   is
    begin
       return Style.Property ("lineHeight");
    end Line_Height;
@@ -1220,7 +1149,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Line_Join --
    ---------------
 
-   function Line_Join (Style : in out Style_Type) return Line_Join_Type is
+   function Line_Join
+     (Style : in out Style_Type)
+      return Line_Join_Type
+   is
    begin
       return Line_Join_Type'Value (Style.Property ("lineJoin"));
    end Line_Join;
@@ -1229,7 +1161,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Miter_Limit --
    -----------------
 
-   procedure Miter_Limit (Style : in out Style_Type; Value : in Natural) is
+   procedure Miter_Limit
+     (Style : in out Style_Type;
+      Value : in     Natural)
+   is
    begin
       Style.Property ("miterLimit", Value);
    end Miter_Limit;
@@ -1238,7 +1173,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Miter_Limit --
    -----------------
 
-   function Miter_Limit (Style : in out Style_Type) return Natural is
+   function Miter_Limit
+     (Style : in out Style_Type)
+      return Natural
+   is
    begin
       return Style.Property ("miterLimit");
    end Miter_Limit;
@@ -1247,7 +1185,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Padding --
    -------------
 
-   procedure Padding (Style : in out Style_Type; Value : in Natural) is
+   procedure Padding
+     (Style : in out Style_Type;
+      Value : in     Natural)
+   is
    begin
       Style.Property ("padding", Value);
    end Padding;
@@ -1256,7 +1197,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Padding --
    -------------
 
-   function Padding (Style : in out Style_Type) return Natural is
+   function Padding
+     (Style : in out Style_Type)
+      return Natural
+   is
    begin
       return Style.Property ("padding");
    end Padding;
@@ -1278,11 +1222,11 @@ package body Gnoga.Gui.Plugin.Pixi is
    ------------
 
    function Stroke
-     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration
+     (Style : in out Style_Type)
+      return Gnoga.Types.Colors.Color_Enumeration
    is
    begin
-      return Gnoga.Types.Colors.To_Color_Enumeration
-          (Style.Property ("stroke"));
+      return Gnoga.Types.Colors.To_Color_Enumeration (Style.Property ("stroke"));
    end Stroke;
 
    ----------------------
@@ -1301,7 +1245,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Stroke_Thickness --
    ----------------------
 
-   function Stroke_Thickness (Style : in out Style_Type) return Natural is
+   function Stroke_Thickness
+     (Style : in out Style_Type)
+      return Natural
+   is
    begin
       return Style.Property ("strokeThickness");
    end Stroke_Thickness;
@@ -1310,7 +1257,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Trim --
    ----------
 
-   procedure Trim (Style : in out Style_Type; Value : in Boolean) is
+   procedure Trim
+     (Style : in out Style_Type;
+      Value : in     Boolean)
+   is
    begin
       Style.Property ("trim", Value);
    end Trim;
@@ -1319,7 +1269,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Trim --
    ----------
 
-   function Trim (Style : in out Style_Type) return Boolean is
+   function Trim
+     (Style : in out Style_Type)
+      return Boolean
+   is
    begin
       return Style.Property ("trim");
    end Trim;
@@ -1340,7 +1293,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Text_Base_line --
    --------------------
 
-   function Text_Baseline (Style : in out Style_Type) return Baseline_Type is
+   function Text_Baseline
+     (Style : in out Style_Type)
+      return Baseline_Type
+   is
    begin
       return Baseline_Type'Value (Style.Property ("textBaseline"));
    end Text_Baseline;
@@ -1349,7 +1305,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Word_Wrap --
    ---------------
 
-   procedure Word_Wrap (Style : in out Style_Type; Value : in Boolean) is
+   procedure Word_Wrap
+     (Style : in out Style_Type;
+      Value : in     Boolean)
+   is
    begin
       Style.Property ("wordWrap", Value);
    end Word_Wrap;
@@ -1358,7 +1317,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Word_Wrap --
    ---------------
 
-   function Word_Wrap (Style : in out Style_Type) return Boolean is
+   function Word_Wrap
+     (Style : in out Style_Type)
+      return Boolean
+   is
    begin
       return Style.Property ("wordWrap");
    end Word_Wrap;
@@ -1367,7 +1329,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Word_Wrap_Width --
    ---------------------
 
-   procedure Word_Wrap_Width (Style : in out Style_Type; Value : in Natural) is
+   procedure Word_Wrap_Width
+     (Style : in out Style_Type;
+      Value : in     Natural)
+   is
    begin
       Style.Property ("wordWrapWidth", Value);
    end Word_Wrap_Width;
@@ -1376,7 +1341,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    -- Word_Wrap_Width --
    ---------------------
 
-   function Word_Wrap_Width (Style : in out Style_Type) return Natural is
+   function Word_Wrap_Width
+     (Style : in out Style_Type)
+      return Natural
+   is
    begin
       return Style.Property ("wordWrapWidth");
    end Word_Wrap_Width;

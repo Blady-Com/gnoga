@@ -55,8 +55,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       Text.ID (Text_ID, Gnoga.Types.Gnoga_ID);
       Text.Connection_ID (Parent.Connection_ID);
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" & Text_ID & "'] = new PIXI.Text('" & Escape_Quotes (Message) & "');");
+        (Text.Connection_ID, "gnoga['" & Text_ID & "'] = new PIXI.Text('" & Escape_Quotes (Message) & "');");
       Text.Locate (Row, Column);
       Text.Motion (0.0, 0.0);
       Text.Acceleration (0.0, 0.0);
@@ -69,7 +68,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Locate --
    ------------
 
-   procedure Locate (Text : in out Text_Type; Row, Column : in Integer) is
+   procedure Locate
+     (Text        : in out Text_Type;
+      Row, Column : in     Integer)
+   is
    begin
       Text.Property ("x", Column);
       Text.Property ("y", Row);
@@ -79,7 +81,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Position --
    --------------
 
-   procedure Position (Text : in Text_Type; Row, Column : out Integer) is
+   procedure Position
+     (Text        : in     Text_Type;
+      Row, Column :    out Integer)
+   is
    begin
       Row    := Text.Property ("y");
       Column := Text.Property ("x");
@@ -89,7 +94,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Row --
    ---------
 
-   function Row (Text : in Text_Type) return Integer is
+   function Row
+     (Text : in Text_Type)
+      return Integer
+   is
       V : constant Float := Text.Property ("y");
    begin
       return Integer (V);
@@ -99,7 +107,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Column --
    ------------
 
-   function Column (Text : in Text_Type) return Integer is
+   function Column
+     (Text : in Text_Type)
+      return Integer
+   is
       V : constant Float := Text.Property ("x");
    begin
       return Integer (V);
@@ -122,7 +133,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Row_Velocity --
    ------------------
 
-   function Row_Velocity (Text : in Text_Type) return Velocity_Type is
+   function Row_Velocity
+     (Text : in Text_Type)
+      return Velocity_Type
+   is
    begin
       return Text.Property ("gnoga_vy") * Frame_Rate;
    end Row_Velocity;
@@ -131,7 +145,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Column_Velocity --
    ---------------------
 
-   function Column_Velocity (Text : in Text_Type) return Velocity_Type is
+   function Column_Velocity
+     (Text : in Text_Type)
+      return Velocity_Type
+   is
    begin
       return Text.Property ("gnoga_vx") * Frame_Rate;
    end Column_Velocity;
@@ -145,8 +162,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       Row_Acceleration, Column_Acceleration : in     Acceleration_Type)
    is
    begin
-      Text.Property
-      ("gnoga_ax", Column_Acceleration / Frame_Rate / Frame_Rate);
+      Text.Property ("gnoga_ax", Column_Acceleration / Frame_Rate / Frame_Rate);
       Text.Property ("gnoga_ay", Row_Acceleration / Frame_Rate / Frame_Rate);
    end Acceleration;
 
@@ -154,7 +170,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Row_Acceleration --
    ----------------------
 
-   function Row_Acceleration (Text : in Text_Type) return Acceleration_Type is
+   function Row_Acceleration
+     (Text : in Text_Type)
+      return Acceleration_Type
+   is
    begin
       return Text.Property ("gnoga_ay") * (Frame_Rate * Frame_Rate);
    end Row_Acceleration;
@@ -164,7 +183,8 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -------------------------
 
    function Column_Acceleration
-     (Text : in Text_Type) return Acceleration_Type
+     (Text : in Text_Type)
+      return Acceleration_Type
    is
 
    begin
@@ -187,7 +207,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Alpha --
    -----------
 
-   function Alpha (Text : in Text_Type) return Gnoga.Types.Alpha_Type is
+   function Alpha
+     (Text : in Text_Type)
+      return Gnoga.Types.Alpha_Type
+   is
    begin
       return Gnoga.Types.Alpha_Type (Float'(Text.Property ("alpha")));
    end Alpha;
@@ -202,14 +225,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" &
-         Text.ID &
-         "'].anchor = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].anchor = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Anchor;
 
    ----------------
@@ -217,11 +233,11 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    ----------------
 
    function Row_Anchor
-     (Text : in Text_Type) return Gnoga.Types.Frational_Range_Type
+     (Text : in Text_Type)
+      return Gnoga.Types.Frational_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type
-          (Float'(Text.Execute ("anchor.y")));
+      return Gnoga.Types.Frational_Range_Type (Float'(Text.Execute ("anchor.y")));
    end Row_Anchor;
 
    -------------------
@@ -229,11 +245,11 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -------------------
 
    function Column_Anchor
-     (Text : in Text_Type) return Gnoga.Types.Frational_Range_Type
+     (Text : in Text_Type)
+      return Gnoga.Types.Frational_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type
-          (Float'(Text.Execute ("anchor.x")));
+      return Gnoga.Types.Frational_Range_Type (Float'(Text.Execute ("anchor.x")));
    end Column_Anchor;
 
    ----------------
@@ -252,7 +268,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Blend_Mode --
    ----------------
 
-   function Blend_Mode (Text : in Text_Type) return Blend_Modes_Type is
+   function Blend_Mode
+     (Text : in Text_Type)
+      return Blend_Modes_Type
+   is
    begin
       return Blend_Modes_Type'Value (Text.Property ("blendMode"));
    end Blend_Mode;
@@ -261,7 +280,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Message --
    -------------
 
-   procedure Message (Text : in out Text_Type; Value : in String) is
+   procedure Message
+     (Text  : in out Text_Type;
+      Value : in     String)
+   is
    begin
       Text.Property ("text", Value);
    end Message;
@@ -270,7 +292,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Message --
    -------------
 
-   function Message (Text : in Text_Type) return String is
+   function Message
+     (Text : in Text_Type)
+      return String
+   is
    begin
       return Text.Property ("text");
    end Message;
@@ -279,24 +304,23 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Pivot --
    -----------
 
-   procedure Pivot (Text : in out Text_Type; Row, Column : in Integer) is
+   procedure Pivot
+     (Text        : in out Text_Type;
+      Row, Column : in     Integer)
+   is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" &
-         Text.ID &
-         "'].pivot = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].pivot = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Pivot;
 
    ---------------
    -- Row_Pivot --
    ---------------
 
-   function Row_Pivot (Text : in Text_Type) return Integer is
+   function Row_Pivot
+     (Text : in Text_Type)
+      return Integer
+   is
    begin
       return Text.Execute ("pivot.x");
    end Row_Pivot;
@@ -305,7 +329,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Column_Pivot --
    ------------------
 
-   function Column_Pivot (Text : in Text_Type) return Integer is
+   function Column_Pivot
+     (Text : in Text_Type)
+      return Integer
+   is
    begin
       return Text.Execute ("pivot.y");
    end Column_Pivot;
@@ -314,7 +341,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Rotation --
    --------------
 
-   procedure Rotation (Text : in out Text_Type; Value : in Integer) is
+   procedure Rotation
+     (Text  : in out Text_Type;
+      Value : in     Integer)
+   is
    begin
       Text.Property ("rotation", Float (Value) * Ada.Numerics.Pi / 180.0);
    end Rotation;
@@ -323,10 +353,12 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Rotation --
    --------------
 
-   function Rotation (Text : in Text_Type) return Integer is
-   begin
+   function Rotation
+     (Text : in Text_Type)
       return Integer
-          (Float'(Text.Property ("rotation")) * 180.0 / Ada.Numerics.Pi);
+   is
+   begin
+      return Integer (Float'(Text.Property ("rotation")) * 180.0 / Ada.Numerics.Pi);
    end Rotation;
 
    -----------------------
@@ -345,12 +377,12 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Rotation_Velocity --
    -----------------------
 
-   function Rotation_Velocity (Text : in Text_Type) return Velocity_Type is
+   function Rotation_Velocity
+     (Text : in Text_Type)
+      return Velocity_Type
+   is
    begin
-      return Float'(Text.Property ("gnoga_vr")) *
-        Frame_Rate *
-        180.0 /
-        Ada.Numerics.Pi;
+      return Float'(Text.Property ("gnoga_vr")) * Frame_Rate * 180.0 / Ada.Numerics.Pi;
    end Rotation_Velocity;
 
    -----------------------
@@ -362,8 +394,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       Value :        Acceleration_Type)
    is
    begin
-      Text.Property
-      ("gnoga_ar", Value / Frame_Rate / Frame_Rate * Ada.Numerics.Pi / 180.0);
+      Text.Property ("gnoga_ar", Value / Frame_Rate / Frame_Rate * Ada.Numerics.Pi / 180.0);
    end Rotation_Acceleration;
 
    -----------------------
@@ -371,21 +402,21 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -----------------------
 
    function Rotation_Acceleration
-     (Text : in Text_Type) return Acceleration_Type
+     (Text : in Text_Type)
+      return Acceleration_Type
    is
    begin
-      return Float'(Text.Property ("gnoga_ar")) *
-        Frame_Rate *
-        Frame_Rate *
-        180.0 /
-        Ada.Numerics.Pi;
+      return Float'(Text.Property ("gnoga_ar")) * Frame_Rate * Frame_Rate * 180.0 / Ada.Numerics.Pi;
    end Rotation_Acceleration;
 
    -----------
    -- Width --
    -----------
 
-   overriding procedure Width (Text : in out Text_Type; Value : in Integer) is
+   overriding procedure Width
+     (Text  : in out Text_Type;
+      Value : in     Integer)
+   is
    begin
       Text.Property ("width", Value);
    end Width;
@@ -394,7 +425,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Width --
    -----------
 
-   overriding function Width (Text : in Text_Type) return Integer is
+   overriding function Width
+     (Text : in Text_Type)
+      return Integer
+   is
    begin
       return Text.Property ("width");
    end Width;
@@ -403,7 +437,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Height --
    ------------
 
-   overriding procedure Height (Text : in out Text_Type; Value : in Integer) is
+   overriding procedure Height
+     (Text  : in out Text_Type;
+      Value : in     Integer)
+   is
    begin
       Text.Property ("height", Value);
    end Height;
@@ -412,7 +449,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Height --
    ------------
 
-   overriding function Height (Text : in Text_Type) return Integer is
+   overriding function Height
+     (Text : in Text_Type)
+      return Integer
+   is
    begin
       return Text.Property ("height");
    end Height;
@@ -421,24 +461,23 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Scale --
    -----------
 
-   procedure Scale (Text : in out Text_Type; Row, Column : in Positive) is
+   procedure Scale
+     (Text        : in out Text_Type;
+      Row, Column : in     Positive)
+   is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" &
-         Text.ID &
-         "'].scale = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Scale;
 
    ---------------
    -- Row_Scale --
    ---------------
 
-   function Row_Scale (Text : in Text_Type) return Positive is
+   function Row_Scale
+     (Text : in Text_Type)
+      return Positive
+   is
    begin
       return Text.Execute ("scale.y");
    end Row_Scale;
@@ -447,7 +486,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Column_Scale --
    ------------------
 
-   function Column_Scale (Text : in Text_Type) return Positive is
+   function Column_Scale
+     (Text : in Text_Type)
+      return Positive
+   is
    begin
       return Text.Execute ("scale.x");
    end Column_Scale;
@@ -456,24 +498,23 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Skew --
    ----------
 
-   procedure Skew (Text : in out Text_Type; Row, Column : in Positive) is
+   procedure Skew
+     (Text        : in out Text_Type;
+      Row, Column : in     Positive)
+   is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" &
-         Text.ID &
-         "'].skew = {x:" &
-         Column'Img &
-         ",y:" &
-         Row'Img &
-         "};");
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};");
    end Skew;
 
    --------------
    -- Row_Skew --
    --------------
 
-   function Row_Skew (Text : in Text_Type) return Positive is
+   function Row_Skew
+     (Text : in Text_Type)
+      return Positive
+   is
    begin
       return Text.Execute ("skew.y");
    end Row_Skew;
@@ -482,7 +523,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Column_Skew --
    -----------------
 
-   function Column_Skew (Text : in Text_Type) return Positive is
+   function Column_Skew
+     (Text : in Text_Type)
+      return Positive
+   is
    begin
       return Text.Execute ("skew.x");
    end Column_Skew;
@@ -497,8 +541,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" & Text.ID & "'].style = gnoga['" & Value.ID & "'];");
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].style = gnoga['" & Value.ID & "'];");
    end Set_Style;
 
    ---------------
@@ -514,15 +557,17 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       Value.ID (Style_ID, Gnoga.Types.Gnoga_ID);
       Value.Connection_ID (Text.Connection_ID);
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" & Style_ID & "'] = gnoga['" & Text.ID & "'].style;");
+        (Text.Connection_ID, "gnoga['" & Style_ID & "'] = gnoga['" & Text.ID & "'].style;");
    end Get_Style;
 
    ----------
    -- Tint --
    ----------
 
-   procedure Tint (Text : in out Text_Type; Value : in Natural) is
+   procedure Tint
+     (Text  : in out Text_Type;
+      Value : in     Natural)
+   is
    begin
       Text.Property ("tint", Value);
    end Tint;
@@ -531,7 +576,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Tint --
    ----------
 
-   function Tint (Text : in Text_Type) return Natural is
+   function Tint
+     (Text : in Text_Type)
+      return Natural
+   is
    begin
       return Text.Property ("tint");
    end Tint;
@@ -540,7 +588,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Visible --
    -------------
 
-   procedure Visible (Text : in out Text_Type; Value : in Boolean) is
+   procedure Visible
+     (Text  : in out Text_Type;
+      Value : in     Boolean)
+   is
    begin
       Text.Property ("visible", Value);
    end Visible;
@@ -549,7 +600,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Visible --
    -------------
 
-   function Visible (Text : in Text_Type) return Boolean is
+   function Visible
+     (Text : in Text_Type)
+      return Boolean
+   is
    begin
       return Text.Property ("visible");
    end Visible;
@@ -560,7 +614,8 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Coincidence
      (Text1, Text2 : in Text_Type;
-      Tolerance    : in Natural) return Boolean
+      Tolerance    : in Natural)
+      return Boolean
    is
    begin
       return Distance (Text1, Text2) <= Tolerance;
@@ -573,7 +628,8 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    function Coincidence
      (Text        : in Text_Type;
       Row, Column : in Integer;
-      Tolerance   : in Natural) return Boolean
+      Tolerance   : in Natural)
+      return Boolean
    is
    begin
       return Distance (Text, Row, Column) <= Tolerance;
@@ -583,12 +639,15 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    -- Distance --
    --------------
 
-   function Distance (Text1, Text2 : in Text_Type) return Natural is
-   begin
+   function Distance
+     (Text1, Text2 : in Text_Type)
       return Natural
+   is
+   begin
+      return
+        Natural
           (Ada.Numerics.Elementary_Functions.Sqrt
-             (Float (Text2.Row - Text1.Row)**2 +
-              Float (Text2.Column - Text1.Column)**2));
+             (Float (Text2.Row - Text1.Row)**2 + Float (Text2.Column - Text1.Column)**2));
    end Distance;
 
    --------------
@@ -597,12 +656,12 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Distance
      (Text        : in Text_Type;
-      Row, Column : in Integer) return Natural
+      Row, Column : in Integer)
+      return Natural
    is
    begin
-      return Natural
-          (Ada.Numerics.Elementary_Functions.Sqrt
-             (Float (Text.Row - Row)**2 + Float (Text.Column - Column)**2));
+      return
+        Natural (Ada.Numerics.Elementary_Functions.Sqrt (Float (Text.Row - Row)**2 + Float (Text.Column - Column)**2));
    end Distance;
 
    ------------
@@ -625,14 +684,9 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Parent.Connection_ID,
-         "var gnoga_list = [];" &
-         " for (var gnoga_text of gnoga['" &
-         Parent.ID &
+         "var gnoga_list = [];" & " for (var gnoga_text of gnoga['" & Parent.ID &
          "'].children) if (gnoga_text instanceof PIXI.Text) gnoga_list.push(gnoga_text);" &
-         " for (var gnoga_text of gnoga_list)" &
-         " gnoga['" &
-         Parent.ID &
-         "'].removeChild(gnoga_text);");
+         " for (var gnoga_text of gnoga_list)" & " gnoga['" & Parent.ID & "'].removeChild(gnoga_text);");
    end Delete_All;
 
 end Gnoga.Gui.Plugin.Pixi.Text;

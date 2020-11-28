@@ -50,23 +50,26 @@ package Gnoga.Gui.Element.Table is
    --  Table_Types - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create
+   overriding procedure Create
      (Table  : in out Table_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String  := "");
+      ID     : in     String := "");
 
    -------------------------------------------------------------------------
    --  Table_Types - Properties
    -------------------------------------------------------------------------
 
-   function Caption (Table : Table_Type) return String;
+   function Caption
+     (Table : Table_Type)
+      return String;
 
    -------------------------------------------------------------------------
    --  Table_Types - Methods
    -------------------------------------------------------------------------
 
-   procedure Add_Caption (Table : in out Table_Type; Value : in String);
+   procedure Add_Caption
+     (Table : in out Table_Type;
+      Value : in     String);
 
    -------------------------------------------------------------------------
    --  Table_Row_Types
@@ -83,7 +86,7 @@ package Gnoga.Gui.Element.Table is
    procedure Create
      (Row    : in out Table_Row_Type;
       Parent : in out Element_Type'Class;
-      ID     : in     String  := "");
+      ID     : in     String := "");
    --  Use initial Content. Can be replaced or changed later with the Text or
    --  Inner_HTML property.
    --  Parent can be Table_Type, Table_Header_Type, Table_Body_Type or
@@ -126,10 +129,10 @@ package Gnoga.Gui.Element.Table is
    procedure Create
      (Heading     : in out Table_Heading_Type;
       Row         : in out Table_Row_Type'Class;
-      Content     : in     String  := "";
+      Content     : in     String   := "";
       Column_Span : in     Positive := 1;
       Row_Span    : in     Positive := 1;
-      ID          : in     String  := "");
+      ID          : in     String   := "");
    --  Use initial Content. Can be replaced or changed later with the Text or
    --  Inner_HTML property.
 
@@ -146,9 +149,9 @@ package Gnoga.Gui.Element.Table is
    -------------------------------------------------------------------------
 
    procedure Create
-     (Header  : in out Table_Header_Type;
-      Table   : in out Table_Type'Class;
-      ID      : in     String  := "");
+     (Header : in out Table_Header_Type;
+      Table  : in out Table_Type'Class;
+      ID     : in     String := "");
    --  Create an optional table header section <thead>
 
    -------------------------------------------------------------------------
@@ -166,7 +169,7 @@ package Gnoga.Gui.Element.Table is
    procedure Create
      (TBody : in out Table_Body_Type;
       Table : in out Table_Type'Class;
-      ID    : in     String  := "");
+      ID    : in     String := "");
    --  Create an optional table body section <tbody>
 
    -------------------------------------------------------------------------
@@ -184,7 +187,7 @@ package Gnoga.Gui.Element.Table is
    procedure Create
      (Footer : in out Table_Footer_Type;
       Table  : in out Table_Type'Class;
-      ID     : in     String  := "");
+      ID     : in     String := "");
    --  Create an optional table footer section <tfoot>
 
    -------------------------------------------------------------------------
@@ -202,7 +205,7 @@ package Gnoga.Gui.Element.Table is
    procedure Create
      (Group : in out Column_Group_Type;
       Table : in out Table_Type'Class;
-      ID    : in     String  := "");
+      ID    : in     String := "");
    --  Create an optional column group <colgroup> to ease formatting
    --  Must be created or placed at top of table_type.
 
@@ -230,16 +233,11 @@ package Gnoga.Gui.Element.Table is
 private
    type Table_Type is new Gnoga.Gui.View.View_Type with null record;
    type Table_Row_Type is new Gnoga.Gui.View.View_Base_Type with null record;
-   type Table_Column_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
-   type Table_Heading_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
-   type Table_Header_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
+   type Table_Column_Type is new Gnoga.Gui.View.View_Base_Type with null record;
+   type Table_Heading_Type is new Gnoga.Gui.View.View_Base_Type with null record;
+   type Table_Header_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Table_Body_Type is new Gnoga.Gui.View.View_Base_Type with null record;
-   type Table_Footer_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
-   type Column_Group_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
+   type Table_Footer_Type is new Gnoga.Gui.View.View_Base_Type with null record;
+   type Column_Group_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Column_Type is new Gnoga.Gui.Element.Element_Type with null record;
 end Gnoga.Gui.Element.Table;

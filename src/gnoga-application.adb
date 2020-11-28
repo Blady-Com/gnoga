@@ -41,8 +41,7 @@ with GNAT.OS_Lib;
 
 package body Gnoga.Application is
    App_Name : Ada.Strings.Unbounded.Unbounded_String :=
-     Ada.Strings.Unbounded.To_Unbounded_String
-       ("Gnoga - The GNU Omnificent GUI for Ada");
+     Ada.Strings.Unbounded.To_Unbounded_String ("Gnoga - The GNU Omnificent GUI for Ada");
 
    HTML_For_On_Close : Ada.Strings.Unbounded.Unbounded_String;
 
@@ -91,9 +90,9 @@ package body Gnoga.Application is
       pragma Unreferenced (PID);
    begin
       Args := GNAT.OS_Lib.Argument_String_To_List (Open_Command & URL);
-      PID := GNAT.OS_Lib.Non_Blocking_Spawn
-        (Program_Name => Args (Args'First).all,
-         Args         => Args (Args'First + 1 .. Args'Last));
+      PID  :=
+        GNAT.OS_Lib.Non_Blocking_Spawn
+          (Program_Name => Args (Args'First).all, Args => Args (Args'First + 1 .. Args'Last));
    end Open_URL;
 
    -------------------

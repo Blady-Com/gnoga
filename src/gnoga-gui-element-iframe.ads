@@ -52,23 +52,24 @@ package Gnoga.Gui.Element.IFrame is
    --  IFrame_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (IFrame   : in out IFrame_Type;
-                     Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
-                     URL      : in     String;
-                     Seamless : in     Boolean := False;
-                     ID       : in     String := "");
+   procedure Create
+     (IFrame   : in out IFrame_Type;
+      Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
+      URL      : in     String;
+      Seamless : in     Boolean := False;
+      ID       : in     String  := "");
    --  Create a IFrame element with URL
 
    -------------------------------------------------------------------------
    --  IFrame_Type - Properties
    -------------------------------------------------------------------------
 
-   function Window (IFrame : IFrame_Type)
-                    return Gnoga.Gui.Window.Window_Access;
+   function Window
+     (IFrame : IFrame_Type)
+      return Gnoga.Gui.Window.Window_Access;
 
 private
-   type IFrame_Type is new Gnoga.Gui.Element.Element_Type with
-      record
-         Frame : aliased Gnoga.Gui.Window.Window_Type;
-      end record;
+   type IFrame_Type is new Gnoga.Gui.Element.Element_Type with record
+      Frame : aliased Gnoga.Gui.Window.Window_Type;
+   end record;
 end Gnoga.Gui.Element.IFrame;

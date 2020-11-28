@@ -67,12 +67,20 @@ package Gnoga.Gui.Plugin.Pixi.Text is
    --  Text_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Locate (Text : in out Text_Type; Row, Column : in Integer);
+   procedure Locate
+     (Text        : in out Text_Type;
+      Row, Column : in     Integer);
    --  Specifies the position of the upper left hand corner of a Text
 
-   procedure Position (Text : in Text_Type; Row, Column : out Integer);
-   function Row (Text : in Text_Type) return Integer;
-   function Column (Text : in Text_Type) return Integer;
+   procedure Position
+     (Text        : in     Text_Type;
+      Row, Column :    out Integer);
+   function Row
+     (Text : in Text_Type)
+      return Integer;
+   function Column
+     (Text : in Text_Type)
+      return Integer;
    --  Determines the position of a Text
 
    procedure Motion
@@ -80,8 +88,12 @@ package Gnoga.Gui.Plugin.Pixi.Text is
       Row_Velocity, Column_Velocity : in     Velocity_Type);
    --  Specifies the motion of a Text
 
-   function Row_Velocity (Text : in Text_Type) return Velocity_Type;
-   function Column_Velocity (Text : in Text_Type) return Velocity_Type;
+   function Row_Velocity
+     (Text : in Text_Type)
+      return Velocity_Type;
+   function Column_Velocity
+     (Text : in Text_Type)
+      return Velocity_Type;
    --   Returns motion properties
 
    procedure Acceleration
@@ -89,34 +101,50 @@ package Gnoga.Gui.Plugin.Pixi.Text is
       Row_Acceleration, Column_Acceleration : in     Acceleration_Type);
    --  Specifies the acceleration of a text
 
-   function Row_Acceleration (Text : in Text_Type) return Acceleration_Type;
-   function Column_Acceleration (Text : in Text_Type) return Acceleration_Type;
+   function Row_Acceleration
+     (Text : in Text_Type)
+      return Acceleration_Type;
+   function Column_Acceleration
+     (Text : in Text_Type)
+      return Acceleration_Type;
    --  Returns acceleration properties
 
    procedure Alpha
      (Text  : in out Text_Type;
       Value : in     Gnoga.Types.Alpha_Type);
-   function Alpha (Text : in Text_Type) return Gnoga.Types.Alpha_Type;
+   function Alpha
+     (Text : in Text_Type)
+      return Gnoga.Types.Alpha_Type;
    --  The opacity of the object.
 
    procedure Anchor
      (Text        : in out Text_Type;
       Row, Column : in     Gnoga.Types.Frational_Range_Type);
    function Row_Anchor
-     (Text : in Text_Type) return Gnoga.Types.Frational_Range_Type;
+     (Text : in Text_Type)
+      return Gnoga.Types.Frational_Range_Type;
    function Column_Anchor
-     (Text : in Text_Type) return Gnoga.Types.Frational_Range_Type;
+     (Text : in Text_Type)
+      return Gnoga.Types.Frational_Range_Type;
    --  The anchor sets the origin point of the texture.
    --  The default is 0,0 this means the texture's origin is the top left
    --  Setting the anchor to 0.5,0.5 means the texture's origin is centered
    --  Setting the anchor to 1,1 would mean the texture's origin point will be the bottom right corner
 
-   procedure Blend_Mode (Text : in out Text_Type; Value : in Blend_Modes_Type);
-   function Blend_Mode (Text : in Text_Type) return Blend_Modes_Type;
+   procedure Blend_Mode
+     (Text  : in out Text_Type;
+      Value : in     Blend_Modes_Type);
+   function Blend_Mode
+     (Text : in Text_Type)
+      return Blend_Modes_Type;
    --  The blend mode to be applied to the Text. Apply a value of PIXI.BLEND_MODES.NORMAL to reset the blend mode.
 
-   procedure Message (Text : in out Text_Type; Value : in String);
-   function Message (Text : in Text_Type) return String;
+   procedure Message
+     (Text  : in out Text_Type;
+      Value : in     String);
+   function Message
+     (Text : in Text_Type)
+      return String;
    --  The message of the Text.
 
    --  mask PIXI.Graphics PIXI.Text
@@ -125,59 +153,104 @@ package Gnoga.Gui.Plugin.Pixi.Text is
    --  PIXI.Graphics or a PIXI.Text object. This allows for much faster masking in canvas as it
    --  utilises shape clipping. To remove a mask, set this property to null.
 
-   procedure Pivot (Text : in out Text_Type; Row, Column : in Integer);
-   function Row_Pivot (Text : in Text_Type) return Integer;
-   function Column_Pivot (Text : in Text_Type) return Integer;
+   procedure Pivot
+     (Text        : in out Text_Type;
+      Row, Column : in     Integer);
+   function Row_Pivot
+     (Text : in Text_Type)
+      return Integer;
+   function Column_Pivot
+     (Text : in Text_Type)
+      return Integer;
    --  The pivot point of the displayObject that it rotates around
 
-   procedure Rotation (Text : in out Text_Type; Value : in Integer);
-   function Rotation (Text : in Text_Type) return Integer;
+   procedure Rotation
+     (Text  : in out Text_Type;
+      Value : in     Integer);
+   function Rotation
+     (Text : in Text_Type)
+      return Integer;
    --  The rotation of the object in degrees.
 
    procedure Rotation_Velocity
      (Text  : in out Text_Type;
       Value :        Velocity_Type);
-   function Rotation_Velocity (Text : in Text_Type) return Velocity_Type;
+   function Rotation_Velocity
+     (Text : in Text_Type)
+      return Velocity_Type;
    --  The rotation velocity
 
    procedure Rotation_Acceleration
      (Text  : in out Text_Type;
       Value :        Acceleration_Type);
    function Rotation_Acceleration
-     (Text : in Text_Type) return Acceleration_Type;
+     (Text : in Text_Type)
+      return Acceleration_Type;
    --  The rotation acceleration
 
-   overriding procedure Width (Text : in out Text_Type; Value : in Integer);
-   overriding function Width (Text : in Text_Type) return Integer;
+   overriding procedure Width
+     (Text  : in out Text_Type;
+      Value : in     Integer);
+   overriding function Width
+     (Text : in Text_Type)
+      return Integer;
    --  The width of the Text, setting this will actually modify the scale to achieve the value set.
 
-   overriding procedure Height (Text : in out Text_Type; Value : in Integer);
-   overriding function Height (Text : in Text_Type) return Integer;
+   overriding procedure Height
+     (Text  : in out Text_Type;
+      Value : in     Integer);
+   overriding function Height
+     (Text : in Text_Type)
+      return Integer;
    --  The height of the Text, setting this will actually modify the scale to achieve the value set.
 
-   procedure Scale (Text : in out Text_Type; Row, Column : in Positive);
-   function Row_Scale (Text : in Text_Type) return Positive;
-   function Column_Scale (Text : in Text_Type) return Positive;
+   procedure Scale
+     (Text        : in out Text_Type;
+      Row, Column : in     Positive);
+   function Row_Scale
+     (Text : in Text_Type)
+      return Positive;
+   function Column_Scale
+     (Text : in Text_Type)
+      return Positive;
    --  The scale factor of the object.
 
-   procedure Skew (Text : in out Text_Type; Row, Column : in Positive);
-   function Row_Skew (Text : in Text_Type) return Positive;
-   function Column_Skew (Text : in Text_Type) return Positive;
+   procedure Skew
+     (Text        : in out Text_Type;
+      Row, Column : in     Positive);
+   function Row_Skew
+     (Text : in Text_Type)
+      return Positive;
+   function Column_Skew
+     (Text : in Text_Type)
+      return Positive;
    --  The skew factor for the object in radians.
 
-   procedure Set_Style (Text : in out Text_Type; Value : in Style_Type'Class);
-   procedure Get_Style (Text : in Text_Type; Value : in out Style_Type'Class);
+   procedure Set_Style
+     (Text  : in out Text_Type;
+      Value : in     Style_Type'Class);
+   procedure Get_Style
+     (Text  : in     Text_Type;
+      Value : in out Style_Type'Class);
    --  style object PIXI.TextStyle
    --  Set the style of the text.
 
-   procedure Tint (Text : in out Text_Type; Value : in Natural);
-   function Tint (Text : in Text_Type) return Natural;
+   procedure Tint
+     (Text  : in out Text_Type;
+      Value : in     Natural);
+   function Tint
+     (Text : in Text_Type)
+      return Natural;
    --  tint number
    --  The tint applied to the Text. This is a hex value. A value of
    --  0xFFFFFF will remove any tint effect.
 
-   procedure Visible (Text : in out Text_Type; Value : in Boolean);
-   function Visible (Text : in Text_Type) return Boolean;
+   procedure Visible
+     (Text  : in out Text_Type;
+      Value : in     Boolean);
+   function Visible
+     (Text : in Text_Type)
+      return Boolean;
    --  The visibility of the object. If false the object will not be drawn, and
    --  the updateTransform function will not be called.
    --  Only affects recursive calls from parent. You can ask for bounds or call updateTransform manually
@@ -188,19 +261,24 @@ package Gnoga.Gui.Plugin.Pixi.Text is
 
    function Coincidence
      (Text1, Text2 : in Text_Type;
-      Tolerance    : in Natural) return Boolean;
+      Tolerance    : in Natural)
+      return Boolean;
    function Coincidence
      (Text        : in Text_Type;
       Row, Column : in Integer;
-      Tolerance   : in Natural) return Boolean;
+      Tolerance   : in Natural)
+      return Boolean;
    --  Determines if two Texts or a Text and a point on the screen at or near the same location on the screen
    --  Tolerance is in the same unit as position
    --  Tolerance of 0 indicates the exact coincidence
 
-   function Distance (Text1, Text2 : in Text_Type) return Natural;
+   function Distance
+     (Text1, Text2 : in Text_Type)
+      return Natural;
    function Distance
      (Text        : in Text_Type;
-      Row, Column : in Integer) return Natural;
+      Row, Column : in Integer)
+      return Natural;
    --  Determines the distance between two Texts or a Text and a location
    --  The result is the nearest integer from square root between the upper left hand corner of two Texts
    --  or between the upper left hand corner of a Text and a location

@@ -43,8 +43,7 @@ with GNAT.OS_Lib;
 package body Gnoga.Server.Template_Parser is
 
    Template_Directory : Ada.Strings.Unbounded.Unbounded_String :=
-                          Ada.Strings.Unbounded.To_Unbounded_String
-                            (Gnoga.Server.Templates_Directory);
+     Ada.Strings.Unbounded.To_Unbounded_String (Gnoga.Server.Templates_Directory);
 
    --------------
    -- Finalize --
@@ -59,8 +58,9 @@ package body Gnoga.Server.Template_Parser is
    -- Variable_Name --
    -------------------
 
-   procedure Variable_Name (Data : in out View_Data;
-                            Name : String)
+   procedure Variable_Name
+     (Data : in out View_Data;
+      Name :        String)
    is
    begin
       Data.Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
@@ -70,30 +70,32 @@ package body Gnoga.Server.Template_Parser is
    -- Insert --
    ------------
 
-   procedure Insert (Data  : in out View_Data;
-                     Key   : String;
-                     Value : String)
+   procedure Insert
+     (Data  : in out View_Data;
+      Key   :        String;
+      Value :        String)
    is
    begin
       Data.String_Values.Insert (Key, Value);
    end Insert;
 
-   procedure Insert (Data  : in out View_Data;
-                     Key   : String;
-                     Value : Integer)
+   procedure Insert
+     (Data  : in out View_Data;
+      Key   :        String;
+      Value :        Integer)
    is
       String_Value : constant String := Integer'Image (Value);
    begin
-      Insert (Data, Key,
-              String_Value (String_Value'First + 1 .. String_Value'Last));
+      Insert (Data, Key, String_Value (String_Value'First + 1 .. String_Value'Last));
    end Insert;
 
    ------------------
    -- Insert_Array --
    ------------------
 
-   procedure Insert_Array (Data   : in out View_Data;
-                           Vector : Gnoga.Types.Data_Array_Type)
+   procedure Insert_Array
+     (Data   : in out View_Data;
+      Vector :        Gnoga.Types.Data_Array_Type)
    is
    begin
       for I in Vector.First_Index .. Vector.Last_Index loop
@@ -109,9 +111,10 @@ package body Gnoga.Server.Template_Parser is
    -- Insert_Array_Item --
    -----------------------
 
-   procedure Insert_Array_Item (Data   : in out View_Data;
-                                Key    : String;
-                                Vector : Gnoga.Types.Data_Array_Type)
+   procedure Insert_Array_Item
+     (Data   : in out View_Data;
+      Key    :        String;
+      Vector :        Gnoga.Types.Data_Array_Type)
    is
       Map : Gnoga.Types.Data_Map_Type;
    begin
@@ -130,16 +133,16 @@ package body Gnoga.Server.Template_Parser is
    -- Insert_Map --
    ----------------
 
-   procedure Insert_Map (Data : in out View_Data;
-                         Map  : Gnoga.Types.Data_Map_Type)
+   procedure Insert_Map
+     (Data : in out View_Data;
+      Map  :        Gnoga.Types.Data_Map_Type)
    is
       procedure foreach (Cursor : Gnoga.Types.Data_Maps.Cursor);
       --  Iterate through required members
 
       procedure foreach (Cursor : Gnoga.Types.Data_Maps.Cursor) is
       begin
-         Data.Insert (Gnoga.Types.Data_Maps.Key (Cursor),
-                      Gnoga.Types.Data_Maps.Element (Cursor));
+         Data.Insert (Gnoga.Types.Data_Maps.Key (Cursor), Gnoga.Types.Data_Maps.Element (Cursor));
       end foreach;
    begin
       Map.Iterate (foreach'Access);
@@ -149,9 +152,10 @@ package body Gnoga.Server.Template_Parser is
    -- Insert_Map_Item --
    ---------------------
 
-   procedure Insert_Map_Item (Data : in out View_Data;
-                              Key  : String;
-                              Map  : Gnoga.Types.Data_Map_Type)
+   procedure Insert_Map_Item
+     (Data : in out View_Data;
+      Key  :        String;
+      Map  :        Gnoga.Types.Data_Map_Type)
    is
    begin
       Data.Map_Values.Insert (Key, Map);
@@ -172,8 +176,7 @@ package body Gnoga.Server.Template_Parser is
             Key : constant String := I'Img;
          begin
             I := I + 1;
-            Data.Insert_Map_Item
-              (Key (Key'First + 1 .. Key'Last), RS.Field_Values);
+            Data.Insert_Map_Item (Key (Key'First + 1 .. Key'Last), RS.Field_Values);
          end;
       end loop;
    end Insert_Recordset;
@@ -182,9 +185,10 @@ package body Gnoga.Server.Template_Parser is
    -- Insert_Record --
    -------------------
 
-   procedure Insert_Record_Item (Data   : in out View_Data;
-                            Key    : String;
-                            Row    : Gnoga.Server.Model.Active_Record'Class)
+   procedure Insert_Record_Item
+     (Data : in out View_Data;
+      Key  :        String;
+      Row  :        Gnoga.Server.Model.Active_Record'Class)
    is
    begin
       Data.Insert_Map_Item (Key, Row.Values);
@@ -195,16 +199,15 @@ package body Gnoga.Server.Template_Parser is
    ----------------
 
    procedure Insert_Rows
-     (Data   : in out View_Data;
-      Row    : Gnoga.Server.Model.Queries.Active_Record_Array.Vector)
+     (Data : in out View_Data;
+      Row  :        Gnoga.Server.Model.Queries.Active_Record_Array.Vector)
    is
    begin
       for I in 1 .. Natural (Row.Length) loop
          declare
             Key : constant String := I'Img;
          begin
-            Data.Insert_Record_Item (Key => Key (Key'First + 1 .. Key'Last),
-                                     Row => Row.Element (I));
+            Data.Insert_Record_Item (Key => Key (Key'First + 1 .. Key'Last), Row => Row.Element (I));
          end;
       end loop;
    end Insert_Rows;
@@ -213,9 +216,10 @@ package body Gnoga.Server.Template_Parser is
    --  Insert_Query --
    -------------------
 
-   procedure Insert_Query (Data  : in out View_Data;
-                           C     : Gnoga.Server.Database.Connection'Class;
-                           Query : String)
+   procedure Insert_Query
+     (Data  : in out View_Data;
+      C     :        Gnoga.Server.Database.Connection'Class;
+      Query :        String)
    is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (Query);
    begin
@@ -236,15 +240,15 @@ package body Gnoga.Server.Template_Parser is
    -- Parse_Name --
    ----------------
 
-   function Parse_Name (Name : String) return String is
+   function Parse_Name
+     (Name : String)
+      return String
+   is
       use Ada.Strings.Fixed;
 
-      Templates_Dir : constant String :=
-                        Ada.Strings.Unbounded.To_String (Template_Directory);
+      Templates_Dir : constant String := Ada.Strings.Unbounded.To_String (Template_Directory);
    begin
-      if Index (Name, ":") > 0 or
-        Name (Name'First) = GNAT.OS_Lib.Directory_Separator
-      then
+      if Index (Name, ":") > 0 or Name (Name'First) = GNAT.OS_Lib.Directory_Separator then
          return Name;
       end if;
 
@@ -261,8 +265,7 @@ package body Gnoga.Server.Template_Parser is
 
    procedure Set_Template_Directory (Directory : String) is
    begin
-      Template_Directory :=
-        Ada.Strings.Unbounded.To_Unbounded_String (Directory);
+      Template_Directory := Ada.Strings.Unbounded.To_Unbounded_String (Directory);
    end Set_Template_Directory;
 
    -----------------------
@@ -305,14 +308,15 @@ package body Gnoga.Server.Template_Parser is
    -- Write_String_To_File --
    --------------------------
 
-   procedure Write_String_To_File (File_Name : String; Value : String) is
+   procedure Write_String_To_File
+     (File_Name : String;
+      Value     : String)
+   is
       use Ada.Text_IO;
 
       F : File_Type;
    begin
-      Create (File => F,
-              Mode => Out_File,
-              Name => File_Name);
+      Create (File => F, Mode => Out_File, Name => File_Name);
 
       Put (F, Value);
 

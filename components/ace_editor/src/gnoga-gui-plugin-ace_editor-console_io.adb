@@ -50,15 +50,18 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
          NL := True;
       end Write;
 
-      entry Read (Line : out String; Last : out Natural) when NL is
+      entry Read
+        (Line : out String;
+         Last : out Natural) when NL
+      is
          Ind : constant Natural := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) - 1;
       begin
          if Line'Length < Ind then
-            Last := Line'First + Line'Length - 1;
+            Last                      := Line'First + Line'Length - 1;
             Line (Line'First .. Last) := Slice (Buffer, 1, Line'Length);
             Delete (Buffer, 1, Line'Length);
          else
-            Last := Line'First + Ind - 1;
+            Last                      := Line'First + Ind - 1;
             Line (Line'First .. Last) := Slice (Buffer, 1, Ind);
             Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
          end if;
@@ -80,7 +83,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
          NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
       end Read;
 
-      procedure Get (Ch : out Character; Available : out Boolean) is
+      procedure Get
+        (Ch        : out Character;
+         Available : out Boolean)
+      is
       begin
          Available := Length (Buffer) > 0;
          if Available then
@@ -90,7 +96,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
          NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
       end Get;
 
-      procedure Look (Ch : out Character; Available : out Boolean) is
+      procedure Look
+        (Ch        : out Character;
+         Available : out Boolean)
+      is
       begin
          Available := Length (Buffer) > 0;
          if Available then
@@ -116,53 +125,42 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Console.Anchor.Create (Console, 0, 0);
       Console.Editor_Execute ("gnoga_prompt=0;");
       Console.Editor_Execute
-        ("sendEvent = function (e, m) {ws.send ('" &
-           Ada.Strings.Fixed.Trim (Console.Unique_ID'Img, Ada.Strings.Both) &
-           "|' + e + '|' + m);}");
+        ("sendEvent = function (e, m) {ws.send ('" & Ada.Strings.Fixed.Trim (Console.Unique_ID'Img, Ada.Strings.Both) &
+         "|' + e + '|' + m);}");
       Console.Editor_Execute
-        ("commands.on('exec', function(e) {" &
-         "    if (e.command.readOnly) return;" & "    var editableRow = " &
+        ("commands.on('exec', function(e) {" & "    if (e.command.readOnly) return;" & "    var editableRow = " &
          Console.Editor_Var & ".session.getLength() - 1;" &
          "    var deletesLeft = e.command.name == 'backspace' || e.command.name == 'removewordleft';" &
-         "    var notEditable = " & Console.Editor_Var &
-         ".selection.getAllRanges().some(function(r) {" &
-         "        if (deletesLeft && r.start.column <= " & Console.Editor_Var &
-         ".gnoga_prompt && r.end.column <= " & Console.Editor_Var &
-         ".gnoga_prompt) return true;" &
-         "        if (deletesLeft && (r.start.column < " & Console.Editor_Var &
-         ".gnoga_prompt || r.end.column < " & Console.Editor_Var &
-         ".gnoga_prompt)) return true;" &
-         "        if (r.start.column < " & Console.Editor_Var &
-         ".gnoga_prompt && r.end.column < " & Console.Editor_Var &
-         ".gnoga_prompt) return true;" &
-         "        return r.start.row != editableRow || r.end.row != editableRow; " &
-         "    });" & "    if (notEditable)" & "        e.preventDefault();" &
-         "});");
+         "    var notEditable = " & Console.Editor_Var & ".selection.getAllRanges().some(function(r) {" &
+         "        if (deletesLeft && r.start.column <= " & Console.Editor_Var & ".gnoga_prompt && r.end.column <= " &
+         Console.Editor_Var & ".gnoga_prompt) return true;" & "        if (deletesLeft && (r.start.column < " &
+         Console.Editor_Var & ".gnoga_prompt || r.end.column < " & Console.Editor_Var & ".gnoga_prompt)) return true;" &
+         "        if (r.start.column < " & Console.Editor_Var & ".gnoga_prompt && r.end.column < " &
+         Console.Editor_Var & ".gnoga_prompt) return true;" &
+         "        return r.start.row != editableRow || r.end.row != editableRow; " & "    });" &
+         "    if (notEditable)" & "        e.preventDefault();" & "});");
       Console.Editor_Execute
-        ("commands.bindKeys({" &
-         "    'Shift-Return|Ctrl-Return|Alt-Return': function(cmdLine) {}," &
-         "    'Esc|Shift-Esc': function(cmdLine){" &
-         "        cmdLine.session.remove(" &
-         "          {start:{row:cmdLine.session.getLength()-1," &
-         "                  column: cmdLine.gnoga_prompt}," &
+        ("commands.bindKeys({" & "    'Shift-Return|Ctrl-Return|Alt-Return': function(cmdLine) {}," &
+         "    'Esc|Shift-Esc': function(cmdLine){" & "        cmdLine.session.remove(" &
+         "          {start:{row:cmdLine.session.getLength()-1," & "                  column: cmdLine.gnoga_prompt}," &
          "           end: {row:cmdLine.session.getLength()-1," &
          "                 column:cmdLine.session.getDocumentLastRowColumn(cmdLine.session.getLength()-1,0)}});}," &
-         "    'Return': function(cmdLine){" &
-         "        cmdLine.sendEvent ('get_line'," & "          cmdLine.session.getTextRange(" &
-         "            {start:{row:cmdLine.session.getLength()-1," &
+         "    'Return': function(cmdLine){" & "        cmdLine.sendEvent ('get_line'," &
+         "          cmdLine.session.getTextRange(" & "            {start:{row:cmdLine.session.getLength()-1," &
          "                    column: cmdLine.gnoga_prompt}," &
          "             end: {row:cmdLine.session.getLength()-1," &
          "                   column:cmdLine.session.getDocumentLastRowColumn(cmdLine.session.getLength()-1,0)}}));" &
-         "        cmdLine.navigateFileEnd();" &
-         "        cmdLine.insert('\n');}" &
-         "});");
+         "        cmdLine.navigateFileEnd();" & "        cmdLine.insert('\n');}" & "});");
    end Create;
 
    ---------------------
    -- Set_Line_Length --
    ---------------------
 
-   procedure Set_Line_Length (Console : in out Console_IO_Type; To : Count) is
+   procedure Set_Line_Length
+     (Console : in out Console_IO_Type;
+      To      :        Count)
+   is
    begin
       Console.Set_Use_Wrap_Mode (To /= Unbounded);
       Console.Wrap_Limit (To);
@@ -172,12 +170,13 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Set_Page_Length --
    ---------------------
 
-   procedure Set_Page_Length (Console : in Console_IO_Type; To : Count) is
+   procedure Set_Page_Length
+     (Console : in Console_IO_Type;
+      To      :    Count)
+   is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning
-        (Standard.True,
-         "Set_Page_Length unimplemented");
+      pragma Compile_Time_Warning (Standard.True, "Set_Page_Length unimplemented");
       raise Program_Error with "Unimplemented procedure Set_Page_Length";
    end Set_Page_Length;
 
@@ -185,7 +184,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Line_Length --
    -----------------
 
-   function Line_Length (Console : in Console_IO_Type) return Count is
+   function Line_Length
+     (Console : in Console_IO_Type)
+      return Count
+   is
    begin
       return Console.Wrap_Limit;
    end Line_Length;
@@ -194,7 +196,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Page_Length --
    -----------------
 
-   function Page_Length (Console : in Console_IO_Type) return Count is
+   function Page_Length
+     (Console : in Console_IO_Type)
+      return Count
+   is
    begin
       return Console.Last_Visible_Row - Console.First_Visible_Row;
    end Page_Length;
@@ -203,9 +208,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- New_Line --
    --------------
 
-   overriding procedure New_Line
-     (Console : in out Console_IO_Type)
-   is
+   overriding procedure New_Line (Console : in out Console_IO_Type) is
    begin
       Console.New_Line (1);
    end New_Line;
@@ -243,7 +246,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- End_Of_Line --
    -----------------
 
-   function End_Of_Line (Console : in out Console_IO_Type) return Boolean is
+   function End_Of_Line
+     (Console : in out Console_IO_Type)
+      return Boolean
+   is
       Item : Character;
       EOL  : Boolean;
    begin
@@ -275,7 +281,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- End_Of_Page --
    -----------------
 
-   function End_Of_Page (Console : in Console_IO_Type) return Boolean is
+   function End_Of_Page
+     (Console : in Console_IO_Type)
+      return Boolean
+   is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "End_Of_Page unimplemented");
@@ -287,7 +296,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Set_Col --
    -------------
 
-   procedure Set_Col (Console : in out Console_IO_Type; To : Positive_Count) is
+   procedure Set_Col
+     (Console : in out Console_IO_Type;
+      To      :        Positive_Count)
+   is
       Pos : constant Position_Type := Console.Anchor.Position;
    begin
       Console.Anchor.Position ((Pos.Row, To));
@@ -310,7 +322,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Col --
    ---------
 
-   function Col (Console : in Console_IO_Type) return Positive_Count is
+   function Col
+     (Console : in Console_IO_Type)
+      return Positive_Count
+   is
    begin
       return Console.Anchor.Position.Column;
    end Col;
@@ -319,7 +334,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Line --
    ----------
 
-   function Line (Console : in Console_IO_Type) return Positive_Count is
+   function Line
+     (Console : in Console_IO_Type)
+      return Positive_Count
+   is
    begin
       return Console.Anchor.Position.Row;
    end Line;
@@ -328,7 +346,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Page --
    ----------
 
-   function Page (Console : in Console_IO_Type) return Positive_Count is
+   function Page
+     (Console : in Console_IO_Type)
+      return Positive_Count
+   is
    begin
       return Console.Line / Console.Page_Length;
    end Page;
@@ -337,7 +358,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Get --
    ---------
 
-   procedure Get (Console : in out Console_IO_Type; Item : out Character) is
+   procedure Get
+     (Console : in out Console_IO_Type;
+      Item    :    out Character)
+   is
    begin
       Console.Text.Read (Item);
    end Get;
@@ -346,7 +370,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Put --
    ---------
 
-   procedure Put (Console : in out Console_IO_Type; Item : Character) is
+   procedure Put
+     (Console : in out Console_IO_Type;
+      Item    :        Character)
+   is
    begin
       Console.Anchor.Insert_Text_At_Anchor ((1 => Item));
       Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
@@ -400,7 +427,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Get --
    ---------
 
-   procedure Get (Console : in out Console_IO_Type; Item : out String) is
+   procedure Get
+     (Console : in out Console_IO_Type;
+      Item    :    out String)
+   is
    begin
       for Ch of Item loop
          Console.Text.Read (Ch);
@@ -415,7 +445,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
      (Console : in out Console_IO_Type;
       Message : in     String;
       Class   : in     String := "";
-      ID      : in     String := "") is
+      ID      : in     String := "")
+   is
       pragma Unreferenced (Class, ID);
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);
@@ -439,7 +470,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Get_Line --
    --------------
 
-   function Get_Line (Console : in out Console_IO_Type) return String is
+   function Get_Line
+     (Console : in out Console_IO_Type)
+      return String
+   is
       Line : Ada.Strings.Unbounded.Unbounded_String;
    begin
       Console.Text.Read (Line);
@@ -454,7 +488,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
      (Console : in out Console_IO_Type;
       Message : in     String;
       Class   : in     String := "";
-      ID      : in     String := "") is
+      ID      : in     String := "")
+   is
       pragma Unreferenced (Class, ID);
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);

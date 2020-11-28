@@ -42,12 +42,18 @@ package body Gnoga.Gui.Location is
    -- URL --
    ---------
 
-   procedure URL (Location : in out Location_Type; Value : in String) is
+   procedure URL
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("href", Value);
    end URL;
 
-   function URL (Location : Location_Type) return String is
+   function URL
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("href");
    end URL;
@@ -56,12 +62,18 @@ package body Gnoga.Gui.Location is
    -- Hash --
    ----------
 
-   procedure Hash (Location : in out Location_Type; Value : in String) is
+   procedure Hash
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("hash", Value);
    end Hash;
 
-   function Hash (Location : Location_Type) return String is
+   function Hash
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("hash");
    end Hash;
@@ -70,12 +82,18 @@ package body Gnoga.Gui.Location is
    -- Host --
    ----------
 
-   procedure Host (Location : in out Location_Type; Value : in String) is
+   procedure Host
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("host", Value);
    end Host;
 
-   function Host (Location : Location_Type) return String is
+   function Host
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("host");
    end Host;
@@ -84,12 +102,18 @@ package body Gnoga.Gui.Location is
    -- Host_Name --
    ---------------
 
-   procedure Host_Name (Location : in out Location_Type; Value : in String) is
+   procedure Host_Name
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("hostname", Value);
    end Host_Name;
 
-   function Host_Name (Location : Location_Type) return String is
+   function Host_Name
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("hostname");
    end Host_Name;
@@ -98,7 +122,10 @@ package body Gnoga.Gui.Location is
    -- Origin --
    ------------
 
-   function Origin (Location : Location_Type) return String is
+   function Origin
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("origin");
    end Origin;
@@ -107,12 +134,18 @@ package body Gnoga.Gui.Location is
    -- Path_Name --
    ---------------
 
-   procedure Path_Name (Location : in out Location_Type; Value : in String) is
+   procedure Path_Name
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("pathname", Value);
    end Path_Name;
 
-   function Path_Name (Location : Location_Type) return String is
+   function Path_Name
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("pathname");
    end Path_Name;
@@ -121,12 +154,18 @@ package body Gnoga.Gui.Location is
    -- Port --
    ----------
 
-   procedure Port (Location : in out Location_Type; Value : in String) is
+   procedure Port
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("port", Value);
    end Port;
 
-   function Port (Location : Location_Type) return String is
+   function Port
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("port");
    end Port;
@@ -135,12 +174,18 @@ package body Gnoga.Gui.Location is
    -- Protocol --
    --------------
 
-   procedure Protocol (Location : in out Location_Type; Value : in String) is
+   procedure Protocol
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("protocol", Value);
    end Protocol;
 
-   function Protocol (Location : Location_Type) return String is
+   function Protocol
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("protocol");
    end Protocol;
@@ -149,12 +194,18 @@ package body Gnoga.Gui.Location is
    -- Search --
    ------------
 
-   procedure Search (Location : in out Location_Type; Value : in String) is
+   procedure Search
+     (Location : in out Location_Type;
+      Value    : in     String)
+   is
    begin
       Location.Property ("search", Value);
    end Search;
 
-   function Search (Location : Location_Type) return String is
+   function Search
+     (Location : Location_Type)
+      return String
+   is
    begin
       return Location.Property ("search");
    end Search;
@@ -163,9 +214,12 @@ package body Gnoga.Gui.Location is
    -- Parse --
    -----------
 
-   function Parse (URL : in String; Encoding : String := "")
-                   return Gnoga.Types.Data_Map_Type is
-      P : Gnoga.Types.Data_Map_Type;
+   function Parse
+     (URL      : in String;
+      Encoding :    String := "")
+      return Gnoga.Types.Data_Map_Type
+   is
+      P                : Gnoga.Types.Data_Map_Type;
       Ind1, Ind2, Ind3 : Natural;
       use Ada.Strings.Fixed;
    begin
@@ -178,27 +232,19 @@ package body Gnoga.Gui.Location is
                if Ind3 > 0 then
                   if Encoding /= "" then
                      P.Include
-                     (URL_Decode
-                        (URL (Ind1 + 1 .. Ind2 - 1),
-                         Encoding), URL_Decode
-                        (URL (Ind2 + 1 .. Ind3 - 1),
-                         Encoding));
+                       (URL_Decode (URL (Ind1 + 1 .. Ind2 - 1), Encoding),
+                        URL_Decode (URL (Ind2 + 1 .. Ind3 - 1), Encoding));
                   else
-                     P.Include (URL (Ind1 + 1 .. Ind2 - 1),
-                                URL (Ind2 + 1 .. Ind3 - 1));
+                     P.Include (URL (Ind1 + 1 .. Ind2 - 1), URL (Ind2 + 1 .. Ind3 - 1));
                   end if;
                   Ind1 := Ind3;
                else
                   if Encoding /= "" then
                      P.Include
-                     (URL_Decode
-                        (URL (Ind1 + 1 .. Ind2 - 1),
-                         Encoding), URL_Decode
-                        (URL (Ind2 + 1 .. URL'Last),
-                         Encoding));
+                       (URL_Decode (URL (Ind1 + 1 .. Ind2 - 1), Encoding),
+                        URL_Decode (URL (Ind2 + 1 .. URL'Last), Encoding));
                   else
-                     P.Include (URL (Ind1 + 1 .. Ind2 - 1),
-                                URL (Ind2 + 1 .. URL'Last));
+                     P.Include (URL (Ind1 + 1 .. Ind2 - 1), URL (Ind2 + 1 .. URL'Last));
                   end if;
                   exit;
                end if;
@@ -223,7 +269,10 @@ package body Gnoga.Gui.Location is
    -- Replace --
    -------------
 
-   procedure Replace (Location : in out Location_Type; URL : in String) is
+   procedure Replace
+     (Location : in out Location_Type;
+      URL      : in     String)
+   is
    begin
       Location.Execute ("replace('" & Escape_Quotes (URL) & "')");
    end Replace;
@@ -232,7 +281,10 @@ package body Gnoga.Gui.Location is
    -- Assign --
    ------------
 
-   procedure Assign (Location : in out Location_Type; URL : in String) is
+   procedure Assign
+     (Location : in out Location_Type;
+      URL      : in     String)
+   is
    begin
       Location.Execute ("assign('" & Escape_Quotes (URL) & "')");
    end Assign;

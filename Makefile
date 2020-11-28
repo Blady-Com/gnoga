@@ -10,11 +10,13 @@ ifeq ($(strip $(findstring GPRBUILD, $(GPRCHECK))),GPRBUILD)
 	BUILDER=gprbuild -p
 	INSTALLER=gprinstall -p -f
 	CLEANER=gprclean
+	PRETTY_PRINTER=gnatpp
 	STUDIO=gnatstudio
 else
 	BUILDER=gnatmake -p
 	INSTALLER=gprinstall -p -f
 	CLEANER=gnatclean
+	PRETTY_PRINTER=gnatpp
 	STUDIO=gnatstudio
 endif
 
@@ -367,3 +369,6 @@ else
 	echo echo $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)PragmARC > bin$(PATHSEP)gnoga-config
 	chmod +x bin$(PATHSEP)gnoga-config
 endif
+
+pretty_print:
+	$(PRETTY_PRINTER) -P src/gnoga.gpr $(GN_OPTIONS)

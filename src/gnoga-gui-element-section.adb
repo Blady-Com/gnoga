@@ -45,7 +45,7 @@ package body Gnoga.Gui.Element.Section is
      (View    : in out Section_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
       Section : in     Section_Description_Type;
-      ID      : in     String  := "")
+      ID      : in     String := "")
    is
    begin
       View.Create_From_HTML (Parent, "<" & Section'Img & " />", ID);

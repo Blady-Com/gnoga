@@ -109,7 +109,9 @@ package Gnoga.Gui.Plugin.Pixi is
      (Renderer  : in out Renderer_Type;
       Container : in     Container_Type'Class;
       Enable    : in     Boolean);
-   function Auto_Rendering (Renderer : in out Renderer_Type) return Boolean;
+   function Auto_Rendering
+     (Renderer : in out Renderer_Type)
+      return Boolean;
    --  Enables periodic rendering based on animation frame
 
    -------------------------------------------------------------------------
@@ -117,8 +119,8 @@ package Gnoga.Gui.Plugin.Pixi is
    -------------------------------------------------------------------------
 
    procedure Create
-     (Container    : in out Container_Type;
-      Application  : in out Application_Type'Class);
+     (Container   : in out Container_Type;
+      Application : in out Application_Type'Class);
 
    procedure Create
      (Container : in out Container_Type;
@@ -152,14 +154,16 @@ package Gnoga.Gui.Plugin.Pixi is
    --  Set the parent Container of this DisplayObject
 
    function Get_Bounds
-     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type;
+     (Container : in Container_Type)
+      return Gnoga.Types.Rectangle_Type;
    procedure Get_Bounds
      (Container : in     Container_Type;
       Rect      :    out Gnoga.Types.Rectangle_Type);
    --  Retrieves the bounds of the displayObject as a rectangle object.
 
    function Get_Local_Bounds
-     (Container : in Container_Type) return Gnoga.Types.Rectangle_Type;
+     (Container : in Container_Type)
+      return Gnoga.Types.Rectangle_Type;
    procedure Get_Local_Bounds
      (Container : in     Container_Type;
       Rect      :    out Gnoga.Types.Rectangle_Type);
@@ -167,7 +171,8 @@ package Gnoga.Gui.Plugin.Pixi is
 
    function To_Global
      (Container : in Container_Type;
-      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type;
+      Position  :    Gnoga.Types.Point_Type)
+      return Gnoga.Types.Point_Type;
    procedure To_Global
      (Container : in     Container_Type;
       Position  :        Gnoga.Types.Point_Type;
@@ -176,7 +181,8 @@ package Gnoga.Gui.Plugin.Pixi is
 
    function To_Local
      (Container : in Container_Type;
-      Position  :    Gnoga.Types.Point_Type) return Gnoga.Types.Point_Type;
+      Position  :    Gnoga.Types.Point_Type)
+      return Gnoga.Types.Point_Type;
    procedure To_Local
      (Container : in     Container_Type;
       Position  :        Gnoga.Types.Point_Type;
@@ -227,31 +233,40 @@ package Gnoga.Gui.Plugin.Pixi is
      (Texture : in Texture_Type;
       Value   : in Gnoga.Types.Rectangle_Type);
    function Frame
-     (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type;
+     (Texture : in Texture_Type)
+      return Gnoga.Types.Rectangle_Type;
    --  The frame specifies the region of the base texture that this texture uses.
 
    overriding procedure Width
      (Texture : in out Texture_Type;
       Value   : in     Integer);
-   overriding function Width (Texture : in Texture_Type) return Integer;
+   overriding function Width
+     (Texture : in Texture_Type)
+      return Integer;
    --  The height of the Texture in pixels.
 
    overriding procedure Height
      (Texture : in out Texture_Type;
       Value   : in     Integer);
-   overriding function Height (Texture : in Texture_Type) return Integer;
+   overriding function Height
+     (Texture : in Texture_Type)
+      return Integer;
    --  The height of the Texture in pixels.
 
    procedure Orig
      (Texture : in Texture_Type;
       Value   : in Gnoga.Types.Rectangle_Type);
-   function Orig (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type;
+   function Orig
+     (Texture : in Texture_Type)
+      return Gnoga.Types.Rectangle_Type;
    --  This is the area of original texture, before it was put in atlas.
 
    procedure Trim
      (Texture : in Texture_Type;
       Value   : in Gnoga.Types.Rectangle_Type);
-   function Trim (Texture : in Texture_Type) return Gnoga.Types.Rectangle_Type;
+   function Trim
+     (Texture : in Texture_Type)
+      return Gnoga.Types.Rectangle_Type;
    --  This is the trimmed area of original texture, before it was put in atlas.
 
    -------------------------------------------------------------------------
@@ -278,19 +293,28 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Gui.Element.Alignment_Type);
    function Align
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Alignment_Type;
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Alignment_Type;
    --  align string 'left' default
    --  Alignment for multiline text ('left', 'center' or 'right'),
    --  does not affect single line text
 
-   procedure Break_Words (Style : in out Style_Type; Value : in Boolean);
-   function Break_Words (Style : in out Style_Type) return Boolean;
+   procedure Break_Words
+     (Style : in out Style_Type;
+      Value : in     Boolean);
+   function Break_Words
+     (Style : in out Style_Type)
+      return Boolean;
    --  breakWords boolean false default
    --  Indicates if lines can be wrapped within words, it
    --  needs wordWrap to be set to true
 
-   procedure Drop_Shadow (Style : in out Style_Type; Value : in Boolean);
-   function Drop_Shadow (Style : in out Style_Type) return Boolean;
+   procedure Drop_Shadow
+     (Style : in out Style_Type;
+      Value : in     Boolean);
+   function Drop_Shadow
+     (Style : in out Style_Type)
+      return Boolean;
    --  dropShadow boolean false default
    --  Set a drop shadow for the text
 
@@ -298,17 +322,26 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Types.Alpha_Type);
    function Drop_Shadow_Alpha
-     (Style : in out Style_Type) return Gnoga.Types.Alpha_Type;
+     (Style : in out Style_Type)
+      return Gnoga.Types.Alpha_Type;
    --  dropShadowAlpha number 1 default
    --  Set alpha for the drop shadow
 
-   procedure Drop_Shadow_Angle (Style : in out Style_Type; Value : in Integer);
-   function Drop_Shadow_Angle (Style : in out Style_Type) return Integer;
+   procedure Drop_Shadow_Angle
+     (Style : in out Style_Type;
+      Value : in     Integer);
+   function Drop_Shadow_Angle
+     (Style : in out Style_Type)
+      return Integer;
    --  dropShadowAngle number 30° default
    --  Set a angle of the drop shadow
 
-   procedure Drop_Shadow_Blur (Style : in out Style_Type; Value : in Natural);
-   function Drop_Shadow_Blur (Style : in out Style_Type) return Natural;
+   procedure Drop_Shadow_Blur
+     (Style : in out Style_Type;
+      Value : in     Natural);
+   function Drop_Shadow_Blur
+     (Style : in out Style_Type)
+      return Natural;
    --  dropShadowBlur number 0 default
    --  Set a shadow blur radius
 
@@ -316,14 +349,17 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Types.Colors.Color_Enumeration);
    function Drop_Shadow_Color
-     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration;
+     (Style : in out Style_Type)
+      return Gnoga.Types.Colors.Color_Enumeration;
    --  dropShadowColor string '#000000' default
    --  A fill style to be used on the dropshadow e.g 'red', '#00FF00'
 
    procedure Drop_Shadow_Distance
      (Style : in out Style_Type;
       Value : in     Integer);
-   function Drop_Shadow_Distance (Style : in out Style_Type) return Integer;
+   function Drop_Shadow_Distance
+     (Style : in out Style_Type)
+      return Integer;
    --  dropShadowDistance number 5 default
    --  Set a distance of the drop shadow
 
@@ -331,7 +367,8 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Types.Colors.Color_Enumeration);
    function Fill
-     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration;
+     (Style : in out Style_Type)
+      return Gnoga.Types.Colors.Color_Enumeration;
    --  fill string | Array.<string> | number | Array.<number> | CanvasGradient | CanvasPattern 'black' default
    --  A canvas fillstyle that will be used on the text e.g 'red', '#00FF00'. Can be an array to create a gradient
    --  eg ['#000000','#FFFFFF']
@@ -344,13 +381,21 @@ package Gnoga.Gui.Plugin.Pixi is
    --  If fill is an array of colors to create a gradient, this array can set
    --  the stop points (numbers between 0 and 1) for the color, overriding the default behaviour of evenly spacing them.
 
-   procedure Font_Family (Style : in out Style_Type; Value : in String);
-   function Font_Family (Style : in out Style_Type) return String;
+   procedure Font_Family
+     (Style : in out Style_Type;
+      Value : in     String);
+   function Font_Family
+     (Style : in out Style_Type)
+      return String;
    --  fontFamily string | Array.<string> 'Arial' default
    --  The font family
 
-   procedure Font_Size (Style : in out Style_Type; Value : in String);
-   function Font_Size (Style : in out Style_Type) return String;
+   procedure Font_Size
+     (Style : in out Style_Type;
+      Value : in     String);
+   function Font_Size
+     (Style : in out Style_Type)
+      return String;
    --  fontSize number | string 26 default
    --  The font size (as a number it converts to px, but as a string,
    --  equivalents are '26px','20pt','160%' or '1.6em')
@@ -359,7 +404,8 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Gui.Element.Font_Style_Type);
    function Font_Style
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Style_Type;
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Font_Style_Type;
    --  fontStyle string 'normal' default
    --  The font style ('normal', 'italic' or 'oblique')
 
@@ -367,7 +413,8 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Gui.Element.Font_Variant_Type);
    function Font_Variant
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Variant_Type;
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Font_Variant_Type;
    --  fontVariant string 'normal' default
    --  The font variant ('normal' or 'small-caps')
 
@@ -375,37 +422,58 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Gui.Element.Font_Weight_Type);
    function Font_Weight
-     (Style : in out Style_Type) return Gnoga.Gui.Element.Font_Weight_Type;
+     (Style : in out Style_Type)
+      return Gnoga.Gui.Element.Font_Weight_Type;
    --  fontWeight string 'normal' default
    --  The font weight ('normal', 'bold', 'bolder', 'lighter' and '100',
    --  '200', '300', '400', '500', '600', '700', 800' or '900')
 
-   procedure Letter_Spacing (Style : in out Style_Type; Value : in Natural);
-   function Letter_Spacing (Style : in out Style_Type) return Natural;
+   procedure Letter_Spacing
+     (Style : in out Style_Type;
+      Value : in     Natural);
+   function Letter_Spacing
+     (Style : in out Style_Type)
+      return Natural;
    --  letterSpacing number 0 default
    --  The amount of spacing between letters, default is 0
 
-   procedure Line_Height (Style : in out Style_Type; Value : in Natural);
-   function Line_Height (Style : in out Style_Type) return Natural;
+   procedure Line_Height
+     (Style : in out Style_Type;
+      Value : in     Natural);
+   function Line_Height
+     (Style : in out Style_Type)
+      return Natural;
    --  lineHeight number  default
    --  The line height, a number that represents the vertical space that a letter uses
 
    type Line_Join_Type is (Bevel, Round, Miter);
 
-   procedure Line_Join (Style : in out Style_Type; Value : in Line_Join_Type);
-   function Line_Join (Style : in out Style_Type) return Line_Join_Type;
+   procedure Line_Join
+     (Style : in out Style_Type;
+      Value : in     Line_Join_Type);
+   function Line_Join
+     (Style : in out Style_Type)
+      return Line_Join_Type;
    --  lineJoin string 'miter' default
    --  The lineJoin property sets the type of corner created, it can resolve
    --  spiked text issues. Default is 'miter' (creates a sharp corner).
 
-   procedure Miter_Limit (Style : in out Style_Type; Value : in Natural);
-   function Miter_Limit (Style : in out Style_Type) return Natural;
+   procedure Miter_Limit
+     (Style : in out Style_Type;
+      Value : in     Natural);
+   function Miter_Limit
+     (Style : in out Style_Type)
+      return Natural;
    --  miterLimit number 10 default
    --  The miter limit to use when using the 'miter' lineJoin mode. This can reduce
    --  or increase the spikiness of rendered text.
 
-   procedure Padding (Style : in out Style_Type; Value : in Natural);
-   function Padding (Style : in out Style_Type) return Natural;
+   procedure Padding
+     (Style : in out Style_Type;
+      Value : in     Natural);
+   function Padding
+     (Style : in out Style_Type)
+      return Natural;
    --  padding number 0 default
    --  Occasionally some fonts are cropped. Adding some padding will prevent this from
    --  happening by adding padding to all sides of the text.
@@ -414,39 +482,57 @@ package Gnoga.Gui.Plugin.Pixi is
      (Style : in out Style_Type;
       Value : in     Gnoga.Types.Colors.Color_Enumeration);
    function Stroke
-     (Style : in out Style_Type) return Gnoga.Types.Colors.Color_Enumeration;
+     (Style : in out Style_Type)
+      return Gnoga.Types.Colors.Color_Enumeration;
    --  stroke string | number 'black' default
    --  A canvas fillstyle that will be used on the text stroke
    --  e.g 'blue', '#FCFF00'
 
-   procedure Stroke_Thickness (Style : in out Style_Type; Value : in Natural);
-   function Stroke_Thickness (Style : in out Style_Type) return Natural;
+   procedure Stroke_Thickness
+     (Style : in out Style_Type;
+      Value : in     Natural);
+   function Stroke_Thickness
+     (Style : in out Style_Type)
+      return Natural;
    --  strokeThickness number 0 default
    --  A number that represents the thickness of the stroke.
    --  Default is 0 (no stroke)
 
-   procedure Trim (Style : in out Style_Type; Value : in Boolean);
-   function Trim (Style : in out Style_Type) return Boolean;
+   procedure Trim
+     (Style : in out Style_Type;
+      Value : in     Boolean);
+   function Trim
+     (Style : in out Style_Type)
+      return Boolean;
    --  trim boolean false default
    --  Trim transparent borders
 
-   type Baseline_Type is
-     (Alphabetic, Top, Hanging, Middle, Ideographic, Bottom);
+   type Baseline_Type is (Alphabetic, Top, Hanging, Middle, Ideographic, Bottom);
 
    procedure Text_Baseline
      (Style : in out Style_Type;
       Value : in     Baseline_Type);
-   function Text_Baseline (Style : in out Style_Type) return Baseline_Type;
+   function Text_Baseline
+     (Style : in out Style_Type)
+      return Baseline_Type;
    --  textBaseline string 'alphabetic' default
    --  The baseline of the text that is rendered.
 
-   procedure Word_Wrap (Style : in out Style_Type; Value : in Boolean);
-   function Word_Wrap (Style : in out Style_Type) return Boolean;
+   procedure Word_Wrap
+     (Style : in out Style_Type;
+      Value : in     Boolean);
+   function Word_Wrap
+     (Style : in out Style_Type)
+      return Boolean;
    --  wordWrap boolean false default
    --  Indicates if word wrap should be used
 
-   procedure Word_Wrap_Width (Style : in out Style_Type; Value : in Natural);
-   function Word_Wrap_Width (Style : in out Style_Type) return Natural;
+   procedure Word_Wrap_Width
+     (Style : in out Style_Type;
+      Value : in     Natural);
+   function Word_Wrap_Width
+     (Style : in out Style_Type)
+      return Natural;
    --  wordWrapWidth number 100 default
    --  The width at which text will wrap, it needs wordWrap to be set to true
 
@@ -455,38 +541,11 @@ package Gnoga.Gui.Plugin.Pixi is
    -------------------------------------------------------------------------
 
    type Blend_Modes_Type is
-     (NORMAL,
-      ADD,
-      MULTIPLY,
-      SCREEN,
-      OVERLAY,
-      DARKEN,
-      LIGHTEN,
-      COLOR_DODGE,
-      COLOR_BURN,
-      HARD_LIGHT,
-      SOFT_LIGHT,
-      DIFFERENCE,
-      EXCLUSION,
-      HUE,
-      SATURATION,
-      COLOR,
-      LUMINOSITY,
-      NORMAL_NPM,
-      ADD_NPM,
-      SCREEN_NPM,
-      NONE,
-      SRC_IN,
-      SRC_OUT,
-      SRC_ATOP,
-      DST_OVER,
-      DST_IN,
-      DST_OUT,
-      DST_ATOP,
-      SUBTRACT,
-      XOR_BM);
-      SRC_OVER : constant Blend_Modes_Type := NORMAL;
-      ERASE    : constant Blend_Modes_Type := DST_OUT;
+     (NORMAL, ADD, MULTIPLY, SCREEN, OVERLAY, DARKEN, LIGHTEN, COLOR_DODGE, COLOR_BURN, HARD_LIGHT, SOFT_LIGHT,
+      DIFFERENCE, EXCLUSION, HUE, SATURATION, COLOR, LUMINOSITY, NORMAL_NPM, ADD_NPM, SCREEN_NPM, NONE, SRC_IN, SRC_OUT,
+      SRC_ATOP, DST_OVER, DST_IN, DST_OUT, DST_ATOP, SUBTRACT, XOR_BM);
+   SRC_OVER : constant Blend_Modes_Type := NORMAL;
+   ERASE    : constant Blend_Modes_Type := DST_OUT;
    --  Various blend modes supported by PIXI.
    --  IMPORTANT - The WebGL renderer only supports the NORMAL, ADD, MULTIPLY and SCREEN blend modes.
    --  Anything else will silently act like NORMAL.
@@ -496,13 +555,13 @@ package Gnoga.Gui.Plugin.Pixi is
    --  - LINEAR: Smooth scaling
    --  - NEAREST: Pixelating scaling
 
-   subtype Velocity_Type is Float range -1000.0 .. +1000.0;
+   subtype Velocity_Type is Float range -1_000.0 .. +1_000.0;
    --  A positive value moves the object down or to the right, clockwise for rotation.
    --  A negative value moves the object up or to the left, anti-clockwise for rotation.
    --  A value of 1 moves the object at the speed of 1 pixel per second or 1 degree per second for rotation.
    --  A value of 0 stops the object.
 
-   subtype Acceleration_Type is Float range -1000.0 .. +1000.0;
+   subtype Acceleration_Type is Float range -1_000.0 .. +1_000.0;
    --  A positive value increases the object velocity.
    --  A negative value decreases the object velocity.
    --  A value of 1 increases the object velocity at the speed of 1 pixel per second
@@ -516,21 +575,19 @@ private
    type Application_Type is new Gnoga.Gui.Element.Element_Type with null record;
 
    type Renderer_Type is new Gnoga.Gui.Base.Base_Type with null record;
-   overriding
-   procedure On_Child_Removed (Renderer : in out Renderer_Type;
-                               Child    : in out Gnoga.Gui.Base.Base_Type'Class);
-   type Container_Type is new Gnoga.Gui.Base.Base_Type with
-      record
-         Child_Array : Gnoga.Gui.Base.Base_Type_Array;
-      end record;
-   overriding
-   procedure On_Child_Added (Container : in out Container_Type;
-                             Child     : in out Gnoga.Gui.Base.Base_Type'Class);
-   overriding
-   procedure On_Child_Removed (Container : in out Container_Type;
-                               Child     : in out Gnoga.Gui.Base.Base_Type'Class);
-   overriding
-   procedure Finalize (Container : in out Container_Type);
+   overriding procedure On_Child_Removed
+     (Renderer : in out Renderer_Type;
+      Child    : in out Gnoga.Gui.Base.Base_Type'Class);
+   type Container_Type is new Gnoga.Gui.Base.Base_Type with record
+      Child_Array : Gnoga.Gui.Base.Base_Type_Array;
+   end record;
+   overriding procedure On_Child_Added
+     (Container : in out Container_Type;
+      Child     : in out Gnoga.Gui.Base.Base_Type'Class);
+   overriding procedure On_Child_Removed
+     (Container : in out Container_Type;
+      Child     : in out Gnoga.Gui.Base.Base_Type'Class);
+   overriding procedure Finalize (Container : in out Container_Type);
    type Texture_Type is new Gnoga.Gui.Base.Base_Type with null record;
    type Style_Type is new Gnoga.Gui.Base.Base_Type with null record;
 end Gnoga.Gui.Plugin.Pixi;

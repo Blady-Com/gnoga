@@ -47,9 +47,8 @@ with Gnoga.Server.Mime;
 with Gnoga.Application;
 
 with Strings_Edit.Quoted;
-with GNAT.Sockets.Server; use GNAT.Sockets.Server;
-with GNAT.Sockets.Connection_State_Machine.HTTP_Server;
-use  GNAT.Sockets.Connection_State_Machine.HTTP_Server;
+with GNAT.Sockets.Server;                               use GNAT.Sockets.Server;
+with GNAT.Sockets.Connection_State_Machine.HTTP_Server; use GNAT.Sockets.Connection_State_Machine.HTTP_Server;
 with Ada.Text_IO;
 with Ada.Streams.Stream_IO;
 
@@ -131,25 +130,26 @@ package body Gnoga.Server.Connection is
    type Gnoga_HTTP_Client;
    type Socket_Type is access all Gnoga_HTTP_Client;
 
-   type Gnoga_HTTP_Content is new Content_Source with
-      record
-         Socket          : Socket_Type           := null;
-         Connection_Type : Gnoga_Connection_Type := HTTP;
-         Connection_Path : Ada.Strings.Unbounded.Unbounded_String;
-         FS              : Ada.Streams.Stream_IO.File_Type;
-         Input_Overflow  : String_Buffer;
-         Buffer          : String_Buffer;
-         Finalized       : Boolean := False;
-         Text            : aliased Strings_Edit.Streams.String_Stream (500);
-      end record;
+   type Gnoga_HTTP_Content is new Content_Source with record
+      Socket          : Socket_Type           := null;
+      Connection_Type : Gnoga_Connection_Type := HTTP;
+      Connection_Path : Ada.Strings.Unbounded.Unbounded_String;
+      FS              : Ada.Streams.Stream_IO.File_Type;
+      Input_Overflow  : String_Buffer;
+      Buffer          : String_Buffer;
+      Finalized       : Boolean               := False;
+      Text            : aliased Strings_Edit.Streams.String_Stream (500);
+   end record;
 
-   overriding
-   function Get (Source : access Gnoga_HTTP_Content) return String;
+   overriding function Get
+     (Source : access Gnoga_HTTP_Content)
+      return String;
    --  Handle long polling method
 
    pragma Warnings (Off);
-   procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
-                    Item   : in     Gnoga_HTTP_Content);
+   procedure Write
+     (Stream :    access Ada.Streams.Root_Stream_Type'Class;
+      Item   : in Gnoga_HTTP_Content);
    for Gnoga_HTTP_Content'Write use Write;
    pragma Warnings (On);
 
@@ -157,93 +157,82 @@ package body Gnoga.Server.Connection is
    --  Creates Gnoga_HTTP_Client objects on incoming connections
    --  from Gnoga_HTTP_Connection
 
-   type Gnoga_HTTP_Factory (Request_Length  : Positive;
-                            Input_Size      : Buffer_Length;
-                            Output_Size     : Buffer_Length;
-                            Max_Connections : Positive)
+   type Gnoga_HTTP_Factory
+     (Request_Length : Positive; Input_Size : Buffer_Length; Output_Size : Buffer_Length; Max_Connections : Positive)
    is new Connections_Factory with null record;
 
-   overriding
-   function Create (Factory  : access Gnoga_HTTP_Factory;
-                    Listener : access Connections_Server'Class;
-                    From     : GNAT.Sockets.Sock_Addr_Type)
-                    return Connection_Ptr;
+   overriding function Create
+     (Factory  : access Gnoga_HTTP_Factory;
+      Listener : access Connections_Server'Class;
+      From     : GNAT.Sockets.Sock_Addr_Type)
+      return Connection_Ptr;
 
    --  Gnoga_HTTP_Connection  --
 
-   type Gnoga_HTTP_Connection is
-     new GNAT.Sockets.Server.Connections_Server with null record;
+   type Gnoga_HTTP_Connection is new GNAT.Sockets.Server.Connections_Server with null record;
 
-   overriding
-   function Get_Server_Address (Listener : Gnoga_HTTP_Connection)
-                                return GNAT.Sockets.Sock_Addr_Type;
+   overriding function Get_Server_Address
+     (Listener : Gnoga_HTTP_Connection)
+      return GNAT.Sockets.Sock_Addr_Type;
    --  Set the listening host if was set in Initialize
 
-   overriding
-   procedure Create_Socket
+   overriding procedure Create_Socket
      (Listener : in out Gnoga_HTTP_Connection;
       Socket   : in out GNAT.Sockets.Socket_Type;
-      Address  : GNAT.Sockets.Sock_Addr_Type);
+      Address  :        GNAT.Sockets.Sock_Addr_Type);
    --  Create socket with exception handler
 
    --  Gnoga_HTTP_Client  --
 
-   type Gnoga_HTTP_Client is new HTTP_Client with
-      record
-         Content : aliased Gnoga_HTTP_Content;
-      end record;
+   type Gnoga_HTTP_Client is new HTTP_Client with record
+      Content : aliased Gnoga_HTTP_Content;
+   end record;
 
    --  type Socket_Type is access all Gnoga_HTTP_Client;
 
-   overriding
-   procedure Finalize (Client : in out Gnoga_HTTP_Client);
+   overriding procedure Finalize (Client : in out Gnoga_HTTP_Client);
    --  Handle browser crashes or webkit abrupt closes
 
-   overriding
-   function Get_Name (Client : Gnoga_HTTP_Client) return String;
+   overriding function Get_Name
+     (Client : Gnoga_HTTP_Client)
+      return String;
 
-   overriding
-   procedure Do_Get  (Client : in out Gnoga_HTTP_Client);
+   overriding procedure Do_Get (Client : in out Gnoga_HTTP_Client);
 
-   overriding
-   procedure Do_Post (Client : in out Gnoga_HTTP_Client);
+   overriding procedure Do_Post (Client : in out Gnoga_HTTP_Client);
 
-   overriding
-   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
-                             Content : in out CGI_Keys.Table'Class);
+   overriding procedure Body_Received
+     (Client  : in out Gnoga_HTTP_Client;
+      Content : in out CGI_Keys.Table'Class);
 
-   overriding
-   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
-                             Content : in out Ada.Streams.Root_Stream_Type'Class);
+   overriding procedure Body_Received
+     (Client  : in out Gnoga_HTTP_Client;
+      Content : in out Ada.Streams.Root_Stream_Type'Class);
 
-   overriding
-   procedure Do_Body (Client : in out Gnoga_HTTP_Client);
+   overriding procedure Do_Body (Client : in out Gnoga_HTTP_Client);
 
-   overriding
-   procedure Do_Head (Client : in out Gnoga_HTTP_Client);
+   overriding procedure Do_Head (Client : in out Gnoga_HTTP_Client);
 
-   overriding
-   function WebSocket_Open (Client : access Gnoga_HTTP_Client)
-                            return WebSocket_Accept;
+   overriding function WebSocket_Open
+     (Client : access Gnoga_HTTP_Client)
+      return WebSocket_Accept;
 
-   overriding
-   procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client);
+   overriding procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client);
 
-   overriding
-   procedure WebSocket_Received_Part (Client  : in out Gnoga_HTTP_Client;
-                                      Message : in     String);
+   overriding procedure WebSocket_Received_Part
+     (Client  : in out Gnoga_HTTP_Client;
+      Message : in     String);
 
-   overriding
-   procedure WebSocket_Received (Client  : in out Gnoga_HTTP_Client;
-                                 Message : in     String);
+   overriding procedure WebSocket_Received
+     (Client  : in out Gnoga_HTTP_Client;
+      Message : in     String);
 
-   overriding
-   procedure WebSocket_Closed (Client  : in out Gnoga_HTTP_Client;
-                               Status  : in     WebSocket_Status;
-                               Message : in     String);
+   overriding procedure WebSocket_Closed
+     (Client  : in out Gnoga_HTTP_Client;
+      Status  : in     WebSocket_Status;
+      Message : in     String);
 
-   overriding
-   procedure WebSocket_Error
+   overriding procedure WebSocket_Error
      (Client : in out Gnoga_HTTP_Client;
       Error  : in     Ada.Exceptions.Exception_Occurrence);
 
@@ -254,13 +243,14 @@ package body Gnoga.Server.Connection is
    pragma Warnings (Off);
    procedure Start_Long_Polling_Connect
      (Client : in out Gnoga_HTTP_Client;
-      ID     : out    Gnoga.Types.Connection_ID);
+      ID     :    out Gnoga.Types.Connection_ID);
    --  Start a long polling connection alternative to websocket
    pragma Warnings (On);
 
-   function Buffer_Add (ID     : Gnoga.Types.Connection_ID;
-                        Script : String)
-                        return Boolean;
+   function Buffer_Add
+     (ID     : Gnoga.Types.Connection_ID;
+      Script : String)
+      return Boolean;
    --  If buffering add Script to the buffer for ID and return true, if not
    --  buffering return false;
 
@@ -288,10 +278,8 @@ package body Gnoga.Server.Connection is
 
       declare
          Factory : aliased Gnoga_HTTP_Factory
-           (Request_Length  => Max_HTTP_Request_Length,
-            Input_Size      => Max_HTTP_Input_Chunk,
-            Output_Size     => Max_HTTP_Output_Chunk,
-            Max_Connections => Max_HTTP_Connections);
+           (Request_Length => Max_HTTP_Request_Length, Input_Size => Max_HTTP_Input_Chunk,
+            Output_Size    => Max_HTTP_Output_Chunk, Max_Connections => Max_HTTP_Connections);
       begin
          if Verbose_Output then
             Gnoga.Log ("HTTP Server Started");
@@ -302,7 +290,7 @@ package body Gnoga.Server.Connection is
 
          if not Secure_Server then
             declare
-               Server : Gnoga_HTTP_Connection (Factory'Access,  Server_Port);
+               Server : Gnoga_HTTP_Connection (Factory'Access, Server_Port);
                pragma Unreferenced (Server);
             begin
                accept Stop;
@@ -310,22 +298,18 @@ package body Gnoga.Server.Connection is
          else
             if not Secure_Only then
                declare
-                  Server1 : Gnoga_HTTP_Connection
-                    (Factory'Access,  Server_Port);
+                  Server1 : Gnoga_HTTP_Connection (Factory'Access, Server_Port);
                   pragma Unreferenced (Server1);
                   Server2 : Gnoga_HTTP_Connection
-                    (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all,
-                     Secure_Port);
+                    (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all, Secure_Port);
                   pragma Unreferenced (Server2);
                begin
                   accept Stop;
                end;
             else
                declare
-                  Server : Gnoga_HTTP_Connection
-                    (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all,
-                     Secure_Port);
-               pragma Unreferenced (Server);
+                  Server : Gnoga_HTTP_Connection (Gnoga.Server.Connection.Common.Gnoga_Secure_Factory.all, Secure_Port);
+                  pragma Unreferenced (Server);
                begin
                   accept Stop;
                end;
@@ -351,39 +335,37 @@ package body Gnoga.Server.Connection is
       Output_Size    : Buffer_Length)
       return Connection_Ptr
    is
-      Socket : constant Socket_Type := new Gnoga_HTTP_Client
-        (Listener       => Listener.all'Unchecked_Access,
-         Request_Length => Request_Length,
-         Input_Size     => Input_Size,
-         Output_Size    => Output_Size);
+      Socket : constant Socket_Type :=
+        new Gnoga_HTTP_Client
+          (Listener    => Listener.all'Unchecked_Access, Request_Length => Request_Length, Input_Size => Input_Size,
+           Output_Size => Output_Size);
    begin
       Socket.Content.Socket := Socket;
 
       return Connection_Ptr (Socket);
    end Global_Gnoga_Client_Factory;
 
-   overriding
-   function Create (Factory  : access Gnoga_HTTP_Factory;
-                    Listener : access Connections_Server'Class;
-                    From     : GNAT.Sockets.Sock_Addr_Type)
-                    return Connection_Ptr
+   overriding function Create
+     (Factory  : access Gnoga_HTTP_Factory;
+      Listener : access Connections_Server'Class;
+      From     : GNAT.Sockets.Sock_Addr_Type)
+      return Connection_Ptr
    is
       pragma Unreferenced (From);
    begin
-      return Gnoga.Server.Connection.Common.Gnoga_Client_Factory
-        (Listener       => Listener.all'Unchecked_Access,
-         Request_Length => Factory.Request_Length,
-         Input_Size     => Factory.Input_Size,
-         Output_Size    => Factory.Output_Size);
+      return
+        Gnoga.Server.Connection.Common.Gnoga_Client_Factory
+          (Listener   => Listener.all'Unchecked_Access, Request_Length => Factory.Request_Length,
+           Input_Size => Factory.Input_Size, Output_Size => Factory.Output_Size);
    end Create;
 
    -------------------------
    --  Get_Server_Address --
    -------------------------
 
-   overriding
-   function Get_Server_Address (Listener : Gnoga_HTTP_Connection)
-                                return GNAT.Sockets.Sock_Addr_Type
+   overriding function Get_Server_Address
+     (Listener : Gnoga_HTTP_Connection)
+      return GNAT.Sockets.Sock_Addr_Type
    is
       use GNAT.Sockets;
       use type Ada.Strings.Unbounded.Unbounded_String;
@@ -407,11 +389,10 @@ package body Gnoga.Server.Connection is
    --  Create_Socket --
    --------------------
 
-   overriding
-   procedure Create_Socket
+   overriding procedure Create_Socket
      (Listener : in out Gnoga_HTTP_Connection;
       Socket   : in out GNAT.Sockets.Socket_Type;
-      Address  : GNAT.Sockets.Sock_Addr_Type)
+      Address  :        GNAT.Sockets.Sock_Addr_Type)
    is
       use type GNAT.Sockets.Socket_Type;
    begin
@@ -441,8 +422,10 @@ package body Gnoga.Server.Connection is
    -- Get_Name --
    --------------
 
-   overriding
-   function Get_Name (Client : Gnoga_HTTP_Client) return String is
+   overriding function Get_Name
+     (Client : Gnoga_HTTP_Client)
+      return String
+   is
       pragma Unreferenced (Client);
    begin
       return Gnoga.HTTP_Server_Name;
@@ -452,11 +435,13 @@ package body Gnoga.Server.Connection is
    -- Do_Get_Head --
    -----------------
 
-   procedure Do_Get_Head (Client : in out Gnoga_HTTP_Client;
-                          Get    : in     Boolean);
+   procedure Do_Get_Head
+     (Client : in out Gnoga_HTTP_Client;
+      Get    : in     Boolean);
 
-   procedure Do_Get_Head (Client : in out Gnoga_HTTP_Client;
-                          Get    : in     Boolean)
+   procedure Do_Get_Head
+     (Client : in out Gnoga_HTTP_Client;
+      Get    : in     Boolean)
    is
       use Ada.Strings;
       use Ada.Strings.Unbounded;
@@ -508,9 +493,7 @@ package body Gnoga.Server.Connection is
          elsif Start = "img" then
             return Gnoga.Server.IMG_Directory & Path_Adjusted_Name;
          else
-            if Ada.Directories.Exists
-              (Gnoga.Server.HTML_Directory & File_Name)
-            then
+            if Ada.Directories.Exists (Gnoga.Server.HTML_Directory & File_Name) then
                return Gnoga.Server.HTML_Directory & File_Name;
             else
                return Gnoga.Server.HTML_Directory & To_String (Boot_HTML);
@@ -529,21 +512,16 @@ package body Gnoga.Server.Connection is
             Reply_Text (Client, 404, "Not found", "Not found");
          when File =>
             if Verbose_Output then
-               Gnoga.Log ("Requested: Kind: " & Status.Kind'Img & ", File: " & Status.File
-                          & ", Query: " & Status.Query);
+               Gnoga.Log
+                 ("Requested: Kind: " & Status.Kind'Img & ", File: " & Status.File & ", Query: " & Status.Query);
             end if;
-            Client.Content.Connection_Path :=
-              To_Unbounded_String (Status.File);
+            Client.Content.Connection_Path := To_Unbounded_String (Status.File);
 
             Send_Status_Line (Client, 200, "OK");
             Send_Date (Client);
-            Send (Client,
-                  "Cache-Control: no-cache, no-store, must-revalidate" &
-                    Gnoga.Server.Connection.Common.CRLF);
-            Send (Client, "Pragma: no-cache" &
-                    Gnoga.Server.Connection.Common.CRLF);
-            Send (Client, "Expires: 0" &
-                    Gnoga.Server.Connection.Common.CRLF);
+            Send (Client, "Cache-Control: no-cache, no-store, must-revalidate" & Gnoga.Server.Connection.Common.CRLF);
+            Send (Client, "Pragma: no-cache" & Gnoga.Server.Connection.Common.CRLF);
+            Send (Client, "Expires: 0" & Gnoga.Server.Connection.Common.CRLF);
             Send_Connection (Client, Persistent => True);
             Send_Server (Client);
 
@@ -555,11 +533,9 @@ package body Gnoga.Server.Connection is
                   Send_Body (Client, "", Get);
 
                   declare
-                     MH      : constant String := "?m=";
-                     Q       : constant Integer := Index
-                       (Status.Query, MH, Going => Forward);
-                     Message : constant String := Status.Query
-                       (Q + MH'Length .. Status.Query'Last);
+                     MH      : constant String  := "?m=";
+                     Q       : constant Integer := Index (Status.Query, MH, Going => Forward);
+                     Message : constant String  := Status.Query (Q + MH'Length .. Status.Query'Last);
                   begin
                      Dispatch_Message (Message);
                   end;
@@ -569,17 +545,15 @@ package body Gnoga.Server.Connection is
 
                      declare
                         ID : Gnoga.Types.Connection_ID;
-                        F  : Unbounded_String := To_Unbounded_String
-                          (Gnoga.Server.Template_Parser.Simple.Load_View
-                             (Adjust_Name));
+                        F  : Unbounded_String :=
+                          To_Unbounded_String (Gnoga.Server.Template_Parser.Simple.Load_View (Adjust_Name));
                      begin
                         if Gnoga.Application.Favicon /= Null_Unbounded_String and
                           Index (F, "<meta name=""generator"" content=""Gnoga"" />") > 0 and
                           Index (F, "favicon.ico") > 0
                         then
-                           String_Replace (Source      => F,
-                                           Pattern     => "favicon.ico",
-                                           Replacement => Gnoga.Application.Favicon);
+                           String_Replace
+                             (Source => F, Pattern => "favicon.ico", Replacement => Gnoga.Application.Favicon);
                         end if;
                         if Index (F, "/js/ajax.js") > 0 then
                            Client.Content.Connection_Type := Long_Polling;
@@ -592,9 +566,7 @@ package body Gnoga.Server.Connection is
                            Client.Content.Connection_Type := Long_Polling;
                            Start_Long_Polling_Connect (Client, ID);
 
-                           String_Replace (Source      => F,
-                                           Pattern     => "@@Connection_ID@@",
-                                           Replacement => ID'Img);
+                           String_Replace (Source => F, Pattern => "@@Connection_ID@@", Replacement => ID'Img);
                            Client.Content.Buffer.Add (To_String (F));
 
                            Send_Body (Client, Client.Content'Access, Get);
@@ -614,11 +586,8 @@ package body Gnoga.Server.Connection is
                            Close (Client.Content.FS);
                         end if;
 
-                        Open (Client.Content.FS, In_File, F,
-                              Form => "shared=no");
-                        Send_Body (Client,
-                                   Stream (Client.Content.FS),
-                                   Get);
+                        Open (Client.Content.FS, In_File, F, Form => "shared=no");
+                        Send_Body (Client, Stream (Client.Content.FS), Get);
                      end;
                   end if;
                end if;
@@ -630,23 +599,17 @@ package body Gnoga.Server.Connection is
                   if Verbose_Output then
                      Gnoga.Log ("Reply: Not found");
                   end if;
-                  Reply_Text (Client,
-                              404,
-                              "Not found",
-                              "No file " & Quote (Status.File) & " found");
+                  Reply_Text (Client, 404, "Not found", "No file " & Quote (Status.File) & " found");
             end;
 
          when URI =>
             if Verbose_Output then
-               Gnoga.Log ("Requested: Kind: " & Status.Kind'Img & ", Path: " & Status.Path
-                          & ", Query: " & Status.Query);
+               Gnoga.Log
+                 ("Requested: Kind: " & Status.Kind'Img & ", Path: " & Status.Path & ", Query: " & Status.Query);
                Gnoga.Log ("Reply: Not found");
             end if;
 
-            Reply_Text (Client,
-                        404,
-                        "Not found",
-                        "No URI " & Quote (Status.Path) & " found");
+            Reply_Text (Client, 404, "Not found", "No URI " & Quote (Status.Path) & " found");
       end case;
    exception
       when E : others =>
@@ -658,8 +621,7 @@ package body Gnoga.Server.Connection is
    -- Do_Get --
    ------------
 
-   overriding
-   procedure Do_Get  (Client : in out Gnoga_HTTP_Client) is
+   overriding procedure Do_Get (Client : in out Gnoga_HTTP_Client) is
    begin
       Do_Get_Head (Client, True);
    end Do_Get;
@@ -668,8 +630,7 @@ package body Gnoga.Server.Connection is
    -- Do_Post --
    -------------
 
-   overriding
-   procedure Do_Post (Client : in out Gnoga_HTTP_Client) is
+   overriding procedure Do_Post (Client : in out Gnoga_HTTP_Client) is
    begin
       Do_Get_Head (Client, True);
    end Do_Post;
@@ -678,9 +639,9 @@ package body Gnoga.Server.Connection is
    -- Body_Received --
    -------------------
 
-   overriding
-   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
-                             Content : in out CGI_Keys.Table'Class)
+   overriding procedure Body_Received
+     (Client  : in out Gnoga_HTTP_Client;
+      Content : in out CGI_Keys.Table'Class)
    is
       pragma Unreferenced (Content);
       Status : Status_Line renames Get_Status_Line (Client);
@@ -689,10 +650,9 @@ package body Gnoga.Server.Connection is
    begin
       if On_Post_Event /= null and Status.Kind = File then
          for i in 1 .. Client.Get_CGI_Size loop
-            Parameters.Insert (Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Key (i),
-                                 Substitution_Character),
-                               Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Value (i),
-                                 Substitution_Character));
+            Parameters.Insert
+              (Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Key (i), Substitution_Character),
+               Strings_Edit.UTF8.Handling.To_String (Client.Get_CGI_Value (i), Substitution_Character));
          end loop;
 
          On_Post_Event (Status.File & Status.Query, Parameters);
@@ -703,25 +663,25 @@ package body Gnoga.Server.Connection is
    -- Body_Received --
    -------------------
 
-   overriding
-   procedure Body_Received  (Client  : in out Gnoga_HTTP_Client;
-                             Content : in out Ada.Streams.Root_Stream_Type'Class)
+   overriding procedure Body_Received
+     (Client  : in out Gnoga_HTTP_Client;
+      Content : in out Ada.Streams.Root_Stream_Type'Class)
    is
       pragma Unreferenced (Content);
       Status       : Status_Line renames Get_Status_Line (Client);
-      Disposition  : constant String := Client.Get_Multipart_Header (Content_Disposition_Header);
-      Field_ID     : constant String := "name=""";
+      Disposition  : constant String  := Client.Get_Multipart_Header (Content_Disposition_Header);
+      Field_ID     : constant String  := "name=""";
       n            : constant Natural := Ada.Strings.Fixed.Index (Disposition, Field_ID);
       Eq           : constant Natural := Ada.Strings.Fixed.Index (Disposition, """", n + Field_ID'Length);
-      Field_Name   : constant String := Disposition (n + Field_ID'Length .. Eq - 1);
-      Content_Type : constant String :=
-        Client.Get_Multipart_Header (Content_Type_Header);
+      Field_Name   : constant String  := Disposition (n + Field_ID'Length .. Eq - 1);
+      Content_Type : constant String  := Client.Get_Multipart_Header (Content_Type_Header);
 
       Parameters : Gnoga.Types.Data_Map_Type;
    begin
       if On_Post_Event /= null and Status.Kind = File and Content_Type = "" then
-         Parameters.Insert (Strings_Edit.UTF8.Handling.To_String (Field_Name, Substitution_Character),
-                            Strings_Edit.UTF8.Handling.To_String (Client.Content.Text.Get, Substitution_Character));
+         Parameters.Insert
+           (Strings_Edit.UTF8.Handling.To_String (Field_Name, Substitution_Character),
+            Strings_Edit.UTF8.Handling.To_String (Client.Content.Text.Get, Substitution_Character));
          On_Post_Event (Status.File & Status.Query, Parameters);
       end if;
    end Body_Received;
@@ -730,8 +690,7 @@ package body Gnoga.Server.Connection is
    -- Do_Post --
    -------------
 
-   overriding
-   procedure Do_Body (Client : in out Gnoga_HTTP_Client) is
+   overriding procedure Do_Body (Client : in out Gnoga_HTTP_Client) is
       use Ada.Strings.Fixed;
       use Ada.Strings.Unbounded;
       use Ada.Streams.Stream_IO;
@@ -740,10 +699,8 @@ package body Gnoga.Server.Connection is
 
       Param_List : Unbounded_String;
 
-      Content_Type : constant String :=
-        Client.Get_Header (Content_Type_Header);
-      Disposition  : constant String := Client.Get_Multipart_Header
-        (Content_Disposition_Header);
+      Content_Type : constant String := Client.Get_Header (Content_Type_Header);
+      Disposition  : constant String := Client.Get_Multipart_Header (Content_Disposition_Header);
    begin
       --  Gnoga.Log ("Content_Type: " & Content_Type & ", Disposition: " & Disposition);
       if On_Post_Request_Event /= null then
@@ -755,7 +712,7 @@ package body Gnoga.Server.Connection is
       end if;
 
       if Index (Content_Type, "multipart/form-data") = Content_Type'First then
-         if Index (Disposition, "form-data") = Disposition'First  then
+         if Index (Disposition, "form-data") = Disposition'First then
             declare
                Field_ID : constant String := "name=""";
                File_ID  : constant String := "filename=""";
@@ -765,41 +722,32 @@ package body Gnoga.Server.Connection is
             begin
                if n /= 0 then
                   declare
-                     Eq : constant Natural := Index
-                       (Disposition, """", n + Field_ID'Length);
-                     Field_Name : constant String := Disposition
-                       (n + Field_ID'Length .. Eq - 1);
+                     Eq         : constant Natural := Index (Disposition, """", n + Field_ID'Length);
+                     Field_Name : constant String  := Disposition (n + Field_ID'Length .. Eq - 1);
                   begin
                      if Index (Strings_Edit.UTF8.Handling.To_UTF8 (To_String (Param_List)), Field_Name) > 0 then
                         if f /= 0 then
                            declare
-                              Eq : constant Natural := Index
-                                (Disposition, """", f + File_ID'Length);
-                              File_Name : constant String := Disposition
-                                (f + File_ID'Length .. Eq - 1);
+                              Eq        : constant Natural := Index (Disposition, """", f + File_ID'Length);
+                              File_Name : constant String  := Disposition (f + File_ID'Length .. Eq - 1);
                            begin
                               if On_Post_File_Event = null then
-                                 Gnoga.Log ("Attempt to upload file without" &
-                                              " an On_Post_File_Event set");
+                                 Gnoga.Log ("Attempt to upload file without" & " an On_Post_File_Event set");
                               else
                                  if Is_Open (Client.Content.FS) then
                                     Close (Client.Content.FS);
                                  end if;
 
-                                 Create (Client.Content.FS,
-                                         Out_File,
-                                         Gnoga.Server.Upload_Directory &
-                                           File_Name & ".tmp",
-                                         "Text_Translation=No");
+                                 Create
+                                   (Client.Content.FS, Out_File, Gnoga.Server.Upload_Directory & File_Name & ".tmp",
+                                    "Text_Translation=No");
 
-                                 Receive_Body
-                                   (Client, Stream (Client.Content.FS));
+                                 Receive_Body (Client, Stream (Client.Content.FS));
 
-                                 On_Post_File_Event (Status.File & Status.Query,
-                                                     Strings_Edit.UTF8.Handling.To_String
-                                                       (File_Name, Substitution_Character),
-                                                     Strings_Edit.UTF8.Handling.To_String
-                                                       (File_Name, Substitution_Character) & ".tmp");
+                                 On_Post_File_Event
+                                   (Status.File & Status.Query,
+                                    Strings_Edit.UTF8.Handling.To_String (File_Name, Substitution_Character),
+                                    Strings_Edit.UTF8.Handling.To_String (File_Name, Substitution_Character) & ".tmp");
                               end if;
                            end;
                         else
@@ -822,8 +770,7 @@ package body Gnoga.Server.Connection is
    -- Do_Head --
    -------------
 
-   overriding
-   procedure Do_Head (Client : in out Gnoga_HTTP_Client) is
+   overriding procedure Do_Head (Client : in out Gnoga_HTTP_Client) is
    begin
       Do_Get_Head (Client, False);
    end Do_Head;
@@ -836,10 +783,11 @@ package body Gnoga.Server.Connection is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Host    : in String  := "";
-                         Port    : in Integer := 8080;
-                         Boot    : in String  := "boot.html";
-                         Verbose : in Boolean := True)
+   procedure Initialize
+     (Host    : in String  := "";
+      Port    : in Integer := 8_080;
+      Boot    : in String  := "boot.html";
+      Verbose : in Boolean := True)
    is
    begin
       Verbose_Output := Verbose;
@@ -861,13 +809,11 @@ package body Gnoga.Server.Connection is
 
          if not Secure_Only then
             Write_To_Console ("Boot file        :" & Boot);
-            Write_To_Console ("HTTP listen on   :" & Host & ":" &
-                                Left_Trim (Server_Port'Img));
+            Write_To_Console ("HTTP listen on   :" & Host & ":" & Left_Trim (Server_Port'Img));
          end if;
 
          if Secure_Server then
-            Write_To_Console ("HTTPS listen on  :" & Host & ":" &
-                                Left_Trim (Secure_Port'Img));
+            Write_To_Console ("HTTPS listen on  :" & Host & ":" & Left_Trim (Secure_Port'Img));
          end if;
       end if;
 
@@ -922,8 +868,7 @@ package body Gnoga.Server.Connection is
 
    type Connection_Holder_Access is access all Connection_Holder_Type;
 
-   package Connection_Holder_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Unique_ID, Connection_Holder_Access);
+   package Connection_Holder_Maps is new Ada.Containers.Ordered_Maps (Gnoga.Types.Unique_ID, Connection_Holder_Access);
 
    package Connection_Data_Maps is new Ada.Containers.Ordered_Maps
      (Gnoga.Types.Unique_ID, Gnoga.Types.Pointer_to_Connection_Data_Class);
@@ -936,36 +881,35 @@ package body Gnoga.Server.Connection is
 
    type Event_Task_Access is access all Event_Task_Type;
 
-   procedure Free_Event_Task is
-        new Ada.Unchecked_Deallocation (Event_Task_Type,
-                                        Event_Task_Access);
+   procedure Free_Event_Task is new Ada.Unchecked_Deallocation (Event_Task_Type, Event_Task_Access);
 
-   package Event_Task_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Unique_ID, Event_Task_Access);
+   package Event_Task_Maps is new Ada.Containers.Ordered_Maps (Gnoga.Types.Unique_ID, Event_Task_Access);
 
    ------------------------
    -- Connection Manager --
    ------------------------
 
-   package Socket_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Connection_ID, Socket_Type);
+   package Socket_Maps is new Ada.Containers.Ordered_Maps (Gnoga.Types.Connection_ID, Socket_Type);
    --  Socket Maps are used for the Connection Manager to map connection IDs
    --  to web sockets.
 
    protected Connection_Manager is
-      procedure Add_Connection (Socket : in  Socket_Type;
-                                New_ID : out Gnoga.Types.Connection_ID);
+      procedure Add_Connection
+        (Socket : in     Socket_Type;
+         New_ID :    out Gnoga.Types.Connection_ID);
       --  Adds Socket to managed Connections and generates a New_ID.
 
       procedure Start_Connection (New_ID : in Gnoga.Types.Connection_ID);
       --  Start event task on connection
 
-      procedure Swap_Connection (New_ID : in Gnoga.Types.Connection_ID;
-                                 Old_ID : in Gnoga.Types.Connection_ID);
+      procedure Swap_Connection
+        (New_ID : in Gnoga.Types.Connection_ID;
+         Old_ID : in Gnoga.Types.Connection_ID);
       --  Reconnect old connection
 
-      procedure Add_Connection_Holder (ID     : in Gnoga.Types.Connection_ID;
-                                       Holder : in Connection_Holder_Access);
+      procedure Add_Connection_Holder
+        (ID     : in Gnoga.Types.Connection_ID;
+         Holder : in Connection_Holder_Access);
       --  Adds a connection holder to the connection
       --  Can only be one at any given time.
 
@@ -989,7 +933,9 @@ package body Gnoga.Server.Connection is
       procedure Finalize_Connection (ID : in Gnoga.Types.Connection_ID);
       --  Mark Connection with ID for deletion.
 
-      function Valid (ID : in Gnoga.Types.Connection_ID) return Boolean;
+      function Valid
+        (ID : in Gnoga.Types.Connection_ID)
+         return Boolean;
       --  Return True if ID is in connection map.
 
       procedure First (ID : out Gnoga.Types.Connection_ID);
@@ -998,13 +944,15 @@ package body Gnoga.Server.Connection is
       procedure Next (ID : out Gnoga.Types.Connection_ID);
       --  Return next ID if ID is in connection map else 0.
 
-      function Connection_Socket (ID : in Gnoga.Types.Connection_ID)
-                                  return Socket_Type;
+      function Connection_Socket
+        (ID : in Gnoga.Types.Connection_ID)
+         return Socket_Type;
       --  Return the Socket_Type associated with ID
       --  Raises Connection_Error if ID is not Valid
 
-      function Find_Connection_ID (Socket : Socket_Type)
-                                  return Gnoga.Types.Connection_ID;
+      function Find_Connection_ID
+        (Socket : Socket_Type)
+         return Gnoga.Types.Connection_ID;
       --  Find the Connection_ID related to Socket.
 
       procedure Delete_All_Connections;
@@ -1019,57 +967,54 @@ package body Gnoga.Server.Connection is
       Event_Task_Map        : Event_Task_Maps.Map;
       Socket_Map            : Socket_Maps.Map;
       Shadow_Socket_Map     : Socket_Maps.Map;
-      Current_Socket        : Socket_Maps.Cursor := Socket_Maps.No_Element;
+      Current_Socket        : Socket_Maps.Cursor        := Socket_Maps.No_Element;
    end Connection_Manager;
 
    protected body Connection_Manager is
-      procedure Add_Connection (Socket : in  Socket_Type;
-                                New_ID : out Gnoga.Types.Connection_ID)
+      procedure Add_Connection
+        (Socket : in     Socket_Type;
+         New_ID :    out Gnoga.Types.Connection_ID)
       is
       begin
          Socket_Count := Socket_Count + 1;
-         New_ID := Socket_Count;
+         New_ID       := Socket_Count;
          Socket_Map.Insert (New_ID, Socket);
       end Add_Connection;
 
-      procedure Start_Connection (New_ID : in Gnoga.Types.Connection_ID)
-      is
+      procedure Start_Connection (New_ID : in Gnoga.Types.Connection_ID) is
       begin
          Event_Task_Map.Insert (New_ID, new Event_Task_Type (New_ID));
       end Start_Connection;
 
-      procedure Swap_Connection (New_ID : in Gnoga.Types.Connection_ID;
-                                 Old_ID : in Gnoga.Types.Connection_ID)
+      procedure Swap_Connection
+        (New_ID : in Gnoga.Types.Connection_ID;
+         Old_ID : in Gnoga.Types.Connection_ID)
       is
       begin
          if Socket_Map.Contains (Old_ID) then
             declare
-               Old_Socket : constant Socket_Type :=
-                 Socket_Map.Element (Old_ID);
-               New_Socket : constant Socket_Type :=
-                 Socket_Map.Element (New_ID);
+               Old_Socket : constant Socket_Type := Socket_Map.Element (Old_ID);
+               New_Socket : constant Socket_Type := Socket_Map.Element (New_ID);
             begin
-               New_Socket.Content.Connection_Path :=
-                 Old_Socket.Content.Connection_Path;
+               New_Socket.Content.Connection_Path := Old_Socket.Content.Connection_Path;
                Socket_Map.Replace (Old_ID, New_Socket);
                Socket_Map.Replace (New_ID, Old_Socket);
                Old_Socket.Content.Finalized := True;
             end;
          else
-            raise Connection_Error with
-              "Old connection " & Old_ID'Img & " already gone";
+            raise Connection_Error with "Old connection " & Old_ID'Img & " already gone";
          end if;
       end Swap_Connection;
 
-      procedure Add_Connection_Holder (ID     : in Gnoga.Types.Connection_ID;
-                                       Holder : in Connection_Holder_Access)
+      procedure Add_Connection_Holder
+        (ID     : in Gnoga.Types.Connection_ID;
+         Holder : in Connection_Holder_Access)
       is
       begin
          Connection_Holder_Map.Insert (ID, Holder);
       end Add_Connection_Holder;
 
-      procedure Delete_Connection_Holder (ID : in Gnoga.Types.Connection_ID)
-      is
+      procedure Delete_Connection_Holder (ID : in Gnoga.Types.Connection_ID) is
       begin
          if Connection_Holder_Map.Contains (ID) then
             Connection_Holder_Map.Delete (ID);
@@ -1116,7 +1061,7 @@ package body Gnoga.Server.Connection is
 
             if Event_Task_Map.Contains (ID) then
                declare
-                  E  : Event_Task_Access := Event_Task_Map.Element (ID);
+                  E : Event_Task_Access := Event_Task_Map.Element (ID);
                begin
                   Free_Event_Task (E);
                   Event_Task_Map.Delete (ID);
@@ -1125,8 +1070,8 @@ package body Gnoga.Server.Connection is
          end if;
       exception
          when E : others =>
-         Log ("Delete_Connection " & ID'Img & " error.");
-         Log (Ada.Exceptions.Exception_Information (E));
+            Log ("Delete_Connection " & ID'Img & " error.");
+            Log (Ada.Exceptions.Exception_Information (E));
       end Delete_Connection;
 
       procedure Finalize_Connection (ID : in Gnoga.Types.Connection_ID) is
@@ -1140,7 +1085,10 @@ package body Gnoga.Server.Connection is
          end if;
       end Finalize_Connection;
 
-      function Valid (ID : in Gnoga.Types.Connection_ID) return Boolean is
+      function Valid
+        (ID : in Gnoga.Types.Connection_ID)
+         return Boolean
+      is
       begin
          return Socket_Map.Contains (ID);
       end Valid;
@@ -1149,7 +1097,7 @@ package body Gnoga.Server.Connection is
          use type Socket_Maps.Cursor;
       begin
          Shadow_Socket_Map := Socket_Map;
-         Current_Socket := Shadow_Socket_Map.First;
+         Current_Socket    := Shadow_Socket_Map.First;
          if Current_Socket /= Socket_Maps.No_Element then
             ID := Socket_Maps.Key (Current_Socket);
          else
@@ -1168,24 +1116,26 @@ package body Gnoga.Server.Connection is
          end if;
       end Next;
 
-      function Connection_Socket (ID : in Gnoga.Types.Connection_ID)
-                                  return Socket_Type
+      function Connection_Socket
+        (ID : in Gnoga.Types.Connection_ID)
+         return Socket_Type
       is
          use type Socket_Maps.Cursor;
          Connection_Cursor : constant Socket_Maps.Cursor := Socket_Map.Find (ID);
       begin
          if Connection_Cursor = Socket_Maps.No_Element then
             Log ("Error Connection_Socket - " & ID'Img & " not found in connection map. ");
-            raise Connection_Error with
-              "Connection ID" & ID'Img & " not found in connection map. " &
+            raise Connection_Error
+              with "Connection ID" & ID'Img & " not found in connection map. " &
               "Connection most likely was previously closed.";
          else
             return Socket_Maps.Element (Connection_Cursor);
          end if;
       end Connection_Socket;
 
-      function Find_Connection_ID (Socket : Socket_Type)
-                               return Gnoga.Types.Connection_ID
+      function Find_Connection_ID
+        (Socket : Socket_Type)
+         return Gnoga.Types.Connection_ID
       is
          use type Socket_Maps.Cursor;
 
@@ -1227,13 +1177,12 @@ package body Gnoga.Server.Connection is
 
    task body Event_Task_Type is
       Connection_Holder : aliased Connection_Holder_Type;
-      ID : Gnoga.Types.Connection_ID;
+      ID                : Gnoga.Types.Connection_ID;
    begin
       ID := TID;
       --  Insure that TID is retained even if task is "deleted"
 
-      Connection_Manager.Add_Connection_Holder
-        (ID, Connection_Holder'Unchecked_Access);
+      Connection_Manager.Add_Connection_Holder (ID, Connection_Holder'Unchecked_Access);
 
       begin
          delay 0.3;
@@ -1366,23 +1315,25 @@ package body Gnoga.Server.Connection is
 
    No_Object : exception;
 
-   function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
-                 return Boolean;
+   function "="
+     (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
+      return Boolean;
    --  Properly identify equivalent objects
 
-   function "=" (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
-                 return Boolean
+   function "="
+     (Left, Right : Gnoga.Gui.Base.Pointer_To_Base_Class)
+      return Boolean
    is
    begin
       return Left.Unique_ID = Right.Unique_ID;
    end "=";
 
-   package Object_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Unique_ID, Gnoga.Gui.Base.Pointer_To_Base_Class);
+   package Object_Maps is new Ada.Containers.Ordered_Maps (Gnoga.Types.Unique_ID, Gnoga.Gui.Base.Pointer_To_Base_Class);
 
    protected Object_Manager is
-      function Get_Object (ID : Gnoga.Types.Unique_ID)
-                           return Gnoga.Gui.Base.Pointer_To_Base_Class;
+      function Get_Object
+        (ID : Gnoga.Types.Unique_ID)
+         return Gnoga.Gui.Base.Pointer_To_Base_Class;
       procedure Insert
         (ID     : in Gnoga.Types.Unique_ID;
          Object : in Gnoga.Gui.Base.Pointer_To_Base_Class);
@@ -1393,8 +1344,9 @@ package body Gnoga.Server.Connection is
    end Object_Manager;
 
    protected body Object_Manager is
-      function Get_Object (ID : Gnoga.Types.Unique_ID)
-                           return Gnoga.Gui.Base.Pointer_To_Base_Class
+      function Get_Object
+        (ID : Gnoga.Types.Unique_ID)
+         return Gnoga.Gui.Base.Pointer_To_Base_Class
       is
       begin
          if Object_Map.Contains (ID) then
@@ -1409,8 +1361,7 @@ package body Gnoga.Server.Connection is
          Object : in Gnoga.Gui.Base.Pointer_To_Base_Class)
       is
       begin
-         Object_Map.Insert (Key      => ID,
-                            New_Item => Object);
+         Object_Map.Insert (Key => ID, New_Item => Object);
       end Insert;
 
       procedure Delete (ID : Gnoga.Types.Unique_ID) is
@@ -1425,9 +1376,9 @@ package body Gnoga.Server.Connection is
    -- WebSocket_Open --
    --------------------
 
-   overriding
-   function WebSocket_Open (Client : access Gnoga_HTTP_Client)
-                            return WebSocket_Accept
+   overriding function WebSocket_Open
+     (Client : access Gnoga_HTTP_Client)
+      return WebSocket_Accept
    is
 
       Status : Status_Line renames Get_Status_Line (Client.all);
@@ -1439,31 +1390,22 @@ package body Gnoga.Server.Connection is
          declare
             Reason : constant String := "Invalid URL";
          begin
-            return (Accepted => False,
-                    Length   => Reason'Length,
-                    Code     => 400,
-                    Reason   => Reason);
+            return (Accepted => False, Length => Reason'Length, Code => 400, Reason => Reason);
          end;
       end if;
 
       Client.Content.Connection_Type := WebSocket;
 
       if On_Connect_Event /= null then
-         return (Accepted  => True,
-                 Length    => 0,
-                 Size      => Max_Websocket_Message,
-                 Duplex    => True,
-                 Chunked   => True,
-                 Protocols => "");
+         return
+           (Accepted  => True, Length => 0, Size => Max_Websocket_Message, Duplex => True, Chunked => True,
+            Protocols => "");
       else
          Gnoga.Log ("No Connection event set.");
          declare
             Reason : constant String := "No connection event set";
          begin
-            return (Accepted => False,
-                    Length   => Reason'Length,
-                    Code     => 400,
-                    Reason   => Reason);
+            return (Accepted => False, Length => Reason'Length, Code => 400, Reason => Reason);
          end;
       end if;
    end WebSocket_Open;
@@ -1472,15 +1414,13 @@ package body Gnoga.Server.Connection is
    -- WebSocket_Initialize --
    --------------------------
 
-   overriding
-   procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client)
-   is
+   overriding procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client) is
       Status : Status_Line renames Get_Status_Line (Client);
 
-      F      : constant String := Status.Query;
-      S      : constant Socket_Type := Client'Unchecked_Access;
+      F : constant String      := Status.Query;
+      S : constant Socket_Type := Client'Unchecked_Access;
 
-      ID     : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+      ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
 
       function Get_Old_ID return String;
 
@@ -1500,18 +1440,15 @@ package body Gnoga.Server.Connection is
 
       Old_ID : constant String := Get_Old_ID;
    begin
-      Connection_Manager.Add_Connection (Socket => S,
-                                         New_ID => ID);
+      Connection_Manager.Add_Connection (Socket => S, New_ID => ID);
 
       if Old_ID /= "" and Old_ID /= "undefined" then
          if Verbose_Output then
-            Gnoga.Log ("Swapping websocket connection " &
-                         ID'Img & " <=> " & Old_ID);
+            Gnoga.Log ("Swapping websocket connection " & ID'Img & " <=> " & Old_ID);
          end if;
 
          begin
-            Connection_Manager.Swap_Connection
-              (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
+            Connection_Manager.Swap_Connection (ID, Gnoga.Types.Connection_ID'Value (Old_ID));
          exception
             when E : Connection_Error =>
                Gnoga.Log ("Connection error - " & ID'Img);
@@ -1537,24 +1474,22 @@ package body Gnoga.Server.Connection is
    -- WebSocket_Closed --
    ----------------------
 
-   overriding
-   procedure WebSocket_Closed (Client  : in out Gnoga_HTTP_Client;
-                               Status  : in     WebSocket_Status;
-                               Message : in     String)
+   overriding procedure WebSocket_Closed
+     (Client  : in out Gnoga_HTTP_Client;
+      Status  : in     WebSocket_Status;
+      Message : in     String)
    is
       pragma Unreferenced (Status);
-      S  : constant Socket_Type := Client'Unchecked_Access;
+      S : constant Socket_Type := Client'Unchecked_Access;
 
-      ID : constant Gnoga.Types.Connection_ID :=
-             Connection_Manager.Find_Connection_ID (S);
+      ID : constant Gnoga.Types.Connection_ID := Connection_Manager.Find_Connection_ID (S);
    begin
       if ID /= Gnoga.Types.No_Connection then
          S.Content.Finalized := True;
 
          if Verbose_Output then
             if Message /= "" then
-               Gnoga.Log ("Websocket connection closed - ID" & ID'Img &
-                            " with message : " & Message);
+               Gnoga.Log ("Websocket connection closed - ID" & ID'Img & " with message : " & Message);
             else
                Gnoga.Log ("Websocket connection closed - ID" & ID'Img);
             end if;
@@ -1568,21 +1503,17 @@ package body Gnoga.Server.Connection is
    -- WebSocket_Error --
    ---------------------
 
-   overriding
-   procedure WebSocket_Error
+   overriding procedure WebSocket_Error
      (Client : in out Gnoga_HTTP_Client;
       Error  : in     Ada.Exceptions.Exception_Occurrence)
    is
-      S  : constant Socket_Type := Client'Unchecked_Access;
+      S : constant Socket_Type := Client'Unchecked_Access;
 
-      ID : constant Gnoga.Types.Connection_ID :=
-             Connection_Manager.Find_Connection_ID (S);
+      ID : constant Gnoga.Types.Connection_ID := Connection_Manager.Find_Connection_ID (S);
    begin
       S.Content.Finalized := True;
 
-      Gnoga.Log ("Connection error ID" & ID'Img &
-                   " with message : " &
-                   Ada.Exceptions.Exception_Information (Error));
+      Gnoga.Log ("Connection error ID" & ID'Img & " with message : " & Ada.Exceptions.Exception_Information (Error));
       --  If not reconnected by next watchdog ping connection will be deleted.
    end WebSocket_Error;
 
@@ -1592,12 +1523,11 @@ package body Gnoga.Server.Connection is
 
    procedure Start_Long_Polling_Connect
      (Client : in out Gnoga_HTTP_Client;
-      ID     : out    Gnoga.Types.Connection_ID)
+      ID     :    out Gnoga.Types.Connection_ID)
    is
-      S  : constant Socket_Type := Client'Unchecked_Access;
+      S : constant Socket_Type := Client'Unchecked_Access;
    begin
-      Connection_Manager.Add_Connection (Socket => S,
-                                         New_ID => ID);
+      Connection_Manager.Add_Connection (Socket => S, New_ID => ID);
       Connection_Manager.Start_Connection (ID);
 
       if Verbose_Output then
@@ -1629,7 +1559,7 @@ package body Gnoga.Server.Connection is
 
       procedure Release (Result : in String) is
       begin
-         Connected := False;
+         Connected     := False;
          Script_Result := Ada.Strings.Unbounded.To_Unbounded_String (Result);
       end Release;
 
@@ -1641,20 +1571,21 @@ package body Gnoga.Server.Connection is
 
    type Script_Holder_Access is access all Script_Holder_Type;
 
-   package Script_Holder_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Unique_ID, Script_Holder_Access);
+   package Script_Holder_Maps is new Ada.Containers.Ordered_Maps (Gnoga.Types.Unique_ID, Script_Holder_Access);
 
    protected type Script_Manager_Type is
-      procedure Add_Script_Holder (ID     : out Gnoga.Types.Unique_ID;
-                                   Holder : in  Script_Holder_Access);
+      procedure Add_Script_Holder
+        (ID     :    out Gnoga.Types.Unique_ID;
+         Holder : in     Script_Holder_Access);
       --  Adds a script holder to wait for script execution to end
       --  and return results;
 
       procedure Delete_Script_Holder (ID : in Gnoga.Types.Unique_ID);
       --  Delete script holder
 
-      procedure Release_Hold (ID     : in Gnoga.Types.Unique_ID;
-                              Result : in String);
+      procedure Release_Hold
+        (ID     : in Gnoga.Types.Unique_ID;
+         Result : in String);
       --  Delete connection hold with ID.
    private
       Script_Holder_Map : Script_Holder_Maps.Map;
@@ -1662,8 +1593,9 @@ package body Gnoga.Server.Connection is
    end Script_Manager_Type;
 
    protected body Script_Manager_Type is
-      procedure Add_Script_Holder (ID     : out Gnoga.Types.Connection_ID;
-                                   Holder : in Script_Holder_Access)
+      procedure Add_Script_Holder
+        (ID     :    out Gnoga.Types.Connection_ID;
+         Holder : in     Script_Holder_Access)
       is
       begin
          Script_ID := Script_ID + 1;
@@ -1677,8 +1609,9 @@ package body Gnoga.Server.Connection is
          Script_Holder_Map.Delete (ID);
       end Delete_Script_Holder;
 
-      procedure Release_Hold (ID     : in Gnoga.Types.Unique_ID;
-                              Result : in String)
+      procedure Release_Hold
+        (ID     : in Gnoga.Types.Unique_ID;
+         Result : in String)
       is
       begin
          if Script_Holder_Map.Contains (ID) then
@@ -1693,9 +1626,9 @@ package body Gnoga.Server.Connection is
    -- WebSocket_Received_Part --
    -----------------------------
 
-   overriding
-   procedure WebSocket_Received_Part (Client  : in out Gnoga_HTTP_Client;
-                                      Message : in     String)
+   overriding procedure WebSocket_Received_Part
+     (Client  : in out Gnoga_HTTP_Client;
+      Message : in     String)
    is
    begin
       Client.Content.Input_Overflow.Add (Message);
@@ -1705,12 +1638,11 @@ package body Gnoga.Server.Connection is
    -- WebSocket_Received --
    ------------------------
 
-   overriding
-   procedure WebSocket_Received (Client  : in out Gnoga_HTTP_Client;
-                                 Message : in     String)
+   overriding procedure WebSocket_Received
+     (Client  : in out Gnoga_HTTP_Client;
+      Message : in     String)
    is
-      Full_Message : constant String :=
-        Client.Content.Input_Overflow.Get & Message;
+      Full_Message : constant String := Client.Content.Input_Overflow.Get & Message;
    begin
       Client.Content.Input_Overflow.Clear;
 
@@ -1718,8 +1650,7 @@ package body Gnoga.Server.Connection is
          return;
       end if;
 
-      Dispatch_Message (Strings_Edit.UTF8.Handling.To_String (Full_Message,
-                        Substitution_Character));
+      Dispatch_Message (Strings_Edit.UTF8.Handling.To_String (Full_Message, Substitution_Character));
 
    exception
       when E : others =>
@@ -1731,28 +1662,27 @@ package body Gnoga.Server.Connection is
    -- Dispatch_Message --
    ----------------------
 
-   task type Dispatch_Task_Type
-     (Object : Gnoga.Gui.Base.Pointer_To_Base_Class)
-   is
-      entry Start (Event : in String;
-                   Data  : in String;
-                   ID    : in Gnoga.Types.Unique_ID);
+   task type Dispatch_Task_Type (Object : Gnoga.Gui.Base.Pointer_To_Base_Class) is
+      entry Start
+        (Event : in String;
+         Data  : in String;
+         ID    : in Gnoga.Types.Unique_ID);
    end Dispatch_Task_Type;
 
    type Dispatch_Task_Access is access all Dispatch_Task_Type;
 
-   procedure Free_Dispatch_Task is
-        new Ada.Unchecked_Deallocation (Dispatch_Task_Type,
-                                        Dispatch_Task_Access);
+   procedure Free_Dispatch_Task is new Ada.Unchecked_Deallocation (Dispatch_Task_Type, Dispatch_Task_Access);
 
-   package Dispatch_Task_Maps is new Ada.Containers.Ordered_Maps
-     (Gnoga.Types.Unique_ID, Dispatch_Task_Access);
+   package Dispatch_Task_Maps is new Ada.Containers.Ordered_Maps (Gnoga.Types.Unique_ID, Dispatch_Task_Access);
 
    protected Dispatch_Task_Objects is
-      procedure Add_Dispatch_Task (ID            : in Gnoga.Types.Unique_ID;
-                                   Dispatch_Task : in Dispatch_Task_Access);
+      procedure Add_Dispatch_Task
+        (ID            : in Gnoga.Types.Unique_ID;
+         Dispatch_Task : in Dispatch_Task_Access);
 
-      function Object (ID : Gnoga.Types.Unique_ID) return Dispatch_Task_Access;
+      function Object
+        (ID : Gnoga.Types.Unique_ID)
+         return Dispatch_Task_Access;
 
       procedure Delete_Dispatch_Task (ID : in Gnoga.Types.Unique_ID);
    private
@@ -1760,21 +1690,23 @@ package body Gnoga.Server.Connection is
    end Dispatch_Task_Objects;
 
    protected body Dispatch_Task_Objects is
-      procedure Add_Dispatch_Task (ID            : in Gnoga.Types.Unique_ID;
-                                   Dispatch_Task : in Dispatch_Task_Access)
+      procedure Add_Dispatch_Task
+        (ID            : in Gnoga.Types.Unique_ID;
+         Dispatch_Task : in Dispatch_Task_Access)
       is
       begin
          Dispatch_Task_Map.Insert (ID, Dispatch_Task);
       end Add_Dispatch_Task;
 
-      function Object (ID : Gnoga.Types.Unique_ID) return Dispatch_Task_Access
+      function Object
+        (ID : Gnoga.Types.Unique_ID)
+         return Dispatch_Task_Access
       is
       begin
          return Dispatch_Task_Map.Element (ID);
       end Object;
 
-      procedure Delete_Dispatch_Task (ID : in Gnoga.Types.Unique_ID)
-      is
+      procedure Delete_Dispatch_Task (ID : in Gnoga.Types.Unique_ID) is
          Dummy_T : Dispatch_Task_Access := Dispatch_Task_Map.Element (ID);
       begin
          Free_Dispatch_Task (Dummy_T);
@@ -1789,10 +1721,10 @@ package body Gnoga.Server.Connection is
       D : Ada.Strings.Unbounded.Unbounded_String;
       I : Gnoga.Types.Unique_ID;
    begin
-      accept Start (Event : in String;
-                    Data  : in String;
-                    ID    : in Gnoga.Types.Unique_ID)
-      do
+      accept Start
+        (Event : in String;
+         Data  : in String;
+         ID    : in Gnoga.Types.Unique_ID) do
          E := Ada.Strings.Unbounded.To_Unbounded_String (Event);
          D := Ada.Strings.Unbounded.To_Unbounded_String (Data);
          I := ID;
@@ -1803,8 +1735,8 @@ package body Gnoga.Server.Connection is
       declare
          Continue : Boolean;
 
-         Event    : constant String  := Ada.Strings.Unbounded.To_String (E);
-         Data     : constant String  := Ada.Strings.Unbounded.To_String (D);
+         Event : constant String := Ada.Strings.Unbounded.To_String (E);
+         Data  : constant String := Ada.Strings.Unbounded.To_String (D);
       begin
          Object.Fire_On_Message (Event, Data, Continue);
 
@@ -1827,41 +1759,31 @@ package body Gnoga.Server.Connection is
    begin
       if Message (Message'First) = 'S' then
          declare
-            P1 : constant Integer := Index (Source  => Message,
-                                   Pattern => "|");
+            P1 : constant Integer := Index (Source => Message, Pattern => "|");
 
-            UID    : constant String :=
-              Message (Message'First + 2 .. (P1 - 1));
+            UID    : constant String := Message (Message'First + 2 .. (P1 - 1));
             Result : constant String := Message ((P1 + 1) .. Message'Last);
          begin
-            Script_Manager.Release_Hold (Gnoga.Types.Unique_ID'Value (UID),
-                                         Result);
+            Script_Manager.Release_Hold (Gnoga.Types.Unique_ID'Value (UID), Result);
          end;
       else
          declare
-            P1 : constant Integer := Index (Source  => Message,
-                                   Pattern => "|");
+            P1 : constant Integer := Index (Source => Message, Pattern => "|");
 
-            P2 : constant Integer := Index (Source  => Message,
-                                   Pattern => "|",
-                                   From    => P1 + 1);
+            P2 : constant Integer := Index (Source => Message, Pattern => "|", From => P1 + 1);
 
-            UID        : constant String :=
-              Message (Message'First .. (P1 - 1));
+            UID        : constant String := Message (Message'First .. (P1 - 1));
             Event      : constant String := Message ((P1 + 1) .. (P2 - 1));
             Event_Data : constant String := Message ((P2 + 1) .. Message'Last);
 
-            Object : constant Gnoga.Gui.Base.Pointer_To_Base_Class :=
-                       Object_Manager.Get_Object (Integer'Value (UID));
+            Object : constant Gnoga.Gui.Base.Pointer_To_Base_Class := Object_Manager.Get_Object (Integer'Value (UID));
 
             New_ID : Gnoga.Types.Unique_ID;
          begin
             New_Unique_ID (New_ID);
 
-            Dispatch_Task_Objects.Add_Dispatch_Task
-              (New_ID, new Dispatch_Task_Type (Object));
-            Dispatch_Task_Objects.Object (New_ID).Start
-              (Event, Event_Data, New_ID);
+            Dispatch_Task_Objects.Add_Dispatch_Task (New_ID, new Dispatch_Task_Type (Object));
+            Dispatch_Task_Objects.Object (New_ID).Start (Event, Event_Data, New_ID);
          end;
       end if;
    exception
@@ -1911,10 +1833,9 @@ package body Gnoga.Server.Connection is
          return Ada.Strings.Unbounded.To_String (Buffer);
       end Get;
 
-      procedure Get_And_Clear (S : out Ada.Strings.Unbounded.Unbounded_String)
-      is
+      procedure Get_And_Clear (S : out Ada.Strings.Unbounded.Unbounded_String) is
       begin
-         S := Buffer;
+         S      := Buffer;
          Buffer := Ada.Strings.Unbounded.To_Unbounded_String ("");
       end Get_And_Clear;
 
@@ -1928,26 +1849,22 @@ package body Gnoga.Server.Connection is
    -- Buffer_Add --
    ----------------
 
-   function Buffer_Add (ID     : Gnoga.Types.Connection_ID;
-                        Script : String)
-                        return Boolean
+   function Buffer_Add
+     (ID     : Gnoga.Types.Connection_ID;
+      Script : String)
+      return Boolean
    is
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
       if Socket.Content.Buffer.Buffering then
-         if Socket.Content.Buffer.Length + Script'Length >=
-           Max_Buffer_Length
-         then
+         if Socket.Content.Buffer.Length + Script'Length >= Max_Buffer_Length then
             Flush_Buffer (ID);
          end if;
 
          if Socket.Content.Connection_Type = WebSocket then
-            Socket.Content.Buffer.Add (Script &
-                                         Gnoga.Server.Connection.Common.CRLF);
+            Socket.Content.Buffer.Add (Script & Gnoga.Server.Connection.Common.CRLF);
          elsif Socket.Content.Connection_Type = Long_Polling then
-            Socket.Content.Buffer.Add
-              ("<script>" & Script & "</script>");
+            Socket.Content.Buffer.Add ("<script>" & Script & "</script>");
          else
             Gnoga.Log ("Buffer_Add called on unsupported connection type.");
          end if;
@@ -1962,19 +1879,20 @@ package body Gnoga.Server.Connection is
    -- Buffer_Connection --
    -----------------------
 
-   function Buffer_Connection (ID : Gnoga.Types.Connection_ID) return Boolean
+   function Buffer_Connection
+     (ID : Gnoga.Types.Connection_ID)
+      return Boolean
    is
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
       return Socket.Content.Buffer.Buffering;
    end Buffer_Connection;
 
-   procedure Buffer_Connection (ID    : in Gnoga.Types.Connection_ID;
-                                Value : in Boolean)
+   procedure Buffer_Connection
+     (ID    : in Gnoga.Types.Connection_ID;
+      Value : in Boolean)
    is
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
       if Value = False then
          Flush_Buffer (ID);
@@ -1987,16 +1905,12 @@ package body Gnoga.Server.Connection is
    -- Flush_Buffer --
    ------------------
 
-   procedure Flush_Buffer (ID : in Gnoga.Types.Connection_ID)
-   is
+   procedure Flush_Buffer (ID : in Gnoga.Types.Connection_ID) is
       Socket : Socket_Type;
    begin
       if Connection_Manager.Valid (ID) then
-         Socket :=
-           Connection_Manager.Connection_Socket (ID);
-         if Socket.Content.Buffer.Buffering and
-           Socket.Content.Connection_Type = WebSocket
-         then
+         Socket := Connection_Manager.Connection_Socket (ID);
+         if Socket.Content.Buffer.Buffering and Socket.Content.Connection_Type = WebSocket then
             Socket.Content.Buffer.Buffering (False);
             Execute_Script (ID, Socket.Content.Buffer.Get);
             Socket.Content.Buffer.Clear;
@@ -2019,11 +1933,11 @@ package body Gnoga.Server.Connection is
    -- Buffer_Append --
    -------------------
 
-   procedure Buffer_Append (ID    : in Gnoga.Types.Connection_ID;
-                            Value : in String)
+   procedure Buffer_Append
+     (ID    : in Gnoga.Types.Connection_ID;
+      Value : in String)
    is
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
       Socket.Content.Buffer.Add (Value);
    end Buffer_Append;
@@ -2032,17 +1946,16 @@ package body Gnoga.Server.Connection is
    -- Execute_Script --
    --------------------
 
-   procedure Execute_Script (ID     : in Gnoga.Types.Connection_ID;
-                             Script : in String)
+   procedure Execute_Script
+     (ID     : in Gnoga.Types.Connection_ID;
+      Script : in String)
    is
-      UTF8_Script : constant String :=
-        Strings_Edit.UTF8.Handling.To_UTF8 (Script);
+      UTF8_Script : constant String := Strings_Edit.UTF8.Handling.To_UTF8 (Script);
 
       procedure Try_Execute;
 
       procedure Try_Execute is
-         Socket  : constant Socket_Type :=
-           Connection_Manager.Connection_Socket (ID);
+         Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
       begin
          if Socket.Content.Connection_Type = Long_Polling then
             Socket.Content.Buffer.Add ("<script>" & UTF8_Script & "</script>");
@@ -2057,13 +1970,11 @@ package body Gnoga.Server.Connection is
          when E : Ada.Text_IO.End_Error =>
             Log ("Error Try_Execute - " & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
-            raise Connection_Error with
-              "Socket Closed before execute of : " & Script;
+            raise Connection_Error with "Socket Closed before execute of : " & Script;
          when E : others =>
             Log ("Error Try_Execute - " & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
-            raise Connection_Error with
-              "Socket Error during execute of : " & Script;
+            raise Connection_Error with "Socket Error during execute of : " & Script;
       end Try_Execute;
 
    begin
@@ -2080,12 +1991,12 @@ package body Gnoga.Server.Connection is
          Try_Execute;
    end Execute_Script;
 
-   function Execute_Script (ID     : in Gnoga.Types.Connection_ID;
-                            Script : in String)
-                            return String
+   function Execute_Script
+     (ID     : in Gnoga.Types.Connection_ID;
+      Script : in String)
+      return String
    is
-      UTF8_Script : constant String :=
-        Strings_Edit.UTF8.Handling.To_UTF8 (Script);
+      UTF8_Script : constant String := Strings_Edit.UTF8.Handling.To_UTF8 (Script);
 
       function Try_Execute return String;
 
@@ -2094,23 +2005,16 @@ package body Gnoga.Server.Connection is
       begin
          declare
             Script_ID : Gnoga.Types.Unique_ID;
-            Socket    : constant Socket_Type :=
-                          Connection_Manager.Connection_Socket (ID);
+            Socket    : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
          begin
-            Script_Manager.Add_Script_Holder
-              (ID     => Script_ID,
-               Holder => Script_Holder'Unchecked_Access);
+            Script_Manager.Add_Script_Holder (ID => Script_ID, Holder => Script_Holder'Unchecked_Access);
 
             declare
-               Message : constant String := "ws.send (" &
-                           """S" & Script_ID'Img & "|""+" &
-                           "eval (""" & UTF8_Script & """)" &
-                           ");";
+               Message : constant String :=
+                 "ws.send (" & """S" & Script_ID'Img & "|""+" & "eval (""" & UTF8_Script & """)" & ");";
             begin
                if Socket.Content.Connection_Type = Long_Polling then
-                  Socket.Content.Buffer.Add ("<script>" &
-                                               Message &
-                                               "</script>");
+                  Socket.Content.Buffer.Add ("<script>" & Message & "</script>");
                   Socket.Unblock_Send;
                elsif Socket.Content.Connection_Type = WebSocket then
                   Socket.WebSocket_Send (Message);
@@ -2121,8 +2025,7 @@ package body Gnoga.Server.Connection is
 
                   Script_Manager.Delete_Script_Holder (Script_ID);
 
-                  raise Script_Error with
-                    "Timeout error, no browser response for: " & Message;
+                  raise Script_Error with "Timeout error, no browser response for: " & Message;
                then abort
                   Script_Holder.Hold;
                end select;
@@ -2140,13 +2043,11 @@ package body Gnoga.Server.Connection is
          when E : Ada.Text_IO.End_Error =>
             Log ("Error Try_Execute -" & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
-            raise Connection_Error with
-              "Socket Closed before execute of : " & Script;
+            raise Connection_Error with "Socket Closed before execute of : " & Script;
          when E : others =>
             Log ("Error Try_Execute -" & ID'Img);
             Log (Ada.Exceptions.Exception_Information (E));
-            raise Connection_Error with
-              "Socket Error during execute of : " & Script;
+            raise Connection_Error with "Socket Error during execute of : " & Script;
       end Try_Execute;
    begin
       begin
@@ -2178,13 +2079,11 @@ package body Gnoga.Server.Connection is
    ---------------------
 
    procedure Connection_Data
-     (ID   : in     Gnoga.Types.Connection_ID;
-      Data : access Gnoga.Types.Connection_Data_Type'Class)
+     (ID   : in Gnoga.Types.Connection_ID;
+      Data :    access Gnoga.Types.Connection_Data_Type'Class)
    is
    begin
-      Connection_Manager.Add_Connection_Data
-        (ID,
-         Gnoga.Types.Pointer_to_Connection_Data_Class (Data));
+      Connection_Manager.Add_Connection_Data (ID, Gnoga.Types.Pointer_to_Connection_Data_Class (Data));
    end Connection_Data;
 
    function Connection_Data
@@ -2208,11 +2107,11 @@ package body Gnoga.Server.Connection is
    -- Connection_Type --
    ---------------------
 
-   function Connection_Type (ID : Gnoga.Types.Connection_ID)
-                             return Gnoga_Connection_Type
+   function Connection_Type
+     (ID : Gnoga.Types.Connection_ID)
+      return Gnoga_Connection_Type
    is
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
    begin
       return Socket.Content.Connection_Type;
    exception
@@ -2226,13 +2125,13 @@ package body Gnoga.Server.Connection is
    -- Connection_Path --
    ---------------------
 
-   function Connection_Path (ID : Gnoga.Types.Connection_ID)
-                             return String
+   function Connection_Path
+     (ID : Gnoga.Types.Connection_ID)
+      return String
    is
       use Ada.Strings.Unbounded;
 
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
 
       S : constant String := To_String (Socket.Content.Connection_Path);
    begin
@@ -2241,9 +2140,7 @@ package body Gnoga.Server.Connection is
       else
          if S = "" then
             Socket.Content.Connection_Path :=
-              To_Unbounded_String (Left_Trim_Slashes
-                                   (Execute_Script
-                                      (ID, "window.location.pathname")));
+              To_Unbounded_String (Left_Trim_Slashes (Execute_Script (ID, "window.location.pathname")));
 
             return To_String (Socket.Content.Connection_Path);
          else
@@ -2261,11 +2158,11 @@ package body Gnoga.Server.Connection is
    -- Connection_Client_Address --
    -------------------------------
 
-   function Connection_Client_Address (ID : Gnoga.Types.Connection_ID)
-                                       return String
+   function Connection_Client_Address
+     (ID : Gnoga.Types.Connection_ID)
+      return String
    is
-      Socket : constant Socket_Type :=
-        Connection_Manager.Connection_Socket (ID);
+      Socket         : constant Socket_Type                 := Connection_Manager.Connection_Socket (ID);
       Client_Address : constant GNAT.Sockets.Sock_Addr_Type := Get_Client_Address (Socket.all);
    begin
       return GNAT.Sockets.Image (Client_Address);
@@ -2316,9 +2213,10 @@ package body Gnoga.Server.Connection is
    -- Form_Parameter --
    --------------------
 
-   function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
-                            Name : String)
-                            return String
+   function Form_Parameter
+     (ID   : Gnoga.Types.Connection_ID;
+      Name : String)
+      return String
    is
    begin
       return Execute_Script (ID, "params['" & Name & "'];");
@@ -2328,7 +2226,10 @@ package body Gnoga.Server.Connection is
    -- Valid --
    -----------
 
-   function Valid (ID : Gnoga.Types.Connection_ID) return Boolean is
+   function Valid
+     (ID : Gnoga.Types.Connection_ID)
+      return Boolean
+   is
    begin
       if ID = Gnoga.Types.No_Connection then
          return False;
@@ -2345,8 +2246,7 @@ package body Gnoga.Server.Connection is
    begin
       if Valid (ID) then
          declare
-            Socket  : constant Socket_Type :=
-              Connection_Manager.Connection_Socket (ID);
+            Socket : constant Socket_Type := Connection_Manager.Connection_Socket (ID);
          begin
             if Socket.Content.Connection_Type = Long_Polling then
                Socket.Content.Finalized := True;
@@ -2365,13 +2265,12 @@ package body Gnoga.Server.Connection is
    -- HTML_On_Close --
    -------------------
 
-   procedure HTML_On_Close (ID   : in Gnoga.Types.Connection_ID;
-                            HTML : in String)
+   procedure HTML_On_Close
+     (ID   : in Gnoga.Types.Connection_ID;
+      HTML : in String)
    is
    begin
-      Execute_Script (ID     => ID,
-                      Script => "gnoga['html_on_close']='" &
-                        Escape_Quotes (HTML) & "';");
+      Execute_Script (ID => ID, Script => "gnoga['html_on_close']='" & Escape_Quotes (HTML) & "';");
    end HTML_On_Close;
 
    ---------------------
@@ -2388,7 +2287,7 @@ package body Gnoga.Server.Connection is
       procedure Next_ID (ID : out Gnoga.Types.Unique_ID) is
       begin
          Current_ID := Current_ID + 1;
-         ID := Current_ID;
+         ID         := Current_ID;
       end Next_ID;
    end ID_Machine_Type;
 
@@ -2419,9 +2318,7 @@ package body Gnoga.Server.Connection is
    -- Add_To_Message_Queue --
    --------------------------
 
-   procedure Add_To_Message_Queue
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure Add_To_Message_Queue (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Object_Manager.Insert (Object.Unique_ID, Object'Unchecked_Access);
    end Add_To_Message_Queue;
@@ -2430,8 +2327,7 @@ package body Gnoga.Server.Connection is
    -- Delete_From_Message_Queue --
    -------------------------------
 
-   procedure Delete_From_Message_Queue
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+   procedure Delete_From_Message_Queue (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
    begin
       Object_Manager.Delete (Object.Unique_ID);
    end Delete_From_Message_Queue;
@@ -2445,10 +2341,7 @@ package body Gnoga.Server.Connection is
       procedure Free is new Ada.Unchecked_Deallocation (Watchdog_Type, Watchdog_Access);
       procedure Free is new Ada.Unchecked_Deallocation (Gnoga_HTTP_Server_Type, Gnoga_HTTP_Server_Access);
    begin
-      if not Exit_Application_Requested and
-        Watchdog /= null and
-        Gnoga_HTTP_Server /= null
-      then
+      if not Exit_Application_Requested and Watchdog /= null and Gnoga_HTTP_Server /= null then
          Exit_Application_Requested := True;
          Watchdog.Stop;
          Free (Watchdog);
@@ -2475,8 +2368,9 @@ package body Gnoga.Server.Connection is
    -- Write --
    -----------
 
-   procedure Write (Stream : access Ada.Streams.Root_Stream_Type'Class;
-                    Item   : in     Gnoga_HTTP_Content)
+   procedure Write
+     (Stream :    access Ada.Streams.Root_Stream_Type'Class;
+      Item   : in Gnoga_HTTP_Content)
    is
    begin
       null;
@@ -2486,17 +2380,17 @@ package body Gnoga.Server.Connection is
    -- Get --
    ---------
 
-   overriding
-   function Get (Source : access Gnoga_HTTP_Content) return String is
+   overriding function Get
+     (Source : access Gnoga_HTTP_Content)
+      return String
+   is
    begin
       if Source.Buffer.Length = 0 then
          if Source.Connection_Type = HTTP then
             return "";
          elsif Source.Finalized then
             declare
-               ID : constant Gnoga.Types.Connection_ID :=
-                 Connection_Manager.Find_Connection_ID
-                   (Source.Socket);
+               ID : constant Gnoga.Types.Connection_ID := Connection_Manager.Find_Connection_ID (Source.Socket);
             begin
                Gnoga.Log ("Shutting down long polling connection -" & ID'Img);
                return "";
@@ -2515,13 +2409,9 @@ package body Gnoga.Server.Connection is
             Source.Buffer.Get_And_Clear (S);
 
             if Length (S) > Chunk_Size then
-               Source.Buffer.Preface (Slice (Source => S,
-                                             Low    => 1 + Chunk_Size,
-                                             High   => Length (S)));
+               Source.Buffer.Preface (Slice (Source => S, Low => 1 + Chunk_Size, High => Length (S)));
 
-               return Slice (Source => S,
-                             Low    => 1,
-                             High   => Chunk_Size);
+               return Slice (Source => S, Low => 1, High => Chunk_Size);
             else
                return To_String (S);
             end if;
@@ -2533,10 +2423,8 @@ package body Gnoga.Server.Connection is
    -- Finalize --
    --------------
 
-   overriding
-   procedure Finalize (Client : in out Gnoga_HTTP_Client) is
-      ID : constant Gnoga.Types.Connection_ID :=
-             Connection_Manager.Find_Connection_ID (Client'Unchecked_Access);
+   overriding procedure Finalize (Client : in out Gnoga_HTTP_Client) is
+      ID : constant Gnoga.Types.Connection_ID := Connection_Manager.Find_Connection_ID (Client'Unchecked_Access);
    begin
       if Ada.Streams.Stream_IO.Is_Open (Client.Content.FS) then
          Ada.Streams.Stream_IO.Close (Client.Content.FS);
@@ -2554,6 +2442,5 @@ package body Gnoga.Server.Connection is
          Log (Ada.Exceptions.Exception_Information (E));
    end Finalize;
 begin
-   Gnoga.Server.Connection.Common.Gnoga_Client_Factory :=
-      Global_Gnoga_Client_Factory'Access;
+   Gnoga.Server.Connection.Common.Gnoga_Client_Factory := Global_Gnoga_Client_Factory'Access;
 end Gnoga.Server.Connection;

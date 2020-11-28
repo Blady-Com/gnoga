@@ -52,19 +52,19 @@ package Gnoga.Gui.Element.Canvas is
    --  Canvas_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Canvas  : in out Canvas_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Width   : in     Integer;
-                     Height  : in     Integer;
-                     ID      : in     String := "");
+   procedure Create
+     (Canvas : in out Canvas_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Width  : in     Integer;
+      Height : in     Integer;
+      ID     : in     String := "");
    --  Create a Canvas container
 
    -------------------------------------------------------------------------
    --  Context_Types
    -------------------------------------------------------------------------
 
-   type Context_Type is
-     new Ada.Finalization.Limited_Controlled with private;
+   type Context_Type is new Ada.Finalization.Limited_Controlled with private;
    type Context_Access is access all Context_Type;
    type Pointer_To_Context_Class is access all Context_Type'Class;
 
@@ -75,46 +75,66 @@ package Gnoga.Gui.Element.Canvas is
    --  Context_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     String);
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     Integer);
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     Boolean);
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     Float);
-   function Property (Context : Context_Type; Name : String) return String;
-   function Property (Context : Context_Type; Name : String) return Integer;
-   function Property (Context : Context_Type; Name : String) return Boolean;
-   function Property (Context : Context_Type; Name : String) return Float;
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     String);
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     Integer);
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     Boolean);
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     Float);
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return String;
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return Integer;
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return Boolean;
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return Float;
 
    -------------------------------------------------------------------------
    --  Context_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Execute (Context : in out Context_Type; Method : String);
-   function Execute (Context : Context_Type; Method : String)
-                     return String;
+   procedure Execute
+     (Context : in out Context_Type;
+      Method  :        String);
+   function Execute
+     (Context : Context_Type;
+      Method  : String)
+      return String;
 
    --  Internal Methods --
 
-   function ID (Context : Context_Type) return String;
+   function ID
+     (Context : Context_Type)
+      return String;
 
-   function Connection_ID (Context : Context_Type)
-                           return Gnoga.Types.Connection_ID;
+   function Connection_ID
+     (Context : Context_Type)
+      return Gnoga.Types.Connection_ID;
 
 private
    type Canvas_Type is new Gnoga.Gui.Element.Element_Type with null record;
 
-   type Context_Type is
-     new Ada.Finalization.Limited_Controlled with
-      record
-         Connection_ID : Gnoga.Types.Connection_ID :=
-                           Gnoga.Types.No_Connection;
-         Context_ID    : Gnoga.Types.Web_ID;
-      end record;
+   type Context_Type is new Ada.Finalization.Limited_Controlled with record
+      Connection_ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;
+      Context_ID    : Gnoga.Types.Web_ID;
+   end record;
 end Gnoga.Gui.Element.Canvas;

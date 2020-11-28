@@ -42,10 +42,11 @@ with Gnoga.Gui.Base;
 
 package Gnoga.Server.Connection is
 
-   procedure Initialize (Host    : in String  := "";
-                         Port    : in Integer := 8080;
-                         Boot    : in String  := "boot.html";
-                         Verbose : in Boolean := True);
+   procedure Initialize
+     (Host    : in String  := "";
+      Port    : in Integer := 8_080;
+      Boot    : in String  := "boot.html";
+      Verbose : in Boolean := True);
    --  Initialize connection to webserver and dispatchers
    --  If Host = "" then server will listen on all network interfaces.
    --  If Host = "localhost" use will be constrained to local machine only.
@@ -60,25 +61,31 @@ package Gnoga.Server.Connection is
    function Shutting_Down return Boolean;
    --  If application is shutting down returns true
 
-   procedure Execute_Script (ID     : in Gnoga.Types.Connection_ID;
-                             Script : in String);
+   procedure Execute_Script
+     (ID     : in Gnoga.Types.Connection_ID;
+      Script : in String);
    --  Execute Script on Connection ID
 
-   function Execute_Script (ID     : in Gnoga.Types.Connection_ID;
-                            Script : in String)
-                            return String;
+   function Execute_Script
+     (ID     : in Gnoga.Types.Connection_ID;
+      Script : in String)
+      return String;
    --  Execute Script on Connection ID and return result of script
 
-   function Buffer_Connection (ID : Gnoga.Types.Connection_ID) return Boolean;
-   procedure Buffer_Connection (ID    : in Gnoga.Types.Connection_ID;
-                                Value : in Boolean);
+   function Buffer_Connection
+     (ID : Gnoga.Types.Connection_ID)
+      return Boolean;
+   procedure Buffer_Connection
+     (ID    : in Gnoga.Types.Connection_ID;
+      Value : in Boolean);
    --  Buffering Property of connection with ID
 
    procedure Flush_Buffer (ID : in Gnoga.Types.Connection_ID);
    --  Flush buffer of connection ID
 
-   procedure Buffer_Append (ID    : in Gnoga.Types.Connection_ID;
-                            Value : in String);
+   procedure Buffer_Append
+     (ID    : in Gnoga.Types.Connection_ID;
+      Value : in String);
    --  Append Value to output buffer. This can be used to output HTML directly
    --  on a Long_Polling connection.
 
@@ -95,66 +102,68 @@ package Gnoga.Server.Connection is
    --  until the web socket connection is closed.
 
    procedure Connection_Data
-     (ID   : in     Gnoga.Types.Connection_ID;
-      Data : access Gnoga.Types.Connection_Data_Type'Class);
+     (ID   : in Gnoga.Types.Connection_ID;
+      Data :    access Gnoga.Types.Connection_Data_Type'Class);
    function Connection_Data
      (ID : in Gnoga.Types.Connection_ID)
       return Gnoga.Types.Pointer_to_Connection_Data_Class;
    --  Sets a connection specific Data object. Usually this is set with
    --  Gnoga.Gui.Windows.Connection_Data
 
-   type Connect_Event is access
-     procedure (ID         : in Gnoga.Types.Connection_ID;
-                Connection : access Connection_Holder_Type);
+   type Connect_Event is access procedure
+     (ID         : in Gnoga.Types.Connection_ID;
+      Connection :    access Connection_Holder_Type);
 
    procedure On_Connect_Handler (Event : in Connect_Event);
    --  Set event handler for new socket connections.
 
    type Gnoga_Connection_Type is (HTTP, Long_Polling, WebSocket, None);
 
-   function Connection_Type (ID : Gnoga.Types.Connection_ID)
-                             return Gnoga_Connection_Type;
+   function Connection_Type
+     (ID : Gnoga.Types.Connection_ID)
+      return Gnoga_Connection_Type;
    --  Returns the connection type for ID
    --  The connection type may change during the life time of an ID as part
    --  of fall back mechanisms to support different network conditions and
    --  browsers. Returns none if ID is not valid.
 
-   function Connection_Path (ID : Gnoga.Types.Connection_ID)
-                             return String;
+   function Connection_Path
+     (ID : Gnoga.Types.Connection_ID)
+      return String;
    --  Returns the original connection path used to reach boot file, not the
    --  specific path used for ID (e.g. not the WebSocket URL). Returns "" if
    --  ID is invalid.
 
-   function Connection_Client_Address (ID : Gnoga.Types.Connection_ID)
-                             return String;
+   function Connection_Client_Address
+     (ID : Gnoga.Types.Connection_ID)
+      return String;
    --  Returns the client address and port with the form nnn.nnn.nnn.nnn:ppppp
    --  Returns "" if ID is invalid.
 
    function Active_Connections return Natural;
    --  Returns the number of active connections
 
-   type Post_Request_Event is access
-     procedure
-       (URI                 : in String;
-        Accepted_Parameters : out Ada.Strings.Unbounded.Unbounded_String);
+   type Post_Request_Event is access procedure
+     (URI                 : in     String;
+      Accepted_Parameters :    out Ada.Strings.Unbounded.Unbounded_String);
 
    procedure On_Post_Request_Handler (Event : Post_Request_Event);
    --  Event is called when a post request is received. Only those CGI
    --  parameters in the common separated Accepted_Parameters list will be
    --  parsed and sent to the On_Post Event.
 
-   type Post_Event is access
-     procedure (URI        : in String;
-                Parameters : in out Gnoga.Types.Data_Map_Type);
+   type Post_Event is access procedure
+     (URI        : in     String;
+      Parameters : in out Gnoga.Types.Data_Map_Type);
 
    procedure On_Post_Handler (Event : Post_Event);
    --  Called when a post has been received and parameters based on the
    --  On_Post_Request event have been parsed in to Parameters
 
-   type Post_File_Event is access
-     procedure (URI       : in String;
-                File_Name : in String;
-                Temp_Name : in String);
+   type Post_File_Event is access procedure
+     (URI       : in String;
+      File_Name : in String;
+      Temp_Name : in String);
 
    procedure On_Post_File_Handler (Event : Post_File_Event);
    --  Called when a file is received from a post. Note the name of the CGI
@@ -162,15 +171,18 @@ package Gnoga.Server.Connection is
    --  On_Post_Request_Event and there must be a On_Post_File_Event set
    --  or the file will not be downloaded.
 
-   function Form_Parameter (ID   : Gnoga.Types.Connection_ID;
-                            Name : String)
-                            return String;
+   function Form_Parameter
+     (ID   : Gnoga.Types.Connection_ID;
+      Name : String)
+      return String;
    --  Returns the value of parameters passed in on URL.
    --  Returns "undefined" if Name is not in URL query.
    --  For example: http://localhost:8080/?page_id=2
    --  Form_Parameter (ID, "page_id") = "2"
 
-   function Valid (ID : Gnoga.Types.Connection_ID) return Boolean;
+   function Valid
+     (ID : Gnoga.Types.Connection_ID)
+      return Boolean;
    --  If ID is valid return true. Note that a broken web socket that has not
    --  been closed properly will have to time out first before reporting an
    --  error and Gnoga invalidating the ID.
@@ -178,8 +190,9 @@ package Gnoga.Server.Connection is
    procedure Close (ID : in Gnoga.Types.Connection_ID);
    --  Close connection ID
 
-   procedure HTML_On_Close (ID   : in Gnoga.Types.Connection_ID;
-                            HTML : in String);
+   procedure HTML_On_Close
+     (ID   : in Gnoga.Types.Connection_ID;
+      HTML : in String);
    --  On connection closed or lost HTML to display in browser.
    --  By default pages are left in the state they were in and an alter box
    --  announcing connection interruption is displayed.
@@ -190,12 +203,10 @@ package Gnoga.Server.Connection is
    function New_GID return String;
    --  Generates unique ID for use in browser storage of elements
 
-   procedure Add_To_Message_Queue
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Add_To_Message_Queue (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  Add Object to Message Queue
 
-   procedure Delete_From_Message_Queue
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure Delete_From_Message_Queue (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  Delete an Object from Message Queue
 
    Connection_Error : exception;

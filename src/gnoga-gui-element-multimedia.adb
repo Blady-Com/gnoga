@@ -64,8 +64,10 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.Execute ("load()");
    end Load;
 
-   function Can_Play (Media : Multimedia_Type; Media_Type : String)
-                      return Boolean
+   function Can_Play
+     (Media      : Multimedia_Type;
+      Media_Type : String)
+      return Boolean
    is
    begin
       return Media.Execute ("canPlayType ('" & Media_Type & "')") /= "";
@@ -75,7 +77,10 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Media_Duration --
    --------------------
 
-   function Media_Duration (Media : Multimedia_Type) return Float is
+   function Media_Duration
+     (Media : Multimedia_Type)
+      return Float
+   is
    begin
       return Media.Property ("duration");
    end Media_Duration;
@@ -84,13 +89,18 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Media_Source --
    ------------------
 
-   procedure Media_Source (Media : in out Multimedia_Type; Source : in String)
+   procedure Media_Source
+     (Media  : in out Multimedia_Type;
+      Source : in     String)
    is
    begin
       Media.Property ("src", Source);
    end Media_Source;
 
-   function Media_Source (Media : Multimedia_Type) return String is
+   function Media_Source
+     (Media : Multimedia_Type)
+      return String
+   is
    begin
       return Media.Property ("src");
    end Media_Source;
@@ -99,14 +109,18 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Media_Position --
    --------------------
 
-   procedure Media_Position (Media   : in out Multimedia_Type;
-                             Seconds : in     Float)
+   procedure Media_Position
+     (Media   : in out Multimedia_Type;
+      Seconds : in     Float)
    is
    begin
       Media.Property ("currentTime", Seconds);
    end Media_Position;
 
-   function Media_Position (Media : Multimedia_Type) return Float is
+   function Media_Position
+     (Media : Multimedia_Type)
+      return Float
+   is
    begin
       return Media.Property ("currentTime");
    end Media_Position;
@@ -115,7 +129,10 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Playback_Ended --
    --------------------
 
-   function Playback_Ended (Media : Multimedia_Type) return Boolean is
+   function Playback_Ended
+     (Media : Multimedia_Type)
+      return Boolean
+   is
    begin
       return Media.Property ("ended");
    end Playback_Ended;
@@ -124,12 +141,18 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Loop_Media --
    ----------------
 
-   procedure Loop_Media (Media : in out Multimedia_Type; Value : Boolean) is
+   procedure Loop_Media
+     (Media : in out Multimedia_Type;
+      Value :        Boolean)
+   is
    begin
       Media.Property ("loop", Value);
    end Loop_Media;
 
-   function Loop_Media (Media : Multimedia_Type) return Boolean is
+   function Loop_Media
+     (Media : Multimedia_Type)
+      return Boolean
+   is
    begin
       return Media.Property ("loop");
    end Loop_Media;
@@ -138,12 +161,18 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Muted --
    -----------
 
-   procedure Muted (Media : in out Multimedia_Type; Value : Boolean) is
+   procedure Muted
+     (Media : in out Multimedia_Type;
+      Value :        Boolean)
+   is
    begin
       Media.Property ("muted", Value);
    end Muted;
 
-   function Muted (Media : Multimedia_Type) return Boolean is
+   function Muted
+     (Media : Multimedia_Type)
+      return Boolean
+   is
    begin
       return Media.Property ("muted");
    end Muted;
@@ -152,7 +181,10 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Paused --
    ------------
 
-   function Paused (Media : Multimedia_Type) return Boolean is
+   function Paused
+     (Media : Multimedia_Type)
+      return Boolean
+   is
    begin
       return Media.Property ("paused");
    end Paused;
@@ -161,13 +193,18 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Playback_Rate --
    -------------------
 
-   procedure Playback_Rate (Media : in out Multimedia_Type; Value : in Float)
+   procedure Playback_Rate
+     (Media : in out Multimedia_Type;
+      Value : in     Float)
    is
    begin
       Media.Property ("playbackRate", Value);
    end Playback_Rate;
 
-   function Playback_Rate (Media : Multimedia_Type) return Float is
+   function Playback_Rate
+     (Media : Multimedia_Type)
+      return Float
+   is
    begin
       return Media.Property ("playbackRate");
    end Playback_Rate;
@@ -176,7 +213,10 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Ready_To_Play --
    -------------------
 
-   function Ready_To_Play (Media : Multimedia_Type) return Boolean is
+   function Ready_To_Play
+     (Media : Multimedia_Type)
+      return Boolean
+   is
    begin
       return Media.Property ("readyState") /= 0;
    end Ready_To_Play;
@@ -185,17 +225,26 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Seeking --
    -------------
 
-   function Seeking (Media : Multimedia_Type) return Boolean is
+   function Seeking
+     (Media : Multimedia_Type)
+      return Boolean
+   is
    begin
       return Media.Property ("seeking");
    end Seeking;
 
-   procedure Volume (Media : in out Multimedia_Type; Value : Volume_Range) is
+   procedure Volume
+     (Media : in out Multimedia_Type;
+      Value :        Volume_Range)
+   is
    begin
       Media.Property ("volume", Value);
    end Volume;
 
-   function Volume (Media : Multimedia_Type) return Volume_Range is
+   function Volume
+     (Media : Multimedia_Type)
+      return Volume_Range
+   is
    begin
       return Media.Property ("volume");
    end Volume;
@@ -216,13 +265,11 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Media_Abort_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "abort",
-                           Message => "");
+         Media.Bind_Event (Event => "abort", Message => "");
       end if;
    end On_Media_Abort_Handler;
 
-   procedure Fire_On_Media_Abort (Media : in out Multimedia_Type)
-   is
+   procedure Fire_On_Media_Abort (Media : in out Multimedia_Type) is
    begin
       if Media.On_Media_Abort_Event /= null then
          Media.On_Media_Abort_Event (Media);
@@ -245,8 +292,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Media_Error_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "error",
-                           Message => "");
+         Media.Bind_Event (Event => "error", Message => "");
       end if;
    end On_Media_Error_Handler;
 
@@ -273,8 +319,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Can_Play_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "canplay",
-                           Message => "");
+         Media.Bind_Event (Event => "canplay", Message => "");
       end if;
    end On_Can_Play_Handler;
 
@@ -301,8 +346,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Can_Play_Through_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "canplaythrough",
-                           Message => "");
+         Media.Bind_Event (Event => "canplaythrough", Message => "");
       end if;
    end On_Can_Play_Through_Handler;
 
@@ -329,8 +373,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Duration_Change_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "durationchange",
-                           Message => "");
+         Media.Bind_Event (Event => "durationchange", Message => "");
       end if;
    end On_Duration_Change_Handler;
 
@@ -357,8 +400,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Emptied_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "emptied",
-                           Message => "");
+         Media.Bind_Event (Event => "emptied", Message => "");
       end if;
    end On_Emptied_Handler;
 
@@ -385,8 +427,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Ended_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "ended",
-                           Message => "");
+         Media.Bind_Event (Event => "ended", Message => "");
       end if;
    end On_Ended_Handler;
 
@@ -413,8 +454,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Loaded_Data_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "loadeddata",
-                           Message => "");
+         Media.Bind_Event (Event => "loadeddata", Message => "");
       end if;
    end On_Loaded_Data_Handler;
 
@@ -441,8 +481,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Loaded_Meta_Data_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "loadedmetadata",
-                           Message => "");
+         Media.Bind_Event (Event => "loadedmetadata", Message => "");
       end if;
    end On_Loaded_Meta_Data_Handler;
 
@@ -469,8 +508,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Load_Start_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "loadstart",
-                           Message => "");
+         Media.Bind_Event (Event => "loadstart", Message => "");
       end if;
    end On_Load_Start_Handler;
 
@@ -497,8 +535,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Play_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "play",
-                           Message => "");
+         Media.Bind_Event (Event => "play", Message => "");
       end if;
    end On_Play_Handler;
 
@@ -525,8 +562,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Pause_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "pause",
-                           Message => "");
+         Media.Bind_Event (Event => "pause", Message => "");
       end if;
    end On_Pause_Handler;
 
@@ -553,8 +589,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Playing_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "playing",
-                           Message => "");
+         Media.Bind_Event (Event => "playing", Message => "");
       end if;
    end On_Playing_Handler;
 
@@ -581,8 +616,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Progress_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "progress",
-                           Message => "");
+         Media.Bind_Event (Event => "progress", Message => "");
       end if;
    end On_Progress_Handler;
 
@@ -609,8 +643,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Rate_Change_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "ratechange",
-                           Message => "");
+         Media.Bind_Event (Event => "ratechange", Message => "");
       end if;
    end On_Rate_Change_Handler;
 
@@ -637,8 +670,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Seeked_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "seeked",
-                           Message => "");
+         Media.Bind_Event (Event => "seeked", Message => "");
       end if;
    end On_Seeked_Handler;
 
@@ -665,8 +697,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Seeking_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "seeking",
-                           Message => "");
+         Media.Bind_Event (Event => "seeking", Message => "");
       end if;
    end On_Seeking_Handler;
 
@@ -693,8 +724,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Stalled_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "stalled",
-                           Message => "");
+         Media.Bind_Event (Event => "stalled", Message => "");
       end if;
    end On_Stalled_Handler;
 
@@ -721,8 +751,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Suspend_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "suspend",
-                           Message => "");
+         Media.Bind_Event (Event => "suspend", Message => "");
       end if;
    end On_Suspend_Handler;
 
@@ -749,8 +778,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Time_Update_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "timeupdate",
-                           Message => "");
+         Media.Bind_Event (Event => "timeupdate", Message => "");
       end if;
    end On_Time_Update_Handler;
 
@@ -777,8 +805,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Volume_Change_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "volumechange",
-                           Message => "");
+         Media.Bind_Event (Event => "volumechange", Message => "");
       end if;
    end On_Volume_Change_Handler;
 
@@ -805,8 +832,7 @@ package body Gnoga.Gui.Element.Multimedia is
       Media.On_Waiting_Event := Handler;
 
       if Handler /= null then
-         Media.Bind_Event (Event   => "waiting",
-                           Message => "");
+         Media.Bind_Event (Event => "waiting", Message => "");
       end if;
    end On_Waiting_Handler;
 
@@ -821,10 +847,10 @@ package body Gnoga.Gui.Element.Multimedia is
    -- On_Message --
    ----------------
 
-   overriding
-   procedure On_Message (Object  : in out Multimedia_Type;
-                         Event   : in     String;
-                         Message : in     String)
+   overriding procedure On_Message
+     (Object  : in out Multimedia_Type;
+      Event   : in     String;
+      Message : in     String)
    is
    begin
       if Event = "abort" then
@@ -884,15 +910,16 @@ package body Gnoga.Gui.Element.Multimedia is
    -- Create --
    ------------
 
-   procedure Create (Audio     : in out Audio_Type;
-                     Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Source    : in     String  := "";
-                     Controls  : in     Boolean := True;
-                     Preload   : in     Boolean := False;
-                     Autoplay  : in     Boolean := False;
-                     Autoloop  : in     Boolean := False;
-                     Muted     : in     Boolean := False;
-                     ID        : in     String  := "")
+   procedure Create
+     (Audio    : in out Audio_Type;
+      Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Source   : in     String  := "";
+      Controls : in     Boolean := True;
+      Preload  : in     Boolean := False;
+      Autoplay : in     Boolean := False;
+      Autoloop : in     Boolean := False;
+      Muted    : in     Boolean := False;
+      ID       : in     String  := "")
    is
       function Has_Controls return String;
       function Has_Preload return String;
@@ -955,32 +982,27 @@ package body Gnoga.Gui.Element.Multimedia is
          end if;
       end Has_Source;
    begin
-      Audio.Create_From_HTML (Parent => Parent,
-                              HTML   => "<audio" &
-                                Has_Controls &
-                                Has_Preload &
-                                Has_Autoplay &
-                                Has_Autoloop &
-                                Has_Muted &
-                                Has_Source &
-                                " />",
-                              ID     => ID);
+      Audio.Create_From_HTML
+        (Parent => Parent,
+         HTML   => "<audio" & Has_Controls & Has_Preload & Has_Autoplay & Has_Autoloop & Has_Muted & Has_Source & " />",
+         ID     => ID);
    end Create;
 
    ------------
    -- Create --
    ------------
 
-   procedure Create (Video     : in out Video_Type;
-                     Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Source    : in     String  := "";
-                     Controls  : in     Boolean := True;
-                     Preload   : in     Boolean := False;
-                     Poster    : in     String  := "";
-                     Autoplay  : in     Boolean := False;
-                     Autoloop  : in     Boolean := False;
-                     Muted     : in     Boolean := False;
-                     ID        : in     String  := "")
+   procedure Create
+     (Video    : in out Video_Type;
+      Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Source   : in     String  := "";
+      Controls : in     Boolean := True;
+      Preload  : in     Boolean := False;
+      Poster   : in     String  := "";
+      Autoplay : in     Boolean := False;
+      Autoloop : in     Boolean := False;
+      Muted    : in     Boolean := False;
+      ID       : in     String  := "")
    is
       function Has_Controls return String;
       function Has_Preload return String;
@@ -1053,17 +1075,12 @@ package body Gnoga.Gui.Element.Multimedia is
          end if;
       end Has_Source;
    begin
-      Video.Create_From_HTML (Parent => Parent,
-                              HTML   => "<video" &
-                                Has_Controls &
-                                Has_Preload &
-                                Has_Autoplay &
-                                Has_Autoloop &
-                                Has_Muted &
-                                Has_Poster &
-                                Has_Source &
-                                " />",
-                              ID     => ID);
+      Video.Create_From_HTML
+        (Parent => Parent,
+         HTML   =>
+           "<video" & Has_Controls & Has_Preload & Has_Autoplay & Has_Autoloop & Has_Muted & Has_Poster & Has_Source &
+           " />",
+         ID => ID);
    end Create;
 
 end Gnoga.Gui.Element.Multimedia;

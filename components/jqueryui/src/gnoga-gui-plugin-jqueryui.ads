@@ -54,8 +54,7 @@ package Gnoga.Gui.Plugin.jQueryUI is
    --  jQueryUI Library
    -------------------------------------------------------------------------
 
-   procedure Load_jQueryUI
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class);
+   procedure Load_jQueryUI (Window : in out Gnoga.Gui.Window.Window_Type'Class);
    --  Load jQueryUI CSS and Scripting code in to Window
    --  This procedure loads them from Google's CDN
    --  You can also modify boot.html to include the jQueryUI CSS
@@ -65,31 +64,28 @@ package Gnoga.Gui.Plugin.jQueryUI is
    --  jQueryUI Interactions
    -------------------------------------------------------------------------
 
-   procedure Make_Draggable
-     (Element : in out Gnoga.Gui.Element.Element_Type'Class);
+   procedure Make_Draggable (Element : in out Gnoga.Gui.Element.Element_Type'Class);
 
    jQuery_Dropped_Event_Name : constant String := "jqueryui_dropped";
 
-   procedure Make_Droppable
-     (Element : in out Gnoga.Gui.Element.Element_Type'Class);
+   procedure Make_Droppable (Element : in out Gnoga.Gui.Element.Element_Type'Class);
    --  To receive an On_Drop, bind the On_Message of Element
    --  check for Event = jQuery_Dropped_Event_Name
    --  Message will be the Element.ID of the Element being
    --  dropped.
 
-   procedure Make_Resizable
-     (Element : in out Gnoga.Gui.Element.Element_Type'Class);
+   procedure Make_Resizable (Element : in out Gnoga.Gui.Element.Element_Type'Class);
 
-   procedure Make_Sortable
-     (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class);
+   procedure Make_Sortable (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class);
 
    procedure Make_Selectable
      (List            : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class;
       Selecting_Color : in     String := "#ccc";
       Selected_Color  : in     String := "#999");
 
-   function Is_Selected (Item : Gnoga.Gui.Element.List.List_Item_Type'Class)
-                         return Boolean;
+   function Is_Selected
+     (Item : Gnoga.Gui.Element.List.List_Item_Type'Class)
+      return Boolean;
 
    -------------------------------------------------------------------------
    --  jQueryUI Effects

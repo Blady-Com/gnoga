@@ -51,15 +51,13 @@ package body Gnoga.Client.Bind_Page is
    begin
       Gnoga.Server.Connection.Execute_Script
         (View.Connection_ID,
-         "gnoga['idbuf']=''; $('[id]').each ( function (index, n)" &
-           " { gnoga['idbuf'] = gnoga['idbuf'] + " &
-           " $(this).attr('id') + '|'; } );");
+         "gnoga['idbuf']=''; $('[id]').each ( function (index, n)" & " { gnoga['idbuf'] = gnoga['idbuf'] + " &
+         " $(this).attr('id') + '|'; } );");
 
       declare
-         Buf : constant String  := Gnoga.Server.Connection.Execute_Script
-           (View.Connection_ID, "gnoga['idbuf']");
-         S   : Integer := Buf'First;
-         F   : Integer := Buf'First - 1;
+         Buf : constant String := Gnoga.Server.Connection.Execute_Script (View.Connection_ID, "gnoga['idbuf']");
+         S   : Integer         := Buf'First;
+         F   : Integer         := Buf'First - 1;
 
          procedure Split;
 
@@ -67,16 +65,12 @@ package body Gnoga.Client.Bind_Page is
          begin
             S := F + 1;
             if S <= Buf'Last then
-               F := Index (Source  => Buf,
-                           Pattern => "|",
-                           From    => S);
+               F := Index (Source => Buf, Pattern => "|", From => S);
                declare
-                  ID : constant String := Buf (S .. (F - 1));
-                  E  : constant Gnoga.Gui.Element.Element_Access :=
-                         new Gnoga.Gui.Element.Element_Type;
+                  ID : constant String                           := Buf (S .. (F - 1));
+                  E  : constant Gnoga.Gui.Element.Element_Access := new Gnoga.Gui.Element.Element_Type;
                begin
-                  E.Attach_Using_Parent (Parent  => View,
-                                         ID      => ID);
+                  E.Attach_Using_Parent (Parent => View, ID => ID);
                   View.Add_Element (ID, E);
                end;
 

@@ -52,18 +52,16 @@ package Gnoga.Gui.View.Console is
    --  Console_View_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create
-     (View          : in out Console_View_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "");
+   overriding procedure Create
+     (View   : in out Console_View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
 
    -------------------------------------------------------------------------
    --  View_Type - Event Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure On_Child_Added
+   overriding procedure On_Child_Added
      (View  : in out Console_View_Type;
       Child : in out Gnoga.Gui.Base.Base_Type'Class);
 

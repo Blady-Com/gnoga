@@ -42,16 +42,20 @@ package body Gnoga.Server.Template_Parser.Simple is
    -- Load_View --
    ---------------
 
-   function Load_View (Name : String) return String is
+   function Load_View
+     (Name : String)
+      return String
+   is
       Empty_Data : View_Data;
    begin
       return Load_View (Name, Empty_Data);
    end Load_View;
 
-   function Load_View (Name     : String;
-                       Data_Map : Gnoga.Types.Data_Map_Type;
-                       Var_Name : String := "data")
-                       return String
+   function Load_View
+     (Name     : String;
+      Data_Map : Gnoga.Types.Data_Map_Type;
+      Var_Name : String := "data")
+      return String
    is
       Data : View_Data;
    begin
@@ -61,16 +65,19 @@ package body Gnoga.Server.Template_Parser.Simple is
       return Load_View (Name, Data);
    end Load_View;
 
-   function Load_View (Name : String; Data : View_Data)
-                       return String
+   function Load_View
+     (Name : String;
+      Data : View_Data)
+      return String
    is
    begin
       return Load_View (Name, Data_List => (1 => Data));
    end Load_View;
 
-   function Load_View (Name      : String;
-                       Data_List : View_Data_Array)
-                       return String
+   function Load_View
+     (Name      : String;
+      Data_List : View_Data_Array)
+      return String
    is
       use Ada.Strings.Unbounded;
 
@@ -89,15 +96,11 @@ package body Gnoga.Server.Template_Parser.Simple is
 
          F : File_Type;
       begin
-         Open (File => F,
-               Mode => In_File,
-               Name => Parse_Name (Name),
-               Form => "shared=no");
+         Open (File => F, Mode => In_File, Name => Parse_Name (Name), Form => "shared=no");
 
          while not End_Of_File (F) loop
             if Length (Parsed_File) > 0 then
-               Parsed_File :=
-                 Parsed_File & (Character'Val (10) & Get_Line (F));
+               Parsed_File := Parsed_File & (Character'Val (10) & Get_Line (F));
             else
                Parsed_File := To_Unbounded_String (Get_Line (F));
             end if;
@@ -128,15 +131,12 @@ package body Gnoga.Server.Template_Parser.Simple is
          Var_Name : constant String := To_String (D.Name);
       begin
          for C in D.String_Values.Iterate loop
-            Replace_In_String ("@@" & Var_Name & "." & Key (C) & "@@",
-                               Element (C));
+            Replace_In_String ("@@" & Var_Name & "." & Key (C) & "@@", Element (C));
          end loop;
 
          for M in D.Map_Values.Iterate loop
             for C in Element (M).Iterate loop
-               Replace_In_String
-                 ("@@" & Var_Name & "." & Key (M) & "." & Key (C) & "@@",
-                  Element (C));
+               Replace_In_String ("@@" & Var_Name & "." & Key (M) & "." & Key (C) & "@@", Element (C));
             end loop;
          end loop;
       end Replace_Values;

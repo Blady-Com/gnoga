@@ -43,153 +43,21 @@ package body Gnoga.Types.Colors is
    --  http://dev.w3.org/csswg/css-color-3/ §4.3
 
    type CSS_Color_Enumeration is
-     (aliceblue,
-      antiquewhite,
-      aqua,
-      aquamarine,
-      azure,
-      beige,
-      bisque,
-      black,
-      blanchedalmond,
-      blue,
-      blueviolet,
-      brown,
-      burlywood,
-      cadetblue,
-      chartreuse,
-      chocolate,
-      coral,
-      cornflowerblue,
-      cornsilk,
-      crimson,
-      cyan,
-      darkblue,
-      darkcyan,
-      darkgoldenrod,
-      darkgray,
-      darkgreen,
-      darkgrey,
-      darkkhaki,
-      darkmagenta,
-      darkolivegreen,
-      darkorange,
-      darkorchid,
-      darkred,
-      darksalmon,
-      darkseagreen,
-      darkslateblue,
-      darkslategray,
-      darkslategrey,
-      darkturquoise,
-      darkviolet,
-      deeppink,
-      deepskyblue,
-      dimgray,
-      dimgrey,
-      dodgerblue,
-      firebrick,
-      floralwhite,
-      forestgreen,
-      fuchsia,
-      gainsboro,
-      ghostwhite,
-      gold,
-      goldenrod,
-      gray,
-      green,
-      greenyellow,
-      grey,
-      honeydew,
-      hotpink,
-      indianred,
-      indigo,
-      ivory,
-      khaki,
-      lavender,
-      lavenderblush,
-      lawngreen,
-      lemonchiffon,
-      lightblue,
-      lightcoral,
-      lightcyan,
-      lightgoldenrodyellow,
-      lightgray,
-      lightgreen,
-      lightgrey,
-      lightpink,
-      lightsalmon,
-      lightseagreen,
-      lightskyblue,
-      lightslategray,
-      lightslategrey,
-      lightsteelblue,
-      lightyellow,
-      lime,
-      limegreen,
-      linen,
-      magenta,
-      maroon,
-      mediumaquamarine,
-      mediumblue,
-      mediumorchid,
-      mediumpurple,
-      mediumseagreen,
-      mediumslateblue,
-      mediumspringgreen,
-      mediumturquoise,
-      mediumvioletred,
-      midnightblue,
-      mintcream,
-      mistyrose,
-      moccasin,
-      navajowhite,
-      navy,
-      oldlace,
-      olive,
-      olivedrab,
-      orange,
-      orangered,
-      orchid,
-      palegoldenrod,
-      palegreen,
-      paleturquoise,
-      palevioletred,
-      papayawhip,
-      peachpuff,
-      peru,
-      pink,
-      plum,
-      powderblue,
-      purple,
-      red,
-      rosybrown,
-      royalblue,
-      saddlebrown,
-      salmon,
-      sandybrown,
-      seagreen,
-      seashell,
-      sienna,
-      silver,
-      skyblue,
-      slateblue,
-      slategray,
-      slategrey,
-      snow,
-      springgreen,
-      steelblue,
-      tan,
-      teal,
-      thistle,
-      tomato,
-      turquoise,
-      violet,
-      wheat,
-      white,
-      whitesmoke,
-      yellow,
-      yellowgreen);
+     (aliceblue, antiquewhite, aqua, aquamarine, azure, beige, bisque, black, blanchedalmond, blue, blueviolet, brown,
+      burlywood, cadetblue, chartreuse, chocolate, coral, cornflowerblue, cornsilk, crimson, cyan, darkblue, darkcyan,
+      darkgoldenrod, darkgray, darkgreen, darkgrey, darkkhaki, darkmagenta, darkolivegreen, darkorange, darkorchid,
+      darkred, darksalmon, darkseagreen, darkslateblue, darkslategray, darkslategrey, darkturquoise, darkviolet,
+      deeppink, deepskyblue, dimgray, dimgrey, dodgerblue, firebrick, floralwhite, forestgreen, fuchsia, gainsboro,
+      ghostwhite, gold, goldenrod, gray, green, greenyellow, grey, honeydew, hotpink, indianred, indigo, ivory, khaki,
+      lavender, lavenderblush, lawngreen, lemonchiffon, lightblue, lightcoral, lightcyan, lightgoldenrodyellow,
+      lightgray, lightgreen, lightgrey, lightpink, lightsalmon, lightseagreen, lightskyblue, lightslategray,
+      lightslategrey, lightsteelblue, lightyellow, lime, limegreen, linen, magenta, maroon, mediumaquamarine,
+      mediumblue, mediumorchid, mediumpurple, mediumseagreen, mediumslateblue, mediumspringgreen, mediumturquoise,
+      mediumvioletred, midnightblue, mintcream, mistyrose, moccasin, navajowhite, navy, oldlace, olive, olivedrab,
+      orange, orangered, orchid, palegoldenrod, palegreen, paleturquoise, palevioletred, papayawhip, peachpuff, peru,
+      pink, plum, powderblue, purple, red, rosybrown, royalblue, saddlebrown, salmon, sandybrown, seagreen, seashell,
+      sienna, silver, skyblue, slateblue, slategray, slategrey, snow, springgreen, steelblue, tan, teal, thistle,
+      tomato, turquoise, violet, wheat, white, whitesmoke, yellow, yellowgreen);
 
    type Color_Array_Type is array (Color_Enumeration) of Gnoga.Types.RGBA_Type;
 
@@ -346,17 +214,22 @@ package body Gnoga.Types.Colors is
    -- To_String --
    ---------------
 
-   function To_String (Value : Color_Enumeration) return String is
+   function To_String
+     (Value : Color_Enumeration)
+      return String
+   is
    begin
-      return CSS_Color_Enumeration'Image
-          (CSS_Color_Enumeration'Val (Color_Enumeration'Pos (Value)));
+      return CSS_Color_Enumeration'Image (CSS_Color_Enumeration'Val (Color_Enumeration'Pos (Value)));
    end To_String;
 
    -------------
    -- To_RGBA --
    -------------
 
-   function To_RGBA (Value : Color_Enumeration) return Gnoga.Types.RGBA_Type is
+   function To_RGBA
+     (Value : Color_Enumeration)
+      return Gnoga.Types.RGBA_Type
+   is
    begin
       return RGBA_Colors (Value);
    end To_RGBA;
@@ -366,7 +239,8 @@ package body Gnoga.Types.Colors is
    --------------------------
 
    function To_Color_Enumeration
-     (Value : Gnoga.Types.RGBA_Type) return Color_Enumeration
+     (Value : Gnoga.Types.RGBA_Type)
+      return Color_Enumeration
    is
    begin
       for C in RGBA_Colors'Range loop
@@ -381,10 +255,12 @@ package body Gnoga.Types.Colors is
    -- To_Color_Enumeration --
    --------------------------
 
-   function To_Color_Enumeration (Value : String) return Color_Enumeration is
+   function To_Color_Enumeration
+     (Value : String)
+      return Color_Enumeration
+   is
    begin
-      return Color_Enumeration'Val (CSS_Color_Enumeration'Pos
-                                    (CSS_Color_Enumeration'Value (Value)));
+      return Color_Enumeration'Val (CSS_Color_Enumeration'Pos (CSS_Color_Enumeration'Value (Value)));
    exception
       when E : Constraint_Error =>
          Log ("Error converting to Color_Enumeration from " & Value);

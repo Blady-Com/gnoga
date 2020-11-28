@@ -62,13 +62,21 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- Specification of line and page lengths --
    --------------------------------------------
 
-   procedure Set_Line_Length (Console : in out Console_IO_Type; To : Count);
+   procedure Set_Line_Length
+     (Console : in out Console_IO_Type;
+      To      :        Count);
 
-   procedure Set_Page_Length (Console : in Console_IO_Type; To : Count);
+   procedure Set_Page_Length
+     (Console : in Console_IO_Type;
+      To      :    Count);
 
-   function Line_Length (Console : in Console_IO_Type) return Count;
+   function Line_Length
+     (Console : in Console_IO_Type)
+      return Count;
 
-   function Page_Length (Console : in Console_IO_Type) return Count;
+   function Page_Length
+     (Console : in Console_IO_Type)
+      return Count;
 
    ------------------------------------
    -- Column, Line, and Page Control --
@@ -83,31 +91,49 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
      (Console : in out Console_IO_Type;
       Spacing :        Positive_Count := 1);
 
-   function End_Of_Line (Console : in out Console_IO_Type) return Boolean;
+   function End_Of_Line
+     (Console : in out Console_IO_Type)
+      return Boolean;
 
    procedure New_Page (Console : in out Console_IO_Type);
 
    procedure Skip_Page (Console : in Console_IO_Type);
 
-   function End_Of_Page (Console : in Console_IO_Type) return Boolean;
+   function End_Of_Page
+     (Console : in Console_IO_Type)
+      return Boolean;
 
-   procedure Set_Col (Console : in out Console_IO_Type; To : Positive_Count);
+   procedure Set_Col
+     (Console : in out Console_IO_Type;
+      To      :        Positive_Count);
 
-   procedure Set_Line (Console : in out Console_IO_Type; To : Positive_Count);
+   procedure Set_Line
+     (Console : in out Console_IO_Type;
+      To      :        Positive_Count);
 
-   function Col (Console : in Console_IO_Type) return Positive_Count;
+   function Col
+     (Console : in Console_IO_Type)
+      return Positive_Count;
 
-   function Line (Console : in Console_IO_Type) return Positive_Count;
+   function Line
+     (Console : in Console_IO_Type)
+      return Positive_Count;
 
-   function Page (Console : in Console_IO_Type) return Positive_Count;
+   function Page
+     (Console : in Console_IO_Type)
+      return Positive_Count;
 
    ----------------------------
    -- Character Input-Output --
    ----------------------------
 
-   procedure Get (Console : in out Console_IO_Type; Item : out Character);
+   procedure Get
+     (Console : in out Console_IO_Type;
+      Item    :    out Character);
 
-   procedure Put (Console : in out Console_IO_Type; Item : Character);
+   procedure Put
+     (Console : in out Console_IO_Type;
+      Item    :        Character);
 
    procedure Look_Ahead
      (Console     : in out Console_IO_Type;
@@ -127,7 +153,9 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    -- String Input-Output --
    -------------------------
 
-   procedure Get (Console : in out Console_IO_Type; Item : out String);
+   procedure Get
+     (Console : in out Console_IO_Type;
+      Item    :    out String);
 
    overriding procedure Put
      (Console : in out Console_IO_Type;
@@ -140,7 +168,9 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Item    :    out String;
       Last    :    out Natural);
 
-   function Get_Line (Console : in out Console_IO_Type) return String;
+   function Get_Line
+     (Console : in out Console_IO_Type)
+      return String;
 
    overriding procedure Put_Line
      (Console : in out Console_IO_Type;
@@ -162,11 +192,17 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 private
    protected type Text_Buffer is
       procedure Write (Line : in String);
-      entry Read (Line : out String; Last : out Natural);
+      entry Read
+        (Line : out String;
+         Last : out Natural);
       entry Read (Line : out Ada.Strings.Unbounded.Unbounded_String);
       entry Read (Ch : out Character);
-      procedure Get (Ch : out Character; Available : out Boolean);
-      procedure Look (Ch : out Character; Available : out Boolean);
+      procedure Get
+        (Ch        : out Character;
+         Available : out Boolean);
+      procedure Look
+        (Ch        : out Character;
+         Available : out Boolean);
    private
       Buffer : Ada.Strings.Unbounded.Unbounded_String;
       NL     : Boolean := False;

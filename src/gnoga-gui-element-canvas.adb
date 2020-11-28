@@ -46,18 +46,15 @@ package body Gnoga.Gui.Element.Canvas is
    -- Finalize --
    --------------
 
-   overriding
-   procedure Finalize (Object : in out Context_Type) is
+   overriding procedure Finalize (Object : in out Context_Type) is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Object.Connection_ID, "delete gnoga['" &
-           Ada.Strings.Unbounded.To_String (Object.Context_ID) &
-           "'];");
+        (Object.Connection_ID, "delete gnoga['" & Ada.Strings.Unbounded.To_String (Object.Context_ID) & "'];");
    exception
       when E : Gnoga.Server.Connection.Connection_Error =>
-         Log ("Connection" & Object.Connection_ID'Img &
-                " error during delete object " &
-                Ada.Strings.Unbounded.To_String (Object.Context_ID));
+         Log
+           ("Connection" & Object.Connection_ID'Img & " error during delete object " &
+            Ada.Strings.Unbounded.To_String (Object.Context_ID));
          Log (Ada.Exceptions.Exception_Information (E));
    end Finalize;
 
@@ -65,23 +62,24 @@ package body Gnoga.Gui.Element.Canvas is
    -- Create --
    ------------
 
-   procedure Create (Canvas  : in out Canvas_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Width   : in     Integer;
-                     Height  : in     Integer;
-                     ID      : in     String := "")
+   procedure Create
+     (Canvas : in out Canvas_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Width  : in     Integer;
+      Height : in     Integer;
+      ID     : in     String := "")
    is
    begin
-      Canvas.Create_From_HTML (Parent, "<canvas width=" & Width'Img &
-                              " height =" & Height'Img & ">", ID);
+      Canvas.Create_From_HTML (Parent, "<canvas width=" & Width'Img & " height =" & Height'Img & ">", ID);
    end Create;
 
    -------------------
    -- Connection_ID --
    -------------------
 
-   function Connection_ID (Context : Context_Type)
-                           return Gnoga.Types.Connection_ID
+   function Connection_ID
+     (Context : Context_Type)
+      return Gnoga.Types.Connection_ID
    is
    begin
       return Context.Connection_ID;
@@ -91,7 +89,10 @@ package body Gnoga.Gui.Element.Canvas is
    -- ID --
    --------
 
-   function ID (Context : Context_Type) return String is
+   function ID
+     (Context : Context_Type)
+      return String
+   is
       use Ada.Strings.Unbounded;
    begin
       return To_String (Context.Context_ID);
@@ -101,44 +102,55 @@ package body Gnoga.Gui.Element.Canvas is
    -- Property --
    --------------
 
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     String)
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     String)
    is
    begin
       Context.Execute (Name & "='" & Escape_Quotes (Value) & "';");
    end Property;
 
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     Integer)
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     Integer)
    is
    begin
       Context.Execute (Name & "=" & Value'Img & ";");
    end Property;
 
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     Boolean)
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     Boolean)
    is
    begin
       Context.Execute (Name & "=" & Value'Img & ";");
    end Property;
 
-   procedure Property (Context : in out Context_Type;
-                       Name    : in     String;
-                       Value   : in     Float)   is
+   procedure Property
+     (Context : in out Context_Type;
+      Name    : in     String;
+      Value   : in     Float)
+   is
    begin
       Context.Execute (Name & "=" & Value'Img & ";");
    end Property;
 
-   function Property (Context : Context_Type; Name : String) return String
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return String
    is
    begin
       return Context.Execute (Name);
    end Property;
 
-   function Property (Context : Context_Type; Name : String) return Integer
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return Integer
    is
    begin
       return Integer'Value (Context.Property (Name));
@@ -149,7 +161,10 @@ package body Gnoga.Gui.Element.Canvas is
          return 0;
    end Property;
 
-   function Property (Context : Context_Type; Name : String) return Boolean
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return Boolean
    is
    begin
       return Boolean'Value (Context.Property (Name));
@@ -160,7 +175,11 @@ package body Gnoga.Gui.Element.Canvas is
          return False;
    end Property;
 
-   function Property (Context : Context_Type; Name : String) return Float is
+   function Property
+     (Context : Context_Type;
+      Name    : String)
+      return Float
+   is
    begin
       return Float'Value (Context.Property (Name));
    exception
@@ -174,19 +193,23 @@ package body Gnoga.Gui.Element.Canvas is
    -- Execute --
    -------------
 
-   procedure Execute (Context : in out Context_Type; Method : String) is
-   begin
-      Gnoga.Server.Connection.Execute_Script
-        (ID     => Context.Connection_ID,
-         Script => "gnoga['" & Context.ID & "']." & Method);
-   end Execute;
-
-   function Execute (Context : Context_Type; Method : String)
-                     return String
+   procedure Execute
+     (Context : in out Context_Type;
+      Method  :        String)
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script
-        (ID     => Context.Connection_ID,
-         Script => "gnoga['" & Context.ID & "']." & Method);
+      Gnoga.Server.Connection.Execute_Script
+        (ID => Context.Connection_ID, Script => "gnoga['" & Context.ID & "']." & Method);
+   end Execute;
+
+   function Execute
+     (Context : Context_Type;
+      Method  : String)
+      return String
+   is
+   begin
+      return
+        Gnoga.Server.Connection.Execute_Script
+          (ID => Context.Connection_ID, Script => "gnoga['" & Context.ID & "']." & Method);
    end Execute;
 end Gnoga.Gui.Element.Canvas;

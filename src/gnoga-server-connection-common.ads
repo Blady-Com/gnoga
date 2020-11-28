@@ -44,14 +44,14 @@ package Gnoga.Server.Connection.Common is
    --  Gnoga Connection Settings
    -------------------------------------------------------------------------
 
-   Max_HTTP_Request_Length : constant := 1024;
+   Max_HTTP_Request_Length : constant := 1_024;
    Max_HTTP_Connections    : constant := 200;
-   Max_HTTP_Input_Chunk    : constant := 1024;
-   Max_HTTP_Output_Chunk   : constant := 1024;
-   Max_Websocket_Message   : constant := 1024;
+   Max_HTTP_Input_Chunk    : constant := 1_024;
+   Max_HTTP_Output_Chunk   : constant := 1_024;
+   Max_Websocket_Message   : constant := 1_024;
    Script_Time_Out         : constant := 3.0;
 
-   Max_Buffer_Length : constant := 2 ** 16 - 1;
+   Max_Buffer_Length : constant := 2**16 - 1;
    --  Maximum length of to Buffer output to Gnoga clients before an
    --  automatic buffer flush is done.
 
@@ -61,7 +61,7 @@ package Gnoga.Server.Connection.Common is
 
    CRLF : constant String := (Character'Val (13), Character'Val (10));
 
-   Boot_HTML   : Ada.Strings.Unbounded.Unbounded_String;
+   Boot_HTML : Ada.Strings.Unbounded.Unbounded_String;
 
    Server_Host : Ada.Strings.Unbounded.Unbounded_String;
    Server_Port : GNAT.Sockets.Port_Type;
@@ -83,11 +83,9 @@ package Gnoga.Server.Connection.Common is
 
    Gnoga_Client_Factory : Client_Factory_Type := null;
 
-   type Pointer_To_Connections_Factory_Class is
-     access all Connections_Factory'Class;
+   type Pointer_To_Connections_Factory_Class is access all Connections_Factory'Class;
 
-   type Server_Factory_Type is
-     access function return Pointer_To_Connections_Factory_Class;
+   type Server_Factory_Type is access function return Pointer_To_Connections_Factory_Class;
 
    Gnoga_Secure_Factory : Server_Factory_Type := null;
 

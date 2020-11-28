@@ -41,24 +41,25 @@ with Ada.Command_Line;
 with GNAT.OS_Lib;
 
 package body Gnoga.Server is
-   Exec_Loc : constant GNAT.OS_Lib.String_Access :=
-                GNAT.OS_Lib.Locate_Exec_On_Path
-                  (Ada.Command_Line.Command_Name);
-   Exec_Dir : constant String := Exec_Loc.all;
+   Exec_Loc : constant GNAT.OS_Lib.String_Access := GNAT.OS_Lib.Locate_Exec_On_Path (Ada.Command_Line.Command_Name);
+   Exec_Dir : constant String                    := Exec_Loc.all;
 
-   function Find_Subdirectory (Sub : String) return String;
+   function Find_Subdirectory
+     (Sub : String)
+      return String;
    --  Return the path to the given subdirectory or return "";
 
    -----------------------
    -- Find_Subdirectory --
    -----------------------
 
-   function Find_Subdirectory (Sub : String) return String is
-      Dir  : constant String := Application_Directory & Sub &
-               GNAT.OS_Lib.Directory_Separator;
+   function Find_Subdirectory
+     (Sub : String)
+      return String
+   is
+      Dir : constant String := Application_Directory & Sub & GNAT.OS_Lib.Directory_Separator;
 
-      Html : constant String := Application_Directory & "html" &
-               GNAT.OS_Lib.Directory_Separator;
+      Html : constant String := Application_Directory & "html" & GNAT.OS_Lib.Directory_Separator;
    begin
       if Ada.Directories.Exists (Dir) then
          return Dir;
@@ -98,8 +99,7 @@ package body Gnoga.Server is
 
    function Executable_Directory return String is
    begin
-      return Ada.Directories.Containing_Directory (Exec_Dir) &
-        GNAT.OS_Lib.Directory_Separator;
+      return Ada.Directories.Containing_Directory (Exec_Dir) & GNAT.OS_Lib.Directory_Separator;
    end Executable_Directory;
 
    --------------------
@@ -152,13 +152,11 @@ package body Gnoga.Server is
    -------------------------
 
    function Templates_Directory return String is
-      Dir  : constant String := Application_Directory & "templates" &
-               GNAT.OS_Lib.Directory_Separator;
+      Dir : constant String := Application_Directory & "templates" & GNAT.OS_Lib.Directory_Separator;
 
-      Alt : constant String := Application_Directory & "share" &
-              GNAT.OS_Lib.Directory_Separator & "gnoga" &
-              GNAT.OS_Lib.Directory_Separator & "templates" &
-              GNAT.OS_Lib.Directory_Separator;
+      Alt : constant String :=
+        Application_Directory & "share" & GNAT.OS_Lib.Directory_Separator & "gnoga" & GNAT.OS_Lib.Directory_Separator &
+        "templates" & GNAT.OS_Lib.Directory_Separator;
    begin
       if Ada.Directories.Exists (Dir) then
          return Dir;

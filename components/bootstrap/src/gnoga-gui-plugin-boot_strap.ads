@@ -54,8 +54,7 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    --  understanding its concepts and adding and removing classes as
    --  needed will give full access to boot strap's capabilities.
 
-   procedure Load_Boot_Strap
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class);
+   procedure Load_Boot_Strap (Window : in out Gnoga.Gui.Window.Window_Type'Class);
    --  Load Boot Strap CSS and Scripting code in to Window
    --  This procedure loads them from MaxCDN
    --  You can also modify boot.html to include them directly
@@ -76,24 +75,21 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Container : in out Container_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID        : in     String  := "");
+      ID        : in     String := "");
 
    type Fluid_Container_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Fluid_Container_Access is access all Fluid_Container_Type;
-   type Pointer_To_Fluid_Container_Class is
-     access all Fluid_Container_Type'Class;
+   type Pointer_To_Fluid_Container_Class is access all Fluid_Container_Type'Class;
 
    procedure Create
      (Container : in out Fluid_Container_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID        : in     String  := "");
+      ID        : in     String := "");
 
-   procedure Make_Container
-     (View : in out Gnoga.Gui.View.View_Base_Type'Class);
+   procedure Make_Container (View : in out Gnoga.Gui.View.View_Base_Type'Class);
    --  Turns any existing View in to a container for Boot Strap
 
-   procedure Make_Fluid_Container
-     (View : in out Gnoga.Gui.View.View_Base_Type'Class);
+   procedure Make_Fluid_Container (View : in out Gnoga.Gui.View.View_Base_Type'Class);
    --  Make_Fluid_Container causes the View to span the entire parent Window
    --  width
 
@@ -118,13 +114,14 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Row    : in out Row_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String  := "");
+      ID     : in     String := "");
 
    type Device_Type is (Extra_Small, Small, Medium, Large);
 
-   procedure Set_Columns (View   : in out Gnoga.Gui.View.View_Base_Type'Class;
-                          Number : in     Natural;
-                          Device : in     Device_Type := Small);
+   procedure Set_Columns
+     (View   : in out Gnoga.Gui.View.View_Base_Type'Class;
+      Number : in     Natural;
+      Device : in     Device_Type := Small);
 
    type Jumbotron_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Jumbotron_Access is access all Jumbotron_Type;
@@ -133,8 +130,8 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Jumbotron : in out Jumbotron_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-      Content   : in     String  := "";
-      ID        : in     String  := "");
+      Content   : in     String := "";
+      ID        : in     String := "");
    --  Create a Jumbotron area with option Content
    --  A jumbotron is a huge grey background area and enlarged fonts to call
    --  attention to the contents.
@@ -158,10 +155,9 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    --  The Icon name is with out the glyphicon- prefix. See:
    --     http://www.w3schools.com/bootstrap/bootstrap_ref_comp_glyphs.asp
 
-   type Table_Type is new Gnoga.Gui.Element.Element_Type with
-      record
-         Table : Gnoga.Gui.Element.Table.Table_Type;
-      end record;
+   type Table_Type is new Gnoga.Gui.Element.Element_Type with record
+      Table : Gnoga.Gui.Element.Table.Table_Type;
+   end record;
    type Table_Access is access all Table_Type;
    type Pointer_To_Table_Class is access all Table_Type'Class;
 
@@ -186,12 +182,11 @@ package Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Form_Group : in out Form_Group_Type;
       Parent     : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID         : in     String  := "");
+      ID         : in     String := "");
    --  Form Groups are used to create proper spacing between form label
    --  and target. Each label and target should be wrapped in one form group.
 
-   procedure Make_Boot_Strap_Form_Item
-     (Element : in out Gnoga.Gui.Element.Form.Form_Element_Type'Class);
+   procedure Make_Boot_Strap_Form_Item (Element : in out Gnoga.Gui.Element.Form.Form_Element_Type'Class);
    --  Call for all form items of type:
    --     <input>, <textarea>, and <select>
 
@@ -201,11 +196,9 @@ package Gnoga.Gui.Plugin.Boot_Strap is
       ID      : in     String := "");
    --  Adds a help block that will display under Element
 
-   type Check_Box_Type is
-     new Gnoga.Gui.Element.Element_Type with
-      record
-         Box : Gnoga.Gui.Element.Form.Check_Box_Type;
-      end record;
+   type Check_Box_Type is new Gnoga.Gui.Element.Element_Type with record
+      Box : Gnoga.Gui.Element.Form.Check_Box_Type;
+   end record;
    type Check_Box_Access is access all Check_Box_Type;
    type Pointer_To_Check_Box_Class is access all Check_Box_Type'Class;
 
@@ -213,20 +206,19 @@ package Gnoga.Gui.Plugin.Boot_Strap is
      (Element : in out Check_Box_Type;
       Form    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
       Checked : in     Boolean := False;
-      Value   : in     String := "";
-      Name    : in     String := "";
-      ID      : in     String := "");
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "");
    --  Access the original checkbox directly using Element.Box
 
-   procedure Disabled (Element : in out Check_Box_Type;
-                       Value   : in     Boolean := True);
+   procedure Disabled
+     (Element : in out Check_Box_Type;
+      Value   : in     Boolean := True);
    --  Will toggle the "disabled" class and the Element.Box disabled
 
-   type Radio_Button_Type is
-     new Gnoga.Gui.Element.Element_Type with
-      record
-         Radio : Gnoga.Gui.Element.Form.Radio_Button_Type;
-      end record;
+   type Radio_Button_Type is new Gnoga.Gui.Element.Element_Type with record
+      Radio : Gnoga.Gui.Element.Form.Radio_Button_Type;
+   end record;
    type Radio_Button_Access is access all Radio_Button_Type;
    type Pointer_To_Radio_Button_Class is access all Radio_Button_Type'Class;
 
@@ -234,18 +226,18 @@ package Gnoga.Gui.Plugin.Boot_Strap is
      (Element : in out Radio_Button_Type;
       Form    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
       Checked : in     Boolean := False;
-      Value   : in     String := "";
-      Name    : in     String := "";
-      ID      : in     String := "");
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "");
    --  Access the original radio button directly using Element.Radio
 
-   procedure Disabled (Element : in out Radio_Button_Type;
-                       Value   : in     Boolean := True);
+   procedure Disabled
+     (Element : in out Radio_Button_Type;
+      Value   : in     Boolean := True);
    --  Will toggle the "disabled" class and the Element.Radio disabled
 private
    type Container_Type is new Gnoga.Gui.View.View_Base_Type with null record;
-   type Fluid_Container_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
+   type Fluid_Container_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Row_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Jumbotron_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Form_Group_Type is new Gnoga.Gui.View.View_Base_Type with null record;

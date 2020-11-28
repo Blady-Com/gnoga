@@ -44,9 +44,9 @@ package body Gnoga.Gui.Element.List is
    ------------
 
    procedure Create
-     (List    : in out Ordered_List_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "")
+     (List   : in out Ordered_List_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       List.Create_From_HTML (Parent, "<ol />", ID);
@@ -60,16 +60,20 @@ package body Gnoga.Gui.Element.List is
      (List  : in out Ordered_List_Type;
       Value : in     List_Kind_Type)
    is
-      function Adjusted_Image (S : String) return String;
+      function Adjusted_Image
+        (S : String)
+         return String;
 
-      function Adjusted_Image (S : String) return String is
+      function Adjusted_Image
+        (S : String)
+         return String
+      is
          P : constant Integer := Ada.Strings.Fixed.Index (S, "_");
       begin
          if P = 0 then
             return S;
          else
-            return Adjusted_Image (S (S'First .. (P - 1)) &
-                                     "-" & S ((P + 1) .. S'Last));
+            return Adjusted_Image (S (S'First .. (P - 1)) & "-" & S ((P + 1) .. S'Last));
          end if;
       end Adjusted_Image;
    begin
@@ -92,11 +96,10 @@ package body Gnoga.Gui.Element.List is
    -- Create --
    ------------
 
-   overriding
-   procedure Create
-     (List    : in out Unordered_List_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "")
+   overriding procedure Create
+     (List   : in out Unordered_List_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       List.Create_From_HTML (Parent, "<ul />", ID);
@@ -113,20 +116,25 @@ package body Gnoga.Gui.Element.List is
       ID     : in     String := "")
    is
    begin
-      Item.Create_From_HTML
-        (Parent, "<li>" & Escape_Quotes (Text) & "</li>", ID);
+      Item.Create_From_HTML (Parent, "<li>" & Escape_Quotes (Text) & "</li>", ID);
    end Create;
 
    -----------
    -- Value --
    -----------
 
-   procedure Value (Element : in out List_Item_Type; Value : in String) is
+   procedure Value
+     (Element : in out List_Item_Type;
+      Value   : in     String)
+   is
    begin
       Element.Property ("value", Value);
    end Value;
 
-   function Value (Element : List_Item_Type) return String is
+   function Value
+     (Element : List_Item_Type)
+      return String
+   is
    begin
       return Element.Property ("value");
    end Value;
@@ -136,9 +144,9 @@ package body Gnoga.Gui.Element.List is
    ------------
 
    procedure Create
-     (List    : in out Definition_List_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "")
+     (List   : in out Definition_List_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       List.Create_From_HTML (Parent, "<dl />", ID);
@@ -155,8 +163,7 @@ package body Gnoga.Gui.Element.List is
       ID     : in     String := "")
    is
    begin
-      Item.Create_From_HTML
-        (Parent, "<dt>" & Escape_Quotes (Text) & "</dt>", ID);
+      Item.Create_From_HTML (Parent, "<dt>" & Escape_Quotes (Text) & "</dt>", ID);
    end Create;
 
    ------------
@@ -170,8 +177,7 @@ package body Gnoga.Gui.Element.List is
       ID     : in     String := "")
    is
    begin
-      Item.Create_From_HTML
-        (Parent, "<dd>" & Escape_Quotes (Text) & "</dd>", ID);
+      Item.Create_From_HTML (Parent, "<dd>" & Escape_Quotes (Text) & "</dd>", ID);
    end Create;
 
 end Gnoga.Gui.Element.List;

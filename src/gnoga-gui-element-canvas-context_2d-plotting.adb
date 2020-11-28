@@ -37,19 +37,19 @@
 ------------------------------------------------------------------------------
 
 package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
-   procedure Create (Plot   : in out Plot_Info;
-                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Width  : in     Positive;
-                     Height : in     Positive;
-                     X_Min  : in     Float;
-                     X_Max  : in     Float;
-                     Y_Min  : in     Float;
-                     Y_Max  : in     Float;
-                     ID     : in     String := "")
+   procedure Create
+     (Plot   : in out Plot_Info;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Width  : in     Positive;
+      Height : in     Positive;
+      X_Min  : in     Float;
+      X_Max  : in     Float;
+      Y_Min  : in     Float;
+      Y_Max  : in     Float;
+      ID     : in     String := "")
    is
    begin -- Create
-      Canvas_Type (Plot).Create
-   (Parent => Parent, Width => Width, Height => Height, ID => ID);
+      Canvas_Type (Plot).Create (Parent => Parent, Width => Width, Height => Height, ID => ID);
       Plot.X_Min   := Float'Min (X_Min, X_Max);
       Plot.X_Max   := Float'Max (X_Min, X_Max);
       Plot.Y_Min   := Float'Min (Y_Min, Y_Max);
@@ -58,19 +58,28 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       Plot.Y_Scale := Float (Height) / (Plot.Y_Max - Plot.Y_Min);
    end Create;
 
-   function Scale_X (Plot : Plot_Info; X : Float) return Integer is
+   function Scale_X
+     (Plot : Plot_Info;
+      X    : Float)
+      return Integer
+   is
    begin -- Scale_X
       return Integer (Plot.X_Scale * (X - Plot.X_Min));
    end Scale_X;
 
-   function Scale_Y (Plot : Plot_Info; Y : Float) return Integer is
+   function Scale_Y
+     (Plot : Plot_Info;
+      Y    : Float)
+      return Integer
+   is
    begin -- Scale_Y
       return Plot.Height - Integer (Plot.Y_Scale * (Y - Plot.Y_Min));
    end Scale_Y;
 
-   procedure Point (Plot     : in out Plot_Info;
-          Position : in     Plot_Point;
-          Color    : in     Gnoga.Types.RGBA_Type := Black)
+   procedure Point
+     (Plot     : in out Plot_Info;
+      Position : in     Plot_Point;
+      Color    : in     Gnoga.Types.RGBA_Type := Black)
    is
       Dummy_Context : Context_2D_Type;
    begin -- Point
@@ -79,37 +88,36 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       Dummy_Context.Stroke_Color (Value => Color);
       Dummy_Context.Fill_Color (Value => Color);
       Dummy_Context.Line_Width (Value => 1);
-      Dummy_Context.Arc_Degrees (X              => Plot.Scale_X (Position.X),
-                           Y              => Plot.Scale_Y (Position.Y),
-                           Radius         => 2,
-                           Starting_Angle => 0.0,
-                           Ending_Angle   => 360.0);
+      Dummy_Context.Arc_Degrees
+        (X            => Plot.Scale_X (Position.X), Y => Plot.Scale_Y (Position.Y), Radius => 2, Starting_Angle => 0.0,
+         Ending_Angle => 360.0);
       Dummy_Context.Fill;
    end Point;
 
-   procedure Point (Plot     : in out Plot_Info;
-          Position : in     Plot_Point;
-          Color    : in     String)
+   procedure Point
+     (Plot     : in out Plot_Info;
+      Position : in     Plot_Point;
+      Color    : in     String)
    is
    begin -- Point
-      Plot.Point (Position => Position,
-        Color    => Gnoga.Types.Colors.To_RGBA
-          (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
+      Plot.Point
+        (Position => Position, Color => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
    end Point;
 
-   procedure Point (Plot     : in out Plot_Info;
-                    Position : in     Plot_Point;
-                    Color    : in     Gnoga.Types.Colors.Color_Enumeration)
+   procedure Point
+     (Plot     : in out Plot_Info;
+      Position : in     Plot_Point;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin -- Point
-      Plot.Point (Position => Position,
-        Color    => Gnoga.Types.Colors.To_RGBA (Color));
+      Plot.Point (Position => Position, Color => Gnoga.Types.Colors.To_RGBA (Color));
    end Point;
 
-   procedure Line (Plot  : in out Plot_Info;
-         From  : in     Plot_Point;
-         To    : in     Plot_Point;
-         Color : in Gnoga.Types.RGBA_Type := Black)
+   procedure Line
+     (Plot  : in out Plot_Info;
+      From  : in     Plot_Point;
+      To    : in     Plot_Point;
+      Color : in     Gnoga.Types.RGBA_Type := Black)
    is
       Dummy_Context : Context_2D_Type;
    begin -- Line
@@ -121,33 +129,32 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       Dummy_Context.Stroke;
    end Line;
 
-   procedure Line (Plot  : in out Plot_Info;
-         From  : in     Plot_Point;
-         To    : in     Plot_Point;
-         Color : in     String)
+   procedure Line
+     (Plot  : in out Plot_Info;
+      From  : in     Plot_Point;
+      To    : in     Plot_Point;
+      Color : in     String)
    is
    begin -- Line
-      Plot.Line (From  => From,
-       To    => To,
-       Color => Gnoga.Types.Colors.To_RGBA
-         (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
+      Plot.Line
+        (From => From, To => To, Color => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
    end Line;
 
-   procedure Line (Plot  : in out Plot_Info;
-                   From  : in     Plot_Point;
-                   To    : in     Plot_Point;
-                   Color : in     Gnoga.Types.Colors.Color_Enumeration)
+   procedure Line
+     (Plot  : in out Plot_Info;
+      From  : in     Plot_Point;
+      To    : in     Plot_Point;
+      Color : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin -- Line
-      Plot.Line (From  => From,
-       To    => To,
-       Color => Gnoga.Types.Colors.To_RGBA (Color));
+      Plot.Line (From => From, To => To, Color => Gnoga.Types.Colors.To_RGBA (Color));
    end Line;
 
-   procedure X_Axis (Plot     : in out Plot_Info;
-           Interval : in     Positive_Float;
-           Length   : in     Positive;
-           Color    : in     Gnoga.Types.RGBA_Type := Black)
+   procedure X_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.RGBA_Type := Black)
    is
       Y : constant Integer := Plot.Scale_Y (0.0);
 
@@ -155,12 +162,12 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       X       : Integer;
       Point   : Float;
    begin -- X_Axis
-      Plot.Line (From => (X => Plot.X_Min, Y => 0.0),
-       To   => (X => Plot.X_Max, Y => 0.0), Color => Color);
+      Plot.Line (From => (X => Plot.X_Min, Y => 0.0), To => (X => Plot.X_Max, Y => 0.0), Color => Color);
       Context.Get_Drawing_Context_2D (Canvas => Plot);
       Point := Interval;
 
-      Plus : loop
+      Plus :
+      loop
          exit Plus when Point > Plot.X_Max;
 
          X := Plot.Scale_X (Point);
@@ -174,7 +181,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
 
       Point := -Interval;
 
-      Minus : loop
+      Minus :
+      loop
          exit Minus when Point < Plot.X_Min;
 
          X := Plot.Scale_X (Point);
@@ -187,33 +195,33 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       end loop Minus;
    end X_Axis;
 
-   procedure X_Axis (Plot     : in out Plot_Info;
-           Interval : in     Positive_Float;
-           Length   : in     Positive;
-           Color    : in     String)
+   procedure X_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     String)
    is
    begin -- X_Axis
-      Plot.X_Axis (Interval => Interval,
-                   Length   => Length,
-                   Color    => Gnoga.Types.Colors.To_RGBA
-           (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
+      Plot.X_Axis
+        (Interval => Interval, Length => Length,
+         Color    => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
    end X_Axis;
 
-   procedure X_Axis (Plot     : in out Plot_Info;
-                     Interval : in     Positive_Float;
-                     Length   : in     Positive;
-                     Color    : in     Gnoga.Types.Colors.Color_Enumeration)
+   procedure X_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin -- X_Axis
-      Plot.X_Axis (Interval => Interval,
-         Length   => Length,
-         Color     => Gnoga.Types.Colors.To_RGBA (Color));
+      Plot.X_Axis (Interval => Interval, Length => Length, Color => Gnoga.Types.Colors.To_RGBA (Color));
    end X_Axis;
 
-   procedure Y_Axis (Plot     : in out Plot_Info;
-           Interval : in     Positive_Float;
-           Length   : in     Positive;
-           Color    : in     Gnoga.Types.RGBA_Type := Black)
+   procedure Y_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.RGBA_Type := Black)
    is
       X : constant Integer := Plot.Scale_X (0.0);
 
@@ -221,13 +229,12 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       Y       : Integer;
       Point   : Float;
    begin -- Y_Axis
-      Plot.Line (From  => (X => 0.0, Y => Plot.Y_Min),
-       To    => (X => 0.0, Y => Plot.Y_Max),
-       Color => Color);
+      Plot.Line (From => (X => 0.0, Y => Plot.Y_Min), To => (X => 0.0, Y => Plot.Y_Max), Color => Color);
       Context.Get_Drawing_Context_2D (Canvas => Plot);
       Point := Interval;
 
-      Plus : loop
+      Plus :
+      loop
          exit Plus when Point > Plot.Y_Max;
 
          Y := Plot.Scale_Y (Point);
@@ -241,7 +248,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
 
       Point := -Interval;
 
-      Minus : loop
+      Minus :
+      loop
          exit Minus when Point < Plot.Y_Min;
 
          Y := Plot.Scale_Y (Point);
@@ -254,69 +262,74 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       end loop Minus;
    end Y_Axis;
 
-   procedure Y_Axis (Plot     : in out Plot_Info;
-           Interval : in     Positive_Float;
-           Length   : in     Positive;
-           Color    : in     String)
+   procedure Y_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     String)
    is
    begin -- Y_Axis
-      Plot.Y_Axis (Interval => Interval,
-                   Length   => Length,
-                   Color    => Gnoga.Types.Colors.To_RGBA
-           (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
+      Plot.Y_Axis
+        (Interval => Interval, Length => Length,
+         Color    => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
    end Y_Axis;
 
-   procedure Y_Axis (Plot     : in out Plot_Info;
-                     Interval : in     Positive_Float;
-                     Length   : in     Positive;
-                     Color    : in     Gnoga.Types.Colors.Color_Enumeration)
+   procedure Y_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin -- Y_Axis
-      Plot.Y_Axis (Interval => Interval,
-         Length   => Length,
-         Color    => Gnoga.Types.Colors.To_RGBA (Color));
+      Plot.Y_Axis (Interval => Interval, Length => Length, Color => Gnoga.Types.Colors.To_RGBA (Color));
    end Y_Axis;
 
-   procedure Axes (Plot     : in out Plot_Info;
-         Interval : in     Positive_Float;
-         Length   : in     Positive;
-         Color    : in     Gnoga.Types.RGBA_Type := Black)
+   procedure Axes
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.RGBA_Type := Black)
    is
    begin -- Axes
       Plot.X_Axis (Interval => Interval, Length => Length, Color => Color);
       Plot.Y_Axis (Interval => Interval, Length => Length, Color => Color);
    end Axes;
 
-   procedure Axes (Plot     : in out Plot_Info;
-         Interval : in Positive_Float;
-         Length   : in Positive;
-         Color    : in String)
+   procedure Axes
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     String)
    is
    begin -- Axes
-      Plot.Axes (Interval => Interval,
-                 Length   => Length,
-                 Color    => Gnoga.Types.Colors.To_RGBA
-         (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
+      Plot.Axes
+        (Interval => Interval, Length => Length,
+         Color    => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
    end Axes;
 
-   procedure Axes (Plot     : in out Plot_Info;
-                   Interval : in     Positive_Float;
-                   Length   : in     Positive;
-                   Color    : in     Gnoga.Types.Colors.Color_Enumeration)
+   procedure Axes
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin -- Axes
-      Plot.Axes (Interval => Interval,
-       Length   => Length,
-       Color    => Gnoga.Types.Colors.To_RGBA (Color));
+      Plot.Axes (Interval => Interval, Length => Length, Color => Gnoga.Types.Colors.To_RGBA (Color));
    end Axes;
 
-   procedure Graph (Plot  : in out Plot_Info;
-                    List  : in     Point_List;
-                    Color : in     Gnoga.Types.RGBA_Type := Black)
+   procedure Graph
+     (Plot  : in out Plot_Info;
+      List  : in     Point_List;
+      Color : in     Gnoga.Types.RGBA_Type := Black)
    is
       Dummy_Context : Context_2D_Type;
-      function Scale (List : Point_List) return Gnoga.Types.Point_Array_Type;
-      function Scale (List : Point_List) return Gnoga.Types.Point_Array_Type is
+      function Scale
+        (List : Point_List)
+         return Gnoga.Types.Point_Array_Type;
+      function Scale
+        (List : Point_List)
+         return Gnoga.Types.Point_Array_Type
+      is
          Scaled_List : Gnoga.Types.Point_Array_Type (List'Range);
       begin
          for Ind in List'Range loop
@@ -335,19 +348,20 @@ package body Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
       Dummy_Context.Stroke;
    end Graph;
 
-   procedure Graph (Plot  : in out Plot_Info;
-          List  : in     Point_List;
-          Color : in     String)
+   procedure Graph
+     (Plot  : in out Plot_Info;
+      List  : in     Point_List;
+      Color : in     String)
    is
    begin -- Graph
-      Plot.Graph (List  => List,
-        Color => Gnoga.Types.Colors.To_RGBA
-          (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
+      Plot.Graph (List => List, Color => Gnoga.Types.Colors.To_RGBA (Gnoga.Types.Colors.To_Color_Enumeration (Color)));
    end Graph;
 
-   procedure Graph (Plot  : in out Plot_Info;
-          List  : in     Point_List;
-          Color : in     Gnoga.Types.Colors.Color_Enumeration) is
+   procedure Graph
+     (Plot  : in out Plot_Info;
+      List  : in     Point_List;
+      Color : in     Gnoga.Types.Colors.Color_Enumeration)
+   is
    begin -- Graph
       Plot.Graph (List => List, Color => Gnoga.Types.Colors.To_RGBA (Color));
    end Graph;

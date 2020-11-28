@@ -53,14 +53,14 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    type Accordion_Access is access all Accordion_Type;
    type Pointer_To_Accordion_Class is access all Accordion_Type'Class;
 
-   overriding
-   procedure Create
-     (View    : in out Accordion_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "");
+   overriding procedure Create
+     (View   : in out Accordion_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
 
    procedure Create_Section
-     (View : in out Accordion_Type; Heading : String);
+     (View    : in out Accordion_Type;
+      Heading :        String);
    --  Create an accordion section this should be followed up immediately
    --  with the creation of another View_Base_Type'Class with View as the
    --  parent for each section.
@@ -89,8 +89,7 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    --  will be single press buttons. A Check_Box_Types will become a
    --  toggle button.
 
-   procedure Make_Button_Set
-     (View : in out Gnoga.Gui.View.View_Base_Type'Class);
+   procedure Make_Button_Set (View : in out Gnoga.Gui.View.View_Base_Type'Class);
    --  Turn a view (no need to call Make_Button on each item) full of
    --  Check_Box_Types Boxes or Radio_Button_Types in to a set of
    --  toggles or one per set toggles.
@@ -137,18 +136,22 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
 
    procedure Move_To_Top (Dialog : in out Dialog_Type);
 
-   function Is_Open (Dialog : in out Dialog_Type) return Boolean;
+   function Is_Open
+     (Dialog : in out Dialog_Type)
+      return Boolean;
 
    -------------------------------------------------------------------------
    --  Dialog_Type - Event Handlers
    -------------------------------------------------------------------------
 
-   procedure On_Open_Handler (Dialog  : in out Dialog_Type;
-                               Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure On_Open_Handler
+     (Dialog  : in out Dialog_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Open (Dialog : in out Dialog_Type);
 
-   procedure On_Close_Handler (Dialog  : in out Dialog_Type;
-                               Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure On_Close_Handler
+     (Dialog  : in out Dialog_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Close (Dialog : in out Dialog_Type);
 
    -------------------------------------------------------------------------
@@ -160,10 +163,10 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    --
    --  The jQueryUI dialogresizestop event is also bound to fire On_Resize
 
-   overriding
-   procedure On_Message (Object  : in out Dialog_Type;
-                         Event   : in     String;
-                         Message : in     String);
+   overriding procedure On_Message
+     (Object  : in out Dialog_Type;
+      Event   : in     String;
+      Message : in     String);
 
    -------------------------------------------------------------------------
    --  jQuery Progress Bar
@@ -173,29 +176,31 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    type Progress_Bar_Access is access all Progress_Bar_Type;
    type Pointer_To_Progress_Bar_Class is access all Progress_Bar_Type'Class;
 
-   procedure Create (Progress_Bar : in out Progress_Bar_Type;
-                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Value        : in     Integer := 0;
-                     Maximum      : in     Integer := 100;
-                     ID           : in     String := "");
+   procedure Create
+     (Progress_Bar : in out Progress_Bar_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Value        : in     Integer := 0;
+      Maximum      : in     Integer := 100;
+      ID           : in     String  := "");
 
-   procedure Value (Progress_Bar : in out Progress_Bar_Type;
-                    Value        : in     Integer);
-   function Value (Progress_Bar : Progress_Bar_Type) return Integer;
+   procedure Value
+     (Progress_Bar : in out Progress_Bar_Type;
+      Value        : in     Integer);
+   function Value
+     (Progress_Bar : Progress_Bar_Type)
+      return Integer;
 
    -------------------------------------------------------------------------
    --  jQueryUI Menus
    -------------------------------------------------------------------------
 
-   procedure Make_Menu
-     (List : in out Gnoga.Gui.Element.List.Unordered_List_Type'Class);
+   procedure Make_Menu (List : in out Gnoga.Gui.Element.List.Unordered_List_Type'Class);
 
    -------------------------------------------------------------------------
    --  jQueryUI Select Menu
    -------------------------------------------------------------------------
 
-   procedure Make_Select_Menu
-     (Element : in out Gnoga.Gui.Element.Form.Selection_Type'Class);
+   procedure Make_Select_Menu (Element : in out Gnoga.Gui.Element.Form.Selection_Type'Class);
 
    --  jQueryUI Spinner is not bound, use instead
    --     Gnoga.Gui.Element.Form.Range_Type
@@ -208,13 +213,15 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    type Tabs_Access is access all Tabs_Type;
    type Pointer_To_Tabs_Class is access all Tabs_Type'Class;
 
-   procedure Create (Tabs   : in out Tabs_Type;
-                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-                     ID     : in     String := "");
+   procedure Create
+     (Tabs   : in out Tabs_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
 
-   procedure Add_Tab (Tabs  : in out Tabs_Type;
-                      Label : in     String;
-                      View  : in out Gui.View.View_Base_Type'Class);
+   procedure Add_Tab
+     (Tabs  : in out Tabs_Type;
+      Label : in     String;
+      View  : in out Gui.View.View_Base_Type'Class);
 
    procedure Render_Tabs (Tabs : in out Tabs_Type);
    --  Call after all tabs added
@@ -223,8 +230,7 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
    --  jQueryUI Tool Tips
    -------------------------------------------------------------------------
 
-   procedure Turn_On_Tool_Tips
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class);
+   procedure Turn_On_Tool_Tips (Window : in out Gnoga.Gui.Window.Window_Type'Class);
 
    procedure Add_Tool_Tip
      (Element : in out Gnoga.Gui.Element.Element_Type'Class;
@@ -233,18 +239,15 @@ package Gnoga.Gui.Plugin.jQueryUI.Widget is
 private
    type Accordion_Type is new Gnoga.Gui.View.View_Type with null record;
 
-   type Dialog_Type is new Gnoga.Gui.View.View_Base_Type with
-      record
-         On_Open_Event  : Gnoga.Gui.Base.Action_Event := null;
-         On_Close_Event : Gnoga.Gui.Base.Action_Event := null;
-      end record;
+   type Dialog_Type is new Gnoga.Gui.View.View_Base_Type with record
+      On_Open_Event  : Gnoga.Gui.Base.Action_Event := null;
+      On_Close_Event : Gnoga.Gui.Base.Action_Event := null;
+   end record;
 
-   type Tabs_Type is new Gnoga.Gui.View.View_Base_Type with
-      record
-         Labels : Gnoga.Gui.Element.Element_Type;
-      end record;
+   type Tabs_Type is new Gnoga.Gui.View.View_Base_Type with record
+      Labels : Gnoga.Gui.Element.Element_Type;
+   end record;
 
-   type Progress_Bar_Type is
-     new Gnoga.Gui.Element.Element_Type with null record;
+   type Progress_Bar_Type is new Gnoga.Gui.Element.Element_Type with null record;
 
 end Gnoga.Gui.Plugin.jQueryUI.Widget;

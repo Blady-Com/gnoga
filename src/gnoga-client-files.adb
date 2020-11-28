@@ -51,15 +51,17 @@ package body Gnoga.Client.Files is
       GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Reader.Create_With_Script
-        (Window.Connection_ID, GID, "gnoga['" & GID & "'] = new FileReader()",
-         Gnoga.Types.Gnoga_ID);
+        (Window.Connection_ID, GID, "gnoga['" & GID & "'] = new FileReader()", Gnoga.Types.Gnoga_ID);
    end Create;
 
    ----------------
    -- Error_Code --
    ----------------
 
-   function Error_Code (Reader : File_Reader_Type) return Integer is
+   function Error_Code
+     (Reader : File_Reader_Type)
+      return Integer
+   is
    begin
       if Reader.Property ("error") /= "null" then
          return Reader.jQuery_Execute ("prop ('error').code");
@@ -72,7 +74,10 @@ package body Gnoga.Client.Files is
    -- Error_Message --
    -------------------
 
-   function Error_Message (Reader : File_Reader_Type) return String is
+   function Error_Message
+     (Reader : File_Reader_Type)
+      return String
+   is
    begin
       if Reader.Property ("error") /= "null" then
          return Reader.jQuery_Execute ("prop ('error').message");
@@ -85,7 +90,10 @@ package body Gnoga.Client.Files is
    -- Error_Name --
    ----------------
 
-   function Error_Name (Reader : File_Reader_Type) return String is
+   function Error_Name
+     (Reader : File_Reader_Type)
+      return String
+   is
    begin
       if Reader.Property ("error") /= "null" then
          return Reader.jQuery_Execute ("prop ('error').name");
@@ -98,7 +106,10 @@ package body Gnoga.Client.Files is
    -- State --
    -----------
 
-   function State (Reader : File_Reader_Type) return State_Type is
+   function State
+     (Reader : File_Reader_Type)
+      return State_Type
+   is
    begin
       return State_Type'Val (Reader.Property ("readyState"));
    end State;
@@ -107,7 +118,10 @@ package body Gnoga.Client.Files is
    -- Content --
    -------------
 
-   function Content (Reader : File_Reader_Type) return String is
+   function Content
+     (Reader : File_Reader_Type)
+      return String
+   is
    begin
       return Reader.Property ("result");
    end Content;
@@ -131,9 +145,7 @@ package body Gnoga.Client.Files is
       Index  : in     Positive := 1)
    is
    begin
-      Reader.Execute
-        ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" &
-         Natural'Image (Index - 1) & "])");
+      Reader.Execute ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" & Natural'Image (Index - 1) & "])");
    end Transfert_As_Binary;
 
    -----------------------
@@ -141,14 +153,15 @@ package body Gnoga.Client.Files is
    -----------------------
 
    procedure Transfert_As_Text
-     (Reader : in out File_Reader_Type;
-      Files  : in     Gnoga.Gui.Element.Form.File_Type'class;
-      Index  : in     Positive := 1; Encoding : in String := "UTF-8")
+     (Reader   : in out File_Reader_Type;
+      Files    : in     Gnoga.Gui.Element.Form.File_Type'class;
+      Index    : in     Positive := 1;
+      Encoding : in     String   := "UTF-8")
    is
    begin
       Reader.Execute
-        ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" &
-         Natural'Image (Index - 1) & "],'" & Encoding & "')");
+        ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" & Natural'Image (Index - 1) & "],'" & Encoding &
+         "')");
    end Transfert_As_Text;
 
    --------------
@@ -156,7 +169,8 @@ package body Gnoga.Client.Files is
    --------------
 
    procedure On_Abort_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event)
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event)
    is
    begin
       if Reader.On_Abort_Event /= null then
@@ -171,7 +185,8 @@ package body Gnoga.Client.Files is
    end On_Abort_Handler;
 
    procedure Fire_On_Abort
-     (Reader : in out File_Reader_Type; Event : in String)
+     (Reader : in out File_Reader_Type;
+      Event  : in     String)
    is
    begin
       if Reader.On_Abort_Event /= null then
@@ -184,7 +199,8 @@ package body Gnoga.Client.Files is
    ---------------
 
    procedure On_Error_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event)
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event)
    is
    begin
       if Reader.On_Error_Event /= null then
@@ -199,7 +215,8 @@ package body Gnoga.Client.Files is
    end On_Error_Handler;
 
    procedure Fire_On_Error
-     (Reader : in out File_Reader_Type; Event : in String)
+     (Reader : in out File_Reader_Type;
+      Event  : in     String)
    is
    begin
       if Reader.On_Error_Event /= null then
@@ -212,7 +229,8 @@ package body Gnoga.Client.Files is
    -------------
 
    procedure On_Load_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event)
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event)
    is
    begin
       if Reader.On_Load_Event /= null then
@@ -226,7 +244,9 @@ package body Gnoga.Client.Files is
       end if;
    end On_Load_Handler;
 
-   procedure Fire_On_Load (Reader : in out File_Reader_Type; Event : in String)
+   procedure Fire_On_Load
+     (Reader : in out File_Reader_Type;
+      Event  : in     String)
    is
    begin
       if Reader.On_Load_Event /= null then
@@ -239,7 +259,8 @@ package body Gnoga.Client.Files is
    ------------------
 
    procedure On_Load_End_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event)
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event)
    is
    begin
       if Reader.On_Load_End_Event /= null then
@@ -254,7 +275,8 @@ package body Gnoga.Client.Files is
    end On_Load_End_Handler;
 
    procedure Fire_On_Load_End
-     (Reader : in out File_Reader_Type; Event : in String)
+     (Reader : in out File_Reader_Type;
+      Event  : in     String)
    is
    begin
       if Reader.On_Load_End_Event /= null then
@@ -267,7 +289,8 @@ package body Gnoga.Client.Files is
    -------------------
 
    procedure On_Load_Start_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event)
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event)
    is
    begin
       if Reader.On_Load_Start_Event /= null then
@@ -282,7 +305,8 @@ package body Gnoga.Client.Files is
    end On_Load_Start_Handler;
 
    procedure Fire_On_Load_Start
-     (Reader : in out File_Reader_Type; Event : in String)
+     (Reader : in out File_Reader_Type;
+      Event  : in     String)
    is
    begin
       if Reader.On_Load_Start_Event /= null then
@@ -295,7 +319,8 @@ package body Gnoga.Client.Files is
    -----------------
 
    procedure On_Progress_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event)
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event)
    is
    begin
       if Reader.On_Progress_Event /= null then
@@ -310,7 +335,8 @@ package body Gnoga.Client.Files is
    end On_Progress_Handler;
 
    procedure Fire_On_Progress
-     (Reader : in out File_Reader_Type; Event : in String)
+     (Reader : in out File_Reader_Type;
+      Event  : in     String)
    is
    begin
       if Reader.On_Progress_Event /= null then
@@ -323,7 +349,9 @@ package body Gnoga.Client.Files is
    ----------------
 
    overriding procedure On_Message
-     (Reader : in out File_Reader_Type; Event : in String; Message : in String)
+     (Reader  : in out File_Reader_Type;
+      Event   : in     String;
+      Message : in     String)
    is
    begin
       -- Reader Event --

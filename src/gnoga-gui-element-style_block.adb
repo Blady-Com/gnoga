@@ -44,13 +44,11 @@ package body Gnoga.Gui.Element.Style_Block is
    procedure Create
      (Style   : in out Style_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      Content : in     String  := "";
-      ID      : in     String  := "")
+      Content : in     String := "";
+      ID      : in     String := "")
    is
    begin
-      Style.Create_From_HTML (Parent,
-                              "<style>" & Escape_Quotes (Content) & "</style>",
-                              ID);
+      Style.Create_From_HTML (Parent, "<style>" & Escape_Quotes (Content) & "</style>", ID);
    end Create;
 
    ---------------

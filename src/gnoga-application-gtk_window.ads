@@ -37,9 +37,10 @@
 
 package Gnoga.Application.Gtk_Window is
 
-   procedure Initialize (Port   : Integer := 8080;
-                         Width  : Integer := 1024;
-                         Height : Integer := 600);
+   procedure Initialize
+     (Port   : Integer := 8_080;
+      Width  : Integer := 1_024;
+      Height : Integer := 600);
    --  Display native Gtk window with an embedded WebKit2Gtk widget and
    --  connect the widget back to the application localhost on Port. Port
    --  should match the port used to initialize the application.

@@ -53,33 +53,29 @@ package body Gnoga.Gui.Document is
          raise Invalid_ID_Type;
       end if;
 
-      Base.Attach (Object        => Base.Base_Type (Document),
-                   Connection_ID => Connection_ID,
-                   ID            => Base.Script_Accessor (ID, ID_Type) &
-                     ".document",
-                   ID_Type       => Gnoga.Types.Script);
+      Base.Attach
+        (Object => Base.Base_Type (Document), Connection_ID => Connection_ID,
+         ID     => Base.Script_Accessor (ID, ID_Type) & ".document", ID_Type => Gnoga.Types.Script);
 
-      Document.DOM_HTML.Attach (Connection_ID => Connection_ID,
-                                ID            => Document.Script_Accessor &
-                                  ".documentElement",
-                                ID_Type       => Gnoga.Types.Script);
+      Document.DOM_HTML.Attach
+        (Connection_ID => Connection_ID, ID => Document.Script_Accessor & ".documentElement",
+         ID_Type       => Gnoga.Types.Script);
 
-      Document.DOM_Head.Attach (Connection_ID => Connection_ID,
-                                ID            => Document.Script_Accessor &
-                                  ".head",
-                                ID_Type       => Gnoga.Types.Script);
+      Document.DOM_Head.Attach
+        (Connection_ID => Connection_ID, ID => Document.Script_Accessor & ".head", ID_Type => Gnoga.Types.Script);
 
-      Document.DOM_Body.Attach (Connection_ID => Connection_ID,
-                                ID            => Document.Script_Accessor &
-                                  ".body",
-                                ID_Type       => Gnoga.Types.Script);
+      Document.DOM_Body.Attach
+        (Connection_ID => Connection_ID, ID => Document.Script_Accessor & ".body", ID_Type => Gnoga.Types.Script);
    end Attach;
 
    ------------
    -- Domain --
    ------------
 
-   function Domain (Document : Document_Type) return String is
+   function Domain
+     (Document : Document_Type)
+      return String
+   is
    begin
       return Document.Property ("domain");
    end Domain;
@@ -88,7 +84,10 @@ package body Gnoga.Gui.Document is
    -- Input_Encoding --
    --------------------
 
-   function Input_Encoding (Document : Document_Type) return String is
+   function Input_Encoding
+     (Document : Document_Type)
+      return String
+   is
    begin
       return Document.Property ("inputEncoding");
    end Input_Encoding;
@@ -97,7 +96,10 @@ package body Gnoga.Gui.Document is
    -- Last_Modified --
    -------------------
 
-   function Last_Modified (Document : Document_Type) return String is
+   function Last_Modified
+     (Document : Document_Type)
+      return String
+   is
    begin
       return Document.Property ("lastModified");
    end Last_Modified;
@@ -106,7 +108,10 @@ package body Gnoga.Gui.Document is
    -- Referer --
    -------------
 
-   function Referrer (Document : Document_Type) return String is
+   function Referrer
+     (Document : Document_Type)
+      return String
+   is
    begin
       return Document.Property ("referrer");
    end Referrer;
@@ -115,12 +120,18 @@ package body Gnoga.Gui.Document is
    -- Title --
    -----------
 
-   procedure Title (Document : in out Document_Type; Value : String) is
+   procedure Title
+     (Document : in out Document_Type;
+      Value    :        String)
+   is
    begin
       Document.Property ("title", Value);
    end Title;
 
-   function Title (Document : Document_Type) return String is
+   function Title
+     (Document : Document_Type)
+      return String
+   is
    begin
       return Document.Property ("title");
    end Title;
@@ -129,7 +140,10 @@ package body Gnoga.Gui.Document is
    -- URL --
    ---------
 
-   function URL (Document : Document_Type) return String is
+   function URL
+     (Document : Document_Type)
+      return String
+   is
    begin
       return Document.Property ("URL");
    end URL;
@@ -174,8 +188,9 @@ package body Gnoga.Gui.Document is
    -- Ready_State --
    -----------------
 
-   function Ready_State (Document : Document_Type)
-                         return Ready_State_Type
+   function Ready_State
+     (Document : Document_Type)
+      return Ready_State_Type
    is
    begin
       return Ready_State_Type'Value (Document.Property ("readyState"));
@@ -185,18 +200,23 @@ package body Gnoga.Gui.Document is
    -- Load_CSS --
    --------------
 
-   procedure Load_CSS (Document : in out Document_Type; URL : String) is
+   procedure Load_CSS
+     (Document : in out Document_Type;
+      URL      :        String)
+   is
    begin
       Document.Head_Element.jQuery_Execute
-        ("append('" & Escape_Quotes ("<link rel='stylesheet' " &
-           "href='" & URL & "' type='text/css'>'") & "')");
+        ("append('" & Escape_Quotes ("<link rel='stylesheet' " & "href='" & URL & "' type='text/css'>'") & "')");
    end Load_CSS;
 
    -----------
    -- Write --
    -----------
 
-   procedure Write (Document : in out Document_Type; Value : String) is
+   procedure Write
+     (Document : in out Document_Type;
+      Value    :        String)
+   is
    begin
       Document.Execute ("write('" & Escape_Quotes (Value) & "');");
    end Write;
@@ -205,7 +225,10 @@ package body Gnoga.Gui.Document is
    -- Write_Line --
    ----------------
 
-   procedure Write_Line (Document : in out Document_Type; Value : String) is
+   procedure Write_Line
+     (Document : in out Document_Type;
+      Value    :        String)
+   is
    begin
       Document.Execute ("writeln('" & Escape_Quotes (Value) & "');");
    end Write_Line;
@@ -214,7 +237,10 @@ package body Gnoga.Gui.Document is
    -- Put_Line --
    --------------
 
-   procedure Put_Line (Document : in out Document_Type; Value : String) is
+   procedure Put_Line
+     (Document : in out Document_Type;
+      Value    :        String)
+   is
    begin
       Document.Write_Line (Value & "<br />");
    end Put_Line;

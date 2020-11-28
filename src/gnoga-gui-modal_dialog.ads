@@ -51,47 +51,51 @@ package Gnoga.Gui.Modal_Dialog is
    type Pointer_To_Dialog_Class is access all Dialog_Type'Class;
 
    procedure Create
-      (Dialog : in out Dialog_Type;
-       Parent : in out Gnoga.Gui.Window.Window_Type'Class;
-       ID     : in     String := "");
+     (Dialog : in out Dialog_Type;
+      Parent : in out Gnoga.Gui.Window.Window_Type'Class;
+      ID     : in     String := "");
    --  Create a modal dialog using the window as a parent
 
    procedure Create
-      (Dialog : in out Dialog_Type;
-       Parent : in out Gnoga.Gui.View.View_Base_Type'Class;
-       ID     : in     String := "");
+     (Dialog : in out Dialog_Type;
+      Parent : in out Gnoga.Gui.View.View_Base_Type'Class;
+      ID     : in     String := "");
    --  Create a modal dialog using a view as the parent
 
    procedure Create_Main_View
-      (Dialog : in out Dialog_Type;
-       View   : in out Gnoga.Gui.View.View_Type'Class;
-       ID     : in     String := "");
+     (Dialog : in out Dialog_Type;
+      View   : in out Gnoga.Gui.View.View_Type'Class;
+      ID     : in     String := "");
    --  Attach and create a user created view to the dialog.  Call this
    --  in place of the Create procedure for the view supplied.
 
    procedure Show
-      (Dialog : in out Dialog_Type;
-       Show   :        Boolean := True;
-       Center :        Boolean := True);
+     (Dialog : in out Dialog_Type;
+      Show   :        Boolean := True;
+      Center :        Boolean := True);
    --  Shows or hides a dialog
 
    procedure Center (Dialog : in out Dialog_Type);
    --  Center a dialog within its parent window or view
 
-   procedure Top (Dialog : in out Dialog_Type; Top  : Integer);
+   procedure Top
+     (Dialog : in out Dialog_Type;
+      Top    :        Integer);
    --  Set the "top" position of the dialog.
 
-   procedure Left (Dialog : in out Dialog_Type; Left : Integer);
+   procedure Left
+     (Dialog : in out Dialog_Type;
+      Left   :        Integer);
    --  Set the "left" position of the dialog.
 
    procedure Modal_Background_Color
-      (Dialog : in out Dialog_Type;
-       Color  :        String);
+     (Dialog : in out Dialog_Type;
+      Color  :        String);
    --  Change the background color of the modal dialog's fill view
 
    procedure Modal_Background_Color
-      (Dialog : in out Dialog_Type;
-       Color  :        Gnoga.Types.Colors.Color_Enumeration);
+     (Dialog : in out Dialog_Type;
+      Color  :        Gnoga.Types.Colors.Color_Enumeration);
    --  Change the background color of the modal dialog's fill view
 
    procedure Remove (Dialog : in out Dialog_Type);

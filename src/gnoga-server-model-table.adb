@@ -56,9 +56,9 @@ package body Gnoga.Server.Model.Table is
    ----------------
 
    function Find_Items
-     (Parent         : Gnoga.Server.Model.Active_Record'Class;
-      Like           : String := "";
-      Order_By       : String := "")
+     (Parent   : Gnoga.Server.Model.Active_Record'Class;
+      Like     : String := "";
+      Order_By : String := "")
       return Gnoga.Server.Model.Queries.Active_Record_Array.Vector
    is
       R : Active_Record;

@@ -40,25 +40,33 @@ with Interfaces.C.Strings;
 
 package body Gnoga.Server.Template_Parser.Python is
 
-   function Python_Encode_Key (Code : String) return String;
+   function Python_Encode_Key
+     (Code : String)
+      return String;
    --  fixes the presence of a ' in a key
 
-   function Python_Encode_Value (Code : String) return String;
+   function Python_Encode_Value
+     (Code : String)
+      return String;
    --  fixes the presence of a "  in a values
 
-   function Execute_Python (Code : String) return String;
+   function Execute_Python
+     (Code : String)
+      return String;
    --  Execute Python Code and return output
    --  raises X on error
 
-   function String_Data_List (Data     : Gnoga.Types.Data_Map_Type;
-                              Var_Name : String;
-                              As_Array : Boolean      := False)
-                              return String;
+   function String_Data_List
+     (Data     : Gnoga.Types.Data_Map_Type;
+      Var_Name : String;
+      As_Array : Boolean := False)
+      return String;
    --  Convert key/value pairs in Gnoga.Types.Data_Map_Type to scripting code
 
-   function Map_Data_List (Data     : Gnoga.Types.Map_of_Data_Maps_Type;
-                           Var_Name : String)
-                           return String;
+   function Map_Data_List
+     (Data     : Gnoga.Types.Map_of_Data_Maps_Type;
+      Var_Name : String)
+      return String;
    --  Convert Map of Maps of key/value pairs in to associative arrays
    --  in scripting code
 
@@ -66,7 +74,10 @@ package body Gnoga.Server.Template_Parser.Python is
    -- Python_Encode_Key --
    -----------------------
 
-   function Python_Encode_Key (Code : String) return String is
+   function Python_Encode_Key
+     (Code : String)
+      return String
+   is
    begin
       if Code'Length = 0 then
          return "";
@@ -75,11 +86,9 @@ package body Gnoga.Server.Template_Parser.Python is
             New_Char : constant Character := Code (Code'First);
          begin
             if New_Char = ''' then
-               return "\'"
-                 & Python_Encode_Key (Code (Code'First + 1 .. Code'Last));
+               return "\'" & Python_Encode_Key (Code (Code'First + 1 .. Code'Last));
             else
-               return New_Char
-                 & Python_Encode_Key (Code (Code'First + 1 .. Code'Last));
+               return New_Char & Python_Encode_Key (Code (Code'First + 1 .. Code'Last));
             end if;
          end;
       end if;
@@ -89,7 +98,10 @@ package body Gnoga.Server.Template_Parser.Python is
    -- Python_Encode_Value --
    -------------------------
 
-   function Python_Encode_Value (Code : String) return String is
+   function Python_Encode_Value
+     (Code : String)
+      return String
+   is
    begin
       if Code'Length = 0 then
          return "";
@@ -98,11 +110,9 @@ package body Gnoga.Server.Template_Parser.Python is
             New_Char : constant Character := Code (Code'First);
          begin
             if New_Char = '"' then
-               return "\"""
-                 & Python_Encode_Value (Code (Code'First + 1 .. Code'Last));
+               return "\""" & Python_Encode_Value (Code (Code'First + 1 .. Code'Last));
             else
-               return New_Char
-                 & Python_Encode_Value (Code (Code'First + 1 .. Code'Last));
+               return New_Char & Python_Encode_Value (Code (Code'First + 1 .. Code'Last));
             end if;
          end;
       end if;
@@ -113,14 +123,16 @@ package body Gnoga.Server.Template_Parser.Python is
    --------------------
 
    protected Python_Execute is
-      procedure Execute (Code   : in  String;
-                         Result : out Ada.Strings.Unbounded.Unbounded_String);
+      procedure Execute
+        (Code   : in     String;
+         Result :    out Ada.Strings.Unbounded.Unbounded_String);
       --  Single threaded access to python interpreter
    end Python_Execute;
 
    protected body Python_Execute is
-      procedure Execute (Code   : in  String;
-                         Result : out Ada.Strings.Unbounded.Unbounded_String)
+      procedure Execute
+        (Code   : in     String;
+         Result :    out Ada.Strings.Unbounded.Unbounded_String)
       is
          nl  : constant Character := Character'Val (10);
          nul : constant Character := Character'Val (0);
@@ -133,39 +145,35 @@ package body Gnoga.Server.Template_Parser.Python is
          procedure Py_Finalize;
          pragma Import (C, Py_Finalize, "Py_Finalize");
 
-         function PyImport_AddModule (S : in String := "__main__" & nul)
-                                      return Py_Object;
+         function PyImport_AddModule
+           (S : in String := "__main__" & nul)
+            return Py_Object;
          pragma Import (C, PyImport_AddModule, "PyImport_AddModule");
 
-         procedure PyRun_SimpleStringFlags (S : in String;
-                                            F : access Integer := null);
+         procedure PyRun_SimpleStringFlags
+           (S : in String;
+            F :    access Integer := null);
          pragma Import (C, PyRun_SimpleStringFlags, "PyRun_SimpleStringFlags");
 
          procedure PyErr_Print;
          pragma Import (C, PyErr_Print, "PyErr_Print");
 
-         function PyObject_GetAttrString (Object : Py_Object;
-                                          Method : String)
-                                          return Py_Object;
+         function PyObject_GetAttrString
+           (Object : Py_Object;
+            Method : String)
+            return Py_Object;
          pragma Import (C, PyObject_GetAttrString, "PyObject_GetAttrString");
 
          procedure PyString_AsStringAndSize
            (Object : in     Py_Object;
-            Buffer : out    Interfaces.C.Strings.chars_ptr;
-            Length : out    Interfaces.C.size_t);
-         pragma Import (C, PyString_AsStringAndSize,
-                        "PyString_AsStringAndSize");
+            Buffer :    out Interfaces.C.Strings.chars_ptr;
+            Length :    out Interfaces.C.size_t);
+         pragma Import (C, PyString_AsStringAndSize, "PyString_AsStringAndSize");
 
          Redirect : constant String :=
-                      "import sys" & nl &
-                      "class CatchOutErr:" & nl &
-                      "    def __init__(self):" & nl &
-                      "        self.value = ''" & nl &
-                      "    def write(self, txt):" & nl &
-                      "        self.value += txt" & nl &
-                      "catchOutErr = CatchOutErr()" & nl &
-                      "sys.stdout = catchOutErr" & nl &
-                      "sys.stderr = catchOutErr" & nul;
+           "import sys" & nl & "class CatchOutErr:" & nl & "    def __init__(self):" & nl & "        self.value = ''" &
+           nl & "    def write(self, txt):" & nl & "        self.value += txt" & nl & "catchOutErr = CatchOutErr()" &
+           nl & "sys.stdout = catchOutErr" & nl & "sys.stderr = catchOutErr" & nul;
 
          Module   : Py_Object;
          Catcher  : Py_Object;
@@ -182,19 +190,21 @@ package body Gnoga.Server.Template_Parser.Python is
 
          PyErr_Print;
 
-         Catcher := PyObject_GetAttrString (Module, "catchOutErr" & nul);
+         Catcher  := PyObject_GetAttrString (Module, "catchOutErr" & nul);
          P_Result := PyObject_GetAttrString (Catcher, "value" & nul);
 
          PyString_AsStringAndSize (P_Result, C_Result, Length);
 
-         Result := Ada.Strings.Unbounded.To_Unbounded_String
-           (Interfaces.C.Strings.Value (C_Result, Length));
+         Result := Ada.Strings.Unbounded.To_Unbounded_String (Interfaces.C.Strings.Value (C_Result, Length));
 
          Py_Finalize;
       end Execute;
    end Python_Execute;
 
-   function Execute_Python (Code : String) return String is
+   function Execute_Python
+     (Code : String)
+      return String
+   is
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
       Python_Execute.Execute (Code, Result);
@@ -206,10 +216,11 @@ package body Gnoga.Server.Template_Parser.Python is
    --  String_Data_List --
    -----------------------
 
-   function String_Data_List (Data     : Gnoga.Types.Data_Map_Type;
-                              Var_Name : String;
-                              As_Array : Boolean      := False)
-                              return String
+   function String_Data_List
+     (Data     : Gnoga.Types.Data_Map_Type;
+      Var_Name : String;
+      As_Array : Boolean := False)
+      return String
    is
       C : Gnoga.Types.Data_Maps.Cursor := Gnoga.Types.Data_Maps.First (Data);
 
@@ -226,13 +237,11 @@ package body Gnoga.Server.Template_Parser.Python is
             begin
                Gnoga.Types.Data_Maps.Next (C);
                if As_Array then
-                  return "'" & Python_Encode_Key (Key)
-                    & "' : """ & Python_Encode_Value (Value)
-                    & """, " & Data_List;
+                  return "'" & Python_Encode_Key (Key) & "' : """ & Python_Encode_Value (Value) & """, " & Data_List;
                else
-                  return Var_Name & "['" & Python_Encode_Key (Key)
-                    & "'] = """ & Python_Encode_Value (Value)
-                    & """; " & Data_List;
+                  return
+                    Var_Name & "['" & Python_Encode_Key (Key) & "'] = """ & Python_Encode_Value (Value) & """; " &
+                    Data_List;
                end if;
             end;
          else
@@ -251,12 +260,12 @@ package body Gnoga.Server.Template_Parser.Python is
    -- Map_Data_List --
    -------------------
 
-   function Map_Data_List (Data     : Gnoga.Types.Map_of_Data_Maps_Type;
-                           Var_Name : String)
-                           return String
+   function Map_Data_List
+     (Data     : Gnoga.Types.Map_of_Data_Maps_Type;
+      Var_Name : String)
+      return String
    is
-      C : Gnoga.Types.Maps_of_Data_Maps.Cursor :=
-            Gnoga.Types.Maps_of_Data_Maps.First (Data);
+      C : Gnoga.Types.Maps_of_Data_Maps.Cursor := Gnoga.Types.Maps_of_Data_Maps.First (Data);
 
       function Data_List return String;
       --  Recursive function to compile list of parameters to be injected
@@ -266,16 +275,12 @@ package body Gnoga.Server.Template_Parser.Python is
       begin
          if Gnoga.Types.Maps_of_Data_Maps.Has_Element (C) then
             declare
-               Key   : constant String :=
-                 Gnoga.Types.Maps_of_Data_Maps.Key (C);
-               Value : constant String := String_Data_List
-                 (Gnoga.Types.Maps_of_Data_Maps.Element (C),
-                  Var_Name,
-                  As_Array => True);
+               Key   : constant String := Gnoga.Types.Maps_of_Data_Maps.Key (C);
+               Value : constant String :=
+                 String_Data_List (Gnoga.Types.Maps_of_Data_Maps.Element (C), Var_Name, As_Array => True);
             begin
                Gnoga.Types.Maps_of_Data_Maps.Next (C);
-               return Var_Name & "['" & Python_Encode_Key (Key) & "'] = "
-                 & Value & "; " & Data_List;
+               return Var_Name & "['" & Python_Encode_Key (Key) & "'] = " & Value & "; " & Data_List;
             end;
          else
             return "";
@@ -290,16 +295,20 @@ package body Gnoga.Server.Template_Parser.Python is
    -- Load_View --
    ---------------
 
-   function Load_View (Name : String) return String is
+   function Load_View
+     (Name : String)
+      return String
+   is
       Empty_Data : View_Data;
    begin
       return Load_View (Name, Empty_Data);
    end Load_View;
 
-   function Load_View (Name     : String;
-                       Data_Map : Gnoga.Types.Data_Map_Type;
-                       Var_Name : String := "data")
-                       return String
+   function Load_View
+     (Name     : String;
+      Data_Map : Gnoga.Types.Data_Map_Type;
+      Var_Name : String := "data")
+      return String
    is
       Data : View_Data;
    begin
@@ -309,24 +318,26 @@ package body Gnoga.Server.Template_Parser.Python is
       return Load_View (Name, Data);
    end Load_View;
 
-   function Load_View (Name : String; Data : View_Data)
-                       return String
+   function Load_View
+     (Name : String;
+      Data : View_Data)
+      return String
    is
    begin
       return Load_View (Name, Data_List => (1 => Data));
    end Load_View;
 
-   function Load_View (Name      : String;
-                       Data_List : View_Data_Array)
-                       return String
+   function Load_View
+     (Name      : String;
+      Data_List : View_Data_Array)
+      return String
    is
       use Ada.Strings.Unbounded;
 
       Error_Queue_Data : View_Data;
       Info_Queue_Data  : View_Data;
 
-      Python_Code : constant String :=
-                   "execfile ('" & Parse_Name (Name) & "', globals());";
+      Python_Code : constant String := "execfile ('" & Parse_Name (Name) & "', globals());";
 
       I : Positive := Data_List'First;
 
@@ -337,22 +348,17 @@ package body Gnoga.Server.Template_Parser.Python is
       begin
          if I <= Data_List'Last then
             I := I + 1;
-            return Build_List &
-            To_String (Data_List (I - 1).Name) & "={}; " &
-            String_Data_List (Data_List (I - 1).String_Values,
-                              To_String (Data_List (I - 1).Name)) &
-            Map_Data_List (Data_List (I - 1).Map_Values,
-                           To_String (Data_List (I - 1).Name));
+            return
+              Build_List & To_String (Data_List (I - 1).Name) & "={}; " &
+              String_Data_List (Data_List (I - 1).String_Values, To_String (Data_List (I - 1).Name)) &
+              Map_Data_List (Data_List (I - 1).Map_Values, To_String (Data_List (I - 1).Name));
          else
             Error_Queue_Data.Insert_Array (Error_Queue);
             Info_Queue_Data.Insert_Array (Info_Queue);
 
             return
-              "gnoga_errors={}; " &
-              String_Data_List
-                (Error_Queue_Data.String_Values, "gnoga_error") &
-              "gnoga_infos={}; " &
-              String_Data_List (Info_Queue_Data.String_Values, "gnoga_info");
+              "gnoga_errors={}; " & String_Data_List (Error_Queue_Data.String_Values, "gnoga_error") &
+              "gnoga_infos={}; " & String_Data_List (Info_Queue_Data.String_Values, "gnoga_info");
          end if;
       end Build_List;
    begin

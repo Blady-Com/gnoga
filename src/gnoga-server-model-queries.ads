@@ -39,40 +39,42 @@ with Ada.Containers.Indefinite_Vectors;
 
 package Gnoga.Server.Model.Queries is
 
-   package Active_Record_Array is
-     new Ada.Containers.Indefinite_Vectors (Positive, Active_Record'Class);
+   package Active_Record_Array is new Ada.Containers.Indefinite_Vectors (Positive, Active_Record'Class);
 
    function Find_All
-     (Name       : access String;
-      Connection : access Gnoga.Server.Database.Connection'Class;
-      Like       : in     String := "";
-      Order_By   : in     String := "")
+     (Name       :    access String;
+      Connection :    access Gnoga.Server.Database.Connection'Class;
+      Like       : in String := "";
+      Order_By   : in String := "")
       return Active_Record_Array.Vector;
    --  Return all matching records 'Like'
    --  This version of Find_All returns Active_Records Types
    --  Like is a valid SQL with clause
 
-   function Find_All (Template : Active_Record'Class;
-                      Like     : String := "";
-                      Order_By : String := "")
-                      return Active_Record_Array.Vector;
+   function Find_All
+     (Template : Active_Record'Class;
+      Like     : String := "";
+      Order_By : String := "")
+      return Active_Record_Array.Vector;
    --  Return all matching records 'Like'
    --  This version of Find_All duplicates the type of Template
    --  Like is a valid SQL with clause
 
-   function Find_Items (Parent      : in     Active_Record'Class;
-                        Child_Table : access String;
-                        Like        : in     String := "";
-                        Order_By    : in     String := "")
-                        return Active_Record_Array.Vector;
+   function Find_Items
+     (Parent      : in Active_Record'Class;
+      Child_Table :    access String;
+      Like        : in String := "";
+      Order_By    : in String := "")
+      return Active_Record_Array.Vector;
    --  Return all matching records in Child Table where:
    --  Child_Table.PARENT_TABLE_NAME(with out s)_id = Child_Table.id
 
-   function Find_Items (Parent         : Active_Record'Class;
-                        Child_Template : Active_Record'Class;
-                        Like           : String := "";
-                        Order_By       : String := "")
-                        return Active_Record_Array.Vector;
+   function Find_Items
+     (Parent         : Active_Record'Class;
+      Child_Template : Active_Record'Class;
+      Like           : String := "";
+      Order_By       : String := "")
+      return Active_Record_Array.Vector;
    --  Return all matching records in Child Table where:
    --  Child_Table.PARENT_TABLE_NAME(with out s)_id = Child_Table.id
 end Gnoga.Server.Model.Queries;

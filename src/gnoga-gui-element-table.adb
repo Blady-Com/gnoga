@@ -44,7 +44,7 @@ package body Gnoga.Gui.Element.Table is
    overriding procedure Create
      (Table  : in out Table_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String  := "")
+      ID     : in     String := "")
    is
    begin
       Table.Create_From_HTML (Parent, "<table />", ID);
@@ -54,7 +54,10 @@ package body Gnoga.Gui.Element.Table is
    -- Caption --
    -------------
 
-   function Caption (Table : Table_Type) return String is
+   function Caption
+     (Table : Table_Type)
+      return String
+   is
    begin
       return Table.Property ("caption");
    end Caption;
@@ -63,12 +66,14 @@ package body Gnoga.Gui.Element.Table is
    -- Add_Caption --
    -----------------
 
-   procedure Add_Caption (Table : in out Table_Type; Value : in String) is
+   procedure Add_Caption
+     (Table : in out Table_Type;
+      Value : in     String)
+   is
       E : constant Element_Access := new Element_Type;
    begin
       E.Dynamic;
-      E.Create_From_HTML
-        (Table, "<caption>" & Escape_Quotes (Value) & "</caption>");
+      E.Create_From_HTML (Table, "<caption>" & Escape_Quotes (Value) & "</caption>");
       E.Place_Inside_Top_Of (Table);
    end Add_Caption;
 
@@ -79,13 +84,12 @@ package body Gnoga.Gui.Element.Table is
    procedure Create
      (Row    : in out Table_Row_Type;
       Parent : in out Element_Type'Class;
-      ID     : in     String  := "")
+      ID     : in     String := "")
    is
    begin
-      if not (Parent in Table_Type'Class or
-                Parent in Table_Header_Type'Class or
-                  Parent in Table_Body_Type'Class or
-                    Parent in Table_Footer_Type'Class)
+      if not
+        (Parent in Table_Type'Class or Parent in Table_Header_Type'Class or Parent in Table_Body_Type'Class or
+         Parent in Table_Footer_Type'Class)
       then
          raise Constraint_Error with "Invalid parent of Table_Row_Type";
       end if;
@@ -100,15 +104,15 @@ package body Gnoga.Gui.Element.Table is
    procedure Create
      (Column      : in out Table_Column_Type;
       Row         : in out Table_Row_Type'Class;
-      Content     : in     String  := "";
+      Content     : in     String   := "";
       Column_Span : in     Positive := 1;
       Row_Span    : in     Positive := 1;
-      ID          : in     String  := "")
+      ID          : in     String   := "")
    is
    begin
       Column.Create_From_HTML
-        (Row, "<td colspan=" & Column_Span'Img & " rowspan=" & Row_Span'Img &
-           ">" & Escape_Quotes (Content) & "</td>", ID);
+        (Row, "<td colspan=" & Column_Span'Img & " rowspan=" & Row_Span'Img & ">" & Escape_Quotes (Content) & "</td>",
+         ID);
    end Create;
 
    ------------
@@ -118,15 +122,15 @@ package body Gnoga.Gui.Element.Table is
    procedure Create
      (Heading     : in out Table_Heading_Type;
       Row         : in out Table_Row_Type'Class;
-      Content     : in     String  := "";
+      Content     : in     String   := "";
       Column_Span : in     Positive := 1;
       Row_Span    : in     Positive := 1;
-      ID          : in     String  := "")
+      ID          : in     String   := "")
    is
    begin
       Heading.Create_From_HTML
-        (Row, "<th colspan=" & Column_Span'Img & " rowspan=" & Row_Span'Img &
-           ">" & Escape_Quotes (Content) & "</th>", ID);
+        (Row, "<th colspan=" & Column_Span'Img & " rowspan=" & Row_Span'Img & ">" & Escape_Quotes (Content) & "</th>",
+         ID);
    end Create;
 
    ------------
@@ -134,9 +138,9 @@ package body Gnoga.Gui.Element.Table is
    ------------
 
    procedure Create
-     (Header  : in out Table_Header_Type;
-      Table   : in out Table_Type'Class;
-      ID      : in     String  := "")
+     (Header : in out Table_Header_Type;
+      Table  : in out Table_Type'Class;
+      ID     : in     String := "")
    is
    begin
       Header.Create_From_HTML (Table, "<thead />", ID);
@@ -147,9 +151,9 @@ package body Gnoga.Gui.Element.Table is
    ------------
 
    procedure Create
-     (TBody  : in out Table_Body_Type;
-      Table   : in out Table_Type'Class;
-      ID      : in     String  := "")
+     (TBody : in out Table_Body_Type;
+      Table : in out Table_Type'Class;
+      ID    : in     String := "")
    is
    begin
       TBody.Create_From_HTML (Table, "<tbody />", ID);
@@ -162,7 +166,7 @@ package body Gnoga.Gui.Element.Table is
    procedure Create
      (Footer : in out Table_Footer_Type;
       Table  : in out Table_Type'Class;
-      ID     : in     String  := "")
+      ID     : in     String := "")
    is
    begin
       Footer.Create_From_HTML (Table, "<tfoot />", ID);
@@ -175,7 +179,7 @@ package body Gnoga.Gui.Element.Table is
    procedure Create
      (Group : in out Column_Group_Type;
       Table : in out Table_Type'Class;
-      ID    : in     String  := "")
+      ID    : in     String := "")
    is
    begin
       Group.Create_From_HTML (Table, "<colgroup />", ID);
@@ -188,14 +192,13 @@ package body Gnoga.Gui.Element.Table is
    procedure Create
      (Column      : in out Column_Type;
       Group       : in out Column_Group_Type'Class;
-      Content     : in     String  := "";
+      Content     : in     String   := "";
       Column_Span : in     Positive := 1;
-      ID          : in     String  := "")
+      ID          : in     String   := "")
    is
       pragma Unreferenced (Content);
    begin
-      Column.Create_From_HTML
-        (Group, "<col span=" & Column_Span'Img & ">", ID);
+      Column.Create_From_HTML (Group, "<col span=" & Column_Span'Img & ">", ID);
    end Create;
 
 end Gnoga.Gui.Element.Table;

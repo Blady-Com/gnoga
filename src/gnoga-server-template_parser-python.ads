@@ -41,22 +41,28 @@ package Gnoga.Server.Template_Parser.Python is
    --     pragma Linker_Options ("-lpython");
    --  or otherwise add -lpython to the linker options.
 
-   function Load_View (Name : String) return String;
+   function Load_View
+     (Name : String)
+      return String;
    --  Return named view with no passed data
 
-   function Load_View (Name     : String;
-                       Data_Map : Gnoga.Types.Data_Map_Type;
-                       Var_Name : String := "data")
-                       return String;
+   function Load_View
+     (Name     : String;
+      Data_Map : Gnoga.Types.Data_Map_Type;
+      Var_Name : String := "data")
+      return String;
    --  Return named view with data map
 
-   function Load_View (Name : String; Data : View_Data)
-                       return String;
+   function Load_View
+     (Name : String;
+      Data : View_Data)
+      return String;
    --  Return named view with Data
 
-   function Load_View (Name      : String;
-                       Data_List : View_Data_Array)
-                       return String;
+   function Load_View
+     (Name      : String;
+      Data_List : View_Data_Array)
+      return String;
    --  Return named view with Data_List array of View_Data items
 
 end Gnoga.Server.Template_Parser.Python;

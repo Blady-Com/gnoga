@@ -41,15 +41,13 @@ package body Gnoga.Gui.View.Console is
    -- Create --
    ------------
 
-   overriding
-   procedure Create
-     (View          : in out Console_View_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "")
+   overriding procedure Create
+     (View   : in out Console_View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
-      View_Type (View).Create (Parent => Parent,
-                               ID     => ID);
+      View_Type (View).Create (Parent => Parent, ID => ID);
       View.Padding ("3px", "3px", "3px", "3px");
       View.Overflow (Gnoga.Gui.Element.Auto);
    end Create;

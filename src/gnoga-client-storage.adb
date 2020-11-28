@@ -44,49 +44,54 @@ package body Gnoga.Client.Storage is
    --  scheme://domain:port the browser security would not allow access
    --  anyways.
 
-   procedure Execute (Storage : in out Storage_Type'Class; Method : in String);
-   function Execute (Storage : Storage_Type'Class; Method : String)
-                     return String;
+   procedure Execute
+     (Storage : in out Storage_Type'Class;
+      Method  : in     String);
+   function Execute
+     (Storage : Storage_Type'Class;
+      Method  : String)
+      return String;
    --  Execute access to Storage on its Connection_ID
 
    -------------
    -- Execute --
    -------------
 
-   procedure Execute (Storage : in out Storage_Type'Class; Method : in String)
+   procedure Execute
+     (Storage : in out Storage_Type'Class;
+      Method  : in     String)
    is
-      Message_Script : constant String :=
-                         Storage.Script_Accessor & "." & Method;
+      Message_Script : constant String := Storage.Script_Accessor & "." & Method;
    begin
       if Storage.Connection_ID = Gnoga.Types.No_Connection then
          raise Program_Error with "Use of Storage without Connection";
       end if;
 
-      Gnoga.Server.Connection.Execute_Script
-        (ID     => Storage.Connection_ID,
-         Script => Message_Script);
+      Gnoga.Server.Connection.Execute_Script (ID => Storage.Connection_ID, Script => Message_Script);
    end Execute;
 
-   function Execute (Storage : Storage_Type'Class; Method : String)
-                     return String
+   function Execute
+     (Storage : Storage_Type'Class;
+      Method  : String)
+      return String
    is
-      Message_Script : constant String :=
-                         Storage.Script_Accessor & "." & Method;
+      Message_Script : constant String := Storage.Script_Accessor & "." & Method;
    begin
       if Storage.Connection_ID = Gnoga.Types.No_Connection then
          raise Program_Error with "Use of Storage without Connection";
       end if;
 
-      return Gnoga.Server.Connection.Execute_Script
-        (ID     => Storage.Connection_ID,
-         Script => Message_Script);
+      return Gnoga.Server.Connection.Execute_Script (ID => Storage.Connection_ID, Script => Message_Script);
    end Execute;
 
    ------------
    -- Length --
    ------------
 
-   function Length (Storage : Storage_Type) return Natural is
+   function Length
+     (Storage : Storage_Type)
+      return Natural
+   is
    begin
       return Natural'Value (Execute (Storage, "length"));
    end Length;
@@ -95,7 +100,11 @@ package body Gnoga.Client.Storage is
    -- Key --
    ---------
 
-   function Key (Storage : Storage_Type; Value : Positive) return String is
+   function Key
+     (Storage : Storage_Type;
+      Value   : Positive)
+      return String
+   is
       JS_Value : constant Natural := Value - 1;
    begin
       return Execute (Storage, "key(" & JS_Value'Img & ")");
@@ -105,17 +114,23 @@ package body Gnoga.Client.Storage is
    -- Set --
    ---------
 
-   procedure Set (Storage : in out Storage_Type; Name, Value : String) is
+   procedure Set
+     (Storage     : in out Storage_Type;
+      Name, Value :        String)
+   is
    begin
-      Execute (Storage, "setItem ('" & Escape_Quotes (Name) & "','" &
-                 Escape_Quotes (Value) & "')");
+      Execute (Storage, "setItem ('" & Escape_Quotes (Name) & "','" & Escape_Quotes (Value) & "')");
    end Set;
 
    ---------
    -- Get --
    ---------
 
-   function Get (Storage : Storage_Type; Name : String) return String is
+   function Get
+     (Storage : Storage_Type;
+      Name    : String)
+      return String
+   is
    begin
       return Execute (Storage, "getItem('" & Escape_Quotes (Name) & "')");
    end Get;
@@ -124,10 +139,12 @@ package body Gnoga.Client.Storage is
    -- Script_Accessor --
    ---------------------
 
-   function Script_Accessor (Storage : Storage_Type) return String is
+   function Script_Accessor
+     (Storage : Storage_Type)
+      return String
+   is
    begin
-      raise Program_Error
-        with "Use Session_Storage_Type or Local_Storage_Type";
+      raise Program_Error with "Use Session_Storage_Type or Local_Storage_Type";
       return "";
    end Script_Accessor;
 
@@ -135,8 +152,9 @@ package body Gnoga.Client.Storage is
    -- Local_Storage --
    -------------------
 
-   function Local_Storage (ID : Gnoga.Types.Connection_ID)
-                           return Local_Storage_Type;
+   function Local_Storage
+     (ID : Gnoga.Types.Connection_ID)
+      return Local_Storage_Type;
 
    function Local_Storage
      (ID : Gnoga.Types.Connection_ID)
@@ -158,8 +176,10 @@ package body Gnoga.Client.Storage is
    -- Script_Accessor --
    ---------------------
 
-   overriding
-   function Script_Accessor (Storage : Local_Storage_Type) return String is
+   overriding function Script_Accessor
+     (Storage : Local_Storage_Type)
+      return String
+   is
       pragma Unreferenced (Storage);
    begin
       return "localStorage";
@@ -169,8 +189,9 @@ package body Gnoga.Client.Storage is
    -- Session_Storage --
    ---------------------
 
-   function Session_Storage (ID : Gnoga.Types.Connection_ID)
-                             return Session_Storage_Type;
+   function Session_Storage
+     (ID : Gnoga.Types.Connection_ID)
+      return Session_Storage_Type;
 
    function Session_Storage
      (ID : Gnoga.Types.Connection_ID)
@@ -192,8 +213,10 @@ package body Gnoga.Client.Storage is
    -- Script_Accessor --
    ---------------------
 
-   overriding
-   function Script_Accessor (Storage : Session_Storage_Type) return String is
+   overriding function Script_Accessor
+     (Storage : Session_Storage_Type)
+      return String
+   is
       pragma Unreferenced (Storage);
    begin
       return "sessionStorage";

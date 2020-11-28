@@ -72,19 +72,29 @@ package Gnoga.Client.Files is
    --  File_Reader_Type - Properties
    -------------------------------------------------------------------------
 
-   function Error_Code (Reader : File_Reader_Type) return Integer;
+   function Error_Code
+     (Reader : File_Reader_Type)
+      return Integer;
    --  Return the error code that occurred while reading the file.
 
-   function Error_Message (Reader : File_Reader_Type) return String;
+   function Error_Message
+     (Reader : File_Reader_Type)
+      return String;
    --  Return the error message that occurred while reading the file.
 
-   function Error_Name (Reader : File_Reader_Type) return String;
+   function Error_Name
+     (Reader : File_Reader_Type)
+      return String;
    --  Return the error name that occurred while reading the file.
 
-   function State (Reader : File_Reader_Type) return State_Type;
+   function State
+     (Reader : File_Reader_Type)
+      return State_Type;
    --  Return the current state of the reader
 
-   function Content (Reader : File_Reader_Type) return String;
+   function Content
+     (Reader : File_Reader_Type)
+      return String;
    --  Return the current content of the reader as text
 
    -------------------------------------------------------------------------
@@ -102,9 +112,10 @@ package Gnoga.Client.Files is
    --  the reader contains the raw binary data from the file as a string.
 
    procedure Transfert_As_Text
-     (Reader : in out File_Reader_Type;
-      Files  : in     Gnoga.Gui.Element.Form.File_Type'class;
-      Index  : in     Positive := 1; Encoding : in String := "UTF-8");
+     (Reader   : in out File_Reader_Type;
+      Files    : in     Gnoga.Gui.Element.Form.File_Type'class;
+      Index    : in     Positive := 1;
+      Encoding : in     String   := "UTF-8");
    --  Starts reading the contents of the specified file by its index, once finished,
    --  the reader contains the contents of the file as a text string.
    --  An optional encoding name can be specified.
@@ -114,46 +125,60 @@ package Gnoga.Client.Files is
    -------------------------------------------------------------------------
 
    type File_Reader_Event is access procedure
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class; Event : in String);
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  : in     String);
 
    procedure On_Abort_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event);
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event);
    procedure Fire_On_Abort
-     (Reader : in out File_Reader_Type; Event : in String);
+     (Reader : in out File_Reader_Type;
+      Event  : in     String);
    --  Fired when a read has been aborted, for example because the program called Transfert_Abort.
 
    procedure On_Error_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event);
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event);
    procedure Fire_On_Error
-     (Reader : in out File_Reader_Type; Event : in String);
+     (Reader : in out File_Reader_Type;
+      Event  : in     String);
    --  Fired when the read failed due to an error.
 
    procedure On_Load_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event);
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event);
    procedure Fire_On_Load
-     (Reader : in out File_Reader_Type; Event : in String);
+     (Reader : in out File_Reader_Type;
+      Event  : in     String);
    --  Fired when a read has completed successfully.
 
    procedure On_Load_End_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event);
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event);
    procedure Fire_On_Load_End
-     (Reader : in out File_Reader_Type; Event : in String);
+     (Reader : in out File_Reader_Type;
+      Event  : in     String);
    --  Fired when a read has completed, successfully or not.
 
    procedure On_Load_Start_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event);
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event);
    procedure Fire_On_Load_Start
-     (Reader : in out File_Reader_Type; Event : in String);
+     (Reader : in out File_Reader_Type;
+      Event  : in     String);
    --  Fired when a read has started.
 
    procedure On_Progress_Handler
-     (Reader : in out File_Reader_Type; Handler : in File_Reader_Event);
+     (Reader  : in out File_Reader_Type;
+      Handler : in     File_Reader_Event);
    procedure Fire_On_Progress
-     (Reader : in out File_Reader_Type; Event : in String);
+     (Reader : in out File_Reader_Type;
+      Event  : in     String);
    --  Fired periodically as data is read.
 
    overriding procedure On_Message
-     (Reader  : in out File_Reader_Type; Event : in String;
+     (Reader  : in out File_Reader_Type;
+      Event   : in     String;
       Message : in     String);
    --  Called on receiving any event from the reader.
 

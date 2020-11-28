@@ -41,34 +41,43 @@ package Gnoga.Gui.Navigator is
 
    --  Access information about the user's browser
 
-   function Code_Name (Window : Gnoga.Gui.Window.Window_Type'Class)
-                       return String;
+   function Code_Name
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String;
    --  Always returns Mozilla on all browsers.
 
-   function Name (Window : Gnoga.Gui.Window.Window_Type'Class) return String;
+   function Name
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String;
    --  Almost all browsers regardless of brand will return Navigator.
 
-   function Version (Window : Gnoga.Gui.Window.Window_Type'Class)
-                     return String;
+   function Version
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String;
    --  Most browsers return 4.0, is unreliable for any real information.
 
-   function Cookie_Enabled (Window : Gnoga.Gui.Window.Window_Type'Class)
-                            return Boolean;
+   function Cookie_Enabled
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return Boolean;
    --  Returns true of browser will accept cookies
 
-   function Language (Window : Gnoga.Gui.Window.Window_Type'Class)
-                      return String;
+   function Language
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String;
 
-   function Platform  (Window : Gnoga.Gui.Window.Window_Type'Class)
-                       return String;
+   function Platform
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String;
    --  May be "", sometimes will report actual platform MacIntel, Win32, etc.
 
-   function Product (Window : Gnoga.Gui.Window.Window_Type'Class)
-                     return String;
+   function Product
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String;
    --  All browsers return "Gecko"
 
-   function User_Agent (Window : Gnoga.Gui.Window.Window_Type'Class)
-                        return String;
+   function User_Agent
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String;
    --  The user may use settings on their browser to modify this so not
    --  100% reliable, however most browsers will follow the following standard:
    --

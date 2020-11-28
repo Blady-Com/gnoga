@@ -56,11 +56,10 @@ package Gnoga.Gui.Element.Form.Fieldset is
    --  Fieldset_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create
-     (View          : in out Fieldset_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "");
+   overriding procedure Create
+     (View   : in out Fieldset_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
    --  If Parent is a Window_Type'Class will automatically set itself
    --  as the View on Parent if Attach is True
 
@@ -68,9 +67,10 @@ package Gnoga.Gui.Element.Form.Fieldset is
    --  Fieldset_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Put_Legend (View  : in out Fieldset_Type;
-                         Value : in     String;
-                         ID    : in     String  := "");
+   procedure Put_Legend
+     (View  : in out Fieldset_Type;
+      Value : in     String;
+      ID    : in     String := "");
    --  Should be called at start or end of adding items to a fieldset
    --  to add a legend.
 

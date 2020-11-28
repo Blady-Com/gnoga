@@ -69,12 +69,20 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
    --  Sprite_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Locate (Sprite : in Sprite_Type; Row, Column : in Integer);
+   procedure Locate
+     (Sprite      : in Sprite_Type;
+      Row, Column : in Integer);
    --  Specifies the position of the upper left hand corner of a sprite
 
-   procedure Position (Sprite : in Sprite_Type; Row, Column : out Integer);
-   function Row (Sprite : in Sprite_Type) return Integer;
-   function Column (Sprite : in Sprite_Type) return Integer;
+   procedure Position
+     (Sprite      : in     Sprite_Type;
+      Row, Column :    out Integer);
+   function Row
+     (Sprite : in Sprite_Type)
+      return Integer;
+   function Column
+     (Sprite : in Sprite_Type)
+      return Integer;
    --  Determines the position of a sprite
 
    procedure Pattern
@@ -82,7 +90,9 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Image_Data : in Image_Data_Type'Class);
    --  Specifies the image that defines a sprite
 
-   function Pattern (Sprite : in Sprite_Type) return Image_Data_Type'Class;
+   function Pattern
+     (Sprite : in Sprite_Type)
+      return Image_Data_Type'Class;
    --  Returns the image that defines a sprite
 
    procedure Motion
@@ -90,8 +100,12 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
       Row_Velocity, Column_Velocity : in Integer);
    --  Specifies the motion of a sprite
 
-   function Row_Velocity (Sprite : in Sprite_Type) return Integer;
-   function Column_Velocity (Sprite : in Sprite_Type) return Integer;
+   function Row_Velocity
+     (Sprite : in Sprite_Type)
+      return Integer;
+   function Column_Velocity
+     (Sprite : in Sprite_Type)
+      return Integer;
    --   Returns motion properties
 
    -------------------------------------------------------------------------
@@ -100,19 +114,24 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Sprite is
 
    function Coincidence
      (Sprite1, Sprite2 : in Sprite_Type;
-      Tolerance        : in Natural) return Boolean;
+      Tolerance        : in Natural)
+      return Boolean;
    function Coincidence
      (Sprite      : in Sprite_Type;
       Row, Column : in Integer;
-      Tolerance   : in Natural) return Boolean;
+      Tolerance   : in Natural)
+      return Boolean;
    --  Determines if two sprites or a sprite and a point on the screen at or near the same location on the screen
    --  Tolerance is in the same unit as position
    --  Tolerance of 0 indicates the exact coincidence
 
-   function Distance (Sprite1, Sprite2 : in Sprite_Type) return Natural;
+   function Distance
+     (Sprite1, Sprite2 : in Sprite_Type)
+      return Natural;
    function Distance
      (Sprite      : in Sprite_Type;
-      Row, Column : in Integer) return Natural;
+      Row, Column : in Integer)
+      return Natural;
    --  Determines the distance between two sprites or a sprite and a location
    --  The result is the nearest integer from square root between the upper left hand corner of two sprites
    --  or between the upper left hand corner of a sprite and a location
@@ -138,7 +157,5 @@ private
    end record;
    type Sprite_Data_Access is access Sprite_Data;
    type Sprite_Type is new Gnoga.Types.Unique_ID;
-   package Sprite_Lists is new Ada.Containers.Ordered_Maps
-     (Sprite_Type,
-      Sprite_Data_Access);
+   package Sprite_Lists is new Ada.Containers.Ordered_Maps (Sprite_Type, Sprite_Data_Access);
 end Gnoga.Gui.Element.Canvas.Context_2D.Sprite;

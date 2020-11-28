@@ -56,14 +56,13 @@ package Gnoga.Gui.Element.Section is
    -------------------------------------------------------------------------
 
    type Section_Description_Type is
-     (Address, Article, Aside, Header, Main, Nav, P, Pre, Section,
-      BlockQuote, H1, H2, H3, H4, H5, H6, HGroup);
+     (Address, Article, Aside, Header, Main, Nav, P, Pre, Section, BlockQuote, H1, H2, H3, H4, H5, H6, HGroup);
 
    procedure Create
      (View    : in out Section_Type;
       Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
       Section : in     Section_Description_Type;
-      ID      : in     String  := "");
+      ID      : in     String := "");
 
 private
    type Section_Type is new Gnoga.Gui.View.View_Base_Type with null record;

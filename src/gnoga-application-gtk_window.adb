@@ -65,15 +65,15 @@ package body Gnoga.Application.Gtk_Window is
    task body Gtk_Win_Launcher is
       nul : constant Character := Character'Val (0);
 
-      procedure Launch_Gtk_Window (URL : String; Width, Height : Integer);
+      procedure Launch_Gtk_Window
+        (URL           : String;
+         Width, Height : Integer);
       pragma Import (C, Launch_Gtk_Window, "Launch_Gtk_Window");
    begin
       accept Start;
 
       Launch_Gtk_Window
-        (URL    => "http://127.0.0.1:" &
-           Gnoga.Left_Trim (Global_Port'Img) & nul,
-         Width  => Global_Width,
+        (URL    => "http://127.0.0.1:" & Gnoga.Left_Trim (Global_Port'Img) & nul, Width => Global_Width,
          Height => Global_Height);
    end Gtk_Win_Launcher;
 
@@ -81,9 +81,10 @@ package body Gnoga.Application.Gtk_Window is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Port   : Integer := 8080;
-                         Width  : Integer := 1024;
-                         Height : Integer := 600)
+   procedure Initialize
+     (Port   : Integer := 8_080;
+      Width  : Integer := 1_024;
+      Height : Integer := 600)
    is
    begin
       Global_Port   := Port;
@@ -97,8 +98,7 @@ package body Gnoga.Application.Gtk_Window is
    -- Finalize --
    --------------
 
-   procedure Finalize
-   is
+   procedure Finalize is
       procedure gtk_main_quit;
       pragma Import (C, gtk_main_quit, "gtk_main_quit");
    begin

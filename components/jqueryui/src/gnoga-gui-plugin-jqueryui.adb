@@ -56,22 +56,15 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    -- Load_jQueryUI --
    -------------------
 
-   procedure Load_jQueryUI
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class)
-   is
+   procedure Load_jQueryUI (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
       Delay_Count : Natural := 0;
    begin
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('" & Escape_Quotes ("<link rel='stylesheet' " &
-           "href='/css/jquery-ui.min.css' />") & "')");
+        ("append ('" & Escape_Quotes ("<link rel='stylesheet' " & "href='/css/jquery-ui.min.css' />") & "')");
       Window.Document.Head_Element.jQuery_Execute
         ("append ('" & Escape_Quotes ("<script src='/js/jquery-ui.min.js' />") & "')");
 
-      while
-        Gnoga.Server.Connection.Execute_Script
-          (Window.Connection_ID, "$.ui") = "undefined"
-        or Delay_Count > 10
-      loop
+      while Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "$.ui") = "undefined" or Delay_Count > 10 loop
          delay 0.25;
          Delay_Count := Delay_Count + 1;
       end loop;
@@ -85,9 +78,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    -- Make_Draggable --
    --------------------
 
-   procedure Make_Draggable
-     (Element : in out Gnoga.Gui.Element.Element_Type'Class)
-   is
+   procedure Make_Draggable (Element : in out Gnoga.Gui.Element.Element_Type'Class) is
    begin
       Element.jQuery_Execute ("draggable()");
    end Make_Draggable;
@@ -96,26 +87,21 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    -- Make_Droppable --
    --------------------
 
-   procedure Make_Droppable
-     (Element : in out Gnoga.Gui.Element.Element_Type'Class)
-   is
+   procedure Make_Droppable (Element : in out Gnoga.Gui.Element.Element_Type'Class) is
       US : constant String := Element.Unique_ID'Img;
 
-      Full_Message : constant String := US (US'First + 1 .. US'Last) &
-        "|" & jQuery_Dropped_Event_Name & "|" & Element.ID;
+      Full_Message : constant String :=
+        US (US'First + 1 .. US'Last) & "|" & jQuery_Dropped_Event_Name & "|" & Element.ID;
    begin
       Element.jQuery_Execute
-        ("droppable({ drop: function(event, ui) {" &
-           "ws.send ('" & Escape_Quotes (Full_Message) & "');}})");
+        ("droppable({ drop: function(event, ui) {" & "ws.send ('" & Escape_Quotes (Full_Message) & "');}})");
    end Make_Droppable;
 
    --------------------
    -- Make_Resizable --
    --------------------
 
-   procedure Make_Resizable
-     (Element : in out Gnoga.Gui.Element.Element_Type'Class)
-   is
+   procedure Make_Resizable (Element : in out Gnoga.Gui.Element.Element_Type'Class) is
    begin
       Element.jQuery_Execute ("resizable()");
    end Make_Resizable;
@@ -124,9 +110,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    -- Make_Sortable --
    -------------------
 
-   procedure Make_Sortable
-     (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class)
-   is
+   procedure Make_Sortable (List : in out Gnoga.Gui.Element.List.Ordered_List_Type'Class) is
    begin
       List.jQuery_Execute ("sortable()");
    end Make_Sortable;
@@ -142,11 +126,10 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    is
       S : Gnoga.Gui.Element.Style_Block.Style_Type;
    begin
-      S.Create (List.Parent.all,
-                List.DOM_Selector & " .ui-selecting { background: " &
-                  Selecting_Color & "; } " &
-                  List.DOM_Selector & " .ui-selected { background: " &
-                  Selected_Color & "; } ");
+      S.Create
+        (List.Parent.all,
+         List.DOM_Selector & " .ui-selecting { background: " & Selecting_Color & "; } " & List.DOM_Selector &
+         " .ui-selected { background: " & Selected_Color & "; } ");
 
       List.jQuery_Execute ("selectable()");
    end Make_Selectable;
@@ -155,8 +138,9 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    -- Is_Selected --
    -----------------
 
-   function Is_Selected (Item : Gnoga.Gui.Element.List.List_Item_Type'Class)
-                         return Boolean
+   function Is_Selected
+     (Item : Gnoga.Gui.Element.List.List_Item_Type'Class)
+      return Boolean
    is
    begin
       return Ada.Strings.Fixed.Index (Item.Class_Name, "ui-selected") > 0;
@@ -173,9 +157,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Easing             : in     String  := "swing")
    is
    begin
-      Element.jQuery_Execute ("addClass('" & Class_Name & "'," &
-                                Animation_Duration'Img & ",'" &
-                                Easing & "')");
+      Element.jQuery_Execute ("addClass('" & Class_Name & "'," & Animation_Duration'Img & ",'" & Easing & "')");
    end Add_Class_Name_Animated;
 
    --------------------------------
@@ -189,9 +171,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Easing             : in     String  := "swing")
    is
    begin
-      Element.jQuery_Execute ("removeClass('" & Class_Name & "'," &
-                                Animation_Duration'Img & ",'" &
-                                Easing & "')");
+      Element.jQuery_Execute ("removeClass('" & Class_Name & "'," & Animation_Duration'Img & ",'" & Easing & "')");
    end Remove_Class_Name_Animated;
 
    --------------------------------
@@ -205,9 +185,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Easing             : in     String  := "swing")
    is
    begin
-      Element.jQuery_Execute ("toggleClass('" & Class_Name & "'," &
-                                Animation_Duration'Img & ",'" &
-                                Easing & "')");
+      Element.jQuery_Execute ("toggleClass('" & Class_Name & "'," & Animation_Duration'Img & ",'" & Easing & "')");
    end Toggle_Class_Name_Animated;
 
    --------------------------------
@@ -222,10 +200,9 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Easing             : in     String  := "swing")
    is
    begin
-      Element.jQuery_Execute ("switchClass('" & Old_Class_Name & "','" &
-                                New_Class_Name & "'," &
-                                Animation_Duration'Img & ",'" &
-                                Easing & "')");
+      Element.jQuery_Execute
+        ("switchClass('" & Old_Class_Name & "','" & New_Class_Name & "'," & Animation_Duration'Img & ",'" & Easing &
+         "')");
    end Switch_Class_Name_Animated;
 
    ---------------------
@@ -251,11 +228,9 @@ package body Gnoga.Gui.Plugin.jQueryUI is
          end if;
       end Has_Options;
    begin
-      Element.jQuery_Execute (Effect_Method &
-                                "('" & Effect_Name & "'," &
-                                "{ easing: '" & Easing & "'" &
-                                Has_Options & " }," &
-                                Animation_Duration'Img & ")");
+      Element.jQuery_Execute
+        (Effect_Method & "('" & Effect_Name & "'," & "{ easing: '" & Easing & "'" & Has_Options & " }," &
+         Animation_Duration'Img & ")");
    end jQueryUI_Effect;
 
    ------------------
@@ -270,8 +245,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Options            : in     String  := "")
    is
    begin
-      jQueryUI_Effect (Element, "effect", Effect_Name, Animation_Duration,
-                       Easing, Options);
+      jQueryUI_Effect (Element, "effect", Effect_Name, Animation_Duration, Easing, Options);
    end Apply_Effect;
 
    ------------------------
@@ -286,8 +260,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Options            : in     String  := "")
    is
    begin
-      jQueryUI_Effect (Element, "toggle", Effect_Name, Animation_Duration,
-                       Easing, Options);
+      jQueryUI_Effect (Element, "toggle", Effect_Name, Animation_Duration, Easing, Options);
    end Toggle_With_Effect;
 
    ----------------------
@@ -302,8 +275,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Options            : in     String  := "")
    is
    begin
-      jQueryUI_Effect (Element, "show", Effect_Name, Animation_Duration,
-                       Easing, Options);
+      jQueryUI_Effect (Element, "show", Effect_Name, Animation_Duration, Easing, Options);
    end Show_With_Effect;
 
    ----------------------
@@ -318,8 +290,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       Options            : in     String  := "")
    is
    begin
-      jQueryUI_Effect (Element, "hide", Effect_Name, Animation_Duration,
-                       Easing, Options);
+      jQueryUI_Effect (Element, "hide", Effect_Name, Animation_Duration, Easing, Options);
    end Hide_With_Effect;
 
    --------------
@@ -327,19 +298,16 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    --------------
 
    procedure Position
-     (Element            : in out Gnoga.Gui.Element.Element_Type'Class;
-      Target             : in out Gnoga.Gui.Base.Base_Type'Class;
-      Using_My           : in     String := "center";
-      At_Target          : in     String := "center";
-      On_Collision       : in     String := "flip")
+     (Element      : in out Gnoga.Gui.Element.Element_Type'Class;
+      Target       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Using_My     : in     String := "center";
+      At_Target    : in     String := "center";
+      On_Collision : in     String := "flip")
    is
    begin
-      Element.jQuery_Execute ("position({" &
-                                "my: '" & Using_My & "'," &
-                                "at: '" & At_Target & "'," &
-                                "of: " & Target.jQuery & "," &
-                                "collision: '" & On_Collision & "'" &
-                                "});");
+      Element.jQuery_Execute
+        ("position({" & "my: '" & Using_My & "'," & "at: '" & At_Target & "'," & "of: " & Target.jQuery & "," &
+         "collision: '" & On_Collision & "'" & "});");
    end Position;
 
    procedure Position
@@ -349,14 +317,9 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       On_Collision : in     String := "flip")
    is
    begin
-      Element.jQuery_Execute ("position({" &
-                                "my: '" & Using_My & "'," &
-                                "of: new MouseEvent ('click'," &
-                                " {'clientX':" & X'Img & "," &
-                                "  'clientY':" & Y'Img & "," &
-                                "  'view': window}), " &
-                                "collision: '" & On_Collision & "'" &
-                                "});");
+      Element.jQuery_Execute
+        ("position({" & "my: '" & Using_My & "'," & "of: new MouseEvent ('click'," & " {'clientX':" & X'Img & "," &
+         "  'clientY':" & Y'Img & "," & "  'view': window}), " & "collision: '" & On_Collision & "'" & "});");
    end Position;
 
 end Gnoga.Gui.Plugin.jQueryUI;

@@ -51,25 +51,26 @@ package body Gnoga.Gui.Window is
    use type Gnoga.Gui.Base.Action_Event;
 
    Storage_Event_Script : constant String :=
-                          "e.originalEvent.key + '|' + " &
-                          "e.originalEvent.oldValue + '|' " &
-                          "+ e.originalEvent.newValue + '|'";
+     "e.originalEvent.key + '|' + " & "e.originalEvent.oldValue + '|' " & "+ e.originalEvent.newValue + '|'";
 
-   function Parse_Storage_Event (Message : String)
-                                 return Storage_Event_Record;
+   function Parse_Storage_Event
+     (Message : String)
+      return Storage_Event_Record;
 
    -------------------------
    -- Parse_Storage_Event --
    -------------------------
 
-   function Parse_Storage_Event (Message : String)
-                                 return Storage_Event_Record is
+   function Parse_Storage_Event
+     (Message : String)
+      return Storage_Event_Record
+   is
       use Ada.Strings.Fixed;
       use Ada.Strings.Unbounded;
 
-      Event  : Storage_Event_Record;
-      S      : Integer := Message'First;
-      F      : Integer := Message'First - 1;
+      Event : Storage_Event_Record;
+      S     : Integer := Message'First;
+      F     : Integer := Message'First - 1;
 
       function Split return String;
       function Split return Boolean;
@@ -78,9 +79,7 @@ package body Gnoga.Gui.Window is
       function Split return String is
       begin
          S := F + 1;
-         F := Index (Source  => Message,
-                     Pattern => "|",
-                     From    => S);
+         F := Index (Source => Message, Pattern => "|", From => S);
          return Message (S .. (F - 1));
       end Split;
 
@@ -89,7 +88,7 @@ package body Gnoga.Gui.Window is
          return Split = "true";
       end Split;
    begin
-      Event.Name := To_Unbounded_String (Split);
+      Event.Name      := To_Unbounded_String (Split);
       Event.Old_Value := To_Unbounded_String (Split);
       Event.New_Value := To_Unbounded_String (Split);
 
@@ -100,17 +99,13 @@ package body Gnoga.Gui.Window is
    -- Finalize --
    --------------
 
-   overriding
-   procedure Finalize (Object : in out Window_Type) is
+   overriding procedure Finalize (Object : in out Window_Type) is
       use type Gnoga.Gui.Base.Pointer_To_Base_Class;
 
-      P : Gnoga.Types.Pointer_to_Connection_Data_Class :=
-            Object.Connection_Data;
+      P : Gnoga.Types.Pointer_to_Connection_Data_Class := Object.Connection_Data;
 
-      procedure Free_Data is
-        new Ada.Unchecked_Deallocation
-          (Gnoga.Types.Connection_Data_Type'Class,
-           Gnoga.Types.Pointer_to_Connection_Data_Class);
+      procedure Free_Data is new Ada.Unchecked_Deallocation
+        (Gnoga.Types.Connection_Data_Type'Class, Gnoga.Types.Pointer_to_Connection_Data_Class);
    begin
       if Object.View /= null and Object.View_Is_Dynamic then
          Object.View.Free;
@@ -149,20 +144,14 @@ package body Gnoga.Gui.Window is
       end if;
 
       Gnoga.Gui.Base.Attach
-        (Object        => Gnoga.Gui.Base.Base_Type (Window),
-         Connection_ID => Connection_ID,
-         ID            => ID,
-         ID_Type       => ID_Type);
+        (Object => Gnoga.Gui.Base.Base_Type (Window), Connection_ID => Connection_ID, ID => ID, ID_Type => ID_Type);
 
       Window.DOM_Document.Attach (Connection_ID, ID, ID_Type);
 
       Window.Location.Attach
-        (Connection_ID => Connection_ID,
-         ID            => Window.jQuery & ".prop ('location')",
-         ID_Type       => Gnoga.Types.Script);
+        (Connection_ID => Connection_ID, ID => Window.jQuery & ".prop ('location')", ID_Type => Gnoga.Types.Script);
 
-      Window.Bind_Event (Event   => "resize",
-                         Message => "");
+      Window.Bind_Event (Event => "resize", Message => "");
    end Attach;
 
    procedure Attach
@@ -173,9 +162,9 @@ package body Gnoga.Gui.Window is
    is
       use type Gnoga.Types.ID_Enumeration;
 
-      CID : constant String := Gnoga.Server.Connection.Execute_Script
-        (Parent.Connection_ID,
-         Base.Script_Accessor (ID, ID_Type) & ".gnoga['Connection_ID']");
+      CID : constant String :=
+        Gnoga.Server.Connection.Execute_Script
+          (Parent.Connection_ID, Base.Script_Accessor (ID, ID_Type) & ".gnoga['Connection_ID']");
    begin
       if ID_Type = Gnoga.Types.DOM_ID then
          raise Invalid_ID_Type;
@@ -184,8 +173,7 @@ package body Gnoga.Gui.Window is
       Attach (Window, Gnoga.Types.Connection_ID'Value (CID));
    exception
       when E : others =>
-         Log ("Unable to find gnoga['Connection_ID'] on " & ID &
-                " eval returned : " & CID);
+         Log ("Unable to find gnoga['Connection_ID'] on " & ID & " eval returned : " & CID);
          Log (Ada.Exceptions.Exception_Information (E));
          raise Not_A_Gnoga_Window;
    end Attach;
@@ -194,13 +182,13 @@ package body Gnoga.Gui.Window is
    -- Reattach --
    --------------
 
-   procedure Reattach (Window : in out Window_Type;
-                       Parent : in out Window_Type'Class)
+   procedure Reattach
+     (Window : in out Window_Type;
+      Parent : in out Window_Type'Class)
    is
-      CID : constant String := Gnoga.Server.Connection.Execute_Script
-        (Parent.Connection_ID,
-         Base.Script_Accessor (Window.ID, Window.ID_Type) &
-                 ".gnoga['Connection_ID']");
+      CID : constant String :=
+        Gnoga.Server.Connection.Execute_Script
+          (Parent.Connection_ID, Base.Script_Accessor (Window.ID, Window.ID_Type) & ".gnoga['Connection_ID']");
    begin
       Window.Connection_ID (Gnoga.Types.Connection_ID'Value (CID));
    end Reattach;
@@ -209,8 +197,9 @@ package body Gnoga.Gui.Window is
    -- Disable_Auto_Set_View --
    ---------------------------
 
-   procedure Disable_Auto_Set_View (Window : in out Window_Type;
-                                    Value  : in     Boolean := True)
+   procedure Disable_Auto_Set_View
+     (Window : in out Window_Type;
+      Value  : in     Boolean := True)
    is
    begin
       Window.Auto_Set_View := not Value;
@@ -219,9 +208,10 @@ package body Gnoga.Gui.Window is
    -- Set_View --
    --------------
 
-   procedure Set_View (Window : in out Window_Type;
-                       Object : in out Gnoga.Gui.Base.Base_Type'Class;
-                       Place  : in     Boolean := True)
+   procedure Set_View
+     (Window : in out Window_Type;
+      Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Place  : in     Boolean := True)
    is
       use Gnoga.Gui.Element;
    begin
@@ -230,11 +220,10 @@ package body Gnoga.Gui.Window is
       end if;
 
       if Place then
-         Element_Type (Object).Place_Inside_Top_Of
-           (Window.Document.Body_Element.all);
+         Element_Type (Object).Place_Inside_Top_Of (Window.Document.Body_Element.all);
       end if;
 
-      Window.View := Object'Unchecked_Access;
+      Window.View            := Object'Unchecked_Access;
       Window.View_Is_Dynamic := Object.Dynamic;
 
       Element_Type (Object).Box_Sizing (Border_Box);
@@ -250,8 +239,9 @@ package body Gnoga.Gui.Window is
    -- Get_View --
    --------------
 
-   function Get_View (Window : Window_Type)
-                      return Gnoga.Gui.Base.Pointer_To_Base_Class
+   function Get_View
+     (Window : Window_Type)
+      return Gnoga.Gui.Base.Pointer_To_Base_Class
    is
    begin
       return Window.View;
@@ -270,8 +260,9 @@ package body Gnoga.Gui.Window is
    -- Document --
    --------------
 
-   function Document (Window : Window_Type)
-                      return Gnoga.Gui.Document.Document_Access
+   function Document
+     (Window : Window_Type)
+      return Gnoga.Gui.Document.Document_Access
    is
    begin
       return Window.DOM_Document'Unrestricted_Access;
@@ -281,8 +272,9 @@ package body Gnoga.Gui.Window is
    -- Location --
    --------------
 
-   function Location (Window : Window_Type)
-                      return Gnoga.Gui.Location.Location_Access
+   function Location
+     (Window : Window_Type)
+      return Gnoga.Gui.Location.Location_Access
    is
    begin
       return Window.Location'Unrestricted_Access;
@@ -292,14 +284,17 @@ package body Gnoga.Gui.Window is
    -- Browser_Status_Bar --
    ------------------------
 
-   procedure Browser_Status_Bar (Window : in out Window_Type;
-                                 Value  : in     String)
+   procedure Browser_Status_Bar
+     (Window : in out Window_Type;
+      Value  : in     String)
    is
    begin
       Window.Property ("status", Value);
    end Browser_Status_Bar;
 
-   function Browser_Status_Bar (Window : Window_Type) return String
+   function Browser_Status_Bar
+     (Window : Window_Type)
+      return String
    is
    begin
       return Window.Property ("status");
@@ -309,7 +304,10 @@ package body Gnoga.Gui.Window is
    -- Name --
    ----------
 
-   procedure Name (Window : in out Window_Type; Value : in String) is
+   procedure Name
+     (Window : in out Window_Type;
+      Value  : in     String)
+   is
    begin
       Window.Property ("name", Value);
    end Name;
@@ -318,7 +316,10 @@ package body Gnoga.Gui.Window is
    -- Name --
    ----------
 
-   function Name (Window : Window_Type) return String is
+   function Name
+     (Window : Window_Type)
+      return String
+   is
    begin
       return Window.Property ("name");
    end Name;
@@ -327,7 +328,10 @@ package body Gnoga.Gui.Window is
    -- Inner_Height --
    ------------------
 
-   procedure Inner_Height (Window : in out Window_Type; Value : in Integer) is
+   procedure Inner_Height
+     (Window : in out Window_Type;
+      Value  : in     Integer)
+   is
    begin
       Window.Property ("innerHeight", Value);
    end Inner_Height;
@@ -336,7 +340,10 @@ package body Gnoga.Gui.Window is
    -- Inner_Height --
    ------------------
 
-   function Inner_Height (Window : Window_Type) return Integer is
+   function Inner_Height
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("innerHeight");
    end Inner_Height;
@@ -345,7 +352,10 @@ package body Gnoga.Gui.Window is
    -- Inner_Width --
    -----------------
 
-   procedure Inner_Width (Window : in out Window_Type; Value : in Integer) is
+   procedure Inner_Width
+     (Window : in out Window_Type;
+      Value  : in     Integer)
+   is
    begin
       Window.Property ("innerWidth", Value);
    end Inner_Width;
@@ -354,7 +364,10 @@ package body Gnoga.Gui.Window is
    -- Inner_Width --
    -----------------
 
-   function Inner_Width (Window : Window_Type) return Integer is
+   function Inner_Width
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("innerWidth");
    end Inner_Width;
@@ -363,7 +376,10 @@ package body Gnoga.Gui.Window is
    -- Outer_Height --
    ------------------
 
-   procedure Outer_Height (Window : in out Window_Type; Value : in Integer) is
+   procedure Outer_Height
+     (Window : in out Window_Type;
+      Value  : in     Integer)
+   is
    begin
       Window.Property ("outerHeight", Value);
    end Outer_Height;
@@ -372,7 +388,10 @@ package body Gnoga.Gui.Window is
    -- Outer_Height --
    ------------------
 
-   function Outer_Height (Window : Window_Type) return Integer is
+   function Outer_Height
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("outerHeight");
    end Outer_Height;
@@ -381,7 +400,10 @@ package body Gnoga.Gui.Window is
    -- Outer_Width --
    -----------------
 
-   procedure Outer_Width (Window : in out Window_Type; Value : in Integer) is
+   procedure Outer_Width
+     (Window : in out Window_Type;
+      Value  : in     Integer)
+   is
    begin
       Window.Property ("outerWidth", Value);
    end Outer_Width;
@@ -390,7 +412,10 @@ package body Gnoga.Gui.Window is
    -- Outer_Width --
    -----------------
 
-   function Outer_Width (Window : Window_Type) return Integer is
+   function Outer_Width
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("outerWidth");
    end Outer_Width;
@@ -399,7 +424,10 @@ package body Gnoga.Gui.Window is
    -- X_Offset --
    --------------
 
-   function X_Offset (Window : Window_Type) return Integer is
+   function X_Offset
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("pageXOffset");
    end X_Offset;
@@ -408,7 +436,10 @@ package body Gnoga.Gui.Window is
    -- Y_Offset --
    --------------
 
-   function Y_Offset (Window : Window_Type) return Integer is
+   function Y_Offset
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("pageYOffset");
    end Y_Offset;
@@ -417,7 +448,10 @@ package body Gnoga.Gui.Window is
    -- Top --
    ---------
 
-   function Top (Window : Window_Type) return Integer is
+   function Top
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("screenY");
    end Top;
@@ -426,7 +460,10 @@ package body Gnoga.Gui.Window is
    -- Left --
    ----------
 
-   function Left (Window : Window_Type) return Integer is
+   function Left
+     (Window : Window_Type)
+      return Integer
+   is
    begin
       return Window.Property ("screenX");
    end Left;
@@ -435,20 +472,23 @@ package body Gnoga.Gui.Window is
    -- Form_Parameter --
    --------------------
 
-   function Form_Parameter (Window : Window_Type; Name  : String)
-                              return String
+   function Form_Parameter
+     (Window : Window_Type;
+      Name   : String)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Form_Parameter (Window.Connection_ID,
-                                                     Name);
+      return Gnoga.Server.Connection.Form_Parameter (Window.Connection_ID, Name);
    end Form_Parameter;
 
    ----------------------
    -- Gnoga_Session_ID --
    ----------------------
 
-   function Gnoga_Session_ID (Window : Window_Type; Name : String := "gid")
-                              return String
+   function Gnoga_Session_ID
+     (Window : Window_Type;
+      Name   : String := "gid")
+      return String
    is
       use Gnoga.Client.Storage;
 
@@ -462,18 +502,15 @@ package body Gnoga.Gui.Window is
 
          Now : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       begin
-         return Trim (Year (Now)'Img, Side => Both)
-           & Trim (Month (Now)'Img, Side => Both)
-           & Trim (Day (Now)'Img, Side => Both)
-           & Trim (Hour (Now)'Img, Side => Both)
-           & Trim (Minute (Now)'Img, Side => Both)
-           & Trim (Second (Now)'Img, Side => Both)
-           & Translate (Trim (Sub_Second (Now)'Img, Side => Both),
-                        Ada.Strings.Maps.To_Mapping (".", "0"));
+         return
+           Trim (Year (Now)'Img, Side => Both) & Trim (Month (Now)'Img, Side => Both) &
+           Trim (Day (Now)'Img, Side => Both) & Trim (Hour (Now)'Img, Side => Both) &
+           Trim (Minute (Now)'Img, Side => Both) & Trim (Second (Now)'Img, Side => Both) &
+           Translate (Trim (Sub_Second (Now)'Img, Side => Both), Ada.Strings.Maps.To_Mapping (".", "0"));
       end Generate_Session_ID;
 
       S   : Session_Storage_Type := Session_Storage (Window);
-      Gid : constant String               := S.Get (Name);
+      Gid : constant String      := S.Get (Name);
    begin
       if Gid = "null" then
          declare
@@ -494,18 +531,16 @@ package body Gnoga.Gui.Window is
 
    procedure Connection_Data
      (Window  : in out Window_Type;
-      Data    : access Gnoga.Types.Connection_Data_Type'Class;
+      Data    :        access Gnoga.Types.Connection_Data_Type'Class;
       Dynamic : in     Boolean := True)
    is
    begin
       if Data = null then
-         Gnoga.Server.Connection.Connection_Data
-           (ID => Window.Connection_ID, Data => null);
+         Gnoga.Server.Connection.Connection_Data (ID => Window.Connection_ID, Data => null);
 
          Window.Free_Connection_Data := False;
       else
-         Gnoga.Server.Connection.Connection_Data
-           (ID => Window.Connection_ID, Data => Data.all'Unrestricted_Access);
+         Gnoga.Server.Connection.Connection_Data (ID => Window.Connection_ID, Data => Data.all'Unrestricted_Access);
 
          Window.Free_Connection_Data := Dynamic;
       end if;
@@ -515,18 +550,19 @@ package body Gnoga.Gui.Window is
    -- Launch --
    ------------
 
-   procedure Launch (Window   : in out Window_Type;
-                     Parent   : in out Window_Type'Class;
-                     URL      : in     String;
-                     Width    : in     Integer := -1;
-                     Height   : in     Integer := -1;
-                     Left     : in     Integer := -1;
-                     Top      : in     Integer := -1;
-                     Location : in     Boolean := False;
-                     Menu     : in     Boolean := False;
-                     Status   : in     Boolean := False;
-                     Tool_Bar : in     Boolean := False;
-                     Title    : in     Boolean := False)
+   procedure Launch
+     (Window   : in out Window_Type;
+      Parent   : in out Window_Type'Class;
+      URL      : in     String;
+      Width    : in     Integer := -1;
+      Height   : in     Integer := -1;
+      Left     : in     Integer := -1;
+      Top      : in     Integer := -1;
+      Location : in     Boolean := False;
+      Menu     : in     Boolean := False;
+      Status   : in     Boolean := False;
+      Tool_Bar : in     Boolean := False;
+      Title    : in     Boolean := False)
    is
       GID : constant String := Gnoga.Server.Connection.New_GID;
 
@@ -538,10 +574,17 @@ package body Gnoga.Gui.Window is
          P : Unbounded_String;
          C : Boolean := False;
 
-         procedure Add_Param (S : String; V : String);
-         procedure Add_Param (S : String; V : Boolean);
+         procedure Add_Param
+           (S : String;
+            V : String);
+         procedure Add_Param
+           (S : String;
+            V : Boolean);
 
-         procedure Add_Param (S : String; V : String) is
+         procedure Add_Param
+           (S : String;
+            V : String)
+         is
          begin
             if C then
                P := P & ", ";
@@ -551,7 +594,10 @@ package body Gnoga.Gui.Window is
             C := True;
          end Add_Param;
 
-         procedure Add_Param (S : String; V : Boolean) is
+         procedure Add_Param
+           (S : String;
+            V : Boolean)
+         is
          begin
             if V then
                Add_Param (S, "yes");
@@ -589,29 +635,22 @@ package body Gnoga.Gui.Window is
 
    begin
       Window.Create_With_Script
-        (Connection_ID => Parent.Connection_ID,
-         ID            => GID,
-         Script        => "gnoga['" & GID & "']=window.open ('" & URL &
-           "', '" & GID & "', '" & Params & "')",
+        (Connection_ID => Parent.Connection_ID, ID => GID,
+         Script        => "gnoga['" & GID & "']=window.open ('" & URL & "', '" & GID & "', '" & Params & "')",
          ID_Type       => Gnoga.Types.Gnoga_ID);
 
       delay 0.25;
       --  Needed for Firefox or there is a race condition with the value of
       --  gnoga['" & GID & "']. Popups are nasty, they should be avoided.
 
-      if
-        Gnoga.Server.Connection.Execute_Script
-          (Parent.Connection_ID, "gnoga['" & GID & "']") = "undefined"
-      then
+      if Gnoga.Server.Connection.Execute_Script (Parent.Connection_ID, "gnoga['" & GID & "']") = "undefined" then
          raise Popup_Blocked;
       end if;
 
-      Window.DOM_Document.Attach
-        (Parent.Connection_ID, GID, Gnoga.Types.Gnoga_ID);
+      Window.DOM_Document.Attach (Parent.Connection_ID, GID, Gnoga.Types.Gnoga_ID);
 
       Window.Location.Attach
-        (Connection_ID => Parent.Connection_ID,
-         ID            => Window.jQuery & ".prop ('location')",
+        (Connection_ID => Parent.Connection_ID, ID => Window.jQuery & ".prop ('location')",
          ID_Type       => Gnoga.Types.Script);
    end Launch;
 
@@ -619,7 +658,10 @@ package body Gnoga.Gui.Window is
    -- Alert --
    -----------
 
-   procedure Alert (Window : in out Window_Type; Message : String) is
+   procedure Alert
+     (Window  : in out Window_Type;
+      Message :        String)
+   is
    begin
       Window.Execute ("alert ('" & Escape_Quotes (Message) & "');");
    end Alert;
@@ -628,7 +670,10 @@ package body Gnoga.Gui.Window is
    -- Log --
    ---------
 
-   procedure Log (Window : in out Window_Type; Message : String) is
+   procedure Log
+     (Window  : in out Window_Type;
+      Message :        String)
+   is
    begin
       Window.Execute ("console.log ('" & Escape_Quotes (Message) & "');");
    end Log;
@@ -637,7 +682,10 @@ package body Gnoga.Gui.Window is
    -- Error --
    -----------
 
-   procedure Error (Window : in out Window_Type; Message : String) is
+   procedure Error
+     (Window  : in out Window_Type;
+      Message :        String)
+   is
    begin
       Window.Execute ("console.error ('" & Escape_Quotes (Message) & "');");
    end Error;
@@ -666,7 +714,7 @@ package body Gnoga.Gui.Window is
 
    procedure Resize_By
      (Window        : in out Window_Type;
-      Width, Height : Integer)
+      Width, Height :        Integer)
    is
    begin
       Window.Execute ("resizeBy(" & Width'Img & "," & Height'Img & ");");
@@ -678,7 +726,7 @@ package body Gnoga.Gui.Window is
 
    procedure Resize_To
      (Window        : in out Window_Type;
-      Width, Height : Integer)
+      Width, Height :        Integer)
    is
    begin
       Window.Execute ("resizeTo(" & Width'Img & "," & Height'Img & ");");
@@ -688,7 +736,10 @@ package body Gnoga.Gui.Window is
    -- Move_By --
    -------------
 
-   procedure Move_By (Window : in out Window_Type; X, Y : Integer) is
+   procedure Move_By
+     (Window : in out Window_Type;
+      X, Y   :        Integer)
+   is
    begin
       Window.Execute ("moveBy(" & X'Img & "," & Y'Img & ");");
    end Move_By;
@@ -697,7 +748,10 @@ package body Gnoga.Gui.Window is
    -- Move_To --
    -------------
 
-   procedure Move_To (Window : in out Window_Type; X, Y : Integer) is
+   procedure Move_To
+     (Window : in out Window_Type;
+      X, Y   :        Integer)
+   is
    begin
       Window.Execute ("moveTo(" & X'Img & "," & Y'Img & ");");
    end Move_To;
@@ -706,7 +760,10 @@ package body Gnoga.Gui.Window is
    -- Scroll_By --
    ---------------
 
-   procedure Scroll_By (Window : in out Window_Type; X, Y : Integer) is
+   procedure Scroll_By
+     (Window : in out Window_Type;
+      X, Y   :        Integer)
+   is
    begin
       Window.Execute ("scrollBy(" & X'Img & "," & Y'Img & ");");
    end Scroll_By;
@@ -715,7 +772,10 @@ package body Gnoga.Gui.Window is
    -- Scroll_To --
    ---------------
 
-   procedure Scroll_To (Window : in out Window_Type; X, Y : Integer) is
+   procedure Scroll_To
+     (Window : in out Window_Type;
+      X, Y   :        Integer)
+   is
    begin
       Window.Execute ("scrollTo(" & X'Img & "," & Y'Img & ");");
    end Scroll_To;
@@ -733,8 +793,9 @@ package body Gnoga.Gui.Window is
    -- On_Abort --
    --------------
 
-   procedure On_Abort_Handler (Window  : in out Window_Type;
-                               Handler : in     Gnoga.Gui.Base.Action_Event)
+   procedure On_Abort_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
       if Window.On_Abort_Event /= null then
@@ -744,13 +805,11 @@ package body Gnoga.Gui.Window is
       Window.On_Abort_Event := Handler;
 
       if Handler /= null then
-         Window.Bind_Event (Event   => "abort",
-                            Message => "");
+         Window.Bind_Event (Event => "abort", Message => "");
       end if;
    end On_Abort_Handler;
 
-   procedure Fire_On_Abort (Window : in out Window_Type)
-   is
+   procedure Fire_On_Abort (Window : in out Window_Type) is
    begin
       if Window.On_Abort_Event /= null then
          Window.On_Abort_Event (Window);
@@ -773,13 +832,11 @@ package body Gnoga.Gui.Window is
       Window.On_Error_Event := Handler;
 
       if Handler /= null then
-         Window.Bind_Event (Event   => "error",
-                            Message => "");
+         Window.Bind_Event (Event => "error", Message => "");
       end if;
    end On_Error_Handler;
 
-   procedure Fire_On_Error (Window : in out Window_Type)
-   is
+   procedure Fire_On_Error (Window : in out Window_Type) is
    begin
       if Window.On_Error_Event /= null then
          Window.On_Error_Event (Window);
@@ -790,8 +847,9 @@ package body Gnoga.Gui.Window is
    -- On_Before_Unload --
    ----------------------
 
-   procedure On_Before_Unload_Handler (Window  : in out Window_Type;
-                               Handler : in     Gnoga.Gui.Base.Action_Event)
+   procedure On_Before_Unload_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
       if Window.On_Before_Unload_Event /= null then
@@ -801,13 +859,11 @@ package body Gnoga.Gui.Window is
       Window.On_Before_Unload_Event := Handler;
 
       if Handler /= null then
-         Window.Bind_Event (Event   => "beforeunload",
-                            Message => "");
+         Window.Bind_Event (Event => "beforeunload", Message => "");
       end if;
    end On_Before_Unload_Handler;
 
-   procedure Fire_On_Before_Unload (Window : in out Window_Type)
-   is
+   procedure Fire_On_Before_Unload (Window : in out Window_Type) is
    begin
       if Window.On_Before_Unload_Event /= null then
          Window.On_Before_Unload_Event (Window);
@@ -830,13 +886,11 @@ package body Gnoga.Gui.Window is
       Window.On_Hash_Change_Event := Handler;
 
       if Handler /= null then
-         Window.Bind_Event (Event   => "hashchange",
-                            Message => "");
+         Window.Bind_Event (Event => "hashchange", Message => "");
       end if;
    end On_Hash_Change_Handler;
 
-   procedure Fire_On_Hash_Change (Window : in out Window_Type)
-   is
+   procedure Fire_On_Hash_Change (Window : in out Window_Type) is
    begin
       if Window.On_Hash_Change_Event /= null then
          Window.On_Hash_Change_Event (Window);
@@ -859,13 +913,11 @@ package body Gnoga.Gui.Window is
       Window.On_Orientation_Change_Event := Handler;
 
       if Handler /= null then
-         Window.Bind_Event (Event   => "orientationchange",
-                            Message => "");
+         Window.Bind_Event (Event => "orientationchange", Message => "");
       end if;
    end On_Orientation_Change_Handler;
 
-   procedure Fire_On_Orientation_Change (Window : in out Window_Type)
-   is
+   procedure Fire_On_Orientation_Change (Window : in out Window_Type) is
    begin
       if Window.On_Orientation_Change_Event /= null then
          Window.On_Orientation_Change_Event (Window);
@@ -876,8 +928,9 @@ package body Gnoga.Gui.Window is
    -- On_Storage --
    ----------------
 
-   procedure On_Storage_Handler (Window  : in out Window_Type;
-                                 Handler : in     Storage_Event)
+   procedure On_Storage_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Storage_Event)
    is
    begin
       if Window.On_Storage_Event /= null then
@@ -887,14 +940,13 @@ package body Gnoga.Gui.Window is
       Window.On_Storage_Event := Handler;
 
       if Handler /= null then
-         Window.Bind_Event (Event   => "storage",
-                            Message => "",
-                            Script  => Storage_Event_Script);
+         Window.Bind_Event (Event => "storage", Message => "", Script => Storage_Event_Script);
       end if;
    end On_Storage_Handler;
 
-   procedure Fire_On_Storage (Window        : in out Window_Type;
-                              Storage_Event : in     Storage_Event_Record)
+   procedure Fire_On_Storage
+     (Window        : in out Window_Type;
+      Storage_Event : in     Storage_Event_Record)
    is
    begin
       if Window.On_Storage_Event /= null then
@@ -906,8 +958,7 @@ package body Gnoga.Gui.Window is
    -- On_Resize --
    ---------------
 
-   overriding
-   procedure On_Resize (Window : in out Window_Type) is
+   overriding procedure On_Resize (Window : in out Window_Type) is
       use type Gnoga.Gui.Base.Pointer_To_Base_Class;
       use Gnoga.Gui.Element;
    begin
@@ -921,13 +972,12 @@ package body Gnoga.Gui.Window is
    -- On_Child_Added --
    --------------------
 
-   overriding
-   procedure On_Child_Added (Object : in out Window_Type;
-                             Child  : in out Gnoga.Gui.Base.Base_Type'Class)
+   overriding procedure On_Child_Added
+     (Object : in out Window_Type;
+      Child  : in out Gnoga.Gui.Base.Base_Type'Class)
    is
    begin
-      if Child in Gnoga.Gui.View.View_Base_Type'Class and Object.Auto_Set_View
-      then
+      if Child in Gnoga.Gui.View.View_Base_Type'Class and Object.Auto_Set_View then
          if Gnoga.Gui.View.View_Base_Type (Child).Auto_Place then
             Object.Set_View (Child);
          end if;
@@ -938,10 +988,10 @@ package body Gnoga.Gui.Window is
    -- On_Message --
    ----------------
 
-   overriding
-   procedure On_Message (Object  : in out Window_Type;
-                         Event   : in     String;
-                         Message : in     String)
+   overriding procedure On_Message
+     (Object  : in out Window_Type;
+      Event   : in     String;
+      Message : in     String)
    is
    begin
       -- Network Event --

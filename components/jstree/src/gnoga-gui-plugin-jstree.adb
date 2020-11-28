@@ -41,74 +41,45 @@ package body Gnoga.Gui.Plugin.JSTree is
    -- Load_JSTree --
    -----------------
 
-   function Build_Options (Options : Option_Type) return String;
-   function Build_Options (Options : Option_Type) return String is
+   function Build_Options
+     (Options : Option_Type)
+      return String;
+   function Build_Options
+     (Options : Option_Type)
+      return String
+   is
       Plugins : constant String :=
         (if Options.Plugins (CheckBox) then "'checkbox'," else "") &
         (if Options.Plugins (ContextMenu) then "'contextmenu'," else "") &
-        (if Options.Plugins (DragAndDrop) then "'dnd'," else "") &
-        (if Options.Plugins (Sort) then "'sort'," else "") &
+        (if Options.Plugins (DragAndDrop) then "'dnd'," else "") & (if Options.Plugins (Sort) then "'sort'," else "") &
         (if Options.Plugins (Unique) then "'unique'," else "") &
         (if Options.Plugins (WholeRow) then "'wholerow'," else "");
    begin
-      return '{' &
-        "'core':{" &
-        (if
-           Options.Plugins (ContextMenu) or Options.Plugins (DragAndDrop)
-         then
-           "'check_callback':true,"
-         else "") &
-        "'animation':" &
-        Options.Core.Animation'Img &
-        ',' &
-        "'multiple':" &
-        Options.Core.Multiple'Img &
-        ',' &
-        "'force_text':" &
-        Options.Core.Force_Text'Img &
-        ',' &
-        "'dblclick_toggle':" &
-        Options.Core.DblClick_Toggle'Img &
-        ',' &
-        "'themes':{" &
-        "'dots':" &
-        Options.Core.Themes.Dots'Img &
-        ',' &
-        "'icons':" &
-        Options.Core.Themes.Icons'Img &
-        ',' &
-        "'stripes':" &
-        Options.Core.Themes.Stripes'Img &
-        ',' &
-        '}' &
-        "}," &
-        "'plugins':[" &
-        (if Plugins'Length > 0 then Plugins (Plugins'First .. Plugins'Last - 1)
-         else "") &
-        ']' &
-        '}';
+      return
+        '{' & "'core':{" &
+        (if Options.Plugins (ContextMenu) or Options.Plugins (DragAndDrop) then "'check_callback':true," else "") &
+        "'animation':" & Options.Core.Animation'Img & ',' & "'multiple':" & Options.Core.Multiple'Img & ',' &
+        "'force_text':" & Options.Core.Force_Text'Img & ',' & "'dblclick_toggle':" & Options.Core.DblClick_Toggle'Img &
+        ',' & "'themes':{" & "'dots':" & Options.Core.Themes.Dots'Img & ',' & "'icons':" &
+        Options.Core.Themes.Icons'Img & ',' & "'stripes':" & Options.Core.Themes.Stripes'Img & ',' & '}' & "}," &
+        "'plugins':[" & (if Plugins'Length > 0 then Plugins (Plugins'First .. Plugins'Last - 1) else "") & ']' & '}';
    end Build_Options;
 
    -----------------
    -- Load_JSTree --
    -----------------
 
-   procedure Load_JSTree
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class)
-   is
+   procedure Load_JSTree (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
    begin
       Window.Document.Head_Element.jQuery_Execute
-      ("append('" &
-       Escape_Quotes
-         ("<link href='/css/jstree_themes/default/style.min.css'" &
-          " type='text/css' rel='stylesheet'>") &
-       "')");
+        ("append('" &
+         Escape_Quotes
+           ("<link href='/css/jstree_themes/default/style.min.css'" & " type='text/css' rel='stylesheet'>") &
+         "')");
       Window.Document.Head_Element.jQuery_Execute
-      ("append('" &
-       Escape_Quotes
-         ("<script src='/js/jstree.min.js'" &
-          " type='text/javascript' charset='utf-8'></script>") &
-       "')");
+        ("append('" &
+         Escape_Quotes ("<script src='/js/jstree.min.js'" & " type='text/javascript' charset='utf-8'></script>") &
+         "')");
    end Load_JSTree;
 
    -------------------
@@ -142,8 +113,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View := new JSTree_View_Type;
       Tree.View.Create (Parent, ID);
       Tree.View.Parent_Tree := Tree;
-      JSTree_Access (Tree.View.New_Element (Name, Tree)).Create
-      (Tree.View.all);
+      JSTree_Access (Tree.View.New_Element (Name, Tree)).Create (Tree.View.all);
    end New_Root_Tree;
 
    --------------
@@ -162,19 +132,13 @@ package body Gnoga.Gui.Plugin.JSTree is
    is
       Attributes : constant String :=
         (if Icon /= "" then """icon"":""" & Icon & """," else "") &
-        (if Selected then """selected"":true," & Icon else "") &
-        (if Opened then """opened"":true," & Icon else "") &
+        (if Selected then """selected"":true," & Icon else "") & (if Opened then """opened"":true," & Icon else "") &
         (if Disabled then """disabled"":true," & Icon else "");
    begin
       Item.Create (Tree, Name, ID);
       Item.Attribute
-      ("data-jstree", '{' &
-       (if
-          Attributes'Length > 0
-        then
-          Attributes (Attributes'First .. Attributes'Last - 1)
-        else "") &
-       '}');
+        ("data-jstree",
+         '{' & (if Attributes'Length > 0 then Attributes (Attributes'First .. Attributes'Last - 1) else "") & '}');
    end Add_Item;
 
    --------------
@@ -192,18 +156,8 @@ package body Gnoga.Gui.Plugin.JSTree is
       Disabled : in     Boolean := False)
    is
    begin
-      Item :=
-        JSTree_Item_Access
-          (Tree.View.New_Element (Name, new JSTree_Item_Type));
-      Add_Item
-        (Tree.all,
-         Name,
-         Item.all,
-         ID,
-         Icon,
-         Selected,
-         Opened,
-         Disabled);
+      Item := JSTree_Item_Access (Tree.View.New_Element (Name, new JSTree_Item_Type));
+      Add_Item (Tree.all, Name, Item.all, ID, Icon, Selected, Opened, Disabled);
    end New_Item;
 
    ------------------
@@ -266,8 +220,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       ID       : in     String := "")
    is
    begin
-      Sub_Tree :=
-        JSTree_Access (Tree.View.New_Element (Item.Text, new JSTree_Type));
+      Sub_Tree := JSTree_Access (Tree.View.New_Element (Item.Text, new JSTree_Type));
       Add_Sub_Tree (Tree.all, Item.all, Sub_Tree.all, ID);
    end New_Sub_Tree;
 
@@ -287,20 +240,9 @@ package body Gnoga.Gui.Plugin.JSTree is
    is
       Item : JSTree_Item_Access;
    begin
-      Item :=
-        JSTree_Item_Access
-          (Tree.View.New_Element (Name, new JSTree_Item_Type));
-      Add_Item
-        (Tree.all,
-         Name,
-         Item.all,
-         ID,
-         Icon,
-         Selected,
-         Opened,
-         Disabled);
-      Sub_Tree :=
-        JSTree_Access (Tree.View.New_Element (Name, new JSTree_Type));
+      Item := JSTree_Item_Access (Tree.View.New_Element (Name, new JSTree_Item_Type));
+      Add_Item (Tree.all, Name, Item.all, ID, Icon, Selected, Opened, Disabled);
+      Sub_Tree := JSTree_Access (Tree.View.New_Element (Name, new JSTree_Type));
       Add_Sub_Tree (Tree.all, Item.all, Sub_Tree.all, ID);
    end New_Sub_Tree_Item;
 
@@ -332,15 +274,13 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.On_Open_Node_Event := Handler;
 
       if Handler /= null then
-         Tree.View.Bind_Event
-         (Event                          =>
-            "after_open.jstree", Message =>
-            "", Script                   =>
-            "data.node.text");
+         Tree.View.Bind_Event (Event => "after_open.jstree", Message => "", Script => "data.node.text");
       end if;
    end On_Open_Node_Handler;
 
-   procedure Fire_On_Open_Node (View : in out JSTree_View_Type; Node : String);
+   procedure Fire_On_Open_Node
+     (View : in out JSTree_View_Type;
+      Node :        String);
 
    procedure Fire_On_Open_Node
      (View : in out JSTree_View_Type;
@@ -352,7 +292,10 @@ package body Gnoga.Gui.Plugin.JSTree is
       end if;
    end Fire_On_Open_Node;
 
-   procedure Fire_On_Open_Node (Tree : in out JSTree_Type; Node : String) is
+   procedure Fire_On_Open_Node
+     (Tree : in out JSTree_Type;
+      Node :        String)
+   is
    begin
       Tree.View.Fire_On_Open_Node (Node);
    end Fire_On_Open_Node;
@@ -373,11 +316,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.On_Close_Node_Event := Handler;
 
       if Handler /= null then
-         Tree.View.Bind_Event
-         (Event                           =>
-            "after_close.jstree", Message =>
-            "", Script                    =>
-            "data.node.text");
+         Tree.View.Bind_Event (Event => "after_close.jstree", Message => "", Script => "data.node.text");
       end if;
    end On_Close_Node_Handler;
 
@@ -395,7 +334,10 @@ package body Gnoga.Gui.Plugin.JSTree is
       end if;
    end Fire_On_Close_Node;
 
-   procedure Fire_On_Close_Node (Tree : in out JSTree_Type; Node : String) is
+   procedure Fire_On_Close_Node
+     (Tree : in out JSTree_Type;
+      Node :        String)
+   is
    begin
       Tree.View.Fire_On_Close_Node (Node);
    end Fire_On_Close_Node;
@@ -417,14 +359,11 @@ package body Gnoga.Gui.Plugin.JSTree is
 
       if Handler /= null then
          Tree.View.Bind_Event
-         (Event                           =>
-            "select_node.jstree", Message =>
-            "", Eval                      =>
-            "var i, j, r = [];" &
-            "for(i = 0, j = data.selected.length; i < j; i++) {" &
-            "r.push(data.instance.get_node(data.selected[i]).text);" &
-            "}", Script =>
-            "r.join(', ')");
+           (Event => "select_node.jstree", Message => "",
+            Eval  =>
+              "var i, j, r = [];" & "for(i = 0, j = data.selected.length; i < j; i++) {" &
+              "r.push(data.instance.get_node(data.selected[i]).text);" & "}",
+            Script => "r.join(', ')");
       end if;
    end On_Select_Node_Handler;
 
@@ -467,14 +406,11 @@ package body Gnoga.Gui.Plugin.JSTree is
 
       if Handler /= null then
          Tree.View.Bind_Event
-         (Event                             =>
-            "deselect_node.jstree", Message =>
-            "", Eval                        =>
-            "var i, j, r = [];" &
-            "for(i = 0, j = data.selected.length; i < j; i++) {" &
-            "r.push(data.instance.get_node(data.selected[i]).text);" &
-            "}", Script =>
-            "r.join(', ')");
+           (Event => "deselect_node.jstree", Message => "",
+            Eval  =>
+              "var i, j, r = [];" & "for(i = 0, j = data.selected.length; i < j; i++) {" &
+              "r.push(data.instance.get_node(data.selected[i]).text);" & "}",
+            Script => "r.join(', ')");
       end if;
    end On_Deselect_Node_Handler;
 
@@ -517,14 +453,11 @@ package body Gnoga.Gui.Plugin.JSTree is
 
       if Handler /= null then
          Tree.View.Bind_Event
-         (Event                          =>
-            "check_node.jstree", Message =>
-            "", Eval                     =>
-            "var i, j, r = [];" &
-            "for(i = 0, j = data.selected.length; i < j; i++) {" &
-            "r.push(data.instance.get_node(data.selected[i]).text);" &
-            "}", Script =>
-            "r.join(', ')");
+           (Event => "check_node.jstree", Message => "",
+            Eval  =>
+              "var i, j, r = [];" & "for(i = 0, j = data.selected.length; i < j; i++) {" &
+              "r.push(data.instance.get_node(data.selected[i]).text);" & "}",
+            Script => "r.join(', ')");
       end if;
    end On_Check_Node_Handler;
 
@@ -567,14 +500,11 @@ package body Gnoga.Gui.Plugin.JSTree is
 
       if Handler /= null then
          Tree.View.Bind_Event
-         (Event                            =>
-            "uncheck_node.jstree", Message =>
-            "", Eval                       =>
-            "var i, j, r = [];" &
-            "for(i = 0, j = data.selected.length; i < j; i++) {" &
-            "r.push(data.instance.get_node(data.selected[i]).text);" &
-            "}", Script =>
-            "r.join(', ')");
+           (Event => "uncheck_node.jstree", Message => "",
+            Eval  =>
+              "var i, j, r = [];" & "for(i = 0, j = data.selected.length; i < j; i++) {" &
+              "r.push(data.instance.get_node(data.selected[i]).text);" & "}",
+            Script => "r.join(', ')");
       end if;
    end On_Uncheck_Node_Handler;
 

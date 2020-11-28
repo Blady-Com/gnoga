@@ -40,19 +40,16 @@ with Gnoga.Gui.Element;
 package body Gnoga.Gui.Modal_Dialog is
 
    procedure Create
-      (Dialog : in out Dialog_Type;
-       Parent : in out Gnoga.Gui.Window.Window_Type'Class;
-       ID     : in     String := "")
+     (Dialog : in out Dialog_Type;
+      Parent : in out Gnoga.Gui.Window.Window_Type'Class;
+      ID     : in     String := "")
    is
       use type Gnoga.Gui.Base.Pointer_To_Base_Class;
-      Old_View : constant Gnoga.Gui.Base.Pointer_To_Base_Class
-         := Parent.Get_View;
+      Old_View : constant Gnoga.Gui.Base.Pointer_To_Base_Class := Parent.Get_View;
    begin
 
       --  Create the Dialog Background view
-      Dialog.Modal_Background.Create
-         (Parent => Parent,
-          ID     => ID);
+      Dialog.Modal_Background.Create (Parent => Parent, ID => ID);
 
       --  Creating a view using a window as a parent sets the view as the
       --  window's main view.  This line sets it back to the original.
@@ -76,15 +73,13 @@ package body Gnoga.Gui.Modal_Dialog is
    end Create;
 
    procedure Create
-      (Dialog : in out Dialog_Type;
-       Parent : in out Gnoga.Gui.View.View_Base_Type'Class;
-       ID     : in     String := "")
+     (Dialog : in out Dialog_Type;
+      Parent : in out Gnoga.Gui.View.View_Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       --  Create the Dialog Background view
-      Dialog.Modal_Background.Create
-         (Parent => Parent,
-          ID     => ID);
+      Dialog.Modal_Background.Create (Parent => Parent, ID => ID);
 
       --  Want to place at the top of the parent's DOM tree
       Dialog.Modal_Background.Place_Inside_Top_Of (Parent);
@@ -105,9 +100,9 @@ package body Gnoga.Gui.Modal_Dialog is
    end Create;
 
    procedure Create_Main_View
-      (Dialog : in out Dialog_Type;
-       View   : in out Gnoga.Gui.View.View_Type'Class;
-       ID     : in     String := "")
+     (Dialog : in out Dialog_Type;
+      View   : in out Gnoga.Gui.View.View_Type'Class;
+      ID     : in     String := "")
    is
    begin
       View.Create (Dialog.Modal_Frame, ID);
@@ -119,9 +114,9 @@ package body Gnoga.Gui.Modal_Dialog is
    end Create_Main_View;
 
    procedure Show
-      (Dialog : in out Dialog_Type;
-       Show   :        Boolean := True;
-       Center :        Boolean := True)
+     (Dialog : in out Dialog_Type;
+      Show   :        Boolean := True;
+      Center :        Boolean := True)
    is
    begin
       if Show then
@@ -138,12 +133,8 @@ package body Gnoga.Gui.Modal_Dialog is
    end Show;
 
    procedure Center (Dialog : in out Dialog_Type) is
-      Top_Offset : Integer
-         := (Dialog.Modal_Background.Height / 2
-             - Dialog.Modal_Frame.Height / 2);
-      Left_Offset : Integer
-         := (Dialog.Modal_Background.Width / 2
-             - Dialog.Modal_Frame.Width / 2);
+      Top_Offset  : Integer := (Dialog.Modal_Background.Height / 2 - Dialog.Modal_Frame.Height / 2);
+      Left_Offset : Integer := (Dialog.Modal_Background.Width / 2 - Dialog.Modal_Frame.Width / 2);
 
    begin
 
@@ -154,33 +145,37 @@ package body Gnoga.Gui.Modal_Dialog is
       if Left_Offset < 0 then
          Left_Offset := 0;
       end if;
-      Dialog.Modal_Frame.Top
-         (Dialog.Modal_Background.Offset_From_Top  + Top_Offset);
-      Dialog.Modal_Frame.Left
-         (Dialog.Modal_Background.Offset_From_Left + Left_Offset);
+      Dialog.Modal_Frame.Top (Dialog.Modal_Background.Offset_From_Top + Top_Offset);
+      Dialog.Modal_Frame.Left (Dialog.Modal_Background.Offset_From_Left + Left_Offset);
    end Center;
 
-   procedure Top (Dialog : in out Dialog_Type; Top  : Integer) is
+   procedure Top
+     (Dialog : in out Dialog_Type;
+      Top    :        Integer)
+   is
    begin
       Dialog.Modal_Frame.Top (Top);
    end Top;
 
-   procedure Left (Dialog : in out Dialog_Type; Left : Integer) is
+   procedure Left
+     (Dialog : in out Dialog_Type;
+      Left   :        Integer)
+   is
    begin
       Dialog.Modal_Frame.Left (Left);
    end Left;
 
    procedure Modal_Background_Color
-      (Dialog : in out Dialog_Type;
-       Color  :        String)
+     (Dialog : in out Dialog_Type;
+      Color  :        String)
    is
    begin
       Dialog.Modal_Background.Background_Color (Color);
    end Modal_Background_Color;
 
    procedure Modal_Background_Color
-      (Dialog : in out Dialog_Type;
-       Color  :        Gnoga.Types.Colors.Color_Enumeration)
+     (Dialog : in out Dialog_Type;
+      Color  :        Gnoga.Types.Colors.Color_Enumeration)
    is
    begin
       Dialog.Modal_Background.Background_Color (Color);

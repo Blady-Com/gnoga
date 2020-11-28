@@ -39,15 +39,16 @@
 package Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
    type Plot_Info is new Canvas_Type with private;
 
-   procedure Create (Plot   : in out Plot_Info;
-                     Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Width  : in     Positive;
-                     Height : in     Positive;
-                     X_Min  : in     Float;
-                     X_Max  : in     Float;
-                     Y_Min  : in     Float;
-                     Y_Max  : in     Float;
-                     ID     : in     String := "");
+   procedure Create
+     (Plot   : in out Plot_Info;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Width  : in     Positive;
+      Height : in     Positive;
+      X_Min  : in     Float;
+      X_Max  : in     Float;
+      Y_Min  : in     Float;
+      Y_Max  : in     Float;
+      ID     : in     String := "");
    --  Create a plot
    --  Width and Height are dimensions in pixels of the underlying Canvas_Type
    --  X_Min, X_Max, Y_Min, and Y_Max are the ranges of values that are mapped
@@ -55,10 +56,16 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
    --  X_Min corresponds to an X of zero and X_Max, of Width
    --  Y_Min corresponds to a Y of Height and Y_Max to a Y of zero
 
-   function Scale_X (Plot : Plot_Info; X : Float) return Integer;
+   function Scale_X
+     (Plot : Plot_Info;
+      X    : Float)
+      return Integer;
    --  Return the pixel-X-coordinate corresponding to X
 
-   function Scale_Y (Plot : Plot_Info; Y : Float) return Integer;
+   function Scale_Y
+     (Plot : Plot_Info;
+      Y    : Float)
+      return Integer;
    --  return the pixel-Y-coordinate corresponding to Y
 
    type Plot_Point is record
@@ -68,92 +75,111 @@ package Gnoga.Gui.Element.Canvas.Context_2D.Plotting is
 
    Black : constant Gnoga.Types.RGBA_Type := (others => <>);
 
-   procedure Point (Plot     : in out Plot_Info;
-                    Position : in     Plot_Point;
-                    Color    : in     Gnoga.Types.RGBA_Type := Black);
-   procedure Point (Plot     : in out Plot_Info;
-                    Position : in     Plot_Point;
-                    Color    : in     String);
-   procedure Point (Plot     : in out Plot_Info;
-                    Position : in     Plot_Point;
-                    Color    : in     Gnoga.Types.Colors.Color_Enumeration);
+   procedure Point
+     (Plot     : in out Plot_Info;
+      Position : in     Plot_Point;
+      Color    : in     Gnoga.Types.RGBA_Type := Black);
+   procedure Point
+     (Plot     : in out Plot_Info;
+      Position : in     Plot_Point;
+      Color    : in     String);
+   procedure Point
+     (Plot     : in out Plot_Info;
+      Position : in     Plot_Point;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Draws a point (filled circle with radius of 2 pixels)
    --  at position in color Color
 
-   procedure Line (Plot  : in out Plot_Info;
-                   From  : in     Plot_Point;
-                   To    : in     Plot_Point;
-                   Color : in     Gnoga.Types.RGBA_Type := Black);
-   procedure Line (Plot  : in out Plot_Info;
-                   From  : in     Plot_Point;
-                   To    : in     Plot_Point;
-                   Color : in     String);
-   procedure Line (Plot  : in out Plot_Info;
-                   From  : in     Plot_Point;
-                   To    : in     Plot_Point;
-                   Color : in     Gnoga.Types.Colors.Color_Enumeration);
+   procedure Line
+     (Plot  : in out Plot_Info;
+      From  : in     Plot_Point;
+      To    : in     Plot_Point;
+      Color : in     Gnoga.Types.RGBA_Type := Black);
+   procedure Line
+     (Plot  : in out Plot_Info;
+      From  : in     Plot_Point;
+      To    : in     Plot_Point;
+      Color : in     String);
+   procedure Line
+     (Plot  : in out Plot_Info;
+      From  : in     Plot_Point;
+      To    : in     Plot_Point;
+      Color : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Draws a line (width 1 pixel) from From to To in color Color
 
    subtype Positive_Float is Float range Float'Succ (0.0) .. Float'Last;
 
-   procedure X_Axis (Plot     : in out Plot_Info;
-                     Interval : in     Positive_Float;
-                     Length   : in     Positive;
-                     Color    : in     Gnoga.Types.RGBA_Type := Black);
-   procedure X_Axis (Plot     : in out Plot_Info;
-           Interval : in     Positive_Float;
-           Length   : in     Positive;
-           Color    : in     String);
-   procedure X_Axis (Plot     : in out Plot_Info;
-                     Interval : in     Positive_Float;
-                     Length   : in     Positive;
-                     Color    : in     Gnoga.Types.Colors.Color_Enumeration);
+   procedure X_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.RGBA_Type := Black);
+   procedure X_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     String);
+   procedure X_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Draws the X axis with ticks every Interval away from zero
    --  Ticks extend Length pixels from the axis on both sides
    --  The axis and ticks will be in color Color
 
-   procedure Y_Axis (Plot     : in out Plot_Info;
-           Interval : in     Positive_Float;
-           Length   : in     Positive;
-           Color    : in     Gnoga.Types.RGBA_Type := Black);
-   procedure Y_Axis (Plot : in out Plot_Info;
-           Interval : in Positive_Float;
-           Length   : in Positive;
-           Color    : in String);
-   procedure Y_Axis (Plot     : in out Plot_Info;
-                     Interval : in     Positive_Float;
-                     Length   : in     Positive;
-                     Color    : in     Gnoga.Types.Colors.Color_Enumeration);
+   procedure Y_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.RGBA_Type := Black);
+   procedure Y_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     String);
+   procedure Y_Axis
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Draws the Y axis with ticks every Interval away from zero
    --  Ticks extend Length pixels from the axis on both sides
    --  The axis and ticks will be in color Color
 
-   procedure Axes (Plot     : in out Plot_Info;
-         Interval : in     Positive_Float;
-         Length   : in     Positive;
-         Color    : in     Gnoga.Types.RGBA_Type := Black);
-   procedure Axes (Plot     : in out Plot_Info;
-         Interval : in     Positive_Float;
-         Length   : in     Positive; Color : in String);
-   procedure Axes (Plot     : in out Plot_Info;
-                   Interval : in     Positive_Float;
-                   Length   : in     Positive;
-                   Color    : in     Gnoga.Types.Colors.Color_Enumeration);
+   procedure Axes
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.RGBA_Type := Black);
+   procedure Axes
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     String);
+   procedure Axes
+     (Plot     : in out Plot_Info;
+      Interval : in     Positive_Float;
+      Length   : in     Positive;
+      Color    : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Draws both the X and Y axes with ticks every Interval away from zero
    --  Ticks extend Length pixels from the axis on both sides
    --  The axes and ticks will be in color Color
 
    type Point_List is array (Positive range <>) of Plot_Point;
 
-   procedure Graph (Plot  : in out Plot_Info;
-          List  : in     Point_List;
-          Color : in     Gnoga.Types.RGBA_Type := Black);
-   procedure Graph (Plot  : in out Plot_Info;
-          List  : in     Point_List;
-          Color : in     String);
-   procedure Graph (Plot  : in out Plot_Info;
-          List  : in     Point_List;
-          Color : in     Gnoga.Types.Colors.Color_Enumeration);
+   procedure Graph
+     (Plot  : in out Plot_Info;
+      List  : in     Point_List;
+      Color : in     Gnoga.Types.RGBA_Type := Black);
+   procedure Graph
+     (Plot  : in out Plot_Info;
+      List  : in     Point_List;
+      Color : in     String);
+   procedure Graph
+     (Plot  : in out Plot_Info;
+      List  : in     Point_List;
+      Color : in     Gnoga.Types.Colors.Color_Enumeration);
    --  Draws lines from List (List'First) to List (List'First + 1),
    --  List (List'First + 1) to List (List'First + 2), ...,
    --  List (List'Last - 1) to List (List'Last) in color Color

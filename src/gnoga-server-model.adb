@@ -44,17 +44,14 @@ package body Gnoga.Server.Model is
    -- Initialize --
    ----------------
 
-   overriding
-   procedure Initialize (Object : in out Active_Record) is
+   overriding procedure Initialize (Object : in out Active_Record) is
       use Gnoga.Server.Database;
    begin
       if Object.Connection = null then
          raise Connection_Error;
       end if;
 
-      Object.Fields :=
-        Object.Connection.List_Fields_Of_Table
-          (Object.Table_Name.all);
+      Object.Fields := Object.Connection.List_Fields_Of_Table (Object.Table_Name.all);
    end Initialize;
 
    ----------------
@@ -62,8 +59,8 @@ package body Gnoga.Server.Model is
    ----------------
 
    procedure Values
-     (A                   : in out Active_Record;
-      Map                 : in     Gnoga.Types.Data_Maps.Map)
+     (A   : in out Active_Record;
+      Map : in     Gnoga.Types.Data_Maps.Map)
    is
       procedure foreach (Position : in Gnoga.Types.Data_Arrays.Cursor);
 
@@ -71,8 +68,7 @@ package body Gnoga.Server.Model is
       begin
          if Map.Contains (Gnoga.Types.Data_Arrays.Element (Position)) then
             A.Value
-              (Gnoga.Types.Data_Arrays.Element (Position),
-               Map.Element (Gnoga.Types.Data_Arrays.Element (Position)));
+              (Gnoga.Types.Data_Arrays.Element (Position), Map.Element (Gnoga.Types.Data_Arrays.Element (Position)));
          end if;
       end foreach;
    begin
@@ -83,25 +79,28 @@ package body Gnoga.Server.Model is
    -- Value --
    -----------
 
-   procedure Value (A          : in out Active_Record;
-                    Field_Name : in     String;
-                    Value      : in     String)
+   procedure Value
+     (A          : in out Active_Record;
+      Field_Name : in     String;
+      Value      : in     String)
    is
    begin
       A.Values.Include (Field_Name, Value);
    end Value;
 
-   procedure Value (A             : in out Active_Record;
-                    Field_Name    : in     String;
-                    Integer_Value : in     Integer)
+   procedure Value
+     (A             : in out Active_Record;
+      Field_Name    : in     String;
+      Integer_Value : in     Integer)
    is
    begin
       Value (A, Field_Name, Gnoga.Left_Trim (Integer_Value'Img));
    end Value;
 
-   procedure Value (A          : in out Active_Record;
-                    Field_Name : in     String;
-                    Date_Value : in     Ada.Calendar.Time)
+   procedure Value
+     (A          : in out Active_Record;
+      Field_Name : in     String;
+      Date_Value : in     Ada.Calendar.Time)
    is
       V : constant String := Ada.Calendar.Formatting.Image (Date_Value);
    begin
@@ -112,8 +111,9 @@ package body Gnoga.Server.Model is
    -- Field_Names --
    -----------------
 
-   function Field_Names (A : Active_Record)
-                         return Gnoga.Types.Data_Array_Type
+   function Field_Names
+     (A : Active_Record)
+      return Gnoga.Types.Data_Array_Type
    is
    begin
       return A.Fields;
@@ -123,7 +123,10 @@ package body Gnoga.Server.Model is
    -- Values --
    ------------
 
-   function Values (A : Active_Record) return Gnoga.Types.Data_Maps.Map is
+   function Values
+     (A : Active_Record)
+      return Gnoga.Types.Data_Maps.Map
+   is
    begin
       return A.Values;
    end Values;
@@ -132,7 +135,11 @@ package body Gnoga.Server.Model is
    -- Value --
    -----------
 
-   function Value (A : Active_Record; Field_Name : String) return String is
+   function Value
+     (A          : Active_Record;
+      Field_Name : String)
+      return String
+   is
    begin
       return A.Values.Element (Field_Name);
    end Value;
@@ -141,7 +148,11 @@ package body Gnoga.Server.Model is
    -- Exists --
    ------------
 
-   function Exists (A : Active_Record; Field_Name : String) return Boolean is
+   function Exists
+     (A          : Active_Record;
+      Field_Name : String)
+      return Boolean
+   is
    begin
       return A.Values.Contains (Field_Name);
    end Exists;
@@ -162,19 +173,12 @@ package body Gnoga.Server.Model is
       begin
          if (Gnoga.Types.Data_Maps.Key (Position) /= "id") then
             if (A.Is_New) then
-               fields := fields & "`" &
-                 Gnoga.Types.Data_Maps.Key (Position) & "` ,";
-               values := values & "'" &
-               A.Connection.Escape_String
-                 (Gnoga.Types.Data_Maps.Element (Position)) &
-               "',";
+               fields := fields & "`" & Gnoga.Types.Data_Maps.Key (Position) & "` ,";
+               values := values & "'" & A.Connection.Escape_String (Gnoga.Types.Data_Maps.Element (Position)) & "',";
             else
-               fields := fields & "`" &
-               Gnoga.Types.Data_Maps.Key (Position) & "`=" &
-               "'" &
-               A.Connection.Escape_String
-                 (Gnoga.Types.Data_Maps.Element (Position)) &
-               "',";
+               fields :=
+                 fields & "`" & Gnoga.Types.Data_Maps.Key (Position) & "`=" & "'" &
+                 A.Connection.Escape_String (Gnoga.Types.Data_Maps.Element (Position)) & "',";
             end if;
          end if;
       end foreach;
@@ -187,10 +191,9 @@ package body Gnoga.Server.Model is
             f : constant String := To_String (fields);
             v : constant String := To_String (values);
 
-            Insert_String : constant String := "insert into " &
-            A.Table_Name.all &
-            " (" & f (f'First .. f'Last - 1) & ") VALUES (" &
-            v (v'First .. v'Last - 1) & ")";
+            Insert_String : constant String :=
+              "insert into " & A.Table_Name.all & " (" & f (f'First .. f'Last - 1) & ") VALUES (" &
+              v (v'First .. v'Last - 1) & ")";
          begin
             A.Connection.Execute_Query (Insert_String);
             declare
@@ -204,9 +207,9 @@ package body Gnoga.Server.Model is
          declare
             f : constant String := To_String (fields);
 
-            Update_String : constant String := "update " & A.Table_Name.all &
-            " set " & f (f'First .. f'Last - 1) &
-            " where id=" & A.Values.Element ("id");
+            Update_String : constant String :=
+              "update " & A.Table_Name.all & " set " & f (f'First .. f'Last - 1) & " where id=" &
+              A.Values.Element ("id");
          begin
             A.Connection.Execute_Query (Update_String);
          end;
@@ -219,8 +222,7 @@ package body Gnoga.Server.Model is
 
    procedure Delete (A : in out Active_Record) is
 
-      SQL : constant String := "delete from " & A.Table_Name.all &
-         " where id=" & A.Value ("id");
+      SQL : constant String := "delete from " & A.Table_Name.all & " where id=" & A.Value ("id");
    begin
       A.Connection.Execute_Query (SQL);
       A.Clear;
@@ -240,12 +242,14 @@ package body Gnoga.Server.Model is
    -- Find --
    ----------
 
-   procedure Find (A : in out Active_Record; ID : in Positive) is
+   procedure Find
+     (A  : in out Active_Record;
+      ID : in     Positive)
+   is
 
-      Key : constant String := ID'Img;
+      Key : constant String                       := ID'Img;
       RS  : Gnoga.Server.Database.Recordset'Class :=
-        A.Connection.Query ("select * from " & A.Table_Name.all &
-                            " where id=" & Key (Key'First + 1 .. Key'Last));
+        A.Connection.Query ("select * from " & A.Table_Name.all & " where id=" & Key (Key'First + 1 .. Key'Last));
    begin
       RS.Next;
       A.Is_New := False; -- If no exception is raised then this is not new
@@ -253,7 +257,10 @@ package body Gnoga.Server.Model is
       RS.Close;
    end Find;
 
-   procedure Find (A : in out Active_Record; ID : in String) is
+   procedure Find
+     (A  : in out Active_Record;
+      ID : in     String)
+   is
    begin
       Find (A, Positive'Value (ID));
    end Find;
@@ -262,14 +269,14 @@ package body Gnoga.Server.Model is
    -- Find_Where --
    ----------------
 
-   procedure Find_Where (A          : in out Active_Record;
-                         Where      : in     String;
-                         Create_New : in     Boolean := True)
+   procedure Find_Where
+     (A          : in out Active_Record;
+      Where      : in     String;
+      Create_New : in     Boolean := True)
    is
 
       RS : Gnoga.Server.Database.Recordset'Class :=
-        A.Connection.Query ("select * from " & A.Table_Name.all &
-                            " where " & Where & " LIMIT 1");
+        A.Connection.Query ("select * from " & A.Table_Name.all & " where " & Where & " LIMIT 1");
    begin
       RS.Next;
       A.Is_New := False;  -- If no exception is raised then this is not new
@@ -291,15 +298,14 @@ package body Gnoga.Server.Model is
    -- Find_Item --
    ---------------
 
-   procedure Find_Item (A          : in out Active_Record;
-                        Parent     : in     Active_Record'Class;
-                        Create_New : in     Boolean := True)
+   procedure Find_Item
+     (A          : in out Active_Record;
+      Parent     : in     Active_Record'Class;
+      Create_New : in     Boolean := True)
    is
       Remove_s : constant String := Parent.Table_Name.all;
 
-      Where_Clause : constant String :=
-        Remove_s (Remove_s'First .. Remove_s'Last - 1)
-        & "_id = " & Parent.Value ("id");
+      Where_Clause : constant String := Remove_s (Remove_s'First .. Remove_s'Last - 1) & "_id = " & Parent.Value ("id");
    begin
       A.Find_Where (Where_Clause, Create_New);
    end Find_Item;

@@ -50,44 +50,77 @@ package Gnoga.Gui.Element.Multimedia is
    --  Media_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Loop_Media (Media : in out Multimedia_Type; Value : in Boolean);
-   function Loop_Media (Media : Multimedia_Type) return Boolean;
+   procedure Loop_Media
+     (Media : in out Multimedia_Type;
+      Value : in     Boolean);
+   function Loop_Media
+     (Media : Multimedia_Type)
+      return Boolean;
 
-   function Media_Duration (Media : Multimedia_Type) return Float;
+   function Media_Duration
+     (Media : Multimedia_Type)
+      return Float;
    --  Returns the duration of Media in seconds.
 
-   procedure Media_Source (Media : in out Multimedia_Type; Source : in String);
-   function Media_Source (Media : Multimedia_Type) return String;
+   procedure Media_Source
+     (Media  : in out Multimedia_Type;
+      Source : in     String);
+   function Media_Source
+     (Media : Multimedia_Type)
+      return String;
    --  Returns the URL of the current Media
 
-   procedure Media_Position (Media   : in out Multimedia_Type;
-                             Seconds : in     Float);
-   function Media_Position (Media : Multimedia_Type) return Float;
+   procedure Media_Position
+     (Media   : in out Multimedia_Type;
+      Seconds : in     Float);
+   function Media_Position
+     (Media : Multimedia_Type)
+      return Float;
    --  Position of Media in seconds
 
-   procedure Muted (Media : in out Multimedia_Type; Value : in Boolean);
-   function Muted (Media : Multimedia_Type) return Boolean;
+   procedure Muted
+     (Media : in out Multimedia_Type;
+      Value : in     Boolean);
+   function Muted
+     (Media : Multimedia_Type)
+      return Boolean;
 
-   function Paused (Media : Multimedia_Type) return Boolean;
+   function Paused
+     (Media : Multimedia_Type)
+      return Boolean;
 
-   function Playback_Ended (Media : Multimedia_Type) return Boolean;
+   function Playback_Ended
+     (Media : Multimedia_Type)
+      return Boolean;
    --  Returns true of Media position has reached end of its duration
 
-   procedure Playback_Rate (Media : in out Multimedia_Type; Value : in Float);
-   function Playback_Rate (Media : Multimedia_Type) return Float;
+   procedure Playback_Rate
+     (Media : in out Multimedia_Type;
+      Value : in     Float);
+   function Playback_Rate
+     (Media : Multimedia_Type)
+      return Float;
    --  Playback rate.
    --  Common values - 1.0 normal, 0.5 half speed, -1.0 reverse
 
-   function Ready_To_Play (Media : Multimedia_Type) return Boolean;
+   function Ready_To_Play
+     (Media : Multimedia_Type)
+      return Boolean;
    --  True if media is ready to be played in element
 
-   function Seeking (Media : Multimedia_Type) return Boolean;
+   function Seeking
+     (Media : Multimedia_Type)
+      return Boolean;
    --  True if user is seeking through media
 
    subtype Volume_Range is Float range 0.0 .. 1.0;
 
-   procedure Volume (Media : in out Multimedia_Type; Value : Volume_Range);
-   function Volume (Media : Multimedia_Type) return Volume_Range;
+   procedure Volume
+     (Media : in out Multimedia_Type;
+      Value :        Volume_Range);
+   function Volume
+     (Media : Multimedia_Type)
+      return Volume_Range;
    --  Media volume (not system volume) in Volume_Range
 
    -------------------------------------------------------------------------
@@ -101,8 +134,10 @@ package Gnoga.Gui.Element.Multimedia is
    procedure Load (Media : in out Multimedia_Type);
    --  Loads or reloads media
 
-   function Can_Play (Media : Multimedia_Type; Media_Type : String)
-                      return Boolean;
+   function Can_Play
+     (Media      : Multimedia_Type;
+      Media_Type : String)
+      return Boolean;
    --  Returns true if browser claims support of a media type. Browsers
    --  report possibility but not guarantees of being able to support a
    --  media type.
@@ -269,10 +304,10 @@ package Gnoga.Gui.Element.Multimedia is
    --  Media_Type - Event Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure On_Message (Object  : in out Multimedia_Type;
-                         Event   : in     String;
-                         Message : in     String);
+   overriding procedure On_Message
+     (Object  : in out Multimedia_Type;
+      Event   : in     String;
+      Message : in     String);
    --  Called on receiving any message or event from browser for Object
 
    -------------------------------------------------------------------------
@@ -287,15 +322,16 @@ package Gnoga.Gui.Element.Multimedia is
    --  Audio_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Audio     : in out Audio_Type;
-                     Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Source    : in     String  := "";
-                     Controls  : in     Boolean := True;
-                     Preload   : in     Boolean := False;
-                     Autoplay  : in     Boolean := False;
-                     Autoloop  : in     Boolean := False;
-                     Muted     : in     Boolean := False;
-                     ID        : in     String  := "");
+   procedure Create
+     (Audio    : in out Audio_Type;
+      Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Source   : in     String  := "";
+      Controls : in     Boolean := True;
+      Preload  : in     Boolean := False;
+      Autoplay : in     Boolean := False;
+      Autoloop : in     Boolean := False;
+      Muted    : in     Boolean := False;
+      ID       : in     String  := "");
    --  Create an Audio control with audio from Content
 
    -------------------------------------------------------------------------
@@ -310,45 +346,45 @@ package Gnoga.Gui.Element.Multimedia is
    --  Video_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Video     : in out Video_Type;
-                     Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Source    : in     String  := "";
-                     Controls  : in     Boolean := True;
-                     Preload   : in     Boolean := False;
-                     Poster    : in     String  := "";
-                     Autoplay  : in     Boolean := False;
-                     Autoloop  : in     Boolean := False;
-                     Muted     : in     Boolean := False;
-                     ID        : in     String  := "");
+   procedure Create
+     (Video    : in out Video_Type;
+      Parent   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Source   : in     String  := "";
+      Controls : in     Boolean := True;
+      Preload  : in     Boolean := False;
+      Poster   : in     String  := "";
+      Autoplay : in     Boolean := False;
+      Autoloop : in     Boolean := False;
+      Muted    : in     Boolean := False;
+      ID       : in     String  := "");
    --  Create an Video control with Video from Content. Poster is a URL
    --  to an image to display until play begins.
 
 private
-   type Multimedia_Type is new Gnoga.Gui.Element.Element_Type with
-      record
-         On_Media_Abort_Event      : Gnoga.Gui.Base.Action_Event := null;
-         On_Can_Play_Event         : Gnoga.Gui.Base.Action_Event := null;
-         On_Can_Play_Through_Event : Gnoga.Gui.Base.Action_Event := null;
-         On_Duration_Change_Event  : Gnoga.Gui.Base.Action_Event := null;
-         On_Ended_Event            : Gnoga.Gui.Base.Action_Event := null;
-         On_Emptied_Event          : Gnoga.Gui.Base.Action_Event := null;
-         On_Media_Error_Event      : Gnoga.Gui.Base.Action_Event := null;
-         On_Loaded_Data_Event      : Gnoga.Gui.Base.Action_Event := null;
-         On_Loaded_Meta_Data_Event : Gnoga.Gui.Base.Action_Event := null;
-         On_Load_Start_Event       : Gnoga.Gui.Base.Action_Event := null;
-         On_Pause_Event            : Gnoga.Gui.Base.Action_Event := null;
-         On_Play_Event             : Gnoga.Gui.Base.Action_Event := null;
-         On_Playing_Event          : Gnoga.Gui.Base.Action_Event := null;
-         On_Progress_Event         : Gnoga.Gui.Base.Action_Event := null;
-         On_Rate_Change_Event      : Gnoga.Gui.Base.Action_Event := null;
-         On_Seeked_Event           : Gnoga.Gui.Base.Action_Event := null;
-         On_Seeking_Event          : Gnoga.Gui.Base.Action_Event := null;
-         On_Stalled_Event          : Gnoga.Gui.Base.Action_Event := null;
-         On_Suspend_Event          : Gnoga.Gui.Base.Action_Event := null;
-         On_Time_Update_Event      : Gnoga.Gui.Base.Action_Event := null;
-         On_Volume_Change_Event    : Gnoga.Gui.Base.Action_Event := null;
-         On_Waiting_Event          : Gnoga.Gui.Base.Action_Event := null;
-      end record;
+   type Multimedia_Type is new Gnoga.Gui.Element.Element_Type with record
+      On_Media_Abort_Event      : Gnoga.Gui.Base.Action_Event := null;
+      On_Can_Play_Event         : Gnoga.Gui.Base.Action_Event := null;
+      On_Can_Play_Through_Event : Gnoga.Gui.Base.Action_Event := null;
+      On_Duration_Change_Event  : Gnoga.Gui.Base.Action_Event := null;
+      On_Ended_Event            : Gnoga.Gui.Base.Action_Event := null;
+      On_Emptied_Event          : Gnoga.Gui.Base.Action_Event := null;
+      On_Media_Error_Event      : Gnoga.Gui.Base.Action_Event := null;
+      On_Loaded_Data_Event      : Gnoga.Gui.Base.Action_Event := null;
+      On_Loaded_Meta_Data_Event : Gnoga.Gui.Base.Action_Event := null;
+      On_Load_Start_Event       : Gnoga.Gui.Base.Action_Event := null;
+      On_Pause_Event            : Gnoga.Gui.Base.Action_Event := null;
+      On_Play_Event             : Gnoga.Gui.Base.Action_Event := null;
+      On_Playing_Event          : Gnoga.Gui.Base.Action_Event := null;
+      On_Progress_Event         : Gnoga.Gui.Base.Action_Event := null;
+      On_Rate_Change_Event      : Gnoga.Gui.Base.Action_Event := null;
+      On_Seeked_Event           : Gnoga.Gui.Base.Action_Event := null;
+      On_Seeking_Event          : Gnoga.Gui.Base.Action_Event := null;
+      On_Stalled_Event          : Gnoga.Gui.Base.Action_Event := null;
+      On_Suspend_Event          : Gnoga.Gui.Base.Action_Event := null;
+      On_Time_Update_Event      : Gnoga.Gui.Base.Action_Event := null;
+      On_Volume_Change_Event    : Gnoga.Gui.Base.Action_Event := null;
+      On_Waiting_Event          : Gnoga.Gui.Base.Action_Event := null;
+   end record;
    type Audio_Type is new Multimedia_Type with null record;
    type Video_Type is new Multimedia_Type with null record;
 end Gnoga.Gui.Element.Multimedia;

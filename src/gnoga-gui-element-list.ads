@@ -52,17 +52,16 @@ package Gnoga.Gui.Element.List is
 
    type Ordered_List_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Ordered_List_Access is access all Ordered_List_Type;
-   type Pointer_To_Ordered_List_Class is
-     access all Ordered_List_Type'Class;
+   type Pointer_To_Ordered_List_Class is access all Ordered_List_Type'Class;
 
    -------------------------------------------------------------------------
    --  Ordered_List_Types - Creation Methods
    -------------------------------------------------------------------------
 
    procedure Create
-     (List    : in out Ordered_List_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "");
+     (List   : in out Ordered_List_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
    --  Create an ordered (by default 1,2,3,4..) list
 
    -------------------------------------------------------------------------
@@ -70,18 +69,19 @@ package Gnoga.Gui.Element.List is
    -------------------------------------------------------------------------
 
    type List_Kind_Type is
-     (Disc, Armenian, Circle, Cjk_Ideographic, Decimal, Decimal_Leading_Zero,
-      Georgian, Hebrew, Hiragana, Hiragana_Iroha, Katakana, Katakana_Iroha,
-      Lower_Alpha, Lower_Greek, Lower_Latin, Lower_Roman, None, Square,
+     (Disc, Armenian, Circle, Cjk_Ideographic, Decimal, Decimal_Leading_Zero, Georgian, Hebrew, Hiragana,
+      Hiragana_Iroha, Katakana, Katakana_Iroha, Lower_Alpha, Lower_Greek, Lower_Latin, Lower_Roman, None, Square,
       Upper_Alpha, Upper_Latin, Upper_Roman);
 
-   procedure List_Kind (List  : in out Ordered_List_Type;
-                        Value : in     List_Kind_Type);
+   procedure List_Kind
+     (List  : in out Ordered_List_Type;
+      Value : in     List_Kind_Type);
 
    type List_Location_Type is (Inside, Outside);
 
-   procedure List_Location (List  : in out Ordered_List_Type;
-                            Value : in     List_Location_Type);
+   procedure List_Location
+     (List  : in out Ordered_List_Type;
+      Value : in     List_Location_Type);
    --  Default is outside
 
    -------------------------------------------------------------------------
@@ -90,18 +90,16 @@ package Gnoga.Gui.Element.List is
 
    type Unordered_List_Type is new Ordered_List_Type with private;
    type Unordered_List_Access is access all Unordered_List_Type;
-   type Pointer_To_Unordered_List_Class is
-     access all Unordered_List_Type'Class;
+   type Pointer_To_Unordered_List_Class is access all Unordered_List_Type'Class;
 
    -------------------------------------------------------------------------
    --  Unordered_List_Types - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create
-     (List    : in out Unordered_List_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "");
+   overriding procedure Create
+     (List   : in out Unordered_List_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
    --  Create an unordered (by default) bullet/disc list
 
    -------------------------------------------------------------------------
@@ -116,10 +114,11 @@ package Gnoga.Gui.Element.List is
    --  List_Item_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Item   : in out List_Item_Type;
-                     Parent : in out Ordered_List_Type'Class;
-                     Text   : in     String := "";
-                     ID     : in     String := "");
+   procedure Create
+     (Item   : in out List_Item_Type;
+      Parent : in out Ordered_List_Type'Class;
+      Text   : in     String := "";
+      ID     : in     String := "");
    --  To properly display parent should be an Ordered_List_Type or an
    --  Unordered_List_Type
 
@@ -127,8 +126,12 @@ package Gnoga.Gui.Element.List is
    --  List_Item_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Value (Element : in out List_Item_Type; Value : in String);
-   function Value (Element : List_Item_Type) return String;
+   procedure Value
+     (Element : in out List_Item_Type;
+      Value   : in     String);
+   function Value
+     (Element : List_Item_Type)
+      return String;
    --  Ordered list value, List_Item_Types added following set of Value will
    --  follow in order.
 
@@ -138,17 +141,16 @@ package Gnoga.Gui.Element.List is
 
    type Definition_List_Type is new Gnoga.Gui.View.View_Base_Type with private;
    type Definition_List_Access is access all Definition_List_Type;
-   type Pointer_To_Definition_List_Class is
-     access all Definition_List_Type'Class;
+   type Pointer_To_Definition_List_Class is access all Definition_List_Type'Class;
 
    -------------------------------------------------------------------------
    --  Definition_List_Types - Creation Methods
    -------------------------------------------------------------------------
 
    procedure Create
-     (List    : in out Definition_List_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "");
+     (List   : in out Definition_List_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
    --  Create a definition list of terms and descriptions
 
    -------------------------------------------------------------------------
@@ -163,10 +165,11 @@ package Gnoga.Gui.Element.List is
    --  Term_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Item   : in out Term_Type;
-                     Parent : in out Definition_List_Type'Class;
-                     Text   : in     String := "";
-                     ID     : in     String := "");
+   procedure Create
+     (Item   : in out Term_Type;
+      Parent : in out Definition_List_Type'Class;
+      Text   : in     String := "";
+      ID     : in     String := "");
 
    -------------------------------------------------------------------------
    --  Description_Types
@@ -180,19 +183,17 @@ package Gnoga.Gui.Element.List is
    --  Description_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Item   : in out Description_Type;
-                     Parent : in out Definition_List_Type'Class;
-                     Text   : in     String := "";
-                     ID     : in     String := "");
+   procedure Create
+     (Item   : in out Description_Type;
+      Parent : in out Definition_List_Type'Class;
+      Text   : in     String := "";
+      ID     : in     String := "");
 
 private
-   type Ordered_List_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
+   type Ordered_List_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Unordered_List_Type is new Ordered_List_Type with null record;
    type List_Item_Type is new Gnoga.Gui.Element.Element_Type with null record;
-   type Definition_List_Type is
-     new Gnoga.Gui.View.View_Base_Type with null record;
+   type Definition_List_Type is new Gnoga.Gui.View.View_Base_Type with null record;
    type Term_Type is new Gnoga.Gui.Element.Element_Type with null record;
-   type Description_Type is
-     new Gnoga.Gui.Element.Element_Type with null record;
+   type Description_Type is new Gnoga.Gui.Element.Element_Type with null record;
 end Gnoga.Gui.Element.List;

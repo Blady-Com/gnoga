@@ -41,21 +41,25 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    -- Load_Boot_Strap --
    ---------------------
 
-   procedure Load_Boot_Strap
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class)
-   is
+   procedure Load_Boot_Strap (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
    begin
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('" & Escape_Quotes ("<link rel='stylesheet' " &
-           "href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
-           "css/bootstrap.min.css' />\'") & "'");
+        ("append ('" &
+         Escape_Quotes
+           ("<link rel='stylesheet' " & "href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
+            "css/bootstrap.min.css' />\'") &
+         "'");
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('" & Escape_Quotes ("<link rel='stylesheet' " &
-           "href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
-           "css/bootstrap-theme.min.css' />") & "')");
+        ("append ('" &
+         Escape_Quotes
+           ("<link rel='stylesheet' " & "href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/" &
+            "css/bootstrap-theme.min.css' />") &
+         "')");
       Window.Document.Head_Element.jQuery_Execute
-        ("append ('" & Escape_Quotes ("<script src='https://maxcdn.bootstrapcdn.com/" &
-           "bootstrap/3.2.0/js/bootstrap.min.js'></script>") & "')");
+        ("append ('" &
+         Escape_Quotes
+           ("<script src='https://maxcdn.bootstrapcdn.com/" & "bootstrap/3.2.0/js/bootstrap.min.js'></script>") &
+         "')");
    end Load_Boot_Strap;
 
    ------------
@@ -65,7 +69,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Container : in out Container_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID        : in     String  := "")
+      ID        : in     String := "")
    is
    begin
       Container.Create_From_HTML (Parent, Escape_Quotes ("<div class='container' />"), ID);
@@ -78,20 +82,17 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Container : in out Fluid_Container_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID        : in     String  := "")
+      ID        : in     String := "")
    is
    begin
-      Container.Create_From_HTML
-        (Parent, Escape_Quotes ("<div class='container-fluid' />"), ID);
+      Container.Create_From_HTML (Parent, Escape_Quotes ("<div class='container-fluid' />"), ID);
    end Create;
 
    --------------------
    -- Make_Container --
    --------------------
 
-   procedure Make_Container
-     (View : in out Gnoga.Gui.View.View_Base_Type'Class)
-   is
+   procedure Make_Container (View : in out Gnoga.Gui.View.View_Base_Type'Class) is
    begin
       View.Add_Class ("container");
    end Make_Container;
@@ -100,9 +101,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    -- Make_Fluid_Container --
    --------------------------
 
-   procedure Make_Fluid_Container
-     (View : in out Gnoga.Gui.View.View_Base_Type'Class)
-   is
+   procedure Make_Fluid_Container (View : in out Gnoga.Gui.View.View_Base_Type'Class) is
    begin
       View.Add_Class ("container-fluid");
    end Make_Fluid_Container;
@@ -114,7 +113,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Row    : in out Row_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String  := "")
+      ID     : in     String := "")
    is
    begin
       Row.Create_From_HTML (Parent, Escape_Quotes ("<div class='row' />"), ID);
@@ -124,13 +123,19 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    -- Set_Columns --
    -----------------
 
-   procedure Set_Columns (View   : in out Gnoga.Gui.View.View_Base_Type'Class;
-                          Number : in     Natural;
-                          Device : in     Device_Type := Small)
+   procedure Set_Columns
+     (View   : in out Gnoga.Gui.View.View_Base_Type'Class;
+      Number : in     Natural;
+      Device : in     Device_Type := Small)
    is
-      function To_String (Device : Device_Type) return String;
+      function To_String
+        (Device : Device_Type)
+         return String;
 
-      function To_String (Device : Device_Type) return String is
+      function To_String
+        (Device : Device_Type)
+         return String
+      is
       begin
          if Device = Extra_Small then
             return "col-xs-";
@@ -153,14 +158,11 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Jumbotron : in out Jumbotron_Type;
       Parent    : in out Gnoga.Gui.Base.Base_Type'Class;
-      Content   : in     String  := "";
-      ID        : in     String  := "")
+      Content   : in     String := "";
+      ID        : in     String := "")
    is
    begin
-      Jumbotron.Create_From_HTML (Parent,
-                                  Escape_Quotes ("<div class='jumbotron'>" &
-                                    Content & "</div>"),
-                                  ID);
+      Jumbotron.Create_From_HTML (Parent, Escape_Quotes ("<div class='jumbotron'>" & Content & "</div>"), ID);
    end Create;
 
    ------------
@@ -212,15 +214,13 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    procedure Create
      (Form_Group : in out Form_Group_Type;
       Parent     : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID         : in     String  := "")
+      ID         : in     String := "")
    is
    begin
       Form_Group.Create_From_HTML (Parent, Escape_Quotes ("<div class='form-group' />"), ID);
    end Create;
 
-   procedure Make_Boot_Strap_Form_Item
-     (Element : in out Gnoga.Gui.Element.Form.Form_Element_Type'Class)
-   is
+   procedure Make_Boot_Strap_Form_Item (Element : in out Gnoga.Gui.Element.Form.Form_Element_Type'Class) is
    begin
       Element.Add_Class ("form-control");
    end Make_Boot_Strap_Form_Item;
@@ -236,10 +236,9 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    is
       Dummy_H : Gnoga.Gui.Element.Element_Type;
    begin
-      Dummy_H.Create_From_HTML (Parent => Element.Parent.all,
-                          HTML   => Escape_Quotes ("<span class='help-block'>" &
-                            Text & "</span>"),
-                          ID     => ID);
+      Dummy_H.Create_From_HTML
+        (Parent => Element.Parent.all, HTML => Escape_Quotes ("<span class='help-block'>" & Text & "</span>"),
+         ID     => ID);
    end Add_Help_Block;
 
    ------------
@@ -250,9 +249,9 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
      (Element : in out Check_Box_Type;
       Form    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
       Checked : in     Boolean := False;
-      Value   : in     String := "";
-      Name    : in     String := "";
-      ID      : in     String := "")
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
       Element.Create_From_HTML (Form, Escape_Quotes ("<div class='checkbox'/>"), ID);
@@ -260,8 +259,9 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
       Element.Box.Place_Inside_Top_Of (Element);
    end Create;
 
-   procedure Disabled (Element : in out Check_Box_Type;
-                       Value   : in     Boolean := True)
+   procedure Disabled
+     (Element : in out Check_Box_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Box.Disabled (Value);
@@ -281,9 +281,9 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
      (Element : in out Radio_Button_Type;
       Form    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
       Checked : in     Boolean := False;
-      Value   : in     String := "";
-      Name    : in     String := "";
-      ID      : in     String := "")
+      Value   : in     String  := "";
+      Name    : in     String  := "";
+      ID      : in     String  := "")
    is
    begin
       Element.Create_From_HTML (Form, Escape_Quotes ("<div class='radio'/>"), ID);
@@ -295,8 +295,9 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
    -- Disabled --
    --------------
 
-   procedure Disabled (Element : in out Radio_Button_Type;
-                       Value   : in     Boolean := True)
+   procedure Disabled
+     (Element : in out Radio_Button_Type;
+      Value   : in     Boolean := True)
    is
    begin
       Element.Radio.Disabled (Value);

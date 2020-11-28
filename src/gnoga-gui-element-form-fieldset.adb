@@ -40,11 +40,10 @@ package body Gnoga.Gui.Element.Form.Fieldset is
    -- Create --
    ------------
 
-   overriding
-   procedure Create
-     (View          : in out Fieldset_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "")
+   overriding procedure Create
+     (View   : in out Fieldset_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       View.Create_From_HTML (Parent, "<fieldset />", ID);
@@ -54,9 +53,10 @@ package body Gnoga.Gui.Element.Form.Fieldset is
    -- Put_Legend --
    ----------------
 
-   procedure Put_Legend (View  : in out Fieldset_Type;
-                         Value : in     String;
-                         ID    : in     String  := "")
+   procedure Put_Legend
+     (View  : in out Fieldset_Type;
+      Value : in     String;
+      ID    : in     String := "")
    is
       Dummy_D : Gnoga.Gui.Element.Element_Type;
    begin

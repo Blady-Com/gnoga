@@ -42,11 +42,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    --  Create --
    -------------
 
-   overriding
-   procedure Create
-     (View    : in out Accordion_Type;
-      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID      : in     String  := "")
+   overriding procedure Create
+     (View   : in out Accordion_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
@@ -57,7 +56,8 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    --------------------
 
    procedure Create_Section
-     (View : in out Accordion_Type; Heading : String)
+     (View    : in out Accordion_Type;
+      Heading :        String)
    is
    begin
       View.Put_HTML ("<h3>" & Escape_Quotes (Heading) & "</h3>");
@@ -115,8 +115,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
             if Left_Icon = "" and Right_Icon = "" then
                return "";
             else
-               return ", icons: { primary: '" & Left_Icon & "'," &
-                 "secondary: '" & Right_Icon & "'}";
+               return ", icons: { primary: '" & Left_Icon & "'," & "secondary: '" & Right_Icon & "'}";
             end if;
          end Is_Icon;
       begin
@@ -130,9 +129,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Make_Button_Set --
    ---------------------
 
-   procedure Make_Button_Set
-     (View : in out Gnoga.Gui.View.View_Base_Type'Class)
-   is
+   procedure Make_Button_Set (View : in out Gnoga.Gui.View.View_Base_Type'Class) is
    begin
       View.jQuery_Execute ("buttonset()");
    end Make_Button_Set;
@@ -160,10 +157,17 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Draggable       : in     Boolean := True;
       ID              : in     String  := "")
    is
-      function Is_Auto (N : Natural) return String;
-      function Is_False (N : Natural) return String;
+      function Is_Auto
+        (N : Natural)
+         return String;
+      function Is_False
+        (N : Natural)
+         return String;
 
-      function Is_Auto (N : Natural) return String is
+      function Is_Auto
+        (N : Natural)
+         return String
+      is
       begin
          if N = 0 then
             return " 'auto'";
@@ -172,7 +176,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
          end if;
       end Is_Auto;
 
-      function Is_False (N : Natural) return String is
+      function Is_False
+        (N : Natural)
+         return String
+      is
       begin
          if N = 0 then
             return " 'false'";
@@ -183,28 +190,17 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    begin
       Dialog.Auto_Place (False);
 
-      Dialog.Create_From_HTML
-        (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
+      Dialog.Create_From_HTML (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
 
       Dialog.jQuery_Execute
-        ("dialog({title: '" & Title & "'," &
-           "height:" & Is_Auto (Height) & "," &
-           "width:" & Is_Auto (Width) & "," &
-           "position: { my: '" & Position_My & "', at: '" &
-           Position_At & "', of: window }," &
-           "resizable: " & Resizable'Img & "," &
-           "minHeight:" & Minimum_Height'Img & "," &
-           "minWidth:" & Minimum_Width'Img & "," &
-           "height:" & Is_Auto (Height) & "," &
-           "width:" & Is_Auto (Width) & "," &
-           "maxHeight:" & Is_False (Maximum_Height) & "," &
-           "maxWidth:" & Is_False (Maximum_Width) & "," &
-           "modal: " & Modal'Img & "," &
-           "closeOnEscape: " & Close_On_Escape'Img & "," &
-           "draggable: " & Draggable'Img & "})");
+        ("dialog({title: '" & Title & "'," & "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," &
+         "position: { my: '" & Position_My & "', at: '" & Position_At & "', of: window }," & "resizable: " &
+         Resizable'Img & "," & "minHeight:" & Minimum_Height'Img & "," & "minWidth:" & Minimum_Width'Img & "," &
+         "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," & "maxHeight:" &
+         Is_False (Maximum_Height) & "," & "maxWidth:" & Is_False (Maximum_Width) & "," & "modal: " & Modal'Img & "," &
+         "closeOnEscape: " & Close_On_Escape'Img & "," & "draggable: " & Draggable'Img & "})");
 
-      Dialog.Bind_Event (Event   => "dialogresizestop",
-                         Message => "");
+      Dialog.Bind_Event (Event => "dialogresizestop", Message => "");
    end Create;
 
    ----------
@@ -239,7 +235,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Is_Open --
    -------------
 
-   function Is_Open (Dialog : in out Dialog_Type) return Boolean is
+   function Is_Open
+     (Dialog : in out Dialog_Type)
+      return Boolean
+   is
    begin
       return Dialog.jQuery_Execute ("dialog('isOpen')") = "true";
    end Is_Open;
@@ -248,8 +247,9 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- On_Open --
    -------------
 
-   procedure On_Open_Handler (Dialog  : in out Dialog_Type;
-                              Handler : in     Gnoga.Gui.Base.Action_Event)
+   procedure On_Open_Handler
+     (Dialog  : in out Dialog_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
       Dialog.On_Open_Event := Handler;
@@ -266,8 +266,9 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- On_Close --
    --------------
 
-   procedure On_Close_Handler (Dialog  : in out Dialog_Type;
-                               Handler : in     Gnoga.Gui.Base.Action_Event)
+   procedure On_Close_Handler
+     (Dialog  : in out Dialog_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event)
    is
    begin
       if Dialog.On_Close_Event /= null then
@@ -277,8 +278,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Dialog.On_Close_Event := Handler;
 
       if Handler /= null then
-         Dialog.Bind_Event (Event   => "dialogclose",
-                            Message => "");
+         Dialog.Bind_Event (Event => "dialogclose", Message => "");
       end if;
    end On_Close_Handler;
 
@@ -293,10 +293,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- On_Message --
    ----------------
 
-   overriding
-   procedure On_Message (Object  : in out Dialog_Type;
-                         Event   : in     String;
-                         Message : in     String)
+   overriding procedure On_Message
+     (Object  : in out Dialog_Type;
+      Event   : in     String;
+      Message : in     String)
    is
    begin
       if Event = "dialogclose" then
@@ -312,9 +312,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Make_Menu --
    ---------------
 
-   procedure Make_Menu
-     (List : in out Gnoga.Gui.Element.List.Unordered_List_Type'Class)
-   is
+   procedure Make_Menu (List : in out Gnoga.Gui.Element.List.Unordered_List_Type'Class) is
    begin
       List.jQuery_Execute ("menu()");
    end Make_Menu;
@@ -323,32 +321,35 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Create --
    ------------
 
-   procedure Create (Progress_Bar : in out Progress_Bar_Type;
-                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Value        : in     Integer := 0;
-                     Maximum      : in     Integer := 100;
-                     ID           : in     String := "")
+   procedure Create
+     (Progress_Bar : in out Progress_Bar_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Value        : in     Integer := 0;
+      Maximum      : in     Integer := 100;
+      ID           : in     String  := "")
    is
       pragma Unreferenced (ID);
    begin
       Progress_Bar.Create_From_HTML (Parent, "<div/>");
-      Progress_Bar.jQuery_Execute
-        ("progressbar ({ max:" & Maximum'Img & ", value:" & Value'Img & "})");
+      Progress_Bar.jQuery_Execute ("progressbar ({ max:" & Maximum'Img & ", value:" & Value'Img & "})");
    end Create;
 
    -----------
    -- Value --
    -----------
 
-   procedure Value (Progress_Bar : in out Progress_Bar_Type;
-                    Value        : in     Integer)
+   procedure Value
+     (Progress_Bar : in out Progress_Bar_Type;
+      Value        : in     Integer)
    is
    begin
-      Progress_Bar.jQuery_Execute
-        ("progressbar ('option', 'value'," & Value'Img & ")");
+      Progress_Bar.jQuery_Execute ("progressbar ('option', 'value'," & Value'Img & ")");
    end Value;
 
-   function Value (Progress_Bar : Progress_Bar_Type) return Integer is
+   function Value
+     (Progress_Bar : Progress_Bar_Type)
+      return Integer
+   is
    begin
       return Progress_Bar.jQuery_Execute ("progressbar ('option', 'value')");
    end Value;
@@ -357,8 +358,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Make_Select_Menu --
    ----------------------
 
-   procedure Make_Select_Menu
-     (Element : in out Gnoga.Gui.Element.Form.Selection_Type'Class) is
+   procedure Make_Select_Menu (Element : in out Gnoga.Gui.Element.Form.Selection_Type'Class) is
    begin
       Element.jQuery_Execute ("selectmenu()");
    end Make_Select_Menu;
@@ -367,9 +367,10 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Create --
    ------------
 
-   procedure Create (Tabs         : in out Tabs_Type;
-                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-                     ID           : in     String       := "")
+   procedure Create
+     (Tabs   : in out Tabs_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
    begin
       Tabs.Create_From_HTML (Parent, "<div />", ID);
@@ -380,16 +381,15 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Add_Tab --
    -------------
 
-   procedure Add_Tab (Tabs  : in out Tabs_Type;
-                      Label : in     String;
-                      View  : in out Gui.View.View_Base_Type'Class)
+   procedure Add_Tab
+     (Tabs  : in out Tabs_Type;
+      Label : in     String;
+      View  : in out Gui.View.View_Base_Type'Class)
    is
       L : Gnoga.Gui.Element.Element_Type;
    begin
-      L.Create_From_HTML (Tabs.Labels,
-                          Escape_Quotes ("<li><a href='" & View.DOM_Selector & "'>" &
-                            Label &
-                            "</a></li>"));
+      L.Create_From_HTML
+        (Tabs.Labels, Escape_Quotes ("<li><a href='" & View.DOM_Selector & "'>" & Label & "</a></li>"));
       L.Place_Inside_Bottom_Of (Tabs.Labels);
       View.Place_Inside_Bottom_Of (Tabs);
    end Add_Tab;
@@ -407,9 +407,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
    -- Turn_On_Tool_Tips --
    -----------------------
 
-   procedure Turn_On_Tool_Tips
-     (Window : in out Gnoga.Gui.Window.Window_Type'Class)
-   is
+   procedure Turn_On_Tool_Tips (Window : in out Gnoga.Gui.Window.Window_Type'Class) is
    begin
       Window.Document.jQuery_Execute ("tooltip()");
    end Turn_On_Tool_Tips;

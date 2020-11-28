@@ -42,23 +42,15 @@ with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Indefinite_Hashed_Maps;
 
 package Gnoga.Types is
-   package Data_Arrays is
-     new Ada.Containers.Indefinite_Vectors (Positive, String);
+   package Data_Arrays is new Ada.Containers.Indefinite_Vectors (Positive, String);
    subtype Data_Array_Type is Data_Arrays.Vector;
 
-   package Data_Maps is
-      new Ada.Containers.Indefinite_Hashed_Maps (String,
-                                                 String,
-                                                 Ada.Strings.Hash,
-                                                 Equivalent_Keys => "=");
+   package Data_Maps is new Ada.Containers.Indefinite_Hashed_Maps
+     (String, String, Ada.Strings.Hash, Equivalent_Keys => "=");
    subtype Data_Map_Type is Data_Maps.Map;
 
-   package Maps_of_Data_Maps is
-     new Ada.Containers.Indefinite_Hashed_Maps (String,
-                                                Data_Maps.Map,
-                                                Ada.Strings.Hash,
-                                                Equivalent_Keys => "=",
-                                                "=" => Data_Maps."=");
+   package Maps_of_Data_Maps is new Ada.Containers.Indefinite_Hashed_Maps
+     (String, Data_Maps.Map, Ada.Strings.Hash, Equivalent_Keys => "=", "=" => Data_Maps."=");
    subtype Map_of_Data_Maps_Type is Maps_of_Data_Maps.Map;
 
    subtype Web_ID is Ada.Strings.Unbounded.Unbounded_String;
@@ -75,8 +67,7 @@ package Gnoga.Types is
 
    type Connection_Data_Type is tagged limited null record;
    type Connection_Data_Access is access all Connection_Data_Type;
-   type Pointer_to_Connection_Data_Class is
-     access all Connection_Data_Type'Class;
+   type Pointer_to_Connection_Data_Class is access all Connection_Data_Type'Class;
 
    type Frational_Range_Type is delta 0.001 range 0.0 .. 1.0;
    for Frational_Range_Type'Small use 0.001;
@@ -85,55 +76,58 @@ package Gnoga.Types is
 
    type Color_Type is range 0 .. 255;
 
-   type RGBA_Type is
-      record
-         Red   : Color_Type := 0;
-         Green : Color_Type := 0;
-         Blue  : Color_Type := 0;
-         Alpha : Alpha_Type := 1.0;
-      end record;
+   type RGBA_Type is record
+      Red   : Color_Type := 0;
+      Green : Color_Type := 0;
+      Blue  : Color_Type := 0;
+      Alpha : Alpha_Type := 1.0;
+   end record;
 
-   function To_String (RGBA : RGBA_Type) return String;
+   function To_String
+     (RGBA : RGBA_Type)
+      return String;
    --  Returns an rgba(r,g,b,a) representation of RGBA
 
-   function To_Hex (RGBA : RGBA_Type) return String;
+   function To_Hex
+     (RGBA : RGBA_Type)
+      return String;
    --  Returns a 0xRRGGBB representation of RGBA
 
-   function To_RGBA (Value : String) return RGBA_Type;
+   function To_RGBA
+     (Value : String)
+      return RGBA_Type;
    --  Will convert rgb(r,g,b) and rgba(r,g,b,a), or
    --  Hex color (include Hex with Alpha) to RGBA_Type
 
-   type Pixel_Type is
-      record
-         Red   : Color_Type := 0;
-         Green : Color_Type := 0;
-         Blue  : Color_Type := 0;
-         Alpha : Color_Type := 0;
-      end record;
+   type Pixel_Type is record
+      Red   : Color_Type := 0;
+      Green : Color_Type := 0;
+      Blue  : Color_Type := 0;
+      Alpha : Color_Type := 0;
+   end record;
 
-   function To_RGBA (Value : in Pixel_Type) return RGBA_Type;
+   function To_RGBA
+     (Value : in Pixel_Type)
+      return RGBA_Type;
 
-   function To_Pixel (Value : in RGBA_Type) return Pixel_Type;
+   function To_Pixel
+     (Value : in RGBA_Type)
+      return Pixel_Type;
 
-   type Pixel_Data_Type is
-     array (Positive range <>, Positive range <>) of Pixel_Type;
+   type Pixel_Data_Type is array (Positive range <>, Positive range <>) of Pixel_Type;
    type Pixel_Data_Access is access Pixel_Data_Type;
 
-   type Point_Type is
-      record
-         X, Y : Integer;
-      end record;
+   type Point_Type is record
+      X, Y : Integer;
+   end record;
 
-   type Point_Array_Type is
-     array (Positive range <>) of Point_Type;
+   type Point_Array_Type is array (Positive range <>) of Point_Type;
 
-   type Rectangle_Type is
-      record
-         X, Y, Width, Height : Integer;
-      end record;
+   type Rectangle_Type is record
+      X, Y, Width, Height : Integer;
+   end record;
 
-   type Size_Type is
-      record
-         Width, Height : Integer;
-      end record;
+   type Size_Type is record
+      Width, Height : Integer;
+   end record;
 end Gnoga.Types;

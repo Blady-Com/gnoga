@@ -43,93 +43,96 @@ package body Gnoga.Gui.Navigator is
    -- Code_Name --
    ---------------
 
-   function Code_Name (Window : Gnoga.Gui.Window.Window_Type'Class)
-                       return String
+   function Code_Name
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                                     "navigator.appCodeName");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.appCodeName");
    end Code_Name;
 
    ----------
    -- Name --
    ----------
 
-   function Name (Window : Gnoga.Gui.Window.Window_Type'Class) return String is
+   function Name
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script
-        (Window.Connection_ID, "navigator.appName");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.appName");
    end Name;
 
    -------------
    -- Version --
    -------------
 
-   function Version (Window : Gnoga.Gui.Window.Window_Type'Class) return String
+   function Version
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                                     "navigator.appVersion");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.appVersion");
    end Version;
 
    --------------------
    -- Cookie_Enabled --
    --------------------
 
-   function Cookie_Enabled (Window : Gnoga.Gui.Window.Window_Type'Class)
-                            return Boolean
+   function Cookie_Enabled
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return Boolean
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script
-        (Window.Connection_ID, "navigator.cookieEnabled") = "true";
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.cookieEnabled") = "true";
    end Cookie_Enabled;
 
    --------------
    -- Language --
    --------------
 
-   function Language (Window : Gnoga.Gui.Window.Window_Type'Class)
-                      return String
+   function Language
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                                     "navigator.language");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.language");
    end Language;
 
    --------------
    -- Platform --
    --------------
 
-   function Platform (Window : Gnoga.Gui.Window.Window_Type'Class)
-                      return String
+   function Platform
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                                     "navigator.platform");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.platform");
    end Platform;
 
    -------------
    -- Product --
    -------------
 
-   function Product (Window : Gnoga.Gui.Window.Window_Type'Class)
-                     return String
+   function Product
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                                     "navigator.product");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.product");
    end Product;
 
    ----------------
    -- User_Agent --
    ----------------
 
-   function User_Agent (Window : Gnoga.Gui.Window.Window_Type'Class)
-                        return String
+   function User_Agent
+     (Window : Gnoga.Gui.Window.Window_Type'Class)
+      return String
    is
    begin
-      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID,
-                                                     "navigator.userAgent");
+      return Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "navigator.userAgent");
    end User_Agent;
 
    ---------------------
@@ -141,7 +144,6 @@ package body Gnoga.Gui.Navigator is
       URL    : in     String)
    is
    begin
-      Gnoga.Server.Connection.Execute_Script
-        (Window.Connection_ID, "window.location='" & Escape_Quotes (URL) & "'");
+      Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "window.location='" & Escape_Quotes (URL) & "'");
    end Navigate_To_URL;
 end Gnoga.Gui.Navigator;

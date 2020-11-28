@@ -54,36 +54,72 @@ package Gnoga.Gui.Location is
    --  Location_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure URL (Location : in out Location_Type; Value : in String);
-   function URL (Location : Location_Type) return String;
+   procedure URL
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function URL
+     (Location : Location_Type)
+      return String;
    --  Setting URL will navigate the browser from the current location and
    --  close the current Gnoga Connection.
 
-   procedure Hash (Location : in out Location_Type; Value : in String);
-   function Hash (Location : Location_Type) return String;
+   procedure Hash
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function Hash
+     (Location : Location_Type)
+      return String;
 
-   procedure Host (Location : in out Location_Type; Value : in String);
-   function Host (Location : Location_Type) return String;
+   procedure Host
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function Host
+     (Location : Location_Type)
+      return String;
 
-   procedure Host_Name (Location : in out Location_Type; Value : in String);
-   function Host_Name (Location : Location_Type) return String;
+   procedure Host_Name
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function Host_Name
+     (Location : Location_Type)
+      return String;
 
-   function Origin (Location : Location_Type) return String;
+   function Origin
+     (Location : Location_Type)
+      return String;
 
-   procedure Path_Name (Location : in out Location_Type; Value : in String);
-   function Path_Name (Location : Location_Type) return String;
+   procedure Path_Name
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function Path_Name
+     (Location : Location_Type)
+      return String;
 
-   procedure Port (Location : in out Location_Type; Value : in String);
-   function Port (Location : Location_Type) return String;
+   procedure Port
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function Port
+     (Location : Location_Type)
+      return String;
 
-   procedure Protocol (Location : in out Location_Type; Value : in String);
-   function Protocol (Location : Location_Type) return String;
+   procedure Protocol
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function Protocol
+     (Location : Location_Type)
+      return String;
 
-   procedure Search (Location : in out Location_Type; Value : in String);
-   function Search (Location : Location_Type) return String;
+   procedure Search
+     (Location : in out Location_Type;
+      Value    : in     String);
+   function Search
+     (Location : Location_Type)
+      return String;
 
-   function Parse (URL : in String; Encoding : String := "")
-                   return Gnoga.Types.Data_Map_Type;
+   function Parse
+     (URL      : in String;
+      Encoding :    String := "")
+      return Gnoga.Types.Data_Map_Type;
    --  Parse form GET parameters in URL (typically from Search function)
    --  to Data_Map_Type
    --  Supported encodings are ISO-8859-1 (default)
@@ -96,11 +132,15 @@ package Gnoga.Gui.Location is
    procedure Reload (Location : in out Location_Type);
    --  Reload the current page
 
-   procedure Replace (Location : in out Location_Type; URL : in String);
+   procedure Replace
+     (Location : in out Location_Type;
+      URL      : in     String);
    --  Replace the current page with URL (the current page will be removed
    --  from the browser history)
 
-   procedure Assign (Location : in out Location_Type; URL : in String);
+   procedure Assign
+     (Location : in out Location_Type;
+      URL      : in     String);
    --  Assign URL to the current page, the current page will be available
    --  using the back button.
 

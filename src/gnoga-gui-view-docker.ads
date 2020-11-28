@@ -54,11 +54,10 @@ package Gnoga.Gui.View.Docker is
    --  Docker_View_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure Create
-     (View          : in out Docker_View_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID            : in     String  := "");
+   overriding procedure Create
+     (View   : in out Docker_View_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
    --  Dockers can be nested to create complex reflowing layouts. Ideally the
    --  Window's View (the top level view) should be a Docker and every nested
    --  Docker's Parent a Docker above it.
@@ -83,30 +82,40 @@ package Gnoga.Gui.View.Docker is
    --  Docker_View_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Top_Dock (View : in out Docker_View_Type;
-                       Dock : access View_Base_Type'Class);
-   function Top_Dock (View : Docker_View_Type)
-                      return Pointer_To_View_Base_Class;
+   procedure Top_Dock
+     (View : in out Docker_View_Type;
+      Dock :        access View_Base_Type'Class);
+   function Top_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Bottom_Dock (View : in out Docker_View_Type;
-                          Dock : access View_Base_Type'Class);
-   function Bottom_Dock (View : Docker_View_Type)
-                         return Pointer_To_View_Base_Class;
+   procedure Bottom_Dock
+     (View : in out Docker_View_Type;
+      Dock :        access View_Base_Type'Class);
+   function Bottom_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Fill_Dock (View : in out Docker_View_Type;
-                        Dock : access View_Base_Type'Class);
-   function Fill_Dock (View : Docker_View_Type)
-                       return Pointer_To_View_Base_Class;
+   procedure Fill_Dock
+     (View : in out Docker_View_Type;
+      Dock :        access View_Base_Type'Class);
+   function Fill_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Left_Dock (View : in out Docker_View_Type;
-                        Dock : access View_Base_Type'Class);
-   function Left_Dock (View : Docker_View_Type)
-                       return Pointer_To_View_Base_Class;
+   procedure Left_Dock
+     (View : in out Docker_View_Type;
+      Dock :        access View_Base_Type'Class);
+   function Left_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Right_Dock (View : in out Docker_View_Type;
-                         Dock : access View_Base_Type'Class);
-   function Right_Dock (View : Docker_View_Type)
-                        return Pointer_To_View_Base_Class;
+   procedure Right_Dock
+     (View : in out Docker_View_Type;
+      Dock :        access View_Base_Type'Class);
+   function Right_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
    -------------------------------------------------------------------------
    --  Docker_View_Type - Event Methods
@@ -115,8 +124,7 @@ package Gnoga.Gui.View.Docker is
    procedure Update_Dock (View : in out Docker_View_Type);
    --  Updates layout to current View size
 
-   overriding
-   procedure On_Resize (View : in out Docker_View_Type);
+   overriding procedure On_Resize (View : in out Docker_View_Type);
    --  Handle layout of children
 private
    type Docker_View_Type is new View_Type with null record;

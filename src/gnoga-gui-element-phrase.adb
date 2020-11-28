@@ -45,7 +45,7 @@ package body Gnoga.Gui.Element.Phrase is
      (View   : in out Phrase_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
       Phrase : in     Phrase_Description_Type;
-      ID     : in     String  := "")
+      ID     : in     String := "")
    is
    begin
       View.Create_From_HTML (Parent, "<" & Phrase'Img & " />", ID);

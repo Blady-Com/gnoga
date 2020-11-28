@@ -67,45 +67,69 @@ package Gnoga.Gui.Document is
    --  Document_Type - Properties
    -------------------------------------------------------------------------
 
-   function Domain (Document : Document_Type) return String;
+   function Domain
+     (Document : Document_Type)
+      return String;
 
-   function Input_Encoding (Document : Document_Type) return String;
+   function Input_Encoding
+     (Document : Document_Type)
+      return String;
 
-   function Last_Modified (Document : Document_Type) return String;
+   function Last_Modified
+     (Document : Document_Type)
+      return String;
 
-   function Referrer (Document : Document_Type) return String;
+   function Referrer
+     (Document : Document_Type)
+      return String;
 
-   procedure Title (Document : in out Document_Type; Value : in String);
-   function Title (Document : Document_Type) return String;
+   procedure Title
+     (Document : in out Document_Type;
+      Value    : in     String);
+   function Title
+     (Document : Document_Type)
+      return String;
 
-   function URL (Document : Document_Type) return String;
+   function URL
+     (Document : Document_Type)
+      return String;
 
-   function Head_Element (Document : Document_Type)
-                          return Gnoga.Gui.Element.Element_Access;
+   function Head_Element
+     (Document : Document_Type)
+      return Gnoga.Gui.Element.Element_Access;
 
-   function Body_Element (Document : Document_Type)
-                          return Gnoga.Gui.Element.Element_Access;
+   function Body_Element
+     (Document : Document_Type)
+      return Gnoga.Gui.Element.Element_Access;
 
-   function Document_Element (Document : Document_Type)
-                              return Gnoga.Gui.Element.Element_Access;
+   function Document_Element
+     (Document : Document_Type)
+      return Gnoga.Gui.Element.Element_Access;
    --  The document element is the root of the document, example <HTML>
    --  in a text/html document. Using Document_Element.Outer_HTML will
    --  return the entire document as per the current state in the browser.
 
    type Ready_State_Type is (Uninitialized, Loading, Interactive, Complete);
 
-   function Ready_State (Document : Document_Type)
-                         return Ready_State_Type;
+   function Ready_State
+     (Document : Document_Type)
+      return Ready_State_Type;
 
    -------------------------------------------------------------------------
    --  Document_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Load_CSS (Document : in out Document_Type; URL : in String);
+   procedure Load_CSS
+     (Document : in out Document_Type;
+      URL      : in     String);
    --  Loads a CSS file in to document from URL
 
-   procedure Write (Document : in out Document_Type; Value : in String);
-   procedure Write_Line (Document : in out Document_Type; Value : in String);
+   procedure Write
+     (Document : in out Document_Type;
+      Value    : in     String);
+   procedure Write_Line
+     (Document : in out Document_Type;
+      Value    : in     String);
    --  Write Value (with new line if Write_Line) to the document.
    --  Note that the first use of these procedures can erase elements already
    --  inserted in to the Document.Body_Element. Therefore to use these
@@ -114,16 +138,17 @@ package Gnoga.Gui.Document is
    --  In general, use View.Put_Line instead with in a view that is attached
    --  to the window.
 
-   procedure Put_Line (Document : in out Document_Type; Value : in String);
+   procedure Put_Line
+     (Document : in out Document_Type;
+      Value    : in     String);
    --  Calls Write_Line with Value + "<br />"
    --  Using Put_Line on Firefox will break the WebSocket connection
    --  In general, use View.Put_Line instead with in a view that is attached
    --  to the window.
 private
-   type Document_Type is new Gnoga.Gui.Base.Base_Type with
-      record
-         DOM_HTML : aliased Gnoga.Gui.Element.Element_Type;
-         DOM_Head : aliased Gnoga.Gui.Element.Element_Type;
-         DOM_Body : aliased Gnoga.Gui.Element.Element_Type;
-      end record;
+   type Document_Type is new Gnoga.Gui.Base.Base_Type with record
+      DOM_HTML : aliased Gnoga.Gui.Element.Element_Type;
+      DOM_Head : aliased Gnoga.Gui.Element.Element_Type;
+      DOM_Body : aliased Gnoga.Gui.Element.Element_Type;
+   end record;
 end Gnoga.Gui.Document;

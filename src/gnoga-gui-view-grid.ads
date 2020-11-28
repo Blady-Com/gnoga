@@ -53,19 +53,18 @@ package Gnoga.Gui.View.Grid is
    --  COL = A single column
    --  SPN = Span previous column through this column
 
-   type Grid_Rows_Type is
-     array (Positive range <>, Positive range <>) of Grid_Element_Type;
+   type Grid_Rows_Type is array (Positive range <>, Positive range <>) of Grid_Element_Type;
 
    Vertical_Split   : constant Grid_Rows_Type := ((1 => COL), (1 => COL));
    Horizontal_Split : constant Grid_Rows_Type := (1 => (COL, COL));
 
    procedure Create
-     (Grid          : in out Grid_View_Type;
-      Parent        : in out Gnoga.Gui.Base.Base_Type'Class;
-      Layout        : in     Grid_Rows_Type;
-      Fill_Parent   : in     Boolean := True;
-      Set_Sizes     : in     Boolean := True;
-      ID            : in     String  := "");
+     (Grid        : in out Grid_View_Type;
+      Parent      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Layout      : in     Grid_Rows_Type;
+      Fill_Parent : in     Boolean := True;
+      Set_Sizes   : in     Boolean := True;
+      ID          : in     String  := "");
    --  Create a grid of views using Layout. If Set_Sizes is true then default
    --  equal size columns and rows will be created and widths set as
    --  percentages.
@@ -90,8 +89,10 @@ package Gnoga.Gui.View.Grid is
    --  Grid_View_Type - Properties
    -------------------------------------------------------------------------
 
-   function Panel (Grid : Grid_View_Type; Row, Column : Positive)
-                   return Pointer_To_View_Base_Class;
+   function Panel
+     (Grid        : Grid_View_Type;
+      Row, Column : Positive)
+      return Pointer_To_View_Base_Class;
    --  Return the Panel view at Row, Column. Every member of a column span
    --  will return a pointer to the same view.
 

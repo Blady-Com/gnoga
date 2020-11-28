@@ -53,8 +53,7 @@ package Gnoga.Gui.Plugin.MNMenu is
    --  MNMenu_Types
    -------------------------------------------------------------------------
 
-   type MNMenu_Type is
-     new Gnoga.Gui.Element.List.Unordered_List_Type with private;
+   type MNMenu_Type is new Gnoga.Gui.Element.List.Unordered_List_Type with private;
    type MNMenu_Access is access all MNMenu_Type;
    type Pointer_To_MNMenu_Class is access all MNMenu_Type'Class;
 
@@ -80,8 +79,7 @@ package Gnoga.Gui.Plugin.MNMenu is
    --  MNMenu_Item_Types
    -------------------------------------------------------------------------
 
-   type MNMenu_Item_Type is
-     new Gnoga.Gui.Element.List.List_Item_Type with private;
+   type MNMenu_Item_Type is new Gnoga.Gui.Element.List.List_Item_Type with private;
    type MNMenu_Item_Access is access all MNMenu_Item_Type;
    type Pointer_To_MNMenu_Item_Class is access all MNMenu_Item_Type'Class;
 
@@ -139,18 +137,15 @@ package Gnoga.Gui.Plugin.MNMenu is
       ID       : in     String := "");
    --  Submenu creation together with item. Only use for dynamic objects.
 
-   procedure Display_Menu
-     (Menu : in not null Gnoga.Gui.Plugin.MNMenu.MNMenu_Access);
+   procedure Display_Menu (Menu : in not null Gnoga.Gui.Plugin.MNMenu.MNMenu_Access);
    --  Menu shape display
 
 private
 
-   type MNMenu_Type is new Gnoga.Gui.Element.List.Unordered_List_Type with
-   record
+   type MNMenu_Type is new Gnoga.Gui.Element.List.Unordered_List_Type with record
       View : Gnoga.Gui.View.Pointer_To_View_Base_Class;
    end record;
 
-   type MNMenu_Item_Type is new Gnoga.Gui.Element.List.List_Item_Type with
-   null record;
+   type MNMenu_Item_Type is new Gnoga.Gui.Element.List.List_Item_Type with null record;
 
 end Gnoga.Gui.Plugin.MNMenu;

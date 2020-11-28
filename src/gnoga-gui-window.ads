@@ -57,14 +57,13 @@ package Gnoga.Gui.Window is
    type Window_Access is access all Window_Type;
    type Pointer_To_Window_Class is access all Window_Type'Class;
 
-   overriding
-   procedure Finalize (Object : in out Window_Type);
+   overriding procedure Finalize (Object : in out Window_Type);
    --  Will deallocate the Connection Data if marked dynamic.
    --  Will deallocate an attached View (see Set_View) if the view is
    --  marked dynamic.
    --  See Base_Type.Dynamic
 
-   Invalid_ID_Type    : exception;
+   Invalid_ID_Type : exception;
 
    Not_A_Gnoga_Window : exception;
 
@@ -92,20 +91,23 @@ package Gnoga.Gui.Window is
    --        a Gnoga connection in it. Raises Not_A_Gnoga_Window if window
    --        does not contain a gnoga connection.
 
-   procedure Reattach (Window : in out Window_Type;
-                       Parent : in out Window_Type'Class);
+   procedure Reattach
+     (Window : in out Window_Type;
+      Parent : in out Window_Type'Class);
    --  Attach a Window launched by Parent to its own Gnoga connection.
    --  Will raise Not_A_Gnoga_Window if connection was not established in
    --  Window or is not a Gnoga window (i.e. if has no websocket to app).
 
-   procedure Disable_Auto_Set_View (Window : in out Window_Type;
-                                    Value  : in     Boolean := True);
+   procedure Disable_Auto_Set_View
+     (Window : in out Window_Type;
+      Value  : in     Boolean := True);
    --  By default if a View is created with Window as the Parent, Set_View
    --  will be called to make it the View for the window.
 
-   procedure Set_View (Window : in out Window_Type;
-                       Object : in out Gnoga.Gui.Base.Base_Type'Class;
-                       Place  : in     Boolean := True);
+   procedure Set_View
+     (Window : in out Window_Type;
+      Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Place  : in     Boolean := True);
    --  Sets Object as the Window's View. Object will be auto resized to fill
    --  the entire client area of Window. By default any View_Base_Type'Class
    --  with Window as parent will automatically be set as the View. To change
@@ -122,8 +124,9 @@ package Gnoga.Gui.Window is
    --  deallocated on finalization of Window if it has not been removed using
    --  Window.Remove_View
 
-   function Get_View (Window : Window_Type)
-                      return Gnoga.Gui.Base.Pointer_To_Base_Class;
+   function Get_View
+     (Window : Window_Type)
+      return Gnoga.Gui.Base.Pointer_To_Base_Class;
    --  Returns the current view attached to Window or null
 
    procedure Remove_View (Window : in out Window_Type);
@@ -135,18 +138,19 @@ package Gnoga.Gui.Window is
 
    Popup_Blocked : exception;
 
-   procedure Launch (Window   : in out Window_Type;
-                     Parent   : in out Window_Type'Class;
-                     URL      : in     String;
-                     Width    : in     Integer := -1;
-                     Height   : in     Integer := -1;
-                     Left     : in     Integer := -1;
-                     Top      : in     Integer := -1;
-                     Location : in     Boolean := False;
-                     Menu     : in     Boolean := False;
-                     Status   : in     Boolean := False;
-                     Tool_Bar : in     Boolean := False;
-                     Title    : in     Boolean := False);
+   procedure Launch
+     (Window   : in out Window_Type;
+      Parent   : in out Window_Type'Class;
+      URL      : in     String;
+      Width    : in     Integer := -1;
+      Height   : in     Integer := -1;
+      Left     : in     Integer := -1;
+      Top      : in     Integer := -1;
+      Location : in     Boolean := False;
+      Menu     : in     Boolean := False;
+      Status   : in     Boolean := False;
+      Tool_Bar : in     Boolean := False;
+      Title    : in     Boolean := False);
    --  Launch a new Window on Parent's connection. If Parent window is closed
    --  events will no longer work on Window. If the launched URL has a Gnoga
    --  connection can run Reattach on it before adding any elements or events.
@@ -160,45 +164,80 @@ package Gnoga.Gui.Window is
    --  Window_Type - Properties
    -------------------------------------------------------------------------
 
-   function Document (Window : Window_Type)
-                      return Gnoga.Gui.Document.Document_Access;
+   function Document
+     (Window : Window_Type)
+      return Gnoga.Gui.Document.Document_Access;
    --  DOM Document Node
 
-   function Location (Window : Window_Type)
-                      return Gnoga.Gui.Location.Location_Access;
+   function Location
+     (Window : Window_Type)
+      return Gnoga.Gui.Location.Location_Access;
    --  Browser location object
 
-   procedure Browser_Status_Bar (Window : in out Window_Type;
-                                 Value  : in     String);
-   function Browser_Status_Bar (Window : Window_Type) return String;
+   procedure Browser_Status_Bar
+     (Window : in out Window_Type;
+      Value  : in     String);
+   function Browser_Status_Bar
+     (Window : Window_Type)
+      return String;
    --  Status bar on browser window (not supported on all browsers)
 
-   procedure Name (Window : in out Window_Type; Value : in String);
-   function Name (Window : Window_Type) return String;
+   procedure Name
+     (Window : in out Window_Type;
+      Value  : in     String);
+   function Name
+     (Window : Window_Type)
+      return String;
    --  Hyperlink "target" Name for Window
 
-   procedure Inner_Height (Window : in out Window_Type; Value : in Integer);
-   function Inner_Height (Window : Window_Type) return Integer;
+   procedure Inner_Height
+     (Window : in out Window_Type;
+      Value  : in     Integer);
+   function Inner_Height
+     (Window : Window_Type)
+      return Integer;
 
-   procedure Inner_Width (Window : in out Window_Type; Value : in Integer);
-   function Inner_Width (Window : Window_Type) return Integer;
+   procedure Inner_Width
+     (Window : in out Window_Type;
+      Value  : in     Integer);
+   function Inner_Width
+     (Window : Window_Type)
+      return Integer;
 
-   procedure Outer_Height (Window : in out Window_Type; Value : in Integer);
-   function Outer_Height (Window : Window_Type) return Integer;
+   procedure Outer_Height
+     (Window : in out Window_Type;
+      Value  : in     Integer);
+   function Outer_Height
+     (Window : Window_Type)
+      return Integer;
 
-   procedure Outer_Width (Window : in out Window_Type; Value : in Integer);
-   function Outer_Width (Window : Window_Type) return Integer;
+   procedure Outer_Width
+     (Window : in out Window_Type;
+      Value  : in     Integer);
+   function Outer_Width
+     (Window : Window_Type)
+      return Integer;
 
-   function X_Offset (Window : Window_Type) return Integer;
+   function X_Offset
+     (Window : Window_Type)
+      return Integer;
 
-   function Y_Offset (Window : Window_Type) return Integer;
+   function Y_Offset
+     (Window : Window_Type)
+      return Integer;
 
-   function Top (Window : Window_Type) return Integer;
+   function Top
+     (Window : Window_Type)
+      return Integer;
 
-   function Left (Window : Window_Type) return Integer;
+   function Left
+     (Window : Window_Type)
+      return Integer;
 
-   function Form_Parameter (Window : Window_Type; Name  : String)
-                            return String;
+   function Form_Parameter
+     (Window : Window_Type;
+      Name   : String)
+      return String;
    --  Returns the value of parameters passed in on URL. Returns "undefined"
    --  if Name is not in URL search parameters or received via post.
    --  For example: http://localhost:8080/?page_id=2
@@ -206,15 +245,17 @@ package Gnoga.Gui.Window is
 
    --  Framework Properties  --
 
-   function Gnoga_Session_ID (Window : Window_Type; Name : String := "gid")
-                              return String;
+   function Gnoga_Session_ID
+     (Window : Window_Type;
+      Name   : String := "gid")
+      return String;
    --  If Name exists in Client.Storage.Session_Storage it returns that value,
    --  if not a unique Session ID is generated and stored for future
    --  invocations.
 
    procedure Connection_Data
      (Window  : in out Window_Type;
-      Data    : access Gnoga.Types.Connection_Data_Type'Class;
+      Data    :        access Gnoga.Types.Connection_Data_Type'Class;
       Dynamic : in     Boolean := True);
    --  Associates Data with the the connection Window is on.
    --  If Dynamic is true, Data will be unallocated when Window is
@@ -225,22 +266,32 @@ package Gnoga.Gui.Window is
    --  Window_Type - Methods
    -------------------------------------------------------------------------
 
-   procedure Alert (Window : in out Window_Type; Message : String);
+   procedure Alert
+     (Window  : in out Window_Type;
+      Message :        String);
    --  Display Alert box on Window with Message
 
-   procedure Log (Window : in out Window_Type; Message : String);
+   procedure Log
+     (Window  : in out Window_Type;
+      Message :        String);
    --  Log message on browser console
 
-   procedure Error (Window : in out Window_Type; Message : String);
+   procedure Error
+     (Window  : in out Window_Type;
+      Message :        String);
    --  Log error message on browser console
 
    procedure Print (Window : in out Window_Type);
    --  Print Window contents
 
-   procedure Scroll_By (Window : in out Window_Type; X, Y : Integer);
+   procedure Scroll_By
+     (Window : in out Window_Type;
+      X, Y   :        Integer);
    --  Scroll contents in window by x, y
 
-   procedure Scroll_To (Window : in out Window_Type; X, Y : Integer);
+   procedure Scroll_To
+     (Window : in out Window_Type;
+      X, Y   :        Integer);
    --  Scroll contents in window to x, y
 
    procedure Close_Connection (Window : in out Window_Type);
@@ -252,35 +303,44 @@ package Gnoga.Gui.Window is
 
    procedure Close (Window : in out Window_Type);
 
-   procedure Resize_By (Window : in out Window_Type; Width, Height : Integer);
+   procedure Resize_By
+     (Window        : in out Window_Type;
+      Width, Height :        Integer);
 
-   procedure Resize_To (Window : in out Window_Type; Width, Height : Integer);
+   procedure Resize_To
+     (Window        : in out Window_Type;
+      Width, Height :        Integer);
 
-   procedure Move_By (Window : in out Window_Type; X, Y : Integer);
+   procedure Move_By
+     (Window : in out Window_Type;
+      X, Y   :        Integer);
 
-   procedure Move_To (Window : in out Window_Type; X, Y : Integer);
+   procedure Move_To
+     (Window : in out Window_Type;
+      X, Y   :        Integer);
 
    -------------------------------------------------------------------------
    --  Window_Type - Event Handlers
    -------------------------------------------------------------------------
 
-   type Storage_Event_Record is
-      record
-         Name            : Ada.Strings.Unbounded.Unbounded_String;
-         Old_Value       : Ada.Strings.Unbounded.Unbounded_String;
-         New_Value       : Ada.Strings.Unbounded.Unbounded_String;
-      end record;
+   type Storage_Event_Record is record
+      Name      : Ada.Strings.Unbounded.Unbounded_String;
+      Old_Value : Ada.Strings.Unbounded.Unbounded_String;
+      New_Value : Ada.Strings.Unbounded.Unbounded_String;
+   end record;
 
-   type Storage_Event is access
-     procedure (Object        : in out Gnoga.Gui.Base.Base_Type'Class;
-                Storage_Event : in     Storage_Event_Record);
+   type Storage_Event is access procedure
+     (Object        : in out Gnoga.Gui.Base.Base_Type'Class;
+      Storage_Event : in     Storage_Event_Record);
 
-   procedure On_Abort_Handler (Window  : in out Window_Type;
-                               Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure On_Abort_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Abort (Window : in out Window_Type);
 
-   procedure On_Error_Handler (Window  : in out Window_Type;
-                               Handler : in     Gnoga.Gui.Base.Action_Event);
+   procedure On_Error_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Error (Window : in out Window_Type);
 
    procedure On_Before_Unload_Handler
@@ -298,45 +358,45 @@ package Gnoga.Gui.Window is
       Handler : in     Gnoga.Gui.Base.Action_Event);
    procedure Fire_On_Orientation_Change (Window : in out Window_Type);
 
-   procedure On_Storage_Handler (Window  : in out Window_Type;
-                                 Handler : in     Storage_Event);
-   procedure Fire_On_Storage (Window        : in out Window_Type;
-                              Storage_Event : in     Storage_Event_Record);
+   procedure On_Storage_Handler
+     (Window  : in out Window_Type;
+      Handler : in     Storage_Event);
+   procedure Fire_On_Storage
+     (Window        : in out Window_Type;
+      Storage_Event : in     Storage_Event_Record);
    --  Storage data was changed in another session
 
    -------------------------------------------------------------------------
    --  Window_Type - Event Methods
    -------------------------------------------------------------------------
 
-   overriding
-   procedure On_Resize (Window : in out Window_Type);
+   overriding procedure On_Resize (Window : in out Window_Type);
    --  Handles resizing the View attached to Window to new
    --  height and width of Window
 
-   overriding
-   procedure On_Child_Added (Object : in out Window_Type;
-                             Child  : in out Gnoga.Gui.Base.Base_Type'Class);
+   overriding procedure On_Child_Added
+     (Object : in out Window_Type;
+      Child  : in out Gnoga.Gui.Base.Base_Type'Class);
    --  Handles auto attaching Views to Window.
 
-   overriding
-   procedure On_Message (Object  : in out Window_Type;
-                         Event   : in     String;
-                         Message : in     String);
+   overriding procedure On_Message
+     (Object  : in out Window_Type;
+      Event   : in     String;
+      Message : in     String);
 private
-   type Window_Type is new Gnoga.Gui.Base.Base_Type with
-      record
-         DOM_Document         : aliased Gnoga.Gui.Document.Document_Type;
-         Location             : aliased Gnoga.Gui.Location.Location_Type;
-         View                 : Gnoga.Gui.Base.Pointer_To_Base_Class := null;
-         View_Is_Dynamic      : Boolean := False;
-         Free_Connection_Data : Boolean := False;
-         Auto_Set_View        : Boolean := True;
+   type Window_Type is new Gnoga.Gui.Base.Base_Type with record
+      DOM_Document         : aliased Gnoga.Gui.Document.Document_Type;
+      Location             : aliased Gnoga.Gui.Location.Location_Type;
+      View                 : Gnoga.Gui.Base.Pointer_To_Base_Class := null;
+      View_Is_Dynamic      : Boolean                              := False;
+      Free_Connection_Data : Boolean                              := False;
+      Auto_Set_View        : Boolean                              := True;
 
-         On_Abort_Event              : Gnoga.Gui.Base.Action_Event := null;
-         On_Error_Event              : Gnoga.Gui.Base.Action_Event := null;
-         On_Before_Unload_Event      : Gnoga.Gui.Base.Action_Event := null;
-         On_Hash_Change_Event        : Gnoga.Gui.Base.Action_Event := null;
-         On_Orientation_Change_Event : Gnoga.Gui.Base.Action_Event := null;
-         On_Storage_Event            : Storage_Event               := null;
-      end record;
+      On_Abort_Event              : Gnoga.Gui.Base.Action_Event := null;
+      On_Error_Event              : Gnoga.Gui.Base.Action_Event := null;
+      On_Before_Unload_Event      : Gnoga.Gui.Base.Action_Event := null;
+      On_Hash_Change_Event        : Gnoga.Gui.Base.Action_Event := null;
+      On_Orientation_Change_Event : Gnoga.Gui.Base.Action_Event := null;
+      On_Storage_Event            : Storage_Event               := null;
+   end record;
 end Gnoga.Gui.Window;

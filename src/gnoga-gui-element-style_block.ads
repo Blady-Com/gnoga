@@ -54,34 +54,39 @@ package Gnoga.Gui.Element.Style_Block is
    --  Style_Types - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Style   : in out Style_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Content : in     String  := "";
-                     ID      : in     String  := "");
+   procedure Create
+     (Style   : in out Style_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Content : in     String := "";
+      ID      : in     String := "");
    --  Create a style block with Content
 
    -------------------------------------------------------------------------
    --  Style_Types - Methods
    -------------------------------------------------------------------------
 
-   procedure Add_Style (Style : in out Style_Type;
-                        Text  : in     String);
+   procedure Add_Style
+     (Style : in out Style_Type;
+      Text  : in     String);
    --  Appends Text to Style bock. Should be valid CSS:
    --  selector {property:value; ...}
 
-   procedure Add_Style_for_Element (Style : in out Style_Type;
-                                    Name  : in     String;
-                                    Text  : in     String);
+   procedure Add_Style_for_Element
+     (Style : in out Style_Type;
+      Name  : in     String;
+      Text  : in     String);
    --  Appends Name {Text} to Style Block
 
-   procedure Add_Style_for_ID (Style : in out Style_Type;
-                               ID    : in     String;
-                               Text  : in     String);
+   procedure Add_Style_for_ID
+     (Style : in out Style_Type;
+      ID    : in     String;
+      Text  : in     String);
    --  Appends a #ID {Text} to Style block
 
-   procedure Add_Style_for_Class (Style : in out Style_Type;
-                                  Name  : in     String;
-                                  Text  : in     String);
+   procedure Add_Style_for_Class
+     (Style : in out Style_Type;
+      Name  : in     String;
+      Text  : in     String);
    --  Appends a .Name {Text} to Style Block
 
 private

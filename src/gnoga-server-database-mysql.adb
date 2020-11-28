@@ -46,18 +46,21 @@ package body Gnoga.Server.Database.MySQL is
    for Ulonglong'Size use 64;
    --  return type for Row related fields
 
-   function Error_Message (S : MySQL_ID) return String;
+   function Error_Message
+     (S : MySQL_ID)
+      return String;
    --  Return error message from database
 
    -------------
    -- Connect --
    -------------
-   function Connect (Database : String;
-                     Host     : String;
-                     User     : String;
-                     Password : String  := "";
-                     Port     : Integer := 3306)
-                     return Connection_Access
+   function Connect
+     (Database : String;
+      Host     : String;
+      User     : String;
+      Password : String  := "";
+      Port     : Integer := 3_306)
+      return Connection_Access
    is
       C : constant Connection_Access := new Connection;
    begin
@@ -65,39 +68,43 @@ package body Gnoga.Server.Database.MySQL is
       return C;
    end Connect;
 
-   procedure Connect (C        : in out Connection;
-                      Database : String;
-                      Host     : String;
-                      User     : String;
-                      Password : String  := "";
-                      Port     : Integer := 3306)
+   procedure Connect
+     (C        : in out Connection;
+      Database :        String;
+      Host     :        String;
+      User     :        String;
+      Password :        String  := "";
+      Port     :        Integer := 3_306)
    is
       pragma Unreferenced (Port);
-      function MYSQL_Init (mysql : MySQL_ID := null) return MySQL_ID;
+      function MYSQL_Init
+        (mysql : MySQL_ID := null)
+         return MySQL_ID;
       pragma Import (C, MYSQL_Init, "mysql_init");
 
       Init_Result : MySQL_ID;
 
-      function MYSQL_Real_Connect (mysql       : MySQL_ID;
-                                   mHost       : String   := Host & Nul;
-                                   mUser       : String   := User & Nul;
-                                   Passwd      : String   := Password & Nul;
-                                   Db          : Integer  := 0;
-                                   Port        : Integer  := 0;
-                                   Unix_Socket : Integer  := 0;
-                                   Clientflag  : Integer  := 0)
-                                  return MySQL_ID;
+      function MYSQL_Real_Connect
+        (mysql       : MySQL_ID;
+         mHost       : String  := Host & Nul;
+         mUser       : String  := User & Nul;
+         Passwd      : String  := Password & Nul;
+         Db          : Integer := 0;
+         Port        : Integer := 0;
+         Unix_Socket : Integer := 0;
+         Clientflag  : Integer := 0)
+         return MySQL_ID;
       pragma Import (C, MYSQL_Real_Connect, "mysql_real_connect");
 
-      function MYSQL_Select_DB (mysql : MySQL_ID := C.Server_ID;
-                                db    : String   := Database & Character'First)
-                               return Integer;
+      function MYSQL_Select_DB
+        (mysql : MySQL_ID := C.Server_ID;
+         db    : String   := Database & Character'First)
+         return Integer;
       pragma Import (C, MYSQL_Select_DB, "mysql_select_db");
    begin
       Init_Result := MYSQL_Init;
       if Init_Result = null then
-         raise Connection_Error with
-            "Unable to initialize connection to MySQL Client Library.";
+         raise Connection_Error with "Unable to initialize connection to MySQL Client Library.";
       end if;
 
       C.Server_ID := MYSQL_Real_Connect (Init_Result);
@@ -115,8 +122,7 @@ package body Gnoga.Server.Database.MySQL is
    -- Disconnect --
    ----------------
 
-   overriding
-   procedure Disconnect (C : in out Connection) is
+   overriding procedure Disconnect (C : in out Connection) is
       procedure MYSQL_Close (mysql : MySQL_ID := C.Server_ID);
       pragma Import (C, MYSQL_Close, "mysql_close");
 
@@ -131,12 +137,15 @@ package body Gnoga.Server.Database.MySQL is
    -- Execute_Query --
    -------------------
 
-   overriding
-   procedure Execute_Query (C : in out Connection; SQL : String) is
-      function MYSQL_Real_Query (mysql : MySQL_ID := C.Server_ID;
-                                 q     : String   := SQL;
-                                 l     : Natural := SQL'Length)
-                                 return Integer;
+   overriding procedure Execute_Query
+     (C   : in out Connection;
+      SQL :        String)
+   is
+      function MYSQL_Real_Query
+        (mysql : MySQL_ID := C.Server_ID;
+         q     : String   := SQL;
+         l     : Natural  := SQL'Length)
+         return Integer;
       pragma Import (C, MYSQL_Real_Query, "mysql_real_query");
    begin
       if C.Server_ID = null then
@@ -152,9 +161,10 @@ package body Gnoga.Server.Database.MySQL is
    -- Execute_Update --
    --------------------
 
-   overriding
-   function Execute_Update (C : in out Connection; SQL : String)
-                            return Natural
+   overriding function Execute_Update
+     (C   : in out Connection;
+      SQL :        String)
+      return Natural
    is
    begin
       Execute_Query (C, SQL);
@@ -165,10 +175,13 @@ package body Gnoga.Server.Database.MySQL is
    -- Insert_ID --
    ---------------
 
-   overriding
-   function Insert_ID (C : Connection) return Natural is
-      function MYSQL_Insert_Id (mysql : MySQL_ID := C.Server_ID)
-                                return Ulonglong;
+   overriding function Insert_ID
+     (C : Connection)
+      return Natural
+   is
+      function MYSQL_Insert_Id
+        (mysql : MySQL_ID := C.Server_ID)
+         return Ulonglong;
       pragma Import (C, MYSQL_Insert_Id, "mysql_insert_id");
    begin
       if C.Server_ID = null then
@@ -182,10 +195,13 @@ package body Gnoga.Server.Database.MySQL is
    -- Affected_Rows --
    -------------------
 
-   overriding
-   function Affected_Rows (C : Connection) return Natural is
-      function MYSQL_Affected_Rows (mysql : MySQL_ID := C.Server_ID)
-                                    return Ulonglong;
+   overriding function Affected_Rows
+     (C : Connection)
+      return Natural
+   is
+      function MYSQL_Affected_Rows
+        (mysql : MySQL_ID := C.Server_ID)
+         return Ulonglong;
       pragma Import (C, MYSQL_Affected_Rows, "mysql_affected_rows");
    begin
       if C.Server_ID = null then
@@ -199,20 +215,25 @@ package body Gnoga.Server.Database.MySQL is
    -- Error_Message --
    -------------------
 
-   function Error_Message (S : MySQL_ID) return String is
-      subtype charbuf is
-        Interfaces.C.char_array (1 .. Interfaces.C.size_t'Last);
+   function Error_Message
+     (S : MySQL_ID)
+      return String
+   is
+      subtype charbuf is Interfaces.C.char_array (1 .. Interfaces.C.size_t'Last);
       type charbuf_access is access all charbuf;
 
-      function MYSQL_Error (mysql : MySQL_ID := S)
-                            return charbuf_access;
+      function MYSQL_Error
+        (mysql : MySQL_ID := S)
+         return charbuf_access;
       pragma Import (C, MYSQL_Error, "mysql_error");
    begin
       return Interfaces.C.To_Ada (MYSQL_Error.all);
    end Error_Message;
 
-   overriding
-   function Error_Message (C : Connection) return String is
+   overriding function Error_Message
+     (C : Connection)
+      return String
+   is
    begin
       return Error_Message (C.Server_ID);
    end Error_Message;
@@ -221,12 +242,12 @@ package body Gnoga.Server.Database.MySQL is
    -- List_Of_Tables --
    --------------------
 
-   overriding
-   function List_Of_Tables (C : Connection)
-                            return Gnoga.Types.Data_Array_Type is
+   overriding function List_Of_Tables
+     (C : Connection)
+      return Gnoga.Types.Data_Array_Type
+   is
       Tables : Gnoga.Types.Data_Array_Type;
-      RS     : Gnoga.Server.Database.Recordset'Class :=
-        C.Query ("show tables");
+      RS     : Gnoga.Server.Database.Recordset'Class := C.Query ("show tables");
    begin
       for I in 1 .. RS.Number_Of_Rows loop
          RS.Next;
@@ -240,14 +261,13 @@ package body Gnoga.Server.Database.MySQL is
    -- List_Fields_Of_Table --
    --------------------------
 
-   overriding
-   function List_Fields_Of_Table (C          : Connection;
-                                  Table_Name : String)
-                                  return Gnoga.Types.Data_Array_Type
+   overriding function List_Fields_Of_Table
+     (C          : Connection;
+      Table_Name : String)
+      return Gnoga.Types.Data_Array_Type
    is
       Fields : Gnoga.Types.Data_Array_Type;
-      RS     : Gnoga.Server.Database.Recordset'Class :=
-        C.Query ("describe " & Table_Name);
+      RS     : Gnoga.Server.Database.Recordset'Class := C.Query ("describe " & Table_Name);
    begin
       for I in 1 .. RS.Number_Of_Rows loop
          RS.Next;
@@ -261,14 +281,14 @@ package body Gnoga.Server.Database.MySQL is
    -- Field_Descriptions --
    ------------------------
 
-   overriding
-   function Field_Descriptions (C : Connection; Table_Name : String)
-                                return Field_Description_Array_Type
+   overriding function Field_Descriptions
+     (C          : Connection;
+      Table_Name : String)
+      return Field_Description_Array_Type
    is
       use Ada.Strings.Unbounded;
 
-      RS : Gnoga.Server.Database.Recordset'Class :=
-        C.Query ("describe " & Table_Name);
+      RS : Gnoga.Server.Database.Recordset'Class := C.Query ("describe " & Table_Name);
 
       Descriptions : Field_Description_Array_Type;
    begin
@@ -276,13 +296,10 @@ package body Gnoga.Server.Database.MySQL is
          declare
             Description : Field_Description;
          begin
-            Description.Column_Name   :=
-              To_Unbounded_String (RS.Field_Value (1));
-            Description.Data_Type     :=
-              To_Unbounded_String (RS.Field_Value (2));
+            Description.Column_Name   := To_Unbounded_String (RS.Field_Value (1));
+            Description.Data_Type     := To_Unbounded_String (RS.Field_Value (2));
             Description.Can_Be_Null   := RS.Field_Value (3) = "YES";
-            Description.Default_Value :=
-              To_Unbounded_String (RS.Field_Value (5));
+            Description.Default_Value := To_Unbounded_String (RS.Field_Value (5));
 
             Descriptions.Append (Description);
          end;
@@ -297,28 +314,33 @@ package body Gnoga.Server.Database.MySQL is
    -- Query ---
    ------------
 
-   overriding
-   function Query (C : Connection; SQL : String)
-                   return Gnoga.Server.Database.Recordset'Class
+   overriding function Query
+     (C   : Connection;
+      SQL : String)
+      return Gnoga.Server.Database.Recordset'Class
    is
       RS : Recordset (C.Server_ID);
 
-      function MYSQL_Real_Query (mysql : MySQL_ID := RS.Server_ID;
-                                 q     : String   := SQL;
-                                 l     : Natural  := SQL'Length)
-                                 return Integer;
+      function MYSQL_Real_Query
+        (mysql : MySQL_ID := RS.Server_ID;
+         q     : String   := SQL;
+         l     : Natural  := SQL'Length)
+         return Integer;
       pragma Import (C, MYSQL_Real_Query, "mysql_real_query");
 
-      function MYSQL_Store_Result (mysql : MySQL_ID := RS.Server_ID)
-                                   return MySQL_ID;
+      function MYSQL_Store_Result
+        (mysql : MySQL_ID := RS.Server_ID)
+         return MySQL_ID;
       pragma Import (C, MYSQL_Store_Result, "mysql_store_result");
 
-      function MYSQL_Num_Rows (Result : MySQL_ID := RS.Query_ID)
-                               return Ulonglong;
+      function MYSQL_Num_Rows
+        (Result : MySQL_ID := RS.Query_ID)
+         return Ulonglong;
       pragma Import (C, MYSQL_Num_Rows, "mysql_num_rows");
 
-      function MYSQL_Num_Fields (Result : MySQL_ID := RS.Query_ID)
-                                 return Natural;
+      function MYSQL_Num_Fields
+        (Result : MySQL_ID := RS.Query_ID)
+         return Natural;
       pragma Import (C, MYSQL_Num_Fields, "mysql_num_fields");
    begin
       if RS.Server_ID = null then
@@ -335,7 +357,7 @@ package body Gnoga.Server.Database.MySQL is
          raise Empty_Recordset_Error;
       end if;
 
-      RS.Row_Count := Natural (MYSQL_Num_Rows);
+      RS.Row_Count   := Natural (MYSQL_Num_Rows);
       RS.Field_Count := MYSQL_Num_Fields;
 
       return Recordset'Class (RS);
@@ -345,8 +367,10 @@ package body Gnoga.Server.Database.MySQL is
    -- ID_Field_String --
    ---------------------
 
-   overriding
-   function ID_Field_String (C : Connection) return String is
+   overriding function ID_Field_String
+     (C : Connection)
+      return String
+   is
       pragma Unreferenced (C);
    begin
       return "id INTEGER PRIMARY KEY AUTO_INCREMENT";
@@ -356,9 +380,8 @@ package body Gnoga.Server.Database.MySQL is
    -- Close --
    -----------
 
-   overriding
-   procedure Close (RS : in out Recordset) is
-      procedure MYSQL_Free_Result  (Result : MySQL_ID := RS.Query_ID);
+   overriding procedure Close (RS : in out Recordset) is
+      procedure MYSQL_Free_Result (Result : MySQL_ID := RS.Query_ID);
       pragma Import (C, MYSQL_Free_Result, "mysql_free_result");
    begin
       MYSQL_Free_Result;
@@ -368,8 +391,7 @@ package body Gnoga.Server.Database.MySQL is
    -- Next --
    ----------
 
-   overriding
-   procedure Next (RS : in out Recordset) is
+   overriding procedure Next (RS : in out Recordset) is
    begin
       if not Next (RS) then
          raise End_Of_Recordset;
@@ -380,16 +402,20 @@ package body Gnoga.Server.Database.MySQL is
    -- Next --
    ----------
 
-   overriding
-   function Next (RS : in out Recordset) return Boolean is
+   overriding function Next
+     (RS : in out Recordset)
+      return Boolean
+   is
       R : constant access Recordset := RS'Unrestricted_Access;
 
-      function MYSQL_Fetch_Row (Result : MySQL_ID := RS.Query_ID)
-                                return Row_Access;
+      function MYSQL_Fetch_Row
+        (Result : MySQL_ID := RS.Query_ID)
+         return Row_Access;
       pragma Import (C, MYSQL_Fetch_Row, "mysql_fetch_row");
 
-      function MYSQL_Fetch_Lengths (Result : MySQL_ID := RS.Query_ID)
-                                    return List_of_Lengths_Access;
+      function MYSQL_Fetch_Lengths
+        (Result : MySQL_ID := RS.Query_ID)
+         return List_of_Lengths_Access;
       pragma Import (C, MYSQL_Fetch_Lengths, "mysql_fetch_lengths");
    begin
       R.Last_Row := MYSQL_Fetch_Row;
@@ -408,23 +434,19 @@ package body Gnoga.Server.Database.MySQL is
    -- Iterate --
    -------------
 
-   overriding
-   procedure Iterate
-     (C     : in out Connection;
-      SQL   : in     String;
-      Process : not null access
-        procedure (RS : Gnoga.Server.Database.Recordset'Class))
+   overriding procedure Iterate
+     (C       : in out Connection;
+      SQL     : in     String;
+      Process :        not null access procedure (RS : Gnoga.Server.Database.Recordset'Class))
    is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
    begin
       RS.Iterate (Process);
    end Iterate;
 
-   overriding
-   procedure Iterate
+   overriding procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access
-        procedure (RS : Gnoga.Server.Database.Recordset'Class))
+      Process :        not null access procedure (RS : Gnoga.Server.Database.Recordset'Class))
    is
    begin
       while RS.Next loop
@@ -432,21 +454,19 @@ package body Gnoga.Server.Database.MySQL is
       end loop;
    end Iterate;
 
-   overriding
-   procedure Iterate
-     (C     : in out Connection;
-      SQL   : in     String;
-      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
+   overriding procedure Iterate
+     (C       : in out Connection;
+      SQL     : in     String;
+      Process :        not null access procedure (Row : Gnoga.Types.Data_Map_Type))
    is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
    begin
       RS.Iterate (Process);
    end Iterate;
 
-   overriding
-   procedure Iterate
+   overriding procedure Iterate
      (RS      : in out Recordset;
-      Process : not null access procedure (Row : Gnoga.Types.Data_Map_Type))
+      Process :        not null access procedure (Row : Gnoga.Types.Data_Map_Type))
    is
    begin
       while RS.Next loop
@@ -458,8 +478,10 @@ package body Gnoga.Server.Database.MySQL is
    -- Number_Of_Rows --
    --------------------
 
-   overriding
-   function Number_Of_Rows (RS : Recordset) return Natural is
+   overriding function Number_Of_Rows
+     (RS : Recordset)
+      return Natural
+   is
    begin
       return RS.Row_Count;
    end Number_Of_Rows;
@@ -468,8 +490,10 @@ package body Gnoga.Server.Database.MySQL is
    -- Number_Of_Fields --
    ----------------------
 
-   overriding
-   function Number_Of_Fields (RS : Recordset) return Natural is
+   overriding function Number_Of_Fields
+     (RS : Recordset)
+      return Natural
+   is
    begin
       return RS.Field_Count;
    end Number_Of_Fields;
@@ -478,8 +502,7 @@ package body Gnoga.Server.Database.MySQL is
    -- Field_Name --
    ----------------
 
-   overriding
-   function Field_Name
+   overriding function Field_Name
      (RS           : Recordset;
       Field_Number : Natural)
       return String
@@ -510,8 +533,7 @@ package body Gnoga.Server.Database.MySQL is
 
       function MYSQL_Fetch_Field_Direct
         (Result   : MySQL_ID              := RS.Query_ID;
-         FieldNum : Interfaces.C.unsigned :=
-           Interfaces.C.unsigned (Field_Number - 1))
+         FieldNum : Interfaces.C.unsigned := Interfaces.C.unsigned (Field_Number - 1))
          return MYSQL_FIELD_Access;
       pragma Import (C, MYSQL_Fetch_Field_Direct, "mysql_fetch_field_direct");
 
@@ -522,20 +544,18 @@ package body Gnoga.Server.Database.MySQL is
          raise Query_Error with Error_Message (RS.Query_ID);
       end if;
 
-      return Interfaces.C.To_Ada
-        (Field.Name (0 .. Interfaces.C.size_t (Field.Name_L) - 1) &
-           Interfaces.C.nul);
+      return Interfaces.C.To_Ada (Field.Name (0 .. Interfaces.C.size_t (Field.Name_L) - 1) & Interfaces.C.nul);
    end Field_Name;
 
    -----------------
    -- Field_Value --
    -----------------
 
-   overriding
-   function Field_Value (RS           : Recordset;
-                         Field_Number : Natural;
-                         Handle_Nulls : Boolean := True)
-                         return String
+   overriding function Field_Value
+     (RS           : Recordset;
+      Field_Number : Natural;
+      Handle_Nulls : Boolean := True)
+      return String
    is
       use type Interfaces.C.char_array;
       use type Interfaces.C.size_t;
@@ -553,17 +573,16 @@ package body Gnoga.Server.Database.MySQL is
          end if;
       end if;
 
-      return Interfaces.C.To_Ada
-        (RS.Last_Row (Field_Number)
-         (0 .. Interfaces.C.size_t (RS.Lengths (Field_Number)) - 1) &
-           Interfaces.C.nul);
+      return
+        Interfaces.C.To_Ada
+          (RS.Last_Row (Field_Number) (0 .. Interfaces.C.size_t (RS.Lengths (Field_Number)) - 1) & Interfaces.C.nul);
    end Field_Value;
 
-   overriding
-   function Field_Value (RS           : Recordset;
-                         Field_Name   : String;
-                         Handle_Nulls : Boolean := True)
-                         return String
+   overriding function Field_Value
+     (RS           : Recordset;
+      Field_Name   : String;
+      Handle_Nulls : Boolean := True)
+      return String
    is
    begin
       for I in 1 .. RS.Field_Count loop
@@ -579,8 +598,10 @@ package body Gnoga.Server.Database.MySQL is
    -- Field_Values --
    ------------------
 
-   overriding
-   function Field_Values (RS : Recordset) return Gnoga.Types.Data_Map_Type is
+   overriding function Field_Values
+     (RS : Recordset)
+      return Gnoga.Types.Data_Map_Type
+   is
       Row : Gnoga.Types.Data_Map_Type;
    begin
       for I in 1 .. RS.Field_Count loop
@@ -594,8 +615,11 @@ package body Gnoga.Server.Database.MySQL is
    -- Is_Null --
    -------------
 
-   overriding
-   function Is_Null (RS : Recordset; Field_Number : Natural) return Boolean is
+   overriding function Is_Null
+     (RS           : Recordset;
+      Field_Number : Natural)
+      return Boolean
+   is
    begin
       if RS.Last_Row = null then
          raise Empty_Row_Error;
@@ -608,8 +632,11 @@ package body Gnoga.Server.Database.MySQL is
       end if;
    end Is_Null;
 
-   overriding
-   function Is_Null (RS : Recordset; Field_Name : String) return Boolean is
+   overriding function Is_Null
+     (RS         : Recordset;
+      Field_Name : String)
+      return Boolean
+   is
    begin
       for I in 1 .. RS.Field_Count loop
          if Field_Name = Gnoga.Server.Database.MySQL.Field_Name (RS, I) then
@@ -624,17 +651,21 @@ package body Gnoga.Server.Database.MySQL is
    -- Escape_String --
    -------------------
 
-   overriding
-   function Escape_String (C : Connection; S : String) return String is
-      subtype  Buffer_Type is String (1 .. S'Length * 2 + 1); -- Min Buf Size
+   overriding function Escape_String
+     (C : Connection;
+      S : String)
+      return String
+   is
+      subtype Buffer_Type is String (1 .. S'Length * 2 + 1); -- Min Buf Size
 
       Buf : constant Buffer_Type := (others => Character'First);
 
-      function MYSQL_Real_Escape_String (mysql  : MySQL_ID    := C.Server_ID;
-                                         Buffer : Buffer_Type := Buf;
-                                         Org    : String      := S;
-                                         Length : Natural     := S'Length)
-                                         return Natural;
+      function MYSQL_Real_Escape_String
+        (mysql  : MySQL_ID    := C.Server_ID;
+         Buffer : Buffer_Type := Buf;
+         Org    : String      := S;
+         Length : Natural     := S'Length)
+         return Natural;
       pragma Import (C, MYSQL_Real_Escape_String, "mysql_real_escape_string");
 
       Length : constant Natural := MYSQL_Real_Escape_String;

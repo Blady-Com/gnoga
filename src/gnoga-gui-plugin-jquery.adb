@@ -41,44 +41,41 @@ with Ada.Exceptions;
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.jQuery is
-   function Gnoga_Var (Object : jQuery_Type) return String;
+   function Gnoga_Var
+     (Object : jQuery_Type)
+      return String;
    --  Return the JavaScript variable containing the jQuery result
 
    ---------------
    -- Gnoga_Var --
    ---------------
 
-   function Gnoga_Var (Object : jQuery_Type) return String is
+   function Gnoga_Var
+     (Object : jQuery_Type)
+      return String
+   is
    begin
-      return "gnoga['" &
-        Ada.Strings.Unbounded.To_String (Object.Unique_ID) & "']";
+      return "gnoga['" & Ada.Strings.Unbounded.To_String (Object.Unique_ID) & "']";
    end Gnoga_Var;
 
    ----------------
    -- Initialize --
    ----------------
 
-   overriding procedure Initialize
-     (Object : in out jQuery_Type)
-   is
+   overriding procedure Initialize (Object : in out jQuery_Type) is
    begin
-      Object.Unique_ID := Ada.Strings.Unbounded.To_Unbounded_String
-        (Gnoga.Server.Connection.New_GID);
+      Object.Unique_ID := Ada.Strings.Unbounded.To_Unbounded_String (Gnoga.Server.Connection.New_GID);
    end Initialize;
 
    --------------
    -- Finalize --
    --------------
 
-   overriding procedure Finalize
-     (Object : in out jQuery_Type)
-   is
+   overriding procedure Finalize (Object : in out jQuery_Type) is
    begin
       if not Gnoga.Server.Connection.Shutting_Down then
          if Object.Connection_ID /= Gnoga.Types.No_Connection then
-            Gnoga.Server.Connection.Execute_Script
-              (Object.Connection_ID,
-               "delete " & Gnoga_Var (Object) & ";");
+            Gnoga.Server.Connection.Execute_Script (Object.Connection_ID, "delete " & Gnoga_Var (Object) & ";");
          end if;
       end if;
 
@@ -86,8 +83,7 @@ package body Gnoga.Gui.Plugin.jQuery is
    exception
       when E : Gnoga.Server.Connection.Connection_Error =>
          --  Socket error to browser
-         Log ("Connection" & Object.Connection_ID'Img &
-                " socket error to browser.");
+         Log ("Connection" & Object.Connection_ID'Img & " socket error to browser.");
          Log (Ada.Exceptions.Exception_Information (E));
       when E : others =>
          Log ("Error finalizing jQuery Object - " & Gnoga_Var (Object));
@@ -98,35 +94,40 @@ package body Gnoga.Gui.Plugin.jQuery is
    -- jQuery --
    ------------
 
-   procedure jQuery (Object : in out jQuery_Type;
-                     ID     : in     Gnoga.Types.Connection_ID;
-                     Query  : in String)
+   procedure jQuery
+     (Object : in out jQuery_Type;
+      ID     : in     Gnoga.Types.Connection_ID;
+      Query  : in     String)
    is
    begin
       Object.Connection_ID := ID;
 
-      Gnoga.Server.Connection.Execute_Script
-        (Object.Connection_ID, Gnoga_Var (Object) & "=$(" & Query & ");");
+      Gnoga.Server.Connection.Execute_Script (Object.Connection_ID, Gnoga_Var (Object) & "=$(" & Query & ");");
    end jQuery;
 
    -------------
    -- Execute --
    -------------
 
-   procedure Execute (Object : in out jQuery_Type; Method : in String) is
+   procedure Execute
+     (Object : in out jQuery_Type;
+      Method : in     String)
+   is
    begin
-      Gnoga.Server.Connection.Execute_Script
-        (Object.Connection_ID, Gnoga_Var (Object) & "." & Method);
+      Gnoga.Server.Connection.Execute_Script (Object.Connection_ID, Gnoga_Var (Object) & "." & Method);
    end Execute;
 
    -------------
    -- Execute --
    -------------
 
-   function Execute (Object : jQuery_Type; Method : String) return String is
+   function Execute
+     (Object : jQuery_Type;
+      Method : String)
+      return String
+   is
    begin
-      return Gnoga.Server.Connection.Execute_Script
-        (Object.Connection_ID, Gnoga_Var (Object) & "." & Method);
+      return Gnoga.Server.Connection.Execute_Script (Object.Connection_ID, Gnoga_Var (Object) & "." & Method);
    end Execute;
 
 end Gnoga.Gui.Plugin.jQuery;

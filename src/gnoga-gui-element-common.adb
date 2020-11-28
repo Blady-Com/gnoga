@@ -54,21 +54,26 @@ package body Gnoga.Gui.Element.Common is
       ID      : in     String := "")
    is
    begin
-      A.Create_From_HTML (Parent, Escape_Quotes ("<a target='" & Target &
-                            "' href='" & Link & "'>" &
-                            Content & "</a>"), ID);
+      A.Create_From_HTML
+        (Parent, Escape_Quotes ("<a target='" & Target & "' href='" & Link & "'>" & Content & "</a>"), ID);
    end Create;
 
    ----------
    -- Link --
    ----------
 
-   procedure Link (A : in out A_Type; Value : String) is
+   procedure Link
+     (A     : in out A_Type;
+      Value :        String)
+   is
    begin
       A.Property ("href", Value);
    end Link;
 
-   function Link (A : A_Type) return String is
+   function Link
+     (A : A_Type)
+      return String
+   is
    begin
       return A.Property ("href");
    end Link;
@@ -77,12 +82,18 @@ package body Gnoga.Gui.Element.Common is
    -- Target --
    ------------
 
-   procedure Target (A : in out A_Type; Value : String) is
+   procedure Target
+     (A     : in out A_Type;
+      Value :        String)
+   is
    begin
       A.Attribute ("target", Value);
    end Target;
 
-   function Target (A : A_Type) return String is
+   function Target
+     (A : A_Type)
+      return String
+   is
    begin
       return A.Attribute ("target");
    end Target;
@@ -102,23 +113,25 @@ package body Gnoga.Gui.Element.Common is
       ID      : in     String := "")
    is
    begin
-      Button.Create_From_HTML
-        (Parent, Escape_Quotes ("<button type='button'>" & Content &
-           "</button>"), ID);
+      Button.Create_From_HTML (Parent, Escape_Quotes ("<button type='button'>" & Content & "</button>"), ID);
    end Create;
 
    --------------
    -- Disabled --
    --------------
 
-   procedure Disabled (Button : in out Button_Type;
-                       Value  : in     Boolean := True)
+   procedure Disabled
+     (Button : in out Button_Type;
+      Value  : in     Boolean := True)
    is
    begin
       Button.Property ("disabled", Value);
    end Disabled;
 
-   function Disabled (Button : Button_Type) return Boolean is
+   function Disabled
+     (Button : Button_Type)
+      return Boolean
+   is
    begin
       return Button.Property ("disabled");
    end Disabled;
@@ -138,8 +151,7 @@ package body Gnoga.Gui.Element.Common is
       ID      : in     String := "")
    is
    begin
-      DIV.Create_From_HTML (Parent, "<div>" & Escape_Quotes (Content) &
-                              "</div>", ID);
+      DIV.Create_From_HTML (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -157,8 +169,7 @@ package body Gnoga.Gui.Element.Common is
       ID      : in     String := "")
    is
    begin
-      P.Create_From_HTML (Parent, "<p>" & Escape_Quotes (Content) &
-                              "</p>", ID);
+      P.Create_From_HTML (Parent, "<p>" & Escape_Quotes (Content) & "</p>", ID);
    end Create;
 
    -------------------------------------------------------------------------
@@ -177,17 +188,18 @@ package body Gnoga.Gui.Element.Common is
       ID               : in     String := "")
    is
    begin
-      IMG.Create_From_HTML (Parent,
-                            Escape_Quotes ("<img src='" & URL_Source &
-                              "' Alt='" & Alternative_Text &
-                              "'>"), ID);
+      IMG.Create_From_HTML
+        (Parent, Escape_Quotes ("<img src='" & URL_Source & "' Alt='" & Alternative_Text & "'>"), ID);
    end Create;
 
    -----------------
    --  URL_Source --
    -----------------
 
-   procedure URL_Source (IMG : in out IMG_Type; Value : in String) is
+   procedure URL_Source
+     (IMG   : in out IMG_Type;
+      Value : in     String)
+   is
    begin
       IMG.Attribute ("src", Value);
    end URL_Source;
@@ -230,84 +242,117 @@ package body Gnoga.Gui.Element.Common is
    --  Meter_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Meter   : in out Meter_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Value   : in     Integer := 0;
-                     High    : in     Integer := 100;
-                     Low     : in     Integer := 0;
-                     Maximum : in     Integer := 100;
-                     Minimum : in     Integer := 0;
-                     Optimum : in     Integer := 50;
-                     ID      : in     String := "")
+   procedure Create
+     (Meter   : in out Meter_Type;
+      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
+      Value   : in     Integer := 0;
+      High    : in     Integer := 100;
+      Low     : in     Integer := 0;
+      Maximum : in     Integer := 100;
+      Minimum : in     Integer := 0;
+      Optimum : in     Integer := 50;
+      ID      : in     String  := "")
    is
       pragma Unreferenced (ID);
    begin
-      Meter.Create_From_HTML (Parent,
-                              "<meter high=" & High'Img &
-                                " low=" & Low'Img &
-                                " max=" & Maximum'Img &
-                                " min=" & Minimum'Img &
-                                " optimum=" & Optimum'Img &
-                                " value=" & Value'Img &
-                                " />");
+      Meter.Create_From_HTML
+        (Parent,
+         "<meter high=" & High'Img & " low=" & Low'Img & " max=" & Maximum'Img & " min=" & Minimum'Img & " optimum=" &
+         Optimum'Img & " value=" & Value'Img & " />");
    end Create;
 
-   procedure Value (Meter : in out Meter_Type; Value : in Integer) is
+   procedure Value
+     (Meter : in out Meter_Type;
+      Value : in     Integer)
+   is
    begin
       Meter.Property ("value", Value);
    end Value;
 
-   function Value (Meter : Meter_Type) return Integer is
+   function Value
+     (Meter : Meter_Type)
+      return Integer
+   is
    begin
       return Meter.Property ("value");
    end Value;
 
-   procedure High (Meter : in out Meter_Type; Value : in Integer) is
+   procedure High
+     (Meter : in out Meter_Type;
+      Value : in     Integer)
+   is
    begin
       Meter.Property ("high", Value);
    end High;
 
-   function High (Meter : Meter_Type) return Integer is
+   function High
+     (Meter : Meter_Type)
+      return Integer
+   is
    begin
       return Meter.Property ("high");
    end High;
 
-   procedure Low (Meter : in out Meter_Type; Value : in Integer) is
+   procedure Low
+     (Meter : in out Meter_Type;
+      Value : in     Integer)
+   is
    begin
       Meter.Property ("low", Value);
    end Low;
 
-   function Low (Meter : Meter_Type) return Integer is
+   function Low
+     (Meter : Meter_Type)
+      return Integer
+   is
    begin
       return Meter.Property ("low");
    end Low;
 
-   procedure Maximum (Meter : in out Meter_Type; Value : in Integer) is
+   procedure Maximum
+     (Meter : in out Meter_Type;
+      Value : in     Integer)
+   is
    begin
       Meter.Property ("max", Value);
    end Maximum;
 
-   function Maximum (Meter : Meter_Type) return Integer is
+   function Maximum
+     (Meter : Meter_Type)
+      return Integer
+   is
    begin
       return Meter.Property ("max");
    end Maximum;
 
-   procedure Minimum (Meter : in out Meter_Type; Value : in Integer) is
+   procedure Minimum
+     (Meter : in out Meter_Type;
+      Value : in     Integer)
+   is
    begin
       Meter.Property ("min", Value);
    end Minimum;
 
-   function Minimum (Meter : Meter_Type) return Integer is
+   function Minimum
+     (Meter : Meter_Type)
+      return Integer
+   is
    begin
       return Meter.Property ("min");
    end Minimum;
 
-   procedure Optimum (Meter : in out Meter_Type; Value : in Integer) is
+   procedure Optimum
+     (Meter : in out Meter_Type;
+      Value : in     Integer)
+   is
    begin
       Meter.Property ("optimum", Value);
    end Optimum;
 
-   function Optimum (Meter : Meter_Type) return Integer is
+   function Optimum
+     (Meter : Meter_Type)
+      return Integer
+   is
    begin
       return Meter.Property ("optimum");
    end Optimum;
@@ -316,42 +361,47 @@ package body Gnoga.Gui.Element.Common is
    --  Progress_Bar_Type - Creation Methods
    -------------------------------------------------------------------------
 
-   procedure Create (Progress_Bar : in out Progress_Bar_Type;
-                     Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
-                     Value        : in     Integer := 0;
-                     Maximum      : in     Integer := 100;
-                     ID           : in     String := "")
+   procedure Create
+     (Progress_Bar : in out Progress_Bar_Type;
+      Parent       : in out Gnoga.Gui.Base.Base_Type'Class;
+      Value        : in     Integer := 0;
+      Maximum      : in     Integer := 100;
+      ID           : in     String  := "")
    is
       pragma Unreferenced (ID);
    begin
-      Progress_Bar.Create_From_HTML (Parent,
-                              "<progress" &
-                                " max=" & Maximum'Img &
-                                " value=" & Value'Img &
-                                " />");
+      Progress_Bar.Create_From_HTML (Parent, "<progress" & " max=" & Maximum'Img & " value=" & Value'Img & " />");
 
    end Create;
 
-   procedure Value (Progress_Bar : in out Progress_Bar_Type;
-                    Value        : in     Integer)
+   procedure Value
+     (Progress_Bar : in out Progress_Bar_Type;
+      Value        : in     Integer)
    is
    begin
       Progress_Bar.Property ("value", Value);
    end Value;
 
-   function Value (Progress_Bar : Progress_Bar_Type) return Integer is
+   function Value
+     (Progress_Bar : Progress_Bar_Type)
+      return Integer
+   is
    begin
       return Progress_Bar.Property ("value");
    end Value;
 
-   procedure Maximum (Progress_Bar : in out Progress_Bar_Type;
-                      Value        : in     Integer)
+   procedure Maximum
+     (Progress_Bar : in out Progress_Bar_Type;
+      Value        : in     Integer)
    is
    begin
       Progress_Bar.Property ("max", Value);
    end Maximum;
 
-   function Maximum (Progress_Bar : Progress_Bar_Type) return Integer is
+   function Maximum
+     (Progress_Bar : Progress_Bar_Type)
+      return Integer
+   is
    begin
       return Progress_Bar.Property ("max");
    end Maximum;
@@ -371,7 +421,6 @@ package body Gnoga.Gui.Element.Common is
       ID      : in     String := "")
    is
    begin
-      Span.Create_From_HTML (Parent, "<span>" & Escape_Quotes (Content) &
-                              "</span>", ID);
+      Span.Create_From_HTML (Parent, "<span>" & Escape_Quotes (Content) & "</span>", ID);
    end Create;
 end Gnoga.Gui.Element.Common;

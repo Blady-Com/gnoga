@@ -1,12 +1,15 @@
+with "../simple_components/lib_components.gpr";
+
 library project Lib_UXStrings is
 
    for Library_Kind use "static";
    for Library_Name use "uxstrings";
+   for Source_Dirs use ("src");
    for Object_Dir  use "obj";
    for Library_Dir use "lib";
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVa", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-gnatU", "-Wall");
+      for Default_Switches ("Ada") use ("-gnatW8", "-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eDH.Y", "-gnatVaep", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-gnatU", "-Wall");
    end Compiler;
 
    package Binder is

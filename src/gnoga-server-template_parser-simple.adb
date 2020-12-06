@@ -35,7 +35,7 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;
+with UXStrings.Text_IO;
 
 package body Gnoga.Server.Template_Parser.Simple is
    ---------------
@@ -79,12 +79,10 @@ package body Gnoga.Server.Template_Parser.Simple is
       Data_List : View_Data_Array)
       return String
    is
-      use Ada.Strings.Unbounded;
-
       Error_Queue_Data : View_Data;
       Info_Queue_Data  : View_Data;
 
-      Parsed_File : Ada.Strings.Unbounded.Unbounded_String;
+      Parsed_File : String;
 
       procedure Load_File;
       procedure Parse_Data;
@@ -92,17 +90,17 @@ package body Gnoga.Server.Template_Parser.Simple is
       procedure Replace_In_String (S, M : String);
 
       procedure Load_File is
-         use Ada.Text_IO;
+         use UXStrings.Text_IO;
 
          F : File_Type;
       begin
-         Open (File => F, Mode => In_File, Name => Parse_Name (Name), Form => "shared=no");
+         Open (File => F, Mode => In_File, Name => Parse_Name (Name));
 
          while not End_Of_File (F) loop
             if Length (Parsed_File) > 0 then
-               Parsed_File := Parsed_File & (Character'Val (10) & Get_Line (F));
+               Parsed_File := Parsed_File & (Unicode_Character'Val (10) & Get_Line (F));
             else
-               Parsed_File := To_Unbounded_String (Get_Line (F));
+               Parsed_File := Get_Line (F);
             end if;
          end loop;
 
@@ -128,7 +126,7 @@ package body Gnoga.Server.Template_Parser.Simple is
          use Gnoga.Types.Data_Maps;
          use Gnoga.Types.Maps_of_Data_Maps;
 
-         Var_Name : constant String := To_String (D.Name);
+         Var_Name : constant String := D.Name;
       begin
          for C in D.String_Values.Iterate loop
             Replace_In_String ("@@" & Var_Name & "." & Key (C) & "@@", Element (C));
@@ -148,7 +146,7 @@ package body Gnoga.Server.Template_Parser.Simple is
             N := Index (Parsed_File, S);
 
             if N > 0 then
-               Replace_Slice (Parsed_File, N, N + S'Length - 1, M);
+               Replace_Slice (Parsed_File, N, N + S.Length - 1, M);
             end if;
 
             exit when N = 0;
@@ -157,7 +155,7 @@ package body Gnoga.Server.Template_Parser.Simple is
    begin
       Load_File;
       Parse_Data;
-      return To_String (Parsed_File);
+      return Parsed_File;
    end Load_View;
 
 end Gnoga.Server.Template_Parser.Simple;

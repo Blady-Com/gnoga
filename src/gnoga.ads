@@ -35,11 +35,16 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Exceptions;
 with Ada.Task_Identification;
+with UXStrings;
+with UXStrings.Conversions;
 
 package Gnoga is
+   use UXStrings;
+
+   subtype String is UXString;
+
    Version        : constant String := "2.1-alpha";
    Version_High   : constant        := 2;
    Version_Low    : constant        := 1;
@@ -89,7 +94,7 @@ package Gnoga is
    --  Remove extra spaces, tabs and '/'s
 
    procedure String_Replace
-     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
+     (Source      : in out String;
       Pattern     : in     String;
       Replacement : in     String);
    --  Replace all instances of Pattern with Replacement in Source
@@ -113,5 +118,12 @@ package Gnoga is
 
    procedure Activate_Exception_Handler (Id : Ada.Task_Identification.Task_Id);
    --  Activate exception log for the designated task
+
+   --  Convenient string conversion of usual types
+   function Value is new UXStrings.Conversions.Scalar_Value (Integer);
+   function Value is new UXStrings.Conversions.Real_Value (Float);
+   function Image is new UXStrings.Conversions.Scalar_Image (Boolean);
+   function Image is new UXStrings.Conversions.Scalar_Image (Integer);
+   function Image is new UXStrings.Conversions.Real_Image (Float);
 
 end Gnoga;

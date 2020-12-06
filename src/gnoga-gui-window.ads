@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
-
 --  with Gnoga.Server.Connection;
 --  pragma Elaborate_All (Gnoga.Server.Connection);
 
@@ -324,9 +322,9 @@ package Gnoga.Gui.Window is
    -------------------------------------------------------------------------
 
    type Storage_Event_Record is record
-      Name      : Ada.Strings.Unbounded.Unbounded_String;
-      Old_Value : Ada.Strings.Unbounded.Unbounded_String;
-      New_Value : Ada.Strings.Unbounded.Unbounded_String;
+      Name      : String;
+      Old_Value : String;
+      New_Value : String;
    end record;
 
    type Storage_Event is access procedure

@@ -36,17 +36,16 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Characters.Latin_1;
-with Ada.Strings.Fixed;
+with Ada.Characters.Wide_Wide_Latin_1;
+with Ada.Strings;
 
 package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
-   use Ada.Strings.Unbounded;
 
    protected body Text_Buffer is
       procedure Write (Line : in String) is
       begin
          Append (Buffer, Line);
-         Append (Buffer, Ada.Characters.Latin_1.CR);
+         Append (Buffer, Ada.Characters.Wide_Wide_Latin_1.CR);
          NL := True;
       end Write;
 
@@ -54,37 +53,37 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
         (Line : out String;
          Last : out Natural) when NL
       is
-         Ind : constant Natural := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) - 1;
+         Ind : constant Natural := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) - 1;
       begin
-         if Line'Length < Ind then
-            Last                      := Line'First + Line'Length - 1;
-            Line (Line'First .. Last) := Slice (Buffer, 1, Line'Length);
-            Delete (Buffer, 1, Line'Length);
+         if Line.Length < Ind then
+            Last := Line.Length;
+            Line := Slice (Buffer, 1, Line.Length);
+            Delete (Buffer, 1, Line.Length);
          else
-            Last                      := Line'First + Ind - 1;
-            Line (Line'First .. Last) := Slice (Buffer, 1, Ind);
+            Last := Ind;
+            Line := Slice (Buffer, 1, Ind);
             Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
          end if;
-         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
+         NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Read;
 
-      entry Read (Line : out Ada.Strings.Unbounded.Unbounded_String) when NL is
-         Ind : constant Natural := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) - 1;
+      entry Read (Line : out String) when NL is
+         Ind : constant Natural := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) - 1;
       begin
-         Line := Unbounded_Slice (Buffer, 1, Ind);
+         Line := Slice (Buffer, 1, Ind);
          Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
-         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
+         NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Read;
 
-      entry Read (Ch : out Character) when Length (Buffer) > 0 is
+      entry Read (Ch : out Unicode_Character) when Length (Buffer) > 0 is
       begin
          Ch := Element (Buffer, 1);
          Delete (Buffer, 1, 1);
-         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
+         NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Read;
 
       procedure Get
-        (Ch        : out Character;
+        (Ch        : out Unicode_Character;
          Available : out Boolean)
       is
       begin
@@ -93,11 +92,11 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
             Ch := Element (Buffer, 1);
             Delete (Buffer, 1, 1);
          end if;
-         NL := Index (Buffer, (1 => Ada.Characters.Latin_1.CR)) > 0;
+         NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Get;
 
       procedure Look
-        (Ch        : out Character;
+        (Ch        : out Unicode_Character;
          Available : out Boolean)
       is
       begin
@@ -125,7 +124,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Console.Anchor.Create (Console, 0, 0);
       Console.Editor_Execute ("gnoga_prompt=0;");
       Console.Editor_Execute
-        ("sendEvent = function (e, m) {ws.send ('" & Ada.Strings.Fixed.Trim (Console.Unique_ID'Img, Ada.Strings.Both) &
+        ("sendEvent = function (e, m) {ws.send ('" & Trim (From_Latin_1 (Console.Unique_ID'Img), Ada.Strings.Both) &
          "|' + e + '|' + m);}");
       Console.Editor_Execute
         ("commands.on('exec', function(e) {" & "    if (e.command.readOnly) return;" & "    var editableRow = " &
@@ -221,7 +220,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       for I in 1 .. Spacing loop
          Console.Anchor.Insert_New_Line_At_Anchor;
       end loop;
-      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
+      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
    end New_Line;
 
    ---------------
@@ -232,12 +231,12 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
      (Console : in out Console_IO_Type;
       Spacing :        Positive_Count := 1)
    is
-      Ch : Character;
+      Ch : Unicode_Character;
    begin
       for Line in 1 .. Spacing loop
          loop
             Console.Text.Read (Ch);
-            exit when Ch = Ada.Characters.Latin_1.CR;
+            exit when Ch = Ada.Characters.Wide_Wide_Latin_1.CR;
          end loop;
       end loop;
    end Skip_Line;
@@ -250,7 +249,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
      (Console : in out Console_IO_Type)
       return Boolean
    is
-      Item : Character;
+      Item : Unicode_Character;
       EOL  : Boolean;
    begin
       Console.Look_Ahead (Item, EOL);
@@ -360,7 +359,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
    procedure Get
      (Console : in out Console_IO_Type;
-      Item    :    out Character)
+      Item    :    out Unicode_Character)
    is
    begin
       Console.Text.Read (Item);
@@ -372,11 +371,11 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
    procedure Put
      (Console : in out Console_IO_Type;
-      Item    :        Character)
+      Item    :        Unicode_Character)
    is
    begin
-      Console.Anchor.Insert_Text_At_Anchor ((1 => Item));
-      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
+      Console.Anchor.Insert_Text_At_Anchor (From_Unicode (Item));
+      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
    end Put;
 
    ----------------
@@ -385,13 +384,13 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
    procedure Look_Ahead
      (Console     : in out Console_IO_Type;
-      Item        :    out Character;
+      Item        :    out Unicode_Character;
       End_Of_Line :    out Boolean)
    is
       Available : Boolean;
    begin
       Console.Text.Look (Item, Available);
-      End_Of_Line := Available and Item = Ada.Characters.Latin_1.CR;
+      End_Of_Line := Available and Item = Ada.Characters.Wide_Wide_Latin_1.CR;
    end Look_Ahead;
 
    -------------------
@@ -400,7 +399,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
    procedure Get_Immediate
      (Console : in out Console_IO_Type;
-      Item    :    out Character)
+      Item    :    out Unicode_Character)
    is
       Available : Boolean;
    begin
@@ -416,7 +415,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
    procedure Get_Immediate
      (Console   : in out Console_IO_Type;
-      Item      :    out Character;
+      Item      :    out Unicode_Character;
       Available :    out Boolean)
    is
    begin
@@ -432,9 +431,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Item    :    out String)
    is
    begin
-      for Ch of Item loop
-         Console.Text.Read (Ch);
-      end loop;
+      Console.Text.Read (Item);
    end Get;
 
    ---------
@@ -450,7 +447,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       pragma Unreferenced (Class, ID);
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);
-      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
+      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
    end Put;
 
    --------------
@@ -474,10 +471,10 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
      (Console : in out Console_IO_Type)
       return String
    is
-      Line : Ada.Strings.Unbounded.Unbounded_String;
+      Line : String;
    begin
       Console.Text.Read (Line);
-      return Ada.Strings.Unbounded.To_String (Line);
+      return Line;
    end Get_Line;
 
    --------------
@@ -494,7 +491,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);
       Console.Anchor.Insert_New_Line_At_Anchor;
-      Console.Editor_Execute ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';');
+      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
    end Put_Line;
 
    ----------------------

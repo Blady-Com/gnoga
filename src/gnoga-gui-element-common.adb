@@ -257,8 +257,9 @@ package body Gnoga.Gui.Element.Common is
    begin
       Meter.Create_From_HTML
         (Parent,
-         "<meter high=" & High'Img & " low=" & Low'Img & " max=" & Maximum'Img & " min=" & Minimum'Img & " optimum=" &
-         Optimum'Img & " value=" & Value'Img & " />");
+         From_Latin_1
+           ("<meter high=" & High'Img & " low=" & Low'Img & " max=" & Maximum'Img & " min=" & Minimum'Img &
+            " optimum=" & Optimum'Img & " value=" & Value'Img & " />"));
    end Create;
 
    procedure Value
@@ -370,7 +371,8 @@ package body Gnoga.Gui.Element.Common is
    is
       pragma Unreferenced (ID);
    begin
-      Progress_Bar.Create_From_HTML (Parent, "<progress" & " max=" & Maximum'Img & " value=" & Value'Img & " />");
+      Progress_Bar.Create_From_HTML
+        (Parent, From_Latin_1 ("<progress" & " max=" & Maximum'Img & " value=" & Value'Img & " />"));
 
    end Create;
 

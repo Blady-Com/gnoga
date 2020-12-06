@@ -93,7 +93,7 @@ package body Gnoga.Client.Storage is
       return Natural
    is
    begin
-      return Natural'Value (Execute (Storage, "length"));
+      return Value (Execute (Storage, "length"));
    end Length;
 
    ---------
@@ -107,7 +107,7 @@ package body Gnoga.Client.Storage is
    is
       JS_Value : constant Natural := Value - 1;
    begin
-      return Execute (Storage, "key(" & JS_Value'Img & ")");
+      return Execute (Storage, "key(" & Image (JS_Value) & ")");
    end Key;
 
    ---------

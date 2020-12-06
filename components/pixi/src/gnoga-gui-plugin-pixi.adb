@@ -67,8 +67,10 @@ package body Gnoga.Gui.Plugin.Pixi is
       Application.Attach_Using_Parent (Parent => Window, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Application.Connection_ID,
-         Application.Script_Accessor & " = new PIXI.Application(" & Width'Img & ", " & Height'Img & ");" &
-         "document.body.appendChild(" & Application.Script_Accessor & ".view)");
+         Application.Script_Accessor &
+         From_Latin_1
+           (" = new PIXI.Application(" & Width'Img & ", " & Height'Img & ");" & "document.body.appendChild(") &
+         Application.Script_Accessor & ".view)");
       Application.Parent (Window);
    end Create;
 
@@ -89,8 +91,11 @@ package body Gnoga.Gui.Plugin.Pixi is
       Application.Attach_Using_Parent (Parent => Canvas, ID => Application_ID, ID_Type => Gnoga.Types.Gnoga_ID);
       Gnoga.Server.Connection.Execute_Script
         (Application.Connection_ID,
-         "gnoga['" & Application_ID & "'] = new PIXI.Application({" & "width:" & Width'Img & ", height:" & Height'Img &
-         ", view: document.getElementById('" & Canvas.ID & "')})");
+         "gnoga['" & Application_ID &
+         From_Latin_1
+           ("'] = new PIXI.Application({" & "width:" & Width'Img & ", height:" & Height'Img &
+            ", view: document.getElementById('") &
+         Canvas.ID & "')})");
       Application.Parent (Canvas);
    end Create;
 
@@ -485,8 +490,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute (From_Latin_1 ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;")),
+         Container.Execute (From_Latin_1 ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;")));
    end To_Global;
 
    ---------------
@@ -500,8 +505,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Point :=
-        (Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute (From_Latin_1 ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").x;")),
+         Container.Execute (From_Latin_1 ("toGlobal(" & Position.X'Img & ',' & Position.Y'Img & ").y;")));
    end To_Global;
 
    --------------
@@ -515,8 +520,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       return
-        (Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute (From_Latin_1 ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;")),
+         Container.Execute (From_Latin_1 ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;")));
    end To_Local;
 
    --------------
@@ -530,8 +535,8 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Point :=
-        (Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;"),
-         Container.Execute ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;"));
+        (Container.Execute (From_Latin_1 ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").x;")),
+         Container.Execute (From_Latin_1 ("toLocal(" & Position.X'Img & ',' & Position.Y'Img & ").y;")));
    end To_Local;
 
    -------------------
@@ -548,8 +553,9 @@ package body Gnoga.Gui.Plugin.Pixi is
    is
    begin
       Container.Execute
-        ("setTransform(" & x'Img & ',' & y'Img & ',' & scaleX'Img & ',' & scaleY'Img & ',' & rotation'Img & ',' &
-         skewX'Img & ',' & skewY'Img & ',' & pivotX'Img & ',' & pivotY'Img & ");");
+        (From_Latin_1
+           ("setTransform(" & x'Img & ',' & y'Img & ',' & scaleX'Img & ',' & scaleY'Img & ',' & rotation'Img & ',' &
+            skewX'Img & ',' & skewY'Img & ',' & pivotX'Img & ',' & pivotY'Img & ");"));
    end Set_Transform;
 
    ----------------------
@@ -609,8 +615,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
-         "gnoga['" & Texture.ID & "'].frame = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' &
-         Value.Width'Img & ',' & Value.Height'Img & ");");
+         "gnoga['" & Texture.ID &
+         From_Latin_1
+           ("'].frame = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' & Value.Width'Img & ',' &
+            Value.Height'Img & ");"));
    end Frame;
 
    -----------
@@ -686,8 +694,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
-         "gnoga['" & Texture.ID & "'].orig = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' &
-         Value.Width'Img & ',' & Value.Height'Img & ");");
+         "gnoga['" & Texture.ID &
+         From_Latin_1
+           ("'].orig = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' & Value.Width'Img & ',' &
+            Value.Height'Img & ");"));
    end Orig;
 
    ----------
@@ -715,8 +725,10 @@ package body Gnoga.Gui.Plugin.Pixi is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Texture.Connection_ID,
-         "gnoga['" & Texture.ID & "'].trim = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' &
-         Value.Width'Img & ',' & Value.Height'Img & ");");
+         "gnoga['" & Texture.ID &
+         From_Latin_1
+           ("'].trim = new PIXI.Rectangle(" & Value.X'Img & ',' & Value.Y'Img & ',' & Value.Width'Img & ',' &
+            Value.Height'Img & ");"));
    end Trim;
 
    ----------
@@ -758,7 +770,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Gnoga.Gui.Element.Alignment_Type)
    is
    begin
-      Style.Property ("align", Value'Img);
+      Style.Property ("align", From_Latin_1 (Value'Img));
    end Align;
 
    -----------
@@ -770,7 +782,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       return Gnoga.Gui.Element.Alignment_Type
    is
    begin
-      return Gnoga.Gui.Element.Alignment_Type'Value (Style.Property ("align"));
+      return Gnoga.Gui.Element.Alignment_Type'Value (To_Latin_1 (Style.Property ("align")));
    end Align;
 
    -----------------
@@ -1022,7 +1034,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Gnoga.Gui.Element.Font_Style_Type)
    is
    begin
-      Style.Property ("fontStyle", Value'Img);
+      Style.Property ("fontStyle", From_Latin_1 (Value'Img));
    end Font_Style;
 
    ----------------
@@ -1034,7 +1046,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       return Gnoga.Gui.Element.Font_Style_Type
    is
    begin
-      return Gnoga.Gui.Element.Font_Style_Type'Value (Style.Property ("fontStyle"));
+      return Gnoga.Gui.Element.Font_Style_Type'Value (To_Latin_1 (Style.Property ("fontStyle")));
    end Font_Style;
 
    ------------------
@@ -1046,7 +1058,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Gnoga.Gui.Element.Font_Variant_Type)
    is
    begin
-      Style.Property ("fontVariant", Value'Img);
+      Style.Property ("fontVariant", From_Latin_1 (Value'Img));
    end Font_Variant;
 
    ------------------
@@ -1058,7 +1070,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       return Gnoga.Gui.Element.Font_Variant_Type
    is
    begin
-      return Gnoga.Gui.Element.Font_Variant_Type'Value (Style.Property ("fontVariant"));
+      return Gnoga.Gui.Element.Font_Variant_Type'Value (To_Latin_1 (Style.Property ("fontVariant")));
    end Font_Variant;
 
    -----------------
@@ -1142,7 +1154,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Line_Join_Type)
    is
    begin
-      Style.Property ("lineJoin", Value'Img);
+      Style.Property ("lineJoin", From_Latin_1 (Value'Img));
    end Line_Join;
 
    ---------------
@@ -1154,7 +1166,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       return Line_Join_Type
    is
    begin
-      return Line_Join_Type'Value (Style.Property ("lineJoin"));
+      return Line_Join_Type'Value (To_Latin_1 (Style.Property ("lineJoin")));
    end Line_Join;
 
    -----------------
@@ -1286,7 +1298,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       Value : in     Baseline_Type)
    is
    begin
-      Style.Property ("textBaseline", Value'Img);
+      Style.Property ("textBaseline", From_Latin_1 (Value'Img));
    end Text_Baseline;
 
    --------------------
@@ -1298,7 +1310,7 @@ package body Gnoga.Gui.Plugin.Pixi is
       return Baseline_Type
    is
    begin
-      return Baseline_Type'Value (Style.Property ("textBaseline"));
+      return Baseline_Type'Value (To_Latin_1 (Style.Property ("textBaseline")));
    end Text_Baseline;
 
    ---------------

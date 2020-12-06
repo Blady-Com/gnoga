@@ -122,7 +122,7 @@ package body Gnoga.Gui.Plugin.MacGap is
       MacGap_Execute
         (Window,
          "notify({title: '" & Escape_Quotes (Title) & "', " & "content: '" & Escape_Quotes (Message) & "', " &
-         "sound: " & Sound'Img & "})");
+         "sound: " & Image (Sound) & "})");
    end Notify_User;
 
    -------------------
@@ -139,7 +139,7 @@ package body Gnoga.Gui.Plugin.MacGap is
       MacGap_Execute
         (Window,
          "notify({type: 'sheet', " & "title: '" & Escape_Quotes (Title) & "', " & "content: '" &
-         Escape_Quotes (Message) & "', " & "sound: " & Sound'Img & "})");
+         Escape_Quotes (Message) & "', " & "sound: " & Image (Sound) & "})");
    end Display_Sheet;
 
    ----------------
@@ -151,7 +151,7 @@ package body Gnoga.Gui.Plugin.MacGap is
       return Integer
    is
    begin
-      return Integer'Value (MacGap_Execute (Window, "Window.x"));
+      return Value (MacGap_Execute (Window, "Window.x"));
    end X_Position;
 
    ----------------
@@ -163,7 +163,7 @@ package body Gnoga.Gui.Plugin.MacGap is
       return Integer
    is
    begin
-      return Integer'Value (MacGap_Execute (Window, "Window.y"));
+      return Value (MacGap_Execute (Window, "Window.y"));
    end Y_Position;
 
    ------------------
@@ -187,7 +187,7 @@ package body Gnoga.Gui.Plugin.MacGap is
       X, Y   : in     Integer)
    is
    begin
-      MacGap_Execute (Window, "Window.move(" & X'Img & "," & Y'Img & ")");
+      MacGap_Execute (Window, "Window.move(" & Image (X) & "," & Image (Y) & ")");
    end Move;
 
    ------------
@@ -200,7 +200,7 @@ package body Gnoga.Gui.Plugin.MacGap is
       Height : in     Integer)
    is
    begin
-      MacGap_Execute (Window, "Window.resize(" & Width'Img & "," & Height'Img & ")");
+      MacGap_Execute (Window, "Window.resize(" & Image (Width) & "," & Image (Height) & ")");
    end Resize;
 
    -----------

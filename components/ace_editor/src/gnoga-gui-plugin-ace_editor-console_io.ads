@@ -124,29 +124,29 @@ package Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       return Positive_Count;
 
    ----------------------------
-   -- Character Input-Output --
+   -- Unicode Character Input-Output --
    ----------------------------
 
    procedure Get
      (Console : in out Console_IO_Type;
-      Item    :    out Character);
+      Item    :    out Unicode_Character);
 
    procedure Put
      (Console : in out Console_IO_Type;
-      Item    :        Character);
+      Item    :        Unicode_Character);
 
    procedure Look_Ahead
      (Console     : in out Console_IO_Type;
-      Item        :    out Character;
+      Item        :    out Unicode_Character;
       End_Of_Line :    out Boolean);
 
    procedure Get_Immediate
      (Console : in out Console_IO_Type;
-      Item    :    out Character);
+      Item    :    out Unicode_Character);
 
    procedure Get_Immediate
      (Console   : in out Console_IO_Type;
-      Item      :    out Character;
+      Item      :    out Unicode_Character;
       Available :    out Boolean);
 
    -------------------------
@@ -195,16 +195,16 @@ private
       entry Read
         (Line : out String;
          Last : out Natural);
-      entry Read (Line : out Ada.Strings.Unbounded.Unbounded_String);
-      entry Read (Ch : out Character);
+      entry Read (Line : out String);
+      entry Read (Ch : out Unicode_Character);
       procedure Get
-        (Ch        : out Character;
+        (Ch        : out Unicode_Character;
          Available : out Boolean);
       procedure Look
-        (Ch        : out Character;
+        (Ch        : out Unicode_Character;
          Available : out Boolean);
    private
-      Buffer : Ada.Strings.Unbounded.Unbounded_String;
+      Buffer : String;
       NL     : Boolean := False;
    end Text_Buffer;
 

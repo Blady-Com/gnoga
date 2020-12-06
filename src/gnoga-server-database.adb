@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
-
 package body Gnoga.Server.Database is
 
    ----------------
@@ -47,13 +45,13 @@ package body Gnoga.Server.Database is
      (Field : Field_Description)
       return String
    is
-      Data  : constant String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);
-      Right : constant Natural := Ada.Strings.Fixed.Index (Data, "(");
+      Data  : constant String  := Field.Data_Type;
+      Right : constant Natural := Index (Data, "(");
    begin
       if Right = 0 then
          return Data;
       else
-         return Data (Data'First .. Right - 1);
+         return Data.Slice (1, Right - 1);
       end if;
    end Field_Type;
 
@@ -67,12 +65,12 @@ package body Gnoga.Server.Database is
          return 0;
       else
          declare
-            Comma : constant Natural := Ada.Strings.Fixed.Index (Option, ",");
+            Comma : constant Natural := Index (Option, ",");
          begin
             if Comma = 0 then
-               return Natural'Value (Option);
+               return Natural'Value (To_Latin_1 (Option));
             else
-               return Natural'Value (Option (Option'First .. Comma - 1));
+               return Natural'Value (To_Latin_1 (Option.Slice (1, Comma - 1)));
             end if;
          end;
       end if;
@@ -87,12 +85,12 @@ package body Gnoga.Server.Database is
       return Natural
    is
       Option : constant String  := Field_Options (Field);
-      Comma  : constant Natural := Ada.Strings.Fixed.Index (Option, ",");
+      Comma  : constant Natural := Index (Option, ",");
    begin
       if Comma = 0 then
          return 0;
       else
-         return Natural'Value (Option (Comma + 1 .. Option'Last));
+         return Natural'Value (To_Latin_1 (Option.Slice (Comma + 1, Option.Length)));
       end if;
    end Field_Decimals;
 
@@ -104,14 +102,14 @@ package body Gnoga.Server.Database is
      (Field : Field_Description)
       return String
    is
-      Data  : constant String  := Ada.Strings.Unbounded.To_String (Field.Data_Type);
-      Right : constant Natural := Ada.Strings.Fixed.Index (Data, "(");
-      Left  : constant Natural := Ada.Strings.Fixed.Index (Data, ")");
+      Data  : constant String  := Field.Data_Type;
+      Right : constant Natural := Index (Data, "(");
+      Left  : constant Natural := Index (Data, ")");
    begin
       if Right = 0 or Left = 0 then
          return "";
       else
-         return Data (Right + 1 .. Left - 1);
+         return Data.Slice (Right + 1, Left - 1);
       end if;
    end Field_Options;
 

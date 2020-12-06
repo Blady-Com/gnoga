@@ -111,7 +111,9 @@ package body Gnoga.Gui.Element.Table is
    is
    begin
       Column.Create_From_HTML
-        (Row, "<td colspan=" & Column_Span'Img & " rowspan=" & Row_Span'Img & ">" & Escape_Quotes (Content) & "</td>",
+        (Row,
+         "<td colspan=" & Image (Column_Span) & " rowspan=" & Image (Row_Span) & ">" & Escape_Quotes (Content) &
+         "</td>",
          ID);
    end Create;
 
@@ -129,7 +131,9 @@ package body Gnoga.Gui.Element.Table is
    is
    begin
       Heading.Create_From_HTML
-        (Row, "<th colspan=" & Column_Span'Img & " rowspan=" & Row_Span'Img & ">" & Escape_Quotes (Content) & "</th>",
+        (Row,
+         "<th colspan=" & Image (Column_Span) & " rowspan=" & Image (Row_Span) & ">" & Escape_Quotes (Content) &
+         "</th>",
          ID);
    end Create;
 
@@ -198,7 +202,7 @@ package body Gnoga.Gui.Element.Table is
    is
       pragma Unreferenced (Content);
    begin
-      Column.Create_From_HTML (Group, "<col span=" & Column_Span'Img & ">", ID);
+      Column.Create_From_HTML (Group, "<col span=" & Image (Column_Span) & ">", ID);
    end Create;
 
 end Gnoga.Gui.Element.Table;

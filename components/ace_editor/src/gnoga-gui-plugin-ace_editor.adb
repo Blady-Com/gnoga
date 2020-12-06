@@ -35,7 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Exceptions;
 
 with Gnoga.Server.Connection;
@@ -64,7 +63,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       GID : constant String := Gnoga.Server.Connection.New_GID;
    begin
       Gnoga.Gui.View.View_Type (View).Create (Parent, ID);
-      View.Script_ID := Ada.Strings.Unbounded.To_Unbounded_String ("gnoga['" & GID & "']");
+      View.Script_ID := "gnoga['" & GID & "']";
       Gnoga.Server.Connection.Execute_Script (View.Connection_ID, View.Editor_Var & "=ace.edit('" & View.ID & "');");
    end Create;
 
@@ -121,7 +120,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Pos  : in     Position_Type)
    is
    begin
-      View.Editor_Execute ("moveCursorTo(" & Pos.Row'Img & ',' & Pos.Column'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("moveCursorTo(" & Pos.Row'Img & ',' & Pos.Column'Img & ')'));
    end Position;
 
    function Position
@@ -194,7 +193,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       return Natural
    is
    begin
-      return View.Editor_Execute ("getSession().getDocumentLastRowColumn(" & Row'Img & ",0)");
+      return View.Editor_Execute (From_Latin_1 ("getSession().getDocumentLastRowColumn(" & Row'Img & ",0)"));
    end Last_Column;
 
    --------------
@@ -206,7 +205,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Natural)
    is
    begin
-      View.Editor_Execute ("getSession().setTabSize(" & Value'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("getSession().setTabSize(" & Value'Img & ')'));
    end Tab_Size;
 
    function Tab_Size
@@ -222,7 +221,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Positive)
    is
    begin
-      View.Editor_Execute ("getSession().setTabSize(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("getSession().setTabSize(" & Value'Img & ")"));
    end Default_Tab_Size;
 
    ---------------
@@ -234,7 +233,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("getSession().setUseSoftTabs(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("getSession().setUseSoftTabs(" & Value'Img & ")"));
    end Soft_Tabs;
 
    function Soft_Tabs
@@ -254,7 +253,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("getSession().setUseWrapMode(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("getSession().setUseWrapMode(" & Value'Img & ")"));
    end Word_Wrap;
 
    -----------------------
@@ -266,7 +265,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("setHighlightActiveLine(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("setHighlightActiveLine(" & Value'Img & ")"));
    end Line_Highlighting;
 
    --------------------------
@@ -278,7 +277,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("setShowPrintMargin(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("setShowPrintMargin(" & Value'Img & ")"));
    end Print_Margin_Visible;
 
    -----------------
@@ -290,7 +289,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("renderer.setShowGutter(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("renderer.setShowGutter(" & Value'Img & ")"));
    end Show_Gutter;
 
    function Show_Gutter
@@ -310,7 +309,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("setShowInvisibles(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("setShowInvisibles(" & Value'Img & ")"));
    end Show_Invisibles;
 
    function Show_Invisibles
@@ -330,7 +329,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("setReadOnly(" & Value'Img & ")");
+      View.Editor_Execute (From_Latin_1 ("setReadOnly(" & Value'Img & ")"));
    end Read_Only;
 
    function Read_Only
@@ -360,15 +359,16 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       View.Editor_Execute
-        ("find('" & Escape_Quotes (Text) & "',{" & "backwards: " & Backwards'Img & "," & "wrap: " & Wrap'Img & "," &
-         "caseSensitive: " & Case_Sensitive'Img & "," & "wholeWord: " & Whole_Word'Img & "," & "regExp: " &
-         Reg_Exp'Img &
-         (if Search_Range.Start_Row = -1 then
-            ",range: {start:{row:" & Search_Range.Start_Row'Img & ",column:" & Search_Range.Start_Column'Img &
-            "},end:{row:" & Search_Range.End_Row'Img & ",column:" & Search_Range.End_Column'Img & "}}"
-          else "") &
-         (if Start.Row = -1 then ",start: {row:" & Start.Row'Img & ",column:" & Start.Column'Img & '}' else "") & "," &
-         "skipCurrent: " & Skip_Current'Img & "}," & Animate'Img & ")");
+        ("find('" & Escape_Quotes (Text) &
+         From_Latin_1
+           ("',{" & "backwards: " & Backwards'Img & "," & "wrap: " & Wrap'Img & "," & "caseSensitive: " &
+            Case_Sensitive'Img & "," & "wholeWord: " & Whole_Word'Img & "," & "regExp: " & Reg_Exp'Img &
+            (if Search_Range.Start_Row = -1 then
+               ",range: {start:{row:" & Search_Range.Start_Row'Img & ",column:" & Search_Range.Start_Column'Img &
+               "},end:{row:" & Search_Range.End_Row'Img & ",column:" & Search_Range.End_Column'Img & "}}"
+             else "") &
+            (if Start.Row = -1 then ",start: {row:" & Start.Row'Img & ",column:" & Start.Column'Img & '}' else "") &
+            "," & "skipCurrent: " & Skip_Current'Img & "}," & Animate'Img & ")"));
    end Find_Text;
 
    ---------------
@@ -463,7 +463,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Center, Animate :        Boolean := False)
    is
    begin
-      View.Editor_Execute ("scrollToLine(" & Line'Img & ',' & Center'Img & ',' & Animate'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("scrollToLine(" & Line'Img & ',' & Center'Img & ',' & Animate'Img & ')'));
    end Scroll_To_Line;
 
    --------------------
@@ -475,7 +475,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Row, Column :        Natural)
    is
    begin
-      View.Editor_Execute ("moveCursorTo(" & Row'Img & ',' & Column'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("moveCursorTo(" & Row'Img & ',' & Column'Img & ')'));
    end Move_Cursor_To;
 
    -----------------
@@ -487,7 +487,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Row, Column :        Natural)
    is
    begin
-      View.Editor_Execute ("navigateTo(" & Row'Img & ',' & Column'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("navigateTo(" & Row'Img & ',' & Column'Img & ')'));
    end Navigate_To;
 
    -------------------
@@ -499,7 +499,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Times :        Natural)
    is
    begin
-      View.Editor_Execute ("navigateLeft(" & Times'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("navigateLeft(" & Times'Img & ')'));
    end Navigate_Left;
 
    --------------------
@@ -511,7 +511,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Times :        Natural)
    is
    begin
-      View.Editor_Execute ("navigateRight(" & Times'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("navigateRight(" & Times'Img & ')'));
    end Navigate_Right;
 
    -----------------
@@ -523,7 +523,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Times :        Natural)
    is
    begin
-      View.Editor_Execute ("navigateUp(" & Times'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("navigateUp(" & Times'Img & ')'));
    end Navigate_Up;
 
    -------------------
@@ -535,7 +535,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Times :        Natural)
    is
    begin
-      View.Editor_Execute ("navigateDown(" & Times'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("navigateDown(" & Times'Img & ')'));
    end Navigate_Down;
 
    -----------------------
@@ -614,7 +614,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       View.Editor_Execute
-        ("getSession().getDocument().removeInLine(" & Row'Img & ',' & Start_Column'Img & ',' & End_Column'Img & ')');
+        (From_Latin_1
+           ("getSession().getDocument().removeInLine(" & Row'Img & ',' & Start_Column'Img & ',' & End_Column'Img &
+            ')'));
    end Remove_In_Line;
 
    ------------------
@@ -626,7 +628,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       First_Row, Last_Row :        Natural)
    is
    begin
-      View.Editor_Execute ("getSession().getDocument().removeLines(" & First_Row'Img & ',' & Last_Row'Img & ')');
+      View.Editor_Execute
+        (From_Latin_1 ("getSession().getDocument().removeLines(" & First_Row'Img & ',' & Last_Row'Img & ')'));
    end Remove_Lines;
 
    ---------------------------
@@ -638,7 +641,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("setHighlightActiveLine(" & Value'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setHighlightActiveLine(" & Value'Img & ')'));
    end Highlight_Active_Line;
 
    function Highlight_Active_Line
@@ -654,7 +657,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Should_Highlight :        Boolean)
    is
    begin
-      View.Editor_Execute ("setHighlightActiveLine(" & Should_Highlight'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setHighlightActiveLine(" & Should_Highlight'Img & ')'));
    end Set_Highlight_Active_Line;
 
    -----------------------------
@@ -666,7 +669,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value : in     Boolean := True)
    is
    begin
-      View.Editor_Execute ("setHighlightSelectedWord(" & Value'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setHighlightSelectedWord(" & Value'Img & ')'));
    end Highlight_Selected_Word;
 
    function Highlight_Selected_Word
@@ -682,7 +685,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Should_Highlight :        Boolean)
    is
    begin
-      View.Editor_Execute ("setHighlightSelectedWord(" & Should_Highlight'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setHighlightSelectedWord(" & Should_Highlight'Img & ')'));
    end Set_Highlight_Selected_Word;
 
    ---------------
@@ -694,7 +697,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Overwrite :        Boolean := True)
    is
    begin
-      View.Editor_Execute ("setOverwrite(" & Overwrite'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setOverwrite(" & Overwrite'Img & ')'));
    end Overwrite;
 
    function Overwrite
@@ -710,7 +713,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Overwrite :        Boolean)
    is
    begin
-      View.Editor_Execute ("setOverwrite(" & Overwrite'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setOverwrite(" & Overwrite'Img & ')'));
    end Set_Overwrite;
 
    -----------------------
@@ -722,7 +725,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value :        Boolean := True)
    is
    begin
-      View.Editor_Execute ("setShowPrintMargin(" & Value'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setShowPrintMargin(" & Value'Img & ')'));
    end Show_Print_Margin;
 
    function Show_Print_Margin
@@ -738,7 +741,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Show_Print_Margin :        Boolean)
    is
    begin
-      View.Editor_Execute ("setShowPrintMargin(" & Show_Print_Margin'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setShowPrintMargin(" & Show_Print_Margin'Img & ')'));
    end Set_Show_Print_Margin;
 
    ------------------
@@ -750,7 +753,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value :        Natural)
    is
    begin
-      View.Editor_Execute ("setPrintMarginColumn(" & Value'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("setPrintMarginColumn(" & Value'Img & ')'));
    end Print_Margin;
 
    function Print_Margin
@@ -770,7 +773,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Value :        Boolean := True)
    is
    begin
-      View.Editor_Execute ("getSession().setUseWrapMode(" & Value'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("getSession().setUseWrapMode(" & Value'Img & ')'));
    end Use_Wrap_Mode;
 
    function Use_Wrap_Mode
@@ -786,7 +789,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Use_Wrap_Mode :        Boolean)
    is
    begin
-      View.Editor_Execute ("getSession().setUseWrapMode(" & Use_Wrap_Mode'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("getSession().setUseWrapMode(" & Use_Wrap_Mode'Img & ')'));
    end Set_Use_Wrap_Mode;
 
    --------------------------
@@ -798,7 +801,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Min, Max :        Natural)
    is
    begin
-      View.Editor_Execute ("getSession().setWrapLimitRange(" & Min'Img & ',' & Max'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("getSession().setWrapLimitRange(" & Min'Img & ',' & Max'Img & ')'));
    end Set_Wrap_Limit_Range;
 
    ----------------
@@ -810,7 +813,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       To   :        Natural)
    is
    begin
-      View.Editor_Execute ("getSession().setWrapLimit(" & To'Img & ')');
+      View.Editor_Execute (From_Latin_1 ("getSession().setWrapLimit(" & To'Img & ')'));
    end Wrap_Limit;
 
    function Wrap_Limit
@@ -856,7 +859,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    is
    begin
       View.Editor_Execute
-        ("getSession().getDocument().insertInLine({row:" & Row'Img & ",column:" & Column'Img & "}, '" &
+        (From_Latin_1 ("getSession().getDocument().insertInLine({row:" & Row'Img & ",column:" & Column'Img & "}, '") &
          Escape_Quotes (Text) & "')");
    end Insert;
 
@@ -869,7 +872,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Row, Column :        Natural)
    is
    begin
-      View.Editor_Execute ("getSession().getDocument().insertNewLine({row:" & Row'Img & ",column:" & Column'Img & "})");
+      View.Editor_Execute
+        (From_Latin_1 ("getSession().getDocument().insertNewLine({row:" & Row'Img & ",column:" & Column'Img & "})"));
    end Insert_New_Line;
 
    procedure InsertNewLine
@@ -879,8 +883,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    begin
       Gnoga.Server.Connection.Execute_Script
         (View.Connection_ID,
-         "var p=" & View.Editor_Var & ".getSession().getDocument().indexToPosition(" & Index'Img & ',' & Start_Row'Img &
-         "); " & View.Editor_Var & ".getSession().getDocument().insertNewLine(p)");
+         "var p=" & View.Editor_Var & ".getSession().getDocument().indexToPosition(" &
+         From_Latin_1 (Index'Img & ',' & Start_Row'Img) & "); " & View.Editor_Var &
+         ".getSession().getDocument().insertNewLine(p)");
    end InsertNewLine;
 
    ----------
@@ -893,7 +898,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       return String
    is
    begin
-      return View.Editor_Execute ("getSession().getLine(" & Row'Img & ')');
+      return View.Editor_Execute (From_Latin_1 ("getSession().getLine(" & Row'Img & ')'));
    end Line;
 
    ----------------
@@ -908,8 +913,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    begin
       return
         View.Editor_Execute
-          ("getSession().getTextRange({start:{column:" & From.Column'Img & ",row:" & From.Row'Img & "},end:{column:" &
-           To.Column'Img & ",row:" & To.Row'Img & "}})");
+          (From_Latin_1
+             ("getSession().getTextRange({start:{column:" & From.Column'Img & ",row:" & From.Row'Img &
+              "},end:{column:" & To.Column'Img & ",row:" & To.Row'Img & "}})"));
    end Text_Range;
 
    ----------------
@@ -921,7 +927,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       return String
    is
    begin
-      return Ada.Strings.Unbounded.To_String (Editor.Script_ID);
+      return Editor.Script_ID;
    end Editor_Var;
 
    --------------------
@@ -953,11 +959,11 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       return Integer
    is
    begin
-      return Integer'Value (Editor.Editor_Execute (Method));
+      return Integer'Value (To_Latin_1 (Editor.Editor_Execute (Method)));
    exception
       when E : others =>
          Log ("Error Editor_Execute converting to Integer (forced to 0).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return 0;
    end Editor_Execute;
 
@@ -999,7 +1005,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       Gnoga.Server.Connection.Execute_Script
         (Anchor.Connection_ID,
          "gnoga['" & Anchor_ID & "'] = " & Parent.Editor_Var & "." & "getSession().getDocument().createAnchor(" &
-         Row'Img & ',' & Column'Img & ");");
+         From_Latin_1 (Row'Img & ',' & Column'Img) & ");");
    end Create;
 
    --------------
@@ -1012,7 +1018,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
       No_Clip :        Boolean := False)
    is
    begin
-      Anchor.Execute ("setPosition(" & Pos.Row'Img & ',' & Pos.Column'Img & ',' & No_Clip'Img & ')');
+      Anchor.Execute (From_Latin_1 ("setPosition(" & Pos.Row'Img & ',' & Pos.Column'Img & ',' & No_Clip'Img & ')'));
    end Position;
 
    function Position

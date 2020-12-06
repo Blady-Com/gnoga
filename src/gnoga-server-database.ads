@@ -38,7 +38,6 @@
 --  Abstract class for database access. Use one of the specific implementations
 --  for MySQL, SQLLite, etc.
 
-with Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Vectors;
 
 with Gnoga.Types;
@@ -89,10 +88,10 @@ package Gnoga.Server.Database is
    --  Return an array of field names for table
 
    type Field_Description is record
-      Column_Name   : Ada.Strings.Unbounded.Unbounded_String;
-      Data_Type     : Ada.Strings.Unbounded.Unbounded_String;
+      Column_Name   : String;
+      Data_Type     : String;
       Can_Be_Null   : Boolean;
-      Default_Value : Ada.Strings.Unbounded.Unbounded_String;
+      Default_Value : String;
    end record;
 
    package Field_Description_Arrays is new Ada.Containers.Indefinite_Vectors (Natural, Field_Description);

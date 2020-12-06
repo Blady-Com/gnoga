@@ -225,7 +225,8 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID, "gnoga['" & Text.ID & "'].anchor = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Text.Connection_ID,
+         "gnoga['" & Text.ID & From_Latin_1 ("'].anchor = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Anchor;
 
    ----------------
@@ -261,7 +262,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       Value : in     Blend_Modes_Type)
    is
    begin
-      Text.Property ("blendMode", Value'Img);
+      Text.Property ("blendMode", From_Latin_1 (Value'Img));
    end Blend_Mode;
 
    ----------------
@@ -273,7 +274,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
       return Blend_Modes_Type
    is
    begin
-      return Blend_Modes_Type'Value (Text.Property ("blendMode"));
+      return Blend_Modes_Type'Value (To_Latin_1 (Text.Property ("blendMode")));
    end Blend_Mode;
 
    -------------
@@ -310,7 +311,8 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID, "gnoga['" & Text.ID & "'].pivot = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Text.Connection_ID,
+         "gnoga['" & Text.ID & From_Latin_1 ("'].pivot = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Pivot;
 
    ---------------
@@ -467,7 +469,8 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID, "gnoga['" & Text.ID & "'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Text.Connection_ID,
+         "gnoga['" & Text.ID & From_Latin_1 ("'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Scale;
 
    ---------------
@@ -504,7 +507,8 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID, "gnoga['" & Text.ID & "'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Text.Connection_ID,
+         "gnoga['" & Text.ID & From_Latin_1 ("'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Skew;
 
    --------------

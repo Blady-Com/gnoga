@@ -49,20 +49,23 @@ package body Gnoga.Gui.Plugin.JSTree is
       return String
    is
       Plugins : constant String :=
-        (if Options.Plugins (CheckBox) then "'checkbox'," else "") &
-        (if Options.Plugins (ContextMenu) then "'contextmenu'," else "") &
-        (if Options.Plugins (DragAndDrop) then "'dnd'," else "") & (if Options.Plugins (Sort) then "'sort'," else "") &
-        (if Options.Plugins (Unique) then "'unique'," else "") &
-        (if Options.Plugins (WholeRow) then "'wholerow'," else "");
+        From_Latin_1
+          ((if Options.Plugins (CheckBox) then "'checkbox'," else "") &
+           (if Options.Plugins (ContextMenu) then "'contextmenu'," else "") &
+           (if Options.Plugins (DragAndDrop) then "'dnd'," else "") &
+           (if Options.Plugins (Sort) then "'sort'," else "") & (if Options.Plugins (Unique) then "'unique'," else "") &
+           (if Options.Plugins (WholeRow) then "'wholerow'," else ""));
    begin
       return
-        '{' & "'core':{" &
-        (if Options.Plugins (ContextMenu) or Options.Plugins (DragAndDrop) then "'check_callback':true," else "") &
-        "'animation':" & Options.Core.Animation'Img & ',' & "'multiple':" & Options.Core.Multiple'Img & ',' &
-        "'force_text':" & Options.Core.Force_Text'Img & ',' & "'dblclick_toggle':" & Options.Core.DblClick_Toggle'Img &
-        ',' & "'themes':{" & "'dots':" & Options.Core.Themes.Dots'Img & ',' & "'icons':" &
-        Options.Core.Themes.Icons'Img & ',' & "'stripes':" & Options.Core.Themes.Stripes'Img & ',' & '}' & "}," &
-        "'plugins':[" & (if Plugins'Length > 0 then Plugins (Plugins'First .. Plugins'Last - 1) else "") & ']' & '}';
+        From_Latin_1
+          ('{' & "'core':{" &
+           (if Options.Plugins (ContextMenu) or Options.Plugins (DragAndDrop) then "'check_callback':true," else "") &
+           "'animation':" & Options.Core.Animation'Img & ',' & "'multiple':" & Options.Core.Multiple'Img & ',' &
+           "'force_text':" & Options.Core.Force_Text'Img & ',' & "'dblclick_toggle':" &
+           Options.Core.DblClick_Toggle'Img & ',' & "'themes':{" & "'dots':" & Options.Core.Themes.Dots'Img & ',' &
+           "'icons':" & Options.Core.Themes.Icons'Img & ',' & "'stripes':" & Options.Core.Themes.Stripes'Img & ',' &
+           '}' & "}," & "'plugins':[") &
+        (if Plugins.Length > 0 then Plugins.Slice (1, Plugins.Length - 1) else "") & ']' & '}';
    end Build_Options;
 
    -----------------
@@ -138,7 +141,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       Item.Create (Tree, Name, ID);
       Item.Attribute
         ("data-jstree",
-         '{' & (if Attributes'Length > 0 then Attributes (Attributes'First .. Attributes'Last - 1) else "") & '}');
+         '{' & (if Attributes.Length > 0 then Attributes.Slice (1, Attributes.Length - 1) else "") & '}');
    end Add_Item;
 
    --------------

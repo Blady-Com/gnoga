@@ -35,17 +35,14 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
-
 with GNAT.OS_Lib;
 
 package body Gnoga.Application is
-   App_Name : Ada.Strings.Unbounded.Unbounded_String :=
-     Ada.Strings.Unbounded.To_Unbounded_String ("Gnoga - The GNU Omnificent GUI for Ada");
+   App_Name : String := "Gnoga - The GNU Omnificent GUI for Ada";
 
-   HTML_For_On_Close : Ada.Strings.Unbounded.Unbounded_String;
+   HTML_For_On_Close : String;
 
-   Favicon_URL : Ada.Strings.Unbounded.Unbounded_String;
+   Favicon_URL : String;
 
    ----------------------
    -- Application_Name --
@@ -53,12 +50,12 @@ package body Gnoga.Application is
 
    procedure Title (Name : in String) is
    begin
-      App_Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
+      App_Name := Name;
    end Title;
 
    function Title return String is
    begin
-      return Ada.Strings.Unbounded.To_String (App_Name);
+      return App_Name;
    end Title;
 
    -------------------
@@ -67,12 +64,12 @@ package body Gnoga.Application is
 
    procedure HTML_On_Close (HTML : String) is
    begin
-      HTML_For_On_Close := Ada.Strings.Unbounded.To_Unbounded_String (HTML);
+      HTML_For_On_Close := HTML;
    end HTML_On_Close;
 
    function HTML_On_Close return String is
    begin
-      return Ada.Strings.Unbounded.To_String (HTML_For_On_Close);
+      return HTML_For_On_Close;
    end HTML_On_Close;
 
    --------------
@@ -89,7 +86,7 @@ package body Gnoga.Application is
       PID  : GNAT.OS_Lib.Process_Id;
       pragma Unreferenced (PID);
    begin
-      Args := GNAT.OS_Lib.Argument_String_To_List (Open_Command & URL);
+      Args := GNAT.OS_Lib.Argument_String_To_List (To_Latin_1 (Open_Command & URL));
       PID  :=
         GNAT.OS_Lib.Non_Blocking_Spawn
           (Program_Name => Args (Args'First).all, Args => Args (Args'First + 1 .. Args'Last));
@@ -101,12 +98,12 @@ package body Gnoga.Application is
 
    procedure Favicon (URL : String) is
    begin
-      Favicon_URL := Ada.Strings.Unbounded.To_Unbounded_String (URL);
+      Favicon_URL := URL;
    end Favicon;
 
    function Favicon return String is
    begin
-      return Ada.Strings.Unbounded.To_String (Favicon_URL);
+      return Favicon_URL;
    end Favicon;
 
 end Gnoga.Application;

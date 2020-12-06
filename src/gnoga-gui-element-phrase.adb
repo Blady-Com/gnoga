@@ -48,7 +48,7 @@ package body Gnoga.Gui.Element.Phrase is
       ID     : in     String := "")
    is
    begin
-      View.Create_From_HTML (Parent, "<" & Phrase'Img & " />", ID);
+      View.Create_From_HTML (Parent, "<" & From_Latin_1 (Phrase'Img) & " />", ID);
    end Create;
 
 end Gnoga.Gui.Element.Phrase;

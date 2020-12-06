@@ -35,8 +35,7 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
-with Ada.Strings.Maps;
+with Ada.Strings.Wide_Wide_Maps;
 with Ada.Calendar.Formatting;
 with Ada.Unchecked_Deallocation;
 with Ada.Exceptions;
@@ -65,12 +64,9 @@ package body Gnoga.Gui.Window is
      (Message : String)
       return Storage_Event_Record
    is
-      use Ada.Strings.Fixed;
-      use Ada.Strings.Unbounded;
-
       Event : Storage_Event_Record;
-      S     : Integer := Message'First;
-      F     : Integer := Message'First - 1;
+      S     : Integer := 1;
+      F     : Integer := 0;
 
       function Split return String;
       function Split return Boolean;
@@ -80,7 +76,7 @@ package body Gnoga.Gui.Window is
       begin
          S := F + 1;
          F := Index (Source => Message, Pattern => "|", From => S);
-         return Message (S .. (F - 1));
+         return Message.Slice (S, (F - 1));
       end Split;
 
       function Split return Boolean is
@@ -88,9 +84,9 @@ package body Gnoga.Gui.Window is
          return Split = "true";
       end Split;
    begin
-      Event.Name      := To_Unbounded_String (Split);
-      Event.Old_Value := To_Unbounded_String (Split);
-      Event.New_Value := To_Unbounded_String (Split);
+      Event.Name      := Split;
+      Event.Old_Value := Split;
+      Event.New_Value := Split;
 
       return Event;
    end Parse_Storage_Event;
@@ -119,12 +115,12 @@ package body Gnoga.Gui.Window is
       if Object.Free_Connection_Data then
          Free_Data (P);
          Object.Connection_Data (null);
-         Log ("Connection_Data freed " & Object.Connection_ID'Image);
+         Log (From_Latin_1 ("Connection_Data freed " & Object.Connection_ID'Image));
       end if;
    exception
       when E : others =>
          Log ("Error finalizing Window - " & Object.ID);
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 
    ------------
@@ -170,11 +166,11 @@ package body Gnoga.Gui.Window is
          raise Invalid_ID_Type;
       end if;
 
-      Attach (Window, Gnoga.Types.Connection_ID'Value (CID));
+      Attach (Window, Gnoga.Types.Connection_ID'Value (To_Latin_1 (CID)));
    exception
       when E : others =>
          Log ("Unable to find gnoga['Connection_ID'] on " & ID & " eval returned : " & CID);
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          raise Not_A_Gnoga_Window;
    end Attach;
 
@@ -190,7 +186,7 @@ package body Gnoga.Gui.Window is
         Gnoga.Server.Connection.Execute_Script
           (Parent.Connection_ID, Base.Script_Accessor (Window.ID, Window.ID_Type) & ".gnoga['Connection_ID']");
    begin
-      Window.Connection_ID (Gnoga.Types.Connection_ID'Value (CID));
+      Window.Connection_ID (Gnoga.Types.Connection_ID'Value (To_Latin_1 (CID)));
    end Reattach;
 
    ---------------------------
@@ -496,17 +492,18 @@ package body Gnoga.Gui.Window is
       --  Create a new unique string to identify sessions
 
       function Generate_Session_ID return String is
-         use Ada.Strings.Fixed;
          use Ada.Strings;
          use Ada.Calendar.Formatting;
 
          Now : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       begin
          return
-           Trim (Year (Now)'Img, Side => Both) & Trim (Month (Now)'Img, Side => Both) &
-           Trim (Day (Now)'Img, Side => Both) & Trim (Hour (Now)'Img, Side => Both) &
-           Trim (Minute (Now)'Img, Side => Both) & Trim (Second (Now)'Img, Side => Both) &
-           Translate (Trim (Sub_Second (Now)'Img, Side => Both), Ada.Strings.Maps.To_Mapping (".", "0"));
+           Trim (From_Latin_1 (Year (Now)'Img), Side => Both) & Trim (From_Latin_1 (Month (Now)'Img), Side => Both) &
+           Trim (From_Latin_1 (Day (Now)'Img), Side => Both) & Trim (From_Latin_1 (Hour (Now)'Img), Side => Both) &
+           Trim (From_Latin_1 (Minute (Now)'Img), Side => Both) & Trim (From_Latin_1 (Second (Now)'Img), Side => Both) &
+           Translate
+             (Trim (From_Latin_1 (Sub_Second (Now)'Img), Side => Both),
+              Ada.Strings.Wide_Wide_Maps.To_Mapping (".", "0"));
       end Generate_Session_ID;
 
       S   : Session_Storage_Type := Session_Storage (Window);
@@ -569,9 +566,7 @@ package body Gnoga.Gui.Window is
       function Params return String;
 
       function Params return String is
-         use Ada.Strings.Unbounded;
-
-         P : Unbounded_String;
+         P : String;
          C : Boolean := False;
 
          procedure Add_Param
@@ -590,7 +585,7 @@ package body Gnoga.Gui.Window is
                P := P & ", ";
             end if;
 
-            P := P & To_Unbounded_String (S) & "=" & To_Unbounded_String (V);
+            P := P & S & "=" & V;
             C := True;
          end Add_Param;
 
@@ -608,19 +603,19 @@ package body Gnoga.Gui.Window is
 
       begin
          if Width > -1 then
-            Add_Param ("width", Width'Img);
+            Add_Param ("width", From_Latin_1 (Width'Img));
          end if;
 
          if Height > -1 then
-            Add_Param ("height", Height'Img);
+            Add_Param ("height", From_Latin_1 (Height'Img));
          end if;
 
          if Top > -1 then
-            Add_Param ("top", Top'Img);
+            Add_Param ("top", From_Latin_1 (Top'Img));
          end if;
 
          if Left > -1 then
-            Add_Param ("left", Left'Img);
+            Add_Param ("left", From_Latin_1 (Left'Img));
          end if;
 
          Add_Param ("menubar", Menu);
@@ -630,7 +625,7 @@ package body Gnoga.Gui.Window is
          Add_Param ("titlebar", Title);
          Add_Param ("location", Location);
 
-         return To_String (P);
+         return P;
       end Params;
 
    begin
@@ -717,7 +712,7 @@ package body Gnoga.Gui.Window is
       Width, Height :        Integer)
    is
    begin
-      Window.Execute ("resizeBy(" & Width'Img & "," & Height'Img & ");");
+      Window.Execute (From_Latin_1 ("resizeBy(" & Width'Img & "," & Height'Img & ");"));
    end Resize_By;
 
    ---------------
@@ -729,7 +724,7 @@ package body Gnoga.Gui.Window is
       Width, Height :        Integer)
    is
    begin
-      Window.Execute ("resizeTo(" & Width'Img & "," & Height'Img & ");");
+      Window.Execute (From_Latin_1 ("resizeTo(" & Width'Img & "," & Height'Img & ");"));
    end Resize_To;
 
    -------------
@@ -741,7 +736,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute ("moveBy(" & X'Img & "," & Y'Img & ");");
+      Window.Execute (From_Latin_1 ("moveBy(" & X'Img & "," & Y'Img & ");"));
    end Move_By;
 
    -------------
@@ -753,7 +748,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute ("moveTo(" & X'Img & "," & Y'Img & ");");
+      Window.Execute (From_Latin_1 ("moveTo(" & X'Img & "," & Y'Img & ");"));
    end Move_To;
 
    ---------------
@@ -765,7 +760,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute ("scrollBy(" & X'Img & "," & Y'Img & ");");
+      Window.Execute (From_Latin_1 ("scrollBy(" & X'Img & "," & Y'Img & ");"));
    end Scroll_By;
 
    ---------------
@@ -777,7 +772,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute ("scrollTo(" & X'Img & "," & Y'Img & ");");
+      Window.Execute (From_Latin_1 ("scrollTo(" & X'Img & "," & Y'Img & ");"));
    end Scroll_To;
 
    ----------------------

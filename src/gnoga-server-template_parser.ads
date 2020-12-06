@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Finalization;
-with Ada.Strings.Unbounded;
 
 with Gnoga.Types;
 with Gnoga.Server.Database;
@@ -181,7 +180,7 @@ package Gnoga.Server.Template_Parser is
 
 private
    type View_Data is new Ada.Finalization.Controlled with record
-      Name          : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("data");
+      Name          : String := "data";
       String_Values : Gnoga.Types.Data_Map_Type;
       Map_Values    : Gnoga.Types.Map_of_Data_Maps_Type;
    end record;

@@ -35,15 +35,13 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;
-with Ada.Strings.Fixed;
+with UXStrings.Text_IO;
 
 with GNAT.OS_Lib;
 
 package body Gnoga.Server.Template_Parser is
 
-   Template_Directory : Ada.Strings.Unbounded.Unbounded_String :=
-     Ada.Strings.Unbounded.To_Unbounded_String (Gnoga.Server.Templates_Directory);
+   Template_Directory : String := Gnoga.Server.Templates_Directory;
 
    --------------
    -- Finalize --
@@ -63,7 +61,7 @@ package body Gnoga.Server.Template_Parser is
       Name :        String)
    is
    begin
-      Data.Name := Ada.Strings.Unbounded.To_Unbounded_String (Name);
+      Data.Name := Name;
    end Variable_Name;
 
    ------------
@@ -84,9 +82,9 @@ package body Gnoga.Server.Template_Parser is
       Key   :        String;
       Value :        Integer)
    is
-      String_Value : constant String := Integer'Image (Value);
+      String_Value : constant String := From_Latin_1 (Integer'Image (Value));
    begin
-      Insert (Data, Key, String_Value (String_Value'First + 1 .. String_Value'Last));
+      Insert (Data, Key, String_Value.Slice (2, String_Value.Length));
    end Insert;
 
    ------------------
@@ -100,9 +98,9 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in Vector.First_Index .. Vector.Last_Index loop
          declare
-            K : constant String := I'Img;
+            K : constant String := From_Latin_1 (I'Img);
          begin
-            Data.Insert (K (K'First + 1 .. K'Last), Vector.Element (I));
+            Data.Insert (K.Slice (2, K.Length), Vector.Element (I));
          end;
       end loop;
    end Insert_Array;
@@ -120,9 +118,9 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in Vector.First_Index .. Vector.Last_Index loop
          declare
-            K : constant String := I'Img;
+            K : constant String := From_Latin_1 (I'Img);
          begin
-            Map.Insert (K (K'First + 1 .. K'Last), Vector.Element (I));
+            Map.Insert (K.Slice (2, K.Length), Vector.Element (I));
          end;
       end loop;
 
@@ -173,10 +171,10 @@ package body Gnoga.Server.Template_Parser is
    begin
       while RS.Next loop
          declare
-            Key : constant String := I'Img;
+            Key : constant String := From_Latin_1 (I'Img);
          begin
             I := I + 1;
-            Data.Insert_Map_Item (Key (Key'First + 1 .. Key'Last), RS.Field_Values);
+            Data.Insert_Map_Item (Key.Slice (2, Key.Length), RS.Field_Values);
          end;
       end loop;
    end Insert_Recordset;
@@ -205,9 +203,9 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in 1 .. Natural (Row.Length) loop
          declare
-            Key : constant String := I'Img;
+            Key : constant String := From_Latin_1 (I'Img);
          begin
-            Data.Insert_Record_Item (Key => Key (Key'First + 1 .. Key'Last), Row => Row.Element (I));
+            Data.Insert_Record_Item (Key => Key.Slice (2, Key.Length), Row => Row.Element (I));
          end;
       end loop;
    end Insert_Rows;
@@ -244,18 +242,16 @@ package body Gnoga.Server.Template_Parser is
      (Name : String)
       return String
    is
-      use Ada.Strings.Fixed;
-
-      Templates_Dir : constant String := Ada.Strings.Unbounded.To_String (Template_Directory);
+      Templates_Dir : constant String := Template_Directory;
    begin
-      if Index (Name, ":") > 0 or Name (Name'First) = GNAT.OS_Lib.Directory_Separator then
+      if Index (Name, ":") > 0 or Name (1) = GNAT.OS_Lib.Directory_Separator then
          return Name;
       end if;
 
       if Templates_Dir = "" then
          return Name;
       else
-         return Templates_Dir & GNAT.OS_Lib.Directory_Separator & Name;
+         return Templates_Dir & From_Latin_1 (GNAT.OS_Lib.Directory_Separator) & Name;
       end if;
    end Parse_Name;
 
@@ -265,7 +261,7 @@ package body Gnoga.Server.Template_Parser is
 
    procedure Set_Template_Directory (Directory : String) is
    begin
-      Template_Directory := Ada.Strings.Unbounded.To_Unbounded_String (Directory);
+      Template_Directory := Directory;
    end Set_Template_Directory;
 
    -----------------------
@@ -312,7 +308,7 @@ package body Gnoga.Server.Template_Parser is
      (File_Name : String;
       Value     : String)
    is
-      use Ada.Text_IO;
+      use UXStrings.Text_IO;
 
       F : File_Type;
    begin

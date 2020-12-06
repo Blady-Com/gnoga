@@ -79,16 +79,16 @@ package body Gnoga.Server.Template_Parser.Python is
       return String
    is
    begin
-      if Code'Length = 0 then
+      if Code.Length = 0 then
          return "";
       else
          declare
-            New_Char : constant Character := Code (Code'First);
+            New_Char : constant Unicode_Character := Code (1);
          begin
             if New_Char = ''' then
-               return "\'" & Python_Encode_Key (Code (Code'First + 1 .. Code'Last));
+               return "\'" & Python_Encode_Key (Code.Slice (1 + 1, Code.Length));
             else
-               return New_Char & Python_Encode_Key (Code (Code'First + 1 .. Code'Last));
+               return New_Char & Python_Encode_Key (Code.Slice (1 + 1, Code.Length));
             end if;
          end;
       end if;
@@ -103,16 +103,16 @@ package body Gnoga.Server.Template_Parser.Python is
       return String
    is
    begin
-      if Code'Length = 0 then
+      if Code.Length = 0 then
          return "";
       else
          declare
-            New_Char : constant Character := Code (Code'First);
+            New_Char : constant Unicode_Character := Code (1);
          begin
             if New_Char = '"' then
-               return "\""" & Python_Encode_Value (Code (Code'First + 1 .. Code'Last));
+               return "\""" & Python_Encode_Value (Code.Slice (1 + 1, Code.Length));
             else
-               return New_Char & Python_Encode_Value (Code (Code'First + 1 .. Code'Last));
+               return New_Char & Python_Encode_Value (Code.Slice (1 + 1, Code.Length));
             end if;
          end;
       end if;
@@ -125,14 +125,14 @@ package body Gnoga.Server.Template_Parser.Python is
    protected Python_Execute is
       procedure Execute
         (Code   : in     String;
-         Result :    out Ada.Strings.Unbounded.Unbounded_String);
+         Result :    out String);
       --  Single threaded access to python interpreter
    end Python_Execute;
 
    protected body Python_Execute is
       procedure Execute
         (Code   : in     String;
-         Result :    out Ada.Strings.Unbounded.Unbounded_String)
+         Result :    out String)
       is
          nl  : constant Character := Character'Val (10);
          nul : constant Character := Character'Val (0);
@@ -146,12 +146,12 @@ package body Gnoga.Server.Template_Parser.Python is
          pragma Import (C, Py_Finalize, "Py_Finalize");
 
          function PyImport_AddModule
-           (S : in String := "__main__" & nul)
+           (S : in Standard.String := "__main__" & nul)
             return Py_Object;
          pragma Import (C, PyImport_AddModule, "PyImport_AddModule");
 
          procedure PyRun_SimpleStringFlags
-           (S : in String;
+           (S : in Standard.String;
             F :    access Integer := null);
          pragma Import (C, PyRun_SimpleStringFlags, "PyRun_SimpleStringFlags");
 
@@ -160,7 +160,7 @@ package body Gnoga.Server.Template_Parser.Python is
 
          function PyObject_GetAttrString
            (Object : Py_Object;
-            Method : String)
+            Method : Standard.String)
             return Py_Object;
          pragma Import (C, PyObject_GetAttrString, "PyObject_GetAttrString");
 
@@ -170,7 +170,7 @@ package body Gnoga.Server.Template_Parser.Python is
             Length :    out Interfaces.C.size_t);
          pragma Import (C, PyString_AsStringAndSize, "PyString_AsStringAndSize");
 
-         Redirect : constant String :=
+         Redirect : constant Standard.String :=
            "import sys" & nl & "class CatchOutErr:" & nl & "    def __init__(self):" & nl & "        self.value = ''" &
            nl & "    def write(self, txt):" & nl & "        self.value += txt" & nl & "catchOutErr = CatchOutErr()" &
            nl & "sys.stdout = catchOutErr" & nl & "sys.stderr = catchOutErr" & nul;
@@ -186,7 +186,7 @@ package body Gnoga.Server.Template_Parser.Python is
          Module := PyImport_AddModule;
 
          PyRun_SimpleStringFlags (Redirect);
-         PyRun_SimpleStringFlags (Code & nul);
+         PyRun_SimpleStringFlags (To_Latin_1 (Code) & nul);
 
          PyErr_Print;
 
@@ -195,7 +195,7 @@ package body Gnoga.Server.Template_Parser.Python is
 
          PyString_AsStringAndSize (P_Result, C_Result, Length);
 
-         Result := Ada.Strings.Unbounded.To_Unbounded_String (Interfaces.C.Strings.Value (C_Result, Length));
+         Result := From_Latin_1 (Interfaces.C.Strings.Value (C_Result, Length));
 
          Py_Finalize;
       end Execute;
@@ -205,11 +205,11 @@ package body Gnoga.Server.Template_Parser.Python is
      (Code : String)
       return String
    is
-      Result : Ada.Strings.Unbounded.Unbounded_String;
+      Result : String;
    begin
       Python_Execute.Execute (Code, Result);
 
-      return Ada.Strings.Unbounded.To_String (Result);
+      return Result;
    end Execute_Python;
 
    -----------------------
@@ -332,8 +332,6 @@ package body Gnoga.Server.Template_Parser.Python is
       Data_List : View_Data_Array)
       return String
    is
-      use Ada.Strings.Unbounded;
-
       Error_Queue_Data : View_Data;
       Info_Queue_Data  : View_Data;
 
@@ -349,9 +347,9 @@ package body Gnoga.Server.Template_Parser.Python is
          if I <= Data_List'Last then
             I := I + 1;
             return
-              Build_List & To_String (Data_List (I - 1).Name) & "={}; " &
-              String_Data_List (Data_List (I - 1).String_Values, To_String (Data_List (I - 1).Name)) &
-              Map_Data_List (Data_List (I - 1).Map_Values, To_String (Data_List (I - 1).Name));
+              Build_List & Data_List (I - 1).Name & "={}; " &
+              String_Data_List (Data_List (I - 1).String_Values, Data_List (I - 1).Name) &
+              Map_Data_List (Data_List (I - 1).Map_Values, Data_List (I - 1).Name);
          else
             Error_Queue_Data.Insert_Array (Error_Queue);
             Info_Queue_Data.Insert_Array (Info_Queue);

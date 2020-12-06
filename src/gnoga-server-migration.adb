@@ -36,8 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Command_Line;
-with Ada.Strings.Fixed;
-with Ada.Strings.Maps.Constants;
+with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 with Ada.Exceptions;
 
 with Gnoga.Server.Model.Table;
@@ -86,22 +85,22 @@ package body Gnoga.Server.Migration is
       Dummy_Migration_Info.Find_Where ("name='migration_level'", Create_New => True);
 
       if Dummy_Migration_Info.Exists ("name") then
-         Current_Level := Natural'Value (Dummy_Migration_Info.Value ("value"));
+         Current_Level := Natural'Value (To_Latin_1 (Dummy_Migration_Info.Value ("value")));
       else
          Dummy_Migration_Info.Value ("value", "0");
       end if;
 
-      Gnoga.Write_To_Console ("Current migration level =" & Current_Level'Img);
+      Gnoga.Write_To_Console ("Current migration level =" & From_Latin_1 (Current_Level'Img));
 
       if Level > Collection.Migrations_Up.Last_Index then
          Actual_Level := Collection.Migrations_Up.Last_Index;
       end if;
 
       if Actual_Level > Current_Level then
-         Gnoga.Write_To_Console ("Requested migration level up to" & Actual_Level'Img);
+         Gnoga.Write_To_Console ("Requested migration level up to" & From_Latin_1 (Actual_Level'Img));
          for i in Current_Level + 1 .. Actual_Level loop
-            Gnoga.Write_To_Console ("Migrating to level" & i'Img);
-            Dummy_Migration_Info.Value ("value", i'Img);
+            Gnoga.Write_To_Console ("Migrating to level" & From_Latin_1 (i'Img));
+            Dummy_Migration_Info.Value ("value", From_Latin_1 (i'Img));
 
             Gnoga.Write_To_Console ("Running : " & Collection.Migrations_Up.Element (i));
             Connection.Execute_Query (Collection.Migrations_Up.Element (i));
@@ -110,10 +109,10 @@ package body Gnoga.Server.Migration is
       end if;
 
       if Actual_Level < Current_Level then
-         Gnoga.Write_To_Console ("Requested migration level down to" & Actual_Level'Img);
+         Gnoga.Write_To_Console ("Requested migration level down to" & From_Latin_1 (Actual_Level'Img));
          for i in reverse Actual_Level + 1 .. Current_Level loop
-            Gnoga.Write_To_Console ("Migrating from level" & i'Img);
-            Dummy_Migration_Info.Value ("value", Integer'Image (i - 1));
+            Gnoga.Write_To_Console ("Migrating from level" & From_Latin_1 (i'Img));
+            Dummy_Migration_Info.Value ("value", From_Latin_1 (Integer'Image (i - 1)));
             Gnoga.Write_To_Console ("Running : " & Collection.Migrations_Down.Element (i));
             Connection.Execute_Query (Collection.Migrations_Down.Element (i));
          end loop;
@@ -144,7 +143,7 @@ package body Gnoga.Server.Migration is
          when E : Gnoga.Server.Database.Query_Error =>
             --  table already exists
             Log ("Error Create_Param_Table table already exists.");
-            Log (Ada.Exceptions.Exception_Information (E));
+            Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
       end Create_Param_Table;
 
       Collection.Migrate_To (Connection, Collection.Migrations_Up.Last_Index);
@@ -160,14 +159,13 @@ package body Gnoga.Server.Migration is
       return Boolean
    is
       use Ada.Command_Line;
-      use Ada.Strings.Fixed;
-      use Ada.Strings.Maps.Constants;
+      use Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 
       M : Migration_Collection;
    begin
       if Argument_Count > 0 then
          declare
-            Command : constant String := Translate (Argument (1), Lower_Case_Map);
+            Command : constant String := Translate (From_Latin_1 (Argument (1)), Lower_Case_Map);
          begin
             if Command = "setup" then
                Migration_Procedure (M);

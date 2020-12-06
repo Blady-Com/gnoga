@@ -47,8 +47,9 @@ package body Gnoga.Gui.Element.Section is
       Section : in     Section_Description_Type;
       ID      : in     String := "")
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Section_Description_Type);
    begin
-      View.Create_From_HTML (Parent, "<" & Section'Img & " />", ID);
+      View.Create_From_HTML (Parent, "<" & Image (Section) & " />", ID);
    end Create;
 
 end Gnoga.Gui.Element.Section;

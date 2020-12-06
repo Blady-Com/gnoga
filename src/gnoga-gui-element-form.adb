@@ -53,9 +53,11 @@ package body Gnoga.Gui.Element.Form is
       Target : in     String           := "_self";
       ID     : in     String           := "")
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Form_Method_Type);
    begin
       Form.Create_From_HTML
-        (Parent, Escape_Quotes ("<form action='" & Action & "' method='" & Method'Img & "' target='" & Target & "' />"),
+        (Parent,
+         Escape_Quotes ("<form action='" & Action & "' method='" & Image (Method) & "' target='" & Target & "' />"),
          ID);
    end Create;
 
@@ -91,8 +93,9 @@ package body Gnoga.Gui.Element.Form is
      (Form  : in out Form_Type;
       Value : in     Form_Method_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Form_Method_Type);
    begin
-      Form.Property ("method", Value'Img);
+      Form.Property ("method", Image (Value));
    end Method;
 
    ------------
@@ -710,8 +713,8 @@ package body Gnoga.Gui.Element.Form is
       Element.Create_From_HTML
         (Form,
          Escape_Quotes
-           ("<textarea " & "form='" & Form.ID & "' name='" & Name & "' cols=" & Columns'Img & " rows=" & Rows'Img &
-            ">" & Value & "</textarea>"),
+           ("<textarea " & "form='" & Form.ID & "' name='" & Name & "' cols=" & Image (Columns) & " rows=" &
+            Image (Rows) & ">" & Value & "</textarea>"),
          ID);
    end Create;
 
@@ -1445,7 +1448,7 @@ package body Gnoga.Gui.Element.Form is
         (Parent => Form,
          HTML   =>
            Escape_Quotes
-             ("<select size=" & Visible_Lines'Img & Is_Multiple_Select & Is_Name & " form='" & Form.ID & "'/>"),
+             ("<select size=" & Image (Visible_Lines) & Is_Multiple_Select & Is_Name & " form='" & Form.ID & "'/>"),
          ID => ID);
    end Create;
 
@@ -1528,7 +1531,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute ("item(" & JS_Index'Img & ").selected = " & Value'Img);
+      Element.Execute ("item(" & Image (JS_Index) & ").selected = " & Image (Value));
    end Selected;
 
    function Selected
@@ -1538,7 +1541,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute ("item(" & JS_Index'Img & ").selected") = "true";
+      return Element.Execute ("item(" & Image (JS_Index) & ").selected") = "true";
    end Selected;
 
    procedure Disabled
@@ -1548,7 +1551,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute ("item(" & JS_Index'Img & ").disabled = " & Value'Img);
+      Element.Execute ("item(" & Image (JS_Index) & ").disabled = " & Image (Value));
    end Disabled;
 
    function Disabled
@@ -1558,7 +1561,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute ("item(" & JS_Index'Img & ").disabled") = "true";
+      return Element.Execute ("item(" & Image (JS_Index) & ").disabled") = "true";
    end Disabled;
 
    procedure Value
@@ -1568,7 +1571,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute ("item(" & JS_Index'Img & ").value = '" & Escape_Quotes (Value) & "'");
+      Element.Execute ("item(" & Image (JS_Index) & ").value = '" & Escape_Quotes (Value) & "'");
    end Value;
 
    function Value
@@ -1578,7 +1581,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute ("item(" & JS_Index'Img & ").value");
+      return Element.Execute ("item(" & Image (JS_Index) & ").value");
    end Value;
 
    procedure Text
@@ -1588,7 +1591,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute ("item(" & JS_Index'Img & ").text = '" & Escape_Quotes (Value) & "'");
+      Element.Execute ("item(" & Image (JS_Index) & ").text = '" & Escape_Quotes (Value) & "'");
    end Text;
 
    function Text
@@ -1598,7 +1601,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      return Element.Execute ("item(" & JS_Index'Img & ").text");
+      return Element.Execute ("item(" & Image (JS_Index) & ").text");
    end Text;
 
    procedure Add_Option
@@ -1650,7 +1653,7 @@ package body Gnoga.Gui.Element.Form is
             declare
                JS_Index : constant Natural := Index - 1;
             begin
-               return "," & JS_Index'Img;
+               return "," & Image (JS_Index);
             end;
          end if;
       end Last_Parameter;
@@ -1668,7 +1671,7 @@ package body Gnoga.Gui.Element.Form is
    is
       JS_Index : constant Natural := Index - 1;
    begin
-      Element.Execute ("remove (" & JS_Index'Img & ")");
+      Element.Execute ("remove (" & Image (JS_Index) & ")");
    end Remove_Option;
 
    procedure Empty_Options (Element : in out Selection_Type) is
@@ -1967,7 +1970,7 @@ package body Gnoga.Gui.Element.Form is
    is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].name");
+         return Element.jQuery_Execute ("prop ('files')[" & Image (Index - 1) & "].name");
       else
          return "";
       end if;
@@ -1980,7 +1983,7 @@ package body Gnoga.Gui.Element.Form is
    is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].size");
+         return Element.jQuery_Execute ("prop ('files')[" & Image (Index - 1) & "].size");
       else
          return 0;
       end if;
@@ -1993,7 +1996,7 @@ package body Gnoga.Gui.Element.Form is
    is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].type");
+         return Element.jQuery_Execute ("prop ('files')[" & Image (Index - 1) & "].type");
       else
          return "";
       end if;
@@ -2006,7 +2009,7 @@ package body Gnoga.Gui.Element.Form is
    is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].lastModified");
+         return Element.jQuery_Execute ("prop ('files')[" & Image (Index - 1) & "].lastModified");
       else
          return 0;
       end if;
@@ -2019,7 +2022,7 @@ package body Gnoga.Gui.Element.Form is
    is
    begin
       if Element.Value /= "" then
-         return Element.jQuery_Execute ("prop ('files')[" & Natural'Image (Index - 1) & "].webkitRelativePath");
+         return Element.jQuery_Execute ("prop ('files')[" & Image (Index - 1) & "].webkitRelativePath");
       else
          return "";
       end if;

@@ -219,7 +219,7 @@ package body Gnoga.Types.Colors is
       return String
    is
    begin
-      return CSS_Color_Enumeration'Image (CSS_Color_Enumeration'Val (Color_Enumeration'Pos (Value)));
+      return From_Latin_1 (CSS_Color_Enumeration'Image (CSS_Color_Enumeration'Val (Color_Enumeration'Pos (Value))));
    end To_String;
 
    -------------
@@ -260,11 +260,11 @@ package body Gnoga.Types.Colors is
       return Color_Enumeration
    is
    begin
-      return Color_Enumeration'Val (CSS_Color_Enumeration'Pos (CSS_Color_Enumeration'Value (Value)));
+      return Color_Enumeration'Val (CSS_Color_Enumeration'Pos (CSS_Color_Enumeration'Value (To_Latin_1 (Value))));
    exception
       when E : Constraint_Error =>
          Log ("Error converting to Color_Enumeration from " & Value);
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          raise Color_Error;
    end To_Color_Enumeration;
 

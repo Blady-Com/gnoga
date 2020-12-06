@@ -145,7 +145,8 @@ package body Gnoga.Client.Files is
       Index  : in     Positive := 1)
    is
    begin
-      Reader.Execute ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" & Natural'Image (Index - 1) & "])");
+      Reader.Execute
+        ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" & From_Latin_1 (Natural'Image (Index - 1)) & "])");
    end Transfert_As_Binary;
 
    -----------------------
@@ -160,8 +161,8 @@ package body Gnoga.Client.Files is
    is
    begin
       Reader.Execute
-        ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" & Natural'Image (Index - 1) & "],'" & Encoding &
-         "')");
+        ("readAsText(" & Files.Script_Accessor & ".prop ('files')[" & From_Latin_1 (Natural'Image (Index - 1)) & "],'" &
+         Encoding & "')");
    end Transfert_As_Text;
 
    --------------

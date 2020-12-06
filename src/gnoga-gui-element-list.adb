@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
-
 package body Gnoga.Gui.Element.List is
 
    ------------
@@ -68,16 +66,16 @@ package body Gnoga.Gui.Element.List is
         (S : String)
          return String
       is
-         P : constant Integer := Ada.Strings.Fixed.Index (S, "_");
+         P : constant Integer := Index (S, "_");
       begin
          if P = 0 then
             return S;
          else
-            return Adjusted_Image (S (S'First .. (P - 1)) & "-" & S ((P + 1) .. S'Last));
+            return Adjusted_Image (S.Slice (1, (P - 1)) & "-" & S.Slice ((P + 1), S.Length));
          end if;
       end Adjusted_Image;
    begin
-      List.Style ("list-style-type", Adjusted_Image (Value'Img));
+      List.Style ("list-style-type", Adjusted_Image (From_Latin_1 (Value'Img)));
    end List_Kind;
 
    -------------------
@@ -89,7 +87,7 @@ package body Gnoga.Gui.Element.List is
       Value : in     List_Location_Type)
    is
    begin
-      List.Style ("list-style-position", Value'Img);
+      List.Style ("list-style-position", From_Latin_1 (Value'Img));
    end List_Location;
 
    ------------

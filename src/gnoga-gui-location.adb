@@ -34,7 +34,6 @@
 --                                                                          --
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
-with Ada.Strings.Fixed;
 
 package body Gnoga.Gui.Location is
 
@@ -221,7 +220,6 @@ package body Gnoga.Gui.Location is
    is
       P                : Gnoga.Types.Data_Map_Type;
       Ind1, Ind2, Ind3 : Natural;
-      use Ada.Strings.Fixed;
    begin
       Ind1 := Index (URL, "?");
       if Ind1 > 0 then
@@ -232,19 +230,19 @@ package body Gnoga.Gui.Location is
                if Ind3 > 0 then
                   if Encoding /= "" then
                      P.Include
-                       (URL_Decode (URL (Ind1 + 1 .. Ind2 - 1), Encoding),
-                        URL_Decode (URL (Ind2 + 1 .. Ind3 - 1), Encoding));
+                       (URL_Decode (URL.Slice (Ind1 + 1, Ind2 - 1), Encoding),
+                        URL_Decode (URL.Slice (Ind2 + 1, Ind3 - 1), Encoding));
                   else
-                     P.Include (URL (Ind1 + 1 .. Ind2 - 1), URL (Ind2 + 1 .. Ind3 - 1));
+                     P.Include (URL.Slice (Ind1 + 1, Ind2 - 1), URL.Slice (Ind2 + 1, Ind3 - 1));
                   end if;
                   Ind1 := Ind3;
                else
                   if Encoding /= "" then
                      P.Include
-                       (URL_Decode (URL (Ind1 + 1 .. Ind2 - 1), Encoding),
-                        URL_Decode (URL (Ind2 + 1 .. URL'Last), Encoding));
+                       (URL_Decode (URL.Slice (Ind1 + 1, Ind2 - 1), Encoding),
+                        URL_Decode (URL.Slice (Ind2 + 1, URL.Length), Encoding));
                   else
-                     P.Include (URL (Ind1 + 1 .. Ind2 - 1), URL (Ind2 + 1 .. URL'Last));
+                     P.Include (URL.Slice (Ind1 + 1, Ind2 - 1), URL.Slice (Ind2 + 1, URL.Length));
                   end if;
                   exit;
                end if;

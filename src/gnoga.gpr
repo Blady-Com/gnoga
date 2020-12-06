@@ -1,5 +1,6 @@
 with "../settings.gpr";
 with "../deps/simple_components/lib_components.gpr";
+with "../deps/uxstrings/lib_uxstrings.gpr";
 with "../components/plugins.gpr";
 
 library project Gnoga is

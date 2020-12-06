@@ -35,8 +35,7 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
-with Ada.Strings.Maps.Constants;
+with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 
 with Gnoga.Gui.Document;
 with Gnoga.Gui.Element.Common;
@@ -209,8 +208,7 @@ package body Gnoga.Gui.View is
       Class     : in     String := "";
       ID        : in     String := "")
    is
-      use Ada.Strings.Fixed;
-      use Ada.Strings.Maps.Constants;
+      use Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 
       S : constant String  := Gnoga.Server.Template_Parser.Simple.Load_View (File_Name);
       B : constant Natural := Index (Source => S, Pattern => "<body", Mapping => Lower_Case_Map);
@@ -218,7 +216,7 @@ package body Gnoga.Gui.View is
       E : constant Natural := Index (Source => S, Pattern => "</body", Mapping => Lower_Case_Map);
    begin
       if B > 0 and E > 0 then
-         View.Put_HTML (S (T + 1 .. E - 1), Class, ID);
+         View.Put_HTML (S.Slice (T + 1, E - 1), Class, ID);
       end if;
    end Load_HTML;
 

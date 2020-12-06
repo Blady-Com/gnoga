@@ -37,7 +37,7 @@
 
 with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Hashed_Maps;
-with Ada.Strings.Hash;
+with UXStrings.Hash;
 
 with Gnoga.Types;
 with Gnoga.Types.Colors;
@@ -59,7 +59,7 @@ package Gnoga.Gui.Element is
      (Index_Type => Positive, Element_Type => Pointer_To_Element_Class, "=" => Element."=");
 
    package Element_Type_Maps is new Ada.Containers.Indefinite_Hashed_Maps
-     (String, Pointer_To_Element_Class, Ada.Strings.Hash, Equivalent_Keys => "=");
+     (String, Pointer_To_Element_Class, UXStrings.Hash, Equivalent_Keys => "=");
 
    subtype Element_Type_Array is Element_Type_Arrays.Vector;
    --  Arrays of Base_Types

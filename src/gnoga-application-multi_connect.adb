@@ -110,14 +110,14 @@ package body Gnoga.Application.Multi_Connect is
    exception
       when E : Gnoga.Server.Connection.Connection_Error =>
          --  Browser window was closed
-         Log ("Error connection" & ID'Img & " browser window was closed.");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 ("Error connection" & ID'Img & " browser window was closed."));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
 
       when E : others =>
          Connection.Release;
 
-         Log ("Error connection" & ID'Img & " closed by exception.");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 ("Error connection" & ID'Img & " closed by exception."));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end On_Connect;
 
    ----------------

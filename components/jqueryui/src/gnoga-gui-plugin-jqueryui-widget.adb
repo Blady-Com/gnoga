@@ -172,7 +172,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
          if N = 0 then
             return " 'auto'";
          else
-            return N'Img;
+            return From_Latin_1 (N'Img);
          end if;
       end Is_Auto;
 
@@ -184,7 +184,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
          if N = 0 then
             return " 'false'";
          else
-            return N'Img;
+            return From_Latin_1 (N'Img);
          end if;
       end Is_False;
    begin
@@ -195,10 +195,12 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Dialog.jQuery_Execute
         ("dialog({title: '" & Title & "'," & "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," &
          "position: { my: '" & Position_My & "', at: '" & Position_At & "', of: window }," & "resizable: " &
-         Resizable'Img & "," & "minHeight:" & Minimum_Height'Img & "," & "minWidth:" & Minimum_Width'Img & "," &
-         "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," & "maxHeight:" &
-         Is_False (Maximum_Height) & "," & "maxWidth:" & Is_False (Maximum_Width) & "," & "modal: " & Modal'Img & "," &
-         "closeOnEscape: " & Close_On_Escape'Img & "," & "draggable: " & Draggable'Img & "})");
+         From_Latin_1
+           (Resizable'Img & "," & "minHeight:" & Minimum_Height'Img & "," & "minWidth:" & Minimum_Width'Img) &
+         "," & "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," & "maxHeight:" &
+         Is_False (Maximum_Height) & "," & "maxWidth:" & Is_False (Maximum_Width) & "," & "modal: " &
+         From_Latin_1
+           (Modal'Img & "," & "closeOnEscape: " & Close_On_Escape'Img & "," & "draggable: " & Draggable'Img & "})"));
 
       Dialog.Bind_Event (Event => "dialogresizestop", Message => "");
    end Create;
@@ -331,7 +333,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       pragma Unreferenced (ID);
    begin
       Progress_Bar.Create_From_HTML (Parent, "<div/>");
-      Progress_Bar.jQuery_Execute ("progressbar ({ max:" & Maximum'Img & ", value:" & Value'Img & "})");
+      Progress_Bar.jQuery_Execute (From_Latin_1 ("progressbar ({ max:" & Maximum'Img & ", value:" & Value'Img & "})"));
    end Create;
 
    -----------
@@ -343,7 +345,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Value        : in     Integer)
    is
    begin
-      Progress_Bar.jQuery_Execute ("progressbar ('option', 'value'," & Value'Img & ")");
+      Progress_Bar.jQuery_Execute (From_Latin_1 ("progressbar ('option', 'value'," & Value'Img & ")"));
    end Value;
 
    function Value

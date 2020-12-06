@@ -35,21 +35,19 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Calendar.Time_Zones;
 with Ada.Integer_Text_IO;
-with Ada.Strings.UTF_Encoding.Strings;
 with Ada.Task_Termination;
 
-with Strings_Edit.UTF8.Handling;
+with UXStrings.Text_IO;
 
 package body Gnoga is
 
    Use_File        : Boolean := False;
    Automatic_Flush : Boolean := False;
-   Log_File        : Ada.Text_IO.File_Type;
+   Log_File        : UXStrings.Text_IO.File_Type;
 
    -------------------
    -- Escape_Quotes --
@@ -61,11 +59,11 @@ package body Gnoga is
    is
 
       function Translate_Character
-        (C : Character)
+        (C : Unicode_Character)
          return String;
 
       function Translate_Character
-        (C : Character)
+        (C : Unicode_Character)
          return String
       is
       begin
@@ -75,22 +73,22 @@ package body Gnoga is
             return "\x27";
          elsif C = '\' then
             return "\x5C";
-         elsif C = Character'Val (10) then
+         elsif C = Unicode_Character'Val (10) then
             return "\x0A";
-         elsif C = Character'Val (13) then
+         elsif C = Unicode_Character'Val (13) then
             return "\x0D";
          else
-            return (1 => C);
+            return From_Unicode (C);
          end if;
       end Translate_Character;
 
-      R : Ada.Strings.Unbounded.Unbounded_String;
+      R : String;
    begin
-      for C in S'Range loop
-         Ada.Strings.Unbounded.Append (R, Translate_Character (S (C)));
+      for C in S loop
+         Append (R, Translate_Character (S (C)));
       end loop;
 
-      return Ada.Strings.Unbounded.To_String (R);
+      return R;
    end Escape_Quotes;
 
    ---------------------
@@ -102,43 +100,43 @@ package body Gnoga is
       return String
    is
 
-      C : Integer := S'First;
+      C : Integer := 1;
 
       function Translate_Character return String;
 
       function Translate_Character return String is
       begin
-         if C < S'Last - 1 then
-            if S (C .. C + 1) = "\\" then
+         if C < S.Length - 1 then
+            if S.Slice (C, C + 1) = "\\" then
                C := C + 2;
                return "\";
-            elsif S (C .. C + 1) = "\x" then
+            elsif S.Slice (C, C + 1) = "\x" then
                declare
-                  H : constant Integer := Integer'Value ("16#" & S (C + 2 .. C + 3) & "#");
+                  H : constant Integer := Integer'Value (To_Latin_1 ("16#" & S.Slice (C + 2, C + 3) & "#"));
                begin
                   C := C + 4;
 
-                  return (1 => Character'Val (H));
+                  return From_Unicode (Unicode_Character'Val (H));
                end;
             end if;
          end if;
 
          declare
-            R : constant String := (1 => S (C));
+            R : constant String := From_Unicode (S (C));
          begin
             C := C + 1;
             return R;
          end;
       end Translate_Character;
 
-      R : Ada.Strings.Unbounded.Unbounded_String;
+      R : String;
    begin
       loop
-         Ada.Strings.Unbounded.Append (R, Translate_Character);
-         exit when C > S'Last;
+         Append (R, Translate_Character);
+         exit when C > S.Length;
       end loop;
 
-      return Ada.Strings.Unbounded.To_String (R);
+      return R;
    end Unescape_Quotes;
 
    ----------------
@@ -161,32 +159,28 @@ package body Gnoga is
       is
       begin
          if C in 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '*' | '_' then
-            return (1 => C);
+            return From_Latin_1 (C);
          elsif C = ' ' then
             return "+";
          else
             declare
-               V : String (1 .. 6); -- 16#HH#
+               V : Latin_1_Character_Array (1 .. 6); -- 16#HH#
             begin
                Ada.Integer_Text_IO.Put (V, Character'Pos (C), 16);
-               return "%" & V (4 .. 5);
+               return From_Latin_1 ("%" & V (4 .. 5));
             end;
          end if;
       end Translate_Character;
 
-      R, T : Ada.Strings.Unbounded.Unbounded_String;
+      R : String;
+      T : constant Latin_1_Character_Array :=
+        (if Encoding = "UTF-8" then Latin_1_Character_Array (To_UTF_8 (S)) else To_Latin_1 (S));
    begin
-      if Encoding = "UTF-8" then
-         T := Ada.Strings.Unbounded.To_Unbounded_String (Ada.Strings.UTF_Encoding.Strings.Encode (S));
-      else
-         T := Ada.Strings.Unbounded.To_Unbounded_String (S);
-      end if;
-
-      for C in 1 .. Ada.Strings.Unbounded.Length (T) loop
-         Ada.Strings.Unbounded.Append (R, Translate_Character (Ada.Strings.Unbounded.Element (T, C)));
+      for C in 1 .. T'Length loop
+         Append (R, Translate_Character (T (C)));
       end loop;
 
-      return Ada.Strings.Unbounded.To_String (R);
+      return R;
    end URL_Encode;
 
    ----------------
@@ -198,33 +192,34 @@ package body Gnoga is
       Encoding : String := "")
       return String
    is
-      C : Integer := S'First;
+      C : Integer                          := 1;
+      L : constant Latin_1_Character_Array := To_Latin_1 (S);
 
       function Translate_Character return Character;
 
       function Translate_Character return Character is
-         R : Character := S (C);
+         R : Character := L (C);
       begin
          if R = '+' then
             R := ' ';
-         elsif R = '%' and C < S'Last - 1 then
-            R := Character'Val (Integer'Value ("16#" & S (C + 1 .. C + 2) & "#"));
+         elsif R = '%' and C < L'Last - 1 then
+            R := Character'Val (Integer'Value ("16#" & L (C + 1 .. C + 2) & "#"));
             C := C + 2;
          end if;
          C := C + 1;
          return R;
       end Translate_Character;
 
-      R : Ada.Strings.Unbounded.Unbounded_String;
+      R : String;
    begin
-      while C in S'Range loop
-         Ada.Strings.Unbounded.Append (R, Translate_Character);
+      while C in L'Range loop
+         Append (R, From_Latin_1 (Translate_Character));
       end loop;
 
       if Encoding = "UTF-8" then
-         return Strings_Edit.UTF8.Handling.To_String (Ada.Strings.Unbounded.To_String (R), Substitution_Character);
+         return From_UTF_8 (UTF_8_Character_Array (To_Latin_1 (R)));
       else
-         return Ada.Strings.Unbounded.To_String (R);
+         return R;
       end if;
    end URL_Decode;
 
@@ -236,13 +231,15 @@ package body Gnoga is
      (S : String)
       return String
    is
+      Space : constant Unicode_Character := ' ';
+      Tab   : constant Unicode_Character := Unicode_Character'Val (9);
    begin
-      if S'Length = 0 then
+      if S.Length = 0 then
          return S;
       end if;
 
-      if S (S'First) = ' ' or S (S'First) = Character'Val (9) then
-         return Left_Trim (S ((S'First + 1) .. S'Last));
+      if S (1) in Space | Tab then
+         return Left_Trim (S.Slice (2, S.Length));
       else
          return S;
       end if;
@@ -256,13 +253,15 @@ package body Gnoga is
      (S : String)
       return String
    is
+      Space : constant Unicode_Character := ' ';
+      Tab   : constant Unicode_Character := Unicode_Character'Val (9);
    begin
-      if S'Length = 0 then
+      if S.Length = 0 then
          return S;
       end if;
 
-      if S (S'Last) = ' ' or S (S'Last) = Character'Val (9) then
-         return Right_Trim (S (S'First .. (S'Last - 1)));
+      if S (S.Length) in Space | Tab then
+         return Right_Trim (S.Slice (1, S.Length - 1));
       else
          return S;
       end if;
@@ -276,13 +275,16 @@ package body Gnoga is
      (S : String)
       return String
    is
+      Space : constant Unicode_Character := ' ';
+      Tab   : constant Unicode_Character := Unicode_Character'Val (9);
+      Slash : constant Unicode_Character := '/';
    begin
-      if S'Length = 0 then
+      if S.Length = 0 then
          return S;
       end if;
 
-      if S (S'First) = ' ' or S (S'First) = Character'Val (9) or S (S'First) = '/' then
-         return Left_Trim_Slashes (S ((S'First + 1) .. S'Last));
+      if S (1) = Space or S (1) = Tab or S (1) = Slash then
+         return Left_Trim_Slashes (S.Slice (2, S.Length));
       else
          return S;
       end if;
@@ -296,13 +298,16 @@ package body Gnoga is
      (S : String)
       return String
    is
+      Space : constant Unicode_Character := ' ';
+      Tab   : constant Unicode_Character := Unicode_Character'Val (9);
+      Slash : constant Unicode_Character := '/';
    begin
-      if S'Length = 0 then
+      if S.Length = 0 then
          return S;
       end if;
 
-      if S (S'Last) = ' ' or S (S'Last) = Character'Val (9) or S (S'Last) = '/' then
-         return Right_Trim_Slashes (S (S'First .. (S'Last - 1)));
+      if S (S.Length) in Space | Tab | Slash then
+         return Right_Trim_Slashes (S.Slice (1, (S.Length - 1)));
       else
          return S;
       end if;
@@ -313,11 +318,10 @@ package body Gnoga is
    --------------------
 
    procedure String_Replace
-     (Source      : in out Ada.Strings.Unbounded.Unbounded_String;
+     (Source      : in out String;
       Pattern     : in     String;
       Replacement : in     String)
    is
-      use Ada.Strings.Unbounded;
 
       I : Natural;
    begin
@@ -326,7 +330,7 @@ package body Gnoga is
 
          exit when I = 0;
 
-         Replace_Slice (Source => Source, Low => I, High => I + Pattern'Length - 1, By => Replacement);
+         Replace_Slice (Source => Source, Low => I, High => I + Pattern.Length - 1, By => Replacement);
       end loop;
    end String_Replace;
 
@@ -336,7 +340,7 @@ package body Gnoga is
 
    procedure Write_To_Console (Message : in String) is
    begin
-      Ada.Text_IO.Put_Line (Message);
+      UXStrings.Text_IO.Put_Line (Message);
    end Write_To_Console;
 
    -----------------
@@ -347,9 +351,8 @@ package body Gnoga is
      (File_Name  : in String;
       Flush_Auto : in Boolean := False)
    is
-      use Ada.Text_IO;
    begin
-      Create (File => Log_File, Mode => Append_File, Name => File_Name);
+      UXStrings.Text_IO.Create (File => Log_File, Mode => UXStrings.Text_IO.Append_File, Name => File_Name);
 
       Use_File        := True;
       Automatic_Flush := Flush_Auto;
@@ -366,12 +369,14 @@ package body Gnoga is
    procedure Log (Message : in String) is
       T            : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       Date_Message : constant String            :=
-        Ada.Calendar.Formatting.Image
-          (Date => T, Include_Time_Fraction => True, Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
-        " : " & Message;
+        From_Latin_1
+          (Ada.Calendar.Formatting.Image
+             (Date => T, Include_Time_Fraction => True, Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
+           " : ") &
+        Message;
    begin
       if Use_File then
-         Ada.Text_IO.Put_Line (Log_File, Date_Message);
+         UXStrings.Text_IO.Put_Line (Log_File, Date_Message);
          if Automatic_Flush then
             Flush_Log;
          end if;
@@ -382,7 +387,7 @@ package body Gnoga is
 
    procedure Log (Occurrence : in Ada.Exceptions.Exception_Occurrence) is
    begin
-      Log (Ada.Exceptions.Exception_Information (Occurrence));
+      Log (From_Latin_1 (Ada.Exceptions.Exception_Information (Occurrence)));
    end Log;
 
    ---------------
@@ -391,7 +396,7 @@ package body Gnoga is
 
    procedure Flush_Log is
    begin
-      Ada.Text_IO.Flush (Log_File);
+      UXStrings.Text_IO.Flush (Log_File);
    end Flush_Log;
 
    --------------------------------
@@ -415,11 +420,11 @@ package body Gnoga is
       begin
          case Cause is
             when Normal =>
-               Log ("Normal exit of task: " & Ada.Task_Identification.Image (Id));
+               Log (From_Latin_1 ("Normal exit of task: " & Ada.Task_Identification.Image (Id)));
             when Abnormal =>
-               Log ("Abnormal exit of task: " & Ada.Task_Identification.Image (Id));
+               Log (From_Latin_1 ("Abnormal exit of task: " & Ada.Task_Identification.Image (Id)));
             when Unhandled_Exception =>
-               Log ("Unhandled exception in task: " & Ada.Task_Identification.Image (Id));
+               Log (From_Latin_1 ("Unhandled exception in task: " & Ada.Task_Identification.Image (Id)));
                Log (Occurrence);
          end case;
       end Log;

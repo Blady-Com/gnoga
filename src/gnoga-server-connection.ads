@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
-
 with Gnoga.Types;
 with Gnoga.Gui.Base;
 
@@ -145,7 +143,7 @@ package Gnoga.Server.Connection is
 
    type Post_Request_Event is access procedure
      (URI                 : in     String;
-      Accepted_Parameters :    out Ada.Strings.Unbounded.Unbounded_String);
+      Accepted_Parameters :    out String);
 
    procedure On_Post_Request_Handler (Event : Post_Request_Event);
    --  Event is called when a post request is received. Only those CGI

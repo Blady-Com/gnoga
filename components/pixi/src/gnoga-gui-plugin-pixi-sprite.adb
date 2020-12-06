@@ -36,7 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics.Elementary_Functions;
-with Ada.Strings.Fixed;
+with Ada.Strings;
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.Pixi.Sprite is
@@ -72,7 +72,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
          "gnoga['" & Sprite_ID & "'] = new PIXI.Sprite(gnoga['" & Texture.ID & "']);" & " gnoga['" & Sprite_ID &
-         "'].sendEvent = function (e) {ws.send ('" & Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
+         "'].sendEvent = function (e) {ws.send ('" & Trim (From_Latin_1 (Sprite.Unique_ID'Img), Ada.Strings.Both) &
          "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
@@ -105,7 +105,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
          "gnoga['" & Sprite_ID & "'] = new PIXI.Sprite.from('" & Image_Path & "');" & " gnoga['" & Sprite_ID &
-         "'].sendEvent = function (e) {ws.send ('" & Ada.Strings.Fixed.Trim (Sprite.Unique_ID'Img, Ada.Strings.Both) &
+         "'].sendEvent = function (e) {ws.send ('" & Trim (From_Latin_1 (Sprite.Unique_ID'Img), Ada.Strings.Both) &
          "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
@@ -456,7 +456,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].anchor = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Sprite.Connection_ID,
+         "gnoga['" & Sprite.ID & From_Latin_1 ("'].anchor = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Anchor;
 
    ----------------
@@ -492,7 +493,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Value  : in     Blend_Modes_Type)
    is
    begin
-      Sprite.Property ("blendMode", Value'Img);
+      Sprite.Property ("blendMode", From_Latin_1 (Value'Img));
    end Blend_Mode;
 
    ----------------
@@ -504,7 +505,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       return Blend_Modes_Type
    is
    begin
-      return Blend_Modes_Type'Value (Sprite.Property ("blendMode"));
+      return Blend_Modes_Type'Value (To_Latin_1 (Sprite.Property ("blendMode")));
    end Blend_Mode;
 
    -----------
@@ -517,7 +518,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].pivot = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Sprite.Connection_ID,
+         "gnoga['" & Sprite.ID & From_Latin_1 ("'].pivot = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Pivot;
 
    ---------------
@@ -674,7 +676,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Sprite.Connection_ID,
+         "gnoga['" & Sprite.ID & From_Latin_1 ("'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Scale;
 
    ---------------
@@ -711,7 +714,8 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};");
+        (Sprite.Connection_ID,
+         "gnoga['" & Sprite.ID & From_Latin_1 ("'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};"));
    end Skew;
 
    --------------

@@ -37,8 +37,6 @@
 
 with Ada.Exceptions;
 
-with Ada.Strings.Unbounded;
-with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
 with Ada.Characters.Conversions;
 
@@ -85,11 +83,9 @@ package body Gnoga.Gui.Base is
       Mouse_Message : Mouse_Message_Type)
       return Mouse_Event_Record
    is
-      use Ada.Strings.Fixed;
-
       Event  : Mouse_Event_Record;
-      S      : Integer := Message'First;
-      F      : Integer := Message'First - 1;
+      S      : Integer := 1;
+      F      : Integer := 1 - 1;
       Button : Integer;
 
       function Split return String;
@@ -101,21 +97,21 @@ package body Gnoga.Gui.Base is
       begin
          S := F + 1;
          F := Index (Source => Message, Pattern => "|", From => S);
-         return Message (S .. (F - 1));
+         return Message.Slice (S, (F - 1));
       end Split;
 
       function Split return Integer is
          S : constant String := Split;
       begin
          if Index (S, ".") > 0 then
-            return Integer (Float'Value (S));
+            return Integer (Float'(Value (S)));
          else
-            return Integer'Value (S);
+            return Value (S);
          end if;
       exception
          when E : others =>
             Log ("Error Parse_Mouse_Event converting to Integer" & " (forced to 0).");
-            Log (Ada.Exceptions.Exception_Information (E));
+            Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             return 0;
       end Split;
 
@@ -157,11 +153,9 @@ package body Gnoga.Gui.Base is
       Keyboard_Message : Keyboard_Message_Type)
       return Keyboard_Event_Record
    is
-      use Ada.Strings.Fixed;
-
       Event : Keyboard_Event_Record;
-      S     : Integer := Message'First;
-      F     : Integer := Message'First - 1;
+      S     : Integer := 1;
+      F     : Integer := 0;
 
       function Split return String;
       function Split return Integer;
@@ -172,21 +166,21 @@ package body Gnoga.Gui.Base is
       begin
          S := F + 1;
          F := Index (Source => Message, Pattern => "|", From => S);
-         return Message (S .. (F - 1));
+         return Message.Slice (S, (F - 1));
       end Split;
 
       function Split return Integer is
          S : constant String := Split;
       begin
          if Index (S, ".") > 0 then
-            return Integer (Float'Value (S));
+            return Integer (Float'(Value (S)));
          else
-            return Integer'Value (S);
+            return Integer'(Value (S));
          end if;
       exception
          when E : others =>
             Log ("Error Parse_Keyboard_Event converting to Integer" & " (forced to 0).");
-            Log (Ada.Exceptions.Exception_Information (E));
+            Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             return 0;
       end Split;
 
@@ -220,10 +214,8 @@ package body Gnoga.Gui.Base is
       Message : in     String)
       return String
    is
-      use Ada.Strings.Fixed;
-
-      S : Integer := Message'First;
-      F : Integer := Message'First - 1;
+      S : Integer := 1;
+      F : Integer := 0;
 
       function Split return String;
       function Split return Integer;
@@ -232,21 +224,21 @@ package body Gnoga.Gui.Base is
       begin
          S := F + 1;
          F := Index (Source => Message, Pattern => "|", From => S);
-         return Message (S .. (F - 1));
+         return Message.Slice (S, (F - 1));
       end Split;
 
       function Split return Integer is
          S : constant String := Split;
       begin
          if Index (S, ".") > 0 then
-            return Integer (Float'Value (S));
+            return Integer (Float'(Value (S)));
          else
-            return Integer'Value (S);
+            return Integer'(Value (S));
          end if;
       exception
          when E : others =>
             Log ("Error Parse_Drop_Event converting to Integer" & " (forced to 0).");
-            Log (Ada.Exceptions.Exception_Information (E));
+            Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             return 0;
       end Split;
    begin
@@ -285,7 +277,7 @@ package body Gnoga.Gui.Base is
                   when E : Gnoga.Server.Connection.Connection_Error =>
                      --  Socket error to browser
                      Log ("Error connection " & Object.ID & " socket error to browser.");
-                     Log (Ada.Exceptions.Exception_Information (E));
+                     Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
                end;
             end if;
             Object.Connection_ID := Gnoga.Types.No_Connection;
@@ -296,7 +288,7 @@ package body Gnoga.Gui.Base is
    exception
       when E : others =>
          Log ("Error finalizing - " & Object.ID);
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 
    ----------
@@ -361,7 +353,7 @@ package body Gnoga.Gui.Base is
       ID_Type       : in     Gnoga.Types.ID_Enumeration := Gnoga.Types.DOM_ID)
    is
    begin
-      Object.Web_ID        := Ada.Strings.Unbounded.To_Unbounded_String (ID);
+      Object.Web_ID        := ID;
       Object.Connection_ID := Connection_ID;
       Object.ID_Type       := ID_Type;
 
@@ -429,7 +421,7 @@ package body Gnoga.Gui.Base is
       return String
    is
    begin
-      return Ada.Strings.Unbounded.To_String (Object.Web_ID);
+      return Object.Web_ID;
    end ID;
 
    procedure ID
@@ -438,7 +430,7 @@ package body Gnoga.Gui.Base is
       ID_Type : in     Gnoga.Types.ID_Enumeration)
    is
    begin
-      Object.Web_ID  := Ada.Strings.Unbounded.To_Unbounded_String (ID);
+      Object.Web_ID  := ID;
       Object.ID_Type := ID_Type;
    end ID;
 
@@ -534,7 +526,7 @@ package body Gnoga.Gui.Base is
       Value  : in     Integer)
    is
    begin
-      Object.jQuery_Execute ("height(" & Left_Trim (Value'Img) & ");");
+      Object.jQuery_Execute ("height(" & Left_Trim (Image (Value)) & ");");
       Object.On_Message ("resize", "");
    end Height;
 
@@ -555,7 +547,7 @@ package body Gnoga.Gui.Base is
       Value  : in     Integer)
    is
    begin
-      Object.jQuery_Execute ("width(" & Left_Trim (Value'Img) & ");");
+      Object.jQuery_Execute ("width(" & Left_Trim (Image (Value)) & ");");
       Object.On_Message ("resize", "");
    end Width;
 
@@ -595,7 +587,7 @@ package body Gnoga.Gui.Base is
       Value  : in     Integer)
    is
    begin
-      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
+      Object.jQuery_Execute ("prop ('" & Name & "'," & Image (Value) & ");");
    end Property;
 
    function Property
@@ -613,7 +605,7 @@ package body Gnoga.Gui.Base is
       Value  : in     Float)
    is
    begin
-      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
+      Object.jQuery_Execute ("prop ('" & Name & "'," & Image (Value) & ");");
    end Property;
 
    function Property
@@ -631,7 +623,7 @@ package body Gnoga.Gui.Base is
       Value  : in     Boolean)
    is
    begin
-      Object.jQuery_Execute ("prop ('" & Name & "'," & Value'Img & ");");
+      Object.jQuery_Execute ("prop ('" & Name & "'," & Image (Value) & ");");
    end Property;
 
    function Property
@@ -2114,9 +2106,9 @@ package body Gnoga.Gui.Base is
       Script  : in     String  := "";
       Cancel  : in     Boolean := False)
    is
-      US : constant String := Object.Unique_ID'Img;
+      US : constant String := Image (Object.Unique_ID);
 
-      Full_Message : constant String := US (US'First + 1 .. US'Last) & "|" & Event & "|" & Message;
+      Full_Message : constant String := US.Slice (1 + 1, US.Length) & "|" & Event & "|" & Message;
 
       function If_Script return String;
       function Cancel_Event return String;
@@ -2266,19 +2258,17 @@ package body Gnoga.Gui.Base is
       Method : String)
       return Integer
    is
-      use Ada.Strings.Fixed;
-
       R : constant String := Object.jQuery_Execute (Method);
    begin
       if Index (R, ".") > 0 then
-         return Integer (Float'Value (R));
+         return Integer (Float'(Value (R)));
       else
-         return Integer'Value (R);
+         return Integer'(Value (R));
       end if;
    exception
       when E : others =>
          Log ("Error jQuery_Execute converting to Integer (forced to 0).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return 0;
    end jQuery_Execute;
 
@@ -2289,11 +2279,11 @@ package body Gnoga.Gui.Base is
    is
       R : constant String := Object.jQuery_Execute (Method);
    begin
-      return Float'Value (R);
+      return Value (R);
    exception
       when E : others =>
          Log ("Error jQuery_Execute converting to Float (forced to 0.0).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return 0.0;
    end jQuery_Execute;
 end Gnoga.Gui.Base;

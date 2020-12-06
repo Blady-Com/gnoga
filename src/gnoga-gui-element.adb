@@ -35,7 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
 with Ada.Exceptions;
 
 with Gnoga.Server.Connection;
@@ -73,20 +72,18 @@ package body Gnoga.Gui.Element is
    begin
       if Gnoga.Server.Connection.Connection_Type (Parent.Connection_ID) = Long_Polling then
          declare
-            use Ada.Strings.Fixed;
-
             P : Natural := Index (Source => HTML, Pattern => ">");
          begin
             if P = 0 then
                Gnoga.Log ("Malformed HTML = " & HTML);
             else
-               if HTML (P - 1) = '/' then
+               if HTML (P - 1) = Latin_1_Character'('/') then
                   P := P - 1;
                end if;
             end if;
 
             declare
-               S : constant String := HTML (HTML'First .. P - 1) & " id='" & GID & "'" & HTML (P .. HTML'Last);
+               S : constant String := HTML.Slice (1, P - 1) & " id='" & GID & "'" & HTML.Slice (P, HTML.Length);
             begin
                Gnoga.Server.Connection.Buffer_Append (Parent.Connection_ID, Unescape_Quotes (S));
 
@@ -180,7 +177,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("css ('" & Name & "'," & Value'Img & ");");
+      Element.jQuery_Execute ("css ('" & Name & "'," & From_Latin_1 (Value'Img) & ");");
    end Style;
 
    function Style
@@ -198,11 +195,11 @@ package body Gnoga.Gui.Element is
       return Integer
    is
    begin
-      return Integer'Value (Element.Style (Name));
+      return Integer'Value (To_Latin_1 (Element.Style (Name)));
    exception
       when E : others =>
          Log ("Error Style converting to Integer (forced to 0).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return 0;
    end Style;
 
@@ -346,7 +343,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Clear_Side_Type)
    is
    begin
-      Element.Style ("clear", Value'Img);
+      Element.Style ("clear", From_Latin_1 (Value'Img));
    end Clear_Side;
 
    ------------------
@@ -358,7 +355,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Float_Type)
    is
    begin
-      Element.Style ("float", Value'Img);
+      Element.Style ("float", From_Latin_1 (Value'Img));
    end Layout_Float;
 
    -------------
@@ -390,7 +387,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Overflow_Type)
    is
    begin
-      Element.Style ("overflow", Value'Img);
+      Element.Style ("overflow", From_Latin_1 (Value'Img));
    end Overflow;
 
    function Overflow
@@ -398,11 +395,11 @@ package body Gnoga.Gui.Element is
       return Overflow_Type
    is
    begin
-      return Overflow_Type'Value (Element.Style ("overflow"));
+      return Overflow_Type'Value (To_Latin_1 (Element.Style ("overflow")));
    exception
       when E : others =>
          Log ("Error Overflow converting to Overflow_Type" & " (forced to Visible).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return Visible;
    end Overflow;
 
@@ -415,7 +412,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Overflow_Type)
    is
    begin
-      Element.Style ("overflow-x", Value'Img);
+      Element.Style ("overflow-x", From_Latin_1 (Value'Img));
    end Overflow_X;
 
    ----------------
@@ -427,7 +424,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Overflow_Type)
    is
    begin
-      Element.Style ("overflow-y", Value'Img);
+      Element.Style ("overflow-y", From_Latin_1 (Value'Img));
    end Overflow_Y;
 
    -------------
@@ -439,7 +436,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.Style ("z-index", Value'Img);
+      Element.Style ("z-index", From_Latin_1 (Value'Img));
    end Z_Index;
 
    ---------------
@@ -451,7 +448,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Resizable_Type)
    is
    begin
-      Element.Style ("resize", Value'Img);
+      Element.Style ("resize", From_Latin_1 (Value'Img));
    end Resizable;
 
    function Resizable
@@ -459,11 +456,11 @@ package body Gnoga.Gui.Element is
       return Resizable_Type
    is
    begin
-      return Resizable_Type'Value (Element.Style ("resize"));
+      return Resizable_Type'Value (To_Latin_1 (Element.Style ("resize")));
    exception
       when E : others =>
          Log ("Error Resizable converting to Resizable_Type" & " (forced to None).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return None;
    end Resizable;
 
@@ -476,7 +473,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Position_Type)
    is
    begin
-      Element.Style ("position", Value'Img);
+      Element.Style ("position", From_Latin_1 (Value'Img));
    end Position;
 
    function Position
@@ -484,11 +481,11 @@ package body Gnoga.Gui.Element is
       return Position_Type
    is
    begin
-      return Position_Type'Value (Element.Style ("position"));
+      return Position_Type'Value (To_Latin_1 (Element.Style ("position")));
    exception
       when E : others =>
          Log ("Error Position converting to Position_Type" & " (forced to Static).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return Static;
    end Position;
 
@@ -550,7 +547,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("left", Left_Trim (Value'Img) & Unit);
+      Element.Style ("left", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
    end Left;
 
    procedure Left
@@ -579,7 +576,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("right", Left_Trim (Value'Img) & Unit);
+      Element.Style ("right", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
    end Right;
 
    procedure Right
@@ -608,7 +605,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("top", Left_Trim (Value'Img) & Unit);
+      Element.Style ("top", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
    end Top;
 
    procedure Top
@@ -637,7 +634,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("bottom", Left_Trim (Value'Img) & Unit);
+      Element.Style ("bottom", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
    end Bottom;
 
    procedure Bottom
@@ -666,7 +663,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("height", Left_Trim (Value'Img) & Unit);
+      Element.Style ("height", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
       Element.On_Message ("resize", "");
    end Box_Height;
 
@@ -697,7 +694,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("min-height", Left_Trim (Value'Img) & Unit);
+      Element.Style ("min-height", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Height;
 
@@ -728,7 +725,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("max-height", Left_Trim (Value'Img) & Unit);
+      Element.Style ("max-height", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Height;
 
@@ -759,7 +756,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("width", Left_Trim (Value'Img) & Unit);
+      Element.Style ("width", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
       Element.On_Message ("resize", "");
    end Box_Width;
 
@@ -790,7 +787,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("min-width", Left_Trim (Value'Img) & Unit);
+      Element.Style ("min-width", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Width;
 
@@ -821,7 +818,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("max-width", Left_Trim (Value'Img) & Unit);
+      Element.Style ("max-width", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Width;
 
@@ -1067,7 +1064,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("innerHeight(" & Left_Trim (Value'Img) & ");");
+      Element.jQuery_Execute ("innerHeight(" & Left_Trim (From_Latin_1 (Value'Img)) & ");");
       Element.On_Message ("resize", "");
    end Inner_Height;
 
@@ -1088,7 +1085,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("innerWidth(" & Left_Trim (Value'Img) & ");");
+      Element.jQuery_Execute ("innerWidth(" & Left_Trim (From_Latin_1 (Value'Img)) & ");");
       Element.On_Message ("resize", "");
    end Inner_Width;
 
@@ -1353,7 +1350,7 @@ package body Gnoga.Gui.Element is
       Alpha   : in     Gnoga.Types.Alpha_Type)
    is
    begin
-      Element.Style ("opacity", Alpha'Img);
+      Element.Style ("opacity", From_Latin_1 (Alpha'Img));
    end Opacity;
 
    function Opacity
@@ -1361,11 +1358,11 @@ package body Gnoga.Gui.Element is
       return Gnoga.Types.Alpha_Type
    is
    begin
-      return Gnoga.Types.Alpha_Type'Value (Element.Style ("opacity"));
+      return Gnoga.Types.Alpha_Type'Value (To_Latin_1 (Element.Style ("opacity")));
    exception
       when E : others =>
          Log ("Error Opacity converting to Alpha_Type (forced to 1.0).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return 1.0;
    end Opacity;
 
@@ -1378,7 +1375,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Background_Attachment_Type)
    is
    begin
-      Element.Style ("background-attachment", Value'Img);
+      Element.Style ("background-attachment", From_Latin_1 (Value'Img));
    end Background_Attachment;
 
    function Background_Attachment
@@ -1390,7 +1387,7 @@ package body Gnoga.Gui.Element is
       if Value = "" then
          return Scroll;
       else
-         return Background_Attachment_Type'Value (Value);
+         return Background_Attachment_Type'Value (To_Latin_1 (Value));
       end if;
    end Background_Attachment;
 
@@ -1565,7 +1562,7 @@ package body Gnoga.Gui.Element is
       Color   : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Black)
    is
    begin
-      Element.Style ("border", Width & " " & Style'Img & " " & Gnoga.Types.Colors.To_String (Color));
+      Element.Style ("border", Width & " " & From_Latin_1 (Style'Img) & " " & Gnoga.Types.Colors.To_String (Color));
    end Border;
 
    -------------------
@@ -1630,7 +1627,7 @@ package body Gnoga.Gui.Element is
       Width   : in     String             := "medium")
    is
    begin
-      Element.Style ("outline", Color & " " & Style'Img & " " & Width);
+      Element.Style ("outline", Color & " " & From_Latin_1 (Style'Img) & " " & Width);
    end Outline;
 
    ------------
@@ -1691,9 +1688,9 @@ package body Gnoga.Gui.Element is
      (Value : in Gnoga.Gui.Element.Font_Weight_Type)
       return String
    is
-      W : constant String := Value'Img;
+      W : constant String := From_Latin_1 (Value'Img);
    begin
-      return W (W'First + 7 .. W'Last);
+      return W.Slice (8, W.Length);
    end Image;
 
    -----------
@@ -1705,7 +1702,7 @@ package body Gnoga.Gui.Element is
       return Gnoga.Gui.Element.Font_Weight_Type
    is
    begin
-      return Gnoga.Gui.Element.Font_Weight_Type'Value ("Weight_" & Value);
+      return Gnoga.Gui.Element.Font_Weight_Type'Value ("Weight_" & To_Latin_1 (Value));
    end Value;
 
    ----------
@@ -1720,10 +1717,11 @@ package body Gnoga.Gui.Element is
       Weight  : in     Font_Weight_Type  := Weight_Normal;
       Variant : in     Font_Variant_Type := Normal)
    is
-      W : constant String := Weight'Img;
+      W : constant String := From_Latin_1 (Weight'Img);
    begin
       Element.Style
-        ("font", Style'Img & " " & Variant'Img & " " & W (W'First + 7 .. W'Last) & " " & Height & " " & Family);
+        ("font",
+         From_Latin_1 (Style'Img & " " & Variant'Img) & " " & W.Slice (8, W.Length) & " " & Height & " " & Family);
    end Font;
 
    procedure Font
@@ -1733,7 +1731,7 @@ package body Gnoga.Gui.Element is
    begin
       case System_Font is
          when Caption | Icon | Menu =>
-            Element.Style ("font", System_Font'Img);
+            Element.Style ("font", From_Latin_1 (System_Font'Img));
          when Message_Box =>
             Element.Style ("font", "message-box");
          when Small_Caption =>
@@ -1751,13 +1749,13 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Alignment_Type)
    is
-      V : constant String := Value'Img;
+      V : constant String := From_Latin_1 (Value'Img);
    begin
       case Value is
          when Left | Right | Center =>
             Element.Style ("text-align", V);
          when At_Start | To_End =>
-            Element.Style ("text-align", V ((V'First + 3) .. V'Last));
+            Element.Style ("text-align", V.Slice ((4), V.Length));
       end case;
    end Text_Alignment;
 
@@ -1775,7 +1773,7 @@ package body Gnoga.Gui.Element is
       elsif Value = Text_Bottom then
          Element.Style ("vertical-align", "text-bottom");
       else
-         Element.Style ("vertical-align", Value'Img);
+         Element.Style ("vertical-align", From_Latin_1 (Value'Img));
       end if;
    end Vertical_Align;
 

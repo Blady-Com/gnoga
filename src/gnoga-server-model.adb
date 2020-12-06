@@ -94,7 +94,7 @@ package body Gnoga.Server.Model is
       Integer_Value : in     Integer)
    is
    begin
-      Value (A, Field_Name, Gnoga.Left_Trim (Integer_Value'Img));
+      Value (A, Field_Name, Gnoga.Left_Trim (From_Latin_1 (Integer_Value'Img)));
    end Value;
 
    procedure Value
@@ -102,7 +102,7 @@ package body Gnoga.Server.Model is
       Field_Name : in     String;
       Date_Value : in     Ada.Calendar.Time)
    is
-      V : constant String := Ada.Calendar.Formatting.Image (Date_Value);
+      V : constant String := From_Latin_1 (Ada.Calendar.Formatting.Image (Date_Value));
    begin
       Value (A, Field_Name, V);
    end Value;
@@ -162,10 +162,8 @@ package body Gnoga.Server.Model is
    ----------
 
    procedure Save (A : in out Active_Record) is
-      use Ada.Strings.Unbounded;
-
-      fields : Unbounded_String;
-      values : Unbounded_String;
+      fields : String;
+      values : String;
 
       procedure foreach (Position : in Gnoga.Types.Data_Maps.Cursor);
 
@@ -188,27 +186,27 @@ package body Gnoga.Server.Model is
 
       if A.Is_New then
          declare
-            f : constant String := To_String (fields);
-            v : constant String := To_String (values);
+            f : constant String := fields;
+            v : constant String := values;
 
             Insert_String : constant String :=
-              "insert into " & A.Table_Name.all & " (" & f (f'First .. f'Last - 1) & ") VALUES (" &
-              v (v'First .. v'Last - 1) & ")";
+              "insert into " & A.Table_Name.all & " (" & f.Slice (1, f.Length - 1) & ") VALUES (" &
+              v.Slice (1, v.Length - 1) & ")";
          begin
             A.Connection.Execute_Query (Insert_String);
             declare
-               New_ID : constant String := A.Connection.Insert_ID'Img;
+               New_ID : constant String := From_Latin_1 (A.Connection.Insert_ID'Img);
             begin
-               A.Value ("id", New_ID (New_ID'First + 1 .. New_ID'Last));
+               A.Value ("id", New_ID.Slice (2, New_ID.Length));
                A.Is_New := False;
             end;
          end;
       else
          declare
-            f : constant String := To_String (fields);
+            f : constant String := fields;
 
             Update_String : constant String :=
-              "update " & A.Table_Name.all & " set " & f (f'First .. f'Last - 1) & " where id=" &
+              "update " & A.Table_Name.all & " set " & f.Slice (1, f.Length - 1) & " where id=" &
               A.Values.Element ("id");
          begin
             A.Connection.Execute_Query (Update_String);
@@ -247,9 +245,9 @@ package body Gnoga.Server.Model is
       ID : in     Positive)
    is
 
-      Key : constant String                       := ID'Img;
+      Key : constant String                       := From_Latin_1 (ID'Img);
       RS  : Gnoga.Server.Database.Recordset'Class :=
-        A.Connection.Query ("select * from " & A.Table_Name.all & " where id=" & Key (Key'First + 1 .. Key'Last));
+        A.Connection.Query ("select * from " & A.Table_Name.all & " where id=" & Key.Slice (2, Key.Length));
    begin
       RS.Next;
       A.Is_New := False; -- If no exception is raised then this is not new
@@ -262,7 +260,7 @@ package body Gnoga.Server.Model is
       ID : in     String)
    is
    begin
-      Find (A, Positive'Value (ID));
+      Find (A, Positive'Value (To_Latin_1 (ID)));
    end Find;
 
    ----------------
@@ -285,7 +283,7 @@ package body Gnoga.Server.Model is
    exception
       when E : Gnoga.Server.Database.End_Of_Recordset =>
          Log ("Error End_Of_Recordset.");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          if Create_New then
             A.Value ("id", "");
             RS.Close;
@@ -305,7 +303,7 @@ package body Gnoga.Server.Model is
    is
       Remove_s : constant String := Parent.Table_Name.all;
 
-      Where_Clause : constant String := Remove_s (Remove_s'First .. Remove_s'Last - 1) & "_id = " & Parent.Value ("id");
+      Where_Clause : constant String := Remove_s.Slice (1, Remove_s.Length - 1) & "_id = " & Parent.Value ("id");
    begin
       A.Find_Where (Where_Clause, Create_New);
    end Find_Item;

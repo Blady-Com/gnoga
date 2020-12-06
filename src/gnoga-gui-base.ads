@@ -38,7 +38,7 @@
 with Ada.Finalization;
 with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Hashed_Maps;
-with Ada.Strings.Hash;
+with UXStrings.Hash;
 
 with Gnoga.Types;
 
@@ -78,7 +78,7 @@ package Gnoga.Gui.Base is
      (Index_Type => Positive, Element_Type => Pointer_To_Base_Class, "=" => Base."=");
 
    package Base_Type_Maps is new Ada.Containers.Indefinite_Hashed_Maps
-     (String, Pointer_To_Base_Class, Ada.Strings.Hash, Equivalent_Keys => "=");
+     (String, Pointer_To_Base_Class, UXStrings.Hash, Equivalent_Keys => "=");
 
    subtype Base_Type_Array is Base_Type_Arrays.Vector;
    --  Arrays of Base_Types

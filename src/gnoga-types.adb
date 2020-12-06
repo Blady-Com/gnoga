@@ -35,7 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
 with Ada.Exceptions;
 
 package body Gnoga.Types is
@@ -56,8 +55,8 @@ package body Gnoga.Types is
    is
    begin
       return
-        "rgba(" & Left_Trim (RGBA.Red'Img) & "," & Left_Trim (RGBA.Green'Img) & "," & Left_Trim (RGBA.Blue'Img) & "," &
-        Left_Trim (RGBA.Alpha'Img) & ")";
+        "rgba(" & Left_Trim (From_Latin_1 (RGBA.Red'Img)) & "," & Left_Trim (From_Latin_1 (RGBA.Green'Img)) & "," &
+        Left_Trim (From_Latin_1 (RGBA.Blue'Img)) & "," & Left_Trim (From_Latin_1 (RGBA.Alpha'Img)) & ")";
    end To_String;
 
    ------------
@@ -66,9 +65,9 @@ package body Gnoga.Types is
 
    function To_Hex
      (RGBA : RGBA_Type)
-      return String
+      return Latin_1_Character_Array
    is
-      Hex : constant String := "0123456789ABCDEF";
+      Hex : constant Latin_1_Character_Array := "0123456789ABCDEF";
    begin
       return
         "0x" & Hex (Natural (RGBA.Red) / 16 + 1) & Hex (Natural (RGBA.Red) mod 16 + 1) &
@@ -85,7 +84,7 @@ package body Gnoga.Types is
       return RGBA_Type
    is
    begin
-      if Value (Value'First) = '#' then
+      if Value (1) = Latin_1_Character'('#') then
          return To_RGBA_From_Hex (Value);
       else
          return To_RGBA_From_RGB_or_RGBA (Value);
@@ -101,17 +100,17 @@ package body Gnoga.Types is
       return RGBA_Type
    is
       RGBA : RGBA_Type;
-      P    : constant Integer := Value'First;
+      P    : constant Integer := 1;
    begin
-      if Value'Length = 7 then
-         RGBA.Red   := Color_Type'Value ("16#" & Value ((P + 1) .. (P + 2)) & '#');
-         RGBA.Green := Color_Type'Value ("16#" & Value ((P + 3) .. (P + 4)) & '#');
-         RGBA.Blue  := Color_Type'Value ("16#" & Value ((P + 5) .. (P + 6)) & '#');
-      elsif Value'Length = 9 then
-         RGBA.Alpha := Alpha_Type (Integer'Value ("16#" & Value ((P + 1) .. (P + 2)) & '#')) / 255;
-         RGBA.Red   := Color_Type'Value ("16#" & Value ((P + 3) .. (P + 4)) & '#');
-         RGBA.Green := Color_Type'Value ("16#" & Value ((P + 5) .. (P + 6)) & '#');
-         RGBA.Blue  := Color_Type'Value ("16#" & Value ((P + 7) .. (P + 8)) & '#');
+      if Value.Length = 7 then
+         RGBA.Red   := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 1), (P + 2))) & '#');
+         RGBA.Green := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 3), (P + 4))) & '#');
+         RGBA.Blue  := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 5), (P + 6))) & '#');
+      elsif Value.Length = 9 then
+         RGBA.Alpha := Alpha_Type (Integer'Value (To_Latin_1 ("16#" & Value.Slice ((P + 1), (P + 2))) & '#')) / 255;
+         RGBA.Red   := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 3), (P + 4))) & '#');
+         RGBA.Green := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 5), (P + 6))) & '#');
+         RGBA.Blue  := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 7), (P + 8))) & '#');
       else
          Log ("Invalid Hex value for rbga value from " & Value);
       end if;
@@ -120,7 +119,7 @@ package body Gnoga.Types is
    exception
       when E : others =>
          Log ("Error converting to rbga value from " & Value);
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return RGBA;
    end To_RGBA_From_Hex;
 
@@ -132,10 +131,8 @@ package body Gnoga.Types is
      (Value : String)
       return RGBA_Type
    is
-      use Ada.Strings.Fixed;
-
-      S    : Integer := Value'First;
-      F    : Integer := Value'First - 1;
+      S    : Integer := 1;
+      F    : Integer := 0;
       RGBA : RGBA_Type;
 
       function Split
@@ -156,7 +153,7 @@ package body Gnoga.Types is
       begin
          S := F + 1;
          F := Index (Source => Value, Pattern => P, From => S);
-         return Value (S .. (F - 1));
+         return Value.Slice (S, (F - 1));
       end Split;
 
       function Split
@@ -164,7 +161,7 @@ package body Gnoga.Types is
          return Color_Type
       is
       begin
-         return Color_Type'Value (Split (P));
+         return Color_Type'Value (To_Latin_1 (Split (P)));
       end Split;
 
       function Split
@@ -172,7 +169,7 @@ package body Gnoga.Types is
          return Alpha_Type
       is
       begin
-         return Alpha_Type'Value (Split (P));
+         return Alpha_Type'Value (To_Latin_1 (Split (P)));
       end Split;
 
       rtype : constant String := Split ("(");
@@ -180,7 +177,7 @@ package body Gnoga.Types is
       RGBA.Red   := Split (",");
       RGBA.Green := Split (",");
 
-      if rtype'Length = 3 then
+      if rtype.Length = 3 then
          RGBA.Blue := Split (")");
       else
          RGBA.Blue  := Split (",");

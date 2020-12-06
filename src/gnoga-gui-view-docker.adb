@@ -99,7 +99,7 @@ package body Gnoga.Gui.View.Docker is
    exception
       when E : others =>
          Log ("Error Update_Dock.");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Update_Dock;
 
    --------------

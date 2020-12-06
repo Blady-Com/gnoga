@@ -35,7 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Exceptions;
 
 with Gnoga.Server.Connection;
@@ -55,7 +54,7 @@ package body Gnoga.Gui.Plugin.jQuery is
       return String
    is
    begin
-      return "gnoga['" & Ada.Strings.Unbounded.To_String (Object.Unique_ID) & "']";
+      return "gnoga['" & Object.Unique_ID & "']";
    end Gnoga_Var;
 
    ----------------
@@ -64,7 +63,7 @@ package body Gnoga.Gui.Plugin.jQuery is
 
    overriding procedure Initialize (Object : in out jQuery_Type) is
    begin
-      Object.Unique_ID := Ada.Strings.Unbounded.To_Unbounded_String (Gnoga.Server.Connection.New_GID);
+      Object.Unique_ID := Gnoga.Server.Connection.New_GID;
    end Initialize;
 
    --------------
@@ -83,11 +82,11 @@ package body Gnoga.Gui.Plugin.jQuery is
    exception
       when E : Gnoga.Server.Connection.Connection_Error =>
          --  Socket error to browser
-         Log ("Connection" & Object.Connection_ID'Img & " socket error to browser.");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log ("Connection" & Image (Object.Connection_ID) & " socket error to browser.");
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
       when E : others =>
          Log ("Error finalizing jQuery Object - " & Gnoga_Var (Object));
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 
    ------------

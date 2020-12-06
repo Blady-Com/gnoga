@@ -193,7 +193,7 @@ package body Gnoga.Gui.Document is
       return Ready_State_Type
    is
    begin
-      return Ready_State_Type'Value (Document.Property ("readyState"));
+      return Ready_State_Type'Value (To_Latin_1 (Document.Property ("readyState")));
    end Ready_State;
 
    --------------

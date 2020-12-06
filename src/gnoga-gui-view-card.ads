@@ -39,7 +39,6 @@
 --  virtual stack with only one shown and the others hidden at any given
 --  time.
 
-with Ada.Strings.Unbounded;
 with Gnoga.Types.Colors;
 
 package Gnoga.Gui.View.Card is
@@ -192,6 +191,6 @@ private
    end record;
 
    type Tab_Item_Type is new Gnoga.Gui.Element.Element_Type with record
-      Card_Name : Ada.Strings.Unbounded.Unbounded_String;
+      Card_Name : String;
    end record;
 end Gnoga.Gui.View.Card;

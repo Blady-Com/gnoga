@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
-
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Window;
 
@@ -54,17 +52,16 @@ package body Gnoga.Gui.View.Grid is
       Set_Sizes   : in     Boolean := True;
       ID          : in     String  := "")
    is
-      use Ada.Strings.Unbounded;
 
-      C   : Unbounded_String;
+      C   : String;
       CID : constant String := Gnoga.Server.Connection.New_GID;
 
       N         : Natural;
       Span_Size : Natural;
       Column    : Positive;
 
-      P_Height : constant String := Left_Trim (Integer (100 / Layout'Length (1))'Img) & "%";
-      P_Width  : constant String := Left_Trim (Integer (100 / Layout'Length (2))'Img) & "%";
+      P_Height : constant String := Left_Trim (From_Latin_1 (Integer (100 / Layout'Length (1))'Img)) & "%";
+      P_Width  : constant String := Left_Trim (From_Latin_1 (Integer (100 / Layout'Length (2))'Img)) & "%";
 
       Column_Object : View_Base_Access := null;
 
@@ -91,7 +88,7 @@ package body Gnoga.Gui.View.Grid is
 
    begin
       if Parent in Gnoga.Gui.Window.Window_Type'Class then
-         C := To_Unbounded_String ("<div style='position:relative'>");
+         C := "<div style='position:relative'>";
       end if;
 
       C := C & "<table style='" & " position:relative;" & " border-spacing: 0px; border-collapse: collapse;";
@@ -114,7 +111,8 @@ package body Gnoga.Gui.View.Grid is
                N := N + 1;
                C :=
                  C & "<td style='" & TD_Width & " position:relative;" &
-                 " padding:0; text-align: left; vertical-align: top;" & "' id='" & CID & "_" & Left_Trim (N'Img) & "'";
+                 " padding:0; text-align: left; vertical-align: top;" & "' id='" & CID & "_" &
+                 Left_Trim (From_Latin_1 (N'Img)) & "'";
                Span_Size := 1;
             elsif Layout (Row, Column) = SPN then
                Span_Size := Span_Size + 1;
@@ -125,7 +123,7 @@ package body Gnoga.Gui.View.Grid is
             if Column > Layout'Last (2) or else Layout (Row, Column) = COL then
                if Span_Size > 0 then
                   if Span_Size > 1 then
-                     C := C & " colspan=" & Left_Trim (Span_Size'Img);
+                     C := C & " colspan=" & Left_Trim (From_Latin_1 (Span_Size'Img));
                   end if;
 
                   C := C & " />";
@@ -143,7 +141,7 @@ package body Gnoga.Gui.View.Grid is
          C := C & "</div>";
       end if;
 
-      Grid.Create_From_HTML (Parent, Escape_Quotes (To_String (C)), ID);
+      Grid.Create_From_HTML (Parent, Escape_Quotes (C), ID);
 
       N := 0;
       for Row in Layout'Range (1) loop
@@ -158,7 +156,7 @@ package body Gnoga.Gui.View.Grid is
                Column_Object := new View_Base_Type;
                Column_Object.Auto_Place (False);
                Column_Object.Dynamic (True);
-               Column_Object.Attach_Using_Parent (Grid, CID & "_" & Left_Trim (N'Img));
+               Column_Object.Attach_Using_Parent (Grid, CID & "_" & Left_Trim (From_Latin_1 (N'Img)));
                Column_Object.Parent (Grid);
 
                if Column = Layout'First (2) and Row = Layout'First (1) then
@@ -169,7 +167,8 @@ package body Gnoga.Gui.View.Grid is
             end if;
 
             declare
-               Address : constant String := Left_Trim (Row'Img) & "_" & Left_Trim (Column'Img);
+               Address : constant String :=
+                 Left_Trim (From_Latin_1 (Row'Img)) & "_" & Left_Trim (From_Latin_1 (Column'Img));
             begin
                Grid.Add_Element (Address, Column_Object);
             end;
@@ -189,7 +188,7 @@ package body Gnoga.Gui.View.Grid is
       Row, Column : Positive)
       return Pointer_To_View_Base_Class
    is
-      Address : constant String := Left_Trim (Row'Img) & "_" & Left_Trim (Column'Img);
+      Address : constant String := Left_Trim (From_Latin_1 (Row'Img)) & "_" & Left_Trim (From_Latin_1 (Column'Img));
    begin
       return Pointer_To_View_Base_Class (Grid.Element (Address));
    end Panel;

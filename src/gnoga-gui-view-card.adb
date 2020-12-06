@@ -264,7 +264,7 @@ package body Gnoga.Gui.View.Card is
          Parent.Height (L.Offset_Top * 2 + L.Client_Height);
       end;
 
-      Item.Card_Name := Ada.Strings.Unbounded.To_Unbounded_String (Card);
+      Item.Card_Name := Card;
 
       Parent.Add_Element (Card, Item'Unrestricted_Access);
       --  Allow for the Parent.Select_Tab to work
@@ -303,7 +303,7 @@ package body Gnoga.Gui.View.Card is
       Dummy_Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
       Dummy_Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
 
-      Tab_Access (Item.Parent).Card_View.Show_Card (Ada.Strings.Unbounded.To_String (Item.Card_Name));
+      Tab_Access (Item.Parent).Card_View.Show_Card (Item.Card_Name);
    end Tab_Select;
 
    ------------------

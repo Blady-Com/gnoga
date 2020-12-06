@@ -42,7 +42,7 @@ with GNAT.OS_Lib;
 
 package body Gnoga.Server is
    Exec_Loc : constant GNAT.OS_Lib.String_Access := GNAT.OS_Lib.Locate_Exec_On_Path (Ada.Command_Line.Command_Name);
-   Exec_Dir : constant String                    := Exec_Loc.all;
+   Exec_Dir : constant String                    := From_Latin_1 (Exec_Loc.all);
 
    function Find_Subdirectory
      (Sub : String)
@@ -57,13 +57,13 @@ package body Gnoga.Server is
      (Sub : String)
       return String
    is
-      Dir : constant String := Application_Directory & Sub & GNAT.OS_Lib.Directory_Separator;
+      Dir : constant String := Application_Directory & Sub & From_Latin_1 (GNAT.OS_Lib.Directory_Separator);
 
-      Html : constant String := Application_Directory & "html" & GNAT.OS_Lib.Directory_Separator;
+      Html : constant String := Application_Directory & "html" & From_Latin_1 (GNAT.OS_Lib.Directory_Separator);
    begin
-      if Ada.Directories.Exists (Dir) then
+      if Ada.Directories.Exists (To_Latin_1 (Dir)) then
          return Dir;
-      elsif Ada.Directories.Exists (Html) then
+      elsif Ada.Directories.Exists (To_Latin_1 (Html)) then
          return Html;
       else
          return Application_Directory;
@@ -76,7 +76,7 @@ package body Gnoga.Server is
 
    function Directory_Separator return String is
    begin
-      return (1 => GNAT.OS_Lib.Directory_Separator);
+      return From_Latin_1 (GNAT.OS_Lib.Directory_Separator);
    end Directory_Separator;
 
    ---------------------------
@@ -86,8 +86,8 @@ package body Gnoga.Server is
    function Application_Directory return String is
       Exe : constant String := Executable_Directory;
    begin
-      if Exe (Exe'Last - 3 .. Exe'Last - 1) = "bin" then
-         return Exe (Exe'First .. Exe'Last - 4);
+      if Exe.Slice (Exe.Length - 3, Exe.Length - 1) = "bin" then
+         return Exe.Slice (1, Exe.Length - 4);
       else
          return Exe;
       end if;
@@ -99,7 +99,8 @@ package body Gnoga.Server is
 
    function Executable_Directory return String is
    begin
-      return Ada.Directories.Containing_Directory (Exec_Dir) & GNAT.OS_Lib.Directory_Separator;
+      return
+        From_Latin_1 (Ada.Directories.Containing_Directory (To_Latin_1 (Exec_Dir)) & GNAT.OS_Lib.Directory_Separator);
    end Executable_Directory;
 
    --------------------
@@ -152,15 +153,15 @@ package body Gnoga.Server is
    -------------------------
 
    function Templates_Directory return String is
-      Dir : constant String := Application_Directory & "templates" & GNAT.OS_Lib.Directory_Separator;
+      Dir : constant String := Application_Directory & "templates" & From_Latin_1 (GNAT.OS_Lib.Directory_Separator);
 
       Alt : constant String :=
-        Application_Directory & "share" & GNAT.OS_Lib.Directory_Separator & "gnoga" & GNAT.OS_Lib.Directory_Separator &
-        "templates" & GNAT.OS_Lib.Directory_Separator;
+        Application_Directory & "share" & From_Latin_1 (GNAT.OS_Lib.Directory_Separator) & "gnoga" &
+        From_Latin_1 (GNAT.OS_Lib.Directory_Separator) & "templates" & From_Latin_1 (GNAT.OS_Lib.Directory_Separator);
    begin
-      if Ada.Directories.Exists (Dir) then
+      if Ada.Directories.Exists (To_Latin_1 (Dir)) then
          return Dir;
-      elsif Ada.Directories.Exists (Alt) then
+      elsif Ada.Directories.Exists (To_Latin_1 (Alt)) then
          return Alt;
       else
          return Application_Directory;

@@ -59,18 +59,18 @@ package Gnoga.Server.Connection.Common is
    --  Private Variables
    -------------------------------------------------------------------------
 
-   CRLF : constant String := (Character'Val (13), Character'Val (10));
+   CRLF : constant String := From_Latin_1 ((Character'Val (13), Character'Val (10)));
 
-   Boot_HTML : Ada.Strings.Unbounded.Unbounded_String;
+   Boot_HTML : String;
 
-   Server_Host : Ada.Strings.Unbounded.Unbounded_String;
+   Server_Host : String;
    Server_Port : GNAT.Sockets.Port_Type;
 
    Secure_Port   : GNAT.Sockets.Port_Type;
    Secure_Only   : Boolean := False;
    Secure_Server : Boolean := False;
-   Secure_Crt    : Ada.Strings.Unbounded.Unbounded_String;
-   Secure_Key    : Ada.Strings.Unbounded.Unbounded_String;
+   Secure_Crt    : String;
+   Secure_Key    : String;
 
    Verbose_Output : Boolean := False;
 

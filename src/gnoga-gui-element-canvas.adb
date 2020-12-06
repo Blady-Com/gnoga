@@ -35,7 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Exceptions;
 
 with Gnoga.Server.Connection;
@@ -48,14 +47,13 @@ package body Gnoga.Gui.Element.Canvas is
 
    overriding procedure Finalize (Object : in out Context_Type) is
    begin
-      Gnoga.Server.Connection.Execute_Script
-        (Object.Connection_ID, "delete gnoga['" & Ada.Strings.Unbounded.To_String (Object.Context_ID) & "'];");
+      Gnoga.Server.Connection.Execute_Script (Object.Connection_ID, "delete gnoga['" & Object.Context_ID & "'];");
    exception
       when E : Gnoga.Server.Connection.Connection_Error =>
          Log
-           ("Connection" & Object.Connection_ID'Img & " error during delete object " &
-            Ada.Strings.Unbounded.To_String (Object.Context_ID));
-         Log (Ada.Exceptions.Exception_Information (E));
+           (From_Latin_1 ("Connection" & Object.Connection_ID'Img) & " error during delete object " &
+            Object.Context_ID);
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 
    ------------
@@ -70,7 +68,8 @@ package body Gnoga.Gui.Element.Canvas is
       ID     : in     String := "")
    is
    begin
-      Canvas.Create_From_HTML (Parent, "<canvas width=" & Width'Img & " height =" & Height'Img & ">", ID);
+      Canvas.Create_From_HTML
+        (Parent, From_Latin_1 ("<canvas width=" & Width'Img & " height =" & Height'Img & ">"), ID);
    end Create;
 
    -------------------
@@ -93,9 +92,8 @@ package body Gnoga.Gui.Element.Canvas is
      (Context : Context_Type)
       return String
    is
-      use Ada.Strings.Unbounded;
    begin
-      return To_String (Context.Context_ID);
+      return Context.Context_ID;
    end ID;
 
    --------------
@@ -117,7 +115,7 @@ package body Gnoga.Gui.Element.Canvas is
       Value   : in     Integer)
    is
    begin
-      Context.Execute (Name & "=" & Value'Img & ";");
+      Context.Execute (Name & "=" & From_Latin_1 (Value'Img) & ";");
    end Property;
 
    procedure Property
@@ -126,7 +124,7 @@ package body Gnoga.Gui.Element.Canvas is
       Value   : in     Boolean)
    is
    begin
-      Context.Execute (Name & "=" & Value'Img & ";");
+      Context.Execute (Name & "=" & From_Latin_1 (Value'Img) & ";");
    end Property;
 
    procedure Property
@@ -135,7 +133,7 @@ package body Gnoga.Gui.Element.Canvas is
       Value   : in     Float)
    is
    begin
-      Context.Execute (Name & "=" & Value'Img & ";");
+      Context.Execute (Name & "=" & From_Latin_1 (Value'Img) & ";");
    end Property;
 
    function Property
@@ -153,11 +151,11 @@ package body Gnoga.Gui.Element.Canvas is
       return Integer
    is
    begin
-      return Integer'Value (Context.Property (Name));
+      return Integer'Value (To_Latin_1 (Context.Property (Name)));
    exception
       when E : others =>
          Log ("Error Property converting to Integer (forced to 0).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return 0;
    end Property;
 
@@ -167,11 +165,11 @@ package body Gnoga.Gui.Element.Canvas is
       return Boolean
    is
    begin
-      return Boolean'Value (Context.Property (Name));
+      return Boolean'Value (To_Latin_1 (Context.Property (Name)));
    exception
       when E : others =>
          Log ("Error Property converting to Boolean (forced to False).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return False;
    end Property;
 
@@ -181,11 +179,11 @@ package body Gnoga.Gui.Element.Canvas is
       return Float
    is
    begin
-      return Float'Value (Context.Property (Name));
+      return Float'Value (To_Latin_1 (Context.Property (Name)));
    exception
       when E : others =>
          Log ("Error Property converting to Float (forced to 0.0).");
-         Log (Ada.Exceptions.Exception_Information (E));
+         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return 0.0;
    end Property;
 

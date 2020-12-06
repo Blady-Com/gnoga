@@ -1,5 +1,3 @@
-with Ada.Strings.Unbounded;
-
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.Base;
@@ -8,12 +6,16 @@ with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.View.Console;
 with Gnoga.Types;
 with Gnoga.Server.Connection;
+with UXStrings;
 
 procedure Forms is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use UXStrings;
+
+   subtype String is UXString;
 
    Last_Parameters : Gnoga.Types.Data_Map_Type;
 
@@ -200,16 +202,15 @@ procedure Forms is
 
    procedure On_Post_Request
      (URI                 : in String;
-      Accepted_Parameters : out Ada.Strings.Unbounded.Unbounded_String);
+      Accepted_Parameters : out String);
 
    procedure On_Post_Request
      (URI                 : in String;
-      Accepted_Parameters : out Ada.Strings.Unbounded.Unbounded_String)
+      Accepted_Parameters : out String)
    is
       pragma Unreferenced (URI);
    begin
-      Accepted_Parameters :=
-        Ada.Strings.Unbounded.To_Unbounded_String ("Some_Text,fspec,Some_Text2");
+      Accepted_Parameters :=        "Some_Text,fspec,Some_Text2";
    end On_Post_Request;
 
    procedure On_Post (URI        : String;

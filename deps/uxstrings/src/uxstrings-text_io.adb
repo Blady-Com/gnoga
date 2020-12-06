@@ -37,7 +37,7 @@ package body UXStrings.Text_IO is
          when Latin_1 =>
             File.Buffer := From_Latin_1 (Buffer (1 .. Last));
          when UTF_8 =>
-            File.Buffer := From_UTF8 (UTF_8_Character_Array (Buffer (1 .. Last)));
+            File.Buffer := From_UTF_8 (UTF_8_Character_Array (Buffer (1 .. Last)));
          when UTF_16BE =>
             null;
          when UTF_16LE =>

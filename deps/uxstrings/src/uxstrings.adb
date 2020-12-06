@@ -243,6 +243,17 @@ package body UXStrings is
    -- From_Latin_1 --
    ------------------
 
+   function From_Latin_1 (Char : Latin_1_Character) return UXString is
+   begin
+      return UXS : UXString do
+         UXS.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (To_UTF8 (Char)));
+      end return;
+   end From_Latin_1;
+
+   ------------------
+   -- From_Latin_1 --
+   ------------------
+
    function From_Latin_1 (Str : Latin_1_Character_Array) return UXString is
    begin
       return UXS : UXString do
@@ -287,6 +298,17 @@ package body UXStrings is
    begin
       return To_Wide_String (String (Source.Chars.all), Substitute);
    end To_BMP;
+
+   --------------
+   -- From_BMP --
+   --------------
+
+   function From_BMP (Char : BMP_Character) return UXString is
+   begin
+      return UXS : UXString do
+         UXS.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (To_UTF8 (Char)));
+      end return;
+   end From_BMP;
 
    --------------
    -- From_BMP --
@@ -341,6 +363,17 @@ package body UXStrings is
    -- From_Unicode --
    ------------------
 
+   function From_Unicode (Char : Unicode_Character) return UXString is
+   begin
+      return UXS : UXString do
+         UXS.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (To_UTF8 (Char)));
+      end return;
+   end From_Unicode;
+
+   ------------------
+   -- From_Unicode --
+   ------------------
+
    function From_Unicode (Str : Unicode_Character_Array) return UXString is
    begin
       return UXS : UXString do
@@ -357,16 +390,16 @@ package body UXStrings is
       return Source.Chars.all;
    end To_UTF_8;
 
-   ---------------
-   -- From_UTF8 --
-   ---------------
+   ----------------
+   -- From_UTF_8 --
+   ----------------
 
-   function From_UTF8 (Str : UTF_8_Character_Array) return UXString is
+   function From_UTF_8 (Str : UTF_8_Character_Array) return UXString is
    begin
       return UXS : UXString do
          UXS.Chars := new UTF_8_Character_Array'(Str);
       end return;
-   end From_UTF8;
+   end From_UTF_8;
 
    ---------------
    -- To_UTF_16 --

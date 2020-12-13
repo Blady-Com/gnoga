@@ -614,19 +614,8 @@ package body UXStrings is
      (Source  : UXString; Pattern : UXString; Going : Direction := Forward;
       Mapping : Wide_Wide_Character_Mapping := Identity) return Natural
    is
-      Ind     : Natural;
-      Item    : UTF8_Code_Point;
-      Pointer : Integer := Source.Chars'First;
-      Count   : Natural := 0;
    begin
-      if Source.Chars /= null and Pattern.Chars /= null then
-         Ind := Index (String (Source.Chars.all), String (Pattern.Chars.all));
-         while Pointer <= Ind loop
-            Get (String (Source.Chars.all), Pointer, Item);
-            Count := Count + 1;
-         end loop;
-      end if;
-      return Count;
+      return Index (Source, Pattern, 1, Going, Mapping);
    end Index;
 
    -----------
@@ -638,8 +627,7 @@ package body UXStrings is
       Mapping : Wide_Wide_Character_Mapping_Function) return Natural
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index unimplemented");
-      return raise Program_Error with "Unimplemented function Index";
+      return Index (Source, Pattern, 1, Going, Mapping);
    end Index;
 
    -----------
@@ -663,9 +651,20 @@ package body UXStrings is
      (Source  : UXString; Pattern : UXString; From : Positive; Going : Direction := Forward;
       Mapping : Wide_Wide_Character_Mapping := Identity) return Natural
    is
+      Pointer1 : Integer := Source.Chars'First;
+      Pointer2 : Integer;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index unimplemented");
-      return raise Program_Error with "Unimplemented function Index";
+      if Source.Chars /= null and Pattern.Chars /= null then
+         Skip (String (Source.Chars.all), Pointer1, From - 1);
+         Pointer2 := Index (String (Source.Chars.all), String (Pattern.Chars.all), Pointer1);
+         if Pointer2 > 0 then
+            return Length (String (Source.Chars.all (Source.Chars'First .. Pointer2 - 1))) + 1;
+         else
+            return 0;
+         end if;
+      else
+         return 0;
+      end if;
    end Index;
 
    -----------
@@ -888,7 +887,7 @@ package body UXStrings is
 
    procedure Delete (Source : in out UXString; From : Positive; Through : Natural) is
       Pointer1     : Integer                 := Source.Chars'First;
-      Pointer2     : Integer                 ;
+      Pointer2     : Integer;
       Saved_Access : UTF_8_Characters_Access := Source.Chars;
    begin
       Skip (String (Source.Chars.all), Pointer1, From - 1);

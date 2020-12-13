@@ -30,19 +30,23 @@ package body UXStrings.Text_IO is
    end To_String;
 
    procedure Read_More (File : in out File_Type) is
-      Buffer : String (1 .. 200);
-      Last   : constant Integer := Read (File.FD, Buffer'Address, Buffer'Length);
+      Buffer_Size : constant         := 200;
+      Buffer      : String (1 .. Buffer_Size);
+      Last        : constant Integer := Read (File.FD, Buffer'Address, Buffer'Length);
    begin
       case File.Scheme is
          when Latin_1 =>
-            File.Buffer := From_Latin_1 (Buffer (1 .. Last));
+            File.Buffer.Append (From_Latin_1 (Buffer (1 .. Last)));
          when UTF_8 =>
-            File.Buffer := From_UTF_8 (UTF_8_Character_Array (Buffer (1 .. Last)));
+            File.Buffer.Append (From_UTF_8 (UTF_8_Character_Array (Buffer (1 .. Last))));
          when UTF_16BE =>
             null;
          when UTF_16LE =>
             null;
       end case;
+      if Last < Buffer_Size then
+         File.EOF := True;
+      end if;
    end Read_More;
 
    ------------
@@ -573,8 +577,7 @@ package body UXStrings.Text_IO is
 
    function End_Of_File (File : in File_Type) return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "End_Of_File unimplemented");
-      return raise Program_Error with "Unimplemented function End_Of_File";
+      return File.EOF and File.Buffer.Length = 0;
    end End_Of_File;
 
    -----------------
@@ -583,8 +586,7 @@ package body UXStrings.Text_IO is
 
    function End_Of_File return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "End_Of_File unimplemented");
-      return raise Program_Error with "Unimplemented function End_Of_File";
+      return End_Of_File (Current_Input);
    end End_Of_File;
 
    -------------
@@ -849,11 +851,18 @@ package body UXStrings.Text_IO is
       EOL : Natural := Index (File.Buffer, LM);
    begin
       while EOL = 0 loop
+         -- Read one more time even if EOF is set, in case of standard input
          Read_More (File);
          EOL := Index (File.Buffer, LM);
+         exit when File.EOF;
       end loop;
-      Slice (File.Buffer, Item, 1, EOL - 1);
-      Delete (File.Buffer, 1, EOL - 1 + LM.Length);
+      if EOL /= 0 then
+         Slice (File.Buffer, Item, 1, EOL - 1);
+         Delete (File.Buffer, 1, EOL - 1 + LM.Length);
+      elsif File.Buffer.Length /= 0 then
+         Item := File.Buffer;
+         File.Buffer := Null_UXString;
+      end if;
    end Get_Line;
 
    --------------

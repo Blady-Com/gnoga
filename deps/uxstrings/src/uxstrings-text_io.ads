@@ -161,6 +161,7 @@ private
       Scheme : Encoding_Scheme;
       Ending : Line_Ending;
       Buffer : UXString;
+      EOF    : Boolean                     := False;
    end record;
 
 end UXStrings.Text_IO;

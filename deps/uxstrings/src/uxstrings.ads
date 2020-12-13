@@ -190,15 +190,15 @@ private
 
    type UTF_8_Characters_Access is access UTF_8_Character_Array;
    type UXString is new Ada.Finalization.Controlled with record
-      Chars          : UTF_8_Characters_Access;
+      Chars          : UTF_8_Characters_Access := new UTF_8_Character_Array (2 .. 1);
       Char           : aliased Char_Type;
       Wide_Char      : aliased Wide_Char_Type;
       Wide_Wide_Char : aliased Wide_Wide_Char_Type;
-      Index          : Natural := 0;
+      Index          : Natural                 := 0;
    end record;
 
-   procedure Adjust     (Object : in out UXString);
-   procedure Finalize   (Object : in out UXString);
+   procedure Adjust (Object : in out UXString);
+   procedure Finalize (Object : in out UXString);
 
    Null_UXString : constant UXString :=
      (Ada.Finalization.Controlled with Chars => new UTF_8_Character_Array (2 .. 1), others => <>);

@@ -98,7 +98,7 @@ package body UXStrings is
 
    function Element (Source : UXString; Index : Positive; Substitute : in Char_Type := '¿') return Char_Type is
       Item    : UTF8_Code_Point;
-      Pointer : Integer := 1;
+      Pointer : Integer := Source.Chars'First;
    begin
       Skip (String (Source.Chars.all), Pointer, Index - 1);
       Get (String (Source.Chars.all), Pointer, Item);
@@ -116,7 +116,7 @@ package body UXStrings is
    function Element (Source : UXString; Index : Positive; Substitute : in Wide_Char_Type := '¿') return Wide_Char_Type
    is
       Item    : UTF8_Code_Point;
-      Pointer : Integer := 1;
+      Pointer : Integer := Source.Chars'First;
    begin
       Skip (String (Source.Chars.all), Pointer, Index - 1);
       Get (String (Source.Chars.all), Pointer, Item);
@@ -133,7 +133,7 @@ package body UXStrings is
 
    function Element (Source : UXString; Index : Positive) return Wide_Wide_Char_Type is
       Item    : UTF8_Code_Point;
-      Pointer : Integer := 1;
+      Pointer : Integer := Source.Chars'First;
    begin
       Skip (String (Source.Chars.all), Pointer, Index - 1);
       Get (String (Source.Chars.all), Pointer, Item);
@@ -184,9 +184,9 @@ package body UXStrings is
    ----------
 
    function Next (Source : UXString; Index : Positive) return Positive is
-      P : Integer := 1;
+      Pointer : Integer := Source.Chars'First;
    begin
-      Skip (String (Source.Chars.all), P, Index);
+      Skip (String (Source.Chars.all), Pointer, Index);
       return Index + 1;
    end Next;
 
@@ -533,12 +533,12 @@ package body UXStrings is
    -----------
 
    function Slice (Source : UXString; Low : Positive; High : Natural) return UXString is
-      Pointer1 : Integer := 1;
-      Pointer2 : Integer := 1;
+      Pointer1 : Integer := Source.Chars'First;
+      Pointer2 : Integer;
    begin
       Skip (String (Source.Chars.all), Pointer1, Low - 1);
       Pointer2 := Pointer1;
-      Skip (String (Source.Chars.all), Pointer2, Low - High + 1);
+      Skip (String (Source.Chars.all), Pointer2, High - Low + 1);
       return UXS : UXString do
          UXS.Chars := new UTF_8_Character_Array'(UTF_8_Character_Array (Source.Chars.all (Pointer1 .. Pointer2 - 1)));
       end return;
@@ -549,8 +549,8 @@ package body UXStrings is
    -----------
 
    procedure Slice (Source : UXString; Target : out UXString; Low : Positive; High : Natural) is
-      Pointer1 : Integer := 1;
-      Pointer2 : Integer := 1;
+      Pointer1 : Integer := Source.Chars'First;
+      Pointer2 : Integer;
    begin
       Skip (String (Source.Chars.all), Pointer1, Low - 1);
       Pointer2 := Pointer1;
@@ -616,7 +616,7 @@ package body UXStrings is
    is
       Ind     : Natural;
       Item    : UTF8_Code_Point;
-      Pointer : Integer := 1;
+      Pointer : Integer := Source.Chars'First;
       Count   : Natural := 0;
    begin
       if Source.Chars /= null and Pattern.Chars /= null then
@@ -887,8 +887,8 @@ package body UXStrings is
    ------------
 
    procedure Delete (Source : in out UXString; From : Positive; Through : Natural) is
-      Pointer1     : Integer                 := 1;
-      Pointer2     : Integer                 := 1;
+      Pointer1     : Integer                 := Source.Chars'First;
+      Pointer2     : Integer                 ;
       Saved_Access : UTF_8_Characters_Access := Source.Chars;
    begin
       Skip (String (Source.Chars.all), Pointer1, From - 1);

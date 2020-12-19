@@ -860,7 +860,7 @@ package body UXStrings.Text_IO is
          Slice (File.Buffer, Item, 1, EOL - 1);
          Delete (File.Buffer, 1, EOL - 1 + LM.Length);
       elsif File.Buffer.Length /= 0 then
-         Item := File.Buffer;
+         Item        := File.Buffer;
          File.Buffer := Null_UXString;
       end if;
    end Get_Line;

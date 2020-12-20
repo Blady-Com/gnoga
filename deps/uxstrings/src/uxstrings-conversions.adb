@@ -26,20 +26,29 @@ package body UXStrings.Conversions is
    -- Integer_Value --
    -------------------
 
-   function Integer_Value (Item : UXString; Base : in NumberBase := 10) return T is
+   function Integer_Value (Item : UXString; Base : in Number_Base := 10) return T is
       package Strings_Edit_T is new Strings_Edit.Integer_Edit (T);
    begin
       return Strings_Edit_T.Value (To_Latin_1 (Item), Base);
    end Integer_Value;
 
-   -----------------
-   -- Real_Value --
-   -----------------
+   --------------------------
+   -- Floating_Point_Value --
+   --------------------------
 
-   function Real_Value (Item : UXString) return T is
+   function Floating_Point_Value (Item : UXString) return T is
    begin
       return T'Wide_Wide_Value (To_Unicode (Item));
-   end Real_Value;
+   end Floating_Point_Value;
+
+   -----------------------
+   -- Fixed_Point_Value --
+   -----------------------
+
+   function Fixed_Point_Value (Item : UXString) return T is
+   begin
+      return T'Wide_Wide_Value (To_Unicode (Item));
+   end Fixed_Point_Value;
 
    ------------------
    -- Scalar_Image --
@@ -54,19 +63,35 @@ package body UXStrings.Conversions is
    -- Integer_Image --
    -------------------
 
-   function Integer_Image (Item : T; Base : in NumberBase := 10) return UXString is
+   function Integer_Image (Item : T; Base : in Number_Base := 10; Prefix : Number_Prefix := None) return UXString is
       package Strings_Edit_T is new Strings_Edit.Integer_Edit (T);
    begin
-      return From_Latin_1 (Strings_Edit_T.Image (Item, Base));
+      case Prefix is
+         when None =>
+            return From_Latin_1 (Strings_Edit_T.Image (Item, Base, False));
+         when ' ' =>
+            return From_Latin_1 (' ' & Strings_Edit_T.Image (Item, Base, False));
+         when '+' =>
+            return From_Latin_1 (Strings_Edit_T.Image (Item, Base, True));
+      end case;
    end Integer_Image;
 
-   ----------------
-   -- Real_Image --
-   ----------------
+   --------------------------
+   -- Floating_Point_Image --
+   --------------------------
 
-   function Real_Image (Item : T) return UXString is
+   function Floating_Point_Image (Item : T) return UXString is
    begin
       return From_Unicode (T'Wide_Wide_Image (Item));
-   end Real_Image;
+   end Floating_Point_Image;
+
+   -----------------------
+   -- Fixed_Point_Image --
+   -----------------------
+
+   function Fixed_Point_Image (Item : T) return UXString is
+   begin
+      return From_Unicode (T'Wide_Wide_Image (Item));
+   end Fixed_Point_Image;
 
 end UXStrings.Conversions;

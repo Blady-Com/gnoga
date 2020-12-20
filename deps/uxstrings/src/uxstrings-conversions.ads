@@ -1,6 +1,7 @@
 package UXStrings.Conversions is
 
-   subtype NumberBase is Integer range 2 .. 16;
+   subtype Number_Base is Integer range 2 .. 16;
+   type Number_Prefix is (None, ' ', '+');
 
    generic
       type T is (<>);
@@ -8,11 +9,15 @@ package UXStrings.Conversions is
 
    generic
       type T is range <>;
-   function Integer_Value (Item : UXString; Base : in NumberBase := 10) return T;
+   function Integer_Value (Item : UXString; Base : in Number_Base := 10) return T;
 
    generic
       type T is digits <>;
-   function Real_Value (Item : UXString) return T;
+   function Floating_Point_Value (Item : UXString) return T;
+
+   generic
+      type T is delta <>;
+   function Fixed_Point_Value (Item : UXString) return T;
 
    generic
       type T is (<>);
@@ -20,10 +25,14 @@ package UXStrings.Conversions is
 
    generic
       type T is range <>;
-   function Integer_Image (Item : T; Base : in NumberBase := 10) return UXString;
+   function Integer_Image (Item : T; Base : in Number_Base := 10; Prefix : Number_Prefix := None) return UXString;
 
    generic
       type T is digits <>;
-   function Real_Image (Item : T) return UXString;
+   function Floating_Point_Image (Item : T) return UXString;
+
+   generic
+      type T is delta <>;
+   function Fixed_Point_Image (Item : T) return UXString;
 
 end UXStrings.Conversions;

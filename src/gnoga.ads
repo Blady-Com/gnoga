@@ -73,8 +73,7 @@ package Gnoga is
      (S        : String;
       Encoding : String := "")
       return String;
-   --  Encode and decode form URL
-   --  Supported encodings are ISO-8859-1 (default)
+   --  Encode and decode form URL Supported encodings are ISO-8859-1 (default)
    --  and UTF-8 (typically from Input_Encoding function)
 
    function Left_Trim
@@ -105,7 +104,8 @@ package Gnoga is
    procedure Log_To_File
      (File_Name  : in String;
       Flush_Auto : in Boolean := False);
-   --  Redirect logging to File_Name instead of console with flushing if specified
+   --  Redirect logging to File_Name instead of console with flushing if
+   --  specified
 
    procedure Log (Message : in String);
    --  Output message to log
@@ -119,11 +119,16 @@ package Gnoga is
    procedure Activate_Exception_Handler (Id : Ada.Task_Identification.Task_Id);
    --  Activate exception log for the designated task
 
-   --  Convenient string conversion of usual types
-   function Value is new UXStrings.Conversions.Scalar_Value (Integer);
-   function Value is new UXStrings.Conversions.Real_Value (Float);
+   --  Convenient string conversions of usual types
+   function Value is new UXStrings.Conversions.Integer_Value (Integer);
+   function Value is new UXStrings.Conversions.Floating_Point_Value (Float);
    function Image is new UXStrings.Conversions.Scalar_Image (Boolean);
-   function Image is new UXStrings.Conversions.Scalar_Image (Integer);
-   function Image is new UXStrings.Conversions.Real_Image (Float);
+   function Base_Image is new UXStrings.Conversions.Integer_Image (Integer);
+   function Image
+     (Item   :    Integer;
+      Base   : in UXStrings.Conversions.Number_Base   := 10;
+      Prefix :    UXStrings.Conversions.Number_Prefix := ' ')
+      return UXString renames Base_Image;
+   function Image is new UXStrings.Conversions.Floating_Point_Image (Float);
 
 end Gnoga;

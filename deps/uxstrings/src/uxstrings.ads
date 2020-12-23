@@ -58,6 +58,7 @@ package UXStrings is
    function First (Source : UXString) return Positive;
    function Next (Source : UXString; Index : Positive) return Positive;
    function Has_Element (Source : UXString; Index : Positive) return Boolean;
+   function Last (Source : UXString) return Natural;
 
    function Is_Latin_1 (Source : UXString; Index : Positive) return Boolean;
    function Is_Latin_1 (Source : UXString) return Boolean;

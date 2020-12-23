@@ -199,6 +199,15 @@ package body UXStrings is
       return Index <= Length (Source);
    end Has_Element;
 
+   ----------
+   -- Last --
+   ----------
+
+   function Last (Source : UXString) return Natural is
+     begin
+      return Length (Source);
+   end Last;
+
    ----------------
    -- Is_Latin_1 --
    ----------------

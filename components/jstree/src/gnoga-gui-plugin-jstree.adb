@@ -59,13 +59,13 @@ package body Gnoga.Gui.Plugin.JSTree is
       return
         From_Latin_1
           ('{' & "'core':{" &
-           (if Options.Plugins (ContextMenu) or Options.Plugins (DragAndDrop) then "'check_callback':true," else "") &
-           "'animation':" & Options.Core.Animation'Img & ',' & "'multiple':" & Options.Core.Multiple'Img & ',' &
-           "'force_text':" & Options.Core.Force_Text'Img & ',' & "'dblclick_toggle':" &
-           Options.Core.DblClick_Toggle'Img & ',' & "'themes':{" & "'dots':" & Options.Core.Themes.Dots'Img & ',' &
-           "'icons':" & Options.Core.Themes.Icons'Img & ',' & "'stripes':" & Options.Core.Themes.Stripes'Img & ',' &
-           '}' & "}," & "'plugins':[") &
-        (if Plugins.Length > 0 then Plugins.Slice (1, Plugins.Length - 1) else "") & ']' & '}';
+           (if Options.Plugins (ContextMenu) or Options.Plugins (DragAndDrop) then "'check_callback':true," else "")) &
+        "'animation':" & Image (Options.Core.Animation) & ',' & "'multiple':" & Image (Options.Core.Multiple) & ',' &
+        "'force_text':" & Image (Options.Core.Force_Text) & ',' & "'dblclick_toggle':" &
+        Image (Options.Core.DblClick_Toggle) & ',' & "'themes':{" & "'dots':" & Image (Options.Core.Themes.Dots) & ',' &
+        "'icons':" & Image (Options.Core.Themes.Icons) & ',' & "'stripes':" & Image (Options.Core.Themes.Stripes) &
+        ',' & '}' & "}," & "'plugins':[" &
+        (if Plugins.Length > 0 then Plugins.Slice (Plugins.First, Plugins.Last - 1) else "") & ']' & '}';
    end Build_Options;
 
    -----------------
@@ -141,7 +141,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       Item.Create (Tree, Name, ID);
       Item.Attribute
         ("data-jstree",
-         '{' & (if Attributes.Length > 0 then Attributes.Slice (1, Attributes.Length - 1) else "") & '}');
+         '{' & (if Attributes.Length > 0 then Attributes.Slice (Attributes.First, Attributes.Last - 1) else "") & '}');
    end Add_Item;
 
    --------------

@@ -99,7 +99,8 @@ package body Gnoga.Server.Model.Queries is
       return Active_Record_Array.Vector
    is
       Remove_s     : constant String := Parent.Table_Name.all;
-      Where_Clause : constant String := Remove_s.Slice (1, Remove_s.Length - 1) & "_id = " & Parent.Value ("id");
+      Where_Clause : constant String :=
+        Remove_s.Slice (Remove_s.First, Remove_s.Last - 1) & "_id = " & Parent.Value ("id");
    begin
       if Like /= "" then
          return Find_All (Child_Table, Parent.Connection, Where_Clause & " and " & Like, Order_By);
@@ -116,7 +117,8 @@ package body Gnoga.Server.Model.Queries is
       return Active_Record_Array.Vector
    is
       Remove_s     : constant String := Parent.Table_Name.all;
-      Where_Clause : constant String := Remove_s.Slice (1, Remove_s.Length - 1) & "_id = " & Parent.Value ("id");
+      Where_Clause : constant String :=
+        Remove_s.Slice (Remove_s.First, Remove_s.Last - 1) & "_id = " & Parent.Value ("id");
    begin
       if Like /= "" then
          return Find_All (Child_Template, Where_Clause & " and " & Like, Order_By);

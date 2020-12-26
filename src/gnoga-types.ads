@@ -88,7 +88,7 @@ package Gnoga.Types is
 
    function To_Hex
      (RGBA : RGBA_Type)
-      return Latin_1_Character_Array;
+      return String;
    --  Returns a 0xRRGGBB representation of RGBA
 
    function To_RGBA

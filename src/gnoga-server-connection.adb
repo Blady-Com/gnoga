@@ -456,7 +456,7 @@ package body Gnoga.Server.Connection is
             if Q = 0 then
                return "";
             else
-               return File_Name.Slice (1, Q - 1);
+               return File_Name.Slice (File_Name.First, Q - 1);
             end if;
          end Start_Path;
 
@@ -466,7 +466,7 @@ package body Gnoga.Server.Connection is
             if Q = 0 then
                return File_Name;
             else
-               return File_Name.Slice (Q + 1, File_Name.Length);
+               return File_Name.Slice (Q + 1, File_Name.Last);
             end if;
          end After_Start_Path;
 
@@ -492,11 +492,13 @@ package body Gnoga.Server.Connection is
          end if;
       end Adjust_Name;
 
+      function Image is new UXStrings.Conversions.Scalar_Image (Status_Line_Type);
+
    begin
       case Status.Kind is
          when None =>
             if Verbose_Output then
-               Gnoga.Log (From_Latin_1 ("Requested: Kind: " & Status.Kind'Img & ", Query: " & Status.Query));
+               Gnoga.Log ("Requested: Kind: " & Image (Status.Kind) & ", Query: " & From_Latin_1 (Status.Query));
                Gnoga.Log ("Reply: Not found");
             end if;
 
@@ -504,8 +506,8 @@ package body Gnoga.Server.Connection is
          when File =>
             if Verbose_Output then
                Gnoga.Log
-                 (From_Latin_1
-                    ("Requested: Kind: " & Status.Kind'Img & ", File: " & Status.File & ", Query: " & Status.Query));
+                 ("Requested: Kind: " & Image (Status.Kind) & ", File: " & From_Latin_1 (Status.File) & ", Query: " &
+                  From_Latin_1 (Status.Query));
             end if;
             Client.Content.Connection_Path := From_Latin_1 (Status.File);
 
@@ -559,8 +561,7 @@ package body Gnoga.Server.Connection is
                            Client.Content.Connection_Type := Long_Polling;
                            Start_Long_Polling_Connect (Client, ID);
 
-                           String_Replace
-                             (Source => F, Pattern => "@@Connection_ID@@", Replacement => From_Latin_1 (ID'Img));
+                           String_Replace (Source => F, Pattern => "@@Connection_ID@@", Replacement => Image (ID));
                            Client.Content.Buffer.Add (F);
 
                            Send_Body (Client, Client.Content'Access, Get);
@@ -599,8 +600,8 @@ package body Gnoga.Server.Connection is
          when URI =>
             if Verbose_Output then
                Gnoga.Log
-                 (From_Latin_1
-                    ("Requested: Kind: " & Status.Kind'Img & ", Path: " & Status.Path & ", Query: " & Status.Query));
+                 ("Requested: Kind: " & Image (Status.Kind) & ", Path: " & From_Latin_1 (Status.Path) & ", Query: " &
+                  From_Latin_1 (Status.Query));
                Gnoga.Log ("Reply: Not found");
             end if;
 
@@ -703,8 +704,8 @@ package body Gnoga.Server.Connection is
          Client.Receive_Body (Standard.String (To_UTF_8 (Param_List)));
       end if;
 
-      if Index (Content_Type, "multipart/form-data") = 1 then
-         if Index (Disposition, "form-data") = 1 then
+      if Index (Content_Type, "multipart/form-data") = Content_Type.First then
+         if Index (Disposition, "form-data") = Disposition.First then
             declare
                Field_ID : constant String := "name=""";
                File_ID  : constant String := "filename=""";
@@ -780,6 +781,7 @@ package body Gnoga.Server.Connection is
       Boot    : in String  := "boot.html";
       Verbose : in Boolean := True)
    is
+      function Image is new UXStrings.Conversions.Integer_Image (GNAT.Sockets.Port_Type);
    begin
       Verbose_Output := Verbose;
 
@@ -800,11 +802,11 @@ package body Gnoga.Server.Connection is
 
          if not Secure_Only then
             Write_To_Console ("Boot file        :" & Boot);
-            Write_To_Console ("HTTP listen on   :" & Host & ":" & Left_Trim (From_Latin_1 (Server_Port'Img)));
+            Write_To_Console ("HTTP listen on   :" & Host & ":" & Left_Trim (Image (Server_Port)));
          end if;
 
          if Secure_Server then
-            Write_To_Console ("HTTPS listen on  :" & Host & ":" & Left_Trim (From_Latin_1 (Secure_Port'Img)));
+            Write_To_Console ("HTTPS listen on  :" & Host & ":" & Left_Trim (Image (Secure_Port)));
          end if;
       end if;
 
@@ -993,7 +995,7 @@ package body Gnoga.Server.Connection is
                Old_Socket.Content.Finalized := True;
             end;
          else
-            raise Connection_Error with "Old connection " & Old_ID'Img & " already gone";
+            raise Connection_Error with "Old connection " & To_Latin_1 (Image (Old_ID)) & " already gone";
          end if;
       end Swap_Connection;
 
@@ -1035,7 +1037,7 @@ package body Gnoga.Server.Connection is
       procedure Delete_Connection (ID : in Gnoga.Types.Connection_ID) is
       begin
          if (ID > 0) then
-            Gnoga.Log (From_Latin_1 ("Deleting connection -" & ID'Img));
+            Gnoga.Log ("Deleting connection -" & Image (ID));
 
             if Connection_Holder_Map.Contains (ID) then
                Connection_Holder_Map.Element (ID).Release;
@@ -1061,7 +1063,7 @@ package body Gnoga.Server.Connection is
          end if;
       exception
          when E : others =>
-            Log (From_Latin_1 ("Delete_Connection " & ID'Img & " error."));
+            Log ("Delete_Connection " & Image (ID) & " error.");
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
       end Delete_Connection;
 
@@ -1069,7 +1071,7 @@ package body Gnoga.Server.Connection is
       begin
          if (ID > 0) and Socket_Map.Contains (ID) then
             if Verbose_Output then
-               Gnoga.Log (From_Latin_1 ("Finalizing connection -" & ID'Img));
+               Gnoga.Log ("Finalizing connection -" & Image (ID));
             end if;
 
             Socket_Map.Element (ID).Content.Finalized := True;
@@ -1115,9 +1117,9 @@ package body Gnoga.Server.Connection is
          Connection_Cursor : constant Socket_Maps.Cursor := Socket_Map.Find (ID);
       begin
          if Connection_Cursor = Socket_Maps.No_Element then
-            Log (From_Latin_1 ("Error Connection_Socket - " & ID'Img & " not found in connection map. "));
+            Log ("Error Connection_Socket - " & Image (ID) & " not found in connection map. ");
             raise Connection_Error
-              with "Connection ID" & ID'Img & " not found in connection map. " &
+              with "Connection ID" & To_Latin_1 (Image (ID)) & " not found in connection map. " &
               "Connection most likely was previously closed.";
          else
             return Socket_Maps.Element (Connection_Cursor);
@@ -1179,12 +1181,12 @@ package body Gnoga.Server.Connection is
          delay 0.3;
          --  Give time to finish handshaking
 
-         Execute_Script (ID, From_Latin_1 ("gnoga['Connection_ID']=" & ID'Img));
+         Execute_Script (ID, "gnoga['Connection_ID']=" & Image (ID));
 
          Execute_Script (ID, "TRUE=true");
          Execute_Script (ID, "FALSE=false");
          --  By setting the variable TRUE and FALSE it is possible to set
-         --  a property or attribute with Boolean'Img which will result
+         --  a property or attribute with Image (Boolean) which will result
          --  in TRUE or FALSE not the case sensitive true or false
          --  expected.
 
@@ -1192,13 +1194,13 @@ package body Gnoga.Server.Connection is
       exception
          when E : Connection_Error =>
             --  Browser was closed by user
-            Log (From_Latin_1 ("Error browser was closed by user -" & ID'Img));
+            Log ("Error browser was closed by user -" & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             Connection_Holder.Release;
          when E : others =>
             Connection_Holder.Release;
 
-            Log (From_Latin_1 ("Error on Connection ID =" & ID'Img));
+            Log ("Error on Connection ID =" & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
       end;
 
@@ -1207,7 +1209,7 @@ package body Gnoga.Server.Connection is
       --  Insure cleanup even if socket not closed by external connection
    exception
       when E : others =>
-         Log (From_Latin_1 ("Connection Manager Error Connection ID =" & ID'Img));
+         Log ("Connection Manager Error Connection ID =" & Image (ID));
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Event_Task_Type;
 
@@ -1223,34 +1225,34 @@ package body Gnoga.Server.Connection is
       begin
          if Socket.Content.Finalized then
             if Verbose_Output then
-               Gnoga.Log (From_Latin_1 ("Ping on Finalized -" & ID'Img));
+               Gnoga.Log ("Ping on Finalized -" & Image (ID));
             end if;
             Connection_Manager.Delete_Connection (ID);
             Socket.Shutdown;
          elsif Socket.Content.Connection_Type = Long_Polling then
             if Verbose_Output then
-               Gnoga.Log (From_Latin_1 ("Ping on long polling -" & ID'Img));
+               Gnoga.Log ("Ping on long polling -" & Image (ID));
             end if;
 
             Execute_Script (ID, "0");
 
          elsif Socket.Content.Connection_Type = WebSocket then
             if Verbose_Output then
-               Gnoga.Log (From_Latin_1 ("Ping on websocket -" & ID'Img));
+               Gnoga.Log ("Ping on websocket -" & Image (ID));
             end if;
 
             Socket.WebSocket_Send ("0");
          end if;
       exception
          when E : Storage_Error =>
-            Gnoga.Log (From_Latin_1 ("Invalid socket, Deleting ID -" & ID'Img));
+            Gnoga.Log ("Invalid socket, Deleting ID -" & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             Connection_Manager.Delete_Connection (ID);
          when E : others =>
-            Log (From_Latin_1 ("Ping" & ID'Img & " error."));
+            Log ("Ping" & Image (ID) & " error.");
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             if Socket.Content.Connection_Type = Long_Polling then
-               Gnoga.Log (From_Latin_1 ("Long polling error closing ID " & ID'Img));
+               Gnoga.Log ("Long polling error closing ID " & Image (ID));
                Socket.Content.Finalized := True;
                Socket.Shutdown;
             else
@@ -1260,14 +1262,14 @@ package body Gnoga.Server.Connection is
                   Socket.WebSocket_Send ("0");
                exception
                   when E : others =>
-                     Log (From_Latin_1 ("Watchdog closed connection ID " & ID'Img));
+                     Log ("Watchdog closed connection ID " & Image (ID));
                      Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
 
                      begin
                         Connection_Manager.Delete_Connection (ID);
                      exception
                         when E : others =>
-                           Log (From_Latin_1 ("Watchdog ping error - " & ID'Img));
+                           Log ("Watchdog ping error - " & Image (ID));
                            Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
                      end;
                end;
@@ -1287,7 +1289,7 @@ package body Gnoga.Server.Connection is
             end loop;
          exception
             when E : others =>
-               Log (From_Latin_1 ("Watchdog error on websocket - " & ID'Img));
+               Log ("Watchdog error on websocket - " & Image (ID));
                Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          end;
 
@@ -1343,7 +1345,7 @@ package body Gnoga.Server.Connection is
          if Object_Map.Contains (ID) then
             return Object_Map.Element (ID);
          else
-            raise No_Object with "ID:" & ID'Img;
+            raise No_Object with "ID:" & To_Latin_1 (Image (ID));
          end if;
       end Get_Object;
 
@@ -1421,7 +1423,7 @@ package body Gnoga.Server.Connection is
          I : constant Integer := Index (F, C);
       begin
          if I > 0 then
-            return F.Slice (I + C.Length, F.Length);
+            return F.Slice (I + C.Length, F.Last);
          else
             return "";
          end if;
@@ -1433,29 +1435,29 @@ package body Gnoga.Server.Connection is
 
       if Old_ID /= "" and Old_ID /= "undefined" then
          if Verbose_Output then
-            Gnoga.Log (From_Latin_1 ("Swapping websocket connection " & ID'Img & " <=> ") & Old_ID);
+            Gnoga.Log ("Swapping websocket connection " & Image (ID) & " <=> " & Old_ID);
          end if;
 
          begin
-            Connection_Manager.Swap_Connection (ID, Gnoga.Types.Connection_ID'Value (To_Latin_1 (Old_ID)));
+            Connection_Manager.Swap_Connection (ID, Value (Old_ID));
          exception
             when E : Connection_Error =>
-               Gnoga.Log (From_Latin_1 ("Connection error - " & ID'Img));
+               Gnoga.Log ("Connection error - " & Image (ID));
                Gnoga.Log (From_Latin_1 (Ada.Exceptions.Exception_Message (E)));
                Client.Content.Finalized := True;
                Connection_Manager.Delete_Connection (ID);
-               Gnoga.Log (From_Latin_1 ("Connection aborted - " & ID'Img));
+               Gnoga.Log ("Connection aborted - " & Image (ID));
          end;
       else
          Connection_Manager.Start_Connection (ID);
 
          if Verbose_Output then
-            Gnoga.Log (From_Latin_1 ("New connection - ID" & ID'Img));
+            Gnoga.Log ("New connection - ID" & Image (ID));
          end if;
       end if;
    exception
       when E : others =>
-         Gnoga.Log (From_Latin_1 ("Open error ID" & ID'Img));
+         Gnoga.Log ("Open error ID" & Image (ID));
          Gnoga.Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end WebSocket_Initialize;
 
@@ -1478,9 +1480,10 @@ package body Gnoga.Server.Connection is
 
          if Verbose_Output then
             if Message /= "" then
-               Gnoga.Log (From_Latin_1 ("Websocket connection closed - ID" & ID'Img & " with message : " & Message));
+               Gnoga.Log
+                 ("Websocket connection closed - ID" & Image (ID) & " with message : " & From_Latin_1 (Message));
             else
-               Gnoga.Log (From_Latin_1 ("Websocket connection closed - ID" & ID'Img));
+               Gnoga.Log ("Websocket connection closed - ID" & Image (ID));
             end if;
          end if;
 
@@ -1503,8 +1506,8 @@ package body Gnoga.Server.Connection is
       S.Content.Finalized := True;
 
       Gnoga.Log
-        (From_Latin_1
-           ("Connection error ID" & ID'Img & " with message : " & Ada.Exceptions.Exception_Information (Error)));
+        ("Connection error ID" & Image (ID) & " with message : " &
+         From_Latin_1 (Ada.Exceptions.Exception_Information (Error)));
       --  If not reconnected by next watchdog ping connection will be deleted.
    end WebSocket_Error;
 
@@ -1522,7 +1525,7 @@ package body Gnoga.Server.Connection is
       Connection_Manager.Start_Connection (ID);
 
       if Verbose_Output then
-         Gnoga.Log (From_Latin_1 ("New long polling connection - ID" & ID'Img));
+         Gnoga.Log ("New long polling connection - ID" & Image (ID));
       end if;
    end Start_Long_Polling_Connect;
 
@@ -1748,14 +1751,14 @@ package body Gnoga.Server.Connection is
 
    procedure Dispatch_Message (Message : in String) is
    begin
-      if Message (1) = Latin_1_Character'('S') then
+      if Message (Message.First) = Character'('S') then
          declare
             P1 : constant Integer := Index (Source => Message, Pattern => "|");
 
-            UID    : constant String := Message.Slice (1 + 2, (P1 - 1));
-            Result : constant String := Message.Slice ((P1 + 1), Message.Length);
+            UID    : constant String := Message.Slice (Message.First + 2, (P1 - 1));
+            Result : constant String := Message.Slice ((P1 + 1), Message.Last);
          begin
-            Script_Manager.Release_Hold (Gnoga.Types.Unique_ID'Value (To_Latin_1 (UID)), Result);
+            Script_Manager.Release_Hold (Value (UID), Result);
          end;
       else
          declare
@@ -1763,12 +1766,11 @@ package body Gnoga.Server.Connection is
 
             P2 : constant Integer := Index (Source => Message, Pattern => "|", From => P1 + 1);
 
-            UID        : constant String := Message.Slice (1, (P1 - 1));
+            UID        : constant String := Message.Slice (Message.First, (P1 - 1));
             Event      : constant String := Message.Slice ((P1 + 1), (P2 - 1));
-            Event_Data : constant String := Message.Slice ((P2 + 1), Message.Length);
+            Event_Data : constant String := Message.Slice ((P2 + 1), Message.Last);
 
-            Object : constant Gnoga.Gui.Base.Pointer_To_Base_Class :=
-              Object_Manager.Get_Object (Integer'Value (To_Latin_1 (UID)));
+            Object : constant Gnoga.Gui.Base.Pointer_To_Base_Class := Object_Manager.Get_Object (Value (UID));
 
             New_ID : Gnoga.Types.Unique_ID;
          begin
@@ -1914,10 +1916,10 @@ package body Gnoga.Server.Connection is
    exception
       when E : Connection_Error =>
          --  Connection already closed.
-         Log (From_Latin_1 ("Connection" & ID'Img & " already closed."));
+         Log ("Connection" & Image (ID) & " already closed.");
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
       when E : others =>
-         Log (From_Latin_1 ("Flush_Buffer Error -" & ID'Img));
+         Log ("Flush_Buffer Error -" & Image (ID));
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Flush_Buffer;
 
@@ -1958,11 +1960,11 @@ package body Gnoga.Server.Connection is
          end if;
       exception
          when E : Ada.Text_IO.End_Error =>
-            Log (From_Latin_1 ("Error Try_Execute - " & ID'Img));
+            Log ("Error Try_Execute - " & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             raise Connection_Error with "Socket Closed before execute of : " & To_Latin_1 (Script);
          when E : others =>
-            Log (From_Latin_1 ("Error Try_Execute - " & ID'Img));
+            Log ("Error Try_Execute - " & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             raise Connection_Error with "Socket Error during execute of : " & To_Latin_1 (Script);
       end Try_Execute;
@@ -1975,7 +1977,7 @@ package body Gnoga.Server.Connection is
       end if;
    exception
       when E : others =>
-         Log (From_Latin_1 ("Error Execute_Script -" & ID'Img));
+         Log ("Error Execute_Script -" & Image (ID));
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          delay 2.0;
          Try_Execute;
@@ -1999,7 +2001,7 @@ package body Gnoga.Server.Connection is
 
             declare
                Message : constant String :=
-                 "ws.send (" & """S" & From_Latin_1 (Script_ID'Img) & "|""+" & "eval (""" & Script & """)" & ");";
+                 "ws.send (" & """S" & Image (Script_ID) & "|""+" & "eval (""" & Script & """)" & ");";
             begin
                if Socket.Content.Connection_Type = Long_Polling then
                   Socket.Content.Buffer.Add ("<script>" & Message & "</script>");
@@ -2029,11 +2031,11 @@ package body Gnoga.Server.Connection is
          end;
       exception
          when E : Ada.Text_IO.End_Error =>
-            Log (From_Latin_1 ("Error Try_Execute -" & ID'Img));
+            Log ("Error Try_Execute -" & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             raise Connection_Error with "Socket Closed before execute of : " & To_Latin_1 (Script);
          when E : others =>
-            Log (From_Latin_1 ("Error Try_Execute -" & ID'Img));
+            Log ("Error Try_Execute -" & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             raise Connection_Error with "Socket Error during execute of : " & To_Latin_1 (Script);
       end Try_Execute;
@@ -2043,21 +2045,21 @@ package body Gnoga.Server.Connection is
             Flush_Buffer (ID);
             return Try_Execute;
          else
-            raise Connection_Error with "Invalid ID " & ID'Img;
+            raise Connection_Error with "Invalid ID " & To_Latin_1 (Image (ID));
          end if;
       exception
          when E : others =>
-            Log (From_Latin_1 ("Error Execute_Script -" & ID'Img));
+            Log ("Error Execute_Script -" & Image (ID));
             Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
             begin
                delay 2.0;
                return Try_Execute;
             exception
                when E : others =>
-                  Log (From_Latin_1 ("Error Execute_Script after retrying -" & ID'Img));
+                  Log ("Error Execute_Script after retrying -" & Image (ID));
                   Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
                   Close (ID);
-                  raise Connection_Error with "Invalid ID " & ID'Img;
+                  raise Connection_Error with "Invalid ID " & To_Latin_1 (Image (ID));
             end;
       end;
    end Execute_Script;
@@ -2104,7 +2106,7 @@ package body Gnoga.Server.Connection is
       return Socket.Content.Connection_Type;
    exception
       when E : Connection_Error =>
-         Log (From_Latin_1 ("Error Connection_Type -" & ID'Img));
+         Log ("Error Connection_Type -" & Image (ID));
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return None;
    end Connection_Type;
@@ -2134,7 +2136,7 @@ package body Gnoga.Server.Connection is
       end if;
    exception
       when E : Connection_Error =>
-         Log (From_Latin_1 ("Error Connection_Path -" & ID'Img));
+         Log ("Error Connection_Path -" & Image (ID));
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return "";
    end Connection_Path;
@@ -2153,7 +2155,7 @@ package body Gnoga.Server.Connection is
       return From_Latin_1 (GNAT.Sockets.Image (Client_Address));
    exception
       when E : Connection_Error =>
-         Log (From_Latin_1 ("Error Connection_Client_Address -" & ID'Img));
+         Log ("Error Connection_Client_Address -" & Image (ID));
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          return "";
    end Connection_Client_Address;
@@ -2240,7 +2242,7 @@ package body Gnoga.Server.Connection is
             end if;
          exception
             when E : others =>
-               Log (From_Latin_1 ("Error Close - " & ID'Img));
+               Log ("Error Close - " & Image (ID));
                Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
          end;
       end if;
@@ -2296,7 +2298,7 @@ package body Gnoga.Server.Connection is
    begin
       New_Unique_ID (New_ID);
 
-      return "g" & Left_Trim (From_Latin_1 (New_ID'Img));
+      return "g" & Left_Trim (Image (New_ID));
    end New_GID;
 
    --------------------------
@@ -2377,7 +2379,7 @@ package body Gnoga.Server.Connection is
             declare
                ID : constant Gnoga.Types.Connection_ID := Connection_Manager.Find_Connection_ID (Source.Socket);
             begin
-               Gnoga.Log ("Shutting down long polling connection -" & From_Latin_1 (ID'Img));
+               Gnoga.Log ("Shutting down long polling connection -" & Image (ID));
                return "";
             end;
          else
@@ -2414,14 +2416,14 @@ package body Gnoga.Server.Connection is
       end if;
 
       if ID /= Gnoga.Types.No_Connection then
-         Gnoga.Log ("Deleting connection during finalize -" & From_Latin_1 (ID'Img));
+         Gnoga.Log ("Deleting connection during finalize -" & Image (ID));
          Connection_Manager.Delete_Connection (ID);
       end if;
 
       HTTP_Client (Client).Finalize;
    exception
       when E : others =>
-         Log ("Error Finalize Gnoga_HTTP_Client -" & From_Latin_1 (ID'Img));
+         Log ("Error Finalize Gnoga_HTTP_Client -" & Image (ID));
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 begin

@@ -83,7 +83,7 @@ package body Gnoga.Gui.Element is
             end if;
 
             declare
-               S : constant String := HTML.Slice (1, P - 1) & " id='" & GID & "'" & HTML.Slice (P, HTML.Length);
+               S : constant String := HTML.Slice (HTML.First, P - 1) & " id='" & GID & "'" & HTML.Slice (P, HTML.Last);
             begin
                Gnoga.Server.Connection.Buffer_Append (Parent.Connection_ID, Unescape_Quotes (S));
 
@@ -177,7 +177,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("css ('" & Name & "'," & From_Latin_1 (Value'Img) & ");");
+      Element.jQuery_Execute ("css ('" & Name & "'," & Image (Value) & ");");
    end Style;
 
    function Style
@@ -195,7 +195,7 @@ package body Gnoga.Gui.Element is
       return Integer
    is
    begin
-      return Integer'Value (To_Latin_1 (Element.Style (Name)));
+      return Value (Element.Style (Name));
    exception
       when E : others =>
          Log ("Error Style converting to Integer (forced to 0).");
@@ -342,8 +342,9 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Clear_Side_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Clear_Side_Type);
    begin
-      Element.Style ("clear", From_Latin_1 (Value'Img));
+      Element.Style ("clear", Image (Value));
    end Clear_Side;
 
    ------------------
@@ -354,8 +355,9 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Float_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Float_Type);
    begin
-      Element.Style ("float", From_Latin_1 (Value'Img));
+      Element.Style ("float", Image (Value));
    end Layout_Float;
 
    -------------
@@ -386,16 +388,18 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Overflow_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Overflow_Type);
    begin
-      Element.Style ("overflow", From_Latin_1 (Value'Img));
+      Element.Style ("overflow", Image (Value));
    end Overflow;
 
    function Overflow
      (Element : Element_Type)
       return Overflow_Type
    is
+      function Value is new UXStrings.Conversions.Scalar_Value (Overflow_Type);
    begin
-      return Overflow_Type'Value (To_Latin_1 (Element.Style ("overflow")));
+      return Value (Element.Style ("overflow"));
    exception
       when E : others =>
          Log ("Error Overflow converting to Overflow_Type" & " (forced to Visible).");
@@ -411,8 +415,9 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Overflow_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Overflow_Type);
    begin
-      Element.Style ("overflow-x", From_Latin_1 (Value'Img));
+      Element.Style ("overflow-x", Image (Value));
    end Overflow_X;
 
    ----------------
@@ -423,8 +428,9 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Overflow_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Overflow_Type);
    begin
-      Element.Style ("overflow-y", From_Latin_1 (Value'Img));
+      Element.Style ("overflow-y", Image (Value));
    end Overflow_Y;
 
    -------------
@@ -436,7 +442,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.Style ("z-index", From_Latin_1 (Value'Img));
+      Element.Style ("z-index", Image (Value));
    end Z_Index;
 
    ---------------
@@ -447,16 +453,18 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Resizable_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Resizable_Type);
    begin
-      Element.Style ("resize", From_Latin_1 (Value'Img));
+      Element.Style ("resize", Image (Value));
    end Resizable;
 
    function Resizable
      (Element : Element_Type)
       return Resizable_Type
    is
+      function Value is new UXStrings.Conversions.Scalar_Value (Resizable_Type);
    begin
-      return Resizable_Type'Value (To_Latin_1 (Element.Style ("resize")));
+      return Value (Element.Style ("resize"));
    exception
       when E : others =>
          Log ("Error Resizable converting to Resizable_Type" & " (forced to None).");
@@ -472,16 +480,18 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Position_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Position_Type);
    begin
-      Element.Style ("position", From_Latin_1 (Value'Img));
+      Element.Style ("position", Image (Value));
    end Position;
 
    function Position
      (Element : Element_Type)
       return Position_Type
    is
+      function Value is new UXStrings.Conversions.Scalar_Value (Position_Type);
    begin
-      return Position_Type'Value (To_Latin_1 (Element.Style ("position")));
+      return Value (Element.Style ("position"));
    exception
       when E : others =>
          Log ("Error Position converting to Position_Type" & " (forced to Static).");
@@ -547,7 +557,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("left", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("left", Left_Trim (Image (Value)) & Unit);
    end Left;
 
    procedure Left
@@ -576,7 +586,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("right", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("right", Left_Trim (Image (Value)) & Unit);
    end Right;
 
    procedure Right
@@ -605,7 +615,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("top", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("top", Left_Trim (Image (Value)) & Unit);
    end Top;
 
    procedure Top
@@ -634,7 +644,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("bottom", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("bottom", Left_Trim (Image (Value)) & Unit);
    end Bottom;
 
    procedure Bottom
@@ -663,7 +673,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("height", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("height", Left_Trim (Image (Value)) & Unit);
       Element.On_Message ("resize", "");
    end Box_Height;
 
@@ -694,7 +704,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("min-height", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("min-height", Left_Trim (Image (Value)) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Height;
 
@@ -725,7 +735,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("max-height", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("max-height", Left_Trim (Image (Value)) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Height;
 
@@ -756,7 +766,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("width", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("width", Left_Trim (Image (Value)) & Unit);
       Element.On_Message ("resize", "");
    end Box_Width;
 
@@ -787,7 +797,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("min-width", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("min-width", Left_Trim (Image (Value)) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Width;
 
@@ -818,7 +828,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("max-width", Left_Trim (From_Latin_1 (Value'Img)) & Unit);
+      Element.Style ("max-width", Left_Trim (Image (Value)) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Width;
 
@@ -1064,7 +1074,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("innerHeight(" & Left_Trim (From_Latin_1 (Value'Img)) & ");");
+      Element.jQuery_Execute ("innerHeight(" & Left_Trim (Image (Value)) & ");");
       Element.On_Message ("resize", "");
    end Inner_Height;
 
@@ -1085,7 +1095,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("innerWidth(" & Left_Trim (From_Latin_1 (Value'Img)) & ");");
+      Element.jQuery_Execute ("innerWidth(" & Left_Trim (Image (Value)) & ");");
       Element.On_Message ("resize", "");
    end Inner_Width;
 
@@ -1349,16 +1359,18 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Alpha   : in     Gnoga.Types.Alpha_Type)
    is
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Alpha_Type);
    begin
-      Element.Style ("opacity", From_Latin_1 (Alpha'Img));
+      Element.Style ("opacity", Image (Alpha));
    end Opacity;
 
    function Opacity
      (Element : Element_Type)
       return Gnoga.Types.Alpha_Type
    is
+      function Value is new UXStrings.Conversions.Fixed_Point_Value (Gnoga.Types.Alpha_Type);
    begin
-      return Gnoga.Types.Alpha_Type'Value (To_Latin_1 (Element.Style ("opacity")));
+      return Value (Element.Style ("opacity"));
    exception
       when E : others =>
          Log ("Error Opacity converting to Alpha_Type (forced to 1.0).");
@@ -1374,8 +1386,9 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Background_Attachment_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Background_Attachment_Type);
    begin
-      Element.Style ("background-attachment", From_Latin_1 (Value'Img));
+      Element.Style ("background-attachment", Image (Value));
    end Background_Attachment;
 
    function Background_Attachment
@@ -1383,11 +1396,12 @@ package body Gnoga.Gui.Element is
       return Background_Attachment_Type
    is
       Value : constant String := Element.Style ("background-color");
+      function Val is new UXStrings.Conversions.Scalar_Value (Background_Attachment_Type);
    begin
       if Value = "" then
          return Scroll;
       else
-         return Background_Attachment_Type'Value (To_Latin_1 (Value));
+         return Val (Value);
       end if;
    end Background_Attachment;
 
@@ -1561,8 +1575,9 @@ package body Gnoga.Gui.Element is
       Style   : in     Border_Style                         := Solid;
       Color   : in     Gnoga.Types.Colors.Color_Enumeration := Gnoga.Types.Colors.Black)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Border_Style);
    begin
-      Element.Style ("border", Width & " " & From_Latin_1 (Style'Img) & " " & Gnoga.Types.Colors.To_String (Color));
+      Element.Style ("border", Width & " " & Image (Style) & " " & Gnoga.Types.Colors.To_String (Color));
    end Border;
 
    -------------------
@@ -1626,8 +1641,9 @@ package body Gnoga.Gui.Element is
       Style   : in     Outline_Style_Type := None;
       Width   : in     String             := "medium")
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Outline_Style_Type);
    begin
-      Element.Style ("outline", Color & " " & From_Latin_1 (Style'Img) & " " & Width);
+      Element.Style ("outline", Color & " " & Image (Style) & " " & Width);
    end Outline;
 
    ------------
@@ -1688,9 +1704,10 @@ package body Gnoga.Gui.Element is
      (Value : in Gnoga.Gui.Element.Font_Weight_Type)
       return String
    is
-      W : constant String := From_Latin_1 (Value'Img);
+      function Img is new UXStrings.Conversions.Scalar_Image (Gnoga.Gui.Element.Font_Weight_Type);
+      W : constant String := Img (Value);
    begin
-      return W.Slice (8, W.Length);
+      return W.Slice (W.First + 7, W.Last);
    end Image;
 
    -----------
@@ -1701,8 +1718,9 @@ package body Gnoga.Gui.Element is
      (Value : in String)
       return Gnoga.Gui.Element.Font_Weight_Type
    is
+      function Val is new UXStrings.Conversions.Scalar_Value (Gnoga.Gui.Element.Font_Weight_Type);
    begin
-      return Gnoga.Gui.Element.Font_Weight_Type'Value ("Weight_" & To_Latin_1 (Value));
+      return Val ("Weight_" & Value);
    end Value;
 
    ----------
@@ -1717,21 +1735,24 @@ package body Gnoga.Gui.Element is
       Weight  : in     Font_Weight_Type  := Weight_Normal;
       Variant : in     Font_Variant_Type := Normal)
    is
-      W : constant String := From_Latin_1 (Weight'Img);
+      W : constant String := Image (Weight);
+      function Image is new UXStrings.Conversions.Scalar_Image (Font_Style_Type);
+      function Image is new UXStrings.Conversions.Scalar_Image (Font_Variant_Type);
    begin
       Element.Style
         ("font",
-         From_Latin_1 (Style'Img & " " & Variant'Img) & " " & W.Slice (8, W.Length) & " " & Height & " " & Family);
+         Image (Style) & " " & Image (Variant) & " " & W.Slice (W.First + 7, W.Last) & " " & Height & " " & Family);
    end Font;
 
    procedure Font
      (Element     : in out Element_Type;
       System_Font : in     System_Font_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (System_Font_Type);
    begin
       case System_Font is
          when Caption | Icon | Menu =>
-            Element.Style ("font", From_Latin_1 (System_Font'Img));
+            Element.Style ("font", Image (System_Font));
          when Message_Box =>
             Element.Style ("font", "message-box");
          when Small_Caption =>
@@ -1749,13 +1770,14 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Alignment_Type)
    is
-      V : constant String := From_Latin_1 (Value'Img);
+      function Image is new UXStrings.Conversions.Scalar_Image (Alignment_Type);
+      V : constant String := Image (Value);
    begin
       case Value is
          when Left | Right | Center =>
             Element.Style ("text-align", V);
          when At_Start | To_End =>
-            Element.Style ("text-align", V.Slice ((4), V.Length));
+            Element.Style ("text-align", V.Slice ((V.First + 3), V.Last));
       end case;
    end Text_Alignment;
 
@@ -1767,13 +1789,14 @@ package body Gnoga.Gui.Element is
      (Element : in out Element_Type;
       Value   : in     Vertical_Align_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Vertical_Align_Type);
    begin
       if Value = Text_Top then
          Element.Style ("vertical-align", "text-top");
       elsif Value = Text_Bottom then
          Element.Style ("vertical-align", "text-bottom");
       else
-         Element.Style ("vertical-align", From_Latin_1 (Value'Img));
+         Element.Style ("vertical-align", Image (Value));
       end if;
    end Vertical_Align;
 

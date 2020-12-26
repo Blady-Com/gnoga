@@ -51,7 +51,7 @@ package body Gnoga.Server.Database is
       if Right = 0 then
          return Data;
       else
-         return Data.Slice (1, Right - 1);
+         return Data.Slice (Data.First, Right - 1);
       end if;
    end Field_Type;
 
@@ -68,9 +68,9 @@ package body Gnoga.Server.Database is
             Comma : constant Natural := Index (Option, ",");
          begin
             if Comma = 0 then
-               return Natural'Value (To_Latin_1 (Option));
+               return Value (Option);
             else
-               return Natural'Value (To_Latin_1 (Option.Slice (1, Comma - 1)));
+               return Value (Option.Slice (Option.First, Comma - 1));
             end if;
          end;
       end if;
@@ -90,7 +90,7 @@ package body Gnoga.Server.Database is
       if Comma = 0 then
          return 0;
       else
-         return Natural'Value (To_Latin_1 (Option.Slice (Comma + 1, Option.Length)));
+         return Value (Option.Slice (Comma + 1, Option.Last));
       end if;
    end Field_Decimals;
 

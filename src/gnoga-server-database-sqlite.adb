@@ -159,8 +159,7 @@ package body Gnoga.Server.Database.SQLite is
          result : constant Integer := sqlite3_step;
       begin
          if result /= SQLITE_OK and result /= SQLITE_ROW and result /= SQLITE_DONE then
-            raise Query_Error
-              with To_Latin_1 (SQL) & " => " & result'Img & " - " & To_Latin_1 (Error_Message (C.Server_ID));
+            raise Query_Error with To_Latin_1 (SQL & " => " & Image (result) & " - " & Error_Message (C.Server_ID));
          end if;
       end;
 
@@ -373,7 +372,7 @@ package body Gnoga.Server.Database.SQLite is
 
       R := sqlite3_step;
       if R /= SQLITE_OK and R /= SQLITE_ROW and R /= SQLITE_DONE then
-         raise Query_Error with To_Latin_1 (SQL) & " => " & R'Img & " - " & To_Latin_1 (Error_Message (C.Server_ID));
+         raise Query_Error with To_Latin_1 (SQL & " => " & Image (R) & " - " & Error_Message (C.Server_ID));
       end if;
 
       RS.Last_Result := R;
@@ -697,7 +696,7 @@ package body Gnoga.Server.Database.SQLite is
       Active :        Boolean := True)
    is
    begin
-      C.Execute_Query ("PRAGMA full_column_names = " & From_Latin_1 (Active'Img));
+      C.Execute_Query ("PRAGMA full_column_names = " & Image (Active));
    end Full_Column_Names;
    function Full_Column_Names
      (C : in out Connection)
@@ -706,7 +705,7 @@ package body Gnoga.Server.Database.SQLite is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query ("PRAGMA full_column_names");
    begin
       if RS.Next then
-         return Result : constant Boolean := Boolean'Val (Integer'Value (To_Latin_1 (RS.Field_Value (1)))) do
+         return Result : constant Boolean := Boolean'Val (Value (RS.Field_Value (1))) do
             RS.Close;
          end return;
       else
@@ -724,7 +723,7 @@ package body Gnoga.Server.Database.SQLite is
       Active :        Boolean := True)
    is
    begin
-      C.Execute_Query ("PRAGMA short_column_names = " & From_Latin_1 (Active'Img));
+      C.Execute_Query ("PRAGMA short_column_names = " & Image (Active));
    end Short_Column_Names;
    function Short_Column_Names
      (C : in out Connection)
@@ -733,7 +732,7 @@ package body Gnoga.Server.Database.SQLite is
       RS : Gnoga.Server.Database.Recordset'Class := C.Query ("PRAGMA short_column_names");
    begin
       if RS.Next then
-         return Result : constant Boolean := Boolean'Val (Integer'Value (To_Latin_1 (RS.Field_Value (1)))) do
+         return Result : constant Boolean := Boolean'Val (Value (RS.Field_Value (1))) do
             RS.Close;
          end return;
       else

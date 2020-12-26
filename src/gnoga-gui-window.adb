@@ -65,8 +65,8 @@ package body Gnoga.Gui.Window is
       return Storage_Event_Record
    is
       Event : Storage_Event_Record;
-      S     : Integer := 1;
-      F     : Integer := 0;
+      S     : Integer := Message.First;
+      F     : Integer := Message.First - 1;
 
       function Split return String;
       function Split return Boolean;
@@ -115,7 +115,7 @@ package body Gnoga.Gui.Window is
       if Object.Free_Connection_Data then
          Free_Data (P);
          Object.Connection_Data (null);
-         Log (From_Latin_1 ("Connection_Data freed " & Object.Connection_ID'Image));
+         Log ("Connection_Data freed on ID " & Image (Object.Connection_ID));
       end if;
    exception
       when E : others =>
@@ -166,7 +166,7 @@ package body Gnoga.Gui.Window is
          raise Invalid_ID_Type;
       end if;
 
-      Attach (Window, Gnoga.Types.Connection_ID'Value (To_Latin_1 (CID)));
+      Attach (Window, Value (CID));
    exception
       when E : others =>
          Log ("Unable to find gnoga['Connection_ID'] on " & ID & " eval returned : " & CID);
@@ -186,7 +186,7 @@ package body Gnoga.Gui.Window is
         Gnoga.Server.Connection.Execute_Script
           (Parent.Connection_ID, Base.Script_Accessor (Window.ID, Window.ID_Type) & ".gnoga['Connection_ID']");
    begin
-      Window.Connection_ID (Gnoga.Types.Connection_ID'Value (To_Latin_1 (CID)));
+      Window.Connection_ID (Value (CID));
    end Reattach;
 
    ---------------------------
@@ -495,15 +495,15 @@ package body Gnoga.Gui.Window is
          use Ada.Strings;
          use Ada.Calendar.Formatting;
 
+         function Image is new UXStrings.Conversions.Fixed_Point_Image (Ada.Calendar.Day_Duration);
+
          Now : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       begin
          return
-           Trim (From_Latin_1 (Year (Now)'Img), Side => Both) & Trim (From_Latin_1 (Month (Now)'Img), Side => Both) &
-           Trim (From_Latin_1 (Day (Now)'Img), Side => Both) & Trim (From_Latin_1 (Hour (Now)'Img), Side => Both) &
-           Trim (From_Latin_1 (Minute (Now)'Img), Side => Both) & Trim (From_Latin_1 (Second (Now)'Img), Side => Both) &
-           Translate
-             (Trim (From_Latin_1 (Sub_Second (Now)'Img), Side => Both),
-              Ada.Strings.Wide_Wide_Maps.To_Mapping (".", "0"));
+           Trim (Image (Year (Now)), Side => Both) & Trim (Image (Month (Now)), Side => Both) &
+           Trim (Image (Day (Now)), Side => Both) & Trim (Image (Hour (Now)), Side => Both) &
+           Trim (Image (Minute (Now)), Side => Both) & Trim (Image (Second (Now)), Side => Both) &
+           Translate (Trim (Image (Sub_Second (Now)), Side => Both), Ada.Strings.Wide_Wide_Maps.To_Mapping (".", "0"));
       end Generate_Session_ID;
 
       S   : Session_Storage_Type := Session_Storage (Window);
@@ -603,19 +603,19 @@ package body Gnoga.Gui.Window is
 
       begin
          if Width > -1 then
-            Add_Param ("width", From_Latin_1 (Width'Img));
+            Add_Param ("width", Image (Width));
          end if;
 
          if Height > -1 then
-            Add_Param ("height", From_Latin_1 (Height'Img));
+            Add_Param ("height", Image (Height));
          end if;
 
          if Top > -1 then
-            Add_Param ("top", From_Latin_1 (Top'Img));
+            Add_Param ("top", Image (Top));
          end if;
 
          if Left > -1 then
-            Add_Param ("left", From_Latin_1 (Left'Img));
+            Add_Param ("left", Image (Left));
          end if;
 
          Add_Param ("menubar", Menu);
@@ -712,7 +712,7 @@ package body Gnoga.Gui.Window is
       Width, Height :        Integer)
    is
    begin
-      Window.Execute (From_Latin_1 ("resizeBy(" & Width'Img & "," & Height'Img & ");"));
+      Window.Execute ("resizeBy(" & Image (Width) & "," & Image (Height) & ");");
    end Resize_By;
 
    ---------------
@@ -724,7 +724,7 @@ package body Gnoga.Gui.Window is
       Width, Height :        Integer)
    is
    begin
-      Window.Execute (From_Latin_1 ("resizeTo(" & Width'Img & "," & Height'Img & ");"));
+      Window.Execute ("resizeTo(" & Image (Width) & "," & Image (Height) & ");");
    end Resize_To;
 
    -------------
@@ -736,7 +736,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute (From_Latin_1 ("moveBy(" & X'Img & "," & Y'Img & ");"));
+      Window.Execute ("moveBy(" & Image (X) & "," & Image (Y) & ");");
    end Move_By;
 
    -------------
@@ -748,7 +748,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute (From_Latin_1 ("moveTo(" & X'Img & "," & Y'Img & ");"));
+      Window.Execute ("moveTo(" & Image (X) & "," & Image (Y) & ");");
    end Move_To;
 
    ---------------
@@ -760,7 +760,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute (From_Latin_1 ("scrollBy(" & X'Img & "," & Y'Img & ");"));
+      Window.Execute ("scrollBy(" & Image (X) & "," & Image (Y) & ");");
    end Scroll_By;
 
    ---------------
@@ -772,7 +772,7 @@ package body Gnoga.Gui.Window is
       X, Y   :        Integer)
    is
    begin
-      Window.Execute (From_Latin_1 ("scrollTo(" & X'Img & "," & Y'Img & ");"));
+      Window.Execute ("scrollTo(" & Image (X) & "," & Image (Y) & ");");
    end Scroll_To;
 
    ----------------------

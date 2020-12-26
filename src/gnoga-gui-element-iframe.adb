@@ -50,8 +50,7 @@ package body Gnoga.Gui.Element.IFrame is
    is
    begin
       IFrame.Create_From_HTML
-        (Parent, Escape_Quotes ("<iframe src='" & URL & "' seamless=" & From_Latin_1 (Seamless'Img) & "></iframe>"),
-         ID);
+        (Parent, Escape_Quotes ("<iframe src='" & URL & "' seamless=" & Image (Seamless) & "></iframe>"), ID);
 
       IFrame.Frame.Attach
         (Connection_ID => Parent.Connection_ID, ID => IFrame.Script_Accessor & ".prop('contentWindow')",

@@ -73,7 +73,7 @@ package body Gnoga.Application.Gtk_Window is
       accept Start;
 
       Launch_Gtk_Window
-        (URL    => "http://127.0.0.1:" & Gnoga.Left_Trim (From_Latin_1 (Global_Port'Img)) & nul, Width => Global_Width,
+        (URL    => "http://127.0.0.1:" & Gnoga.Left_Trim (Image (Global_Port)) & nul, Width => Global_Width,
          Height => Global_Height);
    end Gtk_Win_Launcher;
 

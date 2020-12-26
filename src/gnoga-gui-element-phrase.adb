@@ -47,8 +47,9 @@ package body Gnoga.Gui.Element.Phrase is
       Phrase : in     Phrase_Description_Type;
       ID     : in     String := "")
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Phrase_Description_Type);
    begin
-      View.Create_From_HTML (Parent, "<" & From_Latin_1 (Phrase'Img) & " />", ID);
+      View.Create_From_HTML (Parent, "<" & Image (Phrase) & " />", ID);
    end Create;
 
 end Gnoga.Gui.Element.Phrase;

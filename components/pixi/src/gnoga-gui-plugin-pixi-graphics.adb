@@ -90,8 +90,9 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in out Graphics_Type;
       Value    : in     Blend_Modes_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Blend_Modes_Type);
    begin
-      Graphics.Property ("blendMode", From_Latin_1 (Value'Img));
+      Graphics.Property ("blendMode", Image (Value));
    end Blend_Mode;
 
    ----------------
@@ -102,8 +103,9 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in Graphics_Type)
       return Blend_Modes_Type
    is
+      function Value is new UXStrings.Conversions.Scalar_Value (Blend_Modes_Type);
    begin
-      return Blend_Modes_Type'Value (To_Latin_1 (Graphics.Property ("blendMode")));
+      return Value (Graphics.Property ("blendMode"));
    end Blend_Mode;
 
    --------------------
@@ -334,7 +336,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Graphics.Connection_ID,
-         "gnoga['" & Graphics.ID & From_Latin_1 ("'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};"));
+         "gnoga['" & Graphics.ID & "'].scale = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
    end Scale;
 
    ---------------
@@ -372,7 +374,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    begin
       Gnoga.Server.Connection.Execute_Script
         (Graphics.Connection_ID,
-         "gnoga['" & Graphics.ID & From_Latin_1 ("'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};"));
+         "gnoga['" & Graphics.ID & "'].skew = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
    end Skew;
 
    --------------
@@ -469,9 +471,8 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    is
    begin
       Graphics.Execute
-        (From_Latin_1
-           ("arc(" & X'Img & "," & Y'Img & "," & Radius'Img & "," & Starting_Angle'Img & "," & Ending_Angle'Img & "," &
-            Counter_Clockwise'Img & ");"));
+        ("arc(" & Image (X) & "," & Image (Y) & "," & Image (Radius) & "," & Image (Starting_Angle) & "," &
+         Image (Ending_Angle) & "," & Image (Counter_Clockwise) & ");");
    end Arc_Radians;
 
    -----------------
@@ -502,7 +503,8 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    is
    begin
       Graphics.Execute
-        (From_Latin_1 ("arcTo(" & X_1'Img & "," & Y_1'Img & "," & X_2'Img & "," & Y_2'Img & "," & Radius'Img & ");"));
+        ("arcTo(" & Image (X_1) & "," & Image (Y_1) & "," & Image (X_2) & "," & Image (Y_2) & "," & Image (Radius) &
+         ");");
    end Arc_To;
 
    ----------------
@@ -523,8 +525,9 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Color    : in     Gnoga.Types.RGBA_Type;
       Alpha    : in     Gnoga.Types.Alpha_Type := 1.0)
    is
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Alpha_Type);
    begin
-      Graphics.Execute (From_Latin_1 ("beginFill(" & Gnoga.Types.To_Hex (Color) & ", " & Alpha'Img & ");"));
+      Graphics.Execute ("beginFill(" & Gnoga.Types.To_Hex (Color) & ", " & Image (Alpha) & ");");
    end Begin_Fill;
 
    --------------
@@ -547,9 +550,8 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    is
    begin
       Graphics.Execute
-        (From_Latin_1
-           ("bezierCurveTo(" & CP_X_1'Img & "," & CP_Y_1'Img & "," & CP_X_2'Img & "," & CP_Y_2'Img & "," & X'Img & "," &
-            Y'Img & ");"));
+        ("bezierCurveTo(" & Image (CP_X_1) & "," & Image (CP_Y_1) & "," & Image (CP_X_2) & "," & Image (CP_Y_2) & "," &
+         Image (X) & "," & Image (Y) & ");");
    end Bezier_Curve_To;
 
    -----------
@@ -580,7 +582,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       return Boolean
    is
    begin
-      return Graphics.Execute (From_Latin_1 ("containsPoint({x:" & Column'Img & ",y:" & Row'Img & "});")) = "true";
+      return Graphics.Execute ("containsPoint({x:" & Image (Column) & ",y:" & Image (Row) & "});") = "true";
    end Contains_Point;
 
    -----------------
@@ -593,7 +595,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Radius   : in     Integer)
    is
    begin
-      Graphics.Execute (From_Latin_1 ("drawCircle(" & X'Img & ',' & Y'Img & ',' & Radius'Img & ");"));
+      Graphics.Execute ("drawCircle(" & Image (X) & ',' & Image (Y) & ',' & Image (Radius) & ");");
    end Draw_Circle;
 
    ------------------
@@ -607,7 +609,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    is
    begin
       Graphics.Execute
-        (From_Latin_1 ("drawEllipse(" & X'Img & ',' & Y'Img & ',' & Width'Img & ',' & Height'Img & ");"));
+        ("drawEllipse(" & Image (X) & ',' & Image (Y) & ',' & Image (Width) & ',' & Image (Height) & ");");
    end Draw_Ellipse;
 
    ------------------
@@ -618,17 +620,16 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
      (Graphics : in out Graphics_Type;
       Path     : in     Gnoga.Types.Point_Array_Type)
    is
-      use type Ada.Strings.Unbounded.Unbounded_String;
-      S : Ada.Strings.Unbounded.Unbounded_String;
+      S : String;
    begin
       for Point of Path loop
-         if S = Ada.Strings.Unbounded.Null_Unbounded_String then
-            S := Ada.Strings.Unbounded.To_Unbounded_String (Point.X'Img & ',' & Point.Y'Img);
+         if S = Null_UXString then
+            S := Image (Point.X) & ',' & Image (Point.Y);
          else
-            S := S & ',' & Point.X'Img & ',' & Point.Y'Img;
+            S := S & ',' & Image (Point.X) & ',' & Image (Point.Y);
          end if;
       end loop;
-      Graphics.Execute (From_Latin_1 ("drawPolygon(" & Ada.Strings.Unbounded.To_String (S) & ");"));
+      Graphics.Execute ("drawPolygon(" & S & ");");
    end Draw_Polygon;
 
    ---------------
@@ -640,7 +641,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       X, Y, Width, Height : in     Integer)
    is
    begin
-      Graphics.Execute (From_Latin_1 ("drawRect(" & X'Img & ',' & Y'Img & ',' & Width'Img & ',' & Height'Img & ");"));
+      Graphics.Execute ("drawRect(" & Image (X) & ',' & Image (Y) & ',' & Image (Width) & ',' & Image (Height) & ");");
    end Draw_Rect;
 
    -----------------------
@@ -653,7 +654,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    is
    begin
       Graphics.Execute
-        (From_Latin_1 ("drawRoundedRect(" & X'Img & ',' & Y'Img & ',' & Width'Img & ',' & Height'Img & ");"));
+        ("drawRoundedRect(" & Image (X) & ',' & Image (Y) & ',' & Image (Width) & ',' & Image (Height) & ");");
    end Draw_Rounded_Rect;
 
    -----------------------------
@@ -689,9 +690,10 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       Color      : in     Gnoga.Types.RGBA_Type;
       Alpha      : in     Gnoga.Types.Alpha_Type := 1.0)
    is
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Alpha_Type);
    begin
       Graphics.Execute
-        (From_Latin_1 ("lineStyle(" & Line_Width'Img & ',' & Gnoga.Types.To_Hex (Color) & ',' & Alpha'Img & ");"));
+        ("lineStyle(" & Image (Line_Width) & ',' & Gnoga.Types.To_Hex (Color) & ',' & Image (Alpha) & ");");
    end Line_Style;
 
    -------------
@@ -703,7 +705,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       X, Y     : in     Integer)
    is
    begin
-      Graphics.Execute (From_Latin_1 ("lineTo(" & X'Img & "," & Y'Img & ");"));
+      Graphics.Execute ("lineTo(" & Image (X) & "," & Image (Y) & ");");
    end Line_To;
 
    -------------
@@ -715,7 +717,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
       X, Y     : in     Integer)
    is
    begin
-      Graphics.Execute (From_Latin_1 ("moveTo(" & X'Img & "," & Y'Img & ");"));
+      Graphics.Execute ("moveTo(" & Image (X) & "," & Image (Y) & ");");
    end Move_To;
 
    ------------------------
@@ -728,7 +730,7 @@ package body Gnoga.Gui.Plugin.Pixi.Graphics is
    is
    begin
       Graphics.Execute
-        (From_Latin_1 ("quadraticCurveTo(" & CP_X'Img & "," & CP_Y'Img & "," & X'Img & "," & Y'Img & ");"));
+        ("quadraticCurveTo(" & Image (CP_X) & "," & Image (CP_Y) & "," & Image (X) & "," & Image (Y) & ");");
    end Quadratic_Curve_To;
 
 end Gnoga.Gui.Plugin.Pixi.Graphics;

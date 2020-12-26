@@ -192,8 +192,9 @@ package body Gnoga.Gui.Document is
      (Document : Document_Type)
       return Ready_State_Type
    is
+      function Value is new UXStrings.Conversions.Scalar_Value (Ready_State_Type);
    begin
-      return Ready_State_Type'Value (To_Latin_1 (Document.Property ("readyState")));
+      return Value (Document.Property ("readyState"));
    end Ready_State;
 
    --------------

@@ -223,10 +223,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
      (Text        : in out Text_Type;
       Row, Column : in     Gnoga.Types.Frational_Range_Type)
    is
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Frational_Range_Type);
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" & Text.ID & From_Latin_1 ("'].anchor = {x:" & Column'Img & ",y:" & Row'Img & "};"));
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].anchor = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
    end Anchor;
 
    ----------------
@@ -261,8 +261,9 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
      (Text  : in out Text_Type;
       Value : in     Blend_Modes_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Blend_Modes_Type);
    begin
-      Text.Property ("blendMode", From_Latin_1 (Value'Img));
+      Text.Property ("blendMode", Image (Value));
    end Blend_Mode;
 
    ----------------
@@ -273,8 +274,9 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
      (Text : in Text_Type)
       return Blend_Modes_Type
    is
+      function Value is new UXStrings.Conversions.Scalar_Value (Blend_Modes_Type);
    begin
-      return Blend_Modes_Type'Value (To_Latin_1 (Text.Property ("blendMode")));
+      return Value (Text.Property ("blendMode"));
    end Blend_Mode;
 
    -------------
@@ -311,8 +313,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" & Text.ID & From_Latin_1 ("'].pivot = {x:" & Column'Img & ",y:" & Row'Img & "};"));
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].pivot = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
    end Pivot;
 
    ---------------
@@ -469,8 +470,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" & Text.ID & From_Latin_1 ("'].scale = {x:" & Column'Img & ",y:" & Row'Img & "};"));
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].scale = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
    end Scale;
 
    ---------------
@@ -507,8 +507,7 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
    is
    begin
       Gnoga.Server.Connection.Execute_Script
-        (Text.Connection_ID,
-         "gnoga['" & Text.ID & From_Latin_1 ("'].skew = {x:" & Column'Img & ",y:" & Row'Img & "};"));
+        (Text.Connection_ID, "gnoga['" & Text.ID & "'].skew = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
    end Skew;
 
    --------------

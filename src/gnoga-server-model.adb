@@ -94,7 +94,7 @@ package body Gnoga.Server.Model is
       Integer_Value : in     Integer)
    is
    begin
-      Value (A, Field_Name, Gnoga.Left_Trim (From_Latin_1 (Integer_Value'Img)));
+      Value (A, Field_Name, Gnoga.Left_Trim (Image (Integer_Value)));
    end Value;
 
    procedure Value
@@ -190,14 +190,14 @@ package body Gnoga.Server.Model is
             v : constant String := values;
 
             Insert_String : constant String :=
-              "insert into " & A.Table_Name.all & " (" & f.Slice (1, f.Length - 1) & ") VALUES (" &
-              v.Slice (1, v.Length - 1) & ")";
+              "insert into " & A.Table_Name.all & " (" & f.Slice (f.First, f.Last - 1) & ") VALUES (" &
+              v.Slice (v.First, v.Last - 1) & ")";
          begin
             A.Connection.Execute_Query (Insert_String);
             declare
-               New_ID : constant String := From_Latin_1 (A.Connection.Insert_ID'Img);
+               New_ID : constant String := Image (A.Connection.Insert_ID);
             begin
-               A.Value ("id", New_ID.Slice (2, New_ID.Length));
+               A.Value ("id", New_ID.Slice (New_ID.First + 1, New_ID.Last));
                A.Is_New := False;
             end;
          end;
@@ -206,7 +206,7 @@ package body Gnoga.Server.Model is
             f : constant String := fields;
 
             Update_String : constant String :=
-              "update " & A.Table_Name.all & " set " & f.Slice (1, f.Length - 1) & " where id=" &
+              "update " & A.Table_Name.all & " set " & f.Slice (f.First, f.Last - 1) & " where id=" &
               A.Values.Element ("id");
          begin
             A.Connection.Execute_Query (Update_String);
@@ -245,9 +245,9 @@ package body Gnoga.Server.Model is
       ID : in     Positive)
    is
 
-      Key : constant String                       := From_Latin_1 (ID'Img);
+      Key : constant String                       := Image (ID);
       RS  : Gnoga.Server.Database.Recordset'Class :=
-        A.Connection.Query ("select * from " & A.Table_Name.all & " where id=" & Key.Slice (2, Key.Length));
+        A.Connection.Query ("select * from " & A.Table_Name.all & " where id=" & Key.Slice (Key.First + 1, Key.Last));
    begin
       RS.Next;
       A.Is_New := False; -- If no exception is raised then this is not new
@@ -260,7 +260,7 @@ package body Gnoga.Server.Model is
       ID : in     String)
    is
    begin
-      Find (A, Positive'Value (To_Latin_1 (ID)));
+      Find (A, Value (ID));
    end Find;
 
    ----------------
@@ -303,7 +303,8 @@ package body Gnoga.Server.Model is
    is
       Remove_s : constant String := Parent.Table_Name.all;
 
-      Where_Clause : constant String := Remove_s.Slice (1, Remove_s.Length - 1) & "_id = " & Parent.Value ("id");
+      Where_Clause : constant String :=
+        Remove_s.Slice (Remove_s.First, Remove_s.Last - 1) & "_id = " & Parent.Value ("id");
    begin
       A.Find_Where (Where_Clause, Create_New);
    end Find_Item;

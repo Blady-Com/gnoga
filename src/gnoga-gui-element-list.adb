@@ -71,11 +71,12 @@ package body Gnoga.Gui.Element.List is
          if P = 0 then
             return S;
          else
-            return Adjusted_Image (S.Slice (1, (P - 1)) & "-" & S.Slice ((P + 1), S.Length));
+            return Adjusted_Image (S.Slice (S.First, (P - 1)) & "-" & S.Slice ((P + 1), S.Last));
          end if;
       end Adjusted_Image;
+      function Image is new UXStrings.Conversions.Scalar_Image (List_Kind_Type);
    begin
-      List.Style ("list-style-type", Adjusted_Image (From_Latin_1 (Value'Img)));
+      List.Style ("list-style-type", Adjusted_Image (Image (Value)));
    end List_Kind;
 
    -------------------
@@ -86,8 +87,9 @@ package body Gnoga.Gui.Element.List is
      (List  : in out Ordered_List_Type;
       Value : in     List_Location_Type)
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (List_Location_Type);
    begin
-      List.Style ("list-style-position", From_Latin_1 (Value'Img));
+      List.Style ("list-style-position", Image (Value));
    end List_Location;
 
    ------------

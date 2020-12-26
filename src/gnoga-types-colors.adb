@@ -218,8 +218,9 @@ package body Gnoga.Types.Colors is
      (Value : Color_Enumeration)
       return String
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (CSS_Color_Enumeration);
    begin
-      return From_Latin_1 (CSS_Color_Enumeration'Image (CSS_Color_Enumeration'Val (Color_Enumeration'Pos (Value))));
+      return Image (CSS_Color_Enumeration'Val (Color_Enumeration'Pos (Value)));
    end To_String;
 
    -------------
@@ -259,8 +260,9 @@ package body Gnoga.Types.Colors is
      (Value : String)
       return Color_Enumeration
    is
+      function Val is new UXStrings.Conversions.Scalar_Value (CSS_Color_Enumeration);
    begin
-      return Color_Enumeration'Val (CSS_Color_Enumeration'Pos (CSS_Color_Enumeration'Value (To_Latin_1 (Value))));
+      return Color_Enumeration'Val (CSS_Color_Enumeration'Pos (Val (Value)));
    exception
       when E : Constraint_Error =>
          Log ("Error converting to Color_Enumeration from " & Value);

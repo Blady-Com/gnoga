@@ -55,15 +55,9 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       is
          Ind : constant Natural := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) - 1;
       begin
-         if Line.Length < Ind then
-            Last := Line.Length;
-            Line := Slice (Buffer, 1, Line.Length);
-            Delete (Buffer, 1, Line.Length);
-         else
-            Last := Ind;
-            Line := Slice (Buffer, 1, Ind);
-            Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
-         end if;
+         Last := Line.First + Ind - 1;
+         Line := Slice (Buffer, 1, Ind);
+         Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
          NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Read;
 
@@ -124,7 +118,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Console.Anchor.Create (Console, 0, 0);
       Console.Editor_Execute ("gnoga_prompt=0;");
       Console.Editor_Execute
-        ("sendEvent = function (e, m) {ws.send ('" & Trim (From_Latin_1 (Console.Unique_ID'Img), Ada.Strings.Both) &
+        ("sendEvent = function (e, m) {ws.send ('" & Trim (Image (Console.Unique_ID), Ada.Strings.Both) &
          "|' + e + '|' + m);}");
       Console.Editor_Execute
         ("commands.on('exec', function(e) {" & "    if (e.command.readOnly) return;" & "    var editableRow = " &
@@ -220,7 +214,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       for I in 1 .. Spacing loop
          Console.Anchor.Insert_New_Line_At_Anchor;
       end loop;
-      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
+      Console.Editor_Execute ("gnoga_prompt=" & Image (Console.Anchor.Position.Column) & ';');
    end New_Line;
 
    ---------------
@@ -375,7 +369,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    is
    begin
       Console.Anchor.Insert_Text_At_Anchor (From_Unicode (Item));
-      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
+      Console.Editor_Execute ("gnoga_prompt=" & Image (Console.Anchor.Position.Column) & ';');
    end Put;
 
    ----------------
@@ -447,7 +441,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       pragma Unreferenced (Class, ID);
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);
-      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
+      Console.Editor_Execute ("gnoga_prompt=" & Image (Console.Anchor.Position.Column) & ';');
    end Put;
 
    --------------
@@ -491,7 +485,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
    begin
       Console.Anchor.Insert_Text_At_Anchor (Message);
       Console.Anchor.Insert_New_Line_At_Anchor;
-      Console.Editor_Execute (From_Latin_1 ("gnoga_prompt=" & Console.Anchor.Position.Column'Img & ';'));
+      Console.Editor_Execute ("gnoga_prompt=" & Image (Console.Anchor.Position.Column) & ';');
    end Put_Line;
 
    ----------------------

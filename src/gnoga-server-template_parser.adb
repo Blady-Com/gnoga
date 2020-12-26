@@ -82,9 +82,9 @@ package body Gnoga.Server.Template_Parser is
       Key   :        String;
       Value :        Integer)
    is
-      String_Value : constant String := From_Latin_1 (Integer'Image (Value));
+      String_Value : constant String := Image (Value);
    begin
-      Insert (Data, Key, String_Value.Slice (2, String_Value.Length));
+      Insert (Data, Key, String_Value.Slice (String_Value.First + 1, String_Value.Last));
    end Insert;
 
    ------------------
@@ -98,9 +98,9 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in Vector.First_Index .. Vector.Last_Index loop
          declare
-            K : constant String := From_Latin_1 (I'Img);
+            K : constant String := Image (I);
          begin
-            Data.Insert (K.Slice (2, K.Length), Vector.Element (I));
+            Data.Insert (K.Slice (K.First + 1, K.Last), Vector.Element (I));
          end;
       end loop;
    end Insert_Array;
@@ -118,9 +118,9 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in Vector.First_Index .. Vector.Last_Index loop
          declare
-            K : constant String := From_Latin_1 (I'Img);
+            K : constant String := Image (I);
          begin
-            Map.Insert (K.Slice (2, K.Length), Vector.Element (I));
+            Map.Insert (K.Slice (K.First + 1, K.Last), Vector.Element (I));
          end;
       end loop;
 
@@ -171,10 +171,10 @@ package body Gnoga.Server.Template_Parser is
    begin
       while RS.Next loop
          declare
-            Key : constant String := From_Latin_1 (I'Img);
+            Key : constant String := Image (I);
          begin
             I := I + 1;
-            Data.Insert_Map_Item (Key.Slice (2, Key.Length), RS.Field_Values);
+            Data.Insert_Map_Item (Key.Slice (Key.First + 1, Key.Last), RS.Field_Values);
          end;
       end loop;
    end Insert_Recordset;
@@ -203,9 +203,9 @@ package body Gnoga.Server.Template_Parser is
    begin
       for I in 1 .. Natural (Row.Length) loop
          declare
-            Key : constant String := From_Latin_1 (I'Img);
+            Key : constant String := Image (I);
          begin
-            Data.Insert_Record_Item (Key => Key.Slice (2, Key.Length), Row => Row.Element (I));
+            Data.Insert_Record_Item (Key => Key.Slice (Key.First + 1, Key.Last), Row => Row.Element (I));
          end;
       end loop;
    end Insert_Rows;
@@ -244,7 +244,7 @@ package body Gnoga.Server.Template_Parser is
    is
       Templates_Dir : constant String := Template_Directory;
    begin
-      if Index (Name, ":") > 0 or Name (1) = GNAT.OS_Lib.Directory_Separator then
+      if Index (Name, ":") > 0 or Name (Name.First) = GNAT.OS_Lib.Directory_Separator then
          return Name;
       end if;
 

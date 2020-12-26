@@ -83,12 +83,12 @@ package body Gnoga.Server.Template_Parser.Python is
          return "";
       else
          declare
-            New_Char : constant Unicode_Character := Code (1);
+            New_Char : constant Unicode_Character := Code (Code.First);
          begin
             if New_Char = ''' then
-               return "\'" & Python_Encode_Key (Code.Slice (1 + 1, Code.Length));
+               return "\'" & Python_Encode_Key (Code.Slice (Code.First + 1, Code.Last));
             else
-               return New_Char & Python_Encode_Key (Code.Slice (1 + 1, Code.Length));
+               return New_Char & Python_Encode_Key (Code.Slice (Code.First + 1, Code.Last));
             end if;
          end;
       end if;
@@ -107,12 +107,12 @@ package body Gnoga.Server.Template_Parser.Python is
          return "";
       else
          declare
-            New_Char : constant Unicode_Character := Code (1);
+            New_Char : constant Unicode_Character := Code (Code.First);
          begin
             if New_Char = '"' then
-               return "\""" & Python_Encode_Value (Code.Slice (1 + 1, Code.Length));
+               return "\""" & Python_Encode_Value (Code.Slice (Code.First + 1, Code.Last));
             else
-               return New_Char & Python_Encode_Value (Code.Slice (1 + 1, Code.Length));
+               return New_Char & Python_Encode_Value (Code.Slice (Code.First + 1, Code.Last));
             end if;
          end;
       end if;

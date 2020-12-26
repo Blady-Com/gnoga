@@ -53,10 +53,12 @@ package body Gnoga.Types is
      (RGBA : RGBA_Type)
       return String
    is
+      function Image is new UXStrings.Conversions.Scalar_Image (Color_Type);
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Alpha_Type);
    begin
       return
-        "rgba(" & Left_Trim (From_Latin_1 (RGBA.Red'Img)) & "," & Left_Trim (From_Latin_1 (RGBA.Green'Img)) & "," &
-        Left_Trim (From_Latin_1 (RGBA.Blue'Img)) & "," & Left_Trim (From_Latin_1 (RGBA.Alpha'Img)) & ")";
+        "rgba(" & Left_Trim (Image (RGBA.Red)) & "," & Left_Trim (Image (RGBA.Green)) & "," &
+        Left_Trim (Image (RGBA.Blue)) & "," & Left_Trim (Image (RGBA.Alpha)) & ")";
    end To_String;
 
    ------------
@@ -65,9 +67,9 @@ package body Gnoga.Types is
 
    function To_Hex
      (RGBA : RGBA_Type)
-      return Latin_1_Character_Array
+      return String
    is
-      Hex : constant Latin_1_Character_Array := "0123456789ABCDEF";
+      Hex : constant String := "0123456789ABCDEF";
    begin
       return
         "0x" & Hex (Natural (RGBA.Red) / 16 + 1) & Hex (Natural (RGBA.Red) mod 16 + 1) &
@@ -84,7 +86,7 @@ package body Gnoga.Types is
       return RGBA_Type
    is
    begin
-      if Value (1) = Latin_1_Character'('#') then
+      if Value (Value.First) = Character'('#') then
          return To_RGBA_From_Hex (Value);
       else
          return To_RGBA_From_RGB_or_RGBA (Value);
@@ -100,7 +102,7 @@ package body Gnoga.Types is
       return RGBA_Type
    is
       RGBA : RGBA_Type;
-      P    : constant Integer := 1;
+      P    : constant Integer := Value.First;
    begin
       if Value.Length = 7 then
          RGBA.Red   := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 1), (P + 2))) & '#');
@@ -131,8 +133,8 @@ package body Gnoga.Types is
      (Value : String)
       return RGBA_Type
    is
-      S    : Integer := 1;
-      F    : Integer := 0;
+      S    : Integer := Value.First;
+      F    : Integer := Value.First - 1;
       RGBA : RGBA_Type;
 
       function Split
@@ -160,16 +162,18 @@ package body Gnoga.Types is
         (P : String)
          return Color_Type
       is
+         function Value is new UXStrings.Conversions.Scalar_Value (Color_Type);
       begin
-         return Color_Type'Value (To_Latin_1 (Split (P)));
+         return Value (Split (P));
       end Split;
 
       function Split
         (P : String)
          return Alpha_Type
       is
+         function Value is new UXStrings.Conversions.Fixed_Point_Value (Alpha_Type);
       begin
-         return Alpha_Type'Value (To_Latin_1 (Split (P)));
+         return Value (Split (P));
       end Split;
 
       rtype : constant String := Split ("(");

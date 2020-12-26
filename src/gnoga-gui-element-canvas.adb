@@ -50,9 +50,7 @@ package body Gnoga.Gui.Element.Canvas is
       Gnoga.Server.Connection.Execute_Script (Object.Connection_ID, "delete gnoga['" & Object.Context_ID & "'];");
    exception
       when E : Gnoga.Server.Connection.Connection_Error =>
-         Log
-           (From_Latin_1 ("Connection" & Object.Connection_ID'Img) & " error during delete object " &
-            Object.Context_ID);
+         Log ("Connection" & Image (Object.Connection_ID) & " error during delete object " & Object.Context_ID);
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 
@@ -68,8 +66,7 @@ package body Gnoga.Gui.Element.Canvas is
       ID     : in     String := "")
    is
    begin
-      Canvas.Create_From_HTML
-        (Parent, From_Latin_1 ("<canvas width=" & Width'Img & " height =" & Height'Img & ">"), ID);
+      Canvas.Create_From_HTML (Parent, "<canvas width=" & Image (Width) & " height =" & Image (Height) & ">", ID);
    end Create;
 
    -------------------
@@ -115,7 +112,7 @@ package body Gnoga.Gui.Element.Canvas is
       Value   : in     Integer)
    is
    begin
-      Context.Execute (Name & "=" & From_Latin_1 (Value'Img) & ";");
+      Context.Execute (Name & "=" & Image (Value) & ";");
    end Property;
 
    procedure Property
@@ -124,7 +121,7 @@ package body Gnoga.Gui.Element.Canvas is
       Value   : in     Boolean)
    is
    begin
-      Context.Execute (Name & "=" & From_Latin_1 (Value'Img) & ";");
+      Context.Execute (Name & "=" & Image (Value) & ";");
    end Property;
 
    procedure Property
@@ -133,7 +130,7 @@ package body Gnoga.Gui.Element.Canvas is
       Value   : in     Float)
    is
    begin
-      Context.Execute (Name & "=" & From_Latin_1 (Value'Img) & ";");
+      Context.Execute (Name & "=" & Image (Value) & ";");
    end Property;
 
    function Property
@@ -151,7 +148,7 @@ package body Gnoga.Gui.Element.Canvas is
       return Integer
    is
    begin
-      return Integer'Value (To_Latin_1 (Context.Property (Name)));
+      return Value (Context.Property (Name));
    exception
       when E : others =>
          Log ("Error Property converting to Integer (forced to 0).");
@@ -164,8 +161,9 @@ package body Gnoga.Gui.Element.Canvas is
       Name    : String)
       return Boolean
    is
+      function Value is new UXStrings.Conversions.Scalar_Value (Boolean);
    begin
-      return Boolean'Value (To_Latin_1 (Context.Property (Name)));
+      return Value (Context.Property (Name));
    exception
       when E : others =>
          Log ("Error Property converting to Boolean (forced to False).");
@@ -179,7 +177,7 @@ package body Gnoga.Gui.Element.Canvas is
       return Float
    is
    begin
-      return Float'Value (To_Latin_1 (Context.Property (Name)));
+      return Value (Context.Property (Name));
    exception
       when E : others =>
          Log ("Error Property converting to Float (forced to 0.0).");

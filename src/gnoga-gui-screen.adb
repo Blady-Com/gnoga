@@ -48,8 +48,7 @@ package body Gnoga.Gui.Screen is
       return Integer
    is
    begin
-      return
-        Integer'Value (To_Latin_1 (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.width;")));
+      return Value (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.width;"));
    end Width;
 
    ------------
@@ -61,8 +60,7 @@ package body Gnoga.Gui.Screen is
       return Integer
    is
    begin
-      return
-        Integer'Value (To_Latin_1 (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.height;")));
+      return Value (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.height;"));
    end Height;
 
    ----------------------
@@ -74,9 +72,7 @@ package body Gnoga.Gui.Screen is
       return Integer
    is
    begin
-      return
-        Integer'Value
-          (To_Latin_1 (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.availHeight;")));
+      return Value (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.availHeight;"));
    end Available_Height;
 
    ---------------------
@@ -88,9 +84,7 @@ package body Gnoga.Gui.Screen is
       return Integer
    is
    begin
-      return
-        Integer'Value
-          (To_Latin_1 (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.availWidth;")));
+      return Value (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.availWidth;"));
    end Available_Width;
 
    -----------------
@@ -102,9 +96,7 @@ package body Gnoga.Gui.Screen is
       return Integer
    is
    begin
-      return
-        Integer'Value
-          (To_Latin_1 (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.colorDepth;")));
+      return Value (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.colorDepth;"));
    end Color_Depth;
 
    -----------------
@@ -116,9 +108,7 @@ package body Gnoga.Gui.Screen is
       return Integer
    is
    begin
-      return
-        Integer'Value
-          (To_Latin_1 (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.pixelDepth;")));
+      return Value (Gnoga.Server.Connection.Execute_Script (Window.Connection_ID, "screen.pixelDepth;"));
    end Pixel_Depth;
 
 end Gnoga.Gui.Screen;

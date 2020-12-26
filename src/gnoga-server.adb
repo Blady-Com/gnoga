@@ -86,8 +86,8 @@ package body Gnoga.Server is
    function Application_Directory return String is
       Exe : constant String := Executable_Directory;
    begin
-      if Exe.Slice (Exe.Length - 3, Exe.Length - 1) = "bin" then
-         return Exe.Slice (1, Exe.Length - 4);
+      if Exe.Slice (Exe.Last - 3, Exe.Last - 1) = "bin" then
+         return Exe.Slice (Exe.First, Exe.Last - 4);
       else
          return Exe;
       end if;

@@ -321,7 +321,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          end if;
       end Dash_String;
    begin
-      Context.Execute ("setLineDash([" & Dash_String (1) & "]);");
+      Context.Execute ("setLineDash([" & Dash_String (Dash_List'First) & "]);");
    end Set_Line_Dash;
 
    ----------
@@ -342,7 +342,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       W : constant String := Image (Weight);
    begin
       Context.Property
-        ("font", Image (Style) & " " & Image (Variant) & " " & W.Slice (8, W.Length) & " " & Height & " " & Family);
+        ("font",
+         Image (Style) & " " & Image (Variant) & " " & W.Slice (W.First + 7, W.Last) & " " & Height & " " & Family);
    end Font;
 
    procedure Font
@@ -378,7 +379,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          when Left | Right | Center =>
             Context.Property ("textAlign", V);
          when At_Start | To_End =>
-            Context.Property ("textAlign", V.Slice (4, V.Length));
+            Context.Property ("textAlign", V.Slice ((V.First + 3), V.Last));
       end case;
    end Text_Alignment;
 
@@ -403,8 +404,9 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
      (Context : in out Context_2D_Type;
       Alpha   : in     Gnoga.Types.Alpha_Type)
    is
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Alpha_Type);
    begin
-      Context.Property ("globalAlpha", From_Latin_1 (Alpha'Image));
+      Context.Property ("globalAlpha", Image (Alpha));
    end Global_Alpha;
 
    --------------------------------
@@ -422,9 +424,9 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          when Lighter | Copy =>
             Context.Property ("globalCompositeOperation", V);
          when Source_Over | Source_Atop | Source_In | Source_Out =>
-            Context.Property ("globalCompositeOperation", "source-" & V.Slice ((1 + 7), V.Length));
+            Context.Property ("globalCompositeOperation", "source-" & V.Slice ((V.First + 7), V.Last));
          when Destination_Over | Destination_Atop | Destination_In | Destination_Out =>
-            Context.Property ("globalCompositeOperation", "destination-" & V.Slice ((1 + 12), V.Length));
+            Context.Property ("globalCompositeOperation", "destination-" & V.Slice ((V.First + 12), V.Last));
          when Xor_Copy =>
             Context.Property ("globalCompositeOperation", "xor");
       end case;
@@ -496,8 +498,9 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       Position : in     Gnoga.Types.Frational_Range_Type;
       Color    : in     String)
    is
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Frational_Range_Type);
    begin
-      Gradient.Execute ("addColorStop (" & From_Latin_1 (Position'Image) & ", '" & Color & "');");
+      Gradient.Execute ("addColorStop (" & Image (Position) & ", '" & Color & "');");
    end Add_Color_Stop;
 
    procedure Add_Color_Stop
@@ -970,24 +973,24 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
 
       D : Gnoga.Types.Pixel_Data_Type (1 .. Width, 1 .. Height);
 
-      S : Integer := 1;
-      F : Integer := 1 - 1;
+      S : Integer := Value.First;
+      F : Integer := Value.First - 1;
 
       function Split return Color_Type;
       --  Split string and extract values
 
       function Split return Color_Type is
-         function Color_Value is new UXStrings.Conversions.Scalar_Value (Color_Type);
+         function Val is new UXStrings.Conversions.Scalar_Value (Color_Type);
       begin
          S := F + 1;
          F := Index (Source => Value, Pattern => ",", From => S);
 
          if F = 0 then
-            F := Value.Length;
-            return Color_Value (Value.Slice (S, F));
+            F := Value.Last;
+            return Val (Value.Slice (S, F));
          end if;
 
-         return Color_Value (Value.Slice (S, F - 1));
+         return Val (Value.Slice (S, F - 1));
       end Split;
    begin
       for X in 1 .. Width loop

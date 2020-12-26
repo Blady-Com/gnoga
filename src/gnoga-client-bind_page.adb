@@ -53,15 +53,15 @@ package body Gnoga.Client.Bind_Page is
 
       declare
          Buf : constant String := Gnoga.Server.Connection.Execute_Script (View.Connection_ID, "gnoga['idbuf']");
-         S   : Integer         := 1;
-         F   : Integer         := 1 - 1;
+         S   : Integer         := Buf.First;
+         F   : Integer         := Buf.First - 1;
 
          procedure Split;
 
          procedure Split is
          begin
             S := F + 1;
-            if S <= Buf.Length then
+            if S <= Buf.Last then
                F := Index (Source => Buf, Pattern => "|", From => S);
                declare
                   ID : constant String                           := Buf.Slice (S, (F - 1));

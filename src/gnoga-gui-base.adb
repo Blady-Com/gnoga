@@ -84,8 +84,8 @@ package body Gnoga.Gui.Base is
       return Mouse_Event_Record
    is
       Event  : Mouse_Event_Record;
-      S      : Integer := 1;
-      F      : Integer := 1 - 1;
+      S      : Integer := Message.First;
+      F      : Integer := Message.First - 1;
       Button : Integer;
 
       function Split return String;
@@ -154,8 +154,8 @@ package body Gnoga.Gui.Base is
       return Keyboard_Event_Record
    is
       Event : Keyboard_Event_Record;
-      S     : Integer := 1;
-      F     : Integer := 0;
+      S     : Integer := Message.First;
+      F     : Integer := Message.First - 1;
 
       function Split return String;
       function Split return Integer;
@@ -175,7 +175,7 @@ package body Gnoga.Gui.Base is
          if Index (S, ".") > 0 then
             return Integer (Float'(Value (S)));
          else
-            return Integer'(Value (S));
+            return Value (S);
          end if;
       exception
          when E : others =>
@@ -214,8 +214,8 @@ package body Gnoga.Gui.Base is
       Message : in     String)
       return String
    is
-      S : Integer := 1;
-      F : Integer := 0;
+      S : Integer := Message.First;
+      F : Integer := Message.First - 1;
 
       function Split return String;
       function Split return Integer;
@@ -233,7 +233,7 @@ package body Gnoga.Gui.Base is
          if Index (S, ".") > 0 then
             return Integer (Float'(Value (S)));
          else
-            return Integer'(Value (S));
+            return Value (S);
          end if;
       exception
          when E : others =>
@@ -2108,7 +2108,7 @@ package body Gnoga.Gui.Base is
    is
       US : constant String := Image (Object.Unique_ID);
 
-      Full_Message : constant String := US.Slice (1 + 1, US.Length) & "|" & Event & "|" & Message;
+      Full_Message : constant String := US.Slice (US.First + 1, US.Last) & "|" & Event & "|" & Message;
 
       function If_Script return String;
       function Cancel_Event return String;
@@ -2263,7 +2263,7 @@ package body Gnoga.Gui.Base is
       if Index (R, ".") > 0 then
          return Integer (Float'(Value (R)));
       else
-         return Integer'(Value (R));
+         return Value (R);
       end if;
    exception
       when E : others =>

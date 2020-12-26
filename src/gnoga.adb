@@ -100,19 +100,19 @@ package body Gnoga is
       return String
    is
 
-      C : Integer := 1;
+      C : Integer := S.First;
 
       function Translate_Character return String;
 
       function Translate_Character return String is
       begin
-         if C < S.Length - 1 then
-            if S.Slice (C, C + 1) = "\\" then
+         if C < S.Last - 1 then
+            if S.slice (C, C + 1) = "\\" then
                C := C + 2;
                return "\";
             elsif S.Slice (C, C + 1) = "\x" then
                declare
-                  H : constant Integer := Integer'Value (To_Latin_1 ("16#" & S.Slice (C + 2, C + 3) & "#"));
+                  H : constant Integer := Value (S.Slice (C + 2, C + 3), 16);
                begin
                   C := C + 4;
 
@@ -122,7 +122,7 @@ package body Gnoga is
          end if;
 
          declare
-            R : constant String := From_Unicode (S (C));
+            R : constant String := S.Slice (C, C);
          begin
             C := C + 1;
             return R;
@@ -133,7 +133,7 @@ package body Gnoga is
    begin
       loop
          Append (R, Translate_Character);
-         exit when C > S.Length;
+         exit when C > S.Last;
       end loop;
 
       return R;
@@ -192,18 +192,17 @@ package body Gnoga is
       Encoding : String := "")
       return String
    is
-      C : Integer                          := 1;
-      L : constant Latin_1_Character_Array := To_Latin_1 (S);
+      C : Integer := S.First;
 
-      function Translate_Character return Character;
+      function Translate_Character return Unicode_Character;
 
-      function Translate_Character return Character is
-         R : Character := L (C);
+      function Translate_Character return Unicode_Character is
+         R : Unicode_Character := S (C);
       begin
          if R = '+' then
             R := ' ';
-         elsif R = '%' and C < L'Last - 1 then
-            R := Character'Val (Integer'Value ("16#" & L (C + 1 .. C + 2) & "#"));
+         elsif R = '%' and C < S.Last - 1 then
+            R := Unicode_Character'Val (Value (S.Slice (C + 1, C + 2), 16));
             C := C + 2;
          end if;
          C := C + 1;
@@ -212,8 +211,8 @@ package body Gnoga is
 
       R : String;
    begin
-      while C in L'Range loop
-         Append (R, From_Latin_1 (Translate_Character));
+      while C in S.First .. S.Last loop
+         Append (R, Translate_Character);
       end loop;
 
       if Encoding = "UTF-8" then
@@ -238,8 +237,8 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (1) in Space | Tab then
-         return Left_Trim (S.Slice (2, S.Length));
+      if S (S.First) = Space or S (S.First) = tab then
+         return Left_Trim (S.Slice ((S.First + 1), S.Last));
       else
          return S;
       end if;
@@ -260,8 +259,8 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (S.Length) in Space | Tab then
-         return Right_Trim (S.Slice (1, S.Length - 1));
+      if S (S.Last) = Space or S (S.Last) = tab then
+         return Right_Trim (S.Slice (S.First, (S.Last - 1)));
       else
          return S;
       end if;
@@ -283,8 +282,8 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (1) = Space or S (1) = Tab or S (1) = Slash then
-         return Left_Trim_Slashes (S.Slice (2, S.Length));
+      if S (S.First) = Space or S (S.First) = tab or S (S.First) = Slash then
+         return Left_Trim_Slashes (S.Slice ((S.First + 1), S.Last));
       else
          return S;
       end if;
@@ -306,8 +305,8 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (S.Length) in Space | Tab | Slash then
-         return Right_Trim_Slashes (S.Slice (1, (S.Length - 1)));
+      if S (S.Last) = Space or S (S.Last) = Tab or S (S.Last) = Slash then
+         return Right_Trim_Slashes (S.Slice (S.First, (S.Last - 1)));
       else
          return S;
       end if;

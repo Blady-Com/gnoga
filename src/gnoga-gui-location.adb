@@ -240,9 +240,9 @@ package body Gnoga.Gui.Location is
                   if Encoding /= "" then
                      P.Include
                        (URL_Decode (URL.Slice (Ind1 + 1, Ind2 - 1), Encoding),
-                        URL_Decode (URL.Slice (Ind2 + 1, URL.Length), Encoding));
+                        URL_Decode (URL.Slice (Ind2 + 1, URL.Last), Encoding));
                   else
-                     P.Include (URL.Slice (Ind1 + 1, Ind2 - 1), URL.Slice (Ind2 + 1, URL.Length));
+                     P.Include (URL.Slice (Ind1 + 1, Ind2 - 1), URL.Slice (Ind2 + 1, URL.Last));
                   end if;
                   exit;
                end if;

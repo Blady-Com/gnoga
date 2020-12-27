@@ -57,8 +57,8 @@ package body Gnoga.Types is
       function Image is new UXStrings.Conversions.Fixed_Point_Image (Alpha_Type);
    begin
       return
-        "rgba(" & Left_Trim (Image (RGBA.Red)) & "," & Left_Trim (Image (RGBA.Green)) & "," &
-        Left_Trim (Image (RGBA.Blue)) & "," & Left_Trim (Image (RGBA.Alpha)) & ")";
+        "rgba(" & Image (RGBA.Red) & "," & Image (RGBA.Green) & "," & Image (RGBA.Blue) & "," & Image (RGBA.Alpha) &
+        ")";
    end To_String;
 
    ------------

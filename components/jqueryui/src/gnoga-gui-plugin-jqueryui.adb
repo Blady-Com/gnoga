@@ -86,10 +86,7 @@ package body Gnoga.Gui.Plugin.jQueryUI is
    --------------------
 
    procedure Make_Droppable (Element : in out Gnoga.Gui.Element.Element_Type'Class) is
-      US : constant String := Image (Element.Unique_ID);
-
-      Full_Message : constant String :=
-        US.Slice (US.First + 1, US.Last) & "|" & jQuery_Dropped_Event_Name & "|" & Element.ID;
+      Full_Message : constant String := Image (Element.Unique_ID) & "|" & jQuery_Dropped_Event_Name & "|" & Element.ID;
    begin
       Element.jQuery_Execute
         ("droppable({ drop: function(event, ui) {" & "ws.send ('" & Escape_Quotes (Full_Message) & "');}})");

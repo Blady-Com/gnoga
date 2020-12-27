@@ -500,9 +500,8 @@ package body Gnoga.Gui.Window is
          Now : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       begin
          return
-           Trim (Image (Year (Now)), Side => Both) & Trim (Image (Month (Now)), Side => Both) &
-           Trim (Image (Day (Now)), Side => Both) & Trim (Image (Hour (Now)), Side => Both) &
-           Trim (Image (Minute (Now)), Side => Both) & Trim (Image (Second (Now)), Side => Both) &
+           Image (Year (Now)) & Image (Month (Now)) & Image (Day (Now)) & Image (Hour (Now)) & Image (Minute (Now)) &
+           Image (Second (Now)) &
            Translate (Trim (Image (Sub_Second (Now)), Side => Both), Ada.Strings.Wide_Wide_Maps.To_Mapping (".", "0"));
       end Generate_Session_ID;
 

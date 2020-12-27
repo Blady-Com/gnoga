@@ -557,7 +557,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("left", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("left", Image (Value) & Unit);
    end Left;
 
    procedure Left
@@ -586,7 +586,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("right", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("right", Image (Value) & Unit);
    end Right;
 
    procedure Right
@@ -615,7 +615,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("top", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("top", Image (Value) & Unit);
    end Top;
 
    procedure Top
@@ -644,7 +644,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("bottom", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("bottom", Image (Value) & Unit);
    end Bottom;
 
    procedure Bottom
@@ -673,7 +673,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("height", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("height", Image (Value) & Unit);
       Element.On_Message ("resize", "");
    end Box_Height;
 
@@ -704,7 +704,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("min-height", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("min-height", Image (Value) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Height;
 
@@ -735,7 +735,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("max-height", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("max-height", Image (Value) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Height;
 
@@ -766,7 +766,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("width", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("width", Image (Value) & Unit);
       Element.On_Message ("resize", "");
    end Box_Width;
 
@@ -797,7 +797,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("min-width", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("min-width", Image (Value) & Unit);
       Element.On_Message ("resize", "");
    end Minimum_Width;
 
@@ -828,7 +828,7 @@ package body Gnoga.Gui.Element is
       Unit    : in     String := "px")
    is
    begin
-      Element.Style ("max-width", Left_Trim (Image (Value)) & Unit);
+      Element.Style ("max-width", Image (Value) & Unit);
       Element.On_Message ("resize", "");
    end Maximum_Width;
 
@@ -1074,7 +1074,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("innerHeight(" & Left_Trim (Image (Value)) & ");");
+      Element.jQuery_Execute ("innerHeight(" & Image (Value) & ");");
       Element.On_Message ("resize", "");
    end Inner_Height;
 
@@ -1095,7 +1095,7 @@ package body Gnoga.Gui.Element is
       Value   : in     Integer)
    is
    begin
-      Element.jQuery_Execute ("innerWidth(" & Left_Trim (Image (Value)) & ");");
+      Element.jQuery_Execute ("innerWidth(" & Image (Value) & ");");
       Element.On_Message ("resize", "");
    end Inner_Width;
 

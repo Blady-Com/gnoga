@@ -60,8 +60,8 @@ package body Gnoga.Gui.View.Grid is
       Span_Size : Natural;
       Column    : Positive;
 
-      P_Height : constant String := Left_Trim (Image (Integer (100 / Layout'Length (1)))) & "%";
-      P_Width  : constant String := Left_Trim (Image (Integer (100 / Layout'Length (2)))) & "%";
+      P_Height : constant String := Image (Integer (100 / Layout'Length (1))) & "%";
+      P_Width  : constant String := Image (Integer (100 / Layout'Length (2))) & "%";
 
       Column_Object : View_Base_Access := null;
 
@@ -111,8 +111,7 @@ package body Gnoga.Gui.View.Grid is
                N := N + 1;
                C :=
                  C & "<td style='" & TD_Width & " position:relative;" &
-                 " padding:0; text-align: left; vertical-align: top;" & "' id='" & CID & "_" & Left_Trim (Image (N)) &
-                 "'";
+                 " padding:0; text-align: left; vertical-align: top;" & "' id='" & CID & "_" & Image (N) & "'";
                Span_Size := 1;
             elsif Layout (Row, Column) = SPN then
                Span_Size := Span_Size + 1;
@@ -123,7 +122,7 @@ package body Gnoga.Gui.View.Grid is
             if Column > Layout'Last (2) or else Layout (Row, Column) = COL then
                if Span_Size > 0 then
                   if Span_Size > 1 then
-                     C := C & " colspan=" & Left_Trim (Image (Span_Size));
+                     C := C & " colspan=" & Image (Span_Size);
                   end if;
 
                   C := C & " />";
@@ -156,7 +155,7 @@ package body Gnoga.Gui.View.Grid is
                Column_Object := new View_Base_Type;
                Column_Object.Auto_Place (False);
                Column_Object.Dynamic (True);
-               Column_Object.Attach_Using_Parent (Grid, CID & "_" & Left_Trim (Image (N)));
+               Column_Object.Attach_Using_Parent (Grid, CID & "_" & Image (N));
                Column_Object.Parent (Grid);
 
                if Column = Layout'First (2) and Row = Layout'First (1) then
@@ -167,7 +166,7 @@ package body Gnoga.Gui.View.Grid is
             end if;
 
             declare
-               Address : constant String := Left_Trim (Image (Row)) & "_" & Left_Trim (Image (Column));
+               Address : constant String := Image (Row) & "_" & Image (Column);
             begin
                Grid.Add_Element (Address, Column_Object);
             end;
@@ -187,7 +186,7 @@ package body Gnoga.Gui.View.Grid is
       Row, Column : Positive)
       return Pointer_To_View_Base_Class
    is
-      Address : constant String := Left_Trim (Image (Row)) & "_" & Left_Trim (Image (Column));
+      Address : constant String := Image (Row) & "_" & Image (Column);
    begin
       return Pointer_To_View_Base_Class (Grid.Element (Address));
    end Panel;

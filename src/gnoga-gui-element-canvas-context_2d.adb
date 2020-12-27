@@ -1135,17 +1135,15 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
 
       C : constant String := ",";
       S : String;
---        P : Positive        := 1;
    begin
       for X in 1 .. Value'Length (1) loop
          for Y in 1 .. Value'Length (2) loop
             declare
                T : constant String :=
-                 Gnoga.Left_Trim (Image (Value (X, Y).Red)) & C & Gnoga.Left_Trim (Image (Value (X, Y).Green)) & C &
-                 Gnoga.Left_Trim (Image (Value (X, Y).Blue)) & C & Gnoga.Left_Trim (Image (Value (X, Y).Alpha)) & C;
+                 Image (Value (X, Y).Red) & C & Image (Value (X, Y).Green) & C & Image (Value (X, Y).Blue) & C &
+                 Image (Value (X, Y).Alpha) & C;
             begin
                S.Append (T);
---                 P                         := P + T.Length;
             end;
          end loop;
       end loop;

@@ -123,12 +123,7 @@ package Gnoga is
    function Value is new UXStrings.Conversions.Integer_Value (Integer);
    function Value is new UXStrings.Conversions.Floating_Point_Value (Float);
    function Image is new UXStrings.Conversions.Scalar_Image (Boolean);
-   function Base_Image is new UXStrings.Conversions.Integer_Image (Integer);
-   function Image
-     (Item   :    Integer;
-      Base   : in UXStrings.Conversions.Number_Base   := 10;
-      Prefix :    UXStrings.Conversions.Number_Prefix := ' ')
-      return UXString renames Base_Image;
+   function Image is new UXStrings.Conversions.Integer_Image (Integer);
    function Image is new UXStrings.Conversions.Floating_Point_Image (Float);
 
 end Gnoga;

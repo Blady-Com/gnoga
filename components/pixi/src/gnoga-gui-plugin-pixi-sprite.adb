@@ -72,8 +72,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
          "gnoga['" & Sprite_ID & "'] = new PIXI.Sprite(gnoga['" & Texture.ID & "']);" & " gnoga['" & Sprite_ID &
-         "'].sendEvent = function (e) {ws.send ('" & Trim (Image (Sprite.Unique_ID), Ada.Strings.Both) &
-         "|' + e + '|');}");
+         "'].sendEvent = function (e) {ws.send ('" & Image (Sprite.Unique_ID) & "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
       Sprite.Acceleration (Row_Acceleration, Column_Acceleration);
@@ -105,8 +104,7 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID,
          "gnoga['" & Sprite_ID & "'] = new PIXI.Sprite.from('" & Image_Path & "');" & " gnoga['" & Sprite_ID &
-         "'].sendEvent = function (e) {ws.send ('" & Trim (Image (Sprite.Unique_ID), Ada.Strings.Both) &
-         "|' + e + '|');}");
+         "'].sendEvent = function (e) {ws.send ('" & Image (Sprite.Unique_ID) & "|' + e + '|');}");
       Sprite.Locate (Row, Column);
       Sprite.Motion (Row_Velocity, Column_Velocity);
       Sprite.Acceleration (Row_Acceleration, Column_Acceleration);

@@ -94,7 +94,7 @@ package body Gnoga.Server.Model is
       Integer_Value : in     Integer)
    is
    begin
-      Value (A, Field_Name, Gnoga.Left_Trim (Image (Integer_Value)));
+      Value (A, Field_Name, Image (Integer_Value));
    end Value;
 
    procedure Value

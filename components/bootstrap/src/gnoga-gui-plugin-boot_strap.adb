@@ -148,7 +148,7 @@ package body Gnoga.Gui.Plugin.Boot_Strap is
          end if;
       end To_String;
    begin
-      View.Add_Class (To_String (Device) & Left_Trim (Image (Number)));
+      View.Add_Class (To_String (Device) & Image (Number));
    end Set_Columns;
 
    ------------

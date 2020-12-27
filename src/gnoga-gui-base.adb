@@ -526,7 +526,7 @@ package body Gnoga.Gui.Base is
       Value  : in     Integer)
    is
    begin
-      Object.jQuery_Execute ("height(" & Left_Trim (Image (Value)) & ");");
+      Object.jQuery_Execute ("height(" & Image (Value) & ");");
       Object.On_Message ("resize", "");
    end Height;
 
@@ -547,7 +547,7 @@ package body Gnoga.Gui.Base is
       Value  : in     Integer)
    is
    begin
-      Object.jQuery_Execute ("width(" & Left_Trim (Image (Value)) & ");");
+      Object.jQuery_Execute ("width(" & Image (Value) & ");");
       Object.On_Message ("resize", "");
    end Width;
 
@@ -2106,9 +2106,7 @@ package body Gnoga.Gui.Base is
       Script  : in     String  := "";
       Cancel  : in     Boolean := False)
    is
-      US : constant String := Image (Object.Unique_ID);
-
-      Full_Message : constant String := US.Slice (US.First + 1, US.Last) & "|" & Event & "|" & Message;
+      Full_Message : constant String := Image (Object.Unique_ID) & "|" & Event & "|" & Message;
 
       function If_Script return String;
       function Cancel_Event return String;

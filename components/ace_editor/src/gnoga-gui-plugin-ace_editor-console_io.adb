@@ -118,8 +118,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       Console.Anchor.Create (Console, 0, 0);
       Console.Editor_Execute ("gnoga_prompt=0;");
       Console.Editor_Execute
-        ("sendEvent = function (e, m) {ws.send ('" & Trim (Image (Console.Unique_ID), Ada.Strings.Both) &
-         "|' + e + '|' + m);}");
+        ("sendEvent = function (e, m) {ws.send ('" & Image (Console.Unique_ID) & "|' + e + '|' + m);}");
       Console.Editor_Execute
         ("commands.on('exec', function(e) {" & "    if (e.command.readOnly) return;" & "    var editableRow = " &
          Console.Editor_Var & ".session.getLength() - 1;" &

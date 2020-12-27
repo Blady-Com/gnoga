@@ -802,11 +802,11 @@ package body Gnoga.Server.Connection is
 
          if not Secure_Only then
             Write_To_Console ("Boot file        :" & Boot);
-            Write_To_Console ("HTTP listen on   :" & Host & ":" & Left_Trim (Image (Server_Port)));
+            Write_To_Console ("HTTP listen on   :" & Host & ":" & Image (Server_Port));
          end if;
 
          if Secure_Server then
-            Write_To_Console ("HTTPS listen on  :" & Host & ":" & Left_Trim (Image (Secure_Port)));
+            Write_To_Console ("HTTPS listen on  :" & Host & ":" & Image (Secure_Port));
          end if;
       end if;
 
@@ -1755,7 +1755,7 @@ package body Gnoga.Server.Connection is
          declare
             P1 : constant Integer := Index (Source => Message, Pattern => "|");
 
-            UID    : constant String := Message.Slice (Message.First + 2, (P1 - 1));
+            UID    : constant String := Message.Slice (Message.First + 1, (P1 - 1));
             Result : constant String := Message.Slice ((P1 + 1), Message.Last);
          begin
             Script_Manager.Release_Hold (Value (UID), Result);
@@ -2298,7 +2298,7 @@ package body Gnoga.Server.Connection is
    begin
       New_Unique_ID (New_ID);
 
-      return "g" & Left_Trim (Image (New_ID));
+      return "g" & Image (New_ID);
    end New_GID;
 
    --------------------------

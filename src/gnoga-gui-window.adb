@@ -119,7 +119,7 @@ package body Gnoga.Gui.Window is
       end if;
    exception
       when E : others =>
-         Log ("Error finalizing Window - " & Object.ID);
+         Log ("Error finalizing Window ID " & Object.ID);
          Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 

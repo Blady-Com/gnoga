@@ -677,7 +677,7 @@ package body Gnoga.Server.Database.SQLite is
       New_String : String;
    begin
       for J in S loop
-         if S (J) = Latin_1_Character'(''') then
+         if S (J) = ''' then
             New_String := New_String & "''";
          else
             New_String := New_String & S (J);

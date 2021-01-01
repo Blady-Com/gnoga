@@ -77,7 +77,7 @@ package body Gnoga.Gui.Element is
             if P = 0 then
                Gnoga.Log ("Malformed HTML = " & HTML);
             else
-               if HTML (P - 1) = Latin_1_Character'('/') then
+               if HTML (P - 1) = '/' then
                   P := P - 1;
                end if;
             end if;

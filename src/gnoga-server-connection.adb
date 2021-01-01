@@ -1750,7 +1750,7 @@ package body Gnoga.Server.Connection is
 
    procedure Dispatch_Message (Message : in String) is
    begin
-      if Message (Message.First) = Character'('S') then
+      if Message (Message.First) = 'S' then
          declare
             P1 : constant Integer := Index (Source => Message, Pattern => "|");
 

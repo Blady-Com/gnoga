@@ -244,7 +244,7 @@ package body Gnoga.Server.Template_Parser is
    is
       Templates_Dir : constant String := Template_Directory;
    begin
-      if Index (Name, ":") > 0 or Name (Name.First) = GNAT.OS_Lib.Directory_Separator then
+      if Index (Name, ":") > 0 or Name.Get_Latin_1 (Name.First) = GNAT.OS_Lib.Directory_Separator then
          return Name;
       end if;
 

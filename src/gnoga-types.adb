@@ -86,7 +86,7 @@ package body Gnoga.Types is
       return RGBA_Type
    is
    begin
-      if Value (Value.First) = Character'('#') then
+      if Value (Value.First) = '#' then
          return To_RGBA_From_Hex (Value);
       else
          return To_RGBA_From_RGB_or_RGBA (Value);

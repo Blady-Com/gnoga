@@ -27,13 +27,8 @@ package UXStrings is
    subtype UTF_16_Character is Wide_Character;
    type UTF_16_Character_Array is array (Positive range <>) of UTF_16_Character;
 
-   subtype Char_Type is Latin_1_Character;
-   subtype Wide_Char_Type is BMP_Character;
-   subtype Wide_Wide_Char_Type is Unicode_Character;
-
    type UXString is tagged private with
       Constant_Indexing => Element,
-      Variable_Indexing => Reference,
       Iterable          => (First => First, Next => Next, Has_Element => Has_Element, Element => Element),
       String_Literal    => From_Unicode;
 
@@ -41,28 +36,15 @@ package UXStrings is
 
    function Length (Source : UXString) return Natural;
 
-   function Element (Source : UXString; Index : Positive; Substitute : in Char_Type := '¿') return Char_Type;
-   function Element (Source : UXString; Index : Positive; Substitute : in Wide_Char_Type := '¿') return Wide_Char_Type;
-   function Element (Source : UXString; Index : Positive) return Wide_Wide_Char_Type;
-
-   type Character_Reference (Char : not null access Char_Type) is limited private with
-      Implicit_Dereference => Char;
-   function Reference (Source : aliased in out UXString; Index : Positive) return Character_Reference;
-   type Wide_Character_Reference (Wide_Char : not null access Wide_Char_Type) is limited private with
-      Implicit_Dereference => Wide_Char;
-   function Reference (Source : aliased in out UXString; Index : Positive) return Wide_Character_Reference;
-   type Wide_Wide_Character_Reference (Wide_Wide_Char : not null access Wide_Wide_Char_Type) is limited private with
-      Implicit_Dereference => Wide_Wide_Char;
-   function Reference (Source : aliased in out UXString; Index : Positive) return Wide_Wide_Character_Reference;
-
    function First (Source : UXString) return Positive;
    function Next (Source : UXString; Index : Positive) return Positive;
    function Has_Element (Source : UXString; Index : Positive) return Boolean;
+   function Element (Source : UXString; Index : Positive) return Unicode_Character;
    function Last (Source : UXString) return Natural;
 
    function Is_Latin_1 (Source : UXString; Index : Positive) return Boolean;
    function Is_Latin_1 (Source : UXString) return Boolean;
-   function To_Latin_1
+   function Get_Latin_1
      (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := '¿') return Latin_1_Character;
    function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := '¿') return Latin_1_Character_Array;
    function From_Latin_1 (Char : Latin_1_Character) return UXString;
@@ -70,14 +52,14 @@ package UXStrings is
 
    function Is_BMP (Source : UXString; Index : Positive) return Boolean;
    function Is_BMP (Source : UXString) return Boolean;
-   function To_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character;
+   function Get_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character;
    function To_BMP (Source : UXString; Substitute : in BMP_Character := '¿') return BMP_Character_Array;
    function From_BMP (Char : BMP_Character) return UXString;
    function From_BMP (Str : BMP_Character_Array) return UXString;
 
    function Is_Unicode (Source : UXString; Index : Positive) return Boolean;
    function Is_Unicode (Source : UXString) return Boolean;
-   function To_Unicode (Source : UXString; Index : Positive) return Unicode_Character;
+   function Get_Unicode (Source : UXString; Index : Positive) return Unicode_Character;
    function To_Unicode (Source : UXString) return Unicode_Character_Array;
    function From_Unicode (Char : Unicode_Character) return UXString;
    function From_Unicode (Str : Unicode_Character_Array) return UXString;
@@ -102,7 +84,9 @@ package UXStrings is
    function "&" (Left : UXString; Right : Unicode_Character) return UXString;
    function "&" (Left : Unicode_Character; Right : UXString) return UXString;
 
-   procedure Replace_Element (Source : in out UXString; Index : Positive; By : Unicode_Character);
+   procedure Replace_Latin_1 (Source : in out UXString; Index : Positive; By : Latin_1_Character);
+   procedure Replace_BMP (Source : in out UXString; Index : Positive; By : BMP_Character);
+   procedure Replace_Unicode (Source : in out UXString; Index : Positive; By : Unicode_Character);
 
    function Slice (Source : UXString; Low : Positive; High : Natural) return UXString;
    procedure Slice (Source : UXString; Target : out UXString; Low : Positive; High : Natural);
@@ -185,22 +169,13 @@ package UXStrings is
    function "*" (Left : Natural; Right : Unicode_Character) return UXString;
 
 private
-   type Character_Reference (Char : not null access Char_Type) is null record;
-   type Wide_Character_Reference (Wide_Char : not null access Wide_Char_Type) is null record;
-   type Wide_Wide_Character_Reference (Wide_Wide_Char : not null access Wide_Wide_Char_Type) is null record;
-
    type UTF_8_Characters_Access is access UTF_8_Character_Array;
    type UXString is new Ada.Finalization.Controlled with record
-      Chars          : UTF_8_Characters_Access := new UTF_8_Character_Array (2 .. 1);
-      Char           : aliased Char_Type;
-      Wide_Char      : aliased Wide_Char_Type;
-      Wide_Wide_Char : aliased Wide_Wide_Char_Type;
-      Index          : Natural                 := 0;
+      Chars : UTF_8_Characters_Access := new UTF_8_Character_Array (2 .. 1);
    end record;
 
    procedure Adjust (Object : in out UXString);
    procedure Finalize (Object : in out UXString);
 
-   Null_UXString : constant UXString :=
-     (Ada.Finalization.Controlled with Chars => new UTF_8_Character_Array (2 .. 1), others => <>);
+   Null_UXString : constant UXString := (Ada.Finalization.Controlled with Chars => new UTF_8_Character_Array (2 .. 1));
 end UXStrings;

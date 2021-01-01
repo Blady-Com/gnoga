@@ -698,7 +698,7 @@ package body UXStrings.Text_IO is
       if File.Buffer.Length = 0 then
          Read_More (File);
       end if;
-      Item := To_Unicode (File.Buffer, 1);
+      Item := Get_Unicode (File.Buffer, 1);
       Delete (File.Buffer, 1, 1);
    end Get;
 

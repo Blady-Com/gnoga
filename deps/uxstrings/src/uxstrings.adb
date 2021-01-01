@@ -92,84 +92,6 @@ package body UXStrings is
       return Length (String (Source.Chars.all));
    end Length;
 
-   -------------
-   -- Element --
-   -------------
-
-   function Element (Source : UXString; Index : Positive; Substitute : in Char_Type := '¿') return Char_Type is
-      Item    : UTF8_Code_Point;
-      Pointer : Integer := Source.Chars'First;
-   begin
-      Skip (String (Source.Chars.all), Pointer, Index - 1);
-      Get (String (Source.Chars.all), Pointer, Item);
-      if Item > 16#FF# then
-         return Substitute;
-      else
-         return Char_Type'val (Item);
-      end if;
-   end Element;
-
-   -------------
-   -- Element --
-   -------------
-
-   function Element (Source : UXString; Index : Positive; Substitute : in Wide_Char_Type := '¿') return Wide_Char_Type
-   is
-      Item    : UTF8_Code_Point;
-      Pointer : Integer := Source.Chars'First;
-   begin
-      Skip (String (Source.Chars.all), Pointer, Index - 1);
-      Get (String (Source.Chars.all), Pointer, Item);
-      if Item > 16#FFFF# then
-         return Substitute;
-      else
-         return Wide_Char_Type'val (Item);
-      end if;
-   end Element;
-
-   -------------
-   -- Element --
-   -------------
-
-   function Element (Source : UXString; Index : Positive) return Wide_Wide_Char_Type is
-      Item    : UTF8_Code_Point;
-      Pointer : Integer := Source.Chars'First;
-   begin
-      Skip (String (Source.Chars.all), Pointer, Index - 1);
-      Get (String (Source.Chars.all), Pointer, Item);
-      return Wide_Wide_Char_Type'Val (Item);
-   end Element;
-
-   ---------------
-   -- Reference --
-   ---------------
-
-   function Reference (Source : aliased in out UXString; Index : Positive) return Character_Reference is
-   begin
-      Source.Index := Index;
-      return (Char => Source.Char'Access);
-   end Reference;
-
-   ---------------
-   -- Reference --
-   ---------------
-
-   function Reference (Source : aliased in out UXString; Index : Positive) return Wide_Character_Reference is
-   begin
-      Source.Index := Index;
-      return (Wide_Char => Source.Wide_Char'Access);
-   end Reference;
-
-   ---------------
-   -- Reference --
-   ---------------
-
-   function Reference (Source : aliased in out UXString; Index : Positive) return Wide_Wide_Character_Reference is
-   begin
-      Source.Index := Index;
-      return (Wide_Wide_Char => Source.Wide_Wide_Char'Access);
-   end Reference;
-
    -----------
    -- First --
    -----------
@@ -199,12 +121,18 @@ package body UXStrings is
       return Index <= Length (Source);
    end Has_Element;
 
+   -------------
+   -- Element --
+   -------------
+
+   function Element (Source : UXString; Index : Positive) return Unicode_Character renames Get_Unicode;
+
    ----------
    -- Last --
    ----------
 
    function Last (Source : UXString) return Natural is
-     begin
+   begin
       return Length (Source);
    end Last;
 
@@ -228,16 +156,24 @@ package body UXStrings is
       return raise Program_Error with "Unimplemented function Is_Latin_1";
    end Is_Latin_1;
 
-   ----------------
-   -- To_Latin_1 --
-   ----------------
+   -----------------
+   -- Get_Latin_1 --
+   -----------------
 
-   function To_Latin_1
+   function Get_Latin_1
      (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := '¿') return Latin_1_Character
    is
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := Source.Chars'First;
    begin
-      return Source (Index, Substitute);
-   end To_Latin_1;
+      Skip (String (Source.Chars.all), Pointer, Index - 1);
+      Get (String (Source.Chars.all), Pointer, Item);
+      if Item > 16#FF# then
+         return Substitute;
+      else
+         return Latin_1_Character'val (Item);
+      end if;
+   end Get_Latin_1;
 
    ----------------
    -- To_Latin_1 --
@@ -290,14 +226,22 @@ package body UXStrings is
       return raise Program_Error with "Unimplemented function Is_BMP";
    end Is_BMP;
 
-   ------------
-   -- To_BMP --
-   ------------
+   -------------
+   -- Get_BMP --
+   -------------
 
-   function To_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character is
+   function Get_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character is
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := Source.Chars'First;
    begin
-      return Source (Index, Substitute);
-   end To_BMP;
+      Skip (String (Source.Chars.all), Pointer, Index - 1);
+      Get (String (Source.Chars.all), Pointer, Item);
+      if Item > 16#FFFF# then
+         return Substitute;
+      else
+         return BMP_Character'val (Item);
+      end if;
+   end Get_BMP;
 
    ------------
    -- To_BMP --
@@ -350,14 +294,18 @@ package body UXStrings is
       return raise Program_Error with "Unimplemented function Is_Unicode";
    end Is_Unicode;
 
-   ----------------
-   -- To_Unicode --
-   ----------------
+   -----------------
+   -- Get_Unicode --
+   -----------------
 
-   function To_Unicode (Source : UXString; Index : Positive) return Unicode_Character is
+   function Get_Unicode (Source : UXString; Index : Positive) return Unicode_Character is
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := Source.Chars'First;
    begin
-      return Source (Index);
-   end To_Unicode;
+      Skip (String (Source.Chars.all), Pointer, Index - 1);
+      Get (String (Source.Chars.all), Pointer, Item);
+      return Unicode_Character'Val (Item);
+   end Get_Unicode;
 
    ----------------
    -- To_Unicode --
@@ -528,14 +476,34 @@ package body UXStrings is
    end "&";
 
    ---------------------
-   -- Replace_Element --
+   -- Replace_Latin_1 --
    ---------------------
 
-   procedure Replace_Element (Source : in out UXString; Index : Positive; By : Unicode_Character) is
+   procedure Replace_Latin_1 (Source : in out UXString; Index : Positive; By : Latin_1_Character) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Replace_Element unimplemented");
-      raise Program_Error with "Unimplemented procedure Replace_Element";
-   end Replace_Element;
+      pragma Compile_Time_Warning (Standard.True, "Replace_Latin_1 unimplemented");
+      raise Program_Error with "Unimplemented procedure Replace_Latin_1";
+   end Replace_Latin_1;
+
+   -----------------
+   -- Replace_BMP --
+   -------*---------
+
+   procedure Replace_BMP (Source : in out UXString; Index : Positive; By : BMP_Character) is
+   begin
+      pragma Compile_Time_Warning (Standard.True, "Replace_BMP unimplemented");
+      raise Program_Error with "Unimplemented procedure Replace_BMP";
+   end Replace_BMP;
+
+   ---------------------
+   -- Replace_Unicode --
+   ---------------------
+
+   procedure Replace_Unicode (Source : in out UXString; Index : Positive; By : Unicode_Character) is
+   begin
+      pragma Compile_Time_Warning (Standard.True, "Replace_Unicode unimplemented");
+      raise Program_Error with "Unimplemented procedure Replace_Unicode";
+   end Replace_Unicode;
 
    -----------
    -- Slice --

@@ -1,6 +1,5 @@
 with "settings.gpr";
 with "gnoga.gpr";
-with "zanyblue.gpr";
 
 project Localize is
 
@@ -16,5 +15,9 @@ project Localize is
    package Compiler renames Settings.Compiler;
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
+
+   package Pretty_Printer is
+      for Default_Switches ("Ada") use ("-M120", "-W8", "--comments-unchanged");
+   end Pretty_Printer;
 
 end Localize;

@@ -2,9 +2,9 @@
 -- NAME (body)                  : localize-controller.adb
 -- AUTHOR                       : Pascal Pignard
 -- ROLE                         : User interface control unit.
--- NOTES                        : Ada 2012, GNOGA 1.6 alpha
+-- NOTES                        : Ada 2012, GNOGA 2.1 alpha
 --
--- COPYRIGHT                    : (c) Pascal Pignard 2020
+-- COPYRIGHT                    : (c) Pascal Pignard 2021
 -- LICENCE                      : CeCILL V2 (http://www.cecill.info)
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
@@ -24,8 +24,7 @@ package body Localize.Controller is
    procedure On_Save (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Change_Key (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Change_Text (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-   procedure On_Change_Comment
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Change_Comment (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Select (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Enter (Object : in out Gnoga.Gui.Base.Base_Type'Class) is null;
    procedure On_Duplicate (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -33,13 +32,9 @@ package body Localize.Controller is
    procedure On_Delete (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Rename (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   function Modified
-     (Properties : Localize.Parser.Property_List; Key : String)
-      return Character is
+   function Modified (Properties : Localize.Parser.Property_List; Key : String) return Character is
      (if Localize.Parser.Modified (Properties, Key) then '*' else ' ');
-   function Not_In
-     (Properties : Localize.Parser.Property_List; Key : String;
-      Tag        : Character) return Character is
+   function Not_In (Properties : Localize.Parser.Property_List; Key : String; Tag : Character) return Character is
      (if not Localize.Parser.Contains (Properties, Key) then Tag else ' ');
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -86,37 +81,36 @@ package body Localize.Controller is
       View : constant Localize.View.Default_View_Access :=
         Localize.View.Default_View_Access (Object.Parent.Parent.Parent);
       Key_Index : constant Natural := View.Old_Key_Index;
-      Key       : constant String  :=
-        (if Key_Index > 0 then View.Key_List.Value (Key_Index) else "");
+      Key       : constant String  := (if Key_Index > 0 then View.Key_List.Value (Key_Index) else "");
    begin
       View.Error_Label.Text ("No error.");
       Localize.Parser.Text (View.Locale, Key, View.Locale_Text.Value);
       if Localize.Parser.Modified (View.Locale, Key) then
          View.Key_List.Text
            (Key_Index,
-            Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') &
-            Modified (View.Locale, Key) & Key);
+            From_Latin_1
+              (Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') & Modified (View.Locale, Key)) &
+            Key);
       end if;
    exception
       when others =>
          View.Error_Label.Text ("Error CT with key: " & Key);
    end On_Change_Text;
 
-   procedure On_Change_Comment (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Change_Comment (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       View : constant Localize.View.Default_View_Access :=
         Localize.View.Default_View_Access (Object.Parent.Parent.Parent);
       Key_Index : constant Natural := View.Old_Key_Index;
-      Key       : constant String  :=
-        (if Key_Index > 0 then View.Key_List.Value (Key_Index) else "");
+      Key       : constant String  := (if Key_Index > 0 then View.Key_List.Value (Key_Index) else "");
    begin
       View.Error_Label.Text ("No error.");
       Localize.Parser.Comment (View.Locale, Key, View.Locale_Comment.Value);
       if Localize.Parser.Modified (View.Locale, Key) then
          View.Key_List.Text
            (Key_Index,
-            Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') &
-            Modified (View.Locale, Key) & Key);
+            From_Latin_1
+              (Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') & Modified (View.Locale, Key)) &
+            Key);
       end if;
    exception
       when others =>
@@ -158,18 +152,17 @@ package body Localize.Controller is
       View.Error_Label.Text ("No error.");
       View.Old_Key_Index := 0;
       View.Key_List.Empty_Options;
-      for Key of Localize.Parser.Selected_Keys
-        (View.Master, View.Locale, View.Select_Pattern.Value)
-      loop
+      for Key of Localize.Parser.Selected_Keys (View.Master, View.Locale, View.Select_Pattern.Value) loop
          View.Key_List.Add_Option
            (Key,
-            Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') &
-            Modified (View.Locale, Key) & Key);
+            From_Latin_1
+              (Not_In (View.Master, Key, '@') & Not_In (View.Locale, Key, '#') & Modified (View.Locale, Key)) &
+            Key);
          if Key = Old_Key then
             View.Key_List.Selected (View.Key_List.Length);
          end if;
       end loop;
-      View.Keys_Label.Text ("Keys (" & View.Key_List.Length'Image & "):");
+      View.Keys_Label.Text ("Keys (" & Gnoga.Image (View.Key_List.Length) & "):");
       if View.Key_List.Length > 0 then
          if View.Key_List.Selected_Index = 0 then
             View.Key_List.Selected (1);
@@ -189,13 +182,10 @@ package body Localize.Controller is
    begin
       if Key /= "" then
          View.Error_Label.Text ("No error.");
-         Localize.Parser.Text
-           (View.Locale, Key, Localize.Parser.Text (View.Master, Key));
-         Localize.Parser.Comment
-           (View.Locale, Key, Localize.Parser.Comment (View.Master, Key));
+         Localize.Parser.Text (View.Locale, Key, Localize.Parser.Text (View.Master, Key));
+         Localize.Parser.Comment (View.Locale, Key, Localize.Parser.Comment (View.Master, Key));
          View.Locale_Text.Value (Localize.Parser.Text (View.Master, Key));
-         View.Locale_Comment.Value
-           (Localize.Parser.Comment (View.Master, Key));
+         View.Locale_Comment.Value (Localize.Parser.Comment (View.Master, Key));
          On_Select (Object);
       else
          View.Error_Label.Text ("Empty key.");
@@ -259,12 +249,10 @@ package body Localize.Controller is
 
    procedure Default
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
-      View : constant Localize.View.Default_View_Access :=
-        new Localize.View.Default_View_Type;
+      View : constant Localize.View.Default_View_Access := new Localize.View.Default_View_Type;
    begin
       View.Dynamic;
       View.Main_Window   := Main_Window'Unchecked_Access;
@@ -288,6 +276,5 @@ package body Localize.Controller is
    end Default;
 
 begin
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Default'Access, "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Default'Access, "default");
 end Localize.Controller;

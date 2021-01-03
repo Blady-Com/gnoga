@@ -2,9 +2,9 @@
 -- NAME (body)                  : localize-view.adb
 -- AUTHOR                       : Pascal Pignard
 -- ROLE                         : User interface display unit.
--- NOTES                        : Ada 2012, GNOGA 1.6 alpha
+-- NOTES                        : Ada 2012, GNOGA 2.1 alpha
 --
--- COPYRIGHT                    : (c) Pascal Pignard 2020
+-- COPYRIGHT                    : (c) Pascal Pignard 2021
 -- LICENCE                      : CeCILL V2 (http://www.cecill.info)
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
@@ -16,15 +16,12 @@ package body Localize.View is
    ------------
 
    overriding procedure Create
-     (Grid        : in out Default_View_Type;
-      Parent      : in out Gnoga.Gui.Base.Base_Type'Class;
-      Layout      : in     Gnoga.Gui.View.Grid.Grid_Rows_Type;
-      Fill_Parent : in     Boolean := True; Set_Sizes : in Boolean := True;
-      ID          : in     String  := "")
+     (Grid   : in out Default_View_Type; Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Layout : in Gnoga.Gui.View.Grid.Grid_Rows_Type; Fill_Parent : in Boolean := True; Set_Sizes : in Boolean := True;
+      ID     : in     String := "")
    is
    begin
-      Gnoga.Gui.View.Grid.Grid_View_Type (Grid).Create
-        (Parent, Layout, Fill_Parent, Set_Sizes, ID);
+      Gnoga.Gui.View.Grid.Grid_View_Type (Grid).Create (Parent, Layout, Fill_Parent, Set_Sizes, ID);
       Grid.Panel (1, 1).Border;
 
       Grid.List_Form.Create (Grid.Panel (1, 1).all);
@@ -38,8 +35,7 @@ package body Localize.View is
       Grid.Keys_Label.Create (Grid.List_Form, "Keys (?):");
       Grid.Key_List.Create (Grid.List_Form, Visible_Lines => 20);
       Grid.List_Form.New_Line;
-      Grid.List_Form.Put_Line
-        ("(# Master key only, @ Locale key only, * Locale key modified)");
+      Grid.List_Form.Put_Line ("(# Master key only, @ Locale key only, * Locale key modified)");
       Grid.Save_Button.Create (Grid.List_Form, "Save locale strings file");
       Grid.List_Form.New_Line;
       Grid.Exit_Button.Create (Grid.List_Form, "Disconnect");

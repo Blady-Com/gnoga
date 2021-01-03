@@ -2,9 +2,9 @@
 -- NAME (specification)         : localize-view.ads
 -- AUTHOR                       : Pascal Pignard
 -- ROLE                         : User interface display unit.
--- NOTES                        : Ada 2012, GNOGA 1.6 alpha
+-- NOTES                        : Ada 2012, GNOGA 2.1 alpha
 --
--- COPYRIGHT                    : (c) Pascal Pignard 2020
+-- COPYRIGHT                    : (c) Pascal Pignard 2021
 -- LICENCE                      : CeCILL V2 (http://www.cecill.info)
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
@@ -52,10 +52,8 @@ package Localize.View is
    type Pointer_to_Default_View_Class is access all Default_View_Type'Class;
 
    overriding procedure Create
-     (Grid        : in out Default_View_Type;
-      Parent      : in out Gnoga.Gui.Base.Base_Type'Class;
-      Layout      : in     Gnoga.Gui.View.Grid.Grid_Rows_Type;
-      Fill_Parent : in     Boolean := True; Set_Sizes : in Boolean := True;
-      ID          : in     String  := "");
+     (Grid   : in out Default_View_Type; Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      Layout : in Gnoga.Gui.View.Grid.Grid_Rows_Type; Fill_Parent : in Boolean := True; Set_Sizes : in Boolean := True;
+      ID     : in     String := "");
 
 end Localize.View;

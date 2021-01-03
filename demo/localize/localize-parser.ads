@@ -2,15 +2,14 @@
 -- NAME (specification)         : localize-parser.ads
 -- AUTHOR                       : Pascal Pignard
 -- ROLE                         : Localization files parser unit.
--- NOTES                        : Ada 2012, GNOGA 1.6 alpha
+-- NOTES                        : Ada 2012, GNOGA 2.1 alpha
 --
--- COPYRIGHT                    : (c) Pascal Pignard 2020
+-- COPYRIGHT                    : (c) Pascal Pignard 2021
 -- LICENCE                      : CeCILL V2 (http://www.cecill.info)
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
 with Ada.Containers.Indefinite_Vectors;
-with Ada.Strings.Wide_Unbounded;
 with Ada.Containers.Ordered_Maps;
 
 package Localize.Parser is
@@ -24,16 +23,13 @@ package Localize.Parser is
    procedure Write (Properties : Property_List; File_Name : String);
 
    function Keys (Properties : Property_List) return Key_List;
-   function Selected_Keys
-     (Master, Locale : Property_List; Pattern : String) return Key_List;
+   function Selected_Keys (Master, Locale : Property_List; Pattern : String) return Key_List;
    function Contains (Properties : Property_List; Key : String) return Boolean;
 
    function Text (Properties : Property_List; Key : String) return String;
-   procedure Text
-     (Properties : in out Property_List; Key : String; Value : String);
+   procedure Text (Properties : in out Property_List; Key : String; Value : String);
    function Comment (Properties : Property_List; Key : String) return String;
-   procedure Comment
-     (Properties : in out Property_List; Key : String; Value : String);
+   procedure Comment (Properties : in out Property_List; Key : String; Value : String);
 
    procedure Insert (Properties : in out Property_List; Key : String);
    procedure Delete (Properties : in out Property_List; Key : String);
@@ -44,13 +40,11 @@ package Localize.Parser is
 private
 
    type Property_Type is record
-      Comment  : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
-      Text     : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
+      Comment  : String;
+      Text     : String;
       Modified : Boolean;
    end record;
-   use type Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
-   package Content_Maps is new Ada.Containers.Ordered_Maps
-     (Ada.Strings.Wide_Unbounded.Unbounded_Wide_String, Property_Type);
+   package Content_Maps is new Ada.Containers.Ordered_Maps (String, Property_Type);
    type Property_List is new Content_Maps.Map with null record;
 
 end Localize.Parser;

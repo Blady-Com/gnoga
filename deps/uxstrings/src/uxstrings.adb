@@ -20,7 +20,7 @@ package body UXStrings is
    -- Missing subroutines in Strings_Edit as Wide_Wide_XX isn't Ada 95
 
    function To_UTF8 (Value : Wide_Wide_Character) return String is
-      Result  : String (1 .. 3);
+      Result  : String (1 .. 4);
       Pointer : Integer := Result'First;
    begin
       Put (Result, Pointer, UTF8_Code_Point (Wide_Wide_Character'Pos (Value)));
@@ -481,8 +481,7 @@ package body UXStrings is
 
    procedure Replace_Latin_1 (Source : in out UXString; Index : Positive; By : Latin_1_Character) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Replace_Latin_1 unimplemented");
-      raise Program_Error with "Unimplemented procedure Replace_Latin_1";
+      Source := Slice (Source, 1, Index - 1) & From_Latin_1 (By) & Slice (Source, Index + 1, Length (Source));
    end Replace_Latin_1;
 
    -----------------
@@ -491,8 +490,7 @@ package body UXStrings is
 
    procedure Replace_BMP (Source : in out UXString; Index : Positive; By : BMP_Character) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Replace_BMP unimplemented");
-      raise Program_Error with "Unimplemented procedure Replace_BMP";
+      Source := Slice (Source, 1, Index - 1) & From_BMP (By) & Slice (Source, Index + 1, Length (Source));
    end Replace_BMP;
 
    ---------------------
@@ -501,8 +499,7 @@ package body UXStrings is
 
    procedure Replace_Unicode (Source : in out UXString; Index : Positive; By : Unicode_Character) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Replace_Unicode unimplemented");
-      raise Program_Error with "Unimplemented procedure Replace_Unicode";
+      Source := Slice (Source, 1, Index - 1) & From_Unicode (By) & Slice (Source, Index + 1, Length (Source));
    end Replace_Unicode;
 
    -----------
@@ -943,9 +940,17 @@ package body UXStrings is
    ----------
 
    function Tail (Source : UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space) return UXString is
+      Len : constant Positive := Source.Length;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Tail unimplemented");
-      return raise Program_Error with "Unimplemented function Tail";
+      if Count > Len then
+         return UXS : UXString do
+            UXS.Chars :=
+              new UTF_8_Character_Array'
+                (Source.Chars.all & UTF_8_Character_Array ((Count - Len - 1) * (To_UTF8 (Pad))));
+         end return;
+      else
+         return Source.Slice (Len - Count + 1, Len);
+      end if;
    end Tail;
 
    ----------
@@ -954,8 +959,7 @@ package body UXStrings is
 
    procedure Tail (Source : in out UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Tail unimplemented");
-      raise Program_Error with "Unimplemented procedure Tail";
+      Source := Tail (Source, Count, Pad);
    end Tail;
 
    ---------

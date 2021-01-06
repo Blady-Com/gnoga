@@ -62,9 +62,6 @@ package Gnoga is
       return String;
    --  Unescape a string quoted for JavaScript
 
-   Substitution_Character : constant Character := '?';
-   --  Character replacement if UTF-8 character is not existant in Latin-1
-
    function URL_Encode
      (S        : String;
       Encoding : String := "")

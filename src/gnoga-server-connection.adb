@@ -448,7 +448,7 @@ package body Gnoga.Server.Connection is
          function Start_Path return String;
          function After_Start_Path return String;
 
-         File_Name : constant String := From_Latin_1 (Status.File);
+         File_Name : constant String := From_UTF_8 (UTF_8_Character_Array (Status.File));
 
          function Start_Path return String is
             Q : constant Integer := Index (File_Name, "/");
@@ -484,7 +484,7 @@ package body Gnoga.Server.Connection is
          elsif Start = "img" then
             return Gnoga.Server.IMG_Directory & Path_Adjusted_Name;
          else
-            if Ada.Directories.Exists (To_Latin_1 (Gnoga.Server.HTML_Directory & File_Name)) then
+            if Ada.Directories.Exists (Standard.String (To_UTF_8 (Gnoga.Server.HTML_Directory & File_Name))) then
                return Gnoga.Server.HTML_Directory & File_Name;
             else
                return Gnoga.Server.HTML_Directory & Boot_HTML;
@@ -498,7 +498,9 @@ package body Gnoga.Server.Connection is
       case Status.Kind is
          when None =>
             if Verbose_Output then
-               Gnoga.Log ("Requested: Kind: " & Image (Status.Kind) & ", Query: " & From_Latin_1 (Status.Query));
+               Gnoga.Log
+                 ("Requested: Kind: " & Image (Status.Kind) & ", Query: " &
+                  From_UTF_8 (UTF_8_Character_Array (Status.Query)));
                Gnoga.Log ("Reply: Not found");
             end if;
 
@@ -506,18 +508,21 @@ package body Gnoga.Server.Connection is
          when File =>
             if Verbose_Output then
                Gnoga.Log
-                 ("Requested: Kind: " & Image (Status.Kind) & ", File: " & From_Latin_1 (Status.File) & ", Query: " &
-                  From_Latin_1 (Status.Query));
+                 ("Requested: Kind: " & Image (Status.Kind) & ", File: " &
+                  From_UTF_8 (UTF_8_Character_Array (Status.File)) & ", Query: " &
+                  From_UTF_8 (UTF_8_Character_Array (Status.Query)));
             end if;
-            Client.Content.Connection_Path := From_Latin_1 (Status.File);
+            Client.Content.Connection_Path := From_UTF_8 (UTF_8_Character_Array (Status.File));
 
             Send_Status_Line (Client, 200, "OK");
             Send_Date (Client);
             Send
               (Client,
-               To_Latin_1 ("Cache-Control: no-cache, no-store, must-revalidate" & Gnoga.Server.Connection.Common.CRLF));
-            Send (Client, To_Latin_1 ("Pragma: no-cache" & Gnoga.Server.Connection.Common.CRLF));
-            Send (Client, To_Latin_1 ("Expires: 0" & Gnoga.Server.Connection.Common.CRLF));
+               Standard.String
+                 (To_UTF_8
+                    ("Cache-Control: no-cache, no-store, must-revalidate" & Gnoga.Server.Connection.Common.CRLF)));
+            Send (Client, Standard.String (To_UTF_8 ("Pragma: no-cache" & Gnoga.Server.Connection.Common.CRLF)));
+            Send (Client, Standard.String (To_UTF_8 ("Expires: 0" & Gnoga.Server.Connection.Common.CRLF)));
             Send_Connection (Client, Persistent => True);
             Send_Server (Client);
 
@@ -529,9 +534,11 @@ package body Gnoga.Server.Connection is
                   Send_Body (Client, "", Get);
 
                   declare
-                     MH      : constant String  := "?m=";
-                     Q : constant Integer := Index (From_Latin_1 (Status.Query), MH, Going => Ada.Strings.Forward);
-                     Message : constant String  := From_Latin_1 (Status.Query (Q + MH.Length .. Status.Query'Last));
+                     MH : constant String  := "?m=";
+                     Q  : constant Integer :=
+                       Index (From_UTF_8 (UTF_8_Character_Array (Status.Query)), MH, Going => Ada.Strings.Forward);
+                     Message : constant String :=
+                       From_UTF_8 (UTF_8_Character_Array (Status.Query (Q + MH.Length .. Status.Query'Last)));
                   begin
                      Dispatch_Message (Message);
                   end;
@@ -573,7 +580,7 @@ package body Gnoga.Server.Connection is
                         end if;
                      end;
                   else
-                     Send_Content_Type (Client, To_Latin_1 (M));
+                     Send_Content_Type (Client, Standard.String (To_UTF_8 (M)));
                      declare
                         use Ada.Streams.Stream_IO;
                      begin
@@ -581,7 +588,7 @@ package body Gnoga.Server.Connection is
                            Close (Client.Content.FS);
                         end if;
 
-                        Open (Client.Content.FS, In_File, To_Latin_1 (F), Form => "shared=no");
+                        Open (Client.Content.FS, In_File, Standard.String (To_UTF_8 (F)), Form => "shared=no");
                         Send_Body (Client, Stream (Client.Content.FS), Get);
                      end;
                   end if;
@@ -600,8 +607,9 @@ package body Gnoga.Server.Connection is
          when URI =>
             if Verbose_Output then
                Gnoga.Log
-                 ("Requested: Kind: " & Image (Status.Kind) & ", Path: " & From_Latin_1 (Status.Path) & ", Query: " &
-                  From_Latin_1 (Status.Query));
+                 ("Requested: Kind: " & Image (Status.Kind) & ", Path: " &
+                  From_UTF_8 (UTF_8_Character_Array (Status.Path)) & ", Query: " &
+                  From_UTF_8 (UTF_8_Character_Array (Status.Query)));
                Gnoga.Log ("Reply: Not found");
             end if;
 
@@ -651,7 +659,7 @@ package body Gnoga.Server.Connection is
                From_UTF_8 (UTF_8_Character_Array (Client.Get_CGI_Value (i))));
          end loop;
 
-         On_Post_Event (From_Latin_1 (Status.File & Status.Query), Parameters);
+         On_Post_Event (From_UTF_8 (UTF_8_Character_Array (Status.File & Status.Query)), Parameters);
       end if;
    end Body_Received;
 
@@ -664,19 +672,21 @@ package body Gnoga.Server.Connection is
       Content : in out Ada.Streams.Root_Stream_Type'Class)
    is
       pragma Unreferenced (Content);
-      Status       : Status_Line renames Get_Status_Line (Client);
-      Disposition  : constant String  := From_Latin_1 (Client.Get_Multipart_Header (Content_Disposition_Header));
+      Status      : Status_Line renames Get_Status_Line (Client);
+      Disposition : constant String :=
+        From_UTF_8 (UTF_8_Character_Array (Client.Get_Multipart_Header (Content_Disposition_Header)));
       Field_ID     : constant String  := "name=""";
       n            : constant Natural := Index (Disposition, Field_ID);
       Eq           : constant Natural := Index (Disposition, """", n + Field_ID.Length);
       Field_Name   : constant String  := Disposition.Slice (n + Field_ID.Length, Eq - 1);
-      Content_Type : constant String  := From_Latin_1 (Client.Get_Multipart_Header (Content_Type_Header));
+      Content_Type : constant String  :=
+        From_UTF_8 (UTF_8_Character_Array (Client.Get_Multipart_Header (Content_Type_Header)));
 
       Parameters : Gnoga.Types.Data_Map_Type;
    begin
       if On_Post_Event /= null and Status.Kind = File and Content_Type = "" then
          Parameters.Insert (Field_Name, From_UTF_8 (UTF_8_Character_Array (Client.Content.Text.Get)));
-         On_Post_Event (From_Latin_1 (Status.File & Status.Query), Parameters);
+         On_Post_Event (From_UTF_8 (UTF_8_Character_Array (Status.File & Status.Query)), Parameters);
       end if;
    end Body_Received;
 
@@ -697,7 +707,7 @@ package body Gnoga.Server.Connection is
    begin
       --  Gnoga.Log ("Content_Type: " & Content_Type & ", Disposition: " & Disposition);
       if On_Post_Request_Event /= null then
-         On_Post_Request_Event (From_Latin_1 (Status.File & Status.Query), Param_List);
+         On_Post_Request_Event (From_UTF_8 (UTF_8_Character_Array (Status.File & Status.Query)), Param_List);
       end if;
 
       if Content_Type = "application/x-www-form-urlencoded" then
@@ -725,7 +735,7 @@ package body Gnoga.Server.Connection is
                               File_Name : constant String  := Disposition.Slice (f + File_ID.Length, Eq - 1);
                            begin
                               if On_Post_File_Event = null then
-                                 Gnoga.Log ("Attempt to upload file without" & " an On_Post_File_Event set");
+                                 Gnoga.Log ("Attempt to upload file without an On_Post_File_Event set");
                               else
                                  if Is_Open (Client.Content.FS) then
                                     Close (Client.Content.FS);
@@ -733,13 +743,14 @@ package body Gnoga.Server.Connection is
 
                                  Create
                                    (Client.Content.FS, Out_File,
-                                    To_Latin_1 (Gnoga.Server.Upload_Directory & File_Name & ".tmp"),
+                                    Standard.String (To_UTF_8 (Gnoga.Server.Upload_Directory & File_Name & ".tmp")),
                                     "Text_Translation=No");
 
                                  Receive_Body (Client, Stream (Client.Content.FS));
 
                                  On_Post_File_Event
-                                   (From_Latin_1 (Status.File & Status.Query), File_Name, File_Name & ".tmp");
+                                   (From_UTF_8 (UTF_8_Character_Array (Status.File & Status.Query)), File_Name,
+                                    File_Name & ".tmp");
                               end if;
                            end;
                         else
@@ -1186,7 +1197,7 @@ package body Gnoga.Server.Connection is
          Execute_Script (ID, "TRUE=true");
          Execute_Script (ID, "FALSE=false");
          --  By setting the variable TRUE and FALSE it is possible to set
-         --  a property or attribute with Image (Boolean) which will result
+         --  a property or attribute with Boolean'Image which will result
          --  in TRUE or FALSE not the case sensitive true or false
          --  expected.
 
@@ -1376,14 +1387,15 @@ package body Gnoga.Server.Connection is
 
       Status : Status_Line renames Get_Status_Line (Client.all);
 
-      F : constant String := From_Latin_1 (Status.File);
+      F : constant String := From_UTF_8 (UTF_8_Character_Array (Status.File));
    begin
       if F /= "gnoga" then
          Gnoga.Log ("Invalid URL for Websocket: " & F);
          declare
             Reason : constant String := "Invalid URL";
          begin
-            return (Accepted => False, Length => Reason.Length, Code => 400, Reason => To_Latin_1 (Reason));
+            return
+              (Accepted => False, Length => Reason.Length, Code => 400, Reason => Standard.String (To_UTF_8 (Reason)));
          end;
       end if;
 
@@ -1398,7 +1410,8 @@ package body Gnoga.Server.Connection is
          declare
             Reason : constant String := "No connection event set";
          begin
-            return (Accepted => False, Length => Reason.Length, Code => 400, Reason => To_Latin_1 (Reason));
+            return
+              (Accepted => False, Length => Reason.Length, Code => 400, Reason => Standard.String (To_UTF_8 (Reason)));
          end;
       end if;
    end WebSocket_Open;
@@ -1410,7 +1423,7 @@ package body Gnoga.Server.Connection is
    overriding procedure WebSocket_Initialize (Client : in out Gnoga_HTTP_Client) is
       Status : Status_Line renames Get_Status_Line (Client);
 
-      F : constant String      := From_Latin_1 (Status.Query);
+      F : constant String      := From_UTF_8 (UTF_8_Character_Array (Status.Query));
       S : constant Socket_Type := Client'Unchecked_Access;
 
       ID : Gnoga.Types.Connection_ID := Gnoga.Types.No_Connection;

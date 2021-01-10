@@ -139,7 +139,7 @@ basic_components:
 	$(MAKE) -C components
 
 # Mandatory dependances for Gnoga and demos
-deps : simple_components zanyblue pragmarc
+deps : simple_components zanyblue pragmarc uxstrings
 
 simple_components:
 	$(BUILDER) -P deps/simple_components/lib_components.gpr $(SC_OPTIONS)
@@ -156,6 +156,9 @@ zanyblue:
 
 pragmarc:
 	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
+
+uxstrings:
+	$(BUILDER) -P deps/uxstrings/lib_uxstrings.gpr
 
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
@@ -281,13 +284,15 @@ logo: zanyblue
 	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
 	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
 
-localize: zanyblue
-#	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
-#	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
+localize:
+#	- cd demo$(PATHSEP)localize && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings localize_messages localize
 	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
 
 tests:
 	- $(BUILDER) -k -P test/test_agg.gpr $(GN_OPTIONS)
+
+tests-%:
+	- $(BUILDER) -k -P test/test_agg.gpr $(subst tests-,,$@) $(GN_OPTIONS)
 
 tests_ssl: gnoga_secure
 	- $(BUILDER) -P test_ssl/test_ssl.gpr $(GN_OPTIONS)

@@ -4,14 +4,14 @@
 -- ROLE                         : Text input / output implementation for UXString.
 -- NOTES                        : Ada 202x
 --
--- COPYRIGHT                    : (c) Pascal Pignard 2020
+-- COPYRIGHT                    : (c) Pascal Pignard 2021
 -- LICENCE                      : CeCILL V2.1 (https://www.cecill.info)
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with GNAT.OS_Lib; use GNAT.OS_Lib;
-
 package body UXStrings.Text_IO is
+
+   use GNAT.OS_Lib;
 
    Std_In  : aliased File_Type := (Standin, In_File, "sdtin", Latin_1, CRLF, others => <>);
    Std_Out : aliased File_Type := (Standout, Out_File, "sdtout", Latin_1, CRLF, others => <>);
@@ -23,26 +23,19 @@ package body UXStrings.Text_IO is
 
    LM : UXString := From_Latin_1 (Character'Val (13) & Character'Val (10)); -- Default is CRLF for Line_Mark function
 
-   function To_String (Source : UTF_16_Character_Array; Scheme : UTF_16_Encoding_Scheme) return String is
-   begin
-      pragma Compile_Time_Warning (Standard.True, "To_String unimplemented");
-      return raise Program_Error with "Unimplemented function To_String";
-   end To_String;
-
    procedure Read_More (File : in out File_Type) is
-      Buffer_Size : constant         := 200;
-      Buffer      : String (1 .. Buffer_Size);
-      Last        : constant Integer := Read (File.FD, Buffer'Address, Buffer'Length);
+      Buffer_Size : constant := 200;
+      subtype Buffer_Type is String (1 .. Buffer_Size);
+      Buffer : Buffer_Type;
+      Last   : constant Integer := Read (File.FD, Buffer'Address, Buffer'Length);
    begin
       case File.Scheme is
          when Latin_1 =>
             File.Buffer.Append (From_Latin_1 (Buffer (1 .. Last)));
          when UTF_8 =>
-            File.Buffer.Append (From_UTF_8 (UTF_8_Character_Array (Buffer (1 .. Last))));
-         when UTF_16BE =>
-            null;
-         when UTF_16LE =>
-            null;
+            File.Buffer.Append (From_UTF_8 (Buffer (1 .. Last)));
+         when UTF_16BE | UTF_16LE =>
+            File.Buffer.Append (From_UTF_16 (Buffer (1 .. Last), File.Scheme));
       end case;
       if Last < Buffer_Size then
          File.EOF := True;
@@ -430,9 +423,20 @@ package body UXStrings.Text_IO is
            when CRLF                 => Character'Val (13) & Character'Val (10));
       Dummy_Result : Integer;
    begin
-      for Count in 1 .. Spacing loop
-         Dummy_Result := Write (File.FD, NL'Address, NL'Length);
-      end loop;
+      case File.Scheme is
+         when Latin_1 | UTF_8 =>
+            for Count in 1 .. Spacing loop
+               Dummy_Result := Write (File.FD, NL'Address, NL'Length);
+            end loop;
+         when UTF_16BE | UTF_16LE =>
+            declare
+               Buffer : UTF_16_Character_Array := To_UTF_16 (From_Latin_1 (NL), File.Scheme);
+            begin
+               for Count in 1 .. Spacing loop
+                  Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+               end loop;
+            end;
+      end case;
    end New_Line;
 
    --------------
@@ -496,8 +500,7 @@ package body UXStrings.Text_IO is
    procedure Line_Mark (Ending : Line_Ending) is
    begin
       LM :=
-        (case Ending is when CR => From_Latin_1 ((1 => Character'val (13))),
-           when LF              => From_Latin_1 ((1 => Character'val (10))),
+        (case Ending is when CR => From_Latin_1 (Character'val (13)), when LF => From_Latin_1 (Character'val (10)),
            when CRLF            => From_Latin_1 (Character'Val (13) & Character'Val (10)));
    end Line_Mark;
 
@@ -689,6 +692,35 @@ package body UXStrings.Text_IO is
       return raise Program_Error with "Unimplemented function Page";
    end Page;
 
+   -------------
+   -- Put_BOM --
+   -------------
+
+   procedure Put_BOM (File : in File_Type) is
+      Dummy_Result : Integer;
+      use Ada.Strings.UTF_Encoding;
+   begin
+      case File.Scheme is
+         when Latin_1 =>
+            null;
+         when UTF_8 =>
+            Dummy_Result := Write (File.FD, BOM_8'Address, BOM_8'Length);
+         when UTF_16BE =>
+            Dummy_Result := Write (File.FD, BOM_16BE'Address, BOM_16BE'Length);
+         when UTF_16LE =>
+            Dummy_Result := Write (File.FD, BOM_16LE'Address, BOM_16LE'Length);
+      end case;
+   end Put_BOM;
+
+   -------------
+   -- Put_BOM --
+   -------------
+
+   procedure Put_BOM is
+   begin
+      Put_BOM (Cur_Out);
+   end Put_BOM;
+
    ---------
    -- Get --
    ---------
@@ -716,14 +748,28 @@ package body UXStrings.Text_IO is
    ---------
 
    procedure Put (File : in File_Type; Item : in Unicode_Character) is
-      S : constant String :=
-        (case File.Scheme is when Latin_1 => To_Latin_1 (From_Unicode ((1 => Item))),
-           when UTF_8                     => String (To_UTF_8 (From_Unicode ((1 => Item)))),
-           when UTF_16BE => To_String (To_UTF_16 (From_Unicode ((1 => Item)), UTF_16BE, False), UTF_16BE),
-           when UTF_16LE => To_String (To_UTF_16 (From_Unicode ((1 => Item)), UTF_16LE, False), UTF_16LE));
       Dummy_Result : Integer;
    begin
-      Dummy_Result := Write (File.FD, S'Address, S'Length);
+      case File.Scheme is
+         when Latin_1 =>
+            declare
+               Buffer : constant String := To_Latin_1 (From_Unicode (Item));
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
+         when UTF_8 =>
+            declare
+               Buffer : constant String := String (To_UTF_8 (From_Unicode (Item)));
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
+         when UTF_16BE | UTF_16LE =>
+            declare
+               Buffer : UTF_16_Character_Array := To_UTF_16 (From_Unicode (Item), File.Scheme);
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
+      end case;
    end Put;
 
    ---------
@@ -821,13 +867,28 @@ package body UXStrings.Text_IO is
    ---------
 
    procedure Put (File : in File_Type; Item : in UXString) is
-      S : constant String :=
-        (case File.Scheme is when Latin_1 => To_Latin_1 (Item), when UTF_8 => String (To_UTF_8 (Item)),
-           when UTF_16BE                  => To_String (To_UTF_16 (Item, UTF_16BE, False), UTF_16BE),
-           when UTF_16LE                  => To_String (To_UTF_16 (Item, UTF_16LE, False), UTF_16LE));
       Dummy_Result : Integer;
    begin
-      Dummy_Result := Write (File.FD, S'Address, S'Length);
+      case File.Scheme is
+         when Latin_1 =>
+            declare
+               Buffer : constant String := To_Latin_1 (Item);
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
+         when UTF_8 =>
+            declare
+               Buffer : constant String := String (To_UTF_8 (Item));
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
+         when UTF_16BE | UTF_16LE =>
+            declare
+               Buffer : UTF_16_Character_Array := To_UTF_16 (Item, File.Scheme);
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
+      end case;
    end Put;
 
    ---------
@@ -845,8 +906,7 @@ package body UXStrings.Text_IO is
 
    procedure Get_Line (File : in out File_Type; Item : out UXString) is
       LM : constant UXString :=
-        (case File.Ending is when CR => From_Latin_1 ((1 => Character'val (13))),
-           when LF                   => From_Latin_1 ((1 => Character'val (10))),
+        (case File.Ending is when CR => From_Latin_1 (Character'val (13)), when LF => From_Latin_1 (Character'val (10)),
            when CRLF                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
       EOL : Natural := Index (File.Buffer, LM);
    begin

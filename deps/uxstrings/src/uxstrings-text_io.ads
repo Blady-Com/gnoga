@@ -119,6 +119,11 @@ package UXStrings.Text_IO is
    function Page (File : in File_Type) return Positive_Count;
    function Page return Positive_Count;
 
+   -- Byte Order Mark Output (with respect of Encoding Scheme)
+
+   procedure Put_BOM (File : in File_Type);
+   procedure Put_BOM;
+
    -- Unicode Character Input-Output
 
    procedure Get (File : in out File_Type; Item : out Unicode_Character);
@@ -154,6 +159,7 @@ package UXStrings.Text_IO is
    procedure Put_Line (Item : in UXString);
 
 private
+
    type File_Type is record
       FD     : GNAT.OS_Lib.File_Descriptor := GNAT.OS_Lib.Invalid_FD;
       Mode   : File_Mode;

@@ -2,7 +2,7 @@ with "../simple_components/lib_components.gpr";
 
 project UXStrings is
    for Languages use ("Ada");
-   for Source_Dirs use ("src", "tests");
+   for Source_Dirs use ("src", "tests", "fix");
    for Object_Dir use "obj";
    for Exec_Dir use "bin";
    for Main use ("test_uxstrings.adb", "test_uxstrings_text_io.adb");

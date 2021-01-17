@@ -2,12 +2,16 @@ with UXStrings;   use UXStrings;
 with UXStrings.Text_IO; use UXStrings.Text_IO;
 with UXStrings.Conversions;
 with UXStrings.Hash;
+with UXStrings.Formatting;
 
 procedure Test_UXStrings is
 
    function Image is new UXStrings.Conversions.Scalar_Image (Boolean);
    function Image is new UXStrings.Conversions.Integer_Image (Integer);
    function Value is new UXStrings.Conversions.Integer_Value (Integer);
+
+   function Format is new UXStrings.Formatting.Integer_Format (Natural);
+   use all type UXStrings.Formatting.Alignment;
 
    procedure Send (Msg : UTF_8_Character_Array) is
    begin
@@ -90,6 +94,7 @@ begin
    Put_Line (Image(Character'pos (C), 16));
    C := S1.Get_Latin_1 (3); -- same result but avoid all string conversion
    Put_Line (Image(Character'pos (C), 16));
+   Put_Line (Format (5, 2, True, 10, Center, '@'));
    Put_Line ("--end--");
 end Test_UXStrings;
 

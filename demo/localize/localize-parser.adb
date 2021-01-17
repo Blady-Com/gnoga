@@ -9,31 +9,22 @@
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with Ada.Containers.Vectors;
-with Ada.Direct_IO;
-with Ada.Characters.Conversions;
-with Ada.Characters.Latin_1;
-with Ada.Characters.Wide_Latin_1;
 with Ada.Characters.Wide_Wide_Latin_1;
 with Gnoga;
 with UXStrings.Formatting;
+with UXStrings.Text_IO;
 
 package body Localize.Parser is
 
-   use Ada.Characters.Conversions;
    use type Content_Maps.Cursor;
 
    procedure Parse_Strings_File (File_Name : String; Content : out Property_List) is
-      package Strings_IO is new Ada.Direct_IO (Wide_Character);
-      package File_Text is new Ada.Containers.Vectors (Positive, Wide_Wide_Character);
-      use type File_Text.Cursor;
-
       type State_Type is (None, In_Comment, In_Key, In_Value, Equal, Semi_Colon);
 
-      Raw_File : Strings_IO.File_Type;
-      Text     : File_Text.Vector;
-      C        : Wide_Character;
-      I        : File_Text.Cursor;
+      Raw_File : UXStrings.Text_IO.File_Type;
+      Text     : String;
+      C        : Unicode_Character;
+      I        : Natural;
       State    : State_Type := None;
       Comment  : String;
       Key      : String;
@@ -54,18 +45,18 @@ package body Localize.Parser is
       end Append;
 
    begin
-      Strings_IO.Open (Raw_File, Strings_IO.In_File, File_Name.To_Latin_1);
-      while not Strings_IO.End_Of_File (Raw_File) loop
-         Strings_IO.Read (Raw_File, C);
-         Text.Append (To_Wide_Wide_Character (C));
+      UXStrings.Text_IO.Open (Raw_File, UXStrings.Text_IO.In_File, File_Name, UTF_16LE, UXStrings.Text_IO.LF);
+      while not UXStrings.Text_IO.End_Of_File (Raw_File) loop
+         UXStrings.Text_IO.Get (Raw_File, C);
+         Text.Append (C);
       end loop;
-      Strings_IO.Close (Raw_File);
+      UXStrings.Text_IO.Close (Raw_File);
 
       Content.Clear;
       I := Text.First;
-      while I /= File_Text.No_Element loop
+      while I <= Text.Last loop
          if Text (I) = '\' then
-            File_Text.Next (I);
+            Text.Next (I);
             case Text (I) is
                when 't' =>
                   Append (Ada.Characters.Wide_Wide_Latin_1.HT);
@@ -80,14 +71,14 @@ package body Localize.Parser is
                   Append (Text (I));
             end case;
          elsif Text (I) = '/' and State = None then
-            File_Text.Next (I);
+            Text.Next (I);
             if Text (I) = '*' then
                State := In_Comment;
             end if;
          elsif Text (I) /= '*' and State = In_Comment then
             Append (Comment, Text (I));
          elsif Text (I) = '*' and State = In_Comment then
-            File_Text.Next (I);
+            Text.Next (I);
             if Text (I) = '/' then
                State := None;
             else
@@ -113,77 +104,69 @@ package body Localize.Parser is
             Value   := Null_UXString;
             State   := None;
          end if;
-         File_Text.Next (I);
+         Text.Next (I);
       end loop;
    end Parse_Strings_File;
 
    procedure Write_Strings_File (File_Name : String; Content : Property_List) is
-      package Strings_IO is new Ada.Direct_IO (Wide_Character);
+      Raw_File : UXStrings.Text_IO.File_Type;
 
-      BOM_LE : constant Wide_Character := Wide_Character'Val (16#FEFF#);
-
-      Raw_File : Strings_IO.File_Type;
-
-      procedure Escaped_Write (Str : String; Multi_Comment : Boolean := False) is
+      procedure Escaped_Put (Str : String; Multi_Comment : Boolean := False) is
       begin
          for I in 1 .. Length (Str) loop
             if Element (Str, I) = Ada.Characters.Wide_Wide_Latin_1.HT then
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, 't');
+               UXStrings.Text_IO.Put (Raw_File, '\');
+               UXStrings.Text_IO.Put (Raw_File, 't');
             elsif Element (Str, I) = Ada.Characters.Wide_Wide_Latin_1.LF then
                if Multi_Comment then
-                  Strings_IO.Write (Raw_File, Ada.Characters.Wide_Latin_1.LF);
+                  UXStrings.Text_IO.New_Line (Raw_File);
                else
-                  Strings_IO.Write (Raw_File, '\');
-                  Strings_IO.Write (Raw_File, 'n');
+                  UXStrings.Text_IO.Put (Raw_File, '\');
+                  UXStrings.Text_IO.Put (Raw_File, 'n');
                end if;
             elsif Element (Str, I) in '"' | '\' then
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, To_Wide_Character (Element (Str, I)));
+               UXStrings.Text_IO.Put (Raw_File, '\');
+               UXStrings.Text_IO.Put (Raw_File, Element (Str, I));
             else
-               Strings_IO.Write (Raw_File, To_Wide_Character (Element (Str, I)));
+               UXStrings.Text_IO.Put (Raw_File, Element (Str, I));
             end if;
          end loop;
-      end Escaped_Write;
+      end Escaped_Put;
 
    begin
-      Strings_IO.Create (Raw_File, Strings_IO.Out_File, File_Name.To_Latin_1);
-      Strings_IO.Write (Raw_File, BOM_LE);
+      UXStrings.Text_IO.Create (Raw_File, UXStrings.Text_IO.Out_File, File_Name, UTF_16LE, UXStrings.Text_IO.LF);
+      UXStrings.Text_IO.Put_BOM (Raw_File);
       for C in Content.Iterate loop
          if Content_Maps.Element (C).Comment /= Null_UXString then
-            Strings_IO.Write (Raw_File, '/');
-            Strings_IO.Write (Raw_File, '*');
-            Escaped_Write (Content_Maps.Element (C).Comment, True);
-            Strings_IO.Write (Raw_File, '*');
-            Strings_IO.Write (Raw_File, '/');
-            Strings_IO.Write (Raw_File, Ada.Characters.Wide_Latin_1.LF);
+            UXStrings.Text_IO.Put (Raw_File, '/');
+            UXStrings.Text_IO.Put (Raw_File, '*');
+            Escaped_Put (Content_Maps.Element (C).Comment, True);
+            UXStrings.Text_IO.Put (Raw_File, '*');
+            UXStrings.Text_IO.Put (Raw_File, '/');
+            UXStrings.Text_IO.New_Line (Raw_File);
          end if;
-         Strings_IO.Write (Raw_File, '"');
-         Escaped_Write (Content_Maps.Key (C));
-         Strings_IO.Write (Raw_File, '"');
-         Strings_IO.Write (Raw_File, ' ');
-         Strings_IO.Write (Raw_File, '=');
-         Strings_IO.Write (Raw_File, ' ');
-         Strings_IO.Write (Raw_File, '"');
-         Escaped_Write (Content_Maps.Element (C).Text);
-         Strings_IO.Write (Raw_File, '"');
-         Strings_IO.Write (Raw_File, ';');
-         Strings_IO.Write (Raw_File, Ada.Characters.Wide_Latin_1.LF);
+         UXStrings.Text_IO.Put (Raw_File, '"');
+         Escaped_Put (Content_Maps.Key (C));
+         UXStrings.Text_IO.Put (Raw_File, '"');
+         UXStrings.Text_IO.Put (Raw_File, ' ');
+         UXStrings.Text_IO.Put (Raw_File, '=');
+         UXStrings.Text_IO.Put (Raw_File, ' ');
+         UXStrings.Text_IO.Put (Raw_File, '"');
+         Escaped_Put (Content_Maps.Element (C).Text);
+         UXStrings.Text_IO.Put (Raw_File, '"');
+         UXStrings.Text_IO.Put (Raw_File, ';');
+         UXStrings.Text_IO.New_Line (Raw_File);
       end loop;
-      Strings_IO.Close (Raw_File);
+      UXStrings.Text_IO.Close (Raw_File);
    end Write_Strings_File;
 
    procedure Parse_Properties_File (File_Name : String; Content : out Property_List) is
-      package Strings_IO is new Ada.Direct_IO (Character);
-      package File_Text is new Ada.Containers.Vectors (Positive, Wide_Wide_Character);
-      use type File_Text.Cursor;
-
       type State_Type is (None, In_Comment, In_Key, In_Value, Equal);
 
-      Raw_File : Strings_IO.File_Type;
-      Text     : File_Text.Vector;
-      C        : Character;
-      I        : File_Text.Cursor;
+      Raw_File : UXStrings.Text_IO.File_Type;
+      Text     : String;
+      C        : Unicode_Character;
+      I        : Natural;
       State    : State_Type := None;
       Comment  : String;
       Key      : String;
@@ -209,23 +192,23 @@ package body Localize.Parser is
       end Append;
 
    begin
-      Strings_IO.Open (Raw_File, Strings_IO.In_File, File_Name.To_Latin_1);
-      while not Strings_IO.End_Of_File (Raw_File) loop
-         Strings_IO.Read (Raw_File, C);
-         Text.Append (To_Wide_Wide_Character (C));
+      UXStrings.Text_IO.Open (Raw_File, UXStrings.Text_IO.In_File, File_Name, Latin_1, UXStrings.Text_IO.LF);
+      while not UXStrings.Text_IO.End_Of_File (Raw_File) loop
+         UXStrings.Text_IO.Get (Raw_File, C);
+         Text.Append (C);
       end loop;
-      Strings_IO.Close (Raw_File);
+      UXStrings.Text_IO.Close (Raw_File);
 
       Content.Clear;
       I := Text.First;
-      while I /= File_Text.No_Element loop
+      while I <= Text.Last loop
          if Text (I) = '\' then
-            File_Text.Next (I);
+            Text.Next (I);
             case Text (I) is
                when 'u' =>
                   for J in Hex4 loop
-                     File_Text.Next (I);
-                     exit when I = File_Text.No_Element;
+                     Text.Next (I);
+                     exit when I > Text.Last;
                      Hex4.Replace_Unicode (J, Text (I));
                   end loop;
                   Append (Wide_Wide_Character'Val (Gnoga.Value (Hex4, 16)));
@@ -279,14 +262,12 @@ package body Localize.Parser is
             State := In_Value;
             Append (Value, Text (I));
          end if;
-         File_Text.Next (I);
+         Text.Next (I);
       end loop;
    end Parse_Properties_File;
 
    procedure Write_Properties_File (File_Name : String; Content : Property_List) is
-      package Strings_IO is new Ada.Direct_IO (Character);
-
-      Raw_File : Strings_IO.File_Type;
+      Raw_File : UXStrings.Text_IO.File_Type;
 
       type Escape_Space_Type is (No, Start, Full);
 
@@ -302,37 +283,37 @@ package body Localize.Parser is
       begin
          for I in 1 .. Length (Str) loop
             if Element (Str, I) = Ada.Characters.Wide_Wide_Latin_1.HT then
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, 't');
+               UXStrings.Text_IO.Put (Raw_File, '\');
+               UXStrings.Text_IO.Put (Raw_File, 't');
                Space := False;
             elsif Element (Str, I) = Ada.Characters.Wide_Wide_Latin_1.LF then
                if Multi_Comment then
-                  Strings_IO.Write (Raw_File, Ada.Characters.Latin_1.LF);
-                  Strings_IO.Write (Raw_File, '#');
+                  UXStrings.Text_IO.New_Line (Raw_File);
+                  UXStrings.Text_IO.Put (Raw_File, '#');
                else
-                  Strings_IO.Write (Raw_File, '\');
-                  Strings_IO.Write (Raw_File, 'n');
+                  UXStrings.Text_IO.Put (Raw_File, '\');
+                  UXStrings.Text_IO.Put (Raw_File, 'n');
                end if;
                Space := False;
             elsif Element (Str, I) in '=' | ':' | '#' | '!' | '\' and Escape_Space /= No then
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, To_Character (Element (Str, I)));
+               UXStrings.Text_IO.Put (Raw_File, '\');
+               UXStrings.Text_IO.Put (Raw_File, Element (Str, I));
                Space := False;
             elsif Element (Str, I) = ' ' and (Space or Escape_Space = Full) then
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, ' ');
+               UXStrings.Text_IO.Put (Raw_File, '\');
+               UXStrings.Text_IO.Put (Raw_File, ' ');
                Space := False;
             elsif Element (Str, I) < Ada.Characters.Wide_Wide_Latin_1.DEL then
-               Strings_IO.Write (Raw_File, To_Character (Element (Str, I)));
+               UXStrings.Text_IO.Put (Raw_File, Element (Str, I));
                Space := False;
             else
-               Strings_IO.Write (Raw_File, '\');
-               Strings_IO.Write (Raw_File, 'u');
+               UXStrings.Text_IO.Put (Raw_File, '\');
+               UXStrings.Text_IO.Put (Raw_File, 'u');
                declare
-                  Hex4 : constant String := Format_U16 (Wide_Character'Pos (To_Wide_Character (Element (Str, I))));
+                  Hex4 : constant String := Format_U16 (BMP_Character'Pos (Get_BMP (Str, I, '?')));
                begin
                   for C of Hex4 loop
-                     Strings_IO.Write (Raw_File, To_Character (C));
+                     UXStrings.Text_IO.Put (Raw_File, C);
                   end loop;
                end;
                Space := False;
@@ -341,19 +322,19 @@ package body Localize.Parser is
       end Escaped_Write;
 
    begin
-      Strings_IO.Create (Raw_File, Strings_IO.Out_File, File_Name.To_Latin_1);
+      UXStrings.Text_IO.Create (Raw_File, UXStrings.Text_IO.Out_File, File_Name, Latin_1, UXStrings.Text_IO.LF);
       for C in Content.Iterate loop
          if Content_Maps.Element (C).Comment /= Null_UXString then
-            Strings_IO.Write (Raw_File, '#');
+            UXStrings.Text_IO.Put (Raw_File, '#');
             Escaped_Write (Content_Maps.Element (C).Comment, No, True);
-            Strings_IO.Write (Raw_File, Ada.Characters.Latin_1.LF);
+            UXStrings.Text_IO.New_Line (Raw_File);
          end if;
          Escaped_Write (Content_Maps.Key (C), Full);
-         Strings_IO.Write (Raw_File, '=');
+         UXStrings.Text_IO.Put (Raw_File, '=');
          Escaped_Write (Content_Maps.Element (C).Text, Start);
-         Strings_IO.Write (Raw_File, Ada.Characters.Latin_1.LF);
+         UXStrings.Text_IO.New_Line (Raw_File);
       end loop;
-      Strings_IO.Close (Raw_File);
+      UXStrings.Text_IO.Close (Raw_File);
    end Write_Properties_File;
 
    procedure Read (Properties : out Property_List; File_Name : String) is

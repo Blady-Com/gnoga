@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,6 @@ package body ZanyBlue.Test.Text.Generic_Floats.Suites is
    end Initialize;
 
    function Suite return Test_Suite is
-      use ZanyBlue.Test.Text.Generic_Floats;
    begin
       return S : Test_Suite do
          Add_Static_Test (S, GDTOA.Suites.Suite);

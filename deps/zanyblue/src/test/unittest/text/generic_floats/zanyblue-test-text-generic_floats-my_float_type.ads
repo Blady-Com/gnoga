@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ package ZanyBlue.Test.Text.Generic_Floats.My_Float_Type is
 
    package My_Float_Arguments is
       new ZanyBlue.Text.Generic_Floats (My_Float);
-   use My_Float_Arguments;
 
    function Divide (X, Y : My_Float) return My_Float;
    function Infinity (X : My_Float := My_Float'Last) return My_Float;

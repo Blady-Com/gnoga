@@ -63,8 +63,10 @@ project zbcom is
                                                  "-gnatf",
                                                  "-gnatU",
                                                  "-gnato",
-                                                 "-fstack-check",
-                                                 "-Wall");
+                                                 "-gnatwal",
+                                                 "-gnatygO",
+                                                 "-gnatyo",
+                                                 "-fstack-check");
       when "Coverage" =>
          Compile_Switches := Compile_Switches & ("-g",
                                                  "-fprofile-arcs",

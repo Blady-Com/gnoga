@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ procedure T_0005 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Durations;
-   use ZanyBlue.Text.Arguments;
 
    V      : constant Duration := Duration (3600 + 60 + 1);
    Arg    : constant Duration_Argument_Type := Create (V);

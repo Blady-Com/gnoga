@@ -2,7 +2,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ TOP=../..
 SPHINXOPTS    += -D release="$(VERSION)"
 SPHINXOPTS    += -D version="$(V_MAJOR).$(V_MINOR)"
 SPHINXBUILD   = sphinx-build
-DOCLINKSRST   = $(SRCDIR)/doc/source/links.rst
 PAPER         =
 BUILDDIR      = build
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -57,7 +56,6 @@ DSTPDF=$(DOCDIR)/ZanyBlue.pdf
 CLEAN_FILES+=$(wildcard gnatcheck-source-list.out)
 CLEAN_FILES+=$(wildcard source/notices.rst)
 CLEAN_FILES+=$(wildcard source/contribs.rst)
-CLEAN_FILES+=$(wildcard $(DOCLINKSRST))
 CLEAN_DIRS+=$(BUILDDIR)
 CLEAN_DIRS+=$(wildcard source/zbtest/function)
 CLEAN_DIRS+=$(wildcard source/zbtest/command)
@@ -75,7 +73,7 @@ endif
 all:	html latexpdf gnatdocs
 	$(call COPY,$(SRCPDF),$(DSTPDF))
 
-html:	acknowlegments source/zbtest/function source/zbtest/command $(DOCLINKSRST)
+html:	acknowlegments source/zbtest/function source/zbtest/command
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) ../../doc
 
 source/zbtest/function source/zbtest/command:	$(wildcard ../zbtest/commands/*.adb) $(wildcard ../zbtest/functions/*.adb)
@@ -86,9 +84,6 @@ gnatdocs:
 
 acknowlegments:
 	$(ZBDEV) mknotices
-
-$(DOCLINKSRST):
-	echo ".. _download: $(DOWNLOAD_URL)" > $(DOCLINKSRST)
 
 latexpdf:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex

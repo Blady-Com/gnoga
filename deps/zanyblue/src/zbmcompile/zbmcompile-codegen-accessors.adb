@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -447,7 +447,6 @@ package body ZBMCompile.Codegen.Accessors is
          pragma Unreferenced (Facility);
          N_Args : constant Natural := Message_Arg_Count (Base_Locale, Locales);
 
-         use Locale_Definitions_Package;
          use Key_Descriptor_Vectors;
 
          New_Descriptor : Key_Descriptor_Type := (

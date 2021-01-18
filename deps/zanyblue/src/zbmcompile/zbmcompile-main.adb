@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,6 @@ procedure ZBMCompile.Main is
    use Ada.Command_Line;
    use ZanyBlue.Text;
    use ZanyBlue.Text.Formatting;
-   use ZBMCompile;
    use ZBMCompile.Message_Filter;
 
    Usage   : exception;

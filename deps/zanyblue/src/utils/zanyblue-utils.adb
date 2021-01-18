@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -35,13 +35,11 @@
 
 with Ada.Strings.Wide_Maps;
 with Ada.Strings.Wide_Fixed;
-with ZanyBlue.Text.Arguments;
 
 package body ZanyBlue.Utils is
 
    use Ada.Strings.Wide_Maps;
    use Ada.Strings.Wide_Fixed;
-   use ZanyBlue.Text.Arguments;
 
    Mapping : constant Wide_Character_Mapping := To_Mapping (
                                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ.",

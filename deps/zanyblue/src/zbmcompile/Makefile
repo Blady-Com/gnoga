@@ -57,7 +57,7 @@ XGENERATED=zbmcompile-messages.ads zbmcompile-messages.adb $(STAMPFILE)
 # Include configuration definitions
 include $(TOP)/src/mkfile/conf.mk
 
-all:
+all:	$(STAMPFILE)
 	$(GPRBUILD) -p $(GNATFLAGS) -P $(APPNAME)
 
 messages:	$(STAMPFILE)

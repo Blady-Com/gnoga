@@ -2,7 +2,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -39,24 +39,24 @@
 
 TOP=..
 
-APPDIRS=zbmcompile zbinfo
-APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
+APPDIRS=zbmcompile zbinfo zbtest
 
-CLEAN_DEPS+=$(patsubst %,%.clean,$(APPDIRS) root test)
-CLEAN_FILES+=$(wildcard bin/pylib/*.pyc)
-CLEAN_FILES+=$(wildcard bin/pylib/zb/*.pyc)
 CLEAN_FILES+=$(wildcard gnatcheck.out)
 CLEAN_FILES+=$(wildcard obj/*)
 CLEAN_FILES+=$(wildcard $(TOP)/lib/b~*)
 CLEAN_FILES+=$(wildcard $(TOP)/zanyblue-*.tar.gz)
 CLEAN_FILES+=$(wildcard $(TOP)/website.tar.gz)
-CLEAN_DIRS+=$(wildcard $(TOP)/src/text/cldr)
 CLEAN_FILES+=$(wildcard $(TOP)/src/admin/*.TXT)
 CLEAN_DIRS+=$(STAGEDIR)
+CLEAN_DIRS+=$(wildcard $(TOP)/src/text/cldr)
+CLEAN_DIRS+=$(wildcard bin/pylib/__pycache__)
+CLEAN_DIRS+=$(wildcard bin/pylib/zb/__pycache__)
+CLEAN_DIRS+=$(wildcard bin/pylib/zb/scm/__pycache__)
 
-#DEV_CLEAN_DIRS+=$(TOP)/doc
-#DEV_CLEAN_DIRS+=$(TOP)/src/doc/_build
-#DEV_CLEAN_FILES+=$(wildcard $(ZBVERSGPR))
+DEV_CLEAN_DIRS+=$(TOP)/doc
+DEV_CLEAN_DIRS+=$(TOP)/src/doc/_build
+DEV_CLEAN_DIRS+=$(TOP)/src/obj/gnatdoc
+DEV_CLEAN_FILES+=$(wildcard $(ZBVERSGPR))
 
 # Include configuration definitions
 include $(TOP)/src/mkfile/conf.mk

@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,6 @@ package body ZanyBlue.Text.Generic_Integers is
       new ZanyBlue.Text.Generic_Buffer (
              Integer_Type => Integer_Type);
 
-   use Ada.Characters.Conversions;
    use ZanyBlue.Text.Format_Parser;
    use Integer_Buffer;
 

@@ -1,5 +1,5 @@
 .. -*- coding: utf-8 -*-
-   Copyright © 2016, Michael Rohan <mrohan@zanyblue.com>
+   Copyright © 2016, 2018, Michael Rohan <mrohan@zanyblue.com>
    All rights reserved.
 
 .. _zb-intro:
@@ -46,7 +46,7 @@ The build requires
 * GNU make.
 * The XMLAda package needs to be installed to build the ZanyBlue
   testing application, ``zbtest``.
-* The unit tests require the Ahven package
+* The unit tests require the :ref:`zb-ahven` package.
 
 .. _zb-intro-build-building:
 

@@ -8,6 +8,27 @@ Releases
 The ZanyBlue releases are distributed when functionality has been completed.
 The following section detail the contents of the releases.
 
+.. _v1.4.0:
+
+Version 1.4.0, Aug 13th, 2018
+-----------------------------
+
+#. Added an "install" Makefile target to install on the ZB system (contributed
+   by Pascal Pignard).  Use gpr based utilities instead of gnat, e.g.,
+   "gprclean" instead of "gnatclean"
+
+#. Updated the supporting Python scripts to use Python 3
+
+#. Updated Windows support.
+
+#. Dropped usage of GPL library XML/Ada for zbtest.
+
+#. Updated code for stricter checks with GNAT 2018.  Mainly the removal of
+   un-needed "use" statements.
+
+#. Added instructions on building and installing Ahven and included a
+   Ahven patch to support the stricter checks with GNAT 2018.
+
 .. _v1.3.0b:
 
 Version 1.3.0b, Aug 6th, 2016

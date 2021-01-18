@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ pragma Elaborate_All (ZanyBlue.Text.Catalogs);
 package body ZanyBlue.Text.CLDR is
 
    use Ada.Exceptions;
-   use ZanyBlue.Text;
    use ZanyBlue.Text.Catalogs;
 
    CLDR_Catalog : Catalog_Type;

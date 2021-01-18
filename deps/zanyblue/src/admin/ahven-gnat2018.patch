@@ -1,0 +1,103 @@
+diff --git a/gnat/Makefile b/gnat/Makefile
+index 876afe7..01a8b2e 100644
+--- a/gnat/Makefile
++++ b/gnat/Makefile
+@@ -7,7 +7,7 @@ html: ${stage_miscdocdir}/ahven/
+ 	${MAKE} html --directory=${srcdir}/../doc/manual/en BUILDDIR=${objdir}/sphinx
+ 	cp -RHpf ${objdir}/sphinx/html ${stage_miscdocdir}/ahven
+ 
+-build: html
++build:
+ 
+ tests: base ahven_tests.gpr
+ 	${build_GPR}
+diff --git a/gnat/ahven_lib.gpr b/gnat/ahven_lib.gpr
+index 62d6b75..884cb6a 100644
+--- a/gnat/ahven_lib.gpr
++++ b/gnat/ahven_lib.gpr
+@@ -43,6 +43,6 @@ project Ahven_Lib is
+                                        "-gnatwl",
+                                        "-gnatE",
+                                        "-gnatwF", -- unreferenced formal off
+-                                       "-gnatyd3ibmhex", "-gnat95");
++                                       "-gnatyd3ibmhex");
+   end Builder;
+ end Ahven_Lib;
+diff --git a/gnat/ahven_tests.gpr b/gnat/ahven_tests.gpr
+index d0c4572..95302cf 100644
+--- a/gnat/ahven_tests.gpr
++++ b/gnat/ahven_tests.gpr
+@@ -28,8 +28,7 @@ project Ahven_Tests is
+       for Default_Switches ("Ada") use ("-g",
+                                         "-gnatQ",
+                                         "-gnatwa",
+-                                        "-gnatwF", -- unreferenced formal off
+-                                        "-gnat95");
++                                        "-gnatwF"); -- unreferenced formal off
+    end Builder;
+ 
+    package Linker is
+diff --git a/gnat/build_ahven.gpr b/gnat/build_ahven.gpr
+index fa94ef2..3d896e7 100644
+--- a/gnat/build_ahven.gpr
++++ b/gnat/build_ahven.gpr
+@@ -47,7 +47,7 @@ library project Build_Ahven is
+                                           "-gnatwl",
+                                           "-gnatE",
+                                           "-gnatwF", -- unreferenced formal off
+-                                          "-gnatyd3bmhex", "-gnat95");
++                                          "-gnatyd3bmhex");
+       -- gnat style switches explained:
+       -- 'd' - no DOS line terminators
+       -- '3' - indentation level (3 spaces)
+diff --git a/src/ahven-framework.adb b/src/ahven-framework.adb
+index 5f52153..130eb7c 100644
+--- a/src/ahven-framework.adb
++++ b/src/ahven-framework.adb
+@@ -44,7 +44,6 @@ package body Ahven.Framework is
+    function Name_In_List (Name : AStrings.Bounded_String;
+                           List_Of_Names : Name_List.List)
+      return Boolean is
+-      use type Name_List.Cursor;
+ 
+       Pos : Name_List.Cursor := Name_List.First (List_Of_Names);
+    begin
+@@ -560,7 +559,6 @@ package body Ahven.Framework is
+    function Test_Count (T : Test_Case; Test_Names : Name_List.List)
+      return Test_Count_Type
+    is
+-      use Test_Command_List;
+ 
+       Counter  : Test_Count_Type := 0;
+ 
+diff --git a/src/ahven-tap_runner.adb b/src/ahven-tap_runner.adb
+index 7a45a73..4e91c47 100644
+--- a/src/ahven-tap_runner.adb
++++ b/src/ahven-tap_runner.adb
+@@ -129,8 +129,6 @@ package body Ahven.Tap_Runner is
+ 
+    procedure Add_Pass (Listener : in out Tap_Listener;
+                        Info     :        Context) is
+-      use Ada.Strings;
+-      use Ada.Strings.Fixed;
+    begin
+       if Listener.Capture_Output then
+          Temporary_Output.Restore_Output;
+@@ -146,8 +144,6 @@ package body Ahven.Tap_Runner is
+    procedure Report_Not_Ok (Listener : in out Tap_Listener;
+                             Info     :        Context;
+                             Severity :        String) is
+-      use Ada.Strings;
+-      use Ada.Strings.Fixed;
+    begin
+       if Listener.Capture_Output then
+          Temporary_Output.Restore_Output;
+@@ -183,8 +179,6 @@ package body Ahven.Tap_Runner is
+ 
+    procedure Add_Skipped (Listener : in out Tap_Listener;
+                           Info     :        Context) is
+-      use Ada.Strings;
+-      use Ada.Strings.Fixed;
+    begin
+       if Listener.Capture_Output then
+          Temporary_Output.Restore_Output;

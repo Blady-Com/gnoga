@@ -2,7 +2,7 @@
 #
 #  ZanyBlue, an Ada library and framework for finite element analysis.
 #
-#  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+#  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -73,6 +73,9 @@ PLATFORM_TARGET=noop
 DOCSUBSTDEFS+=-d V_MAJOR=$(V_MAJOR)
 DOCSUBSTDEFS+=-d V_MINOR=$(V_MINOR)
 DOCSUBSTDEFS+=-d V_PATCH=$(V_PATCH)
+SRCROOTDIR=root
+SRCDOCDIR=doc
+SRCTESTDIR=test
 
 include $(TOP)/src/mkfile/$(OS).mk
 
@@ -84,6 +87,10 @@ include $(TOP)/src/mkfile/version.mk
 
 -include $(TOP)/src/mkfile/defs.mk
 
+# Define the targets used to do a recursive build and clean
+APPTARGETS=$(patsubst %,%.app,$(APPDIRS))
+CLEAN_DEPS+=$(patsubst %,%.clean,$(APPDIRS) $(SRCROOTDIR) $(SRCDOCDIR) $(SRCTESTDIR))
+
 # If defs.mk doesn't exist, i.e., this is not a source tar ball
 # snapshot, query the environment for the svn version and copyright info.
 VERSION=$(V_MAJOR).$(V_MINOR).$(V_PATCH)
@@ -94,7 +101,7 @@ DOWNLOAD_URL="$(DOWNLOAD_ROOT)/zanyblue-$(VERSION_S).tar.gz"
 DIST_TLD=$(call lc,zanyblue-$(VERSION_TLD))
 TARNAME=zanyblue-$(VERSION_S).tar.gz
 ifndef SVN_VERSION
-SVN_VERSION=3144
+SVN_VERSION=$(shell svnversion $(TOP))
 COPYRIGHT_YEAR=$(CURRENT_YEAR)
 endif
 
@@ -111,7 +118,7 @@ SBINDIR=$(SRCDIR)/bin
 STAGEDIR=$(TOP)/stage
 ADMINDIR=$(SRCDIR)/admin
 DISTRIBUTION=$(TOP)/$(TARNAME)
-ZBDEV=echo
+ZBDEV=$(TOP)/src/bin/zbdev
 
 # The choices for BUILD are "Debug", for a debug build, "Production" for an
 # optimized production build, and  "Coverage" for a coverage enable build via
@@ -163,5 +170,5 @@ CLEAN_FILES+=$(foreach i,$(GENERATED),$(wildcard $i))
 
 #
 # General cleaning rules
-CLEAN_TARGS+=$(patsubst %,%.rmfile,$(CLEAN_FILES))
 CLEAN_TARGS+=$(patsubst %,%.rmdir,$(CLEAN_DIRS))
+CLEAN_TARGS+=$(patsubst %,%.rmfile,$(CLEAN_FILES))

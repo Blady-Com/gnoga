@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2017, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,6 @@ package body ZanyBlue.Text is
 
    procedure Close_And_Update (File    : in out Ada.Wide_Text_IO.File_Type;
                                Updated : out Boolean) is
-      use Ada.Text_IO;
       use Ada.Wide_Text_IO;
       use Ada.Strings.Wide_Fixed;
       use ZanyBlue.Wide_Directories;

@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ with ZanyBlue.Test.Parameters.Values.Suites;
 package body ZanyBlue.Test.Parameters.Suites is
 
    use ZanyBlue.Parameters;
-   use ZanyBlue.Test.Parameters;
 
    procedure T_0001 (T : in out Test_Case'Class);
 

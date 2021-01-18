@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2016, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ with ZanyBlue;
 package body ZanyBlue.Test.Root.Suites is
 
    use Ahven.Framework;
-   use ZanyBlue;
 
    Test_Area : constant Wide_String := "root";
    pragma Unreferenced (Test_Area);

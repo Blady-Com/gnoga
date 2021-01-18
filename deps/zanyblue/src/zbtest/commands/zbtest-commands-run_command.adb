@@ -2,7 +2,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -48,14 +48,12 @@
 --  by the script are discarded (via undo actions) when the script completes.
 --
 
-with Ada.Calendar;
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
 procedure Run_Command (State : in out State_Type;
                        Args  : List_Type) is
 
-   use Ada.Calendar;
    use ZanyBlue.Wide_Directories;
 
    procedure Execute_Script (State  : in out State_Type;

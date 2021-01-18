@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2016, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -67,8 +67,6 @@ with ZanyBlue.Test.Text.Codecs.Decoding.SHIFT_JIS.Suites;
 with ZanyBlue.Test.Text.Codecs.Decoding.UTF_8.Suites;
 
 package body ZanyBlue.Test.Text.Codecs.Decoding.Suites is
-
-   use Ahven;
 
    overriding
    procedure Initialize (T : in out Test) is

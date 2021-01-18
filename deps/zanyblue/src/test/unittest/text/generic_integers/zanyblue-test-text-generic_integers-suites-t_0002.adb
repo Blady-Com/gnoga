@@ -1,7 +1,7 @@
 --
 --  ZanyBlue, an Ada library and framework for finite element analysis.
 --
---  Copyright (c) 2012, 2016, Michael Rohan <mrohan@zanyblue.com>
+--  Copyright (c) 2012, 2018, Michael Rohan <mrohan@zanyblue.com>
 --  All rights reserved.
 --
 --  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ separate (ZanyBlue.Test.Text.Generic_Integers.Suites)
 procedure T_0002 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
-   use ZanyBlue.Text.Arguments;
 
    Max_Integer : constant Integer_Argument_Type := Create (My_Integer'Last);
    Min_Integer : constant Integer_Argument_Type := Create (My_Integer'First);
